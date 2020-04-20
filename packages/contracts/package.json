@@ -1,0 +1,5 @@
+{
+  "name": "@uniswap-v1-app/contracts",
+  "version": "1.0.0",
+  "main": "./src/index.js"
+}
