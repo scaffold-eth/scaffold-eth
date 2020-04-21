@@ -1,0 +1,8 @@
+{
+  "name": "eth-hooks",
+  "version": "1.0.0",
+  "main": "src/index.js",
+  "repository": "https://github.com/austintgriffith/eth-hooks.git",
+  "author": "Austin Griffith <austin@ethereum.org>",
+  "license": "MIT"
+}
