@@ -7,6 +7,8 @@
   "license": "MIT",
   "dependencies": {
     "axios": "^0.19.2",
+    "burner-provider": "^1.0.14",
+    "ethers": "^4.0.46",
     "react": "16.12.0"
   }
 }
