@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import Poller from "./Poller.js";
+import usePoller from "./Poller.js";
 import axios from 'axios';
 export default function useGasPrice() {
   const [gasPrice, setGasPrice] = useState();
@@ -8,7 +8,7 @@ export default function useGasPrice() {
     .then(function (response) {
       let newGasPrice = response.data.fast*0.1
       if(newGasPrice!=gasPrice){
-        console.log("GAS ",newGasPrice,"gwei")
+        //console.log("GAS ",newGasPrice,"gwei")
         setGasPrice(newGasPrice);
       }
     })
@@ -16,6 +16,6 @@ export default function useGasPrice() {
       console.log(error);
     })
   }
-  Poller(loadGasPrice,39999)
+  usePoller(loadGasPrice,39999)
   return gasPrice
 }
