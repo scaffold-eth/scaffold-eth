@@ -1,5 +1,5 @@
 import React, { useEffect, useRef } from 'react';
-export default function Poller(callback, delay) {
+export default function usePoller(callback, delay) {
   const savedCallback = useRef();
   // Remember the latest callback.
   useEffect(() => {

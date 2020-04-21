@@ -4,5 +4,9 @@
   "main": "src/index.js",
   "repository": "https://github.com/austintgriffith/eth-hooks.git",
   "author": "Austin Griffith <austin@ethereum.org>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "axios": "^0.19.2",
+    "react": "16.12.0"
+  }
 }
