@@ -8,6 +8,7 @@ export default function ContractLoader(provider,ready) {
       require("./contracts/"+contractList[c]+".abi.js"),
       provider,
     );
+    contracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
     if(typeof ready == "function") { ready(contracts) }
   }
 }

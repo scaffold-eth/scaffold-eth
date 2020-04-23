@@ -1,5 +1,5 @@
 contract SmartContractWallet {
 
-  string public purpose = "smart contract wallet";
+  string public purpose = "This is going to be rad";
 
 }

@@ -57,17 +57,20 @@ export default function Account(props) {
 
   const logoutOfWeb3Modal = async ()=>{
     const clear = await web3Modal.clearCachedProvider();
-    window.location.reload()
+    console.log("Cleared cache provider!?!",clear)
+    setTimeout(()=>{
+      window.location.reload()
+    },1)
   }
 
   let modalButtons = []
   if (web3Modal.cachedProvider) {
     modalButtons.push(
-      <Button style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
+      <Button style={{marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
     )
   }else{
     modalButtons.push(
-      <Button style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
+      <Button style={{marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
     )
   }
 
@@ -78,13 +81,15 @@ export default function Account(props) {
   }, []);
 
   return (
-    <div style={{position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
+    <div style={{verticalAlign:"middle",position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
       {props.account?(
         <span>
-          <Blockies seed={props.account.toLowerCase()} size={8} />
-          <span style={{paddingLeft:5,fontSize:32}}>
+          <span >
+            <Blockies seed={props.account.toLowerCase()} size={8} scale={4}/>
+          </span>
+          <span style={{paddingLeft:5,fontSize:28}}>
             <Text copyable={{text:props.account}}>
-              {props.account.substr(0,6)}...{props.account.substr(-4)}
+              <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.account}>{props.account.substr(0,6)}...{props.account.substr(-4)}</a>
             </Text>
           </span>
         </span>

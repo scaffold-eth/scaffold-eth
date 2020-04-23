@@ -13,7 +13,7 @@ export default function SmartContractWallet(props) {
         }
       }
   }
-  usePoller(loadPurpose,3333)
+  usePoller(loadPurpose,777)
 
   return (
     <div style={{position:'fixed',textAlign:'left',left:0,bottom:0,padding:10}}>

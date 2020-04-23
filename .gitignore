@@ -2,6 +2,7 @@
 **/node_modules
 packages/buidler/artifacts
 packages/react-app/src/contracts
+packages/buidler/cache
 
 # dependencies
 /node_modules

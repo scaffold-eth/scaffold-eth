@@ -5,26 +5,28 @@ import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 
-import { usePoller, useGasPrice, useUserProvider, useBalance, useBlockNumber } from "eth-hooks";
+import { usePoller, useGasPrice, useBalance, useBlockNumber } from "eth-hooks";
 import useExchangePrice from './ExchangePrice.js'
 
 import { Button, notification } from 'antd';
 
 import Account from './Account.js'
-import SmartContractWallet from './SmartContractWallet.js'
 import ContractLoader from "./ContractLoader.js";
 import Notify from './Notify.js'
+
+import SmartContractWallet from './SmartContractWallet.js'
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
 // change your local provider when you deploy with: echo "REACT_APP_PROVIDER=https://SOME_PROD_RPC" > .env
 const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
+
 
 function App() {
   const [account, setAccount] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
 
   const gasPrice = useGasPrice()
-  //const [account, userProvider] = useUserProvider(localProvider,mainnetProvider)
+
   const localBalance = useBalance(account,localProvider)
   const price = useExchangePrice(mainnetProvider)
 
@@ -34,12 +36,8 @@ function App() {
     ContractLoader(localProvider, async (loadedContracts)=>{
       console.log("CONTRACTS ARE READY!",loadedContracts)
       setContracts(loadedContracts)
-      // listen to events after contracts are loaded
-      //listenForEvents(loadedContracts)
     })
   },[])
-
-
 
   const etherscanTxUrl = "https://ropsten.etherscan.io/tx/"
 
