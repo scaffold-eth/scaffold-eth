@@ -11,6 +11,7 @@ import useExchangePrice from './ExchangePrice.js'
 import { Button, notification } from 'antd';
 
 import Account from './Account.js'
+import SmartContractWallet from './SmartContractWallet.js'
 import ContractLoader from "./ContractLoader.js";
 import Notify from './Notify.js'
 
@@ -38,17 +39,7 @@ function App() {
     })
   },[])
 
-  const [purpose, setPurpose] = useState();
-  const loadPurpose = async ()=>{
-      if(contracts){
-        let newPurpose = await contracts.SmartContractWallet.purpose()
-        if(newPurpose!=purpose){
-          console.log("purpose: ",purpose)
-          setPurpose(newPurpose)
-        }
-      }
-  }
-  usePoller(loadPurpose,3333)
+
 
   const etherscanTxUrl = "https://ropsten.etherscan.io/tx/"
 
@@ -61,37 +52,9 @@ function App() {
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
         />
-        {localBalance}
-        <Button onClick={async ()=>{
-          let signer = injectedProvider.getSigner()
-
-          let tx = {
-              to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-              value: ethers.utils.parseEther('0.01')
-          };
-
-          try{
-            let result = await signer.sendTransaction(tx);
-            console.log(result)
-            const { emitter } = Notify.hash(result.hash)
-            emitter.on('all', (transaction) => {
-              return {
-                onclick: () =>
-                   window.open(etherscanTxUrl+transaction.hash),
-                }
-            })
-          }catch(e){
-            console.log(e)
-            notification['error']({
-               message: 'Transaction Error',
-               description: e.message
-             });
-          }
-
-
-        }}>
-          do something cool
-        </Button>
+        <SmartContractWallet
+          contracts={contracts}
+        />
     </div>
   );
 }
