@@ -1,12 +1,15 @@
-This project was bootstrapped with [Create Eth App](https://github.com/paulrberg/create-eth-app) and the [Uniswap v1 Template](https://github.com/PaulRBerg/create-eth-app/tree/develop/templates/uniswap).
+```
 
-This template contains two packages:
+# install
+yarn install
 
-- [contracts](/packages/contracts)
-- [react-app](/packages/react-app)
+# start local blockchain
+yarn run node
 
-The React app implements a basic example for how to connect and pull data from the [Uniswap v1 subgraph](https://thegraph.com/explorer/subgraph/graphprotocol/uniswap).
+# start frontend
+yarn start
 
-## What is Uniswap?
+# compile, test, deploy, and publish your contracts
+yarn deploy
 
-Uniswap is a protocol for automated token exchange on Ethereum. Read more about it in the [official documentation](https://docs.uniswap.io/).
+```

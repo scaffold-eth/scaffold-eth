@@ -1,6 +1,7 @@
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 **/node_modules
-
+packages/buidler/artifacts
+packages/react-app/src/contracts
 
 # dependencies
 /node_modules
