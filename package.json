@@ -13,7 +13,10 @@
     "react-app:build": "yarn workspace @uniswap-v1-app/react-app build",
     "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
-    "react-app:test": "yarn workspace @uniswap-v1-app/react-app test"
+    "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
+    "node": "cd packages/buidler;npx buidler node",
+    "start": "yarn workspace @uniswap-v1-app/react-app start",
+    "deploy": "cd packages/buidler;npx buidler run scripts/deploy.js; npx buidler run scripts/publish.js"
   },
   "workspaces": {
     "packages": [

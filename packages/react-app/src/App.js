@@ -1,72 +1,97 @@
-import React from "react";
-import logo from "./ethereumLogo.png";
-import { MAINNET_ID, addresses, abis } from "@uniswap-v1-app/contracts";
-import { gql } from "apollo-boost";
+import React, { useState, useEffect, useRef } from 'react'
+import 'antd/dist/antd.css';
+//import { gql } from "apollo-boost";
 import { ethers } from "ethers";
-import { useQuery } from "@apollo/react-hooks";
+//import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 
-const GET_EXCHANGES = gql`
-  {
-    exchanges(first: 5) {
-      id
-      tokenAddress
-      tokenSymbol
-      tokenName
-    }
-  }
-`;
+import { usePoller, useGasPrice, useUserProvider, useBalance, useBlockNumber } from "eth-hooks";
+import useExchangePrice from './ExchangePrice.js'
 
-async function readOnChainData() {
-  // Should replace with the end-user wallet, e.g. Metamask
-  const defaultProvider = ethers.getDefaultProvider();
-  // Create an instance of ethers.Contract
-  // Read more about ethers.js on https://docs.ethers.io/ethers.js/html/api-contract.html
-  const ethDaiExchangeContract = new ethers.Contract(
-    addresses[MAINNET_ID].exchanges["ETH-DAI"],
-    abis.exchange,
-    defaultProvider,
-  );
-  // A pre-defined address that owns some cDAI tokens
-  const exchangeRate = await ethDaiExchangeContract.getEthToTokenInputPrice("1000000000000000000"); // price of 1 Ether in DAI
-  console.log({ exchangeRate: exchangeRate.toString() });
-}
+import { Button, notification } from 'antd';
+
+import Account from './Account.js'
+import ContractLoader from "./ContractLoader.js";
+import Notify from './Notify.js'
+
+const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
+// change your local provider when you deploy with: echo "REACT_APP_PROVIDER=https://SOME_PROD_RPC" > .env
+const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
 
 function App() {
-  const { loading, error, data } = useQuery(GET_EXCHANGES);
+  const [account, setAccount] = useState();
+  const [injectedProvider, setInjectedProvider] = useState();
 
+  const gasPrice = useGasPrice()
+  //const [account, userProvider] = useUserProvider(localProvider,mainnetProvider)
+  const localBalance = useBalance(account,localProvider)
+  const price = useExchangePrice(mainnetProvider)
+
+  const [contracts, setContracts] = useState();
   React.useEffect(() => {
-    if (!loading && !error && data && data.exchanges) {
-      console.log({ exchanges: data.exchanges });
-    }
-  }, [loading, error, data]);
+    //localProvider.resetEventsBlock(0)
+    ContractLoader(localProvider, async (loadedContracts)=>{
+      console.log("CONTRACTS ARE READY!",loadedContracts)
+      setContracts(loadedContracts)
+      // listen to events after contracts are loaded
+      //listenForEvents(loadedContracts)
+    })
+  },[])
+
+  const [purpose, setPurpose] = useState();
+  const loadPurpose = async ()=>{
+      if(contracts){
+        let newPurpose = await contracts.SmartContractWallet.purpose()
+        if(newPurpose!=purpose){
+          console.log("purpose: ",purpose)
+          setPurpose(newPurpose)
+        }
+      }
+  }
+  usePoller(loadPurpose,3333)
+
+  const etherscanTxUrl = "https://ropsten.etherscan.io/tx/"
 
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="react-logo" />
-        <p>
-          Edit <code>packages/react-app/src/App.js</code> and save to reload.
-        </p>
-        <button onClick={() => readOnChainData()} style={{ display: "none" }}>
-          Read On-Chain Exchange Rate
-        </button>
-        <a
-          className="App-link"
-          href="https://ethereum.org/developers/#getting-started"
-          target="_blank"
-          rel="noopener noreferrer"
-          style={{ marginTop: "0px" }}
-        >
-          Learn Ethereum
-        </a>
-        <a className="App-link" href="https://reactjs.org" target="_blank" rel="noopener noreferrer">
-          Learn React
-        </a>
-        <a className="App-link" href="https://docs.uniswap.io/" target="_blank" rel="noopener noreferrer">
-          Learn Uniswap
-        </a>
-      </header>
+        <Account
+          account={account}
+          setAccount={setAccount}
+          localProvider={localProvider}
+          injectedProvider={injectedProvider}
+          setInjectedProvider={setInjectedProvider}
+        />
+        {localBalance}
+        <Button onClick={async ()=>{
+          let signer = injectedProvider.getSigner()
+
+          let tx = {
+              to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
+              value: ethers.utils.parseEther('0.01')
+          };
+
+          try{
+            let result = await signer.sendTransaction(tx);
+            console.log(result)
+            const { emitter } = Notify.hash(result.hash)
+            emitter.on('all', (transaction) => {
+              return {
+                onclick: () =>
+                   window.open(etherscanTxUrl+transaction.hash),
+                }
+            })
+          }catch(e){
+            console.log(e)
+            notification['error']({
+               message: 'Transaction Error',
+               description: e.message
+             });
+          }
+
+
+        }}>
+          do something cool
+        </Button>
     </div>
   );
 }
