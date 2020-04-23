@@ -8,11 +8,11 @@ import "./App.css";
 import { usePoller, useGasPrice, useBalance, useBlockNumber } from "eth-hooks";
 import useExchangePrice from './ExchangePrice.js'
 
-import { Button, notification } from 'antd';
 
 import Account from './Account.js'
 import ContractLoader from "./ContractLoader.js";
-import Notify from './Notify.js'
+import Transactor from "./Transactor.js"
+
 
 import SmartContractWallet from './SmartContractWallet.js'
 
@@ -24,13 +24,15 @@ const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP
 function App() {
   const [account, setAccount] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
+  const [contracts, setContracts] = useState();
+
+  const tx = Transactor(injectedProvider)
 
   const gasPrice = useGasPrice()
-
   const localBalance = useBalance(account,localProvider)
   const price = useExchangePrice(mainnetProvider)
 
-  const [contracts, setContracts] = useState();
+
   React.useEffect(() => {
     //localProvider.resetEventsBlock(0)
     ContractLoader(localProvider, async (loadedContracts)=>{
@@ -38,8 +40,6 @@ function App() {
       setContracts(loadedContracts)
     })
   },[])
-
-  const etherscanTxUrl = "https://ropsten.etherscan.io/tx/"
 
   return (
     <div className="App">
@@ -52,6 +52,8 @@ function App() {
         />
         <SmartContractWallet
           contracts={contracts}
+          injectedProvider={injectedProvider}
+          tx={tx}
         />
     </div>
   );

@@ -15,6 +15,7 @@
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
     "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
     "node": "cd packages/buidler;npx buidler node",
+    "test": "cd packages/buidler;npx buidler test",
     "start": "yarn workspace @uniswap-v1-app/react-app start",
     "compile": "cd packages/buidler;npx buidler compile",
     "deploy": "cd packages/buidler;npx buidler run scripts/deploy.js; npx buidler run scripts/publish.js"
