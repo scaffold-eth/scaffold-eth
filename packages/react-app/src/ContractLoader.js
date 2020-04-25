@@ -1,14 +1,23 @@
 import { ethers } from "ethers";
-export default function ContractLoader(provider,ready) {
-  let contractList = require("./contracts/contracts.js")
-  for(let c in contractList){
-    let contracts = []
-    contracts[contractList[c]] = new ethers.Contract(
-      require("./contracts/"+contractList[c]+".address.js"),
-      require("./contracts/"+contractList[c]+".abi.js"),
-      provider,
-    );
-    contracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
-    if(typeof ready == "function") { ready(contracts) }
-  }
+import { useState, useEffect } from 'react';
+
+export default function useContractLoader(provider) {
+  const [contracts, setContracts] = useState();
+  useEffect(() => {
+    if(typeof provider != "undefined")
+    {
+      let contractList = require("./contracts/contracts.js")
+      let newContracts = []
+      for(let c in contractList){
+        newContracts[contractList[c]] = new ethers.Contract(
+          require("./contracts/"+contractList[c]+".address.js"),
+          require("./contracts/"+contractList[c]+".abi.js"),
+          provider,
+        );
+        newContracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
+      }
+      setContracts(newContracts)
+    }
+  },[provider])
+  return contracts
 }

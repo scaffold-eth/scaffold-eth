@@ -4,7 +4,7 @@ import "@nomiclabs/buidler/console.sol";
 
 contract SmartContractWallet {
 
-  string public purpose = "Smart Contarct Wallet Tinkering";
+  string public purpose = "Hello World!!!";
   address public owner;
 
   constructor() public {
@@ -13,7 +13,7 @@ contract SmartContractWallet {
   }
 
   function updateOwner(address newOwner) public {
-    require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
+    //require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
     owner = newOwner;
   }
 

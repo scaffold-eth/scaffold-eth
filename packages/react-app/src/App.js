@@ -7,10 +7,10 @@ import "./App.css";
 
 import { usePoller, useGasPrice, useBalance, useBlockNumber } from "eth-hooks";
 import useExchangePrice from './ExchangePrice.js'
-
+import useContractLoader from "./ContractLoader.js";
 
 import Account from './Account.js'
-import ContractLoader from "./ContractLoader.js";
+
 import Transactor from "./Transactor.js"
 
 
@@ -24,7 +24,9 @@ const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP
 function App() {
   const [account, setAccount] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
-  const [contracts, setContracts] = useState();
+
+  const readContracts = useContractLoader(localProvider);
+  const writeContracts = useContractLoader(injectedProvider);
 
   const tx = Transactor(injectedProvider)
 
@@ -33,13 +35,7 @@ function App() {
   const price = useExchangePrice(mainnetProvider)
 
 
-  React.useEffect(() => {
-    //localProvider.resetEventsBlock(0)
-    ContractLoader(localProvider, async (loadedContracts)=>{
-      console.log("CONTRACTS ARE READY!",loadedContracts)
-      setContracts(loadedContracts)
-    })
-  },[])
+
 
   return (
     <div className="App">
@@ -51,7 +47,8 @@ function App() {
           setInjectedProvider={setInjectedProvider}
         />
         <SmartContractWallet
-          contracts={contracts}
+          readContracts={readContracts}
+          writeContracts={writeContracts}
           injectedProvider={injectedProvider}
           tx={tx}
         />
