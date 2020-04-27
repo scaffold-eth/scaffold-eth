@@ -1,7 +1,7 @@
 
 # 🏗 scaffold-eth
 
-> TLDR: **fork this repo** for a dapp dev stack focused on *fast product iteration*
+> TL;DR: **fork this repo** for a dapp dev stack focused on *fast product iteration*
 
 ## ⏱ Quickstart:
 
