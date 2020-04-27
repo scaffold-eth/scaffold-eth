@@ -5,7 +5,6 @@
 
 ---
 
-
 ## ⏱ Quickstart:
 
 📦 Clone/fork repo and then install:
@@ -22,8 +21,7 @@ yarn start
 
 📝 Edit your frontend `App.js` in `packages/react-app/src` and open http://localhost:3000
 
-☢️ [eth-hooks](https://github.com/austintgriffith/eth-hooks) and ☢️ other-austin-components
-
+---
 
 
 ⛓ Start your debuggable blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
@@ -48,12 +46,13 @@ yarn run deploy
 yarn run watch
 ```
 
-
+---
 
 
  ✨ Your dapp hot reloads as you build your contracts and frontend together ✨
 
 
+---
 
 
 🔬Test your contracts by editing `myTest.js` in `packages/buidler/contracts`:
@@ -78,6 +77,31 @@ yarn run send --from 0xc783df8a850f42e7F7e57013759C285caa701eB6 --to 0xeAD9C93b7
 
 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
 
+
+---
+
+ ✨ The BuidlerEVM provides *console.log* debugging for our contracts ✨
+
+---
+
+☢️ [eth-hooks](https://github.com/austintgriffith/eth-hooks) -- TODO
+
+🔏 Web3 Provider -- TODO
+
+🔄 Poller -- TODO
+
+🔥 Burner Provider -- TODO
+
+💠 Blockies -- TODO
+
+📥 Contract Loader -- TODO
+
+📚 OpenZeppelin Contracts -- TODO
+
+🗓 Event Parsing -- TODO
+
+🛰 The Graph -- TODO
+
 ---
 
 ## 📋 Manifest?
@@ -101,7 +125,7 @@ yarn run send --from 0xc783df8a850f42e7F7e57013759C285caa701eB6 --to 0xeAD9C93b7
 
 ---
 
-## 🗺 Step-By-Step Guide:
+## 🗺 Step-By-Step Guide?
 
 
 ❇️ **NodeJS**

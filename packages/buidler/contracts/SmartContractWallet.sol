@@ -17,11 +17,14 @@ contract SmartContractWallet {
   }
 
   function withdraw() public {
+    //require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
+    console.log(msg.sender,"withdraws",(address(this)).balance);
     msg.sender.transfer((address(this)).balance);
   }
 
   function updateOwner(address newOwner) public {
     //require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
+    console.log(msg.sender,"updates owner to",newOwner);
     owner = newOwner;
   }
 
