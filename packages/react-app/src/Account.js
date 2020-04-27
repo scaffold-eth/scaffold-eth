@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blockies from 'react-blockies';
 import { ethers } from "ethers";
 import { usePoller } from "eth-hooks";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 
+import Balance from './Balance.js'
 import Address from "./Address.js"
 
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -24,10 +24,9 @@ const web3Modal = new Web3Modal({
   }
 });
 
-
 export default function Account(props) {
 
-  const createBurnerIfNoAccount = () => {
+  const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider){
       if(props.localProvider.connection && props.localProvider.connection.url){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
@@ -38,14 +37,14 @@ export default function Account(props) {
       pollInjectedProvider()
     }
   }
-  useEffect(createBurnerIfNoAccount, [props.injectedProvider]);
+  useEffect(createBurnerIfNoAddress, [props.injectedProvider]);
 
   const pollInjectedProvider = async ()=>{
     if(props.injectedProvider){
       let accounts = await props.injectedProvider.listAccounts()
       if(accounts && accounts[0] && accounts[0] != props.account){
-        console.log("ACCOUNT: ",accounts[0])
-        props.setAccount(accounts[0])
+        console.log("ADDRESS: ",accounts[0])
+        props.setAddress(accounts[0])
       }
     }
   }
@@ -84,10 +83,11 @@ export default function Account(props) {
   }, []);
 
   return (
-    <div style={{position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
-      {props.account?(
-        <Address value={props.account} />
+    <div>
+      {props.address?(
+        <Address value={props.address} />
       ):"Connecting..."}
+      <Balance address={props.address} provider={props.injectedProvider} />
       {modalButtons}
     </div>
   );

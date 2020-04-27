@@ -7,22 +7,33 @@ export default function Address(props) {
   if(!props.value){
     return (
       <span>
-
       </span>
     )
   }
+
+  if(props.minimized){
+    return (
+        <span style={{verticalAlign:"middle"}}>
+          <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.value}>
+            <Blockies seed={props.value.toLowerCase()} size={8} scale={2}/>
+          </a>
+        </span>
+    );
+  }
+
+  //if you want to show the last four chars of your address too: ...{props.value.substr(-4)}
 
   let text
   if(props.onChange){
     text = (
       <Text editable={{onChange:props.onChange}} copyable={{text:props.value}}>
-        <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.value}>{props.value.substr(0,6)}...{props.value.substr(-4)}</a>
+        <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.value}>{props.value.substr(0,6)}</a>
       </Text>
     )
   }else{
     text = (
       <Text copyable={{text:props.value}}>
-        <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.value}>{props.value.substr(0,6)}...{props.value.substr(-4)}</a>
+        <a style={{color:"#222222"}} href={"https://etherscan.io/address/"+props.value}>{props.value.substr(0,6)}</a>
       </Text>
     )
   }

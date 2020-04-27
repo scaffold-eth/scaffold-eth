@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Typography, Skeleton, Card, Row, Col, Button } from 'antd';
-import { DownloadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import useContractReader from './ContractReader.js'
 
 import Address from "./Address.js"
@@ -17,11 +17,8 @@ export default function SmartContractWallet(props) {
   const purpose = useContractReader(props.readContracts,name,"purpose",1777);
   const owner = useContractReader(props.readContracts,name,"owner",1777);
 
+  let displayAddress, displayOwner, onDeposit, onWithdraw
 
-
-  let displayAddress
-  let displayOwner
-  let onDeposit
   if(props.readContracts && props.readContracts[name]){
     displayAddress = (
       <Row>
@@ -32,8 +29,9 @@ export default function SmartContractWallet(props) {
     displayOwner = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
-        <Col span={16}><Address value={owner} onChange={(newOwner)=>{
-          let result = props.writeContracts['SmartContractWallet'].updateOwner(newOwner)
+        <Col span={16}><Address value={owner} onChange={async (newOwner)=>{
+          console.log("UPDATING OWNER ",newOwner,props.writeContracts)
+          let result = await props.writeContracts['SmartContractWallet'].updateOwner(newOwner)
           console.log("result",result)
         }}/></Col>
       </Row>
@@ -44,16 +42,24 @@ export default function SmartContractWallet(props) {
         value: ethers.utils.parseEther('0.01'),
       })
     }
+    onWithdraw = async ()=>{
+
+      let result = await props.writeContracts['SmartContractWallet'].withdraw()
+      console.log("result",result)
+    }
   }
 
 
   return (
-    <div style={{padding:10,textAlign:'left'}}>
+    <div>
       <Card
         size="large"
         style={{ width: 550, marginTop: 25 }}
         loading={!purpose}
         actions={[
+            <div onClick={onWithdraw}>
+              <UploadOutlined /> Withdraw
+            </div>,
             <div onClick={onDeposit}>
               <DownloadOutlined /> Deposit
             </div>,

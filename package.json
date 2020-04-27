@@ -18,7 +18,11 @@
     "test": "cd packages/buidler;npx buidler test",
     "start": "yarn workspace @uniswap-v1-app/react-app start",
     "compile": "cd packages/buidler;npx buidler compile",
-    "deploy": "cd packages/buidler;npx buidler run scripts/deploy.js; npx buidler run scripts/publish.js"
+    "deploy": "cd packages/buidler;npx buidler run scripts/deploy.js; npx buidler run scripts/publish.js",
+    "watch": "cd packages/buidler;node scripts/watch.js",
+    "accounts": "cd packages/buidler;npx buidler accounts",
+    "balance": "cd packages/buidler;npx buidler balance",
+    "send": "cd packages/buidler;npx buidler send"
   },
   "workspaces": {
     "packages": [

@@ -9,9 +9,10 @@ import { usePoller, useGasPrice, useBalance, useBlockNumber } from "eth-hooks";
 import useExchangePrice from './ExchangePrice.js'
 import useContractLoader from "./ContractLoader.js";
 
+import Header from "./Header.js"
 import Account from './Account.js'
-
-import Transactor from "./Transactor.js"
+import Provider from './Provider.js'
+import Transactor from './Transactor.js'
 
 
 import SmartContractWallet from './SmartContractWallet.js'
@@ -22,7 +23,7 @@ const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP
 
 
 function App() {
-  const [account, setAccount] = useState();
+  const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
 
   const readContracts = useContractLoader(localProvider);
@@ -31,27 +32,47 @@ function App() {
   const tx = Transactor(injectedProvider)
 
   const gasPrice = useGasPrice()
-  const localBalance = useBalance(account,localProvider)
+  const localBalance = useBalance(address,localProvider)
   const price = useExchangePrice(mainnetProvider)
-
-
-
 
   return (
     <div className="App">
+
+      <Header />
+
+      <div style={{position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
         <Account
-          account={account}
-          setAccount={setAccount}
+          address={address}
+          setAddress={setAddress}
           localProvider={localProvider}
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
         />
+      </div>
+
+      <div style={{padding:40,textAlign: "left"}}>
         <SmartContractWallet
           readContracts={readContracts}
           writeContracts={writeContracts}
           injectedProvider={injectedProvider}
           tx={tx}
         />
+      </div>
+
+      <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
+        <Provider
+          name={"mainnet"}
+          provider={mainnetProvider}
+        />
+        <Provider
+          name={"local"}
+          provider={localProvider}
+        />
+        <Provider
+          name={"injected"}
+          provider={injectedProvider}
+        />
+      </div>
     </div>
   );
 }

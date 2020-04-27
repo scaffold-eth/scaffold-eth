@@ -12,7 +12,7 @@ export default function useContractLoader(provider) {
         newContracts[contractList[c]] = new ethers.Contract(
           require("./contracts/"+contractList[c]+".address.js"),
           require("./contracts/"+contractList[c]+".abi.js"),
-          provider,
+          provider.getSigner(),
         );
         newContracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
       }
