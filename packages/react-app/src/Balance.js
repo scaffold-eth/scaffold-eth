@@ -8,16 +8,17 @@ export default function Balance(props) {
 
   const [balance, setBalance] = useState();
   usePoller(async ()=>{
-    try{
-      const newBalance = await props.provider.getBalance(props.address)
-      setBalance(newBalance)
-    }catch(e){
-      console.log(e)
+    if(props.address && props.provider){
+      try{
+        const newBalance = await props.provider.getBalance(props.address)
+        setBalance(newBalance)
+      }catch(e){
+        console.log(e)
+      }
     }
-
   },props.pollTime?props.pollTime:1999)
 
-  console.log("balance",balance)
+  //console.log("balance",balance)
 
   let floatBalance = parseFloat("0.00")
 
@@ -29,7 +30,7 @@ export default function Balance(props) {
 
   let displayBalance = floatBalance.toFixed(4)
 
-  console.log("dollarMultiplier",props.dollarMultiplier)
+  //console.log("dollarMultiplier",props.dollarMultiplier)
 
   if(props.dollarMultiplier){
     displayBalance = "$"+(floatBalance*props.dollarMultiplier).toFixed(2)
