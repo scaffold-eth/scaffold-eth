@@ -1,11 +1,13 @@
 
 # 🏗 scaffold-eth
 
-> TL;DR: **fork this repo** for a dapp dev stack focused on *fast product iteration*
+> TL;DR: **fork this repo** for an Ethereum dev stack focused on *fast product iteration*
 
 ---
 
 ## ⏱ Quickstart:
+
+First, you'll need [Git](https://git-scm.com/downloads), [NodeJS>=8.16](https://nodejs.org/en/download/), and [Yarn](https://classic.yarnpkg.com/en/docs/install) installed. 
 
 📦 Clone/fork repo and then install:
 
@@ -30,6 +32,8 @@ yarn run chain
 ```
 
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+
+---
 
 ⚙️ Compile your contracts:
 ```
