@@ -63,7 +63,10 @@ task("send", "Send ETH")
 function send(txparams) {
   return new Promise((resolve, reject) => {
     web3.eth.sendTransaction(txparams,(error, transactionHash) => {
-      debug(`Error: ${error} : transactionHash: ${transactionHash}`)
+      if(error){
+        debug(`Error: ${error}`)
+      }
+      debug(`transactionHash: ${transactionHash}`)
       //checkForReceipt(2, params, transactionHash, resolve)
     })
   })

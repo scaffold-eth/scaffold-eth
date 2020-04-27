@@ -15,7 +15,7 @@ yarn install
 
 ---
 
-⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
+⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using 🔧[Ethers.js](https://docs.ethers.io/ethers.js/html/index.html) and the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
 ```
 yarn start
 ```
@@ -28,7 +28,7 @@ yarn start
 
 ⛓ Start your debuggable blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
 ```
-yarn run node
+yarn run chain
 ```
 
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
@@ -51,7 +51,7 @@ yarn run watch
 
 ---
 
- 🔥Your dapp hot reloads as you build your contracts and frontend together ✨
+ ✨ Your dapp hot reloads as you build your contracts and frontend together ✨
 
 ---
 
@@ -79,8 +79,26 @@ yarn run send --from 0xc783df8a850f42e7F7e57013759C285caa701eB6 --to 0xeAD9C93b7
 
 ---
 
+## 📋 Manifest?
+
+[ *last updated 00/00/0000* ]
+
+| Package | Version |
+| ----------- | ----------- |
+| TODO | TODO |
+| TODO | TODO |
 
 
+---
+
+## ☑️ TODO:
+
+- [x] ~~TODO~~
+- [ ] TODO
+- [ ] TODO
+
+
+---
 
 ## 🗺 Step-By-Step Guide:
 

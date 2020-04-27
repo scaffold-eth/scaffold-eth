@@ -6,24 +6,25 @@ import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import useContractReader from './ContractReader.js'
 
 import Address from "./Address.js"
+import Balance from "./Balance.js"
 
 const { Title } = Typography;
 const { Meta } = Card;
 
-const name = "SmartContractWallet"
+const contractName = "SmartContractWallet"
 
 export default function SmartContractWallet(props) {
 
-  const purpose = useContractReader(props.readContracts,name,"purpose",1777);
-  const owner = useContractReader(props.readContracts,name,"owner",1777);
+  const title = useContractReader(props.readContracts,contractName,"title",1777);
+  const owner = useContractReader(props.readContracts,contractName,"owner",1777);
 
   let displayAddress, displayOwner, onDeposit, onWithdraw
 
-  if(props.readContracts && props.readContracts[name]){
+  if(props.readContracts && props.readContracts[contractName]){
     displayAddress = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Deployed to:</Col>
-        <Col span={16}><Address value={props.readContracts[name].address} /></Col>
+        <Col span={16}><Address value={props.readContracts[contractName].address} /></Col>
       </Row>
     )
     displayOwner = (
@@ -38,7 +39,7 @@ export default function SmartContractWallet(props) {
     )
     onDeposit = ()=>{
       props.tx({
-        to: props.readContracts[name].address,
+        to: props.readContracts[contractName].address,
         value: ethers.utils.parseEther('0.01'),
       })
     }
@@ -53,9 +54,21 @@ export default function SmartContractWallet(props) {
   return (
     <div>
       <Card
+        title={(
+          <div>
+            {title}
+            <div style={{float:'right',opacity:title?0.77:0.33}}>
+              <Balance
+                address={props.readContracts?props.readContracts[contractName].address:0}
+                provider={props.injectedProvider}
+                dollarMultiplier={props.dollarMultiplier}
+              />
+            </div>
+          </div>
+        )}
         size="large"
         style={{ width: 550, marginTop: 25 }}
-        loading={!purpose}
+        loading={!title}
         actions={[
             <div onClick={onWithdraw}>
               <UploadOutlined /> Withdraw
@@ -65,7 +78,6 @@ export default function SmartContractWallet(props) {
             </div>,
         ]}>
           <Meta
-            title={purpose}
             description={(
               <div>
                 {displayAddress}

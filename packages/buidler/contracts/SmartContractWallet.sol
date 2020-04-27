@@ -4,7 +4,7 @@ import "@nomiclabs/buidler/console.sol";
 
 contract SmartContractWallet {
 
-  string public purpose = "Start with a spellling error.";
+  string public title = "📄 Smort Contract Wallet";
   address public owner;
 
   constructor() public {

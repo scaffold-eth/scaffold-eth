@@ -6,17 +6,21 @@ export default function useContractLoader(provider) {
   useEffect(() => {
     if(typeof provider != "undefined")
     {
-      let contractList = require("./contracts/contracts.js")
-      let newContracts = []
-      for(let c in contractList){
-        newContracts[contractList[c]] = new ethers.Contract(
-          require("./contracts/"+contractList[c]+".address.js"),
-          require("./contracts/"+contractList[c]+".abi.js"),
-          provider.getSigner(),
-        );
-        newContracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
+      try{
+        let contractList = require("./contracts/contracts.js")
+        let newContracts = []
+        for(let c in contractList){
+          newContracts[contractList[c]] = new ethers.Contract(
+            require("./contracts/"+contractList[c]+".address.js"),
+            require("./contracts/"+contractList[c]+".abi.js"),
+            provider.getSigner(),
+          );
+          newContracts[contractList[c]].bytecode = require("./contracts/"+contractList[c]+".bytecode.js")
+        }
+        setContracts(newContracts)
+      }catch(e){
+        console.log(e)
       }
-      setContracts(newContracts)
     }
   },[provider])
   return contracts

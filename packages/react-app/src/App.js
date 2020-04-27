@@ -47,6 +47,7 @@ function App() {
           localProvider={localProvider}
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
+          dollarMultiplier={price}
         />
       </div>
 
@@ -55,6 +56,7 @@ function App() {
           readContracts={readContracts}
           writeContracts={writeContracts}
           injectedProvider={injectedProvider}
+          dollarMultiplier={price}
           tx={tx}
         />
       </div>
