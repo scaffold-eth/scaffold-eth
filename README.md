@@ -5,8 +5,6 @@
 
 ## ⏱ Quickstart:
 
----
-
 📦 Clone/fork repo and then install:
 
 ```
