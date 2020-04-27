@@ -14,7 +14,6 @@
 yarn install
 ```
 
----
 
 ⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using 🔧[Ethers.js](https://docs.ethers.io/ethers.js/html/index.html) and the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
 ```
@@ -25,7 +24,7 @@ yarn start
 
 ☢️ [eth-hooks](https://github.com/austintgriffith/eth-hooks) and ☢️ other-austin-components
 
----
+
 
 ⛓ Start your debuggable blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
 ```
@@ -50,11 +49,12 @@ yarn run watch
 ```
 
 
----
+
 
  ✨ Your dapp hot reloads as you build your contracts and frontend together ✨
 
----
+
+
 
 🔬Test your contracts by editing `myTest.js` in `packages/buidler/contracts`:
 ```
