@@ -7,7 +7,7 @@
 
 ## ⏱ Quickstart:
 
-First, you'll need [Git](https://git-scm.com/downloads), [NodeJS>=8.16](https://nodejs.org/en/download/), and [Yarn](https://classic.yarnpkg.com/en/docs/install) installed. 
+First, you'll need [Git](https://git-scm.com/downloads), [NodeJS>=8.16](https://nodejs.org/en/download/), and [Yarn](https://classic.yarnpkg.com/en/docs/install) installed.
 
 📦 Clone/fork repo and then install:
 
@@ -26,7 +26,7 @@ yarn start
 
 
 
-⛓ Start your debuggable blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
+⛓ Start your local blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
 ```
 yarn run chain
 ```
