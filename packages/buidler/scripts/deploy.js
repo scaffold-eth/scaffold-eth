@@ -3,7 +3,7 @@ const chalk = require('chalk');
 async function main() {
   let contractList = fs.readdirSync("./artifacts")
   for(let c in contractList){
-    if(contractList[c].indexOf(".json")>=0){
+    if(contractList[c].indexOf(".json")>=0 && contractList[c].indexOf(".swp.")<0){
       const name = contractList[c].replace(".json","")
       const contractArtifacts = artifacts.require(name);
       const contract = await contractArtifacts.new()
