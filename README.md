@@ -33,6 +33,8 @@ yarn run chain
 
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
 
+---
+
 ⚙️ Compile your contracts:
 ```
 yarn run compile
