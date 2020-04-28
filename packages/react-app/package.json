@@ -28,7 +28,6 @@
     "bnc-notify": "^1.1.2",
     "burner-provider": "^1.0.14",
     "dotenv": "^8.2.0",
-    "eth-hooks": "^1.0.6",
     "ethers": "^4.0.43",
     "graphql": "^14.6.0",
     "react": "16.12.0",

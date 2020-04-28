@@ -6,6 +6,8 @@ const { Text } = Typography;
 
 export default function Balance(props) {
 
+  const [dollarMode, setDollarMode] = useState(true);
+
   const [balance, setBalance] = useState();
   usePoller(async ()=>{
     if(props.address && props.provider){
@@ -32,12 +34,12 @@ export default function Balance(props) {
 
   //console.log("dollarMultiplier",props.dollarMultiplier)
 
-  if(props.dollarMultiplier){
+  if(props.dollarMultiplier && dollarMode){
     displayBalance = "$"+(floatBalance*props.dollarMultiplier).toFixed(2)
   }
 
   return (
-    <span style={{verticalAlign:"middle",fontSize:24,padding:8}}>
+    <span style={{verticalAlign:"middle",fontSize:24,padding:8,cursor:'pointer'}} onClick={()=>{setDollarMode(!dollarMode)}}>
       {displayBalance}
     </span>
   );

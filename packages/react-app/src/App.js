@@ -5,15 +5,8 @@ import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 
-import { usePoller, useGasPrice, useBalance, useBlockNumber } from "eth-hooks";
-import useExchangePrice from './ExchangePrice.js'
-import useContractLoader from "./ContractLoader.js";
-
-import Header from "./Header.js"
-import Account from './Account.js'
-import Provider from './Provider.js'
-import Transactor from './Transactor.js'
-
+import { usePoller, useGasPrice, useBalance, useBlockNumber, useExchangePrice, useContractLoader } from "./hooks"
+import { Header, Account, Provider, Transactor, Address, Balance } from "./components"
 
 import SmartContractWallet from './SmartContractWallet.js'
 
@@ -25,6 +18,7 @@ const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP
 function App() {
   const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
+  const price = useExchangePrice(mainnetProvider)
 
   const readContracts = useContractLoader(localProvider);
   const writeContracts = useContractLoader(injectedProvider);
@@ -33,12 +27,10 @@ function App() {
 
   const gasPrice = useGasPrice()
   const localBalance = useBalance(address,localProvider)
-  const price = useExchangePrice(mainnetProvider)
+
 
   return (
     <div className="App">
-
-      <Header />
 
       <div style={{position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
         <Account
@@ -47,36 +39,79 @@ function App() {
           localProvider={localProvider}
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
+          mainnetProvider={mainnetProvider}
           dollarMultiplier={price}
         />
       </div>
 
-      <div style={{padding:40,textAlign: "left"}}>
-        <SmartContractWallet
-          readContracts={readContracts}
-          writeContracts={writeContracts}
-          injectedProvider={injectedProvider}
-          dollarMultiplier={price}
-          tx={tx}
-        />
-      </div>
 
-      <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
-        <Provider
-          name={"mainnet"}
-          provider={mainnetProvider}
-        />
-        <Provider
-          name={"local"}
-          provider={localProvider}
-        />
-        <Provider
-          name={"injected"}
-          provider={injectedProvider}
-        />
-      </div>
+
+
+
+
+
+
     </div>
   );
 }
 
 export default App;
+/*
+
+
+<div style={{position:'absolute',left:50,top:50}}>
+  <Balance
+    address={address}
+    provider={injectedProvider}
+    dollarMultiplier={price}
+  />
+</div>
+
+
+<div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
+  <div style={{padding:8}}>
+    <Provider name={"mainnet"} provider={mainnetProvider} />
+  </div>
+  <div style={{padding:8}}>
+    <Provider name={"local"} provider={localProvider} />
+  </div>
+  <div style={{padding:8}}>
+    <Provider name={"injected"} provider={injectedProvider} />
+  </div>
+</div>
+
+
+<div style={{position:'absolute',left:50,top:50}}>
+
+  <Address value={address} />
+
+</div>
+
+<div style={{position:'absolute',left:50,top:100}}>
+
+  <Address value={address} size="short" />
+
+</div>
+
+<div style={{position:'absolute',left:50,top:150}}>
+
+  <Address value={address} size="long" blockexplorer="https://blockscout.com/poa/xdai/address/"/>
+
+</div>
+<div style={{position:'absolute',left:50,top:200}}>
+
+  <Address value={address} ensProvider={mainnetProvider}/>
+
+</div>
+
+      <Header />
+<div style={{padding:40,textAlign: "left"}}>
+  <SmartContractWallet
+    readContracts={readContracts}
+    writeContracts={writeContracts}
+    injectedProvider={injectedProvider}
+    dollarMultiplier={price}
+    tx={tx}
+  />
+</div>
+*/

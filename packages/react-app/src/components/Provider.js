@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Blockies from 'react-blockies';
-import { usePoller } from "eth-hooks";
+import { usePoller, useBlockNumber } from "../hooks";
 import { Button, Badge } from 'antd';
 //import { WalletOutlined } from '@ant-design/icons';
 
@@ -13,30 +13,30 @@ export default function Provider(props) {
   const [network, setNetwork] = useState()
   const [signer, setSigner] = useState()
   const [address, setAddress ] = useState()
-  const [blockNumber, setBlockNumber] = useState("processing")
+
+  const blockNumber = useBlockNumber(props.provider)
 
   usePoller(async ()=>{
-    try{
-      const newNetwork = await props.provider.getNetwork()
-      setNetwork(newNetwork)
-      if(newNetwork.chainId>0){
-        setStatus("success")
-      }else{
-        setStatus("warning")
+    if(props.provider&& typeof props.provider.getNetwork == "function"){
+      try{
+        const newNetwork = await props.provider.getNetwork()
+        setNetwork(newNetwork)
+        if(newNetwork.chainId>0){
+          setStatus("success")
+        }else{
+          setStatus("warning")
+        }
+      }catch(e){
+        console.log(e)
+        setStatus("processing")
       }
-    }catch(e){
-      console.log(e)
-      setStatus("processing")
+      try{
+        const newSigner = await props.provider.getSigner()
+        setSigner(newSigner)
+        const newAddress = await newSigner.getAddress()
+        setAddress(newAddress)
+      }catch(e){}
     }
-    try{
-      const newBlockNumber = await props.provider.getBlockNumber()
-      setBlockNumber(newBlockNumber)
-      const newSigner = await props.provider.getSigner()
-      setSigner(newSigner)
-      const newAddress = await newSigner.getAddress()
-      setAddress(newAddress)
-    }catch(e){}
-
   },1377)
 
   let showExtra = ""
@@ -65,10 +65,8 @@ export default function Provider(props) {
   }
 
   return (
-    <div style={{padding:8}}>
-      <Button shape="round" size="large" onClick={()=>{setShowMore(!showMore)}}>
-        <Badge status={status} /> {props.name} {showWallet} #{blockNumber} {showExtra}
-      </Button>
-    </div>
+    <Button shape="round" size="large" onClick={()=>{setShowMore(!showMore)}}>
+      <Badge status={status} /> {props.name} {showWallet} #{blockNumber} {showExtra}
+    </Button>
   );
 }

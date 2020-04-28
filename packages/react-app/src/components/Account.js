@@ -1,12 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
-import { usePoller } from "eth-hooks";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
-
-import Balance from './Balance.js'
-import Address from "./Address.js"
-
+import { Balance, Address } from "."
+import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Typography } from 'antd';
 const { Text } = Typography;
@@ -43,23 +40,23 @@ export default function Account(props) {
     if(props.injectedProvider){
       let accounts = await props.injectedProvider.listAccounts()
       if(accounts && accounts[0] && accounts[0] != props.account){
-        console.log("ADDRESS: ",accounts[0])
-        props.setAddress(accounts[0])
+        //console.log("ADDRESS: ",accounts[0])
+        if(typeof props.setAddress == "function") props.setAddress(accounts[0])
       }
     }
   }
-  usePoller(pollInjectedProvider,props.pollTime?props.pollTime:1999)
+  usePoller(()=>{pollInjectedProvider()},props.pollTime?props.pollTime:1999)
 
   const loadWeb3Modal = async ()=>{
     const provider = await web3Modal.connect();
-    console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
+    //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
     props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
     pollInjectedProvider()
   }
 
   const logoutOfWeb3Modal = async ()=>{
     const clear = await web3Modal.clearCachedProvider();
-    console.log("Cleared cache provider!?!",clear)
+    //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
     },1)
@@ -68,11 +65,11 @@ export default function Account(props) {
   let modalButtons = []
   if (web3Modal.cachedProvider) {
     modalButtons.push(
-      <Button style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
+      <Button key="logoutbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
     )
   }else{
     modalButtons.push(
-      <Button style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
+      <Button key="loginbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
     )
   }
 
@@ -85,7 +82,7 @@ export default function Account(props) {
   return (
     <div>
       {props.address?(
-        <Address value={props.address} />
+        <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
       <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.dollarMultiplier}/>
       {modalButtons}

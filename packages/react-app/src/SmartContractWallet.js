@@ -3,11 +3,8 @@ import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Typography, Skeleton, Card, Row, Col, Button } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import useContractReader from './ContractReader.js'
-
-import Address from "./Address.js"
-import Balance from "./Balance.js"
-
+import { useContractReader } from './hooks'
+import { Address, Balance } from "./components"
 const { Title } = Typography;
 const { Meta } = Card;
 
