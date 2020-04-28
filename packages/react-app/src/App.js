@@ -44,13 +44,6 @@ function App() {
         />
       </div>
 
-
-
-
-
-
-
-
     </div>
   );
 }

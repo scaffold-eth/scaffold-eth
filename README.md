@@ -7,11 +7,13 @@
 
 ## ⏱ Quickstart:
 
-First, you'll need [Git](https://git-scm.com/downloads), [NodeJS>=10](https://nodejs.org/en/download/), and [Yarn](https://classic.yarnpkg.com/en/docs/install) installed.
+First, you'll need [Git](https://git-scm.com/downloads) and [NodeJS>=10](https://nodejs.org/en/download/) installedL
 
 💾 Clone/fork repo and then install:
 
 ```
+npm install -g yarn
+
 yarn install
 ```
 
@@ -89,6 +91,10 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
  ✨ The [BuidlerEVM](https://buidler.dev/buidler-evm/) provides *stack traces* and *console.log* debugging for our contracts ✨
 
 ---
+
+## 📱 Frontend:
+
+<br/>
 
 🔏 **Web3 Providers** The frontend has three different providers:
 
@@ -220,6 +226,13 @@ const price = useExchangePrice(mainnetProvider)
 
 `Transactor`: TODO
 
+---
+
+## 📄 Smart Contract Wallet:
+
+
+
+
 
 ---
 
@@ -233,7 +246,7 @@ const price = useExchangePrice(mainnetProvider)
 
 ---
 
-📄 MY SMART CONTRACT! TODO
+ MY SMART CONTRACT! TODO
 
 ---
 
