@@ -1,10 +1,10 @@
 import React, { useEffect, useRef } from 'react';
-export default function usePoller(callback, delay) {
+export default function usePoller(fn, delay) {
   const savedCallback = useRef();
-  // Remember the latest callback.
+  // Remember the latest fn.
   useEffect(() => {
-    savedCallback.current = callback;
-  }, [callback]);
+    savedCallback.current = fn;
+  }, [fn]);
   // Set up the interval.
   useEffect(() => {
     function tick() {
@@ -17,6 +17,6 @@ export default function usePoller(callback, delay) {
   }, [delay]);
   //run at start too
   useEffect(() => {
-    callback()
+    fn()
   }, []);
 }
