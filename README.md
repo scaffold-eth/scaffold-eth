@@ -15,6 +15,8 @@ First, you'll need [Git](https://git-scm.com/downloads), [NodeJS>=8.16](https://
 yarn install
 ```
 
+---
+
 ⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using 🔧[Ethers.js](https://docs.ethers.io/ethers.js/html/index.html) and the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
 ```
 yarn start
