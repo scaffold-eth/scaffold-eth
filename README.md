@@ -78,7 +78,7 @@ yarn run balance **YOUR-ADDRESS**
 
 💸 Send ETH:
 ```
-yarn run send --from 0 --amount 0.5 --to 0xeAD9C93b79Ae7C1591b1FB5323BD777E86e150d4
+yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ```
 
 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
