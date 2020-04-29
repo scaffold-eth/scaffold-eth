@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePoller } from "eth-hooks";
+import { usePoller } from ".";
 
 export default function useContractReader(contracts,contractName,variableName,pollTime) {
 
