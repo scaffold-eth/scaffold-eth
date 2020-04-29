@@ -146,6 +146,32 @@ const blockNumber = useBlockNumber(props.provider)
 const gasPrice = useGasPrice()
 ```
 
+<br/>
+
+`useExchangePrice(mainnetProvider,pollTime)`: gets current price of Ethereum on the Uniswap exchange.
+
+```
+const price = useExchangePrice(mainnetProvider)
+```
+
+<br/>
+
+`useContractLoader(provider)`: loads your smart contract interface
+
+```
+const readContracts = useContractLoader(localProvider);
+const writeContracts = useContractLoader(injectedProvider);
+```
+
+<br/>
+
+`useContractReader(contracts,contractName,variableName,pollTime)`: reads a variable from your contract and keeps it in the state
+
+```
+const title = useContractReader(props.readContracts,contractName,"title");
+const owner = useContractReader(props.readContracts,contractName,"owner");
+```
+
 ---
 
 
