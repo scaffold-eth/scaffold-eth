@@ -44,6 +44,29 @@ function App() {
         />
       </div>
 
+      <div style={{padding:40,textAlign: "left"}}>
+        <SmartContractWallet
+          readContracts={readContracts}
+          writeContracts={writeContracts}
+          injectedProvider={injectedProvider}
+          dollarMultiplier={price}
+          tx={tx}
+        />
+      </div>
+
+      <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
+        <div style={{padding:8}}>
+          <Provider name={"mainnet"} provider={mainnetProvider} />
+        </div>
+        <div style={{padding:8}}>
+          <Provider name={"local"} provider={localProvider} />
+        </div>
+        <div style={{padding:8}}>
+          <Provider name={"injected"} provider={injectedProvider} />
+        </div>
+      </div>
+
+
     </div>
   );
 }
@@ -61,17 +84,6 @@ export default App;
 </div>
 
 
-<div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
-  <div style={{padding:8}}>
-    <Provider name={"mainnet"} provider={mainnetProvider} />
-  </div>
-  <div style={{padding:8}}>
-    <Provider name={"local"} provider={localProvider} />
-  </div>
-  <div style={{padding:8}}>
-    <Provider name={"injected"} provider={injectedProvider} />
-  </div>
-</div>
 
 
 <div style={{position:'absolute',left:50,top:50}}>
@@ -98,13 +110,5 @@ export default App;
 </div>
 
       <Header />
-<div style={{padding:40,textAlign: "left"}}>
-  <SmartContractWallet
-    readContracts={readContracts}
-    writeContracts={writeContracts}
-    injectedProvider={injectedProvider}
-    dollarMultiplier={price}
-    tx={tx}
-  />
-</div>
+
 */
