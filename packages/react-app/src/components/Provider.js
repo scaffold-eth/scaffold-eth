@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useRef } from 'react'
-import Blockies from 'react-blockies';
 import { usePoller, useBlockNumber } from "../hooks";
 import { Button, Badge } from 'antd';
 //import { WalletOutlined } from '@ant-design/icons';

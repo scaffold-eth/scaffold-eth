@@ -3,8 +3,10 @@ import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Typography, Skeleton, Card, Row, Col, Button } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { useContractReader } from './hooks'
-import { Address, Balance } from "./components"
+
+import { useContractLoader, useContractReader } from "./hooks"
+
+import { Address, Balance, Transactor } from "./components"
 const { Title } = Typography;
 const { Meta } = Card;
 
@@ -12,37 +14,42 @@ const contractName = "SmartContractWallet"
 
 export default function SmartContractWallet(props) {
 
-  const title = useContractReader(props.readContracts,contractName,"title",1777);
-  const owner = useContractReader(props.readContracts,contractName,"owner",1777);
+  const tx = Transactor(props.injectedProvider)
+
+  const readContracts = useContractLoader(props.localProvider);
+  const writeContracts = useContractLoader(props.injectedProvider);
+
+  const title = useContractReader(readContracts,contractName,"title",1777);
+  const owner = useContractReader(readContracts,contractName,"owner",1777);
 
   let displayAddress, displayOwner, onDeposit, onWithdraw
 
-  if(props.readContracts && props.readContracts[contractName]){
+  if(readContracts && readContracts[contractName]){
     displayAddress = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Deployed to:</Col>
-        <Col span={16}><Address value={props.readContracts[contractName].address} /></Col>
+        <Col span={16}><Address value={readContracts[contractName].address} /></Col>
       </Row>
     )
     displayOwner = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}><Address value={owner} onChange={(newOwner)=>{
-          props.tx(
-             props.writeContracts['SmartContractWallet'].updateOwner(newOwner)
+          tx(
+             writeContracts['SmartContractWallet'].updateOwner(newOwner)
           )
         }}/></Col>
       </Row>
     )
     onDeposit = ()=>{
-      props.tx({
-        to: props.readContracts[contractName].address,
+      tx({
+        to: readContracts[contractName].address,
         value: ethers.utils.parseEther('0.01'),
       })
     }
     onWithdraw = async ()=>{
-      props.tx(
-        props.writeContracts['SmartContractWallet'].withdraw()
+      tx(
+        writeContracts['SmartContractWallet'].withdraw()
       )
     }
   }
@@ -55,7 +62,7 @@ export default function SmartContractWallet(props) {
             {title}
             <div style={{float:'right',opacity:title?0.77:0.33}}>
               <Balance
-                address={props.readContracts?props.readContracts[contractName].address:0}
+                address={readContracts?readContracts[contractName].address:0}
                 provider={props.localProvider}
                 dollarMultiplier={props.dollarMultiplier}
               />

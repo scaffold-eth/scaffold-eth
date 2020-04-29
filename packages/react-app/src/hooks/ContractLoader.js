@@ -26,11 +26,15 @@ export default function useContractLoader(provider) {
               require("../contracts/"+contractList[c]+".abi.js"),
               signer,
             );
-            newContracts[contractList[c]].bytecode = require("../contracts/"+contractList[c]+".bytecode.js")
+            try{
+              newContracts[contractList[c]].bytecode = require("../contracts/"+contractList[c]+".bytecode.js")
+            }catch(e){
+              console.log(e)
+            }
           }
           setContracts(newContracts)
         }catch(e){
-          console.log(e)
+          console.log("ERROR LOADING CONTRACTS!!",e)
         }
       }
     }
