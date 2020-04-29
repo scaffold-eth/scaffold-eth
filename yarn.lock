@@ -5442,16 +5442,6 @@ eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.0:
     idna-uts46-hx "^2.3.1"
     js-sha3 "^0.5.7"
 
-eth-hooks@^1.0.6:
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-1.0.6.tgz#82a5912653592ffac525b1e970b2cc6f0e4d4ba1"
-  integrity sha512-AqmJh7GfQFrV8TMxOSPADcJfyzY9zrLYVR2L+/DrrFwhLolpOB8poojOqM8omGRYDmF39KWgHt06MWS8ncti5Q==
-  dependencies:
-    axios "^0.19.2"
-    burner-provider "^1.0.14"
-    ethers "^4.0.46"
-    react "16.12.0"
-
 eth-json-rpc-errors@^1.0.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-1.1.1.tgz#148377ef55155585981c21ff574a8937f9d6991f"

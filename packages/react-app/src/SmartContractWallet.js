@@ -44,10 +44,10 @@ export default function SmartContractWallet(props) {
     onDeposit = ()=>{
       tx({
         to: readContracts[contractName].address,
-        value: ethers.utils.parseEther('0.01'),
+        value: ethers.utils.parseEther('0.001'),
       })
     }
-    onWithdraw = async ()=>{
+    onWithdraw = ()=>{
       tx(
         writeContracts['SmartContractWallet'].withdraw()
       )

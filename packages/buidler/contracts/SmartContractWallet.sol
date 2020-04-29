@@ -4,7 +4,7 @@ import "@nomiclabs/buidler/console.sol";
 
 contract SmartContractWallet {
 
-  string public title = "📄 Smart Contract Wallet";
+  string public title = "📄My Contract Wallet";
   address public owner;
 
   constructor() public {
@@ -27,6 +27,5 @@ contract SmartContractWallet {
     console.log(msg.sender,"updates owner to",newOwner);
     owner = newOwner;
   }
-
 
 }

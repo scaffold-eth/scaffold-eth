@@ -34,6 +34,7 @@ export default function Transactor(provider,etherscan) {
         if(tx instanceof Promise){
           result = await tx
         }else{
+          console.log("tx",tx)
           result = await signer.sendTransaction(tx);
         }
         console.log("RESULT:",result)
