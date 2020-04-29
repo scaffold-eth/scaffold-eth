@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
-import { usePoller } from "eth-hooks";
+import { usePoller } from "../hooks";
 import { Typography } from 'antd';
 const { Text } = Typography;
 
