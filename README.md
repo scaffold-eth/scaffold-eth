@@ -7,7 +7,7 @@
 
 ## ⏱ Quickstart:
 
-First, you'll need [Git](https://git-scm.com/downloads) and [NodeJS>=10](https://nodejs.org/en/download/) installedL
+First, you'll need [Git](https://git-scm.com/downloads) and [NodeJS>=10](https://nodejs.org/en/download/) installed.
 
 💾 Clone/fork repo and then install:
 
