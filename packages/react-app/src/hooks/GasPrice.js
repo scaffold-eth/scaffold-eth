@@ -8,23 +8,19 @@ export default function useGasPrice(speed) {
     .then(function (response) {
 
       let newGasPrice
-      if(speed=="fastest"){
+      if(speed==="fastest"){
         newGasPrice = response.data.fastest*0.1
-      }else if(speed=="fast"){
+      }else if(speed==="fast"){
         newGasPrice = response.data.fast*0.01
-      }else if(speed=="average"){
+      }else if(speed==="average"){
         newGasPrice = response.data.average*0.001
-      }else if(speed=="slow"){
+      }else if(speed==="slow"){
         newGasPrice = response.data.safeLow*0.0001
       }else{
         newGasPrice = response.data.fast*0.1
       }
 
-      console.log("GAS",newGasPrice)
-
-
-
-      if(newGasPrice!=gasPrice){
+      if(newGasPrice!==gasPrice){
         //console.log("GAS ",newGasPrice,"gwei")
         setGasPrice(newGasPrice);
       }

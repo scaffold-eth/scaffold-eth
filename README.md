@@ -86,8 +86,9 @@ yarn run balance **YOUR-ADDRESS**
 yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ```
 
-🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
+> 🛠 Try [this eth.build](https://eth.build/build#1a21b864c6bcdb901070b64965fae825cdfc11b1915d74f058f00b114a8c129a) to double-check your local chain and account balances
 
+> 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
 
 ---
 
@@ -276,6 +277,8 @@ TODO
 ---
 
  MY SMART CONTRACT! TODO
+
+> 🛠 Run [this eth.build](https://eth.build/build#32f1ecd6d90518387f2f34c47176bf67fdf55c855bff39f85de08d76696b850f) with your contract address to ask it who its owner is.
 
 ---
 

@@ -6,12 +6,16 @@ export default function useContractReader(contracts,contractName,variableName,po
   const [value, setValue] = useState();
   usePoller(async ()=>{
     if(contracts && contracts[contractName]){
-      let newValue = await contracts[contractName][variableName]()
-      if(newValue!=value){
-        setValue(newValue)
+      try{
+        let newValue = await contracts[contractName][variableName]()
+        if(newValue!=value){
+          setValue(newValue)
+        }
+      }catch(e){
+        console.log(e)
       }
     }
-  },pollTime?pollTime:777)
+  },pollTime?pollTime:3777)
 
   return value;
 }

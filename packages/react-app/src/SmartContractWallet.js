@@ -27,10 +27,10 @@ export default function SmartContractWallet(props) {
     displayOwner = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
-        <Col span={16}><Address value={owner} onChange={async (newOwner)=>{
-          console.log("UPDATING OWNER ",newOwner,props.writeContracts)
-          let result = await props.writeContracts['SmartContractWallet'].updateOwner(newOwner)
-          console.log("result",result)
+        <Col span={16}><Address value={owner} onChange={(newOwner)=>{
+          props.tx(
+             props.writeContracts['SmartContractWallet'].updateOwner(newOwner)
+          )
         }}/></Col>
       </Row>
     )
@@ -41,12 +41,11 @@ export default function SmartContractWallet(props) {
       })
     }
     onWithdraw = async ()=>{
-
-      let result = await props.writeContracts['SmartContractWallet'].withdraw()
-      console.log("result",result)
+      props.tx(
+        props.writeContracts['SmartContractWallet'].withdraw()
+      )
     }
   }
-
 
   return (
     <div>
@@ -57,7 +56,7 @@ export default function SmartContractWallet(props) {
             <div style={{float:'right',opacity:title?0.77:0.33}}>
               <Balance
                 address={props.readContracts?props.readContracts[contractName].address:0}
-                provider={props.injectedProvider}
+                provider={props.localProvider}
                 dollarMultiplier={props.dollarMultiplier}
               />
             </div>

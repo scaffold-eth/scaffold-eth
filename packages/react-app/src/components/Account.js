@@ -8,6 +8,8 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Typography } from 'antd';
 const { Text } = Typography;
 
+const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
+
 const web3Modal = new Web3Modal({
   //network: "mainnet", // optional
   cacheProvider: true, // optional
@@ -15,7 +17,7 @@ const web3Modal = new Web3Modal({
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: "2717afb6bf164045b5d5468031b93f87" // MY INFURA_ID, SWAP IN YOURS!
+        infuraId: INFURA_ID
       }
     }
   }
@@ -24,11 +26,13 @@ const web3Modal = new Web3Modal({
 export default function Account(props) {
 
   const createBurnerIfNoAddress = () => {
-    if (!props.injectedProvider){
+    if (!props.injectedProvider && props.localProvider){
       if(props.localProvider.connection && props.localProvider.connection.url){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
+      }else if( props.localProvider._network && props.localProvider._network.name ){
+        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
       }else{
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.mainnetProvider.providers[0].connection.url)))
+        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
       }
     }else{
       pollInjectedProvider()

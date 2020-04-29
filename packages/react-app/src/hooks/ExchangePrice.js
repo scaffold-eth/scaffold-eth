@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { usePoller } from "eth-hooks";
+import { usePoller } from ".";
 import { ethers } from "ethers";
 import { MAINNET_ID, addresses, abis } from "@uniswap-v1-app/contracts";
 
@@ -9,7 +9,6 @@ export default function useExchangePrice(mainnetProvider,pollTime) {
 
   const pollPrice = () => {
     async function getPrice() {
-      console.log("polling price")
       const ethDaiExchangeContract = new ethers.Contract(
         addresses[MAINNET_ID].exchanges["ETH-DAI"],
         abis.exchange,

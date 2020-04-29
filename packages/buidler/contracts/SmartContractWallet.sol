@@ -13,7 +13,7 @@ contract SmartContractWallet {
   }
 
   fallback() external payable {
-    console.log(msg.sender,"just paid",msg.value);
+    console.log(msg.sender,"just deposited",msg.value);
   }
 
   function withdraw() public {

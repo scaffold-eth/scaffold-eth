@@ -39,6 +39,14 @@ export default function Provider(props) {
     }
   },1377)
 
+  if(typeof props.provider == "undefined" || typeof props.provider.getNetwork != "function" || !network || !network.chainId){
+    return (
+      <Button shape="round" size="large" onClick={()=>{setShowMore(!showMore)}}>
+        <Badge status={status} /> {props.name}
+      </Button>
+    );
+  }
+
   let showExtra = ""
   if(showMore){
     showExtra = (
@@ -54,7 +62,7 @@ export default function Provider(props) {
   }
 
   let showWallet = ""
-  if(typeof signer != "undefined"){
+  if(typeof signer != "undefined" && address){
     showWallet = (
       <span>
         <span style={{padding:3}}>

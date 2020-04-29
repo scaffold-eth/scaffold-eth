@@ -6,7 +6,7 @@ export default function Header(props) {
     <div>
       <PageHeader
         title="🏗 scaffold-eth"
-        subTitle="forkable dapp dev stack focused on fast product iteration"
+        subTitle="forkable Ethereum dev stack focused on fast product iteration"
       />
     </div>
   );

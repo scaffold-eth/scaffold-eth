@@ -11,7 +11,7 @@ export default function Address(props) {
       async function getEns(){
         let newEns
         try{
-          console.log("getting ens",newEns)
+          //console.log("getting ens",newEns)
           newEns = await props.ensProvider.lookupAddress(props.value)
           setEns(newEns)
         }catch(e){}

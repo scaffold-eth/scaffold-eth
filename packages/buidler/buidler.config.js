@@ -95,10 +95,10 @@ module.exports = {
   defaultNetwork: 'localhost',
   networks: {
     localhost: {
+      //url: 'https://rinkeby.infura.io/v3/2717afb6bf164045b5d5468031b93f87',
       url: 'http://localhost:8545',
-      /*
-      accounts: {
-        mnemonic: "SOME MNEMONIC TEXT HERE"
+      /*accounts: {
+        mnemonic: "**SOME MNEMONIC**"
       },*/
     },
   },

@@ -10,12 +10,12 @@ import { Header, Account, Provider, Transactor, Address, Balance } from "./compo
 
 import SmartContractWallet from './SmartContractWallet.js'
 
+
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
-// change your local provider when you deploy with: echo "REACT_APP_PROVIDER=https://SOME_PROD_RPC" > .env
 const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
 
-
 function App() {
+
   const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
@@ -25,12 +25,10 @@ function App() {
 
   const tx = Transactor(injectedProvider)
 
-  const gasPrice = useGasPrice()
-  const localBalance = useBalance(address,localProvider)
-
-
   return (
     <div className="App">
+
+      <Header />
 
       <div style={{position:'fixed',textAlign:'right',right:0,top:0,padding:10}}>
         <Account
@@ -49,6 +47,7 @@ function App() {
           readContracts={readContracts}
           writeContracts={writeContracts}
           injectedProvider={injectedProvider}
+          localProvider={localProvider}
           dollarMultiplier={price}
           tx={tx}
         />
@@ -109,6 +108,6 @@ export default App;
 
 </div>
 
-      <Header />
+
 
 */
