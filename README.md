@@ -35,7 +35,10 @@ yarn run chain
 
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
 
-> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
+> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix "Smort Contract Wallet" and deploy the contract locally?
+
+![image](https://user-images.githubusercontent.com/2653167/80600757-1cfe4580-89ea-11ea-897a-6e8d623403eb.png)
+
 
 ---
 
