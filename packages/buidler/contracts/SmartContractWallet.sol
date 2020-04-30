@@ -26,6 +26,8 @@ contract SmartContractWallet {
     //require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
     console.log(msg.sender,"updates owner to",newOwner);
     owner = newOwner;
+    emit UpdateOwner(msg.sender,owner);
   }
+  event UpdateOwner(address oldOwner, address newOwner);
 
 }

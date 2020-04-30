@@ -168,10 +168,10 @@ usePoller(()=>{
 ```
 <br/>
 
-`useBalance(address,provider,[pollTime])`: poll for the balance of an address from a provider
+`useBalance(address, provider, [pollTime])`: poll for the balance of an address from a provider
 
 ```
-const localBalance = useBalance(address,localProvider)
+const localBalance = useBalance(address, localProvider)
 ```
 <br/>
 
@@ -190,7 +190,7 @@ const gasPrice = useGasPrice()
 
 <br/>
 
-`useExchangePrice(mainnetProvider,pollTime)`: gets current price of Ethereum on the Uniswap exchange.
+`useExchangePrice(mainnetProvider, [pollTime])`: gets current price of Ethereum on the Uniswap exchange
 
 ```
 const price = useExchangePrice(mainnetProvider)
@@ -207,11 +207,19 @@ const writeContracts = useContractLoader(injectedProvider);
 
 <br/>
 
-`useContractReader(contracts,contractName,variableName,pollTime)`: reads a variable from your contract and keeps it in the state
+`useContractReader(contracts, contractName, variableName, [pollTime])`: reads a variable from your contract and keeps it in the state
 
 ```
 const title = useContractReader(props.readContracts,contractName,"title");
 const owner = useContractReader(props.readContracts,contractName,"owner");
+```
+
+<br/>
+
+`useEventListener(contracts, contractName, eventName, [provider], [startBlock])`: listens for events from a smart contract and keeps them in the state
+
+```
+const ownerUpdates = useEventListener(readContracts,contractName,"UpdateOwner",props.localProvider,1);
 ```
 
 ---
@@ -299,6 +307,9 @@ const price = useExchangePrice(mainnetProvider)
 
 ▶️  Run `yarn run compile` and `yarn run deploy` or just `yarn run watch`
 
+![smortcontractwallet](https://user-images.githubusercontent.com/2653167/80741479-ece0a080-8ad6-11ea-9850-f576f7be2b85.gif)
+
+
 > 🔨 Try depositing, withdrawing, and changing the owner of your contract.
 
 > 🧐 Get your contract to a point where you feel confident that a bad guy can't steal your funds and then let's get it deployed on a testnet.
@@ -309,7 +320,5 @@ const price = useExchangePrice(mainnetProvider)
 
 
 📚 OpenZeppelin Contracts -- TODO
-
-🗓 Event Parsing -- TODO
 
 🛰 The Graph -- TODO

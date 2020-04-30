@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
-import { Typography, Skeleton, Card, Row, Col, Button } from 'antd';
+import { Typography, Skeleton, Card, Row, Col, Button, List } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-
-import { useContractLoader, useContractReader } from "./hooks"
+import { useContractLoader, useContractReader, useEventListener } from "./hooks"
 import { Transactor } from "./helpers"
 import { Address, Balance } from "./components"
 const { Title } = Typography;
@@ -22,6 +21,10 @@ export default function SmartContractWallet(props) {
   const title = useContractReader(readContracts,contractName,"title",1777);
   const owner = useContractReader(readContracts,contractName,"owner",1777);
 
+  const ownerUpdates = useEventListener(readContracts,contractName,"UpdateOwner",props.localProvider,1);//set that last number to the block the contract is deployed (this needs to be automatic in the contract loader!?!)
+
+  console.log("ownerUpdates",ownerUpdates)
+
   let displayAddress, displayOwner, onDeposit, onWithdraw
 
   if(readContracts && readContracts[contractName]){
@@ -36,22 +39,13 @@ export default function SmartContractWallet(props) {
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}><Address value={owner} onChange={(newOwner)=>{
           tx(
-             writeContracts['SmartContractWallet'].updateOwner(newOwner)
+             writeContracts['SmartContractWallet'].updateOwner(newOwner,
+               { gasLimit: ethers.utils.hexlify(40000) }
+             )
           )
         }}/></Col>
       </Row>
     )
-    onDeposit = ()=>{
-      tx({
-        to: readContracts[contractName].address,
-        value: ethers.utils.parseEther('0.001'),
-      })
-    }
-    onWithdraw = ()=>{
-      tx(
-        writeContracts['SmartContractWallet'].withdraw()
-      )
-    }
   }
 
   return (
@@ -73,10 +67,21 @@ export default function SmartContractWallet(props) {
         style={{ width: 550, marginTop: 25 }}
         loading={!title}
         actions={[
-            <div onClick={onWithdraw}>
+            <div onClick={()=>{
+              tx(
+                writeContracts['SmartContractWallet'].withdraw(
+                  { gasLimit: ethers.utils.hexlify(40000) }
+                )
+              )
+            }}>
               <UploadOutlined /> Withdraw
             </div>,
-            <div onClick={onDeposit}>
+            <div onClick={()=>{
+              tx({
+                to: readContracts[contractName].address,
+                value: ethers.utils.parseEther('0.001'),
+              })
+            }}>
               <DownloadOutlined /> Deposit
             </div>,
         ]}>
@@ -89,6 +94,17 @@ export default function SmartContractWallet(props) {
             )}
           />
       </Card>
+      <List
+        style={{ width: 550, marginTop: 25}}
+        header={<div><b>UpdateOwner</b> events</div>}
+        bordered
+        dataSource={ownerUpdates}
+        renderItem={item => (
+          <List.Item style={{ fontSize:22 }}>
+            <Blockies seed={item.oldOwner.toLowerCase()} size={8} scale={2}/> transferred ownership to <Blockies seed={item.newOwner.toLowerCase()} size={8} scale={2}/>
+          </List.Item>
+        )}
+      />
     </div>
   );
 
