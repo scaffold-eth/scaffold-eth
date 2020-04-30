@@ -36,9 +36,7 @@ export default function SmartContractWallet(props) {
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}><Address value={owner} onChange={(newOwner)=>{
           tx(
-             writeContracts['SmartContractWallet'].updateOwner(newOwner,{
-               from: props.address //this is required to make the burner provider side work right now with ethers. I must be doing something wrong
-             })
+             writeContracts['SmartContractWallet'].updateOwner(newOwner)
           )
         }}/></Col>
       </Row>
