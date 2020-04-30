@@ -19,7 +19,7 @@ cd my-cool-new-dapp
 yarn install
 ```
 
-> ⌚️ This will take some time. Take a quick tour of the files in your favorite code editor.
+> ⌚️ This will take some time. How about a quick tour of the file structure with your favorite code editor?
 
 ---
 
@@ -112,11 +112,9 @@ TODO
 
 ---
 
-## 📱 Frontend:
+## 🔏 Web3 Providers:
 
-<br/>
-
-🔏 **Web3 Providers** The frontend has three different providers:
+The frontend has three different providers that provide different levels of access to different chains:
 
  `mainnetProvider`: (read only) [Infura](https://infura.io/) connection to main [Ethereum](https://ethereum.org/developers/) network (and contracts already deployed like [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code) or [Uniswap](https://etherscan.io/address/0x2a1530c4c41db0b0b2bb646cb5eb1a67b7158667)).
 
@@ -131,8 +129,35 @@ TODO
 ---
 
 
+## ⛑ Helpers:
 
-🖇 **/ hooks** are your commonly used Ethereum hooks located in `packages/react-app/src/`:
+`Transactor`: The transactor returns a `tx()` function to make running and tracking transactions as simple and standardized as possible. We will bring in [BlockNative's Notify](https://www.blocknative.com/notify) library to track our testnet and mainnet transactions.
+
+```
+const tx = Transactor(props.injectedProvider,props.gasPrice)
+```
+Then you can use the `tx()` function to send funds and write to your smart contracts:
+```
+tx({
+  to: readContracts[contractName].address,
+  value: ethers.utils.parseEther('0.001'),
+})
+```
+```
+tx(
+  writeContracts['SmartContractWallet'].updateOwner(newOwner)
+)
+```
+
+
+> ☢️ **Warning**: You will need to update the configuration for `react-app/src/helpers/Transactor.js` to use *your* [BlockNative dappId](https://www.blocknative.com/notify)
+
+
+---
+
+## 🖇 Hooks:
+
+Commonly used Ethereum hooks located in `packages/react-app/src/`:
 
 `usePoller(fn, delay)`: runs a function on app load and then on a custom interval
 
@@ -190,9 +215,9 @@ const owner = useContractReader(props.readContracts,contractName,"owner");
 ```
 
 ---
+## 📦 Components:
 
-
-📦 **/ components** are your commonly used Ethereum components located in `packages/react-app/src/`:
+ Your commonly used React Ethereum components located in `packages/react-app/src/`:
 
 <br/>
 
@@ -264,21 +289,21 @@ const price = useExchangePrice(mainnetProvider)
 
 > 💡 **Notice**: you will need to check the network id of your `injectedProvider` compared to your `localProvider` or `mainnetProvider` and alert your users if they are on the wrong network!
 
-<br/>
-
-`Notify`: TODO
-
-<br/>
-
-`Transactor`: TODO
-
 ---
 
 ## 📄 Smart Contract Wallet:
 
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
 
+📝 Then edit the `SmartContractWallet.js` React component in `packages/react-app/src`
 
-TODO
+▶️  Run `yarn run compile` and `yarn run deploy` or just `yarn run watch`
+
+> 🔨 Try depositing, withdrawing, and changing the owner of your contract.
+
+> 🧐 Get your contract to a point where you feel confident that a bad guy can't steal your funds and then let's get it deployed on a testnet.
+
+> 🛠 Run [this eth.build](https://eth.build/build#32f1ecd6d90518387f2f34c47176bf67fdf55c855bff39f85de08d76696b850f) with your contract address to ask it who its owner is.
 
 ---
 
@@ -288,56 +313,3 @@ TODO
 🗓 Event Parsing -- TODO
 
 🛰 The Graph -- TODO
-
-
----
-
- MY SMART CONTRACT! TODO
-
-> 🛠 Run [this eth.build](https://eth.build/build#32f1ecd6d90518387f2f34c47176bf67fdf55c855bff39f85de08d76696b850f) with your contract address to ask it who its owner is.
-
----
-
-## 📋 Manifest?
-
-[ *last updated 00/00/0000* ]
-
-| Package | Version |
-| ----------- | ----------- |
-| TODO | TODO |
-| TODO | TODO |
-
-
----
-
-## ☑️ TODO:
-
-- [x] ~~TODO~~
-- [ ] TODO
-- [ ] TODO
-
-
----
-
-## 🗺 Step-By-Step Guide?
-
-
-❇️ **NodeJS**
-
-First, You will also need to [install Git](https://git-scm.com/book/en/v2/Getting-Started-Installing-Git) and [NodeJS >=10](https://buidler.dev/tutorial/setting-up-the-environment.html)
-
-TODO - translate medium article over with added stuff - focus on a frentend win first before bringing in the blockchain - table of contents - hooks lib and comps to make less copy paste
-
-TODO
-
----
-
-TODO
-
----
-
-TODO
-
----
-
-TODO

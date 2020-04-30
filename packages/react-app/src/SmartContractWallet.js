@@ -5,8 +5,8 @@ import { Typography, Skeleton, Card, Row, Col, Button } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 
 import { useContractLoader, useContractReader } from "./hooks"
-
-import { Address, Balance, Transactor } from "./components"
+import { Transactor } from "./helpers"
+import { Address, Balance } from "./components"
 const { Title } = Typography;
 const { Meta } = Card;
 
