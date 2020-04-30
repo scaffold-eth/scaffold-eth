@@ -3,7 +3,7 @@ import { Input, Button, Tooltip } from 'antd';
 import Blockies from 'react-blockies';
 import { SendOutlined } from  '@ant-design/icons';
 import { ethers } from "ethers";
-import { Transactor } from "."
+import { Transactor } from "../helpers"
 
 
 export default function Faucet(props) {
