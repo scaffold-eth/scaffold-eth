@@ -24,7 +24,7 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"⛓"}>
         <Text delete={props.chainIsUp}>
-          Start your local blockchain with: <Text strong>yarn run chain</Text>
+          Start your local blockchain with: <Text strong>yarn run chain</Text> (and refresh)
         </Text>
       </Timeline.Item>
 
@@ -61,7 +61,7 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"☢️"}>
         <Text>
-          Fix all the security holes in <Text code>SmartContractWallet.sol</Text>
+          Yikes, anyone can take ownership of <Text code>SmartContractWallet.sol</Text>
         </Text>
       </Timeline.Item>
 
@@ -71,15 +71,15 @@ export default function TimelineDisplay(props) {
         </Text>
       </Timeline.Item>
 
-      <Timeline.Item dot={"📖"}>
+      <Timeline.Item dot={"🚀"}>
         <Text>
-          Read more about <a target="_blank"  href="https://ethereum.org/developers">Ethereum</a>, <a target="_blank" href="https://solidity.readthedocs.io/en/develop/contracts.html">Solidity</a>, and <a target="_blank" href="https://buidler.dev/tutorial">Buidler</a>
+          Learn more and fork <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth">this repo</a> to build something amazing!
         </Text>
       </Timeline.Item>
 
-      <Timeline.Item dot={"🛠"}>
+      <Timeline.Item dot={"📖"}>
         <Text>
-          Build something amazing!
+          Read more about <a target="_blank"  href="https://ethereum.org/developers">Ethereum</a>, <a target="_blank" href="https://solidity.readthedocs.io/en/develop/contracts.html">Solidity</a>, and <a target="_blank" href="https://buidler.dev/tutorial">Buidler</a>
         </Text>
       </Timeline.Item>
 

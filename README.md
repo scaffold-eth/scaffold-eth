@@ -12,16 +12,16 @@ First, you'll need [NodeJS>=10](https://nodejs.org/en/download/) plus [Yarn](htt
 💾 Clone/fork repo and then install:
 
 ```
-git clone https://github.com/austintgriffith/scaffold-eth.git my-cool-new-dapp
+git clone https://github.com/austintgriffith/scaffold-eth.git rad-new-dapp
 
-cd my-cool-new-dapp
+cd rad-new-dapp
 
 yarn install
 ```
 
 > ⌚️ This will take some time. How about a quick tour of the file structure with your favorite code editor?
 
-> 💡 You might see warnings that look like errors ("node-gyp") but the next step should work fine. If you need help, check out the troubleshooting section below.
+> 💡 Sometimes the install throws errors like "node-gyp", try the next step even if you see problems.
 
 ---
 
@@ -309,12 +309,7 @@ const price = useExchangePrice(mainnetProvider)
 
 ▶️  Run `yarn run compile` and `yarn run deploy` or just `yarn run watch`
 
-> 🔨 Try depositing, withdrawing, and changing the owner of your contract.
-
 ![smortcontractwallet](https://user-images.githubusercontent.com/2653167/80741479-ece0a080-8ad6-11ea-9850-f576f7be2b85.gif)
-
-
-> 🧐 Get your contract to a point where you feel confident that a bad guy can't steal your funds and then let's get it deployed on a testnet.
 
 > 🛠 Run [this eth.build](https://eth.build/build#32f1ecd6d90518387f2f34c47176bf67fdf55c855bff39f85de08d76696b850f) with your contract address to ask it who its owner is.
 
