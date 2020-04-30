@@ -88,7 +88,7 @@ export default function Account(props) {
       {props.address?(
         <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
-      <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.dollarMultiplier}/>
+      <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.price}/>
       {modalButtons}
     </div>
   );

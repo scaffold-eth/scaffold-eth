@@ -7,15 +7,19 @@
 
 ## ⏱ Quickstart:
 
-First, you'll need [Git](https://git-scm.com/downloads) and [NodeJS>=10](https://nodejs.org/en/download/) installed.
+First, you'll need [NodeJS>=10](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads) installed.
 
 💾 Clone/fork repo and then install:
 
 ```
-npm install -g yarn
+git clone https://github.com/austintgriffith/scaffold-eth.git my-cool-new-dapp
+
+cd my-cool-new-dapp
 
 yarn install
 ```
+
+> ⌚️ This will take some time. Take a quick tour of the files in your favorite code editor.
 
 ---
 
@@ -39,6 +43,8 @@ yarn run chain
 
 ![image](https://user-images.githubusercontent.com/2653167/80600757-1cfe4580-89ea-11ea-897a-6e8d623403eb.png)
 
+
+> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
 
 ---
 
@@ -93,6 +99,16 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ---
 
  ✨ The [BuidlerEVM](https://buidler.dev/buidler-evm/) provides *stack traces* and *console.log* debugging for our contracts ✨
+
+---
+
+## 🏃‍♂️ Speedrun:
+
+
+
+TODO
+
+
 
 ---
 

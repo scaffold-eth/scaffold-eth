@@ -14,7 +14,7 @@ const contractName = "SmartContractWallet"
 
 export default function SmartContractWallet(props) {
 
-  const tx = Transactor(props.injectedProvider)
+  const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   const readContracts = useContractLoader(props.localProvider);
   const writeContracts = useContractLoader(props.injectedProvider);
@@ -36,7 +36,9 @@ export default function SmartContractWallet(props) {
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}><Address value={owner} onChange={(newOwner)=>{
           tx(
-             writeContracts['SmartContractWallet'].updateOwner(newOwner)
+             writeContracts['SmartContractWallet'].updateOwner(newOwner,{
+               from: props.address //this is required to make the burner provider side work right now with ethers. I must be doing something wrong
+             })
           )
         }}/></Col>
       </Row>
@@ -64,7 +66,7 @@ export default function SmartContractWallet(props) {
               <Balance
                 address={readContracts?readContracts[contractName].address:0}
                 provider={props.localProvider}
-                dollarMultiplier={props.dollarMultiplier}
+                dollarMultiplier={props.price}
               />
             </div>
           </div>

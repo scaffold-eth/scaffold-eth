@@ -4,7 +4,7 @@ import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
-import { useExchangePrice } from "./hooks"
+import { useExchangePrice, useGasPrice } from "./hooks"
 import { Header, Account, Provider, Faucet } from "./components"
 
 import SmartContractWallet from './SmartContractWallet.js'
@@ -17,6 +17,7 @@ function App() {
   const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
+  const gasPrice = useGasPrice("fast")
 
   return (
     <div className="App">
@@ -29,14 +30,16 @@ function App() {
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
           mainnetProvider={mainnetProvider}
-          dollarMultiplier={price}
+          price={price}
         />
       </div>
       <div style={{padding:40,textAlign: "left"}}>
         <SmartContractWallet
+          address={address}
           injectedProvider={injectedProvider}
           localProvider={localProvider}
-          dollarMultiplier={price}
+          price={price}
+          gasPrice={gasPrice}
         />
       </div>
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>

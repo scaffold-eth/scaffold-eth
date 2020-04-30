@@ -4,12 +4,10 @@ import { notification } from 'antd';
 
 import Notify from 'bnc-notify'
 
-
-export default function Transactor(provider,etherscan) {
+export default function Transactor(provider,gasPrice,etherscan) {
   if(typeof provider != "undefined"){
-    let signer = provider.getSigner()
     return async (tx) => {
-
+      let signer = provider.getSigner()
       const network = await provider.getNetwork()
       console.log("network",network)
       const options = {
@@ -32,9 +30,18 @@ export default function Transactor(provider,etherscan) {
       try{
         let result
         if(tx instanceof Promise){
+          console.log("CAN I ADD MY OWN ARG TO ",tx,"before awaiting here")
           result = await tx
         }else{
           console.log("tx",tx)
+          console.log("gasPrice",gasPrice)
+          if(!tx.gasPrice){
+            tx.gasPrice = gasPrice ? ethers.utils.parseUnits(""+gasPrice,"gwei") : ethers.utils.parseUnits("4.1","gwei")
+          }
+          if(!tx.gasLimit){
+            tx.gasLimit = ethers.utils.hexlify(120000)
+          }
+          console.log("RUNNING TX",tx)
           result = await signer.sendTransaction(tx);
         }
         console.log("RESULT:",result)
