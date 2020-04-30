@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Typography, Skeleton, Card, Row, Col, Button, List } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { useContractLoader, useContractReader, useEventListener } from "./hooks"
+import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance } from "./hooks"
 import { Transactor } from "./helpers"
-import { Address, Balance } from "./components"
+import { Address, Balance, Timeline } from "./components"
 const { Title } = Typography;
 const { Meta } = Card;
 
@@ -15,6 +15,9 @@ export default function SmartContractWallet(props) {
 
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
+  const localBlockNumber = useBlockNumber(props.localProvider)
+  const localBalance = useBalance(props.address,props.localProvider)
+
   const readContracts = useContractLoader(props.localProvider);
   const writeContracts = useContractLoader(props.injectedProvider);
 
@@ -23,7 +26,8 @@ export default function SmartContractWallet(props) {
 
   const ownerUpdates = useEventListener(readContracts,contractName,"UpdateOwner",props.localProvider,1);//set that last number to the block the contract is deployed (this needs to be automatic in the contract loader!?!)
 
-  console.log("ownerUpdates",ownerUpdates)
+  const contractAddress = readContracts?readContracts[contractName].address:""
+  const contractBalance = useBalance(contractAddress,props.localProvider)
 
   let displayAddress, displayOwner, onDeposit, onWithdraw
 
@@ -31,7 +35,7 @@ export default function SmartContractWallet(props) {
     displayAddress = (
       <Row>
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Deployed to:</Col>
-        <Col span={16}><Address value={readContracts[contractName].address} /></Col>
+        <Col span={16}><Address value={contractAddress} /></Col>
       </Row>
     )
     displayOwner = (
@@ -56,7 +60,7 @@ export default function SmartContractWallet(props) {
             {title}
             <div style={{float:'right',opacity:title?0.77:0.33}}>
               <Balance
-                address={readContracts?readContracts[contractName].address:0}
+                address={contractAddress}
                 provider={props.localProvider}
                 dollarMultiplier={props.price}
               />
@@ -78,7 +82,7 @@ export default function SmartContractWallet(props) {
             </div>,
             <div onClick={()=>{
               tx({
-                to: readContracts[contractName].address,
+                to: contractAddress,
                 value: ethers.utils.parseEther('0.001'),
               })
             }}>
@@ -105,6 +109,20 @@ export default function SmartContractWallet(props) {
           </List.Item>
         )}
       />
+      <div style={{position:'fixed',textAlign:'right',right:25,top:90,padding:10,width:"50%"}}>
+        <h1>✅ TODO LIST</h1>
+        <Timeline
+          localProvider={props.localProvider}
+          address={props.address}
+          chainIsUp={typeof localBlockNumber != "undefined"}
+          hasOwner={typeof owner != "undefined"}
+          isNotSmoort={ title && ( title.indexOf("Smoort") < 0 ) }
+          hasEther={parseFloat(localBalance)>0}
+          contractAddress={contractAddress}
+          contractHasEther={parseFloat(contractBalance)>0}
+          amOwnerOfContract={owner===props.address}
+        />
+      </div>
     </div>
   );
 

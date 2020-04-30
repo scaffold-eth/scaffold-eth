@@ -7,7 +7,6 @@ const { Text } = Typography;
 export default function Balance(props) {
 
   const [dollarMode, setDollarMode] = useState(true);
-
   const [balance, setBalance] = useState();
   usePoller(async ()=>{
     if(props.address && props.provider){
@@ -20,9 +19,11 @@ export default function Balance(props) {
     }
   },props.pollTime?props.pollTime:1999)
 
-  //console.log("balance",balance)
-
   let floatBalance = parseFloat("0.00")
+
+  if(typeof props.balance != "undefined"){
+    balance = props.balance
+  }
 
   if(balance){
     let etherBalance = ethers.utils.formatEther(balance)

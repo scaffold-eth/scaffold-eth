@@ -21,6 +21,8 @@ yarn install
 
 > ⌚️ This will take some time. How about a quick tour of the file structure with your favorite code editor?
 
+> 💡 You might see warnings that look like errors ("node-gyp") but the next step should work fine. If you need help, check out the troubleshooting section below.
+
 ---
 
 ⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using 🔧[Ethers.js](https://docs.ethers.io/ethers.js/html/index.html) and the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
@@ -307,10 +309,10 @@ const price = useExchangePrice(mainnetProvider)
 
 ▶️  Run `yarn run compile` and `yarn run deploy` or just `yarn run watch`
 
+> 🔨 Try depositing, withdrawing, and changing the owner of your contract.
+
 ![smortcontractwallet](https://user-images.githubusercontent.com/2653167/80741479-ece0a080-8ad6-11ea-9850-f576f7be2b85.gif)
 
-
-> 🔨 Try depositing, withdrawing, and changing the owner of your contract.
 
 > 🧐 Get your contract to a point where you feel confident that a bad guy can't steal your funds and then let's get it deployed on a testnet.
 
@@ -322,3 +324,31 @@ const price = useExchangePrice(mainnetProvider)
 📚 OpenZeppelin Contracts -- TODO
 
 🛰 The Graph -- TODO
+
+
+---
+
+
+## 📤 Save to your Git
+
+Create a new repo with the same name as this project and then:
+
+```
+git remote add origin https://github.com/**YOUR_GITHUB_USERNAME**/**YOUR_COOL_PROJECT_NAME**.git
+git push -u origin master
+```
+
+
+---
+
+## 🛳 Ship it!
+
+You can deploy your static site and your dapp can go live:
+
+```
+yarn run build
+
+yarn run ship
+```
+
+> TODO: GITHUB PAGES OR SURGE TUTORIAL?

@@ -35,6 +35,7 @@ function App() {
       </div>
       <div style={{padding:40,textAlign: "left"}}>
         <SmartContractWallet
+          address={address}
           injectedProvider={injectedProvider}
           localProvider={localProvider}
           price={price}
@@ -58,6 +59,7 @@ function App() {
           dollarMultiplier={price}
         />
       </div>
+
     </div>
   );
 }

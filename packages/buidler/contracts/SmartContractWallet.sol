@@ -4,7 +4,7 @@ import "@nomiclabs/buidler/console.sol";
 
 contract SmartContractWallet {
 
-  string public title = "📄 Smort Contract Wallet";
+  string public title = "📄 Smoort Contract Wallet";
   address public owner;
 
   constructor() public {

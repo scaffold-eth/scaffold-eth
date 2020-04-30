@@ -10,10 +10,12 @@
   ],
   "private": true,
   "scripts": {
-    "react-app:build": "yarn workspace @uniswap-v1-app/react-app build",
+    "react-app:build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=12288",
     "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
     "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
+    "ship": "echo 'Sorry, this does not work yet'",
+    "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=12288",
     "chain": "cd packages/buidler && npx buidler node",
     "node": "cd packages/buidler && npx buidler node",
     "test": "cd packages/buidler && npx buidler test",
