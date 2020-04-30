@@ -39,6 +39,8 @@ yarn start
 yarn run chain
 ```
 
+> 🛠 [Use this eth.build](https://eth.build/build#1a21b864c6bcdb901070b64965fae825cdfc11b1915d74f058f00b114a8c129a) to double-check your local chain and account balances
+
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
 
 > 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix "Smort Contract Wallet" and deploy the contract locally?
@@ -93,8 +95,6 @@ yarn run balance **YOUR-ADDRESS**
 ```
 yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ```
-
-> 🛠 Try [this eth.build](https://eth.build/build#1a21b864c6bcdb901070b64965fae825cdfc11b1915d74f058f00b114a8c129a) to double-check your local chain and account balances
 
 > 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
 
