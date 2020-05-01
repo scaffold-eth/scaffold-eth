@@ -109,7 +109,7 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 ---
 
-## 🏃‍♂️ Speedrun (7 min):
+## 🏃‍♂️ Speedrun (🎥 7 min):
 
 [![speedrun](https://user-images.githubusercontent.com/2653167/80823035-13ffa680-8b99-11ea-880e-ae37b752ca59.png)](https://youtu.be/eUAc2FtC0_s)
 
