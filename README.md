@@ -3,6 +3,8 @@
 
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on *fast product iteration*
 
+> 🧫 [first draft] research is [available here](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
+
 ---
 
 ## ⏱ Quickstart:
