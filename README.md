@@ -111,7 +111,7 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 
 
-TODO
+TODO - TODAY - BTF SPEED RUN!!! 
 
 
 
