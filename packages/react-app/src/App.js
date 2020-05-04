@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react'
 import 'antd/dist/antd.css';
-//import { gql } from "apollo-boost";
 import { ethers } from "ethers";
-//import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 import { useExchangePrice, useGasPrice } from "./hooks"
 import { Header, Account, Provider, Faucet } from "./components"
