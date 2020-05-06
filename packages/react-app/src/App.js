@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import 'antd/dist/antd.css';
 //import { gql } from "apollo-boost";
 import { ethers } from "ethers";
