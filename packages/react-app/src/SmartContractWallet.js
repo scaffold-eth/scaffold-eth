@@ -5,7 +5,7 @@ import { Typography, Skeleton, Card, Row, Col, Button, List } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance } from "./hooks"
 import { Transactor } from "./helpers"
-import { Address, Balance, Timeline } from "./components"
+import { Address, Balance, Timeline, Dollars } from "./components"
 const { Title } = Typography;
 const { Meta } = Card;
 
@@ -26,14 +26,29 @@ export default function SmartContractWallet(props) {
   const contractAddress = readContracts?readContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.localProvider)
 
-  let displayOwner, onDeposit, onWithdraw
+  const myBalance = useContractReader(readContracts,contractName,"balances",[props.address],1777)
+
+  let display = []
 
   if(readContracts && readContracts[contractName]){
-    displayOwner = (
-      <Row>
+    display.push(
+      <Row key="ownerRow">
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}>
           <Address value={owner}/>
+        </Col>
+      </Row>
+    )
+    display.push(
+      <Row key="myBalance">
+        <Col span={8} style={{textAlign:"right",paddingRight:6,fontSize:24}}>
+          <Address minimized={true} value={props.address}/>
+        </Col>
+        <Col span={16}>
+          <Balance
+            balance={myBalance}
+            dollarMultiplier={props.price}
+          />
         </Col>
       </Row>
     )
@@ -79,7 +94,7 @@ export default function SmartContractWallet(props) {
           <Meta
             description={(
               <div>
-                {displayOwner}
+                {display}
               </div>
             )}
           />

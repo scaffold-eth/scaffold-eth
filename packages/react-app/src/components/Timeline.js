@@ -42,8 +42,8 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={<DownloadOutlined style={{ fontSize: '16px' }} />} color={props.contractHasEther?"green":"blue"}>
         <Text delete={props.contractHasEther}>
-          👀 Notice how the deposit fails if you try?  <br/>
-          Add a <Text code>fallback()</Text> function to <Text code>SmartContractWallet.sol</Text> <br/>
+          👀 Notice how the deposit fails if you try? (add medium link)<br/>
+          Add a <Text code>payable</Text><Text code>fallback()</Text> function to <Text code>SmartContractWallet.sol</Text> <br/>
           Then, deposit funds into your <Blockies seed={(props.contractAddress?props.contractAddress:"").toLowerCase()} size={8} scale={2}/> smart contract wallet  <br/>
         </Text>
       </Timeline.Item>
