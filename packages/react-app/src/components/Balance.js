@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { ethers } from "ethers";
 import { usePoller } from "../hooks";
-import { Typography } from 'antd';
-const { Text } = Typography;
 
 export default function Balance(props) {
 
@@ -22,7 +20,7 @@ export default function Balance(props) {
   let floatBalance = parseFloat("0.00")
 
   if(typeof props.balance != "undefined"){
-    balance = props.balance
+    setBalance(props.balance);
   }
 
   if(balance){

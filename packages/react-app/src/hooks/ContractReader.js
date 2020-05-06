@@ -8,7 +8,7 @@ export default function useContractReader(contracts,contractName,variableName,po
     if(contracts && contracts[contractName]){
       try{
         let newValue = await contracts[contractName][variableName]()
-        if(newValue!=value){
+        if(newValue!==value){
           setValue(newValue)
         }
       }catch(e){

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import Blockies from 'react-blockies';
 import { Timeline, Typography } from 'antd';
 import { SendOutlined, DownloadOutlined, EditOutlined } from  '@ant-design/icons';
@@ -11,7 +11,7 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"💾"}>
         <Text delete>
-          Clone and Install from the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth">github repo</a>
+          Clone and Install from the <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">github repo</a>
         </Text>
       </Timeline.Item>
 
@@ -73,20 +73,20 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"🚀"}>
         <Text>
-          Learn more and fork <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth">this repo</a> to build something amazing!
+          Learn more and fork <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">this repo</a> to build something amazing!
         </Text>
       </Timeline.Item>
 
       <Timeline.Item dot={"📖"}>
         <Text>
-          Read more about <a target="_blank"  href="https://ethereum.org/developers">Ethereum</a>, <a target="_blank" href="https://solidity.readthedocs.io/en/develop/contracts.html">Solidity</a>, and <a target="_blank" href="https://buidler.dev/tutorial">Buidler</a>
+          Read more about <a target="_blank" rel="noopener noreferrer"  href="https://ethereum.org/developers">Ethereum</a>, <a target="_blank" rel="noopener noreferrer" href="https://solidity.readthedocs.io/en/develop/contracts.html">Solidity</a>, and <a target="_blank" rel="noopener noreferrer" href="https://buidler.dev/tutorial">Buidler</a>
         </Text>
       </Timeline.Item>
 
 
       <Timeline.Item dot={"💬"}>
         <Text>
-          <a target="_blank" href="https://twitter.com/austingriffith">@ me</a>!
+          <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/austingriffith">@ me</a>!
         </Text>
       </Timeline.Item>
     </Timeline>
