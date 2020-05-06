@@ -29,7 +29,6 @@ export default function SmartContractWallet(props) {
   const contractBalance = useBalance(contractAddress,props.localProvider)
 
   let displayAddress, displayOwner
-  // Other methods not implemented: onDeposit, onWithdraw
 
   if(readContracts && readContracts[contractName]){
     displayAddress = (
