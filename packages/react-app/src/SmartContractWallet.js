@@ -109,7 +109,7 @@ export default function SmartContractWallet(props) {
           </List.Item>
         )}
       />
-      <div style={{position:'fixed',textAlign:'right',right:25,top:90,padding:10,width:"50%"}}>
+      <div style={{position:'fixed',textAlign:'right',right:25,top:90,padding:10,width:"50%",marginRight: "15%"}}>
         <h1>✅ TODO LIST</h1>
         <Timeline
           localProvider={props.localProvider}
