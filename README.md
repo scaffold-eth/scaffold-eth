@@ -43,6 +43,8 @@ yarn run chain
 
 > 🛠 [Use this eth.build](https://eth.build/build#1a21b864c6bcdb901070b64965fae825cdfc11b1915d74f058f00b114a8c129a) to double-check your local chain and account balances
 
+__Note__: You'll need to run this command in another terminal from the previous one.
+
 ---
 
 📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
@@ -61,6 +63,7 @@ yarn run chain
 ```
 yarn run compile
 ```
+__Note__: You'll need to run this command in another terminal from the previous one.
 
 🚢 Deploy your contracts to the frontend:
 ```
