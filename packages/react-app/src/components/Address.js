@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import Blockies from 'react-blockies';
 import { Typography, Skeleton } from 'antd';
 const { Text } = Typography;
@@ -32,9 +32,9 @@ export default function Address(props) {
 
   if(ens){
     displayAddress=ens
-  }else if(props.size == "short"){
+  }else if(props.size === "short"){
     displayAddress += "..."+props.value.substr(-4)
-  }else if(props.size == "long"){
+  }else if(props.size === "long"){
     displayAddress = props.value
   }
 

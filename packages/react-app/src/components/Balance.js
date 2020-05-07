@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { ethers } from "ethers";
 import { usePoller } from "../hooks";
-import { Typography } from 'antd';
-const { Text } = Typography;
 
 export default function Balance(props) {
 
@@ -21,19 +19,19 @@ export default function Balance(props) {
 
   let floatBalance = parseFloat("0.00")
 
+  let usingBalance = balance
+
   if(typeof props.balance != "undefined"){
-    balance = props.balance
+    usingBalance = props.balance
   }
 
-  if(balance){
-    let etherBalance = ethers.utils.formatEther(balance)
+  if(usingBalance){
+    let etherBalance = ethers.utils.formatEther(usingBalance)
     parseFloat(etherBalance).toFixed(2)
     floatBalance = parseFloat(etherBalance)
   }
 
   let displayBalance = floatBalance.toFixed(4)
-
-  //console.log("dollarMultiplier",props.dollarMultiplier)
 
   if(props.dollarMultiplier && dollarMode){
     displayBalance = "$"+(floatBalance*props.dollarMultiplier).toFixed(2)

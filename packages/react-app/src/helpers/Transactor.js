@@ -1,4 +1,3 @@
-import React from 'react'
 import { ethers } from "ethers";
 import { notification } from 'antd';
 

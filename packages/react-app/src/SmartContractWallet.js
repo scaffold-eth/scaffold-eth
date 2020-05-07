@@ -1,12 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
-import { Typography, Skeleton, Card, Row, Col, Button, List } from 'antd';
+import { Card, Row, Col, List } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance } from "./hooks"
 import { Transactor } from "./helpers"
 import { Address, Balance, Timeline } from "./components"
-const { Title } = Typography;
 const { Meta } = Card;
 
 const contractName = "SmartContractWallet"
@@ -29,7 +28,7 @@ export default function SmartContractWallet(props) {
   const contractAddress = readContracts?readContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.localProvider)
 
-  let displayAddress, displayOwner, onDeposit, onWithdraw
+  let displayAddress, displayOwner
 
   if(readContracts && readContracts[contractName]){
     displayAddress = (
@@ -110,7 +109,7 @@ export default function SmartContractWallet(props) {
         )}
       />
       <div style={{position:'fixed',textAlign:'right',right:25,top:90,padding:10,width:"50%"}}>
-        <h1>✅ TODO LIST</h1>
+        <h1><span role="img" aria-label="checkmark">✅</span> TODO LIST</h1>
         <Timeline
           localProvider={props.localProvider}
           address={props.address}

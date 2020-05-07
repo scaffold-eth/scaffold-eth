@@ -41,6 +41,8 @@ yarn start
 yarn run chain
 ```
 
+__Note__: You'll need to run this command in a new terminal window
+
 > 🛠 [Use this eth.build](https://eth.build/build#1a21b864c6bcdb901070b64965fae825cdfc11b1915d74f058f00b114a8c129a) to double-check your local chain and account balances
 
 ---
@@ -50,8 +52,6 @@ yarn run chain
 > 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
 
 ![image](https://user-images.githubusercontent.com/2653167/80762594-1232d600-8afa-11ea-88e1-d59a09243bab.png)
-
-
 
 > ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
 

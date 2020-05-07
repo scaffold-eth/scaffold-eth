@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { Input, Button, Tooltip } from 'antd';
 import Blockies from 'react-blockies';
 import { SendOutlined } from  '@ant-design/icons';
@@ -9,15 +9,6 @@ import { Transactor } from "../helpers"
 export default function Faucet(props) {
 
   const [address, setAddress] = useState()
-
-  const layout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 16 },
-  };
-
-  const tailLayout = {
-    wrapperCol: { offset: 8, span: 16 },
-  };
 
   let blockie
   if(address && typeof address.toLowerCase=="function"){
