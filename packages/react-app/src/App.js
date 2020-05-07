@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";

@@ -8,7 +8,7 @@ export default function useBalance(address,provider,pollTime) {
     if(address&&provider){
       let newBalance = await provider.getBalance(address)
       newBalance = ethers.utils.formatEther(newBalance)
-      if(newBalance!=balance){
+      if(newBalance!==balance){
         //console.log("NEW BALANCE:",newBalance,"Current balance",balance)
         setBalance(newBalance)
       }

@@ -1,12 +1,16 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
-import { Typography, Skeleton, Card, Row, Col, Button, List } from 'antd';
+import { Card, Row, Col, List } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance } from "./hooks"
 import { Transactor } from "./helpers"
+<<<<<<< HEAD
 import { Address, Balance, Timeline, Dollars } from "./components"
 const { Title } = Typography;
+=======
+import { Address, Balance, Timeline } from "./components"
+>>>>>>> origin/master
 const { Meta } = Card;
 
 const contractName = "SmartContractWallet"
@@ -26,9 +30,13 @@ export default function SmartContractWallet(props) {
   const contractAddress = readContracts?readContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.localProvider)
 
+<<<<<<< HEAD
   const myBalance = useContractReader(readContracts,contractName,"balances",[props.address],1777)
 
   let display = []
+=======
+  let displayAddress, displayOwner
+>>>>>>> origin/master
 
   if(readContracts && readContracts[contractName]){
     display.push(
@@ -100,7 +108,7 @@ export default function SmartContractWallet(props) {
           />
       </Card>
       <div style={{position:'fixed',textAlign:'right',right:25,top:90,padding:10,width:"50%"}}>
-        <h1>✅ TODO LIST</h1>
+        <h1><span role="img" aria-label="checkmark">✅</span> TODO LIST</h1>
         <Timeline
           localProvider={props.localProvider}
           address={props.address}

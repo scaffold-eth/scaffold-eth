@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React from 'react'
 import Blockies from 'react-blockies';
 import { Timeline, Typography } from 'antd';
 import { SendOutlined, DownloadOutlined, EditOutlined } from  '@ant-design/icons';
@@ -11,7 +11,7 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"💾"}>
         <Text delete>
-          Clone and Install from the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth">github repo</a>
+          Clone and Install from the <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">github repo</a>
         </Text>
       </Timeline.Item>
 

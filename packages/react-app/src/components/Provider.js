@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState } from 'react'
 import { usePoller, useBlockNumber } from "../hooks";
 import { Button, Badge } from 'antd';
 //import { WalletOutlined } from '@ant-design/icons';
