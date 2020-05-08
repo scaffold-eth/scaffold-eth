@@ -34,7 +34,7 @@ export default function Transactor(provider,gasPrice,etherscan) {
         }else{
 
           if(!tx.gasPrice){
-            tx.gasPrice = gasPrice ? tx.gasPrice : ethers.utils.parseUnits("4.1","gwei")
+            tx.gasPrice = gasPrice ? gasPrice : ethers.utils.parseUnits("4.1","gwei")
           }
           if(!tx.gasLimit){
             tx.gasLimit = ethers.utils.hexlify(120000)
