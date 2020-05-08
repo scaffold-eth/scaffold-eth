@@ -47,16 +47,6 @@ __Note__: You'll need to run this command in a new terminal window
 
 ---
 
-📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
-
-> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
-
-![image](https://user-images.githubusercontent.com/2653167/80762594-1232d600-8afa-11ea-88e1-d59a09243bab.png)
-
-> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
-
----
-
 ⚙️ Compile your contracts:
 ```
 yarn run compile
@@ -71,6 +61,17 @@ yarn run deploy
 ```
 yarn run watch
 ```
+
+
+---
+
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+
+> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
+
+![image](https://user-images.githubusercontent.com/2653167/80762594-1232d600-8afa-11ea-88e1-d59a09243bab.png)
+
+> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
 
 ---
 
