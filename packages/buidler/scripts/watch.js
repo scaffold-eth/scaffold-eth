@@ -9,7 +9,7 @@ watch('./contracts', { recursive: true }, function(evt, name) {
     if(error) console.log(error)
     if(stderr) console.log(stderr)
 
-    exec('npx buidler run scripts/publish.js', function(error, stdout, stderr) {
+    exec('npx buidler run scripts/publish.js', {stdio:'inherit'}, function(error, stdout, stderr) {
         console.log(stdout);
         if(error) console.log(error)
         if(stderr) console.log(stderr)
