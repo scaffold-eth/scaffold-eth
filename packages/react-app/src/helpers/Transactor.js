@@ -32,10 +32,9 @@ export default function Transactor(provider,gasPrice,etherscan) {
           console.log("AWAITING TX",tx)
           result = await tx
         }else{
-          //console.log("tx",tx)
-          //console.log("gasPrice",gasPrice)
+
           if(!tx.gasPrice){
-            tx.gasPrice = gasPrice ? ethers.utils.parseUnits(""+gasPrice,"gwei") : ethers.utils.parseUnits("4.1","gwei")
+            tx.gasPrice = gasPrice ? tx.gasPrice : ethers.utils.parseUnits("4.1","gwei")
           }
           if(!tx.gasLimit){
             tx.gasLimit = ethers.utils.hexlify(120000)

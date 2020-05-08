@@ -6,22 +6,8 @@ export default function useGasPrice(speed) {
   const loadGasPrice = async () => {
     axios.get('https://ethgasstation.info/json/ethgasAPI.json')
     .then(function (response) {
-
-      let newGasPrice
-      if(speed==="fastest"){
-        newGasPrice = response.data.fastest*0.1
-      }else if(speed==="fast"){
-        newGasPrice = response.data.fast*0.01
-      }else if(speed==="average"){
-        newGasPrice = response.data.average*0.001
-      }else if(speed==="slow"){
-        newGasPrice = response.data.safeLow*0.0001
-      }else{
-        newGasPrice = response.data.fast*0.1
-      }
-
+      let newGasPrice = response.data[speed?speed:"fast"]*10000000
       if(newGasPrice!==gasPrice){
-        //console.log("GAS ",newGasPrice,"gwei")
         setGasPrice(newGasPrice);
       }
     })
