@@ -1375,10 +1375,10 @@
   resolved "https://registry.yarnpkg.com/@nodelib/fs.stat/-/fs.stat-1.1.3.tgz#2b5a3ab3f918cca48a8c754c08168e3f03eba61b"
   integrity sha512-shAmDyaQC4H92APFoIaVDHCx5bStIocgvbwQyxPRrbUY20V1EYTbSDchWbuwlMG3V17cprZhA6+78JfB+3DTPw==
 
-"@nomiclabs/buidler-truffle5@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-truffle5/-/buidler-truffle5-1.3.0.tgz#6ecc421a0e1f3ea5d9f1903a489bdbee971861d5"
-  integrity sha512-NEBZdvtAVr0Ah3qRUQsNF4VU0+5ZPvwwx8UUV2/R+8NpbrRB8w6HbvQqexgPCLT3nI5KObhqkIdd41XI92nD3A==
+"@nomiclabs/buidler-truffle5@1.3.3-rc.0":
+  version "1.3.3-rc.0"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-truffle5/-/buidler-truffle5-1.3.3-rc.0.tgz#fc4bbec9ad13aa2dfa1d575d1f48f286a3ebe1a3"
+  integrity sha512-zBS9RNGYtdGdBTmaT3+D857YTa86EUUw1VX0qfePAeJR1nwAwGaCWnhrVZsoPkPNTrclkj7zlP538YXsQM1Qhw==
   dependencies:
     "@nomiclabs/truffle-contract" "^4.1.2"
     "@types/chai" "^4.2.0"
@@ -1386,17 +1386,17 @@
     ethereumjs-util "^6.1.0"
     fs-extra "^7.0.1"
 
-"@nomiclabs/buidler-web3@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-web3/-/buidler-web3-1.3.0.tgz#1ad4640cefa9a2a0533a3baa0dd1b48b9a7596f2"
-  integrity sha512-/LlHyElIi0GfGPDErmrplEM+4VzQRF83EpGb0rEP79N5qehWKjYrOlSsZuC4FDJRbsmjf8xHcmyHIO0u6zO9GA==
+"@nomiclabs/buidler-web3@1.3.3-rc.0":
+  version "1.3.3-rc.0"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler-web3/-/buidler-web3-1.3.3-rc.0.tgz#bed699cc38e4f6d1bada4282e8450d64daa0d416"
+  integrity sha512-z/yu17kFoMdzIeWMbHWnz+OPL1GHyZiXE7YD6/5yroQD8l01afKIEow2+Mz4rHrYHf9CIqK2SroCMq2F5h3YSQ==
   dependencies:
     "@types/bignumber.js" "^5.0.0"
 
-"@nomiclabs/buidler@^1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler/-/buidler-1.3.0.tgz#2d4b00945bfceba2f7d0202b57e219641b1783ca"
-  integrity sha512-9Oalatnwb4xiJxdPQufvAXM58V9+MbbKudQz8ckUkLP0e17fF35XvV6+kxeigJKWkabOdBMN5s4YkjGJSzOfVA==
+"@nomiclabs/buidler@1.3.3-rc.0":
+  version "1.3.3-rc.0"
+  resolved "https://registry.yarnpkg.com/@nomiclabs/buidler/-/buidler-1.3.3-rc.0.tgz#8ec1697f245fbde2e5ae76e2cf2633f4c918d9ba"
+  integrity sha512-RQNabPSa0V8VEYQBHdLKciozBnJoQGm46FtNtMcEAcYHsJcdK5K8Zz5vZOIZ8yA9W/VV5hK8H/MWd+SHnZP7MQ==
   dependencies:
     "@nomiclabs/ethereumjs-vm" "^4.1.1"
     "@solidity-parser/parser" "^0.5.2"
@@ -3427,12 +3427,13 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
-burner-provider@^1.0.14:
-  version "1.0.14"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.14.tgz#87ed10603a3940aa565a6fdc618acb2dde03d552"
-  integrity sha512-3WKMYFJAtisfSX/I05yq3Gn6/Ihju3P/IWQe/Xn0FeC2G27IgLCPWORBM9YtWAL64HHCjtCdJSKBjBxzan+EaA==
+burner-provider@^1.0.15:
+  version "1.0.15"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.15.tgz#a4bdcb60b0fcf27fd1dc5faa3bbc2746e4ab66a1"
+  integrity sha512-ep0w//TCqoAX8NEFaK0uY5jQtbX7qwv9XffLL+VL4Oy9+XioswFstqmCBA2hEQf+pW89GIusULrIicbOCV29ow==
   dependencies:
     bip39 "^3.0.2"
+    eth-sig-util "^2.5.3"
     ethereumjs-wallet "^0.6.3"
     ethers "^4.0.46"
     web3-provider-engine "^15.0.6"
@@ -5549,7 +5550,7 @@ eth-sig-util@^1.4.2:
     ethereumjs-abi "git+https://github.com/ethereumjs/ethereumjs-abi.git"
     ethereumjs-util "^5.1.1"
 
-eth-sig-util@^2.5.2:
+eth-sig-util@^2.5.2, eth-sig-util@^2.5.3:
   version "2.5.3"
   resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-2.5.3.tgz#6938308b38226e0b3085435474900b03036abcbe"
   integrity sha512-KpXbCKmmBUNUTGh9MRKmNkIPietfhzBqqYqysDavLseIiMUGl95k6UcPEkALAZlj41e9E6yioYXc1PC333RKqw==

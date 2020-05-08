@@ -73,7 +73,7 @@ export default function TimelineDisplay(props) {
 
       <Timeline.Item dot={"🚀"}>
         <Text>
-          Learn more and fork <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">this repo</a> to build something amazing!
+          Build something awesome with 🏗 <a href="https://github.com/austintgriffith/scaffold-eth">scaffold-eth</a> and <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/austingriffith">@ me</a>!
         </Text>
       </Timeline.Item>
 
@@ -84,11 +84,7 @@ export default function TimelineDisplay(props) {
       </Timeline.Item>
 
 
-      <Timeline.Item dot={"💬"}>
-        <Text>
-          <a target="_blank" rel="noopener noreferrer" href="https://twitter.com/austingriffith">@ me</a>!
-        </Text>
-      </Timeline.Item>
+
     </Timeline>
   );
 }
