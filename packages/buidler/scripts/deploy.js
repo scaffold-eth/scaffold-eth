@@ -7,8 +7,19 @@ async function main() {
     if(contractList[c].indexOf(".sol")>=0 && contractList[c].indexOf(".swp.")<0){
       const name = contractList[c].replace(".sol","")
       const contractArtifacts = artifacts.require(name);
+      let args = []
+      try{
+        const argsFile = "./contracts/"+name+".args"
+        console.log("READING",argsFile)
+        if (fs.existsSync(argsFile)) {
+          args = JSON.parse(fs.readFileSync(argsFile))
+          console.log("LOADED ARGS",args,...args)
+        }
+      }catch(e){
+        console.log(e)
+      }
       console.log("📄 "+name)
-      const contract = await contractArtifacts.new()
+      const contract = await contractArtifacts.new(...args)
       console.log(chalk.cyan(name),"deployed to:", chalk.magenta(contract.address));
       fs.writeFileSync("artifacts/"+name+".address",contract.address);
       console.log("\n")

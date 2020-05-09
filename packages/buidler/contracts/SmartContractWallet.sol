@@ -7,8 +7,8 @@ contract SmartContractWallet {
   string public title = "📄 Smoort Contract Wallet";
   address public owner;
 
-  constructor() public {
-    owner = msg.sender;
+  constructor(address _owner) public {
+    owner = _owner;
     console.log("Smart Contract Wallet is owned by:",owner);
   }
 
