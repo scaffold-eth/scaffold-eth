@@ -73,7 +73,7 @@ yarn run watch
 
 > 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
 
-![image](https://user-images.githubusercontent.com/2653167/80762594-1232d600-8afa-11ea-88e1-d59a09243bab.png)
+![Deployed Contract](https://user-images.githubusercontent.com/2653167/81483187-8146b380-91f9-11ea-80f0-3a8e1e3225dd.png)
 
 > ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
 
