@@ -10,10 +10,10 @@ async function main() {
       let args = []
       try{
         const argsFile = "./contracts/"+name+".args"
-        console.log("READING",argsFile)
+        //console.log("READING",argsFile)
         if (fs.existsSync(argsFile)) {
           args = JSON.parse(fs.readFileSync(argsFile))
-          console.log("LOADED ARGS",args,...args)
+          //console.log("LOADED ARGS",args,...args)
         }
       }catch(e){
         console.log(e)
