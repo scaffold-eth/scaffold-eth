@@ -4,8 +4,9 @@ import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
+import { Row, Col } from 'antd';
 import { useExchangePrice, useGasPrice } from "./hooks"
-import { Header, Account, Provider, Faucet } from "./components"
+import { Header, Account, Provider, Faucet, Ramp } from "./components"
 
 import SmartContractWallet from './SmartContractWallet.js'
 
@@ -43,21 +44,35 @@ function App() {
         />
       </div>
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
-        <div style={{padding:8}}>
-          <Provider name={"mainnet"} provider={mainnetProvider} />
-        </div>
-        <div style={{padding:8}}>
-          <Provider name={"local"} provider={localProvider} />
-        </div>
-        <div style={{padding:8}}>
-          <Provider name={"injected"} provider={injectedProvider} />
-        </div>
+        <Row align="middle" gutter={4}>
+          <Col span={10}>
+            <Provider name={"mainnet"} provider={mainnetProvider} />
+          </Col>
+          <Col span={6}>
+            <Provider name={"local"} provider={localProvider} />
+          </Col>
+          <Col span={8}>
+            <Provider name={"injected"} provider={injectedProvider} />
+          </Col>
+        </Row>
       </div>
-      <div style={{position:'fixed',textAlign:'left',left:0,bottom:0,padding:10}}>
-        <Faucet
-          localProvider={localProvider}
-          dollarMultiplier={price}
-        />
+      <div style={{position:'fixed',textAlign:'left',left:0,bottom:20,padding:10}}>
+        <Row align="middle" gutter={4}>
+          <Col span={9}>
+            <Ramp
+              price={price}
+              address={address}
+            />
+          </Col>
+          <Col span={15}>
+            <Faucet
+              localProvider={localProvider}
+              dollarMultiplier={price}
+            />
+          </Col>
+        </Row>
+
+
       </div>
 
     </div>
