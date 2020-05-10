@@ -9,6 +9,7 @@ export default function Header(props) {
       <PageHeader
         title="🏗 scaffold-eth"
         subTitle="forkable Ethereum dev stack focused on fast product iteration"
+        style={{cursor:'pointer'}}
       />
     </div>
   );
