@@ -27,6 +27,11 @@
     "balance": "cd packages/buidler && npx buidler balance",
     "send": "cd packages/buidler && npx buidler send"
   },
+  "devDependencies": {
+    "@nomiclabs/buidler": "1.3.3-rc.0",
+    "@nomiclabs/buidler-truffle5": "1.3.3-rc.0",
+    "@nomiclabs/buidler-web3": "1.3.3-rc.0"
+  },
   "workspaces": {
     "packages": [
       "packages/*"

@@ -9,6 +9,7 @@ export default function Header(props) {
       <PageHeader
         title="🤖 Smart Contract Wallet"
         subTitle=""
+        style={{cursor:'pointer'}}
       />
     </div>
   );

@@ -6,8 +6,13 @@ contract SmartContractWallet {
 
   address public owner;
 
-  constructor() public {
-    owner = msg.sender;
+  constructor(address _owner) public {
+    owner = _owner;
+    console.log("Smart Contract Wallet is owned by:",owner);
+  }
+
+  fallback() external payable {
+    console.log(msg.sender,"just deposited",msg.value);
   }
 
   function withdraw() public {
