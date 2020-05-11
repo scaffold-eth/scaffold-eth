@@ -11,12 +11,9 @@ contract SmartContractWallet {
     console.log("Smart Contract Wallet is owned by:",owner);
   }
 
-  fallback() external payable {
-    console.log(msg.sender,"just deposited",msg.value);
-  }
-
   function withdraw() public {
     require(msg.sender == owner, "NOT THE OWNER!");
+    console.log(msg.sender,"withdrew",(address(this)).balance);
     msg.sender.transfer((address(this)).balance);
   }
 
