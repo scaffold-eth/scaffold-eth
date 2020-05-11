@@ -1,16 +1,12 @@
 import React from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
-import { Card, Row, Col, List } from 'antd';
+import { Card, Row, Col, List, Typography } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance } from "./hooks"
 import { Transactor } from "./helpers"
-<<<<<<< HEAD
 import { Address, Balance, Timeline, Dollars } from "./components"
 const { Title } = Typography;
-=======
-import { Address, Balance, Timeline } from "./components"
->>>>>>> origin/master
 const { Meta } = Card;
 
 const contractName = "SmartContractWallet"
@@ -30,13 +26,10 @@ export default function SmartContractWallet(props) {
   const contractAddress = readContracts?readContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.localProvider)
 
-<<<<<<< HEAD
   const myBalance = useContractReader(readContracts,contractName,"balances",[props.address],1777)
 
   let display = []
-=======
-  let displayAddress, displayOwner
->>>>>>> origin/master
+
 
   if(readContracts && readContracts[contractName]){
     display.push(
