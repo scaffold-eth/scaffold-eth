@@ -62,6 +62,8 @@ export default function Transactor(provider,gasPrice,etherscan) {
           });
         }
 
+        return result
+
       }catch(e){
         console.log(e)
         console.log("Transaction Error:",e.message)

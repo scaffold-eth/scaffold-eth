@@ -7,7 +7,6 @@ export default function useBalance(address,provider,pollTime) {
   const pollBalance = async ()=>{
     if(address&&provider){
       let newBalance = await provider.getBalance(address)
-      newBalance = ethers.utils.formatEther(newBalance)
       if(newBalance!==balance){
         //console.log("NEW BALANCE:",newBalance,"Current balance",balance)
         setBalance(newBalance)

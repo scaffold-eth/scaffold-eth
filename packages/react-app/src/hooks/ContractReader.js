@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { usePoller } from ".";
 
-export default function useContractReader(contracts,contractName,functionName,args,pollTime) {
+export default function useContractReader(contracts,contractName,functionName,args,pollTime,formatter,onChange) {
 
   let adjustPollTime = 3777
   if(pollTime){
@@ -12,7 +12,20 @@ export default function useContractReader(contracts,contractName,functionName,ar
     adjustPollTime = args
   }
 
-  const [value, setValue] = useState();
+
+  const useStateWithCallback = (initialState, callback) => {
+    const [state, setState] = useState(initialState);
+    useEffect(() => callback(state), [state]);
+    return [state, setState];
+  };
+
+  const [value, setValue] = useStateWithCallback(undefined,()=>{
+    if(typeof onChange == "function"){
+      setTimeout(onChange,1)
+    }
+  });
+
+
   usePoller(async ()=>{
     if(contracts && contracts[contractName]){
       try{
@@ -23,6 +36,9 @@ export default function useContractReader(contracts,contractName,functionName,ar
           //console.log("contractName",contractName,"functionName",functionName,"args",args,"RESULT:",newValue)
         }else{
           newValue = await contracts[contractName][functionName]()
+        }
+        if(formatter && typeof formatter == "function"){
+          newValue = formatter(newValue)
         }
         //console.log("GOT VALUE",newValue)
         if(newValue!=value){
