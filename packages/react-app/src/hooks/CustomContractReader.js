@@ -4,7 +4,7 @@ import { usePoller } from ".";
 
 const DEBUG = false
 
-export default function useContractReader(contracts,contractName,functionName,args,pollTime,formatter,onChange) {
+export default function useCustomContractReader(contract,functionName,args,pollTime,formatter,onChange) {
 
   let adjustPollTime = 3777
   if(pollTime){
@@ -22,15 +22,15 @@ export default function useContractReader(contracts,contractName,functionName,ar
   }, [value]);
 
   usePoller(async ()=>{
-    if(contracts && contracts[contractName]){
+    if(contract && typeof contract[functionName] != "undefined"){
       try{
         let newValue
-        if(DEBUG) console.log("CALLING ",contractName,functionName, "with args", args)
+        if(DEBUG) console.log("CALLING CUSTOM CONTRACT",functionName, "with args", args)
         if(args&&args.length > 0){
-          newValue = await contracts[contractName][functionName](...args)
-          if(DEBUG) console.log("contractName",contractName,"functionName",functionName,"args",args,"RESULT:",newValue)
+          newValue = await contract[functionName](...args)
+          if(DEBUG) console.log("custom contract functionName",functionName,"args",args,"RESULT:",newValue)
         }else{
-          newValue = await contracts[contractName][functionName]()
+          newValue = await contract[functionName]()
         }
         if(formatter && typeof formatter == "function"){
           newValue = formatter(newValue)
