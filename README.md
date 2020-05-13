@@ -319,6 +319,11 @@ const price = useExchangePrice(mainnetProvider)
 
 📚 OpenZeppelin Contracts -- TODO
 
+You can import any of the [OpenZeppelin contracts](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts):
+```
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
+```
+
 🛰 The Graph -- TODO
 
 ⛽️ GSN -- TODO
