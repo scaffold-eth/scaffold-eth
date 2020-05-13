@@ -10,12 +10,16 @@ export default function useEventListener(contracts,contractName,eventName,provid
       provider.resetEventsBlock(startBlock)
     }
     if(contracts && contractName && contracts[contractName]){
-      contracts[contractName].on(eventName, (oldOwner, newOwner) => {
-        let obj = {oldOwner, newOwner}
-        setUpdates(messages => [...messages, obj])
-      });
-      return ()=>{
-        contracts[contractName].removeListener(eventName)
+      try{
+        contracts[contractName].on(eventName, (oldOwner, newOwner) => {
+          let obj = {oldOwner, newOwner}
+          setUpdates(messages => [...messages, obj])
+        });
+        return ()=>{
+          contracts[contractName].removeListener(eventName)
+        }
+      }catch(e){
+        console.log(e)
       }
     }
   },[provider,contracts,contractName,eventName])
