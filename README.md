@@ -245,6 +245,19 @@ const ownerUpdates = useEventListener(readContracts,contractName,"UpdateOwner",p
 
 <br/>
 
+🖋 `<AddressInput />`: An input box you control with useState for an Ethereum address that uses a [Blockie](https://www.npmjs.com/package/ethereum-blockies) and ENS lookup/display.
+
+```
+  const [ address, setAddress ] = useState("")
+  <AddressInput
+    value={address}
+    ensProvider={props.ensProvider}
+    onChange={(address)=>{
+      setAddress(address)
+    }}
+  />
+```
+TODO GIF
 
 <br/>
 
