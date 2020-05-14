@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-export default function useEventListener(contracts,contractName,eventName,provider,startBlock) {
+export default function useEventListener(contracts,contractName,eventName,provider,startBlock,args) {
 
   const [updates,setUpdates] = useState([]);
 
@@ -11,9 +11,8 @@ export default function useEventListener(contracts,contractName,eventName,provid
     }
     if(contracts && contractName && contracts[contractName]){
       try{
-        contracts[contractName].on(eventName, (oldOwner, newOwner) => {
-          let obj = {oldOwner, newOwner}
-          setUpdates(messages => [...messages, obj])
+        contracts[contractName].on(eventName, (...args) => {
+          setUpdates(messages => [...messages, (args.pop()).args]) 
         });
         return ()=>{
           contracts[contractName].removeListener(eventName)
