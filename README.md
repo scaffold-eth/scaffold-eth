@@ -80,13 +80,6 @@ yarn run watch
 
 > ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
 
----
-
-## Part 1: Building a smart contract wallet with social recovery:
-[🛠 Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
-
----
-
 
 🔬Test your contracts by editing `myTest.js` in `packages/buidler/contracts`:
 ```
@@ -121,6 +114,16 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 [![speedrun](https://user-images.githubusercontent.com/2653167/80823035-13ffa680-8b99-11ea-880e-ae37b752ca59.png)](https://youtu.be/eUAc2FtC0_s)
 
 
+---
+
+
+
+---
+
+# Build 1:
+## smart contract wallet with social recovery:
+[🛠 Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f): I this tutorial we demonstrate the basics of 🏗scaffold-eth by building a smart contract wallet with social recovery. 
+[https://www.youtube.com/watch?v=7rq3TPL-tgI](https://www.youtube.com/watch?v=7rq3TPL-tgI)
 ---
 
 ## 🔏 Web3 Providers:
