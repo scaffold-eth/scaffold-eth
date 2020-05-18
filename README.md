@@ -116,7 +116,9 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 ---
 
+---
 
+---
 
 ---
 
@@ -127,6 +129,12 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 [🛠 Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f): In this tutorial we demonstrate the basics of 🏗scaffold-eth by building a smart contract wallet with social recovery. 
 
 [https://www.youtube.com/watch?v=7rq3TPL-tgI](https://www.youtube.com/watch?v=7rq3TPL-tgI)
+---
+
+---
+
+---
+
 ---
 
 ## 🔏 Web3 Providers:
