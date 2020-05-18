@@ -29,6 +29,12 @@ async function deploy(name,_args){
   console.log(chalk.cyan(name),"deployed to:", chalk.magenta(contract.address));
   fs.writeFileSync("artifacts/"+name+".address",contract.address);
   console.log("\n")
+  if(name=="SmartContractWallet"){
+    let forwarderGSNArtifact = fs.readFileSync('../react-app/src/build/gsn/Forwarder.json').toString()
+    let forwarderAddress = JSON.parse(forwarderGSNArtifact).address
+    console.log("Setting GSN Trusted Forwarder to " + chalk.magenta(forwarderAddress))
+    await contract.setTrustedForwarder(forwarderAddress)
+  }
   return contract;
 }
 

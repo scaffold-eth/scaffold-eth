@@ -1,12 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
+import { RelayProvider } from '@opengsn/gsn';
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { Balance, Address } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Typography } from 'antd';
+import { Button, Typography, Checkbox } from 'antd';
 const { Text } = Typography;
+
+const relayHubAddress = require('../build/gsn/RelayHub.json').address
+const stakeManagerAddress = require('../build/gsn/StakeManager.json').address
+const paymasterAddress = require('../build/gsn/Paymaster.json').address
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -27,18 +32,48 @@ export default function Account(props) {
 
   const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider && props.localProvider){
+      let burnerProvider
       if(props.localProvider.connection && props.localProvider.connection.url){
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
+        //props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
+        burnerProvider = new BurnerProvider(props.localProvider.connection.url)
+
       }else if( props.localProvider._network && props.localProvider._network.name ){
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
+        //props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
+        burnerProvider = new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)
+
       }else{
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
+        //props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
+        burnerProvider = new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
       }
+
+      updateProviders(burnerProvider)
+
     }else{
       pollInjectedProvider()
     }
   }
-  useEffect(createBurnerIfNoAddress, [props.injectedProvider]);
+  useEffect(createBurnerIfNoAddress, [props.injectedProvider, props.metaProvider]);
+
+  const updateProviders =  async (provider) => {
+
+
+    props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+
+    let gsnConfig = {
+      relayHubAddress,
+      stakeManagerAddress,
+      paymasterAddress,
+    }
+
+    if (provider._metamask) {
+      console.log('using metamask')
+      gsnConfig = {...gsnConfig, methodSuffix: '_v4', jsonStringifyRequest: true, chainId: provider.networkVersion}
+
+    }
+
+    const gsnProvider = new RelayProvider(provider, gsnConfig)
+    props.setMetaProvider(new ethers.providers.Web3Provider(gsnProvider))
+  }
 
   const pollInjectedProvider = async ()=>{
     if(props.injectedProvider){
@@ -54,7 +89,8 @@ export default function Account(props) {
   const loadWeb3Modal = async ()=>{
     const provider = await web3Modal.connect();
     //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
-    props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+    //props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+    updateProviders(provider)
     pollInjectedProvider()
   }
 

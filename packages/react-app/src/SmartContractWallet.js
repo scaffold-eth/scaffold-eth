@@ -19,6 +19,7 @@ export default function SmartContractWallet(props) {
 
   const readContracts = useContractLoader(props.localProvider);
   const writeContracts = useContractLoader(props.injectedProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const title = useContractReader(readContracts,contractName,"title",1777);
   const owner = useContractReader(readContracts,contractName,"owner",1777);
@@ -42,7 +43,7 @@ export default function SmartContractWallet(props) {
         <Col span={8} style={{textAlign:"right",opacity:0.333,paddingRight:6,fontSize:24}}>Owner:</Col>
         <Col span={16}><Address value={owner} onChange={(newOwner)=>{
           tx(
-             writeContracts['SmartContractWallet'].updateOwner(newOwner,
+             metaWriteContracts['SmartContractWallet'].updateOwner(newOwner,
                { gasLimit: ethers.utils.hexlify(40000) }
              )
           )
@@ -72,7 +73,7 @@ export default function SmartContractWallet(props) {
         actions={[
             <div onClick={()=>{
               tx(
-                writeContracts['SmartContractWallet'].withdraw(
+                metaWriteContracts['SmartContractWallet'].withdraw(
                   { gasLimit: ethers.utils.hexlify(40000) }
                 )
               )

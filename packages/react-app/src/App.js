@@ -17,6 +17,7 @@ function App() {
 
   const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
+  const [metaProvider, setMetaProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
 
@@ -30,6 +31,8 @@ function App() {
           localProvider={localProvider}
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
+          metaProvider={metaProvider}
+          setMetaProvider={setMetaProvider}
           mainnetProvider={mainnetProvider}
           price={price}
         />
@@ -38,6 +41,7 @@ function App() {
         <SmartContractWallet
           address={address}
           injectedProvider={injectedProvider}
+          metaProvider={metaProvider}
           localProvider={localProvider}
           price={price}
           gasPrice={gasPrice}
@@ -53,6 +57,9 @@ function App() {
           </Col>
           <Col span={8}>
             <Provider name={"injected"} provider={injectedProvider} />
+          </Col>
+          <Col span={8}>
+            <Provider name={"meta"} provider={metaProvider} />
           </Col>
         </Row>
       </div>
