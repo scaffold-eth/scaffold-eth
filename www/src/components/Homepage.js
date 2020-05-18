@@ -1,8 +1,8 @@
-import styled from "@emotion/styled";
-import { MDXProvider } from "@mdx-js/react";
-import React from "react";
-import SEO from "../components/seo";
-import CodeBlock from "./CodeBlock";
+import styled from '@emotion/styled';
+import { MDXProvider } from '@mdx-js/react';
+import React from 'react';
+import CodeBlock from './CodeBlock';
+import SEO from './seo';
 
 const Hero = styled.div`
   position: relative;
@@ -26,7 +26,7 @@ const HeroSvg = styled.div`
 `;
 
 const components = {
-  code: CodeBlock,
+  code: CodeBlock
 };
 
 const Homepage = ({ children }) => {
@@ -40,8 +40,7 @@ const Homepage = ({ children }) => {
               🏗 Scaffold ETH
             </h1>
             <p className="text-xl md:text-3xl mt-4">
-              Everything you need to prototype and build a decentralized
-              application
+              Everything you need to prototype and build a decentralized application
             </p>
             <p className="mt-10 lg:mt-16">
               <a

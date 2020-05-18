@@ -1,4 +1,4 @@
-import Homepage from "../components/Homepage";
+import Homepage from '../components/Homepage';
 
 <Homepage>
 
@@ -153,12 +153,12 @@ Then you can use the `tx()` function to send funds and write to your smart contr
 ```js
 tx({
   to: readContracts[contractName].address,
-  value: ethers.utils.parseEther("0.001"),
+  value: ethers.utils.parseEther('0.001')
 });
 ```
 
 ```js
-tx(writeContracts["SmartContractWallet"].updateOwner(newOwner));
+tx(writeContracts['SmartContractWallet'].updateOwner(newOwner));
 ```
 
 > ☢️ **Warning**: You will need to update the configuration for `react-app/src/helpers/Transactor.js` to use _your_ [BlockNative dappId](https://www.blocknative.com/notify)
@@ -223,8 +223,8 @@ const writeContracts = useContractLoader(injectedProvider);
 `useContractReader(contracts, contractName, variableName, [pollTime])`: reads a variable from your contract and keeps it in the state
 
 ```js
-const title = useContractReader(props.readContracts, contractName, "title");
-const owner = useContractReader(props.readContracts, contractName, "owner");
+const title = useContractReader(props.readContracts, contractName, 'title');
+const owner = useContractReader(props.readContracts, contractName, 'owner');
 ```
 
 <br />
@@ -235,7 +235,7 @@ const owner = useContractReader(props.readContracts, contractName, "owner");
 const ownerUpdates = useEventListener(
   readContracts,
   contractName,
-  "UpdateOwner",
+  'UpdateOwner',
   props.localProvider,
   1
 );
@@ -282,11 +282,7 @@ TODO GIF
 💵 `<Balance />`: Displays the balance of an address in either dollars or decimal.
 
 ```js
-<Balance
-  address={address}
-  provider={injectedProvider}
-  dollarMultiplier={price}
-/>
+<Balance address={address} provider={injectedProvider} dollarMultiplier={price} />
 ```
 
 ![balance](https://user-images.githubusercontent.com/2653167/80522919-86c71280-894a-11ea-8f61-70bac7a72106.gif)
@@ -357,7 +353,7 @@ const price = useExchangePrice(mainnetProvider);
 You can import any of the [OpenZeppelin contracts](https://github.com/OpenZeppelin/openzeppelin-contracts/tree/master/contracts):
 
 ```js
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import '@openzeppelin/contracts/token/ERC20/IERC20.sol';
 ```
 
 🛰 The Graph -- TODO
