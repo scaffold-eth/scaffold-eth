@@ -2,7 +2,13 @@ const fs = require('fs');
 const readline = require('readline');
 const { google } = require('googleapis');
 const { ethers, Contract } = require('ethers');
+
+//FIRST YOU NEED TO SETUP GOOGLE SHEETS PERMISSIONS:
 //https://developers.google.com/sheets/api/quickstart/nodejs
+
+const SPREADSHEET_ID = '1sgMaNaXvHIxhgoW_GbaYq_U8tVx-1DWuW23bBHjXAS0'
+
+const OUTPUT_FILE = "../react-app/src/validVotes.json";
 const ERC20_ABI = [{"constant": true,"inputs": [{"name": "_owner","type": "address"}],"name": "balanceOf","outputs": [{"name": "balance","type": "uint256"}],"payable": false,"type": "function"}]
 const ERC20_TOKEN_ADDRESS = "0x6b175474e89094c44da98b954eedeac495271d0f"
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
@@ -16,11 +22,12 @@ fs.readFile('credentials.json', (err, content) => {
   authorize(JSON.parse(content), (auth)=>{
     const sheets = google.sheets({version: 'v4', auth});
     sheets.spreadsheets.values.get({
-      spreadsheetId: '1sgMaNaXvHIxhgoW_GbaYq_U8tVx-1DWuW23bBHjXAS0',
+      spreadsheetId: SPREADSHEET_ID,
       range: 'A1:D50000',
     }, async (err, res) => {
       if (err) return console.log('The API returned an error: ' + err);
       let rows = res.data.values;
+      //console.log("DEBUG SHEET INPUT:",rows)
       let titles = rows.shift()
       let balances = {}
       let validVotes = {}
@@ -36,8 +43,9 @@ fs.readFile('credentials.json', (err, content) => {
           let timestamp = row[2];
           let emoji = row[1]
           let reconstructedMessage = "emojivote"+translateEmoji(emoji)+timestamp;
-
+          //console.log("reconstructedMessage",reconstructedMessage)
           let recovered = await ethers.utils.verifyMessage ( reconstructedMessage , signature )
+          //console.log("recovered",recovered)
 
           if(recovered===row[0]){
             console.log("✅ Valid Signature 🔏 for account "+recovered+" voting for "+emoji)
@@ -76,9 +84,9 @@ fs.readFile('credentials.json', (err, content) => {
         }
 
         console.log("💾 Saving Votes...");
-        const outputFile = "../react-app/src/validVotes.json";
-        fs.writeFileSync(outputFile, JSON.stringify(validVotes,null,2))
-        console.log("🗃  File Written: "+outputFile);
+
+        fs.writeFileSync(OUTPUT_FILE, JSON.stringify(validVotes,null,2))
+        console.log("🗃  File Written: "+OUTPUT_FILE);
 
 
       } else {
