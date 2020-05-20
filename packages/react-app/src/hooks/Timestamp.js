@@ -12,7 +12,7 @@ export default function useTimestamp(provider,pollTime) {
     if(typeof provider !== "undefined"){
       async function getTimestamp() {
         let nextBlock = await provider.getBlock(blockNumber)
-        if(typeof nextBlock !== "undefined" && nextBlock.timestamp){
+        if(typeof nextBlock !== "undefined" && nextBlock && nextBlock.timestamp){
           const nextTimestamp = nextBlock.timestamp
           if(nextTimestamp!==timestamp){
             setTimestamp(nextTimestamp)
@@ -25,3 +25,4 @@ export default function useTimestamp(provider,pollTime) {
 
   return timestamp;
 }
+
