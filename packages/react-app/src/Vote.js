@@ -5,10 +5,10 @@ const axios = require('axios');
 
 export default function SmartContractWallet(props) {
 
-  const voteButton = (emoji,emojiName)=>{
+  const voteButton = (emoji)=>{
     return (
       <Button onClick={()=>{
-        castVote(emoji,emojiName)
+        castVote(emoji,translateEmoji(emoji))
       }}>{emoji}</Button>
     )
   }
@@ -51,15 +51,35 @@ export default function SmartContractWallet(props) {
         size="large"
         style={{ width: 550, marginTop: 25 }}
         >
-          {voteButton("🐮","COW")}
-          {voteButton("🦁","LION")}
-          {voteButton("🐭","MOUSE")}
-          {voteButton("🦊","FOX")}
-          {voteButton("🐶","DOG")}
-          {voteButton("🐰","RABBIT")}
-          {voteButton("🐸","FROG")}
+          {voteButton("🐮",)}
+          {voteButton("🦁")}
+          {voteButton("🐭")}
+          {voteButton("🦊")}
+          {voteButton("🐶")}
+          {voteButton("🐰")}
+          {voteButton("🐸")}
       </Card>
     </div>
   );
 
+}
+
+
+
+const translateEmoji = (emoji)=>{
+  if(emoji==="🦁"){
+    return "LION"
+  } else if(emoji==="🐮"){
+    return "COW"
+  } else if(emoji==="🐭"){
+    return "MOUSE"
+  } else if(emoji==="🦊"){
+    return "FOX"
+  } else if(emoji==="🐶"){
+    return "DOG"
+  } else if(emoji==="🐰"){
+    return "RABBIT"
+  } else if(emoji==="🐸"){
+    return "FROG"
+  }
 }
