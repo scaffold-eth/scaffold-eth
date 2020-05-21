@@ -26,19 +26,14 @@ export default function SmartContractWallet(props) {
     let recovered = await ethers.utils.verifyMessage ( message , result )
     console.log("recovered",recovered)
 
-    axios.get('https://hooks.zapier.com/hooks/catch/7580698/oiml1yj?address='+props.address+'&vote='+emoji+'&timestamp='+timestamp+'&signature='+result)
+    /// CHANGE THIS TO YOUR ZAP: 
+    axios.get('https://hooks.zapier.com/hooks/catch/7580698/oisrrw0/?address='+props.address+'&vote='+emoji+'&timestamp='+timestamp+'&signature='+result)
     .then(function (response) {
-      // handle success
       console.log(response);
     })
     .catch(function (error) {
-      // handle error
       console.log(error);
     })
-    .finally(function () {
-      // always executed
-      console.log("finally")
-    });
   }
 
   return (

@@ -6,7 +6,7 @@ import { Card } from 'antd';
 export default function TimeReport(props) {
 
   // pick a time here: https://www.unixtimestamp.com/index.php and paste it here:
-  const TIME_WHEN_VOTES_WILL_BE_COUNTED = 1590019200
+  const TIME_WHEN_VOTES_WILL_BE_COUNTED = 1599019200
 
   const timestamp = useTimestamp(props.mainnetProvider)
   const timeLeft = TIME_WHEN_VOTES_WILL_BE_COUNTED - timestamp

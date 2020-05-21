@@ -6,7 +6,7 @@ const { ethers, Contract } = require('ethers');
 //FIRST YOU NEED TO SETUP GOOGLE SHEETS PERMISSIONS:
 //https://developers.google.com/sheets/api/quickstart/nodejs
 
-const SPREADSHEET_ID = '1sgMaNaXvHIxhgoW_GbaYq_U8tVx-1DWuW23bBHjXAS0'
+const SPREADSHEET_ID = '1Yh2k5DY66b2tct01EVAV-6jgSFFJtv5CEEtnxr_la_0'
 
 const OUTPUT_FILE = "../react-app/src/validVotes.json";
 const ERC20_ABI = [{"constant": true,"inputs": [{"name": "_owner","type": "address"}],"name": "balanceOf","outputs": [{"name": "balance","type": "uint256"}],"payable": false,"type": "function"}]
