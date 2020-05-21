@@ -37,16 +37,20 @@ function App() {
       <div style={{padding:40,textAlign: "left"}}>
 
         <Vote
+
           address={address}
           injectedProvider={injectedProvider}
           localProvider={localProvider}
         />
 
-        <TimeReport
-          mainnetProvider={mainnetProvider}
-        />
+        <div style={{display:"none"}}>
+          <TimeReport
+            mainnetProvider={mainnetProvider}
+          />
 
-        <VoteReport />
+          <VoteReport />
+        </div>
+
 
       </div>
     </div>

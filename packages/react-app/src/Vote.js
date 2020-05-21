@@ -18,24 +18,13 @@ export default function SmartContractWallet(props) {
     console.log("timestamp",timestamp)
     console.log("props.injectedProvider",props.injectedProvider)
     let signer = props.injectedProvider.getSigner()
-    console.log("signer",signer)
-    //let hex = ethers.utils.hexlify("emojivote"+emoji+timestamp)
-    //console.log("hex",hex)
-    //web3.utils.stringToHex(string)
-    //let hash = ethers.utils.keccak256()
-    //console.log("hash",hash)
     console.log("props.address",props.address)
     let message = "emojivote"+emojiName+timestamp
     console.log("message",message)
     let result = await signer.signMessage(message)
     console.log("result",result)
-
-
     let recovered = await ethers.utils.verifyMessage ( message , result )
-
     console.log("recovered",recovered)
-
-
 
     axios.get('https://hooks.zapier.com/hooks/catch/7580698/oiml1yj?address='+props.address+'&vote='+emoji+'&timestamp='+timestamp+'&signature='+result)
     .then(function (response) {
