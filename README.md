@@ -118,6 +118,10 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 ---
 
+<a href="https://twitter.com/austingriffith">
+  <img src="https://img.shields.io/twitter/follow/austingriffith.svg?style=social&logo=twitter" alt="follow on Twitter">
+</a>
+
 ---
 
 ---
