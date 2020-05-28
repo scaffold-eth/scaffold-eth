@@ -1,1 +1,1 @@
-module.exports = ["SmartContractWallet"]
+module.exports = ["Balloons","MVD"]
