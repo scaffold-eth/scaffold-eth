@@ -43,6 +43,11 @@ function App() {
         provider={injectedProvider}
         address={address}
       />
+      <Contract
+        name={"MVD"}
+        provider={injectedProvider}
+        address={address}
+      />
       <MVD
         address={address}
         injectedProvider={injectedProvider}
