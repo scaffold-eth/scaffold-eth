@@ -2,7 +2,12 @@
 
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
 
-> 🧫 [first draft] research is [available here](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
+>  Chapter 0: [🧫 Building on Ethereum in 2020](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
+
+>  Chapter 1: [🛠 Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
+
+>  Chapter 2: [🗳 Personal Token Voting](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+
 
 ---
 
