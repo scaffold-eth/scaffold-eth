@@ -131,22 +131,6 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 ---
 
----
-
-# Build 1:
-
-## smart contract wallet with social recovery:
-
-[🛠 Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f): In this tutorial we demonstrate the basics of 🏗scaffold-eth by building a smart contract wallet with social recovery.
-
-## [https://www.youtube.com/watch?v=7rq3TPL-tgI](https://www.youtube.com/watch?v=7rq3TPL-tgI)
-
----
-
----
-
----
-
 ## 🔏 Web3 Providers:
 
 The frontend has three different providers that provide different levels of access to different chains:
