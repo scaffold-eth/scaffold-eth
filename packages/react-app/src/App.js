@@ -5,11 +5,10 @@ import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 import { Row, Col } from 'antd';
-import { useExchangePrice, useGasPrice, useContractLoader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance } from "./components"
+import { useExchangePrice, useGasPrice } from "./hooks"
+import { Header, Account, Provider, Faucet, Ramp } from "./components"
 
-import MVD from './MVD.js'
-import Balloons from './Balloons.js'
+import SmartContractWallet from './SmartContractWallet.js'
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
 const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
@@ -20,7 +19,6 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
-  const readContracts = useContractLoader(localProvider);
 
   return (
     <div className="App">
@@ -33,26 +31,18 @@ function App() {
           injectedProvider={injectedProvider}
           setInjectedProvider={setInjectedProvider}
           mainnetProvider={mainnetProvider}
-          readContracts={readContracts}
           price={price}
         />
-        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
       </div>
-      <Contract
-        name={"Balloons"}
-        provider={injectedProvider}
-        address={address}
-      />
-      <Contract
-        name={"MVD"}
-        provider={injectedProvider}
-        address={address}
-      />
-      <MVD
-        address={address}
-        injectedProvider={injectedProvider}
-        readContracts={readContracts}
-      />
+      <div style={{padding:40,textAlign: "left"}}>
+        <SmartContractWallet
+          address={address}
+          injectedProvider={injectedProvider}
+          localProvider={localProvider}
+          price={price}
+          gasPrice={gasPrice}
+        />
+      </div>
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
         <Row align="middle" gutter={4}>
           <Col span={10}>
