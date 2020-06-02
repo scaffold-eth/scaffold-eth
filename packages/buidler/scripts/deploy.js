@@ -1,5 +1,6 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const ethers = require('ethers');
 async function main() {
   console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
@@ -7,8 +8,14 @@ async function main() {
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
   const balloons = await deploy("Balloons")
-  balloons.transfer("0x18c09a69b1B83eDaF476cd6ea5c1f77148AAf289",""+(10*10**18))
+  balloons.transfer("0x18c09a69b1B83eDaF476cd6ea5c1f77148AAf289 ",""+(10*10**18))
   const mvd = await deploy("MVD",[balloons.address])
+
+  console.log("Approving MVD ("+mvd.address+") to take Ballons from main account...")
+  await balloons.approve(mvd.address,ethers.utils.parseEther('100'))
+
+  console.log("INIT exchange...")
+  await mvd.init(ethers.utils.parseEther('50'),{value:ethers.utils.parseEther('50')})
 }
 main()
 .then(() => process.exit(0))

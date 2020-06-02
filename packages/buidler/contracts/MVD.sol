@@ -1,10 +1,11 @@
 pragma solidity ^0.6.6;
+
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 contract MVD is ERC20 {
 
-  IERC20 token; // address of the ERC20 token traded on this contract
+  IERC20 token;
 
   constructor(address token_addr) ERC20("MVD","MVD") public {
     token = IERC20(token_addr);
@@ -15,7 +16,7 @@ contract MVD is ERC20 {
   //}
 
   function init(uint256 tokens) public payable returns (uint256) {
-    require(msg.value > 0, 'MVD#init: YOU MUST INIT WITH VALUE');
+    require(msg.value > 0 && tokens > 0, 'MVD#init: YOU MUST INIT WITH VALUE');
     uint256 initial_liquidity = address(this).balance;
     _mint(msg.sender,initial_liquidity);
     require(token.transferFrom(msg.sender, address(this), tokens));
@@ -24,12 +25,14 @@ contract MVD is ERC20 {
     return initial_liquidity;
   }
 
-  function price(uint256 amount) public view returns (uint256) {
-    return calculatePrice(amount, (address(this)).balance, token.balanceOf(address(this)));
+  function ethPrice(uint256 tokens_to_buy) public view returns (uint256) {
+    return calculatePrice(tokens_to_buy, (address(this)).balance, token.balanceOf(address(this)));
+  }
+  function tokenPrice(uint256 eth_to_sell) public view returns (uint256) {
+    return calculatePrice(eth_to_sell, address(this).balance, token.balanceOf(address(this)));
   }
 
-
-  function calculatePrice(uint256 input_amount, uint256 input_reserve, uint256 output_reserve) public view returns (uint256) {
+  function calculatePrice(uint256 input_amount, uint256 input_reserve, uint256 output_reserve) private view returns (uint256) {
     require(input_reserve > 0 && output_reserve > 0, "INVALID_VALUE");
     uint256 input_amount_with_fee = input_amount.mul(997);
     uint256 numerator = input_amount_with_fee.mul(output_reserve);
@@ -37,34 +40,22 @@ contract MVD is ERC20 {
     return numerator / denominator;
   }
 
-  function ethToToken(uint256 eth_sold, uint256 min_tokens, uint256 deadline, address buyer, address recipient) private returns (uint256) {
-    require(deadline >= block.timestamp && eth_sold > 0 && min_tokens > 0);
+  function ethToToken() public payable returns (uint256) {
     uint256 token_reserve = token.balanceOf(address(this));
-    uint256 tokens_bought = calculatePrice(eth_sold, address(this).balance.sub(eth_sold), token_reserve);
-    require(tokens_bought >= min_tokens);
-    require(token.transfer(recipient, tokens_bought));
+    uint256 tokens_bought = calculatePrice(msg.value, address(this).balance.sub(msg.value), token_reserve);
+    require(token.transfer(msg.sender, tokens_bought));
     //emit TokenPurchase(buyer, eth_sold, tokens_bought);
     return tokens_bought;
   }
 
-  function tokenToEth(uint256 tokens_sold, uint256 min_eth, uint256 deadline, address buyer, address payable recipient) private returns (uint256) {
-    require(deadline >= block.timestamp && tokens_sold > 0 && min_eth > 0);
+  function tokenToEth(uint256 tokens) public returns (uint256) {
     uint256 token_reserve = token.balanceOf(address(this));
-    uint256 eth_bought = calculatePrice(tokens_sold, token_reserve, address(this).balance);
-    uint256 wei_bought = eth_bought;
-    require(wei_bought >= min_eth);
-    recipient.transfer(wei_bought);
-    require(token.transferFrom(buyer, address(this), tokens_sold));
+    uint256 eth_bought = calculatePrice(tokens, token_reserve, address(this).balance);
+    msg.sender.transfer(eth_bought);
+    require(token.transferFrom(msg.sender, address(this), tokens));
     //emit EthPurchase(buyer, tokens_sold, wei_bought);
-    return wei_bought;
+    return eth_bought;
   }
-
-  function tokenPrice(uint256 eth_sold) public view returns (uint256) {
-    require(eth_sold > 0);
-    uint256 token_reserve = token.balanceOf(address(this));
-    return calculatePrice(eth_sold, address(this).balance, token_reserve);
-  }
-
 
   function deposit(uint256 tokens) public payable returns (uint256) {
     require(msg.value > 0, 'MVD#deposit: YOU MUST DEPOSIT VALUE');

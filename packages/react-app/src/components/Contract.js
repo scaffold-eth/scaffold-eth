@@ -34,16 +34,19 @@ export default function Contract(props) {
 
   useEffect(()=>{
     const loadDisplay = async ()=>{
-      console.log("CONTRACT",contract)
+      //console.log("CONTRACT",contract)
       if(contract){
         let nextDisplay = []
         let displayed = {}
         for(let f in contract.interface.functions){
 
           let fn = contract.interface.functions[f]
-          console.log("FUNCTION",fn.name,fn)
-          if(!displayed[fn.name] && fn.type=="call" && fn.inputs.length===0){
-            console.log("PUSHING",fn.name)
+          //console.log("FUNCTION",fn.name,fn)
+
+          if(props.show && props.show.indexOf(fn.name) < 0){
+            //do nothing
+          } else if(!displayed[fn.name] && fn.type=="call" && fn.inputs.length===0){
+            //console.log("PUSHING",fn.name)
             displayed[fn.name]=true
             nextDisplay.push(
               <div>
@@ -56,8 +59,9 @@ export default function Contract(props) {
                 <Divider></Divider>
               </div>
             )
-          }else if(!displayed[fn.name] && ( fn.type==="call" || fn.type === "transaction" ) && fn.inputs.length>0){
-            console.log("CALL WITH ARGS",fn.name)
+          }else if(!displayed[fn.name] && ( fn.type==="call" || fn.type === "transaction" ) ){
+            console.log("RENDERING",fn)
+            //console.log("CALL WITH ARGS",fn.name,fn)
             displayed[fn.name]=true
             let inputs = []
             for(let i in fn.inputs){
@@ -72,17 +76,85 @@ export default function Contract(props) {
                       let formUpdate = {...form}
                       formUpdate[fn.name+input.name+i] = e.target.value
                       setForm(formUpdate)
+                      if(props.formUpdate){
+                        props.formUpdate(formUpdate)
+                      }
                     }}
                   />
                 </div>
               )
             }
 
-            console.log("VALUE OF ",fn.name, "IS",values[fn.name])
+            //console.log("VALUE OF ",fn.name, "IS",values[fn.name])
+
+            let buttonIcon = "📡"
+            let afterForm = ""
+
+            if(fn.type!="call"){
+              if(fn.payable){
+                buttonIcon = "💸"
+                afterForm = (
+                  <Input
+
+                    placeholder={"transaction value"}
+
+                    onChange={(e)=>{
+                      console.log("CHJANGE")
+                      let newValues = {...values}
+                      newValues["valueOf"+fn.name] = e.target.value
+                      console.log("SETTING:",newValues)
+                      setValues(newValues)
+                    }}
+
+                    value={values["valueOf"+fn.name]}
+
+                    addonAfter={
+                      <div>
+                        <Row>
+                          <Col span={16}>
+                          <div type="dashed" onClick={async ()=>{
+                            console.log("CLICK")
+
+
+                            let newValues = {...values}
+                            newValues["valueOf"+fn.name] = ""+ parseFloat(newValues["valueOf"+fn.name]) * 10 ** 18
+                            console.log("SETTING:",newValues)
+                            setValues(newValues)
+
+
+                          }}>{"✳️"}</div>
+                          </Col>
+                          <Col span={16}>
+                          <div type="dashed" onClick={async ()=>{
+                            console.log("CLICK")
+
+
+                            let newValues = {...values}
+                            let bigNumber = ethers.utils.bigNumberify(newValues["valueOf"+fn.name])
+                            newValues["valueOf"+fn.name] = bigNumber.toHexString()
+                            console.log("SETTING:",newValues)
+                            setValues(newValues)
+
+
+                          }}>{"#️⃣"}</div>
+                          </Col>
+                        </Row>
+                      </div>
+                    }
+
+                  />
+                )
+              }else{
+                buttonIcon = "💸"
+              }
+            }
+
+
+
 
             inputs.push(
               <div style={{cursor:"pointer",margin:2}}>
-
+              {afterForm}
                 <Input
 
                 onChange={(e)=>{
@@ -93,6 +165,7 @@ export default function Contract(props) {
                   setValues(newValues)
                 }}
 
+                defaultValue=""
                 value={values[fn.name]}
 
                 addonAfter={
@@ -105,7 +178,15 @@ export default function Contract(props) {
                     }
                     console.log("args",args)
 
-                    let result = tryToDisplay(await contract[fn.name](...args))
+                    let overrides = {}
+                    if(values["valueOf"+fn.name]){
+                      overrides = {
+                        value: values["valueOf"+fn.name]//ethers.utils.parseEther()
+                      }
+                    }
+
+                    //console.log("Running with extras",extras)
+                    let result = tryToDisplay(await contract[fn.name](...args,overrides))
 
                     let newValues = {...values}
                     newValues[fn.name] = result
@@ -113,8 +194,8 @@ export default function Contract(props) {
                     setValues(newValues)
 
 
-                  }}>{fn.type=="call"?"📡":"🔏"}</div>
-                } defaultValue=""
+                  }}>{buttonIcon}</div>
+                }
               />
 
 
@@ -137,7 +218,7 @@ export default function Contract(props) {
 
 
           } else if(!displayed[fn.name]){
-            console.log("UNKNOWN",fn)
+            console.log("UNKNOWN FUNCTION",fn)
           }
         }
         setDisplay(nextDisplay)
@@ -160,7 +241,9 @@ export default function Contract(props) {
                 readContracts={contracts}
                 price={props.price}
               />
+              {props.account}
           </div>
+
         </div>
       )}
       size="large"

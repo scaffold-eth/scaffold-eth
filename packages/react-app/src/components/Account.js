@@ -26,7 +26,7 @@ const web3Modal = new Web3Modal({
 export default function Account(props) {
 
   const createBurnerIfNoAddress = () => {
-    if (!props.injectedProvider && props.localProvider){
+    if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
       if(props.localProvider.connection && props.localProvider.connection.url){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
       }else if( props.localProvider._network && props.localProvider._network.name ){
