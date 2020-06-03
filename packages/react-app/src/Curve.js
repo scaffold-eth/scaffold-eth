@@ -138,8 +138,6 @@ const Curve = (props) => {
         ctx.fill();
       }
 
-
-
       ctx.fillStyle = "#0000FF"
       ctx.beginPath();
       ctx.arc(plotX(props.ethReserve),plotY(props.tokenReserve), 5, 0, 2 * Math.PI);

@@ -131,11 +131,7 @@ export default function DEX(props) {
     )
   }
 
-
   let addingEth = 0
-
-
-
 
   return (
     <div>
