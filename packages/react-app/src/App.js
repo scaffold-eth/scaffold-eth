@@ -8,25 +8,10 @@ import { Row, Col } from 'antd';
 import { useExchangePrice, useGasPrice, useContractLoader, useBalance, useTokenBalance } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance } from "./components"
 
-
-import MVD from './MVD.js'
-import Balloons from './Balloons.js'
+import DEX from './DEX.js'
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
 const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
-
-/*
-
-
-
-
-      <Contract
-        name={"MVD"}
-        provider={injectedProvider}
-        address={address}
-      />
-
-*/
 
 function App() {
 
@@ -35,9 +20,6 @@ function App() {
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
   const readContracts = useContractLoader(localProvider);
-
-
-
 
   return (
     <div className="App">
@@ -57,7 +39,7 @@ function App() {
         <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
       </div>
 
-      <MVD
+      <DEX
         address={address}
         injectedProvider={injectedProvider}
         localProvider={localProvider}
@@ -65,30 +47,6 @@ function App() {
         readContracts={readContracts}
         price={price}
       />
-
-
-      <Contract
-        name={"MVD"}
-        show={["ethToToken","tokenToEth"]}
-        provider={injectedProvider}
-        address={address}
-        account={(
-          <TokenBalance name={"Balloons"} img={"🎈"} address={readContracts?readContracts["MVD"].address:""} contracts={readContracts} />
-        )}
-        formUpdate={(formUpdate)=>{
-          console.log("formUpdate",formUpdate)
-        }}
-      />
-
-
-
-      <Contract
-        name={"Balloons"}
-        show={["approve","allowance","transfer","balanceOf"]}
-        provider={injectedProvider}
-        address={address}
-      />
-
 
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
         <Row align="middle" gutter={4}>
@@ -118,8 +76,6 @@ function App() {
             />
           </Col>
         </Row>
-
-
       </div>
 
     </div>

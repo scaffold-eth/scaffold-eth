@@ -8,14 +8,14 @@ async function main() {
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
   const balloons = await deploy("Balloons")
-  balloons.transfer("0x18c09a69b1B83eDaF476cd6ea5c1f77148AAf289 ",""+(10*10**18))
-  const mvd = await deploy("MVD",[balloons.address])
+  balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
+  const dex = await deploy("DEX",[balloons.address])
 
-  console.log("Approving MVD ("+mvd.address+") to take Ballons from main account...")
-  await balloons.approve(mvd.address,ethers.utils.parseEther('100'))
+  console.log("Approving DEX ("+dex.address+") to take Ballons from main account...")
+  await balloons.approve(dex.address,ethers.utils.parseEther('500'))
 
   console.log("INIT exchange...")
-  await mvd.init(ethers.utils.parseEther('50'),{value:ethers.utils.parseEther('50')})
+  await dex.init(ethers.utils.parseEther('4'),{value:ethers.utils.parseEther('4')})
 }
 main()
 .then(() => process.exit(0))
