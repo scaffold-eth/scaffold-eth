@@ -36,13 +36,13 @@ function App() {
 
       <Contract
         name={"DEX"}
-        provider={localProvider}
+        provider={injectedProvider}
         address={address}
       />
 
       <Contract
         name={"Balloons"}
-        provider={localProvider}
+        provider={injectedProvider}
         address={address}
       />
 
