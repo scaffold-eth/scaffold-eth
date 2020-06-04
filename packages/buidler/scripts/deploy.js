@@ -12,7 +12,7 @@ async function main() {
   const balloons = await deploy("Balloons")
   const dex = await deploy("DEX",[balloons.address])
   // paste in your address here to get 10 balloons on deploy:
-  balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
+  await balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
 }
 main()
 .then(() => process.exit(0))

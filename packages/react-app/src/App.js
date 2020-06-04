@@ -31,7 +31,7 @@ function App() {
           mainnetProvider={mainnetProvider}
           price={price}
         />
-        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={localProvider} />
       </div>
 
       <Contract
