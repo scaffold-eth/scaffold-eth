@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import "./App.css";
 import { Row, Col } from 'antd';
 import { useExchangePrice, useGasPrice } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp } from "./components"
+import { Header, Account, Provider, Faucet, Ramp, Contract } from "./components"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
 const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
@@ -32,6 +32,18 @@ function App() {
           price={price}
         />
       </div>
+
+      <Contract
+        name={"Dex"}
+        provider={localProvider}
+        address={address}
+      />
+
+      <Contract
+        name={"Balloons"}
+        provider={localProvider}
+        address={address}
+      />
 
 
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>

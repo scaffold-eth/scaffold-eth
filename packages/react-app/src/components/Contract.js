@@ -22,7 +22,7 @@ export default function Contract(props) {
 
   const contracts = useContractLoader(props.provider);
   const contract = contracts?contracts[props.name]:""
-  const address = contracts?contract.address:""
+  const address = contract?contract.address:""
   const balance = useBalance(address,props.provider)
 
   const [ display, setDisplay ] = useState(<div>Loading...</div>)
