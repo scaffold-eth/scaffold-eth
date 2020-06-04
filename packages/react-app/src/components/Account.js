@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
-import { Balance, Address } from "."
+import { TokenBalance, Balance, Address } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Typography } from 'antd';
@@ -26,7 +26,7 @@ const web3Modal = new Web3Modal({
 export default function Account(props) {
 
   const createBurnerIfNoAddress = () => {
-    if (!props.injectedProvider && props.localProvider){
+    if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
       if(props.localProvider.connection && props.localProvider.connection.url){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
       }else if( props.localProvider._network && props.localProvider._network.name ){
@@ -67,21 +67,26 @@ export default function Account(props) {
   }
 
   let modalButtons = []
-  if (web3Modal.cachedProvider) {
-    modalButtons.push(
-      <Button key="logoutbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
-    )
-  }else{
-    modalButtons.push(
-      <Button key="loginbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
-    )
+  if(typeof props.setInjectedProvider == "function"){
+    if (web3Modal.cachedProvider) {
+      modalButtons.push(
+        <Button key="logoutbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"}  onClick={logoutOfWeb3Modal}>logout</Button>
+      )
+    }else{
+      modalButtons.push(
+        <Button key="loginbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
+      )
+    }
   }
+
 
   React.useEffect(async () => {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal()
     }
   }, []);
+
+  const tokenContract = props.localProvider
 
   return (
     <div>
