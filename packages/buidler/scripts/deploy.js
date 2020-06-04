@@ -3,12 +3,14 @@ const chalk = require('chalk');
 async function main() {
   console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
-  await autoDeploy();
+  //await autoDeploy();
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
   //const exampleToken = await deploy("ExampleToken")
   //const examplePriceOracle = await deploy("ExamplePriceOracle")
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
+  const balloons = await deploy("Balloons")
+  const dex = await deploy("DEX",[balloons.address])
 }
 main()
 .then(() => process.exit(0))
