@@ -1,5 +1,7 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const ethers = require('ethers');
+
 async function main() {
   console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
@@ -11,8 +13,16 @@ async function main() {
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
   const balloons = await deploy("Balloons")
   const dex = await deploy("DEX",[balloons.address])
+
   // paste in your address here to get 10 balloons on deploy:
   await balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
+
+  // uncomment to init DEX on deploy:
+  //console.log("Approving DEX ("+dex.address+") to take Balloons from main account...")
+  //await balloons.approve(dex.address,ethers.utils.parseEther('100'))
+  //console.log("INIT exchange...")
+  //await dex.init(ethers.utils.parseEther('5'),{value:ethers.utils.parseEther('5')})
+
 }
 main()
 .then(() => process.exit(0))
