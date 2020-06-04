@@ -18,6 +18,7 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
+  const readContracts = useContractLoader(localProvider);
 
   return (
     <div className="App">
@@ -32,7 +33,7 @@ function App() {
           mainnetProvider={mainnetProvider}
           price={price}
         />
-        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={localProvider} />
+        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
       </div>
 
       <Contract
