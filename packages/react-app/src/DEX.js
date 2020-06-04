@@ -29,6 +29,8 @@ export default function DEX(props) {
   const ethBalance = useBalance( contractAddress, props.localProvider )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
 
+  const liquidity = useContractReader(props.readContracts,contractName,"liquidity",[props.address])
+
   let display = []
 
   const [ form, setForm ] = useState({})
@@ -96,7 +98,7 @@ export default function DEX(props) {
           console.log("swapTxResult:",swapTxResult)
         })}
 
-        <Divider> Liquidity:</Divider>
+        <Divider> Liquidity ({liquidity?ethers.utils.formatEther(liquidity):"none"}):</Divider>
 
         {rowForm("deposit","📥",async (value)=>{
           let valueInEther = ethers.utils.parseEther(""+value)
