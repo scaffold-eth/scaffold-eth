@@ -34,7 +34,7 @@ function App() {
       </div>
 
       <Contract
-        name={"Dex"}
+        name={"DEX"}
         provider={localProvider}
         address={address}
       />
