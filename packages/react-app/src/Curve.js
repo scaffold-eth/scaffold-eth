@@ -86,7 +86,7 @@ const Curve = (props) => {
 
 
         ctx.fillStyle = "#009900";
-        ctx.fillText(""+props.addingEth+" ETH input (minus 0.3% fee)", plotX(props.ethReserve)+textSize, plotY(props.tokenReserve)-textSize);
+        ctx.fillText(""+props.addingEth+" ETH input", plotX(props.ethReserve)+textSize, plotY(props.tokenReserve)-textSize);
 
         ctx.strokeStyle = "#990000";
         ctx.beginPath();

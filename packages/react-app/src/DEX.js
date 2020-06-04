@@ -137,7 +137,7 @@ export default function DEX(props) {
     <div>
       <div style={{position:"fixed",right:0,top:50,padding:10}}>
         <Curve
-          addingEth={values && values["valueOfethToToken"]?values["valueOfethToToken"]:0}
+          addingEth={values && values["ethToToken"]?values["ethToToken"]:0}
           addingToken={values && values["tokenToEth"]?values["tokenToEth"]:0}
           ethReserve={ethBalanceFloat}
           tokenReserve={tokenBalanceFloat}
