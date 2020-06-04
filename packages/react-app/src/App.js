@@ -5,7 +5,7 @@ import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 import { Row, Col } from 'antd';
-import { useExchangePrice, useGasPrice } from "./hooks"
+import { useExchangePrice, useGasPrice, useContractLoader } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance } from "./components"
 import  DEX from "./DEX.js"
 
