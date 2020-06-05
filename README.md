@@ -6,7 +6,7 @@ Chapter 0: 🧫 [Building on Ethereum in 2020](https://medium.com/@austin_48503/
 
 Chapter 1: 🛠 [Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
 
-Chapter 2: 🏵 [The Token]()
+Chapter 2: 🏵 The Token
 
 Chapter 3: ⚖️ [Minimum Viable Decentralized Exchange](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
 
