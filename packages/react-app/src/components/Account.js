@@ -54,7 +54,9 @@ export default function Account(props) {
   const loadWeb3Modal = async ()=>{
     const provider = await web3Modal.connect();
     //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
-    props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+    if(typeof props.setInjectedProvider == "function"){
+      props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+    }
     pollInjectedProvider()
   }
 
