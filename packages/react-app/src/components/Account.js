@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
-import { TokenBalance, Balance, Address } from "."
+import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Typography } from 'antd';
@@ -96,6 +96,7 @@ export default function Account(props) {
         <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
       <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.price}/>
+      <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
       {modalButtons}
     </div>
   );

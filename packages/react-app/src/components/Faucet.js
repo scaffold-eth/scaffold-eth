@@ -4,7 +4,7 @@ import Blockies from 'react-blockies';
 import { SendOutlined } from  '@ant-design/icons';
 import { ethers } from "ethers";
 import { Transactor } from "../helpers"
-
+import Wallet from "./Wallet.js"
 
 export default function Faucet(props) {
 
@@ -13,7 +13,7 @@ export default function Faucet(props) {
   let blockie
   if(address && typeof address.toLowerCase=="function"){
     blockie = (
-        <Blockies seed={address.toLowerCase()} size={8} scale={3}/>
+        <Blockies seed={address.toLowerCase()} size={8} scale={4}/>
     )
   }else{
     blockie = (
@@ -42,6 +42,7 @@ export default function Faucet(props) {
                 })
                 setAddress("")
               }} shape="circle" icon={<SendOutlined />} />
+              <Wallet color={"#888888"} provider={props.localProvider} />
             </Tooltip>
           }
         />
