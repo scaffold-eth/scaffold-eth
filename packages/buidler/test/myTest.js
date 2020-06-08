@@ -7,7 +7,7 @@ describe("My Dapp", function() {
   });
   describe("My SmartContractWallet", function() {
     it("Should deploy my SmartContractWallet", async function() {
-      myContract = await SmartContractWallet.new();
+      myContract = await SmartContractWallet.new(accounts[0]);
     });
     describe("owner()", function() {
       it("Should have an owner equal to the deployer", async function() {

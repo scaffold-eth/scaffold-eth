@@ -4,6 +4,15 @@ export default function useEventListener(contracts,contractName,eventName,provid
 
   const [updates,setUpdates] = useState([]);
 
+  const eventCallback = (...args) => {
+    const block = args.pop()
+    const event = Object.assign({}, { ...block.args }, {
+      blockNumber: block.blockNumber,
+      event: block.event
+    })
+    setUpdates(messages => [...messages, event].sort((a, b) => a.blockNumber > b.blockNumber ?1:-1))
+  }
+
   useEffect(() => {
     if(typeof provider != "undefined"&&typeof startBlock != "undefined"){
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
@@ -11,17 +20,15 @@ export default function useEventListener(contracts,contractName,eventName,provid
     }
     if(contracts && contractName && contracts[contractName]){
       try{
-        contracts[contractName].on(eventName, (...args) => {
-          setUpdates(messages => [...messages, (args.pop()).args]) 
-        });
+        eventName.reduceRight((contract, event) => contract.on(event, eventCallback), contracts[contractName])
         return ()=>{
-          contracts[contractName].removeListener(eventName)
+          eventName.reduceRight((contract, event) => contract.on(event), contracts[contractName])
         }
       }catch(e){
         console.log(e)
       }
     }
-  },[provider,contracts,contractName,eventName])
+  },[provider,contracts,contractName,eventName.length])
 
   return updates;
 }

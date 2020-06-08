@@ -23,7 +23,7 @@ export default function SmartContractWallet(props) {
   const title = useContractReader(readContracts,contractName,"title",1777);
   const owner = useContractReader(readContracts,contractName,"owner",1777);
 
-  const ownerUpdates = useEventListener(readContracts,contractName,"UpdateOwner",props.localProvider,1);//set that last number to the block the contract is deployed (this needs to be automatic in the contract loader!?!)
+  let events = useEventListener(readContracts,contractName,["UpdateOwner","EthTransferred","DrainedBalance"],props.localProvider,1);//set that last number to the block the contract is deployed (this needs to be automatic in the contract loader!?!)
 
   const contractAddress = readContracts?readContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.localProvider)
@@ -99,12 +99,26 @@ export default function SmartContractWallet(props) {
       </Card>
       <List
         style={{ width: 550, marginTop: 25}}
-        header={<div><b>UpdateOwner</b> events</div>}
+        header={<div><b>Contract</b> events</div>}
         bordered
-        dataSource={ownerUpdates}
+        dataSource={events}
         renderItem={item => (
           <List.Item style={{ fontSize:22 }}>
-            <Blockies seed={item.oldOwner.toLowerCase()} size={8} scale={2}/> transferred ownership to <Blockies seed={item.newOwner.toLowerCase()} size={8} scale={2}/>
+            {item.event === 'UpdateOwner' && (
+              <div>
+              <Blockies seed={item.oldOwner.toLowerCase()} size={8} scale={2}/> transferred ownership to <Blockies seed={item.newOwner.toLowerCase()} size={8} scale={2}/> <i className="event-name">({item.event})</i>
+              </div>
+            )}
+            {item.event === 'EthTransferred' && (
+              <div>
+                <Blockies seed={item.sender.toLowerCase()} size={8} scale={2}/> deposited {ethers.utils.formatEther(item.value)} ETH to the contract <i className="event-name">({item.event})</i>
+              </div>
+            )}
+            {item.event === 'DrainedBalance' && (
+              <div>
+                <Blockies seed={item.receiver.toLowerCase()} size={8} scale={2}/> drained the balance: {ethers.utils.formatEther(item.value)} ETH <i className="event-name">({item.event})</i>
+              </div>
+            )}
           </List.Item>
         )}
       />

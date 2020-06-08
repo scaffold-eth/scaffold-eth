@@ -6,3 +6,7 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+.event-name {
+	font-size: 12px;
+}

@@ -12,14 +12,23 @@ contract SmartContractWallet {
     console.log("Smart Contract Wallet is owned by:",owner);
   }
 
-  fallback() external payable {
+  // using payable fallback functions for receiving Ether is not recommended, since it would not fail on interface confusions
+  // fallback() external payable {
+  //   console.log(msg.sender,"just deposited",msg.value);
+  // }
+
+  receive() external payable {
     console.log(msg.sender,"just deposited",msg.value);
+    emit EthTransferred(msg.sender, msg.value);
   }
 
+  // See https://solidity.readthedocs.io/en/v0.6.0/contracts.html#receive-ether-function
   function withdraw() public {
     //require(msg.sender == owner, "SmartContractWallet::updateOwner NOT THE OWNER!");
     console.log(msg.sender,"withdraws",(address(this)).balance);
-    msg.sender.transfer((address(this)).balance);
+    uint256 balance = (address(this)).balance;
+    msg.sender.transfer(balance);
+    emit DrainedBalance(msg.sender, balance);
   }
 
   function updateOwner(address newOwner) public {
@@ -29,5 +38,7 @@ contract SmartContractWallet {
     emit UpdateOwner(msg.sender,owner);
   }
   event UpdateOwner(address oldOwner, address newOwner);
+  event EthTransferred(address sender, uint256 value);
+  event DrainedBalance(address receiver, uint value);
 
 }
