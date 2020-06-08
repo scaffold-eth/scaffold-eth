@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import "./App.css";
 import { Row, Col } from 'antd';
 import { useExchangePrice, useGasPrice } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp } from "./components"
+import { Header, Account, Provider, Faucet, Ramp, AddressInput } from "./components"
 
 import SmartContractWallet from './SmartContractWallet.js'
 
@@ -43,6 +43,7 @@ function App() {
           gasPrice={gasPrice}
         />
       </div>
+
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
         <Row align="middle" gutter={4}>
           <Col span={10}>
@@ -67,7 +68,7 @@ function App() {
           <Col span={15}>
             <Faucet
               localProvider={localProvider}
-              dollarMultiplier={price}
+              price={price}
             />
           </Col>
         </Row>

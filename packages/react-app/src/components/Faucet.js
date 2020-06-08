@@ -42,7 +42,7 @@ export default function Faucet(props) {
                 })
                 setAddress("")
               }} shape="circle" icon={<SendOutlined />} />
-              <Wallet color={"#888888"} provider={props.localProvider} />
+              <Wallet color={"#888888"} provider={props.localProvider} price={props.price}/>
             </Tooltip>
           }
         />

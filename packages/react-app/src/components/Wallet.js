@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react'
 import Blockies from 'react-blockies';
-import { Address, Balance } from "."
+import { Address, Balance, AddressInput, EtherInput } from "."
 import { Transactor } from "../helpers"
 import { WalletOutlined, QrcodeOutlined, SendOutlined } from '@ant-design/icons';
-import { Typography, Skeleton, Tooltip, Spin, Modal, Button, Input } from 'antd';
+import { Typography, Skeleton, Tooltip, Spin, Modal, Button } from 'antd';
 import QR from 'qrcode.react';
 import { ethers } from "ethers";
 const { Text } = Typography;
@@ -65,7 +65,7 @@ export default function Wallet(props) {
   let receiveButton
   if(qr){
     display = (
-      <QR value={selectedAddress} size={"420"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:true}}/>
+      <QR value={selectedAddress} size={"430"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
     )
     receiveButton = (
       <Button key="hide" onClick={()=>{setQr("")}}>
@@ -81,26 +81,20 @@ export default function Wallet(props) {
     display = (
       <div>
         <div style={inputStyle}>
-          <Input
-            size="large"
-            placeholder="amount"
+          <EtherInput
+            price={props.price}
             value={amount}
-            onChange={(e)=>{
-              setAmount(e.target.value)
+            onChange={(value)=>{
+              setAmount(value)
             }}
           />
         </div>
         <div style={inputStyle}>
-          <Input
-            size="large"
+          <AddressInput
+            ensProvider={props.ensProvider}
             placeholder="to address"
             value={toAddress}
-            prefix={
-              <Blockies seed={toAddress?toAddress.toLowerCase():""}/>
-            }
-            onChange={(e)=>{
-              setToAddress(e.target.value)
-            }}
+            onChange={setToAddress}
           />
         </div>
       </div>
@@ -134,7 +128,7 @@ export default function Wallet(props) {
         }}
         footer={[
           receiveButton,
-          <Button key="submit" type="primary" disabled={false} loading={false} onClick={()=>{
+          <Button key="submit" type="primary" disabled={!amount || !toAddress || qr} loading={false} onClick={()=>{
             const tx = Transactor(props.provider)
             tx({
               to: toAddress,
