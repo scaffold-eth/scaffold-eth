@@ -113,7 +113,7 @@ export default function DEX(props) {
             approveTx = tx( writeContracts[tokenName].approve(props.readContracts[contractName].address,valuePlusExtra,{gasLimit:200000 , nonce:nonce++}) )
             console.log("approve tx is in, not waiting on it though...",approveTx)
           }
-          let depositTx = tx( writeContracts[contractName]["deposit"](valueInEther,{value: valueInEther, gasLimit:200000, nonce:nonce++}) )
+          let depositTx = tx( writeContracts[contractName]["deposit"]({value: valueInEther, gasLimit:200000, nonce:nonce++}) )
           if(approveTx){
             console.log("waiting on approve to finish...")
             let approveTxResult = await approveTx;
