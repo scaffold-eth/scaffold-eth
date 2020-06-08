@@ -5,6 +5,7 @@ import { Input } from 'antd';
 export default function AddressInput(props) {
 
   const [ mode, setMode ] = useState(props.price?"USD":"ETH")
+  const [ display, setDisplay ] = useState()
   const [ value, setValue ] = useState()
 
   const currentValue = typeof props.value != "undefined"?props.value:value
@@ -15,14 +16,11 @@ export default function AddressInput(props) {
       <div style={{cursor:"pointer"}} onClick={()=>{
         if(mode=="USD"){
           setMode("ETH")
-          let ethValue = ""+(parseFloat(currentValue)/props.price)
-          setValue(ethValue)
-          if(typeof props.onChange == "function") { props.onChange(ethValue) }
+          setDisplay(currentValue)
         }else{
           setMode("USD")
           let usdValue = ""+(parseFloat(currentValue)*props.price).toFixed(2)
-          setValue(usdValue)
-          if(typeof props.onChange == "function") { props.onChange(usdValue) }
+          setDisplay(usdValue)
         }
       }}>
         {title}
@@ -51,12 +49,23 @@ export default function AddressInput(props) {
   return (
     <Input
       placeholder={props.placeholder?props.placeholder:"amount"}
+      autoFocus={props.autoFocus}
       prefix={prefix}
-      value={currentValue}
+      value={display}
       addonAfter={addonAfter}
       onChange={async (e)=>{
-        setValue(e.target.value)
-        if(typeof props.onChange == "function") { props.onChange(e.target.value) }
+
+        let newValue = (e.target.value)
+        if(mode=="USD"){
+          let ethValue = parseFloat(newValue) / props.price
+          setValue(ethValue)
+          if(typeof props.onChange == "function") { props.onChange(ethValue) }
+          setDisplay(newValue)
+        }else{
+          setValue(newValue)
+          if(typeof props.onChange == "function") { props.onChange(newValue) }
+          setDisplay(newValue)
+        }
       }}
     />
   );

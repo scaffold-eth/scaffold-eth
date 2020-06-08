@@ -82,6 +82,7 @@ export default function Wallet(props) {
       <div>
         <div style={inputStyle}>
           <EtherInput
+            autoFocus={true}
             price={props.price}
             value={amount}
             onChange={(value)=>{
@@ -132,7 +133,7 @@ export default function Wallet(props) {
             const tx = Transactor(props.provider)
             tx({
               to: toAddress,
-              value: ethers.utils.parseEther(amount),
+              value: ethers.utils.parseEther(""+amount),
             })
             setOpen(!open)
           }}>
