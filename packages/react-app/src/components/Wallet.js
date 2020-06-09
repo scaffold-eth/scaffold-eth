@@ -65,7 +65,7 @@ export default function Wallet(props) {
   let receiveButton
   if(qr){
     display = (
-      <QR value={selectedAddress} size={"430"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+      <QR value={selectedAddress} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
     )
     receiveButton = (
       <Button key="hide" onClick={()=>{setQr("")}}>

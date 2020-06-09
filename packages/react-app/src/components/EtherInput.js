@@ -19,8 +19,13 @@ export default function AddressInput(props) {
           setDisplay(currentValue)
         }else{
           setMode("USD")
-          let usdValue = ""+(parseFloat(currentValue)*props.price).toFixed(2)
-          setDisplay(usdValue)
+          if(currentValue){
+            let usdValue = ""+(parseFloat(currentValue)*props.price).toFixed(2)
+            setDisplay(usdValue)
+          }else{
+            setDisplay(currentValue)
+          }
+
         }
       }}>
         {title}
