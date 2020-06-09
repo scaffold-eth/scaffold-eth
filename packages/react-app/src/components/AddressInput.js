@@ -49,7 +49,7 @@ export default function AddressInput(props) {
     }}>
       <Badge count={<CameraOutlined style={{fontSize:9}}/>}>
         <QrcodeOutlined style={{fontSize:18}}/>
-      </Badge>
+      </Badge> Scan
     </div>
   )
 
@@ -76,7 +76,8 @@ export default function AddressInput(props) {
     scanner = (
       <div style={{zIndex:256,position:'absolute',left:0,top:0,width:"100%"}} onClick={()=>{setScan(!scan)}}>
         <QrReader
-            delay={300}
+            delay={250}
+            resolution={1200}
             onError={(e)=>{
               console.log("SCAN ERROR",e)
               setScan(!scan)
@@ -84,8 +85,13 @@ export default function AddressInput(props) {
             onScan={(newValue)=>{
               if(newValue){
                 console.log("SCAN VALUE",newValue)
+                let possibleNewValue = newValue
+                if(possibleNewValue.indexOf("/")>=0){
+                  possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"))
+                  console.log("CLEANED VALUE",possibleNewValue)
+                }
                 setScan(!scan)
-                updateAddress(newValue)
+                updateAddress(possibleNewValue)
               }
             }}
             style={{ width: '100%' }}
@@ -99,6 +105,7 @@ export default function AddressInput(props) {
     <div>
       {scanner}
       <Input
+        autoFocus={props.autoFocus}
         placeholder={props.placeholder?props.placeholder:"address"}
         prefix={<Blockie address={currentValue} size={8} scale={3}/>}
         value={ens?ens:currentValue}

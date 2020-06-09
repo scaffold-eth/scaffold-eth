@@ -65,7 +65,7 @@ export default function Wallet(props) {
   let receiveButton
   if(qr){
     display = (
-      <QR value={selectedAddress} size={"430"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+      <QR value={selectedAddress} size={"430"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
     )
     receiveButton = (
       <Button key="hide" onClick={()=>{setQr("")}}>
@@ -81,8 +81,17 @@ export default function Wallet(props) {
     display = (
       <div>
         <div style={inputStyle}>
+          <AddressInput
+             autoFocus={true}
+            ensProvider={props.ensProvider}
+            placeholder="to address"
+            value={toAddress}
+            onChange={setToAddress}
+          />
+        </div>
+        <div style={inputStyle}>
           <EtherInput
-            autoFocus={true}
+
             price={props.price}
             value={amount}
             onChange={(value)=>{
@@ -90,14 +99,7 @@ export default function Wallet(props) {
             }}
           />
         </div>
-        <div style={inputStyle}>
-          <AddressInput
-            ensProvider={props.ensProvider}
-            placeholder="to address"
-            value={toAddress}
-            onChange={setToAddress}
-          />
-        </div>
+
       </div>
     )
     receiveButton = (
