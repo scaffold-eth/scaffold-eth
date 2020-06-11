@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Card, Row, Col, List, Input, Button, Divider } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
-import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance, useTokenBalance } from "./hooks"
+import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance, useTokenBalance, useCustomContractReader } from "./hooks"
 import { Transactor } from "./helpers"
 import { Address, TokenBalance, Timeline } from "./components"
 import Curve from './Curve.js'
@@ -16,16 +16,21 @@ export default function DEX(props) {
 
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
-  const localBlockNumber = useBlockNumber(props.localProvider)
-  const localBalance = useBalance(props.address,props.localProvider)
+
+  const localBalance = useBalance(props.address,props.injectedProvider)
 
   const writeContracts = useContractLoader(props.injectedProvider);
 
-  const contractAddress = props.readContracts?props.readContracts[contractName].address:""
-  const contractBalance = useBalance(contractAddress,props.localProvider)
+  const contractAddress = writeContracts?writeContracts[contractName].address:""
+  const contractBalance = useBalance(contractAddress,props.injectedProvider)
 
-  const tokenBalance = useTokenBalance(props.readContracts, tokenName, contractAddress, props.localProvider)
-  const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance))
+  console.log("contractAddress",contractAddress)
+
+  //const tokenBalance = useTokenBalance(writeContracts, tokenName, contractAddress, props.localProvider)
+  //                   useCustomContractReader(contract,functionName,args,pollTime,formatter,onChange)
+  const maybeTokenBalance = useCustomContractReader(props.xmoonContract,"balanceOf",[contractAddress])
+  console.log("maybeTokenBalance",maybeTokenBalance)
+  const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(maybeTokenBalance?maybeTokenBalance:0))
   const ethBalance = useBalance( contractAddress, props.localProvider )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
 
@@ -137,14 +142,17 @@ export default function DEX(props) {
 
   return (
     <div>
-      <div style={{position:"fixed",right:0,top:50,padding:10}}>
-        <Curve
-          addingEth={values && values["ethToToken"]?values["ethToToken"]:0}
-          addingToken={values && values["tokenToEth"]?values["tokenToEth"]:0}
-          ethReserve={ethBalanceFloat}
-          tokenReserve={tokenBalanceFloat}
-          width={500} height={500}
-        />
+      <div style={{position:"fixed",right:0,top:150,padding:10}}>
+      <Curve
+        addingEth={values && values["ethToToken"]?values["ethToToken"]:0}
+        addingToken={values && values["tokenToEth"]?values["tokenToEth"]:0}
+        ethReserve={ethBalanceFloat}
+        tokenReserve={tokenBalanceFloat}
+        width={500} height={500}
+      />
+        <Button onClick={()=>{
+          tx(props.xmoonContract.approve(props.readContracts["DEX"].address,ethers.utils.parseEther("1000000")))
+        }}>APPROVE DEX</Button>
       </div>
       <Card
         title={(
@@ -152,7 +160,7 @@ export default function DEX(props) {
             <Address value={contractAddress} />
             <div style={{float:'right',fontSize:24}}>
               {parseFloat(ethers.utils.formatEther(contractBalance)).toFixed(4)} ⚖️
-              <TokenBalance name={tokenName} img={"🎈"} address={contractAddress} contracts={props.readContracts} />
+              <TokenBalance name={tokenName} img={"🌒"} address={contractAddress} balance={maybeTokenBalance} />
 
             </div>
           </div>
@@ -161,8 +169,12 @@ export default function DEX(props) {
         style={{ width: 550, marginTop: 25 }}
         loading={false}>
         { display }
+
       </Card>
 
+      <Button onClick={()=>{
+        tx(props.xmoonContract.approve(props.readContracts["DEX"].address,ethers.utils.parseEther("1000000")))
+      }}>APPROVE DEX</Button>
     </div>
   );
 

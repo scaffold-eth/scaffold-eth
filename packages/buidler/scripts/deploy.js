@@ -11,17 +11,18 @@ async function main() {
   //const exampleToken = await deploy("ExampleToken")
   //const examplePriceOracle = await deploy("ExamplePriceOracle")
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-  const balloons = await deploy("Balloons")
-  const dex = await deploy("DEX",[balloons.address])
+  //const balloons = await deploy("Balloons")
+
+  //const dex = await deploy("DEX",["0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910"])
 
   // paste in your address here to get 10 balloons on deploy:
-  await balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
+  //await balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))
 
   // uncomment to init DEX on deploy:
   //console.log("Approving DEX ("+dex.address+") to take Balloons from main account...")
   //await balloons.approve(dex.address,ethers.utils.parseEther('100'))
   //console.log("INIT exchange...")
-  //await dex.init(ethers.utils.parseEther('5'),{value:ethers.utils.parseEther('5')})
+//  await dex.init(ethers.utils.parseEther('5'),{value:ethers.utils.parseEther('5')})
 
 }
 main()
@@ -39,6 +40,7 @@ async function deploy(name,_args){
   }
   console.log("📄 "+name)
   const contractArtifacts = artifacts.require(name);
+  console.log("deploying.....")
   const contract = await contractArtifacts.new(...args)
   console.log(chalk.cyan(name),"deployed to:", chalk.magenta(contract.address));
   fs.writeFileSync("artifacts/"+name+".address",contract.address);

@@ -185,11 +185,18 @@ export default function Contract(props) {
                       }
                     }
 
-                    //console.log("Running with extras",extras)
-                    let result = tryToDisplay(await contract[fn.name](...args,overrides))
-
                     let newValues = {...values}
-                    newValues[fn.name] = result
+
+                    //console.log("Running with extras",extras)
+                    try{
+                      let result = tryToDisplay(await contract[fn.name](...args,overrides))
+                      newValues[fn.name] = result
+                    }catch(e){
+                        console.log("CAUGHT",e)
+                    }
+
+
+
                     console.log("SETTING:",newValues)
                     setValues(newValues)
 

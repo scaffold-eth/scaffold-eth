@@ -3,6 +3,8 @@ usePlugin("@nomiclabs/buidler-truffle5");
 
 const DEBUG = true
 
+
+
 task("accounts", "Prints the list of accounts", async () => {
   const accounts = await web3.eth.getAccounts();
   for (const account of accounts) {
@@ -92,14 +94,19 @@ async function addr(addr) {
 }
 
 module.exports = {
-  defaultNetwork: 'localhost',
+  defaultNetwork: 'xdai',
   networks: {
-    localhost: {
-      //url: 'https://rinkeby.infura.io/v3/2717afb6bf164045b5d5468031b93f87',
-      url: 'http://localhost:8545',
-      /*accounts: {
-        mnemonic: "**SOME MNEMONIC**"
-      },*/
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8',
+      accounts: {
+        mnemonic: "bamboo wet enter annual scale squirrel kangaroo wing crane century problem vague"
+      },
+    },
+    xdai: {
+      url: 'https://dai.poa.network',
+      accounts: {
+        mnemonic: "bamboo wet enter annual scale squirrel kangaroo wing crane century problem vague"
+      },
     },
   },
   solc: {

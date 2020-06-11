@@ -5,12 +5,14 @@ import { ethers } from "ethers";
 //import { useQuery } from "@apollo/react-hooks";
 import "./App.css";
 import { Row, Col } from 'antd';
-import { useExchangePrice, useGasPrice, useContractLoader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance } from "./components"
-import  DEX from "./DEX.js"
+import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader } from "./hooks"
+import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance } from "./components"
+import DEX from "./DEX.js"
+import AMB from "./AMB.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
-const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER?process.env.REACT_APP_PROVIDER:"http://localhost:8545")
+const localProvider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8")
+const xdaiProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
 
 function App() {
 
@@ -19,6 +21,12 @@ function App() {
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
   const readContracts = useContractLoader(localProvider);
+
+  const moonContract = useCustomContractLoader(injectedProvider,"Balloons","0xDF82c9014F127243CE1305DFE54151647d74B27A")
+  const moonbalance = useCustomContractReader(moonContract,"balanceOf",[address])
+
+  const xmoonContract = useCustomContractLoader(injectedProvider,"Balloons","0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910")
+  const xmoonbalance = useCustomContractReader(xmoonContract,"balanceOf",[address])
 
   return (
     <div className="App">
@@ -33,18 +41,46 @@ function App() {
           mainnetProvider={mainnetProvider}
           price={price}
         />
-        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        <TokenBalance name={"MOON"} img={"🌘"} address={address} balance={moonbalance} />
+        <TokenBalance name={"xMOON"} img={"🌒"} address={address} balance={xmoonbalance} />
+        <Balance address={address} provider={xdaiProvider} dollarMultiplier={1}/>
       </div>
 
       <Contract
         name={"DEX"}
+        show={["init"]}
         provider={injectedProvider}
         address={address}
       />
 
+
+      <AMB
+        address={address}
+        moonContract={moonContract}
+        injectedProvider={injectedProvider}
+        localProvider={localProvider}
+        mainnetProvider={mainnetProvider}
+        readContracts={readContracts}
+        price={price}
+      />
+
+
+      <DEX
+        address={address}
+        injectedProvider={injectedProvider}
+        localProvider={xdaiProvider}
+        xmoonContract={xmoonContract}
+        mainnetProvider={mainnetProvider}
+        readContracts={readContracts}
+        price={price}
+      />
+
+
       <Contract
+        title={"🎈 Balloons"}
         name={"Balloons"}
-        provider={injectedProvider}
+        show={["balanceOf","approve"]}
+        provider={localProvider}
         address={address}
       />
 
