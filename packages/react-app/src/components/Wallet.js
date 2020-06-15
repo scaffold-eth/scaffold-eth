@@ -59,7 +59,7 @@ export default function Wallet(props) {
       //setQr("")
     }
     getAddress()
-  },[props])
+  },[props.provider,props.address])
 
   let display
   let receiveButton
