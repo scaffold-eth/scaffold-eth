@@ -34,8 +34,8 @@ yarn install
 
 > ⌚️ This will take some time. How about a quick tour of the file structure with your favorite code editor?
 
-> 💡 Sometimes the install throws errors like "node-gyp", try the next step even if you see problems.
-> (You can also [download the Apple command line tools](https://download.developer.apple.com/Developer_Tools/Command_Line_Tools_for_Xcode_11.5/Command_Line_Tools_for_Xcode_11.5.dmg) to fix the warning.)
+> 💡 Sometimes the install throws errors like "node-gyp", try the next step even if you see problems.<br/>
+> (You can also [download the Apple command line tools](https://developer.apple.com/download/more/) to fix the warning.)
 
 ---
 
