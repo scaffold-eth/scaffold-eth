@@ -7,7 +7,7 @@
     "web3": "^1.2.6"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "3.0.0-rc.1",
+    "@openzeppelin/contracts": "^3.0.2",
     "node-watch": "^0.6.3"
   }
 }

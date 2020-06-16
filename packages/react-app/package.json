@@ -31,6 +31,7 @@
     "dotenv": "^8.2.0",
     "ethers": "^4.0.43",
     "graphql": "^14.6.0",
+    "ipfs-api": "^26.1.2",
     "lz-string": "^1.4.4",
     "qrcode.react": "^1.0.0",
     "react": "16.12.0",

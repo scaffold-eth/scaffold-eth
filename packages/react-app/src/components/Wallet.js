@@ -38,7 +38,7 @@ export default function Wallet(props) {
       if(props.provider){
         let loadedSigner
         try{
-          console.log("SETTING SIGNER")
+          //console.log("SETTING SIGNER")
           loadedSigner = props.provider.getSigner()
           setSigner(loadedSigner)
         }catch(e){
@@ -48,7 +48,7 @@ export default function Wallet(props) {
           setSelectedAddress(props.address)
         }else{
           if(!selectedAddress && loadedSigner){
-            console.log("GETTING ADDRESS FOR WALLET PROVIDER",loadedSigner)
+            //console.log("GETTING ADDRESS FOR WALLET PROVIDER",loadedSigner)
             let result = await loadedSigner.getAddress()
             if(result) {
               setSelectedAddress(result)

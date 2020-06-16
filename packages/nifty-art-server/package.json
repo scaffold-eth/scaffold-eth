@@ -1,0 +1,14 @@
+{
+  "name": "nifty-art-server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "cors": "^2.8.5",
+    "ipfs-api": "^26.1.2",
+    "nodemon": "^2.0.4",
+    "path": "^0.12.7",
+    "string-to-stream": "^3.0.1"
+  }
+}
