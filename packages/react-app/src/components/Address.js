@@ -1,7 +1,11 @@
 import React, { useState, useEffect } from 'react'
 import Blockies from 'react-blockies';
-import { Typography, Skeleton } from 'antd';
+import { Typography, Skeleton, Tooltip, Spin, Modal, Button } from 'antd';
+
+
 const { Text } = Typography;
+
+
 
 export default function Address(props) {
 

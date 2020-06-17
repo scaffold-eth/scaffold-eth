@@ -6,7 +6,9 @@ export default function Balance(props) {
 
   const [dollarMode, setDollarMode] = useState(true);
   const [balance, setBalance] = useState();
-  usePoller(async ()=>{
+
+
+  const getBalance = async ()=>{
     if(props.address && props.provider){
       try{
         const newBalance = await props.provider.getBalance(props.address)
@@ -15,7 +17,9 @@ export default function Balance(props) {
         console.log(e)
       }
     }
-  },props.pollTime?props.pollTime:1999)
+  }
+
+  usePoller(()=>{getBalance()},props.pollTime?props.pollTime:1999)
 
   let floatBalance = parseFloat("0.00")
 
@@ -38,7 +42,7 @@ export default function Balance(props) {
   }
 
   return (
-    <span style={{verticalAlign:"middle",fontSize:24,padding:8,cursor:'pointer'}} onClick={()=>{setDollarMode(!dollarMode)}}>
+    <span style={{verticalAlign:"middle",fontSize:props.size?props.size:24,padding:8,cursor:'pointer'}} onClick={()=>{setDollarMode(!dollarMode)}}>
       {displayBalance}
     </span>
   );

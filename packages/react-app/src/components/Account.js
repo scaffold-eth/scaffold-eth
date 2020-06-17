@@ -2,11 +2,10 @@ import React, { useState, useEffect, useRef } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
-import { TokenBalance, Balance, Address } from "."
+import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Typography } from 'antd';
-const { Text } = Typography;
+import { Button } from 'antd';
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -30,9 +29,12 @@ export default function Account(props) {
       if(props.localProvider.connection && props.localProvider.connection.url){
         console.log("creating a burner from the local provider connection",props.localProvider)
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
+        console.log("________BY URL",props.localProvider.connection.url)
       }else if( props.localProvider._network && props.localProvider._network.name ){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
+        console.log("________INFURA")
       }else{
+        console.log("________MAINMIAN")
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
       }
     }else{
@@ -77,7 +79,7 @@ export default function Account(props) {
       )
     }else{
       modalButtons.push(
-        <Button key="loginbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={"primary"} onClick={loadWeb3Modal}>connect</Button>
+        <Button key="loginbutton" style={{verticalAlign:"top",marginLeft:8,marginTop:4}} shape={"round"} size={"large"} type={props.minimized?"default":"primary"} onClick={loadWeb3Modal}>connect</Button>
       )
     }
   }
@@ -91,12 +93,22 @@ export default function Account(props) {
 
   const tokenContract = props.localProvider
 
+  let display=""
+  if(!props.minimized){
+    display = (
+      <span>
+        {props.address?(
+          <Address value={props.address} ensProvider={props.mainnetProvider}/>
+        ):"Connecting..."}
+        <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
+        <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
+      </span>
+    )
+  }
+
   return (
     <div>
-      {props.address?(
-        <Address value={props.address} ensProvider={props.mainnetProvider}/>
-      ):"Connecting..."}
-      <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.price}/>
+      {display}
       {modalButtons}
     </div>
   );

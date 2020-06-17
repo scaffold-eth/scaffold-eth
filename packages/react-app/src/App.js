@@ -125,7 +125,7 @@ function App() {
           <Col span={15}>
             <Faucet
               localProvider={localProvider}
-              dollarMultiplier={price}
+              price={price}
             />
           </Col>
         </Row>
