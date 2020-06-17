@@ -7,7 +7,7 @@ export default function Header(props) {
       window.open("https://github.com/austintgriffith/scaffold-eth");
     }}>
       <PageHeader
-        title="⚖️ Minimum Viable Decentralized Exchange"
+        title="🌒  xMOON Exchange"
         subTitle=""
         style={{cursor:'pointer'}}
       />

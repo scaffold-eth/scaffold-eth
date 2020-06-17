@@ -24,12 +24,12 @@ export default function DEX(props) {
   const contractAddress = writeContracts?writeContracts[contractName].address:""
   const contractBalance = useBalance(contractAddress,props.injectedProvider)
 
-  console.log("contractAddress",contractAddress)
+  //console.log("contractAddress",contractAddress)
 
   //const tokenBalance = useTokenBalance(writeContracts, tokenName, contractAddress, props.localProvider)
   //                   useCustomContractReader(contract,functionName,args,pollTime,formatter,onChange)
   const maybeTokenBalance = useCustomContractReader(props.xmoonContract,"balanceOf",[contractAddress])
-  console.log("maybeTokenBalance",maybeTokenBalance)
+  //console.log("maybeTokenBalance",maybeTokenBalance)
   const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(maybeTokenBalance?maybeTokenBalance:0))
   const ethBalance = useBalance( contractAddress, props.localProvider )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
@@ -73,7 +73,7 @@ export default function DEX(props) {
   if(props.readContracts && props.readContracts[contractName]){
 
     display.push(
-      <div>
+      <div key="ui">
 
         {rowForm("ethToToken","💸",async (value)=>{
           let valueInEther = ethers.utils.parseEther(""+value)

@@ -19,7 +19,7 @@ export default function AMB(props) {
   const AMBABI  = [{"inputs":[{"internalType":"address","name":"_receiver","type":"address"},{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"relayTokens","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 
   const AMB = useCustomContractLoader(props.injectedProvider,"","0xFEaB457D95D9990b7eb6c943c839258245541754",AMBABI)
-  console.log("AMB",AMB)
+  //console.log("AMB",AMB)
 
   let display = []
 

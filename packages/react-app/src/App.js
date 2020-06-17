@@ -6,13 +6,15 @@ import { ethers } from "ethers";
 import "./App.css";
 import { Row, Col } from 'antd';
 import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance } from "./components"
+import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance, Address } from "./components"
 import DEX from "./DEX.js"
 import AMB from "./AMB.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet","2717afb6bf164045b5d5468031b93f87")
-const localProvider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8")
+const rinkebyProvider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8")
 const xdaiProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
+
+const localProvider = mainnetProvider
 
 function App() {
 
@@ -20,12 +22,16 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
-  const readContracts = useContractLoader(localProvider);
 
-  const moonContract = useCustomContractLoader(injectedProvider,"Balloons","0xDF82c9014F127243CE1305DFE54151647d74B27A")
+  const readxDaiContracts = useContractLoader(xdaiProvider);
+  //const readRinkebyContracts = useContractLoader(rinkebyProvider);
+
+  const moonContractAddress = "0xDF82c9014F127243CE1305DFE54151647d74B27A"
+  const moonContract = useCustomContractLoader(rinkebyProvider,"Balloons",moonContractAddress)
   const moonbalance = useCustomContractReader(moonContract,"balanceOf",[address])
 
-  const xmoonContract = useCustomContractLoader(injectedProvider,"Balloons","0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910")
+  const xmoonContractAddress = "0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910"
+  const xmoonContract = useCustomContractLoader(xdaiProvider,"Balloons",xmoonContractAddress)
   const xmoonbalance = useCustomContractReader(xmoonContract,"balanceOf",[address])
 
   return (
@@ -46,12 +52,12 @@ function App() {
         <Balance address={address} provider={xdaiProvider} dollarMultiplier={1}/>
       </div>
 
-      <Contract
-        name={"DEX"}
-        show={["init"]}
-        provider={injectedProvider}
-        address={address}
-      />
+      <div>
+        <Address value={moonContractAddress}/> MOON <a href="https://rinkeby.etherscan.io/token/0xdf82c9014f127243ce1305dfe54151647d74b27a" target="_blank"></a>
+
+
+      </div>
+
 
 
       <AMB
@@ -60,7 +66,7 @@ function App() {
         injectedProvider={injectedProvider}
         localProvider={localProvider}
         mainnetProvider={mainnetProvider}
-        readContracts={readContracts}
+        readContracts={readxDaiContracts}
         price={price}
       />
 
@@ -71,18 +77,28 @@ function App() {
         localProvider={xdaiProvider}
         xmoonContract={xmoonContract}
         mainnetProvider={mainnetProvider}
-        readContracts={readContracts}
+        readContracts={readxDaiContracts}
         price={price}
       />
 
 
       <Contract
-        title={"🎈 Balloons"}
-        name={"Balloons"}
-        show={["balanceOf","approve"]}
-        provider={localProvider}
+        name={"DEX"}
+        show={["init"]}
+        provider={injectedProvider}
         address={address}
       />
+
+
+
+      {// <Contract
+      //   title={"🎈 Balloons"}
+      //   name={"Balloons"}
+      //   show={["balanceOf","approve"]}
+      //   provider={localProvider}
+      //   address={address}
+      // />
+    }
 
 
       <div style={{position:'fixed',textAlign:'right',right:0,bottom:20,padding:10}}>
