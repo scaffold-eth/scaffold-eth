@@ -219,11 +219,11 @@ function App() {
     bottom = (
       <div style={{ marginTop: 16, width: 255, margin: "auto" }}>
         {ipfsDisplay}
-        {/* <Contract
+        { <Contract
           name={"NFTINK"}
-          provider={localProvider}
+          provider={injectedProvider}
           address={address}
-        /> */}
+        /> }
       </div>
     )
   } else if (mode == "view") {
