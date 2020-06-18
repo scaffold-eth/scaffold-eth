@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Spin, Input } from 'antd';
+import { Row, Col, Button, Spin, Input, InputNumber } from 'antd';
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract } from "./components"
 import { Transactor } from "./helpers"
@@ -34,6 +34,7 @@ function App() {
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
   const [drawing, setDrawing] = useLocalStorage("drawing")
+  const [drawingHash, setDrawingHash] = useState()
   //console.log("drawing",drawing)
   const [mode, setMode] = useState("edit")
 
@@ -43,6 +44,10 @@ function App() {
 
   const [ipfsHash, setIpfsHash] = useState()
   const [values, setValues] = useState({})
+  const [image, setImage] = useState()
+  const [imageHash, setImageHash] = useState()
+  const [ink, setInk] = useState({})
+  const [inkHash, setInkHash] = useState()
 
   useEffect(() => {
     //on page load checking url path
@@ -94,6 +99,11 @@ function App() {
         <Button onClick={() => {
           drawingCanvas.current.loadSaveData(LZ.decompress(drawing), false)
         }}><PlaySquareOutlined /> PLAY</Button>
+        <Button onClick={() => {
+          //var image = drawingCanvas.current.canvas.drawing.toDataURL("image/png").replace("image/png", "image/octet-stream");
+          //window.location.href=image;
+          console.log(drawingCanvas.current.canvas.drawing.toDataURL("image/png"))
+        }}><UndoOutlined /> To Image</Button>
 
         <Button style={{ marginLeft: 8 }} shape="round" size="large" type="primary" onClick={() => {
           setIpfsHash()
@@ -125,7 +135,7 @@ function App() {
             }
             console.log(file)
           })*/
-        }}><SaveOutlined /> SAVE / MINT</Button>
+        }}><SaveOutlined /> INK</Button>
       </div>
     )
     bottom = (
@@ -138,6 +148,81 @@ function App() {
           <Button onClick={() => {
             setPicker(picker + 1)
           }}><DoubleRightOutlined /></Button>
+        </div>
+
+        <div>
+
+          <Input
+            size={"large"}
+            placeholder={"name"}
+            value={ink['name']}
+            onChange={(e) => {
+              let currentInk = ink
+              currentInk['name'] = e.target.value
+              setInk(currentInk)
+            }}
+          />
+
+          <Input
+            size={"large"}
+            placeholder={"description"}
+            value={ink['description']}
+            onChange={(e) => {
+              let currentInk = ink
+              currentInk['description'] = e.target.value
+              setInk(currentInk)
+            }}
+          />
+
+          <InputNumber
+            size={"large"}
+            //value={ink['limit']}
+            defaultValue={1}
+            min={1}
+            onChange={(e) => {
+              let currentInk = ink
+              currentInk['limit'] = e
+              setInk(currentInk)
+              console.log(currentInk)
+            }}
+          />
+
+
+          <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+            console.log("minting...")
+            let result = 'test'//await tx(writeContracts["NFTINK"].mint(values['to'], link ))//eventually pass the JSON link not the Drawing link
+            console.log("result", result)
+
+            setIpfsHash()
+            setDrawingHash()
+            setImageHash()
+            setInkHash()
+            //setMode("mint")
+
+            let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
+            console.log(imageData)
+            setImage(imageData)
+
+            let decompressed = LZ.decompress(drawing)
+            let compressedArray = LZ.compressToUint8Array(decompressed)
+
+            console.log("compressedArray", compressedArray)
+
+            let drawingBuffer = Buffer.from(compressedArray)
+            let imageBuffer = Buffer.from(imageData.split(",")[1], 'base64')
+
+            console.log("SAVING BUFFER:", imageBuffer)
+            axios.post('http://localhost:3001/save', { buffer: imageBuffer })
+              .then(function (response) {
+                console.log(response);
+                setIpfsHash(response.data)
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+
+          }}>Mint</Button>
         </div>
       </div>
     )
@@ -176,25 +261,39 @@ function App() {
           <Input
             size={"large"}
             placeholder={"name"}
-            value={values['name']}
+            value={ink['name']}
             onChange={(e) => {
-              let currentValues = values
-              currentValues['name'] = e.target.value
-              setValues(currentValues)
+              let currentInk = ink
+              currentInk['name'] = e.target.value
+              setInk(currentInk)
             }}
           />
 
           <Input
             size={"large"}
             placeholder={"description"}
-            value={values['description']}
+            value={ink['description']}
             onChange={(e) => {
-              let currentValues = values
-              currentValues['description'] = e.target.value
-              setValues(currentValues)
+              let currentInk = ink
+              currentInk['description'] = e.target.value
+              setInk(currentInk)
             }}
           />
 
+          <InputNumber
+            size={"large"}
+            value={ink['limit']}
+            defaultValue={1}
+            min={1}
+            onChange={(e) => {
+              console.log(e)
+              //let currentInk = ink
+              //currentInk['limit'] = e.target.value
+              //setInk(currentInk)
+            }}
+          />
+
+/*
           <AddressInput
             value={values['to']}
             ensProvider={mainnetProvider}
@@ -205,6 +304,7 @@ function App() {
               setValues(currentValues)
             }}
           />
+          */
 
 
           <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {

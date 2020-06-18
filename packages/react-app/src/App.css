@@ -1,3 +1,8 @@
 .App {
   text-align: center;
 }
+
+#WEB3_CONNECT_MODAL_ID {
+  z-index: 999;
+  position: absolute;
+}
