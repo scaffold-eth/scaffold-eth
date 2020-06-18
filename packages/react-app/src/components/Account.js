@@ -27,14 +27,10 @@ export default function Account(props) {
   const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
       if(props.localProvider.connection && props.localProvider.connection.url){
-        console.log("creating a burner from the local provider connection",props.localProvider)
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
-        console.log("________BY URL",props.localProvider.connection.url)
       }else if( props.localProvider._network && props.localProvider._network.name ){
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
-        console.log("________INFURA")
       }else{
-        console.log("________MAINMIAN")
         props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
       }
     }else{

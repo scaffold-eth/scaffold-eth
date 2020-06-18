@@ -22,7 +22,7 @@ export default function DEX(props) {
   const writeContracts = useContractLoader(props.injectedProvider);
 
   const contractAddress = writeContracts?writeContracts[contractName].address:""
-  const contractBalance = useBalance(contractAddress,props.injectedProvider)
+  const contractBalance = useBalance(contractAddress,props.localProvider)
 
   //console.log("contractAddress",contractAddress)
 
@@ -139,21 +139,22 @@ export default function DEX(props) {
   }
 
   let addingEth = 0
-
-  return (
-    <div>
-      <div style={{position:"fixed",right:0,top:150,padding:10}}>
-      <Curve
+  /*
+  Curve
         addingEth={values && values["ethToToken"]?values["ethToToken"]:0}
         addingToken={values && values["tokenToEth"]?values["tokenToEth"]:0}
         ethReserve={ethBalanceFloat}
-        tokenReserve={tokenBalanceFloat}
+        token<Reserve={tokenBalanceFloat}
         width={500} height={500}
-      />
-        <Button onClick={()=>{
-          tx(props.xmoonContract.approve(props.readContracts["DEX"].address,ethers.utils.parseEther("1000000")))
-        }}>APPROVE DEX</Button>
-      </div>
+      />*/
+
+  return (
+    <div>
+    
+      <div style={{position:"fixed",right:0,top:150,padding:10}}>
+      
+      
+      </div> 
       <Card
         title={(
           <div>

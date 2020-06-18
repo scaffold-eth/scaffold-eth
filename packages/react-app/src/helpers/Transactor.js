@@ -46,6 +46,7 @@ export default function Transactor(provider,gasPrice,etherscan) {
         console.log("Notify",notify)
 
         //if it is a valid Notify.js network, use that, if not, just send a default notification
+        console.log("DECIDING WHTAT NETWORK:",network.chainId)
         if([1,3,4,5,42].indexOf(network.chainId)>=0){
           const { emitter } = notify.hash(result.hash)
           emitter.on('all', (transaction) => {
@@ -54,6 +55,17 @@ export default function Transactor(provider,gasPrice,etherscan) {
               window.open((etherscan?etherscan:etherscanTxUrl)+transaction.hash),
             }
           })
+        }else if(network.chainId){
+          notification['info']({
+            duration: 6,
+            style:{cursor:"pointer"},
+            message: 'xDai Transaction Sent',
+            description: result.hash,
+            placement:"bottomRight",
+            onClick: ()=>{
+              window.open("https://blockscout.com/poa/xdai/tx/"+result.hash)
+            }
+          });
         }else{
           notification['info']({
             message: 'Local Transaction Sent',
