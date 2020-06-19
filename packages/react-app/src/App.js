@@ -58,7 +58,10 @@ function App() {
       console.log("HASH:", ipfsHashRequest)
       ipfs.files.get(ipfsHashRequest, function (err, files) {
         files.forEach((file) => {
-          console.log("LOADED", file.path)
+          console.log("LOADED", JSON.parse(file.content))
+          setInk(file.content)
+          ipfs.files.get(JSON.parse(file.content)['drawing'], function (err, files) {
+            files.forEach((file) => {
           let decompressed = LZ.decompressFromUint8Array(file.content)
           console.log("decompressed frim ipfs", decompressed)
           if (decompressed) {
@@ -67,6 +70,8 @@ function App() {
           }
         })
       })
+    })
+  })
     }
   }, [])
 
@@ -104,38 +109,6 @@ function App() {
           //window.location.href=image;
           console.log(drawingCanvas.current.canvas.drawing.toDataURL("image/png"))
         }}><UndoOutlined /> To Image</Button>
-
-        <Button style={{ marginLeft: 8 }} shape="round" size="large" type="primary" onClick={() => {
-          setIpfsHash()
-          setMode("mint")
-
-          let decompressed = LZ.decompress(drawing)
-
-          let compressedArray = LZ.compressToUint8Array(decompressed)
-
-          console.log("compressedArray", compressedArray)
-
-          let buffer = Buffer.from(compressedArray)
-
-          console.log("SAVING BUFFER:", buffer)
-          axios.post('http://localhost:3001/save', { buffer })
-            .then(function (response) {
-              console.log(response);
-              setIpfsHash(response.data)
-            })
-            .catch(function (error) {
-              console.log(error);
-            });
-          /*let buffer = Buffer.from(compressedArray) //we could fall back to going directly to IPFS if our server is down?
-          console.log("ADDING TO IPFS...",buffer)
-          ipfs.files.add(buffer, function (err, file) {
-            console.log("ADDED!")
-            if (err) {
-              console.log(err);
-            }
-            console.log(file)
-          })*/
-        }}><SaveOutlined /> INK</Button>
       </div>
     )
     bottom = (
@@ -148,6 +121,10 @@ function App() {
           <Button onClick={() => {
             setPicker(picker + 1)
           }}><DoubleRightOutlined /></Button>
+        </div>
+
+        <div style={{margin:16}}>
+          <a href={"http://localhost:3000/" + ipfsHash} target="_blank">{ipfsHash}</a>
         </div>
 
         <div>
@@ -181,7 +158,10 @@ function App() {
             min={1}
             onChange={(e) => {
               let currentInk = ink
-              currentInk['limit'] = e
+              currentInk['attributes'] = [{
+                "trait_type": "Limit",
+                "value": e
+              }]
               setInk(currentInk)
               console.log(currentInk)
             }}
@@ -189,9 +169,9 @@ function App() {
 
 
           <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
-            console.log("minting...")
-            let result = 'test'//await tx(writeContracts["NFTINK"].mint(values['to'], link ))//eventually pass the JSON link not the Drawing link
-            console.log("result", result)
+            console.log("inking...")
+            setIpfsHash()
+            setMode("mint")
 
             setIpfsHash()
             setDrawingHash()
@@ -212,17 +192,39 @@ function App() {
             let imageBuffer = Buffer.from(imageData.split(",")[1], 'base64')
 
             console.log("SAVING BUFFER:", imageBuffer)
-            axios.post('http://localhost:3001/save', { buffer: imageBuffer })
-              .then(function (response) {
-                console.log(response);
-                setIpfsHash(response.data)
-              })
+            axios.all(
+              [axios.post('http://localhost:3001/save', { buffer: drawingBuffer }),
+               axios.post('http://localhost:3001/save', { buffer: imageBuffer })])
+              .then(axios.spread((...responses) => {
+                console.log("Responses", responses);
+                let currentInk = ink
+                currentInk['drawing'] = responses[0].data
+                currentInk['image'] = 'https://ipfs.io/ipfs/' + responses[1].data
+                console.log("CurrentInk:", currentInk)
+                setInk(currentInk)
+                console.log("Ink:", ink)
+
+                var inkStr = JSON.stringify(ink);
+                // read json string to Buffer
+                const inkBuffer = Buffer.from(inkStr);
+                axios.post('http://localhost:3001/save', { buffer: inkBuffer })
+                .then(async (response) => {
+                  console.log(response);
+                  console.log('limit', ink.attributes[0]['value'])
+                  setIpfsHash(response.data)
+                  let result = await tx(writeContracts["NFTINK"].createInk(response.data, ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
+                  console.log("result", result)
+                })
+                .catch(function (error) {
+                  console.log(error);
+                });
+              }))
               .catch(function (error) {
                 console.log(error);
               });
 
 
-          }}>Mint</Button>
+          }}>Ink</Button>
         </div>
       </div>
     )
@@ -353,31 +355,38 @@ function App() {
       </div>
 
       <div>
-        <div style={{ padding: 16 }}>
-          {buttons}
-        </div>
+        <Row>
+          <Col span={16}>
+          <div style={{ padding: 16 }}>
+            {buttons}
+          </div>
+          <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+            <CanvasDraw
+              key={mode}
+              ref={drawingCanvas}
+              canvasWidth={size[0]}
+              canvasHeight={size[1]}
+              brushColor={color.hex}
+              lazyRadius={4} å
+              brushRadius={8}
+              disabled={mode != "edit"}
+              hideGrid={mode != "edit"}
+              hideInterface={mode != "edit"}
+              onChange={(newDrawing) => {
+                let savedData = LZ.compress(newDrawing.getSaveData())
+                setDrawing(savedData)
+              }}
+            />
+          </div>
+          </Col>
+          <Col span={8}>
+          {bottom}
+          </Col>
+        </Row>
 
-        <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
-          <CanvasDraw
-            key={mode}
-            ref={drawingCanvas}
-            canvasWidth={size[0]}
-            canvasHeight={size[1]}
-            brushColor={color.hex}
-            lazyRadius={4} å
-            brushRadius={8}
-            disabled={mode != "edit"}
-            hideGrid={mode != "edit"}
-            hideInterface={mode != "edit"}
-            onChange={(newDrawing) => {
-              let savedData = LZ.compress(newDrawing.getSaveData())
-              setDrawing(savedData)
-            }}
-          />
-        </div>
 
         <div style={{ marginTop: 16 }}>
-          {bottom}
+
         </div>
       </div>
 
