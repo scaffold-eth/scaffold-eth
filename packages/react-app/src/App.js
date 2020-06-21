@@ -12,6 +12,7 @@ import { ChromePicker, TwitterPicker, CompactPicker, SwatchesPicker } from 'reac
 import LZ from "lz-string";
 
 const ipfsAPI = require('ipfs-api');
+const isIPFS = require('is-ipfs')
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
 const axios = require('axios');
 const pickers = [CompactPicker, ChromePicker, TwitterPicker, SwatchesPicker]
@@ -35,12 +36,11 @@ function App() {
   const [color, setColor] = useLocalStorage("color", "#666666")
   const [drawing, setDrawing] = useLocalStorage("drawing")
   const [drawingHash, setDrawingHash] = useState()
-  //console.log("drawing",drawing)
   const [mode, setMode] = useState("edit")
 
   const carousel = useRef(null);
   const drawingCanvas = useRef(null);
-  const size = [750, 500]
+  const [size, setSize] = useState([400,400]) //["50vmin", "50vmin"][750, 500]
 
   const [ipfsHash, setIpfsHash] = useState()
   const [values, setValues] = useState({})
@@ -52,20 +52,24 @@ function App() {
   useEffect(() => {
     //on page load checking url path
     let ipfsHashRequest = window.location.pathname.replace("/", "")
-    if (ipfsHashRequest) {
-      setMode("view")
+    console.log("isIPFS?", isIPFS.multihash(ipfsHashRequest))
+    if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
+      setMode("mint")
       setDrawing("")
       console.log("HASH:", ipfsHashRequest)
       ipfs.files.get(ipfsHashRequest, function (err, files) {
         files.forEach((file) => {
           console.log("LOADED", JSON.parse(file.content))
-          setInk(file.content)
+          setInk(JSON.parse(file.content))
           ipfs.files.get(JSON.parse(file.content)['drawing'], function (err, files) {
             files.forEach((file) => {
           let decompressed = LZ.decompressFromUint8Array(file.content)
-          console.log("decompressed frim ipfs", decompressed)
+          console.log("decompressed from ipfs", decompressed)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)
+            let decompressedObject = JSON.parse(decompressed)
+            setSize([decompressedObject['width'],decompressedObject['height']])
+            setIpfsHash(ipfsHashRequest)
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
         })
@@ -132,7 +136,7 @@ function App() {
           <Input
             size={"large"}
             placeholder={"name"}
-            value={ink['name']}
+            //value={ink['name']}
             onChange={(e) => {
               let currentInk = ink
               currentInk['name'] = e.target.value
@@ -143,7 +147,7 @@ function App() {
           <Input
             size={"large"}
             placeholder={"description"}
-            value={ink['description']}
+            //value={ink['description']}
             onChange={(e) => {
               let currentInk = ink
               currentInk['description'] = e.target.value
@@ -167,7 +171,15 @@ function App() {
             }}
           />
 
-
+          <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+            setMode("mint")
+            setIpfsHash("QmaSZBLx7em4o3xwPuFvCVbr9EgDUyKxs3ULPaT7x39wUZ")
+          }}>Mint mode</Button>
+          <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+            setMode("mint")
+            let result = await tx(writeContracts["NFTINK"].createInk("QmaSZBLx7em4o3xwPuFvCVbr9EgDUyKxs3ULPaT7x39wUZ", 5))//eventually pass the JSON link not the Drawing link
+            console.log("result", result)
+          }}>Five Test Inks</Button>
           <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
             console.log("inking...")
             setIpfsHash()
@@ -260,44 +272,10 @@ function App() {
             <a href={link} target="_blank">{ipfsHash}</a>
           </div>
 
-          <Input
-            size={"large"}
-            placeholder={"name"}
-            value={ink['name']}
-            onChange={(e) => {
-              let currentInk = ink
-              currentInk['name'] = e.target.value
-              setInk(currentInk)
-            }}
-          />
 
-          <Input
-            size={"large"}
-            placeholder={"description"}
-            value={ink['description']}
-            onChange={(e) => {
-              let currentInk = ink
-              currentInk['description'] = e.target.value
-              setInk(currentInk)
-            }}
-          />
 
-          <InputNumber
-            size={"large"}
-            value={ink['limit']}
-            defaultValue={1}
-            min={1}
-            onChange={(e) => {
-              console.log(e)
-              //let currentInk = ink
-              //currentInk['limit'] = e.target.value
-              //setInk(currentInk)
-            }}
-          />
 
-/*
           <AddressInput
-            value={values['to']}
             ensProvider={mainnetProvider}
             placeholder={"to address"}
             onChange={(address) => {
@@ -306,12 +284,12 @@ function App() {
               setValues(currentValues)
             }}
           />
-          */
+
 
 
           <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
-            console.log("minting...")
-            let result = await tx(writeContracts["NFTINK"].mint(values['to'], link ))//eventually pass the JSON link not the Drawing link
+            console.log("minting...", values, ink)
+            let result = await tx(writeContracts["NFTINK"].mint(values['to'], ipfsHash ))//eventually pass the JSON link not the Drawing link
             console.log("result", result)
           }}>Mint</Button>
         </div>
@@ -341,7 +319,7 @@ function App() {
 
       <Header />
 
-      <div style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
+      <div id={'ACCOUNT_HEADER_ID'} style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
           setAddress={setAddress}
@@ -355,8 +333,6 @@ function App() {
       </div>
 
       <div>
-        <Row>
-          <Col span={16}>
           <div style={{ padding: 16 }}>
             {buttons}
           </div>
@@ -378,11 +354,7 @@ function App() {
               }}
             />
           </div>
-          </Col>
-          <Col span={8}>
           {bottom}
-          </Col>
-        </Row>
 
 
         <div style={{ marginTop: 16 }}>
@@ -392,32 +364,28 @@ function App() {
 
       <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={4}>
-          <Col span={10}>
             <Provider name={"mainnet"} provider={mainnetProvider} />
-          </Col>
-          <Col span={6}>
+        </Row>
+        <Row align="middle" gutter={4}>
             <Provider name={"local"} provider={localProvider} />
-          </Col>
-          <Col span={8}>
+          </Row>
+          <Row align="middle" gutter={4}>
             <Provider name={"injected"} provider={injectedProvider} />
-          </Col>
         </Row>
       </div>
 
       <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={4}>
-          <Col span={9}>
             <Ramp
               price={price}
               address={address}
             />
-          </Col>
-          <Col span={15}>
+        </Row>
+        <Row align="middle" gutter={4}>
             <Faucet
               localProvider={localProvider}
               price={price}
             />
-          </Col>
         </Row>
       </div>
 

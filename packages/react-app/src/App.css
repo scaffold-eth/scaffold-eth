@@ -6,3 +6,7 @@
   z-index: 999;
   position: absolute;
 }
+
+#ACCOUNT_HEADER_ID {
+  z-index: 900;
+}

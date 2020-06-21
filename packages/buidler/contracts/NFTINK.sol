@@ -6,10 +6,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 contract NFTINK is ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
-    Counters.Counter private _inkIds;
+    Counters.Counter public totalInks;
 
     constructor() ERC721("Nifty Ink", "NFTINK") public {
-      _setBaseURI('ipfs://ipfs/')
+      _setBaseURI('ipfs://ipfs/');
     }
 
     event newInk(uint256 id, address indexed artist, string jsonUrl, uint256 limit);
@@ -24,15 +24,16 @@ contract NFTINK is ERC721 {
     bool exists;
     }
 
-    mapping (string => Ink) inkByUrl;
+    mapping (string => Ink) private _inkByUrl;
+    mapping (string => EnumerableSet.UintSet) private _inkTokens;
 
     function createInk(string memory jsonUrl, uint256 limit) public returns (uint256) {
-      require(!inkByUrl[jsonUrl].exists, "this ink already exists!");
+      require(!_inkByUrl[jsonUrl].exists, "this ink already exists!");
 
-      _inkIds.increment();
+      totalInks.increment();
 
       Ink memory _ink = Ink({
-        id: _inkIds.current(),
+        id: totalInks.current(),
         artist: msg.sender,
         jsonUrl: jsonUrl,
         limit: limit,
@@ -40,7 +41,7 @@ contract NFTINK is ERC721 {
         exists: true
         });
 
-        inkByUrl[jsonUrl] = _ink;
+        _inkByUrl[jsonUrl] = _ink;
 
         emit newInk(_ink.id, _ink.artist, _ink.jsonUrl, _ink.limit);
 
@@ -49,21 +50,38 @@ contract NFTINK is ERC721 {
 
     function mint(address to, string memory jsonUrl) public returns (uint256) {
 
-        require(inkByUrl[jsonUrl].exists, "this ink does not exist!");
-        Ink memory _ink = inkByUrl[jsonUrl];
-        require(inkByUrl[jsonUrl].artist == msg.sender, "only the artist can mint!");
+        require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
+        Ink memory _ink = _inkByUrl[jsonUrl];
+        require(_inkByUrl[jsonUrl].artist == msg.sender, "only the artist can mint!");
         require(_ink.count < _ink.limit, "this ink is over the limit!");
 
-        inkByUrl[jsonUrl].count += 1;
+        _inkByUrl[jsonUrl].count += 1;
 
         _tokenIds.increment();
-
         uint256 id = _tokenIds.current();
+        _inkTokens[jsonUrl].add(id);
+
         _mint(to, id);
         _setTokenURI(id, jsonUrl);
 
         emit mintedInk(id, jsonUrl, to);
 
         return id;
+    }
+
+    function inkTokenByIndex(string memory jsonUrl, uint256 index) public view returns (uint256) {
+      require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
+      return _inkTokens[jsonUrl].at(index);
+    }
+
+    function inkInfoByJsonUrl(string memory jsonUrl) public view returns (uint256, address, uint256) {
+      require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
+      Ink memory _ink = _inkByUrl[jsonUrl];
+
+      uint256 _inkId = _ink.id;
+      address _inkArtist = _ink.artist;
+      uint256 _inkCount = _ink.count;
+
+      return (_inkId, _inkArtist, _inkCount);
     }
 }
