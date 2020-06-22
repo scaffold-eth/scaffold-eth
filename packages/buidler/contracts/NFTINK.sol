@@ -71,6 +71,8 @@ contract NFTINK is ERC721 {
 
     function inkTokenByIndex(string memory jsonUrl, uint256 index) public view returns (uint256) {
       require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
+      Ink memory _ink = _inkByUrl[jsonUrl];
+      require(_ink.count >= index + 1, "this token index does not exist!");
       return _inkTokens[jsonUrl].at(index);
     }
 
