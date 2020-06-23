@@ -91,7 +91,7 @@ function App() {
   useEffect(()=>{
     const loadHolders = async () => {
       console.log('getting holders')
-    if(inkChainInfo && ink) {
+    if(inkChainInfo && ink['attributes']) {
       let mintedCount = inkChainInfo[2]
       let holdersArray = []
       for(var i = 0; i < mintedCount; i++){
@@ -194,7 +194,7 @@ function App() {
       setDrawingHash()
       setImageHash()
       setInkHash()
-      setInk()
+      setInk({})
     }}><PlusOutlined /> New Ink</Button>
     </div>
   )
@@ -202,6 +202,18 @@ function App() {
 
   const createInk = values => {
     console.log('Success:', values);
+
+    let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
+    console.log(imageData)
+    setImage(imageData)
+
+    let decompressed = LZ.decompress(drawing)
+    let compressedArray = LZ.compressToUint8Array(decompressed)
+
+    console.log("compressedArray", compressedArray)
+
+    let drawingBuffer = Buffer.from(compressedArray)
+    let imageBuffer = Buffer.from(drawingCanvas.current.canvas.drawing.toDataURL("image/png").split(",")[1], 'base64')
 
     let currentInk = ink
 
@@ -223,19 +235,8 @@ function App() {
     setInkHash()
     //setMode("mint")
 
-    let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
-    console.log(imageData)
-    setImage(imageData)
-
-    let decompressed = LZ.decompress(drawing)
-    let compressedArray = LZ.compressToUint8Array(decompressed)
-
-    console.log("compressedArray", compressedArray)
-
-    let drawingBuffer = Buffer.from(compressedArray)
-    let imageBuffer = Buffer.from(imageData.split(",")[1], 'base64')
-
     console.log("SAVING BUFFER:", imageBuffer)
+
     axios.all(
       [axios.post('http://localhost:3001/save', { buffer: drawingBuffer }),
        axios.post('http://localhost:3001/save', { buffer: imageBuffer })])
@@ -317,10 +318,11 @@ function App() {
       </Form.Item>
       </Form>
 
-        {/*<Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+        {/*}<Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
           //setMode("mint")
           //setIpfsHash("QmaSZBLx7em4o3xwPuFvCVbr9EgDUyKxs3ULPaT7x39wUZ")
           window.history.pushState({id: 'draw'}, 'draw', '/')
+          //console.log(drawingCanvas.current.canvas.drawing.toDataURL("image/png"))
         }}>Mint mode</Button>*/}
       </div>
 
