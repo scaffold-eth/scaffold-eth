@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined, CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined, CloseCircleOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, List } from 'antd';
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader, useContractReader } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address } from "./components"
@@ -180,6 +180,26 @@ function App() {
   )
   }
 
+  let newButton
+
+  if (mode == 'mint') {
+
+    newButton = (
+    <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
+    <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
+      window.history.pushState({id: 'draw'}, 'draw', '/')
+      setMode("edit")
+      setDrawing("")
+      setIpfsHash()
+      setDrawingHash()
+      setImageHash()
+      setInkHash()
+      setInk()
+    }}><PlusOutlined /> New Ink</Button>
+    </div>
+  )
+  }
+
   const createInk = values => {
     console.log('Success:', values);
 
@@ -318,11 +338,6 @@ function App() {
         <Button onClick={() => {
           drawingCanvas.current.loadSaveData(LZ.decompress(drawing), false)
         }}><PlaySquareOutlined /> PLAY</Button>
-        <Button onClick={() => {
-          //var image = drawingCanvas.current.canvas.drawing.toDataURL("image/png").replace("image/png", "image/octet-stream");
-          //window.location.href=image;
-          console.log(drawingCanvas.current.canvas.drawing.toDataURL("image/png"))
-        }}><UndoOutlined /> To Image</Button>
       </div>
     )
     bottom = (
@@ -356,17 +371,6 @@ function App() {
 
     buttons = (
       <div>
-        <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
-          window.history.pushState({id: 'draw'}, 'draw', '/')
-          setMode("edit")
-          setDrawing("")
-          setIpfsHash()
-          setDrawingHash()
-          setImageHash()
-          setInkHash()
-          setInk()
-        }}><EditOutlined /> EDIT</Button>
-
         <Button onClick={() => {
           drawingCanvas.current.loadSaveData(LZ.decompress(drawing), false)
         }}><PlaySquareOutlined /> PLAY</Button>
@@ -502,6 +506,7 @@ function App() {
       </div>
 
       {adminWidgets}
+      {newButton}
 
     </div>
   );
