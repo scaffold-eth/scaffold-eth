@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined, CloseCircleOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, List } from 'antd';
+import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, List, Popover } from 'antd';
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader, useContractReader } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address } from "./components"
 import { Transactor } from "./helpers"
@@ -44,7 +44,8 @@ function App() {
 
   const carousel = useRef(null);
   const drawingCanvas = useRef(null);
-  const [size, setSize] = useState(["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
+  const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
+  const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [ipfsHash, setIpfsHash] = useState()
   const [values, setValues] = useState({})
@@ -59,9 +60,9 @@ function App() {
   inkChainInfo = useContractReader(readContracts,'NFTINK',"inkInfoByJsonUrl",[ipfsHash],1777);
 
   useEffect(() => {
+    const loadPage = async () => {
     //on page load checking url path
     let ipfsHashRequest = window.location.pathname.replace("/", "")
-    console.log("isIPFS?", isIPFS.multihash(ipfsHashRequest))
     if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
       setMode("mint")
       setDrawing("")
@@ -75,7 +76,7 @@ function App() {
           let decompressed = LZ.decompressFromUint8Array(file.content)
           console.log("decompressed from ipfs", decompressed)
           if (decompressed) {
-            let compressed = LZ.compress(decompressed)
+            //let compressed = LZ.compress(decompressed)
             let decompressedObject = JSON.parse(decompressed)
             setSize([decompressedObject['width'],decompressedObject['height']])
             setIpfsHash(ipfsHashRequest)
@@ -86,12 +87,49 @@ function App() {
     })
   })
 } else {window.history.pushState({id: 'draw'}, 'draw', '/')}
+}
+loadPage()
   }, [])
 
   useEffect(()=>{
+
+    const sendInkForm = (inkId) => {
+
+      const sendInk = async (values) => {
+      console.log('Success:', address, values, inkId);
+      let result = await tx(writeContracts["NFTINK"].safeTransferFrom(address, values['to'], inkId))
+      };
+
+      return (
+      <Form
+      layout={'inline'}
+      name="sendInk"
+      initialValues={{ inkId: inkId }}
+      onFinish={sendInk}
+      onFinishFailed={onFinishFailed}
+      >
+      <Form.Item
+      name="to"
+      rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
+      >
+      <AddressInput
+        ensProvider={mainnetProvider}
+        placeholder={"to address"}
+      />
+      </Form.Item>
+
+      <Form.Item >
+      <Button type="primary" htmlType="submit">
+        Send
+      </Button>
+      </Form.Item>
+      </Form>
+    )
+    }
+
     const loadHolders = async () => {
-      console.log('getting holders')
-    if(inkChainInfo && ink['attributes']) {
+    if(ipfsHash && ink['attributes']) {
+      inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](ipfsHash)
       let mintedCount = inkChainInfo[2]
       let holdersArray = []
       for(var i = 0; i < mintedCount; i++){
@@ -99,9 +137,26 @@ function App() {
         let ownerOf = await readContracts['NFTINK']["ownerOf"](inkToken)
         holdersArray.push([ownerOf, inkToken.toString()])
       }
-      let nextHolders = (
+
+      const sendInkButton = (tokenOwnerAddress, tokenId) => {
+      if (tokenOwnerAddress == address) {
+        return (
+      <Popover content={sendInkForm(tokenId)} title="Send Ink" trigger="click">
+        <Button>Send ink</Button>
+      </Popover>
+    )
+    }
+  }
+
+      let mintDescription
+      if(ink.attributes[0].value == 0) {
+        mintDescription = (inkChainInfo[2] + ' minted')
+      }
+      else {mintDescription = (inkChainInfo[2] + '/' + ink.attributes[0].value + ' minted')}
+
+      const nextHolders = (
         <List
-          header={<div>{inkChainInfo[2] + '/' + ink.attributes[0].value + ' minted'}</div>}
+          header={<div>{mintDescription}</div>}
           itemLayout="horizontal"
           dataSource={holdersArray}
           renderItem={item => (
@@ -111,6 +166,7 @@ function App() {
                 title={item[0]}
                 description={'Token ID: ' + item[1]}
               />
+              {sendInkButton(item[0], item[1])}
             </List.Item>
           )}
         />)
@@ -236,10 +292,11 @@ function App() {
     //setMode("mint")
 
     console.log("SAVING BUFFER:", imageBuffer)
+    let serverUrl = 'http://localhost:3001/save'
 
     axios.all(
-      [axios.post('http://localhost:3001/save', { buffer: drawingBuffer }),
-       axios.post('http://localhost:3001/save', { buffer: imageBuffer })])
+      [axios.post(serverUrl, { buffer: drawingBuffer }),
+       axios.post(serverUrl, { buffer: imageBuffer })])
       .then(axios.spread((...responses) => {
         console.log("Responses", responses);
         let currentInk = ink
@@ -259,6 +316,7 @@ function App() {
           setIpfsHash(response.data)
           let result = await tx(writeContracts["NFTINK"].createInk(response.data, ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
           console.log("result", result)
+          inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](response.data)
           window.history.pushState({id: response.data}, ink['name'], '/' + response.data)
         })
         .catch(function (error) {
@@ -307,7 +365,7 @@ function App() {
       rules={[{ required: true, message: 'How many inks can be made?' }]}
       >
       <InputNumber
-      min={1}
+      min={0}
       />
       </Form.Item>
 
@@ -318,12 +376,17 @@ function App() {
       </Form.Item>
       </Form>
 
-        {/*}<Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+        <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
           //setMode("mint")
           //setIpfsHash("QmaSZBLx7em4o3xwPuFvCVbr9EgDUyKxs3ULPaT7x39wUZ")
-          window.history.pushState({id: 'draw'}, 'draw', '/')
+          //window.history.pushState({id: 'draw'}, 'draw', '/')
           //console.log(drawingCanvas.current.canvas.drawing.toDataURL("image/png"))
-        }}>Mint mode</Button>*/}
+          let moonLink = "QmfCWSeGEBGxfVx71Pdjf18xh9ewByvJDd9u4yEcKXqEZK"
+          let result = await tx(writeContracts["NFTINK"].createInk(moonLink, 5))//eventually pass the JSON link not the Drawing link
+          console.log("result", result)
+          inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](moonLink)
+          window.history.pushState({id: moonLink}, ink['name'], '/' + moonLink)
+        }}>Mint Moon</Button>
       </div>
 
     )
@@ -343,7 +406,7 @@ function App() {
       </div>
     )
     bottom = (
-      <Row style={{ width: "90vmin", margin: "0 auto", marginTop: 16, justifyContent:'center'}}>
+      <Row style={{ width: "90vmin", margin: "0 auto", justifyContent:'center'}}>
         <Space>
         <PickerDisplay
           color={color}
@@ -411,7 +474,7 @@ function App() {
           </>
         )
 
-      if(address == inkChainInfo[1] && inkChainInfo[2] < ink.attributes[0].value) {
+      if(address == inkChainInfo[1] && (inkChainInfo[2] < ink.attributes[0].value || ink.attributes[0].value == 0)) {
       ipfsDisplay = (
         <Row style={{justifyContent: 'center'}}>
 
@@ -496,15 +559,10 @@ function App() {
               }}
             />
           </div>
-          <div style={{ padding: 16 }}>
+          <div style={{ padding: 8 }}>
             {buttons}
           </div>
           {bottom}
-
-
-        <div style={{ marginTop: 16 }}>
-
-        </div>
       </div>
 
       {adminWidgets}

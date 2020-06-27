@@ -53,7 +53,7 @@ contract NFTINK is ERC721 {
         require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
         Ink memory _ink = _inkByUrl[jsonUrl];
         require(_inkByUrl[jsonUrl].artist == msg.sender, "only the artist can mint!");
-        require(_ink.count < _ink.limit, "this ink is over the limit!");
+        require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
         _inkByUrl[jsonUrl].count += 1;
 
