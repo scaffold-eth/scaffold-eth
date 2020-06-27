@@ -16,6 +16,9 @@ export default function InkInfo(props) {
   let inkChainInfo
   inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByJsonUrl",[props.ipfsHash],1777);
 
+  let mintFlow
+  let inkChainInfoDisplay
+
   const newButton = (
   <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
   <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
@@ -69,13 +72,15 @@ console.log('Failed:', errorInfo);
 
       let mintDescription
       if(props.ink.attributes[0].value == 0) {
-        mintDescription = (inkChainInfo[2] + ' minted')
+        mintDescription = (<><span>{inkChainInfo[2] + ' minted'}</span> {mintFlow}</>)
       }
-      else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
+      else {mintDescription = (<><span>{inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted'}</span> {mintFlow}</>)}
 
       const nextHolders = (
+        <>
+        <Space>
         <List
-          header={<div>{mintDescription}</div>}
+          header={<Typography.Title level={3}>{mintDescription}</Typography.Title>}
           itemLayout="horizontal"
           dataSource={holdersArray}
           renderItem={item => (
@@ -88,19 +93,19 @@ console.log('Failed:', errorInfo);
               {sendInkButton(item[0], item[1])}
             </List.Item>
           )}
-        />)
+        />
+      </Space>
+    </>)
         setHolders(nextHolders)
     }
   }
   loadHolders()
 }, [props.ink, inkChainInfo])
 
-let ipfsDisplay
-let inkChainInfoDisplay
 if (!props.ipfsHash) {
-  ipfsDisplay = (
+  inkChainInfoDisplay = (
     <div>
-      <Spin /> Uploading to IPFS...
+      <Spin /> Connecting to the Ether Webs...
     </div>
   )
 } else {
@@ -108,26 +113,9 @@ if (!props.ipfsHash) {
   let link = "http://localhost:3000/" + props.ipfsHash
 
   if(inkChainInfo) {
-    inkChainInfoDisplay = (
-      <>
-      <Row style={{justifyContent: 'center'}}>
-      <Space>
-      <Typography>
-        <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-        <Typography.Text style={{color:"#222222"}}>Ink #{inkChainInfo[0].toString() + " by "}</Typography.Text>
-        </span>
-      </Typography>
-      <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
-      </Space>
-      </Row>
-      <Row style={{justifyContent: 'center'}}>
-      <Typography.Text copyable={{ text: 'http://localhost:3000/' + props.ipfsHash }} style={{color:"#222222"}}>{props.ipfsHash}</Typography.Text>
-      </Row>
-      </>
-    )
 
   if(props.address == inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value == 0)) {
-  ipfsDisplay = (
+  const mintForm = (
     <Row style={{justifyContent: 'center'}}>
 
       <Form
@@ -155,6 +143,26 @@ if (!props.ipfsHash) {
 
     </Row>
   )
+  mintFlow =       (
+    <Popover content={mintForm}
+        title="Mint" trigger="click">
+          <Button type="primary">Mint ink</Button>
+        </Popover>
+  )
+  inkChainInfoDisplay = (
+    <>
+    <Row style={{justifyContent: 'center'}}>
+    <Space>
+    <Typography>
+      <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+      <Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}}>Ink #{inkChainInfo[0].toString()}</Typography.Text> {" by "}
+      </span>
+    </Typography>
+    <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
+    </Space>
+    </Row>
+    </>
+  )
 }
 }
 }
@@ -163,7 +171,6 @@ let bottom = (
   <>
   <div style={{ marginTop: 16, width: "90vmin", margin: "auto" }}>
     {inkChainInfoDisplay}
-    {ipfsDisplay}
     {holders}
 
     {/* <Contract
