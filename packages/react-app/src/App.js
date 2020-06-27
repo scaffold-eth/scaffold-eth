@@ -5,7 +5,9 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined, CloseCircleOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, List, Popover } from 'antd';
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader, useContractReader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address } from "./components"
+import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address, AdminWidget } from "./components"
+import InkInfo from "./InkInfo.js"
+import SendInkForm from "./SendInkForm.js"
 import { Transactor } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
@@ -40,8 +42,6 @@ function App() {
   const [drawingHash, setDrawingHash] = useState()
   const [mode, setMode] = useState("edit")
 
-  const [admin, setAdmin] = useState(true)
-
   const carousel = useRef(null);
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
@@ -55,9 +55,6 @@ function App() {
   const [inkHash, setInkHash] = useState()
 
   const [holders, setHolders] = useState()
-
-  let inkChainInfo
-  inkChainInfo = useContractReader(readContracts,'NFTINK',"inkInfoByJsonUrl",[ipfsHash],1777);
 
   useEffect(() => {
     const loadPage = async () => {
@@ -91,91 +88,6 @@ function App() {
 loadPage()
   }, [])
 
-  useEffect(()=>{
-
-    const sendInkForm = (inkId) => {
-
-      const sendInk = async (values) => {
-      console.log('Success:', address, values, inkId);
-      let result = await tx(writeContracts["NFTINK"].safeTransferFrom(address, values['to'], inkId))
-      };
-
-      return (
-      <Form
-      layout={'inline'}
-      name="sendInk"
-      initialValues={{ inkId: inkId }}
-      onFinish={sendInk}
-      onFinishFailed={onFinishFailed}
-      >
-      <Form.Item
-      name="to"
-      rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
-      >
-      <AddressInput
-        ensProvider={mainnetProvider}
-        placeholder={"to address"}
-      />
-      </Form.Item>
-
-      <Form.Item >
-      <Button type="primary" htmlType="submit">
-        Send
-      </Button>
-      </Form.Item>
-      </Form>
-    )
-    }
-
-    const loadHolders = async () => {
-    if(ipfsHash && ink['attributes']) {
-      inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](ipfsHash)
-      let mintedCount = inkChainInfo[2]
-      let holdersArray = []
-      for(var i = 0; i < mintedCount; i++){
-        let inkToken = await readContracts['NFTINK']["inkTokenByIndex"](ipfsHash, i)
-        let ownerOf = await readContracts['NFTINK']["ownerOf"](inkToken)
-        holdersArray.push([ownerOf, inkToken.toString()])
-      }
-
-      const sendInkButton = (tokenOwnerAddress, tokenId) => {
-      if (tokenOwnerAddress == address) {
-        return (
-      <Popover content={sendInkForm(tokenId)} title="Send Ink" trigger="click">
-        <Button>Send ink</Button>
-      </Popover>
-    )
-    }
-  }
-
-      let mintDescription
-      if(ink.attributes[0].value == 0) {
-        mintDescription = (inkChainInfo[2] + ' minted')
-      }
-      else {mintDescription = (inkChainInfo[2] + '/' + ink.attributes[0].value + ' minted')}
-
-      const nextHolders = (
-        <List
-          header={<div>{mintDescription}</div>}
-          itemLayout="horizontal"
-          dataSource={holdersArray}
-          renderItem={item => (
-            <List.Item>
-              <List.Item.Meta
-                avatar={<Blockies seed={item[0].toLowerCase()}/>}
-                title={item[0]}
-                description={'Token ID: ' + item[1]}
-              />
-              {sendInkButton(item[0], item[1])}
-            </List.Item>
-          )}
-        />)
-        setHolders(nextHolders)
-    }
-  }
-  loadHolders()
-}, [ink, inkChainInfo])
-
   useEffect(() => {
     if (drawing) {
       console.log("DECOMPRESSING", drawing)
@@ -190,71 +102,6 @@ loadPage()
   }, [mode])
 
   const PickerDisplay = pickers[picker % pickers.length]
-
-  let adminWidgets
-
-  if (admin) {
-    adminWidgets = (
-      <>
-      <div style={{ position: 'fixed', textAlign: 'right', left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={4}>
-          <Button style={{ marginTop: 16 }} shape="round" size="small" onClick={() => {
-            setAdmin(false)
-          }}><CloseCircleOutlined /></Button>
-        </Row>
-          <Row align="middle" gutter={4}>
-            <Provider name={"mainnet"} provider={mainnetProvider} />
-        </Row>
-        <Row align="middle" gutter={4}>
-            <Provider name={"local"} provider={localProvider} />
-          </Row>
-          <Row align="middle" gutter={4}>
-            <Provider name={"injected"} provider={injectedProvider} />
-        </Row>
-          <Row align="middle" gutter={4}>
-              <Ramp
-                price={price}
-                address={address}
-              />
-          </Row>
-          <Row align="middle" gutter={4}>
-              <Faucet
-                localProvider={localProvider}
-                price={price}
-              />
-          </Row>
-      </div>
-      </>
-    )
-  } else {
-    adminWidgets = (
-    <div style={{ position: 'fixed', textAlign: 'right', left: 0, bottom: 20, padding: 10 }}>
-    <Button style={{ marginTop: 16 }} shape="round" size="large" onClick={() => {
-      setAdmin(true)
-    }}><QuestionCircleOutlined /></Button>
-    </div>
-  )
-  }
-
-  let newButton
-
-  if (mode == 'mint') {
-
-    newButton = (
-    <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-    <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
-      window.history.pushState({id: 'draw'}, 'draw', '/')
-      setMode("edit")
-      setDrawing("")
-      setIpfsHash()
-      setDrawingHash()
-      setImageHash()
-      setInkHash()
-      setInk({})
-    }}><PlusOutlined /> New Ink</Button>
-    </div>
-  )
-  }
 
   const createInk = values => {
     console.log('Success:', values);
@@ -316,7 +163,6 @@ loadPage()
           setIpfsHash(response.data)
           let result = await tx(writeContracts["NFTINK"].createInk(response.data, ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
           console.log("result", result)
-          inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](response.data)
           window.history.pushState({id: response.data}, ink['name'], '/' + response.data)
         })
         .catch(function (error) {
@@ -326,12 +172,6 @@ loadPage()
       .catch(function (error) {
         console.log(error);
       });
-  };
-
-  const mint = async (values) => {
-  console.log('Success:', values);
-  let result = await tx(writeContracts["NFTINK"].mint(values['to'], ipfsHash ))//eventually pass the JSON link not the Drawing link
-  console.log("result", result)
   };
 
   const onFinishFailed = errorInfo => {
@@ -384,7 +224,6 @@ loadPage()
           let moonLink = "QmfCWSeGEBGxfVx71Pdjf18xh9ewByvJDd9u4yEcKXqEZK"
           let result = await tx(writeContracts["NFTINK"].createInk(moonLink, 5))//eventually pass the JSON link not the Drawing link
           console.log("result", result)
-          inkChainInfo = await readContracts['NFTINK']["inkInfoByJsonUrl"](moonLink)
           window.history.pushState({id: moonLink}, ink['name'], '/' + moonLink)
         }}>Mint Moon</Button>
       </div>
@@ -442,83 +281,21 @@ loadPage()
       </div>
     )
 
-
-    let ipfsDisplay
-    let inkChainInfoDisplay
-    if (!ipfsHash) {
-      ipfsDisplay = (
-        <div>
-          <Spin /> Uploading to IPFS...
-        </div>
-      )
-    } else {
-
-      let link = "http://localhost:3000/" + ipfsHash
-
-      if(inkChainInfo) {
-        inkChainInfoDisplay = (
-          <>
-          <Row style={{justifyContent: 'center'}}>
-          <Space>
-          <Typography>
-            <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-            <Typography.Text style={{color:"#222222"}}>Ink #{inkChainInfo[0].toString() + " by "}</Typography.Text>
-            </span>
-          </Typography>
-          <Address value={inkChainInfo[1]} ensProvider={mainnetProvider}/>
-          </Space>
-          </Row>
-          <Row style={{justifyContent: 'center'}}>
-          <Typography.Text copyable={{ text: 'http://localhost:3000/' + ipfsHash }} style={{color:"#222222"}}>{ipfsHash}</Typography.Text>
-          </Row>
-          </>
-        )
-
-      if(address == inkChainInfo[1] && (inkChainInfo[2] < ink.attributes[0].value || ink.attributes[0].value == 0)) {
-      ipfsDisplay = (
-        <Row style={{justifyContent: 'center'}}>
-
-          <Form
-          layout={'inline'}
-          name="mintInk"
-          onFinish={mint}
-          onFinishFailed={onFinishFailed}
-          >
-          <Form.Item
-          name="to"
-          rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
-          >
-          <AddressInput
-            ensProvider={mainnetProvider}
-            placeholder={"to address"}
-          />
-          </Form.Item>
-
-          <Form.Item >
-          <Button type="primary" htmlType="submit">
-            Mint
-          </Button>
-          </Form.Item>
-          </Form>
-
-        </Row>
-      )
-    }
-    }
-    }
-
-    bottom = (
-      <div style={{ marginTop: 16, width: "90vmin", margin: "auto" }}>
-        {inkChainInfoDisplay}
-        {ipfsDisplay}
-        {holders}
-        {/* <Contract
-          name={"NFTINK"}
-          provider={injectedProvider}
-          address={address}
-        /> */}
-      </div>
-    )
+    bottom = <InkInfo
+      address={address}
+      mainnetProvider={mainnetProvider}
+      injectedProvider={injectedProvider}
+      ink={ink}
+      ipfsHash={ipfsHash}
+      readContracts={readContracts}
+      setMode={setMode}
+      setDrawing={setDrawing}
+      setIpfsHash={setIpfsHash}
+      setDrawingHash={setDrawingHash}
+      setImageHash={setImageHash}
+      setInkHash={setInkHash}
+      setInk={setInk}
+      />
   }
 
   return (
@@ -565,8 +342,12 @@ loadPage()
           {bottom}
       </div>
 
-      {adminWidgets}
-      {newButton}
+      <AdminWidget
+      address={address}
+      localProvider={localProvider}
+      injectedProvider={injectedProvider}
+      mainnetProvider={mainnetProvider}
+      price={price}/>
 
     </div>
   );
