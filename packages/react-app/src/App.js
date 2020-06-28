@@ -216,7 +216,7 @@ loadPage()
       </Form.Item>
       </Form>
 
-        <Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
+        {/*<Button style={{ marginTop: 16 }} shape="round" size="large" type="primary" onClick={async () => {
           //setMode("mint")
           //setIpfsHash("QmaSZBLx7em4o3xwPuFvCVbr9EgDUyKxs3ULPaT7x39wUZ")
           //window.history.pushState({id: 'draw'}, 'draw', '/')
@@ -226,6 +226,7 @@ loadPage()
           console.log("result", result)
           window.history.pushState({id: moonLink}, ink['name'], '/' + moonLink)
         }}>Mint Moon</Button>
+      */}
       </div>
 
     )
@@ -314,7 +315,11 @@ loadPage()
           hideInterface={false}
           price={price}
         />
-        <NftyWallet address={address} readContracts={readContracts}/>
+        <NftyWallet
+        address={address}
+        readContracts={readContracts}
+        injectedProvider={injectedProvider}
+        mainnetProvider={mainnetProvider}/>
       </Row>
 
       <div>

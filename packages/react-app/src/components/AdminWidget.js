@@ -5,7 +5,7 @@ import { Provider, Faucet, Ramp } from "."
 
 export default function AdminWidget(props) {
 
-  const [admin, setAdmin] = useState(true)
+  const [admin, setAdmin] = useState(false)
 
   let adminWidgets
   if (admin) {

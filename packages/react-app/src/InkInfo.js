@@ -87,10 +87,12 @@ console.log('Failed:', errorInfo);
             <List.Item>
               <List.Item.Meta
                 avatar={<Blockies seed={item[0].toLowerCase()}/>}
-                title={item[0]}
-                description={'Token ID: ' + item[1]}
+                title={<>
+                  <Typography.Text>{'Token ID: ' + item[1] + " owned by "}</Typography.Text>
+                  <Typography.Text copyable={{ text: item[0]}}>{item[0].substring(0,6)}</Typography.Text>
+                </>}
+                description={sendInkButton(item[0], item[1])}
               />
-              {sendInkButton(item[0], item[1])}
             </List.Item>
           )}
         />

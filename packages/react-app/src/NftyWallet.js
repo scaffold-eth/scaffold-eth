@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, List } from 'antd';
+import { Modal, Button, List, Spin, Popover } from 'antd';
 import { AddressInput } from "./components"
 import { Transactor } from "./helpers"
 import { useContractReader, useContractLoader } from "./hooks"
 import Blockies from 'react-blockies';
+import SendInkForm from "./SendInkForm.js"
 
 const ipfsAPI = require('ipfs-api');
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
@@ -60,20 +61,26 @@ export default function NftyWallet(props) {
       const getTokenInfo = async (i) => {
         let tokenId = await props.readContracts['NFTINK']["tokenOfOwnerByIndex"](props.address, i)
         let jsonUrl = await props.readContracts['NFTINK']["tokenURI"](tokenId)
+
         let parts = jsonUrl.split('/');
         let ipfsHash = parts.pop();
+
+        const urlArray = window.location.href.split("/");
+        const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
+        console.log(window.location.protocol + window.location.hostname + "/" + ipfsHash)
         let inkImageURI
         await ipfs.files.get(ipfsHash, function (err, files) {
             const inkJson = JSON.parse(files[0].content)
+            tokens[i]['name'] = inkJson['name']
             const inkImageHash = inkJson.image.split('/').pop()
             ipfs.files.get(inkImageHash, function (err, files) {
                 inkImageURI = 'data:image/png;base64,' + files[0].content.toString('base64')
-                console.log(inkImageURI)
                 tokens[i]['image'] = inkImageURI
             })
           })
 
-        return {tokenId: tokenId.toString(), jsonUrl: jsonUrl}
+
+        return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl}
       }
 
       for(var i = 0; i < nftyBalance; i++){
@@ -100,9 +107,14 @@ tokenView = (
     renderItem={item => (
       <List.Item>
         <List.Item.Meta
-          avatar={<img src={item['image']} height="100" width="100"/>}
-          title={item['tokenId']}
-          description={item['jsonUrl']}
+          avatar={<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>}
+          title={<a href={item['url']}>{item['name'] + ": Token #" + item['tokenId']}</a>}
+          description={<Popover content={
+            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
+          }
+          title="Send Ink" trigger="click">
+            <Button>Send ink</Button>
+          </Popover>}
         />
       </List.Item>
     )}
