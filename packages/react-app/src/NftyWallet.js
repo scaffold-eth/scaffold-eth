@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, List, Spin, Popover, Typography, Badge, Space } from 'antd';
-import { WalletOutlined } from '@ant-design/icons';
+import { Modal, Button, List, Spin, Popover, Typography, Badge, Space, Avatar, Empty } from 'antd';
+import { WalletOutlined, LoadingOutlined } from '@ant-design/icons';
 import { AddressInput } from "./components"
 import { Transactor } from "./helpers"
 import { useContractReader, useContractLoader } from "./hooks"
@@ -109,7 +109,7 @@ tokenView = (
     renderItem={item => (
       <List.Item>
         <List.Item.Meta
-          avatar={<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>}
+          avatar={item['image']?<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
           title={<a href={item['url']}>{item['name'] + ": Token #" + item['tokenId']}</a>}
           description={<Popover content={
             <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
@@ -121,7 +121,14 @@ tokenView = (
       </List.Item>
     )}
   />)
-} else { tokenView = (<Typography> {"You don't have any inks yet :("}</Typography>)}
+} else { tokenView = (<Empty
+    description={
+      <span>
+        You don't have any inks :(
+      </span>
+    }
+  />
+  )}
 
     return (
       <>
