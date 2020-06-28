@@ -1,9 +1,8 @@
 const { usePlugin } = require('@nomiclabs/buidler/config')
 usePlugin("@nomiclabs/buidler-truffle5");
+const fs = require("fs")
 
 const DEBUG = true
-
-
 
 task("accounts", "Prints the list of accounts", async () => {
   const accounts = await web3.eth.getAccounts();
@@ -93,19 +92,28 @@ async function addr(addr) {
   }
 }
 
+let mnemonic = ""
+try{
+  mnemonic = (fs.readFileSync("./mnemonic.txt")).toString().trim()
+}catch(e){ /* ignore for now because it might now have a mnemonic.txt file */ }
+
 module.exports = {
   defaultNetwork: 'xdai',
   networks: {
+    localhost: {
+      url: 'http://localhost:8545',
+    },
     rinkeby: {
-      url: 'https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8',
+      url: 'https://rinkeby.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d',
       accounts: {
-        mnemonic: "bamboo wet enter annual scale squirrel kangaroo wing crane century problem vague"
+        mnemonic: mnemonic
       },
     },
     xdai: {
       url: 'https://dai.poa.network',
+      gasPrice: 1000000000,
       accounts: {
-        mnemonic: "bamboo wet enter annual scale squirrel kangaroo wing crane century problem vague"
+        mnemonic: mnemonic
       },
     },
   },

@@ -6,7 +6,7 @@ export default function useGasPrice(speed) {
   const loadGasPrice = async () => {
     axios.get('https://ethgasstation.info/json/ethgasAPI.json')
     .then(function (response) {
-      let newGasPrice = response.data[speed?speed:"fast"]*10000000
+      let newGasPrice = response.data[speed?speed:"fast"]*10**8
       if(newGasPrice!==gasPrice){
         setGasPrice(newGasPrice);
       }

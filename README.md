@@ -194,10 +194,10 @@ usePoller(() => {
 
 <br/>
 
-`useBalance(address, provider, [pollTime])`: poll for the balance of an address from a provider
+`useBalance(provider, address, [pollTime])`: poll for the balance of an address from a provider
 
 ```js
-const localBalance = useBalance(address, localProvider);
+const localBalance = useBalance(localProvider, address);
 ```
 
 <br/>

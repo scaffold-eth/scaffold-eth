@@ -7,12 +7,29 @@ contract DEX {
 
   using SafeMath for uint256;
   IERC20 token;
+  address public summoner;
+
+  /*
+  function drain() public {
+    require(msg.sender == summoner, "SUMMONER ONLY");
+    uint256 token_reserve = token.balanceOf(address(this));
+    token.transfer(msg.sender, token_reserve);
+    uint256 eth_reserve = address(this).balance;
+    msg.sender.transfer(eth_reserve);
+    totalLiquidity=0;
+  }
+  */
+
+  constructor(address _summoner) public {
+    summoner = _summoner;
+  }
 
   uint256 public totalLiquidity;
 
   mapping (address => uint256) public liquidity;
 
   function init(uint256 tokens, address token_addr) public payable returns (uint256) {
+    require(msg.sender == summoner, "SUMMONER ONLY");
     require(totalLiquidity==0,"DEX:init - already has liquidity");
     token = IERC20(token_addr);
     totalLiquidity = address(this).balance;
@@ -57,8 +74,8 @@ contract DEX {
     uint256 token_reserve = token.balanceOf(address(this));
     uint256 eth_amount = amount.mul(address(this).balance) / totalLiquidity;
     uint256 token_amount = amount.mul(token_reserve) / totalLiquidity;
-    liquidity[msg.sender] = liquidity[msg.sender].sub(eth_amount);
-    totalLiquidity = totalLiquidity.sub(eth_amount);
+    liquidity[msg.sender] = liquidity[msg.sender].sub(amount);
+    totalLiquidity = totalLiquidity.sub(amount);
     msg.sender.transfer(eth_amount);
     require(token.transfer(msg.sender, token_amount));
     return (eth_amount, token_amount);

@@ -47,7 +47,7 @@ export default function Transactor(provider,gasPrice,etherscan) {
 
         //if it is a valid Notify.js network, use that, if not, just send a default notification
         console.log("DECIDING WHTAT NETWORK:",network.chainId)
-        if([1,3,4,5,42].indexOf(network.chainId)>=0){
+        if([1,3,4,5,42,100].indexOf(network.chainId)>=0){
           const { emitter } = notify.hash(result.hash)
           emitter.on('all', (transaction) => {
             return {

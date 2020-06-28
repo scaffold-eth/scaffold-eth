@@ -13,7 +13,7 @@ async function main() {
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
   //const balloons = await deploy("Balloons")
 
-  //const dex = await deploy("DEX",["0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910"])
+  const dex = await deploy("DEX",["0x34aA3F359A9D614239015126635CE7732c18fDF3"]) // deploy with austingriffith.eth as summoner ////"0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A" //xMOON token (moons on xdai):0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A
 
   // paste in your address here to get 10 balloons on deploy:
   //await balloons.transfer("0x2d0B23210A6E04727842fD341Aefd5318C8eBC70",""+(10*10**18))

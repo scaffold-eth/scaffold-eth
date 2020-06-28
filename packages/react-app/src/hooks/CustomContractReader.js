@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { ethers } from "ethers";
 import { usePoller } from ".";
 
-const DEBUG = false
+const DEBUG = false //  hextostring? it might be: formatEther 
 
 export default function useCustomContractReader(contract,functionName,args,pollTime,formatter,onChange) {
 

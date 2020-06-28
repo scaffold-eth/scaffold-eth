@@ -10,7 +10,7 @@ import { Button } from 'antd';
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
-  //network: "mainnet", // optional
+  //network: 100, // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {

@@ -16,7 +16,7 @@ async function main() {
         let contract = fs.readFileSync(bre.config.paths.artifacts+"/"+contractName+".json").toString()
         let address = fs.readFileSync(bre.config.paths.artifacts+"/"+contractName+".address").toString()
         contract = JSON.parse(contract)
-        fs.writeFileSync(publishDir+"/"+contractName+".address.js","module.exports = \""+address+"\"");
+        fs.writeFileSync(publishDir+"/"+contractName+".address.js","module.exports = \""+address.trim()+"\"");
         fs.writeFileSync(publishDir+"/"+contractName+".abi.js","module.exports = "+JSON.stringify(contract.abi));
         fs.writeFileSync(publishDir+"/"+contractName+".bytecode.js","module.exports = \""+contract.bytecode+"\"");
         finalContractList.push(contractName)

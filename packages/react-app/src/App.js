@@ -6,26 +6,25 @@ import { ethers } from "ethers";
 import "./App.css";
 import { LinkOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Row, Col, Button } from 'antd';
-import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance, Address, AmountInput } from "./components"
-import { Transactor } from "./helpers"
+import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader, useBalance } from "./hooks"
+import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance, Address, AmountInput, Exchange, Bridge, GasGauge, Curve } from "./components"
+import { Transactor, approveAndCall } from "./helpers"
 import DEX from "./DEX.js"
-import AMB from "./AMB.js"
+//DEX AMB from "./AMB.js"
 
-
+const productionxDaiExchangeAddress = ""
 
 const RinkebyToxDaiBridge = "0xFEaB457D95D9990b7eb6c943c839258245541754"
 const XDaiToRinkebyBridge = "0x1E0507046130c31DEb20EC2f870ad070Ff266079"
 
 const DaiToxDaiBridge = "0x4aa42145Aa6Ebf72e164C9bBC74fbD3788045016"
-const XDaiToDaiBridge = "0x7301cfa0e1756b71869e93d4e4dca5c7d0eb0aa6"
+const XDaiToDaiBridge = "0x7301CFA0e1756B71869E93d4e4Dca5c7d0eb0AA6"
 
 const BRIDGEABI = [{ "inputs": [{ "internalType": "address", "name": "_receiver", "type": "address" }, { "internalType": "uint256", "name": "_value", "type": "uint256" }], "name": "relayTokens", "outputs": [], "stateMutability": "nonpayable", "type": "function" }]
 
-const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "2717afb6bf164045b5d5468031b93f87")
+const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "e59c464c322f47e2963f5f00638be2f8")
 const rinkebyProvider = new ethers.providers.JsonRpcProvider("https://rinkeby.infura.io/v3/e59c464c322f47e2963f5f00638be2f8")
 const xdaiProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
-
 
 const localProvider = mainnetProvider
 
@@ -37,33 +36,47 @@ function App() {
   const gasPrice = useGasPrice("fast")
 
   const xDaiContracts = useContractLoader(xdaiProvider);
+  const injectedXDaiContracts = useContractLoader(injectedProvider);
+
+  const totalLiquidity = useCustomContractReader(xDaiContracts ? xDaiContracts['DEX']:null, "totalLiquidity", [])
+
   const xMoonToxDaiDEXAddress = xDaiContracts ? xDaiContracts["DEX"].address : ""
 
-  const rinkebyTx = Transactor(rinkebyProvider)
-  const xdaiTx = Transactor(xdaiProvider)
+  const tx = Transactor(injectedProvider,gasPrice)
+  const rinkebyTx = Transactor(rinkebyProvider,1,"https://rinkeby.etherscan.io/")
+  const xdaiTx = Transactor(xdaiProvider,1.0102,"https://blockscout.com/poa/xdai/tx/")
+  const injectedXdaiTx = Transactor(injectedProvider,1.0102,"https://blockscout.com/poa/xdai/tx/")
 
   const moonContractAddress = "0xDF82c9014F127243CE1305DFE54151647d74B27A"
   const moonContract = useCustomContractLoader(rinkebyProvider, "Balloons", moonContractAddress)
+  const injectedMoonContract = useCustomContractLoader(injectedProvider, "Balloons", moonContractAddress)
   const moonBalance = useCustomContractReader(moonContract, "balanceOf", [address])
 
-  const xmoonContractAddress = "0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910"
+  const xmoonContractAddress = "0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A"//"0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910"
   const xmoonContract = useCustomContractLoader(xdaiProvider, "Balloons", xmoonContractAddress)
+  const injectedXmoonContract = useCustomContractLoader(injectedProvider, "Balloons", xmoonContractAddress)
   const xmoonBalance = useCustomContractReader(xmoonContract, "balanceOf", [address])
 
   const daiContractAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
   const daiContract = useCustomContractLoader(mainnetProvider, "Balloons", daiContractAddress)
+  const injectedDaiContract = useCustomContractLoader(injectedProvider, "Balloons", daiContractAddress)
   const daiBalance = useCustomContractReader(daiContract, "balanceOf", [address])
 
-  const moonContractWriteable = useCustomContractLoader(injectedProvider, "Balloons", moonContractAddress)
   const rinkebyBridgeContractWriteable = useCustomContractLoader(injectedProvider, "", RinkebyToxDaiBridge, BRIDGEABI)
-
-  const xmoonContractWriteable = useCustomContractLoader(injectedProvider, "Balloons", xmoonContractAddress)
   const xdaiBridgeContractWriteable = useCustomContractLoader(injectedProvider, "", XDaiToRinkebyBridge, BRIDGEABI)
 
   const contractsWriteable = useContractLoader(injectedProvider);
 
+  const xdaiBalance = useBalance(xdaiProvider, address)
+
+  const xDaiExchangeAddress = xDaiContracts ? xDaiContracts["DEX"].address : ""
+  const xDaiBalanceOfExchange = useBalance(xdaiProvider, xDaiExchangeAddress)
+  const xMoonBalanceOfExchange = useCustomContractReader(xmoonContract, "balanceOf", [ xDaiExchangeAddress ])
+  //console.log("xMoonBalanceOfExchange",xMoonBalanceOfExchange)
+  //?xMoonBalanceOfExchange:null)
+
   const [injectedNetwork, setInjectedNetwork] = useState();
-  console.log(injectedNetwork)
+  //console.log(injectedNetwork)
   useEffect(() => {
     const getNetwork = async () => {
       if (injectedProvider) {
@@ -75,237 +88,45 @@ function App() {
   }, [injectedProvider])
 
 
-  //////////////////////////////////////////////////////////////////////////   MOON BRIDGE   //////////////////////////////////////////////////////
-
-  let moonToxMoonBridge, max
-  const [moonToxMoonBridgeMode, setMoonToxMoonBridgeMode] = useState();
-  const [moonToxMoonBridgeAmount, setMoonToxMoonBridgeAmount] = useState();
-  if (!moonToxMoonBridgeMode) {
-    moonToxMoonBridge = (
-      <Row gutter={8}>
-        <Col span={12} align="right">
-          <Button shape="round" size="large" type="primary" onClick={() => { setMoonToxMoonBridgeMode("down") }} disabled={!injectedNetwork || injectedNetwork.chainId != 4}  >
-            <DownOutlined /> MOON to xMOON
-          </Button>
-        </Col>
-        <Col>
-          <Button shape="round" size="large" type="primary" onClick={() => { setMoonToxMoonBridgeMode("up") }} disabled={!injectedNetwork || injectedNetwork.chainId != 100}  >
-            <UpOutlined /> xMOON to MOON
-          </Button>
-        </Col>
-      </Row>
+/*<Bridge
+  topBalance={0}
+  bottomBalance={0}
+  upText={"xDAI to xMOON"}
+  downText={"xMOON to xDAI"}
+  upDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
+  downDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
+  onChange={(value)=>{
+    console.log("VALUE",value)
+  }}
+  transferDown = {async (amount) => {
+    approveAndCall(
+      injectedProvider,
+      xdaiTx,
+      address,
+      contractsWriteable["DEX"].address,
+      ethers.utils.parseEther("" + amount),
+      injectedXmoonContract,
+      contractsWriteable["DEX"].tokenToEth,
+      [ethers.utils.parseEther("" + amount)],
+      { gasLimit: 250000 }
     )
-  } else {
-    let button
-    if (moonToxMoonBridgeMode == "down") {
-     max = moonBalance ? ethers.utils.formatEther(moonBalance) : 0
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          let allowance = await moonContract.allowance(address, RinkebyToxDaiBridge)
-          let amountInWei = ethers.utils.parseEther(moonToxMoonBridgeAmount)
-          if (amountInWei.gt(allowance)) {
-            console.log("they are not approved, this is a two tx move...")
-            rinkebyTx(moonContractWriteable.approve(RinkebyToxDaiBridge, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          } else {
-            console.log("they are approved, single tx move...")
-            rinkebyTx(rinkebyBridgeContractWriteable.relayTokens(address, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          }
-        }}>
-          <DownOutlined /> MOON to xMOON
-        </Button>
-      )
-    } else {
-      max = xmoonBalance ? ethers.utils.formatEther(xmoonBalance) : 0
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          let allowance = await xmoonContract.allowance(address, XDaiToRinkebyBridge)
-          let amountInWei = ethers.utils.parseEther(moonToxMoonBridgeAmount)
-          if (amountInWei.gt(allowance)) {
-            console.log("they are not approved, this is a two tx move...")
-            xdaiTx(xmoonContractWriteable.approve(XDaiToRinkebyBridge, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          } else {
-            console.log("they are approved, single tx move...")
-            xdaiTx(xdaiBridgeContractWriteable.relayTokens(address, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          }
-        }}>
-          <UpOutlined /> xMOON to MOON
-        </Button>
-      )
-    }
+  }}
+  transferDownTime = {60}
+  transferUp = { async (amount) => {
+    let amountInWei = ethers.utils.parseEther(amount)
+    xdaiTx(contractsWriteable["DEX"].ethToToken({value: amountInWei}))
+  } }
+/>*/
 
-    moonToxMoonBridge = (
-      <Row gutter={8}>
-        <Col span={10} align="center">
-          <AmountInput prefix="" max={max} value={moonToxMoonBridgeAmount} setValue={setMoonToxMoonBridgeAmount} />
-        </Col>
-        <Col span={8} align="center">
-          {button}
-        </Col>
-        <Col span={6} align="center">
-          <Button shape="round" size="large" onClick={() => { setMoonToxMoonBridgeMode() }}>
-            cancel
-        </Button>
-        </Col>
-      </Row>
-    )
-  }
-
-
-
-
-  //////////////////////////////////////////////////////////////////////////  xMOON DEX   //////////////////////////////////////////////////////
-
-
-  let xMoonDex, xMoonDexMax
-  const [xMoonDexMode, setXMoonDexMode] = useState();
-  const [xMoonDexAmount, setXMoonDexAmount] = useState();
-  if (!xMoonDexMode) {
-    xMoonDex = (
-      <Row gutter={8}>
-        <Col span={12} align="right">
-          <Button shape="round" size="large" type="primary" onClick={() => { setXMoonDexMode("down") }} disabled={!injectedNetwork || injectedNetwork.chainId != 100}  >
-            <DownOutlined /> xMOON to xDAI
-          </Button>
-        </Col>
-        <Col>
-          <Button shape="round" size="large" type="primary" onClick={() => { setXMoonDexMode("up") }} disabled={!injectedNetwork || injectedNetwork.chainId != 100}  >
-            <UpOutlined /> xDAI to xMOON
-          </Button>
-        </Col>
-      </Row>
-    )
-  } else {
-    xMoonDexMax = xmoonBalance ? ethers.utils.formatEther(xmoonBalance) : 0
-    let button
-    if (xMoonDexMode == "down") {
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          
-          let allowance = await xmoonContract.allowance(address, xMoonToxDaiDEXAddress)
-          let amountInWei = ethers.utils.parseEther(xMoonDexAmount)
-          if (amountInWei.gt(allowance)) {
-            console.log("they are not approved, this is a two tx move...")
-            xdaiTx(xmoonContractWriteable.approve(xMoonToxDaiDEXAddress, ethers.utils.parseEther("" + xMoonDexAmount)))
-          } else {
-            console.log("they are approved, single tx move...")
-            xdaiTx(contractsWriteable["DEX"].tokenToEth(ethers.utils.parseEther("" + xMoonDexAmount)))
-          }
-        }}>
-          <DownOutlined /> xMOON to xDAI
-        </Button>
-      )
-    } else {
-      xMoonDexMax = moonBalance ? ethers.utils.formatEther(moonBalance) : 0
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          let amountInWei = ethers.utils.parseEther(xMoonDexAmount)
-          xdaiTx(contractsWriteable["DEX"].ethToToken({value: amountInWei}))
-          //let swapEthToTokenResult = await tx( writeContracts[contractName]["ethToToken"]({value: valueInEther}) )
-        }}>
-          <UpOutlined /> xDAI to xMOON
-        </Button>
-      )
-    }
-
-
-
-    xMoonDex = (
-      <Row gutter={8}>
-        <Col span={10} align="center">
-          <AmountInput prefix="" max={xMoonDexMax} value={xMoonDexAmount} setValue={setXMoonDexAmount} />
-        </Col>
-        <Col span={8} align="center">
-          {button}
-        </Col>
-        <Col span={6} align="center">
-          <Button shape="round" size="large" onClick={() => { setXMoonDexMode() }}>
-            cancel
-        </Button>
-        </Col>
-      </Row>
-    )
-  }
-
-
-
-  //////////////////////////////////////////////////////////////////////////   xDAI/DAI BRIDGE   //////////////////////////////////////////////////////
-/*
-  let xdaiBridge
-  const [xdaiBridgeMode, setXdaiBridgeMode] = useState();
-  const [moonToxMoonBridgeAmount, setMoonToxMoonBridgeAmount] = useState();
-  if (!moonToxMoonBridgeMode) {
-    xdaiBridge = (
-      <Row gutter={8}>
-        <Col span={12} align="right">
-          <Button shape="round" size="large" type="primary" onClick={() => { setXdaiBridgeMode("down") }} disabled={!injectedNetwork || injectedNetwork.chainId != 4}  >
-            <DownOutlined /> MOON to xMOON
-          </Button>
-        </Col>
-        <Col>
-          <Button shape="round" size="large" type="primary" onClick={() => { setXdaiBridgeMode("up") }} disabled={!injectedNetwork || injectedNetwork.chainId != 100}  >
-            <UpOutlined /> xMOON to MOON
-          </Button>
-        </Col>
-      </Row>
-    )
-  } else {
-    let button
-    if (moonToxMoonBridgeMode == "down") {
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          let allowance = await moonContract.allowance(address, RinkebyToxDaiBridge)
-          let amountInWei = ethers.utils.parseEther(moonToxMoonBridgeAmount)
-          if (amountInWei.gt(allowance)) {
-            console.log("they are not approved, this is a two tx move...")
-            rinkebyTx(moonContractWriteable.approve(RinkebyToxDaiBridge, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          } else {
-            console.log("they are approved, single tx move...")
-            rinkebyTx(rinkebyBridgeContractWriteable.relayTokens(address, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          }
-        }}>
-          <DownOutlined /> MOON to xMOON
-        </Button>
-      )
-    } else {
-      button = (
-        <Button shape="round" size="large" type="primary" onClick={async () => {
-          let allowance = await xmoonContract.allowance(address, XDaiToRinkebyBridge)
-          let amountInWei = ethers.utils.parseEther(moonToxMoonBridgeAmount)
-          if (amountInWei.gt(allowance)) {
-            console.log("they are not approved, this is a two tx move...")
-            xdaiTx(xmoonContractWriteable.approve(XDaiToRinkebyBridge, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          } else {
-            console.log("they are approved, single tx move...")
-            xdaiTx(xdaiBridgeContractWriteable.relayTokens(address, ethers.utils.parseEther("" + moonToxMoonBridgeAmount)))
-          }
-        }}>
-          <UpOutlined /> xMOON to MOON
-        </Button>
-      )
-    }
-
-    xdaiBridge = (
-      <Row gutter={8}>
-        <Col span={10} align="center">
-          <AmountInput prefix="" max={moonBalance ? ethers.utils.formatEther(moonBalance) : 0} value={moonToxMoonBridgeAmount} setValue={setMoonToxMoonBridgeAmount} />
-        </Col>
-        <Col span={8} align="center">
-          {button}
-        </Col>
-        <Col span={6} align="center">
-          <Button shape="round" size="large" onClick={() => { setXdaiBridgeMode() }}>
-            cancel
-        </Button>
-        </Col>
-      </Row>
-    )
-  }
-  */
+  const size = useWindowSize();
 
 
   return (
-    <div className="App">
+    <div className="App" style={{backgroundColor:"#E9E9E9",color:"#bcbcbc",}}>
       <Header />
+
+
+
       <div style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
@@ -318,82 +139,182 @@ function App() {
         />
       </div>
 
-      <div>
-        Rinkeby
-        <Balance address={address} provider={rinkebyProvider} />
+
+      <div style={{width:"100%",backgroundColor:"#999999"}}>
+
+        <div style={{float:"right",padding:16}}>
+          <img src="./rinkeby.png" style={{maxWidth:30}}/> Rinkeby
+          <Balance address={address} provider={rinkebyProvider} />
+        </div>
+
+        <div style={{textAlign:"left",padding:16}}>
+          {/*<Address value={moonContractAddress} />*/} MOON <a href="https://rinkeby.etherscan.io/token/0xdf82c9014f127243ce1305dfe54151647d74b27a" target="_blank"><LinkOutlined /></a>
+          <TokenBalance name={"MOON"} img={(<img src="./moons.png" style={{maxWidth:32}}/>)} address={address} balance={moonBalance} />
+        </div>
+
       </div>
 
-      <div>
-        <Address value={moonContractAddress} /> MOON <a href="https://rinkeby.etherscan.io/token/0xdf82c9014f127243ce1305dfe54151647d74b27a" target="_blank"><LinkOutlined /></a>
-        <TokenBalance name={"MOON"} img={"🌘"} address={address} balance={moonBalance} />
+      <div style={{width:"100%",backgroundColor:"#777777",padding:16}}>
+
+        <div style={{ width: 600, margin: "auto", padding: 24 }}>
+          <Bridge
+            topBalance={moonBalance}
+            bottomBalance={xmoonBalance}
+            upText={"xMOON to MOON"}
+            downText={"MOON to xMOON"}
+            topNetwork="Rinkeby"
+            bottomBalance={daiBalance}
+            bottomNetwork="https://dai.poa.network"
+            upDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
+            downDisabled={!injectedNetwork || injectedNetwork.chainId != 4}
+            transferDown = { async (amount) => {
+              approveAndCall(
+                injectedProvider,
+                rinkebyTx,
+                address,
+                RinkebyToxDaiBridge,
+                amount,
+                injectedMoonContract,
+                rinkebyBridgeContractWriteable.relayTokens,
+                [address, ethers.utils.parseEther("" + amount)],
+                { gasLimit: 250000 }
+              )
+            }}
+            transferUp = { async (amount) => {
+              approveAndCall(
+                injectedProvider,
+                xdaiTx,
+                address,
+                XDaiToRinkebyBridge,
+                amount,
+                injectedXmoonContract,
+                xdaiBridgeContractWriteable.relayTokens,
+                [address, ethers.utils.parseEther("" + amount)],
+                { gasLimit: 250000 }
+              )
+
+            }}
+          />
+        </div>
+
       </div>
 
-      <div style={{ width: 600, margin: "auto", padding: 24 }}>
-        {moonToxMoonBridge}
+
+      <div style={{width:"100%",height:700,backgroundColor:"#555555"}}>
+
+        <div style={{float:"right",padding:16}}>
+          <img src="./xdai.png" style={{maxWidth:30}}/> xDAI
+          <Balance address={address} provider={xdaiProvider} dollarMultiplier={1} />
+        </div>
+
+        <div style={{textAlign:"left",padding:16}}>
+          {/*<Address value={xmoonContractAddress} />*/} xMOON <a href={"https://blockscout.com/poa/xdai/tokens/"+xmoonContractAddress} target="_blank"><LinkOutlined /></a>
+          <TokenBalance name={"xMOON"} img={"🌒"} address={address} balance={xmoonBalance} />
+        </div>
+
+        <DEX
+          size={size}
+          injectedNetwork={injectedNetwork}
+          xdaiTx={injectedXdaiTx}
+          address={address}
+          injectedProvider={injectedProvider}
+          localProvider={xdaiProvider}
+          readContracts={xDaiContracts}
+          price={1}
+          tokenContract={xmoonContract}
+          writeTokenContract={injectedXmoonContract}
+        />
+
+        {/*<Button onClick={()=>{
+          const xDaiStartAmount = '5'
+          const xMoonStartAmount =  '500'
+          approveAndCall(
+            injectedProvider,
+            xdaiTx,
+            address,
+            injectedXDaiContracts['DEX'].address,
+            xMoonStartAmount,
+            injectedXmoonContract,
+            injectedXDaiContracts['DEX'].init,
+            [ethers.utils.parseEther(xMoonStartAmount), "0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A"],
+            { gasLimit: 150000, value: ethers.utils.parseEther(xDaiStartAmount) }
+          )
+        }}>INIT</Button>
+        <Button onClick={()=>{
+          xdaiTx( injectedXDaiContracts['DEX'].drain({gasLimit:250000}) )
+        }}>DRAIN</Button>*/}
+
+
       </div>
 
-      <div>
-        <Address value={xmoonContractAddress} /> xMOON <a href="https://blockscout.com/poa/xdai/token/0xC5C35D01B20f8d5cb65C60f02113EF6cd8e79910" target="_blank"><LinkOutlined /></a>
-        <TokenBalance name={"xMOON"} img={"🌒"} address={address} balance={xmoonBalance} />
+
+
+
+      <div style={{width:"100%",backgroundColor:"#040404"}}>
+
+        <div style={{width:"100%",backgroundColor:"#333333",padding:16}}>
+
+          <div style={{ width: 600, margin: "auto", padding: 24 }}>
+            <Bridge
+              topBalance={xdaiBalance}
+              topNetwork="https://dai.poa.network"
+              bottomBalance={daiBalance}
+              bottomNetwork="Mainnet"
+              upText={"DAI to xDAI"}
+              downText={"xDAI to DAI"}
+              upDisabled={!injectedNetwork || injectedNetwork.chainId != 1}
+              downDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
+              transferDown = { async (amount) => {
+                injectedXdaiTx({
+                  to: XDaiToDaiBridge,
+                  value: ethers.utils.parseEther(amount),
+                })
+              }}
+              transferDownTime = {180}
+              transferUp = { async (amount) => {
+                tx(
+                  injectedDaiContract.transfer(DaiToxDaiBridge,ethers.utils.parseEther(amount),{
+                    gasLimit: 100000,
+                    gasPrice: gasPrice
+                  })
+                )
+              }}
+              transferUpTime = {180}
+              //60 seconds and then 120 'hold time' // detect one balance changing by amount and display in the middle until the other address moves that amount
+              //its important that we show the funds 'in holding' -- people are always up in my DMs like wtf where is it?!? and then it shows up.
+            />
+          </div>
+
+        </div>
+
+        <div style={{width:"100%",backgroundColor:"#111111"}}>
+
+
+          <div style={{float:"right",padding:16}}>
+            <img src="./eth.png" style={{maxWidth:30}}/> ETH
+            <Balance address={address} provider={mainnetProvider} dollarMultiplier={price} />
+          </div>
+
+
+          <div style={{textAlign:'left',padding:16}}>
+             {/* <Address value={daiContractAddress} /> */} DAI <a href="https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f" target="_blank"><LinkOutlined /></a>
+            <TokenBalance name={"DAI"} img={<img src="./dai.png" style={{maxWidth:30}}/>} address={address} balance={daiBalance} />
+          </div>
+
+        </div>
+
+
       </div>
 
-      <div style={{ width: 600, margin: "auto", padding: 24 }}>
-        {xMoonDex}
-      </div>
-
-      <div>
-        xDAI
-        <Balance address={address} provider={xdaiProvider} dollarMultiplier={1} />
-      </div>
-
-      <div>
-        <Address value={daiContractAddress} /> DAI <a href="https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f" target="_blank"><LinkOutlined /></a>
-        <TokenBalance name={"DAI"} img={"💵"} address={address} balance={daiBalance} />
-      </div>
-
-      <div>
-        ETH
-        <Balance address={address} provider={mainnetProvider} dollarMultiplier={price} />
-      </div>
-
-      <AMB
-        address={address}
-        moonContract={moonContract}
-        injectedProvider={injectedProvider}
-        localProvider={localProvider}
-        mainnetProvider={mainnetProvider}
-        readContracts={xDaiContracts}
-        price={price}
-      />
-
-      <DEX
-        address={address}
-        injectedProvider={injectedProvider}
-        localProvider={xdaiProvider}
-        xmoonContract={xmoonContract}
-        mainnetProvider={mainnetProvider}
-        readContracts={xDaiContracts}
-        price={price}
-      />
-
-      <Contract
-        name={"DEX"}
-        show={["init"]}
-        provider={injectedProvider}
-        address={address}
-      />
-
-      {// <Contract
-        //   title={"🎈 Balloons"}
-        //   name={"Balloons"}
-        //   show={["balanceOf","approve"]}
-        //   provider={localProvider}
-        //   address={address}
-        // />
-      }
 
 
-      <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
+
+
+
+
+
+
+      {/*<div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={4}>
           <Col span={10}>
             <Provider name={"mainnet"} provider={mainnetProvider} />
@@ -405,21 +326,25 @@ function App() {
             <Provider name={"injected"} provider={injectedProvider} />
           </Col>
         </Row>
-      </div>
-      <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
+      </div>*/}
+      <div style={{ textAlign: 'center', left: 0, bottom: 20, padding: 16, backgroundColor:"#040404"}}>
         <Row align="middle" gutter={4}>
-          <Col span={9}>
+          <Col span={12} style={{textAlign:"center", opacity:0.8}}>
             <Ramp
-              price={price}
+              price={price}gz
               address={address}
             />
           </Col>
-          <Col span={15}>
+          <Col span={12} style={{textAlign:"center", opacity:0.8}}>
+            <GasGauge gasPrice={gasPrice}/>
+          </Col>
+
+          {/*<Col span={12}>
             <Faucet
               localProvider={localProvider}
               price={price}
             />
-          </Col>
+          </Col>*/}
         </Row>
 
 
@@ -430,3 +355,32 @@ function App() {
 }
 
 export default App;
+
+
+function useWindowSize() {
+  const isClient = typeof window === 'object';
+
+  function getSize() {
+    return {
+      width: isClient ? window.innerWidth : undefined,
+      height: isClient ? window.innerHeight : undefined
+    };
+  }
+
+  const [windowSize, setWindowSize] = useState(getSize);
+
+  useEffect(() => {
+    if (!isClient) {
+      return false;
+    }
+
+    function handleResize() {
+      setWindowSize(getSize());
+    }
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Empty array ensures that effect is only run on mount and unmount
+
+  return windowSize;
+}

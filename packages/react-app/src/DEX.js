@@ -5,33 +5,29 @@ import { Card, Row, Col, List, Input, Button, Divider } from 'antd';
 import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance, useTokenBalance, useCustomContractReader } from "./hooks"
 import { Transactor } from "./helpers"
-import { Address, TokenBalance, Timeline } from "./components"
+import { Address, TokenBalance, Timeline, Bridge } from "./components"
 import Curve from './Curve.js'
 const { Meta } = Card;
 
 const contractName = "DEX"
-const tokenName = "Balloons"
+
 
 export default function DEX(props) {
 
-  const tx = Transactor(props.injectedProvider,props.gasPrice)
+  const tx = props.xdaiTx
 
-
-  const localBalance = useBalance(props.address,props.injectedProvider)
+  const localBlockNumber = useBlockNumber(props.localProvider)
+  const localBalance = useBalance(props.localProvider,props.address)
 
   const writeContracts = useContractLoader(props.injectedProvider);
 
-  const contractAddress = writeContracts?writeContracts[contractName].address:""
-  const contractBalance = useBalance(contractAddress,props.localProvider)
+  const contractAddress = props.readContracts?props.readContracts[contractName].address:""
+  const contractBalance = useBalance(props.localProvider,contractAddress)
 
-  //console.log("contractAddress",contractAddress)
-
-  //const tokenBalance = useTokenBalance(writeContracts, tokenName, contractAddress, props.localProvider)
-  //                   useCustomContractReader(contract,functionName,args,pollTime,formatter,onChange)
-  const maybeTokenBalance = useCustomContractReader(props.xmoonContract,"balanceOf",[contractAddress])
-  //console.log("maybeTokenBalance",maybeTokenBalance)
-  const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(maybeTokenBalance?maybeTokenBalance:0))
-  const ethBalance = useBalance( contractAddress, props.localProvider )
+  //const tokenBalance = useTokenBalance(props.readContracts, tokenName, contractAddress, props.localProvider)
+  const tokenBalance = useCustomContractReader(props.tokenContract,"balanceOf",[ contractAddress ])
+  const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance?tokenBalance:0))
+  const ethBalance = useBalance(  props.localProvider, contractAddress )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
 
   const liquidity = useContractReader(props.readContracts,contractName,"liquidity",[props.address])
@@ -73,7 +69,7 @@ export default function DEX(props) {
   if(props.readContracts && props.readContracts[contractName]){
 
     display.push(
-      <div key="ui">
+      <div>
 
         {rowForm("ethToToken","💸",async (value)=>{
           let valueInEther = ethers.utils.parseEther(""+value)
@@ -84,23 +80,29 @@ export default function DEX(props) {
         {rowForm("tokenToEth","🔏",async (value)=>{
           let valueInEther = ethers.utils.parseEther(""+value)
           console.log("valueInEther",valueInEther)
-          let allowance =  await props.readContracts[tokenName].allowance(props.address,props.readContracts[contractName].address)
+          let allowance =  await props.tokenContract.allowance(props.address,props.readContracts[contractName].address)
           console.log("allowance",allowance)
           let nonce = await props.injectedProvider.getTransactionCount(props.address)
           console.log("nonce",nonce)
           let approveTx
           if(allowance.lt(valueInEther)){
-            approveTx = tx( writeContracts[tokenName].approve(props.readContracts[contractName].address,valueInEther,{gasLimit:200000 , nonce:nonce++}) )
+            approveTx = tx( props.writeTokenContract.approve(contractAddress,valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce++}) )
             console.log("approve tx is in, not waiting on it though...",approveTx)
+            setTimeout(()=>{
+              let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
+            },1500)
+
+          }else{
+            let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
           }
-          let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, nonce:nonce++}) )
-          if(approveTx){
+
+          /*if(approveTx){
             console.log("waiting on approve to finish...")
             let approveTxResult = await approveTx;
             console.log("approveTxResult:",approveTxResult)
           }
           let swapTxResult = await swapTx;
-          console.log("swapTxResult:",swapTxResult)
+          console.log("swapTxResult:",swapTxResult)*/
         })}
 
         <Divider> Liquidity ({liquidity?ethers.utils.formatEther(liquidity):"none"}):</Divider>
@@ -109,28 +111,34 @@ export default function DEX(props) {
           let valueInEther = ethers.utils.parseEther(""+value)
           let valuePlusExtra = ethers.utils.parseEther(""+value*1.03)
           console.log("valuePlusExtra",valuePlusExtra)
-          let allowance =  await props.readContracts[tokenName].allowance(props.address,props.readContracts[contractName].address)
+          let allowance =  await props.tokenContract.allowance(props.address,props.readContracts[contractName].address)
           console.log("allowance",allowance)
           let nonce = await props.injectedProvider.getTransactionCount(props.address)
           console.log("nonce",nonce)
           let approveTx
           if(allowance.lt(valuePlusExtra)){
-            approveTx = tx( writeContracts[tokenName].approve(props.readContracts[contractName].address,valuePlusExtra,{gasLimit:200000 , nonce:nonce++}) )
+            console.log("CALLING APPROVE OF",props.writeTokenContract)
+            approveTx = tx( props.writeTokenContract.approve(props.address,valuePlusExtra,{gasLimit:200000 , nonce:nonce++}) )
             console.log("approve tx is in, not waiting on it though...",approveTx)
+            setTimeout(()=>{
+                let depositTx = tx( writeContracts[contractName]["deposit"]({value: valueInEther, gasLimit:200000, nonce:nonce}) )
+            },1500)
+          }else{
+            let depositTx = tx( writeContracts[contractName]["deposit"]({value: valueInEther, gasLimit:200000, nonce:nonce}) )
+            //console.log("waiting on approve to finish...")
+            //let approveTxResult = await approveTx;
+            //console.log("approveTxResult:",approveTxResult)
+            //let depositTxResult = await depositTx;
+            //console.log("depositTxResult:",depositTxResult)
           }
-          let depositTx = tx( writeContracts[contractName]["deposit"]({value: valueInEther, gasLimit:200000, nonce:nonce++}) )
-          if(approveTx){
-            console.log("waiting on approve to finish...")
-            let approveTxResult = await approveTx;
-            console.log("approveTxResult:",approveTxResult)
-          }
-          let depositTxResult = await depositTx;
-          console.log("depositTxResult:",depositTxResult)
+
+
         })}
 
         {rowForm("withdraw","📤",async (value)=>{
           let valueInEther = ethers.utils.parseEther(""+value)
-          let withdrawTxResult = await tx( writeContracts[contractName]["withdraw"](valueInEther) )
+          console.log("withdrawing:",valueInEther)
+          let withdrawTxResult = await tx( writeContracts[contractName]["withdraw"](valueInEther,{ gasLimit:200000 }) )
           console.log("withdrawTxResult:",withdrawTxResult)
         })}
 
@@ -138,30 +146,102 @@ export default function DEX(props) {
     )
   }
 
-  let addingEth = 0
-  /*
-  Curve
-        addingEth={values && values["ethToToken"]?values["ethToToken"]:0}
-        addingToken={values && values["tokenToEth"]?values["tokenToEth"]:0}
-        ethReserve={ethBalanceFloat}
-        token<Reserve={tokenBalanceFloat}
-        width={500} height={500}
-      />*/
+
+
+  let tokenDivider = 100
+
+  const [addingEth, setAddingEth] = useState();
+  const [addingToken, setAddingToken] = useState();
 
   return (
-    <div>
-    
-      <div style={{position:"fixed",right:0,top:150,padding:10}}>
-      
-      
-      </div> 
-      <Card
+    <div style={{position:"relative"}}>
+
+      <div style={{zIndex:2,width:200,position:"absolute",top:64,left:(props.size.width/2)-100}}>
+        <Address value={contractAddress} blockExplorer={"https://blockscout.com/poa/xdai/address/"}/>
+      </div>
+
+      <div style={{width:550,height:500,margin:"auto"}}>
+        <Curve
+          addingEth={addingEth}
+          ethReserveDisplay={ethBalanceFloat.toFixed(4)+" xDAI"}
+          tokenReserveDisplay={tokenBalanceFloat.toFixed(4)+" xMOON"}
+          addingToken={addingToken}
+          ethReserve={ethBalanceFloat}
+          tokenReserve={tokenBalanceFloat/tokenDivider}
+          width={500} height={500}
+          tokenDivider={tokenDivider}//i think this adjusts to get the dot in the middle ... sort of what you _think_ the ratio should be
+        />
+      </div>
+
+      <div style={{padding:16,width:550,margin:"auto"}}>
+
+        <Bridge
+          dexMode={true}
+          topBalance={tokenBalance}
+          bottomBalance={ethBalance}
+          upText={"xDAI to xMOON"}
+          downText={"xMOON to xDAI"}
+          /*topNetwork="Rinkeby"*/
+          topNetwork="https://dai.poa.network"
+          bottomBalance={0}
+          bottomNetwork="https://dai.poa.network"
+          upDisabled={!props.injectedNetwork || props.injectedNetwork.chainId != 100}
+          downDisabled={!props.injectedNetwork || props.injectedNetwork.chainId != 100}
+
+          onUpdate={(mode,amount)=>{
+            //console.log(mode,amount)
+            if(mode=="up"){
+              setAddingEth(amount)
+              setAddingToken(0)
+            } else if(mode=="down"){
+              setAddingEth(0)
+              setAddingToken(amount/tokenDivider)
+            } else{
+              setAddingEth(0)
+              setAddingToken(0)
+            }
+          }}
+
+          transferDown = { async (value)=>{
+            let valueInEther = ethers.utils.parseEther(""+value)
+            console.log("valueInEther",valueInEther)
+            let allowance =  await props.tokenContract.allowance(props.address,props.readContracts[contractName].address)
+            console.log("allowance",allowance)
+            let nonce = await props.injectedProvider.getTransactionCount(props.address)
+            console.log("nonce",nonce)
+            let approveTx
+            if(allowance.lt(valueInEther)){
+              approveTx = tx( props.writeTokenContract.approve(contractAddress,valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce++}) )
+              console.log("approve tx is in, not waiting on it though...",approveTx)
+              setTimeout(()=>{
+                let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
+              },1500)
+
+            }else{
+              let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
+            }
+          }}
+          transferUp = { async (value)=>{
+            let valueInEther = ethers.utils.parseEther(""+value)
+            let swapEthToTokenResult = await tx( writeContracts[contractName]["ethToToken"]({value: valueInEther}) )
+            console.log("swapEthToTokenResult:",swapEthToTokenResult)
+          }}
+        />
+      </div>
+
+
+
+
+
+    <div></div>
+
+      {/*<Card
         title={(
           <div>
-            <Address value={contractAddress} />
+
             <div style={{float:'right',fontSize:24}}>
               {parseFloat(ethers.utils.formatEther(contractBalance)).toFixed(4)} ⚖️
-              <TokenBalance name={tokenName} img={"🌒"} address={contractAddress} balance={maybeTokenBalance} />
+              <TokenBalance img={"🌒"} address={contractAddress} balance={tokenBalance} />
 
             </div>
           </div>
@@ -170,12 +250,8 @@ export default function DEX(props) {
         style={{ width: 550, marginTop: 25 }}
         loading={false}>
         { display }
+      </Card>*/}
 
-      </Card>
-
-      <Button onClick={()=>{
-        tx(props.xmoonContract.approve(props.readContracts["DEX"].address,ethers.utils.parseEther("1000000")))
-      }}>APPROVE DEX</Button>
     </div>
   );
 
