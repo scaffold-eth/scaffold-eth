@@ -63,20 +63,19 @@ function App() {
     if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
       setMode("mint")
       setDrawing("")
-      console.log("HASH:", ipfsHashRequest)
       ipfs.files.get(ipfsHashRequest, function (err, files) {
         files.forEach((file) => {
-          console.log("LOADED", JSON.parse(file.content))
           setInk(JSON.parse(file.content))
           ipfs.files.get(JSON.parse(file.content)['drawing'], function (err, files) {
             files.forEach((file) => {
-          let decompressed = LZ.decompressFromUint8Array(file.content)
-          console.log("decompressed from ipfs", decompressed)
-          if (decompressed) {
-            //let compressed = LZ.compress(decompressed)
-            let decompressedObject = JSON.parse(decompressed)
-            //setSize([decompressedObject['width'],decompressedObject['height']])
             setIpfsHash(ipfsHashRequest)
+            let decompressed = LZ.decompressFromUint8Array(file.content)
+          if (decompressed) {
+            let compressed = LZ.compress(decompressed)
+            setDrawing(compressed)
+            //let decompressedObject = JSON.parse(decompressed)
+            //setSize([decompressedObject['width'],decompressedObject['height']])
+
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
         })
@@ -90,10 +89,10 @@ loadPage()
 
   useEffect(() => {
     if (drawing) {
-      console.log("DECOMPRESSING", drawing)
+      //console.log("DECOMPRESSING", drawing)
       try {
         let decompressed = LZ.decompress(drawing)
-        console.log(decompressed)
+        //console.log(decompressed)
         drawingCanvas.current.loadSaveData(decompressed, false)
       } catch (e) {
         console.log(e)
@@ -282,7 +281,7 @@ loadPage()
       </div>
     )
 
-    bottom = <InkInfo
+    bottom = (<><InkInfo
       address={address}
       mainnetProvider={mainnetProvider}
       injectedProvider={injectedProvider}
@@ -297,6 +296,12 @@ loadPage()
       setInkHash={setInkHash}
       setInk={setInk}
       />
+      {/*<Contract
+          name={"NFTINK"}
+          provider={localProvider}
+          address={address}
+        />*/}
+      </>)
   }
 
   return (
@@ -314,6 +319,7 @@ loadPage()
           mainnetProvider={mainnetProvider}
           hideInterface={false}
           price={price}
+          minimized={true}
         />
         <NftyWallet
         address={address}

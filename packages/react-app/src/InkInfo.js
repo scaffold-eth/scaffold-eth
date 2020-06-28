@@ -10,6 +10,7 @@ import Blockies from 'react-blockies';
 export default function InkInfo(props) {
 
   const [holders, setHolders] = useState()
+  const [sends, setSends] = useState(0)
   const writeContracts = useContractLoader(props.injectedProvider);
   const tx = Transactor(props.injectedProvider)
 
@@ -61,7 +62,7 @@ console.log('Failed:', errorInfo);
       if (tokenOwnerAddress == props.address) {
         return (
       <Popover content={
-        <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
+        <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
       }
       title="Send Ink" trigger="click">
         <Button>Send ink</Button>
@@ -77,8 +78,7 @@ console.log('Failed:', errorInfo);
       else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
 
       const nextHolders = (
-        <>
-        <Space>
+        <Row style={{justifyContent: 'center', marginBottom: 50}}>
         <List
           header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
           itemLayout="horizontal"
@@ -96,8 +96,7 @@ console.log('Failed:', errorInfo);
             </List.Item>
           )}
         />
-      </Space>
-    </>)
+    </Row>)
         setHolders(nextHolders)
     }
   }
@@ -151,21 +150,21 @@ if (!props.ipfsHash) {
           <Button type="primary" style={{ marginBottom: 12 }}>Mint ink</Button>
         </Popover>
   )
-  inkChainInfoDisplay = (
-    <>
-    <Row style={{justifyContent: 'center'}}>
-    <Space>
-    <Typography>
-      <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-      <Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}}>Ink #{inkChainInfo[0].toString()}</Typography.Text> {" by "}
-      </span>
-    </Typography>
-    <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
-    </Space>
-    </Row>
-    </>
-  )
 }
+inkChainInfoDisplay = (
+  <>
+  <Row style={{justifyContent: 'center'}}>
+  <Space>
+  <Typography>
+    <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+    <Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}}>Ink #{inkChainInfo[0].toString()}</Typography.Text> {" by "}
+    </span>
+  </Typography>
+  <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
+  </Space>
+  </Row>
+  </>
+)
 }
 }
 
@@ -174,12 +173,6 @@ let bottom = (
   <div style={{ marginTop: 16, width: "90vmin", margin: "auto" }}>
     {inkChainInfoDisplay}
     {holders}
-
-    {/* <Contract
-      name={"NFTINK"}
-      provider={injectedProvider}
-      address={address}
-    /> */}
   </div>
   {newButton}
   </>

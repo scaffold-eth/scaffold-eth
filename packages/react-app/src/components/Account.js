@@ -5,7 +5,7 @@ import Web3Modal from "web3modal";
 import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button } from 'antd';
+import { Button, Popover } from 'antd';
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -103,7 +103,14 @@ export default function Account(props) {
         <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
       </span>
     )
-  }
+  } else { display = (
+    <span>
+      {props.address?(
+        <Address value={props.address} ensProvider={props.mainnetProvider}/>
+      ):"Connecting..."}
+      <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
+      <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
+    </span>)}
 
   return (
     <div>

@@ -45,7 +45,7 @@ contract NFTINK is ERC721 {
 
         _inkByUrl[jsonUrl] = _ink;
         _inkById[_ink.id] = _ink;
-        _artistInks[msg.sender].add(_ink.id)
+        _artistInks[msg.sender].add(_ink.id);
 
         emit newInk(_ink.id, _ink.artist, _ink.jsonUrl, _ink.limit);
 
@@ -89,5 +89,9 @@ contract NFTINK is ERC721 {
       uint256 _inkCount = _ink.count;
 
       return (_inkId, _inkArtist, _inkCount);
+    }
+
+    function inksCreatedBy(address artist) public view returns (uint256) {
+      return _artistInks[artist].length();
     }
 }

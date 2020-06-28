@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Modal, Button, List, Spin, Popover } from 'antd';
+import { Modal, Button, List, Spin, Popover, Typography, Badge, Space } from 'antd';
+import { WalletOutlined } from '@ant-design/icons';
 import { AddressInput } from "./components"
 import { Transactor } from "./helpers"
 import { useContractReader, useContractLoader } from "./hooks"
@@ -12,6 +13,7 @@ const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
 export default function NftyWallet(props) {
 
   const [visible, setVisible] = useState(false)
+  const [sends, setSends] = useState(0)
   let tokens
   const [tokenData, setTokenData] = useState()
 
@@ -43,7 +45,6 @@ export default function NftyWallet(props) {
     let ifpsFile
     await ipfs.files.get(hash, function (err, files) {
       ifpsFile = files[0].content
-      console.log(ifpsFile)
     })
     return ifpsFile
   }
@@ -67,7 +68,6 @@ export default function NftyWallet(props) {
 
         const urlArray = window.location.href.split("/");
         const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-        console.log(window.location.protocol + window.location.hostname + "/" + ipfsHash)
         let inkImageURI
         await ipfs.files.get(ipfsHash, function (err, files) {
             const inkJson = JSON.parse(files[0].content)
@@ -85,7 +85,6 @@ export default function NftyWallet(props) {
 
       for(var i = 0; i < nftyBalance; i++){
         let tokenInfo = await getTokenInfo(i)
-        console.log(tokenInfo)
         tokens[i] = tokenInfo
       }
 
@@ -94,12 +93,15 @@ export default function NftyWallet(props) {
   loadTokens()
 }
 }
-},[visible])
+},[visible, sends])
 
 useEffect(()=>{
+  if(tokens) {
   setTokenData(tokens)
+}
 },[tokens])
 
+if(nftyBalance > 0) {
 tokenView = (
   <List
     itemLayout="horizontal"
@@ -110,7 +112,7 @@ tokenView = (
           avatar={<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>}
           title={<a href={item['url']}>{item['name'] + ": Token #" + item['tokenId']}</a>}
           description={<Popover content={
-            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
+            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
           }
           title="Send Ink" trigger="click">
             <Button>Send ink</Button>
@@ -119,12 +121,15 @@ tokenView = (
       </List.Item>
     )}
   />)
+} else { tokenView = (<Typography> {"You don't have any inks yet :("}</Typography>)}
 
     return (
       <>
+      <Badge count={displayBalance} showZero>
         <Button type="primary" onClick={showModal} style={{verticalAlign:"top",marginLeft:8,marginTop:4}} size={"large"}>
-          NFTY Wallet
+          My Inks
         </Button>
+        </Badge>
         <Modal
           title="My inks"
           visible={visible}
