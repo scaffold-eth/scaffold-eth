@@ -72,15 +72,15 @@ console.log('Failed:', errorInfo);
 
       let mintDescription
       if(props.ink.attributes[0].value == 0) {
-        mintDescription = (<><span>{inkChainInfo[2] + ' minted'}</span> {mintFlow}</>)
+        mintDescription = (inkChainInfo[2] + ' minted')
       }
-      else {mintDescription = (<><span>{inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted'}</span> {mintFlow}</>)}
+      else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
 
       const nextHolders = (
         <>
         <Space>
         <List
-          header={<Typography.Title level={3}>{mintDescription}</Typography.Title>}
+          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray}
           renderItem={item => (
@@ -146,7 +146,7 @@ if (!props.ipfsHash) {
   mintFlow =       (
     <Popover content={mintForm}
         title="Mint" trigger="click">
-          <Button type="primary">Mint ink</Button>
+          <Button type="primary" style={{ marginBottom: 12 }}>Mint ink</Button>
         </Popover>
   )
   inkChainInfoDisplay = (

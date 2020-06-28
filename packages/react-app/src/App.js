@@ -7,7 +7,7 @@ import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, Li
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader, useContractReader } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address, AdminWidget } from "./components"
 import InkInfo from "./InkInfo.js"
-import SendInkForm from "./SendInkForm.js"
+import NftyWallet from "./NftyWallet.js"
 import { Transactor } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
@@ -75,7 +75,7 @@ function App() {
           if (decompressed) {
             //let compressed = LZ.compress(decompressed)
             let decompressedObject = JSON.parse(decompressed)
-            setSize([decompressedObject['width'],decompressedObject['height']])
+            //setSize([decompressedObject['width'],decompressedObject['height']])
             setIpfsHash(ipfsHashRequest)
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
@@ -303,7 +303,7 @@ loadPage()
 
       <Header />
 
-      <div id={'ACCOUNT_HEADER_ID'} style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
+      <Row id={'ACCOUNT_HEADER_ID'} style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
           setAddress={setAddress}
@@ -314,7 +314,8 @@ loadPage()
           hideInterface={false}
           price={price}
         />
-      </div>
+        <NftyWallet address={address} readContracts={readContracts}/>
+      </Row>
 
       <div>
       {top}

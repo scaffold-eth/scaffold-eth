@@ -25,7 +25,9 @@ contract NFTINK is ERC721 {
     }
 
     mapping (string => Ink) private _inkByUrl;
+    mapping (uint256 => Ink) private _inkById;
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
+    mapping (address => EnumerableSet.UintSet) private _artistInks;
 
     function createInk(string memory jsonUrl, uint256 limit) public returns (uint256) {
       require(!_inkByUrl[jsonUrl].exists, "this ink already exists!");
@@ -42,6 +44,8 @@ contract NFTINK is ERC721 {
         });
 
         _inkByUrl[jsonUrl] = _ink;
+        _inkById[_ink.id] = _ink;
+        _artistInks[msg.sender].add(_ink.id)
 
         emit newInk(_ink.id, _ink.artist, _ink.jsonUrl, _ink.limit);
 
