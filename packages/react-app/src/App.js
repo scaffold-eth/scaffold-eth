@@ -56,6 +56,8 @@ function App() {
 
   const [holders, setHolders] = useState()
 
+  const [loadingTip, setLoadingTip] = useState('Connecting to the Ether webs...')
+
   useEffect(() => {
     const loadPage = async () => {
     //on page load checking url path
@@ -136,6 +138,7 @@ loadPage()
     setImageHash()
     setInkHash()
     //setMode("mint")
+    setLoadingTip('Sending ink to IPFS...')
 
     console.log("SAVING BUFFER:", imageBuffer)
     let serverUrl = 'http://localhost:3001/save'
@@ -155,13 +158,18 @@ loadPage()
         var inkStr = JSON.stringify(ink);
         // read json string to Buffer
         const inkBuffer = Buffer.from(inkStr);
+
+        setLoadingTip('Saving metadata in IPFS...')
+
         axios.post('http://localhost:3001/save', { buffer: inkBuffer })
         .then(async (response) => {
           console.log(response);
           console.log('limit', ink.attributes[0]['value'])
           setIpfsHash(response.data)
+          setLoadingTip('Saving Ink on-chain...')
           let result = await tx(writeContracts["NFTINK"].createInk(response.data, ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
           console.log("result", result)
+          setLoadingTip('Connecting to the Ether webs...')
           window.history.pushState({id: response.data}, ink['name'], '/' + response.data)
         })
         .catch(function (error) {
@@ -295,6 +303,7 @@ loadPage()
       setImageHash={setImageHash}
       setInkHash={setInkHash}
       setInk={setInk}
+      loadingTip={loadingTip}
       />
       {/*<Contract
           name={"NFTINK"}

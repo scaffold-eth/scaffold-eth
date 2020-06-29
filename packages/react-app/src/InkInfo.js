@@ -106,7 +106,7 @@ console.log('Failed:', errorInfo);
 if (!props.ipfsHash) {
   inkChainInfoDisplay = (
     <div>
-      <Spin /> Connecting to the Ether Webs...
+      <Spin tip={props.loadingTip}/>
     </div>
   )
 } else {

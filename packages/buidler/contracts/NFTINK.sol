@@ -94,4 +94,20 @@ contract NFTINK is ERC721 {
     function inksCreatedBy(address artist) public view returns (uint256) {
       return _artistInks[artist].length();
     }
+
+    function inkOfArtistByIndex(address artist, uint256 index) public view returns (uint256) {
+        return _artistInks[artist].at(index);
+    }
+
+    function inkInfoById(uint256 id) public view returns (string memory, address, uint256) {
+      require(_inkById[id].exists, "this ink does not exist!");
+      Ink memory _ink = _inkById[id];
+
+      string memory _jsonUrl = _ink.jsonUrl;
+      address _inkArtist = _ink.artist;
+      uint256 _inkCount = _ink.count;
+
+
+      return (_jsonUrl, _inkArtist, _inkCount);
+    }
 }
