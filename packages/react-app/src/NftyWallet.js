@@ -198,6 +198,7 @@ tokenView = (
           <List.Item.Meta
             avatar={item['image']?<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
             title={<a href={item['url']}>{item['name'] + ": Ink #" + item['inkId']}</a>}
+            description={item['inkCount'].toString() + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
           />
         </List.Item>
       )}

@@ -60,6 +60,7 @@ contract NFTINK is ERC721 {
         require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
         _inkByUrl[jsonUrl].count += 1;
+        _inkById[_ink.id].count += 1;
 
         _tokenIds.increment();
         uint256 id = _tokenIds.current();
