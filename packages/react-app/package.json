@@ -14,6 +14,7 @@
     ]
   },
   "dependencies": {
+    "@ant-design/icons": "^4.2.1",
     "@apollo/react-hooks": "^3.1.3",
     "@ramp-network/ramp-instant-sdk": "^1.8.1",
     "@testing-library/jest-dom": "^4.2.4",
