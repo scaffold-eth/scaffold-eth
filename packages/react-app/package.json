@@ -32,10 +32,10 @@
     "ethers": "^4.0.43",
     "graphql": "^14.6.0",
     "qrcode.react": "^1.0.0",
-    "react-qr-reader": "^2.2.1",
     "react": "16.12.0",
     "react-blockies": "^1.4.1",
     "react-dom": "16.12.0",
+    "react-qr-reader": "^2.2.1",
     "react-scripts": "^3.3.1",
     "web3modal": "^1.5.0"
   },
@@ -43,7 +43,11 @@
     "@testing-library/dom": "^6.12.2",
     "@types/react": "^16.9.19",
     "eslint": "^6.8.0",
-    "eslint-plugin-flowtype": "^4.6.0"
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "prettier": "^2.0.5"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -52,6 +56,7 @@
     "build": "react-scripts build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
-    "test": "react-scripts test"
+    "test": "react-scripts test",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
   }
 }
