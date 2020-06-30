@@ -37,6 +37,7 @@
     "bnc-notify": "^1.1.2",
     "burner-provider": "^1.0.15",
     "dotenv": "^8.2.0",
+    "eth-hooks": "^1.1.2",
     "graphql": "^14.6.0",
     "qrcode.react": "^1.0.0",
     "react": "16.12.0",

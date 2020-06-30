@@ -1,6 +1,6 @@
 import { useState } from "react";
+import { usePoller } from "eth-hooks";
 import axios from "axios";
-import usePoller from "./Poller";
 
 export default function useGasPrice(speed) {
   const [gasPrice, setGasPrice] = useState();

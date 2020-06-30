@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Token, WETH, Fetcher, Route } from "@uniswap/sdk";
-import usePoller from "./Poller";
+import { usePoller } from "eth-hooks";
 
 export default function useExchangePrice(mainnetProvider, pollTime) {
   const [price, setPrice] = useState(0);

@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
-import { useContractReader } from "../hooks";
+import { useTokenBalance } from "eth-hooks";
 
 export default function TokenBalance(props) {
   const [dollarMode, setDollarMode] = useState(true);
 
-  const balance = useContractReader(props.contracts, props.name, "balanceOf", [props.address], 1777);
+  const tokenContract = props.contracts && props.contracts[props.name];
+  const balance = useTokenBalance(tokenContract, props.address, 1777);
 
   let floatBalance = parseFloat("0.00");
 

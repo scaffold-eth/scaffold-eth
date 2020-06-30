@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Button, Badge } from "antd";
-import { usePoller, useBlockNumber } from "../hooks";
+import { usePoller, useBlockNumber } from "eth-hooks";
 // import { WalletOutlined } from '@ant-design/icons';
 
 import Address from "./Address";

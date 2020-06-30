@@ -5,7 +5,8 @@ import "./App.css";
 import { Row, Col } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useExchangePrice, useGasPrice, useBalance, useAddress, useUserProvider } from "./hooks";
+import { useUserAddress, useBalance } from "eth-hooks";
+import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract } from "./components";
 import Hints from "./Hints";
 import { INFURA_ID } from "./constants";
@@ -44,7 +45,7 @@ function App() {
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localChainProvider);
-  const address = useAddress(userProvider);
+  const address = useUserAddress(userProvider);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localChainProvider, address);

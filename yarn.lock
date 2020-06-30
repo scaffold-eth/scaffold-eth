@@ -6025,6 +6025,13 @@ eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.0:
     idna-uts46-hx "^2.3.1"
     js-sha3 "^0.5.7"
 
+eth-hooks@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-1.1.2.tgz#6b8f4cd1acbb0a83714cb740fc6c6238685dd2a6"
+  integrity sha512-+K1Pkm5BRSRE+Gt3mCZsHx7gJiYahFhGbQ+ns6T/S/A4MUp2xDvDZxQRSr8Qy48jaV6Y1GtKj+mi1dpbV+GLKQ==
+  dependencies:
+    burner-provider "^1.0.15"
+
 eth-json-rpc-errors@^1.0.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/eth-json-rpc-errors/-/eth-json-rpc-errors-1.1.1.tgz#148377ef55155585981c21ff574a8937f9d6991f"
