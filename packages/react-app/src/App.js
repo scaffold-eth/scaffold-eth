@@ -76,7 +76,7 @@ function App() {
   //?xMoonBalanceOfExchange:null)
 
   const [injectedNetwork, setInjectedNetwork] = useState();
-  //console.log(injectedNetwork)
+  console.log("injectedNetwork",injectedNetwork)
   useEffect(() => {
     const getNetwork = async () => {
       if (injectedProvider) {
@@ -143,7 +143,7 @@ function App() {
       <div style={{width:"100%",backgroundColor:"#999999"}}>
 
         <div style={{float:"right",padding:16}}>
-          <img src="./rinkeby.png" style={{maxWidth:30}}/> Rinkeby
+          <img src="./rinkeby.png" style={{maxWidth:30}}/> Rinkeby <a href={"https://rinkeby.etherscan.io"} target="_blank"><LinkOutlined /></a>
           <Balance address={address} provider={rinkebyProvider} />
         </div>
 
@@ -167,8 +167,9 @@ function App() {
             bottomNetwork="https://dai.poa.network"
             upDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
             downDisabled={!injectedNetwork || injectedNetwork.chainId != 4}
+            timeEstimations={[15,40]}
             transferDown = { async (amount) => {
-              approveAndCall(
+              let result = approveAndCall(
                 injectedProvider,
                 rinkebyTx,
                 address,
@@ -179,9 +180,12 @@ function App() {
                 [address, ethers.utils.parseEther("" + amount)],
                 { gasLimit: 250000 }
               )
+              console.log("result",result)
+              console.log("await------>:",await result)
+              console.log("----- done ----")
             }}
             transferUp = { async (amount) => {
-              approveAndCall(
+              return approveAndCall(
                 injectedProvider,
                 xdaiTx,
                 address,
@@ -203,13 +207,13 @@ function App() {
       <div style={{width:"100%",height:700,backgroundColor:"#555555"}}>
 
         <div style={{float:"right",padding:16}}>
-          <img src="./xdai.png" style={{maxWidth:30}}/> xDAI
+          <img src="./xdai.png" style={{maxWidth:30}}/> xDAI <a href={"https://blockscout.com/poa/xdai/"} target="_blank"><LinkOutlined /></a>
           <Balance address={address} provider={xdaiProvider} dollarMultiplier={1} />
         </div>
 
         <div style={{textAlign:"left",padding:16}}>
           {/*<Address value={xmoonContractAddress} />*/} xMOON <a href={"https://blockscout.com/poa/xdai/tokens/"+xmoonContractAddress} target="_blank"><LinkOutlined /></a>
-          <TokenBalance name={"xMOON"} img={"🌒"} address={address} balance={xmoonBalance} />
+          <TokenBalance name={"xMOON"} img={"🌒"} address={address} balance={xmoonBalance}  />
         </div>
 
         <DEX
@@ -265,14 +269,14 @@ function App() {
               upDisabled={!injectedNetwork || injectedNetwork.chainId != 1}
               downDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
               transferDown = { async (amount) => {
-                injectedXdaiTx({
+                return injectedXdaiTx({
                   to: XDaiToDaiBridge,
                   value: ethers.utils.parseEther(amount),
                 })
               }}
               transferDownTime = {180}
               transferUp = { async (amount) => {
-                tx(
+                return tx(
                   injectedDaiContract.transfer(DaiToxDaiBridge,ethers.utils.parseEther(amount),{
                     gasLimit: 100000,
                     gasPrice: gasPrice
@@ -291,14 +295,14 @@ function App() {
 
 
           <div style={{float:"right",padding:16}}>
-            <img src="./eth.png" style={{maxWidth:30}}/> ETH
+            <img src="./eth.png" style={{maxWidth:30}}/> ETH <a href={"https://etherscan.io"} target="_blank"><LinkOutlined /></a>
             <Balance address={address} provider={mainnetProvider} dollarMultiplier={price} />
           </div>
 
 
           <div style={{textAlign:'left',padding:16}}>
              {/* <Address value={daiContractAddress} /> */} DAI <a href="https://etherscan.io/token/0x6b175474e89094c44da98b954eedeac495271d0f" target="_blank"><LinkOutlined /></a>
-            <TokenBalance name={"DAI"} img={<img src="./dai.png" style={{maxWidth:30}}/>} address={address} balance={daiBalance} />
+            <TokenBalance name={"DAI"} img={<img src="./dai.png" style={{maxWidth:30}}/>} address={address} balance={daiBalance} dollarMultiplier={1}/>
           </div>
 
         </div>

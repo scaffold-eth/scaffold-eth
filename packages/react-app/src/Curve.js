@@ -8,7 +8,7 @@ const Curve = (props) => {
 
     const textSize = 16
 
-    const width = canvas.width ;
+    const width = canvas.width-200 ;
     const height = canvas.height ;
 
     if (canvas.getContext && props.ethReserve && props.tokenReserve ) {

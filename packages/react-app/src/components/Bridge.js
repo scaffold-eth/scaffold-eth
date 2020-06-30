@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { LinkOutlined, DownOutlined, UpOutlined, LeftOutlined, RightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Popover } from 'antd';
+import { Row, Col, Button, Popover, Progress } from 'antd';
 import { ethers } from "ethers";
 import { AmountInput } from "."
 
@@ -10,6 +10,8 @@ export default function Bridge(props) {
   let moonToxMoonBridge, max
   const [mode, setMode] = useState();
   const [amount, setAmount] = useState();
+  const [start, setStart] = useState();
+
 
   const update = (newMode,newAmount)=>{
     setMode(newMode)
@@ -73,17 +75,61 @@ export default function Bridge(props) {
     )
   } else {
     let button
-    if (mode == "down") {
+    if (mode == "bridgingDown" || mode == "bridgingUp" ) {
+
+      let timePassed = Date.now()-start
+
+      let percent = timePassed/5000*100
+
+      return (
+        <Row gutter={8} type="flex" align="middle" style={{backgroundColor:"#FFFFFF", padding:32, borderRadius:8}}>
+          <Col span={8} align="right" >
+            <Progress type="circle" percent={Math.round(Math.min(100,percent))} width={80} />
+          </Col>
+          <Col span={8} align="center">
+            {mode == "bridgingDown" ? downDisplay:upDisplay}
+          </Col>
+          <Col span={8} align="left">
+
+          </Col>
+        </Row>
+      )
+    } else if (mode == "confirmDialog") {
+      return (
+        <Row gutter={8} type="flex" align="middle" style={{backgroundColor:"#FFFFFF", padding:32, borderRadius:8}}>
+          <Col span={24} align="center" >
+            <img src="./metamask.png" style={{maxWidth:64, paddingRight:16}} /> Please confirm wallet dialog.
+          </Col>
+        </Row>
+      )
+    } else if (mode == "down") {
      max = props.topBalance ? ethers.utils.formatEther(props.topBalance) : 0
       button = (
-        <Button shape="round" size="large" type="primary" onClick={()=>{props.transferDown(amount)}} disabled={!amount}>
+        <Button shape="round" size="large" type="primary" onClick={async ()=>{
+
+          console.log("AWAITING TRANSFER DOWN")
+          update("confirmDialog",amount)
+          let result = await props.transferDown(amount)
+          update("",0)
+          //setStart(Date.now())
+          //console.log("TRANSFER DOWN RESULOT:",result)
+          //setTimeout(()=>{
+          //  update("",0)
+          //},15000)
+        }} disabled={!amount}>
           {downDisplay}
         </Button>
       )
-    } else {
+    } else if (mode == "up") {
       max = props.bottomBalance ? ethers.utils.formatEther(props.bottomBalance) : 0
       button = (
-        <Button shape="round" size="large" type="primary" onClick={()=>{props.transferUp(amount)}} disabled={!amount}>
+        <Button shape="round" size="large" type="primary" onClick={async ()=>{
+
+          console.log("AWAITING TRANSFER UP")
+          update("confirmDialog",amount)
+          let result = await props.transferUp(amount)
+          update("",0)
+        }} disabled={!amount}>
           {upDisplay}
         </Button>
       )

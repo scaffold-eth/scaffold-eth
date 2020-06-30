@@ -168,7 +168,7 @@ export default function DEX(props) {
           addingToken={addingToken}
           ethReserve={ethBalanceFloat}
           tokenReserve={tokenBalanceFloat/tokenDivider}
-          width={500} height={500}
+          width={700} height={500}
           tokenDivider={tokenDivider}//i think this adjusts to get the dot in the middle ... sort of what you _think_ the ratio should be
         />
       </div>
@@ -202,24 +202,28 @@ export default function DEX(props) {
             }
           }}
 
-          transferDown = { async (value)=>{
-            let valueInEther = ethers.utils.parseEther(""+value)
-            console.log("valueInEther",valueInEther)
-            let allowance =  await props.tokenContract.allowance(props.address,props.readContracts[contractName].address)
-            console.log("allowance",allowance)
-            let nonce = await props.injectedProvider.getTransactionCount(props.address)
-            console.log("nonce",nonce)
-            let approveTx
-            if(allowance.lt(valueInEther)){
-              approveTx = tx( props.writeTokenContract.approve(contractAddress,valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce++}) )
-              console.log("approve tx is in, not waiting on it though...",approveTx)
-              setTimeout(()=>{
-                let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
-              },1500)
+          transferDown = {(value)=>{
+            return new Promise(async (resolve, reject) => {
+              let valueInEther = ethers.utils.parseEther(""+value)
+              console.log("valueInEther",valueInEther)
+              let allowance =  await props.tokenContract.allowance(props.address,props.readContracts[contractName].address)
+              console.log("allowance",allowance)
+              let nonce = await props.injectedProvider.getTransactionCount(props.address)
+              console.log("nonce",nonce)
+              let approveTx
+              if(allowance.lt(valueInEther)){
+                approveTx = tx( props.writeTokenContract.approve(contractAddress,valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce++}) )
+                console.log("approve tx is in, not waiting on it though...",approveTx)
+                setTimeout(()=>{
+                  let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
+                  resolve(swapTx)
+                },1500)
 
-            }else{
-              let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
-            }
+              }else{
+                let swapTx = tx( writeContracts[contractName]["tokenToEth"](valueInEther,{gasLimit:200000, gasPrice:1000000000, nonce:nonce}) )
+                resolve(swapTx)
+              }
+            })
           }}
           transferUp = { async (value)=>{
             let valueInEther = ethers.utils.parseEther(""+value)
