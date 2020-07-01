@@ -1,5 +1,5 @@
 # folders
-dist/
+lib/
 node_modules/
 
 *.log

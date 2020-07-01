@@ -4,9 +4,10 @@
   "description": "A set of hooks to turbocharge buidling",
   "author": "Austin Griffith <austin@ethereum.org>",
   "repository": "https://github.com/tomafrench/eth-hooks.git",
-  "main": "dist/index.js",
-  "module": "dist/index.es.js",
-  "jsnext:main": "dist/index.es.js",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "jsnext:main": "lib/index.es.js",
+  "types": "lib/index.d.ts",
   "engines": {
     "node": ">=8",
     "npm": ">=5"
@@ -41,8 +42,8 @@
     "@commitlint/config-conventional": "^8.3.4",
     "@rollup/plugin-babel": "^5.0.4",
     "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^8.1.0",
-    "@rollup/plugin-typescript": "^5.0.1",
     "@rollup/plugin-url": "^5.0.1",
     "@types/react": "^16.9.41",
     "commitizen": "^4.1.2",
@@ -54,6 +55,7 @@
     "prettier": "1.x",
     "react": "^16.9.0",
     "rollup": "2.18.1",
+    "rollup-plugin-typescript2": "^0.27.1",
     "shx": "^0.3.2",
     "typescript": "^3.9.5"
   },
