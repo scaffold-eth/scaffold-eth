@@ -6,7 +6,7 @@ import { ethers } from "ethers";
 import "./App.css";
 import { LinkOutlined, DownOutlined, UpOutlined } from '@ant-design/icons';
 import { Row, Col, Button } from 'antd';
-import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader, useBalance } from "./hooks"
+import { useExchangePrice, useGasPrice, useContractLoader, useCustomContractLoader, useCustomContractReader, useBalance, useNetwork } from "./hooks"
 import { Header, Account, Provider, Faucet, Ramp, Contract, TokenBalance, Balance, Address, AmountInput, Exchange, Bridge, GasGauge, Curve } from "./components"
 import { Transactor, approveAndCall } from "./helpers"
 import DEX from "./DEX.js"
@@ -72,51 +72,8 @@ function App() {
   const xDaiExchangeAddress = xDaiContracts ? xDaiContracts["DEX"].address : ""
   const xDaiBalanceOfExchange = useBalance(xdaiProvider, xDaiExchangeAddress)
   const xMoonBalanceOfExchange = useCustomContractReader(xmoonContract, "balanceOf", [ xDaiExchangeAddress ])
-  //console.log("xMoonBalanceOfExchange",xMoonBalanceOfExchange)
-  //?xMoonBalanceOfExchange:null)
 
-  const [injectedNetwork, setInjectedNetwork] = useState();
-  console.log("injectedNetwork",injectedNetwork)
-  useEffect(() => {
-    const getNetwork = async () => {
-      if (injectedProvider) {
-        let injectedNetwork = await injectedProvider.getNetwork()
-        setInjectedNetwork(injectedNetwork)
-      }
-    }
-    getNetwork()
-  }, [injectedProvider])
-
-
-/*<Bridge
-  topBalance={0}
-  bottomBalance={0}
-  upText={"xDAI to xMOON"}
-  downText={"xMOON to xDAI"}
-  upDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
-  downDisabled={!injectedNetwork || injectedNetwork.chainId != 100}
-  onChange={(value)=>{
-    console.log("VALUE",value)
-  }}
-  transferDown = {async (amount) => {
-    approveAndCall(
-      injectedProvider,
-      xdaiTx,
-      address,
-      contractsWriteable["DEX"].address,
-      ethers.utils.parseEther("" + amount),
-      injectedXmoonContract,
-      contractsWriteable["DEX"].tokenToEth,
-      [ethers.utils.parseEther("" + amount)],
-      { gasLimit: 250000 }
-    )
-  }}
-  transferDownTime = {60}
-  transferUp = { async (amount) => {
-    let amountInWei = ethers.utils.parseEther(amount)
-    xdaiTx(contractsWriteable["DEX"].ethToToken({value: amountInWei}))
-  } }
-/>*/
+  const injectedNetwork = useNetwork(injectedProvider);
 
   const size = useWindowSize();
 

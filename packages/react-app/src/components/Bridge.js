@@ -25,10 +25,10 @@ export default function Bridge(props) {
   let downDisplay = ""
   if(props.dexMode){
     upDisplay = (
-      <div>{props.upText} <RightOutlined /></div>
+      <div><LeftOutlined /> {props.upText}</div>
     )
     downDisplay = (
-      <div><LeftOutlined /> {props.downText} </div>
+      <div> {props.downText}  <RightOutlined /></div>
     )
   }else{
     upDisplay = (
@@ -43,7 +43,6 @@ export default function Bridge(props) {
   if (!mode) {
     return (
       <Row gutter={8}>
-
         <Col span={12} align="right">
           {props.upDisabled ? (
             <Popover content={props.bottomNetwork?"Required Network: "+props.bottomNetwork:"Wrong Network Selected"}>
@@ -106,7 +105,6 @@ export default function Bridge(props) {
      max = props.topBalance ? ethers.utils.formatEther(props.topBalance) : 0
       button = (
         <Button shape="round" size="large" type="primary" onClick={async ()=>{
-
           console.log("AWAITING TRANSFER DOWN")
           update("confirmDialog",amount)
           let result = await props.transferDown(amount)
@@ -124,7 +122,6 @@ export default function Bridge(props) {
       max = props.bottomBalance ? ethers.utils.formatEther(props.bottomBalance) : 0
       button = (
         <Button shape="round" size="large" type="primary" onClick={async ()=>{
-
           console.log("AWAITING TRANSFER UP")
           update("confirmDialog",amount)
           let result = await props.transferUp(amount)

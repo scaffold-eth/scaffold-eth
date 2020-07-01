@@ -6,7 +6,7 @@ const Curve = (props) => {
   useEffect(() => {
     let canvas = ref.current;
 
-    const textSize = 16
+    const textSize = 18
 
     const width = canvas.width-200 ;
     const height = canvas.height ;
@@ -16,7 +16,7 @@ const Curve = (props) => {
       const k = props.ethReserve * props.tokenReserve
 
       const ctx = canvas.getContext('2d');
-      ctx.clearRect(0,0,width,height);
+      ctx.clearRect(-canvas.width,-canvas.height,canvas.width*2,canvas.height*2);
 
       let maxX = k/(props.ethReserve/4)
       let minX = 0
@@ -41,15 +41,21 @@ const Curve = (props) => {
       ctx.fillStyle = "#FFFFFF";
       ctx.font = textSize+"px Arial";
       // +Y axis
-      ctx.beginPath() ;
-      ctx.moveTo(plotX(minX),plotY(0)) ;
-      ctx.lineTo(plotX(minX),plotY(maxY)) ;
-      ctx.stroke() ;
+      //ctx.beginPath() ;
+      //ctx.moveTo(plotX(minX),plotY(0)) ;
+      //ctx.lineTo(plotX(minX),plotY(maxY)) ;
+      //ctx.stroke() ;
       // +X axis
-      ctx.beginPath() ;
-      ctx.moveTo(plotX(0),plotY(minY)) ;
-      ctx.lineTo(plotX(maxX),plotY(minY)) ;
-      ctx.stroke() ;
+      //ctx.beginPath() ;
+      //ctx.moveTo(plotX(0),plotY(minY)) ;
+    //  ctx.lineTo(plotX(maxX),plotY(minY)) ;
+      //ctx.stroke() ;
+
+      ctx.save();
+      ctx.translate(width,height/2);//offset?
+      ctx.rotate(Math.PI*135/180);
+      ctx.scale(0.8,0.8);
+
 
       ctx.lineWidth = 2 ;
       ctx.beginPath() ;
@@ -71,9 +77,12 @@ const Curve = (props) => {
 
       if(props.addingEth){
 
+
+
+
         let newEthReserve = props.ethReserve + parseFloat(props.addingEth)
 
-        ctx.fillStyle = "#eeeeee";
+        ctx.fillStyle = "#aaaaaa";
         ctx.beginPath();
         ctx.arc(plotX(newEthReserve),plotY(k/(newEthReserve)), 5, 0, 2 * Math.PI);
         ctx.fill();
@@ -82,24 +91,38 @@ const Curve = (props) => {
         ctx.strokeStyle = "#999999";
         drawArrow(ctx,plotX(newEthReserve),plotY(props.tokenReserve),plotX(newEthReserve),plotY(k/(newEthReserve)))
 
-
-        ctx.fillStyle = "#222222";
-        ctx.fillText("$"+props.addingEth+" xDai input", plotX(props.ethReserve)+textSize, plotY(props.tokenReserve)-textSize);
-
         ctx.strokeStyle = "#333333";
         drawArrow(ctx,plotX(props.ethReserve),plotY(props.tokenReserve),plotX(newEthReserve),plotY(props.tokenReserve))
 
 
 
+        ctx.save();
+        ctx.translate(plotX(props.ethReserve)+textSize,plotY(props.tokenReserve)-textSize);
+        ctx.rotate(Math.PI*225/180);
+
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText("$"+props.addingEth+" xDai input", 0, 0);
+
+        ctx.restore();
+
+
+
+        ctx.save();
+        ctx.translate(plotX(newEthReserve)+textSize,plotY(k/(newEthReserve))-textSize*3);
+        ctx.rotate(Math.PI*225/180);
+
         let amountGained =  Math.round(10000 * ( props.addingEth * props.tokenReserve ) / ( newEthReserve ) ) /10000
-        ctx.fillStyle = "#000000";
-        ctx.fillText(""+(amountGained*props.tokenDivider)+" 🌒  output", plotX(newEthReserve)+textSize,plotY(k/(newEthReserve)));
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillText(""+(amountGained*props.tokenDivider).toFixed(4)+" 🌒  output",0 ,0);
+
+        ctx.restore();
+
 
       }else if(props.addingToken){
 
         let newTokenReserve = props.tokenReserve + parseFloat(props.addingToken)
 
-        ctx.fillStyle = "#bbbbbb";
+        ctx.fillStyle = "#aaaaaa";
         ctx.beginPath();
         ctx.arc(plotX(k/(newTokenReserve)),plotY(newTokenReserve), 5, 0, 2 * Math.PI);
         ctx.fill();
@@ -112,28 +135,49 @@ const Curve = (props) => {
         ctx.strokeStyle = "#333333";
         drawArrow(ctx,plotX(props.ethReserve),plotY(props.tokenReserve),plotX(props.ethReserve),plotY(newTokenReserve))
 
-        ctx.fillStyle = "#000000";
-        ctx.fillText(""+(props.addingToken*props.tokenDivider)+" 🌒  input", plotX(props.ethReserve)+textSize,plotY(props.tokenReserve));
 
+        ctx.save();
+        ctx.translate(plotX(props.ethReserve)+textSize,plotY(props.tokenReserve)+textSize*3);
+        ctx.rotate(Math.PI*225/180);
+
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText(""+(props.addingToken*props.tokenDivider)+" 🌒  input", 0,0);
+
+        ctx.restore();
+
+
+        ctx.save();
+        ctx.translate(plotX(k/(newTokenReserve))+textSize,plotY(newTokenReserve)-2*textSize);
+        ctx.rotate(Math.PI*225/180);
 
         let amountGained =  Math.round(10000 * ( props.addingToken * props.ethReserve ) / ( newTokenReserve ) ) /10000
         //console.log("amountGained",amountGained)
-        ctx.fillStyle = "#000000";
-        ctx.fillText("$"+amountGained+" xDai output", plotX(k/(newTokenReserve))+textSize,plotY(newTokenReserve)-textSize);
+        ctx.fillStyle = "#ffffff";
+        ctx.fillText("$"+amountGained+" xDai output", 0,0 );
+
+        ctx.restore();
 
       }else{
+
+
+        ctx.save();
+        ctx.translate((plotX(props.ethReserve)+textSize*2),plotY(props.tokenReserve)+textSize*10);
+        ctx.rotate(Math.PI*225/180);
+
 
         let newEthReserve = props.ethReserve + parseFloat(1)
         let amountTokenGained =  Math.round(10000 * ( 1 * props.tokenReserve ) / ( newEthReserve ) ) /10000
         ctx.fillStyle = "#aaaaaa";
 
-        ctx.fillText("$1.00 xDAI is trading for "+(amountTokenGained)+" 🌒  xMOON", plotX(props.ethReserve)+textSize,plotY(props.tokenReserve)-(textSize*2));
+        ctx.fillText("$1.00 xDAI is trading for "+(amountTokenGained)+" 🌒  xMOON", textSize,(textSize*2));
 
         let newTokenReserve = props.tokenReserve + parseFloat(1)
         let amountGained =  Math.round(10000 * ( 1 * props.ethReserve ) / ( newTokenReserve ) ) /10000
-        ctx.fillText("1 🌒  xMOON is trading for $"+(amountGained/props.tokenDivider)+" xDAI", plotX(props.ethReserve)+textSize*2,plotY(props.tokenReserve));
+        ctx.fillText("1 🌒  xMOON is trading for $"+(amountGained/props.tokenDivider).toFixed(4)+" xDAI", 0,(textSize*0));
 
 
+
+        ctx.restore();
 
 
       }
@@ -143,7 +187,12 @@ const Curve = (props) => {
       ctx.arc(plotX(props.ethReserve),plotY(props.tokenReserve), 5, 0, 2 * Math.PI);
       ctx.fill();
 
+
+      ctx.restore();
+
+
     }
+
   },[props]);
 
 
@@ -154,11 +203,11 @@ const Curve = (props) => {
         ref={ref}
         {...props}
       />
-      <div style={{position:'absolute',fontSize:20,left:"20%",bottom:10,color:"#ededed"}}>
-       {props.ethReserveDisplay} -->
+      <div style={{position:'absolute',width:"50%",textAlign:"right",fontSize:20,right:"103%",bottom:10,color:"#ededed"}}>
+       {props.ethReserveDisplay}
       </div>
-      <div style={{position:'absolute',fontSize:20,left:10,bottom:"20%",transform:"rotate(-90deg)",transformOrigin:"0 0",color:"#ededed"}}>
-       {props.tokenReserveDisplay} -->
+      <div style={{position:'absolute',fontSize:20,right:"3%",bottom:10,color:"#ededed"}}>
+       {props.tokenReserveDisplay}
       </div>
     </div>
   );
