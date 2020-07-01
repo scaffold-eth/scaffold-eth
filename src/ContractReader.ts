@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
 import usePoller from "./Poller";
+import { BLOCK_TIME } from "./constants";
 
 const DEBUG = false;
 
@@ -13,7 +14,7 @@ export default function useContractReader(
   formatter?: (...args: any[]) => any,
   onChange?: (newValue: any) => void,
 ): any {
-  let adjustPollTime = 3777;
+  let adjustPollTime = BLOCK_TIME;
 
   if (pollTime) {
     adjustPollTime = pollTime;

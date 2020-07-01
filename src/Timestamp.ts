@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import useBlockNumber from "./BlockNumber";
 
-const useTimestamp = (provider: Web3Provider, pollTime: number): number => {
+const useTimestamp = (provider: Web3Provider, pollTime?: number): number => {
   const blockNumber = useBlockNumber(provider, pollTime);
 
   const [timestamp, setTimestamp] = useState<number>(0);

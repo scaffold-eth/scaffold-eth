@@ -1,8 +1,9 @@
 import { useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import usePoller from "./Poller";
+import { BLOCK_TIME } from "./constants";
 
-const useBlockNumber = (provider: Web3Provider, pollTime: number = 1777): number => {
+const useBlockNumber = (provider: Web3Provider, pollTime: number = BLOCK_TIME / 2): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 
   usePoller((): void => {

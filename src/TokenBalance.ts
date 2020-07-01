@@ -2,8 +2,9 @@ import { useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
 import { Contract } from "@ethersproject/contracts";
 import usePoller from "./Poller";
+import { BLOCK_TIME } from "./constants";
 
-const useTokenBalance = (contract: Contract, address: string, pollTime: number = 777): BigNumber => {
+const useTokenBalance = (contract: Contract, address: string, pollTime: number = 2 * BLOCK_TIME): BigNumber => {
   const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
 
   usePoller((): void => {
