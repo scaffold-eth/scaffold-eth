@@ -1,3 +1,6 @@
 # folders
 dist/
 node_modules/
+
+*.log
+*.tgz
