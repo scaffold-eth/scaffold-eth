@@ -22,7 +22,9 @@
     }
   ],
   "dependencies": {
+    "@ethersproject/address": "^5.0.1",
     "@ethersproject/bignumber": "^5.0.1",
+    "@ethersproject/constants": "^5.0.1",
     "@ethersproject/contracts": "^5.0.1",
     "@ethersproject/providers": "^5.0.2",
     "@ethersproject/units": "^5.0.1",
