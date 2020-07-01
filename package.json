@@ -28,7 +28,8 @@
     "@ethersproject/contracts": "^5.0.1",
     "@ethersproject/providers": "^5.0.2",
     "@ethersproject/units": "^5.0.1",
-    "builtin-modules": "^3.1.0"
+    "builtin-modules": "^3.1.0",
+    "burner-provider": "^1.0.15"
   },
   "peerDependencies": {
     "react": "^16.9.0"
