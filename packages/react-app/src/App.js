@@ -301,11 +301,11 @@ loadPage()
       setInk={setInk}
       loadingTip={loadingTip}
       />
-      {<Contract
+      {/*<Contract
           name={"NFTINK"}
           provider={localProvider}
           address={address}
-        />}
+        />*/}
       </>)
   }
 
