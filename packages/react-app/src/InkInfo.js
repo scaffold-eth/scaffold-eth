@@ -29,6 +29,7 @@ export default function InkInfo(props) {
     props.setIpfsHash()
     props.setDrawingHash()
     props.setImageHash()
+    props.setFormLimit(false)
     props.setInkHash()
     props.setInk({})
   }}><PlusOutlined /> New Ink</Button>

@@ -3,7 +3,7 @@ import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, DoubleRightOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, Typography, Space } from 'antd';
+import { Row, Button, Input, InputNumber, Form, Typography, Space, Checkbox } from 'antd';
 import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader } from "./hooks"
 import { Header, Account, Contract, AdminWidget } from "./components"
 import InkInfo from "./InkInfo.js"
@@ -53,6 +53,7 @@ function App() {
   const [inkHash, setInkHash] = useState()
 
   const [loadingTip, setLoadingTip] = useState('Connecting to the Ether webs...')
+  const [formLimit, setFormLimit] = useState(false);
 
   useEffect(() => {
     const loadPage = async () => {
@@ -100,7 +101,7 @@ loadPage()
 
   const PickerDisplay = pickers[picker % pickers.length]
 
-  const createInk = values => {
+  const createInk = async values => {
     console.log('Success:', values);
 
     let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
@@ -184,13 +185,17 @@ loadPage()
   let top, buttons, bottom
   if (mode === "edit") {
 
+    const onFormLimitCheckboxChange = e => {
+      setFormLimit(e.target.checked);
+    };
+
     top = (
       <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
 
       <Form
       layout={'inline'}
       name="createInk"
-      initialValues={{ limit: 1 }}
+      initialValues={{ limit: 0 }}
       onFinish={createInk}
       onFinishFailed={onFinishFailed}
       labelAlign = {'middle'}
@@ -203,8 +208,15 @@ loadPage()
       <Input placeholder={"name"} />
       </Form.Item>
 
+      <Form.Item>
+      <Checkbox checked={formLimit} onChange={onFormLimitCheckboxChange}>
+      Limit?
+      </Checkbox>
+      </Form.Item>
+
       <Form.Item
       name="limit"
+      hidden={!formLimit}
       rules={[{ required: true, message: 'How many inks can be made?' }]}
       >
       <InputNumber
@@ -300,6 +312,7 @@ loadPage()
       setInkHash={setInkHash}
       setInk={setInk}
       loadingTip={loadingTip}
+      setFormLimit={setFormLimit}
       />
       {/*<Contract
           name={"NFTINK"}
