@@ -1,14 +1,81 @@
 {
   "name": "eth-hooks",
-  "version": "1.0.5",
-  "main": "src/index.js",
-  "repository": "https://github.com/austintgriffith/eth-hooks.git",
+  "version": "1.1.0",
+  "description": "A set of hooks to turbocharge buidling",
   "author": "Austin Griffith <austin@ethereum.org>",
-  "license": "MIT",
+  "repository": "https://github.com/tomafrench/eth-hooks.git",
+  "main": "lib/index.js",
+  "module": "lib/index.es.js",
+  "jsnext:main": "lib/index.es.js",
+  "types": "lib/index.d.ts",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "contributors": [
+    {
+      "name": "Austin Griffith",
+      "url": "https://github.com/austintgriffith"
+    },
+    {
+      "name": "Tom French",
+      "url": "https://github.com/tomafrench"
+    }
+  ],
   "dependencies": {
-    "axios": "^0.19.2",
-    "burner-provider": "^1.0.14",
-    "ethers": "^4.0.46",
-    "react": "16.12.0"
+    "@ethersproject/address": "^5.0.1",
+    "@ethersproject/bignumber": "^5.0.1",
+    "@ethersproject/constants": "^5.0.1",
+    "@ethersproject/contracts": "^5.0.1",
+    "@ethersproject/providers": "^5.0.2",
+    "@ethersproject/units": "^5.0.1",
+    "builtin-modules": "^3.1.0",
+    "burner-provider": "^1.0.15"
+  },
+  "peerDependencies": {
+    "react": "^16.9.0"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.2.2",
+    "@babel/runtime": "^7.3.1",
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@rollup/plugin-babel": "^5.0.4",
+    "@rollup/plugin-commonjs": "^13.0.0",
+    "@rollup/plugin-json": "^4.1.0",
+    "@rollup/plugin-node-resolve": "^8.1.0",
+    "@rollup/plugin-url": "^5.0.1",
+    "@types/react": "^16.9.41",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "eslint": "6.x",
+    "eslint-config-airbnb-typescript-prettier": "^3.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.7",
+    "prettier": "1.x",
+    "react": "^16.9.0",
+    "rollup": "2.18.1",
+    "rollup-plugin-typescript2": "^0.27.1",
+    "shx": "^0.3.2",
+    "typescript": "^3.9.5"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "react",
+    "create-eth-app",
+    "typescript"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "commit": "git-cz",
+    "build": "rollup --config rollup.config.js",
+    "clean": "shx rm -rf ./lib",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
   }
 }
