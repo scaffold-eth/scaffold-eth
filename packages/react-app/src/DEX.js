@@ -156,7 +156,7 @@ export default function DEX(props) {
   return (
     <div style={{position:"relative"}}>
 
-      <div style={{zIndex:2,width:200,position:"absolute",top:0,left:(props.size.width/2)-100}}>
+      <div style={{zIndex:2,width:200,position:"absolute",top:-50,left:(props.size.width/2)-100}}>
         <Address value={contractAddress} blockExplorer={"https://blockscout.com/poa/xdai/address/"}/>
       </div>
 
