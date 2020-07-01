@@ -2,17 +2,16 @@ import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import { ethers } from "ethers";
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, SaveOutlined, EditOutlined, DoubleRightOutlined, CloseCircleOutlined, QuestionCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Spin, Input, InputNumber, Form, Typography, Space, List, Popover } from 'antd';
-import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader, useContractReader } from "./hooks"
-import { Header, Account, Provider, Faucet, Ramp, AddressInput, Contract, Address, AdminWidget } from "./components"
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, DoubleRightOutlined } from '@ant-design/icons';
+import { Row, Button, Input, InputNumber, Form, Typography, Space } from 'antd';
+import { useExchangePrice, useGasPrice, useLocalStorage, useContractLoader } from "./hooks"
+import { Header, Account, Contract, AdminWidget } from "./components"
 import InkInfo from "./InkInfo.js"
 import NftyWallet from "./NftyWallet.js"
 import { Transactor } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
 import LZ from "lz-string";
-import Blockies from 'react-blockies';
 
 const ipfsAPI = require('ipfs-api');
 const isIPFS = require('is-ipfs')
@@ -42,7 +41,6 @@ function App() {
   const [drawingHash, setDrawingHash] = useState()
   const [mode, setMode] = useState("edit")
 
-  const carousel = useRef(null);
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
@@ -53,8 +51,6 @@ function App() {
   const [imageHash, setImageHash] = useState()
   const [ink, setInk] = useState({})
   const [inkHash, setInkHash] = useState()
-
-  const [holders, setHolders] = useState()
 
   const [loadingTip, setLoadingTip] = useState('Connecting to the Ether webs...')
 
@@ -186,7 +182,7 @@ loadPage()
   };
 
   let top, buttons, bottom
-  if (mode == "edit") {
+  if (mode === "edit") {
 
     top = (
       <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
@@ -266,12 +262,12 @@ loadPage()
         </div>
 
         <div style={{margin:16}}>
-          <a href={"http://localhost:3000/" + ipfsHash} target="_blank">{ipfsHash}</a>
+          <a href={"http://localhost:3000/" + ipfsHash} target="_blank" rel="noopener noreferrer">{ipfsHash}</a>
         </div>
         </Space>
       </Row>
     )
-  } else if (mode == "mint") {
+  } else if (mode === "mint") {
 
     top = (
       <Typography copyable={{text:ink.name}}>
@@ -305,11 +301,11 @@ loadPage()
       setInk={setInk}
       loadingTip={loadingTip}
       />
-      {/*<Contract
+      {<Contract
           name={"NFTINK"}
           provider={localProvider}
           address={address}
-        />*/}
+        />}
       </>)
   }
 

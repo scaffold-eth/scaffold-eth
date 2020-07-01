@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Row, Col, Button } from 'antd';
+import { Row, Button } from 'antd';
 import { CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { Provider, Faucet, Ramp } from "."
 

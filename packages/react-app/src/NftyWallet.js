@@ -1,10 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Modal, Button, List, Spin, Popover, Typography, Badge, Space, Avatar, Empty, Tabs } from 'antd';
-import { WalletOutlined, LoadingOutlined } from '@ant-design/icons';
-import { AddressInput } from "./components"
-import { Transactor } from "./helpers"
-import { useContractReader, useContractLoader } from "./hooks"
-import Blockies from 'react-blockies';
+import React, { useState, useEffect, useRef } from 'react'
+import { Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
+import { useContractReader } from "./hooks"
 import SendInkForm from "./SendInkForm.js"
 const { TabPane } = Tabs;
 
@@ -50,14 +47,6 @@ export default function NftyWallet(props) {
     console.log(e);
     setVisible(false);
   };
-
-  const getIPFSFile = async (hash) => {
-    let ifpsFile
-    await ipfs.files.get(hash, function (err, files) {
-      ifpsFile = files[0].content
-    })
-    return ifpsFile
-  }
 
 
   useEffect(()=>{
@@ -167,7 +156,7 @@ tokenView = (
     renderItem={item => (
       <List.Item>
         <List.Item.Meta
-          avatar={item['image']?<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+          avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
           title={<a href={item['url']}>{item['name'] + ": Token #" + item['tokenId']}</a>}
           description={<Popover content={
             <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
@@ -188,7 +177,7 @@ tokenView = (
   />
   )}
 
-  if(inksCreatedBy > 0) {
+  if(inksCreatedBy > 0 && inkData) {
   inkView = (
     <List
       itemLayout="horizontal"
@@ -196,7 +185,7 @@ tokenView = (
       renderItem={item => (
         <List.Item>
           <List.Item.Meta
-            avatar={item['image']?<a href={item['url']}><img src={item['image']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+            avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
             title={<a href={item['url']}>{item['name'] + ": Ink #" + item['inkId']}</a>}
             description={item['inkCount'].toString() + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
           />

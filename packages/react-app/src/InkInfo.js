@@ -59,7 +59,7 @@ console.log('Failed:', errorInfo);
       }
 
       const sendInkButton = (tokenOwnerAddress, tokenId) => {
-      if (tokenOwnerAddress == props.address) {
+      if (tokenOwnerAddress === props.address) {
         return (
       <Popover content={
         <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
@@ -72,7 +72,7 @@ console.log('Failed:', errorInfo);
   }
 
       let mintDescription
-      if(props.ink.attributes[0].value == 0) {
+      if(props.ink.attributes[0].value === 0) {
         mintDescription = (inkChainInfo[2] + ' minted')
       }
       else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
@@ -111,11 +111,9 @@ if (!props.ipfsHash) {
   )
 } else {
 
-  let link = "http://localhost:3000/" + props.ipfsHash
-
   if(inkChainInfo) {
 
-  if(props.address == inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value == 0)) {
+  if(props.address === inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value === 0)) {
   const mintForm = (
     <Row style={{justifyContent: 'center'}}>
 

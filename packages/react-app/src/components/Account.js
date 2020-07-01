@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Popover } from 'antd';
+import { Button } from 'antd';
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -45,7 +45,7 @@ export default function Account(props) {
   const pollInjectedProvider = async ()=>{
     if(props.injectedProvider){
       let accounts = await props.injectedProvider.listAccounts()
-      if(accounts && accounts[0] && accounts[0] != props.account){
+      if(accounts && accounts[0] && accounts[0] !== props.account){
         //console.log("ADDRESS: ",accounts[0])
         if(typeof props.setAddress == "function") props.setAddress(accounts[0])
       }
@@ -63,7 +63,7 @@ export default function Account(props) {
   }
 
   const logoutOfWeb3Modal = async ()=>{
-    const clear = await web3Modal.clearCachedProvider();
+    await web3Modal.clearCachedProvider();
     //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
