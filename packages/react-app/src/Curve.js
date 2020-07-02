@@ -141,7 +141,7 @@ const Curve = (props) => {
         ctx.rotate(Math.PI*225/180);
 
         ctx.fillStyle = "#ffffff";
-        ctx.fillText(""+(props.addingToken*props.tokenDivider)+" 🌒  input", 0,0);
+        ctx.fillText(""+(props.addingToken*props.tokenDivider).toFixed(4)+" 🌒  input", 0,0);
 
         ctx.restore();
 

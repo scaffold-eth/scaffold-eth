@@ -148,7 +148,7 @@ export default function DEX(props) {
 
 
 
-  let tokenDivider = 100
+  let tokenDivider = 2900 / 200
 
   const [addingEth, setAddingEth] = useState();
   const [addingToken, setAddingToken] = useState();

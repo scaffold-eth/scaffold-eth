@@ -78,6 +78,45 @@ function App() {
   const size = useWindowSize();
 
 
+  let adminExtras = ""
+
+  if(address=="0x34aA3F359A9D614239015126635CE7732c18fDF3"&&injectedNetwork &&injectedNetwork.chainId==100){
+    adminExtras = (
+      <div>
+        <Button onClick={()=>{
+          const xDaiStartAmount = '200'
+          const xMoonStartAmount =  '2900'
+          approveAndCall(
+            injectedProvider,
+            xdaiTx,
+            address,
+            injectedXDaiContracts['DEX'].address,
+            xMoonStartAmount,
+            injectedXmoonContract,
+            injectedXDaiContracts['DEX'].init,
+            [ethers.utils.parseEther(xMoonStartAmount), "0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A"],
+            { gasLimit: 150000, value: ethers.utils.parseEther(xDaiStartAmount) }
+          )
+        }}>INIT</Button>
+
+
+      </div>
+    )
+  }
+/*
+
+<Contract
+name={"DEX"}
+provider={injectedProvider}
+address={address}
+/>
+
+<Button onClick={()=>{
+  xdaiTx( injectedXDaiContracts['DEX'].drain({gasLimit:250000}) )
+}}>DRAIN</Button>
+
+*/
+
   return (
     <div className="App" style={{backgroundColor:"#E9E9E9",color:"#bcbcbc",}}>
       <Header />
@@ -186,24 +225,7 @@ function App() {
           writeTokenContract={injectedXmoonContract}
         />
 
-        {/*<Button onClick={()=>{
-          const xDaiStartAmount = '5'
-          const xMoonStartAmount =  '500'
-          approveAndCall(
-            injectedProvider,
-            xdaiTx,
-            address,
-            injectedXDaiContracts['DEX'].address,
-            xMoonStartAmount,
-            injectedXmoonContract,
-            injectedXDaiContracts['DEX'].init,
-            [ethers.utils.parseEther(xMoonStartAmount), "0x1e16aa4Df73d29C029d94CeDa3e3114EC191E25A"],
-            { gasLimit: 150000, value: ethers.utils.parseEther(xDaiStartAmount) }
-          )
-        }}>INIT</Button>
-        <Button onClick={()=>{
-          xdaiTx( injectedXDaiContracts['DEX'].drain({gasLimit:250000}) )
-        }}>DRAIN</Button>*/}
+        {adminExtras}
 
 
       </div>
@@ -290,13 +312,21 @@ function App() {
       </div>*/}
       <div style={{ textAlign: 'center', left: 0, bottom: 20, padding: 16, backgroundColor:"#040404"}}>
         <Row align="middle" gutter={4}>
-          <Col span={12} style={{textAlign:"center", opacity:0.8}}>
+          <Col span={8} style={{textAlign:"center", opacity:0.8}}>
             <Ramp
               price={price}gz
               address={address}
             />
           </Col>
-          <Col span={12} style={{textAlign:"center", opacity:0.8}}>
+
+          <Col span={8} style={{textAlign:"center", opacity:1}}>
+            <Button onClick={()=>{window.open("https://t.me/joinchat/KByvmRPhYA7DsIbCmxoCTg")}} size="large" shape="round">
+              <span style={{marginRight:8}}>💬</span>
+              Chat / Support
+            </Button>
+          </Col>
+
+          <Col span={8} style={{textAlign:"center", opacity:0.8}}>
             <GasGauge gasPrice={gasPrice}/>
           </Col>
 
