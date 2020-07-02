@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { PlusOutlined } from '@ant-design/icons';
 import { Row, Popover, Button, List, Form, Typography, Spin, Space } from 'antd';
 import { AddressInput, Address } from "./components"
 import { useContractReader, useContractLoader } from "./hooks"
@@ -20,25 +19,11 @@ export default function InkInfo(props) {
   let mintFlow
   let inkChainInfoDisplay
 
-  const newButton = (
-  <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
-    window.history.pushState({id: 'draw'}, 'draw', '/')
-    props.setMode("edit")
-    props.setDrawing("")
-    props.setIpfsHash()
-    props.setDrawingHash()
-    props.setImageHash()
-    props.setFormLimit(false)
-    props.setInkHash()
-    props.setInk({})
-  }}><PlusOutlined /> New Ink</Button>
-  </div>
-)
+  const loadingTip = 'Connecting to the Ether webs...'
 
 const mint = async (values) => {
 console.log('Success:', values);
-let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash ))//eventually pass the JSON link not the Drawing link
+let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash ))
 console.log("result", result)
 };
 
@@ -107,7 +92,7 @@ console.log('Failed:', errorInfo);
 if (!props.ipfsHash) {
   inkChainInfoDisplay = (
     <div>
-      <Spin tip={props.loadingTip}/>
+      <Spin tip={loadingTip}/>
     </div>
   )
 } else {
@@ -169,11 +154,10 @@ inkChainInfoDisplay = (
 
 let bottom = (
   <>
-  <div style={{ marginTop: 16, width: "90vmin", margin: "auto" }}>
+  <div style={{ marginTop: 16, margin: "auto" }}>
     {inkChainInfoDisplay}
     {holders}
   </div>
-  {newButton}
   </>
 )
 

@@ -203,7 +203,7 @@ tokenView = (
 
     return (
       <>
-        <Button type="primary" onClick={showModal} style={{verticalAlign:"top",marginLeft:8,marginTop:4}} size={"large"}>
+        <Button type="primary" onClick={showModal} size={"large"}>
           My Inks
         </Button>
         <Modal
