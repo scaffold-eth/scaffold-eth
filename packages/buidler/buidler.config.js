@@ -1,4 +1,5 @@
 const { usePlugin } = require('@nomiclabs/buidler/config')
+const fs = require("fs")
 usePlugin("@nomiclabs/buidler-truffle5");
 
 const DEBUG = true
@@ -91,15 +92,37 @@ async function addr(addr) {
   }
 }
 
+let mnemonic = ""
+try{
+  mnemonic = (fs.readFileSync("./mnemonic.txt")).toString().trim()
+}catch(e){ console.log("MNEMONIC ERRROIRT",e)/* ignore for now because it might now have a mnemonic.txt file */ }
+
+
 module.exports = {
-  defaultNetwork: 'localhost',
+  defaultNetwork: 'xdai',
   networks: {
     localhost: {
-      //url: 'https://rinkeby.infura.io/v3/2717afb6bf164045b5d5468031b93f87',
       url: 'http://localhost:8545',
-      /*accounts: {
-        mnemonic: "**SOME MNEMONIC**"
-      },*/
+    },
+    mainnet: {
+      url: 'https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d',
+      accounts: {
+        mnemonic: mnemonic
+      },
+    },
+    rinkeby: {
+      url: 'https://rinkeby.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d',
+      accounts: {
+        mnemonic: mnemonic
+      },
+    },
+    xdai: {
+      url: 'https://dai.poa.network',
+      gasPrice: 1000000000,
+      gasLimit: 3500000,
+      accounts: {
+        mnemonic: mnemonic
+      },
     },
   },
   solc: {
