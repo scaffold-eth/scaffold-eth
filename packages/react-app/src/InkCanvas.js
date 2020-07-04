@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, DoubleRightOutlined, PlusOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification } from 'antd';
+import { Row, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -12,6 +12,7 @@ import LZ from "lz-string";
 const ipfsAPI = require('ipfs-api');
 const isIPFS = require('is-ipfs')
 const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
+const Hash = require('ipfs-only-hash')
 const axios = require('axios');
 const pickers = [CompactPicker, ChromePicker, TwitterPicker, CirclePicker]
 
@@ -80,7 +81,7 @@ loadPage()
   const mintInk = async (hashToMint) => {
     let result = await tx(writeContracts["NFTINK"].createInk(hashToMint, props.ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
     console.log("result", result)
-    window.history.pushState({id: hashToMint}, props.ink['name'], '/' + hashToMint)
+    return result
   }
 
   const createInk = async values => {
@@ -102,10 +103,39 @@ loadPage()
     }]
     currentInk['name'] = values.title
 
-    props.setInk(currentInk)
-
     props.setIpfsHash()
+
+    const drawingHash = await Hash.of(drawingBuffer)
+    console.log("drawingHash", drawingHash)
+    const imageHash = await Hash.of(imageBuffer)
+    console.log("imageHash", imageHash)
+
+    currentInk['drawing'] = drawingHash
+    currentInk['image'] = 'https://ipfs.io/ipfs/' + imageHash
+    props.setInk(currentInk)
+    console.log("Ink:", props.ink)
+
+    var inkStr = JSON.stringify(props.ink);
+    const inkBuffer = Buffer.from(inkStr);
+
+    const inkHash = await Hash.of(inkBuffer)
+    console.log("jsonHash", inkHash)
+
+    props.setIpfsHash(inkHash)
+
+    //setMode("mint")
+    notification.open({
+    message: 'Saving Ink to the blockchain',
+    description:
+      'Contacting the smartcontract',
+    });
+
+    var mintResult = await mintInk(inkHash);
+
+    if(mintResult) {
+
     props.setMode("mint")
+    window.history.pushState({id: inkHash}, props.ink['name'], '/' + inkHash)
 
     //setMode("mint")
     notification.open({
@@ -114,49 +144,28 @@ loadPage()
       'Uploading to the distributed web',
     });
 
+    message.loading('Uploading to IPFS...', 0);
+
     let serverUrl = 'http://localhost:3001/save'
 
     axios.all(
       [axios.post(serverUrl, { buffer: drawingBuffer }),
-       axios.post(serverUrl, { buffer: imageBuffer })])
+       axios.post(serverUrl, { buffer: imageBuffer }),
+       axios.post(serverUrl, { buffer: inkBuffer })])
       .then(axios.spread((...responses) => {
         console.log("Responses", responses);
-        let currentInk = props.ink
-        currentInk['drawing'] = responses[0].data
-        currentInk['image'] = 'https://ipfs.io/ipfs/' + responses[1].data
-        props.setInk(currentInk)
-        console.log("Ink:", props.ink)
-
-        var inkStr = JSON.stringify(props.ink);
-        // read json string to Buffer
-        const inkBuffer = Buffer.from(inkStr);
-
+        message.destroy()
+        //setMode("mint")
         notification.open({
-        message: 'Saving ink Meta-data to IPFS',
+        message: 'Ink saved in IPFS',
         description:
-          'So that we know what your ink is about',
-        });
-
-        axios.post('http://localhost:3001/save', { buffer: inkBuffer })
-        .then(async (response) => {
-          console.log(response);
-          props.setIpfsHash(response.data)
-
-          notification.open({
-          message: 'Saving ink on-chain',
-          description:
-            'Connecting to the NFTY Ink Contract',
-          });
-
-          mintInk(response.data)
-        })
-        .catch(function (error) {
-          console.log(error);
+          'Your ink is now InterPlanetary',
         });
       }))
       .catch(function (error) {
         console.log(error);
       });
+    }
   };
 
   const onFinishFailed = errorInfo => {
@@ -220,7 +229,7 @@ loadPage()
 
       <Form.Item >
       <Button type="primary" htmlType="submit">
-        Ink
+        Ink!
       </Button>
       </Form.Item>
       </Form>
