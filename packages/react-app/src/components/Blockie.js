@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import Blockies from 'react-blockies';
 
 export default function Blockie(props) {

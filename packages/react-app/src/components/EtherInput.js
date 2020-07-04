@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import { Blockie }  from "."
+import React, { useState } from 'react'
 import { Input } from 'antd';
 
 export default function AddressInput(props) {
@@ -14,7 +13,7 @@ export default function AddressInput(props) {
     if(!props.price) return ""
     return (
       <div style={{cursor:"pointer"}} onClick={()=>{
-        if(mode=="USD"){
+        if(mode==="USD"){
           setMode("ETH")
           setDisplay(currentValue)
         }else{
@@ -35,7 +34,7 @@ export default function AddressInput(props) {
 
   let prefix
   let addonAfter
-  if(mode=="USD"){
+  if(mode==="USD"){
     prefix = (
       "$"
     )
@@ -61,7 +60,7 @@ export default function AddressInput(props) {
       onChange={async (e)=>{
 
         let newValue = (e.target.value)
-        if(mode=="USD"){
+        if(mode==="USD"){
           let ethValue = parseFloat(newValue) / props.price
           setValue(ethValue)
           if(typeof props.onChange == "function") { props.onChange(ethValue) }

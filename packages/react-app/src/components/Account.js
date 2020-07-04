@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useEffect } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
@@ -45,7 +45,7 @@ export default function Account(props) {
   const pollInjectedProvider = async ()=>{
     if(props.injectedProvider){
       let accounts = await props.injectedProvider.listAccounts()
-      if(accounts && accounts[0] && accounts[0] != props.account){
+      if(accounts && accounts[0] && accounts[0] !== props.account){
         //console.log("ADDRESS: ",accounts[0])
         if(typeof props.setAddress == "function") props.setAddress(accounts[0])
       }
@@ -63,7 +63,7 @@ export default function Account(props) {
   }
 
   const logoutOfWeb3Modal = async ()=>{
-    const clear = await web3Modal.clearCachedProvider();
+    await web3Modal.clearCachedProvider();
     //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
@@ -103,7 +103,14 @@ export default function Account(props) {
         <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
       </span>
     )
-  }
+  } else { display = (
+    <span>
+      {props.address?(
+        <Address value={props.address} ensProvider={props.mainnetProvider}/>
+      ):"Connecting..."}
+      <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
+      <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
+    </span>)}
 
   return (
     <div>
