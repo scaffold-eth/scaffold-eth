@@ -18,14 +18,16 @@ const Curve = (props) => {
       const ctx = canvas.getContext('2d');
       ctx.clearRect(-canvas.width,-canvas.height,canvas.width*2,canvas.height*2);
 
-      let maxX = k/(props.ethReserve/4)
+      let maxX = 1600//k/(props.ethReserve/4)
       let minX = 0
 
-      if(props.addingEth||props.addingToken){
-        maxX = k/(props.ethReserve*0.4)
+      //console.log("maxX",maxX)
+
+      //if(props.addingEth||props.addingToken){
+        //maxX = k/(props.ethReserve*0.4)
         //maxX = k/(props.ethReserve*0.8)
-        minX = k/Math.max(0,(500-props.ethReserve))
-      }
+        //minX = k/Math.max(0,(500-props.ethReserve))
+      //}
 
       const maxY = maxX * height / width;
       const minY = minX * height / width;
@@ -52,9 +54,9 @@ const Curve = (props) => {
       //ctx.stroke() ;
 
       ctx.save();
-      ctx.translate(width,height/2);//offset?
+      ctx.translate(width,height*2/3);//offset?
       ctx.rotate(Math.PI*135/180);
-      ctx.scale(0.8,0.8);
+      //ctx.scale(0.8,0.8);
 
 
       ctx.lineWidth = 2 ;
@@ -76,8 +78,6 @@ const Curve = (props) => {
       ctx.lineWidth = 3 ;
 
       if(props.addingEth){
-
-
 
 
         let newEthReserve = props.ethReserve + parseFloat(props.addingEth)
@@ -116,6 +116,7 @@ const Curve = (props) => {
         ctx.fillText(""+(amountGained*props.tokenDivider).toFixed(4)+" 🌒  output",0 ,0);
 
         ctx.restore();
+
 
 
       }else if(props.addingToken){
@@ -161,7 +162,7 @@ const Curve = (props) => {
 
 
         ctx.save();
-        ctx.translate((plotX(props.ethReserve)+textSize*2),plotY(props.tokenReserve)+textSize*10);
+        ctx.translate((plotX(props.ethReserve)+textSize*2),plotY(props.tokenReserve)+textSize*6);
         ctx.rotate(Math.PI*225/180);
 
 
@@ -169,10 +170,10 @@ const Curve = (props) => {
         let amountTokenGained =  Math.round(10000 * ( 1 * props.tokenReserve ) / ( newEthReserve ) ) /10000
         ctx.fillStyle = "#aaaaaa";
 
-        ctx.fillText("$1.00 xDAI is trading for "+(amountTokenGained)+" 🌒  xMOON", textSize,(textSize*2));
+        ctx.fillText("$1.00 xDAI is trading for "+(amountTokenGained*props.tokenDivider).toFixed(4)+" 🌒  xMOON", textSize,(textSize*1.5));
 
-        let newTokenReserve = props.tokenReserve + parseFloat(1)
-        let amountGained =  Math.round(10000 * ( 1 * props.ethReserve ) / ( newTokenReserve ) ) /10000
+        let newTokenReserve = props.tokenReserve + parseFloat(1.00)
+        let amountGained =  Math.round(10000 * ( 1.00 * props.tokenReserve ) / ( newEthReserve ) ) /10000
         ctx.fillText("1 🌒  xMOON is trading for $"+(amountGained/props.tokenDivider).toFixed(4)+" xDAI", 0,(textSize*0));
 
 

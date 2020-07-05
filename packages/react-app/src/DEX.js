@@ -1,8 +1,8 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers";
 import Blockies from 'react-blockies';
 import { Card, Row, Col, List, Input, Button, Divider } from 'antd';
-import { DownloadOutlined, UploadOutlined } from '@ant-design/icons';
+import { DownloadOutlined, UploadOutlined, InfoCircleOutlined } from '@ant-design/icons';
 import { useContractLoader, useContractReader, useEventListener, useBlockNumber, useBalance, useTokenBalance, useCustomContractReader } from "./hooks"
 import { Transactor } from "./helpers"
 import { Address, TokenBalance, Timeline, Bridge } from "./components"
@@ -10,6 +10,10 @@ import Curve from './Curve.js'
 const { Meta } = Card;
 
 const contractName = "DEX"
+
+
+
+let tokenDividerStart = 25000 / 300
 
 
 export default function DEX(props) {
@@ -29,6 +33,30 @@ export default function DEX(props) {
   const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance?tokenBalance:0))
   const ethBalance = useBalance(  props.localProvider, contractAddress )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
+
+  const [ tokenDivider, setTokenDivider ] = useState(tokenDividerStart)
+  const [ incomingTokenDivider, setIncomingTokenDivider ] = useState()
+
+  useEffect(()=>{
+    //console.log("CHECK",tokenBalanceFloat,ethBalanceFloat)
+    if(!incomingTokenDivider && tokenBalanceFloat && ethBalanceFloat){
+      let newTokenDivider = Math.round(tokenBalanceFloat) / Math.round(ethBalanceFloat)
+      //console.log("possible newTokenDivider",newTokenDivider)
+      if(newTokenDivider!=tokenDivider){
+        setIncomingTokenDivider(newTokenDivider)
+        //console.log("SETTING IT")
+        setTimeout(()=>{
+          //console.log("SETTING TOKEN DIVIDER",newTokenDivider)
+          setTokenDivider(newTokenDivider)
+          setIncomingTokenDivider(0)
+        },5000)
+      }
+    }
+
+  },[props,tokenBalanceFloat,ethBalanceFloat])
+
+  //console.log("tokenBalanceFloat",tokenBalanceFloat)
+  //console.log("ethBalanceFloat",ethBalanceFloat)
 
   const liquidity = useContractReader(props.readContracts,contractName,"liquidity",[props.address])
 
@@ -148,7 +176,6 @@ export default function DEX(props) {
 
 
 
-  let tokenDivider = 2900 / 200
 
   const [addingEth, setAddingEth] = useState();
   const [addingToken, setAddingToken] = useState();
@@ -157,7 +184,7 @@ export default function DEX(props) {
     <div style={{position:"relative"}}>
 
       <div style={{zIndex:2,width:200,position:"absolute",top:-50,left:(props.size.width/2)-100}}>
-        <Address value={contractAddress} blockExplorer={"https://blockscout.com/poa/xdai/address/"}/>
+        <Address value={contractAddress} blockExplorer={"https://blockscout.com/poa/xdai/address/"}/> <a href="https://blockscout.com/poa/xdai/address/0xfda3cfBE831399802a8400ca952D6bed6c677148/token_transfers" target="_blank"><InfoCircleOutlined /></a>
       </div>
 
       <div style={{width:550,height:500,margin:"auto"}}>
@@ -173,7 +200,7 @@ export default function DEX(props) {
         />
       </div>
 
-      <div style={{padding:16,width:550,margin:"auto"}}>
+      <div style={{padding:16,width:550,margin:"auto",marginTop:-250}}>
 
         <Bridge
           dexMode={true}

@@ -84,8 +84,8 @@ function App() {
     adminExtras = (
       <div>
         <Button onClick={()=>{
-          const xDaiStartAmount = '200'
-          const xMoonStartAmount =  '2900'
+          const xDaiStartAmount = '400'
+          const xMoonStartAmount =  '20000'
           approveAndCall(
             injectedProvider,
             xdaiTx,
@@ -98,6 +98,7 @@ function App() {
             { gasLimit: 150000, value: ethers.utils.parseEther(xDaiStartAmount) }
           )
         }}>INIT</Button>
+
 
 
       </div>
@@ -141,6 +142,9 @@ address={address}
         <div style={{float:"right",padding:16}}>
           <img src="./rinkeby.png" style={{maxWidth:30}}/> Rinkeby <a href={"https://rinkeby.etherscan.io"} target="_blank"><LinkOutlined /></a>
           <Balance address={address} provider={rinkebyProvider} />
+          <div style={{fontSize:14,marginTop:-8}}>
+            <a style={{color:"#6677bb"}} href="https://faucet.rinkeby.io/" target="_blank">💦 faucet</a>
+          </div>
         </div>
 
         <div style={{textAlign:"left",padding:16}}>
