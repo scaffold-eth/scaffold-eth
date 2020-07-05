@@ -9,10 +9,11 @@ import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
 import LZ from "lz-string";
 
-const ipfsAPI = require('ipfs-api');
+const ipfsAPI = require('ipfs-http-client');
 const isIPFS = require('is-ipfs')
-const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const Hash = require('ipfs-only-hash')
+const BufferList = require('bl/BufferList')
 const axios = require('axios');
 const pickers = [CompactPicker, ChromePicker, TwitterPicker, CirclePicker]
 
@@ -24,13 +25,32 @@ export default function InkCanvas(props) {
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
-  const [drawing, setDrawing] = useState()//useLocalStorage("drawing")
+  const [drawing, setDrawing] = useLocalStorage("drawing")
 
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [formLimit, setFormLimit] = useState(false);
+
+  const getFromIPFS = async hashToGet => {
+    for await (const file of ipfs.get(hashToGet)) {
+      console.log(file.path)
+      if (!file.content) continue;
+      const content = new BufferList()
+      for await (const chunk of file.content) {
+        content.append(chunk)
+      }
+      console.log(content)
+      return content
+    }
+  }
+
+  const addToIPFS = async fileToUpload => {
+    for await (const result of ipfs.add(fileToUpload)) {
+      return result
+    }
+  }
 
   useEffect(() => {
     const loadPage = async () => {
@@ -39,13 +59,16 @@ export default function InkCanvas(props) {
     if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
       props.setMode("mint")
       setDrawing("")
-      ipfs.files.get(ipfsHashRequest, function (err, files) {
-        files.forEach((file) => {
-          props.setInk(JSON.parse(file.content))
-          ipfs.files.get(JSON.parse(file.content)['drawing'], function (err, files) {
-            files.forEach((file) => {
-            props.setIpfsHash(ipfsHashRequest)
-            let decompressed = LZ.decompressFromUint8Array(file.content)
+
+      let inkContent = await getFromIPFS(ipfsHashRequest)
+      console.log(JSON.parse(inkContent))
+      props.setInk(JSON.parse(inkContent))
+
+      let drawingContent = await getFromIPFS(JSON.parse(inkContent)['drawing'])
+      console.log(drawingContent)
+      props.setIpfsHash(ipfsHashRequest)
+      let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
+      console.log(decompressed)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)
             setDrawing(compressed)
@@ -54,12 +77,8 @@ export default function InkCanvas(props) {
 
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
-        })
-      })
-    })
-  })
-} else {window.history.pushState({id: 'edit'}, 'edit', '/')}
-}
+        } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
+      }
 loadPage()
   }, [])
 
@@ -148,25 +167,23 @@ loadPage()
 
     let serverUrl = 'http://localhost:3001/save'
 
-    axios.all(
-      [axios.post(serverUrl, { buffer: drawingBuffer }),
-       axios.post(serverUrl, { buffer: imageBuffer }),
-       axios.post(serverUrl, { buffer: inkBuffer })])
-      .then(axios.spread((...responses) => {
-        console.log("Responses", responses);
-        message.destroy()
-        //setMode("mint")
-        notification.open({
-        message: 'Ink saved in IPFS',
-        description:
-          'Your ink is now InterPlanetary',
-        });
-      }))
-      .catch(function (error) {
-        console.log(error);
+    const drawingResult = addToIPFS(drawingBuffer)
+    const imageResult = addToIPFS(imageBuffer)
+    const inkResult = addToIPFS(inkBuffer)
+
+    Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+      console.log(values);
+      message.destroy()
+      //setMode("mint")
+      notification.open({
+      message: 'Ink saved in IPFS',
+      description:
+        'Your ink is now InterPlanetary',
       });
+    });
     }
   };
+
 
   const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
