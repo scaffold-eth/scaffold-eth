@@ -8,3 +8,4 @@ export { default as usePoller } from "./Poller";
 export { default as useTimestamp } from "./Timestamp";
 export { default as useTokenBalance } from "./TokenBalance";
 export { default as useUserAddress } from "./UserAddress";
+export { default as useUserProvider } from "./UserProvider";
