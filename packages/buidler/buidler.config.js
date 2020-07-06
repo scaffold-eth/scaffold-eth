@@ -101,6 +101,10 @@ try{
 module.exports = {
   defaultNetwork: 'xdai',
   networks: {
+    kovan: {
+      url: 'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c',
+      accounts: ['']
+    },
     localhost: {
       url: 'http://localhost:8545',
     },

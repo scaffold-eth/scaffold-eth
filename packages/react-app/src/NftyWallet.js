@@ -5,8 +5,9 @@ import { useContractReader } from "./hooks"
 import SendInkForm from "./SendInkForm.js"
 const { TabPane } = Tabs;
 
-const ipfsAPI = require('ipfs-api');
-const ipfs = ipfsAPI('ipfs.infura.io', '5001', { protocol: 'https' })
+const ipfsAPI = require('ipfs-http-client');
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+const BufferList = require('bl/BufferList')
 
 export default function NftyWallet(props) {
 
@@ -24,6 +25,17 @@ export default function NftyWallet(props) {
   nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy
   inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
+
+  const getFromIPFS = async hashToGet => {
+  for await (const file of ipfs.get(hashToGet)) {
+    if (!file.content) continue;
+    const content = new BufferList()
+    for await (const chunk of file.content) {
+      content.append(chunk)
+    }
+    return content
+  }
+}
 
   let displayBalance
   if(nftyBalance) {
@@ -67,19 +79,13 @@ export default function NftyWallet(props) {
 
         const urlArray = window.location.href.split("/");
         const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-        let inkImageURI
-        await ipfs.files.get(ipfsHash, function (err, files) {
-            const inkJson = JSON.parse(files[0].content)
-            tokens[i]['name'] = inkJson['name']
-            const inkImageHash = inkJson.image.split('/').pop()
-            ipfs.files.get(inkImageHash, function (err, files) {
-                inkImageURI = 'data:image/png;base64,' + files[0].content.toString('base64')
-                tokens[i]['image'] = inkImageURI
-            })
-          })
+        const jsonContent = await getFromIPFS(ipfsHash)
+        const inkJson = JSON.parse(jsonContent)
+        const inkImageHash = inkJson.image.split('/').pop()
+        const imageContent = await getFromIPFS(inkImageHash)
+        const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
-
-        return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl}
+        return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl, name: inkJson['name'], image: inkImageURI}
       }
 
       for(var i = 0; i < nftyBalance; i++){
@@ -104,20 +110,15 @@ export default function NftyWallet(props) {
 
       const urlArray = window.location.href.split("/");
       const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-      let inkImageURI
-      await ipfs.files.get(ipfsHash, function (err, files) {
-          const inkJson = JSON.parse(files[0].content)
-          inks[i]['name'] = inkJson['name']
-          inks[i]['limit'] = inkJson['attributes'][0]['value']
-          const inkImageHash = inkJson.image.split('/').pop()
-          ipfs.files.get(inkImageHash, function (err, files) {
-              inkImageURI = 'data:image/png;base64,' + files[0].content.toString('base64')
-              inks[i]['image'] = inkImageURI
-          })
-        })
 
+      const jsonContent = await getFromIPFS(ipfsHash)
+      const inkJson = JSON.parse(jsonContent)
+      console.log(inkJson)
+      const inkImageHash = inkJson.image.split('/').pop()
+      const imageContent = await getFromIPFS(inkImageHash)
+      const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
-      return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl}
+      return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI}
     }
 
     for(var i = 0; i < inksCreatedBy; i++){
