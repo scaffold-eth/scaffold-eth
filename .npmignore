@@ -6,9 +6,9 @@ src
 .eslintignore
 .eslintrc.js
 .gitignore
+.huskyrc.js
 .lintstagedrc.js
 .prettierrc
-rollup.config.js
 tsconfig.json
 yarn.lock
 

@@ -5,8 +5,6 @@
   "author": "Austin Griffith <austin@ethereum.org>",
   "repository": "https://github.com/tomafrench/eth-hooks.git",
   "main": "lib/index.js",
-  "module": "lib/index.es.js",
-  "jsnext:main": "lib/index.es.js",
   "types": "lib/index.d.ts",
   "engines": {
     "node": ">=8",
@@ -69,7 +67,7 @@
   "license": "MIT",
   "scripts": {
     "commit": "git-cz",
-    "build": "rollup --config rollup.config.js",
+    "build": "tsc",
     "clean": "shx rm -rf ./lib",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
   },

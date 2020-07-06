@@ -1,10 +1,10 @@
-## 🖇 Hooks:
+# 🖇 Hooks
 
 Commonly used Ethereum hooks:
 
 `usePoller(fn, delay)`: runs a function on app load and then on a custom interval
 
-```jsx
+```js
 usePoller(() => {
   //do something cool at start and then every three seconds
 }, 3000);
