@@ -11,7 +11,7 @@ import NftyHeader from "./NftyHeader.js"
 import InkCanvas from "./InkCanvas.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "2717afb6bf164045b5d5468031b93f87")
-const localProvider = new ethers.providers.JsonRpcProvider('https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c')//process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545")
+const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545")//'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c')//
 
 function App() {
 

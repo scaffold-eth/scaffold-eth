@@ -94,6 +94,10 @@ async function addr(addr) {
 module.exports = {
   defaultNetwork: 'localhost',
   networks: {
+    kovan: {
+      url: 'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c',
+      accounts: ['']
+    },
     localhost: {
       //url: 'https://rinkeby.infura.io/v3/2717afb6bf164045b5d5468031b93f87',
       url: 'http://localhost:8545',
