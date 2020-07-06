@@ -24,13 +24,13 @@ contract NFTINK is ERC721 {
     bool exists;
     }
 
-    mapping (string => Ink) private _inkByUrl;
+    mapping (string => uint256) private _inkIdByUrl;
     mapping (uint256 => Ink) private _inkById;
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
 
     function createInk(string memory jsonUrl, uint256 limit) public returns (uint256) {
-      require(!_inkByUrl[jsonUrl].exists, "this ink already exists!");
+      require(!(_inkIdByUrl[jsonUrl] > 0), "this ink already exists!");
 
       totalInks.increment();
 
@@ -43,7 +43,7 @@ contract NFTINK is ERC721 {
         exists: true
         });
 
-        _inkByUrl[jsonUrl] = _ink;
+        _inkIdByUrl[jsonUrl] = _ink.id;
         _inkById[_ink.id] = _ink;
         _artistInks[msg.sender].add(_ink.id);
 
@@ -53,13 +53,12 @@ contract NFTINK is ERC721 {
     }
 
     function mint(address to, string memory jsonUrl) public returns (uint256) {
-
-        require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
-        Ink memory _ink = _inkByUrl[jsonUrl];
-        require(_inkByUrl[jsonUrl].artist == msg.sender, "only the artist can mint!");
+        uint256 _inkId = _inkIdByUrl[jsonUrl];
+        require(_inkId > 0, "this ink does not exist!");
+        Ink memory _ink = _inkById[_inkId];
+        require(_ink.artist == msg.sender, "only the artist can mint!");
         require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
-        _inkByUrl[jsonUrl].count += 1;
         _inkById[_ink.id].count += 1;
 
         _tokenIds.increment();
@@ -75,17 +74,18 @@ contract NFTINK is ERC721 {
     }
 
     function inkTokenByIndex(string memory jsonUrl, uint256 index) public view returns (uint256) {
-      require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
-      Ink memory _ink = _inkByUrl[jsonUrl];
+      uint256 _inkId = _inkIdByUrl[jsonUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink memory _ink = _inkById[_inkId];
       require(_ink.count >= index + 1, "this token index does not exist!");
       return _inkTokens[jsonUrl].at(index);
     }
 
     function inkInfoByJsonUrl(string memory jsonUrl) public view returns (uint256, address, uint256) {
-      require(_inkByUrl[jsonUrl].exists, "this ink does not exist!");
-      Ink memory _ink = _inkByUrl[jsonUrl];
+      uint256 _inkId = _inkIdByUrl[jsonUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink memory _ink = _inkById[_inkId];
 
-      uint256 _inkId = _ink.id;
       address _inkArtist = _ink.artist;
       uint256 _inkCount = _ink.count;
 
