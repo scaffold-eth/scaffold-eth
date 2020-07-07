@@ -1,3 +1,4 @@
+packages/nifty-art-server/*.pem
 packages/buidler/mnemonic.txt
 **/aws.json
 
