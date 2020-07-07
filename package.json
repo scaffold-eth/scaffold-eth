@@ -27,22 +27,14 @@
     "@ethersproject/contracts": "^5.0.1",
     "@ethersproject/providers": "^5.0.2",
     "@ethersproject/units": "^5.0.1",
-    "builtin-modules": "^3.1.0",
     "burner-provider": "^1.0.15"
   },
   "peerDependencies": {
     "react": "^16.9.0"
   },
   "devDependencies": {
-    "@babel/core": "^7.2.2",
-    "@babel/runtime": "^7.3.1",
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@rollup/plugin-babel": "^5.0.4",
-    "@rollup/plugin-commonjs": "^13.0.0",
-    "@rollup/plugin-json": "^4.1.0",
-    "@rollup/plugin-node-resolve": "^8.1.0",
-    "@rollup/plugin-url": "^5.0.1",
     "@types/react": "^16.9.41",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
@@ -52,8 +44,6 @@
     "lint-staged": "^10.2.7",
     "prettier": "1.x",
     "react": "^16.9.0",
-    "rollup": "2.18.1",
-    "rollup-plugin-typescript2": "^0.27.1",
     "shx": "^0.3.2",
     "typescript": "^3.9.5"
   },
