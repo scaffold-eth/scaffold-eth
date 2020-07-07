@@ -95,11 +95,11 @@ async function addr(addr) {
 let mnemonic = ""
 try{
   mnemonic = (fs.readFileSync("./mnemonic.txt")).toString().trim()
-}catch(e){ console.log("MNEMONIC ERRROIRT",e)/* ignore for now because it might now have a mnemonic.txt file */ }
+}catch(e){ /* ignore for now because it might now have a mnemonic.txt file */ }
 
 
 module.exports = {
-  defaultNetwork: 'xdai',
+  defaultNetwork: 'localhost',
   networks: {
     kovan: {
       url: 'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c',
