@@ -66,8 +66,8 @@ export default function InkCanvas(props) {
         console.log("drawingContent:", drawingContent)
         props.setIpfsHash(ipfsHashRequest)
         try{
-          let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
-          //console.log(decompressed)
+          const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
+          let decompressed = LZ.decompressFromUint8Array(arrays)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)
             props.setDrawing(compressed)
@@ -98,8 +98,8 @@ export default function InkCanvas(props) {
 
   const PickerDisplay = pickers[picker % pickers.length]
 
-  const mintInk = async (hashToMint) => {
-    let result = await tx(writeContracts["NFTINK"].createInk(hashToMint, props.ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
+  const mintInk = async (inkUrl, jsonUrl) => {
+    let result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
     console.log("result", result)
     return result
   }
@@ -132,16 +132,17 @@ export default function InkCanvas(props) {
 
     currentInk['drawing'] = drawingHash
     currentInk['image'] = 'https://ipfs.io/ipfs/' + imageHash
+    currentInk['external_url'] = 'https://nifty.ink/' + drawingHash
     props.setInk(currentInk)
     console.log("Ink:", props.ink)
 
     var inkStr = JSON.stringify(props.ink);
     const inkBuffer = Buffer.from(inkStr);
 
-    const inkHash = await Hash.of(inkBuffer)
-    console.log("jsonHash", inkHash)
+    const jsonHash = await Hash.of(inkBuffer)
+    console.log("jsonHash", jsonHash)
 
-    props.setIpfsHash(inkHash)
+    props.setIpfsHash(drawingHash)
 
     //setMode("mint")
     notification.open({
@@ -150,12 +151,12 @@ export default function InkCanvas(props) {
       'Contacting the smartcontract',
     });
 
-    var mintResult = await mintInk(inkHash);
+    var mintResult = await mintInk(drawingHash, jsonHash);
 
     if(mintResult) {
 
       props.setMode("mint")
-      window.history.pushState({id: inkHash}, props.ink['name'], '/' + inkHash)
+      window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
       //setMode("mint")
       notification.open({
