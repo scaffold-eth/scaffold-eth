@@ -21,15 +21,15 @@
     }
   ],
   "dependencies": {
+    "burner-provider": "^1.0.15"
+  },
+  "peerDependencies": {
     "@ethersproject/address": "^5.0.1",
     "@ethersproject/bignumber": "^5.0.1",
     "@ethersproject/constants": "^5.0.1",
     "@ethersproject/contracts": "^5.0.1",
     "@ethersproject/providers": "^5.0.2",
     "@ethersproject/units": "^5.0.1",
-    "burner-provider": "^1.0.15"
-  },
-  "peerDependencies": {
     "react": "^16.9.0"
   },
   "devDependencies": {
