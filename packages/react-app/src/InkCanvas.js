@@ -66,7 +66,9 @@ export default function InkCanvas(props) {
         console.log("drawingContent:", drawingContent)
         props.setIpfsHash(ipfsHashRequest)
         try{
-          let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
+          //let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
+          const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
+         let decompressed = LZ.decompressFromUint8Array(arrays)
           //console.log(decompressed)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)

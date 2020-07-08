@@ -99,23 +99,23 @@ try{
 
 
 module.exports = {
-  defaultNetwork: 'localhost',
+  defaultNetwork: 'rinkeby',
   networks: {
     kovan: {
-      url: 'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c',
+      url: 'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c',
       accounts: ['']
     },
     localhost: {
       url: 'http://localhost:8545',
     },
     mainnet: {
-      url: 'https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d',
+      url: 'https://mainnet.infura.io/v3/9ea7e149b122423991f56257b882261c',
       accounts: {
         mnemonic: mnemonic
       },
     },
     rinkeby: {
-      url: 'https://rinkeby.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d',
+      url: 'https://rinkeby.infura.io/v3/9ea7e149b122423991f56257b882261c',
       accounts: {
         mnemonic: mnemonic
       },
@@ -123,7 +123,7 @@ module.exports = {
     xdai: {
       url: 'https://dai.poa.network',
       gasPrice: 1000000000,
-      gasLimit: 3500000,
+      gasLimit: 10000000,
       accounts: {
         mnemonic: mnemonic
       },

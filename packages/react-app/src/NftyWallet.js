@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
-import { Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs, Typography } from 'antd';
+import { Row, Col, Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs, Typography } from 'antd';
 import { LoadingOutlined, PlusOutlined, SendOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
 import { Account } from "./components"
@@ -277,18 +277,20 @@ export default function NftyWallet(props) {
 
           return (
             <div>
-              <Tabs activeKey={tab} onChange={setTab} style={{padding:16,textAlign:"left"}} tabBarExtraContent={(
-                <Account
-                    address={props.address}
-                    setAddress={props.setAddress}
-                    localProvider={props.localProvider}
-                    injectedProvider={props.injectedProvider}
-                    setInjectedProvider={props.setInjectedProvider}
-                    mainnetProvider={props.mainnetProvider}
-                    price={props.price}
-                    minimized={props.minimized}
-                />
-              )} defaultActiveKey="1">
+              <div style={{position:"absolute",right:8,top:0}}>
+              <Account
+                  address={props.address}
+                  setAddress={props.setAddress}
+                  localProvider={props.localProvider}
+                  injectedProvider={props.injectedProvider}
+                  setInjectedProvider={props.setInjectedProvider}
+                  mainnetProvider={props.mainnetProvider}
+                  price={props.price}
+                  minimized={props.minimized}
+              />
+
+              </div>
+              <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"left"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24}}>🧑‍🎨 Nifty Ink</span></>} key="1">
                   <div>
                     <InkCanvas
@@ -321,6 +323,8 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
               </Tabs>
+
+
               {newButton}
             </div>
           );
