@@ -16,12 +16,12 @@ contract NFTINK is ERC721 {
     event mintedInk(uint256 id, string jsonUrl, address to);
 
     struct Ink {
-    uint256 id;
-    address artist;
-    string jsonUrl;
-    uint256 limit;
-    uint256 count;
-    bool exists;
+      uint256 id;
+      address artist;
+      string jsonUrl;
+      uint256 limit;
+      uint256 count;
+      bool exists;
     }
 
     mapping (string => uint256) private _inkIdByUrl;
@@ -41,36 +41,36 @@ contract NFTINK is ERC721 {
         limit: limit,
         count: 0,
         exists: true
-        });
+      });
 
-        _inkIdByUrl[jsonUrl] = _ink.id;
-        _inkById[_ink.id] = _ink;
-        _artistInks[msg.sender].add(_ink.id);
+      _inkIdByUrl[jsonUrl] = _ink.id;
+      _inkById[_ink.id] = _ink;
+      _artistInks[msg.sender].add(_ink.id);
 
-        emit newInk(_ink.id, _ink.artist, _ink.jsonUrl, _ink.limit);
+      emit newInk(_ink.id, _ink.artist, _ink.jsonUrl, _ink.limit);
 
-        return _ink.id;
+      return _ink.id;
     }
 
     function mint(address to, string memory jsonUrl) public returns (uint256) {
-        uint256 _inkId = _inkIdByUrl[jsonUrl];
-        require(_inkId > 0, "this ink does not exist!");
-        Ink memory _ink = _inkById[_inkId];
-        require(_ink.artist == msg.sender, "only the artist can mint!");
-        require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
+      uint256 _inkId = _inkIdByUrl[jsonUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink memory _ink = _inkById[_inkId];
+      require(_ink.artist == msg.sender, "only the artist can mint!");
+      require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
-        _inkById[_ink.id].count += 1;
+      _inkById[_ink.id].count += 1;
 
-        _tokenIds.increment();
-        uint256 id = _tokenIds.current();
-        _inkTokens[jsonUrl].add(id);
+      _tokenIds.increment();
+      uint256 id = _tokenIds.current();
+      _inkTokens[jsonUrl].add(id);
 
-        _mint(to, id);
-        _setTokenURI(id, jsonUrl);
+      _mint(to, id);
+      _setTokenURI(id, jsonUrl);
 
-        emit mintedInk(id, jsonUrl, to);
+      emit mintedInk(id, jsonUrl, to);
 
-        return id;
+      return id;
     }
 
     function inkTokenByIndex(string memory jsonUrl, uint256 index) public view returns (uint256) {

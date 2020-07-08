@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, DoubleRightOutlined, PlusOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
+import { Row, Col, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -15,7 +15,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const Hash = require('ipfs-only-hash')
 const BufferList = require('bl/BufferList')
 const axios = require('axios');
-const pickers = [CompactPicker, ChromePicker, TwitterPicker, CirclePicker]
+const pickers = [CirclePicker, ChromePicker]
 
 
 export default function InkCanvas(props) {
@@ -25,13 +25,11 @@ export default function InkCanvas(props) {
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
-  const [drawing, setDrawing] = useLocalStorage("drawing")
+
 
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
-
-  const [formLimit, setFormLimit] = useState(false);
 
   const getFromIPFS = async hashToGet => {
     for await (const file of ipfs.get(hashToGet)) {
@@ -54,46 +52,49 @@ export default function InkCanvas(props) {
 
   useEffect(() => {
     const loadPage = async () => {
-    //on page load checking url path
-    let ipfsHashRequest = window.location.pathname.replace("/", "")
-    if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
-      props.setMode("mint")
-      setDrawing("")
+      //on page load checking url path
+      let ipfsHashRequest = window.location.pathname.replace("/", "")
+      if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
+        props.setMode("mint")
+        props.setDrawing("")
 
-      let inkContent = await getFromIPFS(ipfsHashRequest)
-      console.log(JSON.parse(inkContent))
-      props.setInk(JSON.parse(inkContent))
+        let inkContent = await getFromIPFS(ipfsHashRequest)
+        console.log(JSON.parse(inkContent))
+        props.setInk(JSON.parse(inkContent))
 
-      let drawingContent = await getFromIPFS(JSON.parse(inkContent)['drawing'])
-      console.log(drawingContent)
-      props.setIpfsHash(ipfsHashRequest)
-      let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
-      console.log(decompressed)
+        let drawingContent = await getFromIPFS(JSON.parse(inkContent)['drawing'])
+        console.log("drawingContent:", drawingContent)
+        props.setIpfsHash(ipfsHashRequest)
+        try{
+          let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
+          //console.log(decompressed)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)
-            setDrawing(compressed)
+            props.setDrawing(compressed)
             //let decompressedObject = JSON.parse(decompressed)
             //setSize([decompressedObject['width'],decompressedObject['height']])
 
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
-        } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
-      }
-loadPage()
+        }catch(e){console.log("RROROROROROROROROROROR",e)}
+
+      } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
+    }
+    loadPage()
   }, [])
 
   useEffect(() => {
-    if (drawing) {
-      //console.log("DECOMPRESSING", drawing)
+    if (props.drawing) {
+      //console.log("DECOMPRESSING", props.drawing)
       try {
-        let decompressed = LZ.decompress(drawing)
+        let decompressed = LZ.decompress(props.drawing)
         //console.log(decompressed)
         drawingCanvas.current.loadSaveData(decompressed, false)
       } catch (e) {
         console.log(e)
       }
     }
-  }, [props.mode])
+  }, [props.mode, props.ink])
 
   const PickerDisplay = pickers[picker % pickers.length]
 
@@ -108,7 +109,7 @@ loadPage()
 
     let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
 
-    let decompressed = LZ.decompress(drawing)
+    let decompressed = LZ.decompress(props.drawing)
     let compressedArray = LZ.compressToUint8Array(decompressed)
 
     let drawingBuffer = Buffer.from(compressedArray)
@@ -144,8 +145,8 @@ loadPage()
 
     //setMode("mint")
     notification.open({
-    message: 'Saving Ink to the blockchain',
-    description:
+      message: 'Saving Ink to the blockchain',
+      description:
       'Contacting the smartcontract',
     });
 
@@ -153,185 +154,213 @@ loadPage()
 
     if(mintResult) {
 
-    props.setMode("mint")
-    window.history.pushState({id: inkHash}, props.ink['name'], '/' + inkHash)
+      props.setMode("mint")
+      window.history.pushState({id: inkHash}, props.ink['name'], '/' + inkHash)
 
-    //setMode("mint")
-    notification.open({
-    message: 'Sending ink to IPFS',
-    description:
-      'Uploading to the distributed web',
-    });
-
-    message.loading('Uploading to IPFS...', 0);
-
-    let serverUrl = 'http://localhost:3001/save'
-
-    const drawingResult = addToIPFS(drawingBuffer)
-    const imageResult = addToIPFS(imageBuffer)
-    const inkResult = addToIPFS(inkBuffer)
-
-    Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-      console.log(values);
-      message.destroy()
       //setMode("mint")
       notification.open({
+        message: 'Sending ink to IPFS',
+        description:
+        'Uploading to the distributed web',
+      });
+
+      message.loading('Uploading to IPFS...', 0);
+
+      let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
+
+      let buffer = Buffer.from(compressedArray)
+
+      console.log("SAVING TO SERVER BUFFER:", drawingBuffer)
+      axios.post(serverUrl, {buffer: drawingBuffer})
+      .then(function (response) {
+        console.log(" drawingBuffer SERVER RESPONSE LOCAL:",response);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      console.log("SAVING TO SERVER BUFFER:", imageBuffer)
+      axios.post(serverUrl,  {buffer: imageBuffer})
+      .then(function (response) {
+        console.log(" imageBuffer SERVER RESPONSE LOCAL:",response);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+
+      console.log("SAVING TO SERVER BUFFER:", inkBuffer)
+      axios.post(serverUrl,  {buffer: inkBuffer})
+      .then(function (response) {
+        console.log("inkBuffer SERVER RESPONSE LOCAL:",response);
+
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+      /*let buffer = Buffer.from(compressedArray) //we could fall back to going directly to IPFS if our server is down?
+      console.log("ADDING TO IPFS...",buffer)
+      ipfs.files.add(buffer, function (err, file) {
+      console.log("ADDED!")
+      if (err) {
+      console.log(err);
+    }
+    console.log(file)
+  })*/
+
+  const drawingResult = addToIPFS(drawingBuffer)
+  const imageResult = addToIPFS(imageBuffer)
+  const inkResult = addToIPFS(inkBuffer)
+
+  Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+    console.log(values);
+    message.destroy()
+    //setMode("mint")
+    notification.open({
       message: 'Ink saved in IPFS',
       description:
-        'Your ink is now InterPlanetary',
-      });
+      'Your ink is now InterPlanetary',
     });
-    }
-  };
+  });
+}
+};
 
 
-  const onFinishFailed = errorInfo => {
+const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
+};
+
+
+
+let top, buttons, bottom
+if (props.mode === "edit") {
+
+  const onFormLimitCheckboxChange = e => {
+    props.setFormLimit(e.target.checked);
   };
 
-  const newButton = (
-  <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
-    window.history.pushState({id: 'draw'}, 'draw', '/')
-    props.setMode("edit")
-    setDrawing("")
-    props.setIpfsHash()
-    setFormLimit(false)
-    props.setInk({})
-  }}><PlusOutlined /> New Ink</Button>
-  </div>
+  top = (
+    <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
+
+
+
+    <Form
+    layout={'inline'}
+    name="createInk"
+    initialValues={{ limit: 0 }}
+    onFinish={createInk}
+    onFinishFailed={onFinishFailed}
+    labelAlign = {'middle'}
+    style={{justifyContent: 'center'}}
+    >
+
+    <Form.Item >
+    <Button onClick={() => {
+      drawingCanvas.current.undo()
+    }}><UndoOutlined /> UNDO</Button>
+
+    <Button onClick={() => {
+      drawingCanvas.current.clear()
+      props.setDrawing()
+    }}><ClearOutlined /> CLEAR</Button>
+    <Button onClick={() => {
+      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+    }}><PlaySquareOutlined /> PLAY</Button>
+    </Form.Item>
+
+    <Form.Item
+    name="title"
+    rules={[{ required: true, message: 'What is this work of art called?' }]}
+    >
+    <Input placeholder={"name"} />
+    </Form.Item>
+
+    <Form.Item>
+    <Checkbox checked={props.formLimit} onChange={onFormLimitCheckboxChange}>
+    limit
+    </Checkbox>
+    </Form.Item>
+
+    <Form.Item
+    name="limit"
+    hidden={!props.formLimit}
+    rules={[{ required: true, message: 'How many inks can be minted?' }]}
+    >
+    <InputNumber
+    min={0}
+    />
+    </Form.Item>
+
+    <Form.Item >
+    <Button type="primary" htmlType="submit">
+    Ink!
+    </Button>
+    </Form.Item>
+    </Form>
+
+    </div>
+
   )
 
-  let top, buttons, bottom
-  if (props.mode === "edit") {
+  buttons = (
+    <div>
 
-    const onFormLimitCheckboxChange = e => {
-      setFormLimit(e.target.checked);
-    };
+    </div>
+  )
+  bottom = (
+    <div style={{ marginTop: 16 }}>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <PickerDisplay
+    color={color}
+    onChangeComplete={setColor}
+    />
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Button onClick={() => {
+      setPicker(picker + 1)
+    }}><HighlightOutlined /></Button>
+    </Row>
+    </div>
+  )
+} else if (props.mode === "mint") {
 
-    top = (
-      <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
+  top = (
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
 
-      <Form
-      layout={'inline'}
-      name="createInk"
-      initialValues={{ limit: 0 }}
-      onFinish={createInk}
-      onFinishFailed={onFinishFailed}
-      labelAlign = {'middle'}
-      style={{justifyContent: 'center'}}
-      >
-      <Form.Item
-      name="title"
-      rules={[{ required: true, message: 'What is this work of art called?' }]}
-      >
-      <Input placeholder={"name"} />
-      </Form.Item>
+    <Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+    <a href={'http://localhost:3000/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
+    </Typography.Text>
 
-      <Form.Item>
-      <Checkbox checked={formLimit} onChange={onFormLimitCheckboxChange}>
-      Limit?
-      </Checkbox>
-      </Form.Item>
 
-      <Form.Item
-      name="limit"
-      hidden={!formLimit}
-      rules={[{ required: true, message: 'How many inks can be made?' }]}
-      >
-      <InputNumber
-      min={0}
-      />
-      </Form.Item>
+    </Row>
+  )
 
-      <Form.Item >
-      <Button type="primary" htmlType="submit">
-        Ink!
-      </Button>
-      </Form.Item>
-      </Form>
+  bottom = (<></>)
+}
 
-      </div>
-
-    )
-
-    buttons = (
-      <div>
-        <Button onClick={() => {
-          drawingCanvas.current.undo()
-        }}><UndoOutlined /> UNDO</Button>
-        <Button onClick={() => {
-          drawingCanvas.current.clear()
-          setDrawing()
-        }}><ClearOutlined /> CLEAR</Button>
-        <Button onClick={() => {
-          drawingCanvas.current.loadSaveData(LZ.decompress(drawing), false)
-        }}><PlaySquareOutlined /> PLAY</Button>
-      </div>
-    )
-    bottom = (
-      <Row style={{ width: "90vmin", margin: "0 auto", justifyContent:'center'}}>
-        <Space>
-        <PickerDisplay
-          color={color}
-          onChangeComplete={setColor}
-        />
-        <div style={{ marginTop: 16 }}>
-          <Button onClick={() => {
-            setPicker(picker + 1)
-          }}><DoubleRightOutlined /></Button>
-        </div>
-
-        </Space>
-      </Row>
-    )
-  } else if (props.mode === "mint") {
-
-    top = (
-      <Typography copyable={{text:props.ink.name}}>
-        <span style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-        <a href={'http://localhost:3000/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
-        </span>
-      </Typography>
-    )
-
-    buttons = (
-      <div>
-        <Button onClick={() => {
-          drawingCanvas.current.loadSaveData(LZ.decompress(drawing), false)
-        }}><PlaySquareOutlined /> PLAY</Button>
-      </div>
-    )
-
-    bottom = (<></>)
-  }
-
-  return (
-      <div>
-      {top}
-          <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
-            <CanvasDraw
-              key={props.mode}
-              ref={drawingCanvas}
-              canvasWidth={size[0]}
-              canvasHeight={size[1]}
-              brushColor={color.hex}
-              lazyRadius={4} å
-              brushRadius={8}
-              disabled={props.mode !== "edit"}
-              hideGrid={props.mode !== "edit"}
-              hideInterface={props.mode !== "edit"}
-              onChange={(newDrawing) => {
-                let savedData = LZ.compress(newDrawing.getSaveData())
-                setDrawing(savedData)
-              }}
-            />
-          </div>
-          <div style={{ padding: 8 }}>
-            {buttons}
-          </div>
-          {bottom}
-          {newButton}
-      </div>
-  );
+return (
+  <div style={{textAlign:"center"}}>
+  {top}
+  <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+  <CanvasDraw
+  key={props.mode}
+  ref={drawingCanvas}
+  canvasWidth={size[0]}
+  canvasHeight={size[1]}
+  brushColor={color.hex}
+  lazyRadius={4} å
+  brushRadius={8}
+  disabled={props.mode !== "edit"}
+  hideGrid={props.mode !== "edit"}
+  hideInterface={props.mode !== "edit"}
+  onChange={(newDrawing) => {
+    let savedData = LZ.compress(newDrawing.getSaveData())
+    props.setDrawing(savedData)
+  }}
+  />
+  </div>
+  {bottom}
+  </div>
+);
 }
