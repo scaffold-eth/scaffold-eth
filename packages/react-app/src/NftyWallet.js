@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col, Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs, Typography } from 'antd';
 import { LoadingOutlined, PlusOutlined, SendOutlined } from '@ant-design/icons';
-import { useContractReader, useLocalStorage } from "./hooks"
+import { useContractReader, useLocalStorage, useEventListener } from "./hooks"
 import { Account } from "./components"
 import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -28,9 +28,11 @@ export default function NftyWallet(props) {
   let showcase
   const [tokenData, setTokenData] = useState()
   const [inkData, setInkData] = useState()
+  const [allInks, setAllInks] = useState()
 
   let tokenView
   let inkView
+  let allInkView
 
   let nftyBalance
   nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
@@ -38,6 +40,7 @@ export default function NftyWallet(props) {
   inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
   let totalInks
   totalInks = useContractReader(props.readContracts,'NFTINK',"totalInks",1777);
+  let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
 
   let displayBalance
   if(nftyBalance) {
@@ -126,25 +129,32 @@ export default function NftyWallet(props) {
           setInkData(inks.reverse())
         }
 
+        const getInkImages = async (e) => {
+          const jsonContent = await getFromIPFS(e['jsonUrl'], ipfsConfig)
+          const inkJson = JSON.parse(jsonContent)
+          const inkImageHash = inkJson.image.split('/').pop()
+          const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
+          const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
+          return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing}, e);
+        }
+
+        const loadStream = async (e) => {
+          if(inkCreations) {
+            const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
+            console.log(newInkCreations)
+            setAllInks(newInkCreations.reverse())
+          }
+        }
+
         loadTokens()
         loadInks()
+        loadStream()
 
       }
 
   },[sends,props.readContracts,props.address,tab])
 
-  useEffect(()=>{
-    if(tokens) {
-      setTokenData(tokens)
-    }
-  },[tokens])
 
-  useEffect(()=>{
-    if(inks) {
-      setInkData(inks)
-      console.log(inkData)
-    }
-  },[inks])
 
   const badgeStyle = {
     backgroundColor: "#fff",
@@ -256,6 +266,22 @@ export default function NftyWallet(props) {
             />
           )}
 
+       if(allInks) {
+         allInkView = (
+           <List
+           itemLayout="horizontal"
+           dataSource={allInks}
+           renderItem={item => (
+             <List.Item>
+             <List.Item.Meta
+             avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+             title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
+             />
+             </List.Item>
+           )}
+           />)
+       }
+
           /*return (
             <>
             <Button type="primary" onClick={showModal} size={"large"}>
@@ -324,6 +350,11 @@ export default function NftyWallet(props) {
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
                   <div style={{maxWidth:500,margin:"0 auto"}}>
                     {inkView}
+                  </div>
+                </TabPane>
+                <TabPane tab={<><span><span style={{padding:8}}>🎥</span> stream</span></>} key="4">
+                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                    {allInkView}
                   </div>
                 </TabPane>
               </Tabs>
