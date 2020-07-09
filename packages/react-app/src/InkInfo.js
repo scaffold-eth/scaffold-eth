@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Popover, Button, List, Form, Typography, Spin, Space } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useContractReader, useContractLoader } from "./hooks"
 import { Transactor, getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -22,6 +22,7 @@ export default function InkInfo(props) {
 
   let mintFlow
   let inkChainInfoDisplay
+  let detailContent
 
   const loadingTip = 'Connecting to the Ether webs...'
 
@@ -109,6 +110,18 @@ useEffect(()=>{
     } else {
       if(inkChainInfo && props.ink.attributes) {
         if(props.address === inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value === 0)) {
+
+          detailContent = (
+            <Descriptions>
+              <Descriptions.Item label="Name">{props.ink.name}</Descriptions.Item>
+              <Descriptions.Item label="Artist">{inkChainInfo[1]}</Descriptions.Item>
+              <Descriptions.Item label="jsonUrl">{inkChainInfo[3]}</Descriptions.Item>
+              <Descriptions.Item label="Image">{props.ink.image}</Descriptions.Item>
+              <Descriptions.Item label="Count">{inkChainInfo[2].toString()}</Descriptions.Item>
+              <Descriptions.Item label="Limit">{props.ink.attributes[0].value}</Descriptions.Item>
+            </Descriptions>
+          )
+
           const mintForm = (
             <Row style={{justifyContent: 'center'}}>
 
@@ -155,6 +168,9 @@ useEffect(()=>{
           </Typography>
           <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
           </Space>
+          <Popover content={detailContent} title="Ink Details">
+          <QuestionCircleOutlined />
+          </Popover>
           </Row>
           </>
         )
