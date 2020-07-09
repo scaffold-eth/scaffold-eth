@@ -72,7 +72,7 @@ export default function InkInfo(props) {
           <List
           header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
           itemLayout="horizontal"
-          dataSource={holdersArray}
+          dataSource={holdersArray.reverse()}
           renderItem={item => (
             <List.Item>
               <Address value={item[0]} /> {sendInkButton(item[0], item[1])}

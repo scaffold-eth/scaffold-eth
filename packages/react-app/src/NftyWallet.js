@@ -25,6 +25,7 @@ export default function NftyWallet(props) {
   const [sends, setSends] = useState(0)
   let tokens
   let inks
+  let showcase
   const [tokenData, setTokenData] = useState()
   const [inkData, setInkData] = useState()
 
@@ -35,6 +36,8 @@ export default function NftyWallet(props) {
   nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy
   inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
+  let totalInks
+  totalInks = useContractReader(props.readContracts,'NFTINK',"totalInks",1777);
 
   let displayBalance
   if(nftyBalance) {
@@ -78,7 +81,7 @@ export default function NftyWallet(props) {
             tokens[i] = tokenInfo
           }
 
-          setTokenData(tokens)
+          setTokenData(tokens.reverse())
         }
 
         const loadInks = async () => {
@@ -109,7 +112,7 @@ export default function NftyWallet(props) {
             inks[i] = inkInfo
           }
 
-          setInkData(inks)
+          setInkData(inks.reverse())
         }
 
         loadTokens()
