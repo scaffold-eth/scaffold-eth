@@ -14,7 +14,6 @@
     "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
     "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
-
     "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=16384",
     "chain": "cd packages/buidler && npx buidler node",
     "node": "cd packages/buidler && npx buidler node",
@@ -42,6 +41,7 @@
   "dependencies": {
     "ipfs-http-client": "^44.3.0",
     "ipfs-only-hash": "^2.0.1",
-    "is-ipfs": "^1.0.3"
+    "is-ipfs": "^1.0.3",
+    "lodash": "^4.17.19"
   }
 }

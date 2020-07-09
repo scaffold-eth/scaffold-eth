@@ -48,6 +48,17 @@ export default function NftyWallet(props) {
     displayInksCreated = inksCreatedBy.toString()
   }
 
+  const showInk = ((newIpfsHash) => {
+    console.log(newIpfsHash)
+    window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
+    setIpfsHash(newIpfsHash)
+    setDrawing()
+    setInk({})
+    setMode('mint')
+    setTab('1')
+    return false
+  })
+
   useEffect(()=>{
 
       if(props.readContracts && props.address) {
@@ -68,7 +79,7 @@ export default function NftyWallet(props) {
             const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
             const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
+            const linkUrl = inkJson['drawing']//urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
             const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
@@ -99,7 +110,7 @@ export default function NftyWallet(props) {
             const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
             const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
+            const linkUrl = inkJson['drawing']// urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
             const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
@@ -183,12 +194,12 @@ export default function NftyWallet(props) {
       renderItem={item => (
         <List.Item>
         <List.Item.Meta
-        avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+        avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
         title={(
           <div style={{marginTop:8}}>
 
             <Typography.Text  copyable={{ text: item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
-            <a style={{color:"#222222"}} href={item['url']}>
+            <a style={{color:"#222222"}} href="#" onClick={() => showInk(item['url'])} >
             {item['name'] /*+ ": Token #" + item['tokenId']*/}
             </a>
             </Typography.Text>
@@ -225,7 +236,7 @@ export default function NftyWallet(props) {
             renderItem={item => (
               <List.Item>
               <List.Item.Meta
-              avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+              avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
               title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
               description={(item['inkCount']?item['inkCount'].toString():'') + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
               />

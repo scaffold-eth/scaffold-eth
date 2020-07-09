@@ -53,7 +53,7 @@ export default function InkCanvas(props) {
 
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
-        }catch(e){console.log("RROROROROROROROROROROR",e)}
+        }catch(e){console.log("Drawing Error:",e)}
 
       } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
     }
@@ -61,6 +61,7 @@ export default function InkCanvas(props) {
   }, [])
 
   useEffect(() => {
+    const showDrawing = async () => {
     if (props.drawing) {
       //console.log("DECOMPRESSING", props.drawing)
       try {
@@ -70,8 +71,22 @@ export default function InkCanvas(props) {
       } catch (e) {
         console.log(e)
       }
+    } else if (props.ipfsHash) {
+      let drawingContent = await getFromIPFS(props.ipfsHash, props.ipfsConfig)
+      try{
+        const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
+        let decompressed = LZ.decompressFromUint8Array(arrays)
+        if (decompressed) {
+          let compressed = LZ.compress(decompressed)
+          props.setDrawing(compressed)
+
+          drawingCanvas.current.loadSaveData(decompressed, false)
+        }
+      }catch(e){console.log("Drawing Error:",e)}
     }
-  }, [props.mode])
+  }
+  showDrawing()
+}, [props.mode, props.ipfsHash])
 
   const PickerDisplay = pickers[picker % pickers.length]
 

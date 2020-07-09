@@ -2,10 +2,11 @@ import React, { useState, useEffect } from 'react'
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { useContractReader, useContractLoader } from "./hooks"
+import { useContractReader, useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import Blockies from 'react-blockies';
+var _ = require('lodash');
 
 const isIPFS = require('is-ipfs')
 const Hash = require('ipfs-only-hash')
@@ -16,9 +17,11 @@ export default function InkInfo(props) {
   const [sends, setSends] = useState(0)
   const writeContracts = useContractLoader(props.injectedProvider);
   const tx = Transactor(props.injectedProvider)
+  const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 
-  let inkChainInfo
-  inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByInkUrl",[props.ipfsHash],1777);
+  //let inkChainInfo
+  //inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByInkUrl",[props.ipfsHash],1777);
+  const [inkChainInfo, setInkChainInfo] = useState()
 
   let mintFlow
   let inkChainInfoDisplay
@@ -36,11 +39,24 @@ export default function InkInfo(props) {
     console.log('Failed:', errorInfo);
   };
 
+  usePoller(() => {
+    const getChainInfo = async () => {
+      if(props.ipfsHash){
+        try {
+        const newChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+        setInkChainInfo(newChainInfo)
+      } catch(e){ console.log(e)}      
+      }
+    }
+    getChainInfo()
+  }, 1777
+)
+
   useEffect(()=>{
 
     const loadHolders = async () => {
-      if(props.ipfsHash && props.ink['attributes']) {
-        inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+      if(props.ipfsHash && props.ink['attributes'] && inkChainInfo) {
+        //inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         let mintedCount = inkChainInfo[2]
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
@@ -90,15 +106,19 @@ export default function InkInfo(props) {
 useEffect(()=>{
   const updateInk = async () => {
     if (props.readContracts) {
-    inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+    if(inkChainInfo && !(_.isEqual(inkChainInfo,referenceInkChainInfo))) {
+    console.log('gettingNewInkInfo')
+    //inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
     let jsonUrl = inkChainInfo[3]
     let inkContent = await getFromIPFS(jsonUrl, props.ipfsConfig)
     console.log(JSON.parse(inkContent))
     props.setInk(JSON.parse(inkContent))
+    setReferenceInkChainInfo(inkChainInfo)
+  }
   }
 }
   updateInk()
-}, [props.ipfsHash])
+}, [inkChainInfo])
 
 
     if (!inkChainInfo || !props.ink.attributes) {
