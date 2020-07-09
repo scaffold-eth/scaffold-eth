@@ -3,14 +3,13 @@ import { Row, Col, Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs, Typ
 import { LoadingOutlined, PlusOutlined, SendOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
 import { Account } from "./components"
+import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import InkCanvas from "./InkCanvas.js"
 import InkInfo from "./InkInfo.js"
 const { TabPane } = Tabs;
 
-const ipfsAPI = require('ipfs-http-client');
-const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
-const BufferList = require('bl/BufferList')
+const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
 export default function NftyWallet(props) {
 
@@ -36,17 +35,6 @@ export default function NftyWallet(props) {
   nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy
   inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
-
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      if (!file.content) continue;
-      const content = new BufferList()
-      for await (const chunk of file.content) {
-        content.append(chunk)
-      }
-      return content
-    }
-  }
 
   let displayBalance
   if(nftyBalance) {
@@ -74,12 +62,12 @@ export default function NftyWallet(props) {
             let parts = jsonUrl.split('/');
             let ipfsHash = parts.pop();
 
-            const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-            const jsonContent = await getFromIPFS(ipfsHash)
+            const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
+            const urlArray = window.location.href.split("/");
+            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash)
+            const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
             return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl, name: inkJson['name'], image: inkImageURI}
@@ -105,13 +93,12 @@ export default function NftyWallet(props) {
 
             let ipfsHash = inkInfo[0]
 
-            const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-
-            const jsonContent = await getFromIPFS(ipfsHash)
+            const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
+            const urlArray = window.location.href.split("/");
+            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash)
+            const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
             return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI}
@@ -179,7 +166,9 @@ export default function NftyWallet(props) {
       injectedProvider={props.injectedProvider}
       readContracts={props.readContracts}
       ink={ink}
+      setInk={setInk}
       ipfsHash={ipfsHash}
+      ipfsConfig={ipfsConfig}
     />)
   }
 
@@ -235,7 +224,7 @@ export default function NftyWallet(props) {
               <List.Item.Meta
               avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
               title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
-              description={item['inkCount'].toString() + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
+              description={(item['inkCount']?item['inkCount'].toString():'') + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
               />
               </List.Item>
             )}
@@ -308,6 +297,7 @@ export default function NftyWallet(props) {
                       setDrawing={setDrawing}
                       formLimit={formLimit}
                       setFormLimit={setFormLimit}
+                      ipfsConfig={ipfsConfig}
                     />
                     {inkInfo}
                   </div>

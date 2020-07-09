@@ -99,7 +99,7 @@ try{
 
 
 module.exports = {
-  defaultNetwork: 'rinkeby',
+  defaultNetwork: 'localhost',
   networks: {
     kovan: {
       url: 'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c',

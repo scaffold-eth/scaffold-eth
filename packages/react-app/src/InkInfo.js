@@ -3,19 +3,22 @@ import { Row, Popover, Button, List, Form, Typography, Spin, Space } from 'antd'
 import { AddressInput, Address } from "./components"
 import { SendOutlined } from '@ant-design/icons';
 import { useContractReader, useContractLoader } from "./hooks"
-import { Transactor } from "./helpers"
+import { Transactor, getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import Blockies from 'react-blockies';
 
+const isIPFS = require('is-ipfs')
+const Hash = require('ipfs-only-hash')
+
 export default function InkInfo(props) {
 
-  const [holders, setHolders] = useState()
+  const [holders, setHolders] = useState(<></>)
   const [sends, setSends] = useState(0)
   const writeContracts = useContractLoader(props.injectedProvider);
   const tx = Transactor(props.injectedProvider)
 
   let inkChainInfo
-  inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByJsonUrl",[props.ipfsHash],1777);
+  inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByInkUrl",[props.ipfsHash],1777);
 
   let mintFlow
   let inkChainInfoDisplay
@@ -36,7 +39,7 @@ export default function InkInfo(props) {
 
     const loadHolders = async () => {
       if(props.ipfsHash && props.ink['attributes']) {
-        inkChainInfo = await props.readContracts['NFTINK']["inkInfoByJsonUrl"](props.ipfsHash)
+        inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         let mintedCount = inkChainInfo[2]
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
@@ -81,18 +84,30 @@ export default function InkInfo(props) {
         }
       }
       loadHolders()
-    }, [props.ink, inkChainInfo])
+    }, [inkChainInfo])
 
-    if (!props.ipfsHash) {
+useEffect(()=>{
+  const updateInk = async () => {
+    if (props.readContracts) {
+    inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+    let jsonUrl = inkChainInfo[3]
+    let inkContent = await getFromIPFS(jsonUrl, props.ipfsConfig)
+    console.log(JSON.parse(inkContent))
+    props.setInk(JSON.parse(inkContent))
+  }
+}
+  updateInk()
+}, [props.ipfsHash])
+
+
+    if (!inkChainInfo || !props.ink.attributes) {
       inkChainInfoDisplay = (
         <div>
         <Spin tip={loadingTip}/>
         </div>
       )
     } else {
-
-      if(inkChainInfo) {
-
+      if(inkChainInfo && props.ink.attributes) {
         if(props.address === inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value === 0)) {
           const mintForm = (
             <Row style={{justifyContent: 'center'}}>
@@ -129,7 +144,6 @@ export default function InkInfo(props) {
             </Popover>
           )
         }
-        /*<Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}}>Ink #{inkChainInfo[0].toString()}</Typography.Text>*/
         inkChainInfoDisplay = (
           <>
           <Row style={{justifyContent: 'center',marginTop:16}}>

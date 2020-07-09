@@ -4,16 +4,13 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
-import { Transactor } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
 import LZ from "lz-string";
 
-const ipfsAPI = require('ipfs-http-client');
 const isIPFS = require('is-ipfs')
-const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const Hash = require('ipfs-only-hash')
-const BufferList = require('bl/BufferList')
 const axios = require('axios');
 const pickers = [CirclePicker, ChromePicker]
 
@@ -31,25 +28,6 @@ export default function InkCanvas(props) {
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      console.log(file.path)
-      if (!file.content) continue;
-      const content = new BufferList()
-      for await (const chunk of file.content) {
-        content.append(chunk)
-      }
-      console.log(content)
-      return content
-    }
-  }
-
-  const addToIPFS = async fileToUpload => {
-    for await (const result of ipfs.add(fileToUpload)) {
-      return result
-    }
-  }
-
   useEffect(() => {
     const loadPage = async () => {
       //on page load checking url path
@@ -58,11 +36,10 @@ export default function InkCanvas(props) {
         props.setMode("mint")
         props.setDrawing("")
 
-        let inkContent = await getFromIPFS(ipfsHashRequest)
-        console.log(JSON.parse(inkContent))
-        props.setInk(JSON.parse(inkContent))
-
-        let drawingContent = await getFromIPFS(JSON.parse(inkContent)['drawing'])
+        //let inkContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
+        //console.log(JSON.parse(inkContent))
+        //props.setInk(JSON.parse(inkContent))
+        let drawingContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
         console.log("drawingContent:", drawingContent)
         props.setIpfsHash(ipfsHashRequest)
         try{
@@ -94,7 +71,7 @@ export default function InkCanvas(props) {
         console.log(e)
       }
     }
-  }, [props.mode, props.ink])
+  }, [props.mode])
 
   const PickerDisplay = pickers[picker % pickers.length]
 
@@ -210,9 +187,9 @@ export default function InkCanvas(props) {
     console.log(file)
   })*/
 
-  const drawingResult = addToIPFS(drawingBuffer)
-  const imageResult = addToIPFS(imageBuffer)
-  const inkResult = addToIPFS(inkBuffer)
+  const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
+  const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
+  const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
     console.log(values);

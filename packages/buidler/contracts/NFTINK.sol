@@ -13,7 +13,7 @@ contract NFTINK is ERC721 {
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
-    event mintedInk(uint256 id, string jsonUrl, address to);
+    event mintedInk(uint256 id, string inkUrl, address to);
 
     struct Ink {
     uint256 id;
@@ -70,7 +70,7 @@ contract NFTINK is ERC721 {
         _mint(to, id);
         _setTokenURI(id, _ink.jsonUrl);
 
-        emit mintedInk(id, jsonUrl, to);
+        emit mintedInk(id, _ink.inkUrl, to);
 
         return id;
     }
@@ -83,7 +83,7 @@ contract NFTINK is ERC721 {
       return _inkTokens[inkUrl].at(index);
     }
 
-    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string) {
+    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory) {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
@@ -99,7 +99,7 @@ contract NFTINK is ERC721 {
         return _artistInks[artist].at(index);
     }
 
-    function inkInfoById(uint256 id) public view returns (string memory, address, uint256) {
+    function inkInfoById(uint256 id) public view returns (string memory, address, uint256, string memory) {
       require(_inkById[id].exists, "this ink does not exist!");
       Ink storage _ink = _inkById[id];
 
