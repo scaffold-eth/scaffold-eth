@@ -1,16 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Row, Col, Modal, Button, List, Popover, Badge, Avatar, Empty, Tabs, Typography } from 'antd';
 import { LoadingOutlined, PlusOutlined, SendOutlined } from '@ant-design/icons';
-import { useContractReader, useLocalStorage } from "./hooks"
+import { useContractReader, useLocalStorage, useEventListener } from "./hooks"
 import { Account } from "./components"
+import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import InkCanvas from "./InkCanvas.js"
 import InkInfo from "./InkInfo.js"
 const { TabPane } = Tabs;
 
-const ipfsAPI = require('ipfs-http-client');
-const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
-const BufferList = require('bl/BufferList')
+const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
 export default function NftyWallet(props) {
 
@@ -26,27 +25,22 @@ export default function NftyWallet(props) {
   const [sends, setSends] = useState(0)
   let tokens
   let inks
+  let showcase
   const [tokenData, setTokenData] = useState()
   const [inkData, setInkData] = useState()
+  const [allInks, setAllInks] = useState()
 
   let tokenView
   let inkView
+  let allInkView
 
   let nftyBalance
   nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy
   inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
-
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      if (!file.content) continue;
-      const content = new BufferList()
-      for await (const chunk of file.content) {
-        content.append(chunk)
-      }
-      return content
-    }
-  }
+  let totalInks
+  totalInks = useContractReader(props.readContracts,'NFTINK',"totalInks",1777);
+  let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
 
   let displayBalance
   if(nftyBalance) {
@@ -57,12 +51,22 @@ export default function NftyWallet(props) {
     displayInksCreated = inksCreatedBy.toString()
   }
 
+  const showInk = ((newIpfsHash) => {
+    console.log(newIpfsHash)
+    window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
+    setIpfsHash(newIpfsHash)
+    setDrawing()
+    setInk({})
+    setMode('mint')
+    setTab('1')
+    return false
+  })
+
   useEffect(()=>{
 
       if(props.readContracts && props.address) {
 
         const loadTokens = async () => {
-          console.log(("LOADING TOKENS"))
           nftyBalance = await props.readContracts['NFTINK']["balanceOf"](props.address)
           tokens = new Array(nftyBalance)
           //console.log(tokens)
@@ -74,12 +78,12 @@ export default function NftyWallet(props) {
             let parts = jsonUrl.split('/');
             let ipfsHash = parts.pop();
 
-            const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-            const jsonContent = await getFromIPFS(ipfsHash)
+            const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
+            const urlArray = window.location.href.split("/");
+            const linkUrl = inkJson['drawing']//urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash)
+            const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
             return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl, name: inkJson['name'], image: inkImageURI}
@@ -90,14 +94,12 @@ export default function NftyWallet(props) {
             tokens[i] = tokenInfo
           }
 
-          setTokenData(tokens)
+          setTokenData(tokens.reverse())
         }
 
         const loadInks = async () => {
           inksCreatedBy = await props.readContracts['NFTINK']["inksCreatedBy"](props.address)
           inks = new Array(inksCreatedBy)
-          console.log("inks", inks)
-          console.log(inksCreatedBy.toString())
 
           const getInkInfo = async (i) => {
             let inkId = await props.readContracts['NFTINK']["inkOfArtistByIndex"](props.address, i)
@@ -105,13 +107,12 @@ export default function NftyWallet(props) {
 
             let ipfsHash = inkInfo[0]
 
-            const urlArray = window.location.href.split("/");
-            const linkUrl = urlArray[0] + "//" + urlArray[2] + "/" + ipfsHash
-
-            const jsonContent = await getFromIPFS(ipfsHash)
+            const jsonContent = await getFromIPFS(ipfsHash, ipfsConfig)
             const inkJson = JSON.parse(jsonContent)
+            const urlArray = window.location.href.split("/");
+            const linkUrl = inkJson['drawing']// urlArray[0] + "//" + urlArray[2] + "/" + inkJson['drawing']
             const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash)
+            const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
             return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI}
@@ -122,28 +123,34 @@ export default function NftyWallet(props) {
             inks[i] = inkInfo
           }
 
-          setInkData(inks)
+          setInkData(inks.reverse())
+        }
+
+        const getInkImages = async (e) => {
+          const jsonContent = await getFromIPFS(e['jsonUrl'], ipfsConfig)
+          const inkJson = JSON.parse(jsonContent)
+          const inkImageHash = inkJson.image.split('/').pop()
+          const imageContent = await getFromIPFS(inkImageHash, ipfsConfig)
+          const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
+          return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing}, e);
+        }
+
+        const loadStream = async (e) => {
+          if(inkCreations) {
+            const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
+            setAllInks(newInkCreations.reverse())
+          }
         }
 
         loadTokens()
         loadInks()
+        loadStream()
 
       }
 
   },[sends,props.readContracts,props.address,tab])
 
-  useEffect(()=>{
-    if(tokens) {
-      setTokenData(tokens)
-    }
-  },[tokens])
 
-  useEffect(()=>{
-    if(inks) {
-      setInkData(inks)
-      console.log(inkData)
-    }
-  },[inks])
 
   const badgeStyle = {
     backgroundColor: "#fff",
@@ -179,7 +186,9 @@ export default function NftyWallet(props) {
       injectedProvider={props.injectedProvider}
       readContracts={props.readContracts}
       ink={ink}
+      setInk={setInk}
       ipfsHash={ipfsHash}
+      ipfsConfig={ipfsConfig}
     />)
   }
 
@@ -191,12 +200,12 @@ export default function NftyWallet(props) {
       renderItem={item => (
         <List.Item>
         <List.Item.Meta
-        avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+        avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
         title={(
           <div style={{marginTop:8}}>
 
             <Typography.Text  copyable={{ text: item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
-            <a style={{color:"#222222"}} href={item['url']}>
+            <a style={{color:"#222222"}} href="#" onClick={() => showInk(item['url'])} >
             {item['name'] /*+ ": Token #" + item['tokenId']*/}
             </a>
             </Typography.Text>
@@ -233,9 +242,9 @@ export default function NftyWallet(props) {
             renderItem={item => (
               <List.Item>
               <List.Item.Meta
-              avatar={item['image']?<a href={item['url']}><img src={item['image']} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+              avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
               title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
-              description={item['inkCount'].toString() + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
+              description={(item['inkCount']?item['inkCount'].toString():'') + (item['limit']>0?'/' + item['limit']:'') + ' minted'}
               />
               </List.Item>
             )}
@@ -252,6 +261,22 @@ export default function NftyWallet(props) {
             }
             />
           )}
+
+       if(allInks) {
+         allInkView = (
+           <List
+           itemLayout="horizontal"
+           dataSource={allInks}
+           renderItem={item => (
+             <List.Item>
+             <List.Item.Meta
+             avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
+             title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
+             />
+             </List.Item>
+           )}
+           />)
+       }
 
           /*return (
             <>
@@ -287,6 +312,9 @@ export default function NftyWallet(props) {
                   mainnetProvider={props.mainnetProvider}
                   price={props.price}
                   minimized={props.minimized}
+                  setMetaProvider={props.setMetaProvider}
+                  metaProvider={props.metaProvider}
+                  gsnConfig={props.gsnConfig}
               />
 
               </div>
@@ -308,6 +336,8 @@ export default function NftyWallet(props) {
                       setDrawing={setDrawing}
                       formLimit={formLimit}
                       setFormLimit={setFormLimit}
+                      ipfsConfig={ipfsConfig}
+                      metaProvider={props.metaProvider}
                     />
                     {inkInfo}
                   </div>
@@ -320,6 +350,11 @@ export default function NftyWallet(props) {
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
                   <div style={{maxWidth:500,margin:"0 auto"}}>
                     {inkView}
+                  </div>
+                </TabPane>
+                <TabPane tab={<><span><span style={{padding:8}}>🎥</span> stream</span></>} key="4">
+                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                    {allInkView}
                   </div>
                 </TabPane>
               </Tabs>

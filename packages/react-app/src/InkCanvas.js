@@ -4,16 +4,13 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
-import { Transactor } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
 import LZ from "lz-string";
 
-const ipfsAPI = require('ipfs-http-client');
 const isIPFS = require('is-ipfs')
-const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const Hash = require('ipfs-only-hash')
-const BufferList = require('bl/BufferList')
 const axios = require('axios');
 const pickers = [CirclePicker, ChromePicker]
 
@@ -21,6 +18,7 @@ const pickers = [CirclePicker, ChromePicker]
 export default function InkCanvas(props) {
 
   const writeContracts = useContractLoader(props.injectedProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider);
   const tx = Transactor(props.injectedProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
@@ -31,25 +29,6 @@ export default function InkCanvas(props) {
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
-  const getFromIPFS = async hashToGet => {
-    for await (const file of ipfs.get(hashToGet)) {
-      console.log(file.path)
-      if (!file.content) continue;
-      const content = new BufferList()
-      for await (const chunk of file.content) {
-        content.append(chunk)
-      }
-      console.log(content)
-      return content
-    }
-  }
-
-  const addToIPFS = async fileToUpload => {
-    for await (const result of ipfs.add(fileToUpload)) {
-      return result
-    }
-  }
-
   useEffect(() => {
     const loadPage = async () => {
       //on page load checking url path
@@ -58,18 +37,11 @@ export default function InkCanvas(props) {
         props.setMode("mint")
         props.setDrawing("")
 
-        let inkContent = await getFromIPFS(ipfsHashRequest)
-        console.log(JSON.parse(inkContent))
-        props.setInk(JSON.parse(inkContent))
-
-        let drawingContent = await getFromIPFS(JSON.parse(inkContent)['drawing'])
-        console.log("drawingContent:", drawingContent)
+        let drawingContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
         props.setIpfsHash(ipfsHashRequest)
         try{
-          //let decompressed = LZ.decompressFromUint8Array(drawingContent._bufs[0])
           const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
-         let decompressed = LZ.decompressFromUint8Array(arrays)
-          //console.log(decompressed)
+          let decompressed = LZ.decompressFromUint8Array(arrays)
           if (decompressed) {
             let compressed = LZ.compress(decompressed)
             props.setDrawing(compressed)
@@ -78,7 +50,7 @@ export default function InkCanvas(props) {
 
             drawingCanvas.current.loadSaveData(decompressed, false)
           }
-        }catch(e){console.log("RROROROROROROROROROROR",e)}
+        }catch(e){console.log("Drawing Error:",e)}
 
       } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
     }
@@ -86,6 +58,7 @@ export default function InkCanvas(props) {
   }, [])
 
   useEffect(() => {
+    const showDrawing = async () => {
     if (props.drawing) {
       //console.log("DECOMPRESSING", props.drawing)
       try {
@@ -95,13 +68,34 @@ export default function InkCanvas(props) {
       } catch (e) {
         console.log(e)
       }
+    } else if (props.ipfsHash) {
+      let drawingContent = await getFromIPFS(props.ipfsHash, props.ipfsConfig)
+      try{
+        const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
+        let decompressed = LZ.decompressFromUint8Array(arrays)
+        if (decompressed) {
+          let compressed = LZ.compress(decompressed)
+          props.setDrawing(compressed)
+
+          drawingCanvas.current.loadSaveData(decompressed, false)
+        }
+      }catch(e){console.log("Drawing Error:",e)}
     }
-  }, [props.mode, props.ink])
+  }
+  showDrawing()
+}, [props.mode, props.ipfsHash])
 
   const PickerDisplay = pickers[picker % pickers.length]
 
-  const mintInk = async (hashToMint) => {
-    let result = await tx(writeContracts["NFTINK"].createInk(hashToMint, props.ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
+  const mintInk = async (inkUrl, jsonUrl) => {
+    let result
+    try {
+      console.log('trying meta-transaction')
+    result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    } catch {
+      console.log('the old fashioned way')
+    result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    }
     console.log("result", result)
     return result
   }
@@ -134,16 +128,17 @@ export default function InkCanvas(props) {
 
     currentInk['drawing'] = drawingHash
     currentInk['image'] = 'https://ipfs.io/ipfs/' + imageHash
+    currentInk['external_url'] = 'https://nifty.ink/' + drawingHash
     props.setInk(currentInk)
     console.log("Ink:", props.ink)
 
     var inkStr = JSON.stringify(props.ink);
     const inkBuffer = Buffer.from(inkStr);
 
-    const inkHash = await Hash.of(inkBuffer)
-    console.log("jsonHash", inkHash)
+    const jsonHash = await Hash.of(inkBuffer)
+    console.log("jsonHash", jsonHash)
 
-    props.setIpfsHash(inkHash)
+    props.setIpfsHash(drawingHash)
 
     //setMode("mint")
     notification.open({
@@ -152,12 +147,12 @@ export default function InkCanvas(props) {
       'Contacting the smartcontract',
     });
 
-    var mintResult = await mintInk(inkHash);
+    var mintResult = await mintInk(drawingHash, jsonHash);
 
     if(mintResult) {
 
       props.setMode("mint")
-      window.history.pushState({id: inkHash}, props.ink['name'], '/' + inkHash)
+      window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
       //setMode("mint")
       notification.open({
@@ -211,9 +206,9 @@ export default function InkCanvas(props) {
     console.log(file)
   })*/
 
-  const drawingResult = addToIPFS(drawingBuffer)
-  const imageResult = addToIPFS(imageBuffer)
-  const inkResult = addToIPFS(inkBuffer)
+  const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
+  const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
+  const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
     console.log(values);
@@ -330,8 +325,8 @@ if (props.mode === "edit") {
   top = (
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
 
-    <Typography.Text style={{color:"#222222"}} copyable={{ text: 'http://localhost:3000/' + props.ipfsHash}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-    <a href={'http://localhost:3000/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
+    <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+    <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
     </Typography.Text>
 
 
