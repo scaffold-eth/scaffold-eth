@@ -45,7 +45,7 @@ export default function InkInfo(props) {
         try {
         const newChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         setInkChainInfo(newChainInfo)
-      } catch(e){ console.log(e)}      
+      } catch(e){ console.log(e)}
       }
     }
     getChainInfo()
@@ -107,8 +107,6 @@ useEffect(()=>{
   const updateInk = async () => {
     if (props.readContracts) {
     if(inkChainInfo && !(_.isEqual(inkChainInfo,referenceInkChainInfo))) {
-    console.log('gettingNewInkInfo')
-    //inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
     let jsonUrl = inkChainInfo[3]
     let inkContent = await getFromIPFS(jsonUrl, props.ipfsConfig)
     console.log(JSON.parse(inkContent))

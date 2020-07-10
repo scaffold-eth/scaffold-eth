@@ -6,6 +6,7 @@ import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button } from 'antd';
+import { RelayProvider } from '@opengsn/gsn';
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -26,21 +27,45 @@ export default function Account(props) {
 
   const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
+      let burnerProvider
       if(props.localProvider.connection && props.localProvider.connection.url){
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)))
+        burnerProvider = new BurnerProvider(props.localProvider.connection.url)
         console.log("________BY URL",props.localProvider.connection.url)
       }else if( props.localProvider._network && props.localProvider._network.name ){
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)))
+        burnerProvider = new BurnerProvider("https://"+props.localProvider._network.name+".infura.io/v3/"+INFURA_ID)
         console.log("________INFURA")
       }else{
         console.log("________MAINMIAN")
-        props.setInjectedProvider(new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)))
+        burnerProvider = new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
       }
+      updateProviders(burnerProvider)
     }else{
       pollInjectedProvider()
     }
   }
   useEffect(createBurnerIfNoAddress, [props.injectedProvider]);
+
+  const updateProviders =  async (provider) => {
+
+    props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+
+    if (typeof props.setMetaProvider == "function" && props.gsnConfig) {
+    let gsnConfig = {
+      relayHubAddress: props.gsnConfig.relayHubAddress,
+      stakeManagerAddress: props.gsnConfig.stakeManagerAddress,
+      paymasterAddress: props.gsnConfig.paymasterAddress,
+    }
+
+    if (provider._metamask) {
+      console.log('using metamask')
+      gsnConfig = {...gsnConfig, methodSuffix: '_v4', jsonStringifyRequest: true, chainId: provider.networkVersion}
+
+    }
+
+    const gsnProvider = new RelayProvider(provider, gsnConfig)
+    props.setMetaProvider(new ethers.providers.Web3Provider(gsnProvider))
+  }
+  }
 
   const pollInjectedProvider = async ()=>{
     if(props.injectedProvider){
@@ -57,7 +82,7 @@ export default function Account(props) {
     const provider = await web3Modal.connect();
     //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
     if(typeof props.setInjectedProvider == "function"){
-      props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
+      updateProviders(provider)
     }
     pollInjectedProvider()
   }
@@ -93,24 +118,14 @@ export default function Account(props) {
   const tokenContract = props.localProvider
 
   let display=""
-  if(!props.minimized){
-    display = (
-      <span>
-        {props.address?(
-          <Address value={props.address} ensProvider={props.mainnetProvider}/>
-        ):"Connecting..."}
-        <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
-        <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
-      </span>
-    )
-  } else { display = (
+  display = (
     <span>
       {props.address?(
         <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
       <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
-    </span>)}
+    </span>)
 
   return (
     <div>

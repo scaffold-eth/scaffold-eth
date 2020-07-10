@@ -3,13 +3,16 @@ pragma solidity >=0.6.0 <0.7.0;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 
-contract NFTINK is ERC721 {
+import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
+
+contract NFTINK is BaseRelayRecipient, ERC721 {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
 
-    constructor() ERC721("Nifty Ink", "NFTINK") public {
+    constructor(address _forwarder) ERC721("Nifty Ink", "NFTINK") public {
       _setBaseURI('ipfs://ipfs/');
+      trustedForwarder = _forwarder;
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
@@ -37,7 +40,7 @@ contract NFTINK is ERC721 {
 
       Ink memory _ink = Ink({
         id: totalInks.current(),
-        artist: msg.sender,
+        artist: _msgSender(),
         inkUrl: inkUrl,
         jsonUrl: jsonUrl,
         limit: limit,
@@ -47,7 +50,7 @@ contract NFTINK is ERC721 {
 
         _inkIdByUrl[inkUrl] = _ink.id;
         _inkById[_ink.id] = _ink;
-        _artistInks[msg.sender].add(_ink.id);
+        _artistInks[_msgSender()].add(_ink.id);
 
         emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
 
@@ -58,7 +61,7 @@ contract NFTINK is ERC721 {
         uint256 _inkId = _inkIdByUrl[inkUrl];
         require(_inkId > 0, "this ink does not exist!");
         Ink storage _ink = _inkById[_inkId];
-        require(_ink.artist == msg.sender, "only the artist can mint!");
+        require(_ink.artist == _msgSender(), "only the artist can mint!");
         require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
         _inkById[_ink.id].count += 1;
@@ -105,4 +108,24 @@ contract NFTINK is ERC721 {
 
       return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl);
     }
+
+    function versionRecipient() external virtual view
+  	override returns (string memory) {
+  		return "1.0";
+  	}
+
+  	function getTrustedForwarder() public view returns(address) {
+  		return trustedForwarder;
+  	}
+
+    function _msgSender() internal override(BaseRelayRecipient, Context) view returns (address payable) {
+        if (msg.data.length >= 24 && isTrustedForwarder(msg.sender)) {
+            // At this point we know that the sender is a trusted forwarder,
+            // so we trust that the last bytes of msg.data are the verified sender address.
+            // extract sender address from the end of msg.data
+            return address(uint160(LibBytesV06.readAddress(msg.data, msg.data.length - 20)));
+        }
+        return msg.sender;
+    }
+
 }

@@ -18,6 +18,7 @@ const pickers = [CirclePicker, ChromePicker]
 export default function InkCanvas(props) {
 
   const writeContracts = useContractLoader(props.injectedProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider);
   const tx = Transactor(props.injectedProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
@@ -36,11 +37,7 @@ export default function InkCanvas(props) {
         props.setMode("mint")
         props.setDrawing("")
 
-        //let inkContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
-        //console.log(JSON.parse(inkContent))
-        //props.setInk(JSON.parse(inkContent))
         let drawingContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
-        console.log("drawingContent:", drawingContent)
         props.setIpfsHash(ipfsHashRequest)
         try{
           const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
@@ -91,7 +88,14 @@ export default function InkCanvas(props) {
   const PickerDisplay = pickers[picker % pickers.length]
 
   const mintInk = async (inkUrl, jsonUrl) => {
-    let result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))//eventually pass the JSON link not the Drawing link
+    let result
+    try {
+      console.log('trying meta-transaction')
+    result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    } catch {
+      console.log('the old fashioned way')
+    result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    }
     console.log("result", result)
     return result
   }

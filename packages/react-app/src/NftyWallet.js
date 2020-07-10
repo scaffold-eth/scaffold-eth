@@ -67,7 +67,6 @@ export default function NftyWallet(props) {
       if(props.readContracts && props.address) {
 
         const loadTokens = async () => {
-          console.log(("LOADING TOKENS"))
           nftyBalance = await props.readContracts['NFTINK']["balanceOf"](props.address)
           tokens = new Array(nftyBalance)
           //console.log(tokens)
@@ -101,8 +100,6 @@ export default function NftyWallet(props) {
         const loadInks = async () => {
           inksCreatedBy = await props.readContracts['NFTINK']["inksCreatedBy"](props.address)
           inks = new Array(inksCreatedBy)
-          console.log("inks", inks)
-          console.log(inksCreatedBy.toString())
 
           const getInkInfo = async (i) => {
             let inkId = await props.readContracts['NFTINK']["inkOfArtistByIndex"](props.address, i)
@@ -141,7 +138,6 @@ export default function NftyWallet(props) {
         const loadStream = async (e) => {
           if(inkCreations) {
             const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
-            console.log(newInkCreations)
             setAllInks(newInkCreations.reverse())
           }
         }
@@ -316,6 +312,9 @@ export default function NftyWallet(props) {
                   mainnetProvider={props.mainnetProvider}
                   price={props.price}
                   minimized={props.minimized}
+                  setMetaProvider={props.setMetaProvider}
+                  metaProvider={props.metaProvider}
+                  gsnConfig={props.gsnConfig}
               />
 
               </div>
@@ -338,6 +337,7 @@ export default function NftyWallet(props) {
                       formLimit={formLimit}
                       setFormLimit={setFormLimit}
                       ipfsConfig={ipfsConfig}
+                      metaProvider={props.metaProvider}
                     />
                     {inkInfo}
                   </div>
