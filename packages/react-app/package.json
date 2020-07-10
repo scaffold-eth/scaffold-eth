@@ -48,7 +48,10 @@
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "prettier": "^2.0.5"
+    "ipfs-http-client": "^44.3.0",
+    "prettier": "^2.0.5",
+    "s3-folder-upload": "^2.3.1",
+    "surge": "^0.21.5"
   },
   "eslintConfig": {
     "extends": "react-app"

@@ -25,7 +25,10 @@
     "watch": "cd packages/buidler && node scripts/watch.js",
     "accounts": "cd packages/buidler && npx buidler accounts",
     "balance": "cd packages/buidler && npx buidler balance",
-    "send": "cd packages/buidler && npx buidler send"
+    "send": "cd packages/buidler && npx buidler send",
+    "ipfs": "cd packages/react-app && node ipfs",
+    "surge": "surge packages/react-app/build",
+    "s3": "cd packages/react-app && node s3"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "1.3.3-rc.0",
