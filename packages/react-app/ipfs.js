@@ -7,14 +7,29 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const addOptions = {
   //pin: true,//uncomment for localhost
   wrapWithDirectory: true,
-  timeout: 120000
+  //timeout: 240000
 };
 
 const deploy = async ()=>{
   console.log("🛰  Sending to IPFS...")
   for await (const file of ipfs.add(globSource('./build', {recursive: true}), addOptions)) {
     if(file.path=="build"){
-      console.log("BUILD:\n",file)
+      console.log("📡  Deployed to IPFS:\n",file)
+
+      /*
+      //// 🔖 IPNS -- you must be running your own node at this point for signing keys ////
+      let cid = file.cid
+      cid = cid.toString()
+      console.log("🔖  Publishing /ipfs/"+cid+" to IPNS...")
+      let result = await ipfs.name.publish("/ipfs/"+cid)
+      if(!result.name) console.log("ERROR:",result)
+      else {
+        console.log(`🚀 ${result.value} deployed to:`)
+        console.log(`    https://gateway.ipfs.io/ipns/${result.name}`)
+      }
+      /////////////////////////////////////////////////////////////////////////////////////
+      */
+
     }else{
       console.log(file.path)
     }
