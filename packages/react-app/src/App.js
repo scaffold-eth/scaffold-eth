@@ -35,9 +35,9 @@ function App() {
   return (
     <div className="App">
 
-      <div style={{backgroundColor:"#FFFAB2",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(0.5px)"}}>
+      {/*<div style={{backgroundColor:"#FFFAB2",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(0.5px)"}}>
         rinkeby
-      </div>
+      </div>*/}
 
 
       <NftyWallet

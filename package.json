@@ -27,7 +27,8 @@
     "send": "cd packages/buidler && npx buidler send",
     "server": "cd packages/nifty-art-server && nodemon index",
     "ship": "cd packages/react-app && node deploy",
-    "gsn-start": "gsn start --workdir packages/react-app/src/gsn"
+    "gsn-start": "gsn start --workdir packages/react-app/src/gsn",
+    "gsn": "gsn start --workdir packages/react-app/src/gsn"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "1.3.3-rc.0",
