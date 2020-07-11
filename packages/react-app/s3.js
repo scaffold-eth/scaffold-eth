@@ -17,7 +17,7 @@ try{
   console.log('☢️   Create an aws.json credentials file in packages/react-app/ like { "accessKeyId": "xxx", "secretAccessKey": "xxx", "region": "xxx" } ')
   process.exit(1)
 }
-console.log("credentials",credentials)
+//console.log("credentials",credentials)
 
 credentials.bucket = BUCKETNAME
 

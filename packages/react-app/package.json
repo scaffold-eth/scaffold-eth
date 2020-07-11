@@ -51,7 +51,8 @@
     "@testing-library/dom": "^6.12.2",
     "@types/react": "^16.9.19",
     "eslint": "^6.8.0",
-    "eslint-plugin-flowtype": "^4.6.0"
+    "eslint-plugin-flowtype": "^4.6.0",
+    "s3-folder-upload": "^2.3.1"
   },
   "eslintConfig": {
     "extends": "react-app"
