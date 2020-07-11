@@ -79,7 +79,7 @@ export default function InkInfo(props) {
         }
         //<Typography.Text>{'Token ID: ' + item[1] + " owned by "}</Typography.Text>
         let mintDescription
-        if(props.ink.attributes[0].value === 0) {
+        if(props.ink.attributes[0].value === "0") {
           mintDescription = (inkChainInfo[2] + ' minted')
         }
         else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
@@ -127,7 +127,6 @@ useEffect(()=>{
       )
     } else {
       if(inkChainInfo && props.ink.attributes) {
-        if(props.address === inkChainInfo[1] && (inkChainInfo[2] < props.ink.attributes[0].value || props.ink.attributes[0].value === 0)) {
 
           detailContent = (
             <Descriptions>
@@ -140,6 +139,7 @@ useEffect(()=>{
             </Descriptions>
           )
 
+      if(props.address === inkChainInfo[1] && (inkChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
           const mintForm = (
             <Row style={{justifyContent: 'center'}}>
 
