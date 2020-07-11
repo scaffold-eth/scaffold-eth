@@ -89,13 +89,13 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl) => {
     let result
-    try {
+    /*try {
       console.log('trying meta-transaction')
     result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-    } catch {
-      console.log('the old fashioned way')
+  } catch {
+      console.log('the old fashioned way')*/
     result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-    }
+    //}
     console.log("result", result)
     return result
   }
@@ -115,9 +115,17 @@ export default function InkCanvas(props) {
 
     currentInk['attributes'] = [{
       "trait_type": "Limit",
-      "value": values.limit
+      "value": values.limit.toString()
     }]
     currentInk['name'] = values.title
+    let newEns
+    try {
+      newEns = await props.mainnetProvider.lookupAddress(props.address)
+    } catch (e) { console.log(e) }
+    const timeInMs = new Date()
+    console.log(newEns, !newEns, props.address, timeInMs.toUTCString())
+    const addressForDescription = !newEns?props.address:newEns
+    currentInk['description'] = 'A Nifty Ink by ' + addressForDescription + ' on ' + timeInMs.toUTCString()
 
     props.setIpfsHash()
 
