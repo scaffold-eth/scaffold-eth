@@ -2,17 +2,16 @@ pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-
+import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 
-contract NFTINK is BaseRelayRecipient, ERC721 {
+contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
 
-    constructor(address _forwarder) ERC721("Nifty Ink", "NFTINK") public {
+    constructor() ERC721("Nifty Ink", "NFTINK") public {
       _setBaseURI('ipfs://ipfs/');
-      trustedForwarder = _forwarder;
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
@@ -109,9 +108,12 @@ contract NFTINK is BaseRelayRecipient, ERC721 {
       return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl);
     }
 
-    function versionRecipient() external virtual view
-  	override returns (string memory) {
+    function versionRecipient() external virtual view override returns (string memory) {
   		return "1.0";
+  	}
+
+    function setTrustedForwarder(address _trustedForwarder) public onlyOwner {
+      trustedForwarder = _trustedForwarder;
   	}
 
   	function getTrustedForwarder() public view returns(address) {
