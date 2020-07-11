@@ -7,7 +7,22 @@ import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import InkCanvas from "./InkCanvas.js"
 import InkInfo from "./InkInfo.js"
+import { makeStyles } from '@material-ui/core/styles';
+import GridList from '@material-ui/core/GridList';
+import GridListTile from '@material-ui/core/GridListTile';
+import GridListTileBar from '@material-ui/core/GridListTileBar';
 const { TabPane } = Tabs;
+
+const useStyles = makeStyles((theme) => ({
+  gridList: {
+    width: "95vw"
+  },
+  titleBar: {
+  background:
+    'linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, ' +
+    'rgba(0,0,0,0.3) 70%, rgba(0,0,0,0) 100%)',
+},
+}));
 
 const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
@@ -49,6 +64,15 @@ export default function NftyWallet(props) {
   let displayInksCreated
   if(inksCreatedBy) {
     displayInksCreated = inksCreatedBy.toString()
+  }
+
+  const classes = useStyles();
+
+  const getImageWidth = () => {
+    if(window.document.body.clientWidth / 9 < 120) {
+      return 120
+    }
+    return window.document.body.clientWidth / 9
   }
 
   const showInk = ((newIpfsHash) => {
@@ -168,7 +192,7 @@ export default function NftyWallet(props) {
     setFormLimit(false)
     setInk({})
     setTab("1")
-    window.location = "/" // something is wrong with rendering so this is a hack for now
+    //window.location = "/" // something is wrong with rendering so this is a hack for now
   }}><PlusOutlined /> New Ink</Button>
   </div>
   )
@@ -264,18 +288,17 @@ export default function NftyWallet(props) {
 
        if(allInks) {
          allInkView = (
-           <List
-           itemLayout="horizontal"
-           dataSource={allInks}
-           renderItem={item => (
-             <List.Item>
-             <List.Item.Meta
-             avatar={item['image']?<a><img src={item['image']} onClick={() => showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
-             title={<a href={item['url']}>{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
-             />
-             </List.Item>
-           )}
-           />)
+      <GridList cellHeight={"auto"} className={classes.gridList} cols={0}>
+        {allInks.map((item) => (
+          <a onClick={() => showInk(item['url'])}><GridListTile key={item.image} cols={1}>
+            {item['image']?<a><img src={item['image']} alt={item['name']} height={getImageWidth()} width={getImageWidth()}/></a>:<Avatar icon={<LoadingOutlined />} />}
+            <GridListTileBar className={classes.titleBar} titlePosition="top"
+                title={item.name}
+                subtitle={<span>{item.limit.toString()=="0"?'unlimited':item.limit.toString()}</span>}
+              />
+          </GridListTile></a>
+        ))}
+      </GridList>)
        }
 
           /*return (
@@ -353,7 +376,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🎥</span> stream</span></>} key="4">
-                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <div style={{margin:"0 auto"}}>
                     {allInkView}
                   </div>
                 </TabPane>

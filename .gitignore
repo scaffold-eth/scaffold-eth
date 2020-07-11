@@ -1,3 +1,5 @@
+packages/react-app/src/gsn
+
 packages/nifty-art-server/*.pem
 packages/buidler/mnemonic.txt
 **/aws.json
