@@ -1,18 +1,60 @@
 # 🏗 scaffold-eth
 
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
+---
 
-Chapter 1: 🛠 [Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
+[<H3>🛠  Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
 
-Chapter 2: 🏵 The Token
+Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ Buidler, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
+[🎥 Guided Tutorial](https://youtu.be/7rq3TPL-tgI)
 
-Chapter 3: ⚖️ [Minimum Viable Decentralized Exchange](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
+
+---
+
+<H3>🏵 The Token</H3>
+
+Learn about tokens. [coming soon] What is a token? Why is it cool? How can I deploy one? Exotic mechanisms?
+
+---
+
+[<H3>⚖️ Minimum Viable Decentralized Exchange</H3>](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
+
+Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liqudity.
+
+[🏃‍♀️ SpeedRun  📹](https://youtu.be/eP5w6Ger1EQ)
+
+---
+
+[<H3>🚀 Connecting ETH to IPFS</H3>](https://medium.com/@austin_48503/tl-dr-scaffold-eth-ipfs-20fa35b11c35)
+
+Build a simple IPFS application in 🏗 <b>scaffold-eth</b> to learn more about distributed file storage and content addressing.
+  [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=342)
+
+---
 
 
-Chapter 0: 🧫 (research ) [Building on Ethereum in 2020](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
+[<H3>🛰 Decentralized Deployment</H3>](https://medium.com/@austin_48503/decentralized-deployment-7d975c9d5016)
 
-Chapter 7: 🗳 [Personal Token Voting](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+Learn how to deploy your smart contract to a production blockchain. Then deploy your applicaton to Surge, S3, and IPFS. Finally, register an ENS and point it at the decentralized content!  [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=1350)
 
+
+
+
+---
+
+[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+
+Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
+
+[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
+
+
+
+
+---
+
+
+[<h5>🧫 Building on Ethereum in 2020 (research)</h5>  ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
 
 
 
@@ -375,6 +417,8 @@ You can import any of the [OpenZeppelin contracts](https://github.com/OpenZeppel
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 ```
 
+---
+
 🛰 The Graph -- TODO
 
 ⛽️ GSN -- TODO
@@ -397,9 +441,18 @@ git push -u origin master
 You can deploy your static site and your dapp can go live:
 
 ```bash
+
 yarn run build
 
-yarn run ship
-```
+# ship it!
 
-> TODO: GITHUB PAGES OR SURGE TUTORIAL?
+yarn run surge
+
+OR
+
+yarn run s3
+
+OR
+
+yarn run ipfs
+```
