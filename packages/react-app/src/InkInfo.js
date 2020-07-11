@@ -136,6 +136,7 @@ useEffect(()=>{
               <Descriptions.Item label="Image">{props.ink.image}</Descriptions.Item>
               <Descriptions.Item label="Count">{inkChainInfo[2].toString()}</Descriptions.Item>
               <Descriptions.Item label="Limit">{props.ink.attributes[0].value}</Descriptions.Item>
+              <Descriptions.Item label="Description">{props.ink.description}</Descriptions.Item>
             </Descriptions>
           )
 
