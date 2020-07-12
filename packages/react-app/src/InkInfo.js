@@ -2,14 +2,10 @@ import React, { useState, useEffect } from 'react'
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { useContractReader, useContractLoader, usePoller } from "./hooks"
+import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
-import Blockies from 'react-blockies';
 var _ = require('lodash');
-
-const isIPFS = require('is-ipfs')
-const Hash = require('ipfs-only-hash')
 
 export default function InkInfo(props) {
 

@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Space, Checkbox, notification, message } from 'antd';
+import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -173,8 +173,6 @@ export default function InkCanvas(props) {
 
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
-      let buffer = Buffer.from(compressedArray)
-
       console.log("SAVING TO SERVER BUFFER:", drawingBuffer)
       axios.post(serverUrl, {buffer: drawingBuffer})
       .then(function (response) {
@@ -332,11 +330,12 @@ if (props.mode === "edit") {
 
   top = (
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
-
+    <Button onClick={() => {
+      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+    }}><PlaySquareOutlined /> PLAY</Button>
     <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
     <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
     </Typography.Text>
-
 
     </Row>
   )
