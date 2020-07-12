@@ -9,8 +9,8 @@ import NftyWallet from "./NftyWallet.js"
 
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
-//const localProvider = new ethers.providers.InfuraProvider("rinkeby", "9ea7e149b122423991f56257b882261c")
-const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545")//'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c')//
+const localProvider = new ethers.providers.InfuraProvider("rinkeby", "9ea7e149b122423991f56257b882261c")
+//const localProvider = new ethers.providers.JsonRpcProvider(process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545")//'https://kovan.infura.io/v3/813ba28a534f416793957d3fe470923c')//
 
 //let relayHubAddress = require('./gsn/RelayHub.json').address
 //let stakeManagerAddress = require('./gsn/StakeManager.json').address
