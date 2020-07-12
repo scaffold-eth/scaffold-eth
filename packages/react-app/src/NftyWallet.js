@@ -48,9 +48,9 @@ export default function NftyWallet(props) {
       setTab('1')
     } else {
     window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
-    setIpfsHash(newIpfsHash)
     setDrawing()
     setInk({})
+    setIpfsHash(newIpfsHash)
     setMode('mint')
     setTab('1')
     return false
@@ -155,6 +155,7 @@ export default function NftyWallet(props) {
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
                       nftyBalance={nftyBalance}
+                      thisTab={"2"}
                     />
                   </div>
                 </TabPane>
@@ -169,6 +170,7 @@ export default function NftyWallet(props) {
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
                       inksCreatedBy={inksCreatedBy}
+                      thisTab={"3"}
                     />
                   </div>
                 </TabPane>
@@ -181,6 +183,7 @@ export default function NftyWallet(props) {
                     tab={tab}
                     showInk={showInk}
                     ipfsConfig={ipfsConfig}
+                    thisTab={"4"}
                   />
                 </TabPane>
               </Tabs>

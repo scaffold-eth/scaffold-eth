@@ -10,7 +10,7 @@ export default function MyNiftyInks(props) {
 
   useEffect(()=>{
 
-      if(props.readContracts && props.address) {
+      if(props.readContracts && props.address && props.tab === props.thisTab) {
 
         let inks
 
@@ -45,7 +45,7 @@ export default function MyNiftyInks(props) {
 
       }
 
-  },[props.readContracts,props.address,props.tab])
+  },[props.address,props.tab])
 
 
       if(props.inksCreatedBy > 0 && inkData) {
@@ -68,7 +68,7 @@ export default function MyNiftyInks(props) {
           console.log(e)
         }
 
-        } else { inkView = (<Empty
+      } else if(props.inksCreatedBy === 0) { inkView = (<Empty
           description={
             <span>
               <a href="/"><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
@@ -76,6 +76,9 @@ export default function MyNiftyInks(props) {
             }
             />
           )}
+        else {
+          inkView = (<List/>)
+        }
 
 
           return inkView

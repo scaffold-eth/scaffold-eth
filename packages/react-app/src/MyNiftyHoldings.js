@@ -12,7 +12,8 @@ export default function MyNiftyHoldings(props) {
 
   useEffect(()=>{
 
-      if(props.readContracts && props.address) {
+      if(props.readContracts && props.address && props.tab === props.thisTab) {
+        console.log('made it through the wilderness')
 
         let tokens
 
@@ -49,7 +50,7 @@ export default function MyNiftyHoldings(props) {
 
       }
 
-  },[props.sends,props.readContracts,props.address,props.tab])
+  },[props.sends,props.address,props.tab])
 
   if(props.nftyBalance > 0) {
     tokenView = (
