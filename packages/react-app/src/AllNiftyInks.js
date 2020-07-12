@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Avatar, Empty } from 'antd';
+import { Row, Avatar, Empty, Space } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { useEventListener } from "./hooks"
 import { getFromIPFS } from "./helpers"
@@ -42,11 +42,11 @@ export default function NftyWallet(props) {
 
        if(allInks) {
          allInkView = (
-      <Row>
+      <Row><Space>
         {allInks.map(item =>
         <img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>
       )}
-      </Row>
+      </Space></Row>
     )
     } else {
       allInkView = (<Empty
