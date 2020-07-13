@@ -160,11 +160,12 @@ export default function InkCanvas(props) {
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
       //setMode("mint")
+      /*
       notification.open({
         message: 'Sending ink to IPFS',
         description:
         'Uploading to the distributed web',
-      });
+      });*/
 
       message.loading('Uploading to IPFS...', 0);
 
