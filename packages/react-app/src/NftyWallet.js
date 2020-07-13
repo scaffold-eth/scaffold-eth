@@ -21,7 +21,7 @@ export default function NftyWallet(props) {
   const [drawing, setDrawing] = useLocalStorage("drawing")
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
-  const [formLimit, setFormLimit] = useState(false);
+  const [formLimit, setFormLimit] = useState();
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
   const [sends, setSends] = useState(0)
@@ -76,7 +76,7 @@ export default function NftyWallet(props) {
     setMode("edit")
     setDrawing("")
     setIpfsHash()
-    setFormLimit(false)
+    setFormLimit()
     setInk({})
     setTab("1")
     setCanvasKey(Date.now())
@@ -117,9 +117,9 @@ export default function NftyWallet(props) {
                   mainnetProvider={props.mainnetProvider}
                   price={props.price}
                   minimized={props.minimized}
-                  //setMetaProvider={props.setMetaProvider}
-                  //metaProvider={props.metaProvider}
-                  //gsnConfig={props.gsnConfig}
+                  setMetaProvider={props.setMetaProvider}
+                  metaProvider={props.metaProvider}
+                  gsnConfig={props.gsnConfig}
               />
 
               </div>

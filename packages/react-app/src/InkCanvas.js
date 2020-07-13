@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
-import { useLocalStorage, useContractLoader } from "./hooks"
+import { useLocalStorage, useContractLoader, useBalance } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
@@ -20,6 +21,8 @@ export default function InkCanvas(props) {
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
   const tx = Transactor(props.injectedProvider)
+
+  const balance = useBalance(props.address,props.metaProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
@@ -74,13 +77,22 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl) => {
     let result
-    /*try {
-      console.log('trying meta-transaction')
-    result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-  } catch {
-      console.log('the old fashioned way')*/
-    result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-    //}
+    console.log("INK")
+    let enough = ethers.utils.parseEther("0.0001")
+    let needsGSN = balance.lt(enough)
+    console.log("needsGSN",needsGSN)
+    if(needsGSN){
+      try {
+        console.log('trying meta-transaction')
+        result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+      } catch {
+        console.log('the old fashioned way')
+        result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+      }
+    }else{
+      result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    }
+
     console.log("result", result)
     return result
   }
@@ -206,9 +218,9 @@ export default function InkCanvas(props) {
     message.destroy()
     //setMode("mint")
     notification.open({
-      message: '💾 Ink saved in IPFS',
+      message: '💾  Ink saved!',
       description:
-      '🍾 🎊  🎉  🥳 🎉  🎊 🍾',
+      ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
     });
   });
 }
