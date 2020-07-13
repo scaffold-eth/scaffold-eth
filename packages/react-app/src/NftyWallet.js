@@ -66,7 +66,7 @@ export default function NftyWallet(props) {
   }
 
   let newButton
-  if (mode!=="edit" || tab!=="1") {
+  if (true/*mode!=="edit" /*|| tab!=="1"*/) {
   newButton = (
   <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
   <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
@@ -77,6 +77,7 @@ export default function NftyWallet(props) {
     setFormLimit(false)
     setInk({})
     setTab("1")
+    window.location = "/" //always have to add this because some useEffect isn't quite right I think
   }}><PlusOutlined /> New Ink</Button>
   </div>
 )}
@@ -119,7 +120,7 @@ export default function NftyWallet(props) {
               />
 
               </div>
-              <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"left"}} tabBarExtraContent={""} defaultActiveKey="1">
+              <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24}}>🧑‍🎨 Nifty Ink</span></>} key="1">
                   <div>
                     <InkCanvas
@@ -175,16 +176,18 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🎥</span> stream</span> <Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="4">
-                  <AllNiftyInks
-                    mainnetProvider={props.mainnetProvider}
-                    injectedProvider={props.injectedProvider}
-                    localProvider={props.localProvider}
-                    readContracts={props.readContracts}
-                    tab={tab}
-                    showInk={showInk}
-                    ipfsConfig={ipfsConfig}
-                    thisTab={"4"}
-                  />
+                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                    <AllNiftyInks
+                      mainnetProvider={props.mainnetProvider}
+                      injectedProvider={props.injectedProvider}
+                      localProvider={props.localProvider}
+                      readContracts={props.readContracts}
+                      tab={tab}
+                      showInk={showInk}
+                      ipfsConfig={ipfsConfig}
+                      thisTab={"4"}
+                    />
+                  </div>
                 </TabPane>
               </Tabs>
 

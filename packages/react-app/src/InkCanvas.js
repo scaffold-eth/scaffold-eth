@@ -6,13 +6,13 @@ import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notif
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
-import { ChromePicker, TwitterPicker, CompactPicker, CirclePicker } from 'react-color';
+import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
 
 const isIPFS = require('is-ipfs')
 const Hash = require('ipfs-only-hash')
 const axios = require('axios');
-const pickers = [CirclePicker, ChromePicker]
+const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
 
 
 export default function InkCanvas(props) {
