@@ -38,18 +38,26 @@ export default function InkCanvas(props) {
         props.setDrawing("")
         props.setIpfsHash(ipfsHashRequest)
 
-      } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
+      } else {
+        if (ipfsHashRequest) {window.history.pushState({id: 'edit'}, 'edit', '/')}
+        if (props.drawing && props.drawing !== "") {
+          try {
+            let decompressed = LZ.decompress(props.drawing)
+            drawingCanvas.current.loadSaveData(decompressed, false)
+          } catch (e) {
+            console.log(e)
+          }
+        }
+    }
     }
     loadPage()
   }, [])
 
   useEffect(() => {
     const showDrawing = async () => {
-    if (props.drawing && props.drawing !== "") {
-      //console.log("DECOMPRESSING", props.drawing)
+    if (props.ipfsHash && props.drawing && props.drawing !== "") {
       try {
         let decompressed = LZ.decompress(props.drawing)
-        //console.log(decompressed)
         drawingCanvas.current.loadSaveData(decompressed, false)
       } catch (e) {
         console.log(e)
@@ -69,7 +77,7 @@ export default function InkCanvas(props) {
     }
   }
   showDrawing()
-}, [props.mode, props.ipfsHash])
+}, [props.ipfsHash])
 
   const PickerDisplay = pickers[picker % pickers.length]
 
@@ -109,7 +117,6 @@ export default function InkCanvas(props) {
       newEns = await props.mainnetProvider.lookupAddress(props.address)
     } catch (e) { console.log(e) }
     const timeInMs = new Date()
-    console.log(newEns, !newEns, props.address, timeInMs.toUTCString())
     const addressForDescription = !newEns?props.address:newEns
     currentInk['description'] = 'A Nifty Ink by ' + addressForDescription + ' on ' + timeInMs.toUTCString()
 
@@ -132,8 +139,6 @@ export default function InkCanvas(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
-    props.setIpfsHash(drawingHash)
-
     //setMode("mint")
     notification.open({
       message: 'Saving Ink to the blockchain',
@@ -146,6 +151,7 @@ export default function InkCanvas(props) {
     if(mintResult) {
 
       props.setMode("mint")
+      props.setIpfsHash(drawingHash)
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
       //setMode("mint")
