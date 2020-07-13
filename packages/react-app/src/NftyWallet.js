@@ -22,6 +22,7 @@ export default function NftyWallet(props) {
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
   const [formLimit, setFormLimit] = useState(false);
+  const [canvasKey, setCanvasKey] = useState(Date.now())
 
   const [sends, setSends] = useState(0)
 
@@ -53,6 +54,7 @@ export default function NftyWallet(props) {
     setIpfsHash(newIpfsHash)
     setMode('mint')
     setTab('1')
+    setCanvasKey(Date.now())
     return false
   }
   })
@@ -77,6 +79,7 @@ export default function NftyWallet(props) {
     setFormLimit(false)
     setInk({})
     setTab("1")
+    setCanvasKey(Date.now())
     //window.location = "/" //always have to add this because some useEffect isn't quite right I think
   }}><PlusOutlined /> New Ink</Button>
   </div>
@@ -124,6 +127,7 @@ export default function NftyWallet(props) {
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24}}>🧑‍🎨 Nifty Ink</span></>} key="1">
                   <div>
                     <InkCanvas
+                      canvasKey={canvasKey}
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
@@ -145,7 +149,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="2">
-                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <div style={{maxWidth:200,margin:"0 auto"}}>
                     <MyNiftyHoldings
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
@@ -161,7 +165,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
-                  <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <div style={{width:200,margin:"0 auto"}}>
                     <MyNiftyInks
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}

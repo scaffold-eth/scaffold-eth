@@ -24,7 +24,6 @@ export default function InkCanvas(props) {
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
 
-
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
@@ -135,11 +134,11 @@ export default function InkCanvas(props) {
     props.setIpfsHash(drawingHash)
 
     //setMode("mint")
-    notification.open({
+    /*notification.open({
       message: 'Saving Ink to the blockchain',
       description:
       'Contacting the smartcontract',
-    });
+    });*/
 
     var mintResult = await mintInk(drawingHash, jsonHash);
 
@@ -245,17 +244,7 @@ if (props.mode === "edit") {
     >
 
     <Form.Item >
-    <Button onClick={() => {
-      drawingCanvas.current.undo()
-    }}><UndoOutlined /> UNDO</Button>
 
-    <Button onClick={() => {
-      drawingCanvas.current.clear()
-      props.setDrawing()
-    }}><ClearOutlined /> CLEAR</Button>
-    <Button onClick={() => {
-      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
-    }}><PlaySquareOutlined /> PLAY</Button>
     </Form.Item>
 
     <Form.Item
@@ -288,6 +277,18 @@ if (props.mode === "edit") {
     </Form.Item>
     </Form>
 
+      <div style={{marginTop: 16}}>
+        <Button onClick={() => {
+          drawingCanvas.current.undo()
+        }}><UndoOutlined /> UNDO</Button>
+        <Button onClick={() => {
+          drawingCanvas.current.clear()
+          props.setDrawing()
+        }}><ClearOutlined /> CLEAR</Button>
+        <Button onClick={() => {
+          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+        }}><PlaySquareOutlined /> PLAY</Button>
+      </div>
     </div>
 
   )
@@ -316,15 +317,16 @@ if (props.mode === "edit") {
 
   top = (
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
-    <Button onClick={() => {
-      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
-    }}><PlaySquareOutlined /> PLAY</Button>
+    <a style={{fontSize:28, opacity:0.5}} onClick={() => {
+       drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+    }}><PlaySquareOutlined /></a>
     <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
     <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
     </Typography.Text>
 
     </Row>
   )
+
 
   bottom = (<></>)
 }
@@ -334,7 +336,7 @@ return (
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
   <CanvasDraw
-  key={props.mode}
+  key={props.mode+""+props.canvasKey}
   ref={drawingCanvas}
   canvasWidth={size[0]}
   canvasHeight={size[1]}

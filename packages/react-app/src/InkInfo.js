@@ -23,7 +23,7 @@ export default function InkInfo(props) {
   let inkChainInfoDisplay
   let detailContent
 
-  const loadingTip = 'Connecting to the Ether webs...'
+  const loadingTip = ''
 
   const mint = async (values) => {
     console.log('Success:', values);
@@ -117,8 +117,8 @@ useEffect(()=>{
 
     if (!inkChainInfo || !props.ink.attributes) {
       inkChainInfoDisplay = (
-        <div>
-        <Spin tip={loadingTip}/>
+        <div style={{marginTop:32}}>
+          <Spin tip={loadingTip}/>
         </div>
       )
     } else {
