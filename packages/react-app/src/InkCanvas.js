@@ -369,6 +369,7 @@ return (
     let savedData = LZ.compress(newDrawing.getSaveData())
     props.setDrawing(savedData)
   }}
+  loadTimeOffset={3}
   />
   </div>
   {bottom}
