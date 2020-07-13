@@ -3,10 +3,12 @@ const chalk = require('chalk');
 async function main() {
   console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
-  await autoDeploy();
+  //await autoDeploy();
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
-  //const exampleToken = await deploy("ExampleToken")
+  const NFTINK = await deploy("NFTINK")
+  console.log("Setting trusted forwarder....")
+  await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
   //const examplePriceOracle = await deploy("ExamplePriceOracle")
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 }

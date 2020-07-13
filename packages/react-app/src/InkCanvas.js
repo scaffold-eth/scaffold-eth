@@ -1,9 +1,10 @@
 import React, { useState, useRef, useEffect } from 'react'
+import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
-import { useLocalStorage, useContractLoader } from "./hooks"
+import { useLocalStorage, useContractLoader, useBalance } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
@@ -21,9 +22,10 @@ export default function InkCanvas(props) {
   const metaWriteContracts = useContractLoader(props.metaProvider);
   const tx = Transactor(props.injectedProvider)
 
+  const balance = useBalance(props.address,props.metaProvider)
+
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
-
 
   const drawingCanvas = useRef(null);
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
@@ -83,13 +85,22 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl) => {
     let result
-    /*try {
-      console.log('trying meta-transaction')
-    result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-  } catch {
-      console.log('the old fashioned way')*/
-    result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
-    //}
+    console.log("INK")
+    let enough = ethers.utils.parseEther("0.0001")
+    let needsGSN = balance.lt(enough)
+    console.log("needsGSN",needsGSN)
+    if(needsGSN){
+      try {
+        console.log('trying meta-transaction')
+        result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+      } catch {
+        console.log('the old fashioned way')
+        result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+      }
+    }else{
+      result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+    }
+
     console.log("result", result)
     return result
   }
@@ -140,11 +151,11 @@ export default function InkCanvas(props) {
     console.log("jsonHash", jsonHash)
 
     //setMode("mint")
-    notification.open({
+    /*notification.open({
       message: 'Saving Ink to the blockchain',
       description:
       'Contacting the smartcontract',
-    });
+    });*/
 
     var mintResult = await mintInk(drawingHash, jsonHash);
 
@@ -155,11 +166,12 @@ export default function InkCanvas(props) {
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
       //setMode("mint")
+      /*
       notification.open({
         message: 'Sending ink to IPFS',
         description:
         'Uploading to the distributed web',
-      });
+      });*/
 
       message.loading('Uploading to IPFS...', 0);
 
@@ -213,9 +225,9 @@ export default function InkCanvas(props) {
     message.destroy()
     //setMode("mint")
     notification.open({
-      message: 'Ink saved in IPFS',
+      message: '💾  Ink saved!',
       description:
-      'Your ink is now InterPlanetary',
+      ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
     });
   });
 }
@@ -251,17 +263,7 @@ if (props.mode === "edit") {
     >
 
     <Form.Item >
-    <Button onClick={() => {
-      drawingCanvas.current.undo()
-    }}><UndoOutlined /> UNDO</Button>
 
-    <Button onClick={() => {
-      drawingCanvas.current.clear()
-      props.setDrawing()
-    }}><ClearOutlined /> CLEAR</Button>
-    <Button onClick={() => {
-      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
-    }}><PlaySquareOutlined /> PLAY</Button>
     </Form.Item>
 
     <Form.Item
@@ -294,6 +296,18 @@ if (props.mode === "edit") {
     </Form.Item>
     </Form>
 
+      <div style={{marginTop: 16}}>
+        <Button onClick={() => {
+          drawingCanvas.current.undo()
+        }}><UndoOutlined /> UNDO</Button>
+        <Button onClick={() => {
+          drawingCanvas.current.clear()
+          props.setDrawing()
+        }}><ClearOutlined /> CLEAR</Button>
+        <Button onClick={() => {
+          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+        }}><PlaySquareOutlined /> PLAY</Button>
+      </div>
     </div>
 
   )
@@ -322,15 +336,16 @@ if (props.mode === "edit") {
 
   top = (
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
-    <Button onClick={() => {
-      drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
-    }}><PlaySquareOutlined /> PLAY</Button>
+    <a style={{fontSize:28, opacity:0.5}} onClick={() => {
+       drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+    }}><PlaySquareOutlined /></a>
     <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
     <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
     </Typography.Text>
 
     </Row>
   )
+
 
   bottom = (<></>)
 }
@@ -340,7 +355,7 @@ return (
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
   <CanvasDraw
-  key={props.mode}
+  key={props.mode+""+props.canvasKey}
   ref={drawingCanvas}
   canvasWidth={size[0]}
   canvasHeight={size[1]}
