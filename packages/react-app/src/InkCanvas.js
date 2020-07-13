@@ -206,9 +206,9 @@ export default function InkCanvas(props) {
     message.destroy()
     //setMode("mint")
     notification.open({
-      message: 'Ink saved in IPFS',
+      message: '💾 Ink saved in IPFS',
       description:
-      'Your ink is now InterPlanetary',
+      '🍾 🎊  🎉  🥳 🎉  🎊 🍾',
     });
   });
 }

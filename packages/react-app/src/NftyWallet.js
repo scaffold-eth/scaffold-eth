@@ -149,7 +149,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="2">
-                  <div style={{maxWidth:200,margin:"0 auto"}}>
+                  <div style={{maxWidth:300,margin:"0 auto"}}>
                     <MyNiftyHoldings
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
@@ -165,7 +165,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
-                  <div style={{width:200,margin:"0 auto"}}>
+                  <div style={{width:300,margin:"0 auto"}}>
                     <MyNiftyInks
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
