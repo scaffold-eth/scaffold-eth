@@ -36,21 +36,7 @@ export default function InkCanvas(props) {
       if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
         props.setMode("mint")
         props.setDrawing("")
-
-        let drawingContent = await getFromIPFS(ipfsHashRequest, props.ipfsConfig)
         props.setIpfsHash(ipfsHashRequest)
-        try{
-          const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
-          let decompressed = LZ.decompressFromUint8Array(arrays)
-          if (decompressed) {
-            let compressed = LZ.compress(decompressed)
-            props.setDrawing(compressed)
-            //let decompressedObject = JSON.parse(decompressed)
-            //setSize([decompressedObject['width'],decompressedObject['height']])
-
-            drawingCanvas.current.loadSaveData(decompressed, false)
-          }
-        }catch(e){console.log("Drawing Error:",e)}
 
       } else {window.history.pushState({id: 'edit'}, 'edit', '/')}
     }
@@ -59,7 +45,7 @@ export default function InkCanvas(props) {
 
   useEffect(() => {
     const showDrawing = async () => {
-    if (props.drawing) {
+    if (props.drawing && props.drawing !== "") {
       //console.log("DECOMPRESSING", props.drawing)
       try {
         let decompressed = LZ.decompress(props.drawing)

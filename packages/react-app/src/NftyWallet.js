@@ -77,7 +77,7 @@ export default function NftyWallet(props) {
     setFormLimit(false)
     setInk({})
     setTab("1")
-    window.location = "/" //always have to add this because some useEffect isn't quite right I think
+    //window.location = "/" //always have to add this because some useEffect isn't quite right I think
   }}><PlusOutlined /> New Ink</Button>
   </div>
 )}
