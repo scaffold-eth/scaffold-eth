@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Popover, Avatar, Empty, Typography } from 'antd';
+import { List, Popover, Avatar, Spin, Typography } from 'antd';
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -12,43 +12,43 @@ export default function MyNiftyHoldings(props) {
 
   useEffect(()=>{
 
-      if(props.readContracts && props.address && props.tab === props.thisTab) {
-        console.log('made it through the wilderness')
+    if(props.readContracts && props.address && props.tab === props.thisTab) {
+      console.log('made it through the wilderness')
 
-        let tokens
+      let tokens
 
-        const loadTokens = async () => {
-          tokens = new Array(props.nftyBalance)
-          //console.log(tokens)
+      const loadTokens = async () => {
+        tokens = new Array(props.nftyBalance)
+        //console.log(tokens)
 
-          const getTokenInfo = async (i) => {
-            let tokenId = await props.readContracts['NFTINK']["tokenOfOwnerByIndex"](props.address, i)
-            let jsonUrl = await props.readContracts['NFTINK']["tokenURI"](tokenId)
+        const getTokenInfo = async (i) => {
+          let tokenId = await props.readContracts['NFTINK']["tokenOfOwnerByIndex"](props.address, i)
+          let jsonUrl = await props.readContracts['NFTINK']["tokenURI"](tokenId)
 
-            let parts = jsonUrl.split('/');
-            let ipfsHash = parts.pop();
+          let parts = jsonUrl.split('/');
+          let ipfsHash = parts.pop();
 
-            const jsonContent = await getFromIPFS(ipfsHash, props.ipfsConfig)
-            const inkJson = JSON.parse(jsonContent)
-            const linkUrl = inkJson['drawing']
-            const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
-            const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
+          const jsonContent = await getFromIPFS(ipfsHash, props.ipfsConfig)
+          const inkJson = JSON.parse(jsonContent)
+          const linkUrl = inkJson['drawing']
+          const inkImageHash = inkJson.image.split('/').pop()
+          const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
+          const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
-            return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl, name: inkJson['name'], image: inkImageURI}
-          }
-
-          for(var i = 0; i < props.nftyBalance; i++){
-            let tokenInfo = await getTokenInfo(i)
-            tokens[i] = tokenInfo
-          }
-
-          setTokenData(tokens.reverse())
+          return {tokenId: tokenId.toString(), jsonUrl: jsonUrl, url: linkUrl, name: inkJson['name'], image: inkImageURI}
         }
 
-        loadTokens()
-
+        for(var i = 0; i < props.nftyBalance; i++){
+          let tokenInfo = await getTokenInfo(i)
+          tokens[i] = tokenInfo
+        }
+        
+        setTokenData(tokens.reverse())
       }
+
+      loadTokens()
+
+    }
 
   },[props.sends,props.address,props.tab])
 
@@ -64,18 +64,18 @@ export default function MyNiftyHoldings(props) {
         title={(
           <div style={{marginTop:8}}>
 
-            <Typography.Text  copyable={{ text: item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
-            <a style={{color:"#222222"}} href="#" onClick={() => props.showInk(item['url'])} >
-            {item['name'] /*+ ": Token #" + item['tokenId']*/}
-            </a>
-            </Typography.Text>
+          <Typography.Text  copyable={{ text: item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
+          <a style={{color:"#222222"}} href="#" onClick={() => props.showInk(item['url'])} >
+          {item['name'] /*+ ": Token #" + item['tokenId']*/}
+          </a>
+          </Typography.Text>
 
-            <Popover content={
-              <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={props.sends} setSends={props.setSends}/>
-            }
-            title="Send Ink" trigger="click">
-            <a href="#"><SendOutlined style={{fontSize:24,marginLeft:4,verticalAlign:"middle"}}/></a>
-            </Popover>
+          <Popover content={
+            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={props.sends} setSends={props.setSends}/>
+          }
+          title="Send Ink" trigger="click">
+          <a href="#"><SendOutlined style={{fontSize:24,marginLeft:4,verticalAlign:"middle"}}/></a>
+          </Popover>
 
           </div>
         )}
@@ -84,15 +84,8 @@ export default function MyNiftyHoldings(props) {
         </List.Item>
       )}
       />)
-    } else { tokenView = (<Empty
-      description={
-        <span>
-        You don't have any inks :(
-          </span>
-        }
-        />
-      )}
+    } else { tokenView = (<Spin/>)}
 
-          return tokenView
+    return tokenView
 
-        }
+  }

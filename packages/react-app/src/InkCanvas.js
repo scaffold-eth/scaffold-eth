@@ -97,13 +97,13 @@ export default function InkCanvas(props) {
         notification.open({
           message: '📡 ',
           description:
-          'Sending Meta Transaction...',
+          'sending meta transaction...',
         });
-        result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+        result = await metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'])
         notification.open({
           message: '🛰',
           description:(
-            <a href={"https://kovan.etherscan.io/tx/"+result.hash}>Sent! view transaction.</a>
+            <a href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
           ),
         });
         setSending(false)
