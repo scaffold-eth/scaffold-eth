@@ -1,17 +1,15 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Avatar, Empty, Space } from 'antd';
-import { LoadingOutlined } from '@ant-design/icons';
+import { Row, Col, Avatar, Empty, Space, Spin } from 'antd';
 import { useEventListener } from "./hooks"
 import { getFromIPFS } from "./helpers"
-
-
 
 export default function NftyWallet(props) {
 
   //const [allInks, setAllInks] = useState()
-  let allInks = []
+  let allInks = new Array(12).fill({})
   const [allInksArray, setAllInksArray] = useState([])
   let allInkView
+  const [lastStreamCount, setLastStreamCount] = useState("0")
 
   let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
 
@@ -20,7 +18,7 @@ export default function NftyWallet(props) {
       if(props.readContracts &&
         props.tab === props.thisTab &&
         inkCreations.length.toString() == props.totalInks.toString() &&
-        allInksArray.length !== inkCreations.length
+        props.totalInks.toString() !== lastStreamCount
       ) {
 
         const getInkImages = async (e) => {
@@ -34,14 +32,14 @@ export default function NftyWallet(props) {
 
         const loadStream = async (e) => {
           if(inkCreations) {
-            console.log(allInks)
-            //const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
-            //setAllInks(newInkCreations.reverse())
-            for(var i = (allInksArray.length); i < inkCreations.length; i++){
-               let inkDetails = await getInkImages(inkCreations[i])
-               allInks.push(inkDetails)
+
+            let mostRecentInks = inkCreations.slice(-12).reverse()
+            for(var i = 0; i < 12; i++){
+               let inkDetails = await getInkImages(mostRecentInks[i])
+               allInks[i] = inkDetails
                setAllInksArray(allInks)
             }
+            setLastStreamCount(props.totalInks.toString())
           }
         }
         loadStream()
@@ -53,8 +51,8 @@ export default function NftyWallet(props) {
        if(allInksArray) {
          allInkView = (
       <Row>
-        {allInksArray.slice(0).reverse().map(item =>
-        <Col span={8}><img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/></Col>
+        {allInksArray.map(item =>
+        <Col span={8}>{item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin size="large" />} />}</Col>
       )}
       </Row>
     )

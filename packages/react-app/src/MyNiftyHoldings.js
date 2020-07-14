@@ -7,6 +7,7 @@ import SendInkForm from "./SendInkForm.js"
 export default function MyNiftyHoldings(props) {
 
   const [tokenData, setTokenData] = useState()
+  const [sends, setSends] = useState(0)
 
   let tokenView
 
@@ -42,7 +43,7 @@ export default function MyNiftyHoldings(props) {
           let tokenInfo = await getTokenInfo(i)
           tokens[i] = tokenInfo
         }
-        
+
         setTokenData(tokens.reverse())
       }
 
@@ -50,7 +51,7 @@ export default function MyNiftyHoldings(props) {
 
     }
 
-  },[props.sends,props.address,props.tab])
+  },[sends,props.address,props.tab])
 
   if(props.nftyBalance > 0) {
     tokenView = (
@@ -71,7 +72,7 @@ export default function MyNiftyHoldings(props) {
           </Typography.Text>
 
           <Popover content={
-            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={props.sends} setSends={props.setSends}/>
+            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
           }
           title="Send Ink" trigger="click">
           <a href="#"><SendOutlined style={{fontSize:24,marginLeft:4,verticalAlign:"middle"}}/></a>

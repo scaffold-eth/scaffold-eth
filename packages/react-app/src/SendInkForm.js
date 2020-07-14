@@ -6,16 +6,19 @@ import { useContractLoader } from "./hooks"
 
 export default function SendInkForm(props) {
 
-  const [complete, setComplete] = useState(false)
+  const [sending, setSending] = useState(false)
+  const [form] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const tx = Transactor(props.injectedProvider)
 
   const sendInk = async (values) => {
-  console.log('Success:', props.address, values, props.tokenId);
-  await tx(writeContracts["NFTINK"].safeTransferFrom(props.address, values['to'], props.tokenId))
-  setComplete(true)
-  props.setSends(props.sends+1)
+    setSending(true)
+    console.log('Success:', props.address, values, props.tokenId);
+    await tx(writeContracts["NFTINK"].safeTransferFrom(props.address, values['to'], props.tokenId))
+    form.resetFields();
+    props.setSends(props.sends+1)
+    setSending(false)
   };
 
   const onFinishFailed = errorInfo => {
@@ -24,6 +27,7 @@ export default function SendInkForm(props) {
 
   let output = (
   <Form
+  form={form}
   layout={'inline'}
   name="sendInk"
   initialValues={{ tokenId: props.tokenId }}
@@ -41,16 +45,12 @@ export default function SendInkForm(props) {
   </Form.Item>
 
   <Form.Item >
-  <Button type="primary" htmlType="submit">
+  <Button type="primary" htmlType="submit" loading={sending}>
     Send
   </Button>
   </Form.Item>
   </Form>
 )
-
-  if(complete) {
-    output = (<Typography> Success! </Typography>)
-  }
 
   return output
 }

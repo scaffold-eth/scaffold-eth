@@ -11,6 +11,9 @@ export default function InkInfo(props) {
 
   const [holders, setHolders] = useState(<></>)
   const [sends, setSends] = useState(0)
+  const [minting, setMinting] = useState(false)
+  const [form] = Form.useForm();
+
   const writeContracts = useContractLoader(props.injectedProvider);
   //console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
   const tx = Transactor(props.injectedProvider,props.gasPrice)
@@ -27,8 +30,11 @@ export default function InkInfo(props) {
   const loadingTip = ''
 
   const mint = async (values) => {
+    setMinting(true)
     console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
     let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
+    form.resetFields();
+    setMinting(false)
     console.log("result", result)
   };
 
@@ -142,6 +148,7 @@ useEffect(()=>{
             <Row style={{justifyContent: 'center'}}>
 
             <Form
+            form={form}
             layout={'inline'}
             name="mintInk"
             onFinish={mint}
@@ -158,7 +165,7 @@ useEffect(()=>{
             </Form.Item>
 
             <Form.Item >
-            <Button type="primary" htmlType="submit">
+            <Button type="primary" htmlType="submit" loading={minting}>
             Mint
             </Button>
             </Form.Item>

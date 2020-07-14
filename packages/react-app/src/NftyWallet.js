@@ -24,8 +24,6 @@ export default function NftyWallet(props) {
   const [formLimit, setFormLimit] = useState();
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
-  const [sends, setSends] = useState(0)
-
   let nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
   let totalInks = useContractReader(props.readContracts,'NFTINK',"totalInks",1777);
@@ -157,7 +155,6 @@ export default function NftyWallet(props) {
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
                       readContracts={props.readContracts}
-                      sends={sends}
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
