@@ -102,6 +102,7 @@ export default function NftyWallet(props) {
       setInk={setInk}
       ipfsHash={ipfsHash}
       ipfsConfig={ipfsConfig}
+      gasPrice={props.gasPrice}
     />)
   }
 
@@ -144,6 +145,7 @@ export default function NftyWallet(props) {
                       setFormLimit={setFormLimit}
                       ipfsConfig={ipfsConfig}
                       metaProvider={props.metaProvider}
+                      gasPrice={props.gasPrice}
                     />
                     {inkInfo}
                   </div>
