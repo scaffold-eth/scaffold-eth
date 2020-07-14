@@ -58,9 +58,15 @@ export default function Account(props) {
 
     if (provider._metamask) {
       console.log('using metamask')
-      gsnConfig = {...gsnConfig, methodSuffix: '_v4', jsonStringifyRequest: true, chainId: provider.networkVersion}
+      gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true, chainId: provider.networkVersion}
 
     }
+
+    //hardcode test
+    gsnConfig.chainId = 42
+	  gsnConfig.relayLookupWindowBlocks= 1e5
+
+    console.log("gsnConfig",gsnConfig)
 
     const gsnProvider = new RelayProvider(provider, gsnConfig)
     props.setMetaProvider(new ethers.providers.Web3Provider(gsnProvider))

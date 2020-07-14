@@ -31,6 +31,8 @@ export default function InkCanvas(props) {
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
   const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
+  const [sending, setSending] = useState()
+
   useEffect(() => {
     const loadPage = async () => {
       //on page load checking url path
@@ -91,13 +93,28 @@ export default function InkCanvas(props) {
     console.log("needsGSN",needsGSN)
     if(needsGSN){
       try {
-        console.log('trying meta-transaction')
+        setSending(true)
+        notification.open({
+          message: '📡 ',
+          description:
+          'Sending Meta Transaction...',
+        });
         result = await tx(metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+        notification.open({
+          message: '🛰',
+          description:(
+            <a href={"https://kovan.etherscan.io/tx/"+result.hash}>Sent! view transaction.</a>
+          ),
+        });
+        setSending(false)
       } catch {
         console.log('the old fashioned way')
+        setSending(true)
         result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+        setSending(false)
       }
     }else{
+      setSending(true)
       result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
     }
 
@@ -290,7 +307,7 @@ if (props.mode === "edit") {
     </Form.Item>
 
     <Form.Item >
-    <Button type="primary" htmlType="submit">
+    <Button loading={sending} type="primary" htmlType="submit">
     Ink!
     </Button>
     </Form.Item>
