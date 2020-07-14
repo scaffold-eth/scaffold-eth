@@ -8,15 +8,20 @@ import { getFromIPFS } from "./helpers"
 
 export default function NftyWallet(props) {
 
-  const [allInks, setAllInks] = useState()
-
+  //const [allInks, setAllInks] = useState()
+  let allInks = []
+  const [allInksArray, setAllInksArray] = useState([])
   let allInkView
 
   let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
 
   useEffect(()=>{
 
-      if(props.readContracts && props.tab === props.thisTab) {
+      if(props.readContracts &&
+        props.tab === props.thisTab &&
+        inkCreations.length.toString() == props.totalInks.toString() &&
+        allInksArray.length !== inkCreations.length
+      ) {
 
         const getInkImages = async (e) => {
           const jsonContent = await getFromIPFS(e['jsonUrl'], props.ipfsConfig)
@@ -29,21 +34,26 @@ export default function NftyWallet(props) {
 
         const loadStream = async (e) => {
           if(inkCreations) {
-            const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
-            setAllInks(newInkCreations.reverse())
+            console.log(allInks)
+            //const newInkCreations = await Promise.all(inkCreations.map(getInkImages))
+            //setAllInks(newInkCreations.reverse())
+            for(var i = (allInksArray.length); i < inkCreations.length; i++){
+               let inkDetails = await getInkImages(inkCreations[i])
+               allInks.push(inkDetails)
+               setAllInksArray(allInks)
+            }
           }
         }
-
         loadStream()
 
       }
 
   },[props.tab, inkCreations])
 
-       if(allInks) {
+       if(allInksArray) {
          allInkView = (
       <Row>
-        {allInks.map(item =>
+        {allInksArray.slice(0).reverse().map(item =>
         <Col span={8}><img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/></Col>
       )}
       </Row>

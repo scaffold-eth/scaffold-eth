@@ -189,6 +189,7 @@ export default function NftyWallet(props) {
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
+                      totalInks={totalInks}
                       thisTab={"4"}
                     />
                   </div>
