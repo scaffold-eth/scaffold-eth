@@ -1,9 +1,10 @@
 import React, { useState } from 'react'
 import 'antd/dist/antd.css';
+import { Row, Col,  Button } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
-import { useExchangePrice, useContractLoader } from "./hooks"
-import { AdminWidget } from "./components"
+import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
+import { Ramp } from "./components"
 
 import NftyWallet from "./NftyWallet.js"
 
@@ -20,6 +21,11 @@ if(process.env.REACT_APP_NETWORK_NAME){
   )
   localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
 }else{
+  networkBanner = (
+    <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
+      {"localhost"}
+    </div>
+  )
   localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")
 }
 
@@ -34,6 +40,10 @@ function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   const [metaProvider, setMetaProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
+  const gasPrice = useGasPrice("fast")
+
+  //console.log("gasPrice",gasPrice)
+
   const readContracts = useContractLoader(localProvider);
 
   const gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
@@ -58,15 +68,29 @@ function App() {
         setMetaProvider={setMetaProvider}
         metaProvider={metaProvider}
         gsnConfig={gsnConfig}
+        gasPrice={gasPrice}
       />
 
-      <AdminWidget
-        address={address}
-        localProvider={localProvider}
-        injectedProvider={injectedProvider}
-        mainnetProvider={mainnetProvider}
-        price={price}
-      />
+      <div style={{float:'left',padding:32}}>
+        <Row gutter={8}>
+          <Col>
+          <Ramp
+            price={price}
+            address={address}
+          />
+          </Col>
+          <Col>
+          <Button onClick={()=>{window.open("https://ethgasstation.info/")}} size="large" shape="round">
+            <span style={{marginRight:8}}>⛽️</span>
+            {parseInt(gasPrice)/10**9}g
+          </Button>
+          </Col>
+        </Row>
+
+
+
+      </div>
+
 
     </div>
   );

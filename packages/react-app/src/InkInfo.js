@@ -12,7 +12,8 @@ export default function InkInfo(props) {
   const [holders, setHolders] = useState(<></>)
   const [sends, setSends] = useState(0)
   const writeContracts = useContractLoader(props.injectedProvider);
-  const tx = Transactor(props.injectedProvider)
+  //console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
+  const tx = Transactor(props.injectedProvider,props.gasPrice)
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 
   //let inkChainInfo
@@ -26,8 +27,8 @@ export default function InkInfo(props) {
   const loadingTip = ''
 
   const mint = async (values) => {
-    console.log('Success:', values);
-    let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash ))
+    console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
+    let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
     console.log("result", result)
   };
 

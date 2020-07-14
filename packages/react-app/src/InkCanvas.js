@@ -20,7 +20,8 @@ export default function InkCanvas(props) {
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
-  const tx = Transactor(props.injectedProvider)
+  //console.log("Transactor setup with gasprice ",props.gasPrice)
+  const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   const balance = useBalance(props.address,props.metaProvider)
 
@@ -99,6 +100,7 @@ export default function InkCanvas(props) {
           description:
           'sending meta transaction...',
         });
+        //no tx() here, we'll manually alert for meta tx for now
         result = await metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'])
         notification.open({
           message: '🛰',
@@ -110,12 +112,12 @@ export default function InkCanvas(props) {
       } catch {
         console.log('the old fashioned way')
         setSending(true)
-        result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+        result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
         setSending(false)
       }
     }else{
       setSending(true)
-      result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value']))
+      result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
     }
 
     console.log("result", result)
