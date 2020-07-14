@@ -42,7 +42,7 @@ function App() {
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
 
-  console.log("gasPrice",gasPrice)
+  //console.log("gasPrice",gasPrice)
 
   const readContracts = useContractLoader(localProvider);
 
