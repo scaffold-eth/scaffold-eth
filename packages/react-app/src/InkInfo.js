@@ -12,7 +12,7 @@ export default function InkInfo(props) {
   const [holders, setHolders] = useState(<></>)
   const [sends, setSends] = useState(0)
   const writeContracts = useContractLoader(props.injectedProvider);
-  console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
+  //console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
   const tx = Transactor(props.injectedProvider,props.gasPrice)
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 

@@ -20,7 +20,7 @@ export default function InkCanvas(props) {
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
-  console.log("Transactor setup with gasprice ",props.gasPrice)
+  //console.log("Transactor setup with gasprice ",props.gasPrice)
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   const balance = useBalance(props.address,props.metaProvider)
