@@ -8,14 +8,26 @@ async function main() {
   // custom deploy (to use deployed addresses dynamically for example:)
   const NFTINK = await deploy("NFTINK")
   console.log("Setting trusted forwarder....")
-  let trustedForwarder
-  try{
-    let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
-    console.log("Setting GSN Trusted Forwarder to ",trustedForwarderObj.address)
-    await NFTINK.setTrustedForwarder(trustedForwarderObj.address)
-  }catch(e){
-    console.log(e)
+
+  const LOCAL = false
+
+  if(LOCAL){
+    let trustedForwarder
+    try{
+      let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
+      console.log("Setting GSN Trusted Forwarder to ",trustedForwarderObj.address)
+      await NFTINK.setTrustedForwarder(trustedForwarderObj.address)
+    }catch(e){
+      console.log(e)
+    }
   }
+  else{
+    //https://docs.opengsn.org/gsn-provider/networks.html
+    await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
+  }
+
+
+
 
   //const examplePriceOracle = await deploy("ExamplePriceOracle")
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])

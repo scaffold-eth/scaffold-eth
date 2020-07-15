@@ -16,7 +16,7 @@ let stakeManagerAddress
 let paymasterAddress
 
 let networkBanner = ""
-if(false && process.env.REACT_APP_NETWORK_NAME){
+if(process.env.REACT_APP_NETWORK_NAME){
   networkBanner = (
     <div style={{backgroundColor:process.env.REACT_APP_NETWORK_COLOR,color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
       {process.env.REACT_APP_NETWORK_NAME}
