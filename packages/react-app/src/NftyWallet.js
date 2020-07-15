@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Button, Badge, Tabs } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
@@ -10,6 +10,7 @@ import MyNiftyInks from "./MyNiftyInks.js"
 import AllNiftyInks from "./AllNiftyInks.js"
 const { TabPane } = Tabs;
 
+const isIPFS = require('is-ipfs')
 const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
 export default function NftyWallet(props) {
@@ -74,6 +75,22 @@ export default function NftyWallet(props) {
     color: "#999",
     boxShadow:"0 0 0 1px #d9d9d9 inset",
   }
+
+  useEffect(() => {
+    const loadPage = async () => {
+      let ipfsHashRequest = window.location.pathname.replace("/", "")
+      if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
+        setMode("mint")
+        setDrawing("")
+        setTab("2")
+        setIpfsHash(ipfsHashRequest)
+
+      } else {
+        if (ipfsHashRequest) {window.history.pushState({id: 'edit'}, 'edit', '/')}
+    }
+    }
+    loadPage()
+  }, [])
 
   let newButton
   if (true/*mode!=="edit" /*|| tab!=="1"*/) {

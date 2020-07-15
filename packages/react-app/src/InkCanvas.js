@@ -9,8 +9,6 @@ import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
-
-const isIPFS = require('is-ipfs')
 const Hash = require('ipfs-only-hash')
 const axios = require('axios');
 const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
@@ -36,16 +34,10 @@ export default function InkCanvas(props) {
 
   useEffect(() => {
     const loadPage = async () => {
-      //on page load checking url path
-      let ipfsHashRequest = window.location.pathname.replace("/", "")
-      if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
-        props.setMode("mint")
-        props.setDrawing("")
-        props.setIpfsHash(ipfsHashRequest)
-
-      } else {
-        if (ipfsHashRequest) {window.history.pushState({id: 'edit'}, 'edit', '/')}
-        if (props.drawing && props.drawing !== "") {
+        if (props.ipfsHash) {
+          console.log('ipfsHash Set')
+        }
+        else if (props.drawing && props.drawing !== "") {
           try {
             let decompressed = LZ.decompress(props.drawing)
             drawingCanvas.current.loadSaveData(decompressed, false)
@@ -53,7 +45,6 @@ export default function InkCanvas(props) {
             console.log(e)
           }
         }
-    }
     }
     loadPage()
   }, [])
