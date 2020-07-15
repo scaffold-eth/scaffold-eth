@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions } from 'antd';
+import { ethers } from "ethers"
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
@@ -15,6 +16,8 @@ export default function InkInfo(props) {
   const [form] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
+
+  const metaWriteContracts = useContractLoader(props.metaProvider);
   //console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
   const tx = Transactor(props.injectedProvider,props.gasPrice)
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
@@ -87,10 +90,72 @@ export default function InkInfo(props) {
         }
         else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
 
+        let patronButton = (
+          <Button type="secondary" onClick={async ()=>{
+            console.log("PATRONAGE",inkChainInfo,props.ipfsHash)
+            let artist = inkChainInfo[1]
+            console.log("artist",artist)
+            let inkUrl = props.ipfsHash
+            console.log("inkUrl",inkUrl)
+            let jsonUrl = inkChainInfo[3]
+            console.log("jsonUrl",jsonUrl)
+            let limit = props.ink.attributes[0].value
+            console.log("limit",limit)
+
+            let hashToSign = await props.readContracts["NFTINK"].getHash(artist, inkUrl, jsonUrl, ""+limit)
+            console.log("hashToSign",hashToSign)
+
+            let signer = props.injectedProvider.getSigner()
+            console.log("signer",signer)
+
+            let signerAddress = await signer.getAddress()
+            console.log("signerAddress",signerAddress)
+
+            console.log("signing",hashToSign)
+
+            let messageHashBytes = ethers.utils.arrayify(hashToSign) //this was the trick I was stuck on, why can't you just sign the freaking hash ricmoo
+            console.log("messageHashBytes",messageHashBytes)
+
+            let signature = await signer.signMessage(messageHashBytes)
+            console.log("signature:",signature)
+
+            let verifySignature = await props.readContracts["NFTINK"].getSigner(hashToSign,signature)
+            console.log("verifySignature",verifySignature)
+
+            if(verifySignature==signerAddress){
+              console.log("VALID SIG")
+              notification.open({
+                message: '📡 ',
+                description:
+                'sending meta transaction...',
+              });
+              //no tx() here, we'll manually alert for meta tx for now
+              console.log("allowPatronization on metaWriteContracts",metaWriteContracts,inkUrl, signature)
+              let result = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+              console.log("result",result)
+              notification.open({
+                message: '🛰',
+                description:(
+                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
+                ),
+              });
+              console.log("Patronizing signature SAVED on lower value chain:",result)
+            }else{
+              console.log("INVALID SIG!!!!")
+            }
+
+          }} style={{ marginBottom: 12 }}>Allow Patronage</Button>
+        )
+        let upgradeButton = (
+          <Button type="primary" onClick={()=>{
+            console.log("UPGRADE")
+          }} style={{ marginBottom: 12 }}>Upgrade</Button>
+        )
+
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
           <List
-          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
+          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space><Space>{upgradeButton}</Space><Space>{patronButton}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
           renderItem={item => (

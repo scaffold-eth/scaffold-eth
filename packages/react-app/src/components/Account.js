@@ -62,12 +62,21 @@ export default function Account(props) {
 
     }
 
-    //hardcode test
-    gsnConfig.chainId = 42
-	  gsnConfig.relayLookupWindowBlocks= 1e5
+    //if(provider && typeof provider.getNetwork == "function"){
+      //hardcode test
+    //  console.log("NEED NETWORK ID")
+    //  console.log("probably:",provider.networkVersion)
+    //  console.log("NETWORK:",await provider.getNetwork())
+    //  gsnConfig.chainId = 42
+  	 // gsnConfig.relayLookupWindowBlocks= 1e5
 
-    console.log("gsnConfig",gsnConfig)
 
+    //}else{
+      gsnConfig.chainId = 42//31337
+  	  gsnConfig.relayLookupWindowBlocks= 1e5
+    //}
+
+    console.log("setting gsnConfig",gsnConfig)
     const gsnProvider = new RelayProvider(provider, gsnConfig)
     props.setMetaProvider(new ethers.providers.Web3Provider(gsnProvider))
   }

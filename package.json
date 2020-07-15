@@ -44,7 +44,6 @@
     ]
   },
   "dependencies": {
-    "@opengsn/gsn": "^0.10.0",
     "ipfs-http-client": "^44.3.0",
     "ipfs-only-hash": "^2.0.1",
     "is-ipfs": "^1.0.3",

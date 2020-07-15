@@ -4,8 +4,10 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
+import "@openzeppelin/contracts/cryptography/ECDSA.sol";
 
 contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
+    using ECDSA for bytes32;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
@@ -20,6 +22,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     struct Ink {
     uint256 id;
     address artist;
+    address patron;
     string jsonUrl;
     string inkUrl;
     uint256 limit;
@@ -31,6 +34,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     mapping (uint256 => Ink) private _inkById;
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
+    mapping (string => string) private _inkSignatureByUrl;
 
     function createInk(string memory inkUrl, string memory jsonUrl, uint256 limit) public returns (uint256) {
       require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
@@ -40,6 +44,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       Ink memory _ink = Ink({
         id: totalInks.current(),
         artist: _msgSender(),
+        patron: address(0),
         inkUrl: inkUrl,
         jsonUrl: jsonUrl,
         limit: limit,
@@ -75,6 +80,76 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         emit mintedInk(id, _ink.inkUrl, to);
 
         return id;
+    }
+
+    //we will store the patronization signature on the weaker cahin to use on the stronger chain
+    function allowPatronization(string memory inkUrl,string memory signature) public {
+      uint256 _inkId = _inkIdByUrl[inkUrl];
+      Ink storage _ink = _inkById[_inkId];
+      require(_ink.artist == _msgSender(), "only the artist can allow patronization!");
+      _inkSignatureByUrl[inkUrl] = signature;
+    }
+
+    function patronize(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit, bytes memory signature) public returns (uint256) {
+      require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
+
+      require(artist!=address(0), "Artist must be specified.");
+      bytes32 messageHash = getHash(artist,inkUrl,jsonUrl,limit);
+      address signer = getSigner(messageHash, signature);
+      require(signer == artist, "Artist did not sign these patronizing parameters.");
+
+      totalInks.increment();
+
+      Ink memory _ink = Ink({
+        id: totalInks.current(),
+        artist: artist,
+        patron: msg.sender,//we want the actual msg.sender here not the possible _msgSender from a metatx right?
+        inkUrl: inkUrl,
+        jsonUrl: jsonUrl,
+        limit: limit,
+        count: 0,
+        exists: true
+        });
+
+        _inkIdByUrl[inkUrl] = _ink.id;
+        _inkById[_ink.id] = _ink;
+        _artistInks[artist].add(_ink.id);
+
+        emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
+
+        require(_ink.count < _ink.limit || _ink.limit == 0 , "this ink is over the limit!");
+
+        _inkById[_ink.id].count += 1;
+
+        _tokenIds.increment();
+        uint256 id = _tokenIds.current();
+        _inkTokens[inkUrl].add(id);
+
+        _mint(msg.sender, id);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
+        _setTokenURI(id, _ink.jsonUrl);
+
+        emit mintedInk(id, _ink.inkUrl, msg.sender);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
+
+        return id;
+    }
+
+    function getHash(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit) public view returns (bytes32)
+    {
+        return keccak256(
+            abi.encodePacked(
+                byte(0x19),
+                byte(0),
+                address(this),
+                artist,
+                inkUrl,
+                jsonUrl,
+                limit
+        ));
+    }
+
+    function getSigner(bytes32 signedHash, bytes memory signature) public pure returns (address)
+    {
+        return signedHash.toEthSignedMessageHash().recover(signature);
     }
 
     function inkTokenByIndex(string memory inkUrl, uint256 index) public view returns (uint256) {

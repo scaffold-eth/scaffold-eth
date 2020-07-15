@@ -112,6 +112,7 @@ export default function NftyWallet(props) {
     inkInfo = (<InkInfo
       address={props.address}
       mainnetProvider={props.mainnetProvider}
+      metaProvider={props.metaProvider}
       injectedProvider={props.injectedProvider}
       readContracts={props.readContracts}
       ink={ink}

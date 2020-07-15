@@ -79,7 +79,7 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl) => {
     let result
-    console.log("INK")
+    console.log("INK",inkUrl, jsonUrl)
     let enough = ethers.utils.parseEther("0.0001")
     let needsGSN = balance.lt(enough)
     console.log("needsGSN",needsGSN)
@@ -100,8 +100,8 @@ export default function InkCanvas(props) {
           ),
         });
         setSending(false)
-      } catch {
-        console.log('the old fashioned way')
+      } catch(e) {
+        console.log('fallback to old way because',e)
         setSending(true)
         result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
         setSending(false)
