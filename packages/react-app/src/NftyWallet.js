@@ -22,7 +22,6 @@ export default function NftyWallet(props) {
   const [drawing, setDrawing] = useLocalStorage("drawing")
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
-  const [formLimit, setFormLimit] = useState();
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
   let nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
@@ -63,7 +62,6 @@ export default function NftyWallet(props) {
     setMode("edit")
     setDrawing("")
     setIpfsHash()
-    setFormLimit()
     setInk({})
     setTab("2")
     setCanvasKey(Date.now())
@@ -144,6 +142,8 @@ export default function NftyWallet(props) {
               <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
+                  }}><PlusOutlined /> New Ink</Button>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
                     injectedProvider={props.injectedProvider}
@@ -173,8 +173,6 @@ export default function NftyWallet(props) {
                       setInk={setInk}
                       drawing={drawing}
                       setDrawing={setDrawing}
-                      formLimit={formLimit}
-                      setFormLimit={setFormLimit}
                       ipfsConfig={ipfsConfig}
                       metaProvider={props.metaProvider}
                       gasPrice={props.gasPrice}

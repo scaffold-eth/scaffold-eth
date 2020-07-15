@@ -253,10 +253,6 @@ const onFinishFailed = errorInfo => {
 let top, buttons, bottom
 if (props.mode === "edit") {
 
-  const onFormLimitCheckboxChange = e => {
-    props.setFormLimit(e.target.checked);
-  };
-
   top = (
     <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
 
@@ -265,7 +261,7 @@ if (props.mode === "edit") {
     <Form
     layout={'inline'}
     name="createInk"
-    initialValues={{ limit: 0 }}
+    //initialValues={{ limit: 0 }}
     onFinish={createInk}
     onFinishFailed={onFinishFailed}
     labelAlign = {'middle'}
@@ -283,19 +279,14 @@ if (props.mode === "edit") {
     <Input placeholder={"name"} />
     </Form.Item>
 
-    <Form.Item>
-    <Checkbox checked={props.formLimit} onChange={onFormLimitCheckboxChange}>
-    limit
-    </Checkbox>
-    </Form.Item>
-
     <Form.Item
+    label={"Limit"}
     name="limit"
-    hidden={!props.formLimit}
     rules={[{ required: true, message: 'How many inks can be minted?' }]}
     >
-    <InputNumber
+    <InputNumber placeholder={"limit"}
     min={0}
+    precision={0}
     />
     </Form.Item>
 
