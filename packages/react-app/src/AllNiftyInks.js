@@ -15,11 +15,13 @@ export default function NftyWallet(props) {
 
   useEffect(()=>{
 
-      if(props.readContracts &&
-        props.tab === props.thisTab &&
-        inkCreations.length.toString() == props.totalInks.toString() &&
+      if(props.tab === props.thisTab && props.readContracts && inkCreations && props.totalInks && inkCreations.length) {
+      if(inkCreations.length.toString() == props.totalInks.toString() &&
         props.totalInks.toString() !== lastStreamCount
       ) {
+        setLastStreamCount(props.totalInks.toString())
+
+        console.log(props.tab, props.totalInks, inkCreations, lastStreamCount)
 
         const getInkImages = async (e) => {
           const jsonContent = await getFromIPFS(e['jsonUrl'], props.ipfsConfig)
@@ -39,14 +41,13 @@ export default function NftyWallet(props) {
                allInks[i] = inkDetails
                setAllInksArray(allInks)
             }
-            setLastStreamCount(props.totalInks.toString())
           }
         }
         loadStream()
 
       }
-
-  },[props.tab, inkCreations])
+    }
+  },[props.tab, props.totalInks])
 
        if(allInksArray) {
          allInkView = (

@@ -44,19 +44,29 @@ export default function NftyWallet(props) {
   const showInk = ((newIpfsHash) => {
     console.log(newIpfsHash)
     if(newIpfsHash === ipfsHash) {
-      setTab('1')
+      setTab('2')
     } else {
     window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
     setDrawing()
     setInk({})
     setIpfsHash(newIpfsHash)
     setMode('mint')
-    setTab('1')
+    setTab('2')
     setCanvasKey(Date.now())
     return false
   }
   })
 
+  const newInk = (() => {
+    window.history.pushState({id: 'draw'}, 'draw', '/')
+    setMode("edit")
+    setDrawing("")
+    setIpfsHash()
+    setFormLimit()
+    setInk({})
+    setTab("2")
+    setCanvasKey(Date.now())
+  })
 
 
   const badgeStyle = {
@@ -69,16 +79,7 @@ export default function NftyWallet(props) {
   if (true/*mode!=="edit" /*|| tab!=="1"*/) {
   newButton = (
   <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {
-    window.history.pushState({id: 'draw'}, 'draw', '/')
-    setMode("edit")
-    setDrawing("")
-    setIpfsHash()
-    setFormLimit()
-    setInk({})
-    setTab("1")
-    setCanvasKey(Date.now())
-    //window.location = "/" //always have to add this because some useEffect isn't quite right I think
+  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
   }}><PlusOutlined /> New Ink</Button>
   </div>
 )}
@@ -123,7 +124,22 @@ export default function NftyWallet(props) {
 
               </div>
               <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
-                <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24}}>🧑‍🎨 Nifty Ink</span></>} key="1">
+                <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
+                <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <AllNiftyInks
+                    mainnetProvider={props.mainnetProvider}
+                    injectedProvider={props.injectedProvider}
+                    localProvider={props.localProvider}
+                    readContracts={props.readContracts}
+                    tab={tab}
+                    showInk={showInk}
+                    ipfsConfig={ipfsConfig}
+                    totalInks={totalInks}
+                    thisTab={"1"}
+                  />
+                </div>
+                </TabPane>
+                <TabPane tab={<><span><span style={{padding:8}}>🖌️</span> Create Ink</span></>} key="2">
                   <div>
                     <InkCanvas
                       canvasKey={canvasKey}
@@ -148,21 +164,6 @@ export default function NftyWallet(props) {
                     {inkInfo}
                   </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="2">
-                  <div style={{maxWidth:300,margin:"0 auto"}}>
-                    <MyNiftyHoldings
-                      address={props.address}
-                      mainnetProvider={props.mainnetProvider}
-                      injectedProvider={props.injectedProvider}
-                      readContracts={props.readContracts}
-                      tab={tab}
-                      showInk={showInk}
-                      ipfsConfig={ipfsConfig}
-                      nftyBalance={nftyBalance}
-                      thisTab={"2"}
-                    />
-                  </div>
-                </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
                   <div style={{width:300,margin:"0 auto"}}>
                     <MyNiftyInks
@@ -175,20 +176,21 @@ export default function NftyWallet(props) {
                       ipfsConfig={ipfsConfig}
                       inksCreatedBy={inksCreatedBy}
                       thisTab={"3"}
+                      newInk={newInk}
                     />
                   </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>🎥</span> stream</span> <Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="4">
-                  <div style={{maxWidth:500,margin:"0 auto"}}>
-                    <AllNiftyInks
+                <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="4">
+                  <div style={{maxWidth:300,margin:"0 auto"}}>
+                    <MyNiftyHoldings
+                      address={props.address}
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
-                      localProvider={props.localProvider}
                       readContracts={props.readContracts}
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
-                      totalInks={totalInks}
+                      nftyBalance={nftyBalance}
                       thisTab={"4"}
                     />
                   </div>

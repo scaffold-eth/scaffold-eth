@@ -14,13 +14,11 @@ export default function MyNiftyHoldings(props) {
   useEffect(()=>{
 
     if(props.readContracts && props.address && props.tab === props.thisTab) {
-      console.log('made it through the wilderness')
 
       let tokens
 
       const loadTokens = async () => {
-        tokens = new Array(props.nftyBalance)
-        //console.log(tokens)
+        tokens = new Array(props.nftyBalance).fill({})
 
         const getTokenInfo = async (i) => {
           let tokenId = await props.readContracts['NFTINK']["tokenOfOwnerByIndex"](props.address, i)

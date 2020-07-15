@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Avatar, Empty } from 'antd';
+import { List, Avatar, Empty, Spin } from 'antd';
 import { LoadingOutlined } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 
@@ -71,13 +71,13 @@ export default function MyNiftyInks(props) {
       } else if(props.inksCreatedBy.toString() === "0") { inkView = (<Empty
           description={
             <span>
-              <a href="/"><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
+              <a href="" onClick={() => {props.newInk()}}><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
               </span>
             }
             />
           )}
         else {
-          inkView = (<List/>)
+          inkView = (<Spin/>)
         }
 
 
