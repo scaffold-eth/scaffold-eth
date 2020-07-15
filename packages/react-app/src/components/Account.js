@@ -6,7 +6,7 @@ import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button } from 'antd';
-import { RelayProvider } from '@opengsn/gsn';
+
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -49,37 +49,7 @@ export default function Account(props) {
 
     props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
 
-    if (typeof props.setMetaProvider == "function" && props.gsnConfig) {
-    let gsnConfig = {
-      relayHubAddress: props.gsnConfig.relayHubAddress,
-      stakeManagerAddress: props.gsnConfig.stakeManagerAddress,
-      paymasterAddress: props.gsnConfig.paymasterAddress,
-    }
 
-    if (provider._metamask) {
-      console.log('using metamask')
-      gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true, chainId: provider.networkVersion}
-
-    }
-
-    //if(provider && typeof provider.getNetwork == "function"){
-      //hardcode test
-    //  console.log("NEED NETWORK ID")
-    //  console.log("probably:",provider.networkVersion)
-    //  console.log("NETWORK:",await provider.getNetwork())
-    //  gsnConfig.chainId = 42
-  	 // gsnConfig.relayLookupWindowBlocks= 1e5
-
-
-    //}else{
-      gsnConfig.chainId = 42//31337
-  	  gsnConfig.relayLookupWindowBlocks= 1e5
-    //}
-
-    console.log("setting gsnConfig",gsnConfig)
-    const gsnProvider = new RelayProvider(provider, gsnConfig)
-    props.setMetaProvider(new ethers.providers.Web3Provider(gsnProvider))
-  }
   }
 
   const pollInjectedProvider = async ()=>{

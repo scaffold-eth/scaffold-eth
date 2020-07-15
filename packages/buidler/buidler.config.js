@@ -97,9 +97,10 @@ try{
   mnemonic = (fs.readFileSync("./mnemonic.txt")).toString().trim()
 }catch(e){ /* ignore for now because it might now have a mnemonic.txt file */ }
 
+const network = "rinkeby"
 
 module.exports = {
-  defaultNetwork: 'kovan',
+  defaultNetwork: network,
   networks: {
     kovan: {
       url: 'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c',

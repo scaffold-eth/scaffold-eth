@@ -4,21 +4,26 @@ import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
-import { useLocalStorage, useContractLoader, useBalance } from "./hooks"
+import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
+import { RelayProvider } from '@opengsn/gsn';
+
 const Hash = require('ipfs-only-hash')
 const axios = require('axios');
 const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
 
+const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
 
 export default function InkCanvas(props) {
 
+  const [metaProvider, setMetaProvider] = useState()
+  //console.log("metaProvider",metaProvider)
+
   const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider);
-  //console.log("Transactor setup with gasprice ",props.gasPrice)
+
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   const balance = useBalance(props.address,props.metaProvider)
@@ -45,6 +50,55 @@ export default function InkCanvas(props) {
             console.log(e)
           }
         }
+
+        let relayHubAddress
+        let stakeManagerAddress
+        let paymasterAddress
+        if(process.env.REACT_APP_NETWORK_NAME){
+          // we will use Kovan GSN for minting and liking:
+          //https://docs.opengsn.org/gsn-provider/networks.html
+          relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
+          stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
+          paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
+
+        }else{
+          relayHubAddress = require('./gsn/RelayHub.json').address
+          stakeManagerAddress = require('./gsn/StakeManager.json').address
+          paymasterAddress = require('./gsn/Paymaster.json').address
+          console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
+        }
+
+        let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
+        //if (provider._metamask) {
+          //console.log('using metamask')
+        //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
+        //}
+        gsnConfig.chainId = 42//31337
+        gsnConfig.relayLookupWindowBlocks= 1e5
+
+
+
+        //let kovanblocknum = await props.kovanProvider.getBlockNumber()
+        //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
+
+        console.log("gsnConfig",gsnConfig)
+
+        console.log("props.kovanProvider",props.kovanProvider)
+        const gsnProvider = new RelayProvider(props.kovanProvider, gsnConfig)
+        console.log("gsnProvider:",gsnProvider)
+
+        console.log("getting newMetaPriovider")
+        let newMetaProvider = new ethers.providers.Web3Provider(gsnProvider)
+        console.log("newMetaPriovider is:",newMetaProvider)
+
+        console.log("Setting meta provider.....")
+        setMetaProvider(newMetaProvider)
+        console.log("TESTING meta povider..................")
+
+        let blocknum = await newMetaProvider.getBlockNumber()
+        console.log("/////////////blocknum BLOCK NUMBER IS ",blocknum)
+
+
     }
     loadPage()
   }, [])
@@ -77,13 +131,80 @@ export default function InkCanvas(props) {
 
   const PickerDisplay = pickers[picker % pickers.length]
 
-  const mintInk = async (inkUrl, jsonUrl) => {
+  const mintInk = async (inkUrl, jsonUrl, limit) => {
     let result
-    console.log("INK",inkUrl, jsonUrl)
-    let enough = ethers.utils.parseEther("0.0001")
+    console.log("INK",inkUrl, jsonUrl, limit)
+
+    console.log("PATRONAGE",props.ipfsHash)
+    let artist = props.address
+    console.log("artist",artist)
+    console.log("inkUrl",inkUrl)
+    console.log("jsonUrl",jsonUrl)
+    console.log("limit",limit)
+
+    let hashToSign = await props.readContracts["NFTINK"].getHash(artist, inkUrl, jsonUrl, ""+limit)
+    console.log("hashToSign",hashToSign)
+
+    let signer = props.injectedProvider.getSigner()
+    console.log("signer",signer)
+
+    let signerAddress = await signer.getAddress()
+    console.log("signerAddress",signerAddress)
+
+    console.log("signing",hashToSign)
+
+    let messageHashBytes = ethers.utils.arrayify(hashToSign) //this was the trick I was stuck on, why can't you just sign the freaking hash ricmoo
+    console.log("messageHashBytes",messageHashBytes)
+
+    let signature = await signer.signMessage(messageHashBytes)
+    console.log("signature:",signature)
+
+    let verifySignature = await props.readContracts["NFTINK"].getSigner(hashToSign,signature)
+    console.log("verifySignature",verifySignature)
+
+
+
+
+    let contractName = "NFTINK"
+    //let wallet = ethers.Wallet.createRandom()
+    //console.log("wallet",wallet)
+
+    //console.log("testing meta provider:",await metaProvider.blockNumber())
+
+    //let connectedWallet = wallet.connect(metaProvider)
+    //console.log("connectedWallet",connectedWallet)
+
+
+
+    console.log("creating contract...")
+    let customContract = new ethers.Contract(
+      KOVAN_CONTRACT_ADDRESS,
+      require("./contracts/"+contractName+".abi.js"),
+      metaProvider.getSigner(),
+    );
+    console.log("customContract",customContract)
+    try{
+      customContract.bytecode = require("./contracts/"+contractName+".bytecode.js")
+    }catch(e){
+      console.log(e)
+    }
+    console.log("ready to call createInk on ",customContract)
+    console.log("customContract.createInk",customContract.createInk)
+    let signed = await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+
+    console.log("SINGED?",signed)
+
+
+    //create a burner wallet and call createInk with a signed message:
+    //kovanContract
+
+    /*let enough = ethers.utils.parseEther("0.0001")
     let needsGSN = balance.lt(enough)
     console.log("needsGSN",needsGSN)
-    if(needsGSN){
+    if(needsGSN){*/
+
+
+    /*
       try {
         setSending(true)
         notification.open({
@@ -106,13 +227,16 @@ export default function InkCanvas(props) {
         result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
         setSending(false)
       }
-    }else{
+
+
+
+    /*}else{
       setSending(true)
       result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
-    }
+    }*/
 
-    console.log("result", result)
-    return result
+    //console.log("result", result)
+    //return result
   }
 
   const createInk = async values => {
@@ -167,7 +291,7 @@ export default function InkCanvas(props) {
       'Contacting the smartcontract',
     });*/
 
-    var mintResult = await mintInk(drawingHash, jsonHash);
+    var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
 
     if(mintResult) {
 

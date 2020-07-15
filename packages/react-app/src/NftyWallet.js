@@ -133,9 +133,6 @@ export default function NftyWallet(props) {
                   mainnetProvider={props.mainnetProvider}
                   price={props.price}
                   minimized={props.minimized}
-                  setMetaProvider={props.setMetaProvider}
-                  metaProvider={props.metaProvider}
-                  gsnConfig={props.gsnConfig}
               />
 
               </div>
@@ -160,6 +157,7 @@ export default function NftyWallet(props) {
                 <TabPane tab={<><span><span style={{padding:8}}>🖌️</span>create</span></>} key="2">
                   <div>
                     <InkCanvas
+                      kovanProvider={props.kovanProvider}
                       canvasKey={canvasKey}
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
