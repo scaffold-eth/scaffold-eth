@@ -53,7 +53,7 @@ export default function NftyWallet(props) {
          allInkView = (
       <Row>
         {allInksArray.map(item =>
-        <Col span={8}>{item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin size="large" />} />}</Col>
+        <Col span={8}>{item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.25}} size="large" />} />}</Col>
       )}
       </Row>
     )

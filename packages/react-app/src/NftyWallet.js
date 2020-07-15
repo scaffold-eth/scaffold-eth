@@ -156,7 +156,7 @@ export default function NftyWallet(props) {
                   />
                 </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>🖌️</span> Create Ink</span></>} key="2">
+                <TabPane tab={<><span><span style={{padding:8}}>🖌️</span>create</span></>} key="2">
                   <div>
                     <InkCanvas
                       canvasKey={canvasKey}

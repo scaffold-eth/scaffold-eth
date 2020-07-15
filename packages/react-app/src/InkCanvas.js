@@ -96,7 +96,7 @@ export default function InkCanvas(props) {
         notification.open({
           message: '🛰',
           description:(
-            <a href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
+            <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
           ),
         });
         setSending(false)
