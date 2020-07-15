@@ -53,8 +53,8 @@ export default function Ramp(props) {
            <Divider />
 
            <p>
-            <Button type={type} size="large" shape="round" onClick={()=>{window.open("https://support.mycrypto.com/how-to/getting-started/where-to-get-testnet-ether")}}>
-              <span style={{paddingRight:15}}>🛠</span> Testnet Faucets
+            <Button type={type} size="large" shape="round" onClick={()=>{window.open("https://faucet.kovan.network/")}}>
+              <span style={{paddingRight:15}}>🛠</span> https://faucet.kovan.network/
             </Button>
            </p>
 
