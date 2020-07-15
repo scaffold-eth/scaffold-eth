@@ -7,11 +7,11 @@ async function main() {
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
   const NFTINK = await deploy("NFTINK")
+
+
+  const network = "rinkeby"
   console.log("Setting trusted forwarder....")
-
-  const LOCAL = false
-
-  if(LOCAL){
+  if(network=="localhost"){
     let trustedForwarder
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
@@ -21,9 +21,11 @@ async function main() {
       console.log(e)
     }
   }
-  else{
+  else if(network=="kovan") {
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
+  }else{
+    //do not set for Rinkeby/Mainnet/xDAI for now
   }
 
 
@@ -47,7 +49,18 @@ async function deploy(name,_args){
   }
   console.log("📄 "+name)
   const contractArtifacts = artifacts.require(name);
-  const contract = await contractArtifacts.new(...args)
+  //console.log("contractArtifacts",contractArtifacts)
+  //console.log("args",args)
+
+  const promise =  contractArtifacts.new(...args)
+
+
+  promise.on("error",(e)=>{console.log("ERROR:",e)})
+
+
+  let contract = await promise
+
+
   console.log(chalk.cyan(name),"deployed to:", chalk.magenta(contract.address));
   fs.writeFileSync("artifacts/"+name+".address",contract.address);
   console.log("\n")

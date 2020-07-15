@@ -36,15 +36,20 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     mapping (address => EnumerableSet.UintSet) private _artistInks;
     mapping (string => string) private _inkSignatureByUrl;
 
-    function createInk(string memory inkUrl, string memory jsonUrl, uint256 limit) public returns (uint256) {
+    function createInk(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit, bytes memory signature) public returns (uint256) {
       require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
 
       totalInks.increment();
 
+      require(artist!=address(0), "Artist must be specified.");
+      bytes32 messageHash = getHash(artist,inkUrl,jsonUrl,limit);
+      address signer = getSigner(messageHash, signature);
+      require(signer == artist, "Artist did not sign these parameters.");
+
       Ink memory _ink = Ink({
         id: totalInks.current(),
-        artist: _msgSender(),
-        patron: address(0),
+        artist: artist,
+        patron: _msgSender(),
         inkUrl: inkUrl,
         jsonUrl: jsonUrl,
         limit: limit,

@@ -1,20 +1,18 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import { Row, Col,  Button } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
 import { Ramp } from "./components"
+import BurnerProvider from 'burner-provider';
 
 import NftyWallet from "./NftyWallet.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
+const kovanProvider = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 
 let localProvider
-let relayHubAddress
-let stakeManagerAddress
-let paymasterAddress
-
 let networkBanner = ""
 if(process.env.REACT_APP_NETWORK_NAME){
   networkBanner = (
@@ -23,10 +21,6 @@ if(process.env.REACT_APP_NETWORK_NAME){
     </div>
   )
   localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
-  relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
-  stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
-  paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
-
 }else{
   networkBanner = (
     <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
@@ -34,13 +28,7 @@ if(process.env.REACT_APP_NETWORK_NAME){
     </div>
   )
   localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")
-  relayHubAddress = require('./gsn/RelayHub.json').address
-  stakeManagerAddress = require('./gsn/StakeManager.json').address
-  paymasterAddress = require('./gsn/Paymaster.json').address
-  console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
 }
-
-
 
 function App() {
 
@@ -53,9 +41,6 @@ function App() {
   //console.log("gasPrice",gasPrice)
 
   const readContracts = useContractLoader(localProvider);
-
-  const gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
-
 
 
   return (
@@ -73,10 +58,8 @@ function App() {
         price={price}
         minimized={true}
         readContracts={readContracts}
-        setMetaProvider={setMetaProvider}
-        metaProvider={metaProvider}
-        gsnConfig={gsnConfig}
         gasPrice={gasPrice}
+        kovanProvider={kovanProvider}
       />
 
       <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
