@@ -71,7 +71,7 @@ function App() {
         gasPrice={gasPrice}
       />
 
-      <div style={{float:'left',padding:32}}>
+      <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
         <Row gutter={8}>
           <Col>
           <Ramp
