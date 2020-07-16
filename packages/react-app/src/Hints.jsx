@@ -125,9 +125,9 @@ export default function Hints(props) {
         </span>
       </p>
 
-      <p>
-        <span style={{marginTop:32}}>💬</span>
-        for support, join this
+      <p style={{marginTop:32}}> 
+        <span style={{marginRight:8}}>💬</span>
+         for support, join this
         <span style={{marginLeft:4,backgroundColor:"#f9f9f9", padding:4, borderRadius:4, fontWeight:'bolder'}}>
           <a target="_blank" href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA">Telegram Chat</a>
         </span>

@@ -2,7 +2,7 @@ var watch = require('node-watch');
 
 const run = ()=>{
   var exec = require('child_process').exec;
-  console.log("🛠 Compiling & Deploying...")
+  console.log("🛠  Compiling & Deploying...")
   exec('cd ../../ && yarn run deploy',function(error, stdout, stderr) {
     console.log(stdout);
     if(error) console.log(error)

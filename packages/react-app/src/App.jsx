@@ -7,6 +7,7 @@ import { useExchangePrice, useGasPrice, useBalance } from "./hooks";
 import { Address, Header, Account, Provider, Faucet, Ramp, Contract } from "./components";
 import Hints from "./Hints";
 
+// 🛰 providers
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "2717afb6bf164045b5d5468031b93f87");
 const localProvider = new ethers.providers.JsonRpcProvider(
   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545",
@@ -41,7 +42,7 @@ function App() {
 
       {/*
 
-        📦 this scaffolding is full of commonly used components
+        🎛 this scaffolding is full of commonly used components
         this <Contract/> component will automatically parse your ABI
         and give you a form to interact with it locally
 
