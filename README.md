@@ -11,9 +11,9 @@ It's great for building <i>decentralized applications</i> on [Ethereum](https://
 
 ---
 
-[<H3>⏱ Quickstart</H3>](https://github.com/austintgriffith/scaffold-eth#-quickstart)
+[<H3>⏱ Quickstart</H3>](https://github.com/austintgriffith/scaffold-eth#-quickstart-1)
 
-🏃‍♀️ Get straight to building with this [5 minute quickstart](https://github.com/austintgriffith/scaffold-eth#-quickstart).
+🏃‍♀️ Get straight to building with this [5 minute quickstart](https://github.com/austintgriffith/scaffold-eth#-quickstart-1).
 
 ---
 
