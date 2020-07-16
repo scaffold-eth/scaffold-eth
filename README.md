@@ -1,7 +1,5 @@
 # 🏗 scaffold-eth
 
----
-
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
 
 ---
