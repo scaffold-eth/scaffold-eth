@@ -14,7 +14,6 @@
     "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
     "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
-    "ship": "echo 'Sorry, this does not work yet'",
     "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=12288",
     "chain": "cd packages/buidler && npx buidler node",
     "node": "cd packages/buidler && npx buidler node",
@@ -28,7 +27,9 @@
     "send": "cd packages/buidler && npx buidler send",
     "ipfs": "cd packages/react-app && node ipfs",
     "surge": "surge packages/react-app/build",
-    "s3": "cd packages/react-app && node s3"
+    "s3": "cd packages/react-app && node s3",
+    "ship": "surge packages/react-app/build"
+
   },
   "devDependencies": {
     "@nomiclabs/buidler": "1.3.3-rc.0",

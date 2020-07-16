@@ -3,21 +3,39 @@
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
 ---
 
-[<H3>🛠  Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
+🏗 <b>scaffold-eth</b> is a <i>stack</i> of existing tools including 👷‍♀️ [Buidler](https://buidler.dev/tutorial/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app)
+
+It's <i>super power</i> is <b>interating on smart contracts as you build your frontend</b>.
+
+It's great for building <i>decentralized applications</i> on [Ethereum](https://ethereum.org/en/developers/).
+
+---
+
+[<H3>⏱ Quickstart</H3>](https://github.com/austintgriffith/scaffold-eth#-quickstart)
+
+🏃‍♀️ Get straight to building with this [5 minute quickstart](https://github.com/austintgriffith/scaffold-eth#-quickstart).
+
+---
+
+[<H3>🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
+
+Learn how to [quickly iterate on a smart contract]((https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)) using the <b>\<Contract /\></b> component.
+
+---
+[<H3>Tutorial 1: 🛠 Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
 
 Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ Buidler, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
 [🎥 Guided Tutorial](https://youtu.be/7rq3TPL-tgI)
 
+---
+
+<H3>Tutorial 2: 🏵 The Token</H3>
+
+Learn about tokens. [coming soon] What is a token? Why is it cool? How can I deploy one? Exotic mechanisms? (todo)
 
 ---
 
-<H3>🏵 The Token</H3>
-
-Learn about tokens. [coming soon] What is a token? Why is it cool? How can I deploy one? Exotic mechanisms?
-
----
-
-[<H3>⚖️ Minimum Viable Decentralized Exchange</H3>](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
+[<H3>Tutorial 3: ⚖️ Minimum Viable Decentralized Exchange</H3>](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
 
 Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liqudity.
 
@@ -25,20 +43,37 @@ Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Res
 
 ---
 
-[<H3>🚀 Connecting ETH to IPFS</H3>](https://medium.com/@austin_48503/tl-dr-scaffold-eth-ipfs-20fa35b11c35)
+[<H3>Tutorial 4: 🚀 Connecting ETH to IPFS</H3>](https://medium.com/@austin_48503/tl-dr-scaffold-eth-ipfs-20fa35b11c35)
 
 Build a simple IPFS application in 🏗 <b>scaffold-eth</b> to learn more about distributed file storage and content addressing.
   [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=342)
 
 ---
 
+<H3>Tutorial 5: ⛽️GSN and Meta Transactions</H3>
 
-[<H3>🛰 Decentralized Deployment</H3>](https://medium.com/@austin_48503/decentralized-deployment-7d975c9d5016)
+Learn about to provide your users with better UX by abstracting away gas fees and blockchain mechanics.  (todo)
+
+
+---
+
+
+[<H3>Tutorial 6: 🛰 Decentralized Deployment</H3>](https://medium.com/@austin_48503/decentralized-deployment-7d975c9d5016)
 
 Learn how to deploy your smart contract to a production blockchain. Then deploy your applicaton to Surge, S3, and IPFS. Finally, register an ENS and point it at the decentralized content!  [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=1350)
 
+---
+
+<h1>built with 🏗 scaffold-eth:</h1>
 
 
+[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
+
+Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
+
+🏃‍♂️ SpeedRun 📹 (TODO)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
 
 ---
 
@@ -48,8 +83,22 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 [🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
 
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
+
+---
+
+[<H3>🌒 xmoon.exchange</H3>](https://xmoon.exchange/)
+
+Exchange Reddit MOONs for ETH or DAI through xDAI. Learn about different 🛰 providers and how 🌉 bridges can connect different chains with different security models.
+
+[🏃‍♂️ SpeedRun 📹 ](https://www.youtube.com/watch?v=_ikHSyThDiA)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/xmoon-dev)
 
 
+---
+
+^^^ ⛏ <b>PR</B> your 🏗 scaffold-eth project in above!!! ^^^
 
 ---
 
@@ -64,12 +113,14 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 First, you'll need [NodeJS>=10](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads) installed.
 
-💾 Clone/fork repo and then install:
+💾 <b>install</b>:
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git rad-new-dapp
 
 cd rad-new-dapp
+
+git checkout quickstart
 
 yarn install
 ```
@@ -81,7 +132,7 @@ yarn install
 
 ---
 
-⚛️ [React](https://reactjs.org/tutorial/tutorial.html) frontend powered by 📱[create-eth-app](https://github.com/PaulRBerg/create-eth-app) using 🔧[Ethers.js](https://docs.ethers.io/ethers.js/html/index.html) and the 🦄[Uniswap](https://uniswap.org/docs/v1) template:
+🎛 <b>frontend</b>
 
 ```bash
 yarn start
@@ -91,7 +142,7 @@ yarn start
 
 ---
 
-⛓ Start your local blockchain powered by 👷‍♀️[Buidler](https://buidler.dev/tutorial/):
+⛓ <b>blockchain</b>
 
 ```bash
 yarn run chain
@@ -173,11 +224,45 @@ yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 
 ---
 
----
 
-<a href="https://twitter.com/austingriffith">
-  <img src="https://img.shields.io/twitter/follow/austingriffith.svg?style=social&logo=twitter" alt="follow on Twitter">
-</a>
+## 🔬 Smart Contract Sandbox:
+
+💾 <b>install</b>:
+
+```bash
+git clone https://github.com/austintgriffith/scaffold-eth.git smart-contract-sandbox
+
+cd smart-contract-sandbox
+
+yarn install
+```
+⚙️ <b>start</b>
+
+```bash
+#run in original terminal window:
+yarn start
+#run in terminal window 2:
+yarn run chain
+#run in terminal window 3:
+yarn run deploy
+```
+
+
+🔏 Edit or rename your smart contract `YourContract.sol` in `packages/buidler/contracts`
+
+📝 Edit your frontend `App.js` in `packages/react-app/src`
+
+📱 Open http://localhost:3000 to see the app
+
+☢️ Make sure are running your local chain `yarn run chain` and your contract is deployed with `yarn run deploy`
+
+🔥 Try `yarn run watch` and as you change your Solidity, your frontend <b>\<Contract/\></b> will hot reload to give you access to new variables and functions:
+
+
+
+ **TODO quick screencast of this process**
+
+
 
 ---
 

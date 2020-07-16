@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-
+import { Transactor } from "../helpers"
 import { Card, Row, Col, Input, Divider } from "antd";
 import { useContractLoader } from "../hooks";
 import Account from "./Account";
@@ -22,9 +22,11 @@ export default function Contract(props) {
   const address = contract ? contract.address : "";
 
   const [display, setDisplay] = useState(<div>Loading...</div>);
+  const tx = Transactor(props.provider,props.gasPrice);
 
   const [form, setForm] = useState({});
   const [values, setValues] = useState({});
+  const [key, setKey] = useState(1);
 
   const { show } = props;
   useEffect(() => {
@@ -56,15 +58,20 @@ export default function Contract(props) {
                   >
                     {fn.name}
                   </Col>
-                  <Col span={16}>
+                  <Col span={14} key={key}>
                     <h2>{tryToDisplay(await contract[fn.name]())}</h2>
+                  </Col>
+                  <Col span={2} key={fn.name+"_reader_"+key}>
+                    <h2><a href="#" onClick={()=>{
+                      setKey(key+1)
+                    }}>🔄</a></h2>
                   </Col>
                 </Row>
                 <Divider />
               </div>,
             );
           } else if (!displayed[fn.name] && (fn.type === "call" || fn.type === "transaction")) {
-            console.log("RENDERING", fn);
+            //console.log("RENDERING", fn);
             // console.log("CALL WITH ARGS",fn.name,fn)
             displayed[fn.name] = true;
             const inputs = [];
@@ -122,6 +129,7 @@ export default function Contract(props) {
                                   "" + parseFloat(newValues["valueOf" + fn.name]) * 10 ** 18;
                                 console.log("SETTING:", newValues);
                                 setValues(newValues);
+                                setKey(key+1)
                               }}
                             >
                               ✳️
@@ -138,6 +146,7 @@ export default function Contract(props) {
                                 newValues["valueOf" + fn.name] = bigNumber.toHexString();
                                 console.log("SETTING:", newValues);
                                 setValues(newValues);
+                                setKey(key+1)
                               }}
                             >
                               #️⃣
@@ -188,12 +197,15 @@ export default function Contract(props) {
                         }
 
                         // console.log("Running with extras",extras)
-                        const result = tryToDisplay(await contract[fn.name](...args, overrides));
+                        let returned = await tx(contract[fn.name](...args, overrides))
+
+                        const result = tryToDisplay(returned);
 
                         const newValues = { ...values };
                         newValues[fn.name] = result;
                         console.log("SETTING:", newValues);
                         setValues(newValues);
+                        setKey(key+1)
                       }}
                     >
                       {buttonIcon}
@@ -230,31 +242,33 @@ export default function Contract(props) {
       }
     };
     loadDisplay();
-  }, [contract, values, form, show]);
+  }, [contract, values, form, show, key]);
 
   return (
-    <Card
-      title={
-        <div>
-          {props.name}
-          <div style={{ float: "right" }}>
-            <Account
-              address={address}
-              localProvider={props.provider}
-              injectedProvider={props.provider}
-              mainnetProvider={props.provider}
-              readContracts={contracts}
-              price={props.price}
-            />
-            {props.account}
+    <div style={{margin:"auto",width:"70vw"}}>
+      <Card
+        title={
+          <div>
+            {props.name}
+            <div style={{ float: "right" }}>
+              <Account
+                address={address}
+                localProvider={props.provider}
+                injectedProvider={props.provider}
+                mainnetProvider={props.provider}
+                readContracts={contracts}
+                price={props.price}
+              />
+              {props.account}
+            </div>
           </div>
-        </div>
-      }
-      size="large"
-      style={{ width: 550, marginTop: 25 }}
-      loading={display && display.length <= 0}
-    >
-      {display}
-    </Card>
+        }
+        size="large"
+        style={{  marginTop: 25 ,width:"100%" }}
+        loading={display && display.length <= 0}
+      >
+        {display}
+      </Card>
+    </div>
   );
 }
