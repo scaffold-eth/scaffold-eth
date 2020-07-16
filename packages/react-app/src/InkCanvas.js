@@ -19,7 +19,6 @@ const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
 
 export default function InkCanvas(props) {
 
-  const [metaProvider, setMetaProvider] = useState()
   //console.log("metaProvider",metaProvider)
 
   const writeContracts = useContractLoader(props.injectedProvider);
@@ -50,53 +49,6 @@ export default function InkCanvas(props) {
             console.log(e)
           }
         }
-
-        let relayHubAddress
-        let stakeManagerAddress
-        let paymasterAddress
-        if(process.env.REACT_APP_NETWORK_NAME){
-          // we will use Kovan GSN for minting and liking:
-          //https://docs.opengsn.org/gsn-provider/networks.html
-          relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
-          stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
-          paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
-
-        }else{
-          relayHubAddress = require('./gsn/RelayHub.json').address
-          stakeManagerAddress = require('./gsn/StakeManager.json').address
-          paymasterAddress = require('./gsn/Paymaster.json').address
-          console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
-        }
-
-        let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
-        //if (provider._metamask) {
-          //console.log('using metamask')
-        //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
-        //}
-        gsnConfig.chainId = 42//31337
-        gsnConfig.relayLookupWindowBlocks= 1e5
-
-
-
-        //let kovanblocknum = await props.kovanProvider.getBlockNumber()
-        //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
-
-        console.log("gsnConfig",gsnConfig)
-
-        console.log("props.kovanProvider",props.kovanProvider)
-        const gsnProvider = new RelayProvider(props.kovanProvider, gsnConfig)
-        console.log("gsnProvider:",gsnProvider)
-
-        console.log("getting newMetaPriovider")
-        let newMetaProvider = new ethers.providers.Web3Provider(gsnProvider)
-        console.log("newMetaPriovider is:",newMetaProvider)
-
-        console.log("Setting meta provider.....")
-        setMetaProvider(newMetaProvider)
-        console.log("TESTING meta povider..................")
-
-        let blocknum = await newMetaProvider.getBlockNumber()
-        console.log("/////////////blocknum BLOCK NUMBER IS ",blocknum)
 
 
     }
@@ -180,7 +132,7 @@ export default function InkCanvas(props) {
     let customContract = new ethers.Contract(
       KOVAN_CONTRACT_ADDRESS,
       require("./contracts/"+contractName+".abi.js"),
-      metaProvider.getSigner(),
+      props.metaProvider.getSigner(),
     );
     console.log("customContract",customContract)
     try{
@@ -193,6 +145,8 @@ export default function InkCanvas(props) {
     let signed = await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("SINGED?",signed)
+
+    return signed
 
 
     //create a burner wallet and call createInk with a signed message:
@@ -404,7 +358,6 @@ if (props.mode === "edit") {
     </Form.Item>
 
     <Form.Item
-    label={"Limit"}
     name="limit"
     rules={[{ required: true, message: 'How many inks can be minted?' }]}
     >

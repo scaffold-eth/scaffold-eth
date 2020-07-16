@@ -41,6 +41,7 @@ function App() {
   //console.log("gasPrice",gasPrice)
 
   const readContracts = useContractLoader(localProvider);
+  const readKovanContracts = useContractLoader(kovanProvider);
 
 
   return (
@@ -58,8 +59,11 @@ function App() {
         price={price}
         minimized={true}
         readContracts={readContracts}
+        readKovanContracts={readKovanContracts}
         gasPrice={gasPrice}
         kovanProvider={kovanProvider}
+        metaProvider={metaProvider}
+        setMetaProvider={setMetaProvider}
       />
 
       <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
