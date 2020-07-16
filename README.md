@@ -98,7 +98,7 @@ Exchange Reddit MOONs for ETH or DAI through xDAI. Learn about different 🛰 pr
 
 ---
 
-^^^ ⛏ <b>PR</B> your 🏗 scaffold-eth project in above!!! ^^^
+^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth project in above!!! ^^^
 
 ---
 
