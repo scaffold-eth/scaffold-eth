@@ -1,6 +1,9 @@
 # 🏗 scaffold-eth
 
+---
+
 > TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
+
 ---
 
 🏗 <b>scaffold-eth</b> is a <i>stack</i> of existing tools including 👷‍♀️ [Buidler](https://buidler.dev/tutorial/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app)
