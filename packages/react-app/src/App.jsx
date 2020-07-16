@@ -3,7 +3,7 @@ import "antd/dist/antd.css";
 import { ethers } from "ethers";
 import "./App.css";
 import { Row, Col } from "antd";
-import { useExchangePrice, useGasPrice, useBalance } from "./hooks";
+import { useExchangePrice, useGasPrice, useBalance, useContractLoader, useCustomContractReader } from "./hooks";
 import { Address, Header, Account, Provider, Faucet, Ramp, Contract } from "./components";
 import Hints from "./Hints";
 
@@ -24,6 +24,9 @@ function App() {
   // just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
+  // Load in your local 📝 contract and read a value from it:
+  //const readContracts = useContractLoader(localProvider)
+  //const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
 
   return (
     <div className="App">
