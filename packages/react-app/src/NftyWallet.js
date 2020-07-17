@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import { Button, Badge, Tabs } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
+import { ethers } from "ethers";
+import { RelayProvider } from '@opengsn/gsn';
 import { Account } from "./components"
 import InkCanvas from "./InkCanvas.js"
 import InkInfo from "./InkInfo.js"
@@ -22,12 +24,11 @@ export default function NftyWallet(props) {
   const [drawing, setDrawing] = useLocalStorage("drawing")
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
-  const [formLimit, setFormLimit] = useState();
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
   let nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
   let inksCreatedBy = useContractReader(props.readContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
-  let totalInks = useContractReader(props.readContracts,'NFTINK',"totalInks",1777);
+  let totalInks = useContractReader(props.readKovanContracts,'NFTINK',"totalInks",1777);
 
   let displayBalance
   if(nftyBalance) {
@@ -63,7 +64,6 @@ export default function NftyWallet(props) {
     setMode("edit")
     setDrawing("")
     setIpfsHash()
-    setFormLimit()
     setInk({})
     setTab("2")
     setCanvasKey(Date.now())
@@ -75,6 +75,8 @@ export default function NftyWallet(props) {
     color: "#999",
     boxShadow:"0 0 0 1px #d9d9d9 inset",
   }
+
+
 
   useEffect(() => {
     const loadPage = async () => {
@@ -88,6 +90,53 @@ export default function NftyWallet(props) {
       } else {
         if (ipfsHashRequest) {window.history.pushState({id: 'edit'}, 'edit', '/')}
     }
+
+    let relayHubAddress
+    let stakeManagerAddress
+    let paymasterAddress
+    if(process.env.REACT_APP_NETWORK_NAME){
+      // we will use Kovan GSN for minting and liking:
+      //https://docs.opengsn.org/gsn-provider/networks.html
+      relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
+      stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
+      paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
+
+    }else{
+      relayHubAddress = require('./gsn/RelayHub.json').address
+      stakeManagerAddress = require('./gsn/StakeManager.json').address
+      paymasterAddress = require('./gsn/Paymaster.json').address
+      console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
+    }
+
+    let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
+    //if (provider._metamask) {
+      //console.log('using metamask')
+    //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
+    //}
+    gsnConfig.chainId = 42//31337
+    gsnConfig.relayLookupWindowBlocks= 1e5
+
+
+
+    //let kovanblocknum = await props.kovanProvider.getBlockNumber()
+    //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
+
+    console.log("gsnConfig",gsnConfig)
+
+    console.log("props.kovanProvider",props.kovanProvider)
+    const gsnProvider = new RelayProvider(props.kovanProvider, gsnConfig)
+    console.log("gsnProvider:",gsnProvider)
+
+    console.log("getting newMetaPriovider")
+    let newMetaProvider = new ethers.providers.Web3Provider(gsnProvider)
+    console.log("newMetaPriovider is:",newMetaProvider)
+
+    console.log("Setting meta provider.....")
+    props.setMetaProvider(newMetaProvider)
+    console.log("TESTING meta povider..................")
+
+    let blocknum = await newMetaProvider.getBlockNumber()
+    console.log("/////////////blocknum BLOCK NUMBER IS ",blocknum)
     }
     loadPage()
   }, [])
@@ -141,10 +190,12 @@ export default function NftyWallet(props) {
               <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
+                  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
+                  }}><PlusOutlined /> New Ink</Button>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
                     injectedProvider={props.injectedProvider}
-                    localProvider={props.localProvider}
+                    localProvider={props.kovanProvider}
                     readContracts={props.readContracts}
                     tab={tab}
                     showInk={showInk}
@@ -171,8 +222,6 @@ export default function NftyWallet(props) {
                       setInk={setInk}
                       drawing={drawing}
                       setDrawing={setDrawing}
-                      formLimit={formLimit}
-                      setFormLimit={setFormLimit}
                       ipfsConfig={ipfsConfig}
                       metaProvider={props.metaProvider}
                       gasPrice={props.gasPrice}
