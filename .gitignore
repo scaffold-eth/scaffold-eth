@@ -1,3 +1,4 @@
+packages/react-app/*.env
 packages/buidler/*.txt
 packages/react-app/src/gsn
 
