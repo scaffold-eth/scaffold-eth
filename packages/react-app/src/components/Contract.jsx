@@ -21,7 +21,7 @@ export default function Contract(props) {
   const contract = contracts ? contracts[props.name] : "";
   const address = contract ? contract.address : "";
 
-  const [display, setDisplay] = useState(<div>Loading...</div>);
+  const [display, setDisplay] = useState(<div>Loading... <div style={{padding:32}}>You need to run <span style={{marginLeft:4,backgroundColor:"#f1f1f1", padding:4, borderRadius:4, fontWeight:'bolder'}}>yarn run chain</span> and <span style={{marginLeft:4,backgroundColor:"#f1f1f1", padding:4, borderRadius:4, fontWeight:'bolder'}}>yarn run deploy</span> to see your contract here.</div></div>);
   const tx = Transactor(props.provider,props.gasPrice);
 
   const [form, setForm] = useState({});
@@ -44,32 +44,34 @@ export default function Contract(props) {
           } else if (!displayed[fn.name] && fn.type === "call" && fn.inputs.length === 0) {
             // console.log("PUSHING",fn.name)
             displayed[fn.name] = true;
-            nextDisplay.push(
-              <div>
-                <Row>
-                  <Col
-                    span={8}
-                    style={{
-                      textAlign: "right",
-                      opacity: 0.333,
-                      paddingRight: 6,
-                      fontSize: 24,
-                    }}
-                  >
-                    {fn.name}
-                  </Col>
-                  <Col span={14} key={key}>
-                    <h2>{tryToDisplay(await contract[fn.name]())}</h2>
-                  </Col>
-                  <Col span={2} key={fn.name+"_reader_"+key}>
-                    <h2><a href="#" onClick={()=>{
-                      setKey(key+1)
-                    }}>🔄</a></h2>
-                  </Col>
-                </Row>
-                <Divider />
-              </div>,
-            );
+            try{
+              nextDisplay.push(
+                <div>
+                  <Row>
+                    <Col
+                      span={8}
+                      style={{
+                        textAlign: "right",
+                        opacity: 0.333,
+                        paddingRight: 6,
+                        fontSize: 24,
+                      }}
+                    >
+                      {fn.name}
+                    </Col>
+                    <Col span={14} key={key}>
+                      <h2>{tryToDisplay(await contract[fn.name]())}</h2>
+                    </Col>
+                    <Col span={2} key={fn.name+"_reader_"+key}>
+                      <h2><a href="#" onClick={()=>{
+                        setKey(key+1)
+                      }}>🔄</a></h2>
+                    </Col>
+                  </Row>
+                  <Divider />
+                </div>,
+              );
+            }catch(e){console.log(e)}
           } else if (!displayed[fn.name] && (fn.type === "call" || fn.type === "transaction")) {
             //console.log("RENDERING", fn);
             // console.log("CALL WITH ARGS",fn.name,fn)
