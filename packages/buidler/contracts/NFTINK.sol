@@ -20,14 +20,14 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     event mintedInk(uint256 id, string inkUrl, address to);
 
     struct Ink {
-    uint256 id;
-    address artist;
-    address patron;
-    string jsonUrl;
-    string inkUrl;
-    uint256 limit;
-    uint256 count;
-    bool exists;
+      uint256 id;
+      address artist;
+      address patron;
+      string jsonUrl;
+      string inkUrl;
+      uint256 limit;
+      uint256 count;
+      bool exists;
     }
 
     mapping (string => uint256) private _inkIdByUrl;
@@ -114,28 +114,28 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         limit: limit,
         count: 0,
         exists: true
-        });
+      });
 
-        _inkIdByUrl[inkUrl] = _ink.id;
-        _inkById[_ink.id] = _ink;
-        _artistInks[artist].add(_ink.id);
+      _inkIdByUrl[inkUrl] = _ink.id;
+      _inkById[_ink.id] = _ink;
+      _artistInks[artist].add(_ink.id);
 
-        emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
+      emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
 
-        require(_ink.count < _ink.limit || _ink.limit == 0 , "this ink is over the limit!");
+      require(_ink.count < _ink.limit || _ink.limit == 0 , "this ink is over the limit!");
 
-        _inkById[_ink.id].count += 1;
+      _inkById[_ink.id].count += 1;
 
-        _tokenIds.increment();
-        uint256 id = _tokenIds.current();
-        _inkTokens[inkUrl].add(id);
+      _tokenIds.increment();
+      uint256 id = _tokenIds.current();
+      _inkTokens[inkUrl].add(id);
 
-        _mint(msg.sender, id);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
-        _setTokenURI(id, _ink.jsonUrl);
+      _mint(msg.sender, id);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
+      _setTokenURI(id, _ink.jsonUrl);
 
-        emit mintedInk(id, _ink.inkUrl, msg.sender);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
+      emit mintedInk(id, _ink.inkUrl, msg.sender);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
 
-        return id;
+      return id;
     }
 
     function getHash(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit) public view returns (bytes32)

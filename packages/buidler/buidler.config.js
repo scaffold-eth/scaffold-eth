@@ -94,14 +94,27 @@ async function addr(addr) {
 
 let mnemonic = ""
 try{
-  mnemonic = (fs.readFileSync("./mnemonic.txt")).toString().trim()
-}catch(e){ /* ignore for now because it might now have a mnemonic.txt file */ }
 
-const network = "rinkeby"
+  mnemonic = (fs.readFileSync("./0x22b89e6ef342b28e9bce08422eaa1285157fe909.txt")).toString().trim()
+  console.log("  🗝  loaded mnemonic for 0x22b89e6ef342b28e9bce08422eaa1285157fe909")
+}catch(e){ /* ignore for now because it might now have a mnemonic.txt file */ console.log(e)}
+
+//use this eth.build with the mnemonic file: https://eth.build/build#a48269774834671c8ae23d92e612c5169afa57856c396646cb1d30bc7ac4683a
+
+
+const network = "mainnet"
 
 module.exports = {
   defaultNetwork: network,
   networks: {
+    mainnet: {
+      url: 'https://mainnet.infura.io/v3/9ea7e149b122423991f56257b882261c',
+      gasPrice: 31000000000,
+      gasLimit: 5000000,
+      accounts: {
+        mnemonic: mnemonic
+      },
+    },
     kovan: {
       url: 'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c',
       accounts: {
@@ -126,7 +139,6 @@ module.exports = {
     xdai: {
       url: 'https://dai.poa.network',
       gasPrice: 1000000000,
-      gasLimit: 10000000,
       accounts: {
         mnemonic: mnemonic
       },
