@@ -19,9 +19,8 @@ const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
 
 export default function InkCanvas(props) {
 
-  //console.log("metaProvider",metaProvider)
-
   const writeContracts = useContractLoader(props.injectedProvider);
+  //const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
@@ -84,24 +83,17 @@ export default function InkCanvas(props) {
   const PickerDisplay = pickers[picker % pickers.length]
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
+
     let result
     console.log("INK",inkUrl, jsonUrl, limit)
 
-    console.log("PATRONAGE",props.ipfsHash)
     let artist = props.address
-    console.log("artist",artist)
-    console.log("inkUrl",inkUrl)
-    console.log("jsonUrl",jsonUrl)
-    console.log("limit",limit)
 
     let hashToSign = await props.readContracts["NFTINK"].getHash(artist, inkUrl, jsonUrl, ""+limit)
     console.log("hashToSign",hashToSign)
 
     let signer = props.injectedProvider.getSigner()
     console.log("signer",signer)
-
-    let signerAddress = await signer.getAddress()
-    console.log("signerAddress",signerAddress)
 
     console.log("signing",hashToSign)
 
@@ -114,9 +106,6 @@ export default function InkCanvas(props) {
     let verifySignature = await props.readContracts["NFTINK"].getSigner(hashToSign,signature)
     console.log("verifySignature",verifySignature)
 
-
-
-
     let contractName = "NFTINK"
     //let wallet = ethers.Wallet.createRandom()
     //console.log("wallet",wallet)
@@ -126,9 +115,7 @@ export default function InkCanvas(props) {
     //let connectedWallet = wallet.connect(metaProvider)
     //console.log("connectedWallet",connectedWallet)
 
-
-
-    console.log("creating contract...")
+    /*console.log("creating contract...")
     let customContract = new ethers.Contract(
       KOVAN_CONTRACT_ADDRESS,
       require("./contracts/"+contractName+".abi.js"),
@@ -142,9 +129,11 @@ export default function InkCanvas(props) {
     }
     console.log("ready to call createInk on ",customContract)
     console.log("customContract.createInk",customContract.createInk)
-    let signed = await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    */
+    let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
-    console.log("SINGED?",signed)
+    console.log("Signed?",signed)
 
     return signed
 
@@ -196,6 +185,8 @@ export default function InkCanvas(props) {
   const createInk = async values => {
     console.log('Success:', values);
 
+    setSending(true)
+
     let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
 
     let decompressed = LZ.decompress(props.drawing)
@@ -245,7 +236,12 @@ export default function InkCanvas(props) {
       'Contacting the smartcontract',
     });*/
 
-    var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
+    try {
+      var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
+    } catch (e) {
+      console.log(e)
+      setSending(false)
+    }
 
     if(mintResult) {
 

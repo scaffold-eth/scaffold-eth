@@ -6,7 +6,7 @@ import { getFromIPFS } from "./helpers"
 export default function NftyWallet(props) {
 
   //const [allInks, setAllInks] = useState()
-  let allInks = new Array(12).fill({})
+  let allInks = new Array(Math.min(12)).fill({})
   const [allInksArray, setAllInksArray] = useState([])
   let allInkView
   const [lastStreamCount, setLastStreamCount] = useState("0")
@@ -14,7 +14,7 @@ export default function NftyWallet(props) {
   let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
 
   useEffect(()=>{
-
+    
       if(props.tab === props.thisTab && props.readContracts && inkCreations && props.totalInks && inkCreations.length) {
       if(inkCreations.length.toString() == props.totalInks.toString() &&
         props.totalInks.toString() !== lastStreamCount

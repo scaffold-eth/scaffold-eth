@@ -4,12 +4,13 @@ import { PlusOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
 import { ethers } from "ethers";
 import { RelayProvider } from '@opengsn/gsn';
-import { Account } from "./components"
+import { Account, Contract } from "./components"
 import InkCanvas from "./InkCanvas.js"
 import InkInfo from "./InkInfo.js"
 import MyNiftyHoldings from "./MyNiftyHoldings.js"
 import MyNiftyInks from "./MyNiftyInks.js"
 import AllNiftyInks from "./AllNiftyInks.js"
+import BurnerProvider from 'burner-provider';
 const { TabPane } = Tabs;
 
 const isIPFS = require('is-ipfs')
@@ -69,17 +70,17 @@ export default function NftyWallet(props) {
     setCanvasKey(Date.now())
   })
 
-
   const badgeStyle = {
     backgroundColor: "#fff",
     color: "#999",
     boxShadow:"0 0 0 1px #d9d9d9 inset",
   }
 
-
-
   useEffect(() => {
     const loadPage = async () => {
+
+      console.log(process.env.REACT_APP_NETWORK_NAME)
+
       let ipfsHashRequest = window.location.pathname.replace("/", "")
       if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
         setMode("mint")
@@ -102,10 +103,10 @@ export default function NftyWallet(props) {
       paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
 
     }else{
-      relayHubAddress = require('./gsn/RelayHub.json').address
-      stakeManagerAddress = require('./gsn/StakeManager.json').address
-      paymasterAddress = require('./gsn/Paymaster.json').address
-      console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
+      //relayHubAddress = require('./gsn/RelayHub.json').address
+      //stakeManagerAddress = require('./gsn/StakeManager.json').address
+      //paymasterAddress = require('./gsn/Paymaster.json').address
+      //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
     }
 
     let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
@@ -116,15 +117,13 @@ export default function NftyWallet(props) {
     gsnConfig.chainId = 42//31337
     gsnConfig.relayLookupWindowBlocks= 1e5
 
-
-
     //let kovanblocknum = await props.kovanProvider.getBlockNumber()
     //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
 
     console.log("gsnConfig",gsnConfig)
-
-    console.log("props.kovanProvider",props.kovanProvider)
-    const gsnProvider = new RelayProvider(props.kovanProvider, gsnConfig)
+    const kovanBurner = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")
+    console.log("props.kovanProvider",kovanBurner)
+    const gsnProvider = new RelayProvider(kovanBurner, gsnConfig)
     console.log("gsnProvider:",gsnProvider)
 
     console.log("getting newMetaPriovider")
@@ -133,10 +132,6 @@ export default function NftyWallet(props) {
 
     console.log("Setting meta provider.....")
     props.setMetaProvider(newMetaProvider)
-    console.log("TESTING meta povider..................")
-
-    let blocknum = await newMetaProvider.getBlockNumber()
-    console.log("/////////////blocknum BLOCK NUMBER IS ",blocknum)
     }
     loadPage()
   }, [])
@@ -162,8 +157,8 @@ export default function NftyWallet(props) {
       address={props.address}
       mainnetProvider={props.mainnetProvider}
       metaProvider={props.metaProvider}
-      injectedProvider={props.injectedProvider}
-      readContracts={props.readContracts}
+      injectedProvider={props.metaProvider}
+      readContracts={props.readKovanContracts}
       ink={ink}
       setInk={setInk}
       ipfsHash={ipfsHash}
@@ -194,26 +189,29 @@ export default function NftyWallet(props) {
                   }}><PlusOutlined /> New Ink</Button>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
-                    injectedProvider={props.injectedProvider}
                     localProvider={props.kovanProvider}
-                    readContracts={props.readContracts}
+                    readContracts={props.readKovanContracts}
                     tab={tab}
                     showInk={showInk}
                     ipfsConfig={ipfsConfig}
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
+                  <Contract
+                  provider={props.kovanProvider}
+                  name={"NFTINK"}
+                  price={props.price}
+                  />
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖌️</span>create</span></>} key="2">
                   <div>
                     <InkCanvas
-                      kovanProvider={props.kovanProvider}
                       canvasKey={canvasKey}
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
-                      injectedProvider={props.injectedProvider}
-                      readContracts={props.readContracts}
+                      injectedProvider={props.metaProvider}
+                      readContracts={props.readKovanContracts}
                       mode={mode}
                       ink={ink}
                       ipfsHash={ipfsHash}
@@ -223,7 +221,6 @@ export default function NftyWallet(props) {
                       drawing={drawing}
                       setDrawing={setDrawing}
                       ipfsConfig={ipfsConfig}
-                      metaProvider={props.metaProvider}
                       gasPrice={props.gasPrice}
                     />
                     {inkInfo}

@@ -5,12 +5,11 @@ import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
 import { Ramp } from "./components"
-import BurnerProvider from 'burner-provider';
 
 import NftyWallet from "./NftyWallet.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
-const kovanProvider = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
+const kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")//new ethers.providers.Web3Provider(new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"))//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 
 const CROSS_CHAIN_CONTRACT_ADDRESS = "0x1b8C48EB484363eFE390D92998D1CaDB7F193480";
 
