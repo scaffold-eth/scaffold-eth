@@ -198,11 +198,11 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  <Contract
+                  {/*<Contract
                   provider={props.injectedProvider}
                   name={"NFTINK"}
                   price={props.price}
-                  />
+                  />*/}
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖌️</span>create</span></>} key="2">
