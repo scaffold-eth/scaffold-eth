@@ -36,20 +36,14 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     mapping (address => EnumerableSet.UintSet) private _artistInks;
     mapping (string => string) private _inkSignatureByUrl;
 
-    function createInk(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit, bytes memory signature) public returns (uint256) {
-      require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
+    function _createInk(string memory inkUrl, string memory jsonUrl, uint256 limit, address artist, address patron) internal returns (uint256) {
 
       totalInks.increment();
-
-      require(artist!=address(0), "Artist must be specified.");
-      bytes32 messageHash = getHash(artist,inkUrl,jsonUrl,limit);
-      address signer = getSigner(messageHash, signature);
-      require(signer == artist, "Artist did not sign these parameters.");
 
       Ink memory _ink = Ink({
         id: totalInks.current(),
         artist: artist,
-        patron: _msgSender(),
+        patron: patron,
         inkUrl: inkUrl,
         jsonUrl: jsonUrl,
         limit: limit,
@@ -59,11 +53,34 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
 
         _inkIdByUrl[inkUrl] = _ink.id;
         _inkById[_ink.id] = _ink;
-        _artistInks[_msgSender()].add(_ink.id);
+        _artistInks[artist].add(_ink.id);
 
         emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
 
         return _ink.id;
+    }
+
+    function createInk(string memory inkUrl, string memory jsonUrl, uint256 limit) public returns (uint256) {
+      require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
+
+      uint256 inkId = _createInk(inkUrl, jsonUrl, limit, _msgSender(), _msgSender());
+
+      return inkId;
+    }
+
+    function _mintInkToken(address to, uint256 inkId, string memory inkUrl, string memory jsonUrl) internal returns (uint256) {
+      _inkById[inkId].count += 1;
+
+      _tokenIds.increment();
+      uint256 id = _tokenIds.current();
+      _inkTokens[inkUrl].add(id);
+
+      _mint(to, id);
+      _setTokenURI(id, jsonUrl);
+
+      emit mintedInk(id, inkUrl, to);
+
+      return id;
     }
 
     function mint(address to, string memory inkUrl) public returns (uint256) {
@@ -73,18 +90,9 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         require(_ink.artist == _msgSender(), "only the artist can mint!");
         require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
 
-        _inkById[_ink.id].count += 1;
+        uint256 tokenId = _mintInkToken(to, _inkId, _ink.inkUrl, _ink.jsonUrl);
 
-        _tokenIds.increment();
-        uint256 id = _tokenIds.current();
-        _inkTokens[inkUrl].add(id);
-
-        _mint(to, id);
-        _setTokenURI(id, _ink.jsonUrl);
-
-        emit mintedInk(id, _ink.inkUrl, to);
-
-        return id;
+        return tokenId;
     }
 
     //we will store the patronization signature on the weaker cahin to use on the stronger chain
@@ -95,7 +103,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       _inkSignatureByUrl[inkUrl] = signature;
     }
 
-    function patronize(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit, bytes memory signature) public returns (uint256) {
+    function patronize(string memory inkUrl, string memory jsonUrl, uint256 limit, address artist, bytes memory signature) public returns (uint256) {
       require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
 
       require(artist!=address(0), "Artist must be specified.");
@@ -103,39 +111,11 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       address signer = getSigner(messageHash, signature);
       require(signer == artist, "Artist did not sign these patronizing parameters.");
 
-      totalInks.increment();
+      uint256 inkId = _createInk(inkUrl, jsonUrl, limit, artist, _msgSender());
 
-      Ink memory _ink = Ink({
-        id: totalInks.current(),
-        artist: artist,
-        patron: msg.sender,//we want the actual msg.sender here not the possible _msgSender from a metatx right?
-        inkUrl: inkUrl,
-        jsonUrl: jsonUrl,
-        limit: limit,
-        count: 0,
-        exists: true
-      });
+      _mintInkToken(_msgSender(), inkId, inkUrl, jsonUrl);
 
-      _inkIdByUrl[inkUrl] = _ink.id;
-      _inkById[_ink.id] = _ink;
-      _artistInks[artist].add(_ink.id);
-
-      emit newInk(_ink.id, _ink.artist, _ink.inkUrl, _ink.jsonUrl, _ink.limit);
-
-      require(_ink.count < _ink.limit || _ink.limit == 0 , "this ink is over the limit!");
-
-      _inkById[_ink.id].count += 1;
-
-      _tokenIds.increment();
-      uint256 id = _tokenIds.current();
-      _inkTokens[inkUrl].add(id);
-
-      _mint(msg.sender, id);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
-      _setTokenURI(id, _ink.jsonUrl);
-
-      emit mintedInk(id, _ink.inkUrl, msg.sender);//we want the actual msg.sender here not the possible _msgSender from a metatx right?
-
-      return id;
+      return inkId;
     }
 
     function getHash(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit) public view returns (bytes32)
@@ -165,12 +145,13 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       return _inkTokens[inkUrl].at(index);
     }
 
-    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory) {
+    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory, string memory) {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
+      string memory signature = _inkSignatureByUrl[inkUrl];
 
-      return (_inkId, _ink.artist, _ink.count, _ink.jsonUrl);
+      return (_inkId, _ink.artist, _ink.count, _ink.jsonUrl, signature);
     }
 
     function inksCreatedBy(address artist) public view returns (uint256) {

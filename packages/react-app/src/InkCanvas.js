@@ -5,7 +5,7 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS, signInk } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
@@ -19,8 +19,8 @@ const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
 
 export default function InkCanvas(props) {
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  //const metaWriteContracts = useContractLoader(props.metaProvider);
+  //const writeContracts = useContractLoader(props.injectedProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
@@ -85,101 +85,16 @@ export default function InkCanvas(props) {
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
     let result
-    console.log("INK",inkUrl, jsonUrl, limit)
 
-    let artist = props.address
+    let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readContracts["NFTINK"])
 
-    let hashToSign = await props.readContracts["NFTINK"].getHash(artist, inkUrl, jsonUrl, ""+limit)
-    console.log("hashToSign",hashToSign)
-
-    let signer = props.injectedProvider.getSigner()
-    console.log("signer",signer)
-
-    console.log("signing",hashToSign)
-
-    let messageHashBytes = ethers.utils.arrayify(hashToSign) //this was the trick I was stuck on, why can't you just sign the freaking hash ricmoo
-    console.log("messageHashBytes",messageHashBytes)
-
-    let signature = await signer.signMessage(messageHashBytes)
-    console.log("signature:",signature)
-
-    let verifySignature = await props.readContracts["NFTINK"].getSigner(hashToSign,signature)
-    console.log("verifySignature",verifySignature)
-
-    let contractName = "NFTINK"
-    //let wallet = ethers.Wallet.createRandom()
-    //console.log("wallet",wallet)
-
-    //console.log("testing meta provider:",await metaProvider.blockNumber())
-
-    //let connectedWallet = wallet.connect(metaProvider)
-    //console.log("connectedWallet",connectedWallet)
-
-    /*console.log("creating contract...")
-    let customContract = new ethers.Contract(
-      KOVAN_CONTRACT_ADDRESS,
-      require("./contracts/"+contractName+".abi.js"),
-      props.metaProvider.getSigner(),
-    );
-    console.log("customContract",customContract)
-    try{
-      customContract.bytecode = require("./contracts/"+contractName+".bytecode.js")
-    }catch(e){
-      console.log(e)
-    }
-    console.log("ready to call createInk on ",customContract)
-    console.log("customContract.createInk",customContract.createInk)
-    */
-    let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    let signed = await metaWriteContracts["NFTINK"].patronize(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("Signed?",signed)
 
     return signed
 
-
-    //create a burner wallet and call createInk with a signed message:
-    //kovanContract
-
-    /*let enough = ethers.utils.parseEther("0.0001")
-    let needsGSN = balance.lt(enough)
-    console.log("needsGSN",needsGSN)
-    if(needsGSN){*/
-
-
-    /*
-      try {
-        setSending(true)
-        notification.open({
-          message: '📡 ',
-          description:
-          'sending meta transaction...',
-        });
-        //no tx() here, we'll manually alert for meta tx for now
-        result = await metaWriteContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'])
-        notification.open({
-          message: '🛰',
-          description:(
-            <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
-          ),
-        });
-        setSending(false)
-      } catch(e) {
-        console.log('fallback to old way because',e)
-        setSending(true)
-        result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
-        setSending(false)
-      }
-
-
-
-    /*}else{
-      setSending(true)
-      result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, props.ink.attributes[0]['value'],{gasPrice: props.gasPrice}))
-    }*/
-
-    //console.log("result", result)
-    //return result
   }
 
   const createInk = async values => {

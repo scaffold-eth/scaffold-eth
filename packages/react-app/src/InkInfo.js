@@ -4,7 +4,7 @@ import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getFromIPFS } from "./helpers"
+import { Transactor, getFromIPFS, signInk } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 var _ = require('lodash');
 
@@ -16,21 +16,15 @@ export default function InkInfo(props) {
   const [form] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
-
   const metaWriteContracts = useContractLoader(props.metaProvider);
-  //console.log("inkinfo transctor setup with props.gasPrice",props.gasPrice)
   const tx = Transactor(props.injectedProvider,props.gasPrice)
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 
-  //let inkChainInfo
-  //inkChainInfo = useContractReader(props.readContracts,'NFTINK',"inkInfoByInkUrl",[props.ipfsHash],1777);
   const [inkChainInfo, setInkChainInfo] = useState()
 
   let mintFlow
   let inkChainInfoDisplay
   let detailContent
-
-  const loadingTip = ''
 
   const mint = async (values) => {
     setMinting(true)
@@ -49,7 +43,7 @@ export default function InkInfo(props) {
     const getChainInfo = async () => {
       if(props.ipfsHash){
         try {
-        const newChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+        const newChainInfo = await props.readKovanContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         setInkChainInfo(newChainInfo)
       } catch(e){ console.log(e)}
       }
@@ -62,7 +56,6 @@ export default function InkInfo(props) {
 
     const loadHolders = async () => {
       if(props.ipfsHash && props.ink['attributes'] && inkChainInfo) {
-        //inkChainInfo = await props.readContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         let mintedCount = inkChainInfo[2]
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
@@ -83,7 +76,6 @@ export default function InkInfo(props) {
             )
           }
         }
-        //<Typography.Text>{'Token ID: ' + item[1] + " owned by "}</Typography.Text>
         let mintDescription
         if(props.ink.attributes[0].value === "0") {
           mintDescription = (inkChainInfo[2] + ' minted')
@@ -94,55 +86,26 @@ export default function InkInfo(props) {
           <Button type="secondary" onClick={async ()=>{
             console.log("PATRONAGE",inkChainInfo,props.ipfsHash)
             let artist = inkChainInfo[1]
-            console.log("artist",artist)
             let inkUrl = props.ipfsHash
-            console.log("inkUrl",inkUrl)
             let jsonUrl = inkChainInfo[3]
-            console.log("jsonUrl",jsonUrl)
             let limit = props.ink.attributes[0].value
-            console.log("limit",limit)
 
-            let hashToSign = await props.readContracts["NFTINK"].getHash(artist, inkUrl, jsonUrl, ""+limit)
-            console.log("hashToSign",hashToSign)
+            let signature = await signInk(artist, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NFTINK"])
 
-            let signer = props.injectedProvider.getSigner()
-            console.log("signer",signer)
-
-            let signerAddress = await signer.getAddress()
-            console.log("signerAddress",signerAddress)
-
-            console.log("signing",hashToSign)
-
-            let messageHashBytes = ethers.utils.arrayify(hashToSign) //this was the trick I was stuck on, why can't you just sign the freaking hash ricmoo
-            console.log("messageHashBytes",messageHashBytes)
-
-            let signature = await signer.signMessage(messageHashBytes)
-            console.log("signature:",signature)
-
-            let verifySignature = await props.readContracts["NFTINK"].getSigner(hashToSign,signature)
-            console.log("verifySignature",verifySignature)
-
-            if(verifySignature==signerAddress){
-              console.log("VALID SIG")
-              notification.open({
-                message: '📡 ',
-                description:
-                'sending meta transaction...',
-              });
-              //no tx() here, we'll manually alert for meta tx for now
-              console.log("allowPatronization on metaWriteContracts",metaWriteContracts,inkUrl, signature)
-              let result = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-              console.log("result",result)
-              notification.open({
-                message: '🛰',
-                description:(
-                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
-                ),
-              });
-              console.log("Patronizing signature SAVED on lower value chain:",result)
-            }else{
-              console.log("INVALID SIG!!!!")
-            }
+            notification.open({
+              message: '📡 ',
+              description:
+              'sending meta transaction...',
+            });
+            console.log("allowPatronization on metaWriteContracts",metaWriteContracts,inkUrl, signature)
+            let result = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+            notification.open({
+              message: '🛰',
+              description:(
+                <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
+              ),
+            });
+            console.log("Patronizing signature SAVED on lower value chain:",result)
 
           }} style={{ marginBottom: 12 }}>Allow Patronage</Button>
         )
@@ -190,7 +153,7 @@ useEffect(()=>{
     if (!inkChainInfo || !props.ink.attributes) {
       inkChainInfoDisplay = (
         <div style={{marginTop:32}}>
-          <Spin tip={loadingTip}/>
+          <Spin/>
         </div>
       )
     } else {

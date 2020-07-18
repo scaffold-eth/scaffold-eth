@@ -4,12 +4,12 @@ import { Row, Col,  Button } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
-import { Ramp } from "./components"
+import { Ramp, AdminWidget } from "./components"
 
 import NftyWallet from "./NftyWallet.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
-const kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")//new ethers.providers.Web3Provider(new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"))//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
+const kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")//new ethers.providers.Web3Provider(new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"))//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 
 const CROSS_CHAIN_CONTRACT_ADDRESS = "0x1b8C48EB484363eFE390D92998D1CaDB7F193480";
 
@@ -28,7 +28,7 @@ if(process.env.REACT_APP_NETWORK_NAME){
       {"localhost"}
     </div>
   )
-  localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")
+  localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546")
 }
 
 function App() {
@@ -39,7 +39,7 @@ function App() {
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
 
-  //console.log("gasPrice",gasPrice)
+  console.log(kovanProvider, localProvider)
 
   const readContracts = useContractLoader(localProvider);
   const readKovanContracts = useContractLoader(kovanProvider);
@@ -84,9 +84,15 @@ function App() {
         </Row>
 
 
-
       </div>
 
+      <AdminWidget
+    address={address}
+    localProvider={localProvider}
+    injectedProvider={injectedProvider}
+    mainnetProvider={mainnetProvider}
+    price={price}
+  />
 
     </div>
   );
