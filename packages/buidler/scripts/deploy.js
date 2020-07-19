@@ -1,17 +1,20 @@
 const fs = require('fs');
 const chalk = require('chalk');
+const bre = require("@nomiclabs/buidler");
 async function main() {
   console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
   //await autoDeploy();
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
+
+  console.log("🪐 DEPLOYING ON NETWORK: ",bre.network.name)
+
   const NFTINK = await deploy("NFTINK")
 
 
-  const network = "rinkeby"
-  console.log("Setting trusted forwarder....")
-  if(network=="localhost"){
+  if(bre.network.name=="localhost"){
+    console.log("Local deploy, loading GSN trusted forwarder from a file...")
     let trustedForwarder
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
@@ -21,11 +24,23 @@ async function main() {
       console.log(e)
     }
   }
-  else if(network=="kovan") {
+  else if(bre.network.name=="kovan") {
+    console.log(" 🟣 KOVAN deploy, adding Kovan trusted forwarder...")
     //https://docs.opengsn.org/gsn-provider/networks.html
-    await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
-  }else{
-    //do not set for Rinkeby/Mainnet/xDAI for now
+    let result = await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
+    console.log("Result: ",result.status)
+  }else if(bre.network.name=="xdai") {
+    console.log(" ♦ xDAI deploy, no known trusted forwarder yet.")
+    //https://docs.opengsn.org/gsn-provider/networks.html
+    await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+  }else if(bre.network.name=="rinkeby") {
+    console.log(" 🟨 Rinkeby deploy, no known trusted forwarder yet.")
+    //https://docs.opengsn.org/gsn-provider/networks.html
+    await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+  }else if(bre.network.name=="mainnet") {
+    console.log(" 🚀 Mainnet deploy, no known trusted forwarder yet.")
+    //https://docs.opengsn.org/gsn-provider/networks.html
+    await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
   }
 
 
