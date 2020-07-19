@@ -192,15 +192,15 @@ module.exports = {
     },
     localhost: {
       url: 'http://localhost:8545',
-      accounts: {
+    /*  accounts: {
         mnemonic: DEPLOY_ACCOUNT
-      },
+      },*/
     },
     localhost2: {
       url: 'http://localhost:8546',
-      accounts: {
+      /*accounts: {
         mnemonic: DEPLOY_ACCOUNT
-      },
+      },*/
     },
     mainnet: {
       url: 'https://mainnet.infura.io/v3/9ea7e149b122423991f56257b882261c',
