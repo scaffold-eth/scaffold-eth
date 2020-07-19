@@ -19,7 +19,7 @@ const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
 
 export default function InkCanvas(props) {
 
-  //const writeContracts = useContractLoader(props.injectedProvider);
+  const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const tx = Transactor(props.injectedProvider,props.gasPrice)
@@ -87,6 +87,8 @@ export default function InkCanvas(props) {
     let result
 
     let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readContracts["NFTINK"])
+
+    console.log(metaWriteContracts["NFTINK"])
 
     let signed = await metaWriteContracts["NFTINK"].patronize(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})

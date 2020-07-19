@@ -34,7 +34,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     mapping (uint256 => Ink) private _inkById;
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
-    mapping (string => string) private _inkSignatureByUrl;
+    mapping (string => bytes) private _inkSignatureByUrl;
 
     function _createInk(string memory inkUrl, string memory jsonUrl, uint256 limit, address artist, address patron) internal returns (uint256) {
 
@@ -64,6 +64,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
 
       uint256 inkId = _createInk(inkUrl, jsonUrl, limit, _msgSender(), _msgSender());
+
+      _mintInkToken(_msgSender(), inkId, inkUrl, jsonUrl);
 
       return inkId;
     }
@@ -96,10 +98,12 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     }
 
     //we will store the patronization signature on the weaker cahin to use on the stronger chain
-    function allowPatronization(string memory inkUrl,string memory signature) public {
+    function allowPatronization(string memory inkUrl, bytes memory signature) public {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       Ink storage _ink = _inkById[_inkId];
-      require(_ink.artist == _msgSender(), "only the artist can allow patronization!");
+      bytes32 messageHash = getHash(_ink.artist,inkUrl,_ink.jsonUrl,_ink.limit);
+      address signer = getSigner(messageHash, signature);
+      require(signer == _ink.artist, "Artist did not sign these patronizing parameters.");
       _inkSignatureByUrl[inkUrl] = signature;
     }
 
@@ -145,13 +149,17 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       return _inkTokens[inkUrl].at(index);
     }
 
-    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory, string memory) {
+    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory, bytes memory) {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
-      string memory signature = _inkSignatureByUrl[inkUrl];
+      bytes memory signature = _inkSignatureByUrl[inkUrl];
 
       return (_inkId, _ink.artist, _ink.count, _ink.jsonUrl, signature);
+    }
+
+    function inkIdByUrl(string memory inkUrl) public view returns (uint256) {
+      return _inkIdByUrl[inkUrl];
     }
 
     function inksCreatedBy(address artist) public view returns (uint256) {
@@ -162,11 +170,12 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         return _artistInks[artist].at(index);
     }
 
-    function inkInfoById(uint256 id) public view returns (string memory, address, uint256, string memory) {
+    function inkInfoById(uint256 id) public view returns (string memory, address, uint256, string memory, bytes memory) {
       require(_inkById[id].exists, "this ink does not exist!");
       Ink storage _ink = _inkById[id];
+      bytes memory signature = _inkSignatureByUrl[_ink.inkUrl];
 
-      return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl);
+      return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl, signature);
     }
 
     function versionRecipient() external virtual view override returns (string memory) {
@@ -182,13 +191,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
   	}
 
     function _msgSender() internal override(BaseRelayRecipient, Context) view returns (address payable) {
-        if (msg.data.length >= 24 && isTrustedForwarder(msg.sender)) {
-            // At this point we know that the sender is a trusted forwarder,
-            // so we trust that the last bytes of msg.data are the verified sender address.
-            // extract sender address from the end of msg.data
-            return address(uint160(LibBytesV06.readAddress(msg.data, msg.data.length - 20)));
-        }
-        return msg.sender;
+        return BaseRelayRecipient._msgSender();
     }
 
 }

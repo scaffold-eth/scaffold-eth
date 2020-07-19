@@ -116,6 +116,7 @@ export default function NftyWallet(props) {
     //}
     gsnConfig.chainId = 42//31337
     gsnConfig.relayLookupWindowBlocks= 1e5
+    gsnConfig.verbose = true
 
     //let kovanblocknum = await props.kovanProvider.getBlockNumber()
     //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
@@ -158,7 +159,7 @@ export default function NftyWallet(props) {
       mainnetProvider={props.mainnetProvider}
       metaProvider={props.metaProvider}
       injectedProvider={props.injectedProvider}
-      readContracts={props.readKovanContracts}
+      readContracts={props.readContracts}
       readKovanContracts={props.readKovanContracts}
       ink={ink}
       setInk={setInk}
@@ -233,7 +234,8 @@ export default function NftyWallet(props) {
                     <MyNiftyInks
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
-                      readContracts={props.readKovanContracts}
+                      readContracts={props.readContracts}
+                      readKovanContracts={props.readKovanContracts}
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
