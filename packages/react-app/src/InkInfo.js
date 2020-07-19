@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, Badge } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, StarTwoTone } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getFromIPFS, signInk } from "./helpers"
+import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 var _ = require('lodash');
 
@@ -23,6 +23,7 @@ export default function InkInfo(props) {
   const [inkChainInfo, setInkChainInfo] = useState()
   const [inkMainChainInfo, setinkMainChainInfo] = useState()
   const [upgraded, setUpgraded] = useState()
+  const [likes, setLikes] = useState()
 
   let mintDescription
   let mintFlow
@@ -31,6 +32,12 @@ export default function InkInfo(props) {
   let getPatronageButton
   let upgradeButton
   let providePatronageButton
+  let likeButton
+
+  let displayLikes
+  if(likes) {
+    displayLikes = likes.toString()
+  }
 
   const mint = async (values) => {
     setMinting(true)
@@ -51,6 +58,9 @@ export default function InkInfo(props) {
         try {
         const newChainInfo = await props.readKovanContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         setInkChainInfo(newChainInfo)
+        let niftyAddress = props.readKovanContracts['NFTINK']['address']
+        const newInkLikes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, newChainInfo[0])
+        setLikes(newInkLikes)
         const mainChainInkId = await props.readContracts['NFTINK']['inkIdByUrl'](props.ipfsHash)
         if(mainChainInkId.toString()=="0") {
           setUpgraded(false)
@@ -149,6 +159,27 @@ useEffect(()=>{
     } else {
       if(inkChainInfo && props.ink.attributes) {
 
+          likeButton = (
+            <Button loading={minting} shape={"round"} onClick={async ()=>{
+              setMinting(true)
+              try {
+                let contractAddress = props.readKovanContracts['NFTINK']['address']
+                let target = inkChainInfo[0]
+                let liker = props.address
+                let signature = await signLike(contractAddress, target, liker, props.injectedProvider, props.readKovanContracts["Liker"])
+                let result = await metaWriteContracts["Liker"].likeWithSignature(contractAddress, target, liker, signature)
+                if(result) {
+                console.log(result)
+                setMinting(false)
+              }
+              } catch(e) {
+                setMinting(false)
+                console.log(e)
+              }
+            }} style={{ marginBottom: 12 }}><LikeTwoTone /><Badge style={{ backgroundColor: '#2db7f5' }} count={displayLikes} showZero/></Button>
+
+          )
+
           detailContent = (
             <Descriptions>
               <Descriptions.Item label="Name">{props.ink.name}</Descriptions.Item>
@@ -160,6 +191,7 @@ useEffect(()=>{
               <Descriptions.Item label="Description">{props.ink.description}</Descriptions.Item>
               <Descriptions.Item label="signature">{inkChainInfo[4]}</Descriptions.Item>
               <Descriptions.Item label="status">{upgraded?"Upgraded":"Not upgraded"}</Descriptions.Item>
+              <Descriptions.Item label="likes">{displayLikes}</Descriptions.Item>
             </Descriptions>
           )
 
@@ -292,6 +324,7 @@ useEffect(()=>{
           <QuestionCircleOutlined />
           </Popover>
           {upgraded?<StarTwoTone />:<></>}
+          {likeButton}
           </Row>
           </>
         )
