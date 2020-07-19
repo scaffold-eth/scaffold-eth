@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, StarTwoTone } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, signInk } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -21,10 +21,16 @@ export default function InkInfo(props) {
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 
   const [inkChainInfo, setInkChainInfo] = useState()
+  const [inkMainChainInfo, setinkMainChainInfo] = useState()
+  const [upgraded, setUpgraded] = useState()
 
+  let mintDescription
   let mintFlow
   let inkChainInfoDisplay
   let detailContent
+  let getPatronageButton
+  let upgradeButton
+  let providePatronageButton
 
   const mint = async (values) => {
     setMinting(true)
@@ -45,17 +51,32 @@ export default function InkInfo(props) {
         try {
         const newChainInfo = await props.readKovanContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
         setInkChainInfo(newChainInfo)
+        const mainChainInkId = await props.readContracts['NFTINK']['inkIdByUrl'](props.ipfsHash)
+        if(mainChainInkId.toString()=="0") {
+          setUpgraded(false)
+        } else {
+          setUpgraded(true)
+          const newMainChainInkInfo = await props.readContracts['NFTINK']['inkInfoByInkUrl'](props.ipfsHash)
+          setinkMainChainInfo(newMainChainInkInfo)
+        }
       } catch(e){ console.log(e)}
       }
     }
     getChainInfo()
-  }, 1777
+  }, 3000
 )
+
+  useEffect(()=>{
+    setHolders()
+    setInkChainInfo()
+    setinkMainChainInfo()
+    setUpgraded(false)
+  }, [props.ipfsHash])
 
   useEffect(()=>{
 
     const loadHolders = async () => {
-      if(props.ipfsHash && props.ink['attributes'] && inkChainInfo) {
+      if(props.ipfsHash && props.ink['attributes'] && inkMainChainInfo) {
         let mintedCount = inkChainInfo[2]
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
@@ -76,49 +97,15 @@ export default function InkInfo(props) {
             )
           }
         }
-        let mintDescription
         if(props.ink.attributes[0].value === "0") {
           mintDescription = (inkChainInfo[2] + ' minted')
         }
         else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
 
-        let patronButton = (
-          <Button type="secondary" onClick={async ()=>{
-            console.log("PATRONAGE",inkChainInfo,props.ipfsHash)
-            let artist = inkChainInfo[1]
-            let inkUrl = props.ipfsHash
-            let jsonUrl = inkChainInfo[3]
-            let limit = props.ink.attributes[0].value
-
-            let signature = await signInk(artist, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NFTINK"])
-
-            notification.open({
-              message: '📡 ',
-              description:
-              'sending meta transaction...',
-            });
-            console.log("allowPatronization on metaWriteContracts",metaWriteContracts,inkUrl, signature)
-            let result = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-            notification.open({
-              message: '🛰',
-              description:(
-                <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
-              ),
-            });
-            console.log("Patronizing signature SAVED on lower value chain:",result)
-
-          }} style={{ marginBottom: 12 }}>Allow Patronage</Button>
-        )
-        let upgradeButton = (
-          <Button type="primary" onClick={()=>{
-            console.log("UPGRADE")
-          }} style={{ marginBottom: 12 }}>Upgrade</Button>
-        )
-
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
           <List
-          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space><Space>{upgradeButton}</Space><Space>{patronButton}</Space></Row>}
+          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
           renderItem={item => (
@@ -129,6 +116,9 @@ export default function InkInfo(props) {
           />
           </Row>)
           setHolders(nextHolders)
+        } else {
+          setHolders(<Row style={{justifyContent: 'center'}}> <Space>{upgradeButton}</Space><Space>{getPatronageButton}</Space>{providePatronageButton}</Row>)
+
         }
       }
       loadHolders()
@@ -168,10 +158,14 @@ useEffect(()=>{
               <Descriptions.Item label="Count">{inkChainInfo[2].toString()}</Descriptions.Item>
               <Descriptions.Item label="Limit">{props.ink.attributes[0].value}</Descriptions.Item>
               <Descriptions.Item label="Description">{props.ink.description}</Descriptions.Item>
+              <Descriptions.Item label="signature">{inkChainInfo[4]}</Descriptions.Item>
+              <Descriptions.Item label="status">{upgraded?"Upgraded":"Not upgraded"}</Descriptions.Item>
             </Descriptions>
           )
 
-      if(props.address === inkChainInfo[1] && (inkChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
+      if(props.address === inkChainInfo[1]) {
+          if(upgraded && inkMainChainInfo) {
+          if(inkChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
           const mintForm = (
             <Row style={{justifyContent: 'center'}}>
 
@@ -208,6 +202,81 @@ useEffect(()=>{
             </Popover>
           )
         }
+      } else {
+
+        getPatronageButton = (
+          <Button type="secondary" loading={minting} disabled={inkChainInfo[4] !== "0x"} onClick={async ()=>{
+            setMinting(true)
+            console.log("PATRONAGE",inkChainInfo,props.ipfsHash)
+            let artist = inkChainInfo[1]
+            let inkUrl = props.ipfsHash
+            let jsonUrl = inkChainInfo[3]
+            let limit = props.ink.attributes[0].value
+
+            let signature = await signInk(artist, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NFTINK"])
+
+            notification.open({
+              message: '📡 ',
+              description:
+              'sending meta transaction...',
+            });
+            console.log("allowPatronization on metaWriteContracts",metaWriteContracts,inkUrl, signature)
+            let result = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+            notification.open({
+              message: '🛰',
+              description:(
+                <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
+              ),
+            });
+            console.log("Patronizing signature SAVED on lower value chain:",result)
+            setMinting(false)
+
+          }} style={{ marginBottom: 12 }}>{(inkChainInfo[4] == "0x")?"Allow Patronage":"Patronage Requested"}</Button>
+        )
+        upgradeButton = (
+          <Button loading={minting} type="primary" onClick={async ()=>{
+            setMinting(true)
+            try {
+              let inkUrl = props.ipfsHash
+              let jsonUrl = inkChainInfo[3]
+              let limit = props.ink.attributes[0].value
+              let result = await writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, limit)
+              if(result) {
+              console.log(result)
+              setMinting(false)
+            }
+            } catch(e) {
+              setMinting(false)
+              console.log(e)
+            }
+          }} style={{ marginBottom: 12 }}>Upgrade</Button>
+        )
+      }
+
+    } else {
+      if(inkChainInfo && inkChainInfo[4] !== "0x") {
+        providePatronageButton = (
+          <Button loading={minting} type="primary" onClick={async ()=>{
+            setMinting(true)
+            try {
+              let inkUrl = props.ipfsHash
+              let jsonUrl = inkChainInfo[3]
+              let limit = props.ink.attributes[0].value
+              let artist = inkChainInfo[1]
+              let signature = inkChainInfo[4]
+              let result = await writeContracts["NFTINK"].patronize(inkUrl, jsonUrl, limit, artist, signature)
+              if(result) {
+              console.log(result)
+              setMinting(false)
+            }
+            } catch(e) {
+              setMinting(false)
+              console.log(e)
+            }
+          }} style={{ marginBottom: 12 }}>Upgrade this ink: provide patronage</Button>
+        )
+      }
+    }
         inkChainInfoDisplay = (
           <>
           <Row style={{justifyContent: 'center',marginTop:16}}>
@@ -222,6 +291,7 @@ useEffect(()=>{
           <Popover content={detailContent} title="Ink Details">
           <QuestionCircleOutlined />
           </Popover>
+          {upgraded?<StarTwoTone />:<></>}
           </Row>
           </>
         )
