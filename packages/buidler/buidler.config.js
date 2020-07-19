@@ -192,7 +192,6 @@ module.exports = {
     },
     localhost: {
       url: 'http://localhost:8545',
-      accounts: ['0xdc3c9bfd06f6f30bbdc8c46dc252d17e832724f010f906f98c92f38952f259dc']
     },
     localhost2: {
       url: 'http://localhost:8546',
