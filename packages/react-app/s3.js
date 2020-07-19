@@ -4,6 +4,26 @@ const directoryName = 'build'
 
 const BUCKETNAME = "nifty.ink"   // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
 
+// optional cloudfront invalidation rule
+const invalidation = {
+  awsDistributionId: "E3VS4W1AUZT7E5",
+  awsInvalidationPath: "/*"
+}
+
+
+/// this is my AWS cloudfront deploy script
+///
+/// in aws console, register route53 name, create s3 bucket in virginia with domain's name, set it up as a static site in props and point to index.html
+/// (this script uploads to that bucket)
+///
+/// then use certificate manager in virginia to get SSL for domain, then create a cloundfront distro pointing to :
+///     yourbucket.name.s3-website-us-east-1.amazonaws.com
+/// with the cert and default object index.html, forward to ssl, compress automatically
+/// then put that distro id down below.
+///
+/// then point Route 53 a record to something like d1ch0i0hy0eywq.cloudfront.net.   <---period at the end
+
+
 if(!BUCKETNAME){
   console.log('☢️   Enter a bucket name in packages/react-app/s3.js ')
   process.exit(1)
@@ -27,10 +47,5 @@ const options = {
   useIAMRoleCredentials: false
 }
 
-// optional cloudfront invalidation rule
-const invalidation = {
-  awsDistributionId: "E3VS4W1AUZT7E5",
-  awsInvalidationPath: "/*"
-}
 
 s3FolderUpload(directoryName, credentials, options, invalidation)
