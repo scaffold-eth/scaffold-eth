@@ -1,45 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import QrReader from "react-qr-reader";
 import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
 import { Input, Badge } from "antd";
+import { useLookupAddress } from "eth-hooks";
 import Blockie from "./Blockie";
 
 export default function AddressInput(props) {
-  const [ens, setEns] = useState(0);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState(props.value);
 
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
-
-  useEffect(() => {
-    setEns("");
-    if (currentValue && props.ensProvider) {
-      // eslint-disable-next-line no-inner-declarations
-      async function getEns() {
-        let newEns;
-        try {
-          console.log("trying reverse ens", newEns);
-
-          newEns = await props.ensProvider.lookupAddress(currentValue);
-          console.log("setting ens", newEns);
-          setEns(newEns);
-        } catch (e) {}
-        console.log("checking resolve");
-        if (currentValue.indexOf(".eth") > 0 || currentValue.indexOf(".xyz") > 0) {
-          try {
-            console.log("resolving");
-            const possibleAddress = await props.ensProvider.resolveName(currentValue);
-            console.log("GOT:L", possibleAddress);
-            if (possibleAddress) {
-              setEns(currentValue);
-              props.onChange(possibleAddress);
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
-        }
-      }
-      getEns();
-    }
-  }, [props]);
+  const ens = useLookupAddress(props.ensProvider, currentValue);
 
   const [scan, setScan] = useState(false);
 
@@ -57,24 +27,27 @@ export default function AddressInput(props) {
     </div>
   );
 
-  const updateAddress = async newValue => {
-    if (typeof newValue !== "undefined") {
-      let address = newValue;
-      if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
-        try {
-          const possibleAddress = await props.ensProvider.resolveName(address);
-          if (possibleAddress) {
-            address = possibleAddress;
-          }
-          // eslint-disable-next-line no-empty
-        } catch (e) {}
+  const updateAddress = useCallback(
+    async newValue => {
+      if (typeof newValue !== "undefined") {
+        let address = newValue;
+        if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
+          try {
+            const possibleAddress = await props.ensProvider.resolveName(address);
+            if (possibleAddress) {
+              address = possibleAddress;
+            }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
+        setValue(address);
+        if (typeof props.onChange === "function") {
+          props.onChange(address);
+        }
       }
-      setValue(address);
-      if (typeof props.onChange === "function") {
-        props.onChange(address);
-      }
-    }
-  };
+    },
+    [props.ensProvider, props.onChange],
+  );
 
   let scanner = "";
   if (scan) {
