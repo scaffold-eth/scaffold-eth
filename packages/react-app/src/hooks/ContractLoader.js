@@ -1,3 +1,5 @@
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
 import { Contract } from "@ethersproject/contracts";
 import { useState, useEffect } from "react";
 
@@ -7,9 +9,6 @@ export default function useContractLoader(provider) {
     async function loadContract() {
       if (typeof provider !== "undefined") {
         try {
-          const contractList = require("../contracts/contracts.js");
-          const newContracts = [];
-
           // we need to check to see if this provider has a signer or not
           let signer;
           const accounts = await provider.listAccounts();
@@ -19,18 +18,20 @@ export default function useContractLoader(provider) {
             signer = provider;
           }
 
-          for (const c in contractList) {
-            newContracts[contractList[c]] = new Contract(
-              require("../contracts/" + contractList[c] + ".address.js"),
-              require("../contracts/" + contractList[c] + ".abi.js"),
+          const contractList = require("../contracts/contracts.js");
+          const newContracts = contractList.map(contractName => {
+            const newContract = new Contract(
+              require(`../contracts/${contractName}.address.js`),
+              require(`../contracts/${contractName}.abi.js`),
               signer,
             );
             try {
-              newContracts[contractList[c]].bytecode = require("../contracts/" + contractList[c] + ".bytecode.js");
+              newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
             } catch (e) {
               console.log(e);
             }
-          }
+            return newContract;
+          });
           setContracts(newContracts);
         } catch (e) {
           console.log("ERROR LOADING CONTRACTS!!", e);

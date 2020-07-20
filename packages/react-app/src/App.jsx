@@ -25,16 +25,15 @@ function App() {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  //const readContracts = useContractLoader(localProvider)
+  // const readContracts = useContractLoader(localProvider)
   // console.log("readContracts",readContracts)
-  //const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
+  // const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
 
   return (
     <div className="App">
       <Header />
 
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-
         <Account
           address={address}
           setAddress={setAddress}
@@ -44,7 +43,6 @@ function App() {
           mainnetProvider={mainnetProvider}
           price={price}
         />
-
       </div>
 
       {/*
@@ -67,7 +65,6 @@ function App() {
           </Col>
         </Row>
       </div>
-
     </div>
   );
 }
