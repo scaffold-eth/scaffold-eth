@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Input, Button, Tooltip } from "antd";
 import Blockies from "react-blockies";
 import { SendOutlined } from "@ant-design/icons";
-import { ethers } from "ethers";
+import { parseEther } from "@ethersproject/units";
 import { Transactor } from "../helpers";
 import Wallet from "./Wallet";
 
@@ -34,7 +34,7 @@ export default function Faucet(props) {
               onClick={() => {
                 localTx({
                   to: address,
-                  value: ethers.utils.parseEther("0.01"),
+                  value: parseEther("0.01"),
                 });
                 setAddress("");
               }}
