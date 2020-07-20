@@ -25,13 +25,16 @@ function App() {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  // const readContracts = useContractLoader(localProvider)
-  // const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
+  //const readContracts = useContractLoader(localProvider)
+  // console.log("readContracts",readContracts)
+  //const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
 
   return (
     <div className="App">
       <Header />
+
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+
         <Account
           address={address}
           setAddress={setAddress}
@@ -41,15 +44,15 @@ function App() {
           mainnetProvider={mainnetProvider}
           price={price}
         />
+
       </div>
 
       {/*
-
-        🎛 this scaffolding is full of commonly used components
-        this <Contract/> component will automatically parse your ABI
-        and give you a form to interact with it locally
-
+          🎛 this scaffolding is full of commonly used components
+          this <Contract/> component will automatically parse your ABI
+          and give you a form to interact with it locally
       */}
+
       <Contract name="YourContract" provider={injectedProvider} address={address} />
 
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
@@ -64,6 +67,7 @@ function App() {
           </Col>
         </Row>
       </div>
+
     </div>
   );
 }

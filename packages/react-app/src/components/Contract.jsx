@@ -47,19 +47,18 @@ export default function Contract(props) {
   const { show } = props;
   useEffect(() => {
     const loadDisplay = async () => {
-      // console.log("CONTRACT",contract)
       if (contract) {
         const nextDisplay = [];
         const displayed = {};
         for (const f in contract.interface.functions) {
           const fn = contract.interface.functions[f];
-          // console.log("FUNCTION",fn.name,fn)
 
           if (show && show.indexOf(fn.name) < 0) {
             // do nothing
-          } else if (!displayed[fn.name] && fn.type === "call" && fn.inputs.length === 0) {
-            // console.log("PUSHING",fn.name)
+          } else if (!displayed[fn.name] && fn.type === "function" && fn.inputs.length === 0) {
+             console.log("PUSHING",fn.name)
             displayed[fn.name] = true;
+            console.log("DISPLAYED:",displayed[fn.name])
             try {
               nextDisplay.push(
                 <div>
@@ -97,7 +96,7 @@ export default function Contract(props) {
             } catch (e) {
               console.log(e);
             }
-          } else if (!displayed[fn.name] && (fn.type === "call" || fn.type === "transaction")) {
+          } else if (!displayed[fn.name] && (fn.type === "function")) {
             // console.log("RENDERING", fn);
             // console.log("CALL WITH ARGS",fn.name,fn)
             displayed[fn.name] = true;

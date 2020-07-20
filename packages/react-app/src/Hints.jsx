@@ -1,7 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useEffect } from "react";
 import { formatEther } from "@ethersproject/units";
-
 import { Address, AddressInput } from "./components";
 
 export default function Hints(props) {
@@ -65,7 +64,7 @@ export default function Hints(props) {
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           useBalance()
         </span>{" "}
-        hook keeps track of your balance: <b>{ethers.utils.formatEther(props.yourLocalBalance)}</b>
+        hook keeps track of your balance: <b>{formatEther(props.yourLocalBalance)}</b>
       </p>
 
       <p style={{ marginTop: 32 }}>

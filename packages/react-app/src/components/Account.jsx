@@ -115,7 +115,7 @@ export default function Account(props) {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal();
     }
-  }, [loadWeb3Modal]);
+  }, []);
 
   let display = "";
   if (!props.minimized) {
