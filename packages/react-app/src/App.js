@@ -12,6 +12,7 @@ const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149
 const kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")//new ethers.providers.Web3Provider(new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"))//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 
 const CROSS_CHAIN_CONTRACT_ADDRESS = "0x1b8C48EB484363eFE390D92998D1CaDB7F193480";
+// local deployment address = 0x7a84d1CBc40AB93985c479f44c486Cf99dE45610
 
 let localProvider
 let networkBanner = ""
@@ -38,8 +39,6 @@ function App() {
   const [metaProvider, setMetaProvider] = useState();
   const price = useExchangePrice(mainnetProvider)
   const gasPrice = useGasPrice("fast")
-
-  console.log(kovanProvider, localProvider)
 
   const readContracts = useContractLoader(localProvider);
   const readKovanContracts = useContractLoader(kovanProvider);
@@ -86,13 +85,13 @@ function App() {
 
       </div>
 
-      <AdminWidget
+      {/*<AdminWidget
     address={address}
     localProvider={localProvider}
     injectedProvider={injectedProvider}
     mainnetProvider={mainnetProvider}
     price={price}
-  />
+  />*/}
 
     </div>
   );

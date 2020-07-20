@@ -187,7 +187,7 @@ export default function NftyWallet(props) {
               <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
-                  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
+                  <Button style={{ marginBottom: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
                   }}><PlusOutlined /> New Ink</Button>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
@@ -201,7 +201,7 @@ export default function NftyWallet(props) {
                   />
                   {/*<Contract
                   provider={props.injectedProvider}
-                  name={"NFTINK"}
+                  name={"Liker"}
                   price={props.price}
                   />*/}
                 </div>

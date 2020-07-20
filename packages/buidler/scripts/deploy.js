@@ -11,6 +11,7 @@ async function main() {
   console.log("🪐 DEPLOYING ON NETWORK: ",bre.network.name)
 
   const NFTINK = await deploy("NFTINK")
+  const Liker = await deploy("Liker")
 
 
   if(bre.network.name=="localhost"){
@@ -42,7 +43,6 @@ async function main() {
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
   }
-
 
 
 

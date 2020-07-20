@@ -1,11 +1,11 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { TokenBalance, Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button } from 'antd';
+import { Button, Modal } from 'antd';
 
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
@@ -24,6 +24,13 @@ const web3Modal = new Web3Modal({
 });
 
 export default function Account(props) {
+
+  function warning(network, chainId) {
+      Modal.warning({
+        title: 'Network mismatch',
+        content: 'Please connect to the ' + network + ' (chainId: ' + chainId + ') network',
+      });
+    }
 
   const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
@@ -67,6 +74,11 @@ export default function Account(props) {
     const provider = await web3Modal.connect();
     //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
     if(typeof props.setInjectedProvider == "function"){
+      console.log('web3 provider',provider.networkVersion)
+      console.log('local provider',props.localProvider.network)
+      if(provider.networkVersion !== props.localProvider.network.chainId.toString()) {
+      warning(props.localProvider.network.name, props.localProvider.network.chainId)
+    }
       updateProviders(provider)
     }
     pollInjectedProvider()

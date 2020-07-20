@@ -102,6 +102,12 @@ contract Liker is Ownable, BaseRelayRecipient {
     return _newLike(contractAddress, target, liker);
   }
 
+  function checkLike(address contractAddress, uint256 target, address liker) public view returns (bool) {
+    require(registeredContracts[contractAddress],"this contract is not registered");
+    uint256 likeId = uint256(getHash(contractAddress, target, liker));
+    return likeById[likeId].exists;
+  }
+
   function getLikeIdByIndex(uint256 index) public view returns (uint256) {
     return likeIds.at(index);
   }

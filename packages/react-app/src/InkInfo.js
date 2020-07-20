@@ -24,6 +24,7 @@ export default function InkInfo(props) {
   const [inkMainChainInfo, setinkMainChainInfo] = useState()
   const [upgraded, setUpgraded] = useState()
   const [likes, setLikes] = useState()
+  const [hasLiked, setHasLiked] = useState()
 
   let mintDescription
   let mintFlow
@@ -61,6 +62,8 @@ export default function InkInfo(props) {
         let niftyAddress = props.readKovanContracts['NFTINK']['address']
         const newInkLikes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, newChainInfo[0])
         setLikes(newInkLikes)
+        const newHasLiked = await props.readKovanContracts['Liker']['checkLike'](niftyAddress, newChainInfo[0], props.address)
+        setHasLiked(newHasLiked)
         const mainChainInkId = await props.readContracts['NFTINK']['inkIdByUrl'](props.ipfsHash)
         if(mainChainInkId.toString()=="0") {
           setUpgraded(false)
@@ -159,8 +162,9 @@ useEffect(()=>{
     } else {
       if(inkChainInfo && props.ink.attributes) {
 
-          likeButton = (
-            <Button loading={minting} shape={"round"} onClick={async ()=>{
+          likeButton = (<>
+            <Badge style={{ backgroundColor: '#2db7f5' }} count={displayLikes} showZero>
+            <Button loading={minting} shape={"circle"} disabled={hasLiked} onClick={async ()=>{
               setMinting(true)
               try {
                 let contractAddress = props.readKovanContracts['NFTINK']['address']
@@ -169,21 +173,35 @@ useEffect(()=>{
                 let signature = await signLike(contractAddress, target, liker, props.injectedProvider, props.readKovanContracts["Liker"])
                 let result = await metaWriteContracts["Liker"].likeWithSignature(contractAddress, target, liker, signature)
                 if(result) {
-                console.log(result)
+                  notification.open({
+                    message: 'You liked this ink!',
+                    description:(
+                      <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>liked! view transaction.</a>
+                    ),
+                  });
                 setMinting(false)
+                console.log(result)
               }
               } catch(e) {
+                notification.open({
+                  message: 'Like unsuccessful',
+                  description:
+                  e.message,
+                });
                 setMinting(false)
-                console.log(e)
+                console.log(e.message)
               }
-            }} style={{ marginBottom: 12 }}><LikeTwoTone /><Badge style={{ backgroundColor: '#2db7f5' }} count={displayLikes} showZero/></Button>
-
+            }} style={{ marginBottom: 12 }}><LikeTwoTone /></Button>
+            </Badge>
+            </>
           )
 
           detailContent = (
             <Descriptions>
               <Descriptions.Item label="Name">{props.ink.name}</Descriptions.Item>
               <Descriptions.Item label="Artist">{inkChainInfo[1]}</Descriptions.Item>
+              <Descriptions.Item label="drawingHash">{props.ipfsHash}</Descriptions.Item>
+              <Descriptions.Item label="id">{inkChainInfo[0].toString()}</Descriptions.Item>
               <Descriptions.Item label="jsonUrl">{inkChainInfo[3]}</Descriptions.Item>
               <Descriptions.Item label="Image">{props.ink.image}</Descriptions.Item>
               <Descriptions.Item label="Count">{inkChainInfo[2].toString()}</Descriptions.Item>

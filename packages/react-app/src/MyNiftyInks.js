@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { List, Avatar, Empty, Spin, Typography, Row } from 'antd';
-import { LoadingOutlined, StarTwoTone } from '@ant-design/icons';
+import { List, Avatar, Empty, Spin, Typography, Row, Badge, Col, Space } from 'antd';
+import { LoadingOutlined, StarTwoTone, LikeTwoTone } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 
 export default function MyNiftyInks(props) {
@@ -22,6 +22,12 @@ export default function MyNiftyInks(props) {
             let inkId = await props.readKovanContracts['NFTINK']["inkOfArtistByIndex"](props.address, i)
             let inkInfo = await props.readKovanContracts['NFTINK']["inkInfoById"](inkId)
             let mainChainId = await props.readContracts['NFTINK']["inkIdByUrl"](inkInfo[3])
+            let likes
+
+            if (props.readContracts['Liker']) {
+              let niftyAddress = props.readKovanContracts['NFTINK']['address']
+              likes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, inkId)
+            }
 
             let jsonIpfsHash = inkInfo[0]
 
@@ -32,7 +38,7 @@ export default function MyNiftyInks(props) {
             const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
-            return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, mainChainId: mainChainId}
+            return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, mainChainId: mainChainId, likes: likes.toString()}
           }
 
           for(var i = 0; i < props.inksCreatedBy; i++){
@@ -50,7 +56,8 @@ export default function MyNiftyInks(props) {
   },[props.address,props.tab])
 
 
-      if(props.inksCreatedBy > 0 && inkData) {
+      if(props.inksCreatedBy > 0 && inkData && inkData[0]['mainChainId']) {
+
         try{
           inkView = (
             <List
@@ -59,9 +66,11 @@ export default function MyNiftyInks(props) {
             renderItem={item => (
               <List.Item>
               <List.Item.Meta
-              avatar={item['image']?<a><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
-              title={<a href="#" onClick={() => props.showInk(item['url'])} >{item['name'] /*+ ": Ink #" + item['inkId']*/}</a>}
-              description={(item['mainChainId'].toString() !== "0"?<Row style={{justifyContent: 'center'}}><StarTwoTone/><Typography>{"Upgraded ink: " + (item['limit']>0?item['limit'] + ' copies':'unlimited copies')}</Typography><StarTwoTone/></Row>:'Ink not upgraded')}
+              avatar={item['image']?<a><Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></Badge></a>:<Avatar icon={<LoadingOutlined />} />}
+              title={<a href="#" onClick={() => props.showInk(item['url'])} >{<span>{item['name']}</span>}</a>}
+              description={<Row style={{justifyContent: 'center'}}>{item['mainChainId'].toString() !== "0"?<><StarTwoTone/><Typography>{"Upgraded: " + (item['limit']>0?item['limit'] + ' copies':'unlimited copies')}</Typography><StarTwoTone/></>:<Typography>Ink not upgraded</Typography>}
+                    </Row>
+                    }
               />
               </List.Item>
             )}
