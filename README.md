@@ -296,7 +296,7 @@ Then you can use the `tx()` function to send funds and write to your smart contr
 ```js
 tx({
   to: readContracts[contractName].address,
-  value: ethers.utils.parseEther("0.001"),
+  value: parseEther("0.001"),
 });
 ```
 

@@ -1,4 +1,5 @@
-import { ethers } from "ethers";
+import { hexlify } from "@ethersproject/bytes";
+import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
 
 import Notify from "bnc-notify";
@@ -34,10 +35,10 @@ export default function Transactor(provider, gasPrice, etherscan) {
           result = await tx;
         } else {
           if (!tx.gasPrice) {
-            tx.gasPrice = gasPrice || ethers.utils.parseUnits("4.1", "gwei");
+            tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
           }
           if (!tx.gasLimit) {
-            tx.gasLimit = ethers.utils.hexlify(120000);
+            tx.gasLimit = hexlify(120000);
           }
           console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);

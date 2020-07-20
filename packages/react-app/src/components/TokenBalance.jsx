@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ethers } from "ethers";
+import { formatEther } from "@ethersproject/units";
 import { useContractReader } from "../hooks";
 
 export default function TokenBalance(props) {
@@ -16,7 +16,7 @@ export default function TokenBalance(props) {
   }
 
   if (usingBalance) {
-    const etherBalance = ethers.utils.formatEther(usingBalance);
+    const etherBalance = formatEther(usingBalance);
     parseFloat(etherBalance).toFixed(2);
     floatBalance = parseFloat(etherBalance);
   }
