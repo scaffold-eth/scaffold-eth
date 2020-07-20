@@ -3,8 +3,8 @@ import "antd/dist/antd.css";
 import { InfuraProvider, JsonRpcProvider } from "@ethersproject/providers";
 import "./App.css";
 import { Row, Col } from "antd";
-import { useExchangePrice, useGasPrice, useBalance, useContractLoader, useCustomContractReader } from "./hooks";
-import { Address, Header, Account, Provider, Faucet, Ramp, Contract } from "./components";
+import { useExchangePrice, useGasPrice, useBalance } from "./hooks";
+import { Header, Account, Faucet, Ramp, Contract } from "./components";
 import Hints from "./Hints";
 
 // 🛰 providers
@@ -25,8 +25,8 @@ function App() {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  //const readContracts = useContractLoader(localProvider)
-  //const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
+  // const readContracts = useContractLoader(localProvider)
+  // const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
 
   return (
     <div className="App">
@@ -50,18 +50,9 @@ function App() {
         and give you a form to interact with it locally
 
       */}
-      <Contract
-        name="YourContract"
-        provider={injectedProvider}
-        address={address}
-      />
+      <Contract name="YourContract" provider={injectedProvider} address={address} />
 
-      <Hints
-        address={address}
-        yourLocalBalance={yourLocalBalance}
-        price={price}
-        mainnetProvider={mainnetProvider}
-      />
+      <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={4}>
