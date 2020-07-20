@@ -33,6 +33,7 @@ export default function AddressInput(props) {
               setEns(currentValue);
               props.onChange(possibleAddress);
             }
+            // eslint-disable-next-line no-empty
           } catch (e) {}
         }
       }
@@ -65,6 +66,7 @@ export default function AddressInput(props) {
           if (possibleAddress) {
             address = possibleAddress;
           }
+          // eslint-disable-next-line no-empty
         } catch (e) {}
       }
       setValue(address);

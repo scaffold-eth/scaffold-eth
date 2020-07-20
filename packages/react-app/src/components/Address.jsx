@@ -7,17 +7,17 @@ const { Text } = Typography;
 export default function Address(props) {
   const [ens, setEns] = useState(0);
   useEffect(() => {
-    if (props.value && props.ensProvider) {
-      async function getEns() {
-        let newEns;
-        try {
-          // console.log("getting ens",newEns)
-          newEns = await props.ensProvider.lookupAddress(props.value);
-          setEns(newEns);
-        } catch (e) {}
-      }
-      getEns();
+    async function getEns() {
+      let newEns;
+      try {
+        // console.log("getting ens",newEns)
+        newEns = await props.ensProvider.lookupAddress(props.value);
+        setEns(newEns);
+        // eslint-disable-next-line no-empty
+      } catch (e) {}
     }
+
+    if (props.value && props.ensProvider) getEns();
   }, [props.value, props.ensProvider]);
 
   if (!props.value) {

@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { Transactor } from "../helpers"
 import { Card, Row, Col, Input, Divider } from "antd";
+import { Transactor } from "../helpers";
 import { useContractLoader } from "../hooks";
 import Account from "./Account";
 
@@ -21,8 +21,23 @@ export default function Contract(props) {
   const contract = contracts ? contracts[props.name] : "";
   const address = contract ? contract.address : "";
 
-  const [display, setDisplay] = useState(<div>Loading... <div style={{padding:32}}>You need to run <span style={{marginLeft:4,backgroundColor:"#f1f1f1", padding:4, borderRadius:4, fontWeight:'bolder'}}>yarn run chain</span> and <span style={{marginLeft:4,backgroundColor:"#f1f1f1", padding:4, borderRadius:4, fontWeight:'bolder'}}>yarn run deploy</span> to see your contract here.</div></div>);
-  const tx = Transactor(props.provider,props.gasPrice);
+  const [display, setDisplay] = useState(
+    <div>
+      Loading...{" "}
+      <div style={{ padding: 32 }}>
+        You need to run{" "}
+        <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+          yarn run chain
+        </span>{" "}
+        and{" "}
+        <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+          yarn run deploy
+        </span>{" "}
+        to see your contract here.
+      </div>
+    </div>,
+  );
+  const tx = Transactor(props.provider, props.gasPrice);
 
   const [form, setForm] = useState({});
   const [values, setValues] = useState({});
@@ -44,7 +59,7 @@ export default function Contract(props) {
           } else if (!displayed[fn.name] && fn.type === "call" && fn.inputs.length === 0) {
             // console.log("PUSHING",fn.name)
             displayed[fn.name] = true;
-            try{
+            try {
               nextDisplay.push(
                 <div>
                   <Row>
@@ -62,18 +77,27 @@ export default function Contract(props) {
                     <Col span={14} key={key}>
                       <h2>{tryToDisplay(await contract[fn.name]())}</h2>
                     </Col>
-                    <Col span={2} key={fn.name+"_reader_"+key}>
-                      <h2><a href="#" onClick={()=>{
-                        setKey(key+1)
-                      }}>🔄</a></h2>
+                    <Col span={2} key={fn.name + "_reader_" + key}>
+                      <h2>
+                        <a
+                          href="#"
+                          onClick={() => {
+                            setKey(key + 1);
+                          }}
+                        >
+                          🔄
+                        </a>
+                      </h2>
                     </Col>
                   </Row>
                   <Divider />
                 </div>,
               );
-            }catch(e){console.log(e)}
+            } catch (e) {
+              console.log(e);
+            }
           } else if (!displayed[fn.name] && (fn.type === "call" || fn.type === "transaction")) {
-            //console.log("RENDERING", fn);
+            // console.log("RENDERING", fn);
             // console.log("CALL WITH ARGS",fn.name,fn)
             displayed[fn.name] = true;
             const inputs = [];
@@ -131,7 +155,7 @@ export default function Contract(props) {
                                   "" + parseFloat(newValues["valueOf" + fn.name]) * 10 ** 18;
                                 console.log("SETTING:", newValues);
                                 setValues(newValues);
-                                setKey(key+1)
+                                setKey(key + 1);
                               }}
                             >
                               ✳️
@@ -148,7 +172,7 @@ export default function Contract(props) {
                                 newValues["valueOf" + fn.name] = bigNumber.toHexString();
                                 console.log("SETTING:", newValues);
                                 setValues(newValues);
-                                setKey(key+1)
+                                setKey(key + 1);
                               }}
                             >
                               #️⃣
@@ -199,7 +223,7 @@ export default function Contract(props) {
                         }
 
                         // console.log("Running with extras",extras)
-                        let returned = await tx(contract[fn.name](...args, overrides))
+                        const returned = await tx(contract[fn.name](...args, overrides));
 
                         const result = tryToDisplay(returned);
 
@@ -207,7 +231,7 @@ export default function Contract(props) {
                         newValues[fn.name] = result;
                         console.log("SETTING:", newValues);
                         setValues(newValues);
-                        setKey(key+1)
+                        setKey(key + 1);
                       }}
                     >
                       {buttonIcon}
@@ -247,7 +271,7 @@ export default function Contract(props) {
   }, [contract, values, form, show, key]);
 
   return (
-    <div style={{margin:"auto",width:"70vw"}}>
+    <div style={{ margin: "auto", width: "70vw" }}>
       <Card
         title={
           <div>
@@ -266,7 +290,7 @@ export default function Contract(props) {
           </div>
         }
         size="large"
-        style={{  marginTop: 25 ,width:"100%" }}
+        style={{ marginTop: 25, width: "100%" }}
         loading={display && display.length <= 0}
       >
         {display}
