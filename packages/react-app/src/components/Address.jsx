@@ -1,24 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React from "react";
 import Blockies from "react-blockies";
 import { Typography, Skeleton } from "antd";
+import { useLookupAddress } from "eth-hooks";
 
 const { Text } = Typography;
 
 export default function Address(props) {
-  const [ens, setEns] = useState(0);
-  useEffect(() => {
-    async function getEns() {
-      let newEns;
-      try {
-        // console.log("getting ens",newEns)
-        newEns = await props.ensProvider.lookupAddress(props.value);
-        setEns(newEns);
-        // eslint-disable-next-line no-empty
-      } catch (e) {}
-    }
-
-    if (props.value && props.ensProvider) getEns();
-  }, [props.value, props.ensProvider]);
+  const ens = useLookupAddress(props.ensProvider, props.value);
 
   if (!props.value) {
     return (
