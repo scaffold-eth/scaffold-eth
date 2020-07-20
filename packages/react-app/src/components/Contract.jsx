@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
+import { BigNumber } from "@ethersproject/bignumber";
+import { formatUnits } from "@ethersproject/units";
 import { Card, Row, Col, Input, Divider } from "antd";
 import { Transactor } from "../helpers";
 import { useContractLoader } from "../hooks";
@@ -10,7 +11,7 @@ const tryToDisplay = thing => {
     try {
       return thing.toNumber();
     } catch (e) {
-      return ethers.utils.formatUnits(thing, "ether");
+      return formatUnits(thing, "ether");
     }
   }
   return JSON.stringify(thing);
@@ -168,7 +169,7 @@ export default function Contract(props) {
                                 console.log("CLICK");
 
                                 const newValues = { ...values };
-                                const bigNumber = ethers.utils.bigNumberify(newValues["valueOf" + fn.name]);
+                                const bigNumber = BigNumber.from(newValues["valueOf" + fn.name]);
                                 newValues["valueOf" + fn.name] = bigNumber.toHexString();
                                 console.log("SETTING:", newValues);
                                 setValues(newValues);

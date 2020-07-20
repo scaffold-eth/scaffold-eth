@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { WalletOutlined, QrcodeOutlined, SendOutlined } from "@ant-design/icons";
 import { Tooltip, Spin, Modal, Button } from "antd";
 import QR from "qrcode.react";
-import { ethers } from "ethers";
+import { parseEther } from "@ethersproject/units";
 import { Transactor } from "../helpers";
 import Address from "./Address";
 import Balance from "./Balance";
@@ -157,7 +157,7 @@ export default function Wallet(props) {
               const tx = Transactor(props.provider);
               tx({
                 to: toAddress,
-                value: ethers.utils.parseEther("" + amount),
+                value: parseEther("" + amount),
               });
               setOpen(!open);
             }}

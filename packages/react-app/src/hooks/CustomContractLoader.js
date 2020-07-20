@@ -1,6 +1,6 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import { ethers } from "ethers";
+import { Contract } from "@ethersproject/contracts";
 import { useState, useEffect } from "react";
 
 /*
@@ -22,11 +22,7 @@ export default function useCustomContractLoader(provider, contractName, address)
             signer = provider;
           }
 
-          const customContract = new ethers.Contract(
-            address,
-            require("../contracts/" + contractName + ".abi.js"),
-            signer,
-          );
+          const customContract = new Contract(address, require("../contracts/" + contractName + ".abi.js"), signer);
           try {
             customContract.bytecode = require("../contracts/" + contractName + ".bytecode.js");
           } catch (e) {

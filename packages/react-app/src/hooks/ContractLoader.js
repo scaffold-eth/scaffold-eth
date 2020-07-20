@@ -1,4 +1,4 @@
-import { ethers } from "ethers";
+import { Contract } from "@ethersproject/contracts";
 import { useState, useEffect } from "react";
 
 export default function useContractLoader(provider) {
@@ -20,7 +20,7 @@ export default function useContractLoader(provider) {
           }
 
           for (const c in contractList) {
-            newContracts[contractList[c]] = new ethers.Contract(
+            newContracts[contractList[c]] = new Contract(
               require("../contracts/" + contractList[c] + ".address.js"),
               require("../contracts/" + contractList[c] + ".abi.js"),
               signer,

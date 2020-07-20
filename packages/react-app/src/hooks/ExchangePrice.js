@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { ethers } from "ethers";
-import { MAINNET_ID, addresses, abis } from "@uniswap-v1-app/contracts";
+import { Token, WETH, Fetcher, Route } from "@uniswap/sdk";
 import usePoller from "./Poller";
 
 export default function useExchangePrice(mainnetProvider, pollTime) {
@@ -8,13 +7,10 @@ export default function useExchangePrice(mainnetProvider, pollTime) {
 
   const pollPrice = () => {
     async function getPrice() {
-      const ethDaiExchangeContract = new ethers.Contract(
-        addresses[MAINNET_ID].exchanges["ETH-DAI"],
-        abis.exchange,
-        mainnetProvider,
-      );
-      const exchangeRate = await ethDaiExchangeContract.getEthToTokenInputPrice("10000000000000000000");
-      setPrice(parseFloat(exchangeRate.div("100000000000000000")) / 100);
+      const DAI = new Token(mainnetProvider.network.chainId, "0x6B175474E89094C44Da98b954EedeAC495271d0F", 18);
+      const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId]);
+      const route = new Route([pair], WETH[DAI.chainId]);
+      setPrice(parseFloat(route.midPrice.toSignificant(6)));
     }
     getPrice();
   };

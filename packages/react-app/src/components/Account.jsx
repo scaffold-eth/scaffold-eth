@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { ethers } from "ethers";
+import { Web3Provider } from "@ethersproject/providers";
 import BurnerProvider from "burner-provider";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -38,22 +38,18 @@ export default function Account(props) {
   const createBurnerIfNoAddress = () => {
     if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider === "function") {
       if (props.localProvider.connection && props.localProvider.connection.url) {
-        props.setInjectedProvider(
-          new ethers.providers.Web3Provider(new BurnerProvider(props.localProvider.connection.url)),
-        );
+        props.setInjectedProvider(new Web3Provider(new BurnerProvider(props.localProvider.connection.url)));
         console.log("________BY URL", props.localProvider.connection.url);
       } else if (props.localProvider._network && props.localProvider._network.name) {
         props.setInjectedProvider(
-          new ethers.providers.Web3Provider(
+          new Web3Provider(
             new BurnerProvider("https://" + props.localProvider._network.name + ".infura.io/v3/" + INFURA_ID),
           ),
         );
         console.log("________INFURA");
       } else {
         console.log("________MAINMIAN");
-        props.setInjectedProvider(
-          new ethers.providers.Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/" + INFURA_ID)),
-        );
+        props.setInjectedProvider(new Web3Provider(new BurnerProvider("https://mainnet.infura.io/v3/" + INFURA_ID)));
       }
     } else {
       pollInjectedProvider();
@@ -72,7 +68,7 @@ export default function Account(props) {
     const provider = await web3Modal.connect();
     // console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
     if (typeof props.setInjectedProvider === "function") {
-      props.setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      props.setInjectedProvider(new Web3Provider(provider));
     }
     pollInjectedProvider();
   };
