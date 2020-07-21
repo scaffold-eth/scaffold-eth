@@ -42,6 +42,7 @@ function App() {
   const price = useExchangePrice(mainnetProvider);
   // const gasPrice = useGasPrice("fast");
 
+  // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localChainProvider);
   const address = useAddress(userProvider);
 
