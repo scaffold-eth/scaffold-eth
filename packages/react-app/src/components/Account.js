@@ -8,7 +8,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Modal } from 'antd';
 
 
-const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
+const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
   //network: "mainnet", // optional
@@ -28,7 +28,7 @@ export default function Account(props) {
   function warning(network, chainId) {
       Modal.warning({
         title: 'Network mismatch',
-        content: 'Please connect to the ' + network + ' (chainId: ' + chainId + ') network',
+        content: `Please connect to the ${network} network (chainId: ${chainId})`,
       });
     }
 
@@ -50,12 +50,19 @@ export default function Account(props) {
       pollInjectedProvider()
     }
   }
-  useEffect(createBurnerIfNoAddress, [props.injectedProvider]);
+    useEffect(() => {
+      createBurnerIfNoAddress()
+    }, [props.injectedProvider]);
 
   const updateProviders =  async (provider) => {
 
-    props.setInjectedProvider(new ethers.providers.Web3Provider(provider))
-
+    let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
+    props.setInjectedProvider(newWeb3Provider)
+    let newNetwork = await newWeb3Provider.getNetwork()
+    let localNetwork = await props.localProvider.getNetwork()
+    if(newNetwork.chainId !== localNetwork.chainId) {
+      warning(localNetwork.name, localNetwork.chainId)
+    }
 
   }
 
@@ -72,13 +79,7 @@ export default function Account(props) {
 
   const loadWeb3Modal = async ()=>{
     const provider = await web3Modal.connect();
-    //console.log("GOT CACHED PROVIDER FROM WEB3 MODAL",provider)
     if(typeof props.setInjectedProvider == "function"){
-      console.log('web3 provider',provider.networkVersion)
-      console.log('local provider',props.localProvider.network)
-      if(provider.networkVersion !== props.localProvider.network.chainId.toString()) {
-      warning(props.localProvider.network.name, props.localProvider.network.chainId)
-    }
       updateProviders(provider)
     }
     pollInjectedProvider()
@@ -108,6 +109,7 @@ export default function Account(props) {
 
   React.useEffect(() => {
     if (web3Modal.cachedProvider) {
+      console.log(web3Modal.cachedProvider)
       loadWeb3Modal()
     }
   }, []);
@@ -120,7 +122,7 @@ export default function Account(props) {
       {props.address?(
         <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
-      <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
+      <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
     </span>)
 
