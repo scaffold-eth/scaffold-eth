@@ -15,7 +15,7 @@ async function main() {
 
   console.log(" 📝 Adding NFTINK ("+NFTINK.address+") TO Liker...")
   await Liker.addContract(NFTINK.address)
-
+  console.log("")
 
   if(bre.network.name.indexOf("localhost")>=0){
     console.log("Local deploy, loading GSN trusted forwarder from a file...")
@@ -40,7 +40,6 @@ async function main() {
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
     await Liker.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
-    console.log("Result: ",result.status)
   }else if(bre.network.name=="xdai") {
     console.log(" ♦ xDAI deploy, no known trusted forwarder yet.")
     //https://docs.opengsn.org/gsn-provider/networks.html

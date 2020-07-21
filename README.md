@@ -29,9 +29,10 @@ yarn run generate
 #get your deployers address, balance, and nonce on various networks:
 yarn run account
 
-#(use the frontend to fund your deployer from both local chains)
+#(use the frontend <Faucet/> to fund your deployer from both local chains)
+# or use rinkeby.instantwallet.io and kovan.instantwallet.io to send funds to the qr in yarn run account 
 
-# compile and deploy to your local chains and publish to the frontend 
+# compile and deploy to your local chains and publish to the frontend
 yarn run localdeploy
 
 
