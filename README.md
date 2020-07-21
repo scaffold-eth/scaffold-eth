@@ -21,6 +21,8 @@ It's great for building <i>decentralized applications</i> on [Ethereum](https://
 [<H3>🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox-1)
 
 Learn how to [quickly iterate on a smart contract](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox-1) using the <b>\<Contract /\></b> component.
+  
+[![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://youtu.be/ShJZf5lsXiM)
 
 ---
 [<H3>Tutorial 1: 🛠 Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
