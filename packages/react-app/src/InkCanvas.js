@@ -9,7 +9,6 @@ import { Transactor, addToIPFS, getFromIPFS, signInk } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
-import { RelayProvider } from '@opengsn/gsn';
 
 const Hash = require('ipfs-only-hash')
 const axios = require('axios');

@@ -13,6 +13,9 @@ async function main() {
   const NFTINK = await deploy("NFTINK")
   const Liker = await deploy("Liker")
 
+  console.log(" 📝 Adding NFTINK ("+NFTINK.address+") TO Liker...")
+  await Liker.addContract(NFTINK.address)
+
 
   if(bre.network.name.indexOf("localhost")>=0){
     console.log("Local deploy, loading GSN trusted forwarder from a file...")
@@ -24,8 +27,9 @@ async function main() {
     let trustedForwarder
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
-      console.log("Setting GSN Trusted Forwarder to ",trustedForwarderObj.address)
+      console.log("⛽️ Setting GSN Trusted Forwarder on NFTINK to ",trustedForwarderObj.address)
       await NFTINK.setTrustedForwarder(trustedForwarderObj.address)
+      console.log("⛽️ Setting GSN Trusted Forwarder on Liker to ",trustedForwarderObj.address)
       await Liker.setTrustedForwarder(trustedForwarderObj.address)
     }catch(e){
       console.log(e)

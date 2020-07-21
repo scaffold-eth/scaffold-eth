@@ -55,16 +55,22 @@ export default function InkInfo(props) {
 
   usePoller(() => {
     const getChainInfo = async () => {
-      if(props.ipfsHash){
+      if(props.ipfsHash && props.readContracts && props.readKovanContracts ){
         try {
         const newChainInfo = await props.readKovanContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+        console.log("newChainInfo",newChainInfo)
         setInkChainInfo(newChainInfo)
         let niftyAddress = props.readKovanContracts['NFTINK']['address']
+        console.log("niftyAddress",niftyAddress)
         const newInkLikes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, newChainInfo[0])
+        console.log("newInkLikes",newInkLikes)
         setLikes(newInkLikes)
+        console.log("CHECKING HAS LIKED",niftyAddress, newChainInfo[0], props.address)
         const newHasLiked = await props.readKovanContracts['Liker']['checkLike'](niftyAddress, newChainInfo[0], props.address)
+        console.log("newHasLiked",newHasLiked)
         setHasLiked(newHasLiked)
         const mainChainInkId = await props.readContracts['NFTINK']['inkIdByUrl'](props.ipfsHash)
+        console.log("mainChainInkId",mainChainInkId)
         if(mainChainInkId.toString()=="0") {
           setUpgraded(false)
         } else {

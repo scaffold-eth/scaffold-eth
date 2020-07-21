@@ -122,7 +122,7 @@ export default function NftyWallet(props) {
     //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
 
     console.log("gsnConfig",gsnConfig)
-    const kovanBurner = new BurnerProvider("http://localhost:8545")//"https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")
+    const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
     console.log("props.kovanProvider",kovanBurner)
     const gsnProvider = new RelayProvider(kovanBurner, gsnConfig)
     console.log("gsnProvider:",gsnProvider)
