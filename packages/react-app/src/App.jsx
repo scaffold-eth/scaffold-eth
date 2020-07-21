@@ -1,33 +1,70 @@
-import React, { useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { InfuraProvider, JsonRpcProvider } from "@ethersproject/providers";
+import { InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
 import { Row, Col } from "antd";
-import { useExchangePrice, useGasPrice, useBalance } from "./hooks";
+import Web3Modal from "web3modal";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import { useExchangePrice, useGasPrice, useBalance, useAddress, useUserProvider } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract } from "./components";
 import Hints from "./Hints";
+import { INFURA_ID } from "./constants";
+
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
 
 // 🛰 providers
-const mainnetProvider = new InfuraProvider("mainnet", "2717afb6bf164045b5d5468031b93f87");
-const localProvider = new JsonRpcProvider(
+const mainnetProvider = new InfuraProvider("mainnet", INFURA_ID);
+const localChainProvider = new JsonRpcProvider(
   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545",
 );
 
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  // console.log("Cleared cache provider!?!",clear)
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
+
 function App() {
-  const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
   const price = useExchangePrice(mainnetProvider);
-  const gasPrice = useGasPrice("fast");
+  // const gasPrice = useGasPrice("fast");
+
+  const userProvider = useUserProvider(injectedProvider, localChainProvider, setInjectedProvider);
+  const address = useAddress(userProvider);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  const yourLocalBalance = useBalance(localChainProvider, address);
   // just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
   // const readContracts = useContractLoader(localProvider)
   // console.log("readContracts",readContracts)
   // const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
+
+  const loadWeb3Modal = useCallback(async () => {
+    const provider = await web3Modal.connect();
+    setInjectedProvider(new Web3Provider(provider));
+  }, [setInjectedProvider]);
+
+  useEffect(() => {
+    if (web3Modal.cachedProvider) {
+      loadWeb3Modal();
+    }
+  }, [loadWeb3Modal]);
 
   return (
     <div className="App">
@@ -36,12 +73,13 @@ function App() {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
-          setAddress={setAddress}
-          localProvider={localProvider}
-          injectedProvider={injectedProvider}
-          setInjectedProvider={setInjectedProvider}
+          localProvider={localChainProvider}
+          userProvider={userProvider}
           mainnetProvider={mainnetProvider}
           price={price}
+          web3Modal={web3Modal}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
       </div>
 
@@ -51,7 +89,7 @@ function App() {
           and give you a form to interact with it locally
       */}
 
-      <Contract name="YourContract" provider={injectedProvider} address={address} />
+      <Contract name="YourContract" provider={userProvider} address={address} />
 
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
@@ -61,7 +99,7 @@ function App() {
             <Ramp price={price} address={address} />
           </Col>
           <Col span={15}>
-            <Faucet localProvider={localProvider} price={price} />
+            <Faucet localProvider={localChainProvider} price={price} />
           </Col>
         </Row>
       </div>

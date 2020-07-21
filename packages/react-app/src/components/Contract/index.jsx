@@ -80,7 +80,6 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
                 localProvider={provider}
                 injectedProvider={provider}
                 mainnetProvider={provider}
-                readContracts={contracts}
                 price={price}
               />
               {account}

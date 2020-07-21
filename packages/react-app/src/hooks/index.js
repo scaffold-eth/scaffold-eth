@@ -1,3 +1,4 @@
+export { default as useAddress } from "./Address";
 export { default as useBalance } from "./Balance";
 export { default as useTokenBalance } from "./TokenBalance";
 export { default as useBlockNumber } from "./BlockNumber";
@@ -7,7 +8,9 @@ export { default as useContractLoader } from "./ContractLoader";
 export { default as useCustomContractLoader } from "./CustomContractLoader";
 export { default as useContractReader } from "./ContractReader";
 export { default as useCustomContractReader } from "./CustomContractReader";
+export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
 export { default as useEventListener } from "./EventListener";
 export { default as useExchangePrice } from "./ExchangePrice";
 export { default as useGasPrice } from "./GasPrice";
 export { default as usePoller } from "./Poller";
+export { default as useUserProvider } from "./UserProvider";
