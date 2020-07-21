@@ -42,7 +42,7 @@ function App() {
   const price = useExchangePrice(mainnetProvider);
   // const gasPrice = useGasPrice("fast");
 
-  const userProvider = useUserProvider(injectedProvider, localChainProvider, setInjectedProvider);
+  const userProvider = useUserProvider(injectedProvider, localChainProvider);
   const address = useAddress(userProvider);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
