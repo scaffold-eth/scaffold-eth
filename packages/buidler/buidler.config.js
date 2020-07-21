@@ -192,8 +192,11 @@ module.exports = {
     },
     localhost: {
       url: 'http://localhost:8545',
+      /*accounts: {
+        mnemonic: DEPLOY_ACCOUNT
+      },*/
     },
-    localhost2: {
+    sidechain: {
       url: 'http://localhost:8546',
       /*accounts: {
         mnemonic: DEPLOY_ACCOUNT

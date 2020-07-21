@@ -1,1 +1,1 @@
-module.exports = ["NFTINK"]
+module.exports = ["Liker","NFTINK"]

@@ -4,7 +4,7 @@ import { Row, Col,  Button } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
-import { Ramp, AdminWidget } from "./components"
+import { Ramp, AdminWidget, Faucet } from "./components"
 
 import NftyWallet from "./NftyWallet.js"
 
@@ -79,6 +79,12 @@ function App() {
             <span style={{marginRight:8}}>⛽️</span>
             {parseInt(gasPrice)/10**9}g
           </Button>
+          </Col>
+          <Col>
+            <Faucet localProvider={localProvider} price={price} />
+          </Col>
+          <Col>
+            <Faucet localProvider={kovanProvider} placeholder={"sidechain faucet"} price={price} />
           </Col>
         </Row>
 

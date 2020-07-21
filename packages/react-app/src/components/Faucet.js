@@ -27,7 +27,7 @@ export default function Faucet(props) {
     <span>
         <Input
           size="large"
-          placeholder="local faucet"
+          placeholder={props.placeholder?props.placeholder:"local faucet"}
           prefix={blockie}
           value={address}
           onChange={(e)=>{

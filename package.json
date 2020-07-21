@@ -34,7 +34,10 @@
     "generate": "cd packages/buidler && npx buidler generate",
     "ship": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet",
     "testnets": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby",
-    "account": "cd packages/buidler && npx buidler account"
+    "account": "cd packages/buidler && npx buidler account",
+    "sidechain": "cd packages/buidler && npx buidler node --port 8546",
+    "sidedeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechain && npx buidler run scripts/deploy.js --network localhost"
+
   },
   "devDependencies": {
     "@nomiclabs/buidler": "1.3.3-rc.0",
