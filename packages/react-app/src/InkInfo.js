@@ -96,7 +96,7 @@ export default function InkInfo(props) {
 
     const loadHolders = async () => {
       if(props.ipfsHash && props.ink['attributes'] && inkMainChainInfo) {
-        let mintedCount = inkChainInfo[2]
+        let mintedCount = inkMainChainInfo[2]
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
           let inkToken = await props.readContracts['NFTINK']["inkTokenByIndex"](props.ipfsHash, i)
@@ -117,9 +117,9 @@ export default function InkInfo(props) {
           }
         }
         if(props.ink.attributes[0].value === "0") {
-          mintDescription = (inkChainInfo[2] + ' minted')
+          mintDescription = (inkMainChainInfo[2] + ' minted')
         }
-        else {mintDescription = (inkChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
+        else {mintDescription = (inkMainChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
 
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
