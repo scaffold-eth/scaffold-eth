@@ -2,7 +2,7 @@ import { ethers } from "ethers";
 
 export async function signInk(artist, inkUrl, jsonUrl, limit, provider, contract) {
 
-  console.log("INK",inkUrl, jsonUrl, limit)
+  console.log("INK",inkUrl, jsonUrl, limit, provider, contract)
 
   let hashToSign = await contract.getHash(artist, inkUrl, jsonUrl, ""+limit)
   console.log("hashToSign",hashToSign)
