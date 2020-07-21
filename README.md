@@ -1,21 +1,43 @@
 # 🏗 scaffold-eth / NFTY INK
 
-> TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
+```bash
 
-Chapter 1: 🛠 [Programming Decentralized Money](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
+git clone -b nfty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
 
-Chapter 2: 🏵 The Token
+cd nifty-ink
 
-Chapter 3: ⚖️ [Minimum Viable Decentralized Exchange](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
+git checkout nifty-ink-dev
+
+yarn install
+#(ignore warnings that look like errors node-gyp)
+
+#start fronend
+yarn start
+
+#start local main chain
+yarn run chain
+
+#start local side chain (8546)
+yarn run sidechain
+
+#start gsn on side chain (8546)
+yarn run gsn
+
+#generate a deployer if you don't have one:
+yarn run generate
+
+#get your deployers address, balance, and nonce on various networks:
+yarn run account
+
+#(use the frontend to fund your deployer from both local chains)
+
+# compile and deploy to your local chains and publish to the frontend 
+yarn run localdeploy
 
 
-Chapter 0: 🧫 (research ) [Building on Ethereum in 2020](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
+```
 
-Chapter 7: 🗳 [Personal Token Voting](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
 
-Chapter X: 🎨 NFTY Ink
-
----
 
 ## Introduction to NFTY INK
 
