@@ -99,6 +99,10 @@ function App() {
     price={price}
   />*/}
 
+
+      <div style={{padding:50}}>
+        <></>
+      </div>
     </div>
   );
 }

@@ -87,12 +87,19 @@ export default function InkCanvas(props) {
 
     let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readContracts["NFTINK"])
 
+    console.log("signature",signature)
+
     console.log(metaWriteContracts["NFTINK"])
+
 
     let signed = await metaWriteContracts["NFTINK"].patronize(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("Signed?",signed)
+
+    console.log("SAVING SIG TO KOVAN:",inkUrl,signature)
+    let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+    console.log("DEOND")
 
     return signed
 
@@ -159,6 +166,7 @@ export default function InkCanvas(props) {
       setSending(false)
     }
 
+
     if(mintResult) {
 
       props.setMode("mint")
@@ -205,6 +213,7 @@ export default function InkCanvas(props) {
       })
       .catch(function (error) {
         console.log(error);
+        setSending(false)
       });
       /*let buffer = Buffer.from(compressedArray) //we could fall back to going directly to IPFS if our server is down?
       console.log("ADDING TO IPFS...",buffer)
@@ -219,6 +228,8 @@ export default function InkCanvas(props) {
   const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
   const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+
+  setSending(false)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
     console.log(values);
