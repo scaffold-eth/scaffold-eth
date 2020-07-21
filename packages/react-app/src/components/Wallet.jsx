@@ -3,6 +3,7 @@ import { WalletOutlined, QrcodeOutlined, SendOutlined } from "@ant-design/icons"
 import { Tooltip, Spin, Modal, Button } from "antd";
 import QR from "qrcode.react";
 import { parseEther } from "@ethersproject/units";
+import { useUserAddress } from "eth-hooks";
 import { Transactor } from "../helpers";
 import Address from "./Address";
 import Balance from "./Balance";
@@ -10,9 +11,10 @@ import AddressInput from "./AddressInput";
 import EtherInput from "./EtherInput";
 
 export default function Wallet(props) {
+  const signerAddress = useUserAddress(props.provider);
+  const selectedAddress = props.address || signerAddress;
+
   const [open, setOpen] = useState();
-  const [selectedAddress, setSelectedAddress] = useState();
-  const [, setSigner] = useState();
   const [qr, setQr] = useState();
 
   let providerSend = "";
@@ -39,31 +41,6 @@ export default function Wallet(props) {
   const [amount, setAmount] = useState();
   const [toAddress, setToAddress] = useState();
 
-  useEffect(() => {
-    const getAddress = async () => {
-      if (props.provider) {
-        let loadedSigner;
-        try {
-          // console.log("SETTING SIGNER")
-          loadedSigner = props.provider.getSigner();
-          setSigner(loadedSigner);
-        } catch (e) {
-          // console.log(e)
-        }
-        if (props.address) {
-          setSelectedAddress(props.address);
-        } else if (!selectedAddress && loadedSigner) {
-          // console.log("GETTING ADDRESS FOR WALLET PROVIDER",loadedSigner)
-          const result = await loadedSigner.getAddress();
-          if (result) {
-            setSelectedAddress(result);
-          }
-        }
-      }
-      // setQr("")
-    };
-    getAddress();
-  }, [props]);
 
   let display;
   let receiveButton;
