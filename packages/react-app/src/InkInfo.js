@@ -270,7 +270,7 @@ useEffect(()=>{
             let limit = props.ink.attributes[0].value
 
             let signature = await signInk(artist, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NFTINK"])
-
+            console.log("signature",signature)
             notification.open({
               message: '📡 ',
               description:

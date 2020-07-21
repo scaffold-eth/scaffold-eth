@@ -87,8 +87,6 @@ export default function InkCanvas(props) {
 
     let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readContracts["NFTINK"])
 
-    console.log("signature",signature)
-
     console.log(metaWriteContracts["NFTINK"])
 
 
@@ -97,9 +95,9 @@ export default function InkCanvas(props) {
 
     console.log("Signed?",signed)
 
-    console.log("SAVING SIG TO KOVAN:",inkUrl,signature)
-    let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-    console.log("DEOND")
+    //console.log("SAVING SIG TO KOVAN:")
+    //let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+    //console.log("DEOND")
 
     return signed
 

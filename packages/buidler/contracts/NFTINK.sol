@@ -119,6 +119,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
 
       _mintInkToken(_msgSender(), inkId, inkUrl, jsonUrl);
 
+      _inkSignatureByUrl[inkUrl] = signature;
+
       return inkId;
     }
 
