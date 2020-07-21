@@ -26,8 +26,8 @@
     "balance": "cd packages/buidler && npx buidler balance",
     "send": "cd packages/buidler && npx buidler send",
     "server": "cd packages/nifty-art-server && nodemon index",
-    "gsn-start": "gsn start --workdir packages/react-app/src/gsn",
-    "gsn": "gsn start --workdir packages/react-app/src/gsn",
+    "gsn-start": "gsn start --workdir packages/react-app/src/gsn --network http://localhost:8546",
+    "gsn": "gsn start --workdir packages/react-app/src/gsn --network http://localhost:8546",
     "ipfs": "cd packages/react-app && node ipfs",
     "surge": "surge packages/react-app/build",
     "s3": "cd packages/react-app && node s3",
@@ -36,7 +36,7 @@
     "testnets": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby",
     "account": "cd packages/buidler && npx buidler account",
     "sidechain": "cd packages/buidler && npx buidler node --port 8546",
-    "sidedeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechainDeployer && npx buidler run scripts/deploy.js --network localhostDeployer"
+    "localdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechain && npx buidler run scripts/deploy.js --network localhost && npx buidler run scripts/publish.js"
 
   },
   "devDependencies": {

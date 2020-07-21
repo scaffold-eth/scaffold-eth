@@ -215,17 +215,11 @@ module.exports = {
     },
     localhost: {
       url: 'http://localhost:8545',
-    },
-    sidechain: {
-      url: 'http://localhost:8546',
-    },
-    localhostDeployer: {
-      url: 'http://localhost:8545',
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
     },
-    sidechainDeployer: {
+    sidechain: {
       url: 'http://localhost:8546',
       accounts: {
         mnemonic: DEPLOY_ACCOUNT

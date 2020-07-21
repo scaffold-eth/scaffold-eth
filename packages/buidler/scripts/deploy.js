@@ -14,13 +14,19 @@ async function main() {
   const Liker = await deploy("Liker")
 
 
-  if(bre.network.name=="localhost"){
+  if(bre.network.name.indexOf("localhost")>=0){
+    console.log("Local deploy, loading GSN trusted forwarder from a file...")
+    await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+    await Liker.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+  }
+  else if(bre.network.name.indexOf("sidechain")>=0){
     console.log("Local deploy, loading GSN trusted forwarder from a file...")
     let trustedForwarder
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
       console.log("Setting GSN Trusted Forwarder to ",trustedForwarderObj.address)
       await NFTINK.setTrustedForwarder(trustedForwarderObj.address)
+      await Liker.setTrustedForwarder(trustedForwarderObj.address)
     }catch(e){
       console.log(e)
     }
