@@ -84,6 +84,29 @@ task("account", "Get balance informations for the deployment account.", async ()
 
 });
 
+task("faucet", "Get funds to your deployer account.", async () => {
+
+  const hdkey = require('ethereumjs-wallet/hdkey');
+  const bip39 = require("bip39")
+  let mnemonic = fs.readFileSync("./DEPLOY_ACCOUNT.txt").toString().trim()
+  if(DEBUG) console.log("mnemonic",mnemonic)
+  const seed = await bip39.mnemonicToSeed(mnemonic)
+  if(DEBUG) console.log("seed",seed)
+  const hdwallet = hdkey.fromMasterSeed(seed);
+  const wallet_hdpath = "m/44'/60'/0'/0/";
+  const account_index = 0
+  let fullPath = wallet_hdpath + account_index
+  if(DEBUG) console.log("fullPath",fullPath)
+  const wallet = hdwallet.derivePath(fullPath).getWallet();
+  const privateKey = "0x"+wallet._privKey.toString('hex');
+  if(DEBUG) console.log("privateKey",privateKey)
+  var EthUtil = require('ethereumjs-util');
+  const address = "0x"+EthUtil.privateToAddress(wallet._privKey).toString('hex')
+
+
+
+})
+
 task("accounts", "Prints the list of accounts", async () => {
   const accounts = await web3.eth.getAccounts();
   for (const account of accounts) {
@@ -192,15 +215,21 @@ module.exports = {
     },
     localhost: {
       url: 'http://localhost:8545',
-      /*accounts: {
-        mnemonic: DEPLOY_ACCOUNT
-      },*/
     },
     sidechain: {
       url: 'http://localhost:8546',
-      /*accounts: {
+    },
+    localhostDeployer: {
+      url: 'http://localhost:8545',
+      accounts: {
         mnemonic: DEPLOY_ACCOUNT
-      },*/
+      },
+    },
+    sidechainDeployer: {
+      url: 'http://localhost:8546',
+      accounts: {
+        mnemonic: DEPLOY_ACCOUNT
+      },
     },
     mainnet: {
       url: 'https://mainnet.infura.io/v3/9ea7e149b122423991f56257b882261c',

@@ -36,7 +36,7 @@
     "testnets": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby",
     "account": "cd packages/buidler && npx buidler account",
     "sidechain": "cd packages/buidler && npx buidler node --port 8546",
-    "sidedeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechain && npx buidler run scripts/deploy.js --network localhost"
+    "sidedeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechainDeployer && npx buidler run scripts/deploy.js --network localhostDeployer"
 
   },
   "devDependencies": {
