@@ -38,20 +38,24 @@ async function main() {
   else if(bre.network.name=="kovan") {
     console.log(" 🟣 KOVAN deploy, adding Kovan trusted forwarder...")
     //https://docs.opengsn.org/gsn-provider/networks.html
-    let result = await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
+    await NFTINK.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
+    await Liker.setTrustedForwarder("0x6453D37248Ab2C16eBd1A8f782a2CBC65860E60B")
     console.log("Result: ",result.status)
   }else if(bre.network.name=="xdai") {
     console.log(" ♦ xDAI deploy, no known trusted forwarder yet.")
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+    await Liker.setTrustedForwarder("0x0000000000000000000000000000000000000000")
   }else if(bre.network.name=="rinkeby") {
     console.log(" 🟨 Rinkeby deploy, no known trusted forwarder yet.")
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+    await Liker.setTrustedForwarder("0x0000000000000000000000000000000000000000")
   }else if(bre.network.name=="mainnet") {
     console.log(" 🚀 Mainnet deploy, no known trusted forwarder yet.")
     //https://docs.opengsn.org/gsn-provider/networks.html
     await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+    await Liker.setTrustedForwarder("0x0000000000000000000000000000000000000000")
   }
 
 
