@@ -16,31 +16,28 @@ export default function Wallet(props) {
 
   const [open, setOpen] = useState();
   const [qr, setQr] = useState();
-
-  let providerSend = "";
-  if (props.provider) {
-    providerSend = (
-      <Tooltip title="Wallet">
-        <WalletOutlined
-          onClick={() => {
-            setOpen(!open);
-          }}
-          rotate={-90}
-          style={{
-            padding: 7,
-            color: props.color ? props.color : "#1890ff",
-            cursor: "pointer",
-            fontSize: 28,
-            verticalAlign: "middle",
-          }}
-        />
-      </Tooltip>
-    );
-  }
-
   const [amount, setAmount] = useState();
   const [toAddress, setToAddress] = useState();
 
+  const providerSend = props.provider ? (
+    <Tooltip title="Wallet">
+      <WalletOutlined
+        onClick={() => {
+          setOpen(!open);
+        }}
+        rotate={-90}
+        style={{
+          padding: 7,
+          color: props.color ? props.color : "#1890ff",
+          cursor: "pointer",
+          fontSize: 28,
+          verticalAlign: "middle",
+        }}
+      />
+    </Tooltip>
+  ) : (
+    ""
+  );
 
   let display;
   let receiveButton;

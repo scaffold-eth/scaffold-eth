@@ -5,6 +5,8 @@ import { useLookupAddress } from "eth-hooks";
 
 const { Text } = Typography;
 
+const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/address/"}${address}`;
+
 export default function Address(props) {
   const ens = useLookupAddress(props.ensProvider, props.value);
 
@@ -26,15 +28,11 @@ export default function Address(props) {
     displayAddress = props.value;
   }
 
-  let blockExplorer = "https://etherscan.io/address/";
-  if (props.blockExplorer) {
-    blockExplorer = props.blockExplorer;
-  }
-
+  const etherscanLink = blockExplorerLink(props.value, props.blockExplorer);
   if (props.minimized) {
     return (
       <span style={{ verticalAlign: "middle" }}>
-        <a style={{ color: "#222222" }} href={blockExplorer + props.value}>
+        <a style={{ color: "#222222" }} href={etherscanLink}>
           <Blockies seed={props.value.toLowerCase()} size={8} scale={2} />
         </a>
       </span>
@@ -45,7 +43,7 @@ export default function Address(props) {
   if (props.onChange) {
     text = (
       <Text editable={{ onChange: props.onChange }} copyable={{ text: props.value }}>
-        <a style={{ color: "#222222" }} href={blockExplorer + props.value}>
+        <a style={{ color: "#222222" }} href={etherscanLink}>
           {displayAddress}
         </a>
       </Text>
@@ -53,7 +51,7 @@ export default function Address(props) {
   } else {
     text = (
       <Text copyable={{ text: props.value }}>
-        <a style={{ color: "#222222" }} href={blockExplorer + props.value}>
+        <a style={{ color: "#222222" }} href={etherscanLink}>
           {displayAddress}
         </a>
       </Text>
