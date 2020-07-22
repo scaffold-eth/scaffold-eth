@@ -47,14 +47,14 @@ export default function NftyWallet(props) {
   const showInk = ((newIpfsHash) => {
     console.log(newIpfsHash)
     if(newIpfsHash === ipfsHash) {
-      setTab('2')
+      setTab('create')
     } else {
     window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
     setDrawing()
     setInk({})
     setIpfsHash(newIpfsHash)
     setMode('mint')
-    setTab('2')
+    setTab('create')
     setCanvasKey(Date.now())
     return false
   }
@@ -66,7 +66,7 @@ export default function NftyWallet(props) {
     setDrawing("")
     setIpfsHash()
     setInk({})
-    setTab("2")
+    setTab("create")
     setCanvasKey(Date.now())
   })
 
@@ -80,12 +80,13 @@ export default function NftyWallet(props) {
     const loadPage = async () => {
 
       console.log(process.env.REACT_APP_NETWORK_NAME)
+      console.log('providers',props.kovanProvider, props.localProvider)
 
       let ipfsHashRequest = window.location.pathname.replace("/", "")
       if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
         setMode("mint")
         setDrawing("")
-        setTab("2")
+        setTab("create")
         setIpfsHash(ipfsHashRequest)
 
       } else {
@@ -187,8 +188,6 @@ export default function NftyWallet(props) {
               <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
-                  <Button style={{ marginBottom: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
-                  }}><PlusOutlined /> New Ink</Button>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
                     localProvider={props.kovanProvider}
@@ -199,14 +198,47 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  {/*<Contract
+                  {<Contract
                   provider={props.injectedProvider}
-                  name={"Liker"}
+                  name={"NFTINK"}
                   price={props.price}
-                  />*/}
+                  />}
                 </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>🖌️</span>create</span></>} key="2">
+                <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
+                  <div style={{width:300,margin:"0 auto"}}>
+                    <MyNiftyInks
+                      address={props.address}
+                      mainnetProvider={props.mainnetProvider}
+                      readContracts={props.readContracts}
+                      readKovanContracts={props.readKovanContracts}
+                      tab={tab}
+                      showInk={showInk}
+                      ipfsConfig={ipfsConfig}
+                      inksCreatedBy={inksCreatedBy}
+                      thisTab={"inks"}
+                      newInk={newInk}
+                    />
+                  </div>
+                </TabPane>
+                <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="holdings">
+                  <div style={{maxWidth:300,margin:"0 auto"}}>
+                    <MyNiftyHoldings
+                      address={props.address}
+                      mainnetProvider={props.mainnetProvider}
+                      injectedProvider={props.injectedProvider}
+                      readContracts={props.readContracts}
+                      tab={tab}
+                      showInk={showInk}
+                      ipfsConfig={ipfsConfig}
+                      nftyBalance={nftyBalance}
+                      thisTab={"holdings"}
+                    />
+                  </div>
+                </TabPane>
+                <TabPane tab={
+                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()}}><PlusOutlined /> New Ink</Button>
+                  } key="create">
                   <div>
                     <InkCanvas
                       canvasKey={canvasKey}
@@ -227,37 +259,6 @@ export default function NftyWallet(props) {
                       gasPrice={props.gasPrice}
                     />
                     {inkInfo}
-                  </div>
-                </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="3">
-                  <div style={{width:300,margin:"0 auto"}}>
-                    <MyNiftyInks
-                      address={props.address}
-                      mainnetProvider={props.mainnetProvider}
-                      readContracts={props.readContracts}
-                      readKovanContracts={props.readKovanContracts}
-                      tab={tab}
-                      showInk={showInk}
-                      ipfsConfig={ipfsConfig}
-                      inksCreatedBy={inksCreatedBy}
-                      thisTab={"3"}
-                      newInk={newInk}
-                    />
-                  </div>
-                </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="4">
-                  <div style={{maxWidth:300,margin:"0 auto"}}>
-                    <MyNiftyHoldings
-                      address={props.address}
-                      mainnetProvider={props.mainnetProvider}
-                      injectedProvider={props.injectedProvider}
-                      readContracts={props.readContracts}
-                      tab={tab}
-                      showInk={showInk}
-                      ipfsConfig={ipfsConfig}
-                      nftyBalance={nftyBalance}
-                      thisTab={"4"}
-                    />
                   </div>
                 </TabPane>
               </Tabs>

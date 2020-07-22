@@ -9,8 +9,7 @@ import { Ramp, AdminWidget, Faucet } from "./components"
 import NftyWallet from "./NftyWallet.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
-const kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")//new ethers.providers.Web3Provider(new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"))//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
-
+let kovanProvider
 const CROSS_CHAIN_CONTRACT_ADDRESS = "0x1b8C48EB484363eFE390D92998D1CaDB7F193480";
 // local deployment address = 0x7a84d1CBc40AB93985c479f44c486Cf99dE45610
 
@@ -23,6 +22,7 @@ if(process.env.REACT_APP_NETWORK_NAME){
     </div>
   )
   localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
+  kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 }else{
   networkBanner = (
     <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
@@ -30,6 +30,7 @@ if(process.env.REACT_APP_NETWORK_NAME){
     </div>
   )
   localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545")
+  kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546") // yarn run sidechain
 }
 
 function App() {

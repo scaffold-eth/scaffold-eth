@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message } from 'antd';
+import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, signInk } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -90,7 +90,7 @@ export default function InkCanvas(props) {
     console.log(metaWriteContracts["NFTINK"])
 
 
-    let signed = await metaWriteContracts["NFTINK"].patronize(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    let signed = await metaWriteContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("Signed?",signed)
@@ -339,7 +339,7 @@ if (props.mode === "edit") {
        drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
     }}><PlaySquareOutlined /></a>
     <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-    <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name}</a>
+    <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name?props.ink.name:<Spin/>}</a>
     </Typography.Text>
 
     </Row>

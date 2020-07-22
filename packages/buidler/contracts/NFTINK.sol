@@ -18,16 +18,18 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
     event mintedInk(uint256 id, string inkUrl, address to);
+    event boughtInk(uint256 id, string inkUrl, address buyer);
 
     struct Ink {
       uint256 id;
-      address artist;
+      address payable artist;
       address patron;
       string jsonUrl;
       string inkUrl;
       uint256 limit;
       uint256 count;
       bool exists;
+      uint256 price;
     }
 
     mapping (string => uint256) private _inkIdByUrl;
@@ -36,7 +38,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     mapping (address => EnumerableSet.UintSet) private _artistInks;
     mapping (string => bytes) private _inkSignatureByUrl;
 
-    function _createInk(string memory inkUrl, string memory jsonUrl, uint256 limit, address artist, address patron) internal returns (uint256) {
+    function _createInk(string memory inkUrl, string memory jsonUrl, uint256 limit, address payable artist, address patron) internal returns (uint256) {
 
       totalInks.increment();
 
@@ -48,7 +50,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         jsonUrl: jsonUrl,
         limit: limit,
         count: 0,
-        exists: true
+        exists: true,
+        price: 0
         });
 
         _inkIdByUrl[inkUrl] = _ink.id;
@@ -97,8 +100,34 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         return tokenId;
     }
 
+    function setPrice(string memory inkUrl, uint256 price) public returns (uint256) {
+      uint256 _inkId = _inkIdByUrl[inkUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink storage _ink = _inkById[_inkId];
+      require(_ink.artist == _msgSender(), "only the artist can set the price!");
+      require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
+
+      _inkById[_inkId].price = price;
+
+      return price;
+    }
+
+    function buyInk(string memory inkUrl) public payable returns (uint256) {
+      uint256 _inkId = _inkIdByUrl[inkUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink storage _ink = _inkById[_inkId];
+      require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
+      require(_ink.price > 0, "this ink does not have a price set");
+      require(msg.value >= _ink.price, "Amount of Ether sent too small");
+      address buyer = _msgSender();
+      uint256 tokenId = _mintInkToken(buyer, _inkId, inkUrl, _ink.jsonUrl);
+      _ink.artist.transfer(msg.value);
+      emit boughtInk(tokenId, inkUrl, buyer);
+      return tokenId;
+    }
+
     //we will store the patronization signature on the weaker cahin to use on the stronger chain
-    function allowPatronization(string memory inkUrl, bytes memory signature) public {
+    function saveInkSignature(string memory inkUrl, bytes memory signature) public {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       Ink storage _ink = _inkById[_inkId];
       bytes32 messageHash = getHash(_ink.artist,inkUrl,_ink.jsonUrl,_ink.limit);
@@ -107,7 +136,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       _inkSignatureByUrl[inkUrl] = signature;
     }
 
-    function patronize(string memory inkUrl, string memory jsonUrl, uint256 limit, address artist, bytes memory signature) public returns (uint256) {
+    function createInkFromSignature(string memory inkUrl, string memory jsonUrl, uint256 limit, address payable artist, bytes memory signature) public returns (uint256) {
       require(!(_inkIdByUrl[inkUrl] > 0), "this ink already exists!");
 
       require(artist!=address(0), "Artist must be specified.");
@@ -151,13 +180,13 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       return _inkTokens[inkUrl].at(index);
     }
 
-    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory, bytes memory) {
+    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, uint256, string memory, bytes memory, uint256) {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
       bytes memory signature = _inkSignatureByUrl[inkUrl];
 
-      return (_inkId, _ink.artist, _ink.count, _ink.jsonUrl, signature);
+      return (_inkId, _ink.artist, _ink.count, _ink.jsonUrl, signature, _ink.price);
     }
 
     function inkIdByUrl(string memory inkUrl) public view returns (uint256) {
@@ -172,12 +201,12 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
         return _artistInks[artist].at(index);
     }
 
-    function inkInfoById(uint256 id) public view returns (string memory, address, uint256, string memory, bytes memory) {
+    function inkInfoById(uint256 id) public view returns (string memory, address, uint256, string memory, bytes memory, uint256) {
       require(_inkById[id].exists, "this ink does not exist!");
       Ink storage _ink = _inkById[id];
       bytes memory signature = _inkSignatureByUrl[_ink.inkUrl];
 
-      return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl, signature);
+      return (_ink.jsonUrl, _ink.artist, _ink.count, _ink.inkUrl, signature, _ink.price);
     }
 
     function versionRecipient() external virtual view override returns (string memory) {
