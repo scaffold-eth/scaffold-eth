@@ -87,6 +87,7 @@ export default function Account(props) {
 
   const logoutOfWeb3Modal = async ()=>{
     await web3Modal.clearCachedProvider();
+    window.localStorage.removeItem('walletconnect');
     //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
