@@ -355,13 +355,13 @@ if (props.mode === "edit") {
 }
 
 return (
-  <div style={{textAlign:"center"}}  onClick={
+  <div style={{textAlign:"center"}}  /*onClick={
     () => {
       if(props.mode=="mint"){
          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
       }
     }
-  }>
+  }*/>
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
   <CanvasDraw
