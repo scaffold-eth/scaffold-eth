@@ -76,7 +76,7 @@ export default function InkInfo(props) {
     setBuying(false)
     if(result) {
     notification.open({
-      message: '💵 Purchased Ink',
+      message: <><span style={{marginRight:8}}>💵</span>Purchased Ink</>,
       description: 'You minted one ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(inkPrice)
     });
   }
@@ -335,7 +335,7 @@ useEffect(()=>{
               let limit = props.ink.attributes[0].value
               let artist = inkChainInfo[1]
               let signature = inkChainInfo[4]
-              let result = await tx(writeContracts["NFTINK"].patronize(inkUrl, jsonUrl, limit, artist, signature))
+              let result = await tx(writeContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, limit, artist, signature))
               if(result) {
               console.log(result)
               setMinting(false)
