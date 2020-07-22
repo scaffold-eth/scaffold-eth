@@ -183,7 +183,7 @@ export default function InkCanvas(props) {
         'Uploading to the distributed web',
       });*/
 
-      message.loading('Uploading to IPFS...', 0);
+      //message.loading('Uploading to IPFS...', 0);
 
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
