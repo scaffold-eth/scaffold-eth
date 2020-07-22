@@ -292,16 +292,16 @@ useEffect(()=>{
               let jsonUrl = inkChainInfo[3]
               let limit = props.ink.attributes[0].value
 
-              message.loading('Upgrading your ink...');
+              //message.loading('Upgrading your ink...');
               let result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, limit))
               console.log(result)
               if(result) {
               message.destroy()
               setMinting(false)
               notification.open({
-                message: '🛰  Ink Minted!',
+                message: <><span style={{marginRight:8}}>🛰</span>Ink Minted!</>,
                 description:(
-                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction.</a>
+                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction</a>
                 ),
               });
             } else {

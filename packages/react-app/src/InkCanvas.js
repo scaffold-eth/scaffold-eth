@@ -88,9 +88,9 @@ export default function InkCanvas(props) {
 
 
     notification.open({
-      message: '📡   Broadcasting Ink',
+      message: <><span style={{marginRight:8}}>📡</span>Broadcasting Ink</>,
       description:
-      'Sending ink and your signature to the network...',
+      'Sending ink and signature to the network...',
     });
 
 
@@ -183,7 +183,7 @@ export default function InkCanvas(props) {
         'Uploading to the distributed web',
       });*/
 
-      message.loading('Uploading to IPFS...', 0);
+      //message.loading('Uploading to IPFS...', 0);
 
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
