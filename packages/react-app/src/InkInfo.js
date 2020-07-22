@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Popconfirm } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -38,6 +38,8 @@ export default function InkInfo(props) {
   let getPatronageButton
   let upgradeButton
   let providePatronageButton
+  let likeButtonDisplay
+  let detailsDisplay
 
   let upgradeButtonSet
 
@@ -56,7 +58,7 @@ export default function InkInfo(props) {
     let multipliedPrice = (values['price'] * 10 ** 18).toString()
     let result = await tx(writeContracts["NFTINK"].setPrice(props.ipfsHash, multipliedPrice, { gasPrice:props.gasPrice } ))
     notification.open({
-      message: 'New price set for ' + props.ink.name,
+      message: 'New minting price set for ' + props.ink.name,
       description: 'Ξ'+values['price']
     });
     priceForm.resetFields();
@@ -74,8 +76,8 @@ export default function InkInfo(props) {
     setBuying(false)
     if(result) {
     notification.open({
-      message: 'You bought a fresh new ink!',
-      description: 'You bought a copy of ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(inkPrice)
+      message: '💵 Purchased Ink',
+      description: 'You minted one ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(inkPrice)
     });
   }
   }
@@ -237,8 +239,8 @@ useEffect(()=>{
             )
             priceFlow = (
               <Popover content={setPriceForm}
-              title="Set Ink Price" trigger="click">
-                <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{inkPrice>0?'Ξ'+ethers.utils.formatEther(inkPrice):'Set Price'}</Button>
+              title="Set price to mint one:" trigger="click">
+                <Button type="primary" style={{ marginBottom: 12 }}><ShopOutlined />{inkPrice>0?'Ξ'+ethers.utils.formatEther(inkPrice):'Sell'}</Button>
               </Popover>
             )
 
@@ -276,7 +278,7 @@ useEffect(()=>{
           mintFlow =       (
             <Popover content={mintInkForm}
             title="Mint" trigger="click">
-            <Button type="primary" style={{ marginBottom: 12 }}>Mint ink</Button>
+            <Button type="primary" style={{ marginBottom: 12 }}><SendOutlined style={{color:"#FFFFFF"}}/> Mint</Button>
             </Popover>
           )
         }
@@ -297,9 +299,9 @@ useEffect(()=>{
               message.destroy()
               setMinting(false)
               notification.open({
-                message: '🛰 Ink Upgraded!',
+                message: '🛰  Ink Upgraded!',
                 description:(
-                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>sent! view transaction.</a>
+                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction.</a>
                 ),
               });
             } else {
@@ -342,15 +344,15 @@ useEffect(()=>{
               setMinting(false)
               console.log(e)
             }
-          }} style={{ marginBottom: 12 }}>Upgrade this ink: provide patronage</Button>
+          }} style={{ marginBottom: 12 }}>Mint on Ethereum</Button>
         )
       }
       if(inkPrice > 0 && (inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
         buyButton = (
           <Popconfirm
-            title={'Buy a copy for Ξ'+ethers.utils.formatEther(inkPrice)}
+            title={'Mint one "'+props.ink.name+'" for Ξ'+ethers.utils.formatEther(inkPrice)}
             onConfirm={buyInk}
-            okText="Buy now"
+            okText="Purchase"
             cancelText="Cancel"
             icon=<ShoppingCartOutlined/>
           >
@@ -362,41 +364,61 @@ useEffect(()=>{
 
         upgradeButtonSet = (<Row style={{justifyContent: 'center'}}>{upgradeButton}{providePatronageButton}</Row>)
 
+        likeButtonDisplay = (
+          <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>
+            <LikeButton
+              metaProvider={props.metaProvider}
+              signingProvider={props.injectedProvider}
+              contractAddress={props.readKovanContracts['NFTINK']['address']}
+              targetId={targetId}
+              likerAddress={props.address}
+            />
+          </div>
+
+        )
+
+        detailsDisplay = (
+          <div style={{marginLeft:-props.calculatedVmin*0.77,marginTop:-20,opacity:0.5}}>
+            <Popover content={detailContent} title="Ink Details">
+            <QuestionCircleOutlined />
+            </Popover>
+            <span style={{paddingLeft:4}}>{upgraded?<StarTwoTone />:<></>}</span>
+          </div>
+        )
+
         inkChainInfoDisplay = (
           <>
-          <Row style={{justifyContent: 'center',marginTop:16}}>
-          <Space>
-          <Typography>
-          <span style={{verticalAlign:"middle",fontSize:16}}>
-          {" artist: "}
-          </span>
-          </Typography>
-          <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
-          </Space>
-          <Popover content={detailContent} title="Ink Details">
-          <QuestionCircleOutlined />
-          </Popover>
-          {upgraded?<StarTwoTone />:<></>}
-          <LikeButton
-            metaProvider={props.metaProvider}
-            signingProvider={props.injectedProvider}
-            contractAddress={props.readKovanContracts['NFTINK']['address']}
-            targetId={targetId}
-            likerAddress={props.address}
-          />
-          </Row>
+            <Row style={{justifyContent: 'center',marginTop:-16}}>
+            <Space>
+            <Typography>
+            <span style={{verticalAlign:"middle",fontSize:16}}>
+            {" artist: "}
+            </span>
+            </Typography>
+            <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
+            </Space>
+
+            </Row>
           </>
         )
       }
     }
 
+    //{artistAndOtherInfo}
+
     let bottom = (
-      <>
-      <div style={{ marginTop: 16, margin: "auto" }}>
-      {inkChainInfoDisplay}
-      {upgraded?holders:upgradeButtonSet}
+      <div>
+        {likeButtonDisplay}
+        {detailsDisplay}
+        <div style={{ marginTop: 16, margin: "auto" }}>
+          {inkChainInfoDisplay}
+        </div>
+
+        <div style={{marginTop:20}}>
+          {upgraded?holders:upgradeButtonSet}
+        </div>
+
       </div>
-      </>
     )
 
     return bottom

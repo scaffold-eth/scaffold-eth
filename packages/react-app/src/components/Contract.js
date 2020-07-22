@@ -60,7 +60,7 @@ export default function Contract(props) {
               </div>
             )
           }else if(!displayed[fn.name] && ( fn.type==="call" || fn.type === "transaction" ) ){
-            console.log("RENDERING",fn)
+            //console.log("RENDERING",fn)
             //console.log("CALL WITH ARGS",fn.name,fn)
             displayed[fn.name]=true
             let inputs = []

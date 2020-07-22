@@ -29,8 +29,7 @@ export default function InkCanvas(props) {
   const [color, setColor] = useLocalStorage("color", "#666666")
 
   const drawingCanvas = useRef(null);
-  const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
-  const [size, setSize] = useState([0.7 * calculatedVmin, 0.7 * calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
+  const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
 
@@ -47,8 +46,6 @@ export default function InkCanvas(props) {
             console.log(e)
           }
         }
-
-
     }
     loadPage()
   }, [])
@@ -234,7 +231,7 @@ export default function InkCanvas(props) {
     message.destroy()
     //setMode("mint")
     notification.open({
-      message: '💾  Ink saved!',
+      message: (<><span style={{marginRight:8}}>💾</span>  Ink saved!</>),
       description:
       ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
     });
@@ -334,15 +331,16 @@ if (props.mode === "edit") {
 } else if (props.mode === "mint") {
 
   top = (
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
-    <a style={{fontSize:28, opacity:0.5}} onClick={() => {
-       drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
-    }}><PlaySquareOutlined /></a>
-    <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-    <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name?props.ink.name:<Spin/>}</a>
-    </Typography.Text>
+    <div>
+      <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"1vh", justifyContent:'center'}}>
 
-    </Row>
+        <Typography.Text style={{color:"#222222"}} copyable={{ text: props.ink.external_url}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+        <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name?props.ink.name:<Spin/>}</a>
+        </Typography.Text>
+
+      </Row>
+    </div>
+
   )
 
 
@@ -350,7 +348,13 @@ if (props.mode === "edit") {
 }
 
 return (
-  <div style={{textAlign:"center"}}>
+  <div style={{textAlign:"center"}}  onClick={
+    () => {
+      if(props.mode=="mint"){
+         drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+      }
+    }
+  }>
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
   <CanvasDraw
@@ -369,6 +373,9 @@ return (
     props.setDrawing(savedData)
   }}
   loadTimeOffset={3}
+
+
+
   />
   </div>
   {bottom}

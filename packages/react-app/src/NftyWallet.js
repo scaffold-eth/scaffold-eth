@@ -16,7 +16,10 @@ const { TabPane } = Tabs;
 const isIPFS = require('is-ipfs')
 const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
+
 export default function NftyWallet(props) {
+
+  const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
 
   const [tab, setTab] = useState("1")
 
@@ -25,6 +28,7 @@ export default function NftyWallet(props) {
   const [drawing, setDrawing] = useLocalStorage("drawing")
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
+  const [renderKey, setRenderKey] = useState(Date.now())
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
   let nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
@@ -43,6 +47,15 @@ export default function NftyWallet(props) {
   if(totalInks) {
     displayTotalInks = totalInks.toString()
   }
+
+  useEffect(() => {
+    function handleResize() {
+      console.log("RESIZE!!!!")
+      setRenderKey(Date.now())
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []); // Empty array ensures that effect is only run on mount and unmount
 
   const showInk = ((newIpfsHash) => {
     console.log(newIpfsHash)
@@ -142,7 +155,7 @@ export default function NftyWallet(props) {
   if (true/*mode!=="edit" /*|| tab!=="1"*/) {
   newButton = (
   <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-  <Button style={{ marginRight: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
+  <Button style={{ marginRight: 8 }} shape="round" size="large" type="secondary" onClick={() => {newInk()
   }}><PlusOutlined /> New Ink</Button>
   </div>
 )}
@@ -167,6 +180,7 @@ export default function NftyWallet(props) {
       ipfsHash={ipfsHash}
       ipfsConfig={ipfsConfig}
       gasPrice={props.gasPrice}
+      calculatedVmin={calculatedVmin}
     />)
   }
 
@@ -185,8 +199,12 @@ export default function NftyWallet(props) {
               />
 
               </div>
-              <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
-                <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span><Badge style={badgeStyle} count={displayTotalInks} showZero/></>} key="1">
+              <Tabs activeKey={tab} onChange={(t)=>{
+                window.history.pushState({id: 'draw'}, 'draw', '/')
+                setTab(t)
+
+              }} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
+                <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
@@ -198,11 +216,11 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  {<Contract
+                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
                   name={"NFTINK"}
                   price={props.price}
-                  />}
+                  />)}
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
@@ -237,10 +255,11 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={
-                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type="primary" onClick={() => {newInk()}}><PlusOutlined /> New Ink</Button>
+                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type={tab=="create" && mode=="edit"?"secondary":"primary"} onClick={() => {newInk()}}><PlusOutlined /> Create</Button>
                   } key="create">
                   <div>
                     <InkCanvas
+                      key={renderKey}
                       canvasKey={canvasKey}
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
@@ -257,6 +276,7 @@ export default function NftyWallet(props) {
                       setDrawing={setDrawing}
                       ipfsConfig={ipfsConfig}
                       gasPrice={props.gasPrice}
+                      calculatedVmin={calculatedVmin}
                     />
                     {inkInfo}
                   </div>
