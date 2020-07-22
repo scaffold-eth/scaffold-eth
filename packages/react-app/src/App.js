@@ -82,12 +82,14 @@ function App() {
           </Button>
           </Col>
           {process.env.REACT_APP_NETWORK_NAME?(
+            <>
             <Col>
               <Faucet localProvider={localProvider} price={price} />
             </Col>
             <Col>
               <Faucet localProvider={kovanProvider} placeholder={"sidechain faucet"} price={price} />
             </Col>
+            </>
           ):""}
 
         </Row>
