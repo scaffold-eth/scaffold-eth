@@ -88,9 +88,9 @@ export default function InkCanvas(props) {
 
 
     notification.open({
-      message: '📡   Broadcasting Ink',
+      message: <><span style={{marginRight:8}}>📡</span>Broadcasting Ink</>,
       description:
-      'Sending ink and your signature to the network...',
+      'Sending ink and signature to the network...',
     });
 
 
