@@ -87,6 +87,13 @@ export default function InkCanvas(props) {
     console.log(metaWriteContracts["NFTINK"])
 
 
+    notification.open({
+      message: '📡   Broadcasting Ink',
+      description:
+      'Sending ink and your signature to the network...',
+    });
+
+
     let signed = await metaWriteContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 

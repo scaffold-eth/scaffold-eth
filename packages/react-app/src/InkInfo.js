@@ -299,7 +299,7 @@ useEffect(()=>{
               message.destroy()
               setMinting(false)
               notification.open({
-                message: '🛰  Ink Upgraded!',
+                message: '🛰  Ink Minted!',
                 description:(
                   <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction.</a>
                 ),
@@ -308,7 +308,7 @@ useEffect(()=>{
               setMinting(false)
               message.destroy()
               notification.open({
-                message: 'Upgrade unsuccessful',
+                message: 'Mint unsuccessful',
                 description: 'No changes made'
               });
             }
@@ -316,11 +316,11 @@ useEffect(()=>{
               setMinting(false)
               console.log(e)
               notification.open({
-                message: 'Upgrade unsuccessful',
+                message: 'Mint unsuccessful',
                 description: e,
               });
             }
-          }} style={{ marginBottom: 12 }}>Upgrade</Button>
+          }} style={{ marginBottom: 12 }}>Mint</Button>
         )
       }
 
@@ -344,7 +344,7 @@ useEffect(()=>{
               setMinting(false)
               console.log(e)
             }
-          }} style={{ marginBottom: 12 }}>Mint on Ethereum</Button>
+          }} style={{ marginBottom: 12 }}>Mint</Button>
         )
       }
       if(inkPrice > 0 && (inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {

@@ -22,6 +22,13 @@ export default function MyNiftyInks(props) {
             let inkId = await props.readKovanContracts['NFTINK']["inkOfArtistByIndex"](props.address, i)
             let inkInfo = await props.readKovanContracts['NFTINK']["inkInfoById"](inkId)
             let mainChainId = await props.readContracts['NFTINK']["inkIdByUrl"](inkInfo[3])
+            let inkCount
+            let mainChainInkInfo
+
+            if(mainChainId > 0) {
+              mainChainInkInfo = await props.readContracts['NFTINK']["inkInfoById"](inkId)
+              inkCount = mainChainInkInfo[2]
+            }
             let likes
 
             if (props.readContracts['Liker']) {
@@ -38,7 +45,7 @@ export default function MyNiftyInks(props) {
             const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
             const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
 
-            return {inkId: inkId.toString(), inkCount: inkInfo[2], url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, mainChainId: mainChainId, likes: likes.toString()}
+            return {inkId: inkId.toString(), inkCount: inkCount, url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, mainChainId: mainChainId, likes: likes.toString()}
           }
 
           for(var i = 0; i < props.inksCreatedBy; i++){
@@ -55,8 +62,7 @@ export default function MyNiftyInks(props) {
 
   },[props.address,props.tab])
 
-
-      if(props.inksCreatedBy > 0 && inkData && inkData[0]['mainChainId']) {
+      if(props.inksCreatedBy > 0 && inkData && inkData[0] && inkData[0]['mainChainId']) {
 
 
 
@@ -83,7 +89,7 @@ export default function MyNiftyInks(props) {
           console.log(e)
         }
 
-      } else if(props.inksCreatedBy.toString() === "0") { inkView = (<Empty
+      } else if(props.inksCreatedBy && props.inksCreatedBy.toString() === "0") { inkView = (<Empty
           description={
             <span>
               <a href="" onClick={() => {props.newInk()}}><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
