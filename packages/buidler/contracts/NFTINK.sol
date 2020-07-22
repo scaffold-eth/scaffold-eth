@@ -116,6 +116,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
+      require(_ink.count < _ink.limit || _ink.limit == 0, "this ink is over the limit!");
       require(_ink.price > 0, "this ink does not have a price set");
       require(msg.value >= _ink.price, "Amount of Ether sent too small");
       address buyer = _msgSender();
