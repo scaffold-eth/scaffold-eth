@@ -10,8 +10,6 @@ import NftyWallet from "./NftyWallet.js"
 
 const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
 let kovanProvider
-const CROSS_CHAIN_CONTRACT_ADDRESS = "0x1b8C48EB484363eFE390D92998D1CaDB7F193480";
-// local deployment address = 0x7a84d1CBc40AB93985c479f44c486Cf99dE45610
 
 let localProvider
 let networkBanner = ""
