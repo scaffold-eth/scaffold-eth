@@ -12,7 +12,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
 
-    constructor() ERC721("Nifty Ink", "NFTINK") public {
+    constructor() ERC721("🎨 Nifty Ink", "NFTINK") public {
       _setBaseURI('ipfs://ipfs/');
     }
 
