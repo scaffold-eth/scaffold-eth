@@ -39,7 +39,7 @@
     "react-qr-reader": "^2.2.1",
     "react-scripts": "^3.3.1",
     "s3": "^4.4.0",
-    "web3modal": "^1.5.0",
+    "web3modal": "^1.9.0",
     "winston": "^3.3.3"
   },
   "devDependencies": {

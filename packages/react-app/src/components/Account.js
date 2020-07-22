@@ -10,13 +10,17 @@ import { Button } from 'antd';
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
-  //network: 100, // optional
+  network: 'xdai', // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: INFURA_ID
+        infuraId: INFURA_ID,
+        network: 'xdai',
+        rpc: {
+          100: 'https://dai.poa.network',
+        },
       }
     }
   }
