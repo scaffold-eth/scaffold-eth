@@ -81,7 +81,7 @@ function App() {
             {parseInt(gasPrice)/10**9}g
           </Button>
           </Col>
-          {process.env.REACT_APP_NETWORK_NAME?(
+          {process.env.REACT_APP_NETWORK_NAME?"":(
             <>
             <Col>
               <Faucet localProvider={localProvider} price={price} />
@@ -90,7 +90,7 @@ function App() {
               <Faucet localProvider={kovanProvider} placeholder={"sidechain faucet"} price={price} />
             </Col>
             </>
-          ):""}
+          )}
 
         </Row>
 
