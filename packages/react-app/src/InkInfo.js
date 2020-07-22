@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Popconfirm } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -14,7 +14,9 @@ export default function InkInfo(props) {
   const [holders, setHolders] = useState(<Spin/>)
   const [sends, setSends] = useState(0)
   const [minting, setMinting] = useState(false)
-  const [form] = Form.useForm();
+  const [buying, setBuying] = useState(false)
+  const [mintForm] = Form.useForm();
+  const [priceForm] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
@@ -25,9 +27,12 @@ export default function InkInfo(props) {
   const [inkMainChainInfo, setinkMainChainInfo] = useState()
   const [upgraded, setUpgraded] = useState()
   const [targetId, setTargetId] = useState()
+  const [inkPrice, setInkPrice] = useState(0)
 
   let mintDescription
   let mintFlow
+  let priceFlow
+  let buyButton
   let inkChainInfoDisplay
   let detailContent
   let getPatronageButton
@@ -40,10 +45,40 @@ export default function InkInfo(props) {
     setMinting(true)
     console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
     let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
-    form.resetFields();
+    mintForm.resetFields();
     setMinting(false)
     console.log("result", result)
   };
+
+  const setPrice = async (values) => {
+    console.log("values",values)
+    setBuying(true)
+    let multipliedPrice = (values['price'] * 10 ** 18).toString()
+    let result = await tx(writeContracts["NFTINK"].setPrice(props.ipfsHash, multipliedPrice, { gasPrice:props.gasPrice } ))
+    notification.open({
+      message: 'New price set for ' + props.ink.name,
+      description: 'Ξ'+values['price']
+    });
+    priceForm.resetFields();
+    setBuying(false)
+    console.log("result", result)
+  }
+
+  const buyInk = async (values) => {
+    console.log("values", values)
+    setBuying(true)
+    let bigNumber = ethers.utils.bigNumberify(inkPrice)
+    let hex = bigNumber.toHexString()
+    let result = await tx(writeContracts["NFTINK"].buyInk(props.ipfsHash, { value: hex, gasPrice:props.gasPrice } ))
+    console.log(result)
+    setBuying(false)
+    if(result) {
+    notification.open({
+      message: 'You bought a fresh new ink!',
+      description: 'You bought a copy of ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(inkPrice)
+    });
+  }
+  }
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
@@ -63,6 +98,7 @@ export default function InkInfo(props) {
           setUpgraded(true)
           const newMainChainInkInfo = await props.readContracts['NFTINK']['inkInfoByInkUrl'](props.ipfsHash)
           setinkMainChainInfo(newMainChainInkInfo)
+          setInkPrice(newMainChainInkInfo[5].toString())
         }
       } catch(e){ console.log(e)}
       }
@@ -110,7 +146,7 @@ export default function InkInfo(props) {
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
           <List
-          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}</Space></Row>}
+          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}{priceFlow}{buyButton}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
           renderItem={item => (
@@ -166,17 +202,53 @@ useEffect(()=>{
               <Descriptions.Item label="Description">{props.ink.description}</Descriptions.Item>
               <Descriptions.Item label="signature">{inkChainInfo[4]}</Descriptions.Item>
               <Descriptions.Item label="status">{upgraded?"Upgraded":"Not upgraded"}</Descriptions.Item>
+              <Descriptions.Item label="Price">{(inkPrice > 0)?ethers.utils.formatEther(inkPrice):"No price set"}</Descriptions.Item>
             </Descriptions>
           )
 
       if(props.address === inkChainInfo[1]) {
           if(upgraded && inkMainChainInfo) {
-          if(inkChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
-          const mintForm = (
+          if(inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
+            const setPriceForm = (
+              <Row style={{justifyContent: 'center'}}>
+
+              <Form
+              form={priceForm}
+              layout={'inline'}
+              name="setPrice"
+              onFinish={setPrice}
+              onFinishFailed={onFinishFailed}
+              >
+              <Form.Item
+              name="price"
+              rules={[{ required: true, message: 'What is the price of an ink?' }]}
+              >
+              <InputNumber min={0} precision={3} placeholder="Ξ" />
+              </Form.Item>
+
+              <Form.Item >
+              <Button type="primary" htmlType="submit" loading={buying}>
+              Set Price
+              </Button>
+              </Form.Item>
+              </Form>
+
+              </Row>
+            )
+            priceFlow = (
+              <Popover content={setPriceForm}
+              title="Set Ink Price" trigger="click">
+                <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{inkPrice>0?'Ξ'+ethers.utils.formatEther(inkPrice):'Set Price'}</Button>
+              </Popover>
+            )
+
+
+
+          const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>
 
             <Form
-            form={form}
+            form={mintForm}
             layout={'inline'}
             name="mintInk"
             onFinish={mint}
@@ -202,7 +274,7 @@ useEffect(()=>{
             </Row>
           )
           mintFlow =       (
-            <Popover content={mintForm}
+            <Popover content={mintInkForm}
             title="Mint" trigger="click">
             <Button type="primary" style={{ marginBottom: 12 }}>Mint ink</Button>
             </Popover>
@@ -271,6 +343,19 @@ useEffect(()=>{
               console.log(e)
             }
           }} style={{ marginBottom: 12 }}>Upgrade this ink: provide patronage</Button>
+        )
+      }
+      if(inkPrice > 0 && (inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
+        buyButton = (
+          <Popconfirm
+            title={'Buy a copy for Ξ'+ethers.utils.formatEther(inkPrice)}
+            onConfirm={buyInk}
+            okText="Buy now"
+            cancelText="Cancel"
+            icon=<ShoppingCartOutlined/>
+          >
+          <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'Ξ'+ethers.utils.formatEther(inkPrice)}</Button>
+          </Popconfirm>
         )
       }
     }
