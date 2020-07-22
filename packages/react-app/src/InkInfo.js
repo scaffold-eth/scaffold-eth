@@ -344,7 +344,7 @@ useEffect(()=>{
               setMinting(false)
               console.log(e)
             }
-          }} style={{ marginBottom: 12 }}>Mint on Ethereum</Button>
+          }} style={{ marginBottom: 12 }}>Mint</Button>
         )
       }
       if(inkPrice > 0 && (inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
