@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { List, Avatar, Empty, Spin, Typography, Row, Badge, Col, Space } from 'antd';
-import { LoadingOutlined, StarTwoTone, LikeTwoTone } from '@ant-design/icons';
+import { LoadingOutlined, LikeTwoTone } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 
 export default function MyNiftyInks(props) {
@@ -58,23 +58,27 @@ export default function MyNiftyInks(props) {
 
       if(props.inksCreatedBy > 0 && inkData && inkData[0]['mainChainId']) {
 
+
+
         try{
+
           inkView = (
             <List
             itemLayout="horizontal"
             dataSource={inkData}
             renderItem={item => (
-              <List.Item>
-              <List.Item.Meta
-              avatar={item['image']?<a><Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></Badge></a>:<Avatar icon={<LoadingOutlined />} />}
-              title={<a href="#" onClick={() => props.showInk(item['url'])} >{<span>{item['name']}</span>}</a>}
-              description={<Row style={{justifyContent: 'center'}}>{item['mainChainId'].toString() !== "0"?<><StarTwoTone/><Typography>{"Upgraded: " + (item['limit']>0?item['limit'] + ' copies':'unlimited copies')}</Typography><StarTwoTone/></>:<Typography>Ink not upgraded</Typography>}
-                    </Row>
-                    }
-              />
-              </List.Item>
-            )}
-            />)
+                <List.Item>
+                <List.Item.Meta
+                avatar={item['image']?<a><Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></Badge></a>:<Avatar icon={<LoadingOutlined />} />}
+                title={<a href="#" onClick={() => props.showInk(item['url'])} >{<span>{item['name']}</span>}</a>}
+                description={<Row style={{justifyContent: 'center'}}>{item['mainChainId'].toString() !== "0"?<><Typography>{item['inkCount'].toNumber()+" of " + (item['limit']>0?item['limit'] + ' minted':'unlimited copies')}</Typography></>:<Typography></Typography>}
+                      </Row>
+                      }
+                />
+                </List.Item>
+              )
+            }
+          />)
         }catch(e){
           console.log(e)
         }

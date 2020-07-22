@@ -199,7 +199,11 @@ export default function NftyWallet(props) {
               />
 
               </div>
-              <Tabs activeKey={tab} onChange={setTab} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
+              <Tabs activeKey={tab} onChange={(t)=>{
+                window.history.pushState({id: 'draw'}, 'draw', '/')
+                setTab(t)
+
+              }} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
                 <div style={{maxWidth:500,margin:"0 auto"}}>
                   <AllNiftyInks
@@ -212,11 +216,11 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  {<Contract
+                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
                   name={"NFTINK"}
                   price={props.price}
-                  />}
+                  />)}
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
@@ -251,7 +255,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={
-                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type={tab=="create"?"secondary":"primary"} onClick={() => {newInk()}}><PlusOutlined /> Create</Button>
+                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type={tab=="create" && mode=="edit"?"secondary":"primary"} onClick={() => {newInk()}}><PlusOutlined /> Create</Button>
                   } key="create">
                   <div>
                     <InkCanvas
