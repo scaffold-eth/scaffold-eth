@@ -55,8 +55,7 @@ export default function MyNiftyInks(props) {
 
   },[props.address,props.tab])
 
-
-      if(props.inksCreatedBy > 0 && inkData && inkData[0]['mainChainId']) {
+      if(props.inksCreatedBy > 0 && inkData && inkData[0] && inkData[0]['mainChainId']) {
 
         try{
           inkView = (
@@ -79,7 +78,7 @@ export default function MyNiftyInks(props) {
           console.log(e)
         }
 
-      } else if(props.inksCreatedBy.toString() === "0") { inkView = (<Empty
+      } else if(props.inksCreatedBy && props.inksCreatedBy.toString() === "0") { inkView = (<Empty
           description={
             <span>
               <a href="" onClick={() => {props.newInk()}}><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
