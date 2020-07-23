@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import 'antd/dist/antd.css';
-import { Row, Col,  Button } from 'antd';
+import { Row, Col,  Button, Spin } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
@@ -105,7 +105,7 @@ function App() {
 
 
       <div style={{padding:50}}>
-        <></>
+        <a href="https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev" target="_blank">{readContracts?"":<Spin style={{padding:64,opacity:metaProvider?0.125:0.3}}/>}</a>
       </div>
     </div>
   );
