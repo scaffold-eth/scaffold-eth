@@ -220,16 +220,16 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
+                  {/*process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
                   name={"ValidSignatureTester"}
                   price={props.price}
-                  />)}
-                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
+                  />)*/}
+                  {/*process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
                   name={"NFTINK"}
                   price={props.price}
-                  />)}
+                  />)*/}
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">

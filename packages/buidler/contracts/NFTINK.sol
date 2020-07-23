@@ -14,6 +14,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
 
     constructor() ERC721("🎨 Nifty Ink", "NFTINK") public {
       _setBaseURI('ipfs://ipfs/');
+      setCheckSignatureFlag(true);
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
