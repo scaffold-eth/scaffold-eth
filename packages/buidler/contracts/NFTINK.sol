@@ -4,9 +4,9 @@ import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
-import "@openzeppelin/contracts/cryptography/ECDSA.sol";
+import "./SignatureChecker.sol";
 
-contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
+contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -121,6 +121,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       require(msg.value >= _ink.price, "Amount of Ether sent too small");
       address buyer = _msgSender();
       uint256 tokenId = _mintInkToken(buyer, _inkId, inkUrl, _ink.jsonUrl);
+      //Note: a pull mechanism would be safer here: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
       _ink.artist.transfer(msg.value);
       emit boughtInk(tokenId, inkUrl, buyer);
       return tokenId;
@@ -131,8 +132,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       uint256 _inkId = _inkIdByUrl[inkUrl];
       Ink storage _ink = _inkById[_inkId];
       bytes32 messageHash = getHash(_ink.artist,inkUrl,_ink.jsonUrl,_ink.limit);
-      address signer = getSigner(messageHash, signature);
-      require(signer == _ink.artist, "Artist did not sign these patronizing parameters.");
+      bool isArtistSignature = checkSignature(messageHash, signature, _ink.artist);
+      require(isArtistSignature, "Unable to verify the artist signature");
       _inkSignatureByUrl[inkUrl] = signature;
     }
 
@@ -141,8 +142,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
 
       require(artist!=address(0), "Artist must be specified.");
       bytes32 messageHash = getHash(artist,inkUrl,jsonUrl,limit);
-      address signer = getSigner(messageHash, signature);
-      require(signer == artist, "Artist did not sign these patronizing parameters.");
+      bool isArtistSignature = checkSignature(messageHash, signature, artist);
+      require(isArtistSignature, "Unable to verify the artist signature");
 
       uint256 inkId = _createInk(inkUrl, jsonUrl, limit, artist, _msgSender());
 
@@ -165,11 +166,6 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
                 jsonUrl,
                 limit
         ));
-    }
-
-    function getSigner(bytes32 signedHash, bytes memory signature) public pure returns (address)
-    {
-        return signedHash.toEthSignedMessageHash().recover(signature);
     }
 
     function inkTokenByIndex(string memory inkUrl, uint256 index) public view returns (uint256) {

@@ -74,6 +74,7 @@ export default function NftyWallet(props) {
   })
 
   const newInk = (() => {
+    if(mode=="mint") {
     window.history.pushState({id: 'draw'}, 'draw', '/')
     setMode("edit")
     setDrawing("")
@@ -81,6 +82,9 @@ export default function NftyWallet(props) {
     setInk({})
     setTab("create")
     setCanvasKey(Date.now())
+  } else {
+    setTab("create")
+  }
   })
 
   const badgeStyle = {
@@ -260,6 +264,11 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
+                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
+                  provider={props.injectedProvider}
+                  name={"ValidSignatureTester"}
+                  price={props.price}
+                  />)}
                   {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
                   name={"NFTINK"}
