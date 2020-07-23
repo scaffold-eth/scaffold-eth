@@ -92,7 +92,7 @@ export default function MyNiftyInks(props) {
       } else if(props.inksCreatedBy && props.inksCreatedBy.toString() === "0") { inkView = (<Empty
           description={
             <span>
-              <a href="" onClick={() => {props.newInk()}}><span style={{paddingRight:8}}>🖌</span>Create a Nifty Ink!</a>
+              Click "Create" to create a new ink!
               </span>
             }
             />

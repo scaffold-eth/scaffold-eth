@@ -235,11 +235,11 @@ export default function InkCanvas(props) {
     console.log(values);
     message.destroy()
     //setMode("mint")
-    notification.open({
+    /*notification.open({
       message: (<><span style={{marginRight:8}}>💾</span>  Ink saved!</>),
       description:
       ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
-    });
+    });*/
   });
 }
 };

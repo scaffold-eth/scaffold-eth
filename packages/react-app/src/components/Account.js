@@ -27,8 +27,8 @@ export default function Account(props) {
 
   function warning(network, chainId) {
       Modal.warning({
-        title: 'Network mismatch',
-        content: `Please connect to the ${network} network (chainId: ${chainId})`,
+        title: 'MetaMask Network Mismatch',
+        content: <>Please connect to <b>${network}</b></>,
       });
     }
 
