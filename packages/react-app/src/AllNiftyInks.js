@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Row, Col, Avatar, Empty, Space, Spin, Badge } from 'antd';
 import { useEventListener } from "./hooks"
 import { getFromIPFS } from "./helpers"
+import StackGrid from "react-stack-grid";
 
 export default function NftyWallet(props) {
 
@@ -54,14 +55,24 @@ export default function NftyWallet(props) {
     }
   },[props.tab, props.totalInks])
 
-       if(allInksArray) {
-         allInkView = (
-      <Row>
-        {allInksArray.map(item =>
-        <Col key={item['id']} span={8}>{item['image']?/*<Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}>*/<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.25}} size="large" />} />}</Col>
-      )}
-      </Row>
-    )
+
+
+    if(allInksArray) {
+             allInkView = (
+          <StackGrid
+             columnWidth={120}
+             gutterHeight={32}
+             gutterWidth={32}
+           >
+            {allInksArray.map(item =>{
+              return (
+                <div key={item['id']}>
+                  {item['image']?/*<Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}>*/<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.25}} size="large" />} />}
+                </div>
+              )
+            })}
+          </StackGrid>
+          )
     } else {
       allInkView = (<Empty
         description={
