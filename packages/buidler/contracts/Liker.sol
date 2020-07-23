@@ -1,18 +1,17 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "@openzeppelin/contracts/cryptography/ECDSA.sol";
+import "./SignatureChecker.sol";
 
-contract Liker is Ownable, BaseRelayRecipient {
+contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
   using ECDSA for bytes32;
   using Counters for Counters.Counter;
   using EnumerableSet for EnumerableSet.UintSet;
   using SafeMath for uint256;
-  using Address for address;
 
   Counters.Counter public totalLikes;
 
@@ -90,15 +89,10 @@ contract Liker is Ownable, BaseRelayRecipient {
       ));
   }
 
-  function getSigner(bytes32 signedHash, bytes memory signature) public pure returns (address)
-  {
-      return signedHash.toEthSignedMessageHash().recover(signature);
-  }
-
   function likeWithSignature(address contractAddress, uint256 target, address liker, bytes memory signature) public returns (uint256) {
     bytes32 messageHash = getHash(contractAddress, target, liker);
-    address signer = getSigner(messageHash, signature);
-    require(signer == liker, "Liker did not sign these parameters.");
+    bool isArtistSignature = checkSignature(messageHash, signature, liker);
+    require(isArtistSignature, "Unable to verify the artist signature");
     return _newLike(contractAddress, target, liker);
   }
 
@@ -138,7 +132,6 @@ contract Liker is Ownable, BaseRelayRecipient {
 
   function addContract(address contractAddress) public onlyOwner returns (bool) {
     require(!registeredContracts[contractAddress],"this contract is already registered");
-    require(contractAddress.isContract(),"this is not a contract");
     registeredContracts[contractAddress] = true;
     emit contractAdded(contractAddress);
     return true;
