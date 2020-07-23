@@ -205,7 +205,7 @@ export default function NftyWallet(props) {
 
               }} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
-                <div style={{maxWidth:500,margin:"0 auto"}}>
+                <div style={{maxWidth:720,margin:"0 auto"}}>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
                     localProvider={props.kovanProvider}
