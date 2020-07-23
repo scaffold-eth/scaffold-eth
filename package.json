@@ -39,7 +39,7 @@
     "mainnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet && npx buidler run scripts/publish.js"
   },
   "devDependencies": {
-    "@opengsn/gsn": "^0.9.0",
+    "@opengsn/gsn": "^0.10.0",
     "@nomiclabs/buidler": "1.3.3-rc.0",
     "@nomiclabs/buidler-truffle5": "1.3.3-rc.0",
     "@nomiclabs/buidler-web3": "1.3.3-rc.0"

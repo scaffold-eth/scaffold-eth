@@ -112,9 +112,53 @@ export default function NftyWallet(props) {
     if(process.env.REACT_APP_NETWORK_NAME){
       // we will use Kovan GSN for minting and liking:
       //https://docs.opengsn.org/gsn-provider/networks.html
-      relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
-      stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
-      paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
+      //relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
+      //stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
+      //paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
+
+      relayHubAddress = "0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6"
+      stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83"
+      paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
+
+      /*
+      Deployed GSN to network: kovan
+
+          RelayHub: 0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6
+          StakeManager: 0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83
+          Penalizer: 0x89c2Ed7235992F9e761Fb105E58704FeA9dBa6Bd
+          Forwarder: 0x77777e800704Fb61b0c10aa7b93985F835EC23fA
+          Paymaster (Default): 0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619
+
+          ---------
+
+          Deployed GSN to network: ropsten
+
+            RelayHub: 0xB3e93d8B141732cFd5e5d7bf0018f6Cbca193e9a
+            StakeManager: 0x62264ab69A01a3e7aC0d7b8C7F7E6899372d90C3
+            Penalizer: 0x9e828894427c56da92c6054e9B8A0Da2C423A220
+            Forwarder: 0x3a6f59D5a07AB99BC3DCF2561D23fC59a0177E77
+            Paymaster (Default): 0x45Aae984d4b1b0C55E3D2231d38882Fd7E6A5796
+
+          ---------
+
+          Deployed GSN to network: xdai
+
+            RelayHub: 0xA58B6fC9264ce507d0B0B477ceE31674341CB27e
+            StakeManager: 0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B
+            Penalizer: 0x19120dD5a594Da608aF904b3BECD1a1b9A839100
+            Forwarder: 0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb
+            Paymaster (Default): 0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC
+
+          ---------
+
+          MAINNET:
+
+          StakeManager: 0x5ae81a75AA2eA4647a31F099c239Bc76433141eA
+          Penalizer:    0x67c6e83F247fa404708A09032475Eda551e768fA
+          Forwarder:    0x4699d5C42A3BC7dd9c72D218cCEA45954aF24f53
+          RelayHub:     0x5648B6306380689AF8d2DE7Bdd23D916b9eE0db5
+          Paymaster:    0xF50B17A7Ca64447Ae782dc6c4AABe992c37476c7
+        */
 
     }else{
       relayHubAddress = require('./gsn/RelayHub.json').address
