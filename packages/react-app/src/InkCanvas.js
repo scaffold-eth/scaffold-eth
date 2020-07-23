@@ -370,7 +370,7 @@ return (
   canvasWidth={size[0]}
   canvasHeight={size[1]}
   brushColor={color.hex}
-  lazyRadius={4} å
+  lazyRadius={4}
   brushRadius={8}
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
