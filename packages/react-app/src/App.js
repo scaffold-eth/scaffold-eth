@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import 'antd/dist/antd.css';
-import { Row, Col,  Button } from 'antd';
+import { Row, Col,  Button, Spin } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
@@ -12,18 +12,18 @@ const mainnetProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149
 let kovanProvider
 
 let localProvider
-let networkBanner = ""
+let networkBanner = (<></>)
 if(process.env.REACT_APP_NETWORK_NAME){
-  networkBanner = (
-    <div style={{backgroundColor:process.env.REACT_APP_NETWORK_COLOR,color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
+  /*networkBanner = (
+    <div style={{backgroundColor:process.env.REACT_APP_NETWORK_COLOR,color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.125,filter:"blur(1.2px)"}}>
       {process.env.REACT_APP_NETWORK_NAME}
     </div>
-  )
+  )*/
   localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
   kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 }else{
   networkBanner = (
-    <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.777,filter:"blur(1.2px)"}}>
+    <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.125,filter:"blur(1.2px)"}}>
       {"localhost"}
     </div>
   )
@@ -105,7 +105,7 @@ function App() {
 
 
       <div style={{padding:50}}>
-        <></>
+        <a href="https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev" target="_blank">{readContracts?"":<Spin style={{padding:64,opacity:metaProvider?0.125:0.3}}/>}</a>
       </div>
     </div>
   );

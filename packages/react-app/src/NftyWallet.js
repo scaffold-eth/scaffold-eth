@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Button, Badge, Tabs } from 'antd';
+import { Button, Badge, Tabs, Row, Col } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 import { useContractReader, useLocalStorage } from "./hooks"
 import { ethers } from "ethers";
@@ -155,23 +155,36 @@ export default function NftyWallet(props) {
     loadPage()
   }, [])
 
-  let newButton
-  if (true/*mode!=="edit" /*|| tab!=="1"*/) {
-  newButton = (
-  <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
-  <Button style={{ marginRight: 8 }} shape="round" size="large" type="secondary" onClick={() => {newInk()
-  }}><PlusOutlined /> New Ink</Button>
-  </div>
-)}
-  else {newButton = (<></>)}
+  let accountDisplay = (
+    <Account
+        address={props.address}
+        setAddress={props.setAddress}
+        localProvider={props.localProvider}
+        injectedProvider={props.injectedProvider}
+        setInjectedProvider={props.setInjectedProvider}
+        mainnetProvider={props.mainnetProvider}
+        price={props.price}
+        minimized={props.minimized}
+    />
+  )
 
-  let inkInfo
+  let accountWithCreateButton = (
+    <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
+      <Row gutter={16} verticalAlign={"middle"}>
+        <Col>
+        <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="secondary" onClick={() => {newInk()
+      }}><span style={{marginRight:12}}>🖌</span> New Ink</Button>
+        </Col>
+        <Col>
+          {accountDisplay}
+        </Col>
 
-  if (mode === "edit") {
-  inkInfo = (<></>)
+      </Row>
+    </div>
+  )
 
-  } else if (mode === "mint") {
-
+  let inkInfo = (<></>)
+  if (mode === "mint") {
     inkInfo = (<InkInfo
       address={props.address}
       mainnetProvider={props.mainnetProvider}
@@ -190,26 +203,13 @@ export default function NftyWallet(props) {
 
           return (
             <div>
-              <div style={{position:"absolute",right:8,top:0}}>
-              <Account
-                  address={props.address}
-                  setAddress={props.setAddress}
-                  localProvider={props.localProvider}
-                  injectedProvider={props.injectedProvider}
-                  setInjectedProvider={props.setInjectedProvider}
-                  mainnetProvider={props.mainnetProvider}
-                  price={props.price}
-                  minimized={props.minimized}
-              />
-
-              </div>
               <Tabs activeKey={tab} onChange={(t)=>{
                 window.history.pushState({id: 'draw'}, 'draw', '/')
                 setTab(t)
 
-              }} style={{marginTop:32,padding:16,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
+              }} style={{marginTop:0,padding:8,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
                 <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🧑‍🎨 Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
-                <div style={{maxWidth:500,margin:"0 auto"}}>
+                <div style={{maxWidth:720,margin:"0 auto"}}>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
                     localProvider={props.kovanProvider}
@@ -293,7 +293,7 @@ export default function NftyWallet(props) {
               </Tabs>
 
 
-              {newButton}
+              {accountWithCreateButton}
             </div>
           );
 

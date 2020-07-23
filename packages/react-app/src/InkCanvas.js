@@ -14,8 +14,6 @@ const Hash = require('ipfs-only-hash')
 const axios = require('axios');
 const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
 
-const KOVAN_CONTRACT_ADDRESS = "0xe9Da1644a6E6BA9A694542307C832d002e143371"
-
 export default function InkCanvas(props) {
 
   const writeContracts = useContractLoader(props.injectedProvider);
@@ -237,11 +235,11 @@ export default function InkCanvas(props) {
     console.log(values);
     message.destroy()
     //setMode("mint")
-    notification.open({
+    /*notification.open({
       message: (<><span style={{marginRight:8}}>💾</span>  Ink saved!</>),
       description:
       ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
-    });
+    });*/
   });
 }
 };
@@ -370,7 +368,7 @@ return (
   canvasWidth={size[0]}
   canvasHeight={size[1]}
   brushColor={color.hex}
-  lazyRadius={4} å
+  lazyRadius={4}
   brushRadius={8}
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
