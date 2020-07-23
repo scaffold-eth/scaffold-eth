@@ -9,7 +9,7 @@ async function main() {
   }
   let finalContractList = []
   fs.readdirSync(contractDir).forEach(file => {
-    if(file.indexOf(".sol")>=0){
+    if( file.indexOf(".sol")>=0 && file.indexOf("IERC1271")<0 && file.indexOf("SignatureChecker")<0 ){
       let contractName = file.replace(".sol","")
       console.log("Publishing",chalk.cyan(contractName), "to",chalk.yellow(publishDir))
       try{
