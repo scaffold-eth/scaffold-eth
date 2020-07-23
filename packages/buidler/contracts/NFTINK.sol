@@ -121,6 +121,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable {
       require(msg.value >= _ink.price, "Amount of Ether sent too small");
       address buyer = _msgSender();
       uint256 tokenId = _mintInkToken(buyer, _inkId, inkUrl, _ink.jsonUrl);
+      //Note: a pull mechanism would be safer here: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
       _ink.artist.transfer(msg.value);
       emit boughtInk(tokenId, inkUrl, buyer);
       return tokenId;
