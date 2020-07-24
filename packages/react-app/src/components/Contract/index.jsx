@@ -1,7 +1,6 @@
-import React, { useEffect, useState, useMemo } from "react";
+import React, { useMemo } from "react";
 import { Card } from "antd";
-import { isAddress } from "@ethersproject/address";
-import { useContractLoader } from "../../hooks";
+import { useContractLoader, useContractExistsAtAddress } from "../../hooks";
 import Account from "../Account";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
@@ -27,18 +26,7 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
   const contracts = useContractLoader(provider);
   const contract = contracts ? contracts[name] : "";
   const address = contract ? contract.address : "";
-
-  const [contractIsDeployed, setContractIsDeployed] = useState(false);
-
-  useEffect(() => {
-    // eslint-disable-next-line consistent-return
-    const checkDeployment = async () => {
-      if (!isAddress(address)) return false;
-      const bytecode = await provider.getCode(address);
-      setContractIsDeployed(bytecode !== "0x0");
-    };
-    if (provider) checkDeployment();
-  }, [provider, address]);
+  const contractIsDeployed = useContractExistsAtAddress(provider, address);
 
   const contractDisplay = useMemo(() => {
     if (contract) {
@@ -80,7 +68,6 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
                 localProvider={provider}
                 injectedProvider={provider}
                 mainnetProvider={provider}
-                readContracts={contracts}
                 price={price}
               />
               {account}

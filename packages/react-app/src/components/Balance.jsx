@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
-import { usePoller } from "../hooks";
+import { usePoller } from "eth-hooks";
 
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
