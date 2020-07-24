@@ -22,6 +22,12 @@ It's great for building <i>decentralized applications</i> on [Ethereum](https://
 
 Learn how to [quickly iterate on a smart contract](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox-1) using the <b>\<Contract /\></b> component.
   
+---
+
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+
+---
+  
 [![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://www.youtube.com/watch?v=ShJZf5lsXiM&feature=youtu.be&t=19)
 
 ---
