@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { List, Popover, Avatar, Spin, Typography } from 'antd';
+import { List, Popover, Avatar, Spin, Typography, Empty } from 'antd';
 import { LoadingOutlined, SendOutlined } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -7,15 +7,16 @@ import SendInkForm from "./SendInkForm.js"
 export default function MyNiftyHoldings(props) {
 
   const [tokenData, setTokenData] = useState()
-  const [sends, setSends] = useState(0)
+  const [lastBalance, setLastBalance] = useState()
 
   let tokenView
 
   useEffect(()=>{
 
-    if(props.readContracts && props.address && props.tab === props.thisTab) {
+    if(props.readContracts && props.address && props.tab === props.thisTab & props.nftyBalance.toString() !== lastBalance) {
 
       let tokens
+      setLastBalance(props.nftyBalance.toString())
 
       const loadTokens = async () => {
         tokens = new Array(props.nftyBalance).fill({})
@@ -49,9 +50,10 @@ export default function MyNiftyHoldings(props) {
 
     }
 
-  },[sends,props.address,props.tab])
+  },[props.nftyBalance,props.address,props.tab])
 
   if(props.nftyBalance > 0) {
+    if (tokenData) {
     tokenView = (
       <List
       itemLayout="horizontal"
@@ -70,9 +72,9 @@ export default function MyNiftyHoldings(props) {
           </Typography.Text>
 
           <Popover content={
-            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
+            <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
           }
-          title="Send Ink" trigger="click">
+          title="Send Ink">
           <a href="#"><SendOutlined style={{fontSize:24,marginLeft:4,verticalAlign:"middle"}}/></a>
           </Popover>
 
@@ -83,7 +85,19 @@ export default function MyNiftyHoldings(props) {
         </List.Item>
       )}
       />)
-    } else { tokenView = (<Spin/>)}
+    }
+      else {
+        tokenView = <Spin/>
+      }
+    }
+    else { tokenView = (
+      <Empty
+        description={
+        <span>
+          You don't own any Ink NFTs yet. Click "Create" to create a new Ink!
+          </span>
+        }
+        />)}
 
     return tokenView
 

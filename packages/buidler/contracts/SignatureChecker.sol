@@ -23,11 +23,13 @@ contract SignatureChecker is Ownable {
     }
 
     function checkSignature(bytes32 signedHash, bytes memory signature, address checkAddress) public view returns (bool) {
-      if (checkSignatureFlag==false) {
-        return true;
-      }
-      else if(checkAddress.isContract()) {
+      if(checkAddress.isContract()) {
+        if (checkSignatureFlag==false) {
+          return true;
+        }
+        else {
         return IERC1271(checkAddress).isValidSignature(signedHash, signature) == _INTERFACE_ID_ERC1271;
+      }
       } else {
         return getSigner(signedHash, signature) == checkAddress;
       }

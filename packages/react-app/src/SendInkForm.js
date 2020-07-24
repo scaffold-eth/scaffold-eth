@@ -17,7 +17,6 @@ export default function SendInkForm(props) {
     console.log('Success:', props.address, values, props.tokenId);
     await tx(writeContracts["NFTINK"].safeTransferFrom(props.address, values['to'], props.tokenId))
     form.resetFields();
-    props.setSends(props.sends+1)
     setSending(false)
   };
 

@@ -12,7 +12,6 @@ var _ = require('lodash');
 export default function InkInfo(props) {
 
   const [holders, setHolders] = useState(<Spin/>)
-  const [sends, setSends] = useState(0)
   const [minting, setMinting] = useState(false)
   const [buying, setBuying] = useState(false)
   const [mintForm] = Form.useForm();
@@ -106,7 +105,7 @@ export default function InkInfo(props) {
       }
     }
     getChainInfo()
-  }, 3000
+  }, 4000
 )
 
   useEffect(()=>{
@@ -132,9 +131,9 @@ export default function InkInfo(props) {
           if (tokenOwnerAddress === props.address) {
             return (
               <Popover content={
-                <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} sends={sends} setSends={setSends}/>
+                <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
               }
-              title="Send Ink" trigger="click">
+              title="Send Ink">
               <a href="#"><SendOutlined style={{fontSize:26,marginLeft:4,verticalAlign:"middle"}}/></a>
               </Popover>
             )
@@ -239,7 +238,7 @@ useEffect(()=>{
             )
             priceFlow = (
               <Popover content={setPriceForm}
-              title="Set price to mint one:" trigger="click">
+              title="Set price to mint one:">
                 <Button type="primary" style={{ marginBottom: 12 }}><ShopOutlined />{inkPrice>0?'Ξ'+ethers.utils.formatEther(inkPrice):'Sell'}</Button>
               </Popover>
             )
@@ -277,7 +276,7 @@ useEffect(()=>{
           )
           mintFlow =       (
             <Popover content={mintInkForm}
-            title="Mint" trigger="click">
+            title="Mint">
             <Button type="primary" style={{ marginBottom: 12 }}><SendOutlined style={{color:"#FFFFFF"}}/> Mint</Button>
             </Popover>
           )
@@ -336,10 +335,8 @@ useEffect(()=>{
               let artist = inkChainInfo[1]
               let signature = inkChainInfo[4]
               let result = await tx(writeContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, limit, artist, signature))
-              if(result) {
               console.log(result)
               setMinting(false)
-            }
             } catch(e) {
               setMinting(false)
               console.log(e)
