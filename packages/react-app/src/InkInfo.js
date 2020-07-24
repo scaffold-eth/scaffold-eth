@@ -299,7 +299,7 @@ useEffect(()=>{
               message.destroy()
               setMinting(false)
               notification.open({
-                message: <><span style={{marginRight:8}}>🛰</span>Ink Minted!</>,
+                message: <><span style={{marginRight:8}}>🛰</span>Minting Ink...</>,
                 description:(
                   <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction</a>
                 ),
