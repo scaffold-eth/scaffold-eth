@@ -28,7 +28,7 @@ export default function Account(props) {
   function warning(network, chainId) {
       Modal.warning({
         title: 'MetaMask Network Mismatch',
-        content: <>Please connect to <b>${network}</b></>,
+        content: <>Please connect to <b>https://dai.poa.network</b></>,
       });
     }
 
@@ -123,7 +123,7 @@ export default function Account(props) {
       {props.address?(
         <Address value={props.address} ensProvider={props.mainnetProvider}/>
       ):"Connecting..."}
-      <Balance address={props.address} provider={props.injectedProvider} dollarMultiplier={props.price}/>
+      <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
     </span>)
 

@@ -215,12 +215,14 @@ export default function NftyWallet(props) {
   let accountWithCreateButton = (
     <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
       <Row gutter={16} verticalAlign={"middle"}>
-        <Col>
-        <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="secondary" onClick={() => {newInk()
-      }}><span style={{marginRight:12}}>🖌</span> New Ink</Button>
-        </Col>
+
         <Col>
           {accountDisplay}
+        </Col>
+
+        <Col>
+        <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
+      }}><span style={{marginRight:12}}>🖌</span></Button>
         </Col>
 
       </Row>

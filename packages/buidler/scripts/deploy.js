@@ -48,10 +48,10 @@ async function main() {
     await Liker.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
 
   }else if(bre.network.name=="xdai") {
-    console.log(" ♦ xDAI deploy, no known trusted forwarder yet.")
+    console.log(" ♦ xDAI deploy 0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
     //https://docs.opengsn.org/gsn-provider/networks.html
-    await NFTINK.setTrustedForwarder("0x0000000000000000000000000000000000000000")
-    await Liker.setTrustedForwarder("0x0000000000000000000000000000000000000000")
+    await NFTINK.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
+    await Liker.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
   }else if(bre.network.name=="rinkeby") {
     console.log(" 🟨 Rinkeby deploy, no known trusted forwarder yet.")
     //https://docs.opengsn.org/gsn-provider/networks.html

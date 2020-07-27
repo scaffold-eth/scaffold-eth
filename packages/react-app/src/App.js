@@ -3,6 +3,7 @@ import 'antd/dist/antd.css';
 import { Row, Col,  Button, Spin } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
+import BurnerProvider from 'burner-provider';
 import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
 import { Ramp, AdminWidget, Faucet } from "./components"
 
@@ -19,7 +20,14 @@ if(process.env.REACT_APP_NETWORK_NAME){
       {process.env.REACT_APP_NETWORK_NAME}
     </div>
   )*/
-  localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
+  if(process.env.REACT_APP_NETWORK_NAME=="xdai"){
+    console.log("🎉XDAINETWORK")
+    //localProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
+    localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
+  }else{
+    localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
+  }
+
   kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 }else{
   networkBanner = (
@@ -36,8 +44,9 @@ function App() {
   const [address, setAddress] = useState();
   const [injectedProvider, setInjectedProvider] = useState();
   const [metaProvider, setMetaProvider] = useState();
-  const price = useExchangePrice(mainnetProvider)
-  const gasPrice = useGasPrice("fast")
+  const price = 1
+  const gasPrice = 1001010001
+
 
   const readContracts = useContractLoader(localProvider);
   const readKovanContracts = useContractLoader(kovanProvider);
@@ -67,18 +76,22 @@ function App() {
 
       <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
         <Row gutter={8}>
-          <Col>
-          <Ramp
-            price={price}
-            address={address}
-          />
-          </Col>
-          <Col>
-          <Button onClick={()=>{window.open("https://ethgasstation.info/")}} size="large" shape="round">
-            <span style={{marginRight:8}}>⛽️</span>
-            {parseInt(gasPrice)/10**9}g
-          </Button>
-          </Col>
+          {!process.env.REACT_APP_NETWORK_NAME||process.env.REACT_APP_NETWORK_NAME=="xdai"?"":(
+            <>
+              <Col>
+              <Ramp
+                price={price}
+                address={address}
+              />
+              </Col>
+              <Col>
+              <Button onClick={()=>{window.open("https://ethgasstation.info/")}} size="large" shape="round">
+                <span style={{marginRight:8}}>⛽️</span>
+                {parseInt(gasPrice)/10**9}g
+              </Button>
+              </Col>
+            </>
+          )}
           {process.env.REACT_APP_NETWORK_NAME?"":(
             <>
             <Col>

@@ -37,6 +37,7 @@
     "sidechain": "cd packages/buidler && npx buidler node --port 8546",
     "localdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network sidechain && npx buidler run scripts/deploy.js --network localhost && npx buidler run scripts/publish.js",
     "testnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby && npx buidler run scripts/publish.js",
+    "xdaideploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/publish.js",
     "mainnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet && npx buidler run scripts/publish.js"
   },
   "devDependencies": {

@@ -292,6 +292,7 @@ useEffect(()=>{
               let limit = props.ink.attributes[0].value
 
               //message.loading('Upgrading your ink...');
+              console.log("createInk",inkUrl, jsonUrl, limit)
               let result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, limit))
               console.log(result)
               if(result) {
@@ -334,8 +335,9 @@ useEffect(()=>{
               let limit = props.ink.attributes[0].value
               let artist = inkChainInfo[1]
               let signature = inkChainInfo[4]
+              console.log("createInkFromSignature",inkUrl, jsonUrl, limit, artist, signature)
               let result = await tx(writeContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, limit, artist, signature))
-              console.log(result)
+              console.log("createInkFromSignature RESULT:",result)
               setMinting(false)
             } catch(e) {
               setMinting(false)
