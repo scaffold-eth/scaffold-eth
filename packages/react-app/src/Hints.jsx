@@ -101,7 +101,7 @@ export default function Hints(props) {
 
       <p style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>📡</span>
-        depoly to a testnet or mainnet by editing
+        deploy to a testnet or mainnet by editing
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/buidler/buidler.config.js
         </span>
