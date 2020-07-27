@@ -5,6 +5,23 @@ const fs = require("fs");
 
 const DEBUG = true;
 
+function debug(text) {
+  if (DEBUG) {
+    console.log(text);
+  }
+}
+
+async function addr(addr) {
+  if (web3.utils.isAddress(addr)) {
+    return web3.utils.toChecksumAddress(addr);
+  }
+  const accounts = await web3.eth.getAccounts();
+  if (accounts[addr] !== undefined) {
+    return accounts[addr];
+  }
+  throw `Could not normalize address: ${addr}`;
+}
+
 task("accounts", "Prints the list of accounts", async () => {
   const accounts = await web3.eth.getAccounts();
   for (const account of accounts) {
@@ -75,22 +92,7 @@ function send(txparams) {
   });
 }
 
-function debug(text) {
-  if (DEBUG) {
-    console.log(text);
-  }
-}
 
-async function addr(addr) {
-  if (web3.utils.isAddress(addr)) {
-    return web3.utils.toChecksumAddress(addr);
-  }
-  const accounts = await web3.eth.getAccounts();
-  if (accounts[addr] !== undefined) {
-    return accounts[addr];
-  }
-  throw `Could not normalize address: ${addr}`;
-}
 
 let mnemonic = "";
 try {
