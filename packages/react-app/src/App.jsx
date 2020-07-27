@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
 import { Row, Col } from "antd";
 import Web3Modal from "web3modal";
@@ -25,7 +25,7 @@ const web3Modal = new Web3Modal({
 });
 
 // 🛰 providers
-const mainnetProvider = new InfuraProvider("mainnet", INFURA_ID);
+const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID });
 const localChainProvider = new JsonRpcProvider(
   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545",
 );
