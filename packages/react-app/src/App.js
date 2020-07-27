@@ -23,7 +23,7 @@ if(process.env.REACT_APP_NETWORK_NAME){
   kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
 }else{
   networkBanner = (
-    <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:32,textAlign:"left",paddingLeft:32,opacity:0.125,filter:"blur(1.2px)"}}>
+    <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:54,textAlign:"left",paddingLeft:32,opacity:0.125,filter:"blur(1.2px)"}}>
       {"localhost"}
     </div>
   )
