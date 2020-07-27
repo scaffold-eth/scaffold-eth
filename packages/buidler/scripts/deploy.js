@@ -2,7 +2,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 async function deploy(name, _args) {
-  const args = _args || []
+  const args = _args || [];
 
   console.log(`📄 ${name}`);
   const contractArtifacts = artifacts.require(name);
@@ -17,9 +17,10 @@ async function deploy(name, _args) {
   return contract;
 }
 
-const isSolidity = fileName => fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp.") < 0
+const isSolidity = (fileName) =>
+  fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp.") < 0;
 
-function readArgumentsFile (contractName) {
+function readArgumentsFile(contractName) {
   let args = [];
   try {
     const argsFile = `./contracts/${contractName}.args`;
@@ -29,22 +30,20 @@ function readArgumentsFile (contractName) {
   } catch (e) {
     console.log(e);
   }
-  
-  return args
+
+  return args;
 }
 
 async function autoDeploy() {
   const contractList = fs.readdirSync("./contracts");
   contractList
-    .filter(fileName => isSolidity(fileName))
-    .forEach(async fileName => {
+    .filter((fileName) => isSolidity(fileName))
+    .forEach(async (fileName) => {
       const contractName = fileName.replace(".sol", "");
-      const args = readArgumentsFile(contractName)
+      const args = readArgumentsFile(contractName);
       await deploy(contractName, args);
-    }
-  )
+    });
 }
-
 
 async function main() {
   console.log("📡 Deploy \n");
