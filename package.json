@@ -1,5 +1,5 @@
 {
-  "name": "@uniswap-v1-app/monorepo",
+  "name": "@scaffold-eth/monorepo",
   "version": "1.0.0",
   "keywords": [
     "ethereum",
@@ -10,31 +10,26 @@
   ],
   "private": true,
   "scripts": {
-    "react-app:build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=12288",
-    "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
-    "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
-    "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
-    "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=12288",
-    "chain": "cd packages/buidler && npx buidler node",
-    "node": "cd packages/buidler && npx buidler node",
-    "test": "cd packages/buidler && npx buidler test",
-    "start": "yarn workspace @uniswap-v1-app/react-app start",
-    "compile": "cd packages/buidler && npx buidler compile",
-    "deploy": "cd packages/buidler && npx buidler run scripts/deploy.js && npx buidler run scripts/publish.js",
-    "watch": "cd packages/buidler && node scripts/watch.js",
-    "accounts": "cd packages/buidler && npx buidler accounts",
-    "balance": "cd packages/buidler && npx buidler balance",
-    "send": "cd packages/buidler && npx buidler send",
+    "react-app:build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
+    "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
+    "react-app:start": "yarn workspace @scaffold-eth/react-app start",
+    "react-app:test": "yarn workspace @scaffold-eth/react-app test",
+    "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
+    "chain": "yarn workspace @scaffold-eth/buidler chain",
+    "node": "yarn workspace @scaffold-eth/buidler chain",
+    "test": "yarn workspace @scaffold-eth/buidler test",
+    "start": "yarn workspace @scaffold-eth/react-app start",
+    "compile": "yarn workspace @scaffold-eth/buidler compile",
+    "deploy": "yarn workspace @scaffold-eth/buidler deploy",
+    "watch": "yarn workspace @scaffold-eth/buidler watch",
+    "accounts": "yarn workspace @scaffold-eth/buidler accounts",
+    "balance": "yarn workspace @scaffold-eth/buidler balance",
+    "send": "yarn workspace @scaffold-eth/buidler send",
     "ipfs": "cd packages/react-app && node ipfs",
     "surge": "surge packages/react-app/build",
     "s3": "cd packages/react-app && node s3",
     "ship": "surge packages/react-app/build"
 
-  },
-  "devDependencies": {
-    "@nomiclabs/buidler": "1.3.3-rc.0",
-    "@nomiclabs/buidler-truffle5": "1.3.3-rc.0",
-    "@nomiclabs/buidler-web3": "1.3.3-rc.0"
   },
   "workspaces": {
     "packages": [

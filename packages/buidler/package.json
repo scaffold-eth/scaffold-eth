@@ -1,13 +1,32 @@
 {
-  "name": "buidler",
+  "name": "@scaffold-eth/buidler",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "web3": "^1.2.6"
+    "eslint": "^7.5.0",
+    "eslint-config-airbnb": "^18.2.0",
+    "eslint-config-prettier": "^6.11.0",
+    "eslint-plugin-babel": "^5.3.1",
+    "eslint-plugin-prettier": "^3.1.4",
+    "web3": "^1.2.11"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "3.0.0-rc.1",
+    "@nomiclabs/buidler": "^1.4.1",
+    "@nomiclabs/buidler-truffle5": "^1.3.4",
+    "@nomiclabs/buidler-web3": "^1.3.4",
+    "@openzeppelin/contracts": "^3.1.0",
+    "chalk": "^4.1.0",
     "node-watch": "^0.6.3"
+  },
+  "scripts": {
+    "chain": "buidler node",
+    "test": "buidler test",
+    "compile": "buidler compile",
+    "deploy": "buidler run scripts/deploy.js && buidler run scripts/publish.js",
+    "watch": "node scripts/watch.js",
+    "accounts": "buidler accounts",
+    "balance": "buidler balance",
+    "send": "buidler send"
   }
 }
