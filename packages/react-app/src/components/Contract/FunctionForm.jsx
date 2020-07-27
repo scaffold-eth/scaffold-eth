@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Row, Col, Input, Divider } from "antd";
+import { Row, Col, Input, Divider, Tooltip } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
 
@@ -41,28 +41,29 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           <div>
             <Row>
               <Col span={16}>
-                <div
-                  type="dashed"
-                  onClick={async () => {
-                    console.log("CLICK");
-                    setTxValue("" + parseFloat(txValue) * 10 ** 18);
-                  }}
-                >
-                  ✳️
-                </div>
+                <Tooltip placement="right" title={" * 10^18 "}>
+                  <div
+                    type="dashed"
+                    onClick={async () => {
+                      let floatValue = parseFloat(txValue)
+                      if(floatValue) setTxValue("" +floatValue  * 10 ** 18);
+                    }}
+                  >
+                    ✳️
+                  </div>
+                </Tooltip>
               </Col>
               <Col span={16}>
+              <Tooltip placement="right" title={"number to hex"}>
                 <div
                   type="dashed"
                   onClick={async () => {
-                    console.log("CLICK",txValue);
-                    console.log("BigNumber.from(txValue).toString()",BigNumber.from(txValue))
-                    console.log("toString()",BigNumber.from(txValue).toString())
                     setTxValue(BigNumber.from(txValue).toHexString());
                   }}
                 >
                   #️⃣
                 </div>
+                </Tooltip>
               </Col>
             </Row>
           </div>
