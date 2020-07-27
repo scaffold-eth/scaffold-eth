@@ -2,7 +2,6 @@ const fs = require("fs");
 const chalk = require("chalk");
 const bre = require("@nomiclabs/buidler");
 
-const contractDir = "./contracts";
 const publishDir = "../react-app/src/contracts";
 
 function publishContract(contractName) {
@@ -45,7 +44,7 @@ async function main() {
     fs.mkdirSync(publishDir);
   }
   const finalContractList = [];
-  fs.readdirSync(contractDir).forEach((file) => {
+  fs.readdirSync(bre.config.paths.sources).forEach((file) => {
     if (file.indexOf(".sol") >= 0) {
       const contractName = file.replace(".sol", "");
       // Add contract to list if publishing is successful
