@@ -2,6 +2,7 @@ pragma solidity >=0.6.0 <0.7.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./SignatureChecker.sol";
@@ -13,15 +14,23 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
+    using SafeMath for uint256;
+
+    uint artistTake;
+
+    function setArtistTake(uint _take) public onlyOwner {
+      artistTake = _take;
+    }
 
     constructor() ERC721("🎨 Nifty Ink", "NFTINK") public {
       _setBaseURI('ipfs://ipfs/');
       setCheckSignatureFlag(true);
+      setArtistTake(1);
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
     event mintedInk(uint256 id, string inkUrl, address to);
-    event boughtInk(uint256 id, string inkUrl, address buyer);
+    event boughtInk(uint256 id, string inkUrl, address buyer, uint256 price);
     event inkSentCrossChain(uint256 id, bytes32 msgId);
     event inkReceivedCrossChain(uint256 id, bytes32 msgId);
 
@@ -43,6 +52,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
     mapping (address => EnumerableSet.UintSet) private _artistInks;
     mapping (string => bytes) private _inkSignatureByUrl;
     mapping (uint256 => uint256) private _inkIdByTokenId;
+
+    mapping (uint256 => uint256) public tokenPrice;
 
     mapping (bytes32 => uint256) private msgTokenId;
     mapping (bytes32 => address) private msgRecipient;
@@ -88,7 +99,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _inkTokens[inkUrl].add(id);
-      _inkIdByTokenId[id].add(inkId);
+      _inkIdByTokenId[id] = inkId;
 
       _mint(to, id);
       _setTokenURI(id, jsonUrl);
@@ -113,14 +124,14 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
     function relayToken(uint256 _tokenId) external returns (bytes32) {
 
       address to = address(this);
-      address _recipient = _msgSender();
+      address _owner = ownerOf(_tokenId);
 
-      safeTransferFrom(_recipient, to, _tokenId);
+      safeTransferFrom(_owner, to, _tokenId);
 
       Ink storage _ink = _inkById[_inkIdByTokenId[_tokenId]];
 
       bytes4 methodSelector = ITokenManagement(address(0)).mint.selector;
-      bytes memory data = abi.encodeWithSelector(methodSelector, _recipient, _tokenId, _ink.inkUrl, _ink.jsonUrl);
+      bytes memory data = abi.encodeWithSelector(methodSelector, _owner, _tokenId, _ink.inkUrl, _ink.jsonUrl);
       bytes32 msgId = bridgeContract().requireToPassMessage(
           mediatorContractOnOtherSide(),
           data,
@@ -128,7 +139,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
       );
 
       msgTokenId[msgId] = _tokenId;
-      msgRecipient[msgId] = _recipient;
+      msgRecipient[msgId] = _owner;
 
       return msgId;
     }
@@ -162,8 +173,38 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
       uint256 tokenId = _mintInkToken(buyer, _inkId, inkUrl, _ink.jsonUrl);
       //Note: a pull mechanism would be safer here: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
       _ink.artist.transfer(msg.value);
-      emit boughtInk(tokenId, inkUrl, buyer);
+      emit boughtInk(tokenId, inkUrl, buyer, msg.value);
       return tokenId;
+    }
+
+
+    function setTokenPrice(uint256 _tokenId, uint256 _price) public returns (uint256) {
+      require(_exists(_tokenId), "this token does not exist!");
+      require(ownerOf(_tokenId) == _msgSender(), "only the owner can set the price!");
+
+      tokenPrice[_tokenId] = _price;
+
+      return _price;
+    }
+
+    function buyToken(uint256 _tokenId) public payable {
+      uint256 _price = tokenPrice[_tokenId];
+      require(_price > 0, "this token is not for sale");
+      require(msg.value >= _price, "Amount of Ether sent too small");
+      address _buyer = _msgSender();
+      address payable _seller = address(uint160(ownerOf(_tokenId)));
+      _transfer(_seller, _buyer, _tokenId);
+      //Note: a pull mechanism would be safer here: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
+
+      uint256 _artistTake = artistTake.mul(msg.value).div(100);
+      uint256 _sellerTake = msg.value.sub(_artistTake);
+
+      Ink storage _ink = _inkById[_inkIdByTokenId[_tokenId]];
+
+      _ink.artist.transfer(_artistTake);
+      _seller.transfer(_sellerTake);
+      delete tokenPrice[_tokenId];
+      emit boughtInk(_tokenId, _ink.inkUrl, _buyer, msg.value);
     }
 
     //we will store the patronization signature on the weaker cahin to use on the stronger chain

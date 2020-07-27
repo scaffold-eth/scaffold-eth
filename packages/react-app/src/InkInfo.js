@@ -7,6 +7,7 @@ import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
+import NiftyShop from "./NiftyShop.js"
 var _ = require('lodash');
 
 export default function InkInfo(props) {
@@ -124,7 +125,8 @@ export default function InkInfo(props) {
         for(var i = 0; i < mintedCount; i++){
           let inkToken = await props.readContracts['NFTINK']["inkTokenByIndex"](props.ipfsHash, i)
           let ownerOf = await props.readContracts['NFTINK']["ownerOf"](inkToken)
-          holdersArray.push([ownerOf, inkToken.toString()])
+          let priceOf = await props.readContracts['NFTINK']["tokenPrice"](inkToken)
+          holdersArray.push([ownerOf, inkToken.toString(), priceOf.toString()])
         }
 
         const sendInkButton = (tokenOwnerAddress, tokenId) => {
@@ -152,7 +154,20 @@ export default function InkInfo(props) {
           dataSource={holdersArray.reverse()}
           renderItem={item => (
             <List.Item>
-              <Address value={item[0]} /> {sendInkButton(item[0], item[1])}
+              <Address value={item[0]} />
+              {sendInkButton(item[0], item[1])}
+              <NiftyShop
+              injectedProvider={props.injectedProvider}
+              metaProvider={props.metaProvider}
+              type={'token'}
+              ink={props.ink}
+              itemForSale={item[1]}
+              gasPrice={props.gasPrice}
+              address={props.address}
+              ownerAddress={item[0]}
+              price={item[2]}
+              visible={true}
+              />
             </List.Item>
           )}
           />
@@ -209,41 +224,21 @@ useEffect(()=>{
 
       if(props.address === inkChainInfo[1]) {
           if(upgraded && inkMainChainInfo) {
+
+            buyButton = (<NiftyShop
+                          injectedProvider={props.injectedProvider}
+                          metaProvider={props.metaProvider}
+                          type={'ink'}
+                          ink={props.ink}
+                          itemForSale={props.ipfsHash}
+                          gasPrice={props.gasPrice}
+                          address={props.address}
+                          ownerAddress={inkChainInfo[1]}
+                          price={inkPrice}
+                          visible={(inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")}
+                          />)
+
           if(inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
-            const setPriceForm = (
-              <Row style={{justifyContent: 'center'}}>
-
-              <Form
-              form={priceForm}
-              layout={'inline'}
-              name="setPrice"
-              onFinish={setPrice}
-              onFinishFailed={onFinishFailed}
-              >
-              <Form.Item
-              name="price"
-              rules={[{ required: true, message: 'What is the price of an ink?' }]}
-              >
-              <InputNumber min={0} precision={3} placeholder="Ξ" />
-              </Form.Item>
-
-              <Form.Item >
-              <Button type="primary" htmlType="submit" loading={buying}>
-              Set Price
-              </Button>
-              </Form.Item>
-              </Form>
-
-              </Row>
-            )
-            priceFlow = (
-              <Popover content={setPriceForm}
-              title="Set price to mint one:">
-                <Button type="primary" style={{ marginBottom: 12 }}><ShopOutlined />{inkPrice>0?'Ξ'+ethers.utils.formatEther(inkPrice):'Sell'}</Button>
-              </Popover>
-            )
-
-
 
           const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>
@@ -344,19 +339,6 @@ useEffect(()=>{
           }} style={{ marginBottom: 12 }}>Mint</Button>
         )
       }
-      if(inkPrice > 0 && (inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")) {
-        buyButton = (
-          <Popconfirm
-            title={'Mint one "'+props.ink.name+'" for Ξ'+ethers.utils.formatEther(inkPrice)}
-            onConfirm={buyInk}
-            okText="Purchase"
-            cancelText="Cancel"
-            icon=<ShoppingCartOutlined/>
-          >
-          <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'Ξ'+ethers.utils.formatEther(inkPrice)}</Button>
-          </Popconfirm>
-        )
-      }
     }
 
         upgradeButtonSet = (<Row style={{justifyContent: 'center'}}>{upgradeButton}{providePatronageButton}</Row>)
@@ -400,8 +382,6 @@ useEffect(()=>{
         )
       }
     }
-
-    //{artistAndOtherInfo}
 
     let bottom = (
       <div>
