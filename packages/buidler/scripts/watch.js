@@ -1,7 +1,7 @@
 const watch = require("node-watch");
+const { exec } = require("child_process")
 
 const run = () => {
-  const exec = require("child_process").exec;
   console.log("🛠  Compiling & Deploying...");
   exec("cd ../../ && yarn run deploy", function (error, stdout, stderr) {
     console.log(stdout);
