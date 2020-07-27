@@ -29,4 +29,8 @@ contract Greeter is AMBMediator {
     return msgId;
   }
 
+  function failedMessageSender(bytes32 _messageId) external view returns (address) {
+    return bridgeContract().failedMessageSender(_messageId);
+  }
+
 }

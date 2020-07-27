@@ -5,8 +5,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./SignatureChecker.sol";
+import "./AMBMediator.sol";
+import "./ITokenManagement.sol";
 
-contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
+contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMediator {
     using ECDSA for bytes32;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -20,6 +22,8 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
     event mintedInk(uint256 id, string inkUrl, address to);
     event boughtInk(uint256 id, string inkUrl, address buyer);
+    event inkSentCrossChain(uint256 id, bytes32 msgId);
+    event inkReceivedCrossChain(uint256 id, bytes32 msgId);
 
     struct Ink {
       uint256 id;
@@ -38,6 +42,10 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
     mapping (string => bytes) private _inkSignatureByUrl;
+    mapping (uint256 => uint256) private _inkIdByTokenId;
+
+    mapping (bytes32 => uint256) private msgTokenId;
+    mapping (bytes32 => address) private msgRecipient;
 
     function _createInk(string memory inkUrl, string memory jsonUrl, uint256 limit, address payable artist, address patron) internal returns (uint256) {
 
@@ -80,6 +88,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _inkTokens[inkUrl].add(id);
+      _inkIdByTokenId[id].add(inkId);
 
       _mint(to, id);
       _setTokenURI(id, jsonUrl);
@@ -100,6 +109,35 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
 
         return tokenId;
     }
+
+    function relayToken(uint256 _tokenId) external returns (bytes32) {
+
+      address to = address(this);
+      address _recipient = _msgSender();
+
+      safeTransferFrom(_recipient, to, _tokenId);
+
+      Ink storage _ink = _inkById[_inkIdByTokenId[_tokenId]];
+
+      bytes4 methodSelector = ITokenManagement(address(0)).mint.selector;
+      bytes memory data = abi.encodeWithSelector(methodSelector, _recipient, _tokenId, _ink.inkUrl, _ink.jsonUrl);
+      bytes32 msgId = bridgeContract().requireToPassMessage(
+          mediatorContractOnOtherSide(),
+          data,
+          requestGasLimit
+      );
+
+      msgTokenId[msgId] = _tokenId;
+      msgRecipient[msgId] = _recipient;
+
+      return msgId;
+    }
+
+    function unlock(address _recipient, uint256 _tokenId) external {
+      address from = address(this);
+      _transfer(from, _recipient, _tokenId);
+    }
+
 
     function setPrice(string memory inkUrl, uint256 price) public returns (uint256) {
       uint256 _inkId = _inkIdByUrl[inkUrl];

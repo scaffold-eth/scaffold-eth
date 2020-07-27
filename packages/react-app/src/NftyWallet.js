@@ -271,7 +271,7 @@ export default function NftyWallet(props) {
                   />)*/}
                   {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
                   provider={props.injectedProvider}
-                  name={"NFTINK"}
+                  name={"Greeter"}
                   price={props.price}
                   />)}
                 </div>

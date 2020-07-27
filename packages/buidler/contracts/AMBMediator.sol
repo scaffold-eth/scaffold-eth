@@ -48,4 +48,21 @@ contract AMBMediator is Ownable {
         requestGasLimit = _requestGasLimit;
     }
 
+    /**
+    * @dev Tells the address that generated the message on the other network that is currently being executed by
+    * the AMB bridge.
+    * @return the address of the message sender.
+    */
+    function messageSender() internal view returns (address) {
+        return bridgeContract().messageSender();
+    }
+
+    /**
+    * @dev Tells the id of the message originated on the other network.
+    * @return the id of the message originated on the other network.
+    */
+    function messageId() internal view returns (bytes32) {
+        return bridgeContract().messageId();
+    }
+
 }
