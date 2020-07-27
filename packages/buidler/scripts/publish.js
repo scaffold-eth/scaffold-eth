@@ -26,7 +26,7 @@ function publishContract(contractName) {
     );
     fs.writeFileSync(
       `${publishDir}/${contractName}.abi.js`,
-      `module.exports = "${JSON.stringify(contract.abi, null, 2)}";`
+      `module.exports = ${JSON.stringify(contract.abi, null, 2)};`
     );
     fs.writeFileSync(
       `${publishDir}/${contractName}.bytecode.js`,
