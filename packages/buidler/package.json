@@ -4,10 +4,6 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
-    "@nomiclabs/buidler": "^1.4.1",
-    "@nomiclabs/buidler-truffle5": "^1.3.4",
-    "@nomiclabs/buidler-web3": "^1.3.4",
-    "chalk": "^4.1.0",
     "eslint": "^7.5.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
@@ -16,7 +12,11 @@
     "web3": "^1.2.11"
   },
   "dependencies": {
+    "@nomiclabs/buidler": "^1.4.1",
+    "@nomiclabs/buidler-truffle5": "^1.3.4",
+    "@nomiclabs/buidler-web3": "^1.3.4",
     "@openzeppelin/contracts": "^3.1.0",
+    "chalk": "^4.1.0",
     "node-watch": "^0.6.3"
   },
   "scripts": {
