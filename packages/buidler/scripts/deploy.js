@@ -1,5 +1,6 @@
 const fs = require("fs");
 const chalk = require("chalk");
+const bre = require("@nomiclabs/buidler");
 
 async function deploy(name, _args) {
   const args = _args || [];
@@ -35,14 +36,16 @@ function readArgumentsFile(contractName) {
 }
 
 async function autoDeploy() {
-  const contractList = fs.readdirSync("./contracts");
-  contractList
-    .filter((fileName) => isSolidity(fileName))
-    .forEach(async (fileName) => {
-      const contractName = fileName.replace(".sol", "");
-      const args = readArgumentsFile(contractName);
-      await deploy(contractName, args);
-    });
+  const contractList = fs.readdirSync(bre.config.paths.sources);
+  return Promise.all(
+    contractList
+      .filter((fileName) => isSolidity(fileName))
+      .map(async (fileName) => {
+        const contractName = fileName.replace(".sol", "");
+        const args = readArgumentsFile(contractName);
+        await deploy(contractName, args);
+      })
+  );
 }
 
 async function main() {
