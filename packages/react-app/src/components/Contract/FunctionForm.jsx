@@ -55,8 +55,10 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 <div
                   type="dashed"
                   onClick={async () => {
-                    console.log("CLICK");
-                    setTxValue(BigNumber.from(txValue).toString());
+                    console.log("CLICK",txValue);
+                    console.log("BigNumber.from(txValue).toString()",BigNumber.from(txValue))
+                    console.log("toString()",BigNumber.from(txValue).toString())
+                    setTxValue(BigNumber.from(txValue).toHexString());
                   }}
                 >
                   #️⃣
