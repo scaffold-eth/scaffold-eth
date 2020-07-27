@@ -30,11 +30,17 @@ yarn run generate
 yarn run account
 
 #(use the frontend <Faucet/> to fund your deployer from both local chains)
-# or use rinkeby.instantwallet.io and kovan.instantwallet.io to send funds to the qr in yarn run account 
+# or use rinkeby.instantwallet.io and kovan.instantwallet.io to send funds to the qr in yarn run account
 
 # compile and deploy to your local chains and publish to the frontend
 yarn run localdeploy
 
+
+##
+## ☢️ Right now we are switching between "@opengsn/gsn": "^0.9.0" and "@opengsn/gsn": "2.0.0-alpha.3-patch.2"
+##
+## (0.9.0 for local dev env and 2.0.0-alpha.3-patch.2 for production Kovan/xDAI)
+##
 
 ```
 
