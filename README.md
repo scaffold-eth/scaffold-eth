@@ -267,9 +267,7 @@ yarn run deploy
 
 🔥 Try `yarn run watch` and as you change your Solidity, your frontend <b>\<Contract/\></b> will hot reload to give you access to new variables and functions:
 
-
-
- **TODO quick screencast of this process**
+📽 [Video Guide] (https://youtu.be/ShJZf5lsXiM?t=34)
 
 
 
