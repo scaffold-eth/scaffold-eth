@@ -22,6 +22,8 @@ const noContractDisplay = (
   </div>
 );
 
+const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
+
 export default function Contract({ account, gasPrice, provider, name, show, price }) {
   const contracts = useContractLoader(provider);
   const contract = contracts ? contracts[name] : "";
@@ -30,13 +32,17 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
 
   const contractDisplay = useMemo(() => {
     if (contract) {
-      return Object.values(contract.interface.functions).map(fn => {
-        if (show && show.indexOf(fn.name) < 0) {
-          // do nothing
-        } else if (fn.type === "function" && fn.inputs.length === 0) {
-          // If there are no inputs, just display return value
-          return <DisplayVariable key={fn.name} contractFunction={contract[fn.name]} functionInfo={fn} />;
-        } else if (fn.type === "function") {
+      return Object.values(contract.interface.functions)
+        .filter(fn => fn.type === "function")
+        .map(fn => {
+          if (show && show.indexOf(fn.name) < 0) {
+            // do nothing
+            return <div key={fn.name} />;
+          }
+          if (isQueryable(fn)) {
+            // If there are no inputs, just display return value
+            return <DisplayVariable key={fn.name} contractFunction={contract[fn.name]} functionInfo={fn} />;
+          }
           // If there are inputs, display a form to allow users to provide these
           return (
             <FunctionForm
@@ -47,11 +53,7 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
               gasPrice={gasPrice}
             />
           );
-        } else {
-          console.log("UNKNOWN FUNCTION", fn);
-        }
-        return <div key={fn.name} />;
-      });
+        });
     }
     return <div />;
   }, [contract, gasPrice, provider, show]);
