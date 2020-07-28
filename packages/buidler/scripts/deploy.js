@@ -37,15 +37,17 @@ function readArgumentsFile(contractName) {
 
 async function autoDeploy() {
   const contractList = fs.readdirSync(config.paths.sources);
-  return Promise.all(
-    contractList
-      .filter((fileName) => isSolidity(fileName))
-      .map(async (fileName) => {
-        const contractName = fileName.replace(".sol", "");
-        const args = readArgumentsFile(contractName);
-        await deploy(contractName, args);
-      })
-  );
+  return contractList
+    .filter((fileName) => isSolidity(fileName))
+    .reduce((lastDeployment, fileName) => {
+      const contractName = fileName.replace(".sol", "");
+      const args = readArgumentsFile(contractName);
+
+      // Wait for last deployment to complete before starting the next
+      return lastDeployment.then((resultArrSoFar) =>
+        deploy(contractName, args).then((result) => [...resultArrSoFar, result])
+      );
+    }, Promise.resolve([]));
 }
 
 async function main() {
