@@ -244,6 +244,13 @@ module.exports = {
         mnemonic: DEPLOY_ACCOUNT
       },
     },
+    sokol: {
+      url: 'https://sokol.poa.network',
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: DEPLOY_ACCOUNT
+      },
+    },
   },
   solc: {
     version : "0.6.6",

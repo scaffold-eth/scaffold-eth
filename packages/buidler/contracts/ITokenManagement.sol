@@ -6,4 +6,6 @@ interface ITokenManagement {
 
   function unlock(address _recipient, uint256 _tokenId) external;
 
+  function fixFailedMessage(bytes32 _dataHash) external;
+
 }

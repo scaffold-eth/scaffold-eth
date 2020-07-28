@@ -34,35 +34,6 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, AMBMediator {
       return tokenId;
     }
 
-    function burn(uint256 _tokenId) internal returns (uint256)   {
-      require(_isApprovedOrOwner(_msgSender(), _tokenId), "Caller is not owner nor approved");
-      string storage inkUrl = tokenInk[_tokenId];
-      _inkTokens[inkUrl].remove(_tokenId);
-      delete tokenInk[_tokenId];
-      _burn(_tokenId);
-  }
-
-  function relayToken(uint256 _tokenId) external returns (bytes32) {
-
-    address _recipient = _msgSender();
-    burn(_tokenId);
-
-    bytes4 methodSelector = ITokenManagement(address(0)).unlock.selector;
-    bytes memory data = abi.encodeWithSelector(methodSelector, _msgSender(), _tokenId);
-    bytes32 msgId = bridgeContract().requireToPassMessage(
-        mediatorContractOnOtherSide(),
-        data,
-        requestGasLimit
-    );
-
-    msgTokenId[msgId] = _tokenId;
-    msgRecipient[msgId] = _recipient;
-
-    emit burnedInk(_tokenId, msgId);
-
-    return msgId;
-  }
-
     function inkTokenByIndex(string memory inkUrl, uint256 index) public view returns (uint256) {
       return _inkTokens[inkUrl].at(index);
     }

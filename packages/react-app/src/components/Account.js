@@ -60,6 +60,7 @@ export default function Account(props) {
     props.setInjectedProvider(newWeb3Provider)
     let newNetwork = await newWeb3Provider.getNetwork()
     let localNetwork = await props.localProvider.getNetwork()
+    console.log('networkcomparison',provider,props.localProvider)
     if(newNetwork.chainId !== localNetwork.chainId) {
       warning(localNetwork.name, localNetwork.chainId)
     }
@@ -75,7 +76,10 @@ export default function Account(props) {
       }
     }
   }
-  usePoller(()=>{pollInjectedProvider()},props.pollTime?props.pollTime:1999)
+  usePoller(()=>{
+    console.log('providers',props.localProvider,props.injectedProvider)
+    pollInjectedProvider()
+  },props.pollTime?props.pollTime:1999)
 
   const loadWeb3Modal = async ()=>{
     const provider = await web3Modal.connect();

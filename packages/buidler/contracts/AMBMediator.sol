@@ -1,6 +1,7 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "./IAMB.sol";
+import "./ITokenManagement.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 
@@ -13,6 +14,8 @@ contract AMBMediator is Ownable {
     address private bridgeContractAddress;
     address public otherSideContractAddress;
     uint256 public requestGasLimit;
+
+    mapping (bytes32 => bool) public messageFixed;
 
     function setBridgeContract(address _bridgeContract) external onlyOwner {
         _setBridgeContract(_bridgeContract);
@@ -63,6 +66,22 @@ contract AMBMediator is Ownable {
     */
     function messageId() internal view returns (bytes32) {
         return bridgeContract().messageId();
+    }
+
+
+    function setMessageFixed(bytes32 _hash) internal {
+        messageFixed[_hash] = true;
+    }
+
+    function requestFailedMessageFix(bytes32 _txHash) external {
+        require(!bridgeContract().messageCallStatus(_txHash));
+        require(bridgeContract().failedMessageReceiver(_txHash) == address(this));
+        require(bridgeContract().failedMessageSender(_txHash) == mediatorContractOnOtherSide());
+        bytes32 dataHash = bridgeContract().failedMessageDataHash(_txHash);
+
+        bytes4 methodSelector = ITokenManagement(address(0)).fixFailedMessage.selector;
+        bytes memory data = abi.encodeWithSelector(methodSelector, dataHash);
+        bridgeContract().requireToPassMessage(mediatorContractOnOtherSide(), data, requestGasLimit);
     }
 
 }
