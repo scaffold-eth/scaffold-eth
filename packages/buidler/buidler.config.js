@@ -1,7 +1,10 @@
 const { usePlugin } = require("@nomiclabs/buidler/config");
-
-usePlugin("@nomiclabs/buidler-truffle5");
+const { utils } = require("ethers");
 const fs = require("fs");
+
+usePlugin("@nomiclabs/buidler-waffle");
+
+const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
 const DEBUG = true;
 
@@ -11,35 +14,45 @@ function debug(text) {
   }
 }
 
-async function addr(addr) {
-  if (web3.utils.isAddress(addr)) {
-    return web3.utils.toChecksumAddress(addr);
+async function addr(ethers, addr) {
+  if (isAddress(addr)) {
+    return getAddress(addr);
   }
-  const accounts = await web3.eth.getAccounts();
+  const accounts = await ethers.provider.listAccounts();
   if (accounts[addr] !== undefined) {
     return accounts[addr];
   }
   throw `Could not normalize address: ${addr}`;
 }
 
-task("accounts", "Prints the list of accounts", async () => {
-  const accounts = await web3.eth.getAccounts();
-  for (const account of accounts) {
-    console.log(account);
-  }
+task("accounts", "Prints the list of accounts", async (_, { ethers }) => {
+  const accounts = await ethers.provider.listAccounts();
+  accounts.forEach((account) => console.log(account));
 });
 
-task("blockNumber", "Prints the block number", async () => {
-  const blockNumber = await web3.eth.getBlockNumber();
+task("blockNumber", "Prints the block number", async (_, { ethers }) => {
+  const blockNumber = await ethers.provider.getBlockNumber();
   console.log(blockNumber);
 });
 
 task("balance", "Prints an account's balance")
   .addPositionalParam("account", "The account's address")
-  .setAction(async (taskArgs) => {
-    const balance = await web3.eth.getBalance(await addr(taskArgs.account));
-    console.log(web3.utils.fromWei(balance, "ether"), "ETH");
+  .setAction(async (taskArgs, { ethers }) => {
+    const balance = await ethers.provider.getBalance(
+      await addr(ethers, taskArgs.account)
+    );
+    console.log(formatUnits(balance, "ether"), "ETH");
   });
+
+function send(signer, txparams) {
+  return signer.sendTransaction(txparams, (error, transactionHash) => {
+    if (error) {
+      debug(`Error: ${error}`);
+    }
+    debug(`transactionHash: ${transactionHash}`);
+    // checkForReceipt(2, params, transactionHash, resolve)
+  });
+}
 
 task("send", "Send ETH")
   .addParam("from", "From address or account index")
@@ -49,50 +62,42 @@ task("send", "Send ETH")
   .addOptionalParam("gasPrice", "Price you are willing to pay in gwei")
   .addOptionalParam("gasLimit", "Limit of how much gas to spend")
 
-  .setAction(async (taskArgs) => {
-    const from = await addr(taskArgs.from);
+  .setAction(async (taskArgs, { network, ethers }) => {
+    const from = await addr(ethers, taskArgs.from);
     debug(`Normalized from address: ${from}`);
+    const fromSigner = await ethers.provider.getSigner(from);
 
     let to;
     if (taskArgs.to) {
-      to = await addr(taskArgs.to);
+      to = await addr(ethers, taskArgs.to);
       debug(`Normalized to address: ${to}`);
     }
 
-    const txparams = {
-      from,
+    const txRequest = {
+      from: await fromSigner.getAddress(),
       to,
-      value: web3.utils.toWei(taskArgs.amount ? taskArgs.amount : "0", "ether"),
-      gasPrice: web3.utils.toWei(
+      value: parseUnits(
+        taskArgs.amount ? taskArgs.amount : "0",
+        "ether"
+      ).toHexString(),
+      nonce: await fromSigner.getTransactionCount(),
+      gasPrice: parseUnits(
         taskArgs.gasPrice ? taskArgs.gasPrice : "1.001",
         "gwei"
-      ),
-      gas: taskArgs.gasLimit ? taskArgs.gasLimit : "24000",
+      ).toHexString(),
+      gasLimit: taskArgs.gasLimit ? taskArgs.gasLimit : 24000,
+      chainId: network.config.chainId,
     };
 
     if (taskArgs.data !== undefined) {
-      txparams.data = taskArgs.data;
-      debug(`Adding data to payload: ${txparams.data}`);
+      txRequest.data = taskArgs.data;
+      debug(`Adding data to payload: ${txRequest.data}`);
     }
-    debug(txparams.gasPrice / 1000000000 + " gwei");
-    debug(JSON.stringify(txparams, null, 2));
+    debug(txRequest.gasPrice / 1000000000 + " gwei");
+    debug(JSON.stringify(txRequest, null, 2));
 
-    return await send(txparams);
+    return send(fromSigner, txRequest);
   });
-
-function send(txparams) {
-  return new Promise((resolve, reject) => {
-    web3.eth.sendTransaction(txparams, (error, transactionHash) => {
-      if (error) {
-        debug(`Error: ${error}`);
-      }
-      debug(`transactionHash: ${transactionHash}`);
-      // checkForReceipt(2, params, transactionHash, resolve)
-    });
-  });
-}
-
-
 
 let mnemonic = "";
 try {
@@ -105,7 +110,6 @@ module.exports = {
   defaultNetwork: "localhost",
   networks: {
     localhost: {
-      // url: 'https://rinkeby.infura.io/v3/2717afb6bf164045b5d5468031b93f87',
       url: "http://localhost:8545",
       /* accounts: {
         mnemonic: "**SOME MNEMONIC**"

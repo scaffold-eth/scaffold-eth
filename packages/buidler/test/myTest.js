@@ -1,18 +1,25 @@
-const SmartContractWallet = artifacts.require("SmartContractWallet");
+const { ethers } = require("@nomiclabs/buidler");
+const { use, expect } = require("chai");
+const { solidity } = require("ethereum-waffle");
+
+use(solidity);
 
 describe("My Dapp", function () {
-  let accounts;
   let myContract;
-  before(async function () {
-    accounts = await web3.eth.getAccounts();
-  });
-  describe("My SmartContractWallet", function () {
-    it("Should deploy my SmartContractWallet", async function () {
-      myContract = await SmartContractWallet.new();
+
+  describe("YourContract", function () {
+    it("Should deploy YourContract", async function () {
+      const YourContract = await ethers.getContractFactory("YourContract");
+
+      myContract = await YourContract.deploy();
     });
-    describe("owner()", function () {
-      it("Should have an owner equal to the deployer", async function () {
-        assert.equal(await myContract.owner(), accounts[0]);
+
+    describe("setPurpose()", function () {
+      it("Should be able to set a new purpose", async function () {
+        const newPurpose = "Test Purpose";
+
+        await myContract.setPurpose(newPurpose);
+        expect(await myContract.purpose()).to.equal(newPurpose);
       });
     });
   });
