@@ -51,7 +51,8 @@
     "prettier": "1.x",
     "react": "^16.9.0",
     "shx": "^0.3.2",
-    "typescript": "^3.9.5"
+    "typescript": "^3.9.5",
+    "watch": "^1.0.2"
   },
   "keywords": [
     "blockchain",
@@ -64,6 +65,7 @@
   "scripts": {
     "commit": "git-cz",
     "build": "tsc",
+    "watch": "watch 'yarn build' ./src",
     "clean": "shx rm -rf ./lib",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
   },
