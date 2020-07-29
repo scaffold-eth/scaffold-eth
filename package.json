@@ -35,6 +35,12 @@
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
+    "@ethersproject/address": "^5.0.1",
+    "@ethersproject/bignumber": "^5.0.1",
+    "@ethersproject/constants": "^5.0.1",
+    "@ethersproject/contracts": "^5.0.1",
+    "@ethersproject/providers": "^5.0.2",
+    "@ethersproject/units": "^5.0.1",
     "@types/react": "^16.9.41",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
