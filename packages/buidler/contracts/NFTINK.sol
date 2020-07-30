@@ -6,8 +6,6 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./SignatureChecker.sol";
-import "./AMBMediator.sol";
-import "./ITokenManagement.sol";
 
 contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMediator {
     using Counters for Counters.Counter;
@@ -30,8 +28,6 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
     event mintedInk(uint256 id, string inkUrl, address to);
     event boughtInk(uint256 id, string inkUrl, address buyer, uint256 price);
-    event inkSentCrossChain(uint256 id, bytes32 msgId);
-    event failedMessageFixed(bytes32 _dataHash, address _recipient, uint256 _tokenId);
 
     struct Ink {
       uint256 id;
@@ -118,48 +114,6 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
         uint256 tokenId = _mintInkToken(to, _inkId, _ink.inkUrl, _ink.jsonUrl);
 
         return tokenId;
-    }
-
-    function relayToken(uint256 _tokenId) external returns (bytes32) {
-
-      address to = address(this);
-      address _owner = ownerOf(_tokenId);
-
-      safeTransferFrom(_owner, to, _tokenId);
-
-      Ink storage _ink = _inkById[_inkIdByTokenId[_tokenId]];
-
-      bytes4 methodSelector = ITokenManagement(address(0)).mint.selector;
-      bytes memory data = abi.encodeWithSelector(methodSelector, _owner, _tokenId, _ink.inkUrl, _ink.jsonUrl);
-      bytes32 msgId = bridgeContract().requireToPassMessage(
-          mediatorContractOnOtherSide(),
-          data,
-          requestGasLimit
-      );
-
-      msgTokenId[msgId] = _tokenId;
-      msgRecipient[msgId] = _owner;
-
-      return msgId;
-    }
-
-    function unlock(address _recipient, uint256 _tokenId) internal {
-      address from = address(this);
-      _transfer(from, _recipient, _tokenId);
-    }
-
-    function fixFailedMessage(bytes32 _dataHash) external {
-      require(msg.sender == address(bridgeContract()));
-      require(bridgeContract().messageSender() == mediatorContractOnOtherSide());
-      require(!messageFixed[_dataHash]);
-
-      address _recipient = msgRecipient[_dataHash];
-      uint256 _tokenId = msgTokenId[_dataHash];
-
-      messageFixed[_dataHash] = true;
-      unlock(_recipient, _tokenId);
-
-      emit failedMessageFixed(_dataHash, _recipient, _tokenId);
     }
 
 
