@@ -77,7 +77,6 @@ export default function Account(props) {
     }
   }
   usePoller(()=>{
-    console.log('providers',props.localProvider,props.injectedProvider)
     pollInjectedProvider()
   },props.pollTime?props.pollTime:1999)
 

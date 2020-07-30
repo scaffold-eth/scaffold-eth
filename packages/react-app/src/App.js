@@ -22,8 +22,9 @@ if(process.env.REACT_APP_NETWORK_NAME){
   )*/
   if(process.env.REACT_APP_NETWORK_NAME=="xdai"){
     console.log("🎉XDAINETWORK")
-    //localProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
-    localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
+    localProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
+    //localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
+    console.log(localProvider)
   }else{
     localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
   }

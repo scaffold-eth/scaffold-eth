@@ -10,7 +10,6 @@ import "./AMBMediator.sol";
 import "./ITokenManagement.sol";
 
 contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMediator {
-    using ECDSA for bytes32;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
@@ -32,7 +31,7 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
     event mintedInk(uint256 id, string inkUrl, address to);
     event boughtInk(uint256 id, string inkUrl, address buyer, uint256 price);
     event inkSentCrossChain(uint256 id, bytes32 msgId);
-    event inkReceivedCrossChain(uint256 id, bytes32 msgId);
+    event failedMessageFixed(bytes32 _dataHash, address _recipient, uint256 _tokenId);
 
     struct Ink {
       uint256 id;
@@ -144,9 +143,23 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
       return msgId;
     }
 
-    function unlock(address _recipient, uint256 _tokenId) external {
+    function unlock(address _recipient, uint256 _tokenId) internal {
       address from = address(this);
       _transfer(from, _recipient, _tokenId);
+    }
+
+    function fixFailedMessage(bytes32 _dataHash) external {
+      require(msg.sender == address(bridgeContract()));
+      require(bridgeContract().messageSender() == mediatorContractOnOtherSide());
+      require(!messageFixed[_dataHash]);
+
+      address _recipient = msgRecipient[_dataHash];
+      uint256 _tokenId = msgTokenId[_dataHash];
+
+      messageFixed[_dataHash] = true;
+      unlock(_recipient, _tokenId);
+
+      emit failedMessageFixed(_dataHash, _recipient, _tokenId);
     }
 
 
@@ -205,16 +218,6 @@ contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMed
       _seller.transfer(_sellerTake);
       delete tokenPrice[_tokenId];
       emit boughtInk(_tokenId, _ink.inkUrl, _buyer, msg.value);
-    }
-
-    //we will store the patronization signature on the weaker cahin to use on the stronger chain
-    function saveInkSignature(string memory inkUrl, bytes memory signature) public {
-      uint256 _inkId = _inkIdByUrl[inkUrl];
-      Ink storage _ink = _inkById[_inkId];
-      bytes32 messageHash = getHash(_ink.artist,inkUrl,_ink.jsonUrl,_ink.limit);
-      bool isArtistSignature = checkSignature(messageHash, signature, _ink.artist);
-      require(isArtistSignature, "Unable to verify the artist signature");
-      _inkSignatureByUrl[inkUrl] = signature;
     }
 
     function createInkFromSignature(string memory inkUrl, string memory jsonUrl, uint256 limit, address payable artist, bytes memory signature) public returns (uint256) {

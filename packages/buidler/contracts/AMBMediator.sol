@@ -11,7 +11,7 @@ contract AMBMediator is Ownable {
     constructor() public {
     }
 
-    address private bridgeContractAddress;
+    address public bridgeContractAddress;
     address public otherSideContractAddress;
     uint256 public requestGasLimit;
 
