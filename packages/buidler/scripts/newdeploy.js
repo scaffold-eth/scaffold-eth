@@ -10,7 +10,7 @@ async function main() {
 
   console.log("🪐 DEPLOYING ON NETWORK: ",bre.network.name)
 
-  if(bre.network.name.indexOf("sidechain")>=0){
+  if(bre.network.name.indexOf("sidechain")>=0 || bre.network.name.indexOf("kovan")>=0){
     const Liker = await deploy("Liker")
     console.log("")
     const NiftyRegistry = await deploy("NiftyRegistry")
@@ -23,6 +23,9 @@ async function main() {
     await NiftyInk.setNiftyRegistry(NiftyRegistry.address)
     await NiftyToken.setNiftyRegistry(NiftyRegistry.address)
     await NiftyMediator.setNiftyRegistry(NiftyRegistry.address)
+    if(bre.network.name.indexOf("kovan")>=0){
+      await NiftyMediator.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
+    }
     await Liker.addContract(NiftyInk.address)
 
     let trustedForwarder
@@ -37,8 +40,12 @@ async function main() {
     }
 
   }
-  if(bre.network.name.indexOf("localhost")>=0){
+  if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0){
     const NiftyMain = await deploy("NiftyMain")
+    if(bre.network.name.indexOf("sokol")>=0) {
+      await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
+    }
+    await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")
   }
 
   /*

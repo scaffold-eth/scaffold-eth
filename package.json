@@ -39,7 +39,8 @@
     "testnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby && npx buidler run scripts/publish.js",
     "xdaideploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/publish.js",
     "mainnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet && npx buidler run scripts/publish.js",
-    "newlocaldeploy": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sidechain && npx buidler run scripts/newdeploy.js --network localhost && npx buidler run scripts/publish.js"
+    "newlocaldeploy": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sidechain && npx buidler run scripts/newdeploy.js --network localhost && npx buidler run scripts/publish.js",
+    "newdeploy": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sokol && npx buidler run scripts/publish.js"
   },
   "devDependencies": {
     "@opengsn/gsn": "^0.9.0",

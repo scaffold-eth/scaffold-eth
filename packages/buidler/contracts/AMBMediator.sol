@@ -12,7 +12,7 @@ contract AMBMediator is Ownable {
     }
 
     address public bridgeContractAddress;
-    address public otherSideContractAddress;
+    address private otherSideContractAddress;
     uint256 public requestGasLimit;
 
     mapping (bytes32 => bool) public messageFixed;
