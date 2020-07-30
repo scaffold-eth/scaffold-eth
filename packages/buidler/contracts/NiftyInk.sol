@@ -58,7 +58,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       totalInks.increment();
       uint256 _inkId = totalInks.current();
 
-      Ink memory _ink = _inkById[_inkId];
+      Ink storage _ink = _inkById[_inkId];
 
       _ink.id = _inkId;
       _ink.artist = artist;

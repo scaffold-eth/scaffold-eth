@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./SignatureChecker.sol";
 
-contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker, AMBMediator {
+contract NFTINK is BaseRelayRecipient, ERC721, Ownable, SignatureChecker {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     Counters.Counter public totalInks;
