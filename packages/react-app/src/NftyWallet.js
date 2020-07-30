@@ -31,13 +31,14 @@ export default function NftyWallet(props) {
   const [renderKey, setRenderKey] = useState(Date.now())
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
-  let nftyBalance = useContractReader(props.readContracts,'NFTINK',"balanceOf",[props.address],1777);
-  let inksCreatedBy = useContractReader(props.readKovanContracts,'NFTINK',"inksCreatedBy",[props.address],1777);
-  let totalInks = useContractReader(props.readKovanContracts,'NFTINK',"totalInks",1777);
+  let nftyBalance = useContractReader(props.readKovanContracts,'NiftyToken',"balanceOf",[props.address],1777);
+  let nftyMainBalance = useContractReader(props.readContracts,'NiftyMain',"balanceOf",[props.address],1777);
+  let inksCreatedBy = useContractReader(props.readKovanContracts,'NiftyInk',"inksCreatedBy",[props.address],1777);
+  let totalInks = useContractReader(props.readKovanContracts,'NiftyInk',"totalInks",1777);
 
   let displayBalance
-  if(nftyBalance) {
-    displayBalance = nftyBalance.toString()
+  if(nftyMainBalance && nftyBalance) {
+    displayBalance = Number(nftyMainBalance.toString()) + Number(nftyBalance.toString())
   }
   let displayInksCreated
   if(inksCreatedBy) {
@@ -258,8 +259,8 @@ export default function NftyWallet(props) {
                 <div style={{maxWidth:720,margin:"0 auto"}}>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}
-                    localProvider={props.kovanProvider}
-                    readContracts={props.readKovanContracts}
+                    kovanProvider={props.kovanProvider}
+                    readKovanContracts={props.readKovanContracts}
                     tab={tab}
                     showInk={showInk}
                     ipfsConfig={ipfsConfig}
@@ -271,11 +272,30 @@ export default function NftyWallet(props) {
                   name={"ValidSignatureTester"}
                   price={props.price}
                   />)*/}
-                  {process.env.REACT_APP_NETWORK_NAME?"":(<Contract
+                  {(<><Contract
+                  provider={props.injectedProvider}
+                  name={"NiftyRegistry"}
+                  price={props.price}
+                  /><Contract
                   provider={props.injectedProvider}
                   name={"NiftyInk"}
                   price={props.price}
-                  />)}
+                  />
+                  <Contract
+                  provider={props.injectedProvider}
+                  name={"NiftyToken"}
+                  price={props.price}
+                  />
+                  <Contract
+                  provider={props.injectedProvider}
+                  name={"NiftyMediator"}
+                  price={props.price}
+                  />
+                  <Contract
+                  provider={props.injectedProvider}
+                  name={"Liker"}
+                  price={props.price}
+                  /></>)}
                 </div>
                 </TabPane>
                 <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
@@ -301,10 +321,13 @@ export default function NftyWallet(props) {
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
                       readContracts={props.readContracts}
+                      readKovanContracts={props.readKovanContracts}
+                      gasPrice={props.gasPrice}
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
                       nftyBalance={nftyBalance}
+                      nftyMainBalance={nftyMainBalance}
                       thisTab={"holdings"}
                     />
                   </div>
@@ -320,7 +343,7 @@ export default function NftyWallet(props) {
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
                       metaProvider={props.metaProvider}
-                      readContracts={props.readKovanContracts}
+                      readKovanContracts={props.readKovanContracts}
                       mode={mode}
                       ink={ink}
                       ipfsHash={ipfsHash}

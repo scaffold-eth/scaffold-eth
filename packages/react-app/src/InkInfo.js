@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Popconfirm } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
 import NiftyShop from "./NiftyShop.js"
+import UpgradeInkButton from "./UpgradeInkButton.js"
 var _ = require('lodash');
 
 export default function InkInfo(props) {
@@ -24,10 +25,9 @@ export default function InkInfo(props) {
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
 
   const [inkChainInfo, setInkChainInfo] = useState()
-  const [inkMainChainInfo, setinkMainChainInfo] = useState()
-  const [upgraded, setUpgraded] = useState()
   const [targetId, setTargetId] = useState()
   const [inkPrice, setInkPrice] = useState(0)
+  const [mintedCount, setMintedCount] = useState()
 
   let mintDescription
   let mintFlow
@@ -35,52 +35,17 @@ export default function InkInfo(props) {
   let buyButton
   let inkChainInfoDisplay
   let detailContent
-  let getPatronageButton
-  let upgradeButton
-  let providePatronageButton
   let likeButtonDisplay
   let detailsDisplay
-
-  let upgradeButtonSet
 
   const mint = async (values) => {
     setMinting(true)
     console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
-    let result = await tx(writeContracts["NFTINK"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
+    let result = await tx(writeContracts["NiftyToken"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
     mintForm.resetFields();
     setMinting(false)
     console.log("result", result)
   };
-
-  const setPrice = async (values) => {
-    console.log("values",values)
-    setBuying(true)
-    let multipliedPrice = (values['price'] * 10 ** 18).toString()
-    let result = await tx(writeContracts["NFTINK"].setPrice(props.ipfsHash, multipliedPrice, { gasPrice:props.gasPrice } ))
-    notification.open({
-      message: 'New minting price set for ' + props.ink.name,
-      description: 'Ξ'+values['price']
-    });
-    priceForm.resetFields();
-    setBuying(false)
-    console.log("result", result)
-  }
-
-  const buyInk = async (values) => {
-    console.log("values", values)
-    setBuying(true)
-    let bigNumber = ethers.utils.bigNumberify(inkPrice)
-    let hex = bigNumber.toHexString()
-    let result = await tx(writeContracts["NFTINK"].buyInk(props.ipfsHash, { value: hex, gasPrice:props.gasPrice } ))
-    console.log(result)
-    setBuying(false)
-    if(result) {
-    notification.open({
-      message: <><span style={{marginRight:8}}>💵</span>Purchased Ink</>,
-      description: 'You minted one ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(inkPrice)
-    });
-  }
-  }
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
@@ -88,20 +53,14 @@ export default function InkInfo(props) {
 
   usePoller(() => {
     const getChainInfo = async () => {
-      if(props.ipfsHash && props.readContracts && props.readKovanContracts ){
+      if(props.ipfsHash && props.readKovanContracts ){
         try {
-        const newChainInfo = await props.readKovanContracts['NFTINK']["inkInfoByInkUrl"](props.ipfsHash)
+        const newChainInfo = await props.readKovanContracts['NiftyInk']["inkInfoByInkUrl"](props.ipfsHash)
+        const newMintedCount = await props.readKovanContracts['NiftyToken']["inkTokenCount"](props.ipfsHash)
+        setMintedCount(newMintedCount.toString())
         setInkChainInfo(newChainInfo)
         setTargetId(newChainInfo[0])
-        const mainChainInkId = await props.readContracts['NFTINK']['inkIdByUrl'](props.ipfsHash)
-        if(mainChainInkId.toString()=="0") {
-          setUpgraded(false)
-        } else {
-          setUpgraded(true)
-          const newMainChainInkInfo = await props.readContracts['NFTINK']['inkInfoByInkUrl'](props.ipfsHash)
-          setinkMainChainInfo(newMainChainInkInfo)
-          setInkPrice(newMainChainInkInfo[5].toString())
-        }
+        setInkPrice(newChainInfo[4].toString())
       } catch(e){ console.log(e)}
       }
     }
@@ -112,21 +71,27 @@ export default function InkInfo(props) {
   useEffect(()=>{
     setHolders(<Spin/>)
     setInkChainInfo()
-    setinkMainChainInfo()
-    setUpgraded(false)
   }, [props.ipfsHash])
 
   useEffect(()=>{
 
     const loadHolders = async () => {
-      if(props.ipfsHash && props.ink['attributes'] && inkMainChainInfo) {
-        let mintedCount = inkMainChainInfo[2]
+      if(props.ipfsHash && props.ink['attributes'] && inkChainInfo) {
         let holdersArray = []
         for(var i = 0; i < mintedCount; i++){
-          let inkToken = await props.readContracts['NFTINK']["inkTokenByIndex"](props.ipfsHash, i)
-          let ownerOf = await props.readContracts['NFTINK']["ownerOf"](inkToken)
-          let priceOf = await props.readContracts['NFTINK']["tokenPrice"](inkToken)
-          holdersArray.push([ownerOf, inkToken.toString(), priceOf.toString()])
+          let inkToken = await props.readKovanContracts['NiftyToken']["inkTokenByIndex"](props.ipfsHash, i)
+          let ownerOf = await props.readKovanContracts['NiftyToken']["ownerOf"](inkToken)
+          let priceOf = await props.readKovanContracts['NiftyToken']["tokenPrice"](inkToken)
+          let mainOwnerOf
+          let relayed = ownerOf === props.readKovanContracts['NiftyMediator'].address
+          if (relayed) {
+            try {
+            mainOwnerOf = await props.readContracts['NiftyMain']["ownerOf"](inkToken)
+          } catch (e) {
+            console.log(e)
+          }
+          }
+          holdersArray.push([ownerOf, inkToken.toString(), priceOf.toString(), mainOwnerOf, relayed])
         }
 
         const sendInkButton = (tokenOwnerAddress, tokenId) => {
@@ -141,10 +106,24 @@ export default function InkInfo(props) {
             )
           }
         }
-        if(props.ink.attributes[0].value === "0") {
-          mintDescription = (inkMainChainInfo[2] + ' minted')
+
+        const relayTokenButton = (relayed, tokenOwnerAddress, tokenId) => {
+          if (tokenOwnerAddress === props.address && relayed === false) {
+            return (
+              <UpgradeInkButton
+                tokenId={tokenId}
+                injectedProvider={props.injectedProvider}
+                gasPrice={props.gasPrice}
+              />
+            )
+          }
         }
-        else {mintDescription = (inkMainChainInfo[2] + '/' + props.ink.attributes[0].value + ' minted')}
+
+
+        if(props.ink.attributes[0].value === "0") {
+          mintDescription = (mintedCount + ' minted')
+        }
+        else {mintDescription = (mintedCount + '/' + props.ink.attributes[0].value + ' minted')}
 
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
@@ -154,8 +133,10 @@ export default function InkInfo(props) {
           dataSource={holdersArray.reverse()}
           renderItem={item => (
             <List.Item>
-              <Address value={item[0]} />
+              <Address value={item[3]?item[3]:item[0]} />
+              {item[4]===true?(item[3]?<Typography.Title level={4}>Upgraded <StarTwoTone /></Typography.Title>:<Typography.Title level={4}>In-transit <SyncOutlined spin /></Typography.Title>):<></>}
               {sendInkButton(item[0], item[1])}
+              {relayTokenButton(item[4], item[0], item[1])}
               <NiftyShop
               injectedProvider={props.injectedProvider}
               metaProvider={props.metaProvider}
@@ -166,7 +147,7 @@ export default function InkInfo(props) {
               address={props.address}
               ownerAddress={item[0]}
               price={item[2]}
-              visible={true}
+              visible={!item[4]}
               />
             </List.Item>
           )}
@@ -184,7 +165,7 @@ useEffect(()=>{
   const updateInk = async () => {
     if (props.readContracts) {
     if(inkChainInfo && !(_.isEqual(inkChainInfo,referenceInkChainInfo))) {
-    let jsonUrl = inkChainInfo[3]
+    let jsonUrl = inkChainInfo[2]
     let inkContent = await getFromIPFS(jsonUrl, props.ipfsConfig)
     console.log(JSON.parse(inkContent))
     props.setInk(JSON.parse(inkContent))
@@ -211,34 +192,32 @@ useEffect(()=>{
               <Descriptions.Item label="Artist">{inkChainInfo[1]}</Descriptions.Item>
               <Descriptions.Item label="drawingHash">{props.ipfsHash}</Descriptions.Item>
               <Descriptions.Item label="id">{inkChainInfo[0].toString()}</Descriptions.Item>
-              <Descriptions.Item label="jsonUrl">{inkChainInfo[3]}</Descriptions.Item>
+              <Descriptions.Item label="jsonUrl">{inkChainInfo[2]}</Descriptions.Item>
               <Descriptions.Item label="Image">{props.ink.image}</Descriptions.Item>
-              <Descriptions.Item label="Count">{inkChainInfo[2].toString()}</Descriptions.Item>
+              <Descriptions.Item label="Count">{mintedCount}</Descriptions.Item>
               <Descriptions.Item label="Limit">{props.ink.attributes[0].value}</Descriptions.Item>
               <Descriptions.Item label="Description">{props.ink.description}</Descriptions.Item>
-              <Descriptions.Item label="signature">{inkChainInfo[4]}</Descriptions.Item>
-              <Descriptions.Item label="status">{upgraded?"Upgraded":"Not upgraded"}</Descriptions.Item>
+              <Descriptions.Item label="signature">{inkChainInfo[3]}</Descriptions.Item>
               <Descriptions.Item label="Price">{(inkPrice > 0)?ethers.utils.formatEther(inkPrice):"No price set"}</Descriptions.Item>
             </Descriptions>
           )
 
+    buyButton = (<NiftyShop
+                  injectedProvider={props.injectedProvider}
+                  metaProvider={props.metaProvider}
+                  type={'ink'}
+                  ink={props.ink}
+                  itemForSale={props.ipfsHash}
+                  gasPrice={props.gasPrice}
+                  address={props.address}
+                  ownerAddress={inkChainInfo[1]}
+                  price={inkPrice}
+                  visible={(mintedCount < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")}
+                  />)
+
       if(props.address === inkChainInfo[1]) {
-          if(upgraded && inkMainChainInfo) {
 
-            buyButton = (<NiftyShop
-                          injectedProvider={props.injectedProvider}
-                          metaProvider={props.metaProvider}
-                          type={'ink'}
-                          ink={props.ink}
-                          itemForSale={props.ipfsHash}
-                          gasPrice={props.gasPrice}
-                          address={props.address}
-                          ownerAddress={inkChainInfo[1]}
-                          price={inkPrice}
-                          visible={(inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")}
-                          />)
-
-          if(inkMainChainInfo[2] < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
+          if(mintedCount < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0") {
 
           const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>
@@ -276,81 +255,16 @@ useEffect(()=>{
             </Popover>
           )
         }
-      } else {
 
-        upgradeButton = (
-          <Button loading={minting} type="primary" onClick={async ()=>{
-            setMinting(true)
-            try {
-              let inkUrl = props.ipfsHash
-              let jsonUrl = inkChainInfo[3]
-              let limit = props.ink.attributes[0].value
 
-              //message.loading('Upgrading your ink...');
-              console.log("createInk",inkUrl, jsonUrl, limit)
-              let result = await tx(writeContracts["NFTINK"].createInk(inkUrl, jsonUrl, limit))
-              console.log(result)
-              if(result) {
-              message.destroy()
-              setMinting(false)
-              notification.open({
-                message: <><span style={{marginRight:8}}>🛰</span>Minting Ink...</>,
-                description:(
-                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction</a>
-                ),
-              });
-            } else {
-              setMinting(false)
-              message.destroy()
-              notification.open({
-                message: 'Mint unsuccessful',
-                description: 'No changes made'
-              });
-            }
-            } catch(e) {
-              setMinting(false)
-              console.log(e)
-              notification.open({
-                message: 'Mint unsuccessful',
-                description: e,
-              });
-            }
-          }} style={{ marginBottom: 12 }}>Mint</Button>
-        )
-      }
-
-    } else {
-      if(inkChainInfo && inkChainInfo[4] !== "0x") {
-        providePatronageButton = (
-          <Button loading={minting} type="primary" onClick={async ()=>{
-            setMinting(true)
-            try {
-              let inkUrl = props.ipfsHash
-              let jsonUrl = inkChainInfo[3]
-              let limit = props.ink.attributes[0].value
-              let artist = inkChainInfo[1]
-              let signature = inkChainInfo[4]
-              console.log("createInkFromSignature",inkUrl, jsonUrl, limit, artist, signature)
-              let result = await tx(writeContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, limit, artist, signature))
-              console.log("createInkFromSignature RESULT:",result)
-              setMinting(false)
-            } catch(e) {
-              setMinting(false)
-              console.log(e)
-            }
-          }} style={{ marginBottom: 12 }}>Mint</Button>
-        )
-      }
     }
-
-        upgradeButtonSet = (<Row style={{justifyContent: 'center'}}>{upgradeButton}{providePatronageButton}</Row>)
 
         likeButtonDisplay = (
           <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>
             <LikeButton
               metaProvider={props.metaProvider}
               signingProvider={props.injectedProvider}
-              contractAddress={props.readKovanContracts['NFTINK']['address']}
+              contractAddress={props.readKovanContracts['NiftyInk']['address']}
               targetId={targetId}
               likerAddress={props.address}
             />
@@ -363,7 +277,6 @@ useEffect(()=>{
             <Popover content={detailContent} title="Ink Details">
             <QuestionCircleOutlined />
             </Popover>
-            <span style={{paddingLeft:4}}>{upgraded?<StarTwoTone />:<></>}</span>
           </div>
         )
 
@@ -394,7 +307,7 @@ useEffect(()=>{
         </div>
 
         <div style={{marginTop:20}}>
-          {upgraded?holders:upgradeButtonSet}
+          {holders}
         </div>
 
       </div>

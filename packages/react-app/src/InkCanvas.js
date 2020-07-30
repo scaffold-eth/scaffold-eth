@@ -80,9 +80,9 @@ export default function InkCanvas(props) {
 
     let result
 
-    let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readContracts["NFTINK"])
+    let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NiftyInk"])
 
-    console.log(metaWriteContracts["NFTINK"])
+    console.log(metaWriteContracts["NiftyInk"])
 
 
     notification.open({
@@ -92,7 +92,7 @@ export default function InkCanvas(props) {
     });
 
 
-    let signed = await metaWriteContracts["NFTINK"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    let signed = await writeContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("Signed?",signed)
@@ -378,9 +378,6 @@ return (
     props.setDrawing(savedData)
   }}
   loadTimeOffset={3}
-
-
-
   />
   </div>
   {bottom}

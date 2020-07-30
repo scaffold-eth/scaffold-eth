@@ -23,9 +23,9 @@ export default function NiftyShop(props) {
     let multipliedPrice = (values['price'] * 10 ** 18).toString()
     let result
     if(props.type === 'ink') {
-    result = await tx(writeContracts["NFTINK"].setPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
+    result = await tx(writeContracts["NiftyInk"].setPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
   } else if(props.type === 'token') {
-    result = await tx(writeContracts["NFTINK"].setTokenPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
+    result = await tx(writeContracts["NiftyToken"].setTokenPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
   }
     notification.open({
       message: 'New price set for ' + props.ink.name,
@@ -44,9 +44,9 @@ export default function NiftyShop(props) {
 
     let result
     if(props.type === 'ink') {
-    result = await tx(writeContracts["NFTINK"].buyInk(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
+    result = await tx(writeContracts["NiftyToken"].buyInk(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
   } else if(props.type === 'token') {
-        result = await tx(writeContracts["NFTINK"].buyToken(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
+        result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
       }
     console.log(result)
     setBuying(false)

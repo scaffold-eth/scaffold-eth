@@ -25,6 +25,11 @@ if(process.env.REACT_APP_NETWORK_NAME){
     localProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
     //localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
     console.log(localProvider)
+  }if(process.env.REACT_APP_NETWORK_NAME=="sokol"){
+    console.log("THIS.IS.SOKOL")
+    localProvider = new ethers.providers.JsonRpcProvider("https://sokol.poa.network")
+    //localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
+    console.log(localProvider)
   }else{
     localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
   }

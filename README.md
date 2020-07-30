@@ -44,6 +44,15 @@ yarn run localdeploy
 
 ```
 
+yarn run newdeploykovan
+
+Update Row 52: await NiftyMain.setMediatorContractOnOtherSide("NiftyMediator.sol Address from Kovan Deploy Goes Here")
+
+yarn run newdeploysokol
+
+Call NiftyMediator.setMediatorContractOnOtherSide("NiftyMain.sol Address from Sokol Deploy Goes Here")
+
+
 
 
 ## Introduction to NFTY INK

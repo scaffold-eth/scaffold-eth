@@ -25,9 +25,12 @@ async function main() {
     await NiftyMediator.setNiftyRegistry(NiftyRegistry.address)
     if(bre.network.name.indexOf("kovan")>=0){
       await NiftyMediator.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
+      await NiftyRegistry.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
+      await NiftyMediator.setRequestGasLimit("1500000")
     }
     await Liker.addContract(NiftyInk.address)
 
+    if(bre.network.name.indexOf("sidechain")>=0) {
     let trustedForwarder
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
@@ -38,6 +41,7 @@ async function main() {
     }catch(e){
       console.log(e)
     }
+  }
 
   }
   if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0){
@@ -46,6 +50,7 @@ async function main() {
       await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
     }
     await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")
+    await NiftyMain.setRequestGasLimit("1500000")
   }
 
   /*

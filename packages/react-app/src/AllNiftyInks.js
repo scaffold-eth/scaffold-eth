@@ -13,12 +13,12 @@ export default function NftyWallet(props) {
   let allInkView
   const [lastStreamCount, setLastStreamCount] = useState("0")
 
-  let inkCreations = useEventListener(props.readContracts,'NFTINK',"newInk",props.localProvider, 1)
+  let inkCreations = useEventListener(props.readKovanContracts,'NiftyInk',"newInk",props.kovanProvider, 1)
   let likes
 
   useEffect(()=>{
 
-      if(props.tab === props.thisTab && props.readContracts && inkCreations && props.totalInks && inkCreations.length) {
+      if(props.tab === props.thisTab && props.readKovanContracts && inkCreations && props.totalInks && inkCreations.length) {
       if(inkCreations.length.toString() == props.totalInks.toString() &&
         props.totalInks.toString() !== lastStreamCount
       ) {
@@ -33,9 +33,9 @@ export default function NftyWallet(props) {
           const inkImageHash = inkJson.image.split('/').pop()
           const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
           const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
-          if (props.readContracts['Liker']) {
-            let niftyAddress = props.readContracts['NFTINK']['address']
-            likes = await props.readContracts['Liker']['getLikesByTarget'](niftyAddress, e['id'])
+          if (props.readKovanContracts['Liker']) {
+            let niftyAddress = props.readKovanContracts['NiftyInk']['address']
+            likes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, e['id'])
           }
           return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing, likes: likes.toString()}, e);
         }
