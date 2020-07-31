@@ -28,8 +28,9 @@
     "ipfs": "cd packages/react-app && node ipfs",
     "surge": "surge packages/react-app/build",
     "s3": "cd packages/react-app && node s3",
-    "ship": "surge packages/react-app/build"
-
+    "ship": "surge packages/react-app/build",
+    "generate": "cd packages/buidler && npx buidler generate",
+    "account": "cd packages/buidler && npx buidler account"
   },
   "workspaces": {
     "packages": [
