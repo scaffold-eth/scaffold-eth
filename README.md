@@ -52,7 +52,17 @@ yarn run newdeploysokol
 
 Call NiftyMediator.setMediatorContractOnOtherSide("NiftyMain.sol Address from Sokol Deploy Goes Here")
 
+Contract architecture:
+NiftyRegistry - keeps track of all the other Contracts
+NiftyInk - creation of artworks
+NiftyToken - NFT Contract
+NiftyMediator - Passing Tokens across the Tokenbridge
+NiftyMain - MainChain NFT Contract (can only mint on the basis of Tokenbridge messages)
+Liker - generic "Likes" contract
 
+Imported contracts:
+AMBMediator - generic AMB functionality
+SignatureChecker - verifying signatures (IERC1271 compatibility)
 
 
 ## Introduction to NFTY INK
