@@ -6,7 +6,8 @@ git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git n
 
 cd nifty-ink
 
-git checkout nifty-ink-dev
+## double check you are on the nifty-ink-dev branch. if not:
+##git checkout nifty-ink-dev
 
 yarn install
 #(ignore warnings that look like errors node-gyp)
