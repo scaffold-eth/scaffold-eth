@@ -50,7 +50,7 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
   function _newLike(address contractAddress, uint256 target, address liker) internal returns (uint256) {
     require(registeredContracts[contractAddress],"this contract is not registered");
     uint256 targetId = getTargetId(contractAddress, target);
-    uint256 likeId = uint256(getHash(contractAddress, target, liker));
+    uint256 likeId = uint256(keccak256(abi.encodePacked(byte(0x19),byte(0),address(this),contractAddress,target,liker)));
     require(!likeById[likeId].exists,"this like has already been liked");
 
     totalLikes.increment();
@@ -86,7 +86,7 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
 
   function checkLike(address contractAddress, uint256 target, address liker) public view returns (bool) {
     require(registeredContracts[contractAddress],"this contract is not registered");
-    uint256 likeId = uint256(getHash(contractAddress, target, liker));
+    uint256 likeId = uint256(keccak256(abi.encodePacked(byte(0x19),byte(0),address(this),contractAddress,target,liker)));
     return likeById[likeId].exists;
   }
 
@@ -121,15 +121,15 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
   function addContract(address contractAddress) public returns (bool) {
     require(!registeredContracts[contractAddress],"this contract is already registered");
     registeredContracts[contractAddress] = true;
-    address _contractOwner = _msgSender()
-    contractOwners[contractAddress] = _contractOwner;
+    address _contractOwner = _msgSender();
+    contractOwner[contractAddress] = _contractOwner;
     emit contractAdded(contractAddress, _contractOwner);
     return true;
   }
 
   function removeContract(address contractAddress) public returns (bool) {
     require(registeredContracts[contractAddress],"this contract is not registered");
-    address _contractOwner = _msgSender()
+    address _contractOwner = _msgSender();
     require(contractOwner[contractAddress] == _contractOwner, 'only the contract owner can remove');
     registeredContracts[contractAddress] = false;
     emit contractRemoved(contractAddress, _contractOwner);

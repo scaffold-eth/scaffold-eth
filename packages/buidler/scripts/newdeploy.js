@@ -25,8 +25,11 @@ async function main() {
     await NiftyMediator.setNiftyRegistry(NiftyRegistry.address)
     if(bre.network.name.indexOf("kovan")>=0){
       await NiftyMediator.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
-      await NiftyRegistry.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
+      await NiftyInk.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
+      await NiftyToken.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
+      await NiftyMediator.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
       await NiftyMediator.setRequestGasLimit("1500000")
+      await Liker.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
     }
     await Liker.addContract(NiftyInk.address)
 
@@ -35,7 +38,9 @@ async function main() {
     try{
       let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
       console.log("⛽️ Setting GSN Trusted Forwarder on NiftyRegistry to ",trustedForwarderObj.address)
-      await NiftyRegistry.setTrustedForwarder(trustedForwarderObj.address)
+      await NiftyInk.setTrustedForwarder(trustedForwarderObj.address)
+      await NiftyToken.setTrustedForwarder(trustedForwarderObj.address)
+      await NiftyMediator.setTrustedForwarder(trustedForwarderObj.address)
       console.log("⛽️ Setting GSN Trusted Forwarder on Liker to ",trustedForwarderObj.address)
       await Liker.setTrustedForwarder(trustedForwarderObj.address)
     }catch(e){
@@ -48,9 +53,9 @@ async function main() {
     const NiftyMain = await deploy("NiftyMain")
     if(bre.network.name.indexOf("sokol")>=0) {
       await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
+      await NiftyMain.setRequestGasLimit("1500000")
     }
     await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")
-    await NiftyMain.setRequestGasLimit("1500000")
   }
 
   /*

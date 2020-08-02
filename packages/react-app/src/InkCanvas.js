@@ -5,7 +5,7 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, signInk } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS, getSignature } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
@@ -78,11 +78,10 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
-    let result
-
-    let signature = await signInk(props.address, inkUrl, jsonUrl, limit, props.injectedProvider, props.readKovanContracts["NiftyInk"])
-
-    console.log(metaWriteContracts["NiftyInk"])
+    let signature = await getSignature(
+      props.injectedProvider, props.address,
+      ['bytes','bytes','address','address','string','string','uint256'],
+      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
 
 
     notification.open({
@@ -92,7 +91,7 @@ export default function InkCanvas(props) {
     });
 
 
-    let signed = await writeContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+    let signed = await metaWriteContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
     //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
     console.log("Signed?",signed)
@@ -163,6 +162,11 @@ export default function InkCanvas(props) {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
       console.log(e)
+      notification.open({
+        message: 'Inking error',
+        description:
+        e.message,
+      })
       setSending(false)
     }
 

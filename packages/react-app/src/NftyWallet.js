@@ -293,7 +293,7 @@ export default function NftyWallet(props) {
                   />
                   <Contract
                   provider={props.injectedProvider}
-                  name={"NiftyMain"}
+                  name={"Liker"}
                   price={props.price}
                   /></>)}
                 </div>

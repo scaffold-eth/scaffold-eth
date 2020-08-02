@@ -3,7 +3,7 @@ import { ethers } from "ethers"
 import { Row, Popover, Button, Form, Typography, Spin, Space, Descriptions, notification, message, InputNumber, Popconfirm } from 'antd';
 import { ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor } from "./helpers"
+import { Transactor, getSignature } from "./helpers"
 
 export default function NiftyShop(props) {
 
@@ -23,7 +23,13 @@ export default function NiftyShop(props) {
     let multipliedPrice = (values['price'] * 10 ** 18).toString()
     let result
     if(props.type === 'ink') {
-    result = await tx(writeContracts["NiftyInk"].setPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
+
+    let signature = await getSignature(
+      props.injectedProvider, props.address,
+      ['bytes','bytes','address','string','uint256','uint256'],
+      ['0x19','0x0',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce])
+
+    result = await tx(metaWriteContracts["NiftyInk"].setPriceFromSignature(props.itemForSale, multipliedPrice, signature, { gasPrice:props.gasPrice } ))
   } else if(props.type === 'token') {
     result = await tx(writeContracts["NiftyToken"].setTokenPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
   }

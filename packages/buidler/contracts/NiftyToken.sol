@@ -9,19 +9,16 @@ import "./INiftyRegistry.sol";
 import "./INiftyInk.sol";
 import "./SignatureChecker.sol";
 
-contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker, Ownable {
+contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
 
-    constructor() public {
+    constructor() ERC721("🎨 Nifty.Ink", "🎨") public {
+      _setBaseURI('ipfs://ipfs/');
       setCheckSignatureFlag(true);
     }
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     using SafeMath for uint256;
-
-    constructor() ERC721("🎨 Nifty.Ink", "🎨") public {
-      _setBaseURI('ipfs://ipfs/');
-    }
 
     address public niftyRegistry;
 
@@ -73,7 +70,9 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker, Ownable {
         uint256 _inkId = niftyInk().inkIdByInkUrl(_inkUrl);
         require(_inkId > 0, "this ink does not exist!");
         (, address _artist, string memory _jsonUrl, , , uint256 _limit, ) = niftyInk().inkInfoById(_inkId);
+
         require(_artist == _msgSender(), "only the artist can mint!");
+
         require(inkTokenCount(_inkUrl) < _limit || _limit == 0, "this ink is over the limit!");
 
         uint256 tokenId = _mintInkToken(to, _inkUrl, _jsonUrl);
@@ -81,7 +80,7 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker, Ownable {
         return tokenId;
     }
 
-    function mintFromSignature(address to, string memory _inkUrl, bytes signature) public returns (uint256) {
+    function mintFromSignature(address to, string memory _inkUrl, bytes memory signature) public returns (uint256) {
         uint256 _inkId = niftyInk().inkIdByInkUrl(_inkUrl);
         require(_inkId > 0, "this ink does not exist!");
 

@@ -102,7 +102,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       return inkId;
     }
 
-    function _setPrice(string memory inkUrl, uint256 price) private returns (uint256) {
+    function _setPrice(uint256 _inkId, uint256 price) private returns (uint256) {
 
       _inkById[_inkId].price = price;
       _inkById[_inkId].priceNonce.increment();
@@ -116,18 +116,18 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       Ink storage _ink = _inkById[_inkId];
       require(_ink.artist == _msgSender(), "only the artist can set the price!");
 
-      return _setPrice(inkUrl, price);
+      return _setPrice(_ink.id, price);
     }
 
     function setPriceFromSignature(string memory inkUrl, uint256 price, bytes memory signature) public returns (uint256) {
       uint256 _inkId = inkIdByInkUrl[inkUrl];
       require(_inkId > 0, "this ink does not exist!");
       Ink storage _ink = _inkById[_inkId];
-      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), inkUrl, price, _ink.priceNonce));
-      bool isArtistSignature = checkSignature(messageHash, signature, artist);
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), inkUrl, price, _ink.priceNonce.current()));
+      bool isArtistSignature = checkSignature(messageHash, signature, _ink.artist);
       require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this price");
 
-      return _setPrice(inkUrl, price);
+      return _setPrice(_ink.id, price);
     }
 
 
@@ -135,7 +135,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       require(id > 0 && id <= totalInks.current(), "this ink does not exist!");
       Ink storage _ink = _inkById[id];
 
-      return (id, _ink.artist, _ink.jsonUrl, _ink.signature, _ink.price, _ink.limit, _ink.inkUrl, _ink.priceNonce);
+      return (id, _ink.artist, _ink.jsonUrl, _ink.signature, _ink.price, _ink.limit, _ink.inkUrl, _ink.priceNonce.current());
     }
 
     function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory, uint256) {

@@ -49,7 +49,7 @@
     "@nomiclabs/buidler": "1.3.3-rc.0",
     "@nomiclabs/buidler-truffle5": "1.3.3-rc.0",
     "@nomiclabs/buidler-web3": "1.3.3-rc.0",
-    "@opengsn/gsn": "2.0.0-alpha.3-patch.2"
+    "@opengsn/gsn": "0.9.0"
   },
   "workspaces": {
     "packages": [

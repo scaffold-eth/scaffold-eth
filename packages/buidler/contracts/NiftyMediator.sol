@@ -6,6 +6,7 @@ import "./AMBMediator.sol";
 import "./INiftyToken.sol";
 import "./INiftyInk.sol";
 import "./INiftyRegistry.sol";
+import "./SignatureChecker.sol";
 
 contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator, SignatureChecker {
 
@@ -63,8 +64,8 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator, SignatureChe
     }
 
 
-    function relayTokenFromSignature(uint256 _tokenId, signature) external returns (bytes32) {
-      address _owner = ownerOf(_tokenId)
+    function relayTokenFromSignature(uint256 _tokenId, bytes calldata signature) external returns (bytes32) {
+      address _owner = niftyToken().ownerOf(_tokenId);
       bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), _owner, _tokenId));
       bool isOwnerSignature = checkSignature(messageHash, signature, _owner);
       require(isOwnerSignature || !checkSignatureFlag, "only the owner can upgrade!");

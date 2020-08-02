@@ -4,7 +4,7 @@ import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getFromIPFS, signInk, signLike } from "./helpers"
+import { Transactor, getFromIPFS, getSignature } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
 import NiftyShop from "./NiftyShop.js"
@@ -40,8 +40,14 @@ export default function InkInfo(props) {
 
   const mint = async (values) => {
     setMinting(true)
+
+    let signature = await getSignature(
+      props.injectedProvider, props.address,
+      ['bytes','bytes','address','address','string','uint256'],
+      ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],props.ipfsHash,mintedCount])
+
     console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
-    let result = await tx(writeContracts["NiftyToken"].mint(values['to'], props.ipfsHash , { gasPrice:props.gasPrice } ))
+    let result = await tx(metaWriteContracts["NiftyToken"].mintFromSignature(values['to'], props.ipfsHash, signature, { gasPrice:props.gasPrice } ))
     mintForm.resetFields();
     setMinting(false)
     console.log("result", result)
@@ -211,6 +217,7 @@ useEffect(()=>{
                   gasPrice={props.gasPrice}
                   address={props.address}
                   ownerAddress={inkChainInfo[1]}
+                  priceNonce={inkChainInfo[7]}
                   price={inkPrice}
                   visible={(mintedCount < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")}
                   />)
