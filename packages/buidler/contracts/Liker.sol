@@ -16,8 +16,8 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
   Counters.Counter public totalLikes;
 
   event liked(uint256 LikeId, address targetContract, uint256 target, uint256 targetId, address liker);
-  event contractAdded(address targetContract);
-  event contractRemoved(address targetContract);
+  event contractAdded(address targetContract, address contractOwner);
+  event contractRemoved(address targetContract, address contractOwner);
 
   struct Like {
     uint256 id;
@@ -30,6 +30,7 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
 
   EnumerableSet.UintSet private likeIds;
   mapping(address => bool) public registeredContracts;
+  mapping(address => address) public contractOwner;
   mapping(uint256 => Like) private likeById;
   mapping(address => EnumerableSet.UintSet) private addressLikes;
   mapping(uint256 => EnumerableSet.UintSet) private targetLikes;
@@ -76,23 +77,10 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
     return _newLike(contractAddress, target, _msgSender());
   }
 
-  function getHash(address contractAddress, uint256 target, address liker) public view returns (bytes32)
-  {
-      return keccak256(
-          abi.encodePacked(
-              byte(0x19),
-              byte(0),
-              address(this),
-              contractAddress,
-              target,
-              liker
-      ));
-  }
-
   function likeWithSignature(address contractAddress, uint256 target, address liker, bytes memory signature) public returns (uint256) {
-    bytes32 messageHash = getHash(contractAddress, target, liker);
+    bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19),byte(0),address(this),contractAddress,target,liker));
     bool isArtistSignature = checkSignature(messageHash, signature, liker);
-    require(isArtistSignature, "Unable to verify the artist signature");
+    require(isArtistSignature || !checkSignatureFlag, "Unable to verify the artist signature");
     return _newLike(contractAddress, target, liker);
   }
 
@@ -130,17 +118,21 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
     return addressLikes[liker].length();
   }
 
-  function addContract(address contractAddress) public onlyOwner returns (bool) {
+  function addContract(address contractAddress) public returns (bool) {
     require(!registeredContracts[contractAddress],"this contract is already registered");
     registeredContracts[contractAddress] = true;
-    emit contractAdded(contractAddress);
+    address _contractOwner = _msgSender()
+    contractOwners[contractAddress] = _contractOwner;
+    emit contractAdded(contractAddress, _contractOwner);
     return true;
   }
 
-  function removeContract(address contractAddress) public onlyOwner returns (bool) {
+  function removeContract(address contractAddress) public returns (bool) {
     require(registeredContracts[contractAddress],"this contract is not registered");
+    address _contractOwner = _msgSender()
+    require(contractOwner[contractAddress] == _contractOwner, 'only the contract owner can remove');
     registeredContracts[contractAddress] = false;
-    emit contractRemoved(contractAddress);
+    emit contractRemoved(contractAddress, _contractOwner);
     return false;
   }
 

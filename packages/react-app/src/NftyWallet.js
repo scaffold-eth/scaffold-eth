@@ -204,7 +204,7 @@ export default function NftyWallet(props) {
     <Account
         address={props.address}
         setAddress={props.setAddress}
-        localProvider={props.localProvider}
+        localProvider={props.kovanProvider}
         injectedProvider={props.injectedProvider}
         setInjectedProvider={props.setInjectedProvider}
         mainnetProvider={props.mainnetProvider}
@@ -293,7 +293,7 @@ export default function NftyWallet(props) {
                   />
                   <Contract
                   provider={props.injectedProvider}
-                  name={"Liker"}
+                  name={"NiftyMain"}
                   price={props.price}
                   /></>)}
                 </div>

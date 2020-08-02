@@ -1,10 +1,11 @@
 import { ethers } from "ethers";
 import { verifySignature } from "./VerifySignature";
-import * as ethUtil from "ethereumjs-util";
 
 export async function signLike(contractAddress, target, liker, provider, contract) {
 
-  let hashToSign = await contract.getHash(contractAddress, target, liker)
+  let hashToSign = ethers.utils.solidityKeccak256(
+    ['bytes','bytes','address','address','uint256','address'],
+    ['0x19','0x0',contract.address,contractAddress,target,liker])//await contract.getHash(contractAddress, target, liker)
   console.log("hashToSign",hashToSign)
 
   let signature = await provider.send("personal_sign", [hashToSign, liker]);

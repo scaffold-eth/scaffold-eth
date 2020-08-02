@@ -9,6 +9,12 @@ import "./INiftyToken.sol";
 import "./INiftyRegistry.sol";
 
 contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
+
+    constructor() public {
+      setCheckSignatureFlag(true);
+      setArtistTake(1);
+    }
+
     using Counters for Counters.Counter;
     using EnumerableSet for EnumerableSet.UintSet;
 
@@ -31,11 +37,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       return INiftyToken(INiftyRegistry(niftyRegistry).tokenAddress());
     }
 
-    constructor() public {
-      setCheckSignatureFlag(true);
-      setArtistTake(1);
-    }
-
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
 
     struct Ink {
@@ -44,9 +45,9 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       string jsonUrl;
       string inkUrl;
       uint256 limit;
-      uint256 price;
       bytes signature;
-      bool artistSigned;
+      uint256 price;
+      Counters.Counter priceNonce;
     }
 
     mapping (string => uint256) public inkIdByInkUrl;
@@ -65,7 +66,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       _ink.inkUrl = inkUrl;
       _ink.jsonUrl = jsonUrl;
       _ink.limit = limit;
-      _ink.artistSigned = true;
 
       inkIdByInkUrl[inkUrl] = _inkId;
       _artistInks[artist].add(_inkId);
@@ -89,17 +89,25 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       require(!(inkIdByInkUrl[inkUrl] > 0), "this ink already exists!");
 
       require(artist!=address(0), "Artist must be specified.");
-      bytes32 messageHash = getHash(artist,inkUrl,jsonUrl,limit);
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), artist, inkUrl, jsonUrl, limit));
       bool isArtistSignature = checkSignature(messageHash, signature, artist);
+      require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this ink");
 
       uint256 inkId = _createInk(inkUrl, jsonUrl, limit, artist);
 
       _inkById[inkId].signature = signature;
-      _inkById[inkId].artistSigned = isArtistSignature;
 
       niftyToken().firstMint(artist, inkUrl, jsonUrl);
 
       return inkId;
+    }
+
+    function _setPrice(string memory inkUrl, uint256 price) private returns (uint256) {
+
+      _inkById[_inkId].price = price;
+      _inkById[_inkId].priceNonce.increment();
+
+      return price;
     }
 
     function setPrice(string memory inkUrl, uint256 price) public returns (uint256) {
@@ -108,34 +116,29 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       Ink storage _ink = _inkById[_inkId];
       require(_ink.artist == _msgSender(), "only the artist can set the price!");
 
-      _inkById[_inkId].price = price;
-
-      return price;
+      return _setPrice(inkUrl, price);
     }
 
-    function getHash(address artist, string memory inkUrl, string memory jsonUrl, uint256 limit) public view returns (bytes32)
-    {
-        return keccak256(
-            abi.encodePacked(
-                byte(0x19),
-                byte(0),
-                address(this),
-                artist,
-                inkUrl,
-                jsonUrl,
-                limit
-        ));
+    function setPriceFromSignature(string memory inkUrl, uint256 price, bytes memory signature) public returns (uint256) {
+      uint256 _inkId = inkIdByInkUrl[inkUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      Ink storage _ink = _inkById[_inkId];
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), inkUrl, price, _ink.priceNonce));
+      bool isArtistSignature = checkSignature(messageHash, signature, artist);
+      require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this price");
+
+      return _setPrice(inkUrl, price);
     }
 
 
-    function inkInfoById(uint256 id) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory) {
+    function inkInfoById(uint256 id) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory, uint256) {
       require(id > 0 && id <= totalInks.current(), "this ink does not exist!");
       Ink storage _ink = _inkById[id];
 
-      return (id, _ink.artist, _ink.jsonUrl, _ink.signature, _ink.price, _ink.limit, _ink.inkUrl);
+      return (id, _ink.artist, _ink.jsonUrl, _ink.signature, _ink.price, _ink.limit, _ink.inkUrl, _ink.priceNonce);
     }
 
-    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory) {
+    function inkInfoByInkUrl(string memory inkUrl) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory, uint256) {
       uint256 _inkId = inkIdByInkUrl[inkUrl];
 
       return inkInfoById(_inkId);
@@ -153,9 +156,13 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
   		return "1.0";
   	}
 
+    function setTrustedForwarder(address _trustedForwarder) public onlyOwner {
+      trustedForwarder = _trustedForwarder;
+    }
+
     function getTrustedForwarder() public view returns(address) {
-  		return INiftyRegistry(niftyRegistry).trustedForwarder();
-  	}
+      return trustedForwarder;
+    }
 
     function _msgSender() internal override(BaseRelayRecipient, Context) view returns (address payable) {
         return BaseRelayRecipient._msgSender();

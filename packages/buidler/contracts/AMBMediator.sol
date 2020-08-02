@@ -69,8 +69,8 @@ contract AMBMediator is Ownable {
     }
 
 
-    function setMessageFixed(bytes32 _hash) internal {
-        messageFixed[_hash] = true;
+    function setMessageFixed(bytes32 _txHash) internal {
+        messageFixed[_txHash] = true;
     }
 
     function requestFailedMessageFix(bytes32 _txHash) external {

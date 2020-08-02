@@ -7,8 +7,14 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./INiftyRegistry.sol";
 import "./INiftyInk.sol";
+import "./SignatureChecker.sol";
 
-contract NiftyToken is BaseRelayRecipient, ERC721, Ownable {
+contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker, Ownable {
+
+    constructor() public {
+      setCheckSignatureFlag(true);
+    }
+
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
     using SafeMath for uint256;
@@ -69,6 +75,23 @@ contract NiftyToken is BaseRelayRecipient, ERC721, Ownable {
         (, address _artist, string memory _jsonUrl, , , uint256 _limit, ) = niftyInk().inkInfoById(_inkId);
         require(_artist == _msgSender(), "only the artist can mint!");
         require(inkTokenCount(_inkUrl) < _limit || _limit == 0, "this ink is over the limit!");
+
+        uint256 tokenId = _mintInkToken(to, _inkUrl, _jsonUrl);
+
+        return tokenId;
+    }
+
+    function mintFromSignature(address to, string memory _inkUrl, bytes signature) public returns (uint256) {
+        uint256 _inkId = niftyInk().inkIdByInkUrl(_inkUrl);
+        require(_inkId > 0, "this ink does not exist!");
+
+        uint256 _count = inkTokenCount(_inkUrl);
+        (, address _artist, string memory _jsonUrl, , , uint256 _limit, ) = niftyInk().inkInfoById(_inkId);
+        require(_count < _limit || _limit == 0, "this ink is over the limit!");
+
+        bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), to, _inkUrl, _count));
+        bool isArtistSignature = checkSignature(messageHash, signature, _artist);
+        require(isArtistSignature || !checkSignatureFlag, "only the artist can mint!");
 
         uint256 tokenId = _mintInkToken(to, _inkUrl, _jsonUrl);
 
@@ -141,9 +164,13 @@ contract NiftyToken is BaseRelayRecipient, ERC721, Ownable {
   		return "1.0";
   	}
 
+    function setTrustedForwarder(address _trustedForwarder) public onlyOwner {
+      trustedForwarder = _trustedForwarder;
+    }
+
     function getTrustedForwarder() public view returns(address) {
-  		return INiftyRegistry(niftyRegistry).trustedForwarder();
-  	}
+      return trustedForwarder;
+    }
 
     function _msgSender() internal override(BaseRelayRecipient, Context) view returns (address payable) {
         return BaseRelayRecipient._msgSender();

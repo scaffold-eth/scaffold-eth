@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Button, notification, Badge } from 'antd';
 import { LikeTwoTone, LikeOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { signLike } from "./helpers"
+import { signLike, getSignature } from "./helpers"
 
 export default function LikeButton(props) {
 
@@ -46,7 +46,11 @@ export default function LikeButton(props) {
             let contractAddress = props.contractAddress
             let target = props.targetId
             let liker = props.likerAddress
-            let signature = await signLike(contractAddress, target, liker, props.signingProvider, writeContracts["Liker"])
+            let signature = await getSignature(
+              props.signingProvider,
+              liker,
+              ['bytes','bytes','address','address','uint256','address'],
+              ['0x19','0x0',writeContracts["Liker"].address,contractAddress,target,liker])
             let result = await writeContracts["Liker"].likeWithSignature(contractAddress, target, liker, signature)
             if(result) {
               notification.open({

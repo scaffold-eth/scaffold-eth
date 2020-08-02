@@ -7,7 +7,11 @@ import "./INiftyToken.sol";
 import "./INiftyInk.sol";
 import "./INiftyRegistry.sol";
 
-contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator {
+contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator, SignatureChecker {
+
+    constructor() public {
+      setCheckSignatureFlag(true);
+    }
 
     event tokenSentViaBridge(uint256 _tokenId, bytes32 _msgId);
     event failedMessageFixed(bytes32 _msgId, address _recipient, uint256 _tokenId);
@@ -29,8 +33,7 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator {
     mapping (bytes32 => uint256) private msgTokenId;
     mapping (bytes32 => address) private msgRecipient;
 
-    function relayToken(uint256 _tokenId) external returns (bytes32) {
-      require(_msgSender() == niftyToken().ownerOf(_tokenId));
+    function _relayToken(uint256 _tokenId) internal returns (bytes32) {
       niftyToken().lock(_tokenId);
 
       string memory _inkUrl = niftyToken().tokenInk(_tokenId);
@@ -53,6 +56,22 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator {
       return msgId;
     }
 
+    function relayToken(uint256 _tokenId) external returns (bytes32) {
+      require(_msgSender() == niftyToken().ownerOf(_tokenId), 'only the owner can upgrade!');
+
+      return _relayToken(_tokenId);
+    }
+
+
+    function relayTokenFromSignature(uint256 _tokenId, signature) external returns (bytes32) {
+      address _owner = ownerOf(_tokenId)
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), _owner, _tokenId));
+      bool isOwnerSignature = checkSignature(messageHash, signature, _owner);
+      require(isOwnerSignature || !checkSignatureFlag, "only the owner can upgrade!");
+
+      return _relayToken(_tokenId);
+    }
+
     function fixFailedMessage(bytes32 _msgId) external {
       require(msg.sender == address(bridgeContract()));
       require(bridgeContract().messageSender() == mediatorContractOnOtherSide());
@@ -71,9 +90,13 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator {
   		return "1.0";
   	}
 
+    function setTrustedForwarder(address _trustedForwarder) public onlyOwner {
+      trustedForwarder = _trustedForwarder;
+    }
+
     function getTrustedForwarder() public view returns(address) {
-  		return INiftyRegistry(niftyRegistry).trustedForwarder();
-  	}
+      return trustedForwarder;
+    }
 
     function _msgSender() internal override(BaseRelayRecipient, Context) view returns (address payable) {
         return BaseRelayRecipient._msgSender();

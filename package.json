@@ -41,13 +41,15 @@
     "mainnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet && npx buidler run scripts/publish.js",
     "newlocaldeploy": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sidechain && npx buidler run scripts/newdeploy.js --network localhost && npx buidler run scripts/publish.js",
     "newdeploykovan": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network kovan && npx buidler run scripts/publish.js",
-    "newdeploysokol": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sokol && npx buidler run scripts/publish.js"
+    "newdeploysokol": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sokol && npx buidler run scripts/publish.js",
+    "deployliker": "cd packages/buidler && npx buidler run scripts/likerdeploy.js --network kovan && npx buidler run scripts/publish.js",
+    "analyze": "source-map-explorer 'packages/react-app/build/static/js/*.js'"
   },
   "devDependencies": {
-    "@opengsn/gsn": "2.0.0-alpha.3-patch.2",
     "@nomiclabs/buidler": "1.3.3-rc.0",
     "@nomiclabs/buidler-truffle5": "1.3.3-rc.0",
-    "@nomiclabs/buidler-web3": "1.3.3-rc.0"
+    "@nomiclabs/buidler-web3": "1.3.3-rc.0",
+    "@opengsn/gsn": "2.0.0-alpha.3-patch.2"
   },
   "workspaces": {
     "packages": [
@@ -55,9 +57,11 @@
     ]
   },
   "dependencies": {
+    "@burner-wallet/burner-connect-provider": "^0.1.1",
     "ipfs-http-client": "^44.3.0",
     "ipfs-only-hash": "^2.0.1",
     "is-ipfs": "^1.0.3",
-    "lodash": "^4.17.19"
+    "lodash": "^4.17.19",
+    "source-map-explorer": "^2.4.2"
   }
 }
