@@ -2,7 +2,7 @@
 
 ```bash
 
-git clone -b nfty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
+git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
 
 cd nifty-ink
 
