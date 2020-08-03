@@ -34,8 +34,11 @@ yarn run account
 # or use rinkeby.instantwallet.io and kovan.instantwallet.io to send funds to the qr in yarn run account
 
 # compile and deploy to your local chains and publish to the frontend
-yarn run localdeploy
+yarn run newlocaldeploy
 
+##
+## Note that the local deployment does not support cross-chain upgrades (no local AMB implementation)
+##
 
 ##
 ## ☢️ Right now we are switching between "@opengsn/gsn": "^0.9.0" and "@opengsn/gsn": "2.0.0-alpha.3-patch.2"
