@@ -13,6 +13,8 @@ import AllNiftyInks from "./AllNiftyInks.js"
 import BurnerProvider from 'burner-provider';
 const { TabPane } = Tabs;
 
+const Web3HttpProvider = require( 'web3-providers-http')
+
 const isIPFS = require('is-ipfs')
 const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 
@@ -181,17 +183,24 @@ export default function NftyWallet(props) {
     gsnConfig.relayLookupWindowBlocks= 1e5
     gsnConfig.verbose = true
 
-    //let kovanblocknum = await props.kovanProvider.getBlockNumber()
-    //console.log("kovanblocknum BLOCK NUMBER IS ",kovanblocknum)
 
     console.log("gsnConfig",gsnConfig)
-    const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
-    console.log("props.kovanProvider",kovanBurner)
-    const gsnProvider = new RelayProvider(kovanBurner, gsnConfig)
-    console.log("gsnProvider:",gsnProvider)
+    const origProvider = new Web3HttpProvider("https://dai.poa.network")
+    console.log("origProvider",origProvider)
+    const gsnProvider = new RelayProvider(origProvider, gsnConfig);
+    console.log("gsnProvider",gsnProvider)
+    const provider = new ethers.providers.Web3Provider(gsnProvider);
+    console.log("provider",provider)
 
-    console.log("getting newMetaPriovider")
-    let newMetaProvider = new ethers.providers.Web3Provider(gsnProvider)
+
+
+    //const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
+    //console.log("props.kovanProvider",kovanBurner)
+    //const gsnProvider = new RelayProvider(, gsnConfig)
+    //console.log("gsnProvider:",gsnProvider)
+
+    //console.log("getting newMetaPriovider")
+    let newMetaProvider = provider//new ethers.providers.Web3Provider(gsnProvider)
     console.log("newMetaPriovider is:",newMetaProvider)
 
     console.log("Setting meta provider.....")

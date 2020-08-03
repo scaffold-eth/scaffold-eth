@@ -83,6 +83,7 @@ export default function InkCanvas(props) {
       ['bytes','bytes','address','address','string','string','uint256'],
       ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
 
+    console.log("+++++++++ got sig: ",signature)
 
     notification.open({
       message: <><span style={{marginRight:8}}>📡</span>Broadcasting Ink</>,
