@@ -35,7 +35,7 @@ export default function NiftyShop(props) {
   }
     notification.open({
       message: 'New price set for ' + props.ink.name,
-      description: 'Ξ'+values['price']
+      description: '$'+values['price']
     });
     priceForm.resetFields();
     setBuying(false)
@@ -59,7 +59,7 @@ export default function NiftyShop(props) {
     if(result) {
     notification.open({
       message: <><span style={{marginRight:8}}>💵</span>Purchased Ink</>,
-      description: 'You bought one ' + props.ink.name + ' for Ξ'+ethers.utils.formatEther(props.price)
+      description: 'You bought one ' + props.ink.name + ' for $'+ethers.utils.formatEther(props.price)
     });
   }
   }
@@ -85,7 +85,7 @@ export default function NiftyShop(props) {
       name="price"
       rules={[{ required: true, message: 'What is the price of this ink?' }]}
       >
-      <InputNumber min={0} precision={3} placeholder="Ξ" />
+      <InputNumber min={0} precision={3} placeholder="$0.00" />
       </Form.Item>
 
       <Form.Item >
@@ -97,23 +97,24 @@ export default function NiftyShop(props) {
 
       </Row>
     )
+
     shopButton = (
       <Popover content={setPriceForm}
-      title="Set price:">
-        <Button type="primary" style={{ marginBottom: 12 }}><ShopOutlined />{props.price>0?'Ξ'+ethers.utils.formatEther(props.price):'Sell'}</Button>
+      title={"Set price:"}>
+        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell'}</Button>
       </Popover>
     )
   } else if (props.price > 0) {
 
     shopButton = (
       <Popconfirm
-        title={'Buy one "'+props.ink.name+'" for Ξ'+ethers.utils.formatEther(props.price)}
+        title={'Purchase "'+props.ink.name+'" for $'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}
         onConfirm={buyInk}
         okText="Purchase"
         cancelText="Cancel"
         icon=<ShoppingCartOutlined/>
       >
-      <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'Ξ'+ethers.utils.formatEther(props.price)}</Button>
+      <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
       </Popconfirm>
     )
   } else {

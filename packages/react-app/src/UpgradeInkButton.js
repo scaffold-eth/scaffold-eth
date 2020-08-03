@@ -39,6 +39,6 @@ export default function UpgradeInkButton(props) {
                 </>
               }
               title={"Upgrade to " + process.env.REACT_APP_NETWORK_NAME}>
-              <a href="#"><UploadOutlined style={{fontSize:26,marginLeft:4,verticalAlign:"middle"}}/></a>
+              <Button type="secondary" style={{ margin:4, marginBottom:12 }}><UploadOutlined/>Upgrade</Button>
             </Popover>)
   }

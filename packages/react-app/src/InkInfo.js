@@ -107,7 +107,7 @@ export default function InkInfo(props) {
                 <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
               }
               title="Send Ink">
-              <a href="#"><SendOutlined style={{fontSize:26,marginLeft:4,verticalAlign:"middle"}}/></a>
+                <Button type="secondary" style={{margin:4,marginBottom:12}}><SendOutlined/> Send</Button>
               </Popover>
             )
           }
@@ -143,6 +143,7 @@ export default function InkInfo(props) {
               {item[4]===true?(item[3]?<Typography.Title level={4}>Upgraded <StarTwoTone /></Typography.Title>:<Typography.Title level={4}>In-transit <SyncOutlined spin /></Typography.Title>):<></>}
               {sendInkButton(item[0], item[1])}
               {relayTokenButton(item[4], item[0], item[1])}
+              <div style={{marginLeft:4,marginTop:4}}>
               <NiftyShop
               injectedProvider={props.injectedProvider}
               metaProvider={props.metaProvider}
@@ -155,6 +156,7 @@ export default function InkInfo(props) {
               price={item[2]}
               visible={!item[4]}
               />
+              </div>
             </List.Item>
           )}
           />
@@ -258,7 +260,7 @@ useEffect(()=>{
           mintFlow =       (
             <Popover content={mintInkForm}
             title="Mint">
-            <Button type="primary" style={{ marginBottom: 12 }}><SendOutlined style={{color:"#FFFFFF"}}/> Mint</Button>
+            <Button type="secondary" style={{ marginBottom: 12 }}><SendOutlined/> Mint</Button>
             </Popover>
           )
         }

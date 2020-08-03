@@ -347,6 +347,10 @@ if (props.mode === "edit") {
         <a href={'/' + props.ipfsHash} style={{color:"#222222"}}>{props.ink.name?props.ink.name:<Spin/>}</a>
         </Typography.Text>
 
+        <Button style={{marginTop:4,marginLeft:4}} onClick={() => {
+          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+        }}><PlaySquareOutlined /> PLAY</Button>
+
       </Row>
     </div>
 

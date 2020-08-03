@@ -1,1 +1,1 @@
-module.exports = ["Liker","NFTINK","NiftyInk","NiftyMain","NiftyMediator","NiftyRegistry","NiftyToken","ValidSignatureTester"]
+module.exports = ["Liker","NFTINK","NiftyInk","NiftyMain","NiftyMediator","NiftyRegistry","NiftyToken"]
