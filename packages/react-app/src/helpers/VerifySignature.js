@@ -10,7 +10,7 @@ export async function verifySignature(
 
   let messageToArray = ethers.utils.arrayify(hash)
   let arrayToHash = ethers.utils.hashMessage(messageToArray)
-  const bytecode = await provider.getCode(address);
+  const bytecode = "0x00"//await provider.getCode(address);/////force this for now because it is failing here
   console.log(bytecode)
   const signer = ethers.utils.verifyMessage(ethers.utils.arrayify(hash), sig)
   console.log(signer)

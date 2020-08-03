@@ -184,27 +184,39 @@ export default function NftyWallet(props) {
     gsnConfig.verbose = true
 
 
-    console.log("gsnConfig",gsnConfig)
-    const origProvider = new Web3HttpProvider("https://dai.poa.network")
-    console.log("origProvider",origProvider)
-    const gsnProvider = new RelayProvider(origProvider, gsnConfig);
-    console.log("gsnProvider",gsnProvider)
-    const provider = new ethers.providers.Web3Provider(gsnProvider);
-    console.log("provider",provider)
+      console.log("gsnConfig",gsnConfig)
+      const origProvider = new Web3HttpProvider("https://dai.poa.network")
+      console.log("origProvider",origProvider)
+      const gsnProvider = new RelayProvider(origProvider, gsnConfig);
+      console.log("gsnProvider",gsnProvider)
 
+      console.log("Creating a new account in the gsn provider...")
+      const account = await gsnProvider.newAccount()
+      let from = account.address
 
+      console.log("gsnProvider should have an account:",gsnProvider)
 
-    //const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
-    //console.log("props.kovanProvider",kovanBurner)
-    //const gsnProvider = new RelayProvider(, gsnConfig)
-    //console.log("gsnProvider:",gsnProvider)
+      console.log("from",from)
 
-    //console.log("getting newMetaPriovider")
-    let newMetaProvider = provider//new ethers.providers.Web3Provider(gsnProvider)
-    console.log("newMetaPriovider is:",newMetaProvider)
+      //const signer = gsnProvider.getSigner(from)
+      //console.log("---------------====== signer",signer)
 
-    console.log("Setting meta provider.....")
-    props.setMetaProvider(newMetaProvider)
+      const provider = new ethers.providers.Web3Provider(gsnProvider);
+      console.log("GOT GSN PROVIDER",gsnProvider)
+      const signer = provider.getSigner(from)
+      console.log("==========================signer",signer)
+
+      //const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
+      //console.log("props.kovanProvider",kovanBurner)
+      //const gsnProvider = new RelayProvider(, gsnConfig)
+      //console.log("gsnProvider:",gsnProvider)
+
+      //console.log("getting newMetaPriovider")
+      //let newMetaProvider = provider//new ethers.providers.Web3Provider(gsnProvider)
+      //console.log("newMetaPriovider is:",newMetaProvider)
+
+      console.log("Setting meta provider (SIGNER!).....",signer)
+      props.setMetaProvider(signer)
     }
     loadPage()
   }, [])

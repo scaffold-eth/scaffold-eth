@@ -13,7 +13,10 @@ export default function useContractLoader(provider) {
 
           //we need to check to see if this provider has a signer or not
           let signer
-          let accounts = await provider.listAccounts()
+          let accounts
+          if(provider.listAccounts){
+            accounts = await provider.listAccounts()
+          }
           if(accounts && accounts.length>0){
             signer = provider.getSigner()
           }else{
