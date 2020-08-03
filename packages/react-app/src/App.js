@@ -22,18 +22,19 @@ if(process.env.REACT_APP_NETWORK_NAME){
   )*/
   if(process.env.REACT_APP_NETWORK_NAME=="xdai"){
     console.log("🎉XDAINETWORK")
-    localProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
-    //localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
-    console.log(localProvider)
-  }if(process.env.REACT_APP_NETWORK_NAME=="sokol"){
+    localProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
+    kovanProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
+  } else if(process.env.REACT_APP_NETWORK_NAME=="sokol"){
     console.log("THIS.IS.SOKOL")
     localProvider = new ethers.providers.JsonRpcProvider("https://sokol.poa.network")
+    kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
     //localProvider = new ethers.providers.Web3Provider(new BurnerProvider("https://dai.poa.network"))
   }else{
     localProvider = new ethers.providers.InfuraProvider(process.env.REACT_APP_NETWORK_NAME, "9ea7e149b122423991f56257b882261c")
+    kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
   }
 
-  kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
+
 }else{
   networkBanner = (
     <div style={{backgroundColor:"#666666",color:"#FFFFFF",position:"absolute",left:0,top:0,width:"100%",fontSize:54,textAlign:"left",paddingLeft:32,opacity:0.125,filter:"blur(1.2px)"}}>

@@ -10,7 +10,7 @@ async function main() {
 
   console.log("🪐 DEPLOYING ON NETWORK: ",bre.network.name)
 
-  if(bre.network.name.indexOf("sidechain")>=0 || bre.network.name.indexOf("kovan")>=0){
+  if(bre.network.name.indexOf("sidechain")>=0 || bre.network.name.indexOf("kovan")>=0|| bre.network.name.indexOf("xdai")>=0){
     const Liker = await deploy("Liker")
     console.log("")
     const NiftyRegistry = await deploy("NiftyRegistry")
@@ -30,6 +30,13 @@ async function main() {
       await NiftyMediator.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
       await NiftyMediator.setRequestGasLimit("1500000")
       await Liker.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")
+    }else if(bre.network.name.indexOf("xdai")>=0){
+      await NiftyMediator.setBridgeContract("0x75Df5AF045d91108662D8080fD1FEFAd6aA0bb59")
+      await NiftyInk.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
+      await NiftyToken.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
+      await NiftyMediator.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
+      await NiftyMediator.setRequestGasLimit("1500000")
+      await Liker.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
     }
     await Liker.addContract(NiftyInk.address)
 

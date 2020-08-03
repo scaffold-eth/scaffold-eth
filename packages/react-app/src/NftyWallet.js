@@ -121,9 +121,9 @@ export default function NftyWallet(props) {
       //stakeManagerAddress = "0x0ecf783407C5C80D71CFEa37938C0b60BD255FF8"
       //paymasterAddress = "0x38489512d064106f5A7AD3d9e13268Aaf777A41c"
 
-      relayHubAddress = "0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6"
-      stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83"
-      paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
+      relayHubAddress = "0xA58B6fC9264ce507d0B0B477ceE31674341CB27e"
+      stakeManagerAddress = "0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B"
+      paymasterAddress = "0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC"
 
       /*
       Deployed GSN to network: kovan
@@ -177,7 +177,7 @@ export default function NftyWallet(props) {
       //console.log('using metamask')
     //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
     //}
-    gsnConfig.chainId = 42//31337
+    gsnConfig.chainId = 100//31337
     gsnConfig.relayLookupWindowBlocks= 1e5
     gsnConfig.verbose = true
 
@@ -272,7 +272,7 @@ export default function NftyWallet(props) {
                   name={"ValidSignatureTester"}
                   price={props.price}
                   />)*/}
-                  {(<><Contract
+                  {process.env.REACT_APP_NETWORK_NAME?"":(<><Contract
                   provider={props.injectedProvider}
                   name={"NiftyRegistry"}
                   price={props.price}
