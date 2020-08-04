@@ -45,6 +45,11 @@ export default function Account(props) {
         console.log("________MAINMIAN")
         burnerProvider = new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
       }
+
+      console.log("********* ****** *** **** **INCOMING NEW burnerProvider",burnerProvider)
+      burnerProvider._blockTracker._setSkipCacheFlag = false
+
+
       updateProviders(burnerProvider)
     }else{
       pollInjectedProvider()
