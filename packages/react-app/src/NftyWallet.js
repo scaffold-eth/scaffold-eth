@@ -185,7 +185,7 @@ export default function NftyWallet(props) {
 
 
       console.log("gsnConfig",gsnConfig)
-      const origProvider = new Web3HttpProvider("https://dai.poa.network")
+      const origProvider = new BurnerProvider("https://dai.poa.network")
       console.log("origProvider",origProvider)
       const gsnProvider = new RelayProvider(origProvider, gsnConfig);
       console.log("gsnProvider",gsnProvider)

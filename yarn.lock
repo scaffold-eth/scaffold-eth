@@ -4958,10 +4958,10 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
-burner-provider@^1.0.15:
-  version "1.0.15"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.15.tgz#a4bdcb60b0fcf27fd1dc5faa3bbc2746e4ab66a1"
-  integrity sha512-ep0w//TCqoAX8NEFaK0uY5jQtbX7qwv9XffLL+VL4Oy9+XioswFstqmCBA2hEQf+pW89GIusULrIicbOCV29ow==
+burner-provider@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.22.tgz#fd83d71403243bde7195f16779df52cc1ab971ff"
+  integrity sha512-nCfjO4OHkamS2exiFaP3xsjNakjAfRP3en41Ox6N4aQca8fbszbTZaIn1FhotxBrIyKb7N4I3QNJUdGeJkK8Xw==
   dependencies:
     bip39 "^3.0.2"
     eth-sig-util "^2.5.3"
