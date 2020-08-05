@@ -47,18 +47,18 @@ export default function Account(props) {
       }*/
 
 
-      //let burner = new BurnerProvider("https://dai.poa.network")
-      let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
-      console.log("🔥📡 burner",burner)
+      let burner = new BurnerProvider("https://dai.poa.network")
+      //let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
+      //console.log("🔥📡 burner",burner)
       let ethersProvider = new ethers.providers.Web3Provider(burner)
-      console.log("📡 Ethers Provider:",ethersProvider)
+      //console.log("📡 Ethers Provider:",ethersProvider)
 
       //This fails only on the xdai network with the ethers provider from react (a script works fine, CORS?!)
       let accounts = await ethersProvider.listAccounts()
       //DO SOME NETWORK STUFF HERE AND SEE WHERE THE XDAI STUFF IS FAILING
-      console.log("😅 accounts:",accounts)
+      //console.log("😅 accounts:",accounts)
       let bal = await ethersProvider.getBalance(accounts[0])
-      console.log("💵 balance", bal)
+      //console.log("💵 balance", bal)
       props.setInjectedProvider(ethersProvider)
 
 

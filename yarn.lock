@@ -1155,11 +1155,6 @@
     lodash "^4.17.19"
     to-fast-properties "^2.0.0"
 
-"@burner-wallet/burner-connect-provider@^0.1.1":
-  version "0.1.1"
-  resolved "https://registry.yarnpkg.com/@burner-wallet/burner-connect-provider/-/burner-connect-provider-0.1.1.tgz#1eccd2e677cbd2eadf18ce32472bd962659dad5c"
-  integrity sha512-cHA2D/Jtn6QRc3szTwSHlJVxz5xKAW6coZw5OK0pwA7IQkZQmbs8DPIAa/qHYKCh7oP2CGcC0V45QgV18cqx4w==
-
 "@cnakazawa/watch@^1.0.3":
   version "1.0.4"
   resolved "https://registry.yarnpkg.com/@cnakazawa/watch/-/watch-1.0.4.tgz#f864ae85004d0fcab6f50be9141c4da368d1656a"
@@ -4958,16 +4953,16 @@ builtin-status-codes@^3.0.0:
   resolved "https://registry.yarnpkg.com/builtin-status-codes/-/builtin-status-codes-3.0.0.tgz#85982878e21b98e1c66425e03d0174788f569ee8"
   integrity sha1-hZgoeOIbmOHGZCXgPQF0eI9Wnug=
 
-burner-provider@^1.0.22:
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.22.tgz#fd83d71403243bde7195f16779df52cc1ab971ff"
-  integrity sha512-nCfjO4OHkamS2exiFaP3xsjNakjAfRP3en41Ox6N4aQca8fbszbTZaIn1FhotxBrIyKb7N4I3QNJUdGeJkK8Xw==
+burner-provider@^1.0.31:
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.31.tgz#8914614ee9a8e93fec1bcb46211a888c09fbad21"
+  integrity sha512-TcZVSbayBKedS+5LKgAaSfhwCrNlQknbkXgpU27xs+1QwNkRZtvHqLJnNrgdxQQqyhsyYuBd7YtUN6jGa6tNVQ==
   dependencies:
     bip39 "^3.0.2"
     eth-sig-util "^2.5.3"
     ethereumjs-wallet "^0.6.3"
     ethers "^4.0.46"
-    web3-provider-engine "^15.0.6"
+    web3-provider-engine "^15.0.7"
 
 bytes@3.0.0:
   version "3.0.0"
@@ -7812,10 +7807,25 @@ ethers@4.0.0-beta.3:
     uuid "2.0.1"
     xmlhttprequest "1.8.0"
 
-ethers@^4.0.0-beta.1, ethers@^4.0.28, ethers@^4.0.32, ethers@^4.0.43, ethers@^4.0.46:
+ethers@^4.0.0-beta.1, ethers@^4.0.28, ethers@^4.0.32, ethers@^4.0.46:
   version "4.0.46"
   resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.46.tgz#13cd3ed099487f43ece00194b89a8a8781f71507"
   integrity sha512-/dPMzzpInhtiip4hKFvsDiJKeRk64IhyA+Po7CtNXneQFSOCYXg8eBFt+jXbxUQyApgWnWOtYxWdfn9+CvvxDA==
+  dependencies:
+    aes-js "3.0.0"
+    bn.js "^4.4.0"
+    elliptic "6.5.2"
+    hash.js "1.1.3"
+    js-sha3 "0.5.7"
+    scrypt-js "2.0.4"
+    setimmediate "1.0.4"
+    uuid "2.0.1"
+    xmlhttprequest "1.8.0"
+
+ethers@^4.0.43:
+  version "4.0.47"
+  resolved "https://registry.yarnpkg.com/ethers/-/ethers-4.0.47.tgz#91b9cd80473b1136dd547095ff9171bd1fc68c85"
+  integrity sha512-hssRYhngV4hiDNeZmVU/k5/E8xmLG8UpcNUzg6mb7lqhgpFPH/t7nuv20RjRrEf0gblzvi2XwR5Te+V3ZFc9pQ==
   dependencies:
     aes-js "3.0.0"
     bn.js "^4.4.0"
@@ -19043,38 +19053,10 @@ web3-net@1.2.9:
     web3-core-method "1.2.9"
     web3-utils "1.2.9"
 
-web3-provider-engine@15.0.12:
+web3-provider-engine@15.0.12, web3-provider-engine@^15.0.7:
   version "15.0.12"
   resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-15.0.12.tgz#24d7f2f6fb6de856824c7306291018c4fc543ac3"
   integrity sha512-/OfhQalKPND1iB5ggvGuYF0+SIb2Qj5OFTrT2VrZWP79UhMTdP7T+L2FtblmRdCeOetoAzZHdBaIwLOZsmIX+w==
-  dependencies:
-    async "^2.5.0"
-    backoff "^2.5.0"
-    clone "^2.0.0"
-    cross-fetch "^2.1.0"
-    eth-block-tracker "^4.4.2"
-    eth-json-rpc-errors "^2.0.2"
-    eth-json-rpc-filters "^4.1.1"
-    eth-json-rpc-infura "^4.0.1"
-    eth-json-rpc-middleware "^4.1.5"
-    eth-sig-util "^1.4.2"
-    ethereumjs-block "^1.2.2"
-    ethereumjs-tx "^1.2.0"
-    ethereumjs-util "^5.1.5"
-    ethereumjs-vm "^2.3.4"
-    json-stable-stringify "^1.0.1"
-    promise-to-callback "^1.0.0"
-    readable-stream "^2.2.9"
-    request "^2.85.0"
-    semaphore "^1.0.3"
-    ws "^5.1.1"
-    xhr "^2.2.0"
-    xtend "^4.0.1"
-
-web3-provider-engine@^15.0.6:
-  version "15.0.7"
-  resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-15.0.7.tgz#2439cdb145140660eb1007e7c6acd2d2d867b432"
-  integrity sha512-0NN0JTc4O/J9NFBtdqc4Ug+ujnniIBTCvauw3OlgZzfjnwr4irDU5CpviS5v33arYpC+WMnaDunad/OFrO/Wcw==
   dependencies:
     async "^2.5.0"
     backoff "^2.5.0"

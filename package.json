@@ -58,7 +58,6 @@
     ]
   },
   "dependencies": {
-    "@burner-wallet/burner-connect-provider": "^0.1.1",
     "ipfs-http-client": "^44.3.0",
     "ipfs-only-hash": "^2.0.1",
     "is-ipfs": "^1.0.3",
