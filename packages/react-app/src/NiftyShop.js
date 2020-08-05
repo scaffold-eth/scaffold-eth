@@ -35,7 +35,7 @@ export default function NiftyShop(props) {
   }
     notification.open({
       message: 'New price set for ' + props.ink.name,
-      description: '$'+values['price']
+      description: '$'+parseFloat(values['price']).toFixed(2)
     });
     priceForm.resetFields();
     setBuying(false)

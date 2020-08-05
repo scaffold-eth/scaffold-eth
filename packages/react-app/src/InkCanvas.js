@@ -19,9 +19,9 @@ export default function InkCanvas(props) {
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
 
-  const tx = Transactor(props.injectedProvider,props.gasPrice)
+  const tx = Transactor(props.kovanProvider,props.gasPrice)
 
-  const balance = useBalance(props.address,props.metaProvider)
+  const balance = useBalance(props.address,props.kovanProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
@@ -92,16 +92,30 @@ export default function InkCanvas(props) {
     });
 
 
-    let signed = await metaWriteContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
-    //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
 
-    console.log("Signed?",signed)
+    if(parseFloat(ethers.utils.formatEther(balance))>0.001){
+      console.log("🔥 User has xDAI, let's skip GSN",inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
 
-    //console.log("SAVING SIG TO KOVAN:")
-    //let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-    //console.log("DEOND")
+      console.log("CONTRACT:",writeContracts["NiftyInk"])
+      console.log("SIGNER:",writeContracts["NiftyInk"].signer)
 
-    return signed
+      let signed = writeContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature,{gasLimit:1500000,gasPrice:1000000000})//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+      console.log("SIGNED TX:",signed)
+      console.log("await...")
+      let result = await signed
+      //let result = await tx(signed)
+      console.log("RESULt!!!!!!",result)
+      return result
+    }else{
+      console.log("No xDAI, let's try ⛽️GSN")
+      let signed = await metaWriteContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
+      //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
+      console.log("Signed?",signed)
+      //console.log("SAVING SIG TO KOVAN:")
+      //let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
+      //console.log("DEOND")
+      return signed
+    }
 
   }
 

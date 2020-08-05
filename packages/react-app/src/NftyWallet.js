@@ -185,7 +185,7 @@ export default function NftyWallet(props) {
 
 
       console.log("gsnConfig",gsnConfig)
-      const origProvider = new BurnerProvider("https://dai.poa.network")
+      const origProvider = new Web3HttpProvider("https://dai.poa.network")
       console.log("origProvider",origProvider)
       const gsnProvider = new RelayProvider(origProvider, gsnConfig);
       console.log("gsnProvider",gsnProvider)
@@ -202,7 +202,7 @@ export default function NftyWallet(props) {
       //console.log("---------------====== signer",signer)
 
       const provider = new ethers.providers.Web3Provider(gsnProvider);
-      console.log("GOT GSN PROVIDER",gsnProvider)
+      //console.log("GOT GSN PROVIDER",gsnProvider)
       const signer = provider.getSigner(from)
       console.log("==========================signer",signer)
 
@@ -215,7 +215,7 @@ export default function NftyWallet(props) {
       //let newMetaProvider = provider//new ethers.providers.Web3Provider(gsnProvider)
       //console.log("newMetaPriovider is:",newMetaProvider)
 
-      console.log("Setting meta provider (SIGNER!).....",signer)
+      //console.log("Setting meta provider (SIGNER!).....",signer)
       props.setMetaProvider(signer)
     }
     loadPage()
@@ -364,6 +364,7 @@ export default function NftyWallet(props) {
                       mainnetProvider={props.mainnetProvider}
                       injectedProvider={props.injectedProvider}
                       metaProvider={props.metaProvider}
+                      kovanProvider={props.kovanProvider}
                       readKovanContracts={props.readKovanContracts}
                       mode={mode}
                       ink={ink}

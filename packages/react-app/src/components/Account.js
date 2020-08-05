@@ -32,10 +32,10 @@ export default function Account(props) {
       });
     }
 
-  const createBurnerIfNoAddress = () => {
+  const createBurnerIfNoAddress = async () => {
     if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
-      let burnerProvider
-      if(props.localProvider.connection && props.localProvider.connection.url){
+      //let burnerProvider
+      /*if(props.localProvider.connection && props.localProvider.connection.url){
         burnerProvider = new BurnerProvider(props.localProvider.connection.url)
         console.log("________BY URL",props.localProvider.connection.url)
       }else if( props.localProvider._network && props.localProvider._network.name ){
@@ -44,8 +44,28 @@ export default function Account(props) {
       }else{
         console.log("________MAINMIAN")
         burnerProvider = new BurnerProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
-      }
-      updateProviders(burnerProvider)
+      }*/
+
+
+      //let burner = new BurnerProvider("https://dai.poa.network")
+      let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
+      console.log("🔥📡 burner",burner)
+      let ethersProvider = new ethers.providers.Web3Provider(burner)
+      console.log("📡 Ethers Provider:",ethersProvider)
+
+      //This fails only on the xdai network with the ethers provider from react (a script works fine, CORS?!)
+      let accounts = await ethersProvider.listAccounts()
+      //DO SOME NETWORK STUFF HERE AND SEE WHERE THE XDAI STUFF IS FAILING
+      console.log("😅 accounts:",accounts)
+      let bal = await ethersProvider.getBalance(accounts[0])
+      console.log("💵 balance", bal)
+      props.setInjectedProvider(ethersProvider)
+
+
+      //let customHttpProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network");
+
+
+
     }else{
       pollInjectedProvider()
     }
@@ -55,8 +75,9 @@ export default function Account(props) {
     }, [props.injectedProvider]);
 
   const updateProviders =  async (provider) => {
-
+    console.log("UPDATE provider:",provider)
     let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
+    console.log("UPDATE newWeb3Provider:",newWeb3Provider)
     props.setInjectedProvider(newWeb3Provider)
     let newNetwork = await newWeb3Provider.getNetwork()
     let localNetwork = await props.localProvider.getNetwork()
