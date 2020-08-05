@@ -4772,6 +4772,17 @@ burner-provider@^1.0.15:
     ethers "^4.0.46"
     web3-provider-engine "^15.0.6"
 
+burner-provider@^1.0.22:
+  version "1.0.22"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.22.tgz#fd83d71403243bde7195f16779df52cc1ab971ff"
+  integrity sha512-nCfjO4OHkamS2exiFaP3xsjNakjAfRP3en41Ox6N4aQca8fbszbTZaIn1FhotxBrIyKb7N4I3QNJUdGeJkK8Xw==
+  dependencies:
+    bip39 "^3.0.2"
+    eth-sig-util "^2.5.3"
+    ethereumjs-wallet "^0.6.3"
+    ethers "^4.0.46"
+    web3-provider-engine "^15.0.6"
+
 bytes@3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/bytes/-/bytes-3.0.0.tgz#d32815404d689699f85a4ea4fa8755dd13a96048"
