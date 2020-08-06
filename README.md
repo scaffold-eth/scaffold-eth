@@ -6,7 +6,7 @@
 
 🏗 <b>scaffold-eth</b> is a <i>stack</i> of existing tools including 👷‍♀️ [Buidler](https://buidler.dev/tutorial/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app)
 
-It's <i>super power</i> is <b>interating on smart contracts as you build your frontend</b>.
+Its <i>super power</i> is <b>interating on smart contracts as you build your frontend</b>.
 
 It's great for building <i>decentralized applications</i> on [Ethereum](https://ethereum.org/en/developers/).
 
@@ -124,7 +124,7 @@ Exchange Reddit MOONs for ETH or DAI through xDAI. Learn about different 🛰 pr
 
 ---
 
-## ⏱ Original Quickstart wtih TODO List:
+## ⏱ Original Quickstart with TODO List:
 
 First, you'll need [NodeJS>=10](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads) installed.
 
