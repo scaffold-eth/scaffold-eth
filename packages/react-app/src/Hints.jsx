@@ -1,44 +1,44 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-import React, { useEffect } from "react";
+import React from "react";
 import { formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "./components";
 
 export default function Hints(props) {
   return (
     <div>
-      <p style={{ marginTop: 32 }}>
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>👷</span>
         Edit your <b>contract</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/buidler/contracts
         </span>
-      </p>
+      </div>
 
-      <p>
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🛰</span>
         <b>compile/deploy</b> with
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run deploy
         </span>
-      </p>
+      </div>
 
-      <p>
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🚀</span>
         Your <b>contract artifacts</b> are automatically injected into your frontend at
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/react-app/src/contracts/
         </span>
-      </p>
+      </div>
 
-      <p>
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🎛</span>
         Edit your <b>frontend</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/reactapp/src/App.js
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>🔭</span>
         explore the
         <span
@@ -57,17 +57,17 @@ export default function Hints(props) {
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           📦 components
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         for example, the
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           useBalance()
         </span>{" "}
         hook keeps track of your balance: <b>{formatEther(props.yourLocalBalance)}</b>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         as you build your app you'll need web3 specific components like an
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           {"<AddressInput/>"}
@@ -77,9 +77,9 @@ export default function Hints(props) {
           <AddressInput ensProvider={props.mainnetProvider} />
         </div>
         <div>(try putting in your address, an ens address, or scanning a QR code)</div>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         this balance could be multiplied by
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           price
@@ -89,17 +89,17 @@ export default function Hints(props) {
           usePrice
         </span>{" "}
         hook with the current value: <b>${props.price}</b>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>💧</span>
         use the <b>faucet</b> to send funds to
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           <Address value={props.address} minimized /> {props.address}
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>📡</span>
         deploy to a testnet or mainnet by editing
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
@@ -109,17 +109,17 @@ export default function Hints(props) {
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run deploy
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>⚙️</span>
         build your app with
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run build
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>🚢</span>
         ship it!
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
@@ -133,9 +133,9 @@ export default function Hints(props) {
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           yarn run ipfs
         </span>
-      </p>
+      </div>
 
-      <p style={{ marginTop: 32 }}>
+      <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>💬</span>
         for support, join this
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
@@ -143,7 +143,7 @@ export default function Hints(props) {
             Telegram Chat
           </a>
         </span>
-      </p>
+      </div>
       <div style={{ padding: 128 }}>
         <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">
           🛠

@@ -6,7 +6,73 @@ usePlugin("@nomiclabs/buidler-waffle");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
-const DEBUG = true;
+/*
+      📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
+
+      check out `packages/scripts/deploy.js` to customize your deployment
+
+      out of the box it will auto deploy anything in the `contracts` folder and named *.sol
+      plus it will use *.args for constructor args
+*/
+
+let mnemonic = "";
+try {
+  mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
+} catch (e) {
+  /* ignore for now because it might now have a mnemonic.txt file */
+}
+
+module.exports = {
+
+  //
+  // Select the network you want to deploy to here:
+  //
+  defaultNetwork: "localhost",
+
+  // don't forget to set your provider like:
+  // REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
+  // (then your frontend will talk to your contracts on the live network!)
+  // (you will need to restart the `yarn run start` dev server after editing the .env)
+
+  networks: {
+    localhost: {
+      url: "http://localhost:8545",
+      /*
+        notice no mnemonic here? it will just use account 0 of the buidler node to deploy
+        (you can put in a mnemonic here to set the deployer locally)
+      */
+    },
+    rinkeby: {
+      url: "https://rinkeby.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
+      accounts: {
+        mnemonic,
+      },
+    },
+    mainnet: {
+      url: "https://mainnet.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
+      accounts: {
+        mnemonic,
+      },
+    },
+    xdai: {
+      url: 'https://dai.poa.network',
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic,
+      },
+    },
+  },
+  solc: {
+    version: "0.6.6",
+    optimizer: {
+      enabled: true,
+      runs: 200,
+    },
+  },
+};
+
+
+const DEBUG = false;
 
 function debug(text) {
   if (DEBUG) {
@@ -31,7 +97,7 @@ task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) 
   if(DEBUG) console.log("privateKey",privateKey)
   var EthUtil = require('ethereumjs-util');
   const address = "0x"+EthUtil.privateToAddress(wallet._privKey).toString('hex')
-  console.log("🔐 Account Generated as "+address+".txt and set as DEPLOY_ACCOUNT in packages/buidler")
+  console.log("🔐 Account Generated as "+address+".txt and set as mnemonic in packages/buidler")
   console.log("💬 Use 'yarn run account' to get more information about the deployment account.")
 
   fs.writeFileSync("./"+address+".txt",mnemonic.toString())
@@ -158,45 +224,3 @@ task("send", "Send ETH")
 
     return send(fromSigner, txRequest);
   });
-
-let mnemonic = "";
-try {
-  mnemonic = fs.readFileSync("./mnemonic.txt").toString().trim();
-} catch (e) {
-  /* ignore for now because it might now have a mnemonic.txt file */
-}
-
-module.exports = {
-  defaultNetwork: "localhost",
-  networks: {
-    localhost: {
-      url: "http://localhost:8545",
-    },
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic,
-      },
-    },
-    mainnet: {
-      url: "https://mainnet.infura.io/v3/c954231486fa42ccb6d132b406483d14",//<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic,
-      },
-    },
-    xdai: {
-      url: 'https://dai.poa.network',
-      gasPrice: 1000000000,
-      accounts: {
-        mnemonic,
-      },
-    },
-  },
-  solc: {
-    version: "0.6.6",
-    optimizer: {
-      enabled: true,
-      runs: 200,
-    },
-  },
-};

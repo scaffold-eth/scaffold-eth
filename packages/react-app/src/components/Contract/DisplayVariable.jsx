@@ -18,7 +18,7 @@ const DisplayVariable = ({ contractFunction, functionInfo }) => {
 
   useEffect(() => {
     refresh();
-  }, [contractFunction]);
+  }, [contractFunction, refresh]);
 
   return (
     <div>

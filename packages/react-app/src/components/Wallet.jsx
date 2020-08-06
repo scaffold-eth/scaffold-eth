@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { WalletOutlined, QrcodeOutlined, SendOutlined } from "@ant-design/icons";
 import { Tooltip, Spin, Modal, Button } from "antd";
 import QR from "qrcode.react";
@@ -115,9 +115,11 @@ export default function Wallet(props) {
           </div>
         }
         onOk={() => {
+          setQr()
           setOpen(!open);
         }}
         onCancel={() => {
+          setQr()
           setOpen(!open);
         }}
         footer={[
@@ -129,11 +131,21 @@ export default function Wallet(props) {
             loading={false}
             onClick={() => {
               const tx = Transactor(props.provider);
+
+              let value
+              try{
+                value = parseEther("" + amount)
+              }catch(e){
+                //failed to parseEther, try something else
+                value = parseEther("" + parseFloat(amount).toFixed(8))
+              }
+
               tx({
                 to: toAddress,
-                value: parseEther("" + amount),
+                value: value,
               });
               setOpen(!open);
+              setQr()
             }}
           >
             <SendOutlined /> Send

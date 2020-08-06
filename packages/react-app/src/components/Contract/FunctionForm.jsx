@@ -21,7 +21,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
   };
 
   const inputs = functionInfo.inputs.map(input => (
-    <div style={{ margin: 2 }}>
+    <div style={{ margin: 2 }} key={"inputs"+input.name}>
       <Input
         size="large"
         placeholder={input.name}
@@ -32,7 +32,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
   ));
 
   const txValueInput = (
-    <div style={{ margin: 2 }}>
+    <div style={{ margin: 2 }} key={"txValueInput"}>
       <Input
         placeholder="transaction value"
         onChange={e => setTxValue(e.target.value)}
@@ -78,13 +78,14 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   const buttonIcon = functionInfo.type === "call" ? "📡" : "💸";
   inputs.push(
-    <div style={{ cursor: "pointer", margin: 2 }}>
+    <div style={{ cursor: "pointer", margin: 2 }} key={"goButton"}>
       <Input
         onChange={e => setReturnValue(e.target.value)}
         defaultValue=""
         value={returnValue}
         addonAfter={
           <div
+            style={{width:50,height:30,margin:0}}
             type="default"
             onClick={async () => {
               console.log("CLICK");

@@ -4,6 +4,11 @@ import { notification } from "antd";
 
 import Notify from "bnc-notify";
 
+// this should probably just be renamed to "notifier"
+// it is basically just a wrapper around BlockNative's wonderful Notify.js
+// https://docs.blocknative.com/notify
+
+
 export default function Transactor(provider, gasPrice, etherscan) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
@@ -12,7 +17,8 @@ export default function Transactor(provider, gasPrice, etherscan) {
       const network = await provider.getNetwork();
       console.log("network", network);
       const options = {
-        dappId: "17422c49-c723-41e7-85dd-950f5831ef92",
+        dappId: "0b58206a-f3c0-4701-a62f-73c7243e8c77", // GET YOUR OWN KEY AT https://account.blocknative.com
+        system: "ethereum",
         networkId: network.chainId,
         // darkMode: Boolean, // (default: false)
         transactionHandler: txInformation => {
@@ -26,7 +32,10 @@ export default function Transactor(provider, gasPrice, etherscan) {
         etherscanNetwork = network.name + ".";
       }
 
-      const etherscanTxUrl = "https://" + etherscanNetwork + "etherscan.io/tx/";
+      let etherscanTxUrl = "https://" + etherscanNetwork + "etherscan.io/tx/";
+      if(network.chainId===100){
+        etherscanTxUrl = "https://blockscout.com/poa/xdai/tx/"
+      }
 
       try {
         let result;
@@ -44,10 +53,10 @@ export default function Transactor(provider, gasPrice, etherscan) {
           result = await signer.sendTransaction(tx);
         }
         console.log("RESULT:", result);
-        console.log("Notify", notify);
+        //console.log("Notify", notify);
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
-        if ([1, 3, 4, 5, 42].indexOf(network.chainId) >= 0) {
+        if ([1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
           const { emitter } = notify.hash(result.hash);
           emitter.on("all", transaction => {
             return {

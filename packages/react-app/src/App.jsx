@@ -2,18 +2,43 @@ import React, { useCallback, useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col } from "antd";
+import { Row, Col, Button } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress, useBalance } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
-import { INFURA_ID } from "./constants";
+/*
+    Welcome to 🏗 scaffold-eth !
 
+    Code:
+    https://github.com/austintgriffith/scaffold-eth
+
+    Support:
+    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
+    or DM @austingriffith on twitter or telegram
+
+    You should get your own Infura.io ID and put it in `constants.js`
+    (this is your connection to the main Ethereum network for ENS etc.)
+*/
+import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
+
+// 🛰 providers
+console.log("📡 Connecting to mainnet")
+// ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID:
+const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY , quorum: 1 });
+
+const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"
+console.log("📡 Connecting to",localProviderUrl)
+const localProvider = new JsonRpcProvider(localProviderUrl);
+
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
 const web3Modal = new Web3Modal({
   // network: "mainnet", // optional
-  cacheProvider: false, // optional
+  cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -23,12 +48,6 @@ const web3Modal = new Web3Modal({
     },
   },
 });
-
-// 🛰 providers
-const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID });
-const localProvider = new JsonRpcProvider(
-  process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545",
-);
 
 const logoutOfWeb3Modal = async () => {
   await web3Modal.clearCachedProvider();
@@ -40,8 +59,13 @@ const logoutOfWeb3Modal = async () => {
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
+  /* 💵 this hook will get the price of ETH from 🦄 Uniswap:*/
   const price = useExchangePrice(mainnetProvider);
-  // const gasPrice = useGasPrice("fast");
+
+  /* ⛽️ this hook will get the price of ETH from 🦄 Uniswap */
+  const gasPrice = useGasPrice("fast");
+
+  // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
@@ -67,6 +91,8 @@ function App() {
       loadWeb3Modal();
     }
   }, [loadWeb3Modal]);
+
+  console.log("localProvider",localProvider)
 
   return (
     <div className="App">
@@ -96,12 +122,31 @@ function App() {
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={4}>
-          <Col span={9}>
+
+        <Row align="middle" gutter={[4, 4]}>
+          <Col span={8}>
             <Ramp price={price} address={address} />
           </Col>
-          <Col span={15}>
-            <Faucet localProvider={localProvider} price={price} />
+
+          <Col span={8} style={{textAlign:"center", opacity:0.8}}>
+            <GasGauge gasPrice={gasPrice}/>
+          </Col>
+          <Col span={8} style={{textAlign:"center", opacity:1}}>
+            <Button onClick={()=>{window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA")}} size="large" shape="round">
+              <span style={{marginRight:8}} role="img" aria-label="support">💬</span>
+              Support
+            </Button>
+          </Col>
+        </Row>
+
+        <Row align="middle" gutter={[4, 4]}>
+          <Col span={24}>
+            {
+              /*  if the local provider has a signer, let's show the faucet:  */
+              (localProvider && !process.env.REACT_APP_PROVIDER)?
+              <Faucet localProvider={localProvider} price={price} />:
+              ""
+            }
           </Col>
         </Row>
       </div>

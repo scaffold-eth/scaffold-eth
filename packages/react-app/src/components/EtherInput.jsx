@@ -45,7 +45,7 @@ export default function AddressInput(props) {
 
   return (
     <Input
-      placeholder={props.placeholder ? props.placeholder : "amount"}
+      placeholder={props.placeholder ? props.placeholder : "amount in "+mode}
       autoFocus={props.autoFocus}
       prefix={prefix}
       value={display}

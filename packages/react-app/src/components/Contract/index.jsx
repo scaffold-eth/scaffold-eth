@@ -20,7 +20,7 @@ const noContractDisplay = (
       to see your contract here.
     </div>
     <div style={{ padding: 32 }}>
-      <span style={{ marginRight: 4 }}>☢️</span>Warning: You might need to run
+      <span style={{ marginRight: 4 }} role="img" aria-label="warning">☢️</span>Warning: You might need to run
       <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
         yarn run deploy
       </span>{" "}
@@ -53,7 +53,7 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
           // If there are inputs, display a form to allow users to provide these
           return (
             <FunctionForm
-              key={fn.name}
+              key={"FF"+fn.name}
               contractFunction={contract[fn.name]}
               functionInfo={fn}
               provider={provider}

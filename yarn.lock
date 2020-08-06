@@ -4436,21 +4436,21 @@ bn.js@^4.11.6, bn.js@^4.11.9:
   resolved "https://registry.yarnpkg.com/bn.js/-/bn.js-4.11.9.tgz#26d556829458f9d1e81fc48952493d0ba3507828"
   integrity sha512-E6QoYqCKZfgatHTdHzs1RRKP7ip4vvm+EyRUeE2RF0NblwVvb0p6jSVeNTOFxPn26QXN2o6SMfNxKp6kU8zQaw==
 
-bnc-notify@^1.1.2:
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.1.2.tgz#7462d855af958d982bb7dbacd288e40c2cc0f5f5"
-  integrity sha512-+RaZmOns4xDfpFu3WUqAHkaw83RcVKuDSLzANDOMVgAhLBgKM9QpXRByflJWcOySy1Bsl66+8FIycQBb5SX1Fg==
+bnc-notify@^1.3.0:
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/bnc-notify/-/bnc-notify-1.3.0.tgz#1517495c242150bc7bf14eceac3c206cb05de9f3"
+  integrity sha512-0PsYv3qZlNg41697aH+3H8KjFHwbunmmuPjj2lkQKJWzA7y3UCFORTsiCl0j+R3Tuh23aVMoep0q1RT1C9CiUw==
   dependencies:
     bignumber.js "^9.0.0"
-    bnc-sdk "2.0.0"
+    bnc-sdk "^2.1.4"
     lodash.debounce "^4.0.8"
     regenerator-runtime "^0.13.3"
     uuid "^3.3.3"
 
-bnc-sdk@2.0.0:
-  version "2.0.0"
-  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-2.0.0.tgz#90b5926a758b9c9050bcbd2854cf3502a5899aff"
-  integrity sha512-IPOtIR0qZ4MtnGlMXVsjxbShANbaIfxksVZOXh/4hjpcSRKI3Gc3N+hq+P0CqeN0nhTuDARkCavDrlq/oPKyUQ==
+bnc-sdk@^2.1.4:
+  version "2.1.4"
+  resolved "https://registry.yarnpkg.com/bnc-sdk/-/bnc-sdk-2.1.4.tgz#23267198f5a48e800d9c2406f6d04a767cab5643"
+  integrity sha512-aU7DYweE+6tfTvZE7NOOfQsieU2Zyrav6o/xwuLt+uKGvrkblIeg1aqBW1yAQBEg4LCHEygX6TwZk8VznDAh3g==
   dependencies:
     crypto-es "^1.2.2"
     sturdy-websocket "^0.1.12"

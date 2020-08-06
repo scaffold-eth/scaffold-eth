@@ -12,3 +12,4 @@ export { default as Wallet } from "./Wallet";
 export { default as Blockie } from "./Blockie";
 export { default as Header } from "./Header";
 export { default as Timeline } from "./Timeline";
+export { default as GasGauge } from "./GasGauge";

@@ -32,7 +32,6 @@ export default function Ramp(props) {
               setModalUp("down");
             }}
           >
-            {">"}
             cancel
           </Button>,
         ]}
@@ -46,7 +45,7 @@ export default function Ramp(props) {
               window.open("https://pay.sendwyre.com/purchase?destCurrency=ETH&sourceAmount=25&dest=" + props.address);
             }}
           >
-            <span style={{ paddingRight: 15 }}>🇺🇸</span>
+            <span style={{ paddingRight: 15 }} role="img">🇺🇸</span>
             Wyre
           </Button>
         </p>
@@ -68,7 +67,7 @@ export default function Ramp(props) {
                 .show();
             }}
           >
-            <span style={{ paddingRight: 15 }}>🇬🇧</span>Ramp
+            <span style={{ paddingRight: 15 }} role="img">🇬🇧</span>Ramp
           </Button>
         </p>
 
@@ -81,8 +80,7 @@ export default function Ramp(props) {
               window.open("https://www.coinbase.com/buy-ethereum");
             }}
           >
-            {">"}
-            <span style={{ paddingRight: 15 }}>🏦</span>
+            <span style={{ paddingRight: 15 }} role="img">🏦</span>
             Coinbase
           </Button>
         </p>
@@ -95,13 +93,56 @@ export default function Ramp(props) {
             size="large"
             shape="round"
             onClick={() => {
-              window.open("https://support.mycrypto.com/how-to/getting-started/where-to-get-testnet-ether");
+              window.open("https://faucet.rinkeby.io/");
             }}
           >
-            {">"}
-            <span style={{ paddingRight: 15 }}>🛠</span> Testnet Faucets
+            <span style={{ paddingRight: 15 }} role="img" aria-label="rinkeby">🟨</span> Rinkeby
           </Button>
         </p>
+
+
+        <p>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://faucet.ropsten.be/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="ropsten">🟠</span> Ropsten
+          </Button>
+        </p>
+
+
+        <p>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://faucet.kovan.network/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="kovan">🟣</span> Kovan
+          </Button>
+        </p>
+
+        <p>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://faucet.goerli.mudit.blog/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="goerli">🔵</span> Goerli
+          </Button>
+        </p>
+
+
+
       </Modal>
     </div>
   );
