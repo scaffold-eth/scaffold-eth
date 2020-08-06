@@ -110,6 +110,30 @@ Exchange Reddit MOONs for ETH or DAI through xDAI. Learn about different 🛰 pr
 
 ---
 
+## ⏱ Original Quickstart wtih TODO List:
+
+First, you'll need [NodeJS>=10](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads) installed.
+
+💾 <b>install</b>:
+
+```bash
+git clone https://github.com/austintgriffith/scaffold-eth.git rad-new-dapp
+
+cd rad-new-dapp
+
+git checkout quickstart
+
+yarn install
+```
+
+> ⌚️ This will take some time. How about a quick tour of the file structure with your favorite code editor?
+
+> 💡 Sometimes the install throws errors like "node-gyp", try the next step even if you see problems.<br/>
+> (You can also [download the Apple command line tools](https://developer.apple.com/download/more/) to fix the warning.)
+
+---
+
+
 🎛 <b>frontend</b>
 
 ```bash
