@@ -24,11 +24,11 @@ yarn run deploy
 
 ```
 
-📱 Open http://localhost:3000 to see the app
-
 🔏 Edit your smart contract `YourContract.sol` in `packages/buidler/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+📱 Open http://localhost:3000 to see the app
 
 ---
 
