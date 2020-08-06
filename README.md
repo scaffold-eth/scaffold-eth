@@ -24,6 +24,12 @@ yarn run deploy
 
 ```
 
+📱 Open http://localhost:3000 to see the app
+
+🔏 Edit your smart contract `YourContract.sol` in `packages/buidler/contracts`
+
+📝 Edit your frontend `App.js` in `packages/react-app/src`
+
 ---
 
 [<H3>⏱ Quickstart: 🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
