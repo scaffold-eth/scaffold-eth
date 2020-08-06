@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import "antd/dist/antd.css";
-import { getDefaultProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { getDefaultProvider, InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
 import { Row, Col, Button } from "antd";
 import Web3Modal from "web3modal";
@@ -27,7 +27,8 @@ import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
 // 🛰 providers
 console.log("📡 Connecting to mainnet")
 // ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID:
-const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY , quorum: 1 });
+//const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY , quorum: 1 });
+const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 
 const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"
 console.log("📡 Connecting to",localProviderUrl)
