@@ -24,7 +24,7 @@ const noContractDisplay = (
       <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
         yarn run deploy
       </span>{" "}
-      <b>again</b> after the frontend comes up!
+      <i>again</i> after the frontend comes up!
     </div>
   </div>
 );
