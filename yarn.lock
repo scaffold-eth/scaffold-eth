@@ -4772,16 +4772,16 @@ burner-provider@^1.0.15:
     ethers "^4.0.46"
     web3-provider-engine "^15.0.6"
 
-burner-provider@^1.0.22:
-  version "1.0.22"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.22.tgz#fd83d71403243bde7195f16779df52cc1ab971ff"
-  integrity sha512-nCfjO4OHkamS2exiFaP3xsjNakjAfRP3en41Ox6N4aQca8fbszbTZaIn1FhotxBrIyKb7N4I3QNJUdGeJkK8Xw==
+burner-provider@^1.0.31:
+  version "1.0.31"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.31.tgz#8914614ee9a8e93fec1bcb46211a888c09fbad21"
+  integrity sha512-TcZVSbayBKedS+5LKgAaSfhwCrNlQknbkXgpU27xs+1QwNkRZtvHqLJnNrgdxQQqyhsyYuBd7YtUN6jGa6tNVQ==
   dependencies:
     bip39 "^3.0.2"
     eth-sig-util "^2.5.3"
     ethereumjs-wallet "^0.6.3"
     ethers "^4.0.46"
-    web3-provider-engine "^15.0.6"
+    web3-provider-engine "^15.0.7"
 
 bytes@3.0.0:
   version "3.0.0"
@@ -18193,6 +18193,34 @@ web3-provider-engine@^15.0.6:
   version "15.0.7"
   resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-15.0.7.tgz#2439cdb145140660eb1007e7c6acd2d2d867b432"
   integrity sha512-0NN0JTc4O/J9NFBtdqc4Ug+ujnniIBTCvauw3OlgZzfjnwr4irDU5CpviS5v33arYpC+WMnaDunad/OFrO/Wcw==
+  dependencies:
+    async "^2.5.0"
+    backoff "^2.5.0"
+    clone "^2.0.0"
+    cross-fetch "^2.1.0"
+    eth-block-tracker "^4.4.2"
+    eth-json-rpc-errors "^2.0.2"
+    eth-json-rpc-filters "^4.1.1"
+    eth-json-rpc-infura "^4.0.1"
+    eth-json-rpc-middleware "^4.1.5"
+    eth-sig-util "^1.4.2"
+    ethereumjs-block "^1.2.2"
+    ethereumjs-tx "^1.2.0"
+    ethereumjs-util "^5.1.5"
+    ethereumjs-vm "^2.3.4"
+    json-stable-stringify "^1.0.1"
+    promise-to-callback "^1.0.0"
+    readable-stream "^2.2.9"
+    request "^2.85.0"
+    semaphore "^1.0.3"
+    ws "^5.1.1"
+    xhr "^2.2.0"
+    xtend "^4.0.1"
+
+web3-provider-engine@^15.0.7:
+  version "15.0.12"
+  resolved "https://registry.yarnpkg.com/web3-provider-engine/-/web3-provider-engine-15.0.12.tgz#24d7f2f6fb6de856824c7306291018c4fc543ac3"
+  integrity sha512-/OfhQalKPND1iB5ggvGuYF0+SIb2Qj5OFTrT2VrZWP79UhMTdP7T+L2FtblmRdCeOetoAzZHdBaIwLOZsmIX+w==
   dependencies:
     async "^2.5.0"
     backoff "^2.5.0"

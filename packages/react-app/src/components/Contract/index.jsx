@@ -19,6 +19,13 @@ const noContractDisplay = (
       </span>{" "}
       to see your contract here.
     </div>
+    <div style={{ padding: 32 }}>
+      <span style={{ marginRight: 4 }}>☢️</span>Warning: You might need to run
+      <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+        yarn run deploy
+      </span>{" "}
+      <b>again</b> after the frontend comes up!
+    </div>
   </div>
 );
 

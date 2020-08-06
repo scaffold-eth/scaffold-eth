@@ -26,7 +26,7 @@ const web3Modal = new Web3Modal({
 
 // 🛰 providers
 const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID });
-const localChainProvider = new JsonRpcProvider(
+const localProvider = new JsonRpcProvider(
   process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545",
 );
 
@@ -44,11 +44,11 @@ function App() {
   // const gasPrice = useGasPrice("fast");
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localChainProvider);
+  const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localChainProvider, address);
+  const yourLocalBalance = useBalance(localProvider, address);
   // just plug in different 🛰 providers to get your balance on different chains:
   // const yourMainnetBalance = useBalance(mainnetProvider, address);
 
@@ -75,7 +75,7 @@ function App() {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
-          localProvider={localChainProvider}
+          localProvider={localProvider}
           userProvider={userProvider}
           mainnetProvider={mainnetProvider}
           price={price}
@@ -101,7 +101,7 @@ function App() {
             <Ramp price={price} address={address} />
           </Col>
           <Col span={15}>
-            <Faucet localProvider={localChainProvider} price={price} />
+            <Faucet localProvider={localProvider} price={price} />
           </Col>
         </Row>
       </div>
