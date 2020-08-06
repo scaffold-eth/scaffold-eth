@@ -12,6 +12,20 @@ It's great for building <i>decentralized applications</i> on [Ethereum](https://
 
 ---
 
+```bash
+
+yarn install
+
+yarn start
+
+yarn run chain
+
+yarn run deploy
+
+```
+
+---
+
 [<H3>⏱ Quickstart: 🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
 
 Learn how to [quickly iterate on a smart contract app](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox) using the <b>\<Contract /\></b> component.
