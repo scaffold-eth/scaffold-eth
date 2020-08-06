@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin } from 'antd';
+import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin, Modal } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, getSignature } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -20,8 +20,6 @@ export default function InkCanvas(props) {
   const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const tx = Transactor(props.kovanProvider,props.gasPrice)
-
-  const balance = useBalance(props.address,props.kovanProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
@@ -78,44 +76,67 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
-    let signature = await getSignature(
-      props.injectedProvider, props.address,
-      ['bytes','bytes','address','address','string','string','uint256'],
-      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
 
-    console.log("+++++++++ got sig: ",signature)
+    function chainWarning(network, chainId) {
+        Modal.warning({
+          title: 'MetaMask Network Mismatch',
+          content: <>Please connect to <b>https://dai.poa.network</b></>,
+        });
+      }
 
-    notification.open({
-      message: <><span style={{marginRight:8}}>📡</span>Broadcasting Ink</>,
-      description:
-      'Sending ink and signature to the network...',
-    });
-
-
-
-    if(parseFloat(ethers.utils.formatEther(balance))>0.001){
-      console.log("🔥 User has xDAI, let's skip GSN",inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
-
-      console.log("CONTRACT:",writeContracts["NiftyInk"])
-      console.log("SIGNER:",writeContracts["NiftyInk"].signer)
-
-      let signed = writeContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature,{gasLimit:1500000,gasPrice:1000000000})//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
-      console.log("SIGNED TX:",signed)
-      console.log("await...")
-      let result = await signed
-      //let result = await tx(signed)
-      console.log("RESULt!!!!!!",result)
-      return result
-    }else{
-      console.log("No xDAI, let's try ⛽️GSN")
-      let signed = await metaWriteContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
-      //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
-      console.log("Signed?",signed)
-      //console.log("SAVING SIG TO KOVAN:")
-      //let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-      //console.log("DEOND")
-      return signed
+    function showXDaiModal() {
+      Modal.info({
+        title: 'You need xDai to Ink!',
+        content: (
+          <a target="_blank" href={"https://xdai.io"}>Take it to the bridge.</a>
+        ),
+        onOk() {},
+      });
     }
+
+      let balance = await props.kovanProvider.getBalance(props.address)
+      console.log('artist balance', balance)
+      let injectedNetwork = await props.injectedProvider.getNetwork()
+      let localNetwork = await props.kovanProvider.getNetwork()
+      console.log('networkcomparison',injectedNetwork,localNetwork)
+
+      if (parseFloat(ethers.utils.formatEther(balance))>0.001){
+        if (injectedNetwork.chainId === localNetwork.chainId) {
+          console.log('Got xDai + on the right network, so kicking it old school')
+            let result = writeContracts["NiftyInk"]['createInk'](inkUrl, jsonUrl, props.ink.attributes[0]['value'])
+            console.log("Regular RESULT!!!!!!",result)
+          return result
+        } else {
+          console.log('Got xDai, but Metamask is on the wrong network')
+          chainWarning()
+          setSending(false)
+        }
+      }
+      else if (process.env.REACT_APP_USE_GSN === 'true') {
+        if(injectedNetwork.chainId === localNetwork.chainId) {
+          console.log('On the same chain, so we are making a metatransaction the straightforward way')
+          let result = metaWriteContracts["NiftyInk"]['createInk'](inkUrl, jsonUrl, props.ink.attributes[0]['value'])
+          console.log("Meta RESULT!!!!!!",result)
+          return result
+        }
+        else {
+          console.log('Injected signer is on the wrong chain, so we are doing it the newfangled signature way!')
+          let signature = await getSignature(
+            props.injectedProvider, props.address,
+            ['bytes','bytes','address','address','string','string','uint256'],
+            ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
+
+          console.log("Got signature: ",signature)
+
+          let result = metaWriteContracts["NiftyInk"]['createInkFromSignature'](inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature,{gasLimit:1500000,gasPrice:1000000000})
+          console.log("Fancy signature RESULT!!!!!!",result)
+          return result
+        }
+      }
+      else {
+        showXDaiModal()
+        setSending(false)
+      }
 
   }
 
@@ -177,12 +198,12 @@ export default function InkCanvas(props) {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
       console.log(e)
+      setSending(false)
       notification.open({
         message: 'Inking error',
         description:
         e.message,
       })
-      setSending(false)
     }
 
 

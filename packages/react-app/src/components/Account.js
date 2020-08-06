@@ -33,7 +33,7 @@ export default function Account(props) {
     }
 
   const createBurnerIfNoAddress = async () => {
-    if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function"){
+    if (!props.injectedProvider && props.localProvider && typeof props.setInjectedProvider == "function" && !web3Modal.cachedProvider){
       //let burnerProvider
       /*if(props.localProvider.connection && props.localProvider.connection.url){
         burnerProvider = new BurnerProvider(props.localProvider.connection.url)
@@ -49,7 +49,7 @@ export default function Account(props) {
 
       let burner = new BurnerProvider("https://dai.poa.network")
       //let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
-      //console.log("🔥📡 burner",burner)
+      console.log("🔥📡 burner",burner)
       let ethersProvider = new ethers.providers.Web3Provider(burner)
       //console.log("📡 Ethers Provider:",ethersProvider)
 
