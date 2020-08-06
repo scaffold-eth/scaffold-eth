@@ -28,7 +28,7 @@ yarn run deploy
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/buidler/contracts`
 
-📝 Edit your frontend `App.js` in `packages/react-app/src`
+📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 ---
 
@@ -160,7 +160,7 @@ yarn install
 yarn start
 ```
 
-📝 Edit your frontend `App.js` in `packages/react-app/src` and open http://localhost:3000
+📝 Edit your frontend `App.jsx` in `packages/react-app/src` and open http://localhost:3000
 
 ---
 
@@ -272,7 +272,7 @@ yarn run deploy
 
 🔏 Edit or rename your smart contract `YourContract.sol` in `packages/buidler/contracts`
 
-📝 Edit your frontend `App.js` in `packages/react-app/src`
+📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 📱 Open http://localhost:3000 to see the app
 
