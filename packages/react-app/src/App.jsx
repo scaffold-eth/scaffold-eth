@@ -119,7 +119,7 @@ function App() {
           and give you a form to interact with it locally
       */}
 
-      <Contract name="YourContract" provider={userProvider} address={address} />
+      <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 

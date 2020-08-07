@@ -17,19 +17,23 @@ const loadContract = (contractName, signer) => {
   return newContract;
 };
 
-export default function useContractLoader(provider) {
+export default function useContractLoader(providerOrSigner) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
     async function loadContracts() {
-      if (typeof provider !== "undefined") {
+      if (typeof providerOrSigner !== "undefined") {
         try {
-          // we need to check to see if this provider has a signer or not
+          // we need to check to see if this providerOrSigner has a signer or not
           let signer;
-          const accounts = await provider.listAccounts();
+          let accounts
+          if(providerOrSigner && typeof providerOrSigner.listAccounts == "function"){
+            accounts = await providerOrSigner.listAccounts();
+          }
+
           if (accounts && accounts.length > 0) {
-            signer = provider.getSigner();
+            signer = providerOrSigner.getSigner();
           } else {
-            signer = provider;
+            signer = providerOrSigner;
           }
 
           const contractList = require("../contracts/contracts.js");
@@ -45,6 +49,6 @@ export default function useContractLoader(provider) {
       }
     }
     loadContracts();
-  }, [provider]);
+  }, [providerOrSigner]);
   return contracts;
 }

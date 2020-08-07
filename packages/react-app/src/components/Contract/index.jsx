@@ -31,13 +31,16 @@ const noContractDisplay = (
 
 const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
 
-export default function Contract({ account, gasPrice, provider, name, show, price }) {
+export default function Contract({ account, gasPrice, signer, provider, name, show, price }) {
   const contracts = useContractLoader(provider);
   const contract = contracts ? contracts[name] : "";
   const address = contract ? contract.address : "";
   const contractIsDeployed = useContractExistsAtAddress(provider, address);
+  const writeContracts = useContractLoader(signer);
+  const writeContract = writeContracts ? writeContracts[name] : "";
 
-  const displayedContractFunctions = useMemo(() => 
+
+  const displayedContractFunctions = useMemo(() =>
     contract ? Object.values(contract.interface.functions)
       .filter(fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0)) : []
       , [contract, show])
@@ -52,7 +55,7 @@ export default function Contract({ account, gasPrice, provider, name, show, pric
       return (
         <FunctionForm
           key={"FF"+fn.name}
-          contractFunction={contract[fn.name]}
+          contractFunction={writeContract[fn.name]}
           functionInfo={fn}
           provider={provider}
           gasPrice={gasPrice}
