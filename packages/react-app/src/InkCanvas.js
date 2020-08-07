@@ -5,7 +5,7 @@ import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
 import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin, Modal } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, getSignature } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
@@ -76,67 +76,18 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
+    let metaSigner = await props.metaProvider.getAddress()
 
-    function chainWarning(network, chainId) {
-        Modal.warning({
-          title: 'MetaMask Network Mismatch',
-          content: <>Please connect to <b>https://dai.poa.network</b></>,
-        });
-      }
+    let result = transactionHandler(
+      props.address, props.injectedProvider, props.kovanProvider, metaSigner,
+      writeContracts["NiftyInk"], metaWriteContracts["NiftyInk"],
+      "createInk", [inkUrl, jsonUrl, props.ink.attributes[0]['value']],
+      "createInkFromSignature", [inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address],
+      ['bytes','bytes','address','address','string','string','uint256'],
+      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
+    )
 
-    function showXDaiModal() {
-      Modal.info({
-        title: 'You need xDai to Ink!',
-        content: (
-          <a target="_blank" href={"https://xdai.io"}>Take it to the bridge.</a>
-        ),
-        onOk() {},
-      });
-    }
-
-      let balance = await props.kovanProvider.getBalance(props.address)
-      console.log('artist balance', balance)
-      let injectedNetwork = await props.injectedProvider.getNetwork()
-      let localNetwork = await props.kovanProvider.getNetwork()
-      console.log('networkcomparison',injectedNetwork,localNetwork)
-
-      if (parseFloat(ethers.utils.formatEther(balance))>0.001){
-        if (injectedNetwork.chainId === localNetwork.chainId) {
-          console.log('Got xDai + on the right network, so kicking it old school')
-            let result = writeContracts["NiftyInk"]['createInk'](inkUrl, jsonUrl, props.ink.attributes[0]['value'])
-            console.log("Regular RESULT!!!!!!",result)
-          return result
-        } else {
-          console.log('Got xDai, but Metamask is on the wrong network')
-          chainWarning()
-          setSending(false)
-        }
-      }
-      else if (process.env.REACT_APP_USE_GSN === 'true') {
-        if(injectedNetwork.chainId === localNetwork.chainId) {
-          console.log('On the same chain, so we are making a metatransaction the straightforward way')
-          let result = metaWriteContracts["NiftyInk"]['createInk'](inkUrl, jsonUrl, props.ink.attributes[0]['value'])
-          console.log("Meta RESULT!!!!!!",result)
-          return result
-        }
-        else {
-          console.log('Injected signer is on the wrong chain, so we are doing it the newfangled signature way!')
-          let signature = await getSignature(
-            props.injectedProvider, props.address,
-            ['bytes','bytes','address','address','string','string','uint256'],
-            ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
-
-          console.log("Got signature: ",signature)
-
-          let result = metaWriteContracts["NiftyInk"]['createInkFromSignature'](inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature,{gasLimit:1500000,gasPrice:1000000000})
-          console.log("Fancy signature RESULT!!!!!!",result)
-          return result
-        }
-      }
-      else {
-        showXDaiModal()
-        setSending(false)
-      }
+    return result
 
   }
 
@@ -187,13 +138,6 @@ export default function InkCanvas(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
-    //setMode("mint")
-    /*notification.open({
-      message: 'Saving Ink to the blockchain',
-      description:
-      'Contacting the smartcontract',
-    });*/
-
     try {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
@@ -212,16 +156,6 @@ export default function InkCanvas(props) {
       props.setMode("mint")
       props.setIpfsHash(drawingHash)
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
-
-      //setMode("mint")
-      /*
-      notification.open({
-        message: 'Sending ink to IPFS',
-        description:
-        'Uploading to the distributed web',
-      });*/
-
-      //message.loading('Uploading to IPFS...', 0);
 
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
@@ -255,15 +189,6 @@ export default function InkCanvas(props) {
         console.log(error);
         setSending(false)
       });
-      /*let buffer = Buffer.from(compressedArray) //we could fall back to going directly to IPFS if our server is down?
-      console.log("ADDING TO IPFS...",buffer)
-      ipfs.files.add(buffer, function (err, file) {
-      console.log("ADDED!")
-      if (err) {
-      console.log(err);
-    }
-    console.log(file)
-  })*/
 
   const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
