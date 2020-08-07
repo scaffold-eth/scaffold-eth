@@ -45,7 +45,9 @@ export default function Ramp(props) {
               window.open("https://pay.sendwyre.com/purchase?destCurrency=ETH&sourceAmount=25&dest=" + props.address);
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img">🇺🇸</span>
+            <span style={{ paddingRight: 15 }} role="img">
+              🇺🇸
+            </span>
             Wyre
           </Button>
         </p>
@@ -67,7 +69,10 @@ export default function Ramp(props) {
                 .show();
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img">🇬🇧</span>Ramp
+            <span style={{ paddingRight: 15 }} role="img">
+              🇬🇧
+            </span>
+            Ramp
           </Button>
         </p>
 
@@ -80,7 +85,9 @@ export default function Ramp(props) {
               window.open("https://www.coinbase.com/buy-ethereum");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img">🏦</span>
+            <span style={{ paddingRight: 15 }} role="img">
+              🏦
+            </span>
             Coinbase
           </Button>
         </p>
@@ -96,10 +103,12 @@ export default function Ramp(props) {
               window.open("https://faucet.rinkeby.io/");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img" aria-label="rinkeby">🟨</span> Rinkeby
+            <span style={{ paddingRight: 15 }} role="img" aria-label="rinkeby">
+              🟨
+            </span>{" "}
+            Rinkeby
           </Button>
         </p>
-
 
         <p>
           <Button
@@ -110,10 +119,12 @@ export default function Ramp(props) {
               window.open("https://faucet.ropsten.be/");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img" aria-label="ropsten">🟠</span> Ropsten
+            <span style={{ paddingRight: 15 }} role="img" aria-label="ropsten">
+              🟠
+            </span>{" "}
+            Ropsten
           </Button>
         </p>
-
 
         <p>
           <Button
@@ -124,7 +135,10 @@ export default function Ramp(props) {
               window.open("https://faucet.kovan.network/");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img" aria-label="kovan">🟣</span> Kovan
+            <span style={{ paddingRight: 15 }} role="img" aria-label="kovan">
+              🟣
+            </span>{" "}
+            Kovan
           </Button>
         </p>
 
@@ -137,12 +151,12 @@ export default function Ramp(props) {
               window.open("https://faucet.goerli.mudit.blog/");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img" aria-label="goerli">🔵</span> Goerli
+            <span style={{ paddingRight: 15 }} role="img" aria-label="goerli">
+              🔵
+            </span>{" "}
+            Goerli
           </Button>
         </p>
-
-
-
       </Modal>
     </div>
   );
