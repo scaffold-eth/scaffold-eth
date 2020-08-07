@@ -9,6 +9,7 @@ import { useUserAddress, useBalance } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
+import { signDaiPermit } from 'eth-permit';
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -33,7 +34,7 @@ const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, ether
 
 const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"
 console.log("📡 Connecting to",localProviderUrl)
-const localProvider = new JsonRpcProvider(localProviderUrl);
+const localProvider = new JsonRpcProvider(localProviderUrl);//mainnetProvider//
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -118,8 +119,31 @@ function App() {
           this <Contract/> component will automatically parse your ABI
           and give you a form to interact with it locally
       */}
+      <Button onClick={async ()=>{
+        window.ethereum.enable()
+      }}>
+        ENABLE
+      </Button>
+      <Button onClick={async ()=>{
+        const senderAddress = "0x34aA3F359A9D614239015126635CE7732c18fDF3"
+        const spender = "0xB2ac59aE04d0f7310dC3519573BF70387b3b6E3a"
+        const tokenAddress = "0x6B175474E89094C44Da98b954EedeAC495271d0F"
+
+        console.log("Signing...",window.ethereum)
+        const result = await signDaiPermit(window.ethereum, tokenAddress, senderAddress, spender);
+        console.log("RESULT:",)
+
+        //await token.methods.permit(senderAddress, spender, result.nonce, result.expiry, true, result.v, result.r, result.s).send({
+        //  from: senderAddress,
+        //});
+      }}>
+        PERMIT
+      </Button>
+
 
       <Contract name="YourContract" provider={userProvider} address={address} />
+
+
 
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
@@ -141,6 +165,7 @@ function App() {
           </Col>
         </Row>
 
+
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {
@@ -151,6 +176,7 @@ function App() {
             }
           </Col>
         </Row>
+
       </div>
     </div>
   );

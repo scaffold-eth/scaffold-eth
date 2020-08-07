@@ -7360,6 +7360,13 @@ eth-lib@^0.1.26:
     ws "^3.0.0"
     xhr-request-promise "^0.1.2"
 
+eth-permit@^0.1.4:
+  version "0.1.4"
+  resolved "https://registry.yarnpkg.com/eth-permit/-/eth-permit-0.1.4.tgz#d094f4968cc9a5cbcce6b7017442d15915914851"
+  integrity sha512-qbJClhl70hl+09JJeDXsyJql7zMHz7rm1NQBi2gbxx2qL1/MUcWqxbtjAg57V2LX7UVOIYZHFpuQEdVyW4Ihkg==
+  dependencies:
+    utf8 "^3.0.0"
+
 eth-query@^2.0.2, eth-query@^2.1.0, eth-query@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/eth-query/-/eth-query-2.1.2.tgz#d6741d9000106b51510c72db92d6365456a6da5e"
