@@ -6,12 +6,12 @@ import { INFURA_ID } from "../constants";
 const useUserProvider = (injectedProvider, localProvider) =>
   useMemo(() => {
     if (injectedProvider) {
-      console.log("🦊 Using injected provider")
+      console.log("🦊 Using injected provider");
       return injectedProvider;
     }
     if (!localProvider) return undefined;
     if (localProvider.connection && localProvider.connection.url) {
-      console.log("🔥 Using burner provider")
+      console.log("🔥 Using burner provider");
       return new Web3Provider(new BurnerProvider(localProvider.connection.url));
     }
     // eslint-disable-next-line no-underscore-dangle

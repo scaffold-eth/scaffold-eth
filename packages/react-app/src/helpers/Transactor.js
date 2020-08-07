@@ -8,7 +8,6 @@ import Notify from "bnc-notify";
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 
-
 export default function Transactor(provider, gasPrice, etherscan) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
@@ -33,8 +32,8 @@ export default function Transactor(provider, gasPrice, etherscan) {
       }
 
       let etherscanTxUrl = "https://" + etherscanNetwork + "etherscan.io/tx/";
-      if(network.chainId===100){
-        etherscanTxUrl = "https://blockscout.com/poa/xdai/tx/"
+      if (network.chainId === 100) {
+        etherscanTxUrl = "https://blockscout.com/poa/xdai/tx/";
       }
 
       try {
@@ -53,7 +52,7 @@ export default function Transactor(provider, gasPrice, etherscan) {
           result = await signer.sendTransaction(tx);
         }
         console.log("RESULT:", result);
-        //console.log("Notify", notify);
+        // console.log("Notify", notify);
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
         if ([1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {

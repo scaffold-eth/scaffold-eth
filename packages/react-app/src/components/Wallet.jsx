@@ -115,11 +115,11 @@ export default function Wallet(props) {
           </div>
         }
         onOk={() => {
-          setQr()
+          setQr();
           setOpen(!open);
         }}
         onCancel={() => {
-          setQr()
+          setQr();
           setOpen(!open);
         }}
         footer={[
@@ -132,20 +132,20 @@ export default function Wallet(props) {
             onClick={() => {
               const tx = Transactor(props.provider);
 
-              let value
-              try{
-                value = parseEther("" + amount)
-              }catch(e){
-                //failed to parseEther, try something else
-                value = parseEther("" + parseFloat(amount).toFixed(8))
+              let value;
+              try {
+                value = parseEther("" + amount);
+              } catch (e) {
+                // failed to parseEther, try something else
+                value = parseEther("" + parseFloat(amount).toFixed(8));
               }
 
               tx({
                 to: toAddress,
-                value: value,
+                value,
               });
               setOpen(!open);
-              setQr()
+              setQr();
             }}
           >
             <SendOutlined /> Send

@@ -12,7 +12,6 @@ export default function AddressInput(props) {
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
   const ens = useLookupAddress(props.ensProvider, currentValue);
 
-
   const scannerButton = (
     <div
       style={{ marginTop: 4, cursor: "pointer" }}
