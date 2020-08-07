@@ -22,7 +22,8 @@ export default function NftyWallet(props) {
       if(inkCreations.length.toString() == props.totalInks.toString() &&
         props.totalInks.toString() !== lastStreamCount
       ) {
-        let allInks = new Array(Math.min(MAX_FRONT_PAGE_DISPLAY, props.totalInks.toString())).fill({})
+        let inksToShow = Math.min(MAX_FRONT_PAGE_DISPLAY, props.totalInks.toString())
+        let allInks = new Array(inksToShow).fill({})
         setLastStreamCount(props.totalInks.toString())
 
         console.log(props.tab, props.totalInks, inkCreations, lastStreamCount)
@@ -33,21 +34,18 @@ export default function NftyWallet(props) {
           const inkImageHash = inkJson.image.split('/').pop()
           const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
           const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
-          if (props.readKovanContracts['Liker']) {
-            let niftyAddress = props.readKovanContracts['NiftyInk']['address']
-            likes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, e['id'])
-          }
-          return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing, likes: likes.toString()}, e);
+          return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing}, e);
         }
 
-        const loadStream = async (e) => {
+        const loadStream = async () => {
           if(inkCreations) {
-
-            let mostRecentInks = inkCreations.slice(-MAX_FRONT_PAGE_DISPLAY).reverse()
-            for(var i = 0; i < MAX_FRONT_PAGE_DISPLAY; i++){
+            let mostRecentInks = inkCreations.slice(-inksToShow).reverse()
+            for(var i = 0; i < inksToShow; i++){
+              try {
                let inkDetails = await getInkImages(mostRecentInks[i])
                allInks[i] = inkDetails
                setAllInksArray(allInks)
+             } catch (e) {console.log(e)}
             }
           }
         }

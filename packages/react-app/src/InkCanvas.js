@@ -3,9 +3,9 @@ import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin } from 'antd';
+import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin, Modal } from 'antd';
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, getSignature } from "./helpers"
+import { Transactor, addToIPFS, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
@@ -20,8 +20,6 @@ export default function InkCanvas(props) {
   const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const tx = Transactor(props.kovanProvider,props.gasPrice)
-
-  const balance = useBalance(props.address,props.kovanProvider)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
@@ -78,44 +76,18 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
-    let signature = await getSignature(
-      props.injectedProvider, props.address,
+    let metaSigner = await props.metaProvider.getAddress()
+
+    let result = transactionHandler(
+      props.address, props.injectedProvider, props.kovanProvider, metaSigner,
+      writeContracts["NiftyInk"], metaWriteContracts["NiftyInk"],
+      "createInk", [inkUrl, jsonUrl, props.ink.attributes[0]['value']],
+      "createInkFromSignature", [inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address],
       ['bytes','bytes','address','address','string','string','uint256'],
-      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit])
+      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
+    )
 
-    console.log("+++++++++ got sig: ",signature)
-
-    notification.open({
-      message: <><span style={{marginRight:8}}>📡</span>Broadcasting Ink</>,
-      description:
-      'Sending ink and signature to the network...',
-    });
-
-
-
-    if(parseFloat(ethers.utils.formatEther(balance))>0.001){
-      console.log("🔥 User has xDAI, let's skip GSN",inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
-
-      console.log("CONTRACT:",writeContracts["NiftyInk"])
-      console.log("SIGNER:",writeContracts["NiftyInk"].signer)
-
-      let signed = writeContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature,{gasLimit:1500000,gasPrice:1000000000})//await customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
-      console.log("SIGNED TX:",signed)
-      console.log("await...")
-      let result = await signed
-      //let result = await tx(signed)
-      console.log("RESULt!!!!!!",result)
-      return result
-    }else{
-      console.log("No xDAI, let's try ⛽️GSN")
-      let signed = await metaWriteContracts["NiftyInk"].createInkFromSignature(inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address, signature)
-      //let signed = await writeContracts["NFTINK"].createInk(props.address, inkUrl, jsonUrl, props.ink.attributes[0]['value'], signature)//customContract.createInk(artist,inkUrl,jsonUrl,limit,signature,{gasPrice:1000000000,gasLimit:6000000})
-      console.log("Signed?",signed)
-      //console.log("SAVING SIG TO KOVAN:")
-      //let savingSigToKovan = await metaWriteContracts["NFTINK"].allowPatronization(inkUrl, signature)
-      //console.log("DEOND")
-      return signed
-    }
+    return result
 
   }
 
@@ -166,23 +138,16 @@ export default function InkCanvas(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
-    //setMode("mint")
-    /*notification.open({
-      message: 'Saving Ink to the blockchain',
-      description:
-      'Contacting the smartcontract',
-    });*/
-
     try {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
       console.log(e)
+      setSending(false)
       notification.open({
         message: 'Inking error',
         description:
         e.message,
       })
-      setSending(false)
     }
 
 
@@ -191,16 +156,6 @@ export default function InkCanvas(props) {
       props.setMode("mint")
       props.setIpfsHash(drawingHash)
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
-
-      //setMode("mint")
-      /*
-      notification.open({
-        message: 'Sending ink to IPFS',
-        description:
-        'Uploading to the distributed web',
-      });*/
-
-      //message.loading('Uploading to IPFS...', 0);
 
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
@@ -234,15 +189,6 @@ export default function InkCanvas(props) {
         console.log(error);
         setSending(false)
       });
-      /*let buffer = Buffer.from(compressedArray) //we could fall back to going directly to IPFS if our server is down?
-      console.log("ADDING TO IPFS...",buffer)
-      ipfs.files.add(buffer, function (err, file) {
-      console.log("ADDED!")
-      if (err) {
-      console.log(err);
-    }
-    console.log(file)
-  })*/
 
   const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
