@@ -1,5 +1,3 @@
-yarn run v1.22.4
-$ cd packages/buidler && npx buidler flatten 
 // Sources flattened with buidler v1.3.3-rc.0 https://buidler.dev
 
 // File contracts/IAMB.sol
@@ -3772,4 +3770,3 @@ contract ValidSignatureTester {
     }
   }
 }
-Done in 1.69s.
