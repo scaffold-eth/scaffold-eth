@@ -39,8 +39,6 @@ export default function Contract({ account, gasPrice, signer, provider, name, sh
   const contract = contracts ? contracts[name] : "";
   const address = contract ? contract.address : "";
   const contractIsDeployed = useContractExistsAtAddress(provider, address);
-  const writeContracts = useContractLoader(signer);
-  const writeContract = writeContracts ? writeContracts[name] : "";
 
   const displayedContractFunctions = useMemo(
     () =>
@@ -61,7 +59,7 @@ export default function Contract({ account, gasPrice, signer, provider, name, sh
     return (
       <FunctionForm
         key={"FF" + fn.name}
-        contractFunction={writeContract[fn.name]}
+        contractFunction={contract.connect(signer)[fn.name]}
         functionInfo={fn}
         provider={provider}
         gasPrice={gasPrice}
