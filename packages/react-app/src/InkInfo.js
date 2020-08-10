@@ -273,6 +273,7 @@ useEffect(()=>{
             <LikeButton
               metaProvider={props.metaProvider}
               signingProvider={props.injectedProvider}
+              localProvider={props.kovanProvider}
               contractAddress={props.readKovanContracts['NiftyInk']['address']}
               targetId={targetId}
               likerAddress={props.address}

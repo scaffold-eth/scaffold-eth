@@ -78,7 +78,7 @@ export default function InkCanvas(props) {
 
     let metaSigner = await props.metaProvider.getAddress()
 
-    let result = transactionHandler(
+    let result = await transactionHandler(
       props.address, props.injectedProvider, props.kovanProvider, metaSigner,
       writeContracts["NiftyInk"], metaWriteContracts["NiftyInk"],
       "createInk", [inkUrl, jsonUrl, props.ink.attributes[0]['value']],

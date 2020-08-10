@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { Button, notification, Badge } from 'antd';
 import { LikeTwoTone, LikeOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { signLike, getSignature } from "./helpers"
+import { signLike, getSignature, transactionHandler } from "./helpers"
 
 export default function LikeButton(props) {
 
   const [minting, setMinting] = useState(false)
 
-  const writeContracts = useContractLoader(props.metaProvider);
+  const writeContracts = useContractLoader(props.signingProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider);
 
   const [likes, setLikes] = useState()
   const [hasLiked, setHasLiked] = useState()
@@ -32,7 +33,7 @@ export default function LikeButton(props) {
       }
     }
     getLikeInfo()
-  }, 3000
+  }, 2987
 )
 
 
@@ -46,12 +47,18 @@ export default function LikeButton(props) {
             let contractAddress = props.contractAddress
             let target = props.targetId
             let liker = props.likerAddress
-            let signature = await getSignature(
-              props.signingProvider,
-              liker,
+
+            let metaSigner = await props.metaProvider.getAddress()
+
+            let result = await transactionHandler(
+              props.likerAddress, props.signingProvider, props.localProvider, metaSigner,
+              writeContracts["Liker"], metaWriteContracts["Liker"],
+              "like", [contractAddress, target],
+              "likeWithSignature", [contractAddress, target, liker],
               ['bytes','bytes','address','address','uint256','address'],
-              ['0x19','0x0',writeContracts["Liker"].address,contractAddress,target,liker])
-            let result = await writeContracts["Liker"].likeWithSignature(contractAddress, target, liker, signature)
+              ['0x19','0x0',writeContracts["Liker"].address,contractAddress,target,liker]
+            )
+
             if(result) {
               notification.open({
                 message: 'You liked this ink!',

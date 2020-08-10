@@ -258,6 +258,7 @@ export default function NftyWallet(props) {
       mainnetProvider={props.mainnetProvider}
       metaProvider={props.metaProvider}
       injectedProvider={props.injectedProvider}
+      kovanProvider={props.kovanProvider}
       readContracts={props.readContracts}
       readKovanContracts={props.readKovanContracts}
       ink={ink}
@@ -288,11 +289,6 @@ export default function NftyWallet(props) {
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
-                  {/*process.env.REACT_APP_NETWORK_NAME?"":(<Contract
-                  provider={props.injectedProvider}
-                  name={"ValidSignatureTester"}
-                  price={props.price}
-                  />)*/}
                   {process.env.REACT_APP_NETWORK_NAME?"":(<><Contract
                   provider={props.injectedProvider}
                   name={"NiftyRegistry"}
