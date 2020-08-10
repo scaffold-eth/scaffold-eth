@@ -56,10 +56,17 @@ async function main() {
   }
 
   }
-  if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0){
+
+
+
+  if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0 || bre.network.name.indexOf("mainnet")>=0){
+    console.log("🚀 Main Deploy ! ")
     const NiftyMain = await deploy("NiftyMain")
     if(bre.network.name.indexOf("sokol")>=0) {
       await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
+      await NiftyMain.setRequestGasLimit("1500000")
+    } else if(bre.network.name.indexOf("mainnet")>=0) {
+      await NiftyMain.setBridgeContract("0x4C36d2919e407f0Cc2Ee3c993ccF8ac26d9CE64e")
       await NiftyMain.setRequestGasLimit("1500000")
     }
     await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")

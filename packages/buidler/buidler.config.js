@@ -199,14 +199,6 @@ async function addr(addr) {
 module.exports = {
   defaultNetwork: "localhost",
   networks: {
-    mainnet: {
-      url: 'https://mainnet.infura.io/v3/9ea7e149b122423991f56257b882261c',
-      gasPrice: 31000000000,
-      gasLimit: 5000000,
-      accounts: {
-        mnemonic: DEPLOY_ACCOUNT
-      },
-    },
     kovan: {
       url: 'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c',
       accounts: {
@@ -230,6 +222,8 @@ module.exports = {
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
+      gasPrice: 41000000111,
+      gasLimit: 5000000,
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/9ea7e149b122423991f56257b882261c',

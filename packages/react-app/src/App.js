@@ -21,8 +21,8 @@ if(process.env.REACT_APP_NETWORK_NAME){
     </div>
   )*/
   if(process.env.REACT_APP_NETWORK_NAME=="xdai"){
-    console.log("🎉XDAINETWORK")
-    localProvider = new ethers.providers.InfuraProvider("mainnet", "9ea7e149b122423991f56257b882261c")
+    console.log("🎉 XDAINETWORK + 🚀 Mainnet Ethereum")
+    localProvider = mainnetProvider
     kovanProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
   } else if(process.env.REACT_APP_NETWORK_NAME=="sokol"){
     console.log("THIS.IS.SOKOL")
@@ -53,8 +53,9 @@ function App() {
   const price = 1
   const gasPrice = 1001010001
 
-
+  //mainnet contract:
   const readContracts = useContractLoader(localProvider);
+
   const readKovanContracts = useContractLoader(kovanProvider);
 
 
