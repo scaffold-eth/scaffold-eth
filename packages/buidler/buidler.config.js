@@ -1,4 +1,5 @@
 const { usePlugin } = require('@nomiclabs/buidler/config')
+usePlugin("@nomiclabs/buidler-ethers");
 const fs = require("fs")
 const { ethers } = require("ethers")
 const DEBUG = false
@@ -222,7 +223,7 @@ module.exports = {
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
-      gasPrice: 41000000111,
+      gasPrice: 82000000111,
       gasLimit: 5000000,
     },
     rinkeby: {

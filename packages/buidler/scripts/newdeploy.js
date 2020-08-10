@@ -1,8 +1,9 @@
 const fs = require('fs');
 const chalk = require('chalk');
 const bre = require("@nomiclabs/buidler");
+
 async function main() {
-  console.log("📡 Deploy \n")
+  console.log("📡 Deploy \n",ethers,bre)
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
   //await autoDeploy();
   // OR
@@ -69,6 +70,7 @@ async function main() {
       await NiftyMain.setBridgeContract("0x4C36d2919e407f0Cc2Ee3c993ccF8ac26d9CE64e")
       await NiftyMain.setRequestGasLimit("1500000")
     }
+    //const NiftyMain = await ethers.getContractAt("NiftyMain","0xc02697c417DdAcfbe5EdbF23eDad956BC883F4fb")
     await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")
   }
 
