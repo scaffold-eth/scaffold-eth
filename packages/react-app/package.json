@@ -50,12 +50,13 @@
   "devDependencies": {
     "@testing-library/dom": "^6.12.2",
     "@types/react": "^16.9.19",
+    "chalk": "^4.1.0",
     "eslint": "^7.5.0",
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-prettier": "^3.1.4",
-    "ipfs-http-client": "^44.3.0",
+    "ipfs-http-client": "^45.0.0",
     "prettier": "^2.0.5",
     "s3-folder-upload": "^2.3.1",
     "surge": "^0.21.5"
@@ -68,6 +69,10 @@
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
+    "ipfs": "node ./scripts/ipfs.js",
+    "surge": "surge ./build",
+    "s3": "node ./scripts/s3.js",
+    "ship": "yarn surge"
   }
 }
