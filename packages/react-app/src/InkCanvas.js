@@ -157,6 +157,8 @@ export default function InkCanvas(props) {
       props.setIpfsHash(drawingHash)
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
+
+      /*
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
 
       console.log("SAVING TO SERVER BUFFER:", drawingBuffer)
@@ -188,7 +190,7 @@ export default function InkCanvas(props) {
       .catch(function (error) {
         console.log(error);
         setSending(false)
-      });
+      });*/
 
   const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
