@@ -85,6 +85,15 @@ task("account", "Get balance informations for the deployment account.", async ()
 
 });
 
+task("select", "Activate one of the deploying accounts (just switchs mnemonic files around)")
+  .addPositionalParam("address", "The account's address. (should be an *address*.txt file here already from the `generate` task)")
+  .setAction(async (taskArgs) => {
+    console.log("Selecting account ",taskArgs)
+    let mnemonic = fs.readFileSync("./"+taskArgs.address+".txt").toString().trim()
+    fs.writeFileSync("./DEPLOY_ACCOUNT.txt",mnemonic)
+    console.log("SELECTED:",taskArgs.address)
+})
+
 task("faucet", "Get funds to your deployer account.", async () => {
 
   const hdkey = require('ethereumjs-wallet/hdkey');
