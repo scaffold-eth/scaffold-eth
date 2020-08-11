@@ -232,7 +232,7 @@ module.exports = {
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
-      gasPrice: 82000000111,
+      gasPrice: 113000000111,
       gasLimit: 5000000,
     },
     rinkeby: {

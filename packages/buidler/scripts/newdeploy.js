@@ -3,7 +3,7 @@ const chalk = require('chalk');
 const bre = require("@nomiclabs/buidler");
 
 async function main() {
-  console.log("📡 Deploy \n",ethers,bre)
+  console.log("📡 Deploy \n")
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
   //await autoDeploy();
   // OR
@@ -13,7 +13,6 @@ async function main() {
 
   if(bre.network.name.indexOf("sidechain")>=0 || bre.network.name.indexOf("kovan")>=0|| bre.network.name.indexOf("xdai")>=0){
     const Liker = await deploy("Liker")
-    console.log("")
     const NiftyRegistry = await deploy("NiftyRegistry")
     const NiftyInk = await deploy("NiftyInk")
     const NiftyToken = await deploy("NiftyToken")
@@ -38,23 +37,28 @@ async function main() {
       await NiftyMediator.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
       await NiftyMediator.setRequestGasLimit("1500000")
       await Liker.setTrustedForwarder("0xB851B09eFe4A5021E9a4EcDDbc5D9c9cE2640CCb")
+      //const NiftyMediator = await ethers.getContractAt("NiftyMediator","0xdFDE4746486086D00F82b81bB84360B72a233a07")
+      //console.log("📡 setMediatorContractOnOtherSide...")
+      //let result = await NiftyMediator.setMediatorContractOnOtherSide("0xc02697c417DdAcfbe5EdbF23eDad956BC883F4fb")
+      //console.log("result",result)
     }
     await Liker.addContract(NiftyInk.address)
 
     if(bre.network.name.indexOf("sidechain")>=0) {
-    let trustedForwarder
-    try{
-      let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
-      console.log("⛽️ Setting GSN Trusted Forwarder on NiftyRegistry to ",trustedForwarderObj.address)
-      await NiftyInk.setTrustedForwarder(trustedForwarderObj.address)
-      await NiftyToken.setTrustedForwarder(trustedForwarderObj.address)
-      await NiftyMediator.setTrustedForwarder(trustedForwarderObj.address)
-      console.log("⛽️ Setting GSN Trusted Forwarder on Liker to ",trustedForwarderObj.address)
-      await Liker.setTrustedForwarder(trustedForwarderObj.address)
-    }catch(e){
-      console.log(e)
+      let trustedForwarder
+      try{
+        let trustedForwarderObj = JSON.parse(fs.readFileSync("../react-app/src/gsn/Forwarder.json"))
+        console.log("⛽️ Setting GSN Trusted Forwarder on NiftyRegistry to ",trustedForwarderObj.address)
+        await NiftyInk.setTrustedForwarder(trustedForwarderObj.address)
+        await NiftyToken.setTrustedForwarder(trustedForwarderObj.address)
+        await NiftyMediator.setTrustedForwarder(trustedForwarderObj.address)
+        console.log("⛽️ Setting GSN Trusted Forwarder on Liker to ",trustedForwarderObj.address)
+        await Liker.setTrustedForwarder(trustedForwarderObj.address)
+
+      }catch(e){
+        console.log(e)
+      }
     }
-  }
 
   }
 
@@ -62,7 +66,7 @@ async function main() {
 
   if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0 || bre.network.name.indexOf("mainnet")>=0){
     console.log("🚀 Main Deploy ! ")
-    const NiftyMain = await deploy("NiftyMain")
+    //const NiftyMain = await deploy("NiftyMain")
     if(bre.network.name.indexOf("sokol")>=0) {
       await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
       await NiftyMain.setRequestGasLimit("1500000")
@@ -71,7 +75,8 @@ async function main() {
       await NiftyMain.setRequestGasLimit("1500000")
     }
     //const NiftyMain = await ethers.getContractAt("NiftyMain","0xc02697c417DdAcfbe5EdbF23eDad956BC883F4fb")
-    await NiftyMain.setMediatorContractOnOtherSide("0x339d0e6f308a410F18888932Bdf661636A0F538f")
+    //console.log("setMediatorContractOnOtherSide...")
+    //await NiftyMain.setMediatorContractOnOtherSide("0x18ba15da0b0092B7F9A9579922DD69f313b1D3a8")
   }
 
   /*
