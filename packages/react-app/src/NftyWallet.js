@@ -16,8 +16,8 @@ const { TabPane } = Tabs;
 const Web3HttpProvider = require( 'web3-providers-http')
 
 const isIPFS = require('is-ipfs')
-const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
-
+//const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
+const ipfsConfig = {host: 'ipfs.nifty.ink', port: '5001', protocol: 'http' }
 
 export default function NftyWallet(props) {
 
