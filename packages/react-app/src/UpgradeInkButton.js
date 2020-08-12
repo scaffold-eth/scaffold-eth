@@ -25,10 +25,10 @@ export default function UpgradeInkButton(props) {
       });
       setUpgrading(false)
     }
-    notification.open({
+    /*notification.open({
       message: 'Token successfully sent to '+process.env.REACT_APP_NETWORK_NAME+'!',
       description: ''
-    });
+    });*/
     setUpgrading(false)
   }
 

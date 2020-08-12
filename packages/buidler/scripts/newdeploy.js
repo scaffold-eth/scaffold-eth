@@ -66,7 +66,7 @@ async function main() {
 
   if(bre.network.name.indexOf("localhost")>=0 || bre.network.name.indexOf("sokol")>=0 || bre.network.name.indexOf("mainnet")>=0){
     console.log("🚀 Main Deploy ! ")
-    //const NiftyMain = await deploy("NiftyMain")
+    const NiftyMain = await deploy("NiftyMain")
     if(bre.network.name.indexOf("sokol")>=0) {
       await NiftyMain.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
       await NiftyMain.setRequestGasLimit("1500000")
@@ -76,7 +76,7 @@ async function main() {
     }
     //const NiftyMain = await ethers.getContractAt("NiftyMain","0xc02697c417DdAcfbe5EdbF23eDad956BC883F4fb")
     //console.log("setMediatorContractOnOtherSide...")
-    //await NiftyMain.setMediatorContractOnOtherSide("0x18ba15da0b0092B7F9A9579922DD69f313b1D3a8")
+    await NiftyMain.setMediatorContractOnOtherSide("0xdFDE4746486086D00F82b81bB84360B72a233a07")
   }
 
   /*
