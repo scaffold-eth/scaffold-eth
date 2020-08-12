@@ -140,7 +140,7 @@ export default function InkInfo(props) {
           renderItem={item => (
             <List.Item>
               <Address value={item[3]?item[3]:item[0]} />
-              {item[4]===true?(item[3]?<Typography.Title level={4}>Upgraded <StarTwoTone /></Typography.Title>:<Typography.Title level={4}>In-transit <SyncOutlined spin /></Typography.Title>):<></>}
+              {item[4]===true?(item[3]?<Typography.Title level={4}>Upgraded <StarTwoTone /></Typography.Title>:<Typography.Title level={4}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
               {sendInkButton(item[0], item[1])}
               {relayTokenButton(item[4], item[0], item[1])}
               <div style={{marginLeft:4,marginTop:4}}>

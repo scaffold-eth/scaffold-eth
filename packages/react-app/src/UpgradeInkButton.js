@@ -32,13 +32,13 @@ export default function UpgradeInkButton(props) {
     setUpgrading(false)
   }
 
-    return (<Popover content={<>
-                <Typography>This cannot be undone</Typography>
+    return (<Popover content={<div style={{textAlign:'center'}} >
+                <Typography></Typography>
                 <Button type="primary" style={{ marginBottom: 12 }} onClick={()=>{relayToken(props.tokenId)}} loading={upgrading}>
                 <UploadOutlined style={{fontSize:26,marginLeft:4,verticalAlign:"middle"}}/> </Button>
-                </>
+                </div>
               }
-              title={"Upgrade to " + process.env.REACT_APP_NETWORK_NAME}>
+              title={"Upgrade to Ethereum mainnet"}>
               <Button type="secondary" style={{ margin:4, marginBottom:12 }}><UploadOutlined/>Upgrade</Button>
             </Popover>)
   }

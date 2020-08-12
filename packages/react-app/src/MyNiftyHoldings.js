@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react'
-import { List, Popover, Avatar, Spin, Typography, Empty } from 'antd';
+import { List, Popover, Avatar, Spin, Typography, Empty, Button } from 'antd';
 import { LoadingOutlined, SendOutlined, StarTwoTone } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
+import { Loader } from "./components"
 
 export default function MyNiftyHoldings(props) {
 
@@ -87,28 +88,29 @@ export default function MyNiftyHoldings(props) {
             <List.Item.Meta
             avatar={item['image']?<a><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
             title={(
-              <div style={{marginTop:8}}>
+              <div style={{marginTop:-4, textAlign:'right'}}>
 
-              <Typography.Text  copyable={{ text: item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
+              <Typography.Text  copyable={{ text: "https://nifty.ink/"+item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
               <a style={{color:"#222222"}} href="#" onClick={() => props.showInk(item['url'])} >
               {item['name'] /*+ ": Token #" + item['tokenId']*/}
               </a>
               </Typography.Text>
 
+
               {item['chain']==='main'?'':
-              <>
+              <span style={{marginBottom:-4}}>
               <Popover content={
                 <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
               }
               title="Send Ink">
-              <a href="#"><SendOutlined style={{fontSize:24,marginLeft:4,verticalAlign:"middle"}}/></a>
+                <Button type="secondary" style={{margin:4}}><SendOutlined/> Send</Button>
               </Popover>
               <UpgradeInkButton
                 tokenId={item['tokenId']}
                 injectedProvider={props.injectedProvider}
                 gasPrice={props.gasPrice}
               />
-              </>
+              </span>
              }
 
               </div>
@@ -122,17 +124,10 @@ export default function MyNiftyHoldings(props) {
       />)
     }
       else {
-        tokenView = <Spin/>
+        tokenView = <Loader/>
       }
     }
-    else { tokenView = (
-      <Empty
-        description={
-        <span>
-          You don't own any Ink NFTs yet. Click "Create" to create a new Ink!
-          </span>
-        }
-        />)}
+    else { tokenView = (<Loader/>)}
 
     return tokenView
 

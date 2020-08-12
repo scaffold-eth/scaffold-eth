@@ -59,7 +59,7 @@ export default function NiftyShop(props) {
     if(result) {
     notification.open({
       message: <><span style={{marginRight:8}}>💵</span>Purchased Ink</>,
-      description: 'You bought one ' + props.ink.name + ' for $'+ethers.utils.formatEther(props.price)
+      description: 'You bought one ' + props.ink.name + ' for $'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)
     });
   }
   }

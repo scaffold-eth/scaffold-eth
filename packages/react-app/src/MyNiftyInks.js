@@ -2,18 +2,23 @@ import React, { useState, useEffect } from 'react'
 import { List, Avatar, Empty, Spin, Typography, Row, Badge, Col, Space } from 'antd';
 import { LoadingOutlined, LikeTwoTone } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
+import { Loader } from "./components"
+
 
 export default function MyNiftyInks(props) {
 
+  const [lastBalance, setLastBalance] = useState()
   const [inkData, setInkData] = useState()
   let inkView
 
   useEffect(()=>{
 
-      if(props.readContracts && props.address && props.tab === props.thisTab) {
+      if(props.readContracts && props.address && props.tab === props.thisTab && lastBalance != props.inksCreatedBy) {
 
         setInkData()
         let inks
+
+        setLastBalance(props.inksCreatedBy.toNumber())
 
         const loadInks = async () => {
           inks = new Array(props.inksCreatedBy)
@@ -95,7 +100,7 @@ export default function MyNiftyInks(props) {
             />
           )}
         else {
-          inkView = (<Spin/>)
+          inkView = (<Loader/>)
         }
 
 

@@ -63,7 +63,7 @@ export default function LikeButton(props) {
               notification.open({
                 message: 'You liked this ink!',
                 description:(
-                  <a target="_blank" href={"https://kovan.etherscan.io/tx/"+result.hash}>view transaction.</a>
+                  <a target="_blank" href={"https://blockscout.com/poa/xdai/tx/"+result.hash}>view transaction.</a>
                 ),
               });
             setMinting(false)

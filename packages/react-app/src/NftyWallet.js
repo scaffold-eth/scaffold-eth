@@ -17,7 +17,7 @@ const Web3HttpProvider = require( 'web3-providers-http')
 
 const isIPFS = require('is-ipfs')
 //const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
-const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 1500}
+const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 2500}
 
 export default function NftyWallet(props) {
 
@@ -315,8 +315,8 @@ export default function NftyWallet(props) {
                   /></>)}
                 </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
-                  <div style={{width:300,margin:"0 auto"}}>
+                <TabPane disabled={!(inksCreatedBy&&inksCreatedBy.toString)} tab={<><span><span style={{padding:8}}>🖼</span> inks</span> <Badge style={badgeStyle} count={displayInksCreated} showZero/></>} key="inks">
+                  <div style={{width:400,margin:"0 auto"}}>
                     <MyNiftyInks
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
@@ -331,8 +331,8 @@ export default function NftyWallet(props) {
                     />
                   </div>
                 </TabPane>
-                <TabPane tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="holdings">
-                  <div style={{maxWidth:300,margin:"0 auto"}}>
+                <TabPane disabled={!(nftyBalance&&nftyBalance.toString&&nftyMainBalance&&nftyMainBalance.toString)} tab={<><span><span style={{padding:8}}>👛</span> holdings</span> <Badge style={badgeStyle} count={displayBalance} showZero/></>} key="holdings">
+                  <div style={{maxWidth:500,margin:"0 auto"}}>
                     <MyNiftyHoldings
                       address={props.address}
                       mainnetProvider={props.mainnetProvider}
