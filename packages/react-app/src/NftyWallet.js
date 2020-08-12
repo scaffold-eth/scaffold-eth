@@ -17,7 +17,7 @@ const Web3HttpProvider = require( 'web3-providers-http')
 
 const isIPFS = require('is-ipfs')
 //const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
-const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 1000}
+const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 1500}
 
 export default function NftyWallet(props) {
 

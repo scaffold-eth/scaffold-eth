@@ -5,6 +5,7 @@ import { getFromIPFS } from "./helpers"
 import StackGrid from "react-stack-grid";
 
 const MAX_FRONT_PAGE_DISPLAY = 24
+const BATCH_DOWNLOAD = 6
 
 export default function NftyWallet(props) {
 
@@ -26,8 +27,6 @@ export default function NftyWallet(props) {
         let allInks = new Array(inksToShow).fill({})
         setLastStreamCount(props.totalInks.toString())
 
-        console.log(props.tab, props.totalInks, inkCreations, lastStreamCount)
-
         const getInkImages = async (e) => {
           const jsonContent = await getFromIPFS(e['jsonUrl'], props.ipfsConfig)
           const inkJson = JSON.parse(jsonContent)
@@ -40,17 +39,30 @@ export default function NftyWallet(props) {
         const loadStream = async () => {
           if(inkCreations) {
             let mostRecentInks = inkCreations.slice(-inksToShow).reverse()
+            let promises = []
             for(var i = 0; i < inksToShow; i++){
               try {
-               let inkDetails = await getInkImages(mostRecentInks[i])
-               allInks[i] = inkDetails
-               setAllInksArray(allInks)
-             } catch (e) {console.log(e)}
+                promises.push(getInkImages(mostRecentInks[i]))
+              } catch (e) {console.log(e)}
+              if(promises.length>=BATCH_DOWNLOAD){
+                for(var p = 0; p <= promises.length; p++){
+                  let result
+                  try {
+                    result = await promises[p]
+                    if(result){
+                      let thisIndex = i-(promises.length-1)+p
+                      allInks[thisIndex] = result
+                      setAllInksArray(allInks)
+                    }
+                  } catch (e) {console.log(e)}
+                }
+                promises = []
+              }
             }
           }
         }
-        loadStream()
 
+        loadStream()
       }
     }
   },[props.tab, props.totalInks])
