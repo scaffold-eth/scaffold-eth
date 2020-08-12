@@ -7,7 +7,7 @@ export default function Header(props) {
       window.open("https://github.com/austintgriffith/scaffold-eth");
     }}>
       <PageHeader
-        title="🧑‍🎨  Nifty Ink "
+        title="🎨  Nifty Ink "
         subTitle=""
         style={{cursor:'pointer'}}
       />

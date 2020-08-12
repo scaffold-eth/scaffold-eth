@@ -21,33 +21,33 @@ export default function MyNiftyInks(props) {
           const getInkInfo = async (i) => {
             let inkId = await props.readKovanContracts['NiftyInk']["inkOfArtistByIndex"](props.address, i)
             let inkInfo = await props.readKovanContracts['NiftyInk']["inkInfoById"](inkId)
-            console.log(inkInfo)
             let inkCount = await props.readKovanContracts['NiftyToken']["inkTokenCount"](inkInfo[6])
 
             let likes
-
             if (props.readKovanContracts['Liker']) {
               let niftyAddress = props.readKovanContracts['NiftyInk']['address']
               likes = await props.readKovanContracts['Liker']['getLikesByTarget'](niftyAddress, inkId)
             }
 
             let jsonIpfsHash = inkInfo[2]
-
-            console.log(jsonIpfsHash)
-
-            const jsonContent = await getFromIPFS(jsonIpfsHash, props.ipfsConfig)
-            const inkJson = JSON.parse(jsonContent)
-            const linkUrl = inkJson['drawing']
-            const inkImageHash = inkJson.image.split('/').pop()
-            const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
-            const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
-
-            return {inkId: inkId.toString(), inkCount: inkCount, url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, likes: likes.toString()}
+            let jsonContent
+            try{
+              jsonContent = await getFromIPFS(jsonIpfsHash, props.ipfsConfig)
+            }catch(e){}
+            if(jsonContent){
+              const inkJson = JSON.parse(jsonContent)
+              const linkUrl = inkJson['drawing']
+              const inkImageHash = inkJson.image.split('/').pop()
+              const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
+              const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
+              return {inkId: inkId.toString(), inkCount: inkCount, url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, likes: likes.toString()}
+            }
+            return {}
           }
 
           for(var i = 0; i < props.inksCreatedBy; i++){
             let inkInfo = await getInkInfo(i)
-            inks[i] = inkInfo
+            if(inkInfo) inks[i] = inkInfo
           }
 
           setInkData(inks.reverse())
@@ -59,28 +59,28 @@ export default function MyNiftyInks(props) {
 
   },[props.address,props.tab])
 
-      if(props.inksCreatedBy > 0 && inkData && inkData[0]) {
-
-
-
+      if(props.inksCreatedBy > 0 && inkData) {
         try{
-
           inkView = (
             <List
             itemLayout="horizontal"
             dataSource={inkData}
-            renderItem={item => (
-                <List.Item>
-                <List.Item.Meta
-                avatar={item['image']?<a><Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></Badge></a>:<Avatar icon={<LoadingOutlined />} />}
-                title={<a href="#" onClick={() => props.showInk(item['url'])} >{<span>{item['name']}</span>}</a>}
-                description={<Row style={{justifyContent: 'center'}}>{<><Typography>{item['inkCount'].toNumber()+" of " + (item['limit']>0?item['limit'] + ' minted':'unlimited copies')}</Typography></>}
-                      </Row>
-                      }
-                />
-                </List.Item>
-              )
-            }
+            renderItem={(item) => {
+              if(!item || !item.name) return (<></>)
+              else{
+                return (
+                  <List.Item>
+                  <List.Item.Meta
+                  avatar={item['image']?<a><Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></Badge></a>:<Avatar icon={<LoadingOutlined />} />}
+                  title={<a href="#" onClick={() => props.showInk(item['url'])} >{<span>{item['name']}</span>}</a>}
+                  description={<Row style={{justifyContent: 'center'}}>{<><Typography>{item['inkCount'].toNumber()+" of " + (item['limit']>0?item['limit'] + ' minted':'unlimited copies')}</Typography></>}
+                        </Row>
+                        }
+                  />
+                  </List.Item>
+                )
+              }
+            }}
           />)
         }catch(e){
           console.log(e)
