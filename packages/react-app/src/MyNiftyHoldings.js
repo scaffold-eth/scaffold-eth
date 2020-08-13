@@ -109,6 +109,7 @@ export default function MyNiftyHoldings(props) {
                 tokenId={item['tokenId']}
                 injectedProvider={props.injectedProvider}
                 gasPrice={props.gasPrice}
+                upgradePrice={props.upgradePrice}
               />
               </span>
              }

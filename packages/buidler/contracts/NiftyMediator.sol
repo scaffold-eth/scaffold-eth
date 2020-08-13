@@ -12,12 +12,25 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator, SignatureChe
 
     constructor() public {
       setCheckSignatureFlag(true);
+      setFeeReceiver(_msgSender());
     }
 
     event tokenSentViaBridge(uint256 _tokenId, bytes32 _msgId);
     event failedMessageFixed(bytes32 _msgId, address _recipient, uint256 _tokenId);
+    event newPrice(uint256 price);
 
     address public niftyRegistry;
+    uint256 public relayPrice;
+    address payable public feeReceiver;
+
+    function setRelayPrice(uint256 _price) public onlyOwner {
+      relayPrice = _price;
+      emit newPrice(_price);
+    }
+
+    function setFeeReceiver(address payable _receiver) public onlyOwner {
+      feeReceiver = _receiver;
+    }
 
     function setNiftyRegistry(address _address) public onlyOwner {
       niftyRegistry = _address;
@@ -57,14 +70,17 @@ contract NiftyMediator is BaseRelayRecipient, Ownable, AMBMediator, SignatureChe
       return msgId;
     }
 
-    function relayToken(uint256 _tokenId) external returns (bytes32) {
+    function relayToken(uint256 _tokenId) external payable returns (bytes32) {
       require(_msgSender() == niftyToken().ownerOf(_tokenId), 'only the owner can upgrade!');
+      require(msg.value >= relayPrice, "Amount sent too small");
+      feeReceiver.transfer(msg.value);
 
       return _relayToken(_tokenId);
     }
 
 
     function relayTokenFromSignature(uint256 _tokenId, bytes calldata signature) external returns (bytes32) {
+      require(relayPrice == 0, "cannot relay from signature, price > 0");
       address _owner = niftyToken().ownerOf(_tokenId);
       bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), _owner, _tokenId));
       bool isOwnerSignature = checkSignature(messageHash, signature, _owner);

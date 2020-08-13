@@ -37,6 +37,7 @@ export default function NftyWallet(props) {
   let nftyMainBalance = useContractReader(props.readContracts,'NiftyMain',"balanceOf",[props.address],1777);
   let inksCreatedBy = useContractReader(props.readKovanContracts,'NiftyInk',"inksCreatedBy",[props.address],1777);
   let totalInks = useContractReader(props.readKovanContracts,'NiftyInk',"totalInks",1777);
+  let upgradePrice = useContractReader(props.readKovanContracts,'NiftyMediator',"relayPrice",9999);
 
   let displayBalance
   if(nftyMainBalance && nftyBalance) {
@@ -116,7 +117,7 @@ export default function NftyWallet(props) {
     let relayHubAddress
     let stakeManagerAddress
     let paymasterAddress
-    if(process.env.REACT_APP_NETWORK_NAME){
+    if(process.env.REACT_APP_NETWORK_NAME == 'xdai'){
       // we will use Kovan GSN for minting and liking:
       //https://docs.opengsn.org/gsn-provider/networks.html
       //relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
@@ -126,6 +127,10 @@ export default function NftyWallet(props) {
       relayHubAddress = "0xA58B6fC9264ce507d0B0B477ceE31674341CB27e"
       stakeManagerAddress = "0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B"
       paymasterAddress = "0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC"
+    } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol'){
+      relayHubAddress = "0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6"
+      stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83"
+      paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
 
       /*
       Deployed GSN to network: kovan
@@ -183,9 +188,15 @@ export default function NftyWallet(props) {
     gsnConfig.relayLookupWindowBlocks= 1e5
     gsnConfig.verbose = true
 
-
+      let origProvider
       console.log("gsnConfig",gsnConfig)
-      const origProvider = new Web3HttpProvider("https://dai.poa.network")
+      if(process.env.REACT_APP_NETWORK_NAME == 'xdai') {
+      origProvider = new Web3HttpProvider("https://dai.poa.network")
+    } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol') {
+      origProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
+    } else {
+      origProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546")
+    }
       console.log("origProvider",origProvider)
       const gsnProvider = new RelayProvider(origProvider, gsnConfig);
       console.log("gsnProvider",gsnProvider)
@@ -267,6 +278,7 @@ export default function NftyWallet(props) {
       ipfsConfig={ipfsConfig}
       gasPrice={props.gasPrice}
       calculatedVmin={calculatedVmin}
+      upgradePrice={upgradePrice}
     />)
   }
 
@@ -346,6 +358,7 @@ export default function NftyWallet(props) {
                       nftyBalance={nftyBalance}
                       nftyMainBalance={nftyMainBalance}
                       thisTab={"holdings"}
+                      upgradePrice={upgradePrice}
                     />
                   </div>
                 </TabPane>

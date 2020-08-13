@@ -12,10 +12,15 @@ export default function UpgradeInkButton(props) {
   const writeContracts = useContractLoader(props.injectedProvider);
   const tx = Transactor(props.injectedProvider,props.gasPrice)
 
+  let relayPrice = props.upgradePrice
+
   const relayToken = async (tokenId) => {
     setUpgrading(true)
+    let bigNumber = ethers.utils.bigNumberify(relayPrice)
+    let hex = bigNumber.toHexString()
+
     try {
-      let result = await tx(writeContracts["NiftyMediator"].relayToken(tokenId, { gasPrice:props.gasPrice } ))
+      let result = await tx(writeContracts["NiftyMediator"].relayToken(tokenId, { value: hex, gasPrice:props.gasPrice } ))
       console.log("result", result)
     } catch (e) {
       console.log(e)
@@ -39,6 +44,6 @@ export default function UpgradeInkButton(props) {
                 </div>
               }
               title={"Upgrade to Ethereum mainnet"}>
-              <Button type="secondary" style={{ margin:4, marginBottom:12 }}><UploadOutlined/>Upgrade</Button>
+              <Button type="secondary" style={{ margin:4, marginBottom:12 }}><UploadOutlined/>{relayPrice?'Upgrade: $'+parseFloat(ethers.utils.formatEther(relayPrice)).toFixed(2):'Upgrade'}</Button>
             </Popover>)
   }

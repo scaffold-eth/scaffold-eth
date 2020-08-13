@@ -120,6 +120,7 @@ export default function InkInfo(props) {
                 tokenId={tokenId}
                 injectedProvider={props.injectedProvider}
                 gasPrice={props.gasPrice}
+                upgradePrice={props.upgradePrice}
               />
             )
           }

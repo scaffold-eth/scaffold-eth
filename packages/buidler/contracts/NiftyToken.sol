@@ -116,7 +116,7 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
       (, address payable _artist, string memory _jsonUrl, , uint256 _price, uint256 _limit, ) = niftyInk().inkInfoById(_inkId);
       require(inkTokenCount(_inkUrl) < _limit || _limit == 0, "this ink is over the limit!");
       require(_price > 0, "this ink does not have a price set");
-      require(msg.value >= _price, "Amount of Ether sent too small");
+      require(msg.value >= _price, "Amount sent too small");
       address _buyer = _msgSender();
       uint256 _tokenId = _mintInkToken(_buyer, _inkUrl, _jsonUrl);
       //Note: a pull mechanism would be safer here: https://docs.openzeppelin.com/contracts/2.x/api/payment#PullPayment
@@ -137,7 +137,7 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
     function buyToken(uint256 _tokenId) public payable {
       uint256 _price = tokenPrice[_tokenId];
       require(_price > 0, "this token is not for sale");
-      require(msg.value >= _price, "Amount of Ether sent too small");
+      require(msg.value >= _price, "Amount sent too small");
       address _buyer = _msgSender();
       address payable _seller = address(uint160(ownerOf(_tokenId)));
       _transfer(_seller, _buyer, _tokenId);
