@@ -44,8 +44,8 @@
     "newdeploykovan": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network kovan && npx buidler run scripts/publish.js",
     "newdeploysokol": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sokol && npx buidler run scripts/publish.js",
     "deployliker": "cd packages/buidler && npx buidler run scripts/likerdeploy.js --network kovan && npx buidler run scripts/publish.js",
-    "newdeployxdai": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network xdai && npx buidler run scripts/publish.js",
-    "newdeploymainnet": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network mainnet && npx buidler run scripts/publish.js",
+    "newdeployxdai": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network xdai",
+    "newdeploymainnet": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network mainnet",
     "analyze": "source-map-explorer 'packages/react-app/build/static/js/*.js'",
     "flatten": "cd packages/buidler && npx buidler flatten "
   },
