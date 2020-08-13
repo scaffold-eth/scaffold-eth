@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, getSignature } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -132,34 +132,49 @@ export default function InkInfo(props) {
         }
         else {mintDescription = (mintedCount + '/' + props.ink.attributes[0].value + ' minted')}
 
+
+
         const nextHolders = (
           <Row style={{justifyContent: 'center', marginBottom: 50}}>
           <List
           header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}{priceFlow}{buyButton}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
-          renderItem={item => (
-            <List.Item>
-              <Address value={item[3]?item[3]:item[0]} />
-              {item[4]===true?(item[3]?<Typography.Title level={4}>Upgraded <StarTwoTone /></Typography.Title>:<Typography.Title level={4}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
-              {sendInkButton(item[0], item[1])}
-              {relayTokenButton(item[4], item[0], item[1])}
-              <div style={{marginLeft:4,marginTop:4}}>
-              <NiftyShop
-              injectedProvider={props.injectedProvider}
-              metaProvider={props.metaProvider}
-              type={'token'}
-              ink={props.ink}
-              itemForSale={item[1]}
-              gasPrice={props.gasPrice}
-              address={props.address}
-              ownerAddress={item[0]}
-              price={item[2]}
-              visible={!item[4]}
-              />
-              </div>
-            </List.Item>
-          )}
+          renderItem={item => {
+
+            const openseaButton = (
+              <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
+                console.log("item",item)
+                window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+item[1])
+              }}>
+               <RocketOutlined />  View on OpenSea
+              </Button>
+            )
+
+
+            return (
+              <List.Item>
+                <Address value={item[3]?item[3]:item[0]} />
+                {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
+                {sendInkButton(item[0], item[1])}
+                {relayTokenButton(item[4], item[0], item[1])}
+                <div style={{marginLeft:4,marginTop:4}}>
+                <NiftyShop
+                injectedProvider={props.injectedProvider}
+                metaProvider={props.metaProvider}
+                type={'token'}
+                ink={props.ink}
+                itemForSale={item[1]}
+                gasPrice={props.gasPrice}
+                address={props.address}
+                ownerAddress={item[0]}
+                price={item[2]}
+                visible={!item[4]}
+                />
+                </div>
+              </List.Item>
+            )
+          }}
           />
           </Row>)
           setHolders(nextHolders)
