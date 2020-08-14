@@ -232,7 +232,7 @@ module.exports = {
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
-      gasPrice: 237100000111,
+      gasPrice: 151100000111,
       gasLimit: 5000000,
     },
     rinkeby: {
@@ -243,7 +243,7 @@ module.exports = {
     },
     xdai: {
       url: 'https://dai.poa.network',
-      gasPrice: 1000000000,
+      gasPrice: 1100000000,
       accounts: {
         mnemonic: DEPLOY_ACCOUNT
       },
