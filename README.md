@@ -50,7 +50,7 @@ yarn run newlocaldeploy
 
 yarn run newdeploykovan
 
-Update Row 52: await NiftyMain.setMediatorContractOnOtherSide("NiftyMediator.sol Address from Kovan Deploy Goes Here")
+Update: await NiftyMain.setMediatorContractOnOtherSide("NiftyMediator.sol Address from Kovan Deploy Goes Here")
 
 yarn run newdeploysokol
 
@@ -68,6 +68,22 @@ Imported contracts:
 AMBMediator - generic AMB functionality
 SignatureChecker - verifying signatures (IERC1271 compatibility)
 
+GSN Infrastructure:
+- we are running a GSN2 relay on xDai at relay.tokenizationofeverything.com (manager address at 0xb54a1c00c937db7ac538edbb4d3350da1bf4d812)
+- we need to keep the xDai GSN Paymaster topped up at 0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC
+
+Actions:
+|Action|Description|Signature supported?|GSN supported?|Payable?|
+|---|---|---|---|---|
+|Create|Creates an ink & mints the first token copy to the artist|y|y|n|
+|Mint|Creates a copy to the specified address|y|y|n|
+|Set ink price|Set the price for non-artists to buy tokens|y|y|n|
+|Set token price|Set the price for an individual token|n|n|n|
+|Buy Ink|Buy a new token copy at the artist-specified price|n|n|y|
+|Buy Token|Buy a specific token at the token-owner specified price|n|n|y|
+|Send|Send an individual token to an address|n|n|n|
+|Upgrade|Transfer an individual token from xDai to mainnet, paying the relayPrice if applicable|y|n|y|
+|Like|"Like" an individual ink|y|y|n|
 
 ## Introduction to NFTY INK
 

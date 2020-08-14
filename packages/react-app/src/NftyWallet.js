@@ -51,7 +51,7 @@ export default function NftyWallet(props) {
   if(totalInks) {
     displayTotalInks = totalInks.toString()
   }
-
+  /* This breaks Android form entry due to re-render on text entry
   useEffect(() => {
     function handleResize() {
       console.log("RESIZE!!!!")
@@ -60,7 +60,7 @@ export default function NftyWallet(props) {
     window.addEventListener('resize', handleResize);
     return () => window.removeEventListener('resize', handleResize);
   }, []); // Empty array ensures that effect is only run on mount and unmount
-
+  */
   const showInk = ((newIpfsHash) => {
     console.log(newIpfsHash)
     if(newIpfsHash === ipfsHash) {
