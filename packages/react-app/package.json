@@ -38,7 +38,7 @@
     "burner-provider": "^1.0.31",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
-    "eth-permit": "^0.1.4",
+    "eth-permit": "^0.1.7",
     "graphql": "^14.6.0",
     "qrcode.react": "^1.0.0",
     "react": "16.12.0",

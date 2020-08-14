@@ -120,19 +120,12 @@ function App() {
           and give you a form to interact with it locally
       */}
       <Button onClick={async ()=>{
-        window.ethereum.enable()
-      }}>
-        ENABLE
-      </Button>
-      <Button onClick={async ()=>{
         const senderAddress = "0x34aA3F359A9D614239015126635CE7732c18fDF3"
         const spender = "0xB2ac59aE04d0f7310dC3519573BF70387b3b6E3a"
         const tokenAddress = "0x75B4D661ed1C33A7B0241EfFeD2ed23409E34f7A"
 
-        console.log("Signing...",window.ethereum)
-        debugger;
-        const result = await signDaiPermit(window.ethereum, tokenAddress, address, spender);
-        console.log("RESULT:",)
+        const result = await signDaiPermit(userProvider, tokenAddress, address, spender);
+        console.log("RESULT:", result)
 
         //await token.methods.permit(senderAddress, spender, result.nonce, result.expiry, true, result.v, result.r, result.s).send({
         //  from: senderAddress,
