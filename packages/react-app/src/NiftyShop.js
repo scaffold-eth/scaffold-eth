@@ -3,7 +3,7 @@ import { ethers } from "ethers"
 import { Row, Popover, Button, Form, Typography, Spin, Space, Descriptions, notification, message, InputNumber, Popconfirm } from 'antd';
 import { ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getSignature } from "./helpers"
+import { Transactor, getSignature, transactionHandler } from "./helpers"
 
 export default function NiftyShop(props) {
 
@@ -24,14 +24,55 @@ export default function NiftyShop(props) {
     let result
     if(props.type === 'ink') {
 
+
+    let contractName = "NiftyInk"
+    let regularFunction = "setPrice"
+    let regularFunctionArgs = [props.itemForSale, multipliedPrice]
+    let signatureFunction = "setPriceFromSignature"
+    let signatureFunctionArgs = [props.itemForSale, multipliedPrice]
+    let getSignatureTypes = ['bytes','bytes','address','string','uint256','uint256']
+    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce]
+
+    let txConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs,
+      signatureFunction,
+      signatureFunctionArgs,
+      getSignatureTypes,
+      getSignatureArgs,
+    }
+
+    console.log(txConfig)
+
+    result = await transactionHandler(txConfig)
+      /*
     let signature = await getSignature(
       props.injectedProvider, props.address,
       ['bytes','bytes','address','string','uint256','uint256'],
       ['0x19','0x0',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce])
 
     result = await tx(metaWriteContracts["NiftyInk"].setPriceFromSignature(props.itemForSale, multipliedPrice, signature, { gasPrice:props.gasPrice } ))
+    */
   } else if(props.type === 'token') {
-    result = await tx(writeContracts["NiftyToken"].setTokenPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
+
+    let contractName = "NiftyToken"
+    let regularFunction = "setTokenPrice"
+    let regularFunctionArgs = [props.itemForSale, multipliedPrice]
+
+    let txConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs
+    }
+
+    console.log(txConfig)
+
+    result = await transactionHandler(txConfig)
+
+    //result = await tx(writeContracts["NiftyToken"].setTokenPrice(props.itemForSale, multipliedPrice, { gasPrice:props.gasPrice } ))
   }
     notification.open({
       message: 'New price set for ' + props.ink.name,

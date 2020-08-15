@@ -25,9 +25,9 @@ export default function LikeButton(props) {
     const getLikeInfo = async () => {
       if(writeContracts){
         try {
-        const newInkLikes = await writeContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
+        const newInkLikes = await metaWriteContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
         setLikes(newInkLikes)
-        const newHasLiked = await writeContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
+        const newHasLiked = await metaWriteContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
         setHasLiked(newHasLiked)
       } catch(e){ console.log(e)}
       }
@@ -48,16 +48,28 @@ export default function LikeButton(props) {
             let target = props.targetId
             let liker = props.likerAddress
 
-            let metaSigner = await props.metaProvider.getAddress()
+            let contractName = "Liker"
+            let regularFunction = "like"
+            let regularFunctionArgs = [contractAddress, target]
+            let signatureFunction = "likeWithSignature"
+            let signatureFunctionArgs = [contractAddress, target, liker]
+            let getSignatureTypes = ['bytes','bytes','address','address','uint256','address']
+            let getSignatureArgs = ['0x19','0x0',metaWriteContracts["Liker"].address,contractAddress,target,liker]
 
-            let result = await transactionHandler(
-              props.likerAddress, props.signingProvider, props.localProvider, metaSigner,
-              writeContracts["Liker"], metaWriteContracts["Liker"],
-              "like", [contractAddress, target],
-              "likeWithSignature", [contractAddress, target, liker],
-              ['bytes','bytes','address','address','uint256','address'],
-              ['0x19','0x0',writeContracts["Liker"].address,contractAddress,target,liker]
-            )
+            let likeConfig = {
+              ...props.transactionConfig,
+              contractName,
+              regularFunction,
+              regularFunctionArgs,
+              signatureFunction,
+              signatureFunctionArgs,
+              getSignatureTypes,
+              getSignatureArgs,
+            }
+
+            console.log(likeConfig)
+
+            let result = await transactionHandler(likeConfig)
 
             if(result) {
               notification.open({

@@ -100,7 +100,7 @@ export default function MyNiftyHoldings(props) {
               {item['chain']==='main'?'':
               <span style={{marginBottom:-4}}>
               <Popover content={
-                <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
+                <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
               }
               title="Send Ink">
                 <Button type="secondary" style={{margin:4}}><SendOutlined/> Send</Button>

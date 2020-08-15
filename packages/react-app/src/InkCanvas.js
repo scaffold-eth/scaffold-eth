@@ -76,17 +76,29 @@ export default function InkCanvas(props) {
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
 
-    let metaSigner = await props.metaProvider.getAddress()
+    let contractName = "NiftyInk"
+    let regularFunction = "createInk"
+    let regularFunctionArgs = [inkUrl, jsonUrl, props.ink.attributes[0]['value']]
+    let signatureFunction = "createInkFromSignature"
+    let signatureFunctionArgs = [inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address]
+    let getSignatureTypes = ['bytes','bytes','address','address','string','string','uint256']
+    let getSignatureArgs = ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
 
-    let result = await transactionHandler(
-      props.address, props.injectedProvider, props.kovanProvider, metaSigner,
-      writeContracts["NiftyInk"], metaWriteContracts["NiftyInk"],
-      "createInk", [inkUrl, jsonUrl, props.ink.attributes[0]['value']],
-      "createInkFromSignature", [inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address],
-      ['bytes','bytes','address','address','string','string','uint256'],
-      ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
-    )
+    let createInkConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs,
+      signatureFunction,
+      signatureFunctionArgs,
+      getSignatureTypes,
+      getSignatureArgs,
+    }
 
+    console.log(createInkConfig)
+
+    let result = await transactionHandler(createInkConfig)
+    
     return result
 
   }

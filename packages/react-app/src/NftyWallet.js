@@ -33,6 +33,16 @@ export default function NftyWallet(props) {
   const [renderKey, setRenderKey] = useState(Date.now())
   const [canvasKey, setCanvasKey] = useState(Date.now())
 
+  const [injectedGsnSigner, setInjectedGsnSigner] = useState()
+
+  let transactionConfig = {
+    'address': props.address,
+    'localProvider': props.kovanProvider,
+    'injectedProvider': props.injectedProvider,
+    'injectedGsnSigner': injectedGsnSigner,
+    'metaSigner': props.metaProvider
+  }
+
   let nftyBalance = useContractReader(props.readKovanContracts,'NiftyToken',"balanceOf",[props.address],1777);
   let nftyMainBalance = useContractReader(props.readContracts,'NiftyMain',"balanceOf",[props.address],1777);
   let inksCreatedBy = useContractReader(props.readKovanContracts,'NiftyInk',"inksCreatedBy",[props.address],1777);
@@ -179,17 +189,18 @@ export default function NftyWallet(props) {
       console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
     }
 
-    let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
+    let newGsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
     //if (provider._metamask) {
       //console.log('using metamask')
     //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
     //}
-    gsnConfig.chainId = 100//31337
-    gsnConfig.relayLookupWindowBlocks= 1e5
-    gsnConfig.verbose = true
+    newGsnConfig.chainId = 100//31337
+    newGsnConfig.relayLookupWindowBlocks= 1e5
+    newGsnConfig.verbose = true
+    console.log(newGsnConfig)
 
       let origProvider
-      console.log("gsnConfig",gsnConfig)
+      console.log("gsnConfig",newGsnConfig)
       if(process.env.REACT_APP_NETWORK_NAME == 'xdai') {
       origProvider = new Web3HttpProvider("https://dai.poa.network")
     } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol') {
@@ -198,7 +209,7 @@ export default function NftyWallet(props) {
       origProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546")
     }
       console.log("origProvider",origProvider)
-      const gsnProvider = new RelayProvider(origProvider, gsnConfig);
+      const gsnProvider = new RelayProvider(origProvider, newGsnConfig);
       console.log("gsnProvider",gsnProvider)
 
       console.log("Creating a new account in the gsn provider...")
@@ -239,6 +250,7 @@ export default function NftyWallet(props) {
         localProvider={props.kovanProvider}
         injectedProvider={props.injectedProvider}
         setInjectedProvider={props.setInjectedProvider}
+        setInjectedGsnSigner={setInjectedGsnSigner}
         mainnetProvider={props.mainnetProvider}
         price={props.price}
         minimized={props.minimized}
@@ -279,6 +291,7 @@ export default function NftyWallet(props) {
       gasPrice={props.gasPrice}
       calculatedVmin={calculatedVmin}
       upgradePrice={upgradePrice}
+      transactionConfig={transactionConfig}
     />)
   }
 
@@ -357,6 +370,7 @@ export default function NftyWallet(props) {
                       ipfsConfig={ipfsConfig}
                       nftyBalance={nftyBalance}
                       nftyMainBalance={nftyMainBalance}
+                      transactionConfig={transactionConfig}
                       thisTab={"holdings"}
                       upgradePrice={upgradePrice}
                     />
@@ -386,6 +400,7 @@ export default function NftyWallet(props) {
                       ipfsConfig={ipfsConfig}
                       gasPrice={props.gasPrice}
                       calculatedVmin={calculatedVmin}
+                      transactionConfig={transactionConfig}
                     />
                     {inkInfo}
                   </div>

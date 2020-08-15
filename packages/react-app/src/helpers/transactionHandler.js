@@ -2,15 +2,25 @@ import React from 'react'
 import { ethers } from "ethers";
 import { Modal } from 'antd';
 import { getSignature } from "./getSignature";
+import { default as Transactor } from "./Transactor";
 
-export async function transactionHandler(
-  address, injectedProvider, localProvider, metaSigner,
-  regularContract, metaContract,
-  regularFunction, regularFunctionArgs,
-  signatureFunction, signatureFunctionArgs, getSignatureTypes, getSignatureArgs
-) {
+export async function transactionHandler(c) {
 
-  console.log(metaContract)
+  /*
+  address,
+  localProvider
+  injectedProvider
+  injectedGsnSigner
+  metaSigner
+  contractName
+  regularFunction,
+  regularFunctionArgs,
+  signatureFunction,
+  signatureFunctionArgs,
+  getSignatureTypes,
+  getSignatureArgs
+
+  */
 
     function chainWarning(network, chainId) {
         Modal.warning({
@@ -29,16 +39,25 @@ export async function transactionHandler(
       });
     }
 
-      let balance = await localProvider.getBalance(address)
+      let contractAddress = require("../contracts/"+c['contractName']+".address.js")
+      let contractAbi = require("../contracts/"+c['contractName']+".abi.js")
+
+      let balance = await c['localProvider'].getBalance(c['address'])
       console.log('artist balance', balance)
-      let injectedNetwork = await injectedProvider.getNetwork()
-      let localNetwork = await localProvider.getNetwork()
+      let injectedNetwork = await c['injectedProvider'].getNetwork()
+      let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){
         if (injectedNetwork.chainId === localNetwork.chainId) {
           console.log('Got xDai + on the right network, so kicking it old school')
-            let result = await regularContract[regularFunction](...regularFunctionArgs)
+
+            let contract = new ethers.Contract(
+                contractAddress,
+                contractAbi,
+                c['injectedProvider'].getSigner(),
+              );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {
@@ -48,27 +67,39 @@ export async function transactionHandler(
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (signatureFunction && signatureFunctionArgs && getSignatureTypes && getSignatureArgs) {
+        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+        }
+        else if (c['signatureFunction'] &&
+          c['signatureFunctionArgs'] &&
+          c['getSignatureTypes'] &&
+          c['getSignatureArgs']) {
           console.log('Doing it the chain-agnostic signature way!')
           let signature = await getSignature(
-            injectedProvider, address,
-            getSignatureTypes,
-            getSignatureArgs)
+            c['injectedProvider'],
+            c['address'],
+            c['getSignatureTypes'],
+            c['getSignatureArgs'])
 
           console.log("Got signature: ",signature)
 
-          let result = await metaContract[signatureFunction](...[...signatureFunctionArgs,signature])
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['metaSigner'],
+            );
+
+          let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature])
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
-        }
-        else if(injectedNetwork.chainId === localNetwork.chainId && address === metaSigner) {
-          console.log('On the same chain & our address is the signer, initiating a user-signed metatransaction')
-          let result = await metaContract[regularFunction](...regularFunctionArgs)
-          console.log("Meta RESULT!!!!!!",result)
-          return result
-        }
-        else if (address !== metaSigner) {
-          throw 'Meta-transaction signer is not the user address, so transaction would be invalid'
         }
         else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()

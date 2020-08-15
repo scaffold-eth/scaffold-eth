@@ -4,7 +4,7 @@ import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getFromIPFS, getSignature } from "./helpers"
+import { Transactor, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
 import NiftyShop from "./NiftyShop.js"
@@ -41,6 +41,30 @@ export default function InkInfo(props) {
   const mint = async (values) => {
     setMinting(true)
 
+    let contractName = "NiftyToken"
+    let regularFunction = "mint"
+    let regularFunctionArgs = [values['to'], props.ipfsHash]
+    let signatureFunction = "mintFromSignature"
+    let signatureFunctionArgs = [values['to'], props.ipfsHash]
+    let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
+    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],props.ipfsHash,mintedCount]
+
+    let mintInkConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs,
+      signatureFunction,
+      signatureFunctionArgs,
+      getSignatureTypes,
+      getSignatureArgs,
+    }
+
+    console.log(mintInkConfig)
+
+    let result = await transactionHandler(mintInkConfig)
+
+    /*
     let signature = await getSignature(
       props.injectedProvider, props.address,
       ['bytes','bytes','address','address','string','uint256'],
@@ -48,6 +72,7 @@ export default function InkInfo(props) {
 
     console.log("MINT OVERRIDE WITH GAS:",values,props.gasPrice)
     let result = await tx(metaWriteContracts["NiftyToken"].mintFromSignature(values['to'], props.ipfsHash, signature, { gasPrice:props.gasPrice } ))
+    */
     mintForm.resetFields();
     setMinting(false)
     console.log("result", result)
@@ -104,7 +129,7 @@ export default function InkInfo(props) {
           if (tokenOwnerAddress === props.address) {
             return (
               <Popover content={
-                <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider}/>
+                <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
               }
               title="Send Ink">
                 <Button type="secondary" style={{margin:4,marginBottom:12}}><SendOutlined/> Send</Button>
@@ -170,6 +195,7 @@ export default function InkInfo(props) {
                 ownerAddress={item[0]}
                 price={item[2]}
                 visible={!item[4]}
+                transactionConfig={props.transactionConfig}
                 />
                 </div>
               </List.Item>
@@ -237,6 +263,7 @@ useEffect(()=>{
                   ownerAddress={inkChainInfo[1]}
                   priceNonce={inkChainInfo[7]}
                   price={inkPrice}
+                  transactionConfig={props.transactionConfig}
                   visible={(mintedCount < Number(props.ink.attributes[0].value) || props.ink.attributes[0].value === "0")}
                   />)
 
@@ -288,11 +315,14 @@ useEffect(()=>{
           <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>
             <LikeButton
               metaProvider={props.metaProvider}
+              metaSigner={props.metaSigner}
+              injectedGsnSigner={props.injectedGsnSigner}
               signingProvider={props.injectedProvider}
               localProvider={props.kovanProvider}
               contractAddress={props.readKovanContracts['NiftyInk']['address']}
               targetId={targetId}
               likerAddress={props.address}
+              transactionConfig={props.transactionConfig}
             />
           </div>
 
