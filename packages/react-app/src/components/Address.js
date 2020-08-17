@@ -42,7 +42,7 @@ export default function Address(props) {
     displayAddress = props.value
   }
 
-  let blockExplorer = "https://etherscan.io/address/"
+  let blockExplorer = "https://blockscout.com/poa/xdai/address/"
   if(props.blockExplorer){
     blockExplorer = props.blockExplorer
   }

@@ -246,7 +246,7 @@ export default function NftyWallet(props) {
   )
 
   let accountWithCreateButton = (
-    <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
+    <div style={{ zIndex:99, position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10, backgroundColor: "#FFFFFF", borderRadius:16 }}>
       <Row gutter={16} verticalAlign={"middle"}>
 
         <Col>

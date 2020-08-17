@@ -244,7 +244,7 @@ if (props.mode === "edit") {
     name="title"
     rules={[{ required: true, message: 'What is this work of art called?' }]}
     >
-    <Input placeholder={"name"} />
+    <Input placeholder={"name"} style={{fontSize:16}}/>
     </Form.Item>
 
     <Form.Item
@@ -252,6 +252,7 @@ if (props.mode === "edit") {
     rules={[{ required: true, message: 'How many inks can be minted?' }]}
     >
     <InputNumber placeholder={"limit"}
+    style={{fontSize:16}}
     min={0}
     precision={0}
     />
