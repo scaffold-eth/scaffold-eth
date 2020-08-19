@@ -118,6 +118,13 @@ Exchange Reddit MOONs for ETH or DAI through xDAI. Learn about different 🛰 pr
 
 [💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/xmoon-dev)
 
+---
+
+[<H3>Obituary.space</H3>](https://obituary.space/)
+
+Remember someone permanently on the blockchain. Write an obituary and upload a photo of a person and their memory will be encoded on the blockchain, forever.
+
+![Obituary.space Demo](https://s3-us-west-2.amazonaws.com/acf-uploads/Ethereum_Transaction_Hash_Txhash_Details__Etherscan_2020-08-10_11-47-24.png | width=400)
 
 ---
 
