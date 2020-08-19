@@ -6,7 +6,7 @@ const directoryName = "build";
 const BUCKETNAME = ""; // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
 
 if (!BUCKETNAME) {
-  console.log("☢️   Enter a bucket name in packages/react-app/s3.js ");
+  console.log("☢️   Enter a bucket name in packages/react-app/scripts/s3.js ");
   process.exit(1);
 }
 

@@ -5152,7 +5152,7 @@ ci-info@^2.0.0:
   resolved "https://registry.yarnpkg.com/ci-info/-/ci-info-2.0.0.tgz#67a9e964be31a51e15e5010d58e6f12834002f46"
   integrity sha512-5tK7EtrZ0N+OLFMthtqOj4fI2Jeb88C4CAZPu25LDVUgXJ0A3Js4PMGqrn0JU1W0Mh1/Z8wZzYPxqUrXeBboCQ==
 
-cids@^0.8.0, cids@~0.8.0:
+cids@^0.8.3, cids@~0.8.0:
   version "0.8.3"
   resolved "https://registry.yarnpkg.com/cids/-/cids-0.8.3.tgz#aaf48ac8ed857c3d37dad94d8db1d8c9407b92db"
   integrity sha512-yoXTbV3llpm+EBGWKeL9xKtksPE/s6DPoDSY4fn8I8TEW1zehWXPSB0pwAXVDlLaOlrw+sNynj995uD9abmPhA==
@@ -9727,46 +9727,48 @@ ipaddr.js@1.9.1, ipaddr.js@^1.9.0:
   resolved "https://registry.yarnpkg.com/ipaddr.js/-/ipaddr.js-1.9.1.tgz#bff38543eeb8984825079ff3a2a8e6cbd46781b3"
   integrity sha512-0KI/607xoxSToH7GjN1FfSbLoU0+btTicjsQSWQlh/hZykN8KpmMf7uYwPW3R+akZ6R/w18ZlXSHBYXiYUPO3g==
 
-ipfs-core-utils@^0.2.4:
-  version "0.2.4"
-  resolved "https://registry.yarnpkg.com/ipfs-core-utils/-/ipfs-core-utils-0.2.4.tgz#fcbcc774383eb44a4f870834b51f351898f73a8d"
-  integrity sha512-Spj5xtmdKMAOsPSUEmiKxj5Oa6FLP5QJgdA5w2WGpaUKw9fTU0he+mtb5Fs/PZusbU9GWxYELVZ1f1TnemeVsA==
+ipfs-core-utils@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/ipfs-core-utils/-/ipfs-core-utils-0.3.0.tgz#4995b5e41df0716a4e448620ff608b27ae974cd1"
+  integrity sha512-mjdFCr+00LNEtEmGlqfzqWcKRxj/KP/K7bJ9T5iezJwgkVlXL6iEBnDpC4lqwH7R8dvb0T6gHTALaeLj7o2sMg==
   dependencies:
     buffer "^5.6.0"
+    cids "^0.8.3"
     err-code "^2.0.0"
     ipfs-utils "^2.2.2"
 
-ipfs-http-client@^44.3.0:
-  version "44.3.0"
-  resolved "https://registry.yarnpkg.com/ipfs-http-client/-/ipfs-http-client-44.3.0.tgz#30921a27b480de7015d555049092209a3832d34f"
-  integrity sha512-oGlD2GkyisCrRPgJYrpo6TYA5VZneCoazEaaKxc1fyGd9TG0Fvc/nBuwW6jB6I5CR78z1JwKr/71QlvZL4jDNg==
+ipfs-http-client@^45.0.0:
+  version "45.0.0"
+  resolved "https://registry.yarnpkg.com/ipfs-http-client/-/ipfs-http-client-45.0.0.tgz#db2679ac5f91fcaa500a3eb78c8409bd30a13944"
+  integrity sha512-ccD2LCVYnSL0yANFQ2GboKV5RTk6Qi45T62Cz9S86qgKa8vw4AK8O30YncHOzbkbuCX1yRBkncYFktcDd/W/nw==
   dependencies:
     abort-controller "^3.0.0"
     any-signal "^1.1.0"
     bignumber.js "^9.0.0"
     buffer "^5.6.0"
-    cids "^0.8.0"
+    cids "^0.8.3"
     debug "^4.1.0"
     form-data "^3.0.0"
-    ipfs-core-utils "^0.2.4"
+    ipfs-core-utils "^0.3.0"
     ipfs-utils "^2.2.2"
     ipld-block "^0.9.1"
     ipld-dag-cbor "^0.15.2"
     ipld-dag-pb "^0.18.5"
     ipld-raw "^5.0.0"
     iso-url "^0.4.7"
+    it-last "^1.0.1"
     it-tar "^1.2.2"
     it-to-buffer "^1.0.0"
     it-to-stream "^0.1.1"
     merge-options "^2.0.0"
     multiaddr "^7.4.3"
     multiaddr-to-uri "^5.1.0"
-    multibase "^0.7.0"
+    multibase "^1.0.1"
     multicodec "^1.0.0"
     multihashes "^1.0.1"
     nanoid "^3.0.2"
     node-fetch "^2.6.0"
-    parse-duration "^0.1.2"
+    parse-duration "^0.4.4"
     stream-to-it "^0.2.0"
 
 ipfs-utils@^2.2.2:
@@ -10429,6 +10431,11 @@ it-glob@0.0.8:
   dependencies:
     fs-extra "^8.1.0"
     minimatch "^3.0.4"
+
+it-last@^1.0.1:
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/it-last/-/it-last-1.0.2.tgz#4f4a38274d3e7acc185455d64b2494dfa0943573"
+  integrity sha512-zjWiVvkDXKxGA+u2ZNzq321RWnj52RLucsIX0Bve3NUX3X/b1RjtUufvUdjtkFtQLKG1yCf5+hxbdeIYiRT1rQ==
 
 it-reader@^2.0.0:
   version "2.1.0"
@@ -13154,10 +13161,10 @@ parse-asn1@^5.0.0:
     pbkdf2 "^3.0.3"
     safe-buffer "^5.1.1"
 
-parse-duration@^0.1.2:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/parse-duration/-/parse-duration-0.1.3.tgz#c2c4d45d49513d544e129b2a5a07b9473545d19a"
-  integrity sha512-hMOZHfUmjxO5hMKn7Eft+ckP2M4nV4yzauLXiw3PndpkASnx5r8pDAMcOAiqxoemqWjMWmz4fOHQM6n6WwETXw==
+parse-duration@^0.4.4:
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/parse-duration/-/parse-duration-0.4.4.tgz#11c0f51a689e97d06c57bd772f7fda7dc013243c"
+  integrity sha512-KbAJuYGUhZkB9gotDiKLnZ7Z3VTacK3fgwmDdB6ZVDtJbMBT6MfLga0WJaYpPDu0mzqT0NgHtHDt5PY4l0nidg==
 
 parse-filepath@^1.0.1:
   version "1.0.2"

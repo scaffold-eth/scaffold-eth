@@ -25,12 +25,12 @@
     "accounts": "yarn workspace @scaffold-eth/buidler accounts",
     "balance": "yarn workspace @scaffold-eth/buidler balance",
     "send": "yarn workspace @scaffold-eth/buidler send",
-    "ipfs": "cd packages/react-app && node ipfs",
-    "surge": "surge packages/react-app/build",
-    "s3": "cd packages/react-app && node s3",
-    "ship": "surge packages/react-app/build",
-    "generate": "cd packages/buidler && npx buidler generate",
-    "account": "cd packages/buidler && npx buidler account"
+    "ipfs": "yarn workspace @scaffold-eth/react-app ipfs",
+    "surge": "yarn workspace @scaffold-eth/react-app surge",
+    "s3": "yarn workspace @scaffold-eth/react-app s3",
+    "ship": "yarn workspace @scaffold-eth/react-app ship",
+    "generate": "yarn workspace @scaffold-eth/buidler generate",
+    "account": "yarn workspace @scaffold-eth/buidler account"
   },
   "workspaces": {
     "packages": [
