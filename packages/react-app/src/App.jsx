@@ -25,14 +25,14 @@ import Hints from "./Hints";
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
 
 // 🛰 providers
-console.log("📡 Connecting to mainnet")
+console.log("📡 Connecting to mainnet");
 // ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID:
-const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY , quorum: 1 });
-//const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-//const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
+const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
+// const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
+// const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
 
-const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"
-console.log("📡 Connecting to",localProviderUrl)
+const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545";
+console.log("📡 Connecting to", localProviderUrl);
 const localProvider = new JsonRpcProvider(localProviderUrl);
 
 /*
@@ -61,7 +61,7 @@ const logoutOfWeb3Modal = async () => {
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
-  /* 💵 this hook will get the price of ETH from 🦄 Uniswap:*/
+  /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(mainnetProvider);
 
   /* ⛽️ this hook will get the price of ETH from 🦄 Uniswap */
@@ -94,7 +94,7 @@ function App() {
     }
   }, [loadWeb3Modal]);
 
-  console.log("localProvider",localProvider)
+  console.log("localProvider", localProvider);
 
   return (
     <div className="App">
@@ -124,18 +124,25 @@ function App() {
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
             <Ramp price={price} address={address} />
           </Col>
 
-          <Col span={8} style={{textAlign:"center", opacity:0.8}}>
-            <GasGauge gasPrice={gasPrice}/>
+          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+            <GasGauge gasPrice={gasPrice} />
           </Col>
-          <Col span={8} style={{textAlign:"center", opacity:1}}>
-            <Button onClick={()=>{window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA")}} size="large" shape="round">
-              <span style={{marginRight:8}} role="img" aria-label="support">💬</span>
+          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+            <Button
+              onClick={() => {
+                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+              }}
+              size="large"
+              shape="round"
+            >
+              <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                💬
+              </span>
               Support
             </Button>
           </Col>
@@ -145,9 +152,11 @@ function App() {
           <Col span={24}>
             {
               /*  if the local provider has a signer, let's show the faucet:  */
-              (localProvider && !process.env.REACT_APP_PROVIDER)?
-              <Faucet localProvider={localProvider} price={price} />:
-              ""
+              localProvider && !process.env.REACT_APP_PROVIDER ? (
+                <Faucet localProvider={localProvider} price={price} />
+              ) : (
+                ""
+              )
             }
           </Col>
         </Row>

@@ -25,8 +25,8 @@ export default function useContractLoader(providerOrSigner) {
         try {
           // we need to check to see if this providerOrSigner has a signer or not
           let signer;
-          let accounts
-          if(providerOrSigner && typeof providerOrSigner.listAccounts == "function"){
+          let accounts;
+          if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
             accounts = await providerOrSigner.listAccounts();
           }
 
