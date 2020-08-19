@@ -258,7 +258,7 @@ export default function NftyWallet(props) {
   )
 
   let accountWithCreateButton = (
-    <div style={{ position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10 }}>
+    <div style={{ zIndex:99, position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10, backgroundColor: "#FFFFFF", borderRadius:16 }}>
       <Row gutter={16} verticalAlign={"middle"}>
 
         <Col>
@@ -268,6 +268,22 @@ export default function NftyWallet(props) {
         <Col>
         <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="primary" onClick={() => {newInk()
       }}><span style={{marginRight:12}}>🖌</span></Button>
+        </Col>
+
+      </Row>
+    </div>
+  )
+
+  let supportButton = (
+    <div style={{ zIndex:99, position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10, backgroundColor: "#FFFFFF", borderRadius:16 }}>
+      <Row gutter={16} verticalAlign={"middle"}>
+
+      <Col>
+      <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="secondary" onClick={() => {window.open("https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg")}}><span style={{marginRight:12}}>💬</span>Chat</Button>
+      </Col>
+
+        <Col>
+        <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="secondary" onClick={() => {window.open("https://medium.com/@austin_48503/nifty-ink-an-ethereum-tutorial-c860a4904cb2")}}><span style={{marginRight:12}}>🧐</span>About</Button>
         </Col>
 
       </Row>
@@ -407,7 +423,7 @@ export default function NftyWallet(props) {
                 </TabPane>
               </Tabs>
 
-
+              {supportButton}
               {accountWithCreateButton}
             </div>
           );

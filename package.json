@@ -14,7 +14,7 @@
     "react-app:eject": "yarn workspace @uniswap-v1-app/react-app eject",
     "react-app:start": "yarn workspace @uniswap-v1-app/react-app start",
     "react-app:test": "yarn workspace @uniswap-v1-app/react-app test",
-    "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=16384",
+    "build": "yarn workspace @uniswap-v1-app/react-app build --max-old-space-size=16384 && cd packages/react-app && node version",
     "chain": "cd packages/buidler && npx buidler node",
     "node": "cd packages/buidler && npx buidler node",
     "test": "cd packages/buidler && npx buidler test",
