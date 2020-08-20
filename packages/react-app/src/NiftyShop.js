@@ -22,6 +22,9 @@ export default function NiftyShop(props) {
     setBuying(true)
     let multipliedPrice = (values['price'] * 10 ** 18).toString()
     let result
+
+    try {
+
     if(props.type === 'ink') {
 
 
@@ -81,6 +84,10 @@ export default function NiftyShop(props) {
     priceForm.resetFields();
     setBuying(false)
     console.log("result", result)
+  } catch (e) {
+    setBuying(false)
+    console.log('error',e)
+  }
   }
 
   const buyInk = async (values) => {

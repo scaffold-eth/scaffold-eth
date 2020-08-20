@@ -41,9 +41,9 @@ export default function Account(props) {
     paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
     chainId = 42
   }else{
-    relayHubAddress = require('./gsn/RelayHub.json').address
-    stakeManagerAddress = require('./gsn/StakeManager.json').address
-    paymasterAddress = require('./gsn/Paymaster.json').address
+    relayHubAddress = require('.././gsn/RelayHub.json').address
+    stakeManagerAddress = require('.././gsn/StakeManager.json').address
+    paymasterAddress = require('.././gsn/Paymaster.json').address
     console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
 
