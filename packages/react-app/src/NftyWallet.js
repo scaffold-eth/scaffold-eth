@@ -23,7 +23,7 @@ export default function NftyWallet(props) {
 
   const calculatedVmin = Math.min(window.document.body.clientHeight, window.document.body.clientWidth)
 
-  const [tab, setTab] = useState("1")
+  const [tab, setTab] = useState("create")
 
   const [mode, setMode] = useState("edit")
 
@@ -317,8 +317,8 @@ export default function NftyWallet(props) {
                 window.history.pushState({id: 'draw'}, 'draw', '/')
                 setTab(t)
 
-              }} style={{marginTop:0,padding:8,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="1">
-                <TabPane defaultActiveKey="1" tab={<><span style={{fontSize:24,padding:8}}>🎨  Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
+              }} style={{marginTop:0,padding:8,textAlign:"center"}} tabBarExtraContent={""} defaultActiveKey="create">
+                <TabPane tab={<><span style={{fontSize:24,padding:8}}>🎨  Nifty Ink</span>{/* pull this our for now <Badge style={badgeStyle} count={displayTotalInks} showZero/>*/}</>} key="1">
                 <div style={{maxWidth:720,margin:"0 auto"}}>
                   <AllNiftyInks
                     mainnetProvider={props.mainnetProvider}

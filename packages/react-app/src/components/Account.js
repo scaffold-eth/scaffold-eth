@@ -60,13 +60,11 @@ export default function Account(props) {
     }
 
   const createBurnerIfNoAddress = async () => {
-    console.log(typeof props.setInjectedGsnSigner, typeof props.setInjectedProvider)
     if (!props.injectedProvider &&
         props.localProvider &&
         typeof props.setInjectedGsnSigner == "function" &&
         typeof props.setInjectedProvider == "function" &&
         !web3Modal.cachedProvider){
-
       let burner
       if(process.env.REACT_APP_NETWORK_NAME == 'xdai') {
       burner = new BurnerProvider("https://dai.poa.network")
@@ -178,10 +176,33 @@ export default function Account(props) {
 
 
   React.useEffect(() => {
+
+    const checkForProvider =  async () => {
     if (web3Modal.cachedProvider) {
+      try {
+      if (web3Modal.cachedProvider === "injected") {
+        const accounts = await window.ethereum.request({ method: "eth_accounts" });
+        console.log('injected accounts', accounts)
+        if (!accounts.length) {
+          await web3Modal.clearCachedProvider();
+          window.localStorage.removeItem('walletconnect');
+          createBurnerIfNoAddress()
+          throw new Error("Injected provider is not accessible");
+        } else {
+        loadWeb3Modal()
+      }
+      } else {
       console.log(web3Modal.cachedProvider)
       loadWeb3Modal()
     }
+
+    } catch (e) {
+      console.log("Could not get a wallet connection", e);
+      return;
+    }
+    }
+  }
+  checkForProvider()
   }, []);
 
   const tokenContract = props.localProvider
