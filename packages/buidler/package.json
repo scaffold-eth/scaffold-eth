@@ -19,7 +19,7 @@
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.0.2",
     "ethers": "^5.0.7",
-    "node-watch": "^0.6.3"
+    "node-watch": "^0.6.4"
   },
   "scripts": {
     "chain": "buidler node",
