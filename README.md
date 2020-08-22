@@ -30,6 +30,38 @@ yarn run deploy
 
 📱 Open http://localhost:3000 to see the app
 
+📚 RTFM: Check out [solidity by example](https://solidity-by-example.org) and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.4.24/units-and-global-variables.html)
+
+👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
+
+⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
+
+🔬 Try it out in the app to see what happens!
+
+🧫 You can iterate and learn as you go. 
+
+🔐 Global variables like `msg.sender` and `msg.value` are cryptographically backed and can be used to make rules
+
+📝 Keep this [cheat sheet](https://solidity.readthedocs.io/en/v0.7.0/cheatsheet.html?highlight=global#global-variables) handy 
+
+⏳ Maybe we could use `block.timestamp` or `block.number` to track time in our contract
+
+🔏 Or maybe keep track of an `address public owner;` then make a rule like `require( msg.sender == owner );` for an important function
+
+🧾 Maybe create a smart contract that keeps track of a `mapping ( address => uint256 ) public balance;`
+
+🏦 It could be like a decentralized bank that you `function deposit() public payable {}` and `withdraw()`
+
+🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) 
+
+📝 Then learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
+
+💸 Maybe add a `receive() external payable {}` so your contract will accept ETH?
+
+🚁 OH! Programming decentralized money! 😎 So rad!
+
+🚀 Good luck!
+
 ---
 
 [<H3>⏱ Quickstart: 🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
