@@ -10,6 +10,7 @@ export default function LikeButton(props) {
 
   const writeContracts = useContractLoader(props.signingProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
+  const readContracts = useContractLoader(props.localProvider);
 
   const [likes, setLikes] = useState()
   const [hasLiked, setHasLiked] = useState()
@@ -23,11 +24,11 @@ export default function LikeButton(props) {
 
   usePoller(() => {
     const getLikeInfo = async () => {
-      if(writeContracts){
+      if(readContracts){
         try {
-        const newInkLikes = await metaWriteContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
+        const newInkLikes = await readContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
         setLikes(newInkLikes)
-        const newHasLiked = await metaWriteContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
+        const newHasLiked = await readContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
         setHasLiked(newHasLiked)
       } catch(e){ console.log(e)}
       }
