@@ -54,7 +54,7 @@ yarn run deploy
 
 🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) 
 
-🗳 Maybe an array `YourStructName[] public proposals` that could call be voted on with `function vote() public {}` 
+🗳 Maybe an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}` 
 
 📝 Then learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
 
