@@ -9,6 +9,7 @@ import { useUserAddress, useBalance } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -23,6 +24,11 @@ import Hints from "./Hints";
     (this is your connection to the main Ethereum network for ENS etc.)
 */
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
+import { Issues } from "./gregsgithubgetter"
+
+const ghIssues = new Issues("MetaMask", "metamask-extension", null);
+console.log("ghIssues",ghIssues)
+
 
 // 🛰 providers
 console.log("📡 Connecting to mainnet");
@@ -58,6 +64,12 @@ const logoutOfWeb3Modal = async () => {
     window.location.reload();
   }, 1);
 };
+
+
+
+
+
+
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
@@ -96,9 +108,25 @@ function App() {
 
   console.log("localProvider", localProvider);
 
+
+
   return (
     <div className="App">
       <Header />
+
+
+      <Button onClick={()=>{
+
+        (async () => {
+        	const allIssues = await ghIssues.getAll();
+        	console.log(allIssues);
+
+        	const specificIssue = await ghIssues.get(allIssues[0].number);
+        	console.log(specificIssue);
+        })()
+
+
+      }}>Greg it!</Button>
 
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
@@ -119,7 +147,7 @@ function App() {
           and give you a form to interact with it locally
       */}
 
-      <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+      <Contract name="BacklogMarket" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
