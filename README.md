@@ -287,6 +287,9 @@ yarn run deploy
 
 📽 [Video Guide](https://youtu.be/ShJZf5lsXiM?t=34)
 
+📚 RTFM: Check out [solidity by example](https://solidity-by-example.org) and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.4.24/units-and-global-variables.html)
+
+🚀 Good luck, and go get 'em!
 
 
 ---
