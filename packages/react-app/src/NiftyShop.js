@@ -97,11 +97,31 @@ export default function NiftyShop(props) {
     let hex = bigNumber.toHexString()
 
     let result
+
+    let contractName = "NiftyToken"
+    let regularFunctionArgs = [props.itemForSale]
+    let payment = hex
+    let regularFunction
     if(props.type === 'ink') {
-    result = await tx(writeContracts["NiftyToken"].buyInk(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
+      regularFunction = "buyInk"
+    //result = await tx(writeContracts["NiftyToken"].buyInk(props.itemForSale, { value: hex } ))
   } else if(props.type === 'token') {
-        result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
-      }
+      regularFunction = "buyToken"
+  }
+
+    let txConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs,
+      payment
+    }
+
+    console.log(txConfig)
+
+    result = await transactionHandler(txConfig)
+
+        //result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex } ))
     console.log(result)
     setBuying(false)
     if(result) {

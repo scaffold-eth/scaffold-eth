@@ -3,7 +3,7 @@ import { ethers } from "ethers"
 import { Popover, Button, Typography, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
 import { useContractLoader } from "./hooks"
-import { Transactor } from "./helpers"
+import { Transactor, transactionHandler } from "./helpers"
 
 export default function UpgradeInkButton(props) {
 
@@ -20,7 +20,26 @@ export default function UpgradeInkButton(props) {
     let hex = bigNumber.toHexString()
 
     try {
-      let result = await tx(writeContracts["NiftyMediator"].relayToken(tokenId, { value: hex, gasPrice:props.gasPrice } ))
+
+      let result
+      let contractName = "NiftyMediator"
+      let regularFunctionArgs = [tokenId]
+      let payment = hex
+      let regularFunction = "relayToken"
+
+      let txConfig = {
+        ...props.transactionConfig,
+        contractName,
+        regularFunction,
+        regularFunctionArgs,
+        payment
+      }
+
+      console.log(txConfig)
+
+      result = await transactionHandler(txConfig)
+
+      //let result = await tx(writeContracts["NiftyMediator"].relayToken(tokenId, { value: hex } ))
       console.log("result", result)
     } catch (e) {
       console.log(e)

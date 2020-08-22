@@ -6,22 +6,6 @@ import { default as Transactor } from "./Transactor";
 
 export async function transactionHandler(c) {
 
-  /*
-  address,
-  localProvider
-  injectedProvider
-  injectedGsnSigner
-  metaSigner
-  contractName
-  regularFunction,
-  regularFunctionArgs,
-  signatureFunction,
-  signatureFunctionArgs,
-  getSignatureTypes,
-  getSignatureArgs
-
-  */
-
     function chainWarning(network, chainId) {
         Modal.warning({
           title: 'MetaMask Network Mismatch',
@@ -57,7 +41,13 @@ export async function transactionHandler(c) {
                 contractAbi,
                 c['injectedProvider'].getSigner(),
               );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+
+            let metaData = {}
+            if(c['payment']) {
+              metaData['value'] = c['payment']
+            }
+
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {

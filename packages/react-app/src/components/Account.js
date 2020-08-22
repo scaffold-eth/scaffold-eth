@@ -44,7 +44,7 @@ export default function Account(props) {
     relayHubAddress = require('.././gsn/RelayHub.json').address
     stakeManagerAddress = require('.././gsn/StakeManager.json').address
     paymasterAddress = require('.././gsn/Paymaster.json').address
-    console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
+    //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
 
   let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
@@ -52,12 +52,14 @@ export default function Account(props) {
   gsnConfig.relayLookupWindowBlocks= 1e5
   gsnConfig.verbose = true
 
+  /*
   function warning(network, chainId) {
       Modal.warning({
         title: 'MetaMask Network Mismatch',
         content: <>Please connect to <b>https://dai.poa.network</b></>,
       });
     }
+    */
 
   const createBurnerIfNoAddress = async () => {
     if (!props.injectedProvider &&
@@ -73,25 +75,8 @@ export default function Account(props) {
     } else {
       burner = new BurnerProvider("http://localhost:8546")//
     }
-      //let burner = new BurnerProvider("https://dai.poa.network")
-      //let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
       console.log("🔥📡 burner",burner)
       updateProviders(burner)
-      //let ethersProvider = new ethers.providers.Web3Provider(burner)
-      //console.log("📡 Ethers Provider:",ethersProvider)
-
-      //This fails only on the xdai network with the ethers provider from react (a script works fine, CORS?!)
-      //let accounts = await ethersProvider.listAccounts()
-      //DO SOME NETWORK STUFF HERE AND SEE WHERE THE XDAI STUFF IS FAILING
-      //console.log("😅 accounts:",accounts)
-      //let bal = await ethersProvider.getBalance(accounts[0])
-      //console.log("💵 balance", bal)
-      //props.setInjectedProvider(ethersProvider)
-
-
-      //let customHttpProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network");
-
-
 
     }else{
       pollInjectedProvider()
@@ -122,12 +107,14 @@ export default function Account(props) {
     console.log(gsnSigner)
     props.setInjectedGsnSigner(gsnSigner)
 
+    /*
     let newNetwork = await newWeb3Provider.getNetwork()
     let localNetwork = await props.localProvider.getNetwork()
     console.log('networkcomparison',provider,props.localProvider)
     if(newNetwork.chainId !== localNetwork.chainId) {
       warning(localNetwork.name, localNetwork.chainId)
     }
+    */
 
   }
 
