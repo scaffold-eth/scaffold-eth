@@ -47,7 +47,8 @@
     "newdeployxdai": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network xdai",
     "newdeploymainnet": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network mainnet",
     "analyze": "source-map-explorer 'packages/react-app/build/static/js/*.js'",
-    "flatten": "cd packages/buidler && npx buidler flatten "
+    "flatten": "cd packages/buidler && npx buidler flatten ",
+    "setprice": "cd packages/buidler && npx buidler run scripts/setPrice.js --network xdai"
   },
   "devDependencies": {
     "@nomiclabs/buidler": "^1.3.3",
