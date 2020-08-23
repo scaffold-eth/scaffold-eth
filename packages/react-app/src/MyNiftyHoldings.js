@@ -97,7 +97,14 @@ export default function MyNiftyHoldings(props) {
               </Typography.Text>
 
 
-              {item['chain']==='main'?'':
+              {item['chain']==='main'?
+              <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
+                console.log("item",item)
+                window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+item['tokenId'])
+              }}>
+               <RocketOutlined />  View on OpenSea
+              </Button>
+              :
               <span style={{marginBottom:-4}}>
               <Popover content={
                 <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
@@ -116,14 +123,6 @@ export default function MyNiftyHoldings(props) {
 
               </div>
             )}
-            description={item['chain']==='main'?
-                          <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
-                            console.log("item",item)
-                            window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+item['tokenId'])
-                          }}>
-                           <RocketOutlined />  View on OpenSea
-                          </Button>
-                        :''}
             />
             </List.Item>
           )
