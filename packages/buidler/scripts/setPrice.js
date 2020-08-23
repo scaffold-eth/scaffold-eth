@@ -6,7 +6,7 @@ async function main() {
   console.log("📡 Loading NiftyMediator \n")
   const NiftyMediator = await ethers.getContractAt("NiftyMediator","0x73cA9C4e72fF109259cf7374F038faf950949C51")
   console.log("💵 Setting Relay Price \n")
-  let result = await NiftyMediator.setRelayPrice("1"+"000000000000000000")
+  let result = await NiftyMediator.setRelayPrice("16"+"000000000000000000")
   //const examplePriceOracle = await deploy("ExamplePriceOracle")
   //const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 }
