@@ -146,6 +146,7 @@ export default function InkInfo(props) {
                 injectedProvider={props.injectedProvider}
                 gasPrice={props.gasPrice}
                 upgradePrice={props.upgradePrice}
+                transactionConfig={props.transactionConfig}
               />
             )
           }

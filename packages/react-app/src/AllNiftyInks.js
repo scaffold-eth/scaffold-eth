@@ -39,7 +39,7 @@ export default function NftyWallet(props) {
 
         const loadStream = async () => {
           if(inkCreations) {
-            let mostRecentInks = inkCreations.reverse()
+            let mostRecentInks = Array.from(inkCreations).reverse()
             let promises = []
             let hashesForDebugging = []
             let skips = 0
