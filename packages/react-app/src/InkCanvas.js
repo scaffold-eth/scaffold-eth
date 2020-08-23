@@ -98,7 +98,7 @@ export default function InkCanvas(props) {
     console.log(createInkConfig)
 
     let result = await transactionHandler(createInkConfig)
-    
+
     return result
 
   }
@@ -208,10 +208,15 @@ export default function InkCanvas(props) {
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
   const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
 
+  const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
+  const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
+  const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+
+
   setSending(false)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-    console.log(values);
+    console.log("FINISHED ULOADING TO PINNER",values);
     message.destroy()
     //setMode("mint")
     /*notification.open({
@@ -219,6 +224,11 @@ export default function InkCanvas(props) {
       description:
       ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
     });*/
+  });
+
+
+  Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
+    console.log("INFURA FINISHED UPLOADING!",values);
   });
 }
 };

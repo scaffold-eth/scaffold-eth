@@ -16,7 +16,7 @@ const { TabPane } = Tabs;
 const Web3HttpProvider = require( 'web3-providers-http')
 
 const isIPFS = require('is-ipfs')
-//const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
+const ipfsConfigInfura = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 2500}
 
 export default function NftyWallet(props) {
@@ -304,6 +304,7 @@ export default function NftyWallet(props) {
       setInk={setInk}
       ipfsHash={ipfsHash}
       ipfsConfig={ipfsConfig}
+      ipfsConfigInfura={ipfsConfigInfura}
       gasPrice={props.gasPrice}
       calculatedVmin={calculatedVmin}
       upgradePrice={upgradePrice}
@@ -327,6 +328,7 @@ export default function NftyWallet(props) {
                     tab={tab}
                     showInk={showInk}
                     ipfsConfig={ipfsConfig}
+                    ipfsConfigInfura={ipfsConfigInfura}
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
@@ -366,6 +368,7 @@ export default function NftyWallet(props) {
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       inksCreatedBy={inksCreatedBy}
                       thisTab={"inks"}
                       newInk={newInk}
@@ -384,6 +387,7 @@ export default function NftyWallet(props) {
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       nftyBalance={nftyBalance}
                       nftyMainBalance={nftyMainBalance}
                       transactionConfig={transactionConfig}
@@ -414,6 +418,7 @@ export default function NftyWallet(props) {
                       drawing={drawing}
                       setDrawing={setDrawing}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       gasPrice={props.gasPrice}
                       calculatedVmin={calculatedVmin}
                       transactionConfig={transactionConfig}
