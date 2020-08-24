@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { List, Popover, Avatar, Spin, Typography, Empty, Button } from 'antd';
-import { LoadingOutlined, SendOutlined, StarTwoTone } from '@ant-design/icons';
+import { LoadingOutlined, SendOutlined, RocketOutlined } from '@ant-design/icons';
 import { getFromIPFS } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
@@ -88,7 +88,7 @@ export default function MyNiftyHoldings(props) {
             <List.Item.Meta
             avatar={item['image']?<a><img src={item['image']} onClick={() => props.showInk(item['url'])} alt={item['name']} height="50" width="50"/></a>:<Avatar icon={<LoadingOutlined />} />}
             title={(
-              <div style={{marginTop:-4, textAlign:'right'}}>
+              <div style={{marginTop:-4}}>
 
               <Typography.Text  copyable={{ text: "https://nifty.ink/"+item['url']}} style={{fontSize:24,verticalAlign:"middle"}}>
               <a style={{color:"#222222"}} href="#" onClick={() => props.showInk(item['url'])} >
@@ -97,7 +97,14 @@ export default function MyNiftyHoldings(props) {
               </Typography.Text>
 
 
-              {item['chain']==='main'?'':
+              {item['chain']==='main'?
+              <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
+                console.log("item",item)
+                window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+item['tokenId'])
+              }}>
+               <RocketOutlined />  View on OpenSea
+              </Button>
+              :
               <span style={{marginBottom:-4}}>
               <Popover content={
                 <SendInkForm tokenId={item['tokenId']} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
@@ -116,7 +123,6 @@ export default function MyNiftyHoldings(props) {
 
               </div>
             )}
-            description={item['chain']==='main'?<Typography level={4}>{"Upgraded to "+process.env.REACT_APP_NETWORK_NAME}<StarTwoTone /></Typography>:''}
             />
             </List.Item>
           )
