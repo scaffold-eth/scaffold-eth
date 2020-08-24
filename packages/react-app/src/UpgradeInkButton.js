@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ethers } from "ethers"
 import { Popover, Button, Typography, notification } from 'antd';
 import { UploadOutlined } from '@ant-design/icons';
@@ -9,8 +9,7 @@ export default function UpgradeInkButton(props) {
 
   const [upgrading, setUpgrading] = useState(false)
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const tx = Transactor(props.injectedProvider,props.gasPrice)
+  //const writeContracts = useContractLoader(props.injectedProvider);
 
   let relayPrice = props.upgradePrice
 

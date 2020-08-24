@@ -1,25 +1,22 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin, Modal } from 'antd';
-import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, getSignature, transactionHandler } from "./helpers"
+import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin } from 'antd';
+import { useLocalStorage, useContractLoader } from "./hooks"
+import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
 
 const Hash = require('ipfs-only-hash')
-const axios = require('axios');
 const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
 
 export default function InkCanvas(props) {
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider);
-
-  const tx = Transactor(props.kovanProvider,props.gasPrice)
+  //const writeContracts = useContractLoader(props.injectedProvider);
+  //const metaWriteContracts = useContractLoader(props.metaProvider);
+  //const tx = Transactor(props.kovanProvider,props.gasPrice)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
@@ -216,7 +213,7 @@ export default function InkCanvas(props) {
   setSending(false)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-    console.log("FINISHED ULOADING TO PINNER",values);
+    console.log("FINISHED UPLOADING TO PINNER",values);
     message.destroy()
     //setMode("mint")
     /*notification.open({
@@ -240,7 +237,7 @@ const onFinishFailed = errorInfo => {
 
 
 
-let top, buttons, bottom
+let top, bottom
 if (props.mode === "edit") {
 
   top = (
@@ -303,11 +300,6 @@ if (props.mode === "edit") {
 
   )
 
-  buttons = (
-    <div>
-
-    </div>
-  )
   bottom = (
     <div style={{ marginTop: 16 }}>
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>

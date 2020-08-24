@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ethers } from "ethers"
-import { Row, Popover, Button, Form, Typography, Spin, Space, Descriptions, notification, message, InputNumber, Popconfirm } from 'antd';
+import { Row, Popover, Button, Form, notification, InputNumber, Popconfirm } from 'antd';
 import { ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
-import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getSignature, transactionHandler } from "./helpers"
+import { useContractLoader } from "./hooks"
+import { Transactor, transactionHandler } from "./helpers"
 
 export default function NiftyShop(props) {
 
   const [buying, setBuying] = useState(false)
-  const [mintForm] = Form.useForm();
   const [priceForm] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
-  const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   let shopButton
 
@@ -136,7 +134,7 @@ export default function NiftyShop(props) {
     console.log('Failed:', errorInfo);
   };
 
-  if(props.visible == false) {
+  if(props.visible === false) {
     shopButton = (<></>)
   } else if(props.address === props.ownerAddress) {
     const setPriceForm = (

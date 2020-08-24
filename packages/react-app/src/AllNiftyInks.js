@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Row, Col, Avatar, Empty, Space, Spin, Badge } from 'antd';
+import { Avatar, Spin } from 'antd';
 import { useEventListener } from "./hooks"
 import { getFromIPFS, isBlacklisted } from "./helpers"
 import { Loader } from "./components"
@@ -17,11 +17,10 @@ export default function NftyWallet(props) {
   const [lastStreamCount, setLastStreamCount] = useState("0")
 
   let inkCreations = useEventListener(props.readKovanContracts,'NiftyInk',"newInk",props.kovanProvider, 1)
-  let likes
 
   useEffect(()=>{
       if(props.tab === props.thisTab && props.readKovanContracts && inkCreations && props.totalInks && inkCreations.length) {
-      if(inkCreations.length.toString() == props.totalInks.toString() &&
+      if(inkCreations.length.toString() === props.totalInks.toString() &&
         props.totalInks.toString() !== lastStreamCount
       ) {
         let inksToShow = Math.min(MAX_FRONT_PAGE_DISPLAY, props.totalInks.toString())
@@ -90,7 +89,7 @@ export default function NftyWallet(props) {
             //console.log("item",item)
             return (
               <div key={item['id']} ipfsHash={item['jsonUrl']}>
-                {item['image']?/*<Badge style={{ backgroundColor: '#2db7f5' }} count={item['likes']}>*/<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.125}} size="large" />} />}
+                {item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.125}} size="large" />} />}
               </div>
             )
           })}
