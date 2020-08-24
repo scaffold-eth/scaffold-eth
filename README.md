@@ -38,11 +38,11 @@ yarn run deploy
 
 🔬 Try it out in the app to see what happens!
 
-🧫 You can iterate and learn as you go. 
+🧫 You can iterate and learn as you go.
 
 🔐 Global variables like `msg.sender` and `msg.value` are cryptographically backed and can be used to make rules
 
-📝 Keep this [cheat sheet](https://solidity.readthedocs.io/en/v0.7.0/cheatsheet.html?highlight=global#global-variables) handy 
+📝 Keep this [cheat sheet](https://solidity.readthedocs.io/en/v0.7.0/cheatsheet.html?highlight=global#global-variables) handy
 
 ⏳ Maybe we could use `block.timestamp` or `block.number` to track time in our contract
 
@@ -52,15 +52,22 @@ yarn run deploy
 
 🏦 It could be like a decentralized bank that you `function deposit() public payable {}` and `withdraw()`
 
-🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) 
+🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/)
 
-🗳 Maybe an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}` 
+🗳 Maybe an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
 
 📝 Then learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
 
 💸 Maybe add a `receive() external payable {}` so your contract will accept ETH?
 
 🚁 OH! Programming decentralized money! 😎 So rad!
+
+🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/buidler/buidler.config.js`
+
+🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
+
+👩‍🎓 You can "gradute" from 🏗 scaffold-eth and start using 👷[Buidler](https://buidler.dev/) and 📦[create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
 🚀 Good luck!
 
@@ -69,13 +76,13 @@ yarn run deploy
 [<H3>⏱ Quickstart: 🔬 Smart Contract Sandbox</H3>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
 
 Learn how to [quickly iterate on a smart contract app](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox) using the <b>\<Contract /\></b> component.
-  
+
 ---
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
 
 ---
-  
+
 [![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://www.youtube.com/watch?v=ShJZf5lsXiM&feature=youtu.be&t=19)
 
 ---
