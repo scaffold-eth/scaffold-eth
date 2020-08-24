@@ -66,7 +66,8 @@ yarn run deploy
 
 🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
 
-👩‍🎓 You can "gradute" from 🏗 scaffold-eth and start using 👷[Buidler](https://buidler.dev/) and 📦[create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+👩‍🎓 You can "gradute" from 🏗 scaffold-eth and start using 👷 [Buidler](https://buidler.dev/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
 🚀 Good luck!
