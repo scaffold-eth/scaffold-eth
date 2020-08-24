@@ -5,8 +5,8 @@ import "./App.css";
 import { Row, Col, Button } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useUserAddress, useBalance } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
+import { useUserAddress, useBalance, useContractReader } from "eth-hooks";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
 /*
@@ -76,12 +76,18 @@ function App() {
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   // just plug in different 🛰 providers to get your balance on different chains:
-  // const yourMainnetBalance = useBalance(mainnetProvider, address);
+  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  console.log("yourMainnetBalance",yourMainnetBalance)
 
   // Load in your local 📝 contract and read a value from it:
-  // const readContracts = useContractLoader(localProvider)
-  // console.log("readContracts",readContracts)
-  // const owner = useCustomContractReader(readContracts?readContracts['YourContract']:"", "owner")
+  const readContracts = useContractLoader(localProvider)
+  console.log("📝 readContracts",readContracts)
+
+  // keep track of a variable from the contract in the local React state:
+  const purpose = useContractReader(readContracts?readContracts['YourContract']:"", "purpose")
+  console.log("🤗 purpose:",purpose)
+
+
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
