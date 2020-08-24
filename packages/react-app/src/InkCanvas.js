@@ -7,12 +7,12 @@ import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notif
 import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
-import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
+import { SketchPicker, CirclePicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
 
 const Hash = require('ipfs-only-hash')
 const axios = require('axios');
-const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
+const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
 
 export default function InkCanvas(props) {
 
