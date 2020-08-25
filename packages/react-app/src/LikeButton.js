@@ -1,14 +1,14 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Button, notification, Badge } from 'antd';
 import { LikeTwoTone, LikeOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
-import { signLike, getSignature, transactionHandler } from "./helpers"
+import { transactionHandler } from "./helpers"
 
 export default function LikeButton(props) {
 
   const [minting, setMinting] = useState(false)
 
-  const writeContracts = useContractLoader(props.signingProvider);
+  //const writeContracts = useContractLoader(props.signingProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
   const readContracts = useContractLoader(props.localProvider);
 

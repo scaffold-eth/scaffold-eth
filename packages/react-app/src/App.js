@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import 'antd/dist/antd.css';
 import { Row, Col,  Button, Spin } from 'antd';
 import { ethers } from "ethers";
 import "./App.css";
-import BurnerProvider from 'burner-provider';
-import { useExchangePrice, useContractLoader, useGasPrice } from "./hooks"
-import { Ramp, AdminWidget, Faucet } from "./components"
+import { useContractLoader } from "./hooks"
+import { Ramp, Faucet } from "./components"
 
 import NftyWallet from "./NftyWallet.js"
 
@@ -20,11 +19,11 @@ if(process.env.REACT_APP_NETWORK_NAME){
       {process.env.REACT_APP_NETWORK_NAME}
     </div>
   )*/
-  if(process.env.REACT_APP_NETWORK_NAME=="xdai"){
+  if(process.env.REACT_APP_NETWORK_NAME==="xdai"){
     console.log("🎉 XDAINETWORK + 🚀 Mainnet Ethereum")
     localProvider = mainnetProvider
     kovanProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network")
-  } else if(process.env.REACT_APP_NETWORK_NAME=="sokol"){
+  } else if(process.env.REACT_APP_NETWORK_NAME==="sokol"){
     console.log("THIS.IS.SOKOL")
     localProvider = new ethers.providers.JsonRpcProvider("https://sokol.poa.network")
     kovanProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
@@ -83,7 +82,7 @@ function App() {
 
       <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
         <Row gutter={8}>
-          {!process.env.REACT_APP_NETWORK_NAME||process.env.REACT_APP_NETWORK_NAME=="xdai"?"":(
+          {!process.env.REACT_APP_NETWORK_NAME||process.env.REACT_APP_NETWORK_NAME==="xdai"?"":(
             <>
               <Col>
               <Ramp
