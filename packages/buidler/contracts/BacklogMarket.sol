@@ -4,9 +4,9 @@ pragma solidity >=0.6.0 <0.7.0;
 
 contract BacklogMarket {
 
-  uint256 startingAt = 0.01 ether;
-  uint16 numerator = 1337;
-  uint16 denominator = 1000;
+  uint256 constant startingAt = 0.01 ether;
+  uint16 constant numerator = 1337;
+  uint16 constant denominator = 1000;
 
   mapping ( bytes32 => uint256 ) public price;
   mapping ( bytes32 => mapping ( address => uint256 ) ) public balanceOf;
