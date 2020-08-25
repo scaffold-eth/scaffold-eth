@@ -9,6 +9,7 @@ import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
 import NiftyShop from "./NiftyShop.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
+import axios from 'axios';
 var _ = require('lodash');
 
 export default function InkInfo(props) {
@@ -28,6 +29,22 @@ export default function InkInfo(props) {
   const [targetId, setTargetId] = useState()
   const [inkPrice, setInkPrice] = useState(0)
   const [mintedCount, setMintedCount] = useState()
+
+  const [ipfsImageForBuffering, setIpfsImageForBuffering] = useState()
+  useEffect(()=>{
+    const loadFromIPFSIOForCaching = async ()=>{
+
+      if(!ipfsImageForBuffering && inkChainInfo && inkChainInfo.length && inkChainInfo[1]){
+        //we want to have the client ping the ipfs.io server to make sure to keep the assets hot?
+        console.log("📟 https://ipfs.io/ipfs/",inkChainInfo[2])
+        let result = await axios.get('https://ipfs.io/ipfs/'+inkChainInfo[2]);
+        console.log("result",result.data)
+        setIpfsImageForBuffering(result.data.image)
+      }
+
+    }
+    loadFromIPFSIOForCaching();
+  },[ inkChainInfo ])
 
   let mintDescription
   let mintFlow
@@ -355,6 +372,11 @@ useEffect(()=>{
       }
     }
 
+    let imageFromIpfsToHelpWithNetworking
+    if(ipfsImageForBuffering){
+      imageFromIpfsToHelpWithNetworking = <img width={1} height={1} src={ipfsImageForBuffering} />
+    }
+
     let bottom = (
       <div>
         {likeButtonDisplay}
@@ -366,7 +388,7 @@ useEffect(()=>{
         <div style={{marginTop:20}}>
           {holders}
         </div>
-
+        {imageFromIpfsToHelpWithNetworking}
       </div>
     )
 
