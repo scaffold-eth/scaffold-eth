@@ -107,6 +107,7 @@ function App() {
 
   return (
     <div className="App">
+      {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
 
       {/*
@@ -117,7 +118,7 @@ function App() {
       }}>Set Purpose</Button>
       */}
 
-      // 👨‍💼 Your account is in the top right with a wallet at connect options
+       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
@@ -140,11 +141,11 @@ function App() {
       <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
 
-      // 🗑 Throw these away once you have 🏗 scaffold-eth figured out:
+      {/* 🗑 Throw these away once you have 🏗 scaffold-eth figured out: */}
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
 
-      // 📟 Extra UI like gas price, eth price, faucet, and support:
+     {/* 📟 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
