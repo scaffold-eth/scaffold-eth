@@ -9,6 +9,7 @@ import { useUserAddress, useBalance } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
+import { GithubIssue } from "./GithubIssue";
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -69,8 +70,6 @@ const logoutOfWeb3Modal = async () => {
 
 
 
-
-
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
@@ -108,6 +107,8 @@ function App() {
 
   console.log("localProvider", localProvider);
 
+  const [githubIssues, setGithubIssues] = useState([]);
+  const [displayIssues, setDisplayIssues] = useState(false);
 
 
   return (
@@ -119,14 +120,26 @@ function App() {
 
         (async () => {
         	const allIssues = await ghIssues.getAll();
-        	console.log(allIssues);
+        	// console.log(allIssues);
+          setGithubIssues(allIssues);
 
         	const specificIssue = await ghIssues.get(allIssues[0].number);
-        	console.log(specificIssue);
+        	// console.log(specificIssue);
+          setDisplayIssues(true);
         })()
 
 
       }}>Greg it!</Button>
+
+      { displayIssues ? 
+        (<div>
+        <br/>
+        <GithubIssue url={githubIssues[0]}/>
+        <br/>
+        </div>)
+        : <p> Please Greg it first!!!</p>
+      }
+      
 
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
