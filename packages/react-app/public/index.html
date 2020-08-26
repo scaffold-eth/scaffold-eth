@@ -25,6 +25,34 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title> Nifty Ink</title>
+
+
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nifty.ink" />
+    <meta property="og:title" content="🎨  Nifty Ink" />
+    <meta property="og:description" content="NFT artwork created and sold on xDAI using GSN and bridged to Ethereum" />
+
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:domain" value="https://nifty.ink" />
+    <meta name="twitter:title" value="🎨  Nifty Ink" />
+    <meta name="twitter:description" value="NFT artwork created and sold on xDAI using GSN and bridged to Ethereum" />
+    <meta name="twitter:url" value="https://nifty.ink" />
+
+    <script>
+      const ipfsHash = window.location.pathname.replace("/","")
+
+      var link = document.createElement('meta');
+      link.setAttribute('property', 'og:image');
+      link.content = "https://ipfs.nifty.ink/"+ipfsHash+".png";
+      document.getElementsByTagName('head')[0].appendChild(link);
+
+      var link2 = document.createElement('meta');
+      link.setAttribute('property', 'twitter:image');
+      link.content = "https://ipfs.nifty.ink/"+ipfsHash+".png";
+      document.getElementsByTagName('head')[0].appendChild(link);
+
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -32,7 +60,7 @@
       <div style="margin:0 auto;opacity:0.25;margin-top:160px;width:300px;border:1px solid #999999;box-shadow:2px 2px 8px #AAAAAA;">
         <img style="max-width:300px" src="/loading.gif"/>
       </div>
-      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0100</div>
+      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0102</div>
     </div>
     <!--
       This HTML file is a template.

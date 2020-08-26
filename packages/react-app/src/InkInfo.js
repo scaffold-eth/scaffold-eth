@@ -103,7 +103,9 @@ export default function InkInfo(props) {
     const getChainInfo = async () => {
       if(props.ipfsHash && props.readKovanContracts ){
         try {
+          console.log("inkInfoByInkUrl",props.ipfsHash)
         const newChainInfo = await props.readKovanContracts['NiftyInk']["inkInfoByInkUrl"](props.ipfsHash)
+        console.log("newChainInfo",newChainInfo)
         const newMintedCount = await props.readKovanContracts['NiftyToken']["inkTokenCount"](props.ipfsHash)
         setMintedCount(newMintedCount.toString())
         setInkChainInfo(newChainInfo)
@@ -198,7 +200,7 @@ export default function InkInfo(props) {
             return (
               <List.Item>
                 <Address value={item[3]?item[3]:item[0]} />
-                {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
+                {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
                 {sendInkButton(item[0], item[1])}
                 {relayTokenButton(item[4], item[0], item[1])}
                 <div style={{marginLeft:4,marginTop:4}}>
