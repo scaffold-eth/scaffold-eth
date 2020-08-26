@@ -5,8 +5,8 @@ import "./App.css";
 import { Row, Col, Button } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useUserAddress, useBalance, useContractReader } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader } from "./hooks";
+import { useUserAddress } from "eth-hooks";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import Hints from "./Hints";
 /*
@@ -25,14 +25,16 @@ import Hints from "./Hints";
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
 
 // 🛰 providers
-console.log("📡 Connecting to mainnet");
-// ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID:
+console.log("📡 Connecting to Mainnet Ethereum");
 const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 // const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
+// 🏠 Your local provider is usually pointed at your local blockchain
+// as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545";
-console.log("📡 Connecting to", localProviderUrl);
+console.log("🏠 Connecting to provider:", localProviderUrl);
 const localProvider = new JsonRpcProvider(localProviderUrl);
 
 /*
@@ -53,7 +55,6 @@ const web3Modal = new Web3Modal({
 
 const logoutOfWeb3Modal = async () => {
   await web3Modal.clearCachedProvider();
-  // console.log("Cleared cache provider!?!",clear)
   setTimeout(() => {
     window.location.reload();
   }, 1);
@@ -64,7 +65,7 @@ function App() {
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(mainnetProvider);
 
-  /* ⛽️ this hook will get the price of ETH from 🦄 Uniswap */
+  /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice("fast");
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
@@ -75,19 +76,23 @@ function App() {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
+  console.log("💵 yourLocalBalance",yourLocalBalance)
+
   // just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-  console.log("yourMainnetBalance",yourMainnetBalance)
+  //const yourMainnetBalance = useBalance(mainnetProvider, address);
+  //console.log("💵 yourMainnetBalance",yourMainnetBalance)
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
   console.log("📝 readContracts",readContracts)
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts?readContracts['YourContract']:"", "purpose")
+  const purpose = useContractReader(readContracts,"YourContract", "purpose")
   console.log("🤗 purpose:",purpose)
 
-
+  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
+  const writeContracts = useContractLoader(userProvider)
+  console.log("🔐 writeContracts",writeContracts)
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -100,12 +105,19 @@ function App() {
     }
   }, [loadWeb3Modal]);
 
-  console.log("localProvider", localProvider);
-
   return (
     <div className="App">
       <Header />
 
+      {/*
+        ⚙️ Here is an example button that sets the purpose in your smart contract:
+
+        <Button onClick={()=>{
+        writeContracts.YourContract.setPurpose("🐖 Don't hog the block!")
+      }}>Set Purpose</Button>
+      */}
+
+      // 👨‍💼 Your account is in the top right with a wallet at connect options
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
@@ -127,8 +139,12 @@ function App() {
 
       <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
+
+      // 🗑 Throw these away once you have 🏗 scaffold-eth figured out:
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
+
+      // 📟 Extra UI like gas price, eth price, faucet, and support:
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>

@@ -4772,10 +4772,10 @@ burner-provider@^1.0.15:
     ethers "^4.0.46"
     web3-provider-engine "^15.0.6"
 
-burner-provider@^1.0.31:
-  version "1.0.31"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.31.tgz#8914614ee9a8e93fec1bcb46211a888c09fbad21"
-  integrity sha512-TcZVSbayBKedS+5LKgAaSfhwCrNlQknbkXgpU27xs+1QwNkRZtvHqLJnNrgdxQQqyhsyYuBd7YtUN6jGa6tNVQ==
+burner-provider@^1.0.37:
+  version "1.0.37"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.37.tgz#bdb8fcf25af65d23222b04b464b61c62d0229bf2"
+  integrity sha512-BsG8UyHuMXihTkBK4+qUoJa26ePuLjmOMU5FusMe+aedyFcjzgflhL0U6FsiTMcUa5OXoLlmEPpTVaYg5QR7cA==
   dependencies:
     bip39 "^3.0.2"
     eth-sig-util "^2.5.3"
