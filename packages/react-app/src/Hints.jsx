@@ -64,7 +64,7 @@ export default function Hints(props) {
         <span style={{ margin: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           useBalance()
         </span>{" "}
-        hook keeps track of your balance: <b>{formatEther(props.yourLocalBalance)}</b>
+        hook keeps track of your balance: <b>{formatEther(props.yourLocalBalance?props.yourLocalBalance:0)}</b>
       </div>
 
       <div style={{ marginTop: 32 }}>
