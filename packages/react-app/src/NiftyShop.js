@@ -14,6 +14,7 @@ export default function NiftyShop(props) {
   const metaWriteContracts = useContractLoader(props.metaProvider);
 
   let shopButton
+  let [newPrice, setNewPrice] = useState(0)
 
   const setPrice = async (values) => {
     console.log("values",values)
@@ -80,6 +81,7 @@ export default function NiftyShop(props) {
       description: '$'+parseFloat(values['price']).toFixed(2)
     });
     priceForm.resetFields();
+    setNewPrice(parseFloat(values['price']).toFixed(2))
     setBuying(false)
     console.log("result", result)
   } catch (e) {
@@ -151,7 +153,10 @@ export default function NiftyShop(props) {
       name="price"
       rules={[{ required: true, message: 'What is the price of this ink?' }]}
       >
-      <InputNumber min={0} precision={3} placeholder="$0.00" />
+      <InputNumber min={0} precision={3}
+      formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+      parser={value => value.replace(/\$\s?|(,*)/g, '')}
+      />
       </Form.Item>
 
       <Form.Item >
@@ -164,12 +169,23 @@ export default function NiftyShop(props) {
       </Row>
     )
 
+    if(props.type === 'token') {
     shopButton = (
       <Popover content={setPriceForm}
       title={"Set price:"}>
-        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell'}</Button>
+        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
       </Popover>
     )
+  } else if (props.type === 'ink' && (props.price > 0 || newPrice > 0)) {
+    shopButton = (
+    <Popover content={setPriceForm}
+    title={"Set price:"}>
+      <Button type="secondary"><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+    </Popover>
+  )
+  } else if (props.type === 'ink') {
+    shopButton = setPriceForm
+  }
   } else if (props.price > 0) {
 
     shopButton = (

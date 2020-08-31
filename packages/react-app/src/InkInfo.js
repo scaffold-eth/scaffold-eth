@@ -48,7 +48,6 @@ export default function InkInfo(props) {
 
   let mintDescription
   let mintFlow
-  let priceFlow
   let buyButton
   let inkChainInfoDisplay
   let detailContent
@@ -180,9 +179,9 @@ export default function InkInfo(props) {
 
 
         const nextHolders = (
-          <Row style={{justifyContent: 'center', marginBottom: 50}}>
+          <Row style={{justifyContent: 'center'}}>
           <List
-          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}{priceFlow}{buyButton}</Space></Row>}
+          header={<Row style={{display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}> <Space><Typography.Title level={3} style={{marginBottom: '0px'}}>{mintDescription}</Typography.Title> {mintFlow}{buyButton}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
           renderItem={item => {
@@ -323,7 +322,7 @@ useEffect(()=>{
           mintFlow =       (
             <Popover content={mintInkForm}
             title="Mint">
-            <Button type="secondary" style={{ marginBottom: 12 }}><SendOutlined/> Mint</Button>
+            <Button type="secondary"><SendOutlined/> Mint</Button>
             </Popover>
           )
         }
