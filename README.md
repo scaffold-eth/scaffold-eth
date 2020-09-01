@@ -24,6 +24,8 @@ yarn run chain
 
 > in a third terminal window:
 
+```bash
+
 yarn run deploy
 
 ```
