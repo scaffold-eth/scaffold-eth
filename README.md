@@ -1,16 +1,10 @@
 # 🏗 scaffold-eth
 
-> TL;DR: **fork this repo** for an Ethereum dev stack focused on _fast product iteration_
+> is everything you need to get started building decentralized applications powered by smart contracts.
 
 ---
 
-🏗 <b>scaffold-eth</b> is a <i>stack</i> of existing tools including 👷‍♀️ [Buidler](https://buidler.dev/tutorial/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app)
-
-Its <i>super power</i> is <b>interating on smart contracts as you build your frontend</b>.
-
-It's great for building <i>decentralized applications</i> on [Ethereum](https://ethereum.org/en/developers/).
-
----
+## get started
 
 ```bash
 
@@ -18,7 +12,17 @@ yarn install
 
 yarn start
 
+```
+
+> in a second terminal window:
+
+```bash
+
 yarn run chain
+
+```
+
+> in a third terminal window:
 
 yarn run deploy
 
@@ -30,13 +34,19 @@ yarn run deploy
 
 📱 Open http://localhost:3000 to see the app
 
+> With everything up your dev environment starts looking something like this:
+
+![image](https://user-images.githubusercontent.com/2653167/91858466-768bb080-ec26-11ea-9e9b-81519f7f1c90.png)
+
+> React dev server, Buidler blockchain, deploy terminal, code IDE, and frontend browser. 
+
 📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.4.24/units-and-global-variables.html)
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
 
 ⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
 
-🔬 Try it out in the app to see what happens!
+🔬 What happens with you subtract 1 from 0? Try it out in the app to see what happens!
 
 🧫 You can iterate and learn as you go.
 
