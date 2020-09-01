@@ -2,7 +2,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin } from 'antd';
+import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin, Col, Slider, Space } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -20,11 +20,16 @@ export default function InkCanvas(props) {
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
+  const [brushRadius, setBrushRadius] = useState(8)
 
   const drawingCanvas = useRef(null);
   const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
+
+  const updateBrushRadius = value => {
+    setBrushRadius(value)
+  }
 
   useEffect(() => {
     const loadPage = async () => {
@@ -302,16 +307,35 @@ if (props.mode === "edit") {
 
   bottom = (
     <div style={{ marginTop: 16 }}>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
+    <Space>
     <PickerDisplay
     color={color}
     onChangeComplete={setColor}
     />
-    </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
     <Button onClick={() => {
       setPicker(picker + 1)
     }}><HighlightOutlined /></Button>
+    </Space>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Col span={12}>
+          <Slider
+            min={1}
+            max={100}
+            onChange={updateBrushRadius}
+            value={typeof brushRadius === 'number' ? brushRadius : 0}
+          />
+        </Col>
+        <Col span={4}>
+          <InputNumber
+            min={1}
+            max={100}
+            style={{ margin: '0 16px' }}
+            value={brushRadius}
+            onChange={updateBrushRadius}
+          />
+        </Col>
     </Row>
     </div>
   )
@@ -355,7 +379,7 @@ return (
   canvasHeight={size[1]}
   brushColor={color.hex}
   lazyRadius={4}
-  brushRadius={8}
+  brushRadius={brushRadius}
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
   hideInterface={props.mode !== "edit"}
