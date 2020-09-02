@@ -20,7 +20,7 @@ export default function Ramp(props) {
         <DollarCircleOutlined style={{ color: "#52c41a" }} /> {props.price.toFixed(2)}
       </Button>
       <Modal
-        title="Buy ETH"
+        title="Get ETH and LINK"
         visible={modalUp === "up"}
         onCancel={() => {
           setModalUp("down");
@@ -42,71 +42,26 @@ export default function Ramp(props) {
             size="large"
             shape="round"
             onClick={() => {
-              window.open("https://pay.sendwyre.com/purchase?destCurrency=ETH&sourceAmount=25&dest=" + props.address);
-            }}
-          >
-            <span style={{ paddingRight: 15 }} role="img">
-              🇺🇸
-            </span>
-            Wyre
-          </Button>
-        </p>
-        <p>
-          {" "}
-          <Button
-            type={type}
-            size="large"
-            shape="round"
-            onClick={() => {
-              new RampInstantSDK({
-                hostAppName: "scaffold-eth",
-                hostLogoUrl: "https://scaffoldeth.io/scaffold-eth.png",
-                swapAmount: "100000000000000000", // 0.1 ETH in wei  ?
-                swapAsset: "ETH",
-                userAddress: props.address,
-              })
-                .on("*", event => console.log(event))
-                .show();
-            }}
-          >
-            <span style={{ paddingRight: 15 }} role="img">
-              🇬🇧
-            </span>
-            Ramp
-          </Button>
-        </p>
-
-        <p>
-          <Button
-            type={type}
-            size="large"
-            shape="round"
-            onClick={() => {
-              window.open("https://www.coinbase.com/buy-ethereum");
-            }}
-          >
-            <span style={{ paddingRight: 15 }} role="img">
-              🏦
-            </span>
-            Coinbase
-          </Button>
-        </p>
-
-        <Divider />
-
-        <p>
-          <Button
-            type={type}
-            size="large"
-            shape="round"
-            onClick={() => {
               window.open("https://faucet.rinkeby.io/");
             }}
           >
             <span style={{ paddingRight: 15 }} role="img" aria-label="rinkeby">
               🟨
             </span>{" "}
-            Rinkeby
+            Rinkeby-ETH
+          </Button>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://rinkeby.chain.link/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="rinkeby">
+              🟨
+            </span>{" "}
+            Rinkeby-LINK
           </Button>
         </p>
 
@@ -122,7 +77,20 @@ export default function Ramp(props) {
             <span style={{ paddingRight: 15 }} role="img" aria-label="ropsten">
               🟠
             </span>{" "}
-            Ropsten
+            Ropsten-ETH
+          </Button>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://ropsten.chain.link/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="ropsten">
+              🟠
+            </span>{" "}
+            Ropsten-LINK
           </Button>
         </p>
 
@@ -138,7 +106,20 @@ export default function Ramp(props) {
             <span style={{ paddingRight: 15 }} role="img" aria-label="kovan">
               🟣
             </span>{" "}
-            Kovan
+            Kovan-ETH
+          </Button>
+          <Button
+            type={type}
+            size="large"
+            shape="round"
+            onClick={() => {
+              window.open("https://kovan.chain.link/");
+            }}
+          >
+            <span style={{ paddingRight: 15 }} role="img" aria-label="kovan">
+              🟣
+            </span>{" "}
+            Kovan-LINK
           </Button>
         </p>
 
@@ -154,9 +135,10 @@ export default function Ramp(props) {
             <span style={{ paddingRight: 15 }} role="img" aria-label="goerli">
               🔵
             </span>{" "}
-            Goerli
+            Goerli-ETH
           </Button>
         </p>
+        <Divider />
       </Modal>
     </div>
   );
