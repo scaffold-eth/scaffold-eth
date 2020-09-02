@@ -87,6 +87,11 @@ export default function NiftyShop(props) {
   } catch (e) {
     setBuying(false)
     console.log('error',e)
+    notification.open({
+      message: 'Price set unsuccessful',
+      description:
+      e.message,
+    });
   }
   }
 
@@ -119,6 +124,7 @@ export default function NiftyShop(props) {
 
     console.log(txConfig)
 
+    try {
     result = await transactionHandler(txConfig)
 
         //result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex } ))
@@ -130,6 +136,13 @@ export default function NiftyShop(props) {
       description: 'You bought one ' + props.ink.name + ' for $'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)
     });
   }
+} catch(e) {
+  notification.open({
+    message: 'Buy unsuccessful',
+    description:
+    e.message,
+  });
+}
   }
 
   const onFinishFailed = errorInfo => {
