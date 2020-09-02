@@ -102,9 +102,9 @@ export default function InkInfo(props) {
     const getChainInfo = async () => {
       if(props.ipfsHash && props.readKovanContracts ){
         try {
-          console.log("inkInfoByInkUrl",props.ipfsHash)
+          //console.log("inkInfoByInkUrl",props.ipfsHash)
         const newChainInfo = await props.readKovanContracts['NiftyInk']["inkInfoByInkUrl"](props.ipfsHash)
-        console.log("newChainInfo",newChainInfo)
+        //console.log("newChainInfo",newChainInfo)
         const newMintedCount = await props.readKovanContracts['NiftyToken']["inkTokenCount"](props.ipfsHash)
         setMintedCount(newMintedCount.toString())
         setInkChainInfo(newChainInfo)
