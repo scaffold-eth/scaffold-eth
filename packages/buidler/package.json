@@ -29,6 +29,7 @@
     "watch": "node scripts/watch.js",
     "accounts": "buidler accounts",
     "balance": "buidler balance",
-    "send": "buidler send"
+    "send": "buidler send",
+    "fund-contract": "buidler run scripts/fund-contract.js"
   }
 }

@@ -8,7 +8,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
-import Hints from "./Hints";
+import ChainlinkHints from "./ChainlinkHints";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -139,6 +139,14 @@ function App() {
       */}
 
       <Contract name="APICall" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+      <Contract name="PriceFeed" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+
+      <ChainlinkHints
+        address={address}
+        yourLocalBalance={yourLocalBalance}
+        price={price}
+        mainnetProvider={mainnetProvider}
+      />
 
       {/* 📟 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
