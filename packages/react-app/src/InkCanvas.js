@@ -71,6 +71,7 @@ export default function InkCanvas(props) {
       }catch(e){console.log("Drawing Error:",e)}
     }
   }
+  window.drawingCanvas = drawingCanvas
   showDrawing()
 }, [props.ipfsHash])
 
