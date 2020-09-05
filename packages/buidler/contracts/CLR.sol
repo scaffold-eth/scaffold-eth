@@ -28,13 +28,13 @@ contract CLR is Ownable {
     mapping(address => bool) public donorAllowList;
 
     uint256 public roundStart;
-    uint256 public constant ROUND_DURATION = 2 minutes;
+    uint256 public roundDuration = 2 minutes;
 
     // used to calculate matching
     uint256 public calculatedToIndex;
     uint256 public totalMatchingWeight;
 
-    event RoundStarted(uint256 roundStart);
+    event RoundStarted(uint256 roundStart, uint256 roundDuration);
     event RecipientAdded(address addr, string data, uint256 index);
     event MatchingPoolDonated(uint256 matchingPool);
     event MatchingCalculated();
@@ -46,7 +46,7 @@ contract CLR is Ownable {
 
     modifier isRoundOpen() {
         require(
-            getBlockTimestamp() < roundStart.add(ROUND_DURATION),
+            getBlockTimestamp() < roundStart.add(roundDuration),
             "Round is not open"
         );
         _;
@@ -55,15 +55,16 @@ contract CLR is Ownable {
     modifier isRoundClosed() {
         require(
             roundStart != 0 &&
-                getBlockTimestamp() >= roundStart.add(ROUND_DURATION),
+                getBlockTimestamp() >= roundStart.add(roundDuration),
             "Round is not closed"
         );
         _;
     }
 
-    function startRound() public onlyOwner {
+    function startRound(uint256 _roundDuration) public onlyOwner {
         roundStart = getBlockTimestamp();
-        emit RoundStarted(roundStart);
+        roundDuration = _roundDuration;
+        emit RoundStarted(roundStart, roundDuration);
     }
 
     function getBlockTimestamp() public view returns (uint256) {
