@@ -45,6 +45,7 @@ export default function InkCanvas(props) {
           }
         }
     }
+    window.drawingCanvas = drawingCanvas
     loadPage()
   }, [])
 
@@ -71,7 +72,6 @@ export default function InkCanvas(props) {
       }catch(e){console.log("Drawing Error:",e)}
     }
   }
-  window.drawingCanvas = drawingCanvas
   showDrawing()
 }, [props.ipfsHash])
 
@@ -384,6 +384,7 @@ return (
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
   hideInterface={props.mode !== "edit"}
+  imgSrc={"https://upload.wikimedia.org/wikipedia/commons/thumb/b/b7/ETHEREUM-YOUTUBE-PROFILE-PIC.png/768px-ETHEREUM-YOUTUBE-PROFILE-PIC.png"}
   onChange={(newDrawing) => {
     let savedData = LZ.compress(newDrawing.getSaveData())
     props.setDrawing(savedData)
