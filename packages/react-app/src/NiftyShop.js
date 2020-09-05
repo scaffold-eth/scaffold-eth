@@ -19,7 +19,8 @@ export default function NiftyShop(props) {
   const setPrice = async (values) => {
     console.log("values",values)
     setBuying(true)
-    let multipliedPrice = (values['price'] * 10 ** 18).toString()
+    let multipliedPrice = (values['price'] * 10 ** 18).toLocaleString('fullwide', {useGrouping:false})
+    console.log(multipliedPrice)
     let result
 
     try {
