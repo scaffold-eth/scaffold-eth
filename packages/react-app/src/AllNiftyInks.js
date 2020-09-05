@@ -5,9 +5,9 @@ import { getFromIPFS, isBlacklisted } from "./helpers"
 import { Loader } from "./components"
 import StackGrid from "react-stack-grid";
 
-const MAX_FRONT_PAGE_DISPLAY = 64
-const LOADERS_TO_SHOW = 16
-const BATCH_DOWNLOAD = 3
+const MAX_FRONT_PAGE_DISPLAY = 512
+const LOADERS_TO_SHOW = 32
+const BATCH_DOWNLOAD = 8
 
 export default function NftyWallet(props) {
   //const [allInks, setAllInks] = useState()

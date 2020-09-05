@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
@@ -199,6 +199,7 @@ export default function InkInfo(props) {
             return (
               <List.Item>
                 <Address value={item[3]?item[3]:item[0]} ensProvider={props.mainnetProvider}/>
+                <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item[1]} target="_blank"><LinkOutlined /></a>
                 {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
                 {sendInkButton(item[0], item[1])}
                 {relayTokenButton(item[4], item[0], item[1])}
