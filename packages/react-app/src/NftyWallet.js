@@ -179,7 +179,7 @@ export default function NftyWallet(props) {
     newGsnConfig.chainId = 100//31337
     newGsnConfig.relayLookupWindowBlocks= 1e5
     newGsnConfig.verbose = true
-    newGsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
+    //newGsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
       let origProvider
       if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
