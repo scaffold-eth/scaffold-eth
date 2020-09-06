@@ -402,7 +402,7 @@ return (
   onChange={props.mode === "edit"?saveDrawing:null}
   saveData={props.mode === "edit"?null:props.viewDrawing}
   immediateLoading={drawingSize >= 10000}
-  loadTimeOffset={2}
+  loadTimeOffset={3}
   />
   </div>
   {bottom}
