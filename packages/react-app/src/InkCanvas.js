@@ -26,13 +26,20 @@ export default function InkCanvas(props) {
   const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
+  const [drawingSize, setDrawingSize] = useState(0)
 
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
 
+  const saveDrawing = (newDrawing) => {
+    let savedData = LZ.compress(newDrawing.getSaveData())
+    props.setDrawing(savedData)
+  }
+
   useEffect(() => {
     const loadPage = async () => {
+      console.log('loadpage')
         if (props.ipfsHash) {
           console.log('ipfsHash Set')
         }
@@ -50,24 +57,29 @@ export default function InkCanvas(props) {
 
   useEffect(() => {
     const showDrawing = async () => {
-    if (props.ipfsHash && props.drawing && props.drawing !== "") {
+    if (props.ipfsHash && props.viewDrawing && props.viewDrawing !== "") {
       try {
-        let decompressed = LZ.decompress(props.drawing)
-        drawingCanvas.current.loadSaveData(decompressed, false)
+        console.log("got viewDrawing")
       } catch (e) {
         console.log(e)
       }
     } else if (props.ipfsHash) {
+      console.log("no viewDrawing")
       let drawingContent = await getFromIPFS(props.ipfsHash, props.ipfsConfig)
       try{
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
         let decompressed = LZ.decompressFromUint8Array(arrays)
-        if (decompressed) {
-          let compressed = LZ.compress(decompressed)
-          props.setDrawing(compressed)
+        console.log(decompressed)
 
-          drawingCanvas.current.loadSaveData(decompressed, false)
+        let points = 0
+        for (const line of JSON.parse(decompressed)['lines']){
+          points = points + line.points.length
         }
+
+        console.log('Drawing points', points)
+        setDrawingSize(points)
+        props.setViewDrawing(decompressed)
+
       }catch(e){console.log("Drawing Error:",e)}
     }
   }
@@ -167,8 +179,11 @@ export default function InkCanvas(props) {
 
     if(mintResult) {
 
+      props.setViewDrawing(LZ.decompress(props.drawing))
+      setDrawingSize(10000)
       props.setMode("mint")
       props.setIpfsHash(drawingHash)
+      props.setDrawing("")
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
 
@@ -350,7 +365,8 @@ if (props.mode === "edit") {
         </Typography.Text>
 
         <Button style={{marginTop:4,marginLeft:4}} onClick={() => {
-          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+          setDrawingSize(0)
+          drawingCanvas.current.loadSaveData(props.viewDrawing, false)
         }}><PlaySquareOutlined /> PLAY</Button>
 
       </Row>
@@ -383,11 +399,10 @@ return (
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
   hideInterface={props.mode !== "edit"}
-  onChange={(newDrawing) => {
-    let savedData = LZ.compress(newDrawing.getSaveData())
-    props.setDrawing(savedData)
-  }}
-  loadTimeOffset={3}
+  onChange={props.mode === "edit"?saveDrawing:null}
+  saveData={props.mode === "edit"?null:props.viewDrawing}
+  immediateLoading={drawingSize >= 10000}
+  loadTimeOffset={2}
   />
   </div>
   {bottom}

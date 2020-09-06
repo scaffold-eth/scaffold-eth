@@ -51,6 +51,7 @@ export default function Account(props) {
 
   gsnConfig.relayLookupWindowBlocks= 1e5
   gsnConfig.verbose = true
+  gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
   /*
   function warning(network, chainId) {
