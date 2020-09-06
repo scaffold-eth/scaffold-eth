@@ -52,6 +52,7 @@ export default function InkCanvas(props) {
           }
         }
     }
+    window.drawingCanvas = drawingCanvas
     loadPage()
   }, [])
 
