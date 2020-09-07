@@ -6,26 +6,10 @@ import { default as Transactor } from "./Transactor";
 
 export async function transactionHandler(c) {
 
-  /*
-  address,
-  localProvider
-  injectedProvider
-  injectedGsnSigner
-  metaSigner
-  contractName
-  regularFunction,
-  regularFunctionArgs,
-  signatureFunction,
-  signatureFunctionArgs,
-  getSignatureTypes,
-  getSignatureArgs
-
-  */
-
     function chainWarning(network, chainId) {
         Modal.warning({
           title: 'MetaMask Network Mismatch',
-          content: <>Please connect to <b>https://dai.poa.network</b></>,
+          content: <><p>Nifty Ink is built on xDai: please change your MetaMask Network to point to the <a href="https://www.xdaichain.com/" target="_blank">xDai Chain</a></p><p>You will need to create a custom RPC with the following URL: <b>https://dai.poa.network</b></p></>,
         });
       }
 
@@ -57,7 +41,13 @@ export async function transactionHandler(c) {
                 contractAbi,
                 c['injectedProvider'].getSigner(),
               );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+
+            let metaData = {}
+            if(c['payment']) {
+              metaData['value'] = c['payment']
+            }
+
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {
@@ -67,18 +57,7 @@ export async function transactionHandler(c) {
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
-        }
-        else if (c['signatureFunction'] &&
+        if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
           c['getSignatureArgs']) {
@@ -100,6 +79,16 @@ export async function transactionHandler(c) {
           let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature])
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
+        } else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
         }
         else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()

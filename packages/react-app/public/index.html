@@ -25,6 +25,39 @@
       Learn how to configure a non-root public URL by running `npm run build`.
     -->
     <title> Nifty Ink</title>
+
+
+
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://nifty.ink" />
+    <meta property="og:title" content="🎨  Nifty Ink" />
+    <meta property="og:description" content="NFT artwork created and sold on xDAI using GSN and bridged to Ethereum" />
+    <meta property="og:image" content="https://ipfs.nifty.ink/unfurl.png" />
+
+    <meta name="twitter:card" value="summary_large_image">
+    <meta name="twitter:domain" value="https://nifty.ink" />
+    <meta name="twitter:title" value="🎨  Nifty Ink" />
+    <meta name="twitter:description" value="NFT artwork created and sold on xDAI using GSN and bridged to Ethereum" />
+    <meta name="twitter:url" value="https://nifty.ink" />
+    <meta name="twitter:image" value="https://ipfs.nifty.ink/unfurl.png" />
+
+    <script>
+      const ipfsHash = window.location.pathname.replace("/","")
+
+      if(ipfsHash){
+        console.log("🦸 Unfurl:",ipfsHash)
+        var link = document.createElement('meta');
+        link.setAttribute('property', 'og:image');
+        link.content = "https://ipfs.nifty.ink/"+ipfsHash+".png";
+        document.getElementsByTagName('head')[0].appendChild(link);
+
+        var link2 = document.createElement('meta');
+        link2.setAttribute('name', 'twitter:image');
+        link2.value = "https://ipfs.nifty.ink/"+ipfsHash+".png";
+        document.getElementsByTagName('head')[0].appendChild(link2);
+      }
+
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
@@ -32,7 +65,7 @@
       <div style="margin:0 auto;opacity:0.25;margin-top:160px;width:300px;border:1px solid #999999;box-shadow:2px 2px 8px #AAAAAA;">
         <img style="max-width:300px" src="/loading.gif"/>
       </div>
-      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0092</div>
+      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0119</div>
     </div>
     <!--
       This HTML file is a template.

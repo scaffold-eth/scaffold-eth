@@ -1,36 +1,45 @@
 import React, { useState, useRef, useEffect } from 'react'
-import { ethers } from "ethers";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
-import { Row, Col, Button, Input, InputNumber, Form, Typography, Checkbox, notification, message, Spin, Modal } from 'antd';
-import { useLocalStorage, useContractLoader, useBalance, useCustomContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, getSignature, transactionHandler } from "./helpers"
+import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin, Col, Slider, Space } from 'antd';
+import { useLocalStorage, useContractLoader } from "./hooks"
+import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
-import { CompactPicker, CirclePicker, GithubPicker, TwitterPicker } from 'react-color';
+import { SketchPicker, CirclePicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
 
 const Hash = require('ipfs-only-hash')
-const axios = require('axios');
-const pickers = [CirclePicker, TwitterPicker, GithubPicker, CompactPicker]
+const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
 
 export default function InkCanvas(props) {
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider);
-
-  const tx = Transactor(props.kovanProvider,props.gasPrice)
+  //const writeContracts = useContractLoader(props.injectedProvider);
+  //const metaWriteContracts = useContractLoader(props.metaProvider);
+  //const tx = Transactor(props.kovanProvider,props.gasPrice)
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
   const [color, setColor] = useLocalStorage("color", "#666666")
+  const [brushRadius, setBrushRadius] = useState(8)
 
   const drawingCanvas = useRef(null);
   const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
+  const [drawingSize, setDrawingSize] = useState(0)
+
+  const updateBrushRadius = value => {
+    setBrushRadius(value)
+  }
+
+  const saveDrawing = (newDrawing) => {
+    let savedData = LZ.compress(newDrawing.getSaveData())
+    props.setDrawing(savedData)
+  }
 
   useEffect(() => {
     const loadPage = async () => {
+      console.log('loadpage')
         if (props.ipfsHash) {
           console.log('ipfsHash Set')
         }
@@ -43,29 +52,35 @@ export default function InkCanvas(props) {
           }
         }
     }
+    window.drawingCanvas = drawingCanvas
     loadPage()
   }, [])
 
   useEffect(() => {
     const showDrawing = async () => {
-    if (props.ipfsHash && props.drawing && props.drawing !== "") {
+    if (props.ipfsHash && props.viewDrawing && props.viewDrawing !== "") {
       try {
-        let decompressed = LZ.decompress(props.drawing)
-        drawingCanvas.current.loadSaveData(decompressed, false)
+        console.log("got viewDrawing")
       } catch (e) {
         console.log(e)
       }
     } else if (props.ipfsHash) {
+      console.log("no viewDrawing")
       let drawingContent = await getFromIPFS(props.ipfsHash, props.ipfsConfig)
       try{
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
         let decompressed = LZ.decompressFromUint8Array(arrays)
-        if (decompressed) {
-          let compressed = LZ.compress(decompressed)
-          props.setDrawing(compressed)
+        console.log(decompressed)
 
-          drawingCanvas.current.loadSaveData(decompressed, false)
+        let points = 0
+        for (const line of JSON.parse(decompressed)['lines']){
+          points = points + line.points.length
         }
+
+        console.log('Drawing points', points)
+        setDrawingSize(points)
+        props.setViewDrawing(decompressed)
+
       }catch(e){console.log("Drawing Error:",e)}
     }
   }
@@ -98,7 +113,7 @@ export default function InkCanvas(props) {
     console.log(createInkConfig)
 
     let result = await transactionHandler(createInkConfig)
-    
+
     return result
 
   }
@@ -165,8 +180,11 @@ export default function InkCanvas(props) {
 
     if(mintResult) {
 
+      props.setViewDrawing(LZ.decompress(props.drawing))
+      setDrawingSize(10000)
       props.setMode("mint")
       props.setIpfsHash(drawingHash)
+      props.setDrawing("")
       window.history.pushState({id: drawingHash}, props.ink['name'], '/' + drawingHash)
 
 
@@ -208,10 +226,15 @@ export default function InkCanvas(props) {
   const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
   const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
 
+  const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
+  const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
+  const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+
+
   setSending(false)
 
   Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-    console.log(values);
+    console.log("FINISHED UPLOADING TO PINNER",values);
     message.destroy()
     //setMode("mint")
     /*notification.open({
@@ -219,6 +242,11 @@ export default function InkCanvas(props) {
       description:
       ' 🍾  🎊   🎉   🥳  🎉   🎊  🍾 ',
     });*/
+  });
+
+
+  Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
+    console.log("INFURA FINISHED UPLOADING!",values);
   });
 }
 };
@@ -230,7 +258,7 @@ const onFinishFailed = errorInfo => {
 
 
 
-let top, buttons, bottom
+let top, bottom
 if (props.mode === "edit") {
 
   top = (
@@ -293,23 +321,37 @@ if (props.mode === "edit") {
 
   )
 
-  buttons = (
-    <div>
-
-    </div>
-  )
   bottom = (
     <div style={{ marginTop: 16 }}>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
+    <Space>
     <PickerDisplay
     color={color}
     onChangeComplete={setColor}
     />
-    </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
     <Button onClick={() => {
       setPicker(picker + 1)
     }}><HighlightOutlined /></Button>
+    </Space>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Col span={12}>
+          <Slider
+            min={1}
+            max={100}
+            onChange={updateBrushRadius}
+            value={typeof brushRadius === 'number' ? brushRadius : 0}
+          />
+        </Col>
+        <Col span={4}>
+          <InputNumber
+            min={1}
+            max={100}
+            style={{ margin: '0 16px' }}
+            value={brushRadius}
+            onChange={updateBrushRadius}
+          />
+        </Col>
     </Row>
     </div>
   )
@@ -324,7 +366,8 @@ if (props.mode === "edit") {
         </Typography.Text>
 
         <Button style={{marginTop:4,marginLeft:4}} onClick={() => {
-          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+          setDrawingSize(0)
+          drawingCanvas.current.loadSaveData(props.viewDrawing, false)
         }}><PlaySquareOutlined /> PLAY</Button>
 
       </Row>
@@ -353,14 +396,13 @@ return (
   canvasHeight={size[1]}
   brushColor={color.hex}
   lazyRadius={4}
-  brushRadius={8}
+  brushRadius={brushRadius}
   disabled={props.mode !== "edit"}
   hideGrid={props.mode !== "edit"}
   hideInterface={props.mode !== "edit"}
-  onChange={(newDrawing) => {
-    let savedData = LZ.compress(newDrawing.getSaveData())
-    props.setDrawing(savedData)
-  }}
+  onChange={props.mode === "edit"?saveDrawing:null}
+  saveData={props.mode === "edit"?null:props.viewDrawing}
+  immediateLoading={drawingSize >= 10000}
   loadTimeOffset={3}
   />
   </div>

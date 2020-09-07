@@ -47,6 +47,9 @@ yarn run newlocaldeploy
 ##
 
 ```
+TODO mainnet bridge ETH topped up: [0x87533bfd390c6d11afd8df1a8c095657e0eeed0d](https://etherscan.io/address/0x87533bfd390c6d11afd8df1a8c095657e0eeed0d)
+
+
 
 yarn run newdeploykovan
 

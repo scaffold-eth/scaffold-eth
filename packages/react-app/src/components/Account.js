@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
-import { TokenBalance, Balance, Address, Wallet } from "."
+import { Balance, Address, Wallet } from "."
 import { usePoller } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Modal } from 'antd';
+import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
 
 
@@ -30,12 +30,12 @@ export default function Account(props) {
   let stakeManagerAddress
   let paymasterAddress
   let chainId
-  if(process.env.REACT_APP_NETWORK_NAME == 'xdai'){
+  if(process.env.REACT_APP_NETWORK_NAME === 'xdai'){
     relayHubAddress = "0xA58B6fC9264ce507d0B0B477ceE31674341CB27e"
     stakeManagerAddress = "0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B"
     paymasterAddress = "0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC"
     chainId = 100
-  } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol'){
+  } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol'){
     relayHubAddress = "0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6"
     stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83"
     paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
@@ -44,20 +44,23 @@ export default function Account(props) {
     relayHubAddress = require('.././gsn/RelayHub.json').address
     stakeManagerAddress = require('.././gsn/StakeManager.json').address
     paymasterAddress = require('.././gsn/Paymaster.json').address
-    console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
+    //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
 
   let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
 
   gsnConfig.relayLookupWindowBlocks= 1e5
   gsnConfig.verbose = true
+  //gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
+  /*
   function warning(network, chainId) {
       Modal.warning({
         title: 'MetaMask Network Mismatch',
         content: <>Please connect to <b>https://dai.poa.network</b></>,
       });
     }
+    */
 
   const createBurnerIfNoAddress = async () => {
     if (!props.injectedProvider &&
@@ -66,32 +69,15 @@ export default function Account(props) {
         typeof props.setInjectedProvider == "function" &&
         !web3Modal.cachedProvider){
       let burner
-      if(process.env.REACT_APP_NETWORK_NAME == 'xdai') {
+      if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
       burner = new BurnerProvider("https://dai.poa.network")
-    } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol') {
+    } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
       burner = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
     } else {
       burner = new BurnerProvider("http://localhost:8546")//
     }
-      //let burner = new BurnerProvider("https://dai.poa.network")
-      //let burner = new BurnerProvider("https://mainnet.infura.io/v3/9ba908922edc44d1b5e1f0ba4506948d")
       console.log("🔥📡 burner",burner)
       updateProviders(burner)
-      //let ethersProvider = new ethers.providers.Web3Provider(burner)
-      //console.log("📡 Ethers Provider:",ethersProvider)
-
-      //This fails only on the xdai network with the ethers provider from react (a script works fine, CORS?!)
-      //let accounts = await ethersProvider.listAccounts()
-      //DO SOME NETWORK STUFF HERE AND SEE WHERE THE XDAI STUFF IS FAILING
-      //console.log("😅 accounts:",accounts)
-      //let bal = await ethersProvider.getBalance(accounts[0])
-      //console.log("💵 balance", bal)
-      //props.setInjectedProvider(ethersProvider)
-
-
-      //let customHttpProvider = new ethers.providers.JsonRpcProvider("https://dai.poa.network");
-
-
 
     }else{
       pollInjectedProvider()
@@ -104,30 +90,27 @@ export default function Account(props) {
   const updateProviders =  async (provider) => {
     console.log("UPDATE provider:",provider)
     let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
-    console.log("UPDATE newWeb3Provider:",newWeb3Provider)
     props.setInjectedProvider(newWeb3Provider)
-    console.log(newWeb3Provider.getSigner())
-
 
     if (provider._metamask) {
       //console.log('using metamask')
     gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
     }
-    console.log(gsnConfig)
 
     const gsnProvider = new RelayProvider(provider, gsnConfig);
     const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
     //console.log("GOT GSN PROVIDER",gsnProvider)
     const gsnSigner = gsnWeb3Provider.getSigner(props.address)
-    console.log(gsnSigner)
     props.setInjectedGsnSigner(gsnSigner)
 
+    /*
     let newNetwork = await newWeb3Provider.getNetwork()
     let localNetwork = await props.localProvider.getNetwork()
     console.log('networkcomparison',provider,props.localProvider)
     if(newNetwork.chainId !== localNetwork.chainId) {
       warning(localNetwork.name, localNetwork.chainId)
     }
+    */
 
   }
 
@@ -204,8 +187,6 @@ export default function Account(props) {
   }
   checkForProvider()
   }, []);
-
-  const tokenContract = props.localProvider
 
   let display=""
   display = (

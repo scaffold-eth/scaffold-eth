@@ -1,26 +1,26 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { ethers } from "ethers"
-import { Row, Popover, Button, Form, Typography, Spin, Space, Descriptions, notification, message, InputNumber, Popconfirm } from 'antd';
+import { Row, Popover, Button, Form, notification, InputNumber, Popconfirm } from 'antd';
 import { ShoppingCartOutlined, ShopOutlined  } from '@ant-design/icons';
-import { useContractLoader, usePoller } from "./hooks"
-import { Transactor, getSignature, transactionHandler } from "./helpers"
+import { useContractLoader } from "./hooks"
+import { Transactor, transactionHandler } from "./helpers"
 
 export default function NiftyShop(props) {
 
   const [buying, setBuying] = useState(false)
-  const [mintForm] = Form.useForm();
   const [priceForm] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
   const metaWriteContracts = useContractLoader(props.metaProvider);
-  const tx = Transactor(props.injectedProvider,props.gasPrice)
 
   let shopButton
+  let [newPrice, setNewPrice] = useState(0)
 
   const setPrice = async (values) => {
     console.log("values",values)
     setBuying(true)
-    let multipliedPrice = (values['price'] * 10 ** 18).toString()
+    let multipliedPrice = (values['price'] * 10 ** 18).toLocaleString('fullwide', {useGrouping:false})
+    console.log(multipliedPrice)
     let result
 
     try {
@@ -82,11 +82,17 @@ export default function NiftyShop(props) {
       description: '$'+parseFloat(values['price']).toFixed(2)
     });
     priceForm.resetFields();
+    setNewPrice(parseFloat(values['price']).toFixed(2))
     setBuying(false)
     console.log("result", result)
   } catch (e) {
     setBuying(false)
     console.log('error',e)
+    notification.open({
+      message: 'Price set unsuccessful',
+      description:
+      e.message,
+    });
   }
   }
 
@@ -97,11 +103,32 @@ export default function NiftyShop(props) {
     let hex = bigNumber.toHexString()
 
     let result
+
+    let contractName = "NiftyToken"
+    let regularFunctionArgs = [props.itemForSale]
+    let payment = hex
+    let regularFunction
     if(props.type === 'ink') {
-    result = await tx(writeContracts["NiftyToken"].buyInk(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
+      regularFunction = "buyInk"
+    //result = await tx(writeContracts["NiftyToken"].buyInk(props.itemForSale, { value: hex } ))
   } else if(props.type === 'token') {
-        result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex, gasPrice:props.gasPrice } ))
-      }
+      regularFunction = "buyToken"
+  }
+
+    let txConfig = {
+      ...props.transactionConfig,
+      contractName,
+      regularFunction,
+      regularFunctionArgs,
+      payment
+    }
+
+    console.log(txConfig)
+
+    try {
+    result = await transactionHandler(txConfig)
+
+        //result = await tx(writeContracts["NiftyToken"].buyToken(props.itemForSale, { value: hex } ))
     console.log(result)
     setBuying(false)
     if(result) {
@@ -110,13 +137,20 @@ export default function NiftyShop(props) {
       description: 'You bought one ' + props.ink.name + ' for $'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)
     });
   }
+} catch(e) {
+  notification.open({
+    message: 'Buy unsuccessful',
+    description:
+    e.message,
+  });
+}
   }
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
 
-  if(props.visible == false) {
+  if(props.visible === false) {
     shopButton = (<></>)
   } else if(props.address === props.ownerAddress) {
     const setPriceForm = (
@@ -133,7 +167,10 @@ export default function NiftyShop(props) {
       name="price"
       rules={[{ required: true, message: 'What is the price of this ink?' }]}
       >
-      <InputNumber min={0} precision={3} placeholder="$0.00" />
+      <InputNumber min={0} precision={3}
+      formatter={value => `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+      parser={value => value.replace(/\$\s?|(,*)/g, '')}
+      />
       </Form.Item>
 
       <Form.Item >
@@ -146,12 +183,23 @@ export default function NiftyShop(props) {
       </Row>
     )
 
+    if(props.type === 'token') {
     shopButton = (
       <Popover content={setPriceForm}
       title={"Set price:"}>
-        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell'}</Button>
+        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
       </Popover>
     )
+  } else if (props.type === 'ink' && (props.price > 0 || newPrice > 0)) {
+    shopButton = (
+    <Popover content={setPriceForm}
+    title={"Set price:"}>
+      <Button type="secondary"><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+    </Popover>
+  )
+  } else if (props.type === 'ink') {
+    shopButton = setPriceForm
+  }
   } else if (props.price > 0) {
 
     shopButton = (

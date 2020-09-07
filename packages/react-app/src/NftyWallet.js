@@ -10,13 +10,12 @@ import InkInfo from "./InkInfo.js"
 import MyNiftyHoldings from "./MyNiftyHoldings.js"
 import MyNiftyInks from "./MyNiftyInks.js"
 import AllNiftyInks from "./AllNiftyInks.js"
-import BurnerProvider from 'burner-provider';
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require( 'web3-providers-http')
 
 const isIPFS = require('is-ipfs')
-//const ipfsConfig = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
+const ipfsConfigInfura = { host: 'ipfs.infura.io', port: '5001', protocol: 'https' }
 const ipfsConfig = {host: 'ipfs.nifty.ink', port: '3001', protocol: 'https' , timeout: 2500}
 
 export default function NftyWallet(props) {
@@ -28,6 +27,7 @@ export default function NftyWallet(props) {
   const [mode, setMode] = useState("edit")
 
   const [drawing, setDrawing] = useLocalStorage("drawing")
+  const [viewDrawing, setViewDrawing] = useState()
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
   const [renderKey, setRenderKey] = useState(Date.now())
@@ -43,10 +43,10 @@ export default function NftyWallet(props) {
     'metaSigner': props.metaProvider
   }
 
-  let nftyBalance = useContractReader(props.readKovanContracts,'NiftyToken',"balanceOf",[props.address],1777);
-  let nftyMainBalance = useContractReader(props.readContracts,'NiftyMain',"balanceOf",[props.address],1777);
-  let inksCreatedBy = useContractReader(props.readKovanContracts,'NiftyInk',"inksCreatedBy",[props.address],1777);
-  let totalInks = useContractReader(props.readKovanContracts,'NiftyInk',"totalInks",1777);
+  let nftyBalance = useContractReader(props.readKovanContracts,'NiftyToken',"balanceOf",[props.address],2777);
+  let nftyMainBalance = useContractReader(props.readContracts,'NiftyMain',"balanceOf",[props.address],2777);
+  let inksCreatedBy = useContractReader(props.readKovanContracts,'NiftyInk',"inksCreatedBy",[props.address],2777);
+  let totalInks = useContractReader(props.readKovanContracts,'NiftyInk',"totalInks",2777);
   let upgradePrice = useContractReader(props.readKovanContracts,'NiftyMediator',"relayPrice",9999);
 
   let displayBalance
@@ -57,27 +57,14 @@ export default function NftyWallet(props) {
   if(inksCreatedBy) {
     displayInksCreated = inksCreatedBy.toString()
   }
-  let displayTotalInks
-  if(totalInks) {
-    displayTotalInks = totalInks.toString()
-  }
-  /* This breaks Android form entry due to re-render on text entry
-  useEffect(() => {
-    function handleResize() {
-      console.log("RESIZE!!!!")
-      setRenderKey(Date.now())
-    }
-    window.addEventListener('resize', handleResize);
-    return () => window.removeEventListener('resize', handleResize);
-  }, []); // Empty array ensures that effect is only run on mount and unmount
-  */
+
   const showInk = ((newIpfsHash) => {
     console.log(newIpfsHash)
     if(newIpfsHash === ipfsHash) {
       setTab('create')
     } else {
     window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
-    setDrawing()
+    setViewDrawing()
     setInk({})
     setIpfsHash(newIpfsHash)
     setMode('mint')
@@ -88,11 +75,12 @@ export default function NftyWallet(props) {
   })
 
   const newInk = (() => {
-    if(mode=="mint") {
+    if(mode==="mint") {
     window.history.pushState({id: 'draw'}, 'draw', '/')
     setMode("edit")
-    setDrawing("")
+    //setDrawing("")
     setIpfsHash()
+    setViewDrawing("")
     setInk({})
     setTab("create")
     setCanvasKey(Date.now())
@@ -110,9 +98,6 @@ export default function NftyWallet(props) {
   useEffect(() => {
     const loadPage = async () => {
 
-      console.log(process.env.REACT_APP_NETWORK_NAME)
-      console.log('providers',props.kovanProvider, props.localProvider)
-
       let ipfsHashRequest = window.location.pathname.replace("/", "")
       if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
         setMode("mint")
@@ -127,7 +112,7 @@ export default function NftyWallet(props) {
     let relayHubAddress
     let stakeManagerAddress
     let paymasterAddress
-    if(process.env.REACT_APP_NETWORK_NAME == 'xdai'){
+    if(process.env.REACT_APP_NETWORK_NAME === 'xdai'){
       // we will use Kovan GSN for minting and liking:
       //https://docs.opengsn.org/gsn-provider/networks.html
       //relayHubAddress = "0x2E0d94754b348D208D64d52d78BcD443aFA9fa52"
@@ -190,54 +175,29 @@ export default function NftyWallet(props) {
     }
 
     let newGsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress }
-    //if (provider._metamask) {
-      //console.log('using metamask')
-    //gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
-    //}
+
     newGsnConfig.chainId = 100//31337
     newGsnConfig.relayLookupWindowBlocks= 1e5
     newGsnConfig.verbose = true
-    console.log(newGsnConfig)
+    //newGsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
       let origProvider
-      console.log("gsnConfig",newGsnConfig)
-      if(process.env.REACT_APP_NETWORK_NAME == 'xdai') {
+      if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
       origProvider = new Web3HttpProvider("https://dai.poa.network")
-    } else if (process.env.REACT_APP_NETWORK_NAME == 'sokol') {
+    } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
       origProvider = new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
     } else {
       origProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546")
     }
-      console.log("origProvider",origProvider)
       const gsnProvider = new RelayProvider(origProvider, newGsnConfig);
-      console.log("gsnProvider",gsnProvider)
 
-      console.log("Creating a new account in the gsn provider...")
       const account = await gsnProvider.newAccount()
       let from = account.address
-
-      console.log("gsnProvider should have an account:",gsnProvider)
-
-      console.log("from",from)
-
-      //const signer = gsnProvider.getSigner(from)
-      //console.log("---------------====== signer",signer)
 
       const provider = new ethers.providers.Web3Provider(gsnProvider);
       //console.log("GOT GSN PROVIDER",gsnProvider)
       const signer = provider.getSigner(from)
-      console.log("==========================signer",signer)
 
-      //const kovanBurner = new BurnerProvider(props.kovanProvider.connection.url)
-      //console.log("props.kovanProvider",kovanBurner)
-      //const gsnProvider = new RelayProvider(, gsnConfig)
-      //console.log("gsnProvider:",gsnProvider)
-
-      //console.log("getting newMetaPriovider")
-      //let newMetaProvider = provider//new ethers.providers.Web3Provider(gsnProvider)
-      //console.log("newMetaPriovider is:",newMetaProvider)
-
-      //console.log("Setting meta provider (SIGNER!).....",signer)
       props.setMetaProvider(signer)
     }
     loadPage()
@@ -259,7 +219,7 @@ export default function NftyWallet(props) {
 
   let accountWithCreateButton = (
     <div style={{ zIndex:99, position: 'fixed', textAlign: 'right', right: 0, bottom: 20, padding: 10, backgroundColor: "#FFFFFF", borderRadius:16 }}>
-      <Row gutter={16} verticalAlign={"middle"}>
+      <Row gutter={16} align={"middle"}>
 
         <Col>
           {accountDisplay}
@@ -276,7 +236,7 @@ export default function NftyWallet(props) {
 
   let supportButton = (
     <div style={{ zIndex:99, position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10, backgroundColor: "#FFFFFF", borderRadius:16 }}>
-      <Row gutter={16} verticalAlign={"middle"}>
+      <Row gutter={16} align={"middle"}>
 
       <Col>
       <Button style={{ marginRight: 8, marginTop:8 }} shape="round" size="large" type="secondary" onClick={() => {window.open("https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg")}}><span style={{marginRight:12}}>💬</span>Chat</Button>
@@ -304,6 +264,7 @@ export default function NftyWallet(props) {
       setInk={setInk}
       ipfsHash={ipfsHash}
       ipfsConfig={ipfsConfig}
+      ipfsConfigInfura={ipfsConfigInfura}
       gasPrice={props.gasPrice}
       calculatedVmin={calculatedVmin}
       upgradePrice={upgradePrice}
@@ -327,6 +288,7 @@ export default function NftyWallet(props) {
                     tab={tab}
                     showInk={showInk}
                     ipfsConfig={ipfsConfig}
+                    ipfsConfigInfura={ipfsConfigInfura}
                     totalInks={totalInks}
                     thisTab={"1"}
                   />
@@ -366,6 +328,7 @@ export default function NftyWallet(props) {
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       inksCreatedBy={inksCreatedBy}
                       thisTab={"inks"}
                       newInk={newInk}
@@ -384,6 +347,7 @@ export default function NftyWallet(props) {
                       tab={tab}
                       showInk={showInk}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       nftyBalance={nftyBalance}
                       nftyMainBalance={nftyMainBalance}
                       transactionConfig={transactionConfig}
@@ -393,7 +357,7 @@ export default function NftyWallet(props) {
                   </div>
                 </TabPane>
                 <TabPane tab={
-                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type={tab=="create" && mode=="edit"?"secondary":"primary"} onClick={() => {newInk()}}><PlusOutlined /> Create</Button>
+                    <Button style={{ marginBottom: 8 }} shape="round" size="large" type={tab==="create" && mode==="edit"?"secondary":"primary"} onClick={() => {newInk()}}><PlusOutlined /> Create</Button>
                   } key="create">
                   <div>
                     <InkCanvas
@@ -413,7 +377,10 @@ export default function NftyWallet(props) {
                       setInk={setInk}
                       drawing={drawing}
                       setDrawing={setDrawing}
+                      viewDrawing={viewDrawing}
+                      setViewDrawing={setViewDrawing}
                       ipfsConfig={ipfsConfig}
+                      ipfsConfigInfura={ipfsConfigInfura}
                       gasPrice={props.gasPrice}
                       calculatedVmin={calculatedVmin}
                       transactionConfig={transactionConfig}

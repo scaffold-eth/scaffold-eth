@@ -2,13 +2,14 @@ import React, { useState, useEffect } from 'react'
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
 import { AddressInput, Address } from "./components"
-import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined } from '@ant-design/icons';
+import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, getSignature, transactionHandler } from "./helpers"
 import SendInkForm from "./SendInkForm.js"
 import LikeButton from "./LikeButton.js"
 import NiftyShop from "./NiftyShop.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
+import axios from 'axios';
 var _ = require('lodash');
 
 export default function InkInfo(props) {
@@ -29,9 +30,24 @@ export default function InkInfo(props) {
   const [inkPrice, setInkPrice] = useState(0)
   const [mintedCount, setMintedCount] = useState()
 
+  const [ipfsImageForBuffering, setIpfsImageForBuffering] = useState()
+  useEffect(()=>{
+    const loadFromIPFSIOForCaching = async ()=>{
+
+      if(!ipfsImageForBuffering && inkChainInfo && inkChainInfo.length && inkChainInfo[1]){
+        //we want to have the client ping the ipfs.io server to make sure to keep the assets hot?
+        console.log("📟 https://ipfs.io/ipfs/",inkChainInfo[2])
+        let result = await axios.get('https://ipfs.io/ipfs/'+inkChainInfo[2]);
+        console.log("result",result.data)
+        setIpfsImageForBuffering(result.data.image)
+      }
+
+    }
+    loadFromIPFSIOForCaching();
+  },[ inkChainInfo ])
+
   let mintDescription
   let mintFlow
-  let priceFlow
   let buyButton
   let inkChainInfoDisplay
   let detailContent
@@ -86,7 +102,9 @@ export default function InkInfo(props) {
     const getChainInfo = async () => {
       if(props.ipfsHash && props.readKovanContracts ){
         try {
+          //console.log("inkInfoByInkUrl",props.ipfsHash)
         const newChainInfo = await props.readKovanContracts['NiftyInk']["inkInfoByInkUrl"](props.ipfsHash)
+        //console.log("newChainInfo",newChainInfo)
         const newMintedCount = await props.readKovanContracts['NiftyToken']["inkTokenCount"](props.ipfsHash)
         setMintedCount(newMintedCount.toString())
         setInkChainInfo(newChainInfo)
@@ -146,6 +164,7 @@ export default function InkInfo(props) {
                 injectedProvider={props.injectedProvider}
                 gasPrice={props.gasPrice}
                 upgradePrice={props.upgradePrice}
+                transactionConfig={props.transactionConfig}
               />
             )
           }
@@ -160,9 +179,9 @@ export default function InkInfo(props) {
 
 
         const nextHolders = (
-          <Row style={{justifyContent: 'center', marginBottom: 50}}>
+          <Row style={{justifyContent: 'center'}}>
           <List
-          header={<Row style={{justifyContent: 'center'}}> <Space><Typography.Title level={3}>{mintDescription}</Typography.Title> {mintFlow}{priceFlow}{buyButton}</Space></Row>}
+          header={<Row style={{display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}> <Space><Typography.Title level={3} style={{marginBottom: '0px'}}>{mintDescription}</Typography.Title> {mintFlow}{buyButton}</Space></Row>}
           itemLayout="horizontal"
           dataSource={holdersArray.reverse()}
           renderItem={item => {
@@ -179,8 +198,9 @@ export default function InkInfo(props) {
 
             return (
               <List.Item>
-                <Address value={item[3]?item[3]:item[0]} />
-                {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
+                <Address value={item[3]?item[3]:item[0]} ensProvider={props.mainnetProvider}/>
+                <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item[1]} target="_blank"><LinkOutlined /></a>
+                {item[4]===true?(item[3]?openseaButton:<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
                 {sendInkButton(item[0], item[1])}
                 {relayTokenButton(item[4], item[0], item[1])}
                 <div style={{marginLeft:4,marginTop:4}}>
@@ -303,7 +323,7 @@ useEffect(()=>{
           mintFlow =       (
             <Popover content={mintInkForm}
             title="Mint">
-            <Button type="secondary" style={{ marginBottom: 12 }}><SendOutlined/> Mint</Button>
+            <Button type="secondary"><SendOutlined/> Mint</Button>
             </Popover>
           )
         }
@@ -354,6 +374,11 @@ useEffect(()=>{
       }
     }
 
+    let imageFromIpfsToHelpWithNetworking
+    if(ipfsImageForBuffering){
+      imageFromIpfsToHelpWithNetworking = <img width={1} height={1} src={ipfsImageForBuffering} />
+    }
+
     let bottom = (
       <div>
         {likeButtonDisplay}
@@ -365,7 +390,7 @@ useEffect(()=>{
         <div style={{marginTop:20}}>
           {holders}
         </div>
-
+        {imageFromIpfsToHelpWithNetworking}
       </div>
     )
 
