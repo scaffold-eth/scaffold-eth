@@ -138,11 +138,27 @@ export default function NiftyShop(props) {
     });
   }
 } catch(e) {
-  notification.open({
-    message: 'Buy unsuccessful',
-    description:
-    e.message,
-  });
+  setBuying(false)
+  if(e.message.indexOf("Relay not ready")>=0){
+    notification.open({
+      message: '📛 Sorry! Transaction limit reached. 😅',
+      description:
+      "⏳ Please try again in a few seconds. 📡",
+    });
+  }else if(e.message.indexOf("Ping errors")>=0){
+    notification.open({
+      message: '📛 Sorry! 📡 Relay Error. 😅',
+      description:
+      "⏳ Please try again in a few seconds. 📡",
+    });
+  }else{
+    notification.open({
+      message: 'Buy unsuccessful',
+      description:
+      e.message,
+    });
+  }
+
 }
   }
 

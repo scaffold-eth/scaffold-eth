@@ -88,7 +88,7 @@ export default function NftyWallet(props) {
           {allInksArray.map(item =>{
             //console.log("item",item)
             return (
-              <div key={item['id']} ipfsHash={item['jsonUrl']}>
+              <div key={item['id']} ipfsHash={item['jsonUrl']} style={{cursor:"pointer"}}>
                 {item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.125}} size="large" />} />}
               </div>
             )
