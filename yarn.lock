@@ -4772,10 +4772,10 @@ burner-provider@^1.0.15:
     ethers "^4.0.46"
     web3-provider-engine "^15.0.6"
 
-burner-provider@^1.0.37:
-  version "1.0.37"
-  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.37.tgz#bdb8fcf25af65d23222b04b464b61c62d0229bf2"
-  integrity sha512-BsG8UyHuMXihTkBK4+qUoJa26ePuLjmOMU5FusMe+aedyFcjzgflhL0U6FsiTMcUa5OXoLlmEPpTVaYg5QR7cA==
+burner-provider@^1.0.38:
+  version "1.0.38"
+  resolved "https://registry.yarnpkg.com/burner-provider/-/burner-provider-1.0.38.tgz#a610ebfdf13220558bd2b8f3db73bad0eea8954f"
+  integrity sha512-ZcZ8wNm380+l4MlVD5qhy5Gsa6Gr0Cftniksyqw6tVi+HmFuy8mvu1+eJR4Vt7NdGNWh9v74zNJVx3HQfQveUw==
   dependencies:
     bip39 "^3.0.2"
     eth-sig-util "^2.5.3"
@@ -12562,10 +12562,10 @@ node-releases@^1.1.52, node-releases@^1.1.53:
   resolved "https://registry.yarnpkg.com/node-releases/-/node-releases-1.1.53.tgz#2d821bfa499ed7c5dffc5e2f28c88e78a08ee3f4"
   integrity sha512-wp8zyQVwef2hpZ/dJH7SfSrIPD6YoJz6BDQDpGEkcA0s3LpAQoxBIYmfIq6QAhC1DhwsyCgTaTTcONwX8qzCuQ==
 
-node-watch@^0.6.3:
-  version "0.6.3"
-  resolved "https://registry.yarnpkg.com/node-watch/-/node-watch-0.6.3.tgz#9abf739ae0638435be6c0d1c99d4dc2e53df7317"
-  integrity sha512-InVPsg51EemnMVH3fvrrSVgqVBMlksZ/mK7ZDWx/NuWdNQi28wcVJX1/BP38alraPFXbRi9jZ35OfK4Ra7l8Bg==
+node-watch@^0.6.4:
+  version "0.6.4"
+  resolved "https://registry.yarnpkg.com/node-watch/-/node-watch-0.6.4.tgz#50e564046eb7be15151c25f9c5aac4b5f495c291"
+  integrity sha512-cI6CHzivIFESe8djiK3Wh90CtWQBxLwMem8x8S+2GSvCvFgoMuOKVlfJtQ/2v3Afg3wOnHl/+tXotEs8z5vOrg==
 
 normalize-package-data@^2.3.2:
   version "2.5.0"
