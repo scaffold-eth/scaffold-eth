@@ -27,6 +27,7 @@ export default function NftyWallet(props) {
   const [mode, setMode] = useState("edit")
 
   const [drawing, setDrawing] = useLocalStorage("drawing")
+  const [viewDrawing, setViewDrawing] = useState()
   const [ipfsHash, setIpfsHash] = useState()
   const [ink, setInk] = useState({})
   const [renderKey, setRenderKey] = useState(Date.now())
@@ -63,7 +64,7 @@ export default function NftyWallet(props) {
       setTab('create')
     } else {
     window.history.pushState({id: newIpfsHash}, newIpfsHash, '/' + newIpfsHash)
-    setDrawing()
+    setViewDrawing()
     setInk({})
     setIpfsHash(newIpfsHash)
     setMode('mint')
@@ -77,8 +78,9 @@ export default function NftyWallet(props) {
     if(mode==="mint") {
     window.history.pushState({id: 'draw'}, 'draw', '/')
     setMode("edit")
-    setDrawing("")
+    //setDrawing("")
     setIpfsHash()
+    setViewDrawing("")
     setInk({})
     setTab("create")
     setCanvasKey(Date.now())
@@ -177,6 +179,7 @@ export default function NftyWallet(props) {
     newGsnConfig.chainId = 100//31337
     newGsnConfig.relayLookupWindowBlocks= 1e5
     newGsnConfig.verbose = true
+    //newGsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
       let origProvider
       if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
@@ -374,6 +377,8 @@ export default function NftyWallet(props) {
                       setInk={setInk}
                       drawing={drawing}
                       setDrawing={setDrawing}
+                      viewDrawing={viewDrawing}
+                      setViewDrawing={setViewDrawing}
                       ipfsConfig={ipfsConfig}
                       ipfsConfigInfura={ipfsConfigInfura}
                       gasPrice={props.gasPrice}

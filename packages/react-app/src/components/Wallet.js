@@ -2,11 +2,11 @@ import React, { useState, useEffect } from 'react'
 import Blockies from 'react-blockies';
 import { Address, Balance, AddressInput, EtherInput } from "."
 import { Transactor } from "../helpers"
-import { WalletOutlined, QrcodeOutlined, SendOutlined } from '@ant-design/icons';
+import { WalletOutlined, QrcodeOutlined, SendOutlined, KeyOutlined } from '@ant-design/icons';
 import { Typography, Skeleton, Tooltip, Spin, Modal, Button } from 'antd';
 import QR from 'qrcode.react';
 import { ethers } from "ethers";
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
 
 
 export default function Wallet(props) {
@@ -15,6 +15,8 @@ export default function Wallet(props) {
   const [selectedAddress, setSelectedAddress] = useState()
   const [signer, setSigner] = useState()
   const [qr, setQr] = useState()
+  const [pk, setPK] = useState()
+
 
   let providerSend = ""
   if(props.provider){
@@ -63,13 +65,69 @@ export default function Wallet(props) {
 
   let display
   let receiveButton
+  let privateKeyButton
   if(qr){
     display = (
+      <div>
+
+      <div>
+       <Text copyable>{selectedAddress}</Text>
+       </div>
+
+
       <QR value={selectedAddress} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+      </div>
     )
     receiveButton = (
       <Button key="hide" onClick={()=>{setQr("")}}>
         <QrcodeOutlined /> Hide
+      </Button>
+    )
+    privateKeyButton = (
+      <Button key="hide" onClick={()=>{setPK(selectedAddress);setQr("")}}>
+        <KeyOutlined /> Private Key
+      </Button>
+    )
+  }else if(pk){
+
+    let pk = localStorage.getItem("metaPrivateKey")
+    let wallet = new ethers.Wallet(pk)
+
+    if(wallet.address!=selectedAddress){
+      display = (
+        <div>
+          <b>*injected account*, private key unknown</b>
+        </div>
+      )
+    }else{
+      display = (
+        <div>
+          <b>Private Key:</b>
+
+          <div>
+           <Text copyable>{pk}</Text>
+           </div>
+
+           <hr/>
+
+          <i>Point your camera phone at qr code to open in <a target="_blank" href={"https://xdai.io/"+pk}>burner wallet</a>:</i>
+          <QR value={"https://xdai.io/"+pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+
+          <Paragraph style={{fontSize:"16"}} copyable>{"https://xdai.io/"+pk}</Paragraph>
+
+
+        </div>
+      )
+    }
+
+    receiveButton = (
+      <Button key="receive" onClick={()=>{setQr(selectedAddress);setPK("")}}>
+        <QrcodeOutlined /> Receive
+      </Button>
+    )
+    privateKeyButton = (
+      <Button key="hide" onClick={()=>{setPK("");setQr("")}}>
+        <KeyOutlined /> Hide
       </Button>
     )
   }else{
@@ -103,8 +161,13 @@ export default function Wallet(props) {
       </div>
     )
     receiveButton = (
-      <Button key="receive" onClick={()=>{setQr(selectedAddress)}}>
+      <Button key="receive" onClick={()=>{setQr(selectedAddress);setPK("")}}>
         <QrcodeOutlined /> Receive
+      </Button>
+    )
+    privateKeyButton = (
+      <Button key="hide" onClick={()=>{setPK(selectedAddress);setQr("")}}>
+        <KeyOutlined /> Private Key
       </Button>
     )
   }
@@ -130,7 +193,7 @@ export default function Wallet(props) {
 
         }}
         footer={[
-          receiveButton,
+          privateKeyButton, receiveButton,
           <Button key="submit" type="primary" disabled={!amount || !toAddress || qr} loading={false} onClick={()=>{
             const tx = Transactor(props.provider)
             tx({

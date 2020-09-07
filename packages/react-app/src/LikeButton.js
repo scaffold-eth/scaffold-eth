@@ -83,11 +83,26 @@ export default function LikeButton(props) {
             console.log(result)
           }
           } catch(e) {
-            notification.open({
-              message: 'Like unsuccessful',
-              description:
-              e.message,
-            });
+            if(e.message.indexOf("Relay not ready")>=0){
+              notification.open({
+                message: '📛 Sorry! Transaction limit reached. 😅',
+                description:
+                "⏳ Please try again in a few seconds. 📡",
+              });
+            }else if(e.message.indexOf("Ping errors")>=0){
+              notification.open({
+                message: '📛 Sorry! 📡 Relay Error. 😅',
+                description:
+                "⏳ Please try again in a few seconds. 📡",
+              });
+            }else{
+              notification.open({
+                message: 'Like unsuccessful',
+                description:
+                e.message,
+              });
+            }
+
             setMinting(false)
             console.log(e.message)
           }
