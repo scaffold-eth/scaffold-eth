@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
 import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin, Col, Slider, Space } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
@@ -256,7 +256,45 @@ const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
 };
 
+const fillBackground = (color) => {
+  let width = drawingCanvas.current.props.canvasWidth;
+  let height = drawingCanvas.current.props.canvasHeight;
 
+  drawingCanvas.current.lines.push({
+    brushColor: color.hex,
+    brushRadius: (width + height) / 2,
+    points: [
+      { x: 0, y: 0 },
+      { x: width, y: height }
+    ]
+  });
+
+  let saved = drawingCanvas.current.getSaveData();
+  drawingCanvas.current.loadSaveData(saved, true);
+};
+
+const drawFrame = (color, radius) => {
+  let width = drawingCanvas.current.props.canvasWidth;
+  let height = drawingCanvas.current.props.canvasHeight;
+
+  drawingCanvas.current.lines.push({
+    brushColor: color.hex,
+    brushRadius: radius,
+    points: [
+      { x: 0, y: 0 },
+      { x: width, y: 0 },
+      { x: width, y: 0 },
+      { x: width, y: height },
+      { x: width, y: height },
+      { x: 0, y: height },
+      { x: 0, y: height },
+      { x: 0, y: 0 }
+    ]
+  });
+
+  let saved = drawingCanvas.current.getSaveData();
+  drawingCanvas.current.loadSaveData(saved, true);
+};
 
 let top, bottom
 if (props.mode === "edit") {
@@ -351,6 +389,18 @@ if (props.mode === "edit") {
             value={brushRadius}
             onChange={updateBrushRadius}
           />
+        </Col>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+        <Col span={4}>
+          <Button
+          onClick={() => fillBackground(color)}
+          ><BgColorsOutlined />Background</Button>
+        </Col>
+        <Col span={4}>
+          <Button
+          onClick={() => drawFrame(color, brushRadius)}
+          ><BorderOutlined />Frame</Button>
         </Col>
     </Row>
     </div>
