@@ -64,7 +64,7 @@ yarn run deploy
 
 🏦 It could be like a decentralized bank that you `function deposit() public payable {}` and `withdraw()`
 
-📟 Events are really handy for signalling to the frontend. [Read more about events here.](https://solidity-by-example.org/0.6/events/)
+📟 Events are really handy for signaling to the frontend. [Read more about events here.](https://solidity-by-example.org/0.6/events/)
 
 📲 Spend some time in `App.jsx` in `packages/react-app/src` and learn about the 🛰 [Providers](https://github.com/austintgriffith/scaffold-eth#-web3-providers)
 
@@ -90,7 +90,7 @@ yarn run deploy
 
 🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
 
-👩‍🎓 You can "gradute" from 🏗 scaffold-eth and start using 👷 [Buidler](https://buidler.dev/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [Buidler](https://buidler.dev/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
 
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
