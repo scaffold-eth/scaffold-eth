@@ -8,6 +8,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Transactor } from "./helpers";
 import Hints from "./Hints";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -74,6 +75,8 @@ function App() {
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
 
+  const transactor = Transactor(userProvider)
+
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   console.log("💵 yourLocalBalance",yourLocalBalance)
@@ -117,10 +120,12 @@ function App() {
       {/*
         ⚙️ Here is an example button that sets the purpose in your smart contract:
 
-        <Button onClick={()=>{
-        writeContracts.YourContract.setPurpose("🐖 Don't hog the block!")
-      }}>Set Purpose</Button>
+
       */}
+
+      <Button onClick={()=>{
+        transactor( writeContracts.CLR.startRound("1000") )
+      }}>START</Button>
 
        {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -142,12 +147,12 @@ function App() {
           and give you a form to interact with it locally
       */}
 
-      <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+      <Contract name="CLR" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
       {/*
 
         📑 Maybe display a list of events?
-        
+
         <div style={{ width:600, margin: "auto" }}>
         <List
           bordered
