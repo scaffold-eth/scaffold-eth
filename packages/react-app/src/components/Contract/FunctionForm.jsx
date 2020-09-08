@@ -7,7 +7,7 @@ import { Row, Col, Input, Divider, Tooltip } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
 
-export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice }) {
+export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh}) {
   const [form, setForm] = useState({});
   const [txValue, setTxValue] = useState();
   const [returnValue, setReturnValue] = useState();
@@ -103,6 +103,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
               console.log("SETTING RESULT:", result);
               setReturnValue(result);
+              triggerRefresh(true);
             }}
           >
             {buttonIcon}

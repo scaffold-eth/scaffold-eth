@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { Card } from "antd";
 import { useContractLoader, useContractExistsAtAddress } from "../../hooks";
 import Account from "../Account";
@@ -50,10 +50,11 @@ export default function Contract({ account, gasPrice, signer, provider, name, sh
     [contract, show],
   );
 
+  const [refreshRequired, triggerRefresh] = useState(false)
   const contractDisplay = displayedContractFunctions.map(fn => {
     if (isQueryable(fn)) {
       // If there are no inputs, just display return value
-      return <DisplayVariable key={fn.name} contractFunction={contract[fn.name]} functionInfo={fn} />;
+      return <DisplayVariable key={fn.name} contractFunction={contract[fn.name]} functionInfo={fn} refreshRequired={refreshRequired} triggerRefresh={triggerRefresh}/>;
     }
     // If there are inputs, display a form to allow users to provide these
     return (
@@ -63,6 +64,7 @@ export default function Contract({ account, gasPrice, signer, provider, name, sh
         functionInfo={fn}
         provider={provider}
         gasPrice={gasPrice}
+        triggerRefresh={triggerRefresh}
       />
     );
   });

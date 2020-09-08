@@ -46,7 +46,7 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-              🇺🇸
+              <span role="img" aria-label="flag-us">🇺🇸</span>
             </span>
             Wyre
           </Button>
@@ -70,7 +70,7 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-              🇬🇧
+            <span role="img" aria-label="flag-gb">🇬🇧</span>
             </span>
             Ramp
           </Button>
@@ -85,7 +85,7 @@ export default function Ramp(props) {
               window.open("https://www.coinbase.com/buy-ethereum");
             }}
           >
-            <span style={{ paddingRight: 15 }} role="img">
+            <span style={{ paddingRight: 15 }} role="img" aria-label="bank">
               🏦
             </span>
             Coinbase
