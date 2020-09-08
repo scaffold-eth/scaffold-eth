@@ -64,11 +64,23 @@ yarn run deploy
 
 🏦 It could be like a decentralized bank that you `function deposit() public payable {}` and `withdraw()`
 
-🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/)
+📟 Events are really handy for signalling to the frontend. [Read more about events here.](https://solidity-by-example.org/0.6/events/)
 
-🗳 Maybe an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
+📲 Spend some time in `App.jsx` in `packages/react-app/src` and learn about the 🛰 [Providers](https://github.com/austintgriffith/scaffold-eth#-web3-providers)
 
-📝 Then learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
+📃 Check the console log for your app to see some extra output from hooks like `useContractReader` and `useEventListener`.
+
+🏗 You'll notice the `<Contract />` component that displays the dynamic form as scaffolding for interacting with your contract.
+
+🔲 Try making a `<Button/>` that calls `writeContracts.YourContract.setPurpose("👋 Hello World")` to explore how your UI might work
+
+🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) in Solidity. 
+
+🗳 Maybe an make an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
+
+🔭 Your dev environment is perfect for *testing assumptions* and learning by prototyping.
+
+📝 Next learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
 
 💸 Maybe add a `receive() external payable {}` so your contract will accept ETH?
 
