@@ -53,10 +53,11 @@ async function autoDeploy() {
 async function main() {
   console.log("📡 Deploy \n");
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
-  await autoDeploy();
+  //await autoDeploy();
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
-  // const exampleToken = await deploy("ExampleToken")
+  const clr = await deploy("CLR")
+  await clr.transferOwnership("0x025645A569b3e60F803bFFC88f0E2e38b7526B3d")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 }
