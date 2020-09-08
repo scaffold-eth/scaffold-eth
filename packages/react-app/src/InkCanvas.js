@@ -170,25 +170,6 @@ export default function InkCanvas(props) {
     } catch (e) {
       console.log(e)
       setSending(false)
-      if(e.message.indexOf("Relay not ready")>=0){
-        notification.open({
-          message: '📛 Sorry! Transaction limit reached. 😅',
-          description:
-          "⏳ Please try again in a few seconds. 📡",
-        });
-      }else if(e.message.indexOf("Ping errors")>=0){
-        notification.open({
-          message: '📛 Sorry! 📡 Relay Error. 😅',
-          description:
-          "⏳ Please try again in a few seconds. 📡",
-        });
-      }else{
-        notification.open({
-          message: 'Inking error',
-          description:
-          e.message,
-        })
-      }
 
     }
 
@@ -205,32 +186,26 @@ export default function InkCanvas(props) {
 
       /*
       let serverUrl = "https://ipfs.nifty.ink:3001/save"//'http://localhost:3001/save'
-
       console.log("SAVING TO SERVER BUFFER:", drawingBuffer)
       axios.post(serverUrl, {buffer: drawingBuffer})
       .then(function (response) {
         console.log(" drawingBuffer SERVER RESPONSE LOCAL:",response);
-
       })
       .catch(function (error) {
         console.log(error);
       });
-
       console.log("SAVING TO SERVER BUFFER:", imageBuffer)
       axios.post(serverUrl,  {buffer: imageBuffer})
       .then(function (response) {
         console.log(" imageBuffer SERVER RESPONSE LOCAL:",response);
-
       })
       .catch(function (error) {
         console.log(error);
       });
-
       console.log("SAVING TO SERVER BUFFER:", inkBuffer)
       axios.post(serverUrl,  {buffer: inkBuffer})
       .then(function (response) {
         console.log("inkBuffer SERVER RESPONSE LOCAL:",response);
-
       })
       .catch(function (error) {
         console.log(error);

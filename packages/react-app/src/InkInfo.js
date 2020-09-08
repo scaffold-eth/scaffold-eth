@@ -78,7 +78,18 @@ export default function InkInfo(props) {
 
     console.log(mintInkConfig)
 
-    let result = await transactionHandler(mintInkConfig)
+    const bytecode = await props.transactionConfig.localProvider.getCode(values['to']);
+    let result
+    if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
+      result = await transactionHandler(mintInkConfig)
+    } else {
+      notification.open({
+          message: '📛 Sorry! Unable to mint to this address',
+          description:
+          "This address is a smart contract 📡",
+        });
+    }
+
 
     /*
     let signature = await getSignature(

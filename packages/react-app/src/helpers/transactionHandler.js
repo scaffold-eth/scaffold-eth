@@ -1,10 +1,12 @@
 import React from 'react'
 import { ethers } from "ethers";
-import { Modal } from 'antd';
+import { Modal, notification } from 'antd';
 import { getSignature } from "./getSignature";
 import { default as Transactor } from "./Transactor";
 
 export async function transactionHandler(c) {
+
+    try {
 
     function chainWarning(network, chainId) {
         Modal.warning({
@@ -57,7 +59,17 @@ export async function transactionHandler(c) {
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (c['signatureFunction'] &&
+        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+        } else if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
           c['getSignatureArgs']) {
@@ -79,16 +91,6 @@ export async function transactionHandler(c) {
           let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature])
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
-        } else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
         }
         else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()
@@ -99,5 +101,28 @@ export async function transactionHandler(c) {
         showXDaiModal()
         throw 'Need XDai'
       }
+
+    } catch(e) {
+      if(e.message.indexOf("Relay not ready")>=0){
+        notification.open({
+          message: '📛 Sorry! Transaction limit reached. 😅',
+          description:
+          "⏳ Please try again in a few seconds. 📡",
+        });
+      }else if(e.message.indexOf("Ping errors")>=0){
+        notification.open({
+          message: '📛 Sorry! 📡 Relay Error. 😅',
+          description:
+          "⏳ Please try again in a few seconds. 📡",
+        });
+      }else{
+        notification.open({
+          message: '📛 Transaction unsuccessful',
+          description:
+          e.message,
+        });
+      }
+      throw e
+    }
 
   }
