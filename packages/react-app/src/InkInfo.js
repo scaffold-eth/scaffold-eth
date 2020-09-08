@@ -79,9 +79,15 @@ export default function InkInfo(props) {
     console.log(mintInkConfig)
 
     const bytecode = await props.transactionConfig.localProvider.getCode(values['to']);
+    const mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
     let result
-    if (!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") {
+    if ((!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") && (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00")) {
       result = await transactionHandler(mintInkConfig)
+      notification.open({
+          message: '🙌 Minting successful!',
+          description:
+          "👀 Minted to " + values['to'],
+        });
     } else {
       notification.open({
           message: '📛 Sorry! Unable to mint to this address',
