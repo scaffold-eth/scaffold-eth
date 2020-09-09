@@ -42,7 +42,7 @@ yarn run deploy
 
 > React dev server, Buidler blockchain, deploy terminal, code IDE, and frontend browser. 
 
-📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.4.24/units-and-global-variables.html)
+📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
 
