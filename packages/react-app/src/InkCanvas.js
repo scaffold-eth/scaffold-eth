@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react'
 import 'antd/dist/antd.css';
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined } from '@ant-design/icons';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
 import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin, Col, Slider, Space } from 'antd';
 import { useLocalStorage, useContractLoader } from "./hooks"
 import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
@@ -246,7 +246,91 @@ const onFinishFailed = errorInfo => {
   console.log('Failed:', errorInfo);
 };
 
+const triggerOnChange = (lines) => {
+  let saved = JSON.stringify({
+    lines: lines,
+    width: drawingCanvas.current.props.canvasWidth,
+    height: drawingCanvas.current.props.canvasHeight
+  });
 
+  drawingCanvas.current.loadSaveData(saved, true);
+  drawingCanvas.current.lines = lines;
+};
+
+const undo = () => {
+  if (!drawingCanvas.current.lines.length) return;
+
+  if (drawingCanvas.current.lines[drawingCanvas.current.lines.length - 1].ref) {
+    drawingCanvas.current.lines[0].brushColor = drawingCanvas.current.lines[drawingCanvas.current.lines.length - 1].brushColor;
+    let lines = drawingCanvas.current.lines.slice(0, -1);
+    triggerOnChange(lines);
+  } else {
+    let lines = drawingCanvas.current.lines.slice(0, -1);
+    triggerOnChange(lines);
+  }
+};
+
+const fillBackground = (color) => {
+  let width = drawingCanvas.current.props.canvasWidth;
+  let height = drawingCanvas.current.props.canvasHeight;
+
+  let bg = {
+    brushColor: color.hex,
+    brushRadius: (width + height) / 2,
+    points: [
+      { x: 0, y: 0 },
+      { x: width, y: height }
+    ],
+    background: true
+  };
+
+  let previousBGColor = drawingCanvas.current.lines.filter((l) => l.ref).length
+    ? drawingCanvas.current.lines[0].brushColor
+    : "#FFF";
+
+  let bgRef = {
+    brushColor: previousBGColor,
+    brushRadius: 1,
+    points: [
+      { x: -1, y: -1 },
+      { x: -1, y: -1 }
+    ],
+    ref: true
+  };
+
+  drawingCanvas.current.lines.filter((l) => l.background).length
+    ? drawingCanvas.current.lines.splice(0, 1, bg)
+    : drawingCanvas.current.lines.unshift(bg);
+  drawingCanvas.current.lines.push(bgRef);
+
+  let lines = drawingCanvas.current.lines;
+
+  triggerOnChange(lines);
+};
+
+const drawFrame = (color, radius) => {
+  let width = drawingCanvas.current.props.canvasWidth;
+  let height = drawingCanvas.current.props.canvasHeight;
+
+  drawingCanvas.current.lines.push({
+    brushColor: color.hex,
+    brushRadius: radius,
+    points: [
+      { x: 0, y: 0 },
+      { x: width, y: 0 },
+      { x: width, y: 0 },
+      { x: width, y: height },
+      { x: width, y: height },
+      { x: 0, y: height },
+      { x: 0, y: height },
+      { x: 0, y: 0 }
+    ]
+  });
+
+  let lines = drawingCanvas.current.lines;
+
+  triggerOnChange(lines);
+};
 
 let top, bottom
 if (props.mode === "edit") {
@@ -296,9 +380,7 @@ if (props.mode === "edit") {
     </Form>
 
       <div style={{marginTop: 16}}>
-        <Button onClick={() => {
-          drawingCanvas.current.undo()
-        }}><UndoOutlined /> UNDO</Button>
+        <Button onClick={() => undo()}><UndoOutlined /> UNDO</Button>
         <Button onClick={() => {
           drawingCanvas.current.clear()
           props.setDrawing()
@@ -341,6 +423,18 @@ if (props.mode === "edit") {
             value={brushRadius}
             onChange={updateBrushRadius}
           />
+        </Col>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+        <Col span={4}>
+          <Button
+          onClick={() => fillBackground(color)}
+          ><BgColorsOutlined />Background</Button>
+        </Col>
+        <Col span={4}>
+          <Button
+          onClick={() => drawFrame(color, brushRadius)}
+          ><BorderOutlined />Frame</Button>
         </Col>
     </Row>
     </div>
