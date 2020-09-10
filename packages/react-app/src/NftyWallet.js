@@ -35,6 +35,8 @@ export default function NftyWallet(props) {
 
   const [injectedGsnSigner, setInjectedGsnSigner] = useState()
 
+  const [artist, setArtist] = useState()
+
   let transactionConfig = {
     'address': props.address,
     'localProvider': props.kovanProvider,
@@ -98,14 +100,29 @@ export default function NftyWallet(props) {
   useEffect(() => {
     const loadPage = async () => {
 
+
       let ipfsHashRequest = window.location.pathname.replace("/", "")
+      let urlComponents = window.location.pathname.split('/')
+
       if (ipfsHashRequest && isIPFS.multihash(ipfsHashRequest)) {
         setMode("mint")
-        setDrawing("")
         setTab("create")
         setIpfsHash(ipfsHashRequest)
 
-      } else {
+      }
+      else if (urlComponents[1] === 'artist') {
+         try {
+           const newAddress = ethers.utils.getAddress(urlComponents[2])
+           setArtist(newAddress)
+           setTab("inks")
+         } catch (e) {
+           console.log('not an address')
+           window.history.pushState({id: 'edit'}, 'edit', '/')
+         }
+
+
+      }
+      else {
         if (ipfsHashRequest) {window.history.pushState({id: 'edit'}, 'edit', '/')}
     }
 
@@ -332,6 +349,8 @@ export default function NftyWallet(props) {
                       inksCreatedBy={inksCreatedBy}
                       thisTab={"inks"}
                       newInk={newInk}
+                      artist={artist}
+                      setArtist={setArtist}
                     />
                   </div>
                 </TabPane>

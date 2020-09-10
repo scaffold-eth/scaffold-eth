@@ -12,7 +12,7 @@ import { RelayProvider } from '@opengsn/gsn';
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
-  //network: "mainnet", // optional
+  network: "mainnet", // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
