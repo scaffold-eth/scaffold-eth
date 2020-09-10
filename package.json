@@ -30,7 +30,8 @@
     "s3": "yarn workspace @scaffold-eth/react-app s3",
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "cd packages/buidler && npx buidler generate",
-    "account": "cd packages/buidler && npx buidler account"
+    "account": "cd packages/buidler && npx buidler account",
+    "flatten": "cd packages/buidler && npx buidler flatten"
   },
   "workspaces": {
     "packages": [
