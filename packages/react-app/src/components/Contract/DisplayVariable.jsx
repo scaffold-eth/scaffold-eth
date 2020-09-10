@@ -38,6 +38,13 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
         <Col span={14}>
           <h2>{tryToDisplay(variable)}</h2>
         </Col>
+        <Col span={2}>
+          <h2>
+            <a href="#" onClick={refresh}>
+              🔄
+            </a>
+          </h2>
+        </Col>
       </Row>
       <Divider />
     </div>
