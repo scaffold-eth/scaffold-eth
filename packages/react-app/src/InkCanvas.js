@@ -60,12 +60,10 @@ export default function InkCanvas(props) {
     const showDrawing = async () => {
     if (props.ipfsHash && props.viewDrawing && props.viewDrawing !== "") {
       try {
-        console.log("got viewDrawing")
       } catch (e) {
         console.log(e)
       }
     } else if (props.ipfsHash) {
-      console.log("no viewDrawing")
       let drawingContent = await getFromIPFS(props.ipfsHash, props.ipfsConfig)
       try{
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));

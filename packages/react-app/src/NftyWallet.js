@@ -286,6 +286,9 @@ export default function NftyWallet(props) {
       calculatedVmin={calculatedVmin}
       upgradePrice={upgradePrice}
       transactionConfig={transactionConfig}
+      artist={artist}
+      setArtist={setArtist}
+      setTab={setTab}
     />)
   }
 

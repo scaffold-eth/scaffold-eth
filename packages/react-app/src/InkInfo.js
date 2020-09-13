@@ -115,6 +115,11 @@ export default function InkInfo(props) {
     console.log('Failed:', errorInfo);
   };
 
+  const viewArtist = (address) => {
+    props.setArtist(address)
+    props.setTab('inks')
+  }
+
   usePoller(() => {
     const getChainInfo = async () => {
       if(props.ipfsHash && props.readKovanContracts ){
@@ -377,12 +382,14 @@ useEffect(()=>{
           <>
             <Row style={{justifyContent: 'center',marginTop:-16}}>
             <Space>
+            <a onClick={() => {viewArtist(inkChainInfo[1])}}>
             <Typography>
             <span style={{verticalAlign:"middle",fontSize:16}}>
             {" artist: "}
             </span>
             </Typography>
-            <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider}/>
+            <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider} clickable={false}/>
+            </a>
             </Space>
 
             </Row>

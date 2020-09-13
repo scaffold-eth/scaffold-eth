@@ -38,7 +38,7 @@ export default function AddressInput(props) {
       }
       getEns()
     }
-  },[props])
+  },[props.value])
 
 
   const [ scan, setScan ] = useState(false)
