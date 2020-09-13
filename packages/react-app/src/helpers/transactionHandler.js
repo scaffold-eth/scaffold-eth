@@ -17,9 +17,10 @@ export async function transactionHandler(c) {
 
     function showXDaiModal() {
       Modal.info({
-        title: 'You need some xDai!',
+        title: 'You need some xDai to make this transaction!',
         content: (
-          <a target="_blank" href={"https://xdai.io"}>Take it to the bridge.</a>
+          <span> Nifty.ink runs on xDAI. <a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).  <a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a>
+          </span>
         ),
         onOk() {},
       });
@@ -33,6 +34,10 @@ export async function transactionHandler(c) {
       let injectedNetwork = await c['injectedProvider'].getNetwork()
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
+
+      if (c['payment'] && ethers.utils.formatEther(balance) < ethers.utils.formatEther(c['payment'])) {
+        showXDaiModal()
+      }
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){
         if (injectedNetwork.chainId === localNetwork.chainId) {

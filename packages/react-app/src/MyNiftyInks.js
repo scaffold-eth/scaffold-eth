@@ -73,6 +73,7 @@ export default function MyNiftyInks(props) {
                 jsonContent = await getFromIPFS(jsonIpfsHash, props.ipfsConfig)
               }catch(e){
                 console.log(e)
+                return {}
               }
               if(jsonContent){
                 try {
@@ -84,6 +85,7 @@ export default function MyNiftyInks(props) {
                 return {inkId: inkId.toString(), inkCount: inkCount, url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, likes: likes.toString()}
               } catch(e) {
                 console.log(e)
+                return {}
               }
               }
               return {}
@@ -95,11 +97,11 @@ export default function MyNiftyInks(props) {
 
             for(let i of pageOfInks){
               let inkInfo = await getInkInfo(i)
-              if(inkInfo && inkInfo.inkId) inks[inksToDisplay.toNumber() - i - 1] = inkInfo
+              if(inkInfo && inkInfo.inkId) inks.push(inkInfo)
+              console.log(inks)
               setInkData(Array.from(inks))
               setInkCounter(inksToDisplay.toNumber())
             }
-            console.log(inks)
             //setInkCounter(inksToDisplay.toNumber())
             setLoading(false)
           }
