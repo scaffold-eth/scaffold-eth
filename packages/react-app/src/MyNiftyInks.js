@@ -26,7 +26,6 @@ export default function MyNiftyInks(props) {
       if(!props.artist) {
         props.setArtist(props.address)
       }
-      console.log(props.readKovanContracts,props.artist,props.tab === props.thisTab,(lastArtist !== props.artist || inkPage !== lastInkPage))
       if(props.readKovanContracts && props.artist && props.tab === props.thisTab) {
         let inks
         const loadInks = async () => {
@@ -37,8 +36,6 @@ export default function MyNiftyInks(props) {
             } else {
               inksToDisplay = await props.readKovanContracts['NiftyInk']["inksCreatedBy"](props.artist)
             }
-
-            console.log(inksToDisplay.toNumber().toString())
 
             if (props.artist === lastArtist && inksToDisplay.toNumber() === inkCounter) {
               inks = Array.from(inkData)
@@ -54,7 +51,6 @@ export default function MyNiftyInks(props) {
             window.history.pushState({id: props.artist}, props.artist, '/artist/' + props.artist)
 
             if(inksToDisplay.toString() === "0") {
-              console.log('trapdoor')
               setInkCounter(inksToDisplay.toNumber())
               setLoading(false)
               return
@@ -75,28 +71,31 @@ export default function MyNiftyInks(props) {
               let jsonContent
               try{
                 jsonContent = await getFromIPFS(jsonIpfsHash, props.ipfsConfig)
-              }catch(e){}
+              }catch(e){
+                console.log(e)
+              }
               if(jsonContent){
+                try {
                 const inkJson = JSON.parse(jsonContent)
                 const linkUrl = inkJson['drawing']
                 const inkImageHash = inkJson.image.split('/').pop()
                 const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
                 const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
                 return {inkId: inkId.toString(), inkCount: inkCount, url: linkUrl, name: inkJson['name'], limit: inkJson['attributes'][0]['value'], image: inkImageURI, likes: likes.toString()}
+              } catch(e) {
+                console.log(e)
+              }
               }
               return {}
             }
 
             let allInksToDisplay = ([...Array(inksToDisplay.toNumber()).keys()])
-            console.log(allInksToDisplay)
-            console.log(inkPage * inksPerPage, inkPage * inksPerPage + inksPerPage)
             let pageOfInks = allInksToDisplay.reverse().slice(inkPage * inksPerPage, inkPage * inksPerPage + inksPerPage)
             console.log(pageOfInks)
 
             for(let i of pageOfInks){
-              console.log(i, lastArtist, props.artist)
               let inkInfo = await getInkInfo(i)
-              if(inkInfo) inks[inksToDisplay.toNumber() - i - 1] = inkInfo
+              if(inkInfo && inkInfo.inkId) inks[inksToDisplay.toNumber() - i - 1] = inkInfo
               setInkData(Array.from(inks))
               setInkCounter(inksToDisplay.toNumber())
             }
@@ -113,7 +112,6 @@ export default function MyNiftyInks(props) {
   },[props.readKovanContracts, props.address,props.tab, props.artist, inkPage])
 
   const search = async (values) => {
-    console.log(values)
 
     try {
       const newAddress = ethers.utils.getAddress(values['address'])
@@ -222,7 +220,6 @@ export default function MyNiftyInks(props) {
             </>
           )}
         else if(inkCounter === 0 && props.address !== props.artist) {
-          console.log('not the artist')
         inkView = (
           <>
           <Empty
@@ -236,7 +233,6 @@ export default function MyNiftyInks(props) {
               </>
             )}
         else {
-          console.log(inkCounter === 0, props.address !== props.artist)
           inkView = (<Loader/>)
         }
 
