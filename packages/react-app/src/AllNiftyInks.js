@@ -5,8 +5,7 @@ import { getFromIPFS, isBlacklisted } from "./helpers"
 import { Loader } from "./components"
 import StackGrid from "react-stack-grid";
 
-const MAX_FRONT_PAGE_DISPLAY = 512
-const LOADERS_TO_SHOW = 32
+const LOADERS_TO_SHOW = 16
 const BATCH_DOWNLOAD = 8
 
 export default function NftyWallet(props) {
@@ -49,21 +48,19 @@ export default function NftyWallet(props) {
 
             let allInksToDisplay = ([...Array(props.totalInks.toNumber()).keys()])
             let pageOfInks = allInksToDisplay.reverse().slice(inkPage * inksPerPage, inkPage * inksPerPage + inksPerPage)
-
-            console.log(pageOfInks)
+            console.log('loading Inks...')
 
             let mostRecentInks = inkCreations
             let promises = []
             let hashesForDebugging = []
             let skips = 0
             let newIndex = inkPage===0?0:allInks.length
-            console.log('newIndex', newIndex)
             for(let i of pageOfInks){
               if(!isBlacklisted(mostRecentInks[i]['jsonUrl'])){
                 try {
                   promises.push(getInkImages(mostRecentInks[i]))
                   hashesForDebugging.push(mostRecentInks[i]['jsonUrl'])
-                } catch (e) {console.log("EEEERRRRR",e)}
+                } catch (e) {console.log("Error:",e)}
               }else{
                 skips++
               }
@@ -84,10 +81,8 @@ export default function NftyWallet(props) {
                 hashesForDebugging = []
                 skips = 0
               }
-              console.log(allInks)
             }
           }
-          console.log(allInks)
           setLoading(false)
         }
 
@@ -107,7 +102,7 @@ export default function NftyWallet(props) {
           {allInksArray.map(item =>{
             //console.log("item",item)
             return (
-              <div key={item['id']} ipfsHash={item['jsonUrl']} style={{cursor:"pointer"}}>
+              <div key={item['jsonUrl']} ipfshash={item['jsonUrl']} style={{cursor:"pointer"}}>
                 {item['image']?<img src={item['image']} alt={item['name']} onClick={() => props.showInk(item['url'])} width='120' height='120'/>/*</Badge>*/:<Avatar size={120} style={{ backgroundColor: '#FFFFFF' }} icon={<Spin style={{opacity:0.125}} size="large" />} />}
               </div>
             )
@@ -117,6 +112,7 @@ export default function NftyWallet(props) {
           onClick={() => {setInkPage(inkPage + 1)}}
           loading={loading}
           disabled={(inkPage * inksPerPage + inksPerPage).toString() >= inkCreations.length}
+          style={{margin:12}}
           >
           {loading?'Loading':(((inkPage * inksPerPage + inksPerPage).toString() < inkCreations.length)?'Show More':allInksArray.length + ' inks')}
         </Button>}

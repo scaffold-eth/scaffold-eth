@@ -93,12 +93,10 @@ export default function MyNiftyInks(props) {
 
             let allInksToDisplay = ([...Array(inksToDisplay.toNumber()).keys()])
             let pageOfInks = allInksToDisplay.reverse().slice(inkPage * inksPerPage, inkPage * inksPerPage + inksPerPage)
-            console.log(pageOfInks)
 
             for(let i of pageOfInks){
               let inkInfo = await getInkInfo(i)
               if(inkInfo && inkInfo.inkId) inks.push(inkInfo)
-              console.log(inks)
               setInkData(Array.from(inks))
               setInkCounter(inksToDisplay.toNumber())
             }
