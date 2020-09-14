@@ -68,6 +68,8 @@ yarn run deploy
 
 📲 Spend some time in `App.jsx` in `packages/react-app/src` and learn about the 🛰 [Providers](https://github.com/austintgriffith/scaffold-eth#-web3-providers)
 
+🐜 The UI framework `Ant Design` has a [bunch of great components](https://ant.design/components/overview/).
+
 📃 Check the console log for your app to see some extra output from hooks like `useContractReader` and `useEventListener`.
 
 🏗 You'll notice the `<Contract />` component that displays the dynamic form as scaffolding for interacting with your contract.
