@@ -6,6 +6,12 @@
 
 ## quickstart
 
+```bash 
+git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
+
+cd your-next-dapp
+```
+
 ```bash
 
 yarn install
