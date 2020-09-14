@@ -2,12 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import "antd/dist/antd.css";
 import { getDefaultProvider, InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button } from "antd";
+import { Row, Col, Button, List } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Transactor } from "./helpers";
+import { parseEther } from "@ethersproject/units";
 import Hints from "./Hints";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -74,6 +76,9 @@ function App() {
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
 
+  // The transactor wraps transactions and provides notificiations
+  const tx = Transactor(userProvider, gasPrice)
+
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   console.log("💵 yourLocalBalance",yourLocalBalance)
@@ -95,8 +100,8 @@ function App() {
   console.log("🔐 writeContracts",writeContracts)
 
   //📟 Listen for broadcast events
-  //const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  //console.log("📟 SetPurpose events:",setPurposeEvents)
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  console.log("📟 SetPurpose events:",setPurposeEvents)
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -115,40 +120,71 @@ function App() {
       <Header />
 
       {/*
-        ⚙️ Here is an example button that sets the purpose in your smart contract:
-
-        <Button onClick={()=>{
-        writeContracts.YourContract.setPurpose("🐖 Don't hog the block!")
-      }}>Set Purpose</Button>
-      */}
-
-       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <Account
-          address={address}
-          localProvider={localProvider}
-          userProvider={userProvider}
-          mainnetProvider={mainnetProvider}
-          price={price}
-          web3Modal={web3Modal}
-          loadWeb3Modal={loadWeb3Modal}
-          logoutOfWeb3Modal={logoutOfWeb3Modal}
-        />
-      </div>
-
-      {/*
           🎛 this scaffolding is full of commonly used components
           this <Contract/> component will automatically parse your ABI
           and give you a form to interact with it locally
       */}
-
       <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
-      {/*
 
+      {/*
+        ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
+      */}
+      <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
+        <h3>example ui:</h3>
+        <h2>{purpose}</h2>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            /* look how you call setPurpose on your contract: */
+            tx( writeContracts.YourContract.setPurpose("🐖 Don't hog the block!") )
+          }}>Set Purpose</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            /*
+              you can also just craft a transaction and send it to the tx() transactor
+              here we are sending value straight to the contract's address:
+            */
+            tx({
+              to: writeContracts.YourContract.address,
+              value: parseEther("0.001")
+            });
+            /* this should throw an error about "no fallback nor receive function" until you add it */
+          }}>Send Value</Button>
+        </div>
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            /* look how we call setPurpose AND send some value along */
+            tx( writeContracts.YourContract.setPurpose("💵 Paying for this one!",{
+              value: parseEther("0.001")
+            }))
+            /* this will fail until you make the setPurpose function payable */
+          }}>Set Purpose With Value</Button>
+        </div>
+
+
+        <div style={{margin:8}}>
+          <Button onClick={()=>{
+            /* you can also just craft a transaction and send it to the tx() transactor */
+            tx({
+              to: writeContracts.YourContract.address,
+              value: parseEther("0.001"),
+              data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)",["🤓 Whoa so 1337!"])
+            });
+            /* this should throw an error about "no fallback nor receive function" until you add it */
+          }}>Another Example</Button>
+        </div>
+
+      </div>
+
+      {/*
         📑 Maybe display a list of events?
-        
-        <div style={{ width:600, margin: "auto" }}>
+          (uncomment the event and emit line in YourContract.sol! )
+      */}
+      <div style={{ width:600, margin: "auto", marginTop:32 }}>
         <List
           bordered
           dataSource={setPurposeEvents}
@@ -161,12 +197,22 @@ function App() {
         />
       </div>
 
-      */}
-
+      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
+      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+         <Account
+           address={address}
+           localProvider={localProvider}
+           userProvider={userProvider}
+           mainnetProvider={mainnetProvider}
+           price={price}
+           web3Modal={web3Modal}
+           loadWeb3Modal={loadWeb3Modal}
+           logoutOfWeb3Modal={logoutOfWeb3Modal}
+         />
+      </div>
 
       {/* 🗑 Throw these away once you have 🏗 scaffold-eth figured out: */}
       <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
-
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
@@ -197,6 +243,7 @@ function App() {
          <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {
+
                /*  if the local provider has a signer, let's show the faucet:  */
                localProvider && !process.env.REACT_APP_PROVIDER && price > 1 ? (
                  <Faucet localProvider={localProvider} price={price} />
@@ -207,9 +254,6 @@ function App() {
            </Col>
          </Row>
        </div>
-
-
-
 
     </div>
   );

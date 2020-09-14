@@ -3,7 +3,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
-import { Row, Col, Input, Divider, Tooltip } from "antd";
+import { Row, Col, Input, Divider, Tooltip, Button } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
 
@@ -44,6 +44,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 <Tooltip placement="right" title={" * 10^18 "}>
                   <div
                     type="dashed"
+                    style={{cursor:"pointer"}}
                     onClick={async () => {
                       let floatValue = parseFloat(txValue)
                       if(floatValue) setTxValue("" +floatValue  * 10 ** 18);
@@ -57,6 +58,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               <Tooltip placement="right" title={"number to hex"}>
                 <div
                   type="dashed"
+                  style={{cursor:"pointer"}}
                   onClick={async () => {
                     setTxValue(BigNumber.from(txValue).toHexString());
                   }}
@@ -76,14 +78,16 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     inputs.push(txValueInput);
   }
 
-  const buttonIcon = functionInfo.type === "call" ? "📡" : "💸";
+  const buttonIcon = functionInfo.type === "call" ? <Button>Read📡</Button> : <Button>Send💸</Button>;
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key={"goButton"}>
       <Input
         onChange={e => setReturnValue(e.target.value)}
         defaultValue=""
+        bordered={false}
+        disabled={true}
         value={returnValue}
-        addonAfter={
+        suffix={
           <div
             style={{width:50,height:30,margin:0}}
             type="default"
