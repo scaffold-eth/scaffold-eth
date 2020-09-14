@@ -54,7 +54,9 @@ yarn run deploy
 
 > React dev server, Buidler blockchain, deploy terminal, code IDE, and frontend browser. 
 
-🔁 You can `yarn run deploy` any time and get a fresh new contract in the frontend:
+---
+
+🔁  You can `yarn run deploy` any time and get a fresh new contract in the frontend:
 
 ![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
 
