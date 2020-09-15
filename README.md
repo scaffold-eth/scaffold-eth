@@ -60,6 +60,12 @@ yarn run deploy
 
 ![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
 
+💵  Each browser has an account in the top right and you can use the faucet to get funds:
+
+![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
+
+---
+
 📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
