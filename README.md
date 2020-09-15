@@ -62,11 +62,20 @@ yarn run deploy
 
 ---
 
-💵.   Each browser has an account in the top right and you can use the faucet to get funds:
+💵.   Each browser has an account in the top right and you can use the faucet (bottom left) to get funds:
 
 ![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
 
 ---
+
+🔨   You can call `setPurpose` on your contract and "write" to the `purpose` storage:
+
+![setp](https://user-images.githubusercontent.com/2653167/93229761-2d625300-f734-11ea-9036-44a75429ef0c.gif)
+
+---
+
+
+
 
 📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
