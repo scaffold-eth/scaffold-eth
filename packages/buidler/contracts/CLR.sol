@@ -2,6 +2,7 @@ pragma solidity >=0.6.6 <0.7.0;
 
 import "@nomiclabs/buidler/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "./Donor.sol";
 import "./Math.sol";
 
 /// Capital-constrained Liberal Radicalism
@@ -24,8 +25,6 @@ contract CLR is Ownable {
     Recipient[] public recipients;
 
     uint256 public matchingPool;
-
-    mapping(address => bool) public donorAllowList;
 
     uint256 public roundStart;
     uint256 public roundDuration = 2 minutes;
@@ -61,7 +60,11 @@ contract CLR is Ownable {
         _;
     }
 
-    function startRound(uint256 _roundDuration) public onlyOwner {
+    function startRound(uint256 _roundDuration)
+        public
+        onlyOwner
+        beforeRoundOpen
+    {
         roundStart = getBlockTimestamp();
         roundDuration = _roundDuration;
         emit RoundStarted(roundStart, roundDuration);
@@ -92,17 +95,7 @@ contract CLR is Ownable {
         return index;
     }
 
-    function allowDonor(address donor) public onlyOwner {
-        donorAllowList[donor] = true;
-    }
-
-    function blockDonor(address donor) public onlyOwner {
-        delete donorAllowList[donor];
-    }
-
     function donate(uint256 index) public payable isRoundOpen {
-        require(donorAllowList[msg.sender], "CLR:donate not in donorAllowList");
-
         recipients[index].totalDonation = recipients[index].totalDonation.add(
             msg.value
         );
@@ -136,7 +129,11 @@ contract CLR is Ownable {
         }
     }
 
-    function withdraw(uint16 index) public isRoundClosed returns (uint256) {
+    function recipientWithdraw(uint16 index)
+        public
+        isRoundClosed
+        returns (uint256)
+    {
         require(
             calculatedToIndex >= recipients.length,
             "CLR:withdraw haven't finished calculating yet"
@@ -157,6 +154,10 @@ contract CLR is Ownable {
     receive() external payable isRoundOpen {
         matchingPool = matchingPool.add(msg.value);
         emit MatchingPoolDonated(matchingPool);
-        console.log(msg.sender, "contributed to the matching pool", msg.value);
+        console.log(
+            _msgSender(),
+            "contributed to the matching pool",
+            msg.value
+        );
     }
 }
