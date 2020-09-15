@@ -56,21 +56,31 @@ yarn run deploy
 
 ---
 
+
 🔁    You can `yarn run deploy` any time and get a fresh new contract in the frontend:
+
 
 ![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
 
+
 ---
 
-💵.   Each browser has an account in the top right and you can use the faucet (bottom left) to get funds:
+
+💵.   Each browser has an account in the top right and you can use the faucet (bottom left) to get ⛽️  testnet eth for gas:
+
 
 ![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
 
+
 ---
 
-🔨   You can call `setPurpose` on your contract and "write" to the `purpose` storage:
+
+🔨   Once you have funds, you can call `setPurpose` on your contract and "write" to the `purpose` storage:
+
 
 ![setp](https://user-images.githubusercontent.com/2653167/93229761-2d625300-f734-11ea-9036-44a75429ef0c.gif)
+
+
 
 ---
 
