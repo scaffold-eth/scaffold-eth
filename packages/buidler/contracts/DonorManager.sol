@@ -2,7 +2,7 @@ pragma solidity >=0.6.6 <0.7.0;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Donnor is Ownable {
+contract DonorManager is Ownable {
     mapping(address => bool) public donorAllowList;
 
     event DonorAllowed(address donor);
@@ -18,8 +18,7 @@ contract Donnor is Ownable {
         emit DonorBlocked(donor);
     }
 
-    modifier onlyAllowedDonor() {
-        require(donorAllowList[_msgSender()], "donor not in donorAllowList");
-        _;
+    function canDonate() external view returns (bool) {
+        return donorAllowList[_msgSender()];
     }
 }

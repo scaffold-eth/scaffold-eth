@@ -2,7 +2,7 @@ pragma solidity >=0.6.6 <0.7.0;
 
 import "@nomiclabs/buidler/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "./Donor.sol";
+import "./IDonorManager.sol";
 import "./Math.sol";
 
 /// Capital-constrained Liberal Radicalism
@@ -25,6 +25,8 @@ contract CLR is Ownable {
     Recipient[] public recipients;
 
     uint256 public matchingPool;
+
+    IDonorManager donorManager;
 
     uint256 public roundStart;
     uint256 public roundDuration = 2 minutes;
@@ -58,6 +60,10 @@ contract CLR is Ownable {
             "Round is not closed"
         );
         _;
+    }
+
+    constructor(address donorManager_) public {
+        donorManager = IDonorManager(donorManager_);
     }
 
     function startRound(uint256 _roundDuration)
@@ -96,6 +102,8 @@ contract CLR is Ownable {
     }
 
     function donate(uint256 index) public payable isRoundOpen {
+        if (!donorManager.canDonate()) return;
+
         recipients[index].totalDonation = recipients[index].totalDonation.add(
             msg.value
         );
