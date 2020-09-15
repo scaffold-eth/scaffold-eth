@@ -56,11 +56,13 @@ yarn run deploy
 
 ---
 
-🔁  You can `yarn run deploy` any time and get a fresh new contract in the frontend:
+🔁    You can `yarn run deploy` any time and get a fresh new contract in the frontend:
 
 ![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
 
-💵  Each browser has an account in the top right and you can use the faucet to get funds:
+---
+
+💵.   Each browser has an account in the top right and you can use the faucet to get funds:
 
 ![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
 
@@ -72,7 +74,10 @@ yarn run deploy
 
 ⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
 
-🔬 What happens with you subtract 1 from 0? Try it out in the app to see what happens!
+![image](https://user-images.githubusercontent.com/2653167/93150263-dae25180-f6b5-11ea-94e1-b24ab2a63fa5.png)
+
+
+🔬  What happens with you subtract 1 from 0? Try it out in the app to see what happens!
 
 🧫 You can iterate and learn as you go.
 
