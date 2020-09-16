@@ -48,6 +48,8 @@ yarn run deploy
 
 📱 Open http://localhost:3000 to see the app
 
+📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
+
 > With everything up your dev environment starts looking something like this:
 
 ![image](https://user-images.githubusercontent.com/2653167/91858466-768bb080-ec26-11ea-9e9b-81519f7f1c90.png)
@@ -84,10 +86,6 @@ yarn run deploy
 
 ---
 
-
-
-
-📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
 
