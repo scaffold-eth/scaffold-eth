@@ -7,7 +7,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./components";
 import { Transactor } from "./helpers";
 import { parseEther } from "@ethersproject/units";
 import Hints from "./Hints";
@@ -26,6 +26,9 @@ import Hints from "./Hints";
 */
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
 
+// 🔭 block explorer URL
+const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
+
 // 🛰 providers
 console.log("📡 Connecting to Mainnet Ethereum");
 const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
@@ -33,34 +36,15 @@ const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, ether
 // const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
+
+
+
 // 🏠 Your local provider is usually pointed at your local blockchain
+const localProviderUrl = "http://localhost:8545"; // for xdai: https://dai.poa.network
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"; // https://dai.poa.network
-console.log("🏠 Connecting to provider:", localProviderUrl);
-const localProvider = new JsonRpcProvider(localProviderUrl);
-
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
-const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: INFURA_ID,
-      },
-    },
-  },
-});
-
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
+const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
+console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
+const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
@@ -116,6 +100,7 @@ function App() {
 
   return (
     <div className="App">
+
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
 
@@ -124,7 +109,13 @@ function App() {
           this <Contract/> component will automatically parse your ABI
           and give you a form to interact with it locally
       */}
-      <Contract name="YourContract" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+      <Contract
+        name="YourContract"
+        signer={userProvider.getSigner()}
+        provider={localProvider}
+        address={address}
+        blockExplorer={blockExplorer}
+      />
 
 
       {/*
@@ -190,7 +181,11 @@ function App() {
           dataSource={setPurposeEvents}
           renderItem={item => (
             <List.Item>
-              {item[0]} =>
+              <Address
+                  value={item[0]}
+                  ensProvider={mainnetProvider}
+                  fontSize={16}
+                /> =>
               {item[1]}
             </List.Item>
           )}
@@ -208,6 +203,7 @@ function App() {
            web3Modal={web3Modal}
            loadWeb3Modal={loadWeb3Modal}
            logoutOfWeb3Modal={logoutOfWeb3Modal}
+           blockExplorer={blockExplorer}
          />
       </div>
 
@@ -245,8 +241,8 @@ function App() {
              {
 
                /*  if the local provider has a signer, let's show the faucet:  */
-               localProvider && !process.env.REACT_APP_PROVIDER && price > 1 ? (
-                 <Faucet localProvider={localProvider} price={price} />
+               localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf("localhost")>=0 && !process.env.REACT_APP_PROVIDER && price > 1 ? (
+                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
                ) : (
                  ""
                )
@@ -258,5 +254,29 @@ function App() {
     </div>
   );
 }
+
+
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
+
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
 
 export default App;

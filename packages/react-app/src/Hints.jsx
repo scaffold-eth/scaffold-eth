@@ -111,6 +111,22 @@ export default function Hints(props) {
         </span>
       </div>
 
+
+      <div style={{ marginTop: 32 }}>
+        <span style={{ marginRight: 8 }}>🔑</span>
+        <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+          yarn run generate
+        </span>
+        will create a deployer account in
+        <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+          packages/buidler
+        </span>
+        <div style={{marginTop:8}}>(use <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
+            yarn run account
+          </span> to display deployer address and balance)</div>
+      </div>
+
+
       <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>⚙️</span>
         build your app with

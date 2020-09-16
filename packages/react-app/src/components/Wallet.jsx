@@ -12,6 +12,19 @@ import EtherInput from "./EtherInput";
 import { ethers } from "ethers";
 const { Text, Paragraph } = Typography;
 
+/*
+
+  Wallet UI for sending, receiving, and extracting the burner wallet
+
+  <Wallet
+    address={address}
+    provider={userProvider}
+    ensProvider={mainnetProvider}
+    price={price}
+  />
+
+*/
+
 export default function Wallet(props) {
   const signerAddress = useUserAddress(props.provider);
   const selectedAddress = props.address || signerAddress;
@@ -178,10 +191,12 @@ export default function Wallet(props) {
         }
         onOk={() => {
           setQr();
+          setPK();
           setOpen(!open);
         }}
         onCancel={() => {
           setQr();
+          setPK();
           setOpen(!open);
         }}
         footer={[

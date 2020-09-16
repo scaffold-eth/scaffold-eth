@@ -78,7 +78,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     inputs.push(txValueInput);
   }
 
-  const buttonIcon = functionInfo.type === "call" ? <Button>Read📡</Button> : <Button>Send💸</Button>;
+  const buttonIcon = functionInfo.type === "call" ? <Button style={{marginLeft:-32}}>Read📡</Button> : <Button style={{marginLeft:-32}}>Send💸</Button>;
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key={"goButton"}>
       <Input
