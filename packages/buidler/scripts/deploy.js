@@ -18,7 +18,7 @@ async function deploy(name, _args) {
   return contract;
 }
 
-const isSolidity = (fileName) =>
+const isSolidity = fileName =>
   fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp.") < 0;
 
 function readArgumentsFile(contractName) {
@@ -38,14 +38,14 @@ function readArgumentsFile(contractName) {
 async function autoDeploy() {
   const contractList = fs.readdirSync(config.paths.sources);
   return contractList
-    .filter((fileName) => isSolidity(fileName))
+    .filter(fileName => isSolidity(fileName))
     .reduce((lastDeployment, fileName) => {
       const contractName = fileName.replace(".sol", "");
       const args = readArgumentsFile(contractName);
 
       // Wait for last deployment to complete before starting the next
-      return lastDeployment.then((resultArrSoFar) =>
-        deploy(contractName, args).then((result) => [...resultArrSoFar, result])
+      return lastDeployment.then(resultArrSoFar =>
+        deploy(contractName, args).then(result => [...resultArrSoFar, result])
       );
     }, Promise.resolve([]));
 }
@@ -56,15 +56,14 @@ async function main() {
   //await autoDeploy();
   // OR
   // custom deploy (to use deployed addresses dynamically for example:)
-  const clr = await deploy("CLR")
-  await clr.transferOwnership("0x025645A569b3e60F803bFFC88f0E2e38b7526B3d")
-  // const examplePriceOracle = await deploy("ExamplePriceOracle")
-  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
+  const donorManager = await deploy("DonorManager");
+  const clr = await deploy("CLR", [donorManager.address]);
+  await clr.transferOwnership("0x025645A569b3e60F803bFFC88f0E2e38b7526B3d");
 }
 
 main()
   .then(() => process.exit(0))
-  .catch((error) => {
+  .catch(error => {
     console.error(error);
     process.exit(1);
   });

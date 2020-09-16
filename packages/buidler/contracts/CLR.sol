@@ -26,7 +26,7 @@ contract CLR is Ownable {
 
     uint256 public matchingPool;
 
-    IDonorManager donorManager;
+    IDonorManager public donorManager;
 
     uint256 public roundStart;
     uint256 public roundDuration = 2 minutes;

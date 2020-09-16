@@ -1,1 +1,1 @@
-module.exports = ["CLR","Math"];
+module.exports = ["CLR","DonorManager","Math"];
