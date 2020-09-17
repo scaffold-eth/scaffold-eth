@@ -64,17 +64,7 @@ export async function transactionHandler(c) {
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
-        } else if (c['signatureFunction'] &&
+        if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
           c['getSignatureArgs']) {
@@ -97,7 +87,17 @@ export async function transactionHandler(c) {
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
         }
-        else if (injectedNetwork.chainId !== localNetwork.chainId) {
+        else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+        } else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()
           throw 'Metamask is on the wrong network'
         }
