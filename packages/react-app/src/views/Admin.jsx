@@ -4,23 +4,9 @@ import { Row, Col, Button } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "../hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "../components";
+import { useExchangePrice, useGasPrice, useUserProvider, } from "../hooks";
+import { Header, Account, Faucet, Ramp, GasGauge } from "../components";
 import { Transactor } from "../helpers";
-import Hints from "../Hints";
-/*
-    Welcome to 🏗 scaffold-eth !
-
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-*/
 import { INFURA_ID, ETHERSCAN_KEY } from "../constants";
 
 // 🛰 providers
@@ -59,7 +45,7 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
-function Debug() {
+function Admin() {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(mainnetProvider); //1 for xdai
@@ -75,30 +61,6 @@ function Debug() {
 
   const transactor = Transactor(userProvider)
 
-  // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
-  console.log("💵 yourLocalBalance",yourLocalBalance)
-
-  // just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-  console.log("💵 yourMainnetBalance",yourMainnetBalance)
-
-  // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
-  console.log("📝 readContracts",readContracts)
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
-
-  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
-  console.log("🔐 writeContracts",writeContracts)
-
-  //📟 Listen for broadcast events
-  //const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  //console.log("📟 SetPurpose events:",setPurposeEvents)
-
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new Web3Provider(provider));
@@ -111,19 +73,8 @@ function Debug() {
   }, [loadWeb3Modal]);
 
   return (
-    <div className="Debug">
-      {/* ✏️ Edit the header and change the title to your project name */}
+    <div className="Admin">
       <Header />
-
-      {/*
-        ⚙️ Here is an example button that sets the purpose in your smart contract:
-
-
-      */}
-
-      <Button onClick={()=>{
-        transactor( writeContracts.CLR.startRound("1000") )
-      }}>START</Button>
 
        {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -138,38 +89,6 @@ function Debug() {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
       </div>
-
-      {/*
-          🎛 this scaffolding is full of commonly used components
-          this <Contract/> component will automatically parse your ABI
-          and give you a form to interact with it locally
-      */}
-
-      <Contract name="CLR" signer={userProvider.getSigner()} provider={localProvider} address={address} />
-
-      {/*
-
-        📑 Maybe display a list of events?
-
-        <div style={{ width:600, margin: "auto" }}>
-        <List
-          bordered
-          dataSource={setPurposeEvents}
-          renderItem={item => (
-            <List.Item>
-              {item[0]} =>
-              {item[1]}
-            </List.Item>
-          )}
-        />
-      </div>
-
-      */}
-
-
-      {/* 🗑 Throw these away once you have 🏗 scaffold-eth figured out: */}
-      <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
-
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
@@ -210,12 +129,8 @@ function Debug() {
            </Col>
          </Row>
        </div>
-
-
-
-
     </div>
   );
 }
 
-export default Debug;
+export default Admin;

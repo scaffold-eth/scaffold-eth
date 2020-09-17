@@ -5,7 +5,7 @@ import {
   Route,
   Link
 } from "react-router-dom";
-import { Debug } from "./views"
+import { Admin, Debug } from "./views"
 import "antd/dist/antd.css";
 import "./App.css";
 
@@ -18,6 +18,7 @@ function App() {
             <Debug />
           </Route>
           <Route path="/admin">
+            <Admin />
           </Route>
           <Route path="/projects">
           </Route>
