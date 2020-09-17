@@ -1,26 +1,22 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { getDefaultProvider, InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { Row, Col, Button } from "antd";
-import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
+import { Row, Col, Button, Input } from "antd";
+import { Web3Provider } from "@ethersproject/providers";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, } from "../hooks";
-import { Header, Account, Faucet, Ramp, GasGauge } from "../components";
-import { Transactor } from "../helpers";
-import { INFURA_ID, ETHERSCAN_KEY } from "../constants";
-
-// 🛰 providers
-console.log("📡 Connecting to Mainnet Ethereum");
-const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
-// const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-// const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
-
-// 🏠 Your local provider is usually pointed at your local blockchain
-// as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrl = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : "http://localhost:8545"; // https://dai.poa.network
-console.log("🏠 Connecting to provider:", localProviderUrl);
-const localProvider = new JsonRpcProvider(localProviderUrl);
+import React, { useCallback, useEffect, useState } from "react";
+import Web3Modal from "web3modal";
+import { RightSquareOutlined } from "@ant-design/icons";
+import WalletConnectProvider from "@walletconnect/web3-provider";
+import { AddressInput } from "../../components";
+import { Transactor } from "../../helpers";
+import {
+  useExchangePrice,
+  useGasPrice,
+  useUserProvider,
+  useContractLoader,
+  useContractReader
+} from "../../hooks";
+import { Header, Account, Faucet, Ramp, GasGauge } from "../../components";
+import { INFURA_ID, ETHERSCAN_KEY } from "../../constants";
+import Ownership from "./Ownership";
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -45,21 +41,21 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
-function Admin() {
+function Admin(props) {
   const [injectedProvider, setInjectedProvider] = useState();
+  const userProvider = useUserProvider(injectedProvider, props.localProvider);
+
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(mainnetProvider); //1 for xdai
+  const price = useExchangePrice(props.mainnetProvider); //1 for xdai
 
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice("fast"); //1000000000 for xdai
 
-  // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
-
-  // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
 
-  const transactor = Transactor(userProvider)
+  const tx = Transactor(userProvider, gasPrice)
+  const readContracts = useContractLoader(props.localProvider)
+  const writeContracts = useContractLoader(userProvider)
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -72,6 +68,19 @@ function Admin() {
     }
   }, [loadWeb3Modal]);
 
+  const [roundDuration, setRoundDuration] = useState();
+
+  const startRoundButton = (
+    <Button
+      key="startRound"
+      onClick={()=>{
+        tx( writeContracts.CLR.startRound(roundDuration) )
+      }}
+    >
+      <RightSquareOutlined /> Start
+    </Button>
+  );
+
   return (
     <div className="Admin">
       <Header />
@@ -80,14 +89,34 @@ function Admin() {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
-          localProvider={localProvider}
+          localProvider={props.localProvider}
           userProvider={userProvider}
-          mainnetProvider={mainnetProvider}
+          mainnetProvider={props.mainnetProvider}
           price={price}
           web3Modal={web3Modal}
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
+      </div>
+
+      <Ownership
+        localProvider={props.localProvider}
+        userProvider={userProvider}
+        mainnetPRovider={props.mainnetProvider}
+      />
+
+      <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto", marginTop:64}}>
+        <Row> Start Round </Row>
+        <Row>
+          <Input
+            placeholder="round duration"
+            value={roundDuration}
+            onChange={e => {
+              setRoundDuration(e.target.value);
+            }}
+            addonAfter={startRoundButton}
+          />
+        </Row>
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
@@ -120,8 +149,8 @@ function Admin() {
            <Col span={24}>
              {
                /*  if the local provider has a signer, let's show the faucet:  */
-               localProvider && !process.env.REACT_APP_PROVIDER && price > 1 ? (
-                 <Faucet localProvider={localProvider} price={price} />
+               props.localProvider && !process.env.REACT_APP_PROVIDER && price > 1 ? (
+                 <Faucet localProvider={props.localProvider} price={price} />
                ) : (
                  ""
                )

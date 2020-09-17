@@ -58,7 +58,7 @@ async function main() {
   // custom deploy (to use deployed addresses dynamically for example:)
   const donorManager = await deploy("DonorManager");
   const clr = await deploy("CLR", [donorManager.address]);
-  await clr.transferOwnership("0x025645A569b3e60F803bFFC88f0E2e38b7526B3d");
+  await clr.transferOwnership("0x0699e030ec9aFbA4e85a6F85e994CCb22418e5E5");
 }
 
 main()
