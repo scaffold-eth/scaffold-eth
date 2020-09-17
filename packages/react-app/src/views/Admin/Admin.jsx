@@ -17,6 +17,7 @@ import {
 import { Header, Account, Faucet, Ramp, GasGauge } from "../../components";
 import { INFURA_ID, ETHERSCAN_KEY } from "../../constants";
 import Ownership from "./Ownership";
+import Round from "./Round";
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -68,19 +69,6 @@ function Admin(props) {
     }
   }, [loadWeb3Modal]);
 
-  const [roundDuration, setRoundDuration] = useState();
-
-  const startRoundButton = (
-    <Button
-      key="startRound"
-      onClick={()=>{
-        tx( writeContracts.CLR.startRound(roundDuration) )
-      }}
-    >
-      <RightSquareOutlined /> Start
-    </Button>
-  );
-
   return (
     <div className="Admin">
       <Header />
@@ -105,19 +93,10 @@ function Admin(props) {
         mainnetPRovider={props.mainnetProvider}
       />
 
-      <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto", marginTop:64}}>
-        <Row> Start Round </Row>
-        <Row>
-          <Input
-            placeholder="round duration"
-            value={roundDuration}
-            onChange={e => {
-              setRoundDuration(e.target.value);
-            }}
-            addonAfter={startRoundButton}
-          />
-        </Row>
-      </div>
+      <Round
+        localProvider={props.localProvider}
+        userProvider={userProvider}
+      />
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>

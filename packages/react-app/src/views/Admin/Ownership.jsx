@@ -9,8 +9,6 @@ import {
   useContractReader
 } from "../../hooks";
 
-// localProvider
-// mainnetProvider
 function Ownership(props) {
   const gasPrice = useGasPrice("fast"); //1000000000 for xdai
 
