@@ -87,7 +87,7 @@ yarn run deploy
 ---
 
 
-Look for the Buidler console.log() output in the `yarn run chain` terminal:
+Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn run chain` terminal:
 
 ![image](https://user-images.githubusercontent.com/2653167/93687934-2f534b80-fa7f-11ea-84b2-c0ba99533dc2.png)
 
