@@ -30,7 +30,7 @@ yarn start
 
 ```bash
 
-yarn run chain
+yarn chain
 
 ```
 
@@ -38,7 +38,7 @@ yarn run chain
 
 ```bash
 
-yarn run deploy
+yarn deploy
 
 ```
 
@@ -91,6 +91,7 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 ![image](https://user-images.githubusercontent.com/2653167/93687934-2f534b80-fa7f-11ea-84b2-c0ba99533dc2.png)
 
+
 ---
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
@@ -99,10 +100,24 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 ![image](https://user-images.githubusercontent.com/2653167/93150263-dae25180-f6b5-11ea-94e1-b24ab2a63fa5.png)
 
+---
 
 🔬  What happens with you subtract 1 from 0? Try it out in the app to see what happens!
 
-🧫 You can iterate and learn as you go.
+![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
+
+🚽 UNDERFLOW!
+
+🧫 You can iterate and learn as you go. Test your assumptions! 
+
+---
+
+💵 Send testnet ETH between browsers or even on an [instantwallet.io](https://instantwallet.io) selecting `localhost`:
+
+![image](https://user-images.githubusercontent.com/2653167/93688096-81e13780-fa80-11ea-91b8-ae738c8ecf96.png)
+
+
+---
 
 🔐 Global variables like `msg.sender` and `msg.value` are cryptographically backed and can be used to make rules
 
