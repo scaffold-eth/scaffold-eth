@@ -114,8 +114,7 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 💵 Send testnet ETH between browsers or even on an [instantwallet.io](https://instantwallet.io) selecting `localhost`:
 
-![image](https://user-images.githubusercontent.com/2653167/93688096-81e13780-fa80-11ea-91b8-ae738c8ecf96.png)
-
+![sendingaroundinstantwallet](https://user-images.githubusercontent.com/2653167/93688154-05028d80-fa81-11ea-8643-2c447af59b5c.gif)
 
 ---
 
