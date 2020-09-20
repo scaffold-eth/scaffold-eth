@@ -161,9 +161,7 @@ export default function Hints(props) {
         </span>
       </div>
       <div style={{ padding: 128 }}>
-        <a target="_blank" rel="noopener noreferrer" href="https://github.com/austintgriffith/scaffold-eth">
-          🛠
-        </a>
+        <blink>🛠 Check out your browser's developer console for more... (inpect -> console) 🚀</blink>
       </div>
     </div>
   );

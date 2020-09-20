@@ -2,6 +2,23 @@ const fs = require("fs");
 const chalk = require("chalk");
 const { config, ethers } = require("@nomiclabs/buidler");
 
+
+
+async function main() {
+  console.log("📡 Deploy \n");
+  // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
+  await autoDeploy();
+  // OR
+  // custom deploy (to use deployed addresses dynamically for example:)
+  // const exampleToken = await deploy("ExampleToken")
+  // const examplePriceOracle = await deploy("ExamplePriceOracle")
+  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
+}
+
+
+
+
+
 async function deploy(name, _args) {
   const args = _args || [];
 
@@ -50,16 +67,6 @@ async function autoDeploy() {
     }, Promise.resolve([]));
 }
 
-async function main() {
-  console.log("📡 Deploy \n");
-  // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
-  await autoDeploy();
-  // OR
-  // custom deploy (to use deployed addresses dynamically for example:)
-  // const exampleToken = await deploy("ExampleToken")
-  // const examplePriceOracle = await deploy("ExamplePriceOracle")
-  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-}
 
 main()
   .then(() => process.exit(0))
