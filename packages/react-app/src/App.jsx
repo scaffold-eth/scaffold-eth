@@ -9,7 +9,7 @@ import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./components";
 import { Transactor } from "./helpers";
-import { parseEther } from "@ethersproject/units";
+import { parseEther, formatEther } from "@ethersproject/units";
 import Hints from "./Hints";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -124,6 +124,10 @@ function App() {
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
         <h3>example ui:</h3>
         <h2>{purpose}</h2>
+
+        {  /* use formatEther to display a BigNumber: */ }
+        <h2>Your Balance: {yourLocalBalance?formatEther(yourLocalBalance):"..."}</h2>
+
 
         <div style={{margin:8}}>
           <Button onClick={()=>{
