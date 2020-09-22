@@ -33,7 +33,7 @@ const options = {
 // optional cloudfront invalidation rule
 // const invalidation = {
 //  awsDistributionId: "<Your CloudFront Distribution Id>",
-//  awsInvalidationPath: "<The Path to Invalidate>"
+//  awsInvalidationPath: "/*"
 // }
 
 s3FolderUpload(directoryName, credentials, options /* , invalidation */);
