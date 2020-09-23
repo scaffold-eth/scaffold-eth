@@ -1,8 +1,10 @@
 import React, { useCallback, useEffect, useState } from "react";
+import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
+import { MailOutlined } from "@ant-design/icons";
 import { getDefaultProvider, InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, List } from "antd";
+import { Row, Col, Button, List, Tabs, Menu } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -10,7 +12,8 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./components";
 import { Transactor } from "./helpers";
 import { parseEther, formatEther } from "@ethersproject/units";
-import Hints from "./Hints";
+//import Hints from "./Hints";
+import { Hints, ExampleUI } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -25,6 +28,7 @@ import Hints from "./Hints";
     (this is your connection to the main Ethereum network for ENS etc.)
 */
 import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
+const { TabPane } = Tabs;
 
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
@@ -36,15 +40,14 @@ const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, ether
 // const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
-
-
-
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = "http://localhost:8545"; // for xdai: https://dai.poa.network
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
+
+
 
 function App() {
   const [injectedProvider, setInjectedProvider] = useState();
@@ -98,103 +101,70 @@ function App() {
     }
   }, [loadWeb3Modal]);
 
+  console.log("Location:",window.location.pathname)
+
+  const [route, setRoute] = useState();
+  useEffect(() => {
+    console.log("SETTING ROUTE",window.location.pathname)
+    setRoute(window.location.pathname)
+  }, [ window.location.pathname ]);
+
   return (
     <div className="App">
 
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
 
-      {/*
-          🎛 this scaffolding is full of commonly used components
-          this <Contract/> component will automatically parse your ABI
-          and give you a form to interact with it locally
-      */}
-      <Contract
-        name="YourContract"
-        signer={userProvider.getSigner()}
-        provider={localProvider}
-        address={address}
-        blockExplorer={blockExplorer}
-      />
+      <BrowserRouter>
 
+        <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+          <Menu.Item key="/">
+            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+          </Menu.Item>
+          <Menu.Item key="/hints">
+            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
+          </Menu.Item>
+          <Menu.Item key="/exampleui">
+            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
+          </Menu.Item>
+        </Menu>
 
-      {/*
-        ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
-      */}
-      <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
-        <h3>example ui:</h3>
-        <h2>{purpose}</h2>
+        <Switch>
+          <Route exact path="/">
+            {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
+            <Contract
+              name="YourContract"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+          </Route>
+          <Route path="/hints">
+            <Hints
+              address={address}
+              yourLocalBalance={yourLocalBalance}
+              mainnetProvider={mainnetProvider}
+              price={price}
+            />
+          </Route>
+          <Route path="/exampleui">
+            <ExampleUI
+              mainnetProvider={mainnetProvider}
+              setPurposeEvents={setPurposeEvents}
+              purpose={purpose}
+              yourLocalBalance={yourLocalBalance}
+              tx={tx}
+              writeContracts={writeContracts}
+            />
+          </Route>
+        </Switch>
+      </BrowserRouter>
 
-        {  /* use formatEther to display a BigNumber: */ }
-        <h2>Your Balance: {yourLocalBalance?formatEther(yourLocalBalance):"..."}</h2>
-
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.setPurpose("🐖 Don't hog the block!") )
-          }}>Set Purpose</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /*
-              you can also just craft a transaction and send it to the tx() transactor
-              here we are sending value straight to the contract's address:
-            */
-            tx({
-              to: writeContracts.YourContract.address,
-              value: parseEther("0.001")
-            });
-            /* this should throw an error about "no fallback nor receive function" until you add it */
-          }}>Send Value</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* look how we call setPurpose AND send some value along */
-            tx( writeContracts.YourContract.setPurpose("💵 Paying for this one!",{
-              value: parseEther("0.001")
-            }))
-            /* this will fail until you make the setPurpose function payable */
-          }}>Set Purpose With Value</Button>
-        </div>
-
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* you can also just craft a transaction and send it to the tx() transactor */
-            tx({
-              to: writeContracts.YourContract.address,
-              value: parseEther("0.001"),
-              data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)",["🤓 Whoa so 1337!"])
-            });
-            /* this should throw an error about "no fallback nor receive function" until you add it */
-          }}>Another Example</Button>
-        </div>
-
-      </div>
-
-      {/*
-        📑 Maybe display a list of events?
-          (uncomment the event and emit line in YourContract.sol! )
-      */}
-      <div style={{ width:600, margin: "auto", marginTop:32 }}>
-        <List
-          bordered
-          dataSource={setPurposeEvents}
-          renderItem={item => (
-            <List.Item>
-              <Address
-                  value={item[0]}
-                  ensProvider={mainnetProvider}
-                  fontSize={16}
-                /> =>
-              {item[1]}
-            </List.Item>
-          )}
-        />
-      </div>
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -210,9 +180,6 @@ function App() {
            blockExplorer={blockExplorer}
          />
       </div>
-
-      {/* 🗑 Throw these away once you have 🏗 scaffold-eth figured out: */}
-      <Hints address={address} yourLocalBalance={yourLocalBalance} price={price} mainnetProvider={mainnetProvider} />
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
