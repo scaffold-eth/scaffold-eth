@@ -36,6 +36,15 @@
   "workspaces": {
     "packages": [
       "packages/*"
+    ],
+    "nohoist": [
+      "packages/subgraph/@graphprotocol/graph-ts",
+      "packages/subgraph/@graphprotocol/graph-ts/**"
     ]
+  },
+  "dependencies": {
+    "@apollo/client": "^3.2.1",
+    "graphql": "^15.3.0",
+    "react-vis": "^1.11.7"
   }
 }

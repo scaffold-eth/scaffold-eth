@@ -14,6 +14,17 @@ import { Transactor } from "./helpers";
 import { parseEther, formatEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI } from "./views"
+import { useQuery, gql } from '@apollo/client';
+import {  XYPlot,
+  XAxis,
+  YAxis,
+  HorizontalGridLines,
+  VerticalGridLines,
+  LineSeries,
+  Crosshair} from 'react-vis';
+import "./ReactVis.css";
+
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -50,6 +61,25 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 
 function App() {
+
+  const GET_UNISWAP_DAYDATA = gql`
+  {
+    uniswapDayDatas(first: 100, orderBy: date, orderDirection: desc) {
+      date
+      dailyVolumeUSD
+    }
+  }
+  `;
+
+  const { loading, error, data } = useQuery(GET_UNISWAP_DAYDATA);
+  let transformedData
+
+  if (data) {
+    console.log(data)
+  transformedData = data['uniswapDayDatas'].map( s => ({x:new Date(s.date * 1000), y: parseFloat(s.dailyVolumeUSD)}) );
+  console.log(transformedData)
+}
+
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(mainnetProvider); //1 for xdai
@@ -166,6 +196,16 @@ function App() {
       </BrowserRouter>
 
 
+      <div style={{ width:600, margin: "auto", marginTop:32 }}>
+      <XYPlot xType="time" width={300} height={300}>
+            <HorizontalGridLines />
+            <VerticalGridLines />
+            <LineSeries
+              data={transformedData}
+            />
+      </XYPlot>
+      </div>
+
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
          <Account
@@ -220,6 +260,7 @@ function App() {
              }
            </Col>
          </Row>
+
        </div>
 
     </div>
