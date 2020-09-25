@@ -1,11 +1,11 @@
 const fs = require("fs");
 const chalk = require("chalk");
 const { config, ethers } = require("@nomiclabs/buidler");
-
-
+const { utils } = require("ethers");
 
 async function main() {
   console.log("📡 Deploy \n");
+
   // auto deploy to read contract directory and deploy them all (add ".args" files for arguments)
   await autoDeploy();
   // OR
@@ -22,16 +22,17 @@ async function main() {
 async function deploy(name, _args) {
   const args = _args || [];
 
-  console.log(`📄 ${name}`);
+  console.log(` 🛰  Deploying ${name}`);
   const contractArtifacts = await ethers.getContractFactory(name);
   const contract = await contractArtifacts.deploy(...args);
-  console.log(
+  console.log(" 📄",
     chalk.cyan(name),
     "deployed to:",
-    chalk.magenta(contract.address)
+    chalk.magenta(contract.address),
+    "\n"
   );
   fs.writeFileSync(`artifacts/${name}.address`, contract.address);
-  console.log("\n");
+  console.log("💾  Artifacts (address, abi, and args) saved to: ",chalk.blue("packages/buidler/artifacts/"),"\n")
   return contract;
 }
 
@@ -62,7 +63,15 @@ async function autoDeploy() {
 
       // Wait for last deployment to complete before starting the next
       return lastDeployment.then((resultArrSoFar) =>
-        deploy(contractName, args).then((result) => [...resultArrSoFar, result])
+        deploy(contractName, args).then((result,b,c) => {
+
+          if(args&&result&&result.interface&&result.interface.deploy){
+            let encoded = utils.defaultAbiCoder.encode(result.interface.deploy.inputs,args)
+            fs.writeFileSync(`artifacts/${contractName}.args`, encoded);
+          }
+
+          return [...resultArrSoFar, result]
+        })
       );
     }, Promise.resolve([]));
 }
