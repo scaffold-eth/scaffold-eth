@@ -32,6 +32,9 @@ export default function MyNiftyHoldings(props) {
             tokenId = await props.readContracts['NiftyMain']["tokenOfOwnerByIndex"](props.address, i)
             jsonUrl = await props.readContracts['NiftyMain']["tokenURI"](tokenId)
           } if(chain === 'lower') {
+
+            console.log("props:", props)
+
             tokenId = await props.readKovanContracts['NiftyToken']["tokenOfOwnerByIndex"](props.address, i)
             jsonUrl = await props.readKovanContracts['NiftyToken']["tokenURI"](tokenId)
           }

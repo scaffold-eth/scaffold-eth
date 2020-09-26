@@ -17,9 +17,10 @@ export async function transactionHandler(c) {
 
     function showXDaiModal() {
       Modal.info({
-        title: 'You need some xDai!',
+        title: 'You need some xDai to make this transaction!',
         content: (
-          <a target="_blank" href={"https://xdai.io"}>Take it to the bridge.</a>
+          <span> Nifty.ink runs on xDAI. <a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).  <a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a>
+          </span>
         ),
         onOk() {},
       });
@@ -33,6 +34,10 @@ export async function transactionHandler(c) {
       let injectedNetwork = await c['injectedProvider'].getNetwork()
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
+
+      if (c['payment'] && ethers.utils.formatEther(balance) < ethers.utils.formatEther(c['payment'])) {
+        showXDaiModal()
+      }
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){
         if (injectedNetwork.chainId === localNetwork.chainId) {
@@ -59,17 +64,7 @@ export async function transactionHandler(c) {
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
-        } else if (c['signatureFunction'] &&
+        if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
           c['getSignatureArgs']) {
@@ -92,7 +87,17 @@ export async function transactionHandler(c) {
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
         }
-        else if (injectedNetwork.chainId !== localNetwork.chainId) {
+        else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+        } else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()
           throw 'Metamask is on the wrong network'
         }
