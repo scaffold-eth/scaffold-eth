@@ -2,19 +2,23 @@ import { gql } from 'apollo-boost';
 
 export const ARTISTS_QUERY = gql`
   query artists($address: Bytes!) {
-    artists(where: {address: $address}) {
+    artists(where: { address: $address }) {
       inkCount
       address
-      inks (orderBy: createdAt, orderDirection: desc){
+      inks(orderBy: createdAt, orderDirection: desc) {
         inkId
         jsonUrl
         limit
         count
         createdAt
+        sales {
+          price
+        }
       }
     }
   }
-`
+`;
+
 
 export const INKS_QUERY = gql`
   query inks {

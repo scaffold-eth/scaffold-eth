@@ -576,7 +576,7 @@ export default function NftyWallet(props) {
             </div>
         </Route>
 
-        <Route path="/artistt/:address">
+        <Route path="/artist/:address">
           <div style={{ maxWidth: 500, margin: "0 auto" }}>
           <Artist {...props} />
           </div>

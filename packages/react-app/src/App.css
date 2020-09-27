@@ -10,3 +10,9 @@
 #ACCOUNT_HEADER_ID {
   z-index: 900;
 }
+
+.artist_blockie {
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px #b5b5b5, 0 0 0 1px #b5b5b5;
+  padding: 5px;
+}
