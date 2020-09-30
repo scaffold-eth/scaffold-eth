@@ -154,12 +154,16 @@ function App() {
           </Route>
           <Route path="/exampleui">
             <ExampleUI
+              address={address}
               mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
               setPurposeEvents={setPurposeEvents}
               purpose={purpose}
               yourLocalBalance={yourLocalBalance}
+              price={price}
               tx={tx}
               writeContracts={writeContracts}
+              readContracts={readContracts}
             />
           </Route>
         </Switch>
