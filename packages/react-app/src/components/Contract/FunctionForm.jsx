@@ -20,16 +20,20 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     setForm(formUpdate);
   };
 
-  const inputs = functionInfo.inputs.map(input => (
-    <div style={{ margin: 2 }} key={"inputs"+input.name}>
-      <Input
-        size="large"
-        placeholder={input.name}
-        value={form[input.name]}
-        onChange={e => handleUpdateForm(e, input.name)}
-      />
-    </div>
-  ));
+  let inputIndex=0;
+  const inputs = functionInfo.inputs.map(input => {
+      const key = "inputs_"+input.name+"_"+input.type+"_"+inputIndex++
+      return (
+        <div style={{ margin: 2 }} key={key}>
+          <Input
+            size="large"
+            placeholder={input.name}
+            value={form[key]}
+            onChange={e => handleUpdateForm(e, input.name)}
+          />
+        </div>
+      )
+  });
 
   const txValueInput = (
     <div style={{ margin: 2 }} key={"txValueInput"}>
