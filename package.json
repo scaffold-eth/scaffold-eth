@@ -18,7 +18,7 @@
     "chain": "yarn workspace @scaffold-eth/buidler chain",
     "node": "yarn workspace @scaffold-eth/buidler chain",
     "test": "yarn workspace @scaffold-eth/buidler test",
-    "start": "yarn workspace @scaffold-eth/react-app start",
+    "start": "concurrently \"yarn workspace @scaffold-eth/react-app start\" \"yarn chain\" \"yarn deploy\"",
     "compile": "yarn workspace @scaffold-eth/buidler compile",
     "deploy": "yarn workspace @scaffold-eth/buidler deploy",
     "watch": "yarn workspace @scaffold-eth/buidler watch",
