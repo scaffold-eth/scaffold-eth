@@ -14,11 +14,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   const tx = Transactor(provider, gasPrice);
 
-  const handleUpdateForm = (event, name) => {
-    const formUpdate = { ...form };
-    formUpdate[name] = event.target.value;
-    setForm(formUpdate);
-  };
+
 
   let inputIndex=0;
   const inputs = functionInfo.inputs.map(input => {
@@ -27,9 +23,14 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
         <div style={{ margin: 2 }} key={key}>
           <Input
             size="large"
-            placeholder={input.name}
+            placeholder={input.name?input.name:input.type}
             value={form[key]}
-            onChange={e => handleUpdateForm(e, input.name)}
+            name={key}
+            onChange={(event) => {
+              const formUpdate = { ...form };
+              formUpdate[event.target.name] = event.target.value;
+              setForm(formUpdate);
+            }}
           />
         </div>
       )
@@ -96,8 +97,11 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             style={{width:50,height:30,margin:0}}
             type="default"
             onClick={async () => {
-              console.log("CLICK");
-              const args = functionInfo.inputs.map(input => form[input.name]);
+              let innerIndex=0
+              const args = functionInfo.inputs.map((input) => {
+                const key = "inputs_"+input.name+"_"+input.type+"_"+innerIndex++
+                return form[key]
+              });
 
               const overrides = {};
               if (txValue) {
