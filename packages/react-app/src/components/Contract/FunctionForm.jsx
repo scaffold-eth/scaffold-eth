@@ -6,6 +6,8 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Row, Col, Input, Divider, Tooltip, Button } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
+const { utils } = require("ethers");
+
 
 export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh}) {
   const [form, setForm] = useState({});
@@ -19,11 +21,37 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
   let inputIndex=0;
   const inputs = functionInfo.inputs.map(input => {
       const key = "inputs_"+input.name+"_"+input.type+"_"+inputIndex++
+
+      let buttons = ""
+      if(input.type=="bytes32"){
+        buttons = (
+          <Tooltip placement="right" title={"to bytes32"}>
+            <div
+              type="dashed"
+              style={{cursor:"pointer"}}
+              onClick={async () => {
+                if(utils.isHexString(form[key])){
+                  const formUpdate = { ...form };
+                  formUpdate[key] = utils.parseBytes32String(form[key]);
+                  setForm(formUpdate);
+                }else{
+                  const formUpdate = { ...form };
+                  formUpdate[key] = utils.formatBytes32String(form[key]);
+                  setForm(formUpdate);
+                }
+              }}
+            >
+              #️⃣
+            </div>
+            </Tooltip>
+        )
+      }
+
       return (
         <div style={{ margin: 2 }} key={key}>
           <Input
             size="large"
-            placeholder={input.name?input.name:input.type}
+            placeholder={input.name?input.type+" "+input.name:input.type}
             value={form[key]}
             name={key}
             onChange={(event) => {
@@ -31,6 +59,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               formUpdate[event.target.name] = event.target.value;
               setForm(formUpdate);
             }}
+            suffix={buttons}
           />
         </div>
       )
