@@ -20,7 +20,8 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   let inputIndex=0;
   const inputs = functionInfo.inputs.map(input => {
-      const key = "inputs_"+input.name+"_"+input.type+"_"+inputIndex++
+
+      const key = functionInfo.name+"_"+input.name+"_"+input.type+"_"+inputIndex++
 
       let buttons = ""
       if(input.type=="bytes32"){
