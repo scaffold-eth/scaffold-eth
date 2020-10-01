@@ -129,7 +129,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             onClick={async () => {
               let innerIndex=0
               const args = functionInfo.inputs.map((input) => {
-                const key = "inputs_"+input.name+"_"+input.type+"_"+innerIndex++
+                const key = functionInfo.name+"_"+input.name+"_"+input.type+"_"+innerIndex++
                 return form[key]
               });
 
