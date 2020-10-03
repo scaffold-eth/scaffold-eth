@@ -49,7 +49,8 @@ export default function Artist(props) {
             <Row>
               <Col span={12}>
                 <p style={{ margin: 0 }}>
-                  <b>Inks:</b> {data ? data.artists[0].inkCount : 0}
+                  <b>Inks:</b>{" "}
+                  {data.artists.length ? data.artists[0].inkCount : 0}
                 </p>
               </Col>
               <Col span={12}>
@@ -79,7 +80,8 @@ export default function Artist(props) {
                     margin: 10,
                     padding: 10,
                     border: "1px solid #e5e5e6",
-                    borderRadius: "10px"
+                    borderRadius: "10px",
+                    fontWeight: "bold"
                   }}
                 >
                   <a
@@ -97,16 +99,45 @@ export default function Artist(props) {
                         borderRadius: "10px"
                       }}
                     />
-                    <h3 style={{ fontWeight: "bold", margin: "10px 0" }}>
+                    <h3
+                      style={{ margin: "10px 0px 5px 0px", fontWeight: "700" }}
+                    >
                       {ink.metadata.name.length > 18
                         ? ink.metadata.name.slice(0, 15).concat("...")
                         : ink.metadata.name}
                     </h3>
-                    <p style={{ color: "#5e5e5e", margin: "0" }}>
+
+                    <Row
+                      align="middle"
+                      style={{ textAlign: "center", justifyContent: "center" }}
+                    >
+                      <p
+                        style={{
+                          color: "#5e5e5e",
+                          margin: "0"
+                        }}
+                      >
+                        <b>{ink.mintPrice / 1e18} </b>
+                      </p>
+
+                      <img
+                        src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
+                        alt="xdai"
+                        style={{ marginLeft: 5 }}
+                      />
+                    </Row>
+                    <Divider style={{ margin: "8px 0px" }} />
+                    <p
+                      style={{
+                        color: "#5e5e5e",
+                        margin: "0",
+                        zoom: 0.8
+                      }}
+                    >
                       Last sold: $
                       {ink.sales.length ? ink.sales[0].price / 1e18 : 0}
                     </p>
-                    <p style={{ color: "#5e5e5e", margin: "0" }}>
+                    <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
                       Edition: {ink.count}/{ink.limit}
                     </p>
                   </a>

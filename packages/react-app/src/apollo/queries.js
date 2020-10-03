@@ -6,10 +6,10 @@ export const ARTISTS_QUERY = gql`
       inkCount
       address
       inks(orderBy: createdAt, orderDirection: desc) {
-        inkId
         jsonUrl
         limit
         count
+        mintPrice
         createdAt
         sales {
           price
@@ -19,13 +19,33 @@ export const ARTISTS_QUERY = gql`
   }
 `;
 
-
 export const INKS_QUERY = gql`
-  query inks {
-    inks(first: 5) {
+  query inks($first: Int, $skip: Int) {
+    inks(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
       id
-      inkId
+      createdAt
       jsonUrl
+      artist {
+        address
+      }
     }
   }
-`
+`;
+
+export const HOLDINGS_QUERY = gql`
+  query tokens($owner: Bytes!) {
+    tokens(where: { owner: $owner }) {
+      owner
+      id
+      ink {
+        id
+        jsonUrl
+        limit
+        count
+        artist {
+          address
+        }
+      }
+    }
+  }
+`;

@@ -11,6 +11,8 @@ import InkInfo from "./InkInfo.js";
 import MyNiftyHoldings from "./MyNiftyHoldings.js";
 import MyNiftyInks from "./MyNiftyInks.js";
 import AllNiftyInks from "./AllNiftyInks.js";
+import Holdings from "./Holdings.js";
+import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
 const { TabPane } = Tabs;
 
@@ -390,28 +392,10 @@ export default function NftyWallet(props) {
           key="1">
         </TabPane>
 
-
-        <TabPane
-          disabled={!(inksCreatedBy && inksCreatedBy.toString)}
-          tab={
-          <Link to="/myinks">
-            <>
-              <span>
-                <span style={{ padding: 8 }}>🖼</span> inks
-              </span>{" "}
-              <Badge style={badgeStyle} count={displayInksCreated} showZero />
-            </>
-          </Link>
-        }
-          key="inks"
-          >
-        </TabPane>
-
-
         <TabPane
           disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
           tab={
-            <Link to="/myholdings">
+            <Link to="/holdings">
             <>
               <span>
                 <span style={{ padding: 8 }} role="img" aria-label="Purse">
@@ -426,7 +410,6 @@ export default function NftyWallet(props) {
           key="holdings"
         >
         </TabPane>
-
 
         <TabPane
           tab={
@@ -449,6 +432,7 @@ export default function NftyWallet(props) {
           key="4"
         >
         </TabPane>
+
       </Tabs>
 
       {supportButton}
@@ -456,94 +440,17 @@ export default function NftyWallet(props) {
 
       <Switch>
         <Route path="/allinks">
-          <div style={{ maxWidth: 720, margin: "0 auto" }}>
-            <AllNiftyInks {...props}
-              mainnetProvider={props.mainnetProvider}
-              kovanProvider={props.kovanProvider}
-              readKovanContracts={props.readKovanContracts}
-              tab={tab}
-              showInk={showInk}
-              ipfsConfig={ipfsConfig}
-              ipfsConfigInfura={ipfsConfigInfura}
-              totalInks={totalInks}
-              thisTab={"1"}
-            />
-            {process.env.REACT_APP_NETWORK_NAME ? (
-              ""
-            ) : (
-              <>
-                <Contract
-                  provider={props.injectedProvider}
-                  name={"NiftyRegistry"}
-                  price={props.price}
-                />
-                <Contract
-                  provider={props.injectedProvider}
-                  name={"NiftyInk"}
-                  price={props.price}
-                />
-                <Contract
-                  provider={props.injectedProvider}
-                  name={"NiftyToken"}
-                  price={props.price}
-                />
-                <Contract
-                  provider={props.injectedProvider}
-                  name={"NiftyMediator"}
-                  price={props.price}
-                />
-                <Contract
-                  provider={props.injectedProvider}
-                  name={"Liker"}
-                  price={props.price}
-                />
-              </>
-            )}
-          </div>
+          <AllInks />
         </Route>
 
-        <Route path="/myinks">
+        <Route path="/holdings">
             <div style={{ maxWidth: 500, margin: "0 auto" }}>
-            <MyNiftyInks {...props}
+            <Holdings {...props}
               address={props.address}
-              mainnetProvider={props.mainnetProvider}
-              readContracts={props.readContracts}
-              readKovanContracts={props.readKovanContracts}
-              tab={tab}
-              showInk={showInk}
-              ipfsConfig={ipfsConfig}
-              ipfsConfigInfura={ipfsConfigInfura}
-              inksCreatedBy={inksCreatedBy}
-              thisTab={"inks"}
-              newInk={newInk}
-              artist={artist}
-              setArtist={setArtist}
             />
             </div>
         </Route>
 
-        <Route path="/myholdings">
-          <div style={{ maxWidth: 500, margin: "0 auto" }}>
-          <MyNiftyHoldings
-            {...props}
-            address={props.address}
-            mainnetProvider={props.mainnetProvider}
-            injectedProvider={props.injectedProvider}
-            readContracts={props.readContracts}
-            readKovanContracts={props.readKovanContracts}
-            gasPrice={props.gasPrice}
-            tab={tab}
-            showInk={showInk}
-            ipfsConfig={ipfsConfig}
-            ipfsConfigInfura={ipfsConfigInfura}
-            nftyBalance={nftyBalance}
-            nftyMainBalance={nftyMainBalance}
-            transactionConfig={transactionConfig}
-            thisTab={"holdings"}
-            upgradePrice={upgradePrice}
-          />
-          </div>
-        </Route>
 
         <Route path="/create">
               <div>
