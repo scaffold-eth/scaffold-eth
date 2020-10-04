@@ -109,7 +109,8 @@ export default function Artist(props) {
                       align="middle"
                       style={{ textAlign: "center", justifyContent: "center" }}
                     >
-                      <p
+                      {(ink.mintPrice > 0 && (ink.limit === 0 || ink.count < ink.limit))
+                        ? (<><p
                         style={{
                           color: "#5e5e5e",
                           margin: "0"
@@ -122,7 +123,8 @@ export default function Artist(props) {
                         src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
                         alt="xdai"
                         style={{ marginLeft: 5 }}
-                      />
+                      /></>)
+                      : null }
                     </Row>
                     <Divider style={{ margin: "8px 0px" }} />
                     <p
@@ -132,11 +134,11 @@ export default function Artist(props) {
                         zoom: 0.8
                       }}
                     >
-                      Last sold: $
-                      {ink.sales.length ? ink.sales[0].price / 1e18 : 0}
+
+                      {ink.sales.length ? 'Last sold: $' + ink.sales[0].price / 1e18 : null}
                     </p>
                     <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
-                      Edition: {ink.count}/{ink.limit}
+                      {'Edition: ' + ink.count + (ink.limit>0?'/' + ink.limit:'')}
                     </p>
                   </Link>
                 </li>
