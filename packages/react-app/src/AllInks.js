@@ -2,13 +2,14 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "react-apollo";
 import { INKS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
-import { Button } from "antd";
+import { Row, Button } from "antd";
+import { Loader } from "./components"
 
 export default function AllInks(props) {
   let [inks, setInks] = useState([]);
   const { loading, error, data, fetchMore } = useQuery(INKS_QUERY, {
     variables: {
-      first: 24,
+      first: 48,
       skip: 0
     }
   });
@@ -42,13 +43,14 @@ export default function AllInks(props) {
 
   useEffect(() => {
     data ? getInks(data.inks) : console.log("loading");
+
     // window.addEventListener("scroll", onLoadMore, );
     // return () => {
     //   window.removeEventListener("scroll", onLoadMore);
     // };
   }, [data]);
 
-  if (loading) return "Loading...";
+  if (loading) return <Loader/>;
   if (error) return `Error! ${error.message}`;
 
   return (
@@ -58,6 +60,7 @@ export default function AllInks(props) {
           {inks
             ? inks.map((ink) => (
                 <li
+                  key={ink.id}
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
@@ -79,9 +82,11 @@ export default function AllInks(props) {
               ))
             : null}
         </ul>
-        <Button type="primary" onClick={onLoadMore}>
-          Load more
-        </Button>
+        <Row justify="center">
+          <Button type="primary" onClick={onLoadMore}>
+            Load more
+          </Button>
+        </Row>
       </div>
     </div>
   );

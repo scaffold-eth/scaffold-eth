@@ -2,8 +2,9 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "react-apollo";
 import { HOLDINGS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
-import { Row, Col, Divider, Switch, Button } from "antd";
+import { Row, Col, Divider, Switch, Button,Empty } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
+import { Loader } from "./components"
 
 export default function Holdings(props) {
   let [tokens, setTokens] = useState([]);
@@ -29,7 +30,7 @@ export default function Holdings(props) {
 
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
-
+    console.log(data.tokens)
     !myCreationOnly
       ? setTokens(data.tokens)
       : setTokens(
@@ -45,8 +46,14 @@ export default function Holdings(props) {
   useEffect(() => {
     data ? getTokens(data.tokens) : console.log("loading");
   }, [data]);
-  if (loading) return "Loading...";
-  if (error) return `Error! ${error.message}`;
+  if (loading) return <Loader/>;
+  if (error) {
+    if(!props.address || data.tokens.length <= 0){
+      return <Empty/>
+    } else {
+    return `Error! ${error.message}`;
+    }
+  }
 
   return (
     <div style={{ width: 600, margin: "0 auto", textAlign: "center" }}>
@@ -81,6 +88,7 @@ export default function Holdings(props) {
           {tokens
             ? tokens.map((token) => (
                 <li
+                  key={token.id}
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
