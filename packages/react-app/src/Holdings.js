@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery } from "react-apollo";
 import { HOLDINGS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
+import { Link } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button,Empty } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
 import { Loader } from "./components"
@@ -31,9 +32,10 @@ export default function Holdings(props) {
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
     console.log(data.tokens)
+    setTokens([])
     !myCreationOnly
-      ? setTokens(data.tokens)
-      : setTokens(
+      ? getTokens(data.tokens)
+      : getTokens(
           data.tokens
             .filter(
               (token) =>
@@ -48,7 +50,7 @@ export default function Holdings(props) {
   }, [data]);
   if (loading) return <Loader/>;
   if (error) {
-    if(!props.address || data.tokens.length <= 0){
+    if(!props.address || (data.tokens && data.tokens.length <= 0)){
       return <Empty/>
     } else {
     return `Error! ${error.message}`;
@@ -99,10 +101,10 @@ export default function Holdings(props) {
                     fontWeight: "bold"
                   }}
                 >
-                  <a
-                    href={token.ink.metadata.external_url}
-                    style={{ color: "black" }}
-                  >
+                <Link
+                  to={"ink/"+token.ink.id}
+                  style={{ color: "black" }}
+                >
                     <img
                       src={token.ink.metadata.image}
                       alt={token.ink.metadata.name}
@@ -123,7 +125,7 @@ export default function Holdings(props) {
                     <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
                       Edition: {token.ink.count}/{token.ink.limit}
                     </p>
-                  </a>
+                  </Link>
                   <Divider style={{ margin: "10px" }} />
                   <Row justify={"space-between"}>
                     <Button size="small">
