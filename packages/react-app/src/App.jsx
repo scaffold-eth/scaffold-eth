@@ -78,17 +78,10 @@ function App() {
   const readContracts = useContractLoader(localProvider)
   console.log("📝 readContracts",readContracts)
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
-
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
   console.log("🔐 writeContracts",writeContracts)
 
-  //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -157,8 +150,6 @@ function App() {
               address={address}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
-              setPurposeEvents={setPurposeEvents}
-              purpose={purpose}
               yourLocalBalance={yourLocalBalance}
               price={price}
               tx={tx}

@@ -2,11 +2,20 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, AddressInput, Balance } from "../components";
+import { useContractReader, useEventListener } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({address, mainnetProvider, localProvider, setPurposeEvents, purpose, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({address, mainnetProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
+
+  // keep track of a variable from the contract in the local React state:
+  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  console.log("🤗 purpose:",purpose)
+
+  //📟 Listen for broadcast events
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  console.log("📟 SetPurpose events:",setPurposeEvents)
 
   return (
     <div>
@@ -14,8 +23,9 @@ export default function ExampleUI({address, mainnetProvider, localProvider, setP
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
-        <h3>example ui:</h3>
-        <h2>{purpose}</h2>
+        <h2>Example UI:</h2>
+
+        <h4>purpose: {purpose}</h4>
 
         <Divider/>
 
@@ -121,6 +131,7 @@ export default function ExampleUI({address, mainnetProvider, localProvider, setP
           (uncomment the event and emit line in YourContract.sol! )
       */}
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Events:</h2>
         <List
           bordered
           dataSource={setPurposeEvents}
