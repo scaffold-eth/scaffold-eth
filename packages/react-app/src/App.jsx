@@ -148,6 +148,7 @@ function App() {
           <Route path="/exampleui">
             <ExampleUI
               address={address}
+              userProvider={userProvider}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}

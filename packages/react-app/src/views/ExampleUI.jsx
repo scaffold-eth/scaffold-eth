@@ -5,7 +5,7 @@ import { Address, AddressInput, Balance } from "../components";
 import { useContractReader, useEventListener } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({address, mainnetProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
 
