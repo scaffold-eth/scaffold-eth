@@ -6,6 +6,7 @@ export const ARTISTS_QUERY = gql`
       inkCount
       address
       inks(orderBy: createdAt, orderDirection: desc) {
+        id
         jsonUrl
         limit
         count

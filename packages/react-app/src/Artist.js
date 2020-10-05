@@ -5,6 +5,7 @@ import { ARTISTS_QUERY } from "./apollo/queries"
 import { isBlacklisted } from "./helpers";
 import { Row, Col, Divider } from "antd";
 import Blockies from "react-blockies";
+import { Loader } from "./components"
 
 export default function Artist(props) {
   let { address } = useParams();
@@ -29,10 +30,10 @@ export default function Artist(props) {
       });
     };
 
-    data ? getInks(data.artists[0].inks) : console.log("loading");
+    data !== undefined && data.artists[0] ? getInks(data.artists[0].inks) : console.log("loading");
   }, [data]);
 
-  if (loading) return "Loading...";
+  if (loading) return <Loader/>;
   if (error) return `Error! ${error.message}`;
 
   return (
@@ -85,7 +86,7 @@ export default function Artist(props) {
                   }}
                 >
                 <Link
-                  to={"ink/"+ink.id}
+                  to={{pathname: "/ink/"+ink.id}}
                   style={{ color: "black" }}
                 >
                     <img

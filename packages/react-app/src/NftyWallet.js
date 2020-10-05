@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Switch, Route, Link, Redirect } from "react-router-dom";
+import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import { Button, Badge, Tabs, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
@@ -120,7 +120,7 @@ export default function NftyWallet(props) {
         <Col>{accountDisplay}</Col>
 
         <Col>
-        <Link to="create">
+        <NavLink to="create">
           <Button
             style={{ marginRight: 8, marginTop: 8 }}
             shape="round"
@@ -129,7 +129,7 @@ export default function NftyWallet(props) {
           >
             <span style={{ marginRight: 12 }}>🖌</span>
           </Button>
-        </Link>
+        </NavLink>
         </Col>
       </Row>
     </div>
@@ -210,7 +210,7 @@ export default function NftyWallet(props) {
       >
 
         <TabPane tab={
-          <Link to="/allinks">
+          <NavLink to="/allinks">
           <>
             <span
               style={{ fontSize: 24, padding: 8 }}
@@ -220,7 +220,7 @@ export default function NftyWallet(props) {
               🎨 Nifty Ink
             </span>
           </>
-          </Link>
+          </NavLink>
           }
           key="1">
         </TabPane>
@@ -228,7 +228,7 @@ export default function NftyWallet(props) {
         <TabPane
           disabled={!props.address}
           tab={
-            <Link to={"/artist/"+props.address}>
+            <NavLink to={"/artist/"+props.address}>
             <>
               <span>
                 <span style={{ padding: 8 }} role="img" aria-label="Painting">
@@ -237,7 +237,7 @@ export default function NftyWallet(props) {
                 inks
               </span>{" "}
             </>
-          </Link>
+          </NavLink>
           }
           key="inks"
         >
@@ -246,7 +246,7 @@ export default function NftyWallet(props) {
         <TabPane
           disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
           tab={
-            <Link to="/holdings">
+            <NavLink to="/holdings">
             <>
               <span>
                 <span style={{ padding: 8 }} role="img" aria-label="Purse">
@@ -256,7 +256,7 @@ export default function NftyWallet(props) {
               </span>{" "}
               <Badge style={badgeStyle} count={displayBalance} showZero />
             </>
-          </Link>
+          </NavLink>
           }
           key="holdings"
         >
@@ -264,7 +264,7 @@ export default function NftyWallet(props) {
 
         <TabPane
           tab={
-             <Link to="/create">
+             <NavLink to="/create">
             <Button
               style={{ marginBottom: 8 }}
               shape="round"
@@ -275,7 +275,7 @@ export default function NftyWallet(props) {
             >
               <PlusOutlined /> Create
             </Button>
-            </Link>
+            </NavLink>
           }
           key="4"
         >
