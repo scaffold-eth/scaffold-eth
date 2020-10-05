@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useQuery } from "react-apollo";
+import { Link } from "react-router-dom";
 import { INKS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
 import { Row, Button } from "antd";
@@ -68,8 +69,8 @@ export default function AllInks(props) {
                     fontWeight: "bold"
                   }}
                 >
-                  <a
-                    href={ink.metadata.external_url}
+                  <Link
+                    to={"ink/"+ink.id}
                     style={{ color: "black" }}
                   >
                     <img
@@ -77,7 +78,7 @@ export default function AllInks(props) {
                       alt={ink.metadata.name}
                       width="120"
                     />
-                  </a>
+                  </Link>
                 </li>
               ))
             : null}
