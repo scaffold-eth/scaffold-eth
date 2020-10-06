@@ -11,7 +11,7 @@ export default function useEventListener(contracts, contractName, eventName, pro
     if (contracts && contractName && contracts[contractName]) {
       try {
         contracts[contractName].on(eventName, (...args) => {
-          setUpdates(messages => [...messages, args.pop().args]);
+          setUpdates(messages => [ args.pop().args, ...messages]);
         });
         return () => {
           contracts[contractName].removeListener(eventName);
