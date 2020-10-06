@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "react-apollo";
 import { Link } from "react-router-dom";
 import { INKS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
-import { Row, Button } from "antd";
+import { Row } from "antd";
 import { Loader } from "./components"
 
 export default function AllInks(props) {
@@ -32,7 +32,13 @@ export default function AllInks(props) {
     });
   };
 
-  const onLoadMore = () => {
+  const onLoadMore = useCallback(() => {
+    if (
+      document.documentElement.scrollTop + window.innerHeight !==
+      document.documentElement.scrollHeight
+    )
+      return;
+
     fetchMore({
       variables: {
         skip: allInks.length
@@ -42,16 +48,19 @@ export default function AllInks(props) {
         return fetchMoreResult;
       }
     });
-  };
+  }, [fetchMore, inks.length]);
 
   useEffect(() => {
     data ? getInks(data.inks) : console.log("loading");
-
-    // window.addEventListener("scroll", onLoadMore, );
-    // return () => {
-    //   window.removeEventListener("scroll", onLoadMore);
-    // };
   }, [data]);
+
+  useEffect(() => {
+  window.addEventListener("scroll", onLoadMore);
+  return () => {
+    window.removeEventListener("scroll", onLoadMore);
+  };
+}, [onLoadMore]);
+
 
   if (loading) return <Loader/>;
   if (error) return `Error! ${error.message}`;
@@ -61,7 +70,9 @@ export default function AllInks(props) {
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
           {inks
-            ? (inks.sort(function(a, b){return b.inkNumber-a.inkNumber})).map((ink) => (
+            ? inks
+                .sort((a, b) => b.inkNumber - a.inkNumber)
+                .map((ink) => (
                 <li
                   key={ink.id}
                   style={{
@@ -86,9 +97,6 @@ export default function AllInks(props) {
             : null}
         </ul>
         <Row justify="center">
-          <Button type="primary" onClick={onLoadMore}>
-            Load more
-          </Button>
         </Row>
       </div>
     </div>

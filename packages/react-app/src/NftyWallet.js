@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
-import { Button, Badge, Tabs, Row, Col } from "antd";
+import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { ethers } from "ethers";
@@ -11,6 +11,7 @@ import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
 import CreateInk from "./CreateInk.js";
 import ViewInk from "./ViewInk.js";
+import Help from "./Help.js";
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require("web3-providers-http");
@@ -47,6 +48,7 @@ export default function NftyWallet(props) {
   const [injectedGsnSigner, setInjectedGsnSigner] = useState();
 
   const [artist, setArtist] = useState();
+  const [drawerVisibility, setDrawerVisibility] = useState(false);
 
   let transactionConfig = {
     address: props.address,
@@ -81,6 +83,14 @@ export default function NftyWallet(props) {
   if (nftyMainBalance && nftyBalance) {
     displayBalance = Number(nftyMainBalance.toString()) + Number(nftyBalance.toString());
   }
+
+  const showDrawer = () => {
+    setDrawerVisibility(true);
+  };
+
+  const onCloseDrawer = () => {
+    setDrawerVisibility(false);
+  };
 
   const badgeStyle = {
     backgroundColor: "#fff",
@@ -148,7 +158,7 @@ export default function NftyWallet(props) {
         borderRadius: 16
       }}
     >
-      <Row gutter={16} align={"middle"}>
+      <Row gutter={4} align={"middle"}>
         <Col>
           <Button
             style={{ marginRight: 8, marginTop: 8 }}
@@ -190,6 +200,24 @@ export default function NftyWallet(props) {
               🧐
             </span>
             About
+          </Button>
+        </Col>
+        <Col>
+          <Button
+            style={{ marginRight: 8, marginTop: 8 }}
+            shape="round"
+            size="large"
+            type="secondary"
+            onClick={showDrawer}
+          >
+            <span
+              style={{ marginRight: 12 }}
+              role="img"
+              aria-label="Light Bulb"
+            >
+              💡
+            </span>
+            Help
           </Button>
         </Col>
       </Row>
@@ -382,6 +410,26 @@ export default function NftyWallet(props) {
         </Route>
 
       </Switch>
+      <Drawer
+        title="How to use"
+        width={520}
+        onClose={onCloseDrawer}
+        visible={drawerVisibility}
+        bodyStyle={{ paddingBottom: 80 }}
+        footer={
+          <div
+            style={{
+              textAlign: "right"
+            }}
+          >
+            <button onClick={onCloseDrawer} style={{ marginRight: 8 }}>
+              Close
+            </button>
+          </div>
+        }
+      >
+      <Help/>
+      </Drawer>
     </div>
   );
 }
