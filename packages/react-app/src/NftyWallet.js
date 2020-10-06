@@ -74,7 +74,7 @@ export default function NftyWallet(props) {
     props.readKovanContracts,
     "NiftyMediator",
     "relayPrice",
-    9999
+    29999
   );
 
   let displayBalance;
@@ -295,6 +295,8 @@ export default function NftyWallet(props) {
             <div style={{ maxWidth: 500, margin: "0 auto" }}>
             <Holdings {...props}
               address={props.address}
+              transactionConfig={transactionConfig}
+              upgradePrice={upgradePrice}
             />
             </div>
         </Route>

@@ -3,9 +3,11 @@ import { useQuery } from "react-apollo";
 import { HOLDINGS_QUERY } from "./apollo/queries";
 import { isBlacklisted } from "./helpers";
 import { Link } from "react-router-dom";
-import { Row, Col, Divider, Switch, Button,Empty } from "antd";
+import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
 import { SendOutlined, UploadOutlined } from "@ant-design/icons";
 import { Loader } from "./components"
+import SendInkForm from "./SendInkForm.js"
+import UpgradeInkButton from "./UpgradeInkButton.js"
 
 export default function Holdings(props) {
   let [tokens, setTokens] = useState([]);
@@ -50,7 +52,7 @@ export default function Holdings(props) {
   }, [data]);
   if (loading) return <Loader/>;
   if (error) {
-    if(!props.address || (data.tokens && data.tokens.length <= 0)){
+    if(!props.address || (data && data.tokens && data.tokens.length <= 0)){
       return <Empty/>
     } else {
     return `Error! ${error.message}`;
@@ -128,12 +130,20 @@ export default function Holdings(props) {
                   </Link>
                   <Divider style={{ margin: "10px" }} />
                   <Row justify={"space-between"}>
-                    <Button size="small">
-                      <SendOutlined /> Send
-                    </Button>
-                    <Button size="small">
-                      <UploadOutlined /> Upgrade
-                    </Button>
+                  <Popover content={
+                    <SendInkForm tokenId={token.id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
+                  }
+                  title="Send Ink">
+                    <Button size="small" type="secondary" style={{margin:4,marginBottom:12}}><SendOutlined/> Send</Button>
+                  </Popover>
+                  <UpgradeInkButton
+                    tokenId={token.id}
+                    injectedProvider={props.injectedProvider}
+                    gasPrice={props.gasPrice}
+                    upgradePrice={props.upgradePrice}
+                    transactionConfig={props.transactionConfig}
+                    buttonSize="small"
+                  />
                   </Row>
                 </li>
               ))

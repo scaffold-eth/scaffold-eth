@@ -55,6 +55,9 @@ export default function UpgradeInkButton(props) {
     setUpgrading(false)
   }
 
+  let buttonSize
+  if(props.buttonSize) {buttonSize = props.buttonSize}
+
     return (<Popover content={<div style={{textAlign:'center'}} >
                 <Typography></Typography>
                 <Button type="primary" style={{ marginBottom: 12 }} onClick={()=>{relayToken(props.tokenId)}} loading={upgrading}>
@@ -62,6 +65,6 @@ export default function UpgradeInkButton(props) {
                 </div>
               }
               title={"Upgrade to Ethereum mainnet"}>
-              <Button type="secondary" style={{ margin:4, marginBottom:12 }}><UploadOutlined/>{relayPrice?'Upgrade: $'+parseFloat(ethers.utils.formatEther(relayPrice)).toFixed(2):'Upgrade'}</Button>
+              <Button type="secondary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><UploadOutlined/>{relayPrice?'Upgrade: $'+parseFloat(ethers.utils.formatEther(relayPrice)).toFixed(2):'Upgrade'}</Button>
             </Popover>)
   }
