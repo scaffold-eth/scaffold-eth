@@ -73,3 +73,12 @@ query ink($inkUrl: String!) {
   }
 }
 `;
+
+export const INK_MAIN_QUERY = gql`
+query token($inkUrl: String!) {
+  tokens(where: {ink: $inkUrl}) {
+    id
+    owner
+    ink
+  }
+}`

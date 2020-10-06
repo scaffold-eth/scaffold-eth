@@ -7,6 +7,7 @@ import { Row, Button } from "antd";
 import { Loader } from "./components"
 
 export default function AllInks(props) {
+  let [allInks, setAllInks] = useState([]);
   let [inks, setInks] = useState([]);
   const { loading, error, data, fetchMore } = useQuery(INKS_QUERY, {
     variables: {
@@ -22,6 +23,7 @@ export default function AllInks(props) {
   };
 
   const getInks = (data) => {
+    setAllInks([...allInks, ...data])
     data.forEach(async (ink) => {
       if (isBlacklisted(ink.jsonUrl)) return;
       let _ink = ink;
@@ -33,7 +35,7 @@ export default function AllInks(props) {
   const onLoadMore = () => {
     fetchMore({
       variables: {
-        skip: inks.length
+        skip: allInks.length
       },
       updateQuery: (prev, { fetchMoreResult }) => {
         if (!fetchMoreResult) return prev;
@@ -59,7 +61,7 @@ export default function AllInks(props) {
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
           {inks
-            ? inks.map((ink) => (
+            ? (inks.sort(function(a, b){return b.inkNumber-a.inkNumber})).map((ink) => (
                 <li
                   key={ink.id}
                   style={{

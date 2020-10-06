@@ -12,10 +12,17 @@ import NiftyShop from "./NiftyShop.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
 import axios from 'axios';
 import { useQuery } from "react-apollo";
-import { INK_QUERY } from "./apollo/queries"
+import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries"
 import CanvasDraw from "react-canvas-draw";
 import LZ from "lz-string";
+import ApolloClient, { InMemoryCache } from 'apollo-boost'
 var _ = require('lodash');
+
+
+const mainClient = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
+  cache: new InMemoryCache(),
+})
 
 export default function ViewInk(props) {
 
@@ -45,6 +52,12 @@ export default function ViewInk(props) {
 
   const [drawing, setDrawing] = useState()
 
+  const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(INK_MAIN_QUERY, {
+    variables: { inkUrl: hash },
+    pollInterval: 2500,
+    client: mainClient
+  });
+
   const { loading, error, data } = useQuery(INK_QUERY, {
     variables: { inkUrl: hash },
     pollInterval: 2500
@@ -59,39 +72,24 @@ export default function ViewInk(props) {
       tIpfsConfig['timeout'] = 10000
       let newInkJson = await getFromIPFS(data.ink.jsonUrl, tIpfsConfig)
 
-      let tempMainnetTokens = {}
-      for (let i of data.ink.tokens) {
-        console.log(i)
-
-        if (i['network'] === 'mainnet') {
-          console.log('checking mainnet')
-
-          try {
-            tempMainnetTokens[i['id']] = await props.readContracts['NiftyMain']["ownerOf"](i['id'])
-
-          } catch (e) { console.log(e) }
-        }
-      }
-      setMainnetTokens(tempMainnetTokens)
       setInkJson(JSON.parse(newInkJson))
     };
 
     data ? getInk(data) : console.log("loading");
   }, [data]);
 
-//  const [ipfsImageForBuffering, setIpfsImageForBuffering] = useState()
-//  useEffect(()=>{
-//    const loadFromIPFSIOForCaching = async ()=>{
-//      if(!ipfsImageForBuffering && inkChainInfo && inkChainInfo.length && inkChainInfo[1]){
-//        //we want to have the client ping the ipfs.io server to make sure to keep the assets hot?
-//        console.log("📟 https://ipfs.io/ipfs/",inkChainInfo[2])
-//        let result = await axios.get('https://ipfs.io/ipfs/'+inkChainInfo[2]);
-//        console.log("result",result.data)
-//        setIpfsImageForBuffering(result.data.image)
-//      }
-//    }
-//    loadFromIPFSIOForCaching();
-//  },[ inkChainInfo ])
+  useEffect(() => {
+    console.log('running dataMain', dataMain)
+    if(dataMain) {
+      let tempMainnetTokens = {}
+      for (let i of dataMain.tokens) {
+        console.log(i)
+        tempMainnetTokens[i['id']] = i['owner']
+        }
+
+      setMainnetTokens(tempMainnetTokens)
+    }
+  }, [dataMain]);
 
   let mintDescription
   let mintFlow
@@ -160,13 +158,11 @@ export default function ViewInk(props) {
 
 
   useEffect(()=>{
-    console.log('new drawing')
     setCanvasKey(Date.now());
     const showDrawing = async () => {
     if (hash) {
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
-      console.log('getting the drawing!', hash, tIpfsConfig)
       let drawingContent
       try {
         drawingContent = await getFromIPFS(hash, tIpfsConfig)
@@ -201,7 +197,7 @@ export default function ViewInk(props) {
     } else {
 
       const sendInkButton = (tokenOwnerAddress, tokenId) => {
-        if (tokenOwnerAddress === props.address) {
+        if (tokenOwnerAddress.toLowerCase() === props.address.toLowerCase()) {
           return (
             <Popover content={
               <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
@@ -214,7 +210,7 @@ export default function ViewInk(props) {
       }
 
       const relayTokenButton = (relayed, tokenOwnerAddress, tokenId) => {
-        if (tokenOwnerAddress === props.address && relayed === false) {
+        if (tokenOwnerAddress.toLowerCase() === props.address.toLowerCase() && relayed === false) {
           return (
             <UpgradeInkButton
               tokenId={tokenId}
@@ -257,7 +253,7 @@ export default function ViewInk(props) {
             <List.Item>
               <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider}/>
               <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item[1]} target="_blank"><LinkOutlined /></a>
-              {item.network === 'mainnet'?(mainnetTokens[item.id]?openseaButton:<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>}
+              {mainnetTokens[item.id]?openseaButton:(item.network === 'mainnet'?(<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>)}
               {sendInkButton(item.owner, item.id)}
               {relayTokenButton(item.network === 'mainnet', item.owner, item.id)}
               <div style={{marginLeft:4,marginTop:4}}>
