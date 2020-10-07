@@ -1,17 +1,32 @@
 import React, { useState, useEffect } from "react";
+import { ethers } from "ethers";
 import { useQuery } from "react-apollo";
-import { HOLDINGS_QUERY } from "./apollo/queries";
+import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY } from "./apollo/queries";
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlacklisted } from "./helpers";
-import { Link } from "react-router-dom";
-import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
-import { SendOutlined, UploadOutlined } from "@ant-design/icons";
-import { Loader } from "./components"
-import SendInkForm from "./SendInkForm.js"
-import UpgradeInkButton from "./UpgradeInkButton.js"
+import { Link, useHistory } from "react-router-dom";
+import { Row, Col, Divider, Switch, Button, Empty, Popover, Form, notification } from "antd";
+import { SendOutlined, UploadOutlined, SearchOutlined, ShareAltOutlined } from "@ant-design/icons";
+import { AddressInput, Address, Loader } from "./components";
+import SendInkForm from "./SendInkForm.js";
+import UpgradeInkButton from "./UpgradeInkButton.js";
+
+const mainClient = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
+  cache: new InMemoryCache(),
+})
 
 export default function Holdings(props) {
-  let [tokens, setTokens] = useState([]);
-  let [myCreationOnly, setmyCreationOnly] = useState(true);
+  const [tokens, setTokens] = useState([]);
+  const [myCreationOnly, setmyCreationOnly] = useState(true);
+  const [searchArtist] = Form.useForm();
+  const history = useHistory();
+
+  const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(HOLDINGS_MAIN_QUERY, {
+    variables: { owner: props.address },
+    client: mainClient
+  });
+
   const { loading, error, data } = useQuery(HOLDINGS_QUERY, {
     variables: { owner: props.address }
   });
@@ -33,7 +48,6 @@ export default function Holdings(props) {
 
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
-    console.log(data.tokens)
     setTokens([])
     !myCreationOnly
       ? getTokens(data.tokens)
@@ -47,9 +61,65 @@ export default function Holdings(props) {
         );
   };
 
+  const search = async (values) => {
+    try {
+      const newAddress = ethers.utils.getAddress(values["address"]);
+      history.push("/artist/"+newAddress);
+    } catch (e) {
+      console.log("not an address");
+      notification.open({
+        message: "📛 Not a valid address!",
+        description: "Please try again"
+      });
+    }
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const searchForm = (
+    <Row style={{ justifyContent: "center" }}>
+      <Form
+        form={searchArtist}
+        layout={"inline"}
+        name="searchArtist"
+        onFinish={search}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          name="address"
+          rules={[{ required: true, message: "Search for an Address or ENS" }]}
+        >
+          <AddressInput
+            ensProvider={props.mainnetProvider}
+            placeholder={"to address"}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" disabled={loading}>
+            <SearchOutlined />
+          </Button>
+        </Form.Item>
+      </Form>
+    </Row>
+  );
+
+  const SearchArtist = () => {
+    return (
+    <Popover content={searchForm} title="Search artist">
+      <Button type="secondary" disabled={loading}>
+        Artist <SearchOutlined />
+      </Button>
+    </Popover>
+  );
+}
+
   useEffect(() => {
     data ? getTokens(data.tokens) : console.log("loading");
   }, [data]);
+
   if (loading) return <Loader/>;
   if (error) {
     if(!props.address || (data && data.tokens && data.tokens.length <= 0)){
@@ -60,7 +130,7 @@ export default function Holdings(props) {
   }
 
   return (
-    <div style={{ width: 600, margin: "0 auto", textAlign: "center" }}>
+    <div style={{maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
       <Row>
         <Col span={12}>
           <p style={{ margin: 0 }}>
@@ -82,7 +152,8 @@ export default function Holdings(props) {
 
       <Divider />
       <Row style={{ marginBottom: 20 }}>
-        <Col span={24} offset={8}>
+        <Col span={12}><SearchArtist/></Col>
+        <Col span={12}>
           Created by me only:{" "}
           <Switch defaultChecked={!myCreationOnly} onChange={handleFilter} />
         </Col>
@@ -96,8 +167,8 @@ export default function Holdings(props) {
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
-                    margin: 7,
-                    padding: 10,
+                    margin: 4,
+                    padding: 5,
                     border: "1px solid #e5e5e6",
                     borderRadius: "10px",
                     fontWeight: "bold"
@@ -128,7 +199,7 @@ export default function Holdings(props) {
                       Edition: {token.ink.count}/{token.ink.limit}
                     </p>
                   </Link>
-                  <Divider style={{ margin: "10px" }} />
+                  <Divider style={{ margin: "10px 0" }} />
                   <Row justify={"space-between"}>
                   <Popover content={
                     <SendInkForm tokenId={token.id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>

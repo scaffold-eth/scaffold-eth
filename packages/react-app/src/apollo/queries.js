@@ -82,3 +82,16 @@ query token($inkUrl: String!) {
     ink
   }
 }`
+
+export const HOLDINGS_MAIN_QUERY = gql`
+  query tokens($owner: Bytes!) {
+    tokens(where: { owner: $owner }) {
+      id
+    	owner
+     	network
+      createdAt
+      ink
+      jsonUrl
+    }
+  }
+`;
