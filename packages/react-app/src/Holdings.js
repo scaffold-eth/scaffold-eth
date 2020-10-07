@@ -1,21 +1,32 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers"
+import { ethers } from "ethers";
 import { useQuery } from "react-apollo";
-import { HOLDINGS_QUERY } from "./apollo/queries";
+import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY } from "./apollo/queries";
+import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlacklisted } from "./helpers";
 import { Link, useHistory } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button, Empty, Popover, Form, notification } from "antd";
 import { SendOutlined, UploadOutlined, SearchOutlined, ShareAltOutlined } from "@ant-design/icons";
-import { AddressInput, Address, Loader } from "./components"
-import SendInkForm from "./SendInkForm.js"
-import UpgradeInkButton from "./UpgradeInkButton.js"
+import { AddressInput, Address, Loader } from "./components";
+import SendInkForm from "./SendInkForm.js";
+import UpgradeInkButton from "./UpgradeInkButton.js";
+
+const mainClient = new ApolloClient({
+  uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
+  cache: new InMemoryCache(),
+})
 
 export default function Holdings(props) {
   const [tokens, setTokens] = useState([]);
   const [myCreationOnly, setmyCreationOnly] = useState(true);
   const [searchArtist] = Form.useForm();
   const history = useHistory();
-  let searchFlow;
+
+  const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(HOLDINGS_MAIN_QUERY, {
+    variables: { owner: props.address },
+    client: mainClient
+  });
+
   const { loading, error, data } = useQuery(HOLDINGS_QUERY, {
     variables: { owner: props.address }
   });
@@ -95,13 +106,15 @@ export default function Holdings(props) {
     </Row>
   );
 
-  searchFlow = (
+  const SearchArtist = () => {
+    return (
     <Popover content={searchForm} title="Search artist">
       <Button type="secondary" disabled={loading}>
         Artist <SearchOutlined />
       </Button>
     </Popover>
   );
+}
 
   useEffect(() => {
     data ? getTokens(data.tokens) : console.log("loading");
@@ -139,7 +152,7 @@ export default function Holdings(props) {
 
       <Divider />
       <Row style={{ marginBottom: 20 }}>
-        <Col span={12}>{searchFlow}</Col>
+        <Col span={12}><SearchArtist/></Col>
         <Col span={12}>
           Created by me only:{" "}
           <Switch defaultChecked={!myCreationOnly} onChange={handleFilter} />
