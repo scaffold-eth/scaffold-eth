@@ -190,8 +190,7 @@ export default function ViewInk(props) {
   }, [hash])
 
   useEffect(()=>{
-    if(props.address && props.address.toLowerCase() === data.ink.artist.id) {
-      console.log(data.ink,data.ink.count < data.ink.limit)
+    if(props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) {
 
         if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
           const mintInkForm = (
@@ -238,7 +237,7 @@ export default function ViewInk(props) {
                         itemForSale={hash}
                         gasPrice={props.gasPrice}
                         address={props.address?props.address.toLowerCase():null}
-                        ownerAddress={data.ink.artist}
+                        ownerAddress={data.ink.artist.id}
                         priceNonce={data.ink.mintPriceNonce}
                         price={data.ink.mintPrice}
                         transactionConfig={props.transactionConfig}
@@ -246,7 +245,7 @@ export default function ViewInk(props) {
                         />)
                       }
                     }
-  },[props.address, data])
+  },[props.address])
 
 
 
@@ -328,7 +327,7 @@ export default function ViewInk(props) {
               address={props.address?props.address.toLowerCase():null}
               ownerAddress={item.owner}
               price={item.price}
-              visible={!item.network === 'mainnet'}
+              visible={!(item.network === 'mainnet')}
               transactionConfig={props.transactionConfig}
               />
               </div>
