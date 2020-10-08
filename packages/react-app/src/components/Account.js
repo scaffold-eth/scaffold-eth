@@ -9,6 +9,7 @@ import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
 //import Fortmatic from "fortmatic";
 //import Portis from "@portis/web3";
+const Web3HttpProvider = require("web3-providers-http");
 
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
 
@@ -117,15 +118,6 @@ export default function Account(props) {
     const gsnSigner = gsnWeb3Provider.getSigner(props.address)
     props.setInjectedGsnSigner(gsnSigner)
 
-    /*
-    let newNetwork = await newWeb3Provider.getNetwork()
-    let localNetwork = await props.localProvider.getNetwork()
-    console.log('networkcomparison',provider,props.localProvider)
-    if(newNetwork.chainId !== localNetwork.chainId) {
-      warning(localNetwork.name, localNetwork.chainId)
-    }
-    */
-
   }
 
   const pollInjectedProvider = async ()=>{
@@ -200,6 +192,33 @@ export default function Account(props) {
     }
   }
   checkForProvider()
+
+  const createBurnerMetaSigner = async () => {
+    let origProvider;
+    if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
+      origProvider = new Web3HttpProvider("https://dai.poa.network");
+    } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
+      origProvider = new ethers.providers.InfuraProvider(
+        "kovan",
+        "9ea7e149b122423991f56257b882261c"
+      );
+    } else {
+      origProvider = new ethers.providers.JsonRpcProvider(
+        "http://localhost:8546"
+      );
+    }
+    const gsnProvider = new RelayProvider(origProvider, gsnConfig);
+
+    const account = await gsnProvider.newAccount();
+    let from = account.address;
+
+    const provider = new ethers.providers.Web3Provider(gsnProvider);
+    const signer = provider.getSigner(from);
+
+    props.setMetaProvider(signer);
+  }
+  createBurnerMetaSigner()
+
   }, []);
 
   let display=""

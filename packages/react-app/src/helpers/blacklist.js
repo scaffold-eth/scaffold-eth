@@ -9,8 +9,9 @@ const blacklist = [
   "Qmbpm61GFdoU13nCu6wP1mejFDK9BQ9gKVUmmTQiY77m6x",
   "QmNnoHKiWHnfqQ4CjLgbJEeFvFqC1h5Be4Dwaa25t6TJXs",
   "QmQZmDkMiv8EsrMwmb8Wt5REEp3SmoMFJJ6UAL8YNsKFnd",
-  "QmWaSkL3MaYvnYUuWsRbrJyFmH7pirUFRYoNUiAF9FEojN"
-]
+  "QmWaSkL3MaYvnYUuWsRbrJyFmH7pirUFRYoNUiAF9FEojN",
+  "QmU65N3U9hBHh2j4nocUERYpbkdytHhdbE4W3WCrzaK3aY"
+];
 
 export default function isBlacklisted(hash) {
   return (blacklist.indexOf(hash)>=0)

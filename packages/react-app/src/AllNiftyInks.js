@@ -9,11 +9,10 @@ const LOADERS_TO_SHOW = 16
 const BATCH_DOWNLOAD = 8
 
 export default function NftyWallet(props) {
-  //const [allInks, setAllInks] = useState()
-  const [allInksArray, setAllInksArray] = useState([])
+  const [allInksArray, setAllInksArray] = useState([]);
 
-  let allInkView
-  const [lastStreamCount, setLastStreamCount] = useState("0")
+  let allInkView;
+  const [lastStreamCount, setLastStreamCount] = useState("0");
 
   let [inkPage, setInkPage] = useState(0)
   let [lastInkPage, setLastInkPage] = useState(0)
@@ -35,13 +34,20 @@ export default function NftyWallet(props) {
         setLastInkPage(inkPage)
 
         const getInkImages = async (e) => {
-          const jsonContent = await getFromIPFS(e['jsonUrl'], props.ipfsConfig)
-          const inkJson = JSON.parse(jsonContent)
-          const inkImageHash = inkJson.image.split('/').pop()
-          const imageContent = await getFromIPFS(inkImageHash, props.ipfsConfig)
-          const inkImageURI = 'data:image/png;base64,' + imageContent.toString('base64')
-          return Object.assign({image: inkImageURI, name: inkJson.name, url: inkJson.drawing}, e);
-        }
+          const jsonContent = await getFromIPFS(e["jsonUrl"], props.ipfsConfig);
+          const inkJson = JSON.parse(jsonContent);
+          const inkImageHash = inkJson.image.split("/").pop();
+          const imageContent = await getFromIPFS(
+            inkImageHash,
+            props.ipfsConfig
+          );
+          const inkImageURI =
+            "data:image/png;base64," + imageContent.toString("base64");
+          return Object.assign(
+            { image: inkImageURI, name: inkJson.name, url: inkJson.drawing },
+            e
+          );
+        };
 
         const loadStream = async () => {
           if(inkCreations) {
@@ -64,29 +70,32 @@ export default function NftyWallet(props) {
               }else{
                 skips++
               }
-              if(promises.length>=BATCH_DOWNLOAD){
-                for(var p = 0; p <= (promises.length-skips); p++){
-                  let result
+              if (promises.length >= BATCH_DOWNLOAD) {
+                for (var p = 0; p <= promises.length - skips; p++) {
+                  let result;
                   try {
-                    result = await promises[p]
-                    if(result){
-                      //let thisIndex = i-(promises.length-1)+p-skips
-                      //console.log("thisIndex",thisIndex)
-                      allInks[newIndex++] = result
-                      setAllInksArray(allInks)
+                    result = await promises[p];
+                    if (result) {
+                      allInks[newIndex++] = result;
+                      setAllInksArray(allInks);
                     }
-                  } catch (e) {console.log("FAILED TO LOAD FROM IPFS =====>",hashesForDebugging[p])}
+                  } catch (e) {
+                    console.log(
+                      "FAILED TO LOAD FROM IPFS =====>",
+                      hashesForDebugging[p]
+                    );
+                  }
                 }
-                promises = []
-                hashesForDebugging = []
-                skips = 0
+                promises = [];
+                hashesForDebugging = [];
+                skips = 0;
               }
             }
           }
           setLoading(false)
         }
 
-        loadStream()
+        loadStream();
       }
     }
   },[props.tab, props.totalInks, inkPage])
@@ -119,8 +128,8 @@ export default function NftyWallet(props) {
         </>
         )
   } else {
-    allInkView = (<Loader/>)
+    allInkView = <Loader />;
   }
 
-  return allInkView
+  return allInkView;
 }
