@@ -77,9 +77,7 @@ export default function ViewInk(props) {
 
     data ? getInk(data) : console.log("loading");
 
-    if(props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) {
-
-        if(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0") {
+    if((props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) && (parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0")) {
           const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>
 
@@ -115,23 +113,22 @@ export default function ViewInk(props) {
             <Button type="secondary"><SendOutlined/> Mint</Button>
             </Popover>
           )
-          console.log(data.ink)
-          setBuyButton(<NiftyShop
-                        injectedProvider={props.injectedProvider}
-                        metaProvider={props.metaProvider}
-                        type={'ink'}
-                        ink={inkJson}
-                        itemForSale={hash}
-                        gasPrice={props.gasPrice}
-                        address={props.address?props.address.toLowerCase():null}
-                        ownerAddress={data.ink.artist.id}
-                        priceNonce={data.ink.mintPriceNonce?data.ink.mintPriceNonce:"0"}
-                        price={data.ink.mintPrice}
-                        transactionConfig={props.transactionConfig}
-                        visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
-                        />)
-                      }
-                    }
+        }
+    (data && data.ink) ? setBuyButton(<NiftyShop
+                                        injectedProvider={props.injectedProvider}
+                                        metaProvider={props.metaProvider}
+                                        type={'ink'}
+                                        ink={inkJson}
+                                        itemForSale={hash}
+                                        gasPrice={props.gasPrice}
+                                        address={props.address?props.address.toLowerCase():null}
+                                        ownerAddress={data.ink.artist.id}
+                                        priceNonce={data.ink.mintPriceNonce?data.ink.mintPriceNonce:"0"}
+                                        price={data.ink.mintPrice}
+                                        transactionConfig={props.transactionConfig}
+                                        visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
+                                        />) : console.log('waiting')
+
   }, [data, props.address]);
 
   useEffect(() => {
