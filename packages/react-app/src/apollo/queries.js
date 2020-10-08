@@ -95,3 +95,17 @@ export const HOLDINGS_MAIN_QUERY = gql`
     }
   }
 `;
+
+export const HOLDINGS_MAIN_INKS_QUERY = gql`
+  query inks($inkList: [String!]) {
+    inks(where: {id_in: $inkList}) {
+      id
+      jsonUrl
+      limit
+      count
+      artist {
+        address
+      }
+    }
+  }
+`;

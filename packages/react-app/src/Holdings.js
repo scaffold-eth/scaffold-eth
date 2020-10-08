@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import { useQuery } from "react-apollo";
-import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY } from "./apollo/queries";
+import { useQuery, useLazyQuery } from "react-apollo";
+import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY, HOLDINGS_MAIN_INKS_QUERY } from "./apollo/queries";
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlacklisted } from "./helpers";
 import { Link, useHistory } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button, Empty, Popover, Form, notification } from "antd";
-import { SendOutlined, UploadOutlined, SearchOutlined, ShareAltOutlined } from "@ant-design/icons";
+import { SendOutlined, UploadOutlined, SearchOutlined, ShareAltOutlined, RocketOutlined } from "@ant-design/icons";
 import { AddressInput, Address, Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
 import UpgradeInkButton from "./UpgradeInkButton.js";
@@ -27,6 +27,8 @@ export default function Holdings(props) {
     client: mainClient
   });
 
+  const [mainInksQuery, { loading: loadingMainInks, error: errorMainInks, data: dataMainInks }] = useLazyQuery(HOLDINGS_MAIN_INKS_QUERY)
+
   const { loading, error, data } = useQuery(HOLDINGS_QUERY, {
     variables: { owner: props.address }
   });
@@ -41,7 +43,34 @@ export default function Holdings(props) {
     data.forEach(async (token) => {
       if (isBlacklisted(token.ink.jsonUrl)) return;
       let _token = token;
+      _token.network = 'xDai'
       _token.ink.metadata = await getMetadata(token.ink.jsonUrl);
+      setTokens((tokens) => [...tokens, _token]);
+    });
+  };
+
+  const getMainInks = async (data) => {
+    let _inkList = data.map(a => a.ink);
+    console.log(_inkList)
+    let mainInks = await mainInksQuery({
+      variables: { inkList: _inkList }
+    })
+    console.log(mainInks)
+  };
+
+
+  const getMainTokens = (data, inks, ownerIsArtist = false) => {
+    console.log('final step!', data, inks)
+    data.forEach(async (token) => {
+      if (isBlacklisted(token.jsonUrl)) return;
+      let _token = Object.assign({}, token);
+      const _tokenInk = inks.filter(ink => ink.id === _token.ink)
+      console.log(_tokenInk)
+      _token.ink = _tokenInk[0]
+      if (ownerIsArtist && _token.ink.artist.address !== props.address.toLowerCase()) return;
+      _token.network = 'Mainnet'
+      _token.ink.metadata = await getMetadata(token.jsonUrl);
+      console.log(_token)
       setTokens((tokens) => [...tokens, _token]);
     });
   };
@@ -49,9 +78,12 @@ export default function Holdings(props) {
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
     setTokens([])
-    !myCreationOnly
-      ? getTokens(data.tokens)
-      : getTokens(
+    if(!myCreationOnly) {
+        getTokens(data.tokens)
+        getMainTokens(dataMain.tokens, dataMainInks.inks)
+      }
+      else {
+        getTokens(
           data.tokens
             .filter(
               (token) =>
@@ -59,6 +91,8 @@ export default function Holdings(props) {
             )
             .reverse()
         );
+        getMainTokens(dataMain.tokens, dataMainInks.inks, true)
+      }
   };
 
   const search = async (values) => {
@@ -117,8 +151,17 @@ export default function Holdings(props) {
 }
 
   useEffect(() => {
-    data ? getTokens(data.tokens) : console.log("loading");
+    data ? getTokens(data.tokens) : console.log("loading tokens");
   }, [data]);
+
+  useEffect(() => {
+    dataMain ? getMainInks(dataMain.tokens) : console.log("loading main inks");
+  }, [dataMain]);
+
+  useEffect(() => {
+    console.log(dataMainInks)
+    dataMain && dataMainInks ? getMainTokens(dataMain.tokens, dataMainInks.inks) : console.log("loading main tokens");
+  }, [dataMainInks]);
 
   if (loading) return <Loader/>;
   if (error) {
@@ -201,6 +244,8 @@ export default function Holdings(props) {
                   </Link>
                   <Divider style={{ margin: "10px 0" }} />
                   <Row justify={"space-between"}>
+                  {token.network==="xDai"
+                  ? <>
                   <Popover content={
                     <SendInkForm tokenId={token.id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
                   }
@@ -214,7 +259,15 @@ export default function Holdings(props) {
                     upgradePrice={props.upgradePrice}
                     transactionConfig={props.transactionConfig}
                     buttonSize="small"
-                  />
+                  /></>
+                  : <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
+                      console.log("item",token)
+                      window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+token.id)
+                    }}>
+                     <RocketOutlined />  View on OpenSea
+                    </Button>
+
+                  }
                   </Row>
                 </li>
               ))

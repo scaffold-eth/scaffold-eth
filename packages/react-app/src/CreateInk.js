@@ -15,8 +15,6 @@ const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
 
 export default function CreateInk(props) {
 
-  console.log('createInk!')
-
   let history = useHistory();
 
   const [picker, setPicker] = useLocalStorage("picker", 0)
