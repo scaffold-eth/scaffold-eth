@@ -16,7 +16,6 @@ import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries"
 import CanvasDraw from "react-canvas-draw";
 import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from 'apollo-boost'
-var _ = require('lodash');
 
 
 const mainClient = new ApolloClient({
@@ -38,6 +37,8 @@ export default function ViewInk(props) {
   const [buying, setBuying] = useState(false)
   const [mintForm] = Form.useForm();
   const [priceForm] = Form.useForm();
+  const [buyButton, setBuyButton] = useState()
+  const [mintFlow, setMintFlow] = useState()
 
   const metaWriteContracts = useContractLoader(props.metaProvider);
   const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
@@ -45,7 +46,7 @@ export default function ViewInk(props) {
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
 //  const [inkPrice, setInkPrice] = useState(0)
-  const [mintedCount, setMintedCount] = useState()
+  //const [mintedCount, setMintedCount] = useState()
 
   const [inkJson, setInkJson] = useState({})
   const [mainnetTokens, setMainnetTokens] = useState({})
@@ -64,10 +65,8 @@ export default function ViewInk(props) {
   });
 
   useEffect(() => {
-    console.log('running')
 
     const getInk = async (data) => {
-      console.log(data)
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
       let newInkJson = await getFromIPFS(data.ink.jsonUrl, tIpfsConfig)
@@ -76,7 +75,60 @@ export default function ViewInk(props) {
     };
 
     data ? getInk(data) : console.log("loading");
-  }, [data]);
+
+    if((props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) && (parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0")) {
+          const mintInkForm = (
+            <Row style={{justifyContent: 'center'}}>
+
+            <Form
+            form={mintForm}
+            layout={'inline'}
+            name="mintInk"
+            onFinish={mint}
+            onFinishFailed={onFinishFailed}
+            >
+            <Form.Item
+            name="to"
+            rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
+            >
+            <AddressInput
+            ensProvider={props.mainnetProvider}
+            placeholder={"to address"}
+            />
+            </Form.Item>
+
+            <Form.Item >
+            <Button type="primary" htmlType="submit" loading={minting}>
+            Mint
+            </Button>
+            </Form.Item>
+            </Form>
+
+            </Row>
+          )
+          setMintFlow(
+            <Popover content={mintInkForm}
+            title="Mint">
+            <Button type="secondary"><SendOutlined/> Mint</Button>
+            </Popover>
+          )
+        }
+    (data && data.ink) ? setBuyButton(<NiftyShop
+                                        injectedProvider={props.injectedProvider}
+                                        metaProvider={props.metaProvider}
+                                        type={'ink'}
+                                        ink={inkJson}
+                                        itemForSale={hash}
+                                        gasPrice={props.gasPrice}
+                                        address={props.address?props.address.toLowerCase():null}
+                                        ownerAddress={data.ink.artist.id}
+                                        priceNonce={data.ink.mintPriceNonce?data.ink.mintPriceNonce:"0"}
+                                        price={data.ink.mintPrice}
+                                        transactionConfig={props.transactionConfig}
+                                        visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
+                                        />) : console.log('waiting')
+
+  }, [data, props.address]);
 
   useEffect(() => {
     console.log('running dataMain', dataMain)
@@ -92,8 +144,6 @@ export default function ViewInk(props) {
   }, [dataMain]);
 
   let mintDescription
-  let mintFlow
-  let buyButton
   let inkChainInfoDisplay
   let detailContent
   let likeButtonDisplay
@@ -109,7 +159,7 @@ export default function ViewInk(props) {
     let signatureFunction = "mintFromSignature"
     let signatureFunctionArgs = [values['to'], hash]
     let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,mintedCount]
+    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
 
     let mintInkConfig = {
       ...props.transactionConfig,
@@ -195,9 +245,8 @@ export default function ViewInk(props) {
         </div>
       )
     } else {
-
       const sendInkButton = (tokenOwnerAddress, tokenId) => {
-        if (tokenOwnerAddress.toLowerCase() === props.address.toLowerCase()) {
+        if (props.address && tokenOwnerAddress.toLowerCase() === props.address.toLowerCase()) {
           return (
             <Popover content={
               <SendInkForm tokenId={tokenId} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
@@ -210,7 +259,7 @@ export default function ViewInk(props) {
       }
 
       const relayTokenButton = (relayed, tokenOwnerAddress, tokenId) => {
-        if (tokenOwnerAddress.toLowerCase() === props.address.toLowerCase() && relayed === false) {
+        if (props.address && tokenOwnerAddress.toLowerCase() === props.address.toLowerCase() && relayed === false) {
           return (
             <UpgradeInkButton
               tokenId={tokenId}
@@ -264,10 +313,10 @@ export default function ViewInk(props) {
               ink={inkJson}
               itemForSale={item.id}
               gasPrice={props.gasPrice}
-              address={props.address}
+              address={props.address?props.address.toLowerCase():null}
               ownerAddress={item.owner}
               price={item.price}
-              visible={!item.network === 'mainnet'}
+              visible={!(item.network === 'mainnet')}
               transactionConfig={props.transactionConfig}
               />
               </div>
@@ -292,65 +341,6 @@ export default function ViewInk(props) {
               <Descriptions.Item label="Price">{(data.ink.mintPrice > 0)?ethers.utils.formatEther(data.ink.mintPrice):"No price set"}</Descriptions.Item>
             </Descriptions>
           )
-
-    buyButton = (<NiftyShop
-                  injectedProvider={props.injectedProvider}
-                  metaProvider={props.metaProvider}
-                  type={'ink'}
-                  ink={inkJson}
-                  itemForSale={hash}
-                  gasPrice={props.gasPrice}
-                  address={props.address}
-                  ownerAddress={data.ink.artist}
-                  priceNonce={data.ink.mintPriceNonce}
-                  price={data.ink.mintPrice}
-                  transactionConfig={props.transactionConfig}
-                  visible={data.ink.count?(data.ink.count < data.ink.limit || data.ink.limit === "0"):false}
-                  />)
-
-      if(props.address === data.ink.artist.id) {
-
-          if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
-
-          const mintInkForm = (
-            <Row style={{justifyContent: 'center'}}>
-
-            <Form
-            form={mintForm}
-            layout={'inline'}
-            name="mintInk"
-            onFinish={mint}
-            onFinishFailed={onFinishFailed}
-            >
-            <Form.Item
-            name="to"
-            rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
-            >
-            <AddressInput
-            ensProvider={props.mainnetProvider}
-            placeholder={"to address"}
-            />
-            </Form.Item>
-
-            <Form.Item >
-            <Button type="primary" htmlType="submit" loading={minting}>
-            Mint
-            </Button>
-            </Form.Item>
-            </Form>
-
-            </Row>
-          )
-          mintFlow =       (
-            <Popover content={mintInkForm}
-            title="Mint">
-            <Button type="secondary"><SendOutlined/> Mint</Button>
-            </Popover>
-          )
-        }
-
-
-    }
 
         likeButtonDisplay = (
           <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>

@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
-import { ethers } from "ethers";
 import { RelayProvider } from "@opengsn/gsn";
-import { Account, Contract } from "./components";
+import { Account } from "./components";
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
@@ -63,14 +62,14 @@ export default function NftyWallet(props) {
     "NiftyToken",
     "balanceOf",
     [props.address],
-    2777
+    4000
   );
   let nftyMainBalance = useContractReader(
     props.readContracts,
     "NiftyMain",
     "balanceOf",
     [props.address],
-    2777
+    4000
   );
   let upgradePrice = useContractReader(
     props.readKovanContracts,
@@ -229,7 +228,6 @@ export default function NftyWallet(props) {
       <Tabs
         activeKey={tab}
         onChange={(t) => {
-          // window.history.pushState({ id: "draw" }, "draw", "/");
           setTab(t);
         }}
         style={{ marginTop: 0, padding: 8, textAlign: "center" }}
@@ -320,19 +318,15 @@ export default function NftyWallet(props) {
         </Route>
 
         <Route path="/holdings">
-            <div style={{ maxWidth: 500, margin: "0 auto" }}>
             <Holdings {...props}
               address={props.address}
               transactionConfig={transactionConfig}
               upgradePrice={upgradePrice}
             />
-            </div>
         </Route>
 
         <Route path="/artist/:address">
-          <div style={{ maxWidth: 500, margin: "0 auto" }}>
           <Artist {...props} />
-          </div>
         </Route>
 
         <Route path="/create">

@@ -1,18 +1,71 @@
 import React, { useState, useEffect } from "react";
-import { useParams, Link } from "react-router-dom";
+import { ethers } from "ethers";
+import { useParams, Link, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
 import { ARTISTS_QUERY } from "./apollo/queries"
 import { isBlacklisted } from "./helpers";
-import { Row, Col, Divider } from "antd";
+import { Row, Col, Divider, Button, Popover, Form, notification } from "antd";
+import { SearchOutlined } from "@ant-design/icons";
 import Blockies from "react-blockies";
-import { Loader } from "./components"
+import { AddressInput, Loader } from "./components"
 
 export default function Artist(props) {
-  let { address } = useParams();
-  let [inks, setInks] = useState([]);
+  const { address } = useParams();
+  const [inks, setInks] = useState([]);
+  const [searchArtist] = Form.useForm();
+  const history = useHistory();
+
   const { loading, error, data } = useQuery(ARTISTS_QUERY, {
     variables: { address: address }
   });
+
+  const search = async (values) => {
+    try {
+      const newAddress = ethers.utils.getAddress(values["address"]);
+      history.push("/artist/"+newAddress);
+    } catch (e) {
+      console.log("not an address");
+      notification.open({
+        message: "📛 Not a valid address!",
+        description: "Please try again"
+      });
+    }
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const SearchForm = () => {
+    return (
+    <Row style={{ justifyContent: "center" }}>
+      <Form
+        form={searchArtist}
+        layout={"inline"}
+        name="searchArtist"
+        onFinish={search}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          name="address"
+          rules={[{ required: true, message: "Search for an Address or ENS" }]}
+        >
+          <AddressInput
+            ensProvider={props.mainnetProvider}
+            placeholder={"Search artist"}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" disabled={loading}>
+            <SearchOutlined />
+          </Button>
+        </Form.Item>
+      </Form>
+    </Row>
+  )
+  };
+
 
   useEffect(() => {
     const getMetadata = async (jsonURL) => {
@@ -22,6 +75,7 @@ export default function Artist(props) {
     };
 
     const getInks = (data) => {
+      setInks([]);
       data.forEach(async (ink) => {
         if (isBlacklisted(ink.jsonUrl)) return;
         let _ink = ink;
@@ -37,7 +91,7 @@ export default function Artist(props) {
   if (error) return `Error! ${error.message}`;
 
   return (
-    <div style={{ width: 600, margin: "0 auto" }}>
+    <div style={{ maxWidth: 700, margin: "0 auto" }}>
       <div>
         <Row style={{ textAlign: "center" }}>
           <Col span={12} offset={6}>
@@ -70,11 +124,15 @@ export default function Artist(props) {
         </Row>
       </div>
       <Divider />
+      <Row style={{ marginBottom: 20 }}>
+        <Col span={24}><SearchForm/></Col>
+      </Row>
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
           {inks
             ? inks.map((ink) => (
                 <li
+                  key={ink.id}
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
@@ -125,19 +183,15 @@ export default function Artist(props) {
                         alt="xdai"
                         style={{ marginLeft: 5 }}
                       /></>)
-                      : null }
+                      : <>
+                      <img
+                        src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
+                        alt="xdai"
+                        style={{ marginLeft: 5, visibility: "hidden" }}
+                      />
+                      </> }
                     </Row>
                     <Divider style={{ margin: "8px 0px" }} />
-                    <p
-                      style={{
-                        color: "#5e5e5e",
-                        margin: "0",
-                        zoom: 0.8
-                      }}
-                    >
-
-                      {ink.sales.length ? 'Last sold: $' + ink.sales[0].price / 1e18 : null}
-                    </p>
                     <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
                       {'Edition: ' + ink.count + (ink.limit>0?'/' + ink.limit:'')}
                     </p>

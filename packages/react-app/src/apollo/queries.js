@@ -3,6 +3,7 @@ import { gql } from 'apollo-boost';
 export const ARTISTS_QUERY = gql`
   query artists($address: Bytes!) {
     artists(where: { address: $address }) {
+      id
       inkCount
       address
       inks(orderBy: createdAt, orderDirection: desc) {
@@ -13,6 +14,7 @@ export const ARTISTS_QUERY = gql`
         mintPrice
         createdAt
         sales {
+          id
           price
         }
       }
@@ -27,6 +29,7 @@ export const INKS_QUERY = gql`
       createdAt
       jsonUrl
       artist {
+        id
         address
       }
     }
@@ -44,6 +47,7 @@ export const HOLDINGS_QUERY = gql`
         limit
         count
         artist {
+          id
           address
         }
       }
@@ -92,6 +96,21 @@ export const HOLDINGS_MAIN_QUERY = gql`
       createdAt
       ink
       jsonUrl
+    }
+  }
+`;
+
+export const HOLDINGS_MAIN_INKS_QUERY = gql`
+  query inks($inkList: [String!]) {
+    inks(where: {id_in: $inkList}) {
+      id
+      jsonUrl
+      limit
+      count
+      artist {
+        id
+        address
+      }
     }
   }
 `;

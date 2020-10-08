@@ -3,9 +3,9 @@ import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, Typography, notification, message, Spin, Col, Slider, Space } from 'antd';
-import { useLocalStorage, useContractLoader } from "./hooks"
-import { Transactor, addToIPFS, getFromIPFS, transactionHandler } from "./helpers"
+import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space } from 'antd';
+import { useLocalStorage } from "./hooks"
+import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker } from 'react-color';
 import LZ from "lz-string";
