@@ -1,34 +1,72 @@
 import React from "react";
+import { Row, Divider } from "antd";
 
 export default function Help() {
   return(
     <div>
-    <h3>- Connect with MetaMask</h3>
-    <ul>
+    <h2 style={{fontWeight: "bold"}}>Connect with MetaMask</h2>
+    <ul style={{ padding: 0 }}>
       <p>
-        1- Open Metamask, and select "Custom RPC" from the Network Dropdown.
+        1- Open MetaMask, and select "Custom RPC" from the Network Dropdown.
       </p>
-      <img
-        width="300"
-        src="https://gblobscdn.gitbook.com/assets%2F-Lpi9AHj62wscNlQjI-l%2F-M4oHJb9sfXw_T_UxNG_%2F-M4oHQEsI2DlDy9y2UgE%2Fcustom-rpc.png?alt=media&token=88e78a8b-c396-4f10-8390-f90cece906fe"
-        alt="metamask"
-      />
+      <Row justify="center">
+        <div style={{marginBottom: 20}}>
+          <img
+            width="300"
+            src="https://gateway.pinata.cloud/ipfs/QmRnTpJuVDq1cTvWcfzEttpgysnnsbhCmmmR7QxXxBtyfz"
+            alt="metamask"
+          />
+        </div>
+      </Row>
       <p>
         2- In the "Custom RPC" Settings, add in the xDai network details and
         click Save:
       </p>
-
-      <li>Network Name: <b>xDai</b></li>
-      <li>New RPC URL: <b>https://rpc.xdaichain.com</b></li>
-      <li>ChainID (Optional): <b>100</b></li>
-      <li>Symbol: <b>xDai</b></li>
-      <li>Block Explorer URL: <b>https://blockscout.com/poa/xdai</b></li>
+      <ul>
+        <li>Network Name: <b>xDAI</b></li>
+        <li>New RPC URL: <b>https://dai.poa.network</b></li>
+        <li>ChainID (Optional): <b>100</b></li>
+        <li>Symbol: <b>xDAI</b></li>
+        <li>Block Explorer URL: <b>https://blockscout.com/poa/xdai</b></li>
+      </ul>
+      <Row justify="center">
+        <div style={{margin: "20px 0"}}>
+          <img
+            width="300"
+            src="https://gateway.pinata.cloud/ipfs/QmU8mstL7PzoPnCzJgwrJcn6C2UVgcgsFt1bTuM2aqZ5z3"
+            alt="metamask-2"
+          />
+        </div>
+      </Row>
     </ul>
-    <h3>- Export burning wallet private key</h3>
+    <Divider />
+    <h2 style={{fontWeight: "bold"}}>Export burning wallet private key</h2>
+    <p>If you are not using MetaMask, you can export your burning wallet private key: </p>
     <ul>
-      <li>Bla bla bla</li>
-      <li>Bla bla bla</li>
+      <li>Click on "Wallet" button</li>
+      <Row justify="center">
+        <div>
+          <img
+            width="400"
+            src="https://gateway.pinata.cloud/ipfs/QmbsYrJ8xyMpTnFZxb9WUewoDCn3Z2YXd9mu5nK5JrmTYN"
+            alt="export-private-key-1"
+          />
+        </div>
+      </Row>
+      <li>Click on "Private Key" button</li>
+      <Row justify="center">
+        <div style={{margin: "20px 0"}}>
+          <img
+            width="400"
+            src="https://gateway.pinata.cloud/ipfs/QmNrApV7hdKR7yCC6Dmhp7NfYXddNVGVTNsGhsL7r84vPV"
+            alt="export-private-key-2"
+          />
+        </div>
+      </Row>
     </ul>
+    <Divider />
+    <h2 style={{fontWeight: "bold"}}>Upgrade inks to Ethereum mainnet</h2>
+    <p>....</p>
     </div>
   )
 }
