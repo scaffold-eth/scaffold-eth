@@ -77,7 +77,63 @@ export default function ViewInk(props) {
     };
 
     data ? getInk(data) : console.log("loading");
-  }, [data]);
+
+    if(props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) {
+
+        if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
+          const mintInkForm = (
+            <Row style={{justifyContent: 'center'}}>
+
+            <Form
+            form={mintForm}
+            layout={'inline'}
+            name="mintInk"
+            onFinish={mint}
+            onFinishFailed={onFinishFailed}
+            >
+            <Form.Item
+            name="to"
+            rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
+            >
+            <AddressInput
+            ensProvider={props.mainnetProvider}
+            placeholder={"to address"}
+            />
+            </Form.Item>
+
+            <Form.Item >
+            <Button type="primary" htmlType="submit" loading={minting}>
+            Mint
+            </Button>
+            </Form.Item>
+            </Form>
+
+            </Row>
+          )
+          setMintFlow(
+            <Popover content={mintInkForm}
+            title="Mint">
+            <Button type="secondary"><SendOutlined/> Mint</Button>
+            </Popover>
+          )
+
+          setBuyButton(<NiftyShop
+                        injectedProvider={props.injectedProvider}
+                        metaProvider={props.metaProvider}
+                        type={'ink'}
+                        ink={inkJson}
+                        itemForSale={hash}
+                        gasPrice={props.gasPrice}
+                        address={props.address?props.address.toLowerCase():null}
+                        ownerAddress={data.ink.artist.id}
+                        priceNonce={data.ink.mintPriceNonce}
+                        price={data.ink.mintPrice}
+                        transactionConfig={props.transactionConfig}
+                        visible={data.ink.count?(data.ink.count < data.ink.limit || data.ink.limit === "0"):false}
+                        />)
+                      }
+                    }
+  }, [data, props.address]);
 
   useEffect(() => {
     console.log('running dataMain', dataMain)
@@ -188,66 +244,6 @@ export default function ViewInk(props) {
     showDrawing()
 
   }, [hash])
-
-  useEffect(()=>{
-    if(props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) {
-
-        if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
-          const mintInkForm = (
-            <Row style={{justifyContent: 'center'}}>
-
-            <Form
-            form={mintForm}
-            layout={'inline'}
-            name="mintInk"
-            onFinish={mint}
-            onFinishFailed={onFinishFailed}
-            >
-            <Form.Item
-            name="to"
-            rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
-            >
-            <AddressInput
-            ensProvider={props.mainnetProvider}
-            placeholder={"to address"}
-            />
-            </Form.Item>
-
-            <Form.Item >
-            <Button type="primary" htmlType="submit" loading={minting}>
-            Mint
-            </Button>
-            </Form.Item>
-            </Form>
-
-            </Row>
-          )
-          setMintFlow(
-            <Popover content={mintInkForm}
-            title="Mint">
-            <Button type="secondary"><SendOutlined/> Mint</Button>
-            </Popover>
-          )
-
-          setBuyButton(<NiftyShop
-                        injectedProvider={props.injectedProvider}
-                        metaProvider={props.metaProvider}
-                        type={'ink'}
-                        ink={inkJson}
-                        itemForSale={hash}
-                        gasPrice={props.gasPrice}
-                        address={props.address?props.address.toLowerCase():null}
-                        ownerAddress={data.ink.artist.id}
-                        priceNonce={data.ink.mintPriceNonce}
-                        price={data.ink.mintPrice}
-                        transactionConfig={props.transactionConfig}
-                        visible={data.ink.count?(data.ink.count < data.ink.limit || data.ink.limit === "0"):false}
-                        />)
-                      }
-                    }
-  },[props.address])
-
-
 
     if (!inkJson || !inkJson.name || !data) {
       inkChainInfoDisplay = (
