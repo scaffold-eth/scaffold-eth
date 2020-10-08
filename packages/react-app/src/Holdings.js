@@ -60,7 +60,6 @@ export default function Holdings(props) {
 
 
   const getMainTokens = (data, inks, ownerIsArtist = false) => {
-    console.log('final step!', data, inks)
     data.forEach(async (token) => {
       if (isBlacklisted(token.jsonUrl)) return;
       let _token = Object.assign({}, token);
@@ -91,7 +90,9 @@ export default function Holdings(props) {
             )
             .reverse()
         );
-        getMainTokens(dataMain.tokens, dataMainInks.inks, true)
+        if(dataMain.tokens && dataMain.inks) {
+          getMainTokens(dataMain.tokens, dataMainInks.inks, true)
+        }
       }
   };
 
@@ -159,7 +160,6 @@ export default function Holdings(props) {
   }, [dataMain]);
 
   useEffect(() => {
-    console.log(dataMainInks)
     dataMain && dataMainInks ? getMainTokens(dataMain.tokens, dataMainInks.inks) : console.log("loading main tokens");
   }, [dataMainInks]);
 

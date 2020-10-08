@@ -46,7 +46,7 @@ export default function ViewInk(props) {
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
 //  const [inkPrice, setInkPrice] = useState(0)
-  const [mintedCount, setMintedCount] = useState()
+  //const [mintedCount, setMintedCount] = useState()
 
   const [inkJson, setInkJson] = useState({})
   const [mainnetTokens, setMainnetTokens] = useState({})
@@ -65,7 +65,6 @@ export default function ViewInk(props) {
   });
 
   useEffect(() => {
-    console.log('running')
 
     const getInk = async (data) => {
       console.log(data)
@@ -80,7 +79,7 @@ export default function ViewInk(props) {
 
     if(props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) {
 
-        if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
+        if(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0") {
           const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>
 
@@ -116,7 +115,7 @@ export default function ViewInk(props) {
             <Button type="secondary"><SendOutlined/> Mint</Button>
             </Popover>
           )
-
+          console.log(data.ink)
           setBuyButton(<NiftyShop
                         injectedProvider={props.injectedProvider}
                         metaProvider={props.metaProvider}
@@ -126,10 +125,10 @@ export default function ViewInk(props) {
                         gasPrice={props.gasPrice}
                         address={props.address?props.address.toLowerCase():null}
                         ownerAddress={data.ink.artist.id}
-                        priceNonce={data.ink.mintPriceNonce}
+                        priceNonce={data.ink.mintPriceNonce?data.ink.mintPriceNonce:"0"}
                         price={data.ink.mintPrice}
                         transactionConfig={props.transactionConfig}
-                        visible={data.ink.count?(data.ink.count < data.ink.limit || data.ink.limit === "0"):false}
+                        visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
                         />)
                       }
                     }
@@ -149,8 +148,6 @@ export default function ViewInk(props) {
   }, [dataMain]);
 
   let mintDescription
-  //let mintFlow
-  //let buyButton
   let inkChainInfoDisplay
   let detailContent
   let likeButtonDisplay
@@ -166,7 +163,7 @@ export default function ViewInk(props) {
     let signatureFunction = "mintFromSignature"
     let signatureFunctionArgs = [values['to'], hash]
     let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,mintedCount]
+    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
 
     let mintInkConfig = {
       ...props.transactionConfig,
@@ -348,66 +345,6 @@ export default function ViewInk(props) {
               <Descriptions.Item label="Price">{(data.ink.mintPrice > 0)?ethers.utils.formatEther(data.ink.mintPrice):"No price set"}</Descriptions.Item>
             </Descriptions>
           )
-
-//    buyButton = (<NiftyShop
-//                  injectedProvider={props.injectedProvider}
-//                  metaProvider={props.metaProvider}
-//                  type={'ink'}
-//                  ink={inkJson}
-//                  itemForSale={hash}
-//                  gasPrice={props.gasPrice}
-//                  address={props.address}
-//                  ownerAddress={data.ink.artist}
-//                  priceNonce={data.ink.mintPriceNonce}
-//                  price={data.ink.mintPrice}
-//                  transactionConfig={props.transactionConfig}
-//                  visible={data.ink.count?(data.ink.count < data.ink.limit || data.ink.limit === "0"):false}
-//                  />)
-
-      if(props.address && props.address.toLowerCase() === data.ink.artist.id) {
-
-          if(data.ink.count < data.ink.limit || data.ink.limit === "0") {
-/*
-          const mintInkForm = (
-            <Row style={{justifyContent: 'center'}}>
-
-            <Form
-            form={mintForm}
-            layout={'inline'}
-            name="mintInk"
-            onFinish={mint}
-            onFinishFailed={onFinishFailed}
-            >
-            <Form.Item
-            name="to"
-            rules={[{ required: true, message: 'Which address should receive this artwork?' }]}
-            >
-            <AddressInput
-            ensProvider={props.mainnetProvider}
-            placeholder={"to address"}
-            />
-            </Form.Item>
-
-            <Form.Item >
-            <Button type="primary" htmlType="submit" loading={minting}>
-            Mint
-            </Button>
-            </Form.Item>
-            </Form>
-
-            </Row>
-          )
-          mintFlow =       (
-            <Popover content={mintInkForm}
-            title="Mint">
-            <Button type="secondary"><SendOutlined/> Mint</Button>
-            </Popover>
-          )
-          */
-        }
-
-
-    } else {console.log(props.address, data.ink.artist.id)}
 
         likeButtonDisplay = (
           <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>

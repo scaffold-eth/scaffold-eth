@@ -63,14 +63,14 @@ export default function NftyWallet(props) {
     "NiftyToken",
     "balanceOf",
     [props.address],
-    2777
+    4000
   );
   let nftyMainBalance = useContractReader(
     props.readContracts,
     "NiftyMain",
     "balanceOf",
     [props.address],
-    2777
+    4000
   );
   let upgradePrice = useContractReader(
     props.readKovanContracts,
