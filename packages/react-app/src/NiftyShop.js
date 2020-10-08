@@ -149,7 +149,7 @@ export default function NiftyShop(props) {
 
   if(props.visible === false) {
     shopButton = (<></>)
-  } else if(props.address === props.ownerAddress) {
+  } else if(props.address && props.ownerAddress && props.address.toLowerCase() === props.ownerAddress) {
     const setPriceForm = (
       <Row style={{justifyContent: 'center'}}>
 
