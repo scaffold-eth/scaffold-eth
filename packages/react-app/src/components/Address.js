@@ -55,9 +55,9 @@ export default function Address(props) {
   if(props.minimized){
     return (
         <span style={{verticalAlign:"middle"}}>
-          <a style={{color:"#222222"}} href={clickable?blockExplorer+props.value:null}>
+          {clickable?<a style={{color:"#222222"}} href={blockExplorer+props.value}>
             <Blockies seed={props.value.toLowerCase()} size={8} scale={2}/>
-          </a>
+          </a>:<Blockies seed={props.value.toLowerCase()} size={8} scale={2}/>}
         </span>
     );
   }
@@ -66,13 +66,13 @@ export default function Address(props) {
   if(props.onChange){
     text = (
       <Text editable={{onChange:props.onChange}} copyable={{text:props.value}}>
-        <a style={{color:"#222222"}} href={clickable?blockExplorer+props.value:null}>{displayAddress}</a>
+        {clickable?<a style={{color:"#222222"}} href={blockExplorer+props.value}>{displayAddress}</a>:<span>{displayAddress}</span>}
       </Text>
     )
   }else{
     text = (
       <Text copyable={{text:props.value}}>
-        <a style={{color:"#222222"}} href={clickable?blockExplorer+props.value:null}>{displayAddress}</a>
+        {clickable?<a style={{color:"#222222"}} href={blockExplorer+props.value}>{displayAddress}</a>:<span>{displayAddress}</span>}
       </Text>
     )
   }

@@ -48,7 +48,7 @@ export default function MyNiftyInks(props) {
             setLastArtist(props.artist)
             setLastInkPage(inkPage)
 
-            window.history.pushState({id: props.artist}, props.artist, '/artist/' + props.artist)
+            // window.history.pushState({id: props.artist}, props.artist, '/artist/' + props.artist)
 
             if(inksToDisplay.toString() === "0") {
               setInkCounter(inksToDisplay.toNumber())

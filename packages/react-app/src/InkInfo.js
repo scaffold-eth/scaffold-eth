@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react'
+import { Link } from "react-router-dom";
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
 import { AddressInput, Address } from "./components"
@@ -382,14 +383,16 @@ useEffect(()=>{
           <>
             <Row style={{justifyContent: 'center',marginTop:-16}}>
             <Space>
-            <a onClick={() => {viewArtist(inkChainInfo[1])}}>
+            <Link to={`/artistt/${inkChainInfo[1]}`}>
+    
             <Typography>
             <span style={{verticalAlign:"middle",fontSize:16}}>
             {" artist: "}
             </span>
             </Typography>
             <Address value={inkChainInfo[1]} ensProvider={props.mainnetProvider} clickable={false}/>
-            </a>
+            </Link>
+
             </Space>
 
             </Row>
