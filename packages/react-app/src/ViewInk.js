@@ -74,7 +74,7 @@ export default function ViewInk(props) {
       setInkJson(JSON.parse(newInkJson))
     };
 
-    data ? getInk(data) : console.log("loading");
+    (data && data.ink) ? getInk(data) : console.log("loading");
 
     if((props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) && (parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0")) {
           const mintInkForm = (
@@ -279,7 +279,7 @@ export default function ViewInk(props) {
       else if (data.ink) {mintDescription = ((data.ink.count?data.ink.count:'0') + '/' + data.ink.limit + ' minted')}
 
 
-
+      if(data && data.ink) {
       nextHolders = (
         <Row style={{justifyContent: 'center'}}>
         <List
@@ -387,6 +387,7 @@ export default function ViewInk(props) {
           </>
         )
     }
+  }
 
     let imageFromIpfsToHelpWithNetworking
     if(inkJson){

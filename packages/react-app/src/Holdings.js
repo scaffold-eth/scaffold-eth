@@ -48,11 +48,9 @@ export default function Holdings(props) {
 
   const getMainInks = async (data) => {
     let _inkList = data.map(a => a.ink);
-    console.log(_inkList)
     let mainInks = await mainInksQuery({
       variables: { inkList: _inkList }
     })
-    console.log(mainInks)
   };
 
 
@@ -61,12 +59,10 @@ export default function Holdings(props) {
       if (isBlacklisted(token.jsonUrl)) return;
       let _token = Object.assign({}, token);
       const _tokenInk = inks.filter(ink => ink.id === _token.ink)
-      console.log(_tokenInk)
       _token.ink = _tokenInk[0]
       if (ownerIsArtist && _token.ink.artist.address !== props.address.toLowerCase()) return;
       _token.network = 'Mainnet'
       _token.ink.metadata = await getMetadata(token.jsonUrl);
-      console.log(_token)
       setTokens((tokens) => [...tokens, _token]);
     });
   };
@@ -92,48 +88,6 @@ export default function Holdings(props) {
         }
       }
   };
-
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
-  };
-
-  const searchForm = (
-    <Row style={{ justifyContent: "center" }}>
-      <Form
-        form={searchArtist}
-        layout={"inline"}
-        name="searchArtist"
-        onFinish={search}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          name="address"
-          rules={[{ required: true, message: "Search for an Address or ENS" }]}
-        >
-          <AddressInput
-            ensProvider={props.mainnetProvider}
-            placeholder={"to address"}
-          />
-        </Form.Item>
-
-        <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={loading}>
-            <SearchOutlined />
-          </Button>
-        </Form.Item>
-      </Form>
-    </Row>
-  );
-
-  const SearchArtist = () => {
-    return (
-    <Popover content={searchForm} title="Search artist">
-      <Button type="secondary" disabled={loading}>
-        Artist <SearchOutlined />
-      </Button>
-    </Popover>
-  );
-}
 
   useEffect(() => {
     data ? getTokens(data.tokens) : console.log("loading tokens");
