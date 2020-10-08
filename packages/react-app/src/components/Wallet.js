@@ -3,7 +3,7 @@ import Blockies from 'react-blockies';
 import { Address, Balance, AddressInput, EtherInput } from "."
 import { Transactor } from "../helpers"
 import { WalletOutlined, QrcodeOutlined, SendOutlined, KeyOutlined } from '@ant-design/icons';
-import { Typography, Skeleton, Tooltip, Spin, Modal, Button } from 'antd';
+import { Typography, Skeleton, Tooltip, Spin, Modal, Button, notification } from 'antd';
 import QR from 'qrcode.react';
 import { ethers } from "ethers";
 const { Text, Paragraph } = Typography;
@@ -138,6 +138,7 @@ export default function Wallet(props) {
 
     display = (
       <div>
+        <Typography>⚡ You are on the <a target="_blank" href={"https://www.xdaichain.com/"}>xDai network</a> ⚡</Typography>
         <div style={inputStyle}>
           <AddressInput
              autoFocus={true}
@@ -157,7 +158,7 @@ export default function Wallet(props) {
             }}
           />
         </div>
-
+        <Typography>📖 <a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a></Typography>
       </div>
     )
     receiveButton = (
@@ -194,13 +195,22 @@ export default function Wallet(props) {
         }}
         footer={[
           privateKeyButton, receiveButton,
-          <Button key="submit" type="primary" disabled={!amount || !toAddress || qr} loading={false} onClick={()=>{
-            const tx = Transactor(props.provider)
-            tx({
-              to: toAddress,
-              value: ethers.utils.parseEther(""+amount),
-            })
-            setOpen(!open)
+          <Button key="submit" type="primary" disabled={!amount || !toAddress || qr} loading={false} onClick={async () => {
+            const mainnetBytecode = await props.ensProvider.getCode(toAddress);
+            if (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00") {
+              const tx = Transactor(props.provider)
+              tx({
+                to: toAddress,
+                value: ethers.utils.parseEther(""+amount),
+              })
+              setOpen(!open)
+            } else {
+              notification.open({
+                  message: '📛 Unable to send',
+                  description:
+                  "This address is a mainnet smart contract 📡",
+                });
+            }
           }}>
             <SendOutlined /> Send
           </Button>,
