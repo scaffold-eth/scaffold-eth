@@ -67,7 +67,6 @@ export default function ViewInk(props) {
   useEffect(() => {
 
     const getInk = async (data) => {
-      console.log(data)
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
       let newInkJson = await getFromIPFS(data.ink.jsonUrl, tIpfsConfig)

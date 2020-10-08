@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { ethers } from "ethers";
 import { useQuery, useLazyQuery } from "react-apollo";
 import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY, HOLDINGS_MAIN_INKS_QUERY } from "./apollo/queries";
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlacklisted } from "./helpers";
-import { Link, useHistory } from "react-router-dom";
-import { Row, Col, Divider, Switch, Button, Empty, Popover, Form, notification } from "antd";
-import { SendOutlined, UploadOutlined, SearchOutlined, ShareAltOutlined, RocketOutlined } from "@ant-design/icons";
-import { AddressInput, Address, Loader } from "./components";
+import { Link } from "react-router-dom";
+import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
+import { SendOutlined, RocketOutlined } from "@ant-design/icons";
+import { AddressInput, Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
 import UpgradeInkButton from "./UpgradeInkButton.js";
 
@@ -19,8 +18,6 @@ const mainClient = new ApolloClient({
 export default function Holdings(props) {
   const [tokens, setTokens] = useState([]);
   const [myCreationOnly, setmyCreationOnly] = useState(true);
-  const [searchArtist] = Form.useForm();
-  const history = useHistory();
 
   const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(HOLDINGS_MAIN_QUERY, {
     variables: { owner: props.address },
@@ -94,19 +91,6 @@ export default function Holdings(props) {
           getMainTokens(dataMain.tokens, dataMainInks.inks, true)
         }
       }
-  };
-
-  const search = async (values) => {
-    try {
-      const newAddress = ethers.utils.getAddress(values["address"]);
-      history.push("/artist/"+newAddress);
-    } catch (e) {
-      console.log("not an address");
-      notification.open({
-        message: "📛 Not a valid address!",
-        description: "Please try again"
-      });
-    }
   };
 
   const onFinishFailed = errorInfo => {
@@ -194,9 +178,8 @@ export default function Holdings(props) {
       </Row>
 
       <Divider />
-      <Row style={{ marginBottom: 20 }}>
-        <Col span={12}><SearchArtist/></Col>
-        <Col span={12}>
+      <Row justify="end" style={{ marginBottom: 20 }}>
+        <Col>
           Created by me only:{" "}
           <Switch defaultChecked={!myCreationOnly} onChange={handleFilter} />
         </Col>
