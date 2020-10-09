@@ -9,7 +9,7 @@ import tryToDisplay from "./utils";
 const { utils } = require("ethers");
 
 
-export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh}) {
+export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh }) {
   const [form, setForm] = useState({});
   const [txValue, setTxValue] = useState();
   const [returnValue, setReturnValue] = useState();
@@ -18,52 +18,77 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
 
 
-  let inputIndex=0;
+  let inputIndex = 0;
   const inputs = functionInfo.inputs.map(input => {
 
-      const key = functionInfo.name+"_"+input.name+"_"+input.type+"_"+inputIndex++
+    const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + inputIndex++
 
-      let buttons = ""
-      if(input.type=="bytes32"){
-        buttons = (
-          <Tooltip placement="right" title={"to bytes32"}>
-            <div
-              type="dashed"
-              style={{cursor:"pointer"}}
-              onClick={async () => {
-                if(utils.isHexString(form[key])){
-                  const formUpdate = { ...form };
-                  formUpdate[key] = utils.parseBytes32String(form[key]);
-                  setForm(formUpdate);
-                }else{
-                  const formUpdate = { ...form };
-                  formUpdate[key] = utils.formatBytes32String(form[key]);
-                  setForm(formUpdate);
-                }
-              }}
-            >
-              #️⃣
-            </div>
-            </Tooltip>
-        )
-      }
-
-      return (
-        <div style={{ margin: 2 }} key={key}>
-          <Input
-            size="large"
-            placeholder={input.name?input.type+" "+input.name:input.type}
-            value={form[key]}
-            name={key}
-            onChange={(event) => {
-              const formUpdate = { ...form };
-              formUpdate[event.target.name] = event.target.value;
-              setForm(formUpdate);
+    let buttons = ""
+    if (input.type == "bytes32") {
+      buttons = (
+        <Tooltip placement="right" title={"to bytes32"}>
+          <div
+            type="dashed"
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              if (utils.isHexString(form[key])) {
+                const formUpdate = { ...form };
+                formUpdate[key] = utils.parseBytes32String(form[key]);
+                setForm(formUpdate);
+              } else {
+                const formUpdate = { ...form };
+                formUpdate[key] = utils.formatBytes32String(form[key]);
+                setForm(formUpdate);
+              }
             }}
-            suffix={buttons}
-          />
-        </div>
+          >
+            #️⃣
+            </div>
+        </Tooltip>
       )
+    } else if (input.type == "bytes") {
+      buttons = (
+        <Tooltip placement="right" title={"to hex"}>
+          <div
+            type="dashed"
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              if (utils.isHexString(form[key])) {
+                const formUpdate = { ...form };
+                formUpdate[key] = utils.toUtf8String(form[key]);
+                setForm(formUpdate);
+              } else {
+                const formUpdate = { ...form };
+                formUpdate[key] = utils.hexlify(utils.toUtf8Bytes(form[key]))
+                setForm(formUpdate);
+              }
+            }}
+          >
+            #️⃣
+            </div>
+        </Tooltip>
+      )
+    }
+
+
+
+
+    return (
+      <div style={{ margin: 2 }} key={key}>
+        <Input
+          size="large"
+          placeholder={input.name ? input.type + " " + input.name : input.type}
+          value={form[key]}
+          name={key}
+          onChange={(event) => {
+            const formUpdate = { ...form };
+            formUpdate[event.target.name] = event.target.value;
+            setForm(formUpdate);
+          }}
+          suffix={buttons}
+        />
+      </div>
+    )
   });
 
   const txValueInput = (
@@ -79,10 +104,10 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 <Tooltip placement="right" title={" * 10^18 "}>
                   <div
                     type="dashed"
-                    style={{cursor:"pointer"}}
+                    style={{ cursor: "pointer" }}
                     onClick={async () => {
                       let floatValue = parseFloat(txValue)
-                      if(floatValue) setTxValue("" +floatValue  * 10 ** 18);
+                      if(floatValue) setTxValue("" + floatValue * 10 ** 18);
                     }}
                   >
                     ✳️
@@ -90,15 +115,15 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 </Tooltip>
               </Col>
               <Col span={16}>
-              <Tooltip placement="right" title={"number to hex"}>
-                <div
-                  type="dashed"
-                  style={{cursor:"pointer"}}
-                  onClick={async () => {
-                    setTxValue(BigNumber.from(txValue).toHexString());
-                  }}
-                >
-                  #️⃣
+                <Tooltip placement="right" title={"number to hex"}>
+                  <div
+                    type="dashed"
+                    style={{ cursor: "pointer" }}
+                    onClick={async () => {
+                      setTxValue(BigNumber.from(txValue).toHexString());
+                    }}
+                  >
+                    #️⃣
                 </div>
                 </Tooltip>
               </Col>
@@ -113,7 +138,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     inputs.push(txValueInput);
   }
 
-  const buttonIcon = functionInfo.type === "call" ? <Button style={{marginLeft:-32}}>Read📡</Button> : <Button style={{marginLeft:-32}}>Send💸</Button>;
+  const buttonIcon = functionInfo.type === "call" ? <Button style={{ marginLeft: -32 }}>Read📡</Button> : <Button style={{ marginLeft: -32 }}>Send💸</Button>;
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key={"goButton"}>
       <Input
@@ -124,13 +149,21 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
         value={returnValue}
         suffix={
           <div
-            style={{width:50,height:30,margin:0}}
+            style={{ width: 50, height: 30, margin: 0 }}
             type="default"
             onClick={async () => {
-              let innerIndex=0
+              let innerIndex = 0
               const args = functionInfo.inputs.map((input) => {
-                const key = functionInfo.name+"_"+input.name+"_"+input.type+"_"+innerIndex++
-                return form[key]
+                const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + innerIndex++
+                let value = form[key]
+                if(input.type == "bool"){
+                  if(value=='true' || value=='1' || value =="0x1"|| value =="0x01"|| value =="0x0001"){
+                    value = 1;
+                  }else{
+                    value = 0;
+                  }
+                }
+                return value
               });
 
               const overrides = {};
@@ -140,7 +173,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
               // console.log("Running with extras",extras)
               const returned = await tx(contractFunction(...args, overrides));
-
               const result = tryToDisplay(returned);
 
               console.log("SETTING RESULT:", result);
