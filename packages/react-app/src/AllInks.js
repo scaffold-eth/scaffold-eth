@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "react-apollo";
 import { Link } from "react-router-dom";
 import { INKS_QUERY } from "./apollo/queries";
-import { isBlacklisted } from "./helpers";
+import { isBlocklisted } from "./helpers";
 import { Row } from "antd";
 import { Loader } from "./components"
 
@@ -25,7 +25,7 @@ export default function AllInks(props) {
   const getInks = (data) => {
     setAllInks([...allInks, ...data])
     data.forEach(async (ink) => {
-      if (isBlacklisted(ink.jsonUrl)) return;
+      if (isBlocklisted(ink.jsonUrl)) return;
       let _ink = ink;
       _ink.metadata = await getMetadata(ink.jsonUrl);
       setInks((inks) => [...inks, _ink]);

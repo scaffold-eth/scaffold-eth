@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useQuery, useLazyQuery } from "react-apollo";
 import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY, HOLDINGS_MAIN_INKS_QUERY } from "./apollo/queries";
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
-import { isBlacklisted } from "./helpers";
+import { isBlocklisted } from "./helpers";
 import { Link } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
 import { SendOutlined, RocketOutlined } from "@ant-design/icons";
@@ -44,7 +44,7 @@ export default function Holdings(props) {
 
   const getTokens = (_data) => {
     _data.forEach(async (token) => {
-      if (isBlacklisted(token.ink.jsonUrl)) return;
+      if (isBlocklisted(token.ink.jsonUrl)) return;
       let _token = token;
       _token.network = 'xDai'
       _token.ink.metadata = await getMetadata(token.ink.jsonUrl);
@@ -66,7 +66,7 @@ export default function Holdings(props) {
 
   const getMainTokens = (_data, inks, ownerIsArtist = false) => {
     _data.forEach(async (token) => {
-      if (isBlacklisted(token.jsonUrl)) return;
+      if (isBlocklisted(token.jsonUrl)) return;
       let _token = Object.assign({}, token);
       const _tokenInk = inks.filter(ink => ink.id === _token.ink)
       _token.ink = _tokenInk[0]
@@ -238,7 +238,6 @@ export default function Holdings(props) {
                     }}>
                      <RocketOutlined />  View on OpenSea
                     </Button>
-
                   }
                   </Row>
                 </li>

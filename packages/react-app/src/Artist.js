@@ -3,7 +3,7 @@ import { ethers } from "ethers";
 import { useParams, Link, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
 import { ARTISTS_QUERY } from "./apollo/queries"
-import { isBlacklisted } from "./helpers";
+import { isBlocklisted } from "./helpers";
 import { Row, Col, Divider, Button, Popover, Form, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Blockies from "react-blockies";
@@ -77,7 +77,7 @@ export default function Artist(props) {
     const getInks = (data) => {
       setInks([]);
       data.forEach(async (ink) => {
-        if (isBlacklisted(ink.jsonUrl)) return;
+        if (isBlocklisted(ink.jsonUrl)) return;
         let _ink = ink;
         _ink.metadata = await getMetadata(ink.jsonUrl);
         setInks((inks) => [...inks, _ink]);
