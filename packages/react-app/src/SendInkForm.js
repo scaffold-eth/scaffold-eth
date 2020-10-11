@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Form, Button, Typography, notification } from 'antd';
+import { Form, Button, notification } from 'antd';
 import { AddressInput } from "./components"
 import { Transactor, transactionHandler } from "./helpers"
 import { useContractLoader } from "./hooks"
@@ -8,9 +8,6 @@ export default function SendInkForm(props) {
 
   const [sending, setSending] = useState(false)
   const [form] = Form.useForm();
-
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const tx = Transactor(props.injectedProvider)
 
   const sendInk = async (values) => {
     setSending(true)
