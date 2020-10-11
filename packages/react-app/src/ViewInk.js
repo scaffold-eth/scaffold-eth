@@ -40,7 +40,7 @@ export default function ViewInk(props) {
   const [buyButton, setBuyButton] = useState()
   const [mintFlow, setMintFlow] = useState()
 
-  const metaWriteContracts = useContractLoader(props.metaProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.kovanProvider);
 
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
@@ -137,7 +137,7 @@ export default function ViewInk(props) {
                                         visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
                                         />) : console.log('waiting')
 
-  }, [data])
+  }, [data, props.address])
 
   useEffect(() => {
     console.log('running dataMain', dataMain)

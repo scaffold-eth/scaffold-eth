@@ -38,7 +38,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
     }
 
     event newInk(uint256 id, address indexed artist, string inkUrl, string jsonUrl, uint256 limit);
-    event newInkPrice(string inkUrl, uint256 price);
 
     struct Ink {
       uint256 id;
@@ -107,7 +106,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
 
       _inkById[_inkId].price = price;
       _inkById[_inkId].priceNonce.increment();
-      emit newInkPrice(_inkById[_inkId].inkUrl, price);
+
       return price;
     }
 

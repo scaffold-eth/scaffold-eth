@@ -1,6 +1,95 @@
-# 🏗 scaffold-eth / NFTY INK
+# 🏗 scaffold-eth / Nifty Ink
 
-```bash
+### Running nifty.ink on xDai / Mainnet
+```
+git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
+```
+
+Create a .env file with the following variables in `packages/react-app`
+```
+REACT_APP_NETWORK_NAME=xdai
+REACT_APP_NETWORK_COLOR=#f6c343
+REACT_APP_USE_GSN=true
+REACT_APP_GRAPHQL_ENDPOINT=https://api.thegraph.com/subgraphs/name/azf20/nifty-ink
+REACT_APP_GRAPHQL_ENDPOINT_MAINNET=https://api.thegraph.com/subgraphs/name/azf20/nifty-ink-main
+```
+Unzip `contracts_xdai_mainnet` in `packages/react-app/src`
+
+Get the react front-end up and running - http://localhost:3000
+```
+cd nifty-ink
+
+yarn install
+
+yarn start
+```
+
+### Running nifty.ink locally
+It is not currently possible to easily run cross-chain nifty.ink locally. Below are instructions for running the xDai portion of nifty.ink on a local chain ("sidechain") running on port=8456.
+- The app will still look for the main chain, but it will refer to mainnet and bridge functionality will not be usable (there is a setup to test the bridge using Kovan <> Sokol)
+- The instructions below do not use the GSN setup we have in the production app
+
+
+```
+git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
+```
+
+Create a .env file with the following variables in `packages/react-app`
+```
+REACT_APP_NETWORK_COLOR=#f6c343
+REACT_APP_GRAPHQL_ENDPOINT=http://localhost:8000/subgraphs/name/azf20/nifty-ink
+REACT_APP_GRAPHQL_ENDPOINT_MAINNET=https://api.thegraph.com/subgraphs/name/azf20/nifty-ink-main
+```
+Unzip `contracts_xdai_mainnet` in `packages/react-app/src`
+
+Terminal A: Get the react front-end up and running - http://localhost:3000
+```
+cd nifty-ink
+
+yarn install
+
+yarn start
+```
+Terminal B: Run the local chain
+```
+cd nifty-ink
+yarn run sidechain
+```
+Terminal C: Generate a deployment account
+```
+cd nifty-ink
+yarn run generate
+```
+Take the address generated, and send it some funds using the faucet in the react-app (this is necessary to deploy the contracts). If you lose this terminal, you can find the address (and the mnemonic!) in `/packages/buidler`
+Then deploy the contracts:
+```
+yarn run sidechaindeploy
+```
+You will need the contract deployment addresses to update the subgraph configuration:
+Go to `packages/niftygraph/subgraph.yaml` and update the addresses for the three datasources to match the addresses from your deployment
+
+
+Terminal D: Run a local graph node <- Requires docker
+```
+cd nifty-ink/docker/graph-node
+docker-compose up
+```
+
+Terminal E: Create and deploy the subgraph on your local graph node
+NOTE: if you update the Nifty smart contracts, you will need to update the ABIs in `/packages/niftygraph/abis`
+```
+cd nifty-ink/packages/niftygraph
+yarn codegen
+yarn build
+yarn create-local
+yarn deploy-local
+```
+
+-------------------------------------------------------------
+
+Old docs...
+```
+bash
 
 git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
 
@@ -48,8 +137,6 @@ yarn run newlocaldeploy
 
 ```
 TODO mainnet bridge ETH topped up: [0x87533bfd390c6d11afd8df1a8c095657e0eeed0d](https://etherscan.io/address/0x87533bfd390c6d11afd8df1a8c095657e0eeed0d)
-
-
 
 yarn run newdeploykovan
 
