@@ -23,18 +23,19 @@ const web3Modal = new Web3Modal({
         infuraId: INFURA_ID
       }
     },
-//    fortmatic: {
-//      package: Fortmatic, // required
-//      options: {
-//        key: "pk_live_4463D2C286A0B058", // required
-//      }
-//    },
-//    portis: {
-//      package: Portis, // required
-//      options: {
-//        id: "5b42dc23-b8b7-494e-a1e0-a32918e4aebe", // required
-//      }
-//    }
+    /*fortmatic: {
+      package: Fortmatic, // required
+      options: {
+        key: "pk_live_4463D2C286A0B058", // required
+      }
+    },
+
+    portis: {
+      package: Portis, // required
+      options: {
+        id: "5b42dc23-b8b7-494e-a1e0-a32918e4aebe", // required
+      }
+    }*/
   }
 });
 
