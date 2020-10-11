@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Avatar, Spin, Button } from 'antd';
 import { useEventListener } from "./hooks"
-import { getFromIPFS, isBlacklisted } from "./helpers"
+import { getFromIPFS, isBlocklisted } from "./helpers"
 import { Loader } from "./components"
 import StackGrid from "react-stack-grid";
 
@@ -62,7 +62,7 @@ export default function NftyWallet(props) {
             let skips = 0
             let newIndex = inkPage===0?0:allInks.length
             for(let i of pageOfInks){
-              if(!isBlacklisted(mostRecentInks[i]['jsonUrl'])){
+              if(!isBlocklisted(mostRecentInks[i]['jsonUrl'])){
                 try {
                   promises.push(getInkImages(mostRecentInks[i]))
                   hashesForDebugging.push(mostRecentInks[i]['jsonUrl'])
