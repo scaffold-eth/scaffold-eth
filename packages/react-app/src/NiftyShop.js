@@ -11,7 +11,7 @@ export default function NiftyShop(props) {
   const [priceForm] = Form.useForm();
 
   const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.injectedProvider);
 
   let shopButton
   let [newPrice, setNewPrice] = useState(0)

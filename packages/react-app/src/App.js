@@ -84,7 +84,7 @@ if (process.env.REACT_APP_NETWORK_NAME) {
       {"localhost"}
     </div>
   );
-  localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  localProvider = mainnetProvider;//new ethers.providers.JsonRpcProvider("http://localhost:8545");
   kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546"); // yarn run sidechain
 }
 
@@ -167,9 +167,6 @@ function App() {
                   ""
                 ) : (
                   <>
-                    <Col>
-                      <Faucet localProvider={localProvider} price={price} />
-                    </Col>
                     <Col>
                       <Faucet
                         localProvider={kovanProvider}

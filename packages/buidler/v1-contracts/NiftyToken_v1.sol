@@ -35,7 +35,6 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
     event boughtToken(uint256 id, string inkUrl, address buyer, uint256 price);
     event lockedInk(uint256 id, address recipient);
     event unlockedInk(uint256 id, address recipient);
-    event newTokenPrice(uint256 id, uint256 price);
 
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (uint256 => string) public tokenInk;
@@ -131,7 +130,7 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
       require(ownerOf(_tokenId) == _msgSender(), "only the owner can set the price!");
 
       tokenPrice[_tokenId] = _price;
-      emit newTokenPrice(_tokenId, _price);
+
       return _price;
     }
 

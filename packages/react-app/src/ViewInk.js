@@ -40,8 +40,7 @@ export default function ViewInk(props) {
   const [buyButton, setBuyButton] = useState()
   const [mintFlow, setMintFlow] = useState()
 
-  const metaWriteContracts = useContractLoader(props.metaProvider);
-  const [referenceInkChainInfo, setReferenceInkChainInfo] = useState()
+  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.kovanProvider);
 
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
@@ -50,6 +49,8 @@ export default function ViewInk(props) {
 
   const [inkJson, setInkJson] = useState({})
   const [mainnetTokens, setMainnetTokens] = useState({})
+  const [blockNumber, setBlockNumber] = useState(0)
+  const [data, setData] = useState()
 
   const [drawing, setDrawing] = useState()
 
@@ -59,23 +60,31 @@ export default function ViewInk(props) {
     client: mainClient
   });
 
-  const { loading, error, data } = useQuery(INK_QUERY, {
+  const { loading, error, data: dataRaw } = useQuery(INK_QUERY, {
     variables: { inkUrl: hash },
     pollInterval: 2500
   });
 
   useEffect(() => {
 
-    const getInk = async (data) => {
+    const getInk = async (_data) => {
+      let _blockNumber = parseInt(_data.metaData.value)
+      console.log(blockNumber, _blockNumber)
+      if(_blockNumber >= blockNumber) {
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
-      let newInkJson = await getFromIPFS(data.ink.jsonUrl, tIpfsConfig)
+      let newInkJson = await getFromIPFS(_data.ink.jsonUrl, tIpfsConfig)
 
+      setData(_data)
+      setBlockNumber(_blockNumber)
       setInkJson(JSON.parse(newInkJson))
+    }
     };
 
-    (data && data.ink) ? getInk(data) : console.log("loading");
+    (dataRaw && dataRaw.ink) ? getInk(dataRaw) : console.log("loading");
+  }, [dataRaw, props.address]);
 
+  useEffect(() => {
     if((props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) && (parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0")) {
           const mintInkForm = (
             <Row style={{justifyContent: 'center'}}>

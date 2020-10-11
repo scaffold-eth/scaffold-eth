@@ -16,18 +16,24 @@ const mainClient = new ApolloClient({
 })
 
 export default function Holdings(props) {
-  const [tokens, setTokens] = useState([]);
+  const [holdings, setHoldings] = useState() // Array with the token id's currently held
+  const [tokens, setTokens] = useState({}); // Object holding information about relevant tokens
   const [myCreationOnly, setmyCreationOnly] = useState(true);
+
+  const [blockNumber, setBlockNumber] = useState(0)
+  const [data, setData] = useState() // Data filtered for latest block update that we have seen
 
   const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(HOLDINGS_MAIN_QUERY, {
     variables: { owner: props.address },
-    client: mainClient
+    client: mainClient,
+    pollInterval: 4000
   });
 
   const [mainInksQuery, { loading: loadingMainInks, error: errorMainInks, data: dataMainInks }] = useLazyQuery(HOLDINGS_MAIN_INKS_QUERY)
 
-  const { loading, error, data } = useQuery(HOLDINGS_QUERY, {
-    variables: { owner: props.address }
+  const { loading, error, data: dataRaw } = useQuery(HOLDINGS_QUERY, {
+    variables: { owner: props.address },
+    pollInterval: 4000
   });
 
   const getMetadata = async (jsonURL) => {
@@ -36,26 +42,30 @@ export default function Holdings(props) {
     return data;
   };
 
-  const getTokens = (data) => {
-    data.forEach(async (token) => {
+  const getTokens = (_data) => {
+    _data.forEach(async (token) => {
       if (isBlocklisted(token.ink.jsonUrl)) return;
       let _token = token;
       _token.network = 'xDai'
       _token.ink.metadata = await getMetadata(token.ink.jsonUrl);
-      setTokens((tokens) => [...tokens, _token]);
+      //setTokens((tokens) => [...tokens, _token]);
+      let _newToken = {}
+      _newToken[_token.id] = _token
+      setTokens((tokens) => ({...tokens, ..._newToken}));
     });
+    updateHoldings((data && data.tokens)?data.tokens:[], (dataMain && dataMain.tokens)?dataMain.tokens:[])
   };
 
-  const getMainInks = async (data) => {
-    let _inkList = data.map(a => a.ink);
+  const getMainInks = async (_data) => {
+    let _inkList = _data.map(a => a.ink);
     let mainInks = await mainInksQuery({
       variables: { inkList: _inkList }
     })
   };
 
 
-  const getMainTokens = (data, inks, ownerIsArtist = false) => {
-    data.forEach(async (token) => {
+  const getMainTokens = (_data, inks, ownerIsArtist = false) => {
+    _data.forEach(async (token) => {
       if (isBlocklisted(token.jsonUrl)) return;
       let _token = Object.assign({}, token);
       const _tokenInk = inks.filter(ink => ink.id === _token.ink)
@@ -63,13 +73,24 @@ export default function Holdings(props) {
       if (ownerIsArtist && _token.ink.artist.address !== props.address.toLowerCase()) return;
       _token.network = 'Mainnet'
       _token.ink.metadata = await getMetadata(token.jsonUrl);
-      setTokens((tokens) => [...tokens, _token]);
+      let _newToken = {}
+      _newToken[_token.id] = _token
+      setTokens((tokens) => ({...tokens, ..._newToken}));
     });
+    updateHoldings((data && data.tokens)?data.tokens:[], (dataMain && dataMain.tokens)?dataMain.tokens:[])
+    console.log(tokens)
   };
+
+  const updateHoldings = (_tokens, _mainTokens) => {
+    let tokenList = _tokens.map(i => i.id)
+    let mainTokenList = _mainTokens.map(i => i.id)
+    setHoldings([...tokenList, ...mainTokenList])
+    console.log(holdings)
+  }
 
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
-    setTokens([])
+    //setTokens([])
     if(!myCreationOnly) {
         getTokens(data.tokens)
         getMainTokens(dataMain.tokens, dataMainInks.inks)
@@ -88,6 +109,20 @@ export default function Holdings(props) {
         }
       }
   };
+
+  useEffect(() => {
+
+    const getHoldings = async (_data) => {
+      let _blockNumber = parseInt(_data.metaData.value)
+      console.log(blockNumber, _blockNumber)
+      if(_blockNumber >= blockNumber) {
+      setData(_data)
+      setBlockNumber(_blockNumber)
+    }
+    };
+
+    dataRaw ? getHoldings(dataRaw) : console.log("loading data");
+  }, [dataRaw]);
 
   useEffect(() => {
     data ? getTokens(data.tokens) : console.log("loading tokens");
@@ -115,16 +150,16 @@ export default function Holdings(props) {
       <Row>
         <Col span={12}>
           <p style={{ margin: 0 }}>
-            <b>All Holdings:</b> {data ? data.tokens.length : 0}
+            <b>All Holdings:</b> {holdings ? holdings.length : 0}
           </p>
         </Col>
         <Col span={12}>
           <p style={{ margin: 0 }}>
             <b>My Inks: </b>
-            {data
-              ? data.tokens.filter(
-                  (token) =>
-                    token.ink.artist.address === props.address.toLowerCase()
+            {(holdings && tokens)
+              ? holdings.filter(
+                  (id) =>
+                    id in tokens && tokens[id].ink.artist.address === props.address.toLowerCase()
                 ).length
               : 0}
           </p>
@@ -140,10 +175,10 @@ export default function Holdings(props) {
       </Row>
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
-          {tokens
-            ? tokens.map((token) => (
+          {holdings
+            ? holdings.filter((id) => id in tokens).map((id) => (
                 <li
-                  key={token.id}
+                  key={id}
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
@@ -155,12 +190,12 @@ export default function Holdings(props) {
                   }}
                 >
                 <Link
-                  to={"ink/"+token.ink.id}
+                  to={"ink/"+tokens[id].ink.id}
                   style={{ color: "black" }}
                 >
                     <img
-                      src={token.ink.metadata.image}
-                      alt={token.ink.metadata.name}
+                      src={tokens[id].ink.metadata.image}
+                      alt={tokens[id].ink.metadata.name}
                       width="150"
                       style={{
                         border: "1px solid #e5e5e6",
@@ -170,27 +205,27 @@ export default function Holdings(props) {
                     <h3
                       style={{ margin: "10px 0px 5px 0px", fontWeight: "700" }}
                     >
-                      {token.ink.metadata.name.length > 18
-                        ? token.ink.metadata.name.slice(0, 15).concat("...")
-                        : token.ink.metadata.name}
+                      {tokens[id].ink.metadata.name.length > 18
+                        ? tokens[id].ink.metadata.name.slice(0, 15).concat("...")
+                        : tokens[id].ink.metadata.name}
                     </h3>
 
                     <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
-                      Edition: {token.ink.count}/{token.ink.limit}
+                      Edition: {tokens[id].ink.count}/{tokens[id].ink.limit}
                     </p>
                   </Link>
                   <Divider style={{ margin: "10px 0" }} />
                   <Row justify={"space-between"}>
-                  {token.network==="xDai"
+                  {tokens[id].network==="xDai"
                   ? <>
                   <Popover content={
-                    <SendInkForm tokenId={token.id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
+                    <SendInkForm tokenId={tokens[id].id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
                   }
                   title="Send Ink">
                     <Button size="small" type="secondary" style={{margin:4,marginBottom:12}}><SendOutlined/> Send</Button>
                   </Popover>
                   <UpgradeInkButton
-                    tokenId={token.id}
+                    tokenId={tokens[id].id}
                     injectedProvider={props.injectedProvider}
                     gasPrice={props.gasPrice}
                     upgradePrice={props.upgradePrice}
@@ -198,12 +233,11 @@ export default function Holdings(props) {
                     buttonSize="small"
                   /></>
                   : <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
-                      console.log("item",token)
-                      window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+token.id)
+                      console.log("item",id)
+                      window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+id)
                     }}>
                      <RocketOutlined />  View on OpenSea
                     </Button>
-
                   }
                   </Row>
                 </li>
