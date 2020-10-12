@@ -35,8 +35,11 @@ export async function transactionHandler(c) {
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
 
-      if (c['payment'] && ethers.utils.formatEther(balance) < ethers.utils.formatEther(c['payment'])) {
+      if (c['payment'] && parseFloat(ethers.utils.formatEther(balance)) < parseFloat(ethers.utils.formatEther(c['payment']))) {
         showXDaiModal()
+        let m = 'You need more than ' + ethers.utils.formatEther(c['payment']) + ' xDai to make this transaction'
+        console.log(m)
+        throw m
       }
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){

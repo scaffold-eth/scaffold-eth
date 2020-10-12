@@ -137,7 +137,7 @@ export default function ViewInk(props) {
                                         visible={data.ink.count?(parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0"):false}
                                         />) : console.log('waiting')
 
-  }, [data, props.address]);
+  }, [data, props.address, inkJson]);
 
   useEffect(() => {
     console.log('running dataMain', dataMain)
