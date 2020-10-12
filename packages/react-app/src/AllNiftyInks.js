@@ -19,13 +19,7 @@ export default function NftyWallet(props) {
   let inksPerPage = 40
   let [loading, setLoading] = useState(true)
 
-  let inkCreations = useEventListener(
-    props.readKovanContracts,
-    "NiftyInk",
-    "newInk",
-    props.kovanProvider,
-    1
-  );
+  let inkCreations = useEventListener(props.readKovanContracts,'NiftyInk',"newInk",props.kovanProvider, 1)
 
   useEffect(()=>{
       if(props.tab === props.thisTab && props.readKovanContracts && inkCreations && props.totalInks && inkCreations.length) {
