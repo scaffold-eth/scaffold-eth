@@ -39,7 +39,6 @@ export default function InkCanvas(props) {
 
   useEffect(() => {
     const loadPage = async () => {
-      console.log('loadpage')
         if (props.ipfsHash) {
           console.log('ipfsHash Set')
         }

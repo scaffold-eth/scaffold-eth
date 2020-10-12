@@ -1,5 +1,5 @@
 
-const blacklist = [
+const blocklist = [
   "QmUr59dCZeXR4ozGNV7D8TYtVvTAGoZcvaPg6FALqxvWTG",
   "QmYto8RMovpQfpdGL2z5eVzCaEDtz1ckhpWSezVct2rjd9",
   "Qmb7qQjz1Z7p97G5i7hUnZ477FcU5RsWQYEBrfdSHjdcWC",
@@ -13,6 +13,6 @@ const blacklist = [
   "QmU65N3U9hBHh2j4nocUERYpbkdytHhdbE4W3WCrzaK3aY"
 ];
 
-export default function isBlacklisted(hash) {
-  return (blacklist.indexOf(hash)>=0)
+export default function isBlocklisted(hash) {
+  return (blocklist.indexOf(hash)>=0)
 }

@@ -23,27 +23,30 @@ const web3Modal = new Web3Modal({
         infuraId: INFURA_ID
       }
     },
-//    fortmatic: {
-//      package: Fortmatic, // required
-//      options: {
-//        key: "pk_live_4463D2C286A0B058", // required
-//      }
-//    },
-//    portis: {
-//      package: Portis, // required
-//      options: {
-//        id: "5b42dc23-b8b7-494e-a1e0-a32918e4aebe", // required
-//      }
-//    }
+    /*fortmatic: {
+      package: Fortmatic, // required
+      options: {
+        key: "pk_live_4463D2C286A0B058", // required
+      }
+    },
+
+    portis: {
+      package: Portis, // required
+      options: {
+        id: "5b42dc23-b8b7-494e-a1e0-a32918e4aebe", // required
+      }
+    }*/
   }
 });
 
 export default function Account(props) {
 
-  let relayHubAddress
-  let stakeManagerAddress
-  let paymasterAddress
-  let chainId
+  let gsnConfig
+  if(process.env.REACT_APP_USE_GSN === 'true') {
+    let relayHubAddress
+    let stakeManagerAddress
+    let paymasterAddress
+    let chainId
   if(process.env.REACT_APP_NETWORK_NAME === 'xdai'){
     relayHubAddress = "0xA58B6fC9264ce507d0B0B477ceE31674341CB27e"
     stakeManagerAddress = "0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B"
@@ -54,17 +57,19 @@ export default function Account(props) {
     stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83"
     paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619"
     chainId = 42
-  }else{
+  }else {
     relayHubAddress = require('.././gsn/RelayHub.json').address
     stakeManagerAddress = require('.././gsn/StakeManager.json').address
     paymasterAddress = require('.././gsn/Paymaster.json').address
     //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
 
-  let gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
+  gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
 
   gsnConfig.relayLookupWindowBlocks= 1e5
   gsnConfig.verbose = true
+
+}
   //gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
 
   /*
@@ -106,6 +111,7 @@ export default function Account(props) {
     let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
     props.setInjectedProvider(newWeb3Provider)
 
+  if(process.env.REACT_APP_USE_GSN === 'true') {
     if (provider._metamask) {
       //console.log('using metamask')
     gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
@@ -116,6 +122,7 @@ export default function Account(props) {
     //console.log("GOT GSN PROVIDER",gsnProvider)
     const gsnSigner = gsnWeb3Provider.getSigner(props.address)
     props.setInjectedGsnSigner(gsnSigner)
+  }
 
   }
 
@@ -192,6 +199,7 @@ export default function Account(props) {
   }
   checkForProvider()
 
+  if(process.env.REACT_APP_USE_GSN === 'true') {
   const createBurnerMetaSigner = async () => {
     let origProvider;
     if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
@@ -217,6 +225,7 @@ export default function Account(props) {
     props.setMetaProvider(signer);
   }
   createBurnerMetaSigner()
+}
 
   }, []);
 

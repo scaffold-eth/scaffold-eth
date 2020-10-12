@@ -66,7 +66,9 @@ export default function Help() {
     </ul>
     <Divider />
     <h2 style={{fontWeight: "bold"}}>Upgrade inks to Ethereum mainnet</h2>
-    <p>....</p>
+    <p>You can upgrade your inks from xDai to the Ethereum mainnet via the <a href="https://docs.tokenbridge.net/amb-bridge/about-amb-bridge">Tokenbridge</a>. It will then be available to hold in your mainnet wallet or trade on mainnet NFT marketplaces.</p>
+    <p>The cost to do this is based on the gas fee associated with minting your Nifty NFT on mainnet</p>
+    <p><b>Note that this is a one-way door - it is not possible to bring your NFT back to xDai once it has been upgraded</b></p>
     </div>
   )
 }

@@ -38,6 +38,10 @@ export const INKS_QUERY = gql`
 
 export const HOLDINGS_QUERY = gql`
   query tokens($owner: Bytes!) {
+    metaData(id: "blockNumber") {
+      id
+      value
+    }
     tokens(where: { owner: $owner }) {
       owner
       id
@@ -57,6 +61,10 @@ export const HOLDINGS_QUERY = gql`
 
 export const INK_QUERY = gql`
 query ink($inkUrl: String!) {
+  metaData(id: "blockNumber") {
+    id
+    value
+  }
   ink(id: $inkUrl) {
     id
     inkNumber

@@ -9,7 +9,7 @@ export default function LikeButton(props) {
   const [minting, setMinting] = useState(false)
 
   //const writeContracts = useContractLoader(props.signingProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider);
+  const metaWriteContracts = useContractLoader(props.metaProvider?props.localProvider:props.metaProvider);
   const readContracts = useContractLoader(props.localProvider);
 
   const [likes, setLikes] = useState()

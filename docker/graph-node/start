@@ -1,0 +1,105 @@
+#!/bin/bash
+
+save_coredumps() {
+    graph_dir=/var/lib/graph
+    datestamp=$(date +"%Y-%m-%dT%H:%M:%S")
+    ls /core.* >& /dev/null && have_cores=yes || have_cores=no
+    if [ -d "$graph_dir" -a "$have_cores" = yes ]
+    then
+        core_dir=$graph_dir/cores
+        mkdir -p $core_dir
+        exec >> "$core_dir"/messages 2>&1
+        echo "${HOSTNAME##*-} Saving core dump on ${HOSTNAME} at ${datestamp}"
+
+        dst="$core_dir/$datestamp-${HOSTNAME}"
+        mkdir "$dst"
+        cp /usr/local/bin/graph-node "$dst"
+        cp /proc/loadavg "$dst"
+        [ -f /Dockerfile ] && cp /Dockerfile "$dst"
+        tar czf "$dst/etc.tgz" /etc/
+        dmesg -e > "$dst/dmesg"
+        # Capture environment variables, but filter out passwords
+        env | sort | sed -r -e 's/^(postgres_pass|ELASTICSEARCH_PASSWORD)=.*$/\1=REDACTED/' > "$dst/env"
+
+        for f in /core.*
+        do
+            echo "${HOSTNAME##*-} Found core dump $f"
+            mv "$f" "$dst"
+        done
+        echo "${HOSTNAME##*-} Saving done"
+    fi
+}
+
+wait_for_ipfs() {
+    # Take the IPFS URL in $1 apart and extract host and port. If no explicit
+    # host is given, use 443 for https, and 80 otherwise
+    if [[ "$1" =~ ^((https?)://)?([^:/]+)(:([0-9]+))? ]]
+    then
+        proto=${BASH_REMATCH[2]:-http}
+        host=${BASH_REMATCH[3]}
+        port=${BASH_REMATCH[5]}
+        if [ -z "$port" ]
+        then
+            [ "$proto" = "https" ] && port=443 || port=80
+        fi
+        wait_for "$host:$port" -t 120
+    else
+        echo "invalid IPFS URL: $1"
+        exit 1
+    fi
+}
+
+start_query_node() {
+    export DISABLE_BLOCK_INGESTOR=true
+    graph-node \
+        --postgres-url "$postgres_url" \
+        --ethereum-rpc $ethereum \
+        --ipfs "$ipfs"
+}
+
+start_index_node() {
+    # Only the index node with the name set in BLOCK_INGESTOR should ingest
+    # blocks
+    if [[ ${node_id} != "${BLOCK_INGESTOR}" ]]; then
+        export DISABLE_BLOCK_INGESTOR=true
+    fi
+
+    graph-node \
+	    --node-id "${node_id//-/_}" \
+	    --postgres-url "$postgres_url" \
+	    --ethereum-rpc $ethereum \
+	    --ipfs "$ipfs"
+}
+
+start_combined_node() {
+    graph-node \
+        --postgres-url "$postgres_url" \
+        --ethereum-rpc $ethereum \
+        --ipfs "$ipfs"
+}
+
+postgres_url="postgresql://$postgres_user:$postgres_pass@$postgres_host/$postgres_db"
+
+wait_for_ipfs "$ipfs"
+wait_for "$postgres_host:5432" -t 120
+sleep 5
+
+trap save_coredumps EXIT
+
+export PGAPPNAME="${node_id-$HOSTNAME}"
+
+case "${node_role-combined-node}" in
+    query-node)
+        start_query_node
+        ;;
+    index-node)
+        start_index_node
+        ;;
+    combined-node)
+        start_combined_node
+        ;;
+    *)
+        echo "Unknown mode for start-node: $1"
+        echo "usage: start (combined-node|query-node|index-node)"
+        exit 1
+esac
