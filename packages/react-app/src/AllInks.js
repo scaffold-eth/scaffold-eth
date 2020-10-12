@@ -34,20 +34,19 @@ export default function AllInks(props) {
 
   const onLoadMore = useCallback(() => {
     if (
-      document.documentElement.scrollTop + window.innerHeight !==
-      document.documentElement.scrollHeight
-    )
-      return;
-
-    fetchMore({
-      variables: {
-        skip: allInks.length
-      },
-      updateQuery: (prev, { fetchMoreResult }) => {
-        if (!fetchMoreResult) return prev;
-        return fetchMoreResult;
-      }
-    });
+      Math.round(window.scrollY + window.innerHeight) >=
+      Math.round(document.body.scrollHeight)
+    ) {
+      fetchMore({
+        variables: {
+          skip: inks.length
+        },
+        updateQuery: (prev, { fetchMoreResult }) => {
+          if (!fetchMoreResult) return prev;
+          return fetchMoreResult;
+        }
+      });
+    }
   }, [fetchMore, inks.length]);
 
   useEffect(() => {
