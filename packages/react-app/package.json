@@ -64,7 +64,7 @@
     "extends": "react-app"
   },
   "scripts": {
-    "build": "react-scripts build",
+    "build": "react-scripts --max-old-space-size=16384 build",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test"

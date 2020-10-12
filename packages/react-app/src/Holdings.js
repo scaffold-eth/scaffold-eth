@@ -48,11 +48,9 @@ export default function Holdings(props) {
 
   const getMainInks = async (data) => {
     let _inkList = data.map(a => a.ink);
-    console.log(_inkList)
     let mainInks = await mainInksQuery({
       variables: { inkList: _inkList }
     })
-    console.log(mainInks)
   };
 
 
@@ -61,12 +59,10 @@ export default function Holdings(props) {
       if (isBlacklisted(token.jsonUrl)) return;
       let _token = Object.assign({}, token);
       const _tokenInk = inks.filter(ink => ink.id === _token.ink)
-      console.log(_tokenInk)
       _token.ink = _tokenInk[0]
       if (ownerIsArtist && _token.ink.artist.address !== props.address.toLowerCase()) return;
       _token.network = 'Mainnet'
       _token.ink.metadata = await getMetadata(token.jsonUrl);
-      console.log(_token)
       setTokens((tokens) => [...tokens, _token]);
     });
   };
@@ -115,7 +111,7 @@ export default function Holdings(props) {
   }
 
   return (
-    <div style={{maxWidth: 800, margin: "0 auto", textAlign: "center" }}>
+    <div style={{maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
       <Row>
         <Col span={12}>
           <p style={{ margin: 0 }}>
