@@ -22,6 +22,7 @@ export default function Artist(props) {
   const search = async (values) => {
     try {
       const newAddress = ethers.utils.getAddress(values["address"]);
+      setInks([]);
       history.push("/artist/"+newAddress);
     } catch (e) {
       console.log("not an address");
