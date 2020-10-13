@@ -207,7 +207,7 @@ const fillBackground = (color) => {
   let height = drawingCanvas.current.props.canvasHeight;
 
   let bg = {
-    brushColor: color.hex,
+    brushColor: color,
     brushRadius: (width + height) / 2,
     points: [
       { x: 0, y: 0 },
@@ -245,7 +245,7 @@ const drawFrame = (color, radius) => {
   let height = drawingCanvas.current.props.canvasHeight;
 
   drawingCanvas.current.lines.push({
-    brushColor: color.hex,
+    brushColor: color,
     brushRadius: radius,
     points: [
       { x: 0, y: 0 },
