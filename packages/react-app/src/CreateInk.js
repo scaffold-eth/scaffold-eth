@@ -7,7 +7,7 @@ import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space } fr
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
-import { SketchPicker, CirclePicker, TwitterPicker } from 'react-color';
+import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
 
 const Hash = require('ipfs-only-hash')
@@ -34,6 +34,12 @@ export default function CreateInk(props) {
   const saveDrawing = (newDrawing) => {
     let savedData = LZ.compress(newDrawing.getSaveData())
     props.setDrawing(savedData)
+  }
+
+  const updateColor = value => {
+    console.log(value)
+    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
   }
 
   useEffect(() => {
@@ -325,12 +331,18 @@ if (props.mode === "edit") {
     <Space>
     <PickerDisplay
     color={color}
-    onChangeComplete={setColor}
+    onChangeComplete={updateColor}
     />
     <Button onClick={() => {
       setPicker(picker + 1)
     }}><HighlightOutlined /></Button>
     </Space>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent: 'center', alignItems: 'center'}}>
+    <Col span={12}>
+    <AlphaPicker onChangeComplete={updateColor}
+        color={color}/>
+    </Col>
     </Row>
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
     <Col span={12}>
@@ -352,6 +364,7 @@ if (props.mode === "edit") {
         </Col>
     </Row>
     <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+        <Space>
         <Col span={4}>
           <Button
           onClick={() => fillBackground(color)}
@@ -362,6 +375,7 @@ if (props.mode === "edit") {
           onClick={() => drawFrame(color, brushRadius)}
           ><BorderOutlined />Frame</Button>
         </Col>
+        </Space>
     </Row>
     </div>
   )
@@ -382,7 +396,7 @@ return (
   ref={drawingCanvas}
   canvasWidth={size[0]}
   canvasHeight={size[1]}
-  brushColor={color.hex}
+  brushColor={color}
   lazyRadius={4}
   brushRadius={brushRadius}
 //  disabled={props.mode !== "edit"}

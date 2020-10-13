@@ -40,7 +40,6 @@
     "testnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network rinkeby && npx buidler run scripts/publish.js",
     "xdaideploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network kovan && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/publish.js",
     "mainnetdeploy": "cd packages/buidler && npx buidler run scripts/deploy.js --network xdai && npx buidler run scripts/deploy.js --network mainnet && npx buidler run scripts/publish.js",
-    "newlocaldeploy": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sidechain && npx buidler run scripts/newdeploy.js --network localhost && npx buidler run scripts/publish.js",
     "newdeploykovan": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network kovan && npx buidler run scripts/publish.js",
     "newdeploysokol": "cd packages/buidler && npx buidler run scripts/newdeploy.js --network sokol && npx buidler run scripts/publish.js",
     "deployliker": "cd packages/buidler && npx buidler run scripts/likerdeploy.js --network kovan && npx buidler run scripts/publish.js",

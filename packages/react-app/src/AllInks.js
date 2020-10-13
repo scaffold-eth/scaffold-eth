@@ -8,7 +8,7 @@ import { Loader } from "./components"
 
 export default function AllInks(props) {
   let [allInks, setAllInks] = useState([]);
-  let [inks, setInks] = useState([]);
+  let [inks, setInks] = useState({});
   const { loading, error, data, fetchMore } = useQuery(INKS_QUERY, {
     variables: {
       first: 48,
@@ -28,7 +28,10 @@ export default function AllInks(props) {
       if (isBlocklisted(ink.jsonUrl)) return;
       let _ink = ink;
       _ink.metadata = await getMetadata(ink.jsonUrl);
-      setInks((inks) => [...inks, _ink]);
+      let _newInk = {}
+      _newInk[_ink.inkNumber] = _ink
+      setInks((inks) => ({...inks, ..._newInk}));
+      //setInks((inks) => [...inks, _ink]);
     });
   };
 
@@ -39,7 +42,11 @@ export default function AllInks(props) {
     ) {
       fetchMore({
         variables: {
+<<<<<<< HEAD
           skip: inks.length
+=======
+          skip: allInks.length
+>>>>>>> 6bc4d7d4d7385fe1761f0a0f1b4f00fbd5732d65
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
@@ -47,7 +54,11 @@ export default function AllInks(props) {
         }
       });
     }
+<<<<<<< HEAD
   }, [fetchMore, inks.length]);
+=======
+  }, [fetchMore, allInks.length]);
+>>>>>>> 6bc4d7d4d7385fe1761f0a0f1b4f00fbd5732d65
 
   useEffect(() => {
     data ? getInks(data.inks) : console.log("loading");
@@ -69,11 +80,11 @@ export default function AllInks(props) {
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
           {inks
-            ? inks
-                .sort((a, b) => b.inkNumber - a.inkNumber)
+            ? Object.keys(inks)
+                .sort((a, b) => b - a)
                 .map((ink) => (
                 <li
-                  key={ink.id}
+                  key={inks[ink].id}
                   style={{
                     display: "inline-block",
                     verticalAlign: "top",
@@ -82,12 +93,12 @@ export default function AllInks(props) {
                   }}
                 >
                   <Link
-                    to={"ink/"+ink.id}
+                    to={"ink/"+inks[ink].id}
                     style={{ color: "black" }}
                   >
                     <img
-                      src={ink.metadata.image}
-                      alt={ink.metadata.name}
+                      src={inks[ink].metadata.image}
+                      alt={inks[ink].metadata.name}
                       width="120"
                     />
                   </Link>
