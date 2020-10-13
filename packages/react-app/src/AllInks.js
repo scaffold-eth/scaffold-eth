@@ -42,11 +42,7 @@ export default function AllInks(props) {
     ) {
       fetchMore({
         variables: {
-<<<<<<< HEAD
-          skip: inks.length
-=======
           skip: allInks.length
->>>>>>> 6bc4d7d4d7385fe1761f0a0f1b4f00fbd5732d65
         },
         updateQuery: (prev, { fetchMoreResult }) => {
           if (!fetchMoreResult) return prev;
@@ -54,11 +50,7 @@ export default function AllInks(props) {
         }
       });
     }
-<<<<<<< HEAD
-  }, [fetchMore, inks.length]);
-=======
   }, [fetchMore, allInks.length]);
->>>>>>> 6bc4d7d4d7385fe1761f0a0f1b4f00fbd5732d65
 
   useEffect(() => {
     data ? getInks(data.inks) : console.log("loading");
