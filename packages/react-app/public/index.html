@@ -7,7 +7,7 @@
     <meta name="theme-color" content="#000000" />
     <meta
       name="description"
-      content="Web site created using create-eth-app"
+      content="NFT artwork created and sold on xDAI using meta transactions, burner wallets, and bridged to Ethereum"
     />
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <!--
@@ -40,24 +40,6 @@
     <meta name="twitter:url" value="https://nifty.ink" />
     <meta name="twitter:image" value="https://ipfs.nifty.ink/unfurl.png" />
 
-    <script>
-      const ipfsHash = window.location.pathname.replace("/","")
-
-      if(ipfsHash){
-        console.log("🦸 Unfurl:",ipfsHash)
-        var link = document.createElement('meta');
-        link.setAttribute('property', 'og:image');
-        link.content = "https://ipfs.nifty.ink/"+ipfsHash+".png";
-        document.getElementsByTagName('head')[0].appendChild(link);
-
-        var link2 = document.createElement('meta');
-        link2.setAttribute('name', 'twitter:image');
-        link2.value = "https://ipfs.nifty.ink/"+ipfsHash+".png";
-        document.getElementsByTagName('head')[0].appendChild(link2);
-      }
-
-    </script>
-
     <meta name="fortmatic-site-verification" content="nC45EuZitvHw8xOe" />
 
   </head>
@@ -67,7 +49,7 @@
       <div style="margin:0 auto;opacity:0.25;margin-top:160px;width:300px;border:1px solid #999999;box-shadow:2px 2px 8px #AAAAAA;">
         <img style="max-width:300px" src="/loading.gif"/>
       </div>
-      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0132</div>
+      <div style="font-size:11px;opacity:0.33;margin-top:16px;text-align:center">v0133</div>
     </div>
     <!--
       This HTML file is a template.

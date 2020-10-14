@@ -90,7 +90,7 @@ export default function Holdings(props) {
 
   const handleFilter = () => {
     setmyCreationOnly((myCreationOnly) => !myCreationOnly);
-    //setTokens([])
+    setTokens({})
     if(!myCreationOnly) {
         getTokens(data.tokens)
         getMainTokens(dataMain.tokens, dataMainInks.inks)

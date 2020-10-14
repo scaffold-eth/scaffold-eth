@@ -1,5 +1,7 @@
 # 🏗 scaffold-eth / Nifty Ink
 
+NFT artwork created and sold on xDAI using meta transactions, burner wallets, and bridged to Ethereum.
+
 ```
 git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
 ```
@@ -88,16 +90,18 @@ _We welcome and are eternally grateful for features and pull requests!_
 -----------------------------------------------
 
 ### Contract architecture:
-NiftyRegistry - keeps track of all the other Contracts
-NiftyInk - creation of artworks
-NiftyToken - NFT Contract
-NiftyMediator - Passing Tokens across the Tokenbridge
-NiftyMain - MainChain NFT Contract (can only mint on the basis of Tokenbridge messages)
-Liker - generic "Likes" contract
+- NiftyRegistry - keeps track of all the other Contracts
+- NiftyInk - creation of artworks
+- NiftyToken - NFT Contract
+- NiftyMediator - Passing Tokens across the Tokenbridge
+- NiftyMain - MainChain NFT Contract (can only mint on the basis of Tokenbridge messages)
+- Liker - generic "Likes" contract
 
 Imported contracts:
-AMBMediator - generic AMB functionality
-SignatureChecker - verifying signatures (IERC1271 compatibility)
+- AMBMediator - generic AMB functionality
+- SignatureChecker - verifying signatures (IERC1271 compatibility)
+
+Note that some of the contracts in this repo are not the on-chain contracts, those which have been changed have their originals in /v1-contracts (the primary change is to emit an event on setting the price of an ink or a token)
 
 ### Actions:
 |Action|Description|Signature supported?|GSN supported?|Payable?|
