@@ -11,15 +11,15 @@
     "eslint-plugin-prettier": "^3.1.4"
   },
   "dependencies": {
-    "@nomiclabs/buidler": "^1.4.1",
-    "@nomiclabs/buidler-ethers": "^2.0.0",
-    "@nomiclabs/buidler-waffle": "^2.0.0",
-    "@openzeppelin/contracts": "^3.1.0",
+    "@nomiclabs/buidler": "^1.4.8",
+    "@nomiclabs/buidler-ethers": "^2.0.2",
+    "@nomiclabs/buidler-waffle": "^2.1.0",
+    "@openzeppelin/contracts": "^3.2.0",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
-    "ethereum-waffle": "^3.0.2",
-    "ethers": "^5.0.7",
-    "node-watch": "^0.6.4"
+    "ethereum-waffle": "^3.1.1",
+    "ethers": "^5.0.17",
+    "node-watch": "^0.7.0"
   },
   "scripts": {
     "chain": "buidler node",
