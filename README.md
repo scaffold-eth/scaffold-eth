@@ -235,6 +235,14 @@ Learn how to deploy your smart contract to a production blockchain. Then deploy 
 
 ---
 
+  📡 Using The Graph with 🏗 scaffold-eth 
+  
+  
+[![image](https://user-images.githubusercontent.com/2653167/96306619-41aca080-0fbd-11eb-8882-8f6c115863eb.png)
+](https://youtu.be/ODSTP5OjG2M)
+
+---
+
 <h1>built with 🏗 scaffold-eth:</h1>
 
 
