@@ -102,7 +102,7 @@ function Subgraph(props) {
           </div>
           <div style={{ margin: 12 }}>
             <span style={{ marginRight: 8 }}>🤩</span>
-            Deploy your <b>contracts and your subgraph</b> by running
+            Deploy your <b>contracts and your subgraph</b> in one go by running
             <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
               yarn deploy-and-graph
             </span>
