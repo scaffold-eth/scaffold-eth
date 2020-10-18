@@ -31,11 +31,25 @@
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "cd packages/buidler && npx buidler generate",
     "account": "cd packages/buidler && npx buidler account",
-    "flatten": "cd packages/buidler && npx buidler flatten"
+    "flatten": "cd packages/buidler && npx buidler flatten",
+    "graph-run-node": "cd docker/graph-node && docker-compose up",
+    "graph-remove-node": "cd docker/graph-node && docker-compose down",
+    "graph-prepare": "mustache packages/subgraph/config/config.json packages/subgraph/src/subgraph.template.yaml > packages/subgraph/subgraph.yaml",
+    "graph-codegen": "yarn workspace @scaffold-eth/subgraph graph codegen",
+    "graph-build": "yarn workspace @scaffold-eth/subgraph graph build",
+    "graph-create-local": "yarn workspace @scaffold-eth/subgraph graph create --node http://localhost:8020/ scaffold-eth/your-contract",
+    "graph-remove-local": "yarn workspace @scaffold-eth/subgraph graph remove --node http://localhost:8020/ scaffold-eth/your-contract",
+    "graph-deploy-local": "yarn workspace @scaffold-eth/subgraph graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 scaffold-eth/your-contract",
+    "graph-ship-local": "yarn graph-prepare && yarn graph-deploy-local",
+    "deploy-and-graph": "yarn deploy && yarn graph-ship-local"
   },
   "workspaces": {
     "packages": [
       "packages/*"
+    ],
+    "nohoist": [
+      "**/@graphprotocol/graph-ts",
+      "**/@graphprotocol/graph-ts/**"
     ]
   }
 }

@@ -4,9 +4,13 @@ import "@nomiclabs/buidler/console.sol";
 
 contract YourContract {
 
+  constructor() public {
+    setPurpose("🛠 Programming Unstoppable Money");
+  }
+
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "🛠 Programming Unstoppable Money";
+  string public purpose;
 
   function setPurpose(string memory newPurpose) public {
     purpose = newPurpose;
