@@ -49,16 +49,19 @@ function publishContract(contractName) {
       `module.exports = "${contract.bytecode}";`
     );
 
-    if (fs.existsSync(graphConfigPath)) {
-      fs.writeFileSync(
-        graphConfigPath,
-        JSON.stringify(graphConfig, null, 2)
-      );
-      fs.writeFileSync(
-        `${graphDir}/abis/${contractName}.json`,
-        JSON.stringify(contract.abi, null, 2)
-      );
+    const folderPath = graphConfigPath.replace("/config.json","")
+    if (!fs.existsSync(folderPath)){
+      fs.mkdirSync(folderPath);
     }
+    fs.writeFileSync(
+      graphConfigPath,
+      JSON.stringify(graphConfig, null, 2)
+    );
+    fs.writeFileSync(
+      `${graphDir}/abis/${contractName}.json`,
+      JSON.stringify(contract.abi, null, 2)
+    );
+
 
 
     return true;
