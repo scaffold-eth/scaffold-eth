@@ -10,6 +10,11 @@ contract YourContract {
 
   event SetPurpose(address sender, string purpose);
 
+  uint8 public count = 1;
+  function dec() public {
+    count -= 1;
+  }
+
   string public purpose;
 
   function setPurpose(string memory newPurpose) public {
