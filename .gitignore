@@ -9,6 +9,8 @@ packages/buidler/cache
 
 docker/**/data
 
+packages/subgraph/config/config.json
+
 # dependencies
 /node_modules
 /.pnp
