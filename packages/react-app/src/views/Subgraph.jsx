@@ -70,7 +70,9 @@ function Subgraph(props) {
   const [newPurpose, setNewPurpose] = useState("loading...");
 
 
-
+  const deployWarning = (
+    <div style={{marginTop:8,padding:8}}>{"Warning: 🤔 Have you deployed your subgraph yet?"}</div>
+  )
 
   return (
       <>
@@ -135,8 +137,9 @@ function Subgraph(props) {
               }}>Set Purpose</Button>
             </div>
 
+            {data?<Table dataSource={data.purposes} columns={purposeColumns} rowKey={"id"} />:<Typography>{(loading?"Loading...":deployWarning)}</Typography>}
+
             <div style={{margin:32, height:400, border:"1px solid #888888", textAlign:'left'}}>
-              {data?<Table dataSource={data.purposes} columns={purposeColumns} rowKey={"id"} />:<Typography>{(loading?"Loading...":"🤔 Have you deployed your subgraph?")}</Typography>}
               <GraphiQL fetcher={graphQLFetcher} docExplorerOpen={true} query={EXAMPLE_GRAPHQL}/>
             </div>
 
