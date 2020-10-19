@@ -48,14 +48,18 @@ function publishContract(contractName) {
       `${publishDir}/${contractName}.bytecode.js`,
       `module.exports = "${contract.bytecode}";`
     );
-    fs.writeFileSync(
-      graphConfigPath,
-      JSON.stringify(graphConfig, null, 2)
-    );
-    fs.writeFileSync(
-      `${graphDir}/abis/${contractName}.json`,
-      JSON.stringify(contract.abi, null, 2)
-    );
+
+    if (fs.existsSync(graphConfigPath)) {
+      fs.writeFileSync(
+        graphConfigPath,
+        JSON.stringify(graphConfig, null, 2)
+      );
+      fs.writeFileSync(
+        `${graphDir}/abis/${contractName}.json`,
+        JSON.stringify(contract.abi, null, 2)
+      );
+    }
+
 
     return true;
   } catch (e) {
