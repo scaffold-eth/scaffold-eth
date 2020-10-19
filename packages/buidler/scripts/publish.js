@@ -20,9 +20,20 @@ function publishContract(contractName) {
       .readFileSync(`${bre.config.paths.artifacts}/${contractName}.address`)
       .toString();
     contract = JSON.parse(contract);
-    let graphConfig = fs
-      .readFileSync(`${graphDir}/config/config.json`)
-      .toString();
+    let graphConfigPath = `${graphDir}/config/config.json`
+    let graphConfig
+    try {
+      if (fs.existsSync(graphConfigPath)) {
+        graphConfig = fs
+          .readFileSync(graphConfigPath)
+          .toString();
+      } else {
+        graphConfig = '{}'
+      }
+      } catch (e) {
+        console.log(e)
+      }
+
     graphConfig = JSON.parse(graphConfig)
     graphConfig[contractName + "Address"] = address
     fs.writeFileSync(
@@ -38,7 +49,7 @@ function publishContract(contractName) {
       `module.exports = "${contract.bytecode}";`
     );
     fs.writeFileSync(
-      `${graphDir}/config/config.json`,
+      graphConfigPath,
       JSON.stringify(graphConfig, null, 2)
     );
     fs.writeFileSync(
