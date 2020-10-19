@@ -124,9 +124,9 @@ function Subgraph(props) {
             </span>
           </div>
 
-          <div style={{width:780, margin: "auto", textAlign:'left' }}>
+          <div style={{width:780, margin: "auto", paddingBottom:64}}>
 
-            <div style={{margin:32}}>
+            <div style={{margin:32, textAlign:'right'}}>
               <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
               <Button onClick={()=>{
                 console.log("newPurpose",newPurpose)
@@ -135,11 +135,15 @@ function Subgraph(props) {
               }}>Set Purpose</Button>
             </div>
 
-            <div style={{margin:32,height:500,border:"1px solid #888888"}}>
+            <div style={{margin:32, height:400, border:"1px solid #888888", textAlign:'left'}}>
               {data?<Table dataSource={data.purposes} columns={purposeColumns} rowKey={"id"} />:<Typography>{(loading?"Loading...":"🤔 Have you deployed your subgraph?")}</Typography>}
               <GraphiQL fetcher={graphQLFetcher} docExplorerOpen={true} query={EXAMPLE_GRAPHQL}/>
             </div>
 
+          </div>
+
+          <div style={{padding:64}}>
+          ...
           </div>
       </>
   );
