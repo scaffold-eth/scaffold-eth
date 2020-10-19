@@ -3,6 +3,7 @@ const chalk = require("chalk");
 const bre = require("@nomiclabs/buidler");
 
 const publishDir = "../react-app/src/contracts";
+const graphDir = "../subgraph"
 
 function publishContract(contractName) {
   console.log(
@@ -19,6 +20,11 @@ function publishContract(contractName) {
       .readFileSync(`${bre.config.paths.artifacts}/${contractName}.address`)
       .toString();
     contract = JSON.parse(contract);
+    let graphConfig = fs
+      .readFileSync(`${graphDir}/config/config.json`)
+      .toString();
+    graphConfig = JSON.parse(graphConfig)
+    graphConfig[contractName + "Address"] = address
     fs.writeFileSync(
       `${publishDir}/${contractName}.address.js`,
       `module.exports = "${address}";`
@@ -30,6 +36,14 @@ function publishContract(contractName) {
     fs.writeFileSync(
       `${publishDir}/${contractName}.bytecode.js`,
       `module.exports = "${contract.bytecode}";`
+    );
+    fs.writeFileSync(
+      `${graphDir}/config/config.json`,
+      JSON.stringify(graphConfig, null, 2)
+    );
+    fs.writeFileSync(
+      `${graphDir}/abis/${contractName}.json`,
+      JSON.stringify(contract.abi, null, 2)
     );
 
     return true;

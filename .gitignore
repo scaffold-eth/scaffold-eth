@@ -7,6 +7,8 @@ packages/buidler/artifacts
 packages/react-app/src/contracts
 packages/buidler/cache
 
+docker/**/data
+
 # dependencies
 /node_modules
 /.pnp

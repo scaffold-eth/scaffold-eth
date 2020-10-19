@@ -13,7 +13,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./co
 import { Transactor } from "./helpers";
 import { parseEther, formatEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI } from "./views"
+import { Hints, ExampleUI, Subgraph } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -51,7 +51,7 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 
 
-function App() {
+function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(mainnetProvider); //1 for xdai
@@ -119,6 +119,9 @@ function App() {
           <Menu.Item key="/exampleui">
             <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
           </Menu.Item>
+          <Menu.Item key="/subgraph">
+            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -155,6 +158,14 @@ function App() {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
+            />
+          </Route>
+          <Route path="/subgraph">
+            <Subgraph
+            subgraphUri={props.subgraphUri}
+            tx={tx}
+            writeContracts={writeContracts}
+            mainnetProvider={mainnetProvider}
             />
           </Route>
         </Switch>

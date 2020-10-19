@@ -1,19 +1,19 @@
 import React from "react";
 import ReactDOM from "react-dom";
-import ApolloClient from "apollo-boost";
-import { ApolloProvider } from "@apollo/react-hooks";
+import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import "./index.css";
 import App from "./App";
 
-// This is the official Uniswap v1 subgraph. You can replace it with your own, if you need to.
-// See all subgraphs: https://thegraph.com/explorer/
+let subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract"
+
 const client = new ApolloClient({
-  uri: "https://api.thegraph.com/subgraphs/name/graphprotocol/uniswap",
+  uri: subgraphUri,
+  cache: new InMemoryCache()
 });
 
 ReactDOM.render(
   <ApolloProvider client={client}>
-    <App />
+    <App subgraphUri={subgraphUri}/>
   </ApolloProvider>,
   document.getElementById("root"),
 );
