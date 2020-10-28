@@ -134,6 +134,10 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 📲 Spend some time in `App.jsx` in `packages/react-app/src` and learn about the 🛰 [Providers](https://github.com/austintgriffith/scaffold-eth#-web3-providers)
 
+⚠️ Numbers are stored as objects because they are so big. `formatEther` and `parseEther` (ethers.js) will help with WEI->ETH and ETH->WEI.
+
+🧳 The single page (searchable) [ethers.js docs](https://docs.ethers.io/v5/single-page/) are pretty great too.
+
 🐜 The UI framework `Ant Design` has a [bunch of great components](https://ant.design/components/overview/).
 
 📃 Check the console log for your app to see some extra output from hooks like `useContractReader` and `useEventListener`.
