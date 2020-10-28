@@ -6,10 +6,10 @@ contract YourContract {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose;
+  string public purpose = "🛠 Programming Unstoppable Money";
 
   constructor() public {
-    setPurpose("🛠 Programming Unstoppable Money");
+    // what should we do on deploy?
   }
 
   function setPurpose(string memory newPurpose) public {
