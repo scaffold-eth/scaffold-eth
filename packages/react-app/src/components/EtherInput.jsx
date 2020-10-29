@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Input } from "antd";
 
 export default function EtherInput(props) {
@@ -42,6 +42,14 @@ export default function EtherInput(props) {
     prefix = "Ξ";
     addonAfter = option("ETH 🔀");
   }
+
+  useEffect(
+    ()=>{
+      if(!currentValue){
+        setDisplay("");
+      }
+    }
+  ,[ currentValue ])
 
   return (
     <Input
