@@ -94,7 +94,7 @@ const abiEncodeArgs = (deployed, contractArgs) => {
 
 // checks if it is a Solidity file
 const isSolidity = (fileName) =>
-  fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp.") < 0;
+  fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp") < 0;
 
 const readArgsFile = (contractName) => {
   let args = [];

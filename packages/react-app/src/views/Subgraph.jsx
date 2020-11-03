@@ -84,6 +84,14 @@ function Subgraph(props) {
           </div>
 
           <div style={{ margin: 32 }}>
+            <span style={{ marginRight: 8 }}>🚮</span>
+            Clean up previous data:
+            <span style={highlight}>
+              rm -rf docker/graph-node/data/
+            </span>
+          </div>
+
+          <div style={{ margin: 32 }}>
             <span style={{ marginRight: 8 }}>📡</span>
             Spin up a local graph node by running
             <span style={highlight}>
