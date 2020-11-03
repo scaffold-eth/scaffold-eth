@@ -118,7 +118,7 @@ Note that some of the contracts in this repo are not the on-chain contracts, tho
 
 ### The upgrade path
 nifty.ink lets users upgrade their xDai ink NFTs to the Ethereum mainnet. This is a one-way door! Once you upgrade you cannot bring your inks back to xDai. The xDai token is locked in the Mediator contract, and a new matching token is minted on Mainnet on the basis of the tokenbridge relay
-When you upgrade, you have to pay a fee - this is to cover the costs of minting a token on mainnet, and is controlled by a price Oracle bot.
+When you upgrade, you have to pay a fee - this is to cover the costs of minting a token on mainnet, and is controlled by a [price Oracle bot](https://blockscout.com/poa/xdai/address/0xa2197a282967dAc145e85D15e7960Aa30b86b771/transactions).
 
 ### Housekeeping
 - we are running a GSN2 relay on xDai at relay.tokenizationofeverything.com (manager address at `0xb54a1c00c937db7ac538edbb4d3350da1bf4d812`)
