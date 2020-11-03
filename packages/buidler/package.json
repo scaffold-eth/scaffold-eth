@@ -20,7 +20,8 @@
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.0.17",
     "node-watch": "^0.7.0",
-    "qrcode-terminal": "^0.12.0"
+    "qrcode-terminal": "^0.12.0",
+    "ramda": "^0.27.1"
   },
   "scripts": {
     "chain": "buidler node",
