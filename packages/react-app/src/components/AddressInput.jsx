@@ -5,6 +5,18 @@ import { Input, Badge } from "antd";
 import { useLookupAddress } from "eth-hooks";
 import Blockie from "./Blockie";
 
+/*
+
+<AddressInput
+  autoFocus
+  ensProvider={props.ensProvider}
+  placeholder="to address"
+  value={toAddress}
+  onChange={setToAddress}
+/>
+
+*/
+
 export default function AddressInput(props) {
   const [value, setValue] = useState(props.value);
   const [scan, setScan] = useState(false);

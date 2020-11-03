@@ -1,7 +1,7 @@
 import React from "react";
 import Blockies from "react-blockies";
 import { Typography, Skeleton } from "antd";
-import { useLookupAddress } from "eth-hooks";
+import { useLookupAddress } from "../hooks";
 
 /*
 

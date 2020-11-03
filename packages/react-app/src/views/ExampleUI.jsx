@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, AddressInput, Balance } from "../components";
-import { useContractReader, useEventListener } from "../hooks";
+import { useContractReader, useEventListener, useResolveName } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
 export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
@@ -16,6 +16,11 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  /*
+  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
+  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  */
 
   return (
     <div>
@@ -46,6 +51,15 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
             value={address}
             ensProvider={mainnetProvider}
             fontSize={16}
+        />
+
+        <Divider />
+
+        ENS Address Example:
+        <Address
+          value={"0x34aA3F359A9D614239015126635CE7732c18fDF3"} /* this will show as austingriffith.eth */
+          ensProvider={mainnetProvider}
+          fontSize={16}
         />
 
         <Divider/>
@@ -135,16 +149,18 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
         <List
           bordered
           dataSource={setPurposeEvents}
-          renderItem={item => (
-            <List.Item>
-              <Address
-                  value={item[0]}
-                  ensProvider={mainnetProvider}
-                  fontSize={16}
-                /> =>
-              {item[1]}
-            </List.Item>
-          )}
+          renderItem={(item) => {
+            return (
+              <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
+                <Address
+                    value={item[0]}
+                    ensProvider={mainnetProvider}
+                    fontSize={16}
+                  /> =>
+                {item[1]}
+              </List.Item>
+            )
+          }}
         />
       </div>
 
