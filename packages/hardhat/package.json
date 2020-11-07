@@ -1,5 +1,5 @@
 {
-  "name": "@scaffold-eth/buidler",
+  "name": "@scaffold-eth/hardhat",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
@@ -11,26 +11,26 @@
     "eslint-plugin-prettier": "^3.1.4"
   },
   "dependencies": {
-    "@nomiclabs/buidler": "^1.4.8",
-    "@nomiclabs/buidler-ethers": "^2.0.2",
-    "@nomiclabs/buidler-waffle": "^2.1.0",
+    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^3.2.0",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.0.17",
+    "hardhat": "^2.0.2",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
   },
   "scripts": {
-    "chain": "buidler node",
-    "test": "buidler test --network buidlerevm",
-    "compile": "buidler compile",
-    "deploy": "buidler run scripts/deploy.js && buidler run scripts/publish.js",
+    "chain": "hardhat node",
+    "test": "hardhat test --network hardhatevm",
+    "compile": "hardhat compile",
+    "deploy": "hardhat run scripts/deploy.js && hardhat run scripts/publish.js",
     "watch": "node scripts/watch.js",
-    "accounts": "buidler accounts",
-    "balance": "buidler balance",
-    "send": "buidler send"
+    "accounts": "hardhat accounts",
+    "balance": "hardhat balance",
+    "send": "hardhat send"
   }
 }

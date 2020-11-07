@@ -1,6 +1,6 @@
 const fs = require("fs");
 const chalk = require("chalk");
-const bre = require("@nomiclabs/buidler");
+const bre = require("hardhat");
 
 const publishDir = "../react-app/src/contracts";
 const graphDir = "../subgraph"
@@ -14,7 +14,7 @@ function publishContract(contractName) {
   );
   try {
     let contract = fs
-      .readFileSync(`${bre.config.paths.artifacts}/${contractName}.json`)
+      .readFileSync(`${bre.config.paths.artifacts}/contracts/${contractName}.sol/${contractName}.json`)
       .toString();
     const address = fs
       .readFileSync(`${bre.config.paths.artifacts}/${contractName}.address`)

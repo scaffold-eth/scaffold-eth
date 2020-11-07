@@ -1,7 +1,7 @@
 /* eslint no-use-before-define: "warn" */
 const fs = require("fs");
 const chalk = require("chalk");
-const { config, ethers } = require("@nomiclabs/buidler");
+const { config, ethers } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
@@ -23,7 +23,7 @@ const main = async () => {
 
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
-    chalk.blue("packages/buidler/artifacts/"),
+    chalk.blue("packages/hardhat/artifacts/"),
     "\n\n"
   );
 };

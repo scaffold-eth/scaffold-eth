@@ -1,8 +1,7 @@
-const { usePlugin } = require("@nomiclabs/buidler/config");
 const { utils } = require("ethers");
 const fs = require("fs");
 
-usePlugin("@nomiclabs/buidler-waffle");
+require("@nomiclabs/hardhat-waffle");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -43,7 +42,7 @@ module.exports = {
     localhost: {
       url: "http://localhost:8545",
       /*
-        notice no mnemonic here? it will just use account 0 of the buidler node to deploy
+        notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
       */
     },
@@ -79,12 +78,14 @@ module.exports = {
       },
     },
   },
-  solc: {
-    version: "0.6.6",
-    optimizer: {
-      enabled: true,
-      runs: 200,
-    },
+  solidity: {
+    version: "0.6.7",
+    settings: {
+      optimizer: {
+        enabled: true,
+        runs: 200
+      }
+    }
   },
 };
 
@@ -113,7 +114,7 @@ task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) 
   if (DEBUG) console.log("privateKey", privateKey)
   var EthUtil = require('ethereumjs-util');
   const address = "0x" + EthUtil.privateToAddress(wallet._privKey).toString('hex')
-  console.log("🔐 Account Generated as " + address + ".txt and set as mnemonic in packages/buidler")
+  console.log("🔐 Account Generated as " + address + ".txt and set as mnemonic in packages/hardhat")
   console.log("💬 Use 'yarn run account' to get more information about the deployment account.")
 
   fs.writeFileSync("./" + address + ".txt", mnemonic.toString())
