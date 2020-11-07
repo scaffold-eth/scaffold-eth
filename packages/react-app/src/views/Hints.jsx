@@ -11,7 +11,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         <span style={{ marginRight: 8 }}>👷</span>
         Edit your <b>contract</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-          packages/buidler/contracts
+          packages/hardhat/contracts
         </span>
       </div>
 
@@ -104,7 +104,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         <span style={{ marginRight: 8 }}>📡</span>
         deploy to a testnet or mainnet by editing
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-          packages/buidler/buidler.config.js
+          packages/hardhat/hardhat.config.js
         </span>
         and running
         <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
@@ -120,7 +120,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         </span>
         will create a deployer account in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-          packages/buidler
+          packages/hardhat
         </span>
         <div style={{marginTop:8}}>(use <span style={{ marginLeft: 4, backgroundColor: "#f1f1f1", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
             yarn run account
