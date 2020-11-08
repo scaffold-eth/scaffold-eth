@@ -6,7 +6,7 @@
 
 ## quickstart
 
-```bash 
+```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
 
 cd your-next-dapp
@@ -42,7 +42,7 @@ yarn deploy
 
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/buidler/contracts`
+🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -54,7 +54,7 @@ yarn deploy
 
 ![image](https://user-images.githubusercontent.com/2653167/91858466-768bb080-ec26-11ea-9e9b-81519f7f1c90.png)
 
-> React dev server, Buidler blockchain, deploy terminal, code IDE, and frontend browser. 
+> React dev server, HardHat blockchain, deploy terminal, code IDE, and frontend browser.
 
 ---
 
@@ -87,7 +87,7 @@ yarn deploy
 ---
 
 
-Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn run chain` terminal:
+Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn run chain` terminal:
 
 ![image](https://user-images.githubusercontent.com/2653167/93687934-2f534b80-fa7f-11ea-84b2-c0ba99533dc2.png)
 
@@ -108,7 +108,7 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 🚽 UNDERFLOW!
 
-🧫 You can iterate and learn as you go. Test your assumptions! 
+🧫 You can iterate and learn as you go. Test your assumptions!
 
 ---
 
@@ -146,7 +146,7 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 🔲 Try making a `<Button/>` that calls `writeContracts.YourContract.setPurpose("👋 Hello World")` to explore how your UI might work
 
-🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) in Solidity. 
+🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) in Solidity.
 
 🗳 Maybe an make an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
 
@@ -158,11 +158,11 @@ Look for the [Buidler](https://buidler.dev) console.log() output in the `yarn ru
 
 🚁 OH! Programming decentralized money! 😎 So rad!
 
-🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/buidler/buidler.config.js`
+🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
 🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
 
-👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [Buidler](https://buidler.dev/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [HardHat](https://hardhat.org/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
 
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
@@ -199,7 +199,7 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 
 [<H3>Tutorial 1: 🛠 Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
 
-Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ Buidler, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
+Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ HardHat, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
 [🎥 Guided Tutorial](https://youtu.be/7rq3TPL-tgI)
 
 ---
@@ -239,9 +239,9 @@ Learn how to deploy your smart contract to a production blockchain. Then deploy 
 
 ---
 
-  📡 Using The Graph with 🏗 scaffold-eth 
-  
-  
+  📡 Using The Graph with 🏗 scaffold-eth
+
+
 [![image](https://user-images.githubusercontent.com/2653167/96306619-41aca080-0fbd-11eb-8882-8f6c115863eb.png)
 ](https://youtu.be/ODSTP5OjG2M)
 
@@ -374,15 +374,15 @@ yarn run watch
 
 ---
 
-📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/hardhat/contracts`
 
-> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
+> 🤡 There is a spelling error in `packages/hardhat/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
 
 ![Deployed Contract](https://user-images.githubusercontent.com/2653167/81483187-8146b380-91f9-11ea-80f0-3a8e1e3225dd.png)
 
-> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
+> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/hardhat/contracts` because there are other contract folders and it can get confusing.
 
-🔬Test your contracts by editing `myTest.js` in `packages/buidler/contracts`:
+🔬Test your contracts by editing `myTest.js` in `packages/hardhat/contracts`:
 
 ```bash
 yarn run test
@@ -406,11 +406,11 @@ yarn run balance **YOUR-ADDRESS**
 yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ```
 
-> 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
+> 🔧 Configure 👷[HardHat](https://hardhat.org/config/) by editing `hardhat.config.js` in `packages/hardhat`
 
 ---
 
-✨ The [BuidlerEVM](https://buidler.dev/buidler-evm/) provides _stack traces_ and _console.log_ debugging for our contracts ✨
+✨ The [HardHat network](https://hardhat.org/hardhat-network/) provides _stack traces_ and _console.log_ debugging for our contracts ✨
 
 ---
 
@@ -444,7 +444,7 @@ yarn run deploy
 ```
 
 
-🔏 Edit or rename your smart contract `YourContract.sol` in `packages/buidler/contracts`
+🔏 Edit or rename your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -469,7 +469,7 @@ The frontend has three different providers that provide different levels of acce
 
 `mainnetProvider`: (read only) [Infura](https://infura.io/) connection to main [Ethereum](https://ethereum.org/developers/) network (and contracts already deployed like [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code) or [Uniswap](https://etherscan.io/address/0x2a1530c4c41db0b0b2bb646cb5eb1a67b7158667)).
 
-`localProvider`: local [Buidler](https://buidler.dev/) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
+`localProvider`: local [HardHat](https://hardhat.org) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
 
 `injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), or other injected wallet (generates [burner-provider](https://www.npmjs.com/package/burner-provider) on page load)
 
@@ -679,7 +679,7 @@ const price = useExchangePrice(mainnetProvider);
 
 ## 📄 Smart Contract Wallet:
 
-📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/hardhat/contracts`
 
 📝 Then edit the `SmartContractWallet.js` React component in `packages/react-app/src`
 
