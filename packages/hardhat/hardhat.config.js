@@ -97,6 +97,56 @@ function debug(text) {
   }
 }
 
+task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
+  const randomWallet = ethers.Wallet.createRandom()
+  const privateKey = randomWallet._signingKey().privateKey
+  console.log("🔐 WALLET Generated as " + randomWallet.address + "")
+  console.log("🔗 http://localhost:3000/pk#"+privateKey)
+});
+
+
+task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
+  .addOptionalParam("amount", "Amount of ETH to send to wallet after generating")
+  .addOptionalParam("url", "URL to add pk to")
+  .setAction(async (taskArgs, { network, ethers }) => {
+
+    const randomWallet = ethers.Wallet.createRandom()
+    const privateKey = randomWallet._signingKey().privateKey
+    console.log("🔐 WALLET Generated as " + randomWallet.address + "")
+    let url = taskArgs.url?taskArgs.url:"http://localhost:3000"
+
+    let localDeployerMnemonic
+    try{
+      localDeployerMnemonic = fs.readFileSync("./mnemonic.txt")
+      localDeployerMnemonic = localDeployerMnemonic.toString().trim()
+    } catch (e) {
+      /* do nothing - this file isn't always there */
+    }
+
+    let amount = taskArgs.amount?taskArgs.amount:"0.01"
+    const tx = {
+      to: randomWallet.address,
+      value: ethers.utils.parseEther(amount)
+    };
+
+    //SEND USING LOCAL DEPLOYER MNEMONIC IF THERE IS ONE
+    // IF NOT SEND USING LOCAL HARDHAT NODE:
+    if(localDeployerMnemonic){
+      let deployerWallet = new ethers.Wallet.fromMnemonic(localDeployerMnemonic)
+      deployerWallet = deployerWallet.connect(ethers.provider)
+      console.log("💵 Sending "+amount+" ETH to "+randomWallet.address+" using deployer account");
+      let sendresult = await deployerWallet.sendTransaction(tx)
+      console.log("\n"+url+"/pk#"+privateKey+"\n")
+      return
+    }else{
+      console.log("💵 Sending "+amount+" ETH to "+randomWallet.address+" using local node");
+      console.log("\n"+url+"/pk#"+privateKey+"\n")
+      return send(ethers.provider.getSigner(), tx);
+    }
+
+});
+
+
 task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) => {
   const bip39 = require("bip39")
   const hdkey = require('ethereumjs-wallet/hdkey');
@@ -114,7 +164,7 @@ task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) 
   if (DEBUG) console.log("privateKey", privateKey)
   var EthUtil = require('ethereumjs-util');
   const address = "0x" + EthUtil.privateToAddress(wallet._privKey).toString('hex')
-  console.log("🔐 Account Generated as " + address + ".txt and set as mnemonic in packages/hardhat")
+  console.log("🔐 Account Generated as " + address + " and set as mnemonic in packages/hardhat")
   console.log("💬 Use 'yarn run account' to get more information about the deployment account.")
 
   fs.writeFileSync("./" + address + ".txt", mnemonic.toString())

@@ -101,6 +101,36 @@ export default function Wallet(props) {
        </div>
      )
    }else{
+
+     let extraPkDisplayAdded = {}
+     let extraPkDisplay = []
+     extraPkDisplayAdded[wallet.address] = true
+     extraPkDisplay.push(
+       <div style={{fontSize:16,padding:2,backgroundStyle:"#89e789"}}>
+          <a href={"/pk#"+pk}>
+            <Address minimized={true} value={wallet.address} ensProvider={props.ensProvider} /> {wallet.address.substr(0,6)}
+          </a>
+       </div>
+     )
+     for (var key in localStorage){
+       if(key.indexOf("metaPrivateKey_backup")>=0){
+         console.log(key)
+         let pastpk = localStorage.getItem(key)
+         let pastwallet = new ethers.Wallet(pastpk)
+         if(!extraPkDisplayAdded[pastwallet.address] /*&& selectedAddress!=pastwallet.address*/){
+           extraPkDisplayAdded[pastwallet.address] = true
+           extraPkDisplay.push(
+             <div style={{fontSize:16}}>
+                <a href={"/pk#"+pastpk}>
+                  <Address minimized={true} value={pastwallet.address} ensProvider={props.ensProvider} /> {pastwallet.address.substr(0,6)}
+                </a>
+             </div>
+           )
+         }
+       }
+     }
+
+
      display = (
        <div>
          <b>Private Key:</b>
@@ -116,6 +146,26 @@ export default function Wallet(props) {
 
          <Paragraph style={{fontSize:"16"}} copyable>{"https://xdai.io/"+pk}</Paragraph>
 
+         {extraPkDisplay?(
+           <div>
+             <h3>
+              Known Private Keys:
+             </h3>
+             {extraPkDisplay}
+             <Button onClick={()=>{
+               let currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
+               if(currentPrivateKey){
+                 window.localStorage.setItem("metaPrivateKey_backup"+Date.now(),currentPrivateKey);
+               }
+               const randomWallet = ethers.Wallet.createRandom()
+               const privateKey = randomWallet._signingKey().privateKey
+               window.localStorage.setItem("metaPrivateKey",privateKey);
+               window.location.reload()
+             }}>
+              Generate
+             </Button>
+           </div>
+         ):""}
 
        </div>
      )

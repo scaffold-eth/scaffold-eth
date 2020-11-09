@@ -160,7 +160,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ru
 
 🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
-🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
+🔐 Generate a deploy account with `yarn generate` and view it with `yarn account`
+
+🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
 
 👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [HardHat](https://hardhat.org/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
 

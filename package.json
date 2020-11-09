@@ -31,6 +31,8 @@
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "cd packages/hardhat && npx hardhat generate",
     "account": "cd packages/hardhat && npx hardhat account",
+    "wallet": "cd packages/hardhat && npx hardhat wallet",
+    "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
     "graph-run-node": "cd docker/graph-node && docker-compose up",
     "graph-remove-node": "cd docker/graph-node && docker-compose down",
