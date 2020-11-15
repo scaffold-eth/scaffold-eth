@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
+
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { MailOutlined } from "@ant-design/icons";
