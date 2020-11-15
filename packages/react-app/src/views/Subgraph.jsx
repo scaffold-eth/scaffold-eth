@@ -1,18 +1,13 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { MailOutlined } from "@ant-design/icons";
-import { Row, Col, Button, List, Tabs, Menu, Select, Typography, Table, Input } from "antd";
+import { Button, Typography, Table, Input } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import { Address } from "../components";
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 import fetch from 'isomorphic-fetch';
-
-const { Title } = Typography;
-
-const { Option } = Select;
 
   const highlight = { marginLeft: 4, marginRight: 8, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }
 
@@ -44,7 +39,7 @@ function Subgraph(props) {
   }
   `
   const EXAMPLE_GQL = gql(EXAMPLE_GRAPHQL)
-  const { loading, error, data } = useQuery(EXAMPLE_GQL,{pollInterval: 2500});
+  const { loading, data } = useQuery(EXAMPLE_GQL,{pollInterval: 2500});
 
   const purposeColumns = [
     {

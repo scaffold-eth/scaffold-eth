@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Provider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { useLocalStorage } from "."
 

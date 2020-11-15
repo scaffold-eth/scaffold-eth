@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Provider } from "@ethersproject/providers";
 import { AddressZero } from "@ethersproject/constants";
 
 const useResolveName = (provider, ensName) => {

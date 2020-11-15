@@ -1,10 +1,10 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
-import { Address, AddressInput, Balance } from "../components";
-import { useContractReader, useEventListener, useResolveName } from "../hooks";
+import { Address, Balance } from "../components";
+import { useContractReader, useEventListener } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
 export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
