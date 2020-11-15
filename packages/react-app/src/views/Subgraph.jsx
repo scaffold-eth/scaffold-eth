@@ -73,7 +73,7 @@ function Subgraph(props) {
 
   return (
       <>
-          <div style={{ margin: 32, marginTop: 32, margin: "auto" }}>
+          <div style={{ marginTop: 32, margin: "auto" }}>
             You will find that parsing/tracking events with the <span style={highlight}>useEventListener</span> hook becomes a chore for every new project.
           </div>
           <div style={{ marginTop: 32, margin: "auto" }}>
