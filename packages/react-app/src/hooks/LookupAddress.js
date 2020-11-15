@@ -35,7 +35,7 @@ const useLookupAddress = (provider, address) => {
         });
       }
     }
-  }, [provider, address]);
+  }, [ensCache, provider, address, setEnsName, setEnsCache]);
 
   return ensName;
 };

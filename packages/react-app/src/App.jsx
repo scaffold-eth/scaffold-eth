@@ -97,7 +97,7 @@ function App(props) {
   const [route, setRoute] = useState();
   useEffect(() => {
     setRoute(window.location.pathname)
-  }, [ window.location.pathname ]);
+  }, [setRoute]);
 
   return (
     <div className="App">
