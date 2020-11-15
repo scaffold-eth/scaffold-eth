@@ -171,14 +171,14 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
 
         <Card>
 
-          Check out all the <a href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components" target="_blank" >📦  components</a>
+          Check out all the <a href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components" target="_blank" rel="noopener noreferrer">📦  components</a>
 
         </Card>
 
         <Card style={{marginTop:32}}>
 
           <div>
-            There are tons of generic components included from <a href="https://ant.design/components/overview/" target="_blank" >🐜  ant.design</a> too!
+            There are tons of generic components included from <a href="https://ant.design/components/overview/" target="_blank" rel="noopener noreferrer">🐜  ant.design</a> too!
           </div>
 
           <div style={{marginTop:8}}>

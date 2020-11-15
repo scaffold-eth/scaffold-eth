@@ -76,8 +76,8 @@ function Subgraph(props) {
           <div style={{ margin: 32, marginTop: 32, margin: "auto" }}>
             You will find that parsing/tracking events with the <span style={highlight}>useEventListener</span> hook becomes a chore for every new project.
           </div>
-          <div style={{ margin: 32, marginTop: 32, margin: "auto" }}>
-            Instead, you can use <a href="https://thegraph.com/docs/introduction" target="_blank">The Graph</a> with 🏗 scaffold-eth by following these steps:
+          <div style={{ marginTop: 32, margin: "auto" }}>
+            Instead, you can use <a href="https://thegraph.com/docs/introduction" target="_blank" rel="noopener noreferrer">The Graph</a> with 🏗 scaffold-eth by following these steps:
           </div>
 
           <div style={{ margin: 32 }}>
@@ -94,7 +94,7 @@ function Subgraph(props) {
             <span style={highlight}>
               yarn graph-run-node
             </span>
-            <span style={{ marginLeft: 4}}> (requires <a href="https://www.docker.com/products/docker-desktop" target="_blank"> Docker</a>) </span>
+            <span style={{ marginLeft: 4}}> (requires <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener noreferrer"> Docker</a>) </span>
           </div>
 
           <div style={{ margin: 32 }}>
@@ -120,7 +120,7 @@ function Subgraph(props) {
             <span style={highlight}>
               packages/subgraph/src
             </span>
-             (learn more about subgraph definition <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank">here</a>)
+             (learn more about subgraph definition <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank" rel="noopener noreferrer">here</a>)
           </div>
 
           <div style={{ margin: 32 }}>
