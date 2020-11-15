@@ -94,7 +94,7 @@ export default function Wallet(props) {
    let pk = localStorage.getItem("metaPrivateKey")
    let wallet = new ethers.Wallet(pk)
 
-   if(wallet.address!=selectedAddress){
+   if(wallet.address!==selectedAddress){
      display = (
        <div>
          <b>*injected account*, private key unknown</b>
