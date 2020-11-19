@@ -144,7 +144,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ru
 
 🏗 You'll notice the `<Contract />` component that displays the dynamic form as scaffolding for interacting with your contract.
 
-🔲 Try making a `<Button/>` that calls `writeContracts.YourContract.setPurpose("👋 Hello World")` to explore how your UI might work
+🔲 Try making a `<Button/>` that calls `writeContracts.YourContract.setPurpose("👋 Hello World")` to explore how your UI might work...
+
+💬 Wrap the call to `writeContracts` with a `tx()` helper that uses BlockNative's [Notify.js](https://www.blocknative.com/notify).
 
 🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) in Solidity.
 
