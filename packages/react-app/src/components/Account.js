@@ -4,23 +4,47 @@ import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { Balance, Address } from "."
 import { usePoller } from "../hooks"
+import WalletLink from 'walletlink';
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button, Typography } from 'antd';
 const { Text } = Typography;
 
 const INFURA_ID = "2717afb6bf164045b5d5468031b93f87"  // MY INFURA_ID, SWAP IN YOURS!
 
+const walletLink = new WalletLink({
+  appName: 'coinbase',
+});
+const walletLinkProvider = walletLink.makeWeb3Provider(
+    `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    1,
+);
+
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
 const web3Modal = new Web3Modal({
-  //network: "mainnet", // optional
+  // network: "mainnet", // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: INFURA_ID
-      }
-    }
-  }
+        infuraId: INFURA_ID,
+      },
+    },
+    'custom-walletlink': {
+      display: {
+        logo: 'https://s3-us-west-2.amazonaws.com/acf-uploads/Image_FSTi8aGEOi.png',
+        name: 'Coinbase',
+        description: 'Scan with Coinbase Wallet (not Coinbase App)',
+      },
+      package: walletLinkProvider,
+      connector: async (provider, options) => {
+        await provider.enable();
+        return provider;
+      },
+    },
+  },
 });
 
 export default function Account(props) {
