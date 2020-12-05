@@ -25,7 +25,7 @@
   },
   "scripts": {
     "chain": "hardhat node",
-    "test": "hardhat test --network hardhatevm",
+    "test": "hardhat test",
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.js && hardhat run scripts/publish.js",
     "watch": "node scripts/watch.js",
