@@ -40,6 +40,14 @@ yarn deploy
 
 ```
 
+> in a fourth terminal window:
+
+```bash
+
+yarn test
+
+```
+
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
