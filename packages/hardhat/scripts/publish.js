@@ -62,8 +62,6 @@ function publishContract(contractName) {
       JSON.stringify(contract.abi, null, 2)
     );
 
-
-
     return true;
   } catch (e) {
     console.log(e);
