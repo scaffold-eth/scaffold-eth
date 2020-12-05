@@ -5,6 +5,14 @@ const bre = require("hardhat");
 const publishDir = "../react-app/src/contracts";
 const graphDir = "../subgraph"
 
+const skipPublishing = {
+  // Add Solidity files you don't want to publish here, together with
+  // a reason for skipping them.  For example, interfaces don't get
+  // deployed, so they won't get an .address file:
+  //
+  // "YourInterface.sol" : "interface",
+};
+
 function publishContract(contractName) {
   console.log(
     "Publishing",
@@ -69,18 +77,37 @@ function publishContract(contractName) {
   }
 }
 
+function shouldPublish(file) {
+  if (file.indexOf(".sol") <= 0) {
+    return false;
+  }
+
+  const interfaceFiles = bre.config.contracts.interfaceFiles || {};
+  if (interfaceFiles.indexOf(file) != -1) {
+    console.log(
+      "Skipping publishing interface file",
+      chalk.cyan(file),
+    );
+    return false;
+  }
+
+  return true;
+}
+
 async function main() {
   if (!fs.existsSync(publishDir)) {
     fs.mkdirSync(publishDir);
   }
   const finalContractList = [];
   fs.readdirSync(bre.config.paths.sources).forEach((file) => {
-    if (file.indexOf(".sol") >= 0) {
-      const contractName = file.replace(".sol", "");
-      // Add contract to list if publishing is successful
-      if (publishContract(contractName)) {
-        finalContractList.push(contractName);
-      }
+    if (! shouldPublish(file)) {
+      return;
+    }
+
+    const contractName = file.replace(".sol", "");
+    // Add contract to list if publishing is successful
+    if (publishContract(contractName)) {
+      finalContractList.push(contractName);
     }
   });
   fs.writeFileSync(

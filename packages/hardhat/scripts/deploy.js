@@ -37,8 +37,18 @@ const autoDeploy = async () => {
   // loop through each solidity file from config.path.sources and deploy it
   // abi encode any args, if found
   // ! do not use .forEach in place of this loop
+  const interfaceFiles = config.contracts.interfaceFiles || {};
   for (let i=0; i < contractList.length; i++) {
     const file = contractList[i];
+
+    if (interfaceFiles.indexOf(file) > -1) {
+      console.log(
+        " 📄 Skipping deploy of interface file",
+        chalk.cyan(file),
+      );
+      continue;
+    }
+
     const contractName = file.replace(".sol", "");
     const contractArgs = readArgsFile(contractName);
     const deployed = await deploy(contractName, contractArgs);

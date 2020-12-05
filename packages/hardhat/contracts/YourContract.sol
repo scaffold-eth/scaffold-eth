@@ -2,8 +2,9 @@ pragma solidity >=0.6.0 <0.7.0;
 
 import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./YourInterface.sol";
 
-contract YourContract {
+contract YourContract is YourInterface {
 
   event SetPurpose(address sender, string purpose);
 
@@ -13,7 +14,7 @@ contract YourContract {
     // what should we do on deploy?
   }
 
-  function setPurpose(string memory newPurpose) public {
+  function setPurpose(string memory newPurpose) public override {
     purpose = newPurpose;
     console.log(msg.sender,"set purpose to",purpose);
     emit SetPurpose(msg.sender, purpose);

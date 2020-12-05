@@ -87,6 +87,9 @@ module.exports = {
       }
     }
   },
+  contracts: {
+    interfaceFiles: ["YourInterface.sol"]
+  }
 };
 
 const DEBUG = false;
