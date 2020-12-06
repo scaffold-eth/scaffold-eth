@@ -1,8 +1,10 @@
-import React, { useCallback, useEffect, useState } from "react";
+/* eslint-disable jsx-a11y/accessible-emoji */
+
+import React, { useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
-import { Address, AddressInput, Balance } from "../components";
-import { useContractReader, useEventListener, useResolveName } from "../hooks";
+import { Address, Balance } from "../components";
+import { useContractReader, useEventListener } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
 export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
@@ -169,14 +171,14 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
 
         <Card>
 
-          Check out all the <a href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components" target="_blank" >📦  components</a>
+          Check out all the <a href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components" target="_blank" rel="noopener noreferrer">📦  components</a>
 
         </Card>
 
         <Card style={{marginTop:32}}>
 
           <div>
-            There are tons of generic components included from <a href="https://ant.design/components/overview/" target="_blank" >🐜  ant.design</a> too!
+            There are tons of generic components included from <a href="https://ant.design/components/overview/" target="_blank" rel="noopener noreferrer">🐜  ant.design</a> too!
           </div>
 
           <div style={{marginTop:8}}>

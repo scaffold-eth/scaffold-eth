@@ -94,7 +94,7 @@ export default function Wallet(props) {
    let pk = localStorage.getItem("metaPrivateKey")
    let wallet = new ethers.Wallet(pk)
 
-   if(wallet.address!=selectedAddress){
+   if(wallet.address!==selectedAddress){
      display = (
        <div>
          <b>*injected account*, private key unknown</b>
@@ -141,7 +141,9 @@ export default function Wallet(props) {
 
           <hr/>
 
-         <i>Point your camera phone at qr code to open in <a target="_blank" href={"https://xdai.io/"+pk}>burner wallet</a>:</i>
+         <i>Point your camera phone at qr code to open in
+           <a target="_blank" href={"https://xdai.io/"+pk} rel="noopener noreferrer">burner wallet</a>:
+         </i>
          <QR value={"https://xdai.io/"+pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
 
          <Paragraph style={{fontSize:"16"}} copyable>{"https://xdai.io/"+pk}</Paragraph>

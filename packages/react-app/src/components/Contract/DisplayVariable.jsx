@@ -7,7 +7,7 @@ import tryToDisplay from "./utils";
 const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh}) => {
   const [variable, setVariable] = useState("");
 
-  const refresh = async () => {
+  const refresh = useCallback(async () => {
     try {
       const funcResponse = await contractFunction();
       setVariable(funcResponse);
@@ -15,11 +15,11 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [setVariable, contractFunction, triggerRefresh]);
 
   useEffect(() => {
     refresh();
-  }, [refreshRequired, contractFunction]);
+  }, [refresh, refreshRequired, contractFunction]);
 
   return (
     <div>

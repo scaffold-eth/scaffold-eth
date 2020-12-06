@@ -38,13 +38,14 @@ export default function AddressInput(props) {
     </div>
   );
 
+  const {ensProvider, onChange} = props;
   const updateAddress = useCallback(
     async newValue => {
       if (typeof newValue !== "undefined") {
         let address = newValue;
         if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
           try {
-            const possibleAddress = await props.ensProvider.resolveName(address);
+            const possibleAddress = await ensProvider.resolveName(address);
             if (possibleAddress) {
               address = possibleAddress;
             }
@@ -52,12 +53,12 @@ export default function AddressInput(props) {
           } catch (e) {}
         }
         setValue(address);
-        if (typeof props.onChange === "function") {
-          props.onChange(address);
+        if (typeof onChange === "function") {
+          onChange(address);
         }
       }
     },
-    [props.ensProvider, props.onChange],
+    [ensProvider, onChange],
   );
 
   const scanner = scan ? (

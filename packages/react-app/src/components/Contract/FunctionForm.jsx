@@ -24,7 +24,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + inputIndex++
 
     let buttons = ""
-    if (input.type == "bytes32") {
+    if (input.type === "bytes32") {
       buttons = (
         <Tooltip placement="right" title={"to bytes32"}>
           <div
@@ -46,7 +46,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             </div>
         </Tooltip>
       )
-    } else if (input.type == "bytes") {
+    } else if (input.type === "bytes") {
       buttons = (
         <Tooltip placement="right" title={"to hex"}>
           <div
@@ -156,8 +156,8 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               const args = functionInfo.inputs.map((input) => {
                 const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + innerIndex++
                 let value = form[key]
-                if(input.type == "bool"){
-                  if(value=='true' || value=='1' || value =="0x1"|| value =="0x01"|| value =="0x0001"){
+                if(input.type === "bool"){
+                  if(value==='true' || value==='1' || value ==="0x1"|| value ==="0x01"|| value ==="0x0001"){
                     value = 1;
                   }else{
                     value = 0;

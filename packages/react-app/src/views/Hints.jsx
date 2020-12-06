@@ -1,3 +1,5 @@
+/* eslint-disable jsx-a11y/accessible-emoji */
+
 import React from "react";
 import { formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
@@ -162,7 +164,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         </span>
       </div>
       <div style={{ padding: 128 }}>
-        <blink>🛠 Check out your browser's developer console for more... (inpect -> console) 🚀</blink>
+        🛠 Check out your browser's developer console for more... (inpect -> console) 🚀
       </div>
     </div>
   );

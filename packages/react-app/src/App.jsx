@@ -1,17 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
-import { MailOutlined } from "@ant-design/icons";
-import { getDefaultProvider, InfuraProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, List, Tabs, Menu } from "antd";
+import { Row, Col, Button, Menu } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useBalance, useEventListener } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./components";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useBalance } from "./hooks";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
-import { parseEther, formatEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 /*
@@ -27,8 +26,7 @@ import { Hints, ExampleUI, Subgraph } from "./views"
     You should get your own Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
 */
-import { INFURA_ID, ETHERSCAN_KEY } from "./constants";
-const { TabPane } = Tabs;
+import { INFURA_ID } from "./constants";
 
 const DEBUG = true
 
@@ -99,7 +97,7 @@ function App(props) {
   const [route, setRoute] = useState();
   useEffect(() => {
     setRoute(window.location.pathname)
-  }, [ window.location.pathname ]);
+  }, [setRoute]);
 
   return (
     <div className="App">

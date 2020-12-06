@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { Provider } from "@ethersproject/providers";
 import { getAddress } from "@ethersproject/address";
 import { useLocalStorage } from "."
 
@@ -36,7 +35,7 @@ const useLookupAddress = (provider, address) => {
         });
       }
     }
-  }, [provider, address]);
+  }, [ensCache, provider, address, setEnsName, setEnsCache]);
 
   return ensName;
 };
