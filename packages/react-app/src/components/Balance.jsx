@@ -3,12 +3,22 @@ import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
 
 /*
+  ~ What it does? ~
+
+  Displays a balance of given address in ether & dollar
+
+  ~ How can I use? ~
 
   <Balance
-    address={selectedAddress}
-    provider={props.provider}
-    dollarMultiplier={props.price}
+    address={address}
+    provider={mainnetProvider}
+    price={price}
   />
+
+  ~ Features ~
+
+  - Provide address={address} and get balance corresponding to given address
+  - Provide price={price} of ether and get your balance converted to dollar
 
 */
 
@@ -51,8 +61,8 @@ export default function Balance(props) {
 
   let displayBalance = floatBalance.toFixed(4);
 
-  if (props.dollarMultiplier && dollarMode) {
-    displayBalance = "$" + (floatBalance * props.dollarMultiplier).toFixed(2);
+  if (props.price && dollarMode) {
+    displayBalance = "$" + (floatBalance * props.price).toFixed(2);
   }
 
   return (

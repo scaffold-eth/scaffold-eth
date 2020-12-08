@@ -4,8 +4,11 @@ import { Typography, Skeleton } from "antd";
 import { useLookupAddress } from "../hooks";
 
 /*
+  ~ What it does? ~
 
-  Displays an address with a blockie, links to a block explorer, and can resolve ENS
+  Displays an address with a blockie image and option to copy address
+
+  ~ How can I use? ~
 
   <Address
     value={address}
@@ -14,6 +17,14 @@ import { useLookupAddress } from "../hooks";
     fontSize={optional_fontSize}
   />
 
+  ~ Features ~
+
+  - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
+              (ex. "0xa870" => "user.eth")
+  - Provide blockExplorer={optional_blockExplorer}, click on address and get link
+              (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
+  - Provide fontSize={optional_fontSize} to change size of address text
+  
 */
 
 const { Text } = Typography;
