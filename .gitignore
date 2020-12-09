@@ -1,3 +1,4 @@
+packages/subgraph/subgraph.yaml
 packages/subgraph/generated
 packages/hardhat/*.txt
 **/aws.json

@@ -66,6 +66,22 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             </div>
         </Tooltip>
       )
+    } else if (input.type == "uint256") {
+      buttons = (
+        <Tooltip placement="right" title={"to hex"}>
+          <div
+            type="dashed"
+            style={{ cursor: "pointer" }}
+            onClick={async () => {
+              const formUpdate = { ...form };
+              formUpdate[key] = utils.parseEther(form[key])
+              setForm(formUpdate);
+            }}
+          >
+            ✴️
+            </div>
+        </Tooltip>
+      )
     }
 
 
