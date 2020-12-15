@@ -11,7 +11,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
 
   const [newPurpose, setNewPurpose] = useState("loading...");
   const context_value = useContext(EthersContext);
-  console.log("context value: ", context_value);
+  console.log("Gas Price: ", context_value.gasPrice);
   return (
     <div>
       {/*
