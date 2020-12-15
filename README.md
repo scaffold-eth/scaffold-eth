@@ -100,7 +100,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ru
 
 ---
 
-🔬  What happens with you subtract 1 from 0? Try it out in the app to see what happens!
+🔬  What happens when you subtract 1 from 0? Try it out in the app to see what happens!
 
 ![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
 
@@ -703,9 +703,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 ---
 
-🛰 The Graph -- TODO
+🛰 The Graph -- [ 🎥 speed run tutorial video ](https://youtu.be/T5ylzOTkn-Q)
 
-⛽️ GSN -- TODO
+⛽️ GSN -- See Nifty.ink!
 
 ---
 

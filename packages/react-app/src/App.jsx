@@ -7,7 +7,7 @@ import { Row, Col, Button, Menu } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useBalance } from "./hooks";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther } from "@ethersproject/units";
@@ -25,9 +25,15 @@ import { Hints, ExampleUI, Subgraph } from "./views"
 
     You should get your own Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
-*/
-import { INFURA_ID } from "./constants";
 
+
+    📡 EXTERNAL CONTRACTS:
+    You can also bring in contract artifacts in `constants.js`
+    (and then use the `useExternalContractLoader()` hook!)
+*/
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+
+// 😬 Sorry for all the console logging 🤡
 const DEBUG = true
 
 // 🔭 block explorer URL
@@ -82,6 +88,23 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
+  // If you want to bring in the mainnet DAI contract it would look like:
+  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
+
+
+  // keep track of a variable from the contract in the local React state:
+  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  console.log("🤗 purpose:",purpose)
+
+  //📟 Listen for broadcast events
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  /*
+  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
+  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  */
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -136,6 +159,17 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+
+            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
+            <Contract
+              name="DAI"
+              customContract={mainnetDAIContract}
+              signer={userProvider.getSigner()}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            */ }
           </Route>
           <Route path="/hints">
             <Hints
@@ -156,6 +190,8 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
             />
           </Route>
           <Route path="/subgraph">
