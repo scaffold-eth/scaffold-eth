@@ -6,17 +6,11 @@ const { utils } = require("ethers");
 const R = require("ramda");
 
 const main = async () => {
-  // ? Tip: if on VSCode, install "Better Comments" extension
+
   console.log("\n\n 📡 Deploying...\n");
 
-  // ! AUTO DEPLOY
-  // * -----------
-  // to read contract directory and deploy them all (add ".args" files for arguments)
-  await autoDeploy();
+  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
 
-  // ! OR CUSTOM DEPLOY
-  // * ----------------
-  // custom deploy (to use deployed addresses dynamically for example:)
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
@@ -26,27 +20,6 @@ const main = async () => {
     chalk.blue("packages/hardhat/artifacts/"),
     "\n\n"
   );
-};
-
-const autoDeploy = async () => {
-  const allDeployed = [];
-  const contractList = fs
-    .readdirSync(config.paths.sources)
-    .filter((fileName) => isSolidity(fileName));
-
-  // loop through each solidity file from config.path.sources and deploy it
-  // abi encode any args, if found
-  // ! do not use .forEach in place of this loop
-  for (let i=0; i < contractList.length; i++) {
-    const file = contractList[i];
-    const contractName = file.replace(".sol", "");
-    const contractArgs = readArgsFile(contractName);
-    const deployed = await deploy(contractName, contractArgs);
-
-    allDeployed.push(deployed);
-  }
-
-  return allDeployed;
 };
 
 const deploy = async (contractName, _args) => {

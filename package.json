@@ -30,6 +30,7 @@
     "s3": "yarn workspace @scaffold-eth/react-app s3",
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "cd packages/hardhat && npx hardhat generate",
+    "mine": "cd packages/hardhat && npx hardhat mine",
     "account": "cd packages/hardhat && npx hardhat account",
     "wallet": "cd packages/hardhat && npx hardhat wallet",
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",

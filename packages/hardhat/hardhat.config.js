@@ -1,5 +1,6 @@
 const { utils } = require("ethers");
 const fs = require("fs");
+const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
 
@@ -171,6 +172,59 @@ task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) 
   fs.writeFileSync("./mnemonic.txt", mnemonic.toString())
 });
 
+task("mine", "Looks for a deployer account that will give leading zeros")
+  .addParam("searchFor", "String to search for")
+  .setAction(async (taskArgs, { network, ethers }) => {
+
+  let contract_address = ""
+  let address;
+
+  const bip39 = require("bip39")
+  const hdkey = require('ethereumjs-wallet/hdkey');
+
+  let mnemonic = ""
+  while(contract_address.indexOf(taskArgs.searchFor)!=0){
+
+    mnemonic = bip39.generateMnemonic()
+    if (DEBUG) console.log("mnemonic", mnemonic)
+    const seed = await bip39.mnemonicToSeed(mnemonic)
+    if (DEBUG) console.log("seed", seed)
+    const hdwallet = hdkey.fromMasterSeed(seed);
+    const wallet_hdpath = "m/44'/60'/0'/0/";
+    const account_index = 0
+    let fullPath = wallet_hdpath + account_index
+    if (DEBUG) console.log("fullPath", fullPath)
+    const wallet = hdwallet.derivePath(fullPath).getWallet();
+    const privateKey = "0x" + wallet._privKey.toString('hex');
+    if (DEBUG) console.log("privateKey", privateKey)
+    var EthUtil = require('ethereumjs-util');
+    address = "0x" + EthUtil.privateToAddress(wallet._privKey).toString('hex')
+
+
+    const rlp = require('rlp');
+    const keccak = require('keccak');
+
+    let nonce = 0x00; //The nonce must be a hex literal!
+    let sender = address;
+
+    let input_arr = [ sender, nonce ];
+    let rlp_encoded = rlp.encode(input_arr);
+
+    let contract_address_long = keccak('keccak256').update(rlp_encoded).digest('hex');
+
+    contract_address = contract_address_long.substring(24); //Trim the first 24 characters.
+
+
+  }
+
+  console.log("⛏  Account Mined as " + address + " and set as mnemonic in packages/hardhat")
+  console.log("📜 This will create the first contract: "+chalk.magenta("0x"+contract_address));
+  console.log("💬 Use 'yarn run account' to get more information about the deployment account.")
+
+  fs.writeFileSync("./" + address + "_produces"+contract_address+".txt", mnemonic.toString())
+  fs.writeFileSync("./mnemonic.txt", mnemonic.toString())
+});
+
 task("account", "Get balance informations for the deployment account.", async (_, { ethers }) => {
   const hdkey = require('ethereumjs-wallet/hdkey');
   const bip39 = require("bip39")
@@ -252,46 +306,46 @@ function send(signer, txparams) {
 }
 
 task("send", "Send ETH")
-    .addParam("from", "From address or account index")
-    .addOptionalParam("to", "To address or account index")
-    .addOptionalParam("amount", "Amount to send in ether")
-    .addOptionalParam("data", "Data included in transaction")
-    .addOptionalParam("gasPrice", "Price you are willing to pay in gwei")
-    .addOptionalParam("gasLimit", "Limit of how much gas to spend")
+  .addParam("from", "From address or account index")
+  .addOptionalParam("to", "To address or account index")
+  .addOptionalParam("amount", "Amount to send in ether")
+  .addOptionalParam("data", "Data included in transaction")
+  .addOptionalParam("gasPrice", "Price you are willing to pay in gwei")
+  .addOptionalParam("gasLimit", "Limit of how much gas to spend")
 
-    .setAction(async (taskArgs, { network, ethers }) => {
-      const from = await addr(ethers, taskArgs.from);
-      debug(`Normalized from address: ${from}`);
-      const fromSigner = await ethers.provider.getSigner(from);
+  .setAction(async (taskArgs, { network, ethers }) => {
+    const from = await addr(ethers, taskArgs.from);
+    debug(`Normalized from address: ${from}`);
+    const fromSigner = await ethers.provider.getSigner(from);
 
-      let to;
-      if (taskArgs.to) {
-        to = await addr(ethers, taskArgs.to);
-        debug(`Normalized to address: ${to}`);
-      }
+    let to;
+    if (taskArgs.to) {
+      to = await addr(ethers, taskArgs.to);
+      debug(`Normalized to address: ${to}`);
+    }
 
-      const txRequest = {
-        from: await fromSigner.getAddress(),
-        to,
-        value: parseUnits(
-            taskArgs.amount ? taskArgs.amount : "0",
-            "ether"
-        ).toHexString(),
-        nonce: await fromSigner.getTransactionCount(),
-        gasPrice: parseUnits(
-            taskArgs.gasPrice ? taskArgs.gasPrice : "1.001",
-            "gwei"
-        ).toHexString(),
-        gasLimit: taskArgs.gasLimit ? taskArgs.gasLimit : 24000,
-        chainId: network.config.chainId,
-      };
+    const txRequest = {
+      from: await fromSigner.getAddress(),
+      to,
+      value: parseUnits(
+          taskArgs.amount ? taskArgs.amount : "0",
+          "ether"
+      ).toHexString(),
+      nonce: await fromSigner.getTransactionCount(),
+      gasPrice: parseUnits(
+          taskArgs.gasPrice ? taskArgs.gasPrice : "1.001",
+          "gwei"
+      ).toHexString(),
+      gasLimit: taskArgs.gasLimit ? taskArgs.gasLimit : 24000,
+      chainId: network.config.chainId,
+    };
 
-      if (taskArgs.data !== undefined) {
-        txRequest.data = taskArgs.data;
-        debug(`Adding data to payload: ${txRequest.data}`);
-      }
-      debug(txRequest.gasPrice / 1000000000 + " gwei");
-      debug(JSON.stringify(txRequest, null, 2));
+    if (taskArgs.data !== undefined) {
+      txRequest.data = taskArgs.data;
+      debug(`Adding data to payload: ${txRequest.data}`);
+    }
+    debug(txRequest.gasPrice / 1000000000 + " gwei");
+    debug(JSON.stringify(txRequest, null, 2));
 
-      return send(fromSigner, txRequest);
-    });
+    return send(fromSigner, txRequest);
+});
