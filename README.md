@@ -51,10 +51,10 @@ So basically it works like this during the deployment of YourContract.sol the ow
 ## Mathmatical Formula
 
 - **Reserve Ratio** When deploying we need to pass in a reserve ratio which currently is 100000(10 %) for hihh price sensitivity but can range from 0 - 100, higher reserve ratio between the Reserve Token balance and the SMILE (😃) Token will result in lower price sensitivity, meaning that each buy and sell will have a less than proportionate effect on the SMILE (😃) Token’s price movement.
-Though it is calculated as => **Reserve Ratio = Reserve Token Balance / (Continuous Token Supply x Continuous Token Price)**
+Though it is calculated as => **Reserve Ratio = Reserve Token Balance / (SMILE Token Supply x SMILE Token Price)**
 
 
-- **Purchase Return**  The Amount of SMILE (😃) Token’s you get after you stake eth => **PurchaseReturn = ContinuousTokenSupply * ((1 + ReserveTokensReceived / ReserveTokenBalance) ^ (ReserveRatio) - 1)**
+- **Purchase Return**  The Amount of SMILE (😃) Token’s you get after you stake eth => **PurchaseReturn = SMILE Token Supply * ((1 + ReserveTokensReceived / ReserveTokenBalance) ^ (ReserveRatio) - 1)**
 
 
-- **Sale Return** The Amount of ETH you get based on the amount of SMILE (😃) token's you choose to burn and the current price at that point  => **SaleReturn = ReserveTokenBalance * (1 - (1 - ContinuousTokensReceived / ContinuousTokenSupply) ^ (1 / (ReserveRatio)))**
+- **Sale Return** The Amount of ETH you get based on the amount of SMILE (😃) token's you choose to burn and the current price at that point  => **SaleReturn = ReserveTokenBalance * (1 - (1 - SMILE Token Received / SMILE Token Supply) ^ (1 / (ReserveRatio)))**
