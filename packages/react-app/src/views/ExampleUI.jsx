@@ -20,6 +20,9 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   const mintEvents = useEventListener(readContracts, "YourContract", "Minted", localProvider, 1);
   console.log("📟 Mint events:",mintEvents)
 
+  const burnEvents = useEventListener(readContracts, "YourContract", "Burned", localProvider, 1);
+  console.log("📟 Burn events:",burnEvents)
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -45,12 +48,23 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   }}
 />          
 <Button onClick={()=>{
-    console.log('amount1', amount)
-    console.log('amount', parseEther(amount))
-    console.log(writeContracts.YourContract.address)
             /* look how you call setPurpose on your contract: */
             tx(writeContracts.YourContract.mint({value: parseEther(amount)}))
           }}>Mint </Button>
+        </div>
+
+        <div style={{margin:8}}>
+<EtherInput
+  price={price}
+  value={amount}
+  onChange={value => {
+    setAmount(value);
+  }}
+/>          
+<Button onClick={()=>{
+            /* look how you call setPurpose on your contract: */
+            tx(writeContracts.YourContract.burn(parseEther(amount)))
+          }}>Burn </Button>
         </div>
 
         <div style={{margin:8}}>
@@ -197,6 +211,25 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   />
                 
               </List.Item>
+
+<List
+bordered
+dataSource={burnEvents}
+renderItem={(item) => {
+  return (
+    <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
+      <Address
+          value={item[0]}
+          ensProvider={mainnetProvider}
+          fontSize={16}
+        /> =>   <Balance
+        balance={item[1]}
+      /> =>
+      <Balance
+balance={item[2]}
+/>
+      
+    </List.Item>
             )
           }}
         />

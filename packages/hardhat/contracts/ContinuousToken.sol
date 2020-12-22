@@ -41,7 +41,6 @@ abstract contract ContinuousToken is Ownable, ERC20, BancorBondingCurve, ValidGa
 
         uint refundAmount = getContinuousBurnRefund(_amount);
         _burn(msg.sender, _amount);
-        emit Burned(msg.sender, _amount, refundAmount);
         return refundAmount;
     }
 

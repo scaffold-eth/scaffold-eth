@@ -5,10 +5,10 @@ import "./ContinuousToken.sol";
 
 contract YourContract is ContinuousToken {
     uint256 internal reserve;
-
-    constructor() public ContinuousToken("Smile", "😃", 100000000000000000000, 1) {
+    // reserve ratio as 10 %
+    constructor() public ContinuousToken("Smile", "😃", 100000000000000000000, 100000) {
         // this ia a bug just added for testing need to change the deployment script
-        reserve = 10;
+        reserve = msg.value;
     }
 
     fallback () external payable { mint(); }
@@ -26,6 +26,7 @@ contract YourContract is ContinuousToken {
         uint refundAmount = _continuousBurn(_amount);
         reserve = reserve.sub(refundAmount);
         msg.sender.transfer(refundAmount);
+        emit Burned(msg.sender, _amount, refundAmount);
     }
 
     function reserveBalance() public override view returns (uint) {
