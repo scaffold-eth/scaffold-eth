@@ -3,12 +3,27 @@
 import React, { useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
-import { Address, Balance } from "../components";
+import { Address, Balance, AddressInput, EtherInput } from "../components";
+import { useContractReader, useEventListener } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
-  const [newPurpose, setNewPurpose] = useState("loading...");
+  const [toAddress, setToAddress] = useState()
+  const [amount, setAmount] = useState();
+
+  // keep track of a variable from the contract in the local React state:
+  const balance = useContractReader(readContracts,"YourContract", "balanceOf", [address])
+  console.log("🤗 balance:",balance)
+
+  //📟 Listen for broadcast YourContract
+  const mintEvents = useEventListener(readContracts, "YourContract", "Minted", localProvider, 1);
+  console.log("📟 Mint events:",mintEvents)
+
+  /*
+  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
+  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  */
 
   return (
     <div>
@@ -18,17 +33,47 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
         <h2>Example UI:</h2>
 
-        <h4>purpose: {purpose}</h4>
-
+        <h4>balance: {balance && formatEther(balance)}</h4>
         <Divider/>
 
         <div style={{margin:8}}>
-          <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
-          <Button onClick={()=>{
-            console.log("newPurpose",newPurpose)
+<EtherInput
+  price={price}
+  value={amount}
+  onChange={value => {
+    setAmount(value);
+  }}
+/>          
+<Button onClick={()=>{
+    console.log('amount1', amount)
+    console.log('amount', parseEther(amount))
+    console.log(writeContracts.YourContract.address)
             /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.setPurpose(newPurpose) )
-          }}>Set Purpose</Button>
+            tx(writeContracts.YourContract.mint({value: parseEther(amount)}))
+          }}>Mint </Button>
+        </div>
+
+        <div style={{margin:8}}>
+        <AddressInput
+          autoFocus
+  ensProvider={mainnetProvider}
+  placeholder="to address"
+  value={toAddress}
+  onChange={setToAddress}
+/>
+<EtherInput
+  price={price}
+  value={amount}
+  onChange={value => {
+    setAmount(value);
+  }}
+/>          
+<Button onClick={()=>{
+    console.log(amount)
+    console.log(toAddress)
+            /* look how you call setPurpose on your contract: */
+            tx( writeContracts.YourContract.transfer(toAddress, parseEther(amount)) )
+          }}>Transfer </Button>
         </div>
 
 
@@ -136,7 +181,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         <h2>Events:</h2>
         <List
           bordered
-          dataSource={setPurposeEvents}
+          dataSource={mintEvents}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
@@ -144,8 +189,13 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
                     value={item[0]}
                     ensProvider={mainnetProvider}
                     fontSize={16}
-                  /> =>
-                {item[1]}
+                  /> =>   <Balance
+                  balance={item[1]}
+                /> =>
+                <Balance
+    balance={item[2]}
+  />
+                
               </List.Item>
             )
           }}

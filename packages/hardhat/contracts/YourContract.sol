@@ -1,22 +1,34 @@
 pragma solidity >=0.6.0 <0.7.0;
 
-import "hardhat/console.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./ContinuousToken.sol";
 
-contract YourContract {
 
-  event SetPurpose(address sender, string purpose);
+contract YourContract is ContinuousToken {
+    uint256 internal reserve;
 
-  string public purpose = "🛠 Programming Unstoppable Money";
+    constructor() public ContinuousToken("Smile", "😃", 100000000000000000000, 1) {
+        // this ia a bug just added for testing need to change the deployment script
+        reserve = 10;
+    }
 
-  constructor() public {
-    // what should we do on deploy?
-  }
+    fallback () external payable { mint(); }
 
-  function setPurpose(string memory newPurpose) public {
-    purpose = newPurpose;
-    console.log(msg.sender,"set purpose to",purpose);
-    emit SetPurpose(msg.sender, purpose);
-  }
+    receive() external payable {}
+  
+    function mint() public payable {
+        uint purchaseAmount = msg.value;
+        uint rewardAmount = _continuousMint(purchaseAmount);
+        reserve = reserve.add(purchaseAmount);
+        emit Minted(msg.sender, rewardAmount, purchaseAmount);
+    }
 
+    function burn(uint _amount) public {
+        uint refundAmount = _continuousBurn(_amount);
+        reserve = reserve.sub(refundAmount);
+        msg.sender.transfer(refundAmount);
+    }
+
+    function reserveBalance() public override view returns (uint) {
+        return reserve;
+    }    
 }

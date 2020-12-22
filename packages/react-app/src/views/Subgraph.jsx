@@ -73,11 +73,11 @@ function Subgraph(props) {
 
   return (
       <>
-          <div style={{ margin: "auto", marginTop: 32 }}>
+          <div style={{ marginTop: 32, margin: "auto" }}>
             You will find that parsing/tracking events with the <span style={highlight}>useEventListener</span> hook becomes a chore for every new project.
           </div>
-          <div style={{ margin: "auto", marginTop: 32 }}>
-            Instead, you can use <a href="https://thegraph.com/docs/introduction" target="_blank" rel="noopener noreferrer">The Graph</a> with 🏗 scaffold-eth (<a href="https://youtu.be/T5ylzOTkn-Q" target="_blank">learn more</a>):
+          <div style={{ marginTop: 32, margin: "auto" }}>
+            Instead, you can use <a href="https://thegraph.com/docs/introduction" target="_blank" rel="noopener noreferrer">The Graph</a> with 🏗 scaffold-eth by following these steps:
           </div>
 
           <div style={{ margin: 32 }}>
