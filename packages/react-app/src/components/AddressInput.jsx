@@ -5,6 +5,8 @@ import { Input, Badge } from "antd";
 import { useLookupAddress } from "eth-hooks";
 import Blockie from "./Blockie";
 
+// probably we need to change value={toAddress} to address={toAddress}
+
 /*
   ~ What it does? ~
 
@@ -25,7 +27,7 @@ import Blockie from "./Blockie";
   - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
   - Provide placeholder="Enter address" value for the input
-  - Value of address input is stored in value={toAddress}
+  - Value of the address input is stored in value={toAddress}
   - Control input change by onChange={setToAddress} 
                           or onChange={address => { setToAddress(address);}}
 */

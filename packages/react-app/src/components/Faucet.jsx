@@ -14,7 +14,7 @@ import { useLookupAddress } from "eth-hooks";
 /*
   ~ What it does? ~
 
-  Displays local faucet to send ETH to given address, also wallet is provided
+  Displays a local faucet to send ETH to given address, also wallet is provided
 
   ~ How can I use? ~
 
@@ -27,13 +27,12 @@ import { useLookupAddress } from "eth-hooks";
 
   ~ Features ~
 
-  - Provide price={price} of ether and convert between USD and ETH in wallet
+  - Provide price={price} of ether and convert between USD and ETH in a wallet
   - Provide localProvider={localProvider} to be able to send ETH to given address
   - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
               works both in input field & wallet
   - Provide placeholder="Send local faucet" value for the input
-
 */
 
 export default function Faucet(props) {

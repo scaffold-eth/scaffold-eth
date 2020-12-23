@@ -18,8 +18,8 @@ import { usePoller } from "eth-hooks";
   ~ Features ~
 
   - Provide address={address} and get balance corresponding to given address
-  - Provide price={price} of ether and get your balance converted to dollar
-
+  - Provide provider={mainnetProvider} to access balance on mainnet or any other network (ex. localProvider)
+  - Provide price={price} of ether and get your balance converted to dollars
 */
 
 

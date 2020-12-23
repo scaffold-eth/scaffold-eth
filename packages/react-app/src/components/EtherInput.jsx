@@ -6,7 +6,7 @@ import { Input } from "antd";
 /*
   ~ What it does? ~
 
-  Displays input field for ETH/USD amount, with option to convert between ETH and USD
+  Displays input field for ETH/USD amount, with an option to convert between ETH and USD
 
   ~ How can I use? ~
 
@@ -26,7 +26,6 @@ import { Input } from "antd";
   - Provide value={value} to specify initial amount of ether
   - Provide placeholder="Enter amount" value for the input
   - Control input change by onChange={value => { setAmount(value);}}
-
 */
 
 export default function EtherInput(props) {

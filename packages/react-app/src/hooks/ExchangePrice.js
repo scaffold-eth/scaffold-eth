@@ -2,6 +2,21 @@ import { useState } from "react";
 import { Token, WETH, Fetcher, Route } from "@uniswap/sdk";
 import { usePoller } from "eth-hooks";
 
+/*
+  ~ What it does? ~
+
+  Gets ETH price from Uniswap (@uniswap/sdk)
+
+  ~ How can I use? ~
+
+  const price = useExchangePrice(mainnetProvider);
+
+  ~ Features ~
+
+  - Provide mainnetProvider to get the exchange price
+  - 1 for xdai
+*/
+
 export default function useExchangePrice(mainnetProvider, pollTime) {
   const [price, setPrice] = useState(0);
 
