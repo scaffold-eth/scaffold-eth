@@ -7,8 +7,8 @@ contract YourContract is ContinuousToken {
     uint256 internal reserve;
     // reserve ratio as 10 %
     constructor() public ContinuousToken("Smile", "😃", 100000000000000000000, 100000) {
-        // this ia a bug just added for testing need to change the deployment script
-        reserve = msg.value;
+        // setting reserve as 1 ether
+        reserve = 1 ether;
     }
 
     fallback () external payable { mint(); }

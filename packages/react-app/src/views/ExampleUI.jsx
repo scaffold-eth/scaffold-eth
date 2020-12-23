@@ -11,7 +11,6 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
 
   const [toAddress, setToAddress] = useState()
   const [amount, setAmount] = useState();
-
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts,"YourContract", "balanceOf", [address])
   console.log("🤗 balance:",balance)
@@ -48,6 +47,9 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   }}
 />          
 <Button onClick={()=>{
+    console.log('amount1', amount)
+    console.log('amount', parseEther(amount))
+    console.log(writeContracts.YourContract.address)
             /* look how you call setPurpose on your contract: */
             tx(writeContracts.YourContract.mint({value: parseEther(amount)}))
           }}>Mint </Button>
@@ -192,7 +194,7 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
           (uncomment the event and emit line in YourContract.sol! )
       */}
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-        <h2>Events:</h2>
+        <h2>Mint Event:</h2>
         <List
           bordered
           dataSource={mintEvents}
@@ -209,27 +211,31 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
                 <Balance
     balance={item[2]}
   />
-                
               </List.Item>
+            )
+          }}
+        />
+      </div>
 
-<List
-bordered
-dataSource={burnEvents}
-renderItem={(item) => {
-  return (
-    <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
-      <Address
-          value={item[0]}
-          ensProvider={mainnetProvider}
-          fontSize={16}
-        /> =>   <Balance
-        balance={item[1]}
-      /> =>
-      <Balance
-balance={item[2]}
-/>
-      
-    </List.Item>
+      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Burn Event:</h2>
+        <List
+          bordered
+          dataSource={burnEvents}
+          renderItem={(item) => {
+            return (
+              <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
+                <Address
+                    value={item[0]}
+                    ensProvider={mainnetProvider}
+                    fontSize={16}
+                  /> =>   <Balance
+                  balance={item[1]}
+                /> =>
+                <Balance
+    balance={item[2]}
+  />
+              </List.Item>
             )
           }}
         />
