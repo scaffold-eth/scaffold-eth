@@ -1,0 +1,15 @@
+[
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "_smile",
+        "type": "address"
+      }
+    ],
+    "name": "delegateMint",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  }
+]

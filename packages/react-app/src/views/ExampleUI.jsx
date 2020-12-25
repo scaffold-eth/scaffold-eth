@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance, AddressInput, EtherInput } from "../components";
-import { useContractReader, useEventListener } from "../hooks";
+import { useContractReader, useEventListener, useNonce } from "../hooks";
 import { parseEther, formatEther } from "@ethersproject/units";
 
 export default function ExampleUI({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
@@ -21,6 +21,13 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
 
   const burnEvents = useEventListener(readContracts, "YourContract", "Burned", localProvider, 1);
   console.log("📟 Burn events:",burnEvents)
+
+
+  const approvalEvents = useEventListener(readContracts, "MockDai", "Approval", localProvider, 1);
+  console.log("📟 Approve events:",approvalEvents)
+
+  let nonce = useNonce(localProvider, address);
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -47,13 +54,16 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   }}
 />          
 <Button onClick={()=>{
-    console.log('amount1', amount)
-    console.log('amount', parseEther(amount))
-    console.log(writeContracts.YourContract.address)
-            /* look how you call setPurpose on your contract: */
-            tx(writeContracts.YourContract.mint({value: parseEther(amount)}))
+    tx(writeContracts.MockDai.approve(writeContracts.YourContract.address, parseEther(amount), { nonce: nonce }))
+      setTimeout(
+        () => {
+          console.log("second tx fired 1.5s later....")
+          tx(writeContracts.YourContract.mint(parseEther(amount), {nonce: nonce + 1 }))
+        }, 1500
+      )
           }}>Mint </Button>
         </div>
+
 
         <div style={{margin:8}}>
 <EtherInput

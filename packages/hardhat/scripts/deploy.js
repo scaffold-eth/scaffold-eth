@@ -9,8 +9,8 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
-
+  const dai = await deploy('MockDai')
+  const yourContract = await deploy("YourContract", [dai.address]) // <-- add in constructor args like line 16 vvvv
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
