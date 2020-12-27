@@ -42,7 +42,7 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
         <h2>Example UI:</h2>
 
-        <h4>balance: {balance && formatEther(balance)}</h4>
+        <h4>😃Balance: {balance && formatEther(balance)}</h4>
         <Divider/>
 
         <div style={{margin:8}}>
@@ -61,7 +61,7 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
           tx(writeContracts.YourContract.mint(parseEther(amount), {nonce: nonce + 1 }))
         }, 1500
       )
-          }}>Mint </Button>
+          }}>Mint 😃</Button>
         </div>
 
 
@@ -76,7 +76,7 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
 <Button onClick={()=>{
             /* look how you call setPurpose on your contract: */
             tx(writeContracts.YourContract.burn(parseEther(amount)))
-          }}>Burn </Button>
+          }}>Burn 😃</Button>
         </div>
 
         <div style={{margin:8}}>
