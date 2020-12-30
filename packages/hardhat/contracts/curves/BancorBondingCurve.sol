@@ -1,7 +1,6 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "../math/BancorFormula.sol";
-import "../lib/ValidGasPrice.sol";
 import "../interfaces/IBondingCurve.sol";
 
 

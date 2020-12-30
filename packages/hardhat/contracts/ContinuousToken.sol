@@ -5,10 +5,9 @@ import "@openzeppelin/contracts/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 import "./curves/BancorBondingCurve.sol";
-import "./lib/ValidGasPrice.sol";
 
 
-abstract contract ContinuousToken is Ownable, ERC20, BancorBondingCurve, ValidGasPrice {
+abstract contract ContinuousToken is Ownable, ERC20, BancorBondingCurve {
     using SafeMath for uint;
 
     event Minted(address sender, uint amount, uint deposit);
@@ -27,7 +26,7 @@ abstract contract ContinuousToken is Ownable, ERC20, BancorBondingCurve, ValidGa
         return totalSupply(); // Continuous Token total supply
     } 
 
-    function _continuousMint(uint _deposit) internal validGasPrice returns (uint) {
+    function _continuousMint(uint _deposit) internal returns (uint) {
         require(_deposit > 0, "Deposit must be non-zero.");
 
         uint rewardAmount = getContinuousMintReward(_deposit);
@@ -35,7 +34,7 @@ abstract contract ContinuousToken is Ownable, ERC20, BancorBondingCurve, ValidGa
         return rewardAmount;
     }
 
-    function _continuousBurn(uint _amount) internal validGasPrice returns (uint) {
+    function _continuousBurn(uint _amount) internal returns (uint) {
         require(_amount > 0, "Amount must be non-zero.");
         require(balanceOf(msg.sender) >= _amount, "Insufficient tokens to burn.");
 

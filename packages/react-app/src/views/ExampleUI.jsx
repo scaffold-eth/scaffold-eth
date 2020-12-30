@@ -15,6 +15,9 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
   const balance = useContractReader(readContracts,"YourContract", "balanceOf", [address])
   console.log("🤗 balance:",balance)
 
+  const daiBalance = useContractReader(readContracts,"MockDai", "balanceOf", [address])
+  console.log("DAI Balance:", daiBalance)
+
   //📟 Listen for broadcast YourContract
   const mintEvents = useEventListener(readContracts, "YourContract", "Minted", localProvider, 1);
   console.log("📟 Mint events:",mintEvents)
@@ -41,6 +44,8 @@ export default function ExampleUI({address, mainnetProvider, userProvider, local
       */}
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
         <h2>Example UI:</h2>
+
+        <h4>DAI Balance: {daiBalance && formatEther(daiBalance)}</h4>
 
         <h4>😃Balance: {balance && formatEther(balance)}</h4>
         <Divider/>
