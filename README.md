@@ -54,7 +54,8 @@ As mentioned below Purchase Return is basically the number of 😃 Tokens you ge
 - **ReserveTokenBalance** The Mock DAI Tokens already locked before (for testing purposes when no 😃 Tokens have been minted yet we assume the ReserveTokenBalance to be 1 wei, in a mainnet scenario as soon as the contract is deployed we transfer a small amount i.e 1 wei worth of reserve token to the contract).
 - **ReserveRatio** Currently it is set at 10 % but let's see how different reserve ratio's affect the price.
 <br/>
-![](https://i.imgur.com/FEEv2HR.png)
+
+![qYnG26I](https://user-images.githubusercontent.com/26670962/103397769-bd030480-4b5f-11eb-9815-8b03d8d20e82.png)
 
 The diagram above shows some examples of bonding curves with different Reserve Ratios. In the bottom-left curve with a 10% Reserve Ratio, the price curve grow more aggressively with increasing supply. A Reserve Ratio higher than 10% would flatten towards the linear top-right shape as it approaches 50%.
 
