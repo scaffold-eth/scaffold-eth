@@ -48,13 +48,30 @@ A Bonding curve is a mathematical curve that defines a relationship between pric
 # How it works ?
 So basically it works like this during the deployment there is a Mock Dai contract that is deployed as well in addition to YourContract.sol and while the owner locks some mock dai into the contract to set the reserve amount which also demonstrates the use of **approve and call** i.e approving YourContract for spending mock dai and minting in the same block, then anyone can call the mint function lock up some eth and they get some SMILE (😃) Tokens minted based on a formula discussed below, and in order to get your mock dai amount back you need to call burn() and burn the SMILE (😃) tokens and based on the price at that point you get that amount of eth back.
 
+# Price Sensitivity
+As mentioned below Purchase Return is basically the number of 😃 Tokens you get when you lock in your Mock DAI Tokens, now this and Sale Return depend on mainly 3 variables
+- **ReserveTokensReceived** The Amount of Mock DAI you decide to lock in.
+- **ReserveTokenBalance** The Mock DAI Tokens already locked before (for testing purposes when no 😃 Tokens have been minted yet we assume the ReserveTokenBalance to be 1 wei, in a mainnet scenario as soon as the contract is deployed we transfer a small amount i.e 1 wei worth of reserve token to the contract).
+- **ReserveRatio** Currently it is set at 10 % but let's see how different reserve ratio's affect the price.
+<br/>
+![](https://i.imgur.com/FEEv2HR.png)
+
+The diagram above shows some examples of bonding curves with different Reserve Ratios. In the bottom-left curve with a 10% Reserve Ratio, the price curve grow more aggressively with increasing supply. A Reserve Ratio higher than 10% would flatten towards the linear top-right shape as it approaches 50%.
+
+
 ## Mathmatical Formula
 
 - **Reserve Ratio** When deploying we need to pass in a reserve ratio which currently is 100000(10 %) for high price sensitivity but can range from 0 - 100, higher reserve ratio between the Reserve Token balance and the SMILE (😃) Token will result in lower price sensitivity, meaning that each buy and sell will have a less than proportionate effect on the SMILE (😃) Token’s price movement.
-Though it is calculated as => **Reserve Ratio = Reserve Token Balance / (SMILE Token Supply x SMILE Token Price)**
+Though it is calculated as
+<br/>
+**Reserve Ratio = Reserve Token Balance / (SMILE Token Supply x SMILE Token Price)**
+<br/>
 
+- **Purchase Return**  The Amount of SMILE (😃) Token’s you get after you stake mock dai
+<br/>
+**Purchase Return = SMILE Token Supply * ((1 + ReserveTokensReceived / ReserveTokenBalance) ^ (ReserveRatio) - 1)**
+<br/>
 
-- **Purchase Return**  The Amount of SMILE (😃) Token’s you get after you stake mock dai => **PurchaseReturn = SMILE Token Supply * ((1 + ReserveTokensReceived / ReserveTokenBalance) ^ (ReserveRatio) - 1)**
-
-
-- **Sale Return** The Amount of Mock DAI you get based on the amount of SMILE (😃) token's you choose to burn and the current price at that point  => **SaleReturn = ReserveTokenBalance * (1 - (1 - SMILE Token Received / SMILE Token Supply) ^ (1 / (ReserveRatio)))**
+- **Sale Return** The Amount of Mock DAI you get based on the amount of SMILE (😃) token's you choose to burn and the current price at that point
+<br/>
+**Sale Return = ReserveTokenBalance * (1 - (1 - SMILE Token Received / SMILE Token Supply) ^ (1 / (ReserveRatio)))**
