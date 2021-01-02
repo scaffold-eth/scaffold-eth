@@ -18,7 +18,7 @@
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.0.17",
-    "hardhat": "^2.0.2",
+    "hardhat": "^2.0.6",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
