@@ -40,6 +40,20 @@ yarn deploy
 
 ```
 
+> Use the faucet wallet to send your local account some funds in order to interact with the contract:
+
+![image](https://user-images.githubusercontent.com/2653167/99156785-fd2a2880-2680-11eb-8665-f8415cc77d5d.png)
+
+> Once you run the above steps you can then interact with the contract after clcicking on "Example UI" and do all kinds of operations with SMILE Bonding Curve Contract.
+
+<img width="341" alt="Screenshot 2021-01-04 at 8 13 23 AM" src="https://user-images.githubusercontent.com/26670962/103496962-191e9f00-4e66-11eb-9c0e-bd5f4bb04478.png">
+
+
+> The subgraph has also been updated with the bonding curve contract so you can easily set it up seeing the instructions and interact with it with the help of the playground.
+
+<img width="658" alt="Screenshot 2021-01-04 at 8 14 01 AM" src="https://user-images.githubusercontent.com/26670962/103496797-84b43c80-4e65-11eb-8332-79570da748c9.png">
+
+
 ## What is a Bonding Curve ?
 ![download](https://user-images.githubusercontent.com/26670962/102856353-4e7dc280-444c-11eb-891b-b1e414d9e4a5.png)
 
