@@ -34,10 +34,10 @@ code {
 
   /* Numbers define values that will be used throughout the CSS.
   --tile-size: 20px for example will set size of the grid squares. */
-  --cols: 256;
-  --rows: 256;
-  --tile-size: 15px;
-  --border-width: 2px;
+  --cols: 64;
+  --rows: 64;
+  --tile-size: 20px;
+  --border-width: 3px;
 }
 
 /* Colors */

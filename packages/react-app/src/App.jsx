@@ -178,9 +178,8 @@ function App(props) {
           <Route path="/grid-view">
             <GridView 
               address={address}
-              yourLocalBalance={yourLocalBalance}
+              localProvider={localProvider}
               mainnetProvider={mainnetProvider}
-              price={price}
             />
           </Route>
           <Route path="/hints">
