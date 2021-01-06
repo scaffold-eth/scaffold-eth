@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
+import { Modal, Button } from 'antd';
 
 
 const random = (min, max) => {
@@ -18,6 +19,7 @@ const gridDefault = () => {
         array.push([]);
         for (let col = 0; col < cols; col++) {
           array[row].push({
+              id: col + '-' + row,
               x: col, 
               y: row, 
               owner: '0x', 
@@ -34,6 +36,12 @@ let theGrid = gridDefault();
 
 function GridSquare(props) {
     const [blockStatus, setBlockStatus] = useState(0);
+   
+
+    function isOwned(square) {
+        
+    }
+
 
 
     const classes = `grid-square color-${props.color}`
@@ -43,18 +51,19 @@ function GridSquare(props) {
                     console.log(e.target);
                     console.log(e.target.id);
                     // filter the grid for the one you want
-                    let result = theGrid.filter((item) => {
-                        //console.log(item)
-                        return item.id == e.target.id
-                        
-                    })
-                    console.log(result)
-                    theGrid.map((item, index) => {
-                        console.info(item)
-                    })
+                    let result = theGrid.find(el => el.id = e.target.id);
+                    let chosenSquare = result.find(el => el.id = e.target.id);
 
+                    props.showModal();
+
+                    console.log(chosenSquare);
+                    
                     // identify the grid-square
+                    // for(var y = 0; y < 64; y++){
+                    //     for(var x = 0; x < 64; x++){
 
+                    //     }
+                    // }
                     // is it owned?
 
                     // buy it
@@ -68,8 +77,26 @@ function GridSquare(props) {
 }
 
 function GridBoard(props) {
+    const [isLoading, setIsLoading] = useState(false);
+    const [isVisible, setIsVisible] = useState(false);
 
-    // generates an array of 256 rows, each containing 256 GridSquares.
+    const showModal = () => {
+        setIsVisible(true);
+    }
+
+    const handleOk = () => {
+        setIsLoading(true);
+        setTimeout(() => {
+            setIsLoading(false);
+            setIsVisible(false);
+        }, 3000);
+    }
+
+    const handleCancel = () => {
+        setIsVisible(false);
+    }
+
+    // generates an array of 64 rows, each containing 64 GridSquares.
   
       const grid = []
       for (let row = 0; row < 64; row ++) {
@@ -79,8 +106,9 @@ function GridBoard(props) {
                 <GridSquare 
                     key={`${col}-${row}`}
                     id={`${col}-${row}`} 
-                    color="0"
+                    color={6}
                     address={props.address}
+                    showModal={showModal}
                 />
             )
           }
@@ -91,19 +119,38 @@ function GridBoard(props) {
       return (
           <div className='grid-board'>
               {grid}
+              <Modal
+                visible={isVisible}
+                title="Buy/Sell A Square"
+                onOk={handleOk}
+                onCancel={handleCancel}
+                footer={[
+                    <Button key="back" onClick={handleCancel}>
+                    Cancel
+                    </Button>,
+                    <Button key="submit" type="primary" loading={isLoading} onClick={handleOk}>
+                    Submit
+                    </Button>,
+                ]}
+                >
+                    {/* content for modal */}
+                <div>
+
+                </div>
+            </Modal>
           </div>
       )
 }
 
+const SquareModal = (props) => {
 
-export default function GridView({ address, localProvider, mainnetProvider  }) {
+    return (<></>);
+}
+
+
+export default function GridView({ address, localProvider, mainnetProvider }) {
     const [gridArray, setGridArray] = useState([])
-
-
-
-
-
-
+    
     return (
         <div id="main-grid-container">
             <div className="game-header">

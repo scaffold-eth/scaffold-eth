@@ -9,7 +9,10 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
+  const yourContract = await deploy("YourContract"); // <-- add in constructor args like line 16 vvvv
+  const gridGameContract = await deploy("GridGame", [yourContract.address]); 
+  // Set YourContract as owner,
+  // we will use it as a caller and proxy sort of.
 
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
