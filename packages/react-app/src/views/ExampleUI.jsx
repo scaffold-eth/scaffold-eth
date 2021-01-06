@@ -5,10 +5,35 @@ import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progres
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import { id } from "@ethersproject/hash";
+import { keccak256 } from '@ethersproject/keccak256'
+import { useContractReader, useEventListener, useNonce } from "../hooks";
+
 
 export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
-  const [newPurpose, setNewPurpose] = useState("loading...");
+  // keep track of a variable from the contract in the local React state:
+  const random = useContractReader(readContracts,"YourContract", "getRandom", [])
+  console.log("revealed number",random)
+  
+  // const [dataHash, setDataHash] = useState('0');
+  const [revealHash, setRevealHash] = useState('0');
+
+  // let hash = useContractReader(readContracts,"YourContract", "getHash", [dataHash])
+
+  // if (dataHash === '0') {
+  //   setDataHash(message);
+  //   hash = id(message + writeContracts.YourContract.address)
+  //   setRevealHash(hash);
+  // }
+
+  //📟 Listen for broadcast YourContract
+  const commitEvents = useEventListener(readContracts, "YourContract", "CommitHash", localProvider, 1);
+  console.log("📟 Commit events:",commitEvents)
+
+  //📟 Listen for broadcast YourContract
+  const revealEvents = useEventListener(readContracts, "YourContract", "RevealHash", localProvider, 1);
+  console.log("📟 Reveal events:", revealEvents)
 
   return (
     <div>
@@ -16,19 +41,28 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
-        <h2>Example UI:</h2>
+        <h2>Commit and Reveal:</h2>
 
-        <h4>purpose: {purpose}</h4>
 
         <Divider/>
 
+        <h4>Revealed Number: {random && random.toString()}</h4>
+
+
         <div style={{margin:8}}>
-          <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
+          <Button onClick={async ()=>{
+            let message = id(Math.random().toString())
+            let revealHash = await readContracts["YourContract"]["getHash"](message);
+            setRevealHash(message)
+            tx( writeContracts.YourContract.commit(revealHash) )
+          }}>Commit</Button>
+        </div>
+
+        <div style={{margin:8}}>
           <Button onClick={()=>{
-            console.log("newPurpose",newPurpose)
             /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.setPurpose(newPurpose) )
-          }}>Set Purpose</Button>
+            tx(writeContracts.YourContract.reveal(revealHash) )
+          }}>Reveal</Button>
         </div>
 
 
@@ -82,50 +116,6 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
 
         <Divider />
 
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.setPurpose("🍻 Cheers") )
-          }}>Set Purpose to "🍻 Cheers"</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /*
-              you can also just craft a transaction and send it to the tx() transactor
-              here we are sending value straight to the contract's address:
-            */
-            tx({
-              to: writeContracts.YourContract.address,
-              value: parseEther("0.001")
-            });
-            /* this should throw an error about "no fallback nor receive function" until you add it */
-          }}>Send Value</Button>
-        </div>
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* look how we call setPurpose AND send some value along */
-            tx( writeContracts.YourContract.setPurpose("💵 Paying for this one!",{
-              value: parseEther("0.001")
-            }))
-            /* this will fail until you make the setPurpose function payable */
-          }}>Set Purpose With Value</Button>
-        </div>
-
-
-        <div style={{margin:8}}>
-          <Button onClick={()=>{
-            /* you can also just craft a transaction and send it to the tx() transactor */
-            tx({
-              to: writeContracts.YourContract.address,
-              value: parseEther("0.001"),
-              data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)",["🤓 Whoa so 1337!"])
-            });
-            /* this should throw an error about "no fallback nor receive function" until you add it */
-          }}>Another Example</Button>
-        </div>
-
       </div>
 
       {/*
@@ -133,10 +123,30 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
           (uncomment the event and emit line in YourContract.sol! )
       */}
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-        <h2>Events:</h2>
+        <h2>Commit Events:</h2>
         <List
           bordered
-          dataSource={setPurposeEvents}
+          dataSource={commitEvents}
+          renderItem={(item) => {
+            return (
+              <List.Item>
+                <Address
+                    value={item[0]}
+                    ensProvider={mainnetProvider}
+                    fontSize={16}
+                  /> => 
+                {item[1]}
+              </List.Item>
+            )
+          }}
+        />
+      </div>
+
+      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Reveal Events:</h2>
+        <List
+          bordered
+          dataSource={revealEvents}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
@@ -145,7 +155,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
                     ensProvider={mainnetProvider}
                     fontSize={16}
                   /> =>
-                {item[1]}
+                {item[1]} => {item[2].toString()}
               </List.Item>
             )
           }}
