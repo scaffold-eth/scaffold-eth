@@ -15,22 +15,112 @@
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "purpose",
-        "type": "string"
+        "internalType": "bytes32",
+        "name": "dataHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint64",
+        "name": "block",
+        "type": "uint64"
       }
     ],
-    "name": "SetPurpose",
+    "name": "CommitHash",
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "purpose",
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "answer",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "name": "RevealAnswer",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "bytes32",
+        "name": "revealHash",
+        "type": "bytes32"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "random",
+        "type": "uint8"
+      }
+    ],
+    "name": "RevealHash",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "dataHash",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint64",
+        "name": "block_number",
+        "type": "uint64"
+      }
+    ],
+    "name": "commit",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "name": "commits",
     "outputs": [
       {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
+        "internalType": "bytes32",
+        "name": "commit",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "uint64",
+        "name": "block",
+        "type": "uint64"
+      },
+      {
+        "internalType": "bool",
+        "name": "revealed",
+        "type": "bool"
       }
     ],
     "stateMutability": "view",
@@ -39,12 +129,86 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "newPurpose",
-        "type": "string"
+        "internalType": "bytes32",
+        "name": "data",
+        "type": "bytes32"
       }
     ],
-    "name": "setPurpose",
+    "name": "getHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "data",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "name": "getSaltedHash",
+    "outputs": [
+      {
+        "internalType": "bytes32",
+        "name": "",
+        "type": "bytes32"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "max",
+    "outputs": [
+      {
+        "internalType": "uint8",
+        "name": "",
+        "type": "uint8"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "revealHash",
+        "type": "bytes32"
+      }
+    ],
+    "name": "reveal",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "bytes32",
+        "name": "answer",
+        "type": "bytes32"
+      },
+      {
+        "internalType": "bytes32",
+        "name": "salt",
+        "type": "bytes32"
+      }
+    ],
+    "name": "revealAnswer",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
