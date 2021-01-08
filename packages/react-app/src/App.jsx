@@ -102,6 +102,8 @@ function App(props) {
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   console.log("📟 SetPurpose events:", setPurposeEvents)
 
+  const buyGridEvents = useEventListener(readContracts, "GridGame", "GridSquarePurchased", localProvider, 1);
+  console.log(buyGridEvents)
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -122,6 +124,31 @@ function App(props) {
   useEffect(() => {
     setRoute(window.location.pathname)
   }, [setRoute]);
+
+  const [grid, setGrid] = useState([]);
+  const random = (min, max) => {
+    return Math.floor(Math.random() * (max - min + 1)) + min
+  }
+  console.log(grid);
+
+  useEffect(() => {
+    let newGrid = [];
+    for (let row = 0; row < 8; row ++) {
+      if(!newGrid[row]){
+        newGrid[row] = [];
+      }
+      
+      for (let col = 0; col < 8; col ++) {
+          newGrid[row][col] = {
+            id: col + '-' + row,
+            color: random(0, 6)
+          };
+          
+      }
+    }
+    setGrid(newGrid);
+    
+  }, [])
 
   return (
     <div className="App">
@@ -188,6 +215,7 @@ function App(props) {
               address={address}
               localProvider={localProvider}
               mainnetProvider={mainnetProvider}
+              grid={grid}
             />
           </Route>
           <Route path="/hints">

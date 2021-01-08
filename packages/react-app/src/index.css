@@ -34,10 +34,10 @@ code {
 
   /* Numbers define values that will be used throughout the CSS.
   --tile-size: 20px for example will set size of the grid squares. */
-  --cols: 64;
-  --rows: 64;
-  --tile-size: 20px;
-  --border-width: 3px;
+  --cols: 8;
+  --rows: 8;
+  --tile-size: 50px;
+  --border-width: 5px;
 }
 
 /* Colors */
@@ -95,21 +95,4 @@ code {
   grid-template-columns: repeat(var(--cols), var(--tile-size));
   grid-gap: 0;
   align-self: flex-start;
-}
-
-
-/* Message Popup Styles */
-.message-popup {
-  position: absolute;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-  width: calc(var(--tile-size) * 10);
-  height: calc(var(--tile-size) * 10);
-  background-color: rgba(255, 255, 255, 0.5);
-  text-align: center;
-}
-
-.message-popup.hidden {
-  display: none;
 }

@@ -9,18 +9,21 @@ contract GridGame {
     address payable public owner;
 
     // Grid
-    uint public rows = 256;
-    uint public cols = 256;
+    uint rows = 8;
+    uint cols = 8;
 
-    //GridSquare[][] public gridSquares;
+    
 
-    struct GridSqure {
-        uint id;
+    struct GridSquare {
+        uint256 id;
         address payable owner;
         string color;
+        uint x;
+        uint y;
     }
 
-    //mapping(address => GridSquare) gridSquareOwners;
+    GridSquare[] public gridSquares;
+    mapping(address => GridSquare) public gridSquareOwners;
 
     // Modifiers
     modifier onlyBy(address _account)
@@ -45,7 +48,8 @@ contract GridGame {
 
 
     // Events
-    event GridSquarePurchased(address owner, uint id);
+    event GridSquarePurchased(address owner, uint id, uint amount);
+    event GridSquareTransferred(address owner, uint id, uint amount, address newOwner);
 
     // Constructor will only ever run once on deploy
     constructor (address payable _owner) public {
@@ -66,7 +70,12 @@ contract GridGame {
         public
         payable
     {
+        GridSquare memory gridSqure = gridSquareOwners[msg.sender];
+        gridSqure.owner = msg.sender;
+        gridSqure.id = _id;
 
+
+        emit GridSquarePurchased(msg.sender, _id, _amount);
     }
 
     function sellSquare(uint _id, uint _amount, address payable _to)
@@ -74,6 +83,8 @@ contract GridGame {
         payable
     {
 
+
+        emit GridSquareTransferred(msg.sender, _id, _amount, _to);
     }
 
 
