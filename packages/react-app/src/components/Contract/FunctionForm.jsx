@@ -92,6 +92,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
         <Input
           size="large"
           placeholder={input.name ? input.type + " " + input.name : input.type}
+          autoComplete="off"
           value={form[key]}
           name={key}
           onChange={(event) => {
