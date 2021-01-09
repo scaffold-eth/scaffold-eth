@@ -68,7 +68,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
       )
     } else if (input.type == "uint256") {
       buttons = (
-        <Tooltip placement="right" title={"to hex"}>
+        <Tooltip placement="right" title={"to wei"}>
           <div
             type="dashed"
             style={{ cursor: "pointer" }}
