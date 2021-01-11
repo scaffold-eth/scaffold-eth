@@ -14,6 +14,14 @@ const main = async () => {
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
+  
+  /*
+   * If you want to send some ETH to a contract on deploy (make your constructor payable!)
+
+   const yourContract = await deploy("YourContract", [], {
+    value: ethers.utils.parseEther("0.05")
+   });
+  */
 
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
@@ -22,12 +30,12 @@ const main = async () => {
   );
 };
 
-const deploy = async (contractName, _args) => {
+const deploy = async (contractName, _args = [], overrides = {}) => {
   console.log(` 🛰  Deploying: ${contractName}`);
 
   const contractArgs = _args || [];
   const contractArtifacts = await ethers.getContractFactory(contractName);
-  const deployed = await contractArtifacts.deploy(...contractArgs);
+  const deployed = await contractArtifacts.deploy(...contractArgs, overrides);
   const encoded = abiEncodeArgs(deployed, contractArgs);
   fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
 
