@@ -141,15 +141,25 @@ function App(props) {
       for (let col = 0; col < 8; col ++) {
           newGrid[row][col] = {
             id: col + '-' + row,
-            color: random(0, 6),
-            
-          };
-          
+            color: 0,
+            owner: '0x0000000000000000000000000000000000000000'         
+          };          
       }
     }
-    setGrid(newGrid);
-    
-  }, [])
+
+    for(let e in buyGridEvents){
+      console.log('from the effect ', buyGridEvents[e])
+      let x = buyGridEvents[e].x.toNumber();
+      let y = buyGridEvents[e].y.toNumber();
+      let color = buyGridEvents[e].color;
+
+      newGrid[x][y].color = color;
+      newGrid[x][y].owner = buyGridEvents[e].owner;
+    }
+
+    setGrid(newGrid);    
+  }, [buyGridEvents])
+
 
   return (
     <div className="App">
@@ -166,15 +176,15 @@ function App(props) {
           <Menu.Item key="/grid-view">
             <Link onClick={()=>{setRoute("/grid-view")}} to="/grid-view">Play Area</Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          {/* <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/exampleui">
             <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
           </Menu.Item>
-          <Menu.Item key="/subgraph">
+          {/* <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
-          </Menu.Item>
+          </Menu.Item> */}
 
         </Menu>
 

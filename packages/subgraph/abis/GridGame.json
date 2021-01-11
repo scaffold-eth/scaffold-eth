@@ -22,8 +22,20 @@
       {
         "indexed": false,
         "internalType": "uint256",
-        "name": "id",
+        "name": "x",
         "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "y",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint8",
+        "name": "color",
+        "type": "uint8"
       },
       {
         "indexed": false,
@@ -70,8 +82,18 @@
     "inputs": [
       {
         "internalType": "uint256",
-        "name": "_id",
+        "name": "_x",
         "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_y",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint8",
+        "name": "_color",
+        "type": "uint8"
       }
     ],
     "name": "buySquare",
@@ -103,11 +125,6 @@
     "name": "gridSquares",
     "outputs": [
       {
-        "internalType": "uint256",
-        "name": "id",
-        "type": "uint256"
-      },
-      {
         "internalType": "address payable",
         "name": "owner",
         "type": "address"
@@ -118,19 +135,9 @@
         "type": "uint256"
       },
       {
-        "internalType": "string",
+        "internalType": "uint8",
         "name": "color",
-        "type": "string"
-      },
-      {
-        "internalType": "uint256",
-        "name": "x",
-        "type": "uint256"
-      },
-      {
-        "internalType": "uint256",
-        "name": "y",
-        "type": "uint256"
+        "type": "uint8"
       }
     ],
     "stateMutability": "view",

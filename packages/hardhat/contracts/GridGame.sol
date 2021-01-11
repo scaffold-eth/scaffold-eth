@@ -10,21 +10,16 @@ contract GridGame {
 
     // Grid
     uint256 rows = 8;
-    uint256 cols = 8;
-
-    
+    uint256 cols = 8;    
 
     struct GridSquare {
-        uint256 id;
         address payable owner;
         uint256 value;
-        string color;
-        uint256 x;
-        uint256 y;
+        uint8 color;
     }
 
-    //GridSquare[] public gridSquares;
-    mapping(uint256 => GridSquare) public gridSquares;
+    GridSquare[64] public gridSquares;
+    //mapping(uint256 => GridSquare) public gridSquares;
 
     // Modifiers
     modifier onlyBy(address _account)
@@ -49,8 +44,8 @@ contract GridGame {
     }
 
     // Events
-    event GridSquarePurchased(address owner, uint id, uint amount);
-    event GridSquareTransferred(address owner, uint id, uint amount, address newOwner);
+    event GridSquarePurchased(address owner, uint256 x, uint256 y, uint8 color, uint256 amount);
+    event GridSquareTransferred(address owner, uint256 id, uint256 amount, address newOwner);
 
     // Constructor will only ever run once on deploy
     constructor (address payable _owner) 
@@ -69,25 +64,27 @@ contract GridGame {
         owner = _newOwner;
     }
 
-    function buySquare(uint256 _id)
+    function buySquare(uint256 _x, uint256 _y, uint8 _color)
         public
         payable
     {
-        require(msg.value > 0, "Must send value for square");
-        GridSquare memory gridSquare = gridSquares[_id];
-        gridSquare.id = _id;
-        gridSquare.owner = msg.sender;
-        gridSquare.value = msg.value;
 
+        uint256 id = _x + _y * 8;
+        //require(msg.value > 0, "Must send value for square");
+        gridSquares[id] = GridSquare(
+            msg.sender,
+            msg.value,
+            _color
+        );
 
-        emit GridSquarePurchased(msg.sender, _id, msg.value);
+        emit GridSquarePurchased(msg.sender, _x, _y, _color, msg.value);
     }
 
     function sellSquare(uint256 _id, uint256 _amount, address payable _to)
         public
         payable
     {
-
+        require(msg.value >= _amount, "not enough ether sent");
 
         emit GridSquareTransferred(msg.sender, _id, _amount, _to);
     }

@@ -9,31 +9,23 @@ const random = (min, max) => {
 }
 
 const GridSquare = (props) => {
-    const [blockStatus, setBlockStatus] = useState(0);
-    //const [blockOwner, setBlockOwner] = useState('0x');
-    //const [grid, setGrid] = useState([])
-
-    function isOwned(square) {
-        
-    }
-
     const classes = `grid-square color-${props.color}`
     return <div className={classes} 
                 onClick={(e) => {
-                    // Show modal??
+                    // Show modal
                     props.showModal();
                     console.log(e.target);
-                    //console.log(e.target.id);
                 }}
                 id={props.id}
                 color={props.color}
+                owner='0x0000000000000000000000000000000000000000'
             />
 }
 
 const GridBoard = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
-    const [selectedSquare, setSelectedSquare] = useState();
+    //const [selectedSquare, setSelectedSquare] = useState();
 
     const showModal = () => {
         setIsVisible(true);
@@ -44,11 +36,10 @@ const GridBoard = (props) => {
         console.log(e.target.value);
         // todo: need to pass in the id from the grid and 
         // the value we are paying... rn at .01
-        props.tx(props.writeContracts.GridGame.buySquare(random(0, 9999),
+        props.tx(props.writeContracts.GridGame.buySquare(random(0, 7), random(0, 7), random(1, 7),
         {
             value: 10000000000000000n // .01 ETH
         }));
-
 
         setTimeout(() => {
             setIsLoading(false);
@@ -60,14 +51,14 @@ const GridBoard = (props) => {
         setIsVisible(false);
     }
 
-    // generates an array of 64 rows, each containing 64 GridSquares.
-  
+    // generates an array of 8 rows, each containing 8 GridSquares.
+    
     const gridDisplay = []
     if (props.grid){
         for (let row = 0; row < 8; row ++) {
             gridDisplay.push([])
             for (let col = 0; col < 8; col ++) {
-                if(props.grid[row] && props.grid[row][col]){
+                if(props.grid[row] && props.grid[row][col]){                    
                     gridDisplay[row].push(
                     <GridSquare 
                         key={`${col}-${row}`}
@@ -109,7 +100,11 @@ const GridBoard = (props) => {
             >
                 {/* content for modal */}
             <div>                
-                Send To: <AddressInput value={props.address} />                
+                New Owner: <AddressInput value={props.address} /> 
+                <br />
+                Square Id: {'0-0'} 
+                <br /> 
+                Color: {props.color}             
             </div>
         </Modal>
         </div>
