@@ -91,6 +91,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
       <div style={{ margin: 2 }} key={key}>
         <Input
           size="large"
+          autoComplete='off'       
           placeholder={input.name ? input.type + " " + input.name : input.type}
           value={form[key]}
           name={key}

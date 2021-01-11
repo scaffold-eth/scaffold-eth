@@ -1,37 +1,12 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
-import { Modal, Button } from 'antd';
+import { Modal, Button, InputNumber } from 'antd';
 
 
 const random = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
-
-// const gridDefault = () => {
-//     const rows = 8
-//     const cols = 8
-//     const array = []
-  
-//     // Fill array with 256 arrays each containing
-//     // 256 zeros (0)
-//     for (let row = 0; row < rows; row++) {
-//         array.push([]);
-//         for (let col = 0; col < cols; col++) {
-//           array[row].push({
-//               id: col + '-' + row,
-//               owner: '0x', 
-//               forSale: true, 
-//               color: random(1, 6),
-//               el: ''
-//             });
-//         }
-//     }
-  
-//     return array;
-// }
-
-// let theGrid = gridDefault();
 
 const GridSquare = (props) => {
     const [blockStatus, setBlockStatus] = useState(0);
@@ -47,11 +22,11 @@ const GridSquare = (props) => {
                 onClick={(e) => {
                     // Show modal??
                     props.showModal();
-                    //setGrid(theGrid);
                     console.log(e.target);
-                    console.log(e.target.id);
+                    //console.log(e.target.id);
                 }}
                 id={props.id}
+                color={props.color}
             />
 }
 
@@ -66,12 +41,14 @@ const GridBoard = (props) => {
 
     const handleOk = (e) => {
         setIsLoading(true);
-        console.log(e.target)
-
-        props.tx(props.writeContracts.GridGame.buySquare(1,
+        console.log(e.target.value);
+        // todo: need to pass in the id from the grid and 
+        // the value we are paying... rn at .01
+        props.tx(props.writeContracts.GridGame.buySquare(random(0, 9999),
         {
-            value: 10000000000000000n
-        }))
+            value: 10000000000000000n // .01 ETH
+        }));
+
 
         setTimeout(() => {
             setIsLoading(false);
@@ -107,35 +84,36 @@ const GridBoard = (props) => {
         }
     }
   
-    // The components generated in makeGrid are rendered in div.grid-board
-  
-      return (
-          <div className='grid-board'>
-              {gridDisplay}
-              <Modal
-                visible={isVisible}
-                title="Buy/Sell A Square"
-                onOk={handleOk}
-                onCancel={handleCancel}
-                footer={[
-                    <Button key="back" onClick={handleCancel}>
-                    Cancel
-                    </Button>,
-                    <Button id={props.id} key="submit" type="primary" loading={isLoading} 
-                        onClick={handleOk}>
-                    Submit
-                    </Button>,
-                ]}
-                >
-                    {/* content for modal */}
-                <div>
-                    
-                    Send To: <AddressInput value={props.address} />
-                   
-                </div>
-            </Modal>
-          </div>
-      )
+    return (
+        <div className='grid-board'>
+            {gridDisplay}
+            <Modal
+            visible={isVisible}
+            title="Buy/Sell A Square"
+            onOk={handleOk}
+            onCancel={handleCancel}
+            footer={[
+                <Button key="back" onClick={handleCancel}>
+                Cancel
+                </Button>,
+                <Button 
+                    value={props.id} 
+                    id={props.id} 
+                    key="submit" 
+                    type="primary" 
+                    loading={isLoading} 
+                    onClick={handleOk}>
+                Buy Square
+                </Button>,
+            ]}
+            >
+                {/* content for modal */}
+            <div>                
+                Send To: <AddressInput value={props.address} />                
+            </div>
+        </Modal>
+        </div>
+    )
 }
 
 const GridView = ({ address, localProvider, mainnetProvider, grid, writeContracts, tx }) => {        

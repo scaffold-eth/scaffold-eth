@@ -139,13 +139,14 @@ export default function ExampleUI({purpose, setPurposeEvents, buyGridEvents, add
           dataSource={buyGridEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item[0].id}>
+              <List.Item key={item.id}>
                 <Address
-                    value={item[0].owner}
+                    value={item.owner}
                     ensProvider={mainnetProvider}
                     fontSize={16}
-                  /> =>
-                {item[0].amount}
+                  />
+                  {item[1].id} {item[1].amount}
+                
               </List.Item>
             )
           }}
