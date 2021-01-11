@@ -1,5 +1,5 @@
 import React, { useState, useCallback, useEffect } from "react";
-import { formatEther } from "@ethersproject/units";
+import { parseEther, formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
 import { Modal, Button } from 'antd';
 
@@ -50,22 +50,6 @@ const GridSquare = (props) => {
                     //setGrid(theGrid);
                     console.log(e.target);
                     console.log(e.target.id);
-                    // filter the grid for the one you want
-                    //let result = theGrid.find(el => el.id = e.target.id);
-                    //let chosenSquare = result.find(el => el.id = e.target.id);
-
-                    //console.log();
-
-                    
-                    
-                    
-                    // is it owned?
-
-                    // buy it / sell it
-                    //chosenSquare.owner = props.address; // after purchase
-                    // update the color
-
-                    // setBlockStatus(props.address);
                 }}
                 id={props.id}
             />
@@ -74,13 +58,21 @@ const GridSquare = (props) => {
 const GridBoard = (props) => {
     const [isLoading, setIsLoading] = useState(false);
     const [isVisible, setIsVisible] = useState(false);
+    const [selectedSquare, setSelectedSquare] = useState();
 
     const showModal = () => {
         setIsVisible(true);
     }
 
-    const handleOk = () => {
+    const handleOk = (e) => {
         setIsLoading(true);
+        console.log(e.target)
+
+        props.tx(props.writeContracts.GridGame.buySquare(1,
+        {
+            value: 10000000000000000n
+        }))
+
         setTimeout(() => {
             setIsLoading(false);
             setIsVisible(false);
@@ -106,10 +98,12 @@ const GridBoard = (props) => {
                         color={props.grid[row][col].color}
                         address={props.address}
                         showModal={showModal}
+                        writeContracts={props.writeContracts}
+                        tx={props.tx}
                     />
                     )
                 }
-        }
+            }
         }
     }
   
@@ -127,35 +121,32 @@ const GridBoard = (props) => {
                     <Button key="back" onClick={handleCancel}>
                     Cancel
                     </Button>,
-                    <Button key="submit" type="primary" loading={isLoading} onClick={handleOk}>
+                    <Button id={props.id} key="submit" type="primary" loading={isLoading} 
+                        onClick={handleOk}>
                     Submit
                     </Button>,
                 ]}
                 >
                     {/* content for modal */}
                 <div>
-                    {props.address}
+                    
+                    Send To: <AddressInput value={props.address} />
+                   
                 </div>
             </Modal>
           </div>
       )
 }
 
-const SquareModal = (props) => {
-    return (<></>);
-}
-
-
-export default function GridView({ address, localProvider, mainnetProvider, grid }) {
-    const [gridArray, setGridArray] = useState([])
-    
+const GridView = ({ address, localProvider, mainnetProvider, grid, writeContracts, tx }) => {        
     return (
         <div id="main-grid-container">
             <div className="game-header">
                 <h1>The Grid 🏁</h1>
             </div>
-            <GridBoard address={address} grid={grid}/>
-            
+            <GridBoard address={address} grid={grid} writeContracts={writeContracts} tx={tx} />            
         </div>
     )
 }
+
+export default GridView;

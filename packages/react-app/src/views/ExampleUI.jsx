@@ -6,7 +6,7 @@ import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({purpose, setPurposeEvents, buyGridEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
 
@@ -133,13 +133,33 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
           (uncomment the event and emit line in YourContract.sol! )
       */}
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Grid Events:</h2>
+        <List
+          bordered
+          dataSource={buyGridEvents}
+          renderItem={(item) => {
+            return (
+              <List.Item key={item[0].id}>
+                <Address
+                    value={item[0].owner}
+                    ensProvider={mainnetProvider}
+                    fontSize={16}
+                  /> =>
+                {item[0].amount}
+              </List.Item>
+            )
+          }}
+        />
+      </div>
+{/* 
+      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
         <h2>Events:</h2>
         <List
           bordered
           dataSource={setPurposeEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
+              <List.Item key={item}>
                 <Address
                     value={item[0]}
                     ensProvider={mainnetProvider}
@@ -150,8 +170,8 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
             )
           }}
         />
-      </div>
-
+      </div> */}
+{/* 
 
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:256 }}>
 
@@ -206,7 +226,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
 
 
 
-      </div>
+      </div> */}
 
 
     </div>

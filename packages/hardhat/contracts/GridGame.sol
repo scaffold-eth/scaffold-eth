@@ -9,21 +9,22 @@ contract GridGame {
     address payable public owner;
 
     // Grid
-    uint rows = 8;
-    uint cols = 8;
+    uint256 rows = 8;
+    uint256 cols = 8;
 
     
 
     struct GridSquare {
         uint256 id;
         address payable owner;
+        uint256 value;
         string color;
-        uint x;
-        uint y;
+        uint256 x;
+        uint256 y;
     }
 
-    GridSquare[] public gridSquares;
-    mapping(address => GridSquare) public gridSquareOwners;
+    //GridSquare[] public gridSquares;
+    mapping(uint256 => GridSquare) public gridSquares;
 
     // Modifiers
     modifier onlyBy(address _account)
@@ -38,7 +39,8 @@ contract GridGame {
         _;
     }
 
-    modifier onlyAfter(uint _time) {
+    modifier onlyAfter(uint256 _time) 
+    {
         require(
             block.timestamp >= _time,
             "Function called too early."
@@ -46,13 +48,14 @@ contract GridGame {
         _;
     }
 
-
     // Events
     event GridSquarePurchased(address owner, uint id, uint amount);
     event GridSquareTransferred(address owner, uint id, uint amount, address newOwner);
 
     // Constructor will only ever run once on deploy
-    constructor (address payable _owner) public {
+    constructor (address payable _owner) 
+        public 
+    {
         owner = _owner;
     }
 
@@ -66,19 +69,21 @@ contract GridGame {
         owner = _newOwner;
     }
 
-    function buySquare(uint _id, uint _amount)
+    function buySquare(uint256 _id)
         public
         payable
     {
-        GridSquare memory gridSqure = gridSquareOwners[msg.sender];
-        gridSqure.owner = msg.sender;
-        gridSqure.id = _id;
+        require(msg.value > 0, "Must send value for square");
+        GridSquare memory gridSquare = gridSquares[_id];
+        gridSquare.id = _id;
+        gridSquare.owner = msg.sender;
+        gridSquare.value = msg.value;
 
 
-        emit GridSquarePurchased(msg.sender, _id, _amount);
+        emit GridSquarePurchased(msg.sender, _id, msg.value);
     }
 
-    function sellSquare(uint _id, uint _amount, address payable _to)
+    function sellSquare(uint256 _id, uint256 _amount, address payable _to)
         public
         payable
     {

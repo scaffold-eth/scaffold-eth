@@ -141,7 +141,8 @@ function App(props) {
       for (let col = 0; col < 8; col ++) {
           newGrid[row][col] = {
             id: col + '-' + row,
-            color: random(0, 6)
+            color: random(0, 6),
+            
           };
           
       }
@@ -216,6 +217,8 @@ function App(props) {
               localProvider={localProvider}
               mainnetProvider={mainnetProvider}
               grid={grid}
+              writeContracts={writeContracts}
+              tx={tx}
             />
           </Route>
           <Route path="/hints">
@@ -239,6 +242,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+              buyGridEvents={buyGridEvents}
             />
           </Route>
           <Route path="/subgraph">
