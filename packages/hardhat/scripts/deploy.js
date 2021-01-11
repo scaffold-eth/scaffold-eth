@@ -8,9 +8,13 @@ const R = require("ramda");
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
-
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
-
+  let yourContract;
+  // if (process.env.NETWORK !== "local") {
+  //   yourContract = await deploy("YourContract");
+  // } else {
+  //   
+  // }
+  yourContract = await deploy("ChainlinkRandomNumberGenrator");
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])

@@ -2,7 +2,8 @@ pragma solidity >=0.6.0 <0.7.0;
 
 import "@chainlink/contracts/src/v0.6/VRFConsumerBase.sol";
 
-contract RandomNumberGenrator is VRFConsumerBase {
+contract ChainlinkRandomNumberGenrator is VRFConsumerBase {
+    event Generated(uint256 random);
     
     bytes32 internal keyHash;
     uint256 internal fee;
@@ -30,7 +31,7 @@ contract RandomNumberGenrator is VRFConsumerBase {
     /** 
      * Requests randomness from a user-provided seed
      */
-    function getRandomNumber(uint256 userProvidedSeed) public returns (bytes32 requestId) {
+    function generateRandom(uint256 userProvidedSeed) public returns (bytes32 requestId) {
         require(LINK.balanceOf(address(this)) >= fee, "Not enough LINK - fill contract with faucet");
         return requestRandomness(keyHash, fee, userProvidedSeed);
     }
@@ -40,5 +41,10 @@ contract RandomNumberGenrator is VRFConsumerBase {
      */
     function fulfillRandomness(bytes32 requestId, uint256 randomness) internal override {
         randomResult = randomness;
+        emit Generated(randomResult);
+    }
+
+    function getRandomNumber() public view returns(uint256) {
+        return randomResult;
     }
 }
