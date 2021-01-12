@@ -141,20 +141,25 @@ function App(props) {
       for (let col = 0; col < 8; col ++) {
           newGrid[row][col] = {
             id: col + '-' + row,
+            x: col,
+            y: row,
             color: 0,
             owner: '0x0000000000000000000000000000000000000000'         
           };          
       }
     }
 
+    // Update UI based on blockchain data... Events
     for(let e in buyGridEvents){
-      console.log('from the effect ', buyGridEvents[e])
+      //console.log('from the effect ', buyGridEvents[e])
       let x = buyGridEvents[e].x.toNumber();
       let y = buyGridEvents[e].y.toNumber();
       let color = buyGridEvents[e].color;
 
       newGrid[x][y].color = color;
       newGrid[x][y].owner = buyGridEvents[e].owner;
+      newGrid[x][y].x = x;
+      newGrid[x][y].y = y;
     }
 
     setGrid(newGrid);    
