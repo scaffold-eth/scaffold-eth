@@ -1,7 +1,7 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
-import { Modal, Button, InputNumber } from 'antd';
+import { Modal, Button, Input, Row, Col, Tooltip } from 'antd';
 
 
 const random = (min, max) => {
@@ -29,6 +29,7 @@ const GridBoard = (props) => {
     const [isVisible, setIsVisible] = useState(false);
     const [x, setX] = useState(0)
     const [y, setY] = useState(0)
+    const [amount, setAmount] = useState()
 
     
     const showModal = (id, color) => {
@@ -41,7 +42,7 @@ const GridBoard = (props) => {
         setIsVisible(true);
     }
 
-    const handleOk = (x, y, color) => {
+    const handleOk = (x, y, amount) => {
         setIsLoading(true);
         console.log('Coords ', x, y)
         // todo: get the id from the div el
@@ -49,8 +50,10 @@ const GridBoard = (props) => {
         // the value we are paying... rn at .01
         props.tx(props.writeContracts.GridGame.buySquare(y, x, random(1, 7),
         {
-            value: 10000000000000000n // .01 ETH
-        }));
+            value: amount // .01 ETH
+        })).then((result) => {
+            console.log(`Hash => https://etherscan.io/tx/${result.hash}`)
+        });
 
         setTimeout(() => {
             setIsLoading(false);
@@ -106,7 +109,7 @@ const GridBoard = (props) => {
                     key="submit" 
                     type="primary" 
                     loading={isLoading} 
-                    onClick={() => {handleOk(x, y)}}>
+                    onClick={() => {handleOk(x, y, amount)}}>
                 Buy Square
                 </Button>,
             ]}
@@ -117,7 +120,33 @@ const GridBoard = (props) => {
                 <br />
                 Square Id: {x}-{y} 
                 <br /> 
-                Color: {props.color}             
+                Bid:
+                <Input
+                    placeholder="transaction value"
+                    onChange={e => setAmount(e.target.value)}
+                    value={amount}
+                    addonAfter={
+                    <div>
+                        <Row>
+                        <Col span={16}>
+                            <Tooltip placement="right" title={" * 10^18 "}>
+                            <div
+                                type="dashed"
+                                style={{ cursor: "pointer" }}
+                                onClick={async () => {
+                                let floatValue = parseFloat(amount)
+                                if(floatValue) setAmount("" + floatValue * 10 ** 18);
+                                }}
+                            >
+                                ✳️
+                            </div>
+                            </Tooltip>
+                        </Col>
+                        </Row>
+                    </div>
+                    }
+                />
+                {/* Color: {props.color}              */}
             </div>
         </Modal>
         </div>
