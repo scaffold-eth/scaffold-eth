@@ -79,7 +79,7 @@ function App(props) {
 
   // just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
-  if(DEBUG) console.log("💵 yourMainnetBalance", yourMainnetBalance?formatEther(yourMainnetBalance):"...")
+  //if(DEBUG) console.log("💵 yourMainnetBalance", yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
@@ -96,11 +96,11 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  //console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:", setPurposeEvents)
+  //console.log("📟 SetPurpose events:", setPurposeEvents)
 
   const buyGridEvents = useEventListener(readContracts, "GridGame", "GridSquarePurchased", localProvider, 1);
   console.log(buyGridEvents)
