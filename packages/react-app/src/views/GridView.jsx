@@ -1,12 +1,15 @@
 import React, { useState, useCallback, useEffect } from "react";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
-import { Modal, Button, Input, Row, Col, Tooltip } from 'antd';
+import { Modal, Button, Input, Row, Col, Tooltip, Select } from 'antd';
 
+const { Option } = Select;
 
 const random = (min, max) => {
     return Math.floor(Math.random() * (max - min + 1)) + min
 }
+
+
 
 const GridSquare = (props) => {
     const classes = `grid-square color-${props.color}`
@@ -14,13 +17,14 @@ const GridSquare = (props) => {
                 onClick={(e) => {
                     // Show modal
                     props.showModal(e.target.id);
-                    //console.log('ID ', e.target.id);
+                    console.log('ID ', e.target.id);
                 }}
                 id={props.id}
                 x={props.x}
                 y={props.y}
                 color={props.color}
                 owner='0x0000000000000000000000000000000000000000'
+                amount={0}
             />
 }
 
@@ -30,29 +34,33 @@ const GridBoard = (props) => {
     const [x, setX] = useState(0)
     const [y, setY] = useState(0)
     const [amount, setAmount] = useState()
-
+    const [color, setColor] = useState()
     
     const showModal = (id, color) => {
         //console.log(id);
         let coords = id.split('-')
         //console.log(coords)
+        // Set the coords from the selection
         setX(coords[0])
         setY(coords[1])
+
 
         setIsVisible(true);
     }
 
-    const handleOk = (x, y, amount) => {
+    const handleOk = async (x, y, amount) => {
         setIsLoading(true);
         console.log('Coords ', x, y)
         // todo: get the id from the div el
+        let owner = await props.readContracts.GridGame.ownerOf(x, y);
+        console.log(owner);
         
         // the value we are paying... rn at .01
-        props.tx(props.writeContracts.GridGame.buySquare(y, x, random(1, 7),
+        props.tx(props.writeContracts.GridGame.buySquare(x, y, color,
         {
             value: amount // .01 ETH
         })).then((result) => {
-            console.log(`Hash => https://etherscan.io/tx/${result.hash}`)
+            //console.log(`Hash => https://etherscan.io/tx/${result.hash}`)
         });
 
         setTimeout(() => {
@@ -65,6 +73,12 @@ const GridBoard = (props) => {
         setIsVisible(false);
     }
 
+    function handleChange(value) {
+        console.log(`selected ${value}`);
+
+        setColor(value);
+    }
+    
     // generates an array of 8 rows, each containing 8 GridSquares.
     
     const gridDisplay = []
@@ -75,15 +89,16 @@ const GridBoard = (props) => {
                 if(props.grid[row] && props.grid[row][col]){                    
                     gridDisplay[row].push(
                     <GridSquare 
-                        key={`${col}-${row}`}
-                        id={`${col}-${row}`}
-                        x={col}
-                        y={row}
+                        key={`${row}-${col}`}
+                        id={`${row}-${col}`}
+                        x={row}
+                        y={col}
                         color={props.grid[row][col].color}
                         address={props.address}
                         showModal={showModal}
                         writeContracts={props.writeContracts}
                         tx={props.tx}
+                        readContracts={props.readContracts}
                     />
                     )
                 }
@@ -120,46 +135,27 @@ const GridBoard = (props) => {
                 <br />
                 Square Id: {x}-{y} 
                 <br /> 
-                Bid:
-                <Input
-                    placeholder="transaction value"
-                    onChange={e => setAmount(e.target.value)}
-                    value={amount}
-                    addonAfter={
-                    <div>
-                        <Row>
-                        <Col span={16}>
-                            <Tooltip placement="right" title={" * 10^18 "}>
-                            <div
-                                type="dashed"
-                                style={{ cursor: "pointer" }}
-                                onClick={async () => {
-                                let floatValue = parseFloat(amount)
-                                if(floatValue) setAmount("" + floatValue * 10 ** 18);
-                                }}
-                            >
-                                ✳️
-                            </div>
-                            </Tooltip>
-                        </Col>
-                        </Row>
-                    </div>
-                    }
-                />
-                {/* Color: {props.color}              */}
+                Color:
+                <Select style={{ width: 120 }} onChange={handleChange}>
+                    <Option value='7'>Red</Option>
+                    <Option value='3'>Blue</Option>
+                    <Option value='6'>Lt Blue</Option>
+                    <Option value='2'>Yellow</Option>
+
+                </Select>
             </div>
         </Modal>
         </div>
     )
 }
 
-const GridView = ({ address, localProvider, mainnetProvider, grid, writeContracts, tx }) => {        
+const GridView = ({ address, localProvider, mainnetProvider, grid, writeContracts, readContracts, tx }) => {        
     return (
-        <div id="main-grid-container">
+        <div id="main-grid-container" style={{ width: 400, margin: 'auto' }}>
             <div className="game-header">
                 <h1>The Grid 🏁</h1>
             </div>
-            <GridBoard address={address} grid={grid} writeContracts={writeContracts} tx={tx} />            
+            <GridBoard address={address} grid={grid} readContracts={readContracts} writeContracts={writeContracts} tx={tx} />            
         </div>
     )
 }

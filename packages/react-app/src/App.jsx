@@ -52,7 +52,7 @@ const localProviderUrl = "http://localhost:8545"; // for xdai: https://dai.poa.n
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
+const localProvider = new JsonRpcProvider(localProviderUrl);
 
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
@@ -124,11 +124,12 @@ function App(props) {
       
       for (let col = 0; col < 8; col ++) {
           newGrid[row][col] = {
-            id: col + '-' + row,
-            x: col,
-            y: row,
+            id: row + '-' + col,
+            x: row,
+            y: col,
             color: 0,
-            owner: '0x0000000000000000000000000000000000000000'         
+            owner: '0x0000000000000000000000000000000000000000',
+            amount: 0        
           };          
       }
     }
@@ -139,11 +140,15 @@ function App(props) {
       let x = buyGridEvents[e].x.toNumber();
       let y = buyGridEvents[e].y.toNumber();
       let color = buyGridEvents[e].color;
+      if(!newGrid[x][y].lastUpdated || buyGridEvents[e].blockNumber > newGrid[x][y].lastUpdated){
+        newGrid[x][y].color = color;
+        newGrid[x][y].owner = buyGridEvents[e].owner;
+        newGrid[x][y].x = x;
+        newGrid[x][y].y = y;
+        newGrid[x][y].lastUpdated = buyGridEvents[e].blockNumber;
+      }
+      
 
-      newGrid[x][y].color = color;
-      newGrid[x][y].owner = buyGridEvents[e].owner;
-      newGrid[x][y].x = x;
-      newGrid[x][y].y = y;
     }
 
     setGrid(newGrid);    
@@ -218,6 +223,7 @@ function App(props) {
               grid={grid}
               writeContracts={writeContracts}
               tx={tx}
+              readContracts={readContracts}
             />
           </Route>
           <Route path="/hints">
@@ -300,7 +306,7 @@ function App(props) {
              {
 
                /*  if the local provider has a signer, let's show the faucet:  */
-               localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf("localhost")>=0 && !process.env.REACT_APP_PROVIDER && price > 1 ? (
+               localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf("localhost")>=0 ? (
                  <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
                ) : (
                  ""

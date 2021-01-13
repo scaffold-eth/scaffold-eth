@@ -21,28 +21,7 @@ contract GridGame {
     GridSquare[64] public gridSquares;
     //mapping(uint256 => GridSquare) public gridSquares;
 
-    // Modifiers
-    modifier onlyBy(address _account)
-    {
-        require(
-            msg.sender == _account,
-            "Sender not authorized."
-        );
-        // Do not forget the "_;"! It will
-        // be replaced by the actual function
-        // body when the modifier is used.
-        _;
-    }
-
-    modifier onlyAfter(uint256 _time) 
-    {
-        require(
-            block.timestamp >= _time,
-            "Function called too early."
-        );
-        _;
-    }
-
+    
     // Events
     event GridSquarePurchased(address owner, uint256 x, uint256 y, uint8 color, uint256 amount);
     event GridSquareTransferred(address owner, uint256 id, uint256 amount, address newOwner);
@@ -54,14 +33,12 @@ contract GridGame {
         owner = _owner;
     }
 
-    // Functions
-    /// Make `_newOwner` the new owner of this
-    /// contract.
-    function changeOwner(address payable _newOwner)
+    function ownerOf(uint256 _x, uint256 _y)
         public
-        onlyBy(owner)
+        returns(address)
     {
-        owner = _newOwner;
+        uint256 id = _x + _y * 8;
+        return gridSquares[id].owner;
     }
 
     function buySquare(uint256 _x, uint256 _y, uint8 _color)
@@ -80,6 +57,17 @@ contract GridGame {
         emit GridSquarePurchased(msg.sender, _x, _y, _color, msg.value);
     }
 
+    function updateColor(uint256 _x, uint256 _y, uint8 _color)
+        public
+    {
+         uint256 id = _x + _y * 8;
+        require(gridSquares[id].owner == msg.sender, "not the owner");
+        gridSquares[id].color = _color;
+
+        emit GridSquarePurchased(msg.sender, _x, _y, _color, 0);
+    }
+
+
     function sellSquare(uint256 _id, uint256 _amount, address payable _to)
         public
         payable
@@ -90,5 +78,6 @@ contract GridGame {
     }
 
 
+    
 
 }
