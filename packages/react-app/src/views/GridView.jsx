@@ -141,7 +141,9 @@ const GridBoard = (props) => {
                     <Option value='3'>Blue</Option>
                     <Option value='6'>Lt Blue</Option>
                     <Option value='2'>Yellow</Option>
-
+                    <Option value='5'>Green</Option>
+                    <Option value='1'>Orange</Option>
+                    <Option value='4'>Purple</Option>
                 </Select>
             </div>
         </Modal>
