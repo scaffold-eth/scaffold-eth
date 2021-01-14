@@ -8,20 +8,21 @@ import { parseEther, formatEther } from "@ethersproject/units";
 import { id } from "@ethersproject/hash";
 import { keccak256 } from '@ethersproject/keccak256'
 import { useContractReader, useEventListener, useNonce, useExternalContractLoader } from "../hooks";
-import { LINK_ADDRESS, LINK_ABI } from "../constants";
+import { LINK_ADDRESS, LINK_ABI, INFURA_ID } from "../constants";
 
+import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 
 export default function VrfComponent({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, externalContracts }) {
 
   const [amount, setAmount] = useState();
-
+  console.log(writeContracts.ChainlinkRandomNumberGenrator.address)
   // keep track of a variable from the contract in the local React state:
+  const kovanProvider = new JsonRpcProvider("https://kovan.infura.io/v3/"+INFURA_ID)
+console.log(kovanProvider)
   const random = useContractReader(readContracts,"ChainlinkRandomNumberGenrator", "getRandomNumber", [])
-  console.log("revealed number",random)
-
-  const vrfAddress = '0xeb06a892dec144582b212aa15360fba25a102ce5';
-  
-  const vrfLINKBalance = useContractReader(externalContracts,"kovanLINKContract", "balanceOf", [writeContracts.ChainlinkRandomNumberGenrator.address])
+  console.log("revealed number",externalContracts)
+  const LinkToken = useExternalContractLoader(kovanProvider, LINK_ADDRESS, LINK_ABI)
+  const vrfLINKBalance = useContractReader({LinkToken: LinkToken},"LinkToken", "balanceOf",["0x98c63b7b319dfbdf3d811530f2ab9dfe4983af9d"])
   console.log("LINK Balance", parseEther(vrfLINKBalance))
 
 

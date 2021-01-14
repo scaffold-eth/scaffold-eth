@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther } from "@ethersproject/units";
-import { LINK_ADDRESS, LINK_ABI } from "./constants";
+import { LINK_ADDRESS, LINK_ABI, INFURA_ID } from "./constants";
 
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph, VrfComponent } from "./views"
@@ -33,8 +33,6 @@ import { Hints, ExampleUI, Subgraph, VrfComponent } from "./views"
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
-
 // 😬 Sorry for all the console logging 🤡
 const DEBUG = true
 
@@ -45,7 +43,9 @@ const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.c
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-const mainnetProvider = new JsonRpcProvider("https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad")
+const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
+const kovanProvider = new JsonRpcProvider("https://kovan.infura.io/v3/"+INFURA_ID)
+
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -72,8 +72,6 @@ function App(props) {
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
 
-  const kovanLINKContract = useExternalContractLoader(userProvider, LINK_ADDRESS, LINK_ABI)
-
 
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userProvider, gasPrice)
@@ -87,15 +85,20 @@ function App(props) {
   if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(userProvider)
+  const readContracts = useContractLoader(kovanProvider)
   if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
+  const writeContracts = useContractLoader(kovanProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
+  const LinkToken = useExternalContractLoader(kovanProvider, LINK_ADDRESS, LINK_ABI)
+  console.log(LinkToken)
 
+  const externalContracts = ({LinkToken: LinkToken})
 
+  // const vrfLINKBalance = useContractReader({LinkToken: LinkToken},"LinkToken", "balanceOf",["0x98c63b7b319dfbdf3d811530f2ab9dfe4983af9d"])
+  // console.log(vrfLINKBalance)
   // If you want to bring in the mainnet DAI contract it would look like:
   //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
   //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
@@ -167,7 +170,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-            />
+            /> 
 
             <Contract
               name="ChainlinkRandomNumberGenrator"
@@ -215,9 +218,9 @@ function App(props) {
           <VrfComponent
               address={address}
               userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
+              mainnetProvider={kovanProvider}
               localProvider={localProvider}
-              externalContracts={kovanLINKContract}
+              externalContracts={externalContracts}
               yourLocalBalance={yourLocalBalance}
               price={price}
               tx={tx}
