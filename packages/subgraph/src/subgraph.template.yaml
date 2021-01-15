@@ -20,6 +20,8 @@ dataSources:
         - name: YourContract
           file: ./abis/YourContract.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: Minted(address,uint256,uint256)
+          handler: handleMinted
+        - event: Burned(address,uint256,uint256)
+          handler: handleBurned
       file: ./src/mapping.ts

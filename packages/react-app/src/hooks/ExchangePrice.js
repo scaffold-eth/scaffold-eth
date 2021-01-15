@@ -14,6 +14,7 @@ export default function useExchangePrice(mainnetProvider, pollTime) {
       );
       const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider);
       const route = new Route([pair], WETH[DAI.chainId]);
+      console.log('price', route.midPrice.toSignificant(6))
       setPrice(parseFloat(route.midPrice.toSignificant(6)));
     }
     getPrice();

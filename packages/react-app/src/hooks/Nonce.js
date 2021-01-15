@@ -5,9 +5,9 @@ export default function useNonce(mainnetProvider, address) {
 
   const Nonce = () => {
     async function getNonce() {
-      setNonce(await mainnetProvider.getTransactionCount(address));
+        setNonce(await mainnetProvider.getTransactionCount(address));
     }
-    if(address) getNonce();
+    getNonce();
   };
   Nonce();
   return nonce;

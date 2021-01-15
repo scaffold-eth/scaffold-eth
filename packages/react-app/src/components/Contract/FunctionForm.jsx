@@ -16,6 +16,8 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   const tx = Transactor(provider, gasPrice);
 
+
+
   let inputIndex = 0;
   const inputs = functionInfo.inputs.map(input => {
 
@@ -63,22 +65,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             }}
           >
             #️⃣
-            </div>
-        </Tooltip>
-      )
-    } else if (input.type == "uint256") {
-      buttons = (
-        <Tooltip placement="right" title={"to hex"}>
-          <div
-            type="dashed"
-            style={{ cursor: "pointer" }}
-            onClick={async () => {
-              const formUpdate = { ...form };
-              formUpdate[key] = utils.parseEther(form[key])
-              setForm(formUpdate);
-            }}
-          >
-            ✴️
             </div>
         </Tooltip>
       )
@@ -183,21 +169,14 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 return value
               });
 
-              let result
-              if(functionInfo.stateMutability === "view"||functionInfo.stateMutability === "pure"){
-                const returned = await contractFunction(...args)
-                result = tryToDisplay(returned);
-              }else{
-                const overrides = {};
-                if (txValue) {
-                  overrides.value = txValue; // ethers.utils.parseEther()
-                }
-
-                // console.log("Running with extras",extras)
-                const returned = await tx(contractFunction(...args, overrides));
-                result = tryToDisplay(returned);
+              const overrides = {};
+              if (txValue) {
+                overrides.value = txValue; // ethers.utils.parseEther()
               }
 
+              // console.log("Running with extras",extras)
+              const returned = await tx(contractFunction(...args, overrides));
+              const result = tryToDisplay(returned);
 
               console.log("SETTING RESULT:", result);
               setReturnValue(result);
