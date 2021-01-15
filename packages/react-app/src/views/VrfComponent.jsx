@@ -15,34 +15,23 @@ import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 export default function VrfComponent({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, externalContracts }) {
 
   const [amount, setAmount] = useState();
-  console.log(writeContracts.ChainlinkRandomNumberGenrator.address)
+
   // keep track of a variable from the contract in the local React state:
-  const kovanProvider = new JsonRpcProvider("https://kovan.infura.io/v3/"+INFURA_ID)
-console.log(kovanProvider)
-  const random = useContractReader(readContracts,"ChainlinkRandomNumberGenrator", "getRandomNumber", [])
-  console.log("revealed number",externalContracts)
-  const LinkToken = useExternalContractLoader(kovanProvider, LINK_ADDRESS, LINK_ABI)
-  const vrfLINKBalance = useContractReader({LinkToken: LinkToken},"LinkToken", "balanceOf",["0x98c63b7b319dfbdf3d811530f2ab9dfe4983af9d"])
-  console.log("LINK Balance", parseEther(vrfLINKBalance))
+  const random = useContractReader(readContracts,"ChainlinkRandomNumberGenrator", "getRandomNumber")
+if (random) {
+  console.log(random.toString());
+}
+  
+  const vrfLINKBalance = useContractReader(externalContracts, "LinkToken", "balanceOf",[writeContracts.ChainlinkRandomNumberGenrator.address])
+  if (vrfLINKBalance) {
+  console.log("vrfLINKBalance", vrfLINKBalance.toString()) 
 
+  }
 
-  // const [dataHash, setDataHash] = useState('0');
-
-  // let hash = useContractReader(readContracts,"YourContract", "getHash", [dataHash])
-
-  // if (dataHash === '0') {
-  //   setDataHash(message);
-  //   hash = id(message + writeContracts.YourContract.address)
-  //   setRevealHash(hash);
-  // }
 
   //📟 Listen for broadcast YourContract
   const events = useEventListener(readContracts, "ChainlinkRandomNumberGenrator", "Generated", userProvider, 1);
   console.log("📟 VRF events:",events)
-
-  // //📟 Listen for broadcast YourContract
-  // const revealEvents = useEventListener(readContracts, "YourContract", "RevealHash", localProvider, 1);
-  // console.log("📟 Reveal events:", revealEvents)
 
   return (
     <div>
@@ -54,9 +43,9 @@ console.log(kovanProvider)
 
 
         <Divider/>
-        <h4>VRF Contract LINK Balance:  {vrfLINKBalance && parseEther(vrfLINKBalance)}</h4>
+        <h4>VRF Contract LINK Balance:  {vrfLINKBalance && vrfLINKBalance.toString()}</h4>
 
-        <h4>Revealed Number: {random && random.toString()}</h4>
+        <h4>Revealed Number: {random && random.toString().substring(0, 4)}</h4>
 
         <div style={{margin:8}}>
         <EtherInput
@@ -66,15 +55,15 @@ console.log(kovanProvider)
     setAmount(value);
   }}
 /> 
-          <Button onClick={async ()=>{
-            tx( writeContracts.kovanLINKContract.transfer(amount))
+          <Button onClick={()=>{
+            tx( externalContracts['LinkToken'].transfer(writeContracts.ChainlinkRandomNumberGenrator.address, "1000000000000000000"))
           }}>Fund VRF Contract with LINK</Button>
         </div>
 
 
-        {parseEther(vrfLINKBalance) > 0.1 && <div style={{margin:8}}>
+        {vrfLINKBalance && parseInt(vrfLINKBalance.toString()) > 1 && <div style={{margin:8}}>
           <Button onClick={async ()=>{
-            tx( writeContracts.ChainlinkRandomNumberGenrator.generateRandom(Math.random()) )
+            tx( writeContracts.ChainlinkRandomNumberGenrator.generateRandom(2) )
           }}>Generate Random</Button>
         </div>}
 
@@ -142,7 +131,7 @@ console.log(kovanProvider)
           renderItem={(item) => {
             return (
               <List.Item>
-                {item[0]}
+                {item[0].toString().substring(0,4)}
               </List.Item>
             )
           }}

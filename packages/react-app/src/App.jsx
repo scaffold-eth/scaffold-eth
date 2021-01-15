@@ -44,7 +44,7 @@ if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
-const kovanProvider = new JsonRpcProvider("https://kovan.infura.io/v3/"+INFURA_ID)
+const kovanProvider = new JsonRpcProvider("https://kovan.infura.io/v3/a241f6393ba1402f8f5623537584c5ba")
 
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
@@ -85,16 +85,14 @@ function App(props) {
   if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(kovanProvider)
+  const readContracts = useContractLoader(userProvider)
   if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(kovanProvider)
+  const writeContracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
-  const LinkToken = useExternalContractLoader(kovanProvider, LINK_ADDRESS, LINK_ABI)
-  console.log(LinkToken)
-
+  const LinkToken = useExternalContractLoader(userProvider, LINK_ADDRESS, LINK_ABI)
   const externalContracts = ({LinkToken: LinkToken})
 
   // const vrfLINKBalance = useContractReader({LinkToken: LinkToken},"LinkToken", "balanceOf",["0x98c63b7b319dfbdf3d811530f2ab9dfe4983af9d"])
@@ -220,7 +218,6 @@ function App(props) {
               userProvider={userProvider}
               mainnetProvider={kovanProvider}
               localProvider={localProvider}
-              externalContracts={externalContracts}
               yourLocalBalance={yourLocalBalance}
               price={price}
               tx={tx}
@@ -228,6 +225,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+              externalContracts={externalContracts}
             />
           </Route>
         </Switch>
