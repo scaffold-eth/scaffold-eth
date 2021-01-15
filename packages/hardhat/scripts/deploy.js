@@ -10,7 +10,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
+  const yourContract = await deploy("YourContract",['0x3512c3eD5Ea009bEc29DE02F759dBB8D7136D04B','0x56FB74B68355a34fc2113Dd2bbE197a52935A310', 1610689905]) // <-- add in constructor args like line 16 vvvv
 
 
 
