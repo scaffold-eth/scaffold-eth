@@ -1,12 +1,12 @@
 pragma solidity >=0.6.0 <0.7.0;
 
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; 
 //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract GridGame {
     // State variables
-    address payable public owner;
+    //address payable public owner;
 
     // Grid
     //uint256 rows = 8;
@@ -26,10 +26,10 @@ contract GridGame {
     event GridSquarePurchased(address owner, uint256 x, uint256 y, uint8 color, uint256 amount);
 
     // Constructor will only ever run once on deploy
-    constructor (address payable _owner) 
+    constructor () 
         public 
     {
-        owner = _owner;
+        
     }
 
     function ownerOf(uint256 _x, uint256 _y)

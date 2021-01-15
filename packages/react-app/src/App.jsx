@@ -38,7 +38,7 @@ import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 const DEBUG = true
 
 // 🔭 block explorer URL
-const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
+const blockExplorer = "https://blockscout.com/poa/xdai/";
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -48,18 +48,19 @@ const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" +   
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = "http://localhost:8545"; // for xdai: https://dai.poa.network
+const localProviderUrl = "http://localhost:8545"; // 
+const xdaiProviderUrl = "http://rpc.xdaichain.com";
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new JsonRpcProvider(localProviderUrl);
+const localProvider = new JsonRpcProvider(xdaiProviderUrl);
 
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(mainnetProvider); //1 for xdai
+  const price = 1;//useExchangePrice(mainnetProvider); //1 for xdai
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice("fast"); //1000000000 for xdai
+  const gasPrice = 1000000000;// useGasPrice("fast"); //1000000000 for xdai
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
@@ -161,11 +162,11 @@ function App(props) {
 
       <BrowserRouter>
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Contracts</Link>
+          <Menu.Item key="/debug">
+            <Link onClick={()=>{setRoute("/debug")}} to="/debug">Contracts</Link>
           </Menu.Item>
-          <Menu.Item key="/grid-view">
-            <Link onClick={()=>{setRoute("/grid-view")}} to="/grid-view">Play Area</Link>
+          <Menu.Item key="/">
+            <Link onClick={()=>{setRoute("/")}} to="/">Play Area</Link>
           </Menu.Item>
           <Menu.Item key="/exampleui">
             <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
@@ -177,7 +178,7 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/debug">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -198,7 +199,7 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/grid-view">
+          <Route path="/">
             <GridView 
               tx={tx}
               grid={grid}              
