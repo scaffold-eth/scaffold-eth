@@ -9,22 +9,21 @@ contract GridGame {
     address payable public owner;
 
     // Grid
-    uint256 rows = 8;
-    uint256 cols = 8;    
+    //uint256 rows = 8;
+    //uint256 cols = 8;    
 
     struct GridSquare {
         address payable owner;
         uint256 value;
         uint8 color;
+        uint256 x;
+        uint256 y;
     }
 
     GridSquare[64] public gridSquares;
-    //mapping(uint256 => GridSquare) public gridSquares;
 
-    
     // Events
     event GridSquarePurchased(address owner, uint256 x, uint256 y, uint8 color, uint256 amount);
-    event GridSquareTransferred(address owner, uint256 id, uint256 amount, address newOwner);
 
     // Constructor will only ever run once on deploy
     constructor (address payable _owner) 
@@ -35,6 +34,7 @@ contract GridGame {
 
     function ownerOf(uint256 _x, uint256 _y)
         public
+        view
         returns(address)
     {
         uint256 id = _x + _y * 8;
@@ -51,7 +51,9 @@ contract GridGame {
         gridSquares[id] = GridSquare(
             msg.sender,
             msg.value,
-            _color
+            _color,
+            _x,
+            _y
         );
 
         emit GridSquarePurchased(msg.sender, _x, _y, _color, msg.value);
@@ -60,7 +62,7 @@ contract GridGame {
     function updateColor(uint256 _x, uint256 _y, uint8 _color)
         public
     {
-         uint256 id = _x + _y * 8;
+        uint256 id = _x + _y * 8;
         require(gridSquares[id].owner == msg.sender, "not the owner");
         gridSquares[id].color = _color;
 
@@ -68,16 +70,21 @@ contract GridGame {
     }
 
 
-    function sellSquare(uint256 _id, uint256 _amount, address payable _to)
+    function sellSquare(uint256 _x, uint256 _y, uint8 _color, uint256 _amount, address payable _to)
         public
         payable
     {
+        uint256 id = _x + _y * 8;
         require(msg.value >= _amount, "not enough ether sent");
+        GridSquare memory square = gridSquares[id];
+        square.owner = _to;
+        square.value = _amount;
+        square.color = _color;
 
-        emit GridSquareTransferred(msg.sender, _id, _amount, _to);
+        emit GridSquarePurchased(_to, _x, _y, _color, _amount);
     }
 
 
-    
+
 
 }

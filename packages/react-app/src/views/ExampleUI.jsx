@@ -6,15 +6,13 @@ import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({purpose, setPurposeEvents, buyGridEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
-
-  const [newPurpose, setNewPurpose] = useState("loading...");
+export default function ExampleUI({buyGridEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   return (
     <div>
         <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
           <h2>Grid Events:</h2>
-          Address | X | Y | Color | Amount
+          Owner | X | Y | Color | Amount
           <List
             bordered
             dataSource={buyGridEvents}

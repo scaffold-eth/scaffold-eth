@@ -147,22 +147,19 @@ function App(props) {
         newGrid[x][y].y = y;
         newGrid[x][y].lastUpdated = buyGridEvents[e].blockNumber;
       }
-      
-
     }
 
-    setGrid(newGrid);    
+    setGrid(newGrid);
+
   }, [buyGridEvents])
 
 
   return (
     <div className="App">
-
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
 
       <BrowserRouter>
-
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Contracts</Link>
@@ -170,9 +167,6 @@ function App(props) {
           <Menu.Item key="/grid-view">
             <Link onClick={()=>{setRoute("/grid-view")}} to="/grid-view">Play Area</Link>
           </Menu.Item>
-          {/* <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-          </Menu.Item> */}
           <Menu.Item key="/exampleui">
             <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
           </Menu.Item>
@@ -203,35 +197,14 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
-            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */ }
           </Route>
           <Route path="/grid-view">
             <GridView 
-              address={address}
-              localProvider={localProvider}
-              mainnetProvider={mainnetProvider}
-              grid={grid}
-              writeContracts={writeContracts}
               tx={tx}
+              grid={grid}              
+              address={address}              
               readContracts={readContracts}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
+              writeContracts={writeContracts}
             />
           </Route>
           <Route path="/exampleui">
@@ -248,14 +221,14 @@ function App(props) {
               buyGridEvents={buyGridEvents}
             />
           </Route>
-          <Route path="/subgraph">
+          {/* <Route path="/subgraph">
             <Subgraph
               subgraphUri={props.subgraphUri}
               tx={tx}
               writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
             />
-          </Route>
+          </Route> */}
         </Switch>
       </BrowserRouter>
 
