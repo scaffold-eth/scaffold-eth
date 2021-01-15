@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 
 export default function useNonce(mainnetProvider, address) {
