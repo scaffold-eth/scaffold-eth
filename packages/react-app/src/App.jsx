@@ -53,14 +53,14 @@ const xdaiProviderUrl = "http://rpc.xdaichain.com";
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new JsonRpcProvider(xdaiProviderUrl);
+const localProvider = new JsonRpcProvider(localProviderUrl);
 
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  const price = 1;//useExchangePrice(mainnetProvider); //1 for xdai
+  const price = useExchangePrice(mainnetProvider); //1 for xdai
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = 1000000000;// useGasPrice("fast"); //1000000000 for xdai
+  const gasPrice = useGasPrice("fast"); //1000000000 for xdai
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
