@@ -55,3 +55,4 @@ yarn deploy
 > Click on a square and select a color
 
 ![image](https://user-images.githubusercontent.com/9419140/104850079-f1462700-58ba-11eb-8488-e903f86b34dd.png)
+![image](https://user-images.githubusercontent.com/9419140/104850108-20f52f00-58bb-11eb-93ba-cce7887d9e0e.png)
