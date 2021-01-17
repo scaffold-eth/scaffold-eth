@@ -50,7 +50,7 @@ yarn deploy
 
 > With everything up your app will look like this:
 
-![image](https://user-images.githubusercontent.com/9419140/104849554-49c7f500-58b8-11eb-810f-e0f37e00f18d.png)
+![image](https://user-images.githubusercontent.com/9419140/104850138-5568eb00-58bb-11eb-919b-6e20ec039069.png)
 
 > Click on a square and select a color
 
