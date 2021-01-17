@@ -21,11 +21,9 @@ export default function VrfComponent({purpose, setPurposeEvents, address, mainne
 if (random) {
   console.log(random.toString());
 }
-  
-  const vrfLINKBalance = useContractReader(externalContracts, "LinkToken", "balanceOf",[writeContracts.ChainlinkRandomNumberGenrator.address])
-  if (vrfLINKBalance) {
-  console.log("vrfLINKBalance", vrfLINKBalance.toString()) 
-
+    const vrfLINKBalance = useContractReader(externalContracts, "LinkToken", "balanceOf",[writeContracts.ChainlinkRandomNumberGenrator.address])
+    if (vrfLINKBalance) {
+    console.log("vrfLINKBalance", vrfLINKBalance.toString())
   }
 
 
@@ -43,9 +41,14 @@ if (random) {
 
 
         <Divider/>
-        <h4>VRF Contract LINK Balance:  {vrfLINKBalance && vrfLINKBalance.toString()}</h4>
-
+        <h4>VRF Contract LINK Balance:  {vrfLINKBalance && formatEther(vrfLINKBalance)}</h4>
+        <br />
         <h4>Revealed Number: {random && random.toString().substring(0, 4)}</h4>
+        <br />
+        <h4><a href = 'https://gitter.im/kovan-testnet/faucet'>Get Kovan ETH here</a></h4>
+        <br />
+        <h4><a href='https://kovan.chain.link/'>Get Kovan LINK here</a></h4>
+        <br />
 
         <div style={{margin:8}}>
         <EtherInput
@@ -56,9 +59,10 @@ if (random) {
   }}
 /> 
           <Button onClick={()=>{
-            tx( externalContracts['LinkToken'].transfer(writeContracts.ChainlinkRandomNumberGenrator.address, "1000000000000000000"))
+            tx( externalContracts['LinkToken'].transfer(writeContracts.ChainlinkRandomNumberGenrator.address, parseEther(amount)))
           }}>Fund VRF Contract with LINK</Button>
         </div>
+        <br />
 
 
         {vrfLINKBalance && parseInt(vrfLINKBalance.toString()) > 1 && <div style={{margin:8}}>
