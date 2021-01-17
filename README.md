@@ -56,3 +56,12 @@ yarn deploy
 
 ![image](https://user-images.githubusercontent.com/9419140/104850079-f1462700-58ba-11eb-8488-e903f86b34dd.png)
 ![image](https://user-images.githubusercontent.com/9419140/104850164-7c272180-58bb-11eb-9d37-9997fbaef816.png)
+
+> Grid is rendered and then updated from watching events on the blockchain
+
+![image](https://user-images.githubusercontent.com/9419140/104850716-c067f100-58be-11eb-8d14-78013b919384.png)
+
+> GridView Component contains all the logic and functions for the squares
+
+
+
