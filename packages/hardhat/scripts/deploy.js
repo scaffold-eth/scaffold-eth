@@ -11,7 +11,11 @@ const main = async () => {
 
 
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
-
+  const CurlyCoin = await deploy("CurlyCoin")
+  
+  const LarryCoin = await deploy("LarryCoin")
+  
+  const MoCoin = await deploy("MoCoin")
 
 
   // const exampleToken = await deploy("ExampleToken")
