@@ -390,6 +390,11 @@ yarn run watch
 yarn run test
 ```
 
+Run autotest to automatically run a test file when it is changed. This workflow allows you to iterate on tests faster. It works particularly well with using the `it.only` syntax to isolate individual tests:
+```bash
+yarn run autotest
+```
+
 🗝 List your local accounts:
 
 ```bash

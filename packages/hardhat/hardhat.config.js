@@ -3,6 +3,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
+require("hardhat-watcher");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -101,6 +102,13 @@ module.exports = {
       }
     }
   },
+  watcher: {
+    test: {
+      tasks: [{ command:'test', params: {testFiles: ['{path}']} }],
+      files: ['./test/**/*'],
+      verbose: true
+    }
+  }
 };
 
 const DEBUG = false;
