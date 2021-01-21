@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, Create, Manage } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -101,13 +101,18 @@ function App(props) {
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
   //
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  // // keep track of a variable from the contract in the local React state:
+  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  // console.log("🤗 purpose:",purpose)
+  //
+  // //📟 Listen for broadcast events
 
-  //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+    // expected output: ReferenceError: nonExistentFunction is not defined
+    // Note - error messages will vary depending on browser
+  
+
+
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -148,6 +153,8 @@ function App(props) {
     )
   }
 
+
+
   return (
     <div className="App">
 
@@ -161,13 +168,13 @@ function App(props) {
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
+            <Link onClick={()=>{setRoute("/hints")}} to="/hints">TODO?</Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
+          <Menu.Item key="/create">
+            <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
           </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          <Menu.Item key="/manage">
+            <Link onClick={()=>{setRoute("/manage")}} to="/manage">Manage</Link>
           </Menu.Item>
         </Menu>
 
@@ -205,8 +212,8 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
+          <Route path="/create">
+            <Create
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -216,12 +223,10 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
             />
           </Route>
-          <Route path="/subgraph">
-            <Subgraph
+          <Route path="/manage">
+            <Manage
             subgraphUri={props.subgraphUri}
             tx={tx}
             writeContracts={writeContracts}

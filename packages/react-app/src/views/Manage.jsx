@@ -11,7 +11,7 @@ import fetch from 'isomorphic-fetch';
 
   const highlight = { marginLeft: 4, marginRight: 8, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }
 
-function Subgraph(props) {
+function Manage(props) {
 
   function graphQLFetcher(graphQLParams) {
     return fetch(props.subgraphUri, {
@@ -157,4 +157,4 @@ function Subgraph(props) {
   );
 }
 
-export default Subgraph;
+export default Manage;
