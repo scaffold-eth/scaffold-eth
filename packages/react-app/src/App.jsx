@@ -3,12 +3,12 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Button, Menu, List } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, Balance, Address } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -102,12 +102,12 @@ function App(props) {
   //
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  const balanceStaked = useContractReader(readContracts,"Staker", "balances",[ address ])
+  console.log("💸 balanceStaked:",balanceStaked)
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  const stakeEvents = useEventListener(readContracts, "Staker", "Stake", localProvider, 1);
+  console.log("📟 stake events:",stakeEvents)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -158,7 +158,7 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Staker</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
@@ -173,13 +173,46 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
+
+            You've staked:
+            <Balance balance={balanceStaked} fontSize={64} />
+
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
             <Contract
-              name="YourContract"
+              name="Staker"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <List
+                bordered
+                dataSource={stakeEvents}
+                renderItem={(item) => {
+                  return (
+                    <List.Item key={item[0]+item[1]}>
+                      <Address
+                          value={item[0]}
+                          ensProvider={mainnetProvider}
+                          fontSize={16}
+                        /> =>
+                        <Balance
+                          balance={item[1]}
+
+                        />
+
+                    </List.Item>
+                  )
+                }}
+              />
+
+            <Contract
+              name="ExampleExternalContract"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
@@ -216,8 +249,8 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
+              /*purpose={purpose}
+              setPurposeEvents={setPurposeEvents}*/
             />
           </Route>
           <Route path="/subgraph">
@@ -247,6 +280,8 @@ function App(props) {
          />
          {faucetHint}
       </div>
+
+      <div style={{marginTop:32,opacity:0.5}}><a target="_blank" style={{padding:32,color:"#000"}} href="https://github.com/austintgriffith/scaffold-eth">🍴 Fork me!</a></div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
