@@ -5,7 +5,7 @@ import './SafeMath.sol';
 // SPDX-License-Identifier: UNLICENSED
 
 
-contract Accountable is Pausable {
+contract Accountable is Mortal {
     
     uint256 internal balance_;
     

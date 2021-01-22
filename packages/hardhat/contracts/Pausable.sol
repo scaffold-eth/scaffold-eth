@@ -1,5 +1,5 @@
 pragma solidity 0.8.0;
-import "./Mortal.sol";
+import "./Ownable.sol";
 
 // SPDX-License-Identifier: UNLICENSED
 

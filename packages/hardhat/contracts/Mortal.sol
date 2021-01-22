@@ -1,5 +1,5 @@
 pragma solidity 0.8.0;
-import "./Ownable.sol";
+import "./Pausable.sol";
 
 // SPDX-License-Identifier: UNLICENSED
 
@@ -7,7 +7,7 @@ contract Mortal is Ownable{
     
     event imploding(string msg);
     
-    function implode() public onlyOwner {
+    function implode() public onlyOwner Paused {
         emit imploding('!MOOB');
         selfdestruct(owner);
     }
