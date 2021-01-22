@@ -9,6 +9,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "bool",
+        "name": "torchPassed",
+        "type": "bool"
+      }
+    ],
+    "name": "OwnershipTransferred",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "sender",
         "type": "address"
@@ -22,6 +35,39 @@
     ],
     "name": "SetPurpose",
     "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "msg",
+        "type": "string"
+      }
+    ],
+    "name": "imploding",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "amIOwner",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "implode",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -45,6 +91,19 @@
       }
     ],
     "name": "setPurpose",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address payable",
+        "name": "newOwner",
+        "type": "address"
+      }
+    ],
+    "name": "transferOwnership",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
