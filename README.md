@@ -13,7 +13,7 @@
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git staking-app-challenge
 cd staking-app-challenge
-git checkout staking-app-challenge
+git checkout stake-app-early-fork
 yarn install
 ```
 
