@@ -32,14 +32,14 @@ contract Accountable is Pausable {
         emit receipt(from, address(this), ammount);
     }
     
-    function debt(address payable to, uint256 amount) internal {
+    function debt(address payable to, uint256 amount) internal Unpaused {
         require(amount <= balance_, 'Insufficient funds available.');
         balance_ = SafeMath.sub(balance_, amount);
         to.transfer(amount);  // revert on fail.
         emit receipt(address(this), to, amount);
     }
     
-    function salary(uint256 amount) public onlyOwner {
+    function salary(uint256 amount) public onlyOwner Paused {
         debt(owner, amount);
     }
 }
