@@ -2,7 +2,7 @@
 
 ### Challenge 1: Staking App
 
-> Build a `Staker.sol` contract that collects ETH from any address using a `stake()` and keeps track of `balances`. After some `deadline` if it has at least some `threshold` ETH, it sends it to a SecondContract and triggers some action. If not enough ETH is collected, allow users to withdraw.
+> Build a `Staker.sol` contract that collects ETH from numerous addresses using a `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` ETH, it sends it to a SecondContract and triggers some action. If not enough ETH is collected, allow users to withdraw.
 
 > Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake(address,uint256)` event to <List/> all stakes.
 
@@ -45,7 +45,7 @@ uint256 public constant threshold = 1 ether;
 
 ## Checkpoint 2:
 
-Start tracking your balance in the frontend:
+Start tracking and display the balance the user has staked in `App.jsx`:
 ```js
 const balance = useContractReader(readContracts,"Staker", "balance")
 console.log("💸 balance:",balance)

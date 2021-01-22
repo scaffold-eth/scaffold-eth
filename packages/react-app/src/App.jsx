@@ -11,7 +11,6 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Balance, Address } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-//import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
@@ -32,6 +31,7 @@ import { Hints, ExampleUI, Subgraph } from "./views"
     (and then use the `useExternalContractLoader()` hook!)
 */
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+const humanizeDuration = require("humanize-duration");
 
 // 😬 Sorry for all the console logging 🤡
 const DEBUG = true
@@ -101,6 +101,14 @@ function App(props) {
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
   //
 
+  //keep track of contract balance to know how much has been staked total:
+  const stakerContractBalance = useBalance(localProvider, readContracts && readContracts.Staker.address);
+  if(DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance )
+
+  //keep track of total 'threshold' needed of ETH
+  const threshold = useContractReader(readContracts,"Staker", "threshold" )
+  console.log("💵 threshold:",threshold)
+
   // keep track of a variable from the contract in the local React state:
   const balanceStaked = useContractReader(readContracts,"Staker", "balances",[ address ])
   console.log("💸 balanceStaked:",balanceStaked)
@@ -108,6 +116,12 @@ function App(props) {
   //📟 Listen for broadcast events
   const stakeEvents = useEventListener(readContracts, "Staker", "Stake", localProvider, 1);
   console.log("📟 stake events:",stakeEvents)
+
+  // keep track of a variable from the contract in the local React state:
+  const timeLeft = useContractReader(readContracts,"Staker", "timeLeft")
+  console.log("⏳ timeLeft:",timeLeft)
+
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -158,44 +172,63 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Staker</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Staker UI</Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          <Menu.Item key="/contracts">
+            <Link onClick={()=>{setRoute("/contracts")}} to="/contracts">Debug Contracts</Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
 
-            You've staked:
-            <Balance balance={balanceStaked} fontSize={64} />
+
+          <div style={{padding:8,marginTop:32}}>
+            <div>Timeleft:</div>
+            {timeLeft && humanizeDuration(timeLeft.toNumber()*1000)}
+          </div>
+
+          <div style={{padding:8}}>
+            <div>Total staked:</div>
+            <Balance
+              balance={stakerContractBalance}
+              fontSize={64}
+            />/<Balance
+              balance={threshold}
+              fontSize={64}
+            />
+          </div>
+
+
+          <div style={{padding:8}}>
+            <div>You staked:</div>
+            <Balance
+              balance={balanceStaked}
+              fontSize={64}
+            />
+          </div>
+
+          <div style={{padding:8}}>
+            <Button type={"default"} onClick={()=>{
+              tx( writeContracts.Staker.stake({value: parseEther("0.5")}) )
+            }}>🥩 Stake 0.5 ether!</Button>
+          </div>
+
+
 
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <Contract
-              name="Staker"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
 
-            <List
-                bordered
+            <div style={{width:500, margin:"auto",marginTop:64}}>
+              <div>Stake Events:</div>
+              <List
                 dataSource={stakeEvents}
                 renderItem={(item) => {
                   return (
-                    <List.Item key={item[0]+item[1]}>
+                    <List.Item key={item[0]+item[1]+item.blockNumber}>
                       <Address
                           value={item[0]}
                           ensProvider={mainnetProvider}
@@ -210,14 +243,9 @@ function App(props) {
                   )
                 }}
               />
+            </div>
 
-            <Contract
-              name="ExampleExternalContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
+
 
             { /* Uncomment to display and interact with an external contract (DAI on mainnet):
             <Contract
@@ -230,37 +258,24 @@ function App(props) {
             />
             */ }
           </Route>
-          <Route path="/hints">
-            <Hints
+          <Route path="/contracts">
+            <Contract
+              name="Staker"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
               address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
+              blockExplorer={blockExplorer}
             />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
+
+            <Contract
+              name="ExampleExternalContract"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
               address={address}
-              userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              /*purpose={purpose}
-              setPurposeEvents={setPurposeEvents}*/
+              blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/subgraph">
-            <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-            />
-          </Route>
+
         </Switch>
       </BrowserRouter>
 
