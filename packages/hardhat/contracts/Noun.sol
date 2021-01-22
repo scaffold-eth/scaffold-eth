@@ -5,20 +5,18 @@ import './Storage.sol';
 
 contract Noun is Storage {
 
-    address currentAddress;
-
-    constructor(address _currentAddress) public {
-        currentAddress = _currentAddress;
+    constructor(address _verbAddress) public {
+        _address('verbAddress') = _verbAddress;
     }
 
     function upgrade(address _newAddress) public{
-        currentAddress = _newAddress;
+        _address('verbAddress') = _newAddress;
     }
 
     // Redirect everything to functional contract.
     fallback() payable external {
-        address implementation = currentAddress;
-        require(currentAddress != address(0));
+        address implementation = _address('verbAddress');
+        require(_address('verbAddress') != address(0));
         bytes memory data = msg.data;
 
         assembly{

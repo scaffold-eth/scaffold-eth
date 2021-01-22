@@ -6,10 +6,10 @@ import './Storage.sol';
 contract Verb is Storage {
 
     function getNumberOfDogs() public view returns(uint256) {
-        return _uint256Storage["Dogs"];
+        return _uint["Dogs"];
     }
 
     function setNumberOfDogs(uint256 toSet) public {
-        _uint256Storage["Dogs"] = toSet;
+        _uint["Dogs"] = toSet;
     }
 }
