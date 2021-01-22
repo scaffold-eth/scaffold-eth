@@ -44,6 +44,8 @@ yarn deploy
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
+💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
+
 📱 Open http://localhost:3000 to see the app
 
 📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
