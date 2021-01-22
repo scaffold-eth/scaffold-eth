@@ -32,4 +32,8 @@ contract Pausable is Mortal{
         paused = false;
         emit PauseEvent('Unpaused.');
     }
+
+    function isPaused() public {
+        return paused;
+    }
 }
