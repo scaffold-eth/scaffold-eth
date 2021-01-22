@@ -6,6 +6,19 @@ import './Accountable.sol';
 contract Storage is Accountable {
     bool public _initialized;
 
+    // Dethlock core: ------------------------------------
+    struct will{
+        uint ethBalance;
+        address payable tokenAddress;
+        uint tokenBalance;
+        uint deadline;
+    }
+
+    mapping (uint => will) masterWillList;
+    mapping (address => uint[]) owners;
+    mapping (address => uint[]) benificiaries; 
+
+    // For upgradeability: -------------------------------
     mapping (string => bool) _bool;
 
     mapping (string =>  int256) _int;  // All int types store as 256.
