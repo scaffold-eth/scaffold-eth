@@ -166,7 +166,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ru
 
 🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
 
-👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [HardHat](https://hardhat.org/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
+
+⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
 
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
