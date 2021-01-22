@@ -7,9 +7,9 @@
 ## quickstart
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
+git clone https://github.com/austintgriffith/scaffold-eth.git
 
-cd your-next-dapp
+cd scaffold-eth
 ```
 
 ```bash
