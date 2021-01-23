@@ -1,12 +1,12 @@
 pragma solidity 0.8.0;
 import "hardhat/console.sol";
-import './Mortal.sol';
+import './Pausable.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract YourContract is Mortal {
+contract YourContract is Pausable {
 
   event SetPurpose(address sender, string purpose);
 

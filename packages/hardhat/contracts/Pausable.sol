@@ -3,7 +3,7 @@ import "./Ownable.sol";
 
 // SPDX-License-Identifier: UNLICENSED
 
-contract Pausable is Mortal{
+contract Pausable is Ownable{
     
     event PauseEvent(string msg);
 
@@ -33,7 +33,7 @@ contract Pausable is Mortal{
         emit PauseEvent('Unpaused.');
     }
 
-    function isPaused() public {
+    function isPaused() public view returns (bool) {
         return paused;
     }
 }

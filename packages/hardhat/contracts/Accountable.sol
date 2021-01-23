@@ -5,7 +5,7 @@ import './SafeMath.sol';
 // SPDX-License-Identifier: UNLICENSED
 
 
-contract Accountable is Mortal {
+contract Accountable is Pausable {
     
     uint256 internal balance_;
     
@@ -23,7 +23,7 @@ contract Accountable is Mortal {
         balance_ = 0;
     }
     
-    function balance() public view onlyOwner returns (uint256){
+    function contractBalance() public view onlyOwner returns (uint256){
         return balance_;
     }
     
@@ -41,5 +41,15 @@ contract Accountable is Mortal {
     
     function salary(uint256 amount) public onlyOwner Paused {
         debt(owner, amount);
+    }
+
+    // Absorb errant ETH
+    receive() external payable {
+        emit receipt(msg.sender, address(this), msg.value);
+    }
+
+    // Square up the books.
+    function rebalance() public onlyOwner {
+        balance_ = address(this).balance;
     }
 }

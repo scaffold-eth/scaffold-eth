@@ -22,6 +22,19 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "string",
+        "name": "msg",
+        "type": "string"
+      }
+    ],
+    "name": "PauseEvent",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "sender",
         "type": "address"
@@ -37,17 +50,18 @@
     "type": "event"
   },
   {
-    "anonymous": false,
-    "inputs": [
-      {
-        "indexed": false,
-        "internalType": "string",
-        "name": "msg",
-        "type": "string"
-      }
-    ],
-    "name": "imploding",
-    "type": "event"
+    "inputs": [],
+    "name": "Pause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "Unpause",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
   },
   {
     "inputs": [],
@@ -64,9 +78,15 @@
   },
   {
     "inputs": [],
-    "name": "implode",
-    "outputs": [],
-    "stateMutability": "nonpayable",
+    "name": "isPaused",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
     "type": "function"
   },
   {
