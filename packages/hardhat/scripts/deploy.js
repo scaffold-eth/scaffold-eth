@@ -9,8 +9,10 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
+  const verb = await deploy('Verb'); // Verb deploys first for address
+  const noun = await deploy('Noun',[verb.address]); // Proxy
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
+  // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
 
 
 

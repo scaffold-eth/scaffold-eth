@@ -1,6 +1,6 @@
 pragma solidity 0.8.0;
 import './Pausable.sol';
-import './SafeMath.sol';
+import '../included/SafeMath.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 

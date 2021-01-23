@@ -1,5 +1,5 @@
 pragma solidity 0.8.0;
-import './Storage.sol';
+import './inherited/Storage.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
