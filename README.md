@@ -9,6 +9,8 @@
 > 🏆 The final **deliverable** is deploying a decentralized application to a public blockchain and then `yarn build` and `yarn surge` your app to a public webserver. Share the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01) to earn a collectible and cred! Part of the challenge is making the **UI/UX** enjoyable and clean! 🤩
 
 
+🧫 Everything starts by ✏️ Editing `Staker.sol` in `packages/hardhat/contracts`
+
 ---
 ### Checkpoint 0: 📦 install 📚
 
