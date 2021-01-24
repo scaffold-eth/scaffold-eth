@@ -123,6 +123,28 @@ function App(props) {
 
 
 
+  const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
+  console.log("✅ complete:",complete)
+
+  const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract.address);
+  if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
+
+
+  let completeDisplay = ""
+  if(complete){
+    completeDisplay = (
+      <div style={{padding:64, backgroundColor:"#eeffef", fontWeight:"bolder"}}>
+        🚀 🎖 👩‍🚀  -  Staking App triggered `ExampleExternalContract` -- 🎉  🍾   🎊
+        <Balance
+          balance={exampleExternalContractBalance}
+          fontSize={64}
+        /> ETH staked!
+      </div>
+    )
+  }
+
+
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -162,6 +184,9 @@ function App(props) {
     )
   }
 
+
+
+
   return (
     <div className="App">
 
@@ -182,6 +207,7 @@ function App(props) {
         <Switch>
           <Route exact path="/">
 
+          {completeDisplay}
 
           <div style={{padding:8,marginTop:32}}>
             <div>Timeleft:</div>
@@ -208,10 +234,23 @@ function App(props) {
             />
           </div>
 
+
           <div style={{padding:8}}>
             <Button type={"default"} onClick={()=>{
+              tx( writeContracts.Staker.execute() )
+            }}>📡  Execute!</Button>
+          </div>
+
+          <div style={{padding:8}}>
+            <Button type={"default"} onClick={()=>{
+              tx( writeContracts.Staker.withdraw( address ) )
+            }}>🏧  Withdraw</Button>
+          </div>
+
+          <div style={{padding:8}}>
+            <Button type={ balanceStaked ? "success" : "primary"} onClick={()=>{
               tx( writeContracts.Staker.stake({value: parseEther("0.5")}) )
-            }}>🥩 Stake 0.5 ether!</Button>
+            }}>🥩  Stake 0.5 ether!</Button>
           </div>
 
 
@@ -266,7 +305,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
             <Contract
               name="ExampleExternalContract"
               signer={userProvider.getSigner()}
@@ -275,7 +313,6 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </Route>
-
         </Switch>
       </BrowserRouter>
 
@@ -295,6 +332,12 @@ function App(props) {
          />
          {faucetHint}
       </div>
+
+      <div style={{marginTop:32,opacity:0.5}}>Created by <Address
+        value={"Your...address"}
+        ensProvider={mainnetProvider}
+        fontSize={16}
+      /></div>
 
       <div style={{marginTop:32,opacity:0.5}}><a target="_blank" style={{padding:32,color:"#000"}} href="https://github.com/austintgriffith/scaffold-eth">🍴 Fork me!</a></div>
 
