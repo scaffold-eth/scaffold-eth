@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Row, Col, Input, Divider, Tooltip, Button } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
+import Blockies from "react-blockies";
 const { utils } = require("ethers");
 
 
@@ -68,7 +69,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
       )
     } else if (input.type == "uint256") {
       buttons = (
-        <Tooltip placement="right" title={"to hex"}>
+        <Tooltip placement="right" title={"* 10 ** 18"}>
           <div
             type="dashed"
             style={{ cursor: "pointer" }}
@@ -82,6 +83,15 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             </div>
         </Tooltip>
       )
+    } else if (input.type == "address") {
+      const possibleAddress = form[key]&&form[key].toLowerCase&&form[key].toLowerCase().trim()
+      if(possibleAddress && possibleAddress.length==42){
+        buttons = (
+          <Tooltip placement="right" title={"blockie"}>
+            <Blockies seed={possibleAddress} scale={3} />
+          </Tooltip>
+        )
+      }
     }
 
 
