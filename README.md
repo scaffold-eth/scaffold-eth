@@ -6,7 +6,7 @@
 
 > 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake(address,uint256)` event to <List/> all stakes.
 
-> 🏆 The final **deliverable** is deploying a decentralized application to a public blockchain and then `yarn build` and `yarn surge` your app to a public webserver. Share the url in the [Challenge 1 telegram channel]() to earn a collectible and cred! Part of the challenge is making the **UI/UX** enjoyable and clean! 🤩
+> 🏆 The final **deliverable** is deploying a decentralized application to a public blockchain and then `yarn build` and `yarn surge` your app to a public webserver. Share the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01) to earn a collectible and cred! Part of the challenge is making the **UI/UX** enjoyable and clean! 🤩
 
 
 ---
@@ -123,4 +123,4 @@ Hint: If the `address(this).balance` of the contract is over the `threshold` by 
 
 💽 Upload your app to surge with `yarn surge` (you could also `yarn s3` or maybe even `yarn ipfs`?)
 
-> 🎖 Show off your app by pasting the url in the [Challenge 1 telegram channel]()
+> 🎖 Show off your app by pasting the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01)
