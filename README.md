@@ -2,7 +2,7 @@
 
 ## 🚩 Challenge 1: Decentralized Staking App
 
-> 🏦 Build a `Staker.sol` contract that collects **ETH** from numerous addresses using a payable `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough ETH is collected, allow users to withdraw.
+> 🏦 Build a `Staker.sol` contract that collects **ETH** from numerous addresses using a payable `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allow users to `withdraw()`.
 
 > 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake(address,uint256)` event to <List/> all stakes.
 
@@ -13,9 +13,9 @@
 ### Checkpoint 0: 📦 install 📚
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git staking-app-challenge
-cd staking-app-challenge
-git checkout stake-app-early-fork
+git clone https://github.com/austintgriffith/scaffold-eth.git challenge-1-decentralized-staking
+cd challenge-1-decentralized-staking
+git checkout challenge-1-decentralized-staking
 yarn install
 ```
 
