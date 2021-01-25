@@ -18,10 +18,20 @@ const main = async () => {
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 
+
+
   /*
+  //If you want to send value to an address from the deployer
+  const deployerWallet = ethers.provider.getSigner()
+  await deployerWallet.sendTransaction({
+    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
+    value: ethers.utils.parseEther("0.001")
+  })
+  */
 
+
+  /*
   //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-
   const yourContract = await deploy("YourContract", [], {
   value: ethers.utils.parseEther("0.05")
   });
@@ -29,14 +39,11 @@ const main = async () => {
 
 
   /*
-
-  //If you want to send value to an address from the deployer
-
-  const deployerWallet = ethers.provider.getSigner()
-  await deployerWallet.sendTransaction({
-    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
+  //If you want to link a library into your contract:
+  // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
+  const yourContract = await deploy("YourContract", [], {}, {
+   LibraryName: **LibraryAddress**
+  });
   */
 
 
@@ -47,11 +54,11 @@ const main = async () => {
   );
 };
 
-const deploy = async (contractName, _args = [], overrides = {}) => {
+const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) => {
   console.log(` 🛰  Deploying: ${contractName}`);
 
   const contractArgs = _args || [];
-  const contractArtifacts = await ethers.getContractFactory(contractName);
+  const contractArtifacts = await ethers.getContractFactory(contractName,{libraries: libraries});
   const deployed = await contractArtifacts.deploy(...contractArgs, overrides);
   const encoded = abiEncodeArgs(deployed, contractArgs);
   fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
@@ -68,6 +75,7 @@ const deploy = async (contractName, _args = [], overrides = {}) => {
 
   return deployed;
 };
+
 
 // ------ utils -------
 
