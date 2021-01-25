@@ -3,16 +3,17 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Button, Menu, List, Card } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, EtherInput } from "./components";
 import { Transactor } from "./helpers";
-import { formatEther } from "@ethersproject/units";
+import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, StakingApp } from "./views";
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -97,10 +98,19 @@ function App(props) {
   const purpose = useContractReader(readContracts,"YourContract", "purpose")
   console.log("🤗 purpose:",purpose)
 
+  const isActive = useContractReader(readContracts,"YourContract", "isActive")
+  const threshold = useContractReader(readContracts,"YourContract", "threshold")
+  const timeLeft = useContractReader(readContracts,"YourContract", "timeLeft")
+
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   console.log("📟 SetPurpose events:",setPurposeEvents)
 
+  const depositEvents = useEventListener(readContracts, "YourContract", "Deposit", localProvider, 1);
+  console.log("Deposit events:",depositEvents)
+
+  const withdrawEvents = useEventListener(readContracts, "YourContract", "Withdraw", localProvider, 1);
+  console.log("Withdraw events:",withdrawEvents)
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -133,6 +143,9 @@ function App(props) {
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+          </Menu.Item>
+          <Menu.Item key="/stakingapp">
+            <Link onClick={()=>{setRoute("/stakingapp")}} to="/stakingapp">Staking App</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
@@ -170,6 +183,20 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
             */ }
+          </Route>
+          <Route path="/stakingapp">
+            <StakingApp
+              mainnetProvider={mainnetProvider}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              depositEvents={depositEvents}
+              withdrawEvents={withdrawEvents}
+              timeLeft={timeLeft}
+              isActive={isActive}
+              threshold={threshold}
+            />
           </Route>
           <Route path="/hints">
             <Hints
