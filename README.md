@@ -101,7 +101,7 @@ Hint: If the `address(this).balance` of the contract is over the `threshold` by 
 
 ### Checkpoint 4: 🚢 Ship it 🚁
 
-📡 Edit the `defaultNetwork` to `xdai` (or any another EVM chain) in `packages/hardhat/hardhat.config.js`
+📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
 
 👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**
 
