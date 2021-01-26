@@ -1,9 +1,9 @@
 pragma solidity 0.8.0;
-import './inherited/Storage.sol';
+import './DethLock.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
-contract Verb is Storage {
+contract Verb is DethLock {
 
     function getNumberOfDogs() public view returns(uint256) {
         return _uint["Dogs"];

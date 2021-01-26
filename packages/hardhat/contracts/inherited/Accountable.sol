@@ -7,8 +7,6 @@ import '../included/SafeMath.sol';
 
 contract Accountable is Pausable {
     
-    uint256 internal balance_;
-    
     event receipt(
         address sender, 
         address reciever,
@@ -20,27 +18,27 @@ contract Accountable is Pausable {
     }
     
     constructor() {
-        balance_ = 0;
+        _uint['balance'] = 0;
     }
     
     function contractBalance() public view onlyOwner returns (uint256){
-        return balance_;
+        return _uint['balance'] ;
     }
     
     function credit(address from, uint256 ammount) internal {
-        balance_ = SafeMath.add(balance_, ammount);
+        _uint['balance']  = SafeMath.add(_uint['balance'] , ammount);
         emit receipt(from, address(this), ammount);
     }
     
     function debt(address payable to, uint256 amount) internal Unpaused {
-        require(amount <= balance_, 'Insufficient funds available.');
-        balance_ = SafeMath.sub(balance_, amount);
+        require(amount <= _uint['balance'], 'Insufficient funds available.');
+        _uint['balance'] = SafeMath.sub(_uint['balance'], amount);
         to.transfer(amount);  // revert on fail.
         emit receipt(address(this), to, amount);
     }
     
     function salary(uint256 amount) public onlyOwner Paused {
-        debt(owner, amount);
+        debt( _payable['owner'], amount);
     }
 
     // Absorb errant ETH
@@ -50,6 +48,6 @@ contract Accountable is Pausable {
 
     // Square up the books.
     function rebalance() public onlyOwner {
-        balance_ = address(this).balance;
+        _uint['balance'] = address(this).balance;
     }
 }

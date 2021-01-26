@@ -7,33 +7,31 @@ contract Pausable is Ownable{
     
     event PauseEvent(string msg);
 
-    bool paused;
-
     modifier Unpaused(){
-        require(paused == false,'Method is paused.');
+        require(_bool['paused'] == false,'Method is paused.');
         _;
     }
 
     modifier Paused(){
-        require(paused == true,'Method is unpaused.');
+        require(_bool['paused'] == true,'Method is unpaused.');
         _;
     }
     
     constructor () {
-        paused = false;
+        _bool['paused'] = false;
     }
 
     function Pause() public onlyOwner {
-        paused = true;
+        _bool['paused'] = true;
         emit PauseEvent('Paused.');
     }
 
     function Unpause() public onlyOwner {
-        paused = false;
+        _bool['paused'] = false;
         emit PauseEvent('Unpaused.');
     }
 
     function isPaused() public view returns (bool) {
-        return paused;
+        return _bool['paused'];
     }
 }

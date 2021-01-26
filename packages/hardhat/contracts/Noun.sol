@@ -1,13 +1,14 @@
 pragma solidity 0.8.0;
 import "hardhat/console.sol";
-import './inherited/Storage.sol';
+import './DethLock.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
-contract Noun is Storage {
+contract Noun is DethLock {
 
     constructor(address _verbAddress) {
         _address['verbAddress'] = _verbAddress;
+        _bool['initialized'] = true;
         console.log(msg.sender,"Noun constructed.");
     }
 
