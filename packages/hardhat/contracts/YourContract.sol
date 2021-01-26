@@ -1,15 +1,17 @@
-pragma solidity >=0.6.0 <0.7.0;
+//SPDX-License-Identifier: <SPDX-License>
+pragma solidity ^0.8.0;
 
 import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+
 
 contract YourContract {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "🛠 Programming Unstoppable Money";
+  string public purpose = "Programming Unstoppable Money";
 
-  constructor() public {
+  constructor() {
     // what should we do on deploy?
   }
 
