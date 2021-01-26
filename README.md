@@ -27,7 +27,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-
+cd your-next-dapp
 yarn chain
 
 ```
@@ -35,7 +35,7 @@ yarn chain
 > in a third terminal window:
 
 ```bash
-
+cd your-next-dapp
 yarn deploy
 
 ```
