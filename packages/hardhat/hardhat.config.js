@@ -17,7 +17,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "hardhat"
+const defaultNetwork = "rinkeby"
 
 function mnemonic() {
   try {
@@ -63,18 +63,18 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    ropsten: {
-      url: ROPSTEN_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    goerli: {
-      url: GOERLI_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
+    // ropsten: {
+    //   url: process.env.ROPSTEN_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
+    //   accounts: {
+    //     mnemonic: mnemonic(),
+    //   },
+    // },
+    // goerli: {
+    //   url: process.env.GOERLI_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
+    //   accounts: {
+    //     mnemonic: mnemonic(),
+    //   },
+    // },
     xdai: {
       url: 'https://rpc.xdaichain.com/',
       gasPrice: 1000000000,

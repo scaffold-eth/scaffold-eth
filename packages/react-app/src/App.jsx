@@ -45,7 +45,7 @@ if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 
 
 // Can't connect to mainnet sorry :)
-// const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
+const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 console.log("window.location.hostname",window.location.hostname)
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -60,7 +60,7 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  // const price = useExchangePrice(mainnetProvider); //1 for xdai
+  const price = useExchangePrice(mainnetProvider); //1 for xdai
 
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice("fast"); //1000000000 for xdai
@@ -82,7 +82,7 @@ function App(props) {
   if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // just plug in different 🛰 providers to get your balance on different chains:
-  // const yourMainnetBalance = useBalance(mainnetProvider, address);
+  const yourMainnetBalance = useBalance(mainnetProvider, address);
   // if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
@@ -102,14 +102,6 @@ function App(props) {
   // Then read your DAI balance like:
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
   //
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
-
-  //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -159,9 +151,6 @@ function App(props) {
       <BrowserRouter>
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
-          </Menu.Item>
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
@@ -172,24 +161,6 @@ function App(props) {
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
         </Menu>
-
-        <Switch>
-          <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-            <Contract
-              name="YourContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
-          </Switch>
           </BrowserRouter>
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -197,7 +168,7 @@ function App(props) {
            address={address}
            localProvider={localProvider}
            userProvider={userProvider}
-            // mainnetProvider={mainnetProvider}
+           mainnetProvider={mainnetProvider}
            price={price}
            web3Modal={web3Modal}
            loadWeb3Modal={loadWeb3Modal}
@@ -213,7 +184,7 @@ function App(props) {
         address={address}
         yourLocalBalance={yourLocalBalance}
         price={price}
-        // mainnetProvider={mainnetProvider}
+        mainnetProvider={mainnetProvider}
       />
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
@@ -241,7 +212,7 @@ function App(props) {
            </Col>
          </Row>
 
-         {/* <Row align="middle" gutter={[4, 4]}>
+         <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {
 
@@ -253,7 +224,7 @@ function App(props) {
                )
              }
            </Col>
-         </Row> */}
+         </Row>
        </div>
     </div>
   );
