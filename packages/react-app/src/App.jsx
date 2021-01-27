@@ -178,6 +178,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+
             <Contract
               name="YourContract"
               signer={userProvider.getSigner()}
@@ -185,6 +186,17 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+
+
+            { /* uncomment for a second contract:
+            <Contract
+              name="SecondContract"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            */ }
 
             { /* Uncomment to display and interact with an external contract (DAI on mainnet):
             <Contract

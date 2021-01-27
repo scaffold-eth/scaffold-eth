@@ -12,7 +12,7 @@ const main = async () => {
 
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
 
-
+  //const secondContract = await deploy("SecondContract") 
 
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
