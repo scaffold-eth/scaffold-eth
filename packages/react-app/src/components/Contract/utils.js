@@ -15,7 +15,7 @@ const tryToDisplay = thing => {
     return (
       <Address
         value={thing}
-        fontSize={16}
+        fontSize={22}
       />
     )
   }
