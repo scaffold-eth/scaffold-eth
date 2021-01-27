@@ -8,6 +8,7 @@ contract Noun is DethLock {
 
     constructor(address _verbAddress) {
         _address['verbAddress'] = _verbAddress;
+        _uint['willsCreated'] = 0;
         _bool['initialized'] = true;
         console.log(msg.sender,"Noun constructed.");
     }

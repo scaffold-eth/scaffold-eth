@@ -5,7 +5,6 @@ import "hardhat/console.sol";
 
 contract Storage {
 
-    // For upgradeability: -------------------------------
     mapping (string => bool) _bool;
 
     mapping (string =>  int256) _int;  // All int types store as 256.

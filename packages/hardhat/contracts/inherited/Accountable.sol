@@ -4,7 +4,7 @@ import '../included/SafeMath.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
-
+// Handles raw ETH balance of a contract.
 contract Accountable is Pausable {
     
     event receipt(
@@ -33,7 +33,7 @@ contract Accountable is Pausable {
     function debt(address payable to, uint256 amount) internal Unpaused {
         require(amount <= _uint['balance'], 'Insufficient funds available.');
         _uint['balance'] = SafeMath.sub(_uint['balance'], amount);
-        to.transfer(amount);  // revert on fail.
+        to.transfer(amount);  // reverts on fail.
         emit receipt(address(this), to, amount);
     }
     
@@ -43,11 +43,12 @@ contract Accountable is Pausable {
 
     // Absorb errant ETH
     receive() external payable {
+        _uint['balance'] = SafeMath.add(_uint['balance'], msg.value);
         emit receipt(msg.sender, address(this), msg.value);
     }
 
     // Square up the books.
-    function rebalance() public onlyOwner {
+    function rebalance() public onlyOwner Paused {
         _uint['balance'] = address(this).balance;
     }
 }
