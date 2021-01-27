@@ -1,6 +1,5 @@
 pragma solidity >=0.6.0 <0.7.0;
 
-import "@nomiclabs/buidler/console.sol";
 import "@chainlink/contracts/src/v0.6/ChainlinkClient.sol";
 
 contract APICall is ChainlinkClient {

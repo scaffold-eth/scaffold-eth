@@ -177,8 +177,9 @@ function App(props) {
          />
          {faucetHint}
       </div>
+    <Contract name="PriceFeed" signer={userProvider.getSigner()} provider={localProvider} address={address} />
+      <Contract name="VRF" signer={userProvider.getSigner()} provider={localProvider} address={address} />
       <Contract name="APICall" signer={userProvider.getSigner()} provider={localProvider} address={address} />
-      <Contract name="PriceFeed" signer={userProvider.getSigner()} provider={localProvider} address={address} />
 
       <ChainlinkHints
         address={address}

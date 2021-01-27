@@ -1,1 +1,1 @@
-module.exports = ["APICall","PriceFeed"];
+module.exports = ["APICall","PriceFeed","VRF"];
