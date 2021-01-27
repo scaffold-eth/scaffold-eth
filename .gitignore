@@ -1,11 +1,17 @@
-packages/buidler/*.txt
+packages/subgraph/subgraph.yaml
+packages/subgraph/generated
+packages/hardhat/*.txt
 **/aws.json
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 **/node_modules
-packages/buidler/artifacts
+packages/hardhat/artifacts
 packages/react-app/src/contracts
-packages/buidler/cache
+packages/hardhat/cache
+
+docker/**/data
+
+packages/subgraph/config/config.json
 
 # dependencies
 /node_modules

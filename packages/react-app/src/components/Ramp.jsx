@@ -49,6 +49,10 @@ export default function Ramp(props) {
               🟨
             </span>{" "}
             Rinkeby-ETH
+            <span style={{ paddingRight: 15 }} role="img">
+              <span role="img" aria-label="flag-us">🇺🇸</span>
+            </span>
+            Wyre
           </Button>
           <Button
             type={type}
@@ -62,6 +66,10 @@ export default function Ramp(props) {
               🟨
             </span>{" "}
             Rinkeby-LINK
+            <span style={{ paddingRight: 15 }} role="img">
+            <span role="img" aria-label="flag-gb">🇬🇧</span>
+            </span>
+            Ramp
           </Button>
         </p>
 
@@ -78,6 +86,10 @@ export default function Ramp(props) {
               🟠
             </span>{" "}
             Ropsten-ETH
+            <span style={{ paddingRight: 15 }} role="img" aria-label="bank">
+              🏦
+            </span>
+            Coinbase
           </Button>
           <Button
             type={type}

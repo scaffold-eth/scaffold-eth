@@ -2,6 +2,17 @@ import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
 
+/*
+
+  <Balance
+    address={selectedAddress}
+    provider={props.provider}
+    dollarMultiplier={props.price}
+  />
+
+*/
+
+
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
   const [balance, setBalance] = useState();

@@ -7,8 +7,18 @@
 ## quickstart
 
 ```bash
+git clone https://github.com/austintgriffith/scaffold-eth.git
+
+cd scaffold-eth
+```
+
+```bash
 
 yarn install
+
+```
+
+```bash
 
 yarn start
 
@@ -17,40 +27,96 @@ yarn start
 > in a second terminal window:
 
 ```bash
-
-yarn run chain
+cd scaffold-eth
+yarn chain
 
 ```
 
 > in a third terminal window:
 
 ```bash
-
-yarn run deploy
+cd scaffold-eth
+yarn deploy
 
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/buidler/contracts`
+🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
+💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
+
 📱 Open http://localhost:3000 to see the app
+
+📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
 > With everything up your dev environment starts looking something like this:
 
 ![image](https://user-images.githubusercontent.com/2653167/91858466-768bb080-ec26-11ea-9e9b-81519f7f1c90.png)
 
-> React dev server, Buidler blockchain, deploy terminal, code IDE, and frontend browser. 
+> React dev server, HardHat blockchain, deploy terminal, code IDE, and frontend browser.
 
-📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.4.24/units-and-global-variables.html)
+---
+
+
+🔁    You can `yarn run deploy` any time and get a fresh new contract in the frontend:
+
+
+![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
+
+
+---
+
+
+💵.   Each browser has an account in the top right and you can use the faucet (bottom left) to get ⛽️  testnet eth for gas:
+
+
+![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
+
+
+---
+
+
+🔨   Once you have funds, you can call `setPurpose` on your contract and "write" to the `purpose` storage:
+
+
+![setp](https://user-images.githubusercontent.com/2653167/93229761-2d625300-f734-11ea-9036-44a75429ef0c.gif)
+
+
+
+---
+
+
+Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn run chain` terminal:
+
+![image](https://user-images.githubusercontent.com/2653167/93687934-2f534b80-fa7f-11ea-84b2-c0ba99533dc2.png)
+
+
+---
 
 👨‍🏫 Maybe start super simple and add a counter `uint8 public count = 1;`
 
 ⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
 
-🔬 What happens with you subtract 1 from 0? Try it out in the app to see what happens!
+![image](https://user-images.githubusercontent.com/2653167/93150263-dae25180-f6b5-11ea-94e1-b24ab2a63fa5.png)
 
-🧫 You can iterate and learn as you go.
+---
+
+🔬  What happens when you subtract 1 from 0? Try it out in the app to see what happens!
+
+![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
+
+🚽 UNDERFLOW!
+
+🧫 You can iterate and learn as you go. Test your assumptions!
+
+---
+
+💵 Send testnet ETH between browsers or even on an [instantwallet.io](https://instantwallet.io) selecting `localhost`:
+
+![sendingaroundinstantwallet](https://user-images.githubusercontent.com/2653167/93688154-05028d80-fa81-11ea-8643-2c447af59b5c.gif)
+
+---
 
 🔐 Global variables like `msg.sender` and `msg.value` are cryptographically backed and can be used to make rules
 
@@ -64,21 +130,45 @@ yarn run deploy
 
 🏦 It could be like a decentralized bank that you `function deposit() public payable {}` and `withdraw()`
 
-🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/)
+📟 Events are really handy for signaling to the frontend. [Read more about events here.](https://solidity-by-example.org/0.6/events/)
 
-🗳 Maybe an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
+📲 Spend some time in `App.jsx` in `packages/react-app/src` and learn about the 🛰 [Providers](https://github.com/austintgriffith/scaffold-eth#-web3-providers)
 
-📝 Then learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
+⚠️ Big numbers are stored as objects: `formatEther` and `parseEther` (ethers.js) will help with WEI->ETH and ETH->WEI.
+
+🧳 The single page (searchable) [ethers.js docs](https://docs.ethers.io/v5/single-page/) are pretty great too.
+
+🐜 The UI framework `Ant Design` has a [bunch of great components](https://ant.design/components/overview/).
+
+📃 Check the console log for your app to see some extra output from hooks like `useContractReader` and `useEventListener`.
+
+🏗 You'll notice the `<Contract />` component that displays the dynamic form as scaffolding for interacting with your contract.
+
+🔲 Try making a `<Button/>` that calls `writeContracts.YourContract.setPurpose("👋 Hello World")` to explore how your UI might work...
+
+💬 Wrap the call to `writeContracts` with a `tx()` helper that uses BlockNative's [Notify.js](https://www.blocknative.com/notify).
+
+🧬 Next learn about [structs](https://solidity-by-example.org/0.6/structs/) in Solidity.
+
+🗳 Maybe an make an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
+
+🔭 Your dev environment is perfect for *testing assumptions* and learning by prototyping.
+
+📝 Next learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
 
 💸 Maybe add a `receive() external payable {}` so your contract will accept ETH?
 
 🚁 OH! Programming decentralized money! 😎 So rad!
 
-🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/buidler/buidler.config.js`
+🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
-🔐 Generate a deploy account with `yarn run generate` and view it with `yarn run account`
+🔐 Generate a deploy account with `yarn generate` and view it with `yarn account`
 
-👩‍🎓 You can "gradute" from 🏗 scaffold-eth and start using 👷 [Buidler](https://buidler.dev/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
+
+⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
+
+⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
 
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
@@ -99,9 +189,23 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 [![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://www.youtube.com/watch?v=ShJZf5lsXiM&feature=youtu.be&t=19)
 
 ---
+
+
+
+🎥.  [Watch the long form 🏗 scaffold-eth introduction on youtube for the EEA](https://youtu.be/_yRX8Qi75OE?t=289).
+
+
+[![image](https://user-images.githubusercontent.com/2653167/93264124-e9874200-f763-11ea-9519-94736b95b2d1.png)](https://youtu.be/_yRX8Qi75OE?t=289)
+
+
+
+
+---
+
+
 [<H3>Tutorial 1: 🛠 Programming Decentralized Money</H3>](https://medium.com/@austin_48503/programming-decentralized-money-300bacec3a4f)
 
-Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ Buidler, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
+Learn the basics of 🏗 <b>scaffold-eth</b> and building on <b>Ethereum</b>. 👷‍♂️ HardHat, 📦 create-eth-app, 🔥 hot reloading smart contracts, 🛰 providers, 🔗 hooks, 🎛 components, and building a decentralized application.
 [🎥 Guided Tutorial](https://youtu.be/7rq3TPL-tgI)
 
 ---
@@ -141,6 +245,14 @@ Learn how to deploy your smart contract to a production blockchain. Then deploy 
 
 ---
 
+  📡 Using The Graph with 🏗 scaffold-eth
+
+
+[![thegraphplayvideo](https://user-images.githubusercontent.com/2653167/101052782-4664ee00-3544-11eb-8805-887ad4d1406e.png)
+](https://youtu.be/T5ylzOTkn-Q)
+
+---
+
 <h1>built with 🏗 scaffold-eth:</h1>
 
 
@@ -151,6 +263,15 @@ Paintings come to life as you "ink" new creations and trade them on Ethereum. A 
 🏃‍♂️ SpeedRun 📹 (TODO)
 
 [💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
+
+---
+
+[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
+
+An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
+
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
 
 ---
 
@@ -259,15 +380,15 @@ yarn run watch
 
 ---
 
-📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/hardhat/contracts`
 
-> 🤡 There is a spelling error in `packages/buidler/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
+> 🤡 There is a spelling error in `packages/hardhat/contracts/SmartContractWallet.sol`! <br/><br/>🤔 Can you fix it and deploy the contract locally?
 
 ![Deployed Contract](https://user-images.githubusercontent.com/2653167/81483187-8146b380-91f9-11ea-80f0-3a8e1e3225dd.png)
 
-> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/buidler/contracts` because there are other contract folders and it can get confusing.
+> ☢️ **Warning**: It is very important that you find `SmartContractWallet.sol` in `packages/hardhat/contracts` because there are other contract folders and it can get confusing.
 
-🔬Test your contracts by editing `myTest.js` in `packages/buidler/contracts`:
+🔬Test your contracts by editing `myTest.js` in `packages/hardhat/contracts`:
 
 ```bash
 yarn run test
@@ -291,11 +412,11 @@ yarn run balance **YOUR-ADDRESS**
 yarn run send --from 0 --amount 0.5 --to **YOUR-ADDRESS**
 ```
 
-> 🔧 Configure 👷[Buidler](https://buidler.dev/config/) by editing `buidler.config.js` in `packages/buidler`
+> 🔧 Configure 👷[HardHat](https://hardhat.org/config/) by editing `hardhat.config.js` in `packages/hardhat`
 
 ---
 
-✨ The [BuidlerEVM](https://buidler.dev/buidler-evm/) provides _stack traces_ and _console.log_ debugging for our contracts ✨
+✨ The [HardHat network](https://hardhat.org/hardhat-network/) provides _stack traces_ and _console.log_ debugging for our contracts ✨
 
 ---
 
@@ -329,7 +450,7 @@ yarn run deploy
 ```
 
 
-🔏 Edit or rename your smart contract `YourContract.sol` in `packages/buidler/contracts`
+🔏 Edit or rename your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -354,7 +475,7 @@ The frontend has three different providers that provide different levels of acce
 
 `mainnetProvider`: (read only) [Infura](https://infura.io/) connection to main [Ethereum](https://ethereum.org/developers/) network (and contracts already deployed like [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code) or [Uniswap](https://etherscan.io/address/0x2a1530c4c41db0b0b2bb646cb5eb1a67b7158667)).
 
-`localProvider`: local [Buidler](https://buidler.dev/) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
+`localProvider`: local [HardHat](https://hardhat.org) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
 
 `injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), or other injected wallet (generates [burner-provider](https://www.npmjs.com/package/burner-provider) on page load)
 
@@ -564,7 +685,7 @@ const price = useExchangePrice(mainnetProvider);
 
 ## 📄 Smart Contract Wallet:
 
-📝 Edit your smart contract `SmartContractWallet.sol` in `packages/buidler/contracts`
+📝 Edit your smart contract `SmartContractWallet.sol` in `packages/hardhat/contracts`
 
 📝 Then edit the `SmartContractWallet.js` React component in `packages/react-app/src`
 
@@ -586,9 +707,9 @@ import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 
 ---
 
-🛰 The Graph -- TODO
+🛰 The Graph -- [ 🎥 speed run tutorial video ](https://youtu.be/T5ylzOTkn-Q)
 
-⛽️ GSN -- TODO
+⛽️ GSN -- See Nifty.ink!
 
 ---
 
