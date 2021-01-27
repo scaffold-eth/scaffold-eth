@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Button, Menu, Alert } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -31,23 +31,26 @@ import { Hints, ExampleUI, Subgraph } from "./views"
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
-// 😬 Sorry for all the console logging 🤡
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORKS } from "./constants";
 const DEBUG = true
+const targetNetwork = NETWORKS['localhost'];
+if(DEBUG) console.log("target network:", targetNetwork);
+// 😬 Sorry for all the console logging 🤡
+
 
 // 🔭 block explorer URL
-const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
+const blockExplorer = targetNetwork.blockExplorer;//"https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
+const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
-console.log("window.location.hostname",window.location.hostname)
+
 // 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = "http://"+window.location.hostname+":8545"; // for xdai: https://dai.poa.network
+const localProviderUrl = targetNetwork.url; // for xdai: https://dai.poa.network
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
@@ -62,12 +65,23 @@ function App(props) {
 
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice("fast"); //1000000000 for xdai
-
-  // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
-
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
+  if(DEBUG) console.log("👩‍💼 selected address:",address)
+
+  // You can warn the user if you would like them to be on a specific network
+  let localNetwork = localProvider && localProvider._network && localProvider._network.name// && localProvider._network.name == 'unknown' && 'localhost'
+  if(localNetwork == 'unknown'){
+    localNetwork = 'localhost'
+  }
+  let network = userProvider && userProvider._network && userProvider._network.name// && userProvider._network.name == 'unknown' && 'localhost'
+  if(network == 'unknown'){
+    network = 'localhost'
+  }
+  if(DEBUG) console.log("🏠 localNetwork",localNetwork)
+  if(DEBUG) console.log("🕵🏻‍♂️ selected user network:",network)
+  // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userProvider, gasPrice)
@@ -113,6 +127,25 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+  let networkDisplay = ""
+  if(network && localNetwork && network != targetNetwork.id ){
+    networkDisplay = (
+      <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
+        <Alert
+          message={"Wrong Network!"}
+          description={`You have the ${network} network selected and you need to be on ${targetNetwork.id}!`}
+          type="error"
+          closable={false}
+        />
+      </div>
+    )
+  }else{
+    networkDisplay = (
+      <div style={{zIndex:2, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+        {targetNetwork.name}
+      </div>
+    )
+  }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -153,7 +186,7 @@ function App(props) {
 
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
-
+      {networkDisplay}
       <BrowserRouter>
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
