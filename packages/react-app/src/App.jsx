@@ -42,10 +42,7 @@ const blockExplorer = "https://etherscan.io/" // for xdai: "https://blockscout.c
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-//const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
-// const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-// const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/5ce0898319eb4f5c9d4c982c8f78392a")
-// ( ⚠️ Getting "failed to maeet quorum" errors? Check your INFURA_ID)
+
 
 // Can't connect to mainnet sorry :)
 // const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/"+INFURA_ID)
@@ -63,7 +60,7 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(mainnetProvider); //1 for xdai
+  // const price = useExchangePrice(mainnetProvider); //1 for xdai
 
   /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice("fast"); //1000000000 for xdai
@@ -85,8 +82,8 @@ function App(props) {
   if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
+  // const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
@@ -191,15 +188,16 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
-
+          </Route>
+          </Switch>
+          </BrowserRouter>
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
          <Account
            address={address}
            localProvider={localProvider}
            userProvider={userProvider}
-           mainnetProvider={mainnetProvider}
+            // mainnetProvider={mainnetProvider}
            price={price}
            web3Modal={web3Modal}
            loadWeb3Modal={loadWeb3Modal}
@@ -215,7 +213,7 @@ function App(props) {
         address={address}
         yourLocalBalance={yourLocalBalance}
         price={price}
-        mainnetProvider={mainnetProvider}
+        // mainnetProvider={mainnetProvider}
       />
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
@@ -243,11 +241,11 @@ function App(props) {
            </Col>
          </Row>
 
-         <Row align="middle" gutter={[4, 4]}>
+         {/* <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {
 
-               /*  if the local provider has a signer, let's show the faucet:  */
+               
                localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf(window.location.hostname)>=0 && !process.env.REACT_APP_PROVIDER && price > 1 ? (
                  <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
                ) : (
@@ -255,9 +253,8 @@ function App(props) {
                )
              }
            </Col>
-         </Row>
+         </Row> */}
        </div>
-
     </div>
   );
 }
