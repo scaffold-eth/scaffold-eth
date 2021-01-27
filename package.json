@@ -36,5 +36,8 @@
     "packages": [
       "packages/*"
     ]
+  },
+  "dependencies": {
+    "@babel/helper-skip-transparent-expression-wrappers": "^7.12.1"
   }
 }
