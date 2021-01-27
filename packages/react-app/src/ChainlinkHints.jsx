@@ -17,14 +17,15 @@ export default function ChainlinkHints(props) {
           <a href="https://docs.chain.link/docs/using-chainlink-reference-contracts">PriceFeeds documentation</a>
         </span>
         <br />
-        <span style={{ marginRight: 8 }}>Step 1: </span> Make sure you set your `REACT_APP_PROVIDER` to a rinkeby URL.
-        You can get one from https://infura.io/. If you want to use a different testnet, be sure to also change the
-        `defaultNetwork` in `buidler.config.js`. <br />
-        You don't need to run a local chain for this tutorial as we are going to interact with real testnet{" "}
-        <a href="https://chain.link">Chainlink</a> nodes!
+        <p>
+          Right now this tutorial is hard-coded to rinkeby. Please swap to rinkeby. We will be testing working directly with <a href="https://chain.link">Chainlink</a> nodes! 
+        </p>
+        <span style={{ marginRight: 8 }}>Step 1: </span> 
+        <br />
+        You don't need to run a local chain for this tutorial as we are going to interact with real testnet - rinkeby! First, be sure to set your environment variables. You'll need a `MNEMONIC` and `RINKEBY_RPC_URL`. You can set them with `export MNEMONIC="cat dog car...". This comes from your metamask or other eth wallet's mnemonic. Your `RINKEBY_RPC_URL` comes from your Infura or Alchemy or other URL. You can <a href="https://www.twilio.com/blog/2017/01/how-to-set-environment-variables.html">learn more about setting environment variables here. </a>
       </div>
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>Step 2: </span> Get some testnet LINK. You can get some by hitting the icon at
+        <span style={{ marginRight: 8 }}>Step 2: </span> Get some rinkeby LINK and rinkeby ETH. You can get both by hitting the icon at
         the bottom, and proceeding to follow the instructions on the appropriate button. If they don't show up in your
         wallet, you can follow <a href="https://docs.chain.link/docs/acquire-link"> this tutorial </a>on how to add it
         to your wallet.
@@ -33,10 +34,14 @@ export default function ChainlinkHints(props) {
         <span style={{ marginRight: 8 }}>Step 3: </span> Deploy your contracts with `yarn deploy`
       </div>
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>Step 4: </span> Copy your contract address and send it a few LINK tokens!
+        <span style={{ marginRight: 8 }}>Step 4: </span> Copy your contract address and send them a few LINK tokens! You don't have to send the price feeds address any tokens. You'll need to do this to pay for the oracle gas. 
       </div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>Step 5:</span>
+        Enter a number for your "seed" to generate a random number. Hit `send` on your wallet, and a Chainlink VRF node will return a provably random number. Hit the refresh button on result (may take a few seconds).
+      </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>Step 6:</span>
         After it's confirmed, using <b>"https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD"</b> for your
         API, and
         <b>"USD"</b> for your path! At the moment, this contract will only work with APIs that return numbers,{" "}
@@ -44,6 +49,8 @@ export default function ChainlinkHints(props) {
         <br />
         Then, hit the little money button at the bottom of `makeAPICall` and once the transaction completes hit the
         refresh!
+
+        You can use any API and path. Try it out!
       </div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>PriceFeeds</span>

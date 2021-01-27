@@ -19,16 +19,16 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils
 //
 const defaultNetwork = "rinkeby"
 
-function mnemonic() {
-  try {
-    return fs.readFileSync("./mnemonic.txt").toString().trim()
-  } catch (e) {
-    if (defaultNetwork !== "localhost") {
-      console.log("☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`.")
-    }
-  }
-  return ""
-}
+// function mnemonic() {
+//   try {
+//     return fs.readFileSync("./mnemonic.txt").toString().trim()
+//   } catch (e) {
+//     if (defaultNetwork !== "localhost") {
+//       console.log("☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`.")
+//     }
+//   }
+//   return ""
+// }
 
 module.exports = {
   defaultNetwork,
@@ -48,45 +48,45 @@ module.exports = {
     rinkeby: {
       url: process.env.RINKEBY_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
       accounts: {
-        mnemonic: mnemonic(),
+        mnemonic: process.env.MNEMONIC,
       },
     },
     kovan: {
       url: process.env.KOVAN_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
       accounts: {
-        mnemonic: mnemonic(),
+        mnemonic: process.env.MNEMONIC,
       },
     },
     mainnet: {
       url: process.env.MAINNET_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
       accounts: {
-        mnemonic: mnemonic(),
+        mnemonic: process.env.MNEMONIC,
       },
     },
     // ropsten: {
     //   url: process.env.ROPSTEN_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
     //   accounts: {
-    //     mnemonic: mnemonic(),
+    //     mnemonic: process.env.MNEMONIC,
     //   },
     // },
     // goerli: {
     //   url: process.env.GOERLI_RPC_URL, //<---- YOUR INFURA ID! (or it won't work)
     //   accounts: {
-    //     mnemonic: mnemonic(),
+    //     mnemonic: process.env.MNEMONIC,
     //   },
     // },
     xdai: {
       url: 'https://rpc.xdaichain.com/',
       gasPrice: 1000000000,
       accounts: {
-        mnemonic: mnemonic(),
+        mnemonic: process.env.MNEMONIC,
       },
     },
     matic: {
       url: 'https://rpc-mainnet.maticvigil.com/',
       gasPrice: 1000000000,
       accounts: {
-        mnemonic: mnemonic(),
+        mnemonic: process.env.MNEMONIC,
       },
     },
   },
