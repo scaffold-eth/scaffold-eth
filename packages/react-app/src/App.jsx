@@ -13,6 +13,7 @@ import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -32,55 +33,49 @@ import { Hints, ExampleUI, Subgraph } from "./views"
     (and then use the `useExternalContractLoader()` hook!)
 */
 
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORKS } from "./constants";
+/// 📡 What chain are your contracts deployed to?
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
+// 😬 Sorry for all the console logging
 const DEBUG = true
-const targetNetwork = NETWORKS['localhost'];
-if(DEBUG) console.log("target network:", targetNetwork);
-// 😬 Sorry for all the console logging 🤡
-
-
-// 🔭 block explorer URL
-const blockExplorer = targetNetwork.blockExplorer;//"https://etherscan.io/" // for xdai: "https://blockscout.com/poa/xdai/"
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-//const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
+// const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
 const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = targetNetwork.url; // for xdai: https://dai.poa.network
+const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
+// 🔭 block explorer URL
+const blockExplorer = targetNetwork.blockExplorer;
 
 
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
-  /* 💵 this hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(mainnetProvider); //1 for xdai
+  /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
+  const price = useExchangePrice(targetNetwork,mainnetProvider);
 
-  /* 🔥 this hook will get the price of Gas from ⛽️ EtherGasStation */
-  const gasPrice = useGasPrice("fast"); //1000000000 for xdai
+  /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
+  const gasPrice = useGasPrice(targetNetwork,"fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
-  let localNetwork = localProvider && localProvider._network && localProvider._network.name// && localProvider._network.name == 'unknown' && 'localhost'
-  if(localNetwork == 'unknown'){
-    localNetwork = 'localhost'
-  }
-  let network = userProvider && userProvider._network && userProvider._network.name// && userProvider._network.name == 'unknown' && 'localhost'
-  if(network == 'unknown'){
-    network = 'localhost'
-  }
-  if(DEBUG) console.log("🏠 localNetwork",localNetwork)
-  if(DEBUG) console.log("🕵🏻‍♂️ selected user network:",network)
+  let localChainId = localProvider && localProvider._network && localProvider._network.chainId
+  if(DEBUG) console.log("🏠 localChainId",localChainId)
+
+  let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
+  if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
+
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
@@ -93,7 +88,7 @@ function App(props) {
   const yourLocalBalance = useBalance(localProvider, address);
   if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
-  // just plug in different 🛰 providers to get your balance on different chains:
+  // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
   if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
@@ -128,12 +123,16 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
   let networkDisplay = ""
-  if(network && localNetwork && network != targetNetwork.id ){
+  if(localChainId && selectedChainId && localChainId != selectedChainId ){
     networkDisplay = (
       <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
         <Alert
-          message={"Wrong Network!"}
-          description={`You have the ${network} network selected and you need to be on ${targetNetwork.id}!`}
+          message={"⚠️ Wrong Network"}
+          description={(
+            <div>
+              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
+            </div>
+          )}
           type="error"
           closable={false}
         />
@@ -297,7 +296,7 @@ function App(props) {
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
          <Row align="middle" gutter={[4, 4]}>
            <Col span={8}>
-             <Ramp price={price} address={address} />
+             <Ramp price={price} address={address} networks={NETWORKS}/>
            </Col>
 
            <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
@@ -361,5 +360,11 @@ const logoutOfWeb3Modal = async () => {
     window.location.reload();
   }, 1);
 };
+
+ window.ethereum && window.ethereum.on('chainChanged', chainId => {
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+})
 
 export default App;
