@@ -79,7 +79,7 @@ contract Verb is DethLock {
 
     function createWill
         (address payable _beneficiary, uint256 _deadline)
-        public returns(uint256){
+        public payable returns(uint256){
         uint256 newWillIndex = initializeWill(payable(msg.sender), _beneficiary);
         setDeadline(newWillIndex, _deadline);
         setBeneficiary(newWillIndex, _beneficiary);
