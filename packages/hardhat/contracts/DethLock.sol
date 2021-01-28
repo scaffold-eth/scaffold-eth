@@ -15,7 +15,7 @@ contract DethLock is Accountable {
         uint deadline;
     }
 
-    mapping (uint => will) _masterWillList;
+    will[] _masterWillList;
     mapping (address => uint[]) _owners;
     mapping (address => uint[]) _beneficiaries; 
 
