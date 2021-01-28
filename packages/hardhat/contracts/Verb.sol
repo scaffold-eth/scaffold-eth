@@ -83,6 +83,9 @@ contract Verb is DethLock {
         uint256 newWillIndex = initializeWill(payable(msg.sender), _beneficiary);
         setDeadline(newWillIndex, _deadline);
         setBeneficiary(newWillIndex, _beneficiary);
+        if (msg.value > 0) {
+            fundWillETH(newWillIndex);
+        }
         return newWillIndex;
     }
 
