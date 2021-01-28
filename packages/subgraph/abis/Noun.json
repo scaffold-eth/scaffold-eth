@@ -15,9 +15,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "bool",
-        "name": "torchPassed",
-        "type": "bool"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",

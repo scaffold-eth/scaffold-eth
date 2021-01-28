@@ -6,7 +6,7 @@ import "./Storage.sol";
 
 contract Ownable is Storage{
     
-    event OwnershipTransferred (bool torchPassed);
+    event OwnershipTransferred (address newOwner);
     
     modifier onlyOwner(){
         require(msg.sender == _payable['owner'],
@@ -27,7 +27,7 @@ contract Ownable is Storage{
             'Cannot transfer ownership to yourself.');
         _payable['owner'] = newOwner;
         assert(_payable['owner'] == newOwner); 
-        emit OwnershipTransferred(true); 
+        emit OwnershipTransferred(newOwner); 
     }
     
 }
