@@ -86,6 +86,7 @@ contract Verb is DethLock {
         _owners[owner].push(_uint['willsCreated']);
         _beneficiaries[beneficiary].push(_uint['willsCreated']);
         emit WillCreated(owner, beneficiary, _uint['willsCreated']);
+        return _uint['willsCreated'];
     }
 
     function setBeneficiary
@@ -105,7 +106,7 @@ contract Verb is DethLock {
     }
 
     function fundWill
-        (uint256 index) public returns (bool){
+        (uint256 index) payable public returns (bool){
         _masterWillList[index].ethBalance = 
             SafeMath.add(_masterWillList[index].ethBalance,msg.value);
         credit(msg.sender, msg.value);
@@ -139,7 +140,7 @@ contract Verb is DethLock {
 
     function depositTokens2Will 
         (uint256 index, address payable tokenAddress, uint256 value) 
-        public returns (bool) {
+        public returns (bytes memory) {
         require(_masterWillList[index].tokenAddress == address(0) || 
                  _masterWillList[index].tokenAddress == tokenAddress, 
                  'Will contains a different token.');
@@ -152,12 +153,12 @@ contract Verb is DethLock {
         _masterWillList[index].tokenAddress = tokenAddress;
         _masterWillList[index].tokenBalance = SafeMath.add(_masterWillList[index].ethBalance, value);
         emit TokensDepositedToWill(msg.sender, tokenAddress, index, value);
-        return true;
+        return returnData;
     }
 
     function withdrawTokensFromWill
         (uint256 index, address payable benifitAddress, uint256 value)
-        public onlyWillOwner(index) beforeDeadline(index) returns (bool) {
+        public onlyWillOwner(index) beforeDeadline(index) returns (bytes memory) {
         require(_masterWillList[index].tokenBalance >= value,
             'Will does not contain that many tokens.');
         _masterWillList[index].tokenBalance = SafeMath.sub(_masterWillList[index].tokenBalance, value);
@@ -168,12 +169,12 @@ contract Verb is DethLock {
             _masterWillList[index].tokenAddress).call(payload);
         require(success, 'failed to transfer tokens.');
         emit TokensWithdrawnFromWill(benifitAddress,_masterWillList[index].tokenAddress,index,value);
-        return true;
+        return returnData;
     }
 
     function benefitTokensFromWill
         (uint256 index, address payable benifitAddress, uint256 value)
-        public onlyBeneficiary(index) afterDeadline(index) returns (bool) {
+        public onlyBeneficiary(index) afterDeadline(index) returns (bytes memory) {
         require(_masterWillList[index].tokenBalance >= value,
             'Will does not contain that many tokens.');
         _masterWillList[index].tokenBalance = SafeMath.sub(_masterWillList[index].tokenBalance, value);
@@ -184,7 +185,7 @@ contract Verb is DethLock {
             _masterWillList[index].tokenAddress).call(payload);
         require(success, 'failed to transfer tokens.');
         emit BenifitedTokens(benifitAddress,_masterWillList[index].tokenAddress,index,value);
-        return true;
+        return returnData;
     }
 
 }
