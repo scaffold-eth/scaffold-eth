@@ -1,0 +1,46 @@
+The stack looks like:
+Ownable: contract deployer address is owner.  Can check bool = amIOwner();.  Can also transferOwnership(address newOwner), which transmits the OwnershipTransferred event.
+Mortal (is Ownable): adds implode() onlyOwner that transmits the imploding event and fires selfdestruct(owner), erasing the contract from the EVM and dumping all balances to designated owner address.
+Pausable (is Mortal): adds Paused and Unpaused modifiers, Pause() and Unpause() functions, and isPaused() query.  Allows critical contract function execution to be halted in-place in case of bug discovery.
+Accountable (is Pausable): adds balance-tracking/reporting functions, receipt events, credit() for absorbing ETH, debt() for transmitting ETH, and salary() for transferring balance to the contract's owner.
+Storage (is Accountable): contains the prototypes/interface definitions of all the mapping variables.  Contains _initialized flag.
+Noun (is Storage): Contains the actual variable mappings, the Verb address, the upgrade() function for changing the Verb address, and forwards everything else to Verb via its fallback().
+Verb (is Storage): Contains all the member functions that do anything on the mapping data stored in Noun.
+
+Storage is really virtual.  Only its children (Noun and Verb) exist on-chain.  Noun assigns data in Storage mappings.  Verb just uses Storage as variable prototypes.
+Verb just has a few dumb sample functions to show syntax.
+Accountable can only debt() to other users when the contract is unpaused.  It can only 
+salary() to owner when the contract is paused.
+
+Storage needs to add a 'will' structure definition as a type.   That's NOT going to be upgradable, unfortunately, because I don't think you can mapping to a typedef .  And then explicit:
+mapping (uint256 => will) masterWillArray;
+And that contains the individual will data.
+Then for ownership:
+mapping (uint256 => uinit256[]) folios;
+Which will contain indexed sets of indexes owned by:
+mapping(address => uint256) willFolioOf;
+mapping(address => uint256) benificiaryFolioOf;
+So...any address can have nothing, or an index to a folio.   A folio is an array of related will indexes in the masterWillArray.
+A folio can contain none, one, or many indexes to wills.
+There is no redundant or overlapping storage of wills.
+Owners and benificiaries index into the same list of wills through different sets of indicies.
+---------------------------------------------------
+So what does a will contain?
+1.) Raw ETH balance.
+2.) A mapping of ERC20 contract addresses to balances.
+3.) A dynamic-length array of addresses in play.
+4.) A deadline date/time.
+And that's it.
+
+Ownership is derived from the index arrays and mappings.
+So a 'will' exists between one owner and one beneficiary.  The owner can always withdraw.  The beneficiary can withdraw after the deadline.
+A will can hold raw ETH, and any number of any balance of ERC20 tokens.
+___
+----------------------------------------------
+Of course the root Noun address owns all ETH and tokens.  The rest of all that is just custodial accounting.
+The rest of the logic is just record keeping of deposits and permission locking of withdraws.
+The withdraw function should ask the user/beneficiary for an address to transmit ETH/Tokens to (defaults to connected wallet's address), the withdraw amount, and gas fees (defaults to pre-calculated).
+The deposit function should have an entry for ETH and gas fees (defaults to calculated), and a section of available ERC20 tokens in the attached wallet with desired deposit amounts, a beneficiary address, and a deadline entry.
+The contact builds the owner and beneficiary indices on deposit.
+On withdraw the UI should aggregate all tokens and ETH available to the user from all wills on the same page and allow the user to select target address, gas fees, and ETH/token amounts for each withdraw.
+-------------------------------------------
