@@ -13,24 +13,7 @@ import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, Create, Manage } from "./views"
-/*
-    Welcome to 🏗 scaffold-eth !
 
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-
-
-    📡 EXTERNAL CONTRACTS:
-    You can also bring in contract artifacts in `constants.js`
-    (and then use the `useExternalContractLoader()` hook!)
-*/
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
@@ -77,47 +60,20 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
-  if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
-  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
-  if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
-  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
-
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
-  //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
-  //
-  // Then read your DAI balance like:
-  //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
-  //
-
-  // // keep track of a variable from the contract in the local React state:
-  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  // console.log("🤗 purpose:",purpose)
-  //
-  // //📟 Listen for broadcast events
-
-    // expected output: ReferenceError: nonExistentFunction is not defined
-    // Note - error messages will vary depending on browser
-  
 
 
+  const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
+  console.log("Eventos de creacion: ", setCreate);
 
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -134,25 +90,6 @@ function App(props) {
   useEffect(() => {
     setRoute(window.location.pathname)
   }, [setRoute]);
-
-  let faucetHint = ""
-  const [ faucetClicked, setFaucetClicked ] = useState( false );
-  if(!faucetClicked&&localProvider&&localProvider.getSigner()&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
-    faucetHint = (
-      <div style={{padding:16}}>
-        <Button type={"primary"} onClick={()=>{
-          faucetTx({
-            to: address,
-            value: parseEther("0.01"),
-          });
-          setFaucetClicked(true)
-        }}>
-          💰 Grab funds from the faucet ⛽️
-        </Button>
-      </div>
-    )
-  }
-
 
 
   return (
@@ -180,34 +117,30 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
+          You will interact with the Verb contract proxying with the Noun contract.
+          Remember to copy Verb functions in /react-app/src/contracts/Noun.abi.js to allow the tx's
             <Contract
-              name="YourContract"
+              name="Noun"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            Coins have a problem with pragma 8 compiler. Something about args requested in transfer/send functions.
+            <Contract
+              name="CurlyCoin"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
 
-            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */ }
+
           </Route>
           <Route path="/hints">
             <Hints
               address={address}
-              yourLocalBalance={yourLocalBalance}
+              localProvider={localProvider}
               mainnetProvider={mainnetProvider}
               price={price}
             />
@@ -223,6 +156,7 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
+              setCreate= {setCreate}
             />
           </Route>
           <Route path="/manage">
@@ -231,6 +165,8 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
+            setCreate={setCreate}
+            address={address}
             />
           </Route>
         </Switch>
@@ -250,7 +186,6 @@ function App(props) {
            logoutOfWeb3Modal={logoutOfWeb3Modal}
            blockExplorer={blockExplorer}
          />
-         {faucetHint}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}

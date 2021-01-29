@@ -62,7 +62,7 @@
         "type": "bool"
       },
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "_beneficiary",
         "type": "address"
       }
@@ -77,7 +77,7 @@
     "name": "beneficiary",
     "outputs": [
       {
-        "internalType": "address",
+        "internalType": "address payable",
         "name": "",
         "type": "address"
       }

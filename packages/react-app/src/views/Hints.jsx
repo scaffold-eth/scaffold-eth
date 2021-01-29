@@ -2,16 +2,19 @@
 
 import React from "react";
 import { formatEther } from "@ethersproject/units";
-import { Address, AddressInput } from "../components";
+import { Address, AddressInput, TokenList} from "../components";
+// import { fetchTokenList } from '../helpers/TokenList';
+
+export default function Hints({mainnetProvider, price, address, localProvider }) {
 
 
-export default function Hints({yourLocalBalance, mainnetProvider, price, address }) {
+
 
   return (
     <div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>👷</span>
-        What about a <b>TODO</b> list?
+        
       </div>
 
 

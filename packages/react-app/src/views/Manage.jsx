@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Button, Typography, Table, Input } from "antd";
+import { Button, Typography, Table, Input, List } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import { Address } from "../components";
 import GraphiQL from 'graphiql';
@@ -23,18 +23,12 @@ function Manage(props) {
 
   const EXAMPLE_GRAPHQL = `
   {
-    purposes(first: 25, orderBy: createdAt, orderDirection: desc) {
+    wills(first: 25, orderBy: createdAt, orderDirection: desc) {
       id
-      purpose
       createdAt
-      sender {
-        id
-      }
-    }
-    senders {
-      id
-      address
-      purposeCount
+      owner
+      asset
+      amount
     }
   }
   `
@@ -73,74 +67,61 @@ function Manage(props) {
 
   return (
       <>
-          <div style={{ margin: "auto", marginTop: 32 }}>
-            You will find that parsing/tracking events with the <span style={highlight}>useEventListener</span> hook becomes a chore for every new project.
-          </div>
-          <div style={{ margin: "auto", marginTop: 32 }}>
-            Instead, you can use <a href="https://thegraph.com/docs/introduction" target="_blank" rel="noopener noreferrer">The Graph</a> with 🏗 scaffold-eth (<a href="https://youtu.be/T5ylzOTkn-Q" target="_blank">learn more</a>):
-          </div>
+          <h2>Wills created:</h2>
+          <List
+            bordered
+            dataSource={props.setCreate}
+            renderItem={(item) => {
+              return (
+                <List.Item key={item.blockNumber+"_"+item.owner+"_"+item.beneficiary}>owner:
+                  <Address
+                      value={item.owner}
+                      ensProvider={props.mainnetProvider}
+                      fontSize={16}
+                    /> =>
+      {/*            timeLock:{item.deadline.toNumber()} =>
+                  amount:{tryToDisplay(item.amountEth)}=>
+      */}            beneficiary:
+                  <Address
+                      value={item.beneficiary}
+                      ensProvider={props.mainnetProvider}
+                      fontSize={16}
+                    /> =>
+                    {item.owner == props.address ?
+                    "You are the owner":null}
+                    {/*              <Button disabled={ contractBalance == 0. } onClick={async() =>{
+                                    await tx({
+                                        to: writeContracts.Noun.address,
+                                        data: writeContracts.Noun.interface.encodeFunctionData("defundWill(uint256, address payable , uint256)",[index,toAddress,value])
+                                      });
+                                  }
+                                  }>
 
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>🚮</span>
-            Clean up previous data:
-            <span style={highlight}>
-              rm -rf docker/graph-node/data/
-            </span>
-          </div>
+                                  withdraw</Button>
+                    */}
 
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>📡</span>
-            Spin up a local graph node by running
-            <span style={highlight}>
-              yarn graph-run-node
-            </span>
-            <span style={{ marginLeft: 4}}> (requires <a href="https://www.docker.com/products/docker-desktop" target="_blank" rel="noopener noreferrer"> Docker</a>) </span>
-          </div>
+                  =>
+                {item.beneficiary == props.address ?
+                  "You are the beneficiary!"
+                :null}
+                {/*
+                  <Button disabled={ts<item.deadline.toNumber() || 0 == contractBalance} onClick={async() =>{
+                    await tx({
+                        to: writeContracts.Noun.address,
+                        data: writeContracts.Noun.interface.encodeFunctionData("BenefitETH(uint256, address payable , uint256)",[index,toAddress,value])
+                      });
+                  }
+                  }>
 
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>📝</span>
-            Create your <b>local subgraph</b> by running
-            <span style={highlight}>
-              yarn graph-create-local
-            </span>
-            (only required once!)
-          </div>
+                  claim</Button>
+                  */ }
+                </List.Item>
+              )
+            }}
+          />
 
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>🚢</span>
-            Deploy your <b>local subgraph</b> by running
-            <span style={highlight}>
-              yarn graph-ship-local
-            </span>
-          </div>
-
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>🖍️</span>
-            Edit your <b>local subgraph</b> in
-            <span style={highlight}>
-              packages/subgraph/src
-            </span>
-             (learn more about subgraph definition <a href="https://thegraph.com/docs/define-a-subgraph" target="_blank" rel="noopener noreferrer">here</a>)
-          </div>
-
-          <div style={{ margin: 32 }}>
-            <span style={{ marginRight: 8 }}>🤩</span>
-            Deploy your <b>contracts and your subgraph</b> in one go by running
-            <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-              yarn deploy-and-graph
-            </span>
-          </div>
-
-          <div style={{width:780, margin: "auto", paddingBottom:64}}>
-
-            <div style={{margin:32, textAlign:'right'}}>
-              <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
-              <Button onClick={()=>{
-                console.log("newPurpose",newPurpose)
-                /* look how you call setPurpose on your contract: */
-                props.tx( props.writeContracts.YourContract.setPurpose(newPurpose) )
-              }}>Set Purpose</Button>
-            </div>
+          <div>
+            The Graph query
 
             {data?<Table dataSource={data.purposes} columns={purposeColumns} rowKey={"id"} />:<Typography>{(loading?"Loading...":deployWarning)}</Typography>}
 
