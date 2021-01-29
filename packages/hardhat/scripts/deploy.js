@@ -14,10 +14,9 @@ const main = async () => {
 
   const verb = await deploy('Verb'); // Verb deploys first for address
   const noun = await deploy('Noun',[verb.address]); // Proxy
-  // const curlyCoin = await deploy("CurlyCoin",['CURLY','CRL'])
-  // const larryCoin = await deploy("LarryCoin",['LARRY','LRY'])
-
-  // const moCoin = await deploy("included/MoCoin",['MO','MOC'])
+  const curlyCoin = await deploy("CurlyCoin",['CURLY','CRL'])
+  const larryCoin = await deploy("LarryCoin",['LARRY','LRY'])
+  const moCoin = await deploy("MoCoin",['MO','MOC'])
 
 
   // const exampleToken = await deploy("ExampleToken")

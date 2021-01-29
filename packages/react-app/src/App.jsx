@@ -128,13 +128,25 @@ function App(props) {
             />
             Coins have a problem with pragma 8 compiler. Something about args requested in transfer/send functions.
             <Contract
+              name="MoCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            <Contract
+              name="LarryCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            /><Contract
               name="CurlyCoin"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-
 
           </Route>
           <Route path="/hints">
@@ -167,6 +179,8 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             setCreate={setCreate}
             address={address}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
             />
           </Route>
         </Switch>

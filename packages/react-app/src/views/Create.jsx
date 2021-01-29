@@ -24,16 +24,7 @@ export default function Create({address, mainnetProvider, userProvider, localPro
 
 
 
-
-  let ourTokensList;
-{ /* try {
-    tokenList = [readContracts.MoCoin.address, readContracts.LarryCoin.address, readContracts.CurlyCoin.address];
-  }
-  catch(err) {
-    tokenList =null;
-    console.log(err);
-  }
-*/}
+  let ourTokensList = [readContracts.MoCoin.address, readContracts.LarryCoin.address, readContracts.CurlyCoin.address];
 
   return (
     <div>
@@ -53,6 +44,25 @@ export default function Create({address, mainnetProvider, userProvider, localPro
         <div style={{border:"1px solid #cccccc", padding:16, width:600, margin:"auto",marginTop:64}}>
 
           <Card style={{marginTop:32}}>
+
+          <div>
+          Stoodges Tokens
+          {ourTokensList ?
+            <Select
+              style={{ width: 200 }}
+              onChange={(value)=>{
+                setTokenAddress(value);
+                }}
+              >
+                <Option value={ourTokensList[0]}>MoCoin</Option>
+                <Option value={ourTokensList[1]}>LarryCoin</Option>
+                <Option value={ourTokensList[2]}>CurlyCoin</Option>
+
+            </Select>
+          : 'Loading..'}
+
+          </div>
+          <Divider />
           ERC20 Token <br />
             <TokenList
               token={tokenAddress}
