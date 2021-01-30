@@ -114,6 +114,10 @@ const readArgsFile = (contractName) => {
   return args;
 };
 
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 main()
   .then(() => process.exit(0))
   .catch((error) => {
