@@ -14,12 +14,12 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - TimeLock
-        - Owner
+        - Purpose
+        - Sender
       abis:
         - name: YourContract
           file: ./abis/YourContract.json
       eventHandlers:
-        - event: timelockCreated(address,uint256,uint256,address)
-          handler: handleLock
+        - event: SetPurpose(address,string)
+          handler: handleSetPurpose
       file: ./src/mapping.ts

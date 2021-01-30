@@ -5,15 +5,11 @@ import {
 } from "../generated/YourContract/YourContract"
 import { Purpose, Sender } from "../generated/schema"
 
-export function handleLock(event: timelockCreated): void {
+export function handleSetPurpose(event: SetPurpose): void {
 
-  // let senderString = event.params.sender.toHexString()
-  //
-  // let sender = Sender.load(senderString)
-  
-  let timeLock = TimeLock.load()//should be something pointing to user/asset
+  let senderString = event.params.sender.toHexString()
 
-
+  let sender = Sender.load(senderString)
 
   if (sender == null) {
     sender = new Sender(senderString)

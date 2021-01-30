@@ -1,8 +1,15 @@
-type TimeLock @entity {
+type Purpose @entity {
   id: ID!
-  owner: Bytes32!
-  beneficiaries: String!
-  amount: BigInt!
-  isEditable: Bool!
+  sender: Sender!
+  purpose: String!
+  createdAt: BigInt!
   transactionHash: String!
+}
+
+type Sender @entity {
+  id: ID!
+  address: Bytes!
+  purposes: [Purpose!] @derivedFrom(field: "sender")
+  createdAt: BigInt!
+  purposeCount: BigInt!
 }

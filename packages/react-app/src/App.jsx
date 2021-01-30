@@ -12,8 +12,25 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, Create, Manage } from "./views"
+import { Hints, ExampleUI, Subgraph } from "./views"
+/*
+    Welcome to 🏗 scaffold-eth !
 
+    Code:
+    https://github.com/austintgriffith/scaffold-eth
+
+    Support:
+    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
+    or DM @austingriffith on twitter or telegram
+
+    You should get your own Infura.io ID and put it in `constants.js`
+    (this is your connection to the main Ethereum network for ENS etc.)
+
+
+    📡 EXTERNAL CONTRACTS:
+    You can also bring in contract artifacts in `constants.js`
+    (and then use the `useExternalContractLoader()` hook!)
+*/
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
@@ -60,20 +77,42 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
+  if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
+  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
+  if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
+  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
+  // EXTERNAL CONTRACT EXAMPLE:
+  //
+  // If you want to bring in the mainnet DAI contract it would look like:
+  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  //console.log("🥇DAI contract on mainnet:",mainnetDAIContract)
+  //
+  // Then read your DAI balance like:
+  //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
+  //
 
-  const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
-  console.log("Eventos de creacion: ", setCreate);
+  // keep track of a variable from the contract in the local React state:
+  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  console.log("🤗 purpose:",purpose)
 
+  //📟 Listen for broadcast events
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  /*
+  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
+  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  */
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -91,6 +130,23 @@ function App(props) {
     setRoute(window.location.pathname)
   }, [setRoute]);
 
+  let faucetHint = ""
+  const [ faucetClicked, setFaucetClicked ] = useState( false );
+  if(!faucetClicked&&localProvider&&localProvider.getSigner()&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
+    faucetHint = (
+      <div style={{padding:16}}>
+        <Button type={"primary"} onClick={()=>{
+          faucetTx({
+            to: address,
+            value: parseEther("0.01"),
+          });
+          setFaucetClicked(true)
+        }}>
+          💰 Grab funds from the faucet ⛽️
+        </Button>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -105,42 +161,32 @@ function App(props) {
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">TODO?</Link>
+            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
-          <Menu.Item key="/create">
-            <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
+          <Menu.Item key="/exampleui">
+            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
           </Menu.Item>
-          <Menu.Item key="/manage">
-            <Link onClick={()=>{setRoute("/manage")}} to="/manage">Manage</Link>
+          <Menu.Item key="/subgraph">
+            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-          You will interact with the Verb contract proxying with the Noun contract.
-          Remember to copy Verb functions in /react-app/src/contracts/Noun.abi.js to allow the tx's
+            {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
             <Contract
-              name="Noun"
+              name="YourContract"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-            Coins have a problem with pragma 8 compiler. Something about args requested in transfer/send functions.
+
             <Contract
-              name="MoCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="LarryCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            /><Contract
               name="CurlyCoin"
               signer={userProvider.getSigner()}
               provider={localProvider}
@@ -148,17 +194,43 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
 
+            <Contract
+              name="MoCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="LarryCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
+            <Contract
+              name="DAI"
+              customContract={mainnetDAIContract}
+              signer={userProvider.getSigner()}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            */ }
           </Route>
           <Route path="/hints">
             <Hints
               address={address}
-              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
             />
           </Route>
-          <Route path="/create">
-            <Create
+          <Route path="/exampleui">
+            <ExampleUI
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -168,19 +240,16 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              setCreate= {setCreate}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
             />
           </Route>
-          <Route path="/manage">
-            <Manage
+          <Route path="/subgraph">
+            <Subgraph
             subgraphUri={props.subgraphUri}
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
-            setCreate={setCreate}
-            address={address}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
             />
           </Route>
         </Switch>
@@ -200,6 +269,7 @@ function App(props) {
            logoutOfWeb3Modal={logoutOfWeb3Modal}
            blockExplorer={blockExplorer}
          />
+         {faucetHint}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
