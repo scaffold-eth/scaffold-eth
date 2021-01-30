@@ -170,12 +170,6 @@
         "internalType": "uint256",
         "name": "index",
         "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "deadline",
-        "type": "uint256"
       }
     ],
     "name": "WillCreated",
@@ -359,11 +353,6 @@
       {
         "internalType": "address payable",
         "name": "_beneficiary",
-        "type": "address"
-      },
-      {
-        "internalType": "address payable",
-        "name": "_tokenAddress",
         "type": "address"
       },
       {

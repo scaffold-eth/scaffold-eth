@@ -1,1 +1,2 @@
-module.exports = ["CurlyCoin","LarryCoin","MoCoin","YourContract"];
+module.exports = ["CurlyCoin","LarryCoin","MoCoin","Noun","Verb"];
+

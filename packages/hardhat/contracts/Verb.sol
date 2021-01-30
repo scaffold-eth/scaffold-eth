@@ -7,10 +7,9 @@ import './included/SafeMath.sol';
 contract Verb is DethLock {
 
     event WillCreated(
-        address owner,
+        address owner, 
         address beneficiary,
-        uint256 index,
-        uint256 deadline);
+        uint256 index);
 
     event BeneficiarySet(
         address  beneficiary
@@ -79,47 +78,37 @@ contract Verb is DethLock {
     }
 
     function createWill
-        (address payable _beneficiary, address payable _tokenAddress,uint256 _deadline)
+        (address payable _beneficiary, uint256 _deadline)
         public payable returns(uint256){
-        uint256 newWillIndex = initializeWill(payable(msg.sender), payable(_beneficiary), payable(_tokenAddress),_deadline);
-        /* setDeadline(newWillIndex, _deadline); */
-        /* setBeneficiary(newWillIndex, _beneficiary); */
-        /* if (msg.value > 0) {
+        uint256 newWillIndex = initializeWill(payable(msg.sender), _beneficiary);
+        setDeadline(newWillIndex, _deadline);
+        setBeneficiary(newWillIndex, _beneficiary);
+        if (msg.value > 0) {
             fundWillETH(newWillIndex);
-        } */
+        }
         return newWillIndex;
     }
 
     function initializeWill
-        (address payable _owner,address payable _beneficiary,address payable _tokenAddress, uint256 _deadline)
+        (address payable owner,address payable beneficiary) 
         internal returns(uint256){
-        /* will memory newWill = _masterWillList.push();
+        will memory newWill = _masterWillList.push();
         newWill.owner = payable(msg.sender);
-        newWill.beneficiary = beneficiary; */
-        will memory newWill;
-        newWill.owner = _owner;
-        newWill.beneficiary = _beneficiary;
-        newWill.deadline = _deadline;
-        newWill.tokenAddress = _tokenAddress;
-        if (msg.value > 0) {
-            newWill.ethBalance = SafeMath.add(newWill.ethBalance,msg.value);
-            credit(msg.sender, msg.value);
-        }
-        _masterWillList.push(newWill);
-        _owners[_owner].push(_masterWillList.length);
-        _beneficiaries[_beneficiary].push(_masterWillList.length);
-        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline);
+        newWill.beneficiary = beneficiary;
+        _owners[owner].push(_masterWillList.length);
+        _beneficiaries[beneficiary].push(_masterWillList.length);
+        emit WillCreated(owner, beneficiary, _masterWillList.length);
         return _masterWillList.length;
     }
 
     function setBeneficiary
-        (uint256 index, address payable benificiary)
+        (uint256 index, address payable benificiary) 
         public onlyWillOwner(index) beforeDeadline(index) {
         _masterWillList[index].beneficiary = benificiary;
     }
 
     function setDeadline
-        (uint256 index, uint256 value)
+        (uint256 index, uint256 value) 
         public onlyWillOwner(index) returns (bool) {
         require(value >= block.timestamp,'Must set deadline to a future time.');
         uint oldDeadline = _masterWillList[index].deadline;
@@ -130,7 +119,7 @@ contract Verb is DethLock {
 
     function fundWillETH
         (uint256 index) payable public returns (bool){
-        _masterWillList[index].ethBalance =
+        _masterWillList[index].ethBalance = 
             SafeMath.add(_masterWillList[index].ethBalance,msg.value);
         credit(msg.sender, msg.value);
         emit WillFunded(msg.sender,index,msg.value);
@@ -139,13 +128,13 @@ contract Verb is DethLock {
 
     function defundWillETH (uint256 index, address payable toAddress, uint256 value)
         public onlyWillOwner(index) beforeDeadline(index) returns (bool) {
-        require(address(this).balance >= value,
+        require(address(this).balance >= value, 
             'Dethlock does not have that much ETH.');
-        require(_uint['balance'] >= value,
+        require(_uint['balance'] >= value, 
             'Dethlock does not think it has that much ETH');
-        require(_masterWillList[index].ethBalance >= value,
+        require(_masterWillList[index].ethBalance >= value, 
             'Will does not have that much ETH.');
-        _masterWillList[index].ethBalance =
+        _masterWillList[index].ethBalance = 
             SafeMath.sub(_masterWillList[index].ethBalance,value);
         debt(toAddress, value);
         emit WillDeFunded(msg.sender, index, value);
@@ -154,34 +143,34 @@ contract Verb is DethLock {
 
     function BenefitETH (uint256 index, address payable toAddress, uint256 value)
         public onlyBeneficiary(index) afterDeadline(index) returns (bool) {
-        require(address(this).balance >= value,
+        require(address(this).balance >= value, 
             'Dethlock does not have that much ETH.');
-        require(_uint['balance'] >= value,
+        require(_uint['balance'] >= value, 
             'Dethlock does not think it has that much ETH');
-        require(_masterWillList[index].ethBalance >= value,
+        require(_masterWillList[index].ethBalance >= value, 
             'Will does not have that much ETH.');
-        _masterWillList[index].ethBalance =
+        _masterWillList[index].ethBalance = 
             SafeMath.sub(_masterWillList[index].ethBalance,value);
         debt(toAddress, value);
         emit WillDeFunded(msg.sender, index, value);
         return true;
     }
 
-    function depositTokensToWill
-        (uint256 index, address payable _tokenAddress, uint256 value)
+    function depositTokensToWill 
+        (uint256 index, address payable _tokenAddress, uint256 value) 
         public returns (bytes memory) {
-        require(_masterWillList[index].tokenAddress == address(0) ||
-                 _masterWillList[index].tokenAddress == _tokenAddress,
+        require(_masterWillList[index].tokenAddress == address(0) || 
+                 _masterWillList[index].tokenAddress == _tokenAddress, 
                  'Will contains a different token.');
         bytes memory payload = abi.encodeWithSignature(
-            'transferFrom(address payable, address payable, uint256)',
+            'transferFrom(address payable, address payable, uint256)', 
             msg.sender, address(this), value);
         (bool success, bytes memory returnData) = address(
             _masterWillList[index].tokenAddress).call(payload);
         require(success, 'failed to transfer tokens.');
-        /* _masterWillList[index].tokenAddress = _tokenAddress; */
-        _masterWillList[index].tokenBalance =
-            SafeMath.add(_masterWillList[index].tokenBalance, value);
+        _masterWillList[index].tokenAddress = _tokenAddress;
+        _masterWillList[index].tokenBalance = 
+            SafeMath.add(_masterWillList[index].ethBalance, value);
         emit TokensDepositedToWill(msg.sender, _tokenAddress, index, value);
         return returnData;
     }
@@ -191,10 +180,10 @@ contract Verb is DethLock {
         public onlyWillOwner(index) beforeDeadline(index) returns (bytes memory) {
         require(_masterWillList[index].tokenBalance >= value,
             'Will does not contain that many tokens.');
-        _masterWillList[index].tokenBalance =
+        _masterWillList[index].tokenBalance = 
             SafeMath.sub(_masterWillList[index].tokenBalance, value);
         bytes memory payload = abi.encodeWithSignature(
-            'transferFrom(address payable, address payable, uint256)',
+            'transferFrom(address payable, address payable, uint256)', 
             address(this), msg.sender, value);
         (bool success, bytes memory returnData) = address(
             _masterWillList[index].tokenAddress).call(payload);
@@ -209,10 +198,10 @@ contract Verb is DethLock {
         public onlyBeneficiary(index) afterDeadline(index) returns (bytes memory) {
         require(_masterWillList[index].tokenBalance >= value,
             'Will does not contain that many tokens.');
-        _masterWillList[index].tokenBalance =
+        _masterWillList[index].tokenBalance = 
             SafeMath.sub(_masterWillList[index].tokenBalance, value);
         bytes memory payload = abi.encodeWithSignature(
-            'transferFrom(address payable, address payable, uint256)',
+            'transferFrom(address payable, address payable, uint256)', 
             address(this), msg.sender, value);
         (bool success, bytes memory returnData) = address(
             _masterWillList[index].tokenAddress).call(payload);
@@ -222,52 +211,52 @@ contract Verb is DethLock {
         return returnData;
     }
 
-    function willsIOwn()
+    function willsIOwn() 
         public view returns(uint[] memory){
         return _owners[msg.sender];
     }
 
-    function willsBenefittingMe()
+    function willsBenefittingMe() 
         public view returns (uint[] memory){
         return _beneficiaries[msg.sender];
     }
 
-    function willsAddressOwns(address doxAddress)
+    function willsAddressOwns(address doxAddress) 
         public view returns (uint[] memory){
         return _owners[doxAddress];
     }
 
-    function willsAddressBenefitsFrom(address doxAddress)
+    function willsAddressBenefitsFrom(address doxAddress) 
         public view returns (uint[] memory){
         return _beneficiaries[doxAddress];
     }
 
-    function whoOwns(uint256 index)
+    function whoOwns(uint256 index) 
         public view returns(address){
         return _masterWillList[index].owner;
     }
 
-    function whoBenefits(uint256 index)
+    function whoBenefits(uint256 index) 
         public view returns(address){
         return _masterWillList[index].beneficiary;
     }
 
-    function ethBalance(uint256 index)
+    function ethBalance(uint256 index) 
         public view returns(uint256){
         return _masterWillList[index].ethBalance;
     }
 
-    function tokenAddress(uint256 index)
+    function tokenAddress(uint256 index) 
         public view returns(address){
         return _masterWillList[index].tokenAddress;
     }
 
-    function tokenBalance(uint256 index)
+    function tokenBalance(uint256 index) 
         public view returns(uint256){
         return _masterWillList[index].tokenBalance;
     }
 
-    function deadline(uint256 index)
+    function deadline(uint256 index) 
         public view returns(uint256){
         return _masterWillList[index].deadline;
     }

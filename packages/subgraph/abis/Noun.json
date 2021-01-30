@@ -1,6 +1,12 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_verbAddress",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -9,9 +15,9 @@
     "inputs": [
       {
         "indexed": false,
-        "internalType": "bool",
-        "name": "torchPassed",
-        "type": "bool"
+        "internalType": "address",
+        "name": "newOwner",
+        "type": "address"
       }
     ],
     "name": "OwnershipTransferred",
@@ -41,13 +47,23 @@
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "purpose",
-        "type": "string"
+        "internalType": "address",
+        "name": "reciever",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "SetPurpose",
+    "name": "receipt",
     "type": "event"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "fallback"
   },
   {
     "inputs": [],
@@ -78,6 +94,19 @@
   },
   {
     "inputs": [],
+    "name": "contractBalance",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "isPaused",
     "outputs": [
       {
@@ -91,26 +120,20 @@
   },
   {
     "inputs": [],
-    "name": "purpose",
-    "outputs": [
-      {
-        "internalType": "string",
-        "name": "",
-        "type": "string"
-      }
-    ],
-    "stateMutability": "view",
+    "name": "rebalance",
+    "outputs": [],
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "newPurpose",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "setPurpose",
+    "name": "salary",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
@@ -127,5 +150,22 @@
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "_newAddress",
+        "type": "address"
+      }
+    ],
+    "name": "upgrade",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "stateMutability": "payable",
+    "type": "receive"
   }
 ]
