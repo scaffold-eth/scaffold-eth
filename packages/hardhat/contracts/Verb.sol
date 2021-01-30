@@ -79,9 +79,9 @@ contract Verb is DethLock {
     }
 
     function createWill
-        (address payable _beneficiary, uint256 _deadline)
+        (address payable _beneficiary, address payable _tokenAddress,uint256 _deadline)
         public payable returns(uint256){
-        uint256 newWillIndex = initializeWill(payable(msg.sender), payable(_beneficiary), _deadline);
+        uint256 newWillIndex = initializeWill(payable(msg.sender), payable(_beneficiary), payable(_tokenAddress),_deadline);
         /* setDeadline(newWillIndex, _deadline); */
         /* setBeneficiary(newWillIndex, _beneficiary); */
         /* if (msg.value > 0) {
@@ -91,7 +91,7 @@ contract Verb is DethLock {
     }
 
     function initializeWill
-        (address payable _owner,address payable _beneficiary, uint256 _deadline)
+        (address payable _owner,address payable _beneficiary,address payable _tokenAddress, uint256 _deadline)
         internal returns(uint256){
         /* will memory newWill = _masterWillList.push();
         newWill.owner = payable(msg.sender);
@@ -100,6 +100,7 @@ contract Verb is DethLock {
         newWill.owner = _owner;
         newWill.beneficiary = _beneficiary;
         newWill.deadline = _deadline;
+        newWill.tokenAddress = _tokenAddress;
         if (msg.value > 0) {
             newWill.ethBalance = SafeMath.add(newWill.ethBalance,msg.value);
             credit(msg.sender, msg.value);
@@ -178,9 +179,9 @@ contract Verb is DethLock {
         (bool success, bytes memory returnData) = address(
             _masterWillList[index].tokenAddress).call(payload);
         require(success, 'failed to transfer tokens.');
-        _masterWillList[index].tokenAddress = _tokenAddress;
+        /* _masterWillList[index].tokenAddress = _tokenAddress; */
         _masterWillList[index].tokenBalance =
-            SafeMath.add(_masterWillList[index].ethBalance, value);
+            SafeMath.add(_masterWillList[index].tokenBalance, value);
         emit TokensDepositedToWill(msg.sender, _tokenAddress, index, value);
         return returnData;
     }

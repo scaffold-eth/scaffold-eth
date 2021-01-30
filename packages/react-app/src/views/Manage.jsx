@@ -2,26 +2,27 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Button, Typography, Table, Input, List } from "antd";
+import { Button, Typography, Table, Input, List, Divider } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import { Address } from "../components";
 import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 import fetch from 'isomorphic-fetch';
 import tryToDisplay from "../components/Contract/utils";
+import { parseEther, formatEther } from "@ethersproject/units";
 
 
   const highlight = { marginLeft: 4, marginRight: 8, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }
 
 function Manage(props) {
 
-  function graphQLFetcher(graphQLParams) {
-    return fetch(props.subgraphUri, {
-      method: 'post',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(graphQLParams),
-    }).then(response => response.json());
-  }
+  // function graphQLFetcher(graphQLParams) {
+  //   return fetch(props.subgraphUri, {
+  //     method: 'post',
+  //     headers: { 'Content-Type': 'application/json' },
+  //     body: JSON.stringify(graphQLParams),
+  //   }).then(response => response.json());
+  // }
 
   const EXAMPLE_GRAPHQL = `
   {
@@ -37,31 +38,102 @@ function Manage(props) {
   // const EXAMPLE_GQL = gql(EXAMPLE_GRAPHQL)
   // const { loading, data } = useQuery(EXAMPLE_GQL,{pollInterval: 2500});
 
-  // const purposeColumns = [
-  //   {
-  //     title: 'Purpose',
-  //     dataIndex: 'purpose',
-  //     key: 'purpose',
-  //   },
-  //   {
-  //     title: 'Sender',
-  //     key: 'id',
-  //     render: (record) => <Address
-  //                       value={record.sender.id}
-  //                       ensProvider={props.mainnetProvider}
-  //                       fontSize={16}
-  //                     />
-  //   },
-  //   {
-  //     title: 'createdAt',
-  //     key: 'createdAt',
-  //     dataIndex: 'createdAt',
-  //     render: d => (new Date(d * 1000)).toISOString()
-  //   },
-  //   ];
-  // const deployWarning = (
-  //   <div style={{marginTop:8,padding:8}}>{"Warning: 🤔 Have you deployed your subgraph yet?"}</div>
-  // )
+  const willsColumns = [
+    {
+      title: 'Will',
+      dataIndex: 'index',
+      key: 'index',
+      render: (record) => <p>{record.toNumber()}</p>
+    },
+    {
+      title: 'Owner',
+      key: 'owner',
+      render: (record) => <Address
+                        value={record.owner}
+                        ensProvider={props.mainnetProvider}
+                        fontSize={16}
+                      />
+    },
+    {
+      title: 'TimeLock',
+      key: 'deadline',
+      dataIndex: 'deadline',
+      render: (record) => (new Date(record.toNumber() * 1000)).toISOString()
+    },
+    {
+      title: 'Beneficiary',
+      key: 'beneficiary',
+      render: (record) => <Address
+                        value={record.beneficiary}
+                        ensProvider={props.mainnetProvider}
+                        fontSize={16}
+                      />
+    },
+    {
+      title: 'Balance ETH',
+      key: 'ethBalance',
+      dataIndex: 'ethBalance',
+      // render: (record) => <p>{record.ethBalance}</p>
+    },
+    {
+      title: 'Token',
+      key: 'tokenAddress',
+      render: (record) => <Address
+                        value={record.tokenAddress}
+                        ensProvider={props.mainnetProvider}
+                        fontSize={16}
+                      />
+    },
+    {
+      title: 'Amount Token',
+      key: 'tokenValue',
+      dataIndex: 'tokenValue',
+      // render: (record) => <p>{record.tokenBalance}</p>
+    },
+    {
+      title: 'Actions',
+      key: 'actions',
+      render: (record) =>
+        <div>
+          <Button
+            disabled={record.owner != props.address}
+            onClick={async() =>{
+                          let totalBalance = await props.readContracts.Noun.ethBalance(record.index-1);
+                          await props.tx({
+                                  to: props.writeContracts.Noun.address,
+                                  data: props.writeContracts.Noun.interface.encodeFunctionData("defundWillETH(uint256, address payable , uint256)",[(record.index-1),props.address,totalBalance])
+                                });
+                            }
+                            }>
+                      withdraw</Button>
+
+          <Button
+            disabled={record.beneficiary!= props.address||ts<record.deadline.toNumber()}
+            onClick={async() =>{
+              let totalBalance = await props.readContracts.Noun.ethBalance(record.index-1);
+              await props.tx({
+                  to: props.writeContracts.Noun.address,
+                  data: props.writeContracts.Noun.interface.encodeFunctionData("BenefitETH(uint256, address payable , uint256)",[(record.index-1),props.address,totalBalance])
+                });
+              }
+            }>
+            claim</Button>
+
+        <Button onClick={
+          async() =>{
+            let bal = await props.readContracts.Noun.ethBalance(record.index-1);
+            console.log(formatEther(bal));
+          }
+        }>Check balance
+        </Button>
+
+        </div>
+    },
+
+    ];
+  const deployWarning = (
+    <div style={{marginTop:8,padding:8}}>{"Warning: 🤔 is it any event fired yet?"}</div>
+  )
 
 
   var ts = Math.floor(new Date().getTime()/1000);
@@ -72,71 +144,16 @@ function Manage(props) {
 
   return (
       <>
+      <span >Current timestamp: {ts?ts:'loading..'}</span>
           <h2>Wills created:</h2>
-          <List
-            bordered
-            dataSource={props.setCreate}
-            renderItem={(item) => {
-              return (
-                <List.Item key={item.blockNumber+"_"+item.owner+"_"+item.beneficiary}>
-                  Will index: {item.index.toNumber()} -
-                  owner:
-                  <Address
-                      value={item.owner}
-                      ensProvider={props.mainnetProvider}
-                      fontSize={16}
-                    /> -
-                    timeLock:{item.deadline.toNumber()} -
-                    beneficiary:
-                  <Address
-                      value={item.beneficiary}
-                      ensProvider={props.mainnetProvider}
-                      fontSize={16}
-                    /> -
-                    <Button onClick={async() =>{
-                       let test = await props.readContracts.Noun.ethBalance(item.index);
-                       console.log(tryToDisplay(test))
-                    }
-                    }>
-                    Balance ETH (console)</Button>
-
-
-                  -  {item.owner == props.address ?
-
-                    <Button onClick={async() =>{
-                                    await props.tx({
-                                        to: props.writeContracts.Noun.address,
-                                        data: props.writeContracts.Noun.interface.encodeFunctionData("defundWillETH(uint256, address payable , uint256)",[item.index,props.address,value])
-                                      });
-                                  }
-                                  }>
-
-                                  withdraw</Button>
-                      :null}
-
-                  =>
-                {item.beneficiary == props.address ?
-                  <Button disabled={ts<item.deadline.toNumber()} onClick={async() =>{
-                    await props.tx({
-                        to: props.writeContracts.Noun.address,
-                        data: props.writeContracts.Noun.interface.encodeFunctionData("BenefitETH(uint256, address payable , uint256)",[item.index,props.address,value])
-                      });
-                  }
-                  }>
-                  claim</Button>
-                  :null}
-
-
-                </List.Item>
-              )
-            }}
-          />
-
           <div>
+          {props.setCreate?<Table dataSource={props.setCreate} columns={willsColumns} rowKey={"id"} />:'Loading..'}
+          {/*<Typography>{(loading?"Loading...":deployWarning)}</Typography>*/}
+
+          <Divider />
             The Graph query
 
-{/*            {data?<Table dataSource={data.purposes} columns={purposeColumns} rowKey={"id"} />:<Typography>{(loading?"Loading...":deployWarning)}</Typography>}
-
+{/*
             <div style={{margin:32, height:400, border:"1px solid #888888", textAlign:'left'}}>
               <GraphiQL fetcher={graphQLFetcher} docExplorerOpen={true} query={EXAMPLE_GRAPHQL}/>
             </div>

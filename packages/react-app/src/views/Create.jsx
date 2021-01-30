@@ -12,7 +12,6 @@ const { Option } = Select;
 export default function Create({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, setCreate }) {
   const [beneficiaries, setBeneficiaries] = useState(null);
   const [beneficiariesShare, setBeneficiariesShare] = useState([1]);
-
   const [depositEth, setDepositEth] = useState(0);
   const [depositValue, setDepositValue] = useState(0);
   const [deadline, setDeadline] = useState(null);
@@ -28,25 +27,14 @@ export default function Create({address, mainnetProvider, userProvider, localPro
 
   return (
     <div>
-        <h2>Create TimeLock:</h2>
+        <h2>Create/Update TimeLock:</h2>
         <Divider/>
-        TimeLock Address:
-        <Address
-            value={readContracts?readContracts.Noun.address:readContracts}
-            ensProvider={mainnetProvider}
-            fontSize={16}
-        /> <br />
-        <Balance
-          address={readContracts?readContracts.Noun.address:readContracts}
-          provider={localProvider}
-          dollarMultiplier={price}
-        />
         <div style={{border:"1px solid #cccccc", padding:16, width:600, margin:"auto",marginTop:64}}>
 
           <Card style={{marginTop:32}}>
 
           <div>
-          Stoodges Tokens
+          Stoodges Tokens<br />
           {ourTokensList ?
             <Select
               style={{ width: 200 }}
@@ -101,23 +89,35 @@ export default function Create({address, mainnetProvider, userProvider, localPro
                     setDeadline(Math.floor(dateSelected.getTime()/1000));
                     {/* Js is in miliseconds, block.timestamp in sec*/}
                   }}/>
+                <Button onClick={()=>{setDeadline(ts+60)}}> +1min</Button>
             </div>
 
           </Card>
 
-          <BeneficiariesInput
+{/*          <BeneficiariesInput
             ensProvider={mainnetProvider}
             value={beneficiaries}
             onChange={e => {setBeneficiaries(e)}}
           />
+*/}
+
+        <AddressInput
+          // ensProvider={props.ensProvider}
+          placeholder="beneficiary"
+          value={beneficiaries}
+          onChange={setBeneficiaries}
+        />
+
+
+
 
         <Button type="primary" disabled={!beneficiaries || !deadline} onClick={async ()=>{
-          await tx({
+            let res = await tx({
               to: writeContracts.Noun.address,
               value: parseEther(depositEth),
               data: writeContracts.Noun.interface.encodeFunctionData(
-                "createWill(address, uint)",
-                [beneficiaries[0], deadline]
+                "createWill(address, address, uint256)",
+                [beneficiaries, tokenAddress, deadline]
               )});
 
         }}>
@@ -127,6 +127,17 @@ export default function Create({address, mainnetProvider, userProvider, localPro
             {ts?ts:null}
             {/*value: parseEther(depositValue),*/}
     </div>
+    TimeLock Address:
+    <Address
+        value={readContracts?readContracts.Noun.address:readContracts}
+        ensProvider={mainnetProvider}
+        fontSize={16}
+    /> <br />
+    <Balance
+      address={readContracts?readContracts.Noun.address:readContracts}
+      provider={localProvider}
+      dollarMultiplier={price}
+    />
 
     </div>
   );
