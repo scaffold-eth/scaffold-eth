@@ -1,36 +1,118 @@
 [
   {
-    "inputs": [],
-    "stateMutability": "nonpayable",
-    "type": "constructor"
-  },
-  {
     "anonymous": false,
     "inputs": [
       {
         "indexed": false,
         "internalType": "address",
-        "name": "sender",
+        "name": "beneficiary",
         "type": "address"
       },
       {
         "indexed": false,
-        "internalType": "string",
-        "name": "purpose",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
       }
     ],
-    "name": "SetPurpose",
+    "name": "claimedTimelock",
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "owner",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "uint256",
+        "name": "timeForDethLOCK",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "amount",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "timelockCreated",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_unlockTime",
+        "type": "uint256"
+      },
+      {
+        "internalType": "bool",
+        "name": "_isEditable",
+        "type": "bool"
+      },
+      {
+        "internalType": "address payable",
+        "name": "_beneficiary",
+        "type": "address"
+      }
+    ],
+    "name": "Lock",
+    "outputs": [],
+    "stateMutability": "payable",
+    "type": "function"
+  },
+  {
     "inputs": [],
-    "name": "purpose",
+    "name": "beneficiary",
     "outputs": [
       {
-        "internalType": "string",
+        "internalType": "address payable",
         "name": "",
-        "type": "string"
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "claim",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "isUnlocked",
+    "outputs": [
+      {
+        "internalType": "bool",
+        "name": "",
+        "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "unlockTime",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
@@ -39,12 +121,19 @@
   {
     "inputs": [
       {
-        "internalType": "string",
-        "name": "newPurpose",
-        "type": "string"
+        "internalType": "uint256",
+        "name": "_unlockTime",
+        "type": "uint256"
       }
     ],
-    "name": "setPurpose",
+    "name": "updateTime",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdraw",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
