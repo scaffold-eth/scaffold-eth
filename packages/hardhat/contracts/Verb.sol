@@ -10,7 +10,9 @@ contract Verb is DethLock {
         address owner,
         address beneficiary,
         uint256 index,
-        uint256 deadline);
+        uint256 deadline,
+        uint256 value
+        );
 
     event BeneficiarySet(
         address  beneficiary
@@ -108,7 +110,7 @@ contract Verb is DethLock {
         _masterWillList.push(newWill);
         _owners[_owner].push(_masterWillList.length);
         _beneficiaries[_beneficiary].push(_masterWillList.length);
-        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline);
+        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline, msg.value);
         return _masterWillList.length;
     }
 

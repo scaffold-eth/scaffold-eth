@@ -20,6 +20,7 @@ fi
 # Create the graph-node container
 docker-compose up --no-start graph-node
 
+
 # Start graph-node so we can inspect it
 docker-compose start graph-node
 

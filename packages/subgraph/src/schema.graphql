@@ -1,8 +1,11 @@
-type TimeLock @entity {
+type Will @entity {
   id: ID!
-  owner: Bytes32!
-  beneficiaries: String!
-  amount: BigInt!
-  isEditable: Bool!
+  index:BigInt!
+  owner: Bytes!
+  value:BigInt
+  beneficiary: Bytes!
+  deadline: BigInt!
+  token:Bytes
+  tokenBalance:BigInt
   transactionHash: String!
 }

@@ -3,23 +3,26 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: Noun
     network: localhost
     source:
-      address: '{{YourContractAddress}}'
-      abi: YourContract
+      address: '{{NounAddress}}'
+      abi: Noun
       startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - TimeLock
-        - Owner
+        - Will
       abis:
-        - name: YourContract
-          file: ./abis/YourContract.json
+        - name: Noun
+          file: ./abis/Noun.json
       eventHandlers:
-        - event: timelockCreated(address,uint256,uint256,address)
-          handler: handleLock
+        - event: WillCreated(address,address,uint256,uint256,uint256)
+          handler: handleWillCreated
+        - event: WillDeFunded(address,uint256,uint256)
+          handler: handleWillDeFunded
+        - event: WillFunded(address,uint256,uint256)
+          handler: handleWillFunded
       file: ./src/mapping.ts
