@@ -11,7 +11,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
     <div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>👷</span>
-<<<<<<< HEAD
+
         Edit your <b>contract</b> in
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
           packages/hardhat/contracts
@@ -41,7 +41,6 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
           packages/reactapp/src/App.js
         </span>
       </div>
-=======
         Open 3 terminals in root folder<br />
         yarn run chain<br />
         yarn run deploy<br />
@@ -61,7 +60,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         Any reload on /Create will have a problem reading Stoodges coins addresses (this wont happen in the wild) go to any other and come back<br />
         Stoodges tokens not working (compiled ERC20 with pragma 8 required to modify transfer and approval functions(error is in those fn))<br />
         Weirdly claim and withdraw not working from /Manage, yes from root(check out signature for onlyOwner & onlyBeneficiary) <br />
->>>>>>> DrHongo
+        DrHongo
 
       <div style={{ marginTop: 32 }}>
         <span style={{ marginRight: 8 }}>🔭</span>
