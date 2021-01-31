@@ -1,11 +1,11 @@
 pragma solidity 0.8.0;
-import './Pausable.sol';
+import './Ownable.sol';
 import '../included/SafeMath.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
 // Handles raw ETH balance of a contract.
-contract Accountable is Pausable {
+contract Accountable is Ownable {
     
     event receipt(
         address sender, 
