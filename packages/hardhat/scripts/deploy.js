@@ -12,8 +12,11 @@ const main = async () => {
   const verb = await deploy('Verb'); // Verb deploys first for address
   const noun = await deploy('Noun',[verb.address]); // Proxy
 
-  // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
-
+  //const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
+  const CurlyCoin = await deploy("CurlyCoin",['CURLY','CRL'])
+  const LarryCoin = await deploy("LarryCoin",['LARRY','LRY'])
+  const MoCoin = await deploy("MoCoin",['MO','MOC'])
+  
 
 
   // const exampleToken = await deploy("ExampleToken")
