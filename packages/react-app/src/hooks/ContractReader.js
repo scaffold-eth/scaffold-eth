@@ -42,7 +42,7 @@ export default function useContractReader(contracts, contractName, functionName,
         console.log(e);
       }
     }
-  }, adjustPollTime, contracts);
+  }, adjustPollTime, contracts && contracts[contractName]);
 
   return value;
 }

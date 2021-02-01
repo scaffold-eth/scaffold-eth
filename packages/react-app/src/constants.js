@@ -31,7 +31,7 @@ export const NETWORKS = {
     },
     mainnet: {
         name: "mainnet",
-        color: '#ffffff',
+        color: '#ff8b9e',
         chainId: 1,
         rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
         blockExplorer: "https://etherscan.io/",
