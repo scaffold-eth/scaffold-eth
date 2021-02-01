@@ -1,27 +1,25 @@
-const { ethers } = require("hardhat");
-const { use, expect } = require("chai");
-const { solidity } = require("ethereum-waffle");
+const { ethers } = require('hardhat');
+const { use, expect } = require('chai');
+const { solidity } = require('ethereum-waffle');
 
 use(solidity);
 
-describe("Ownable", function () {
+describe('My Dapp', function() {
   let myContract;
 
-  describe("YourContract", function () {
-    it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
-
-      myContract = await YourContract.deploy();
-    });
-
-    describe("amIOwner()", function () {
-      it("should say I'm the owner", async function () {
-
-        await myContract.setPurpose(newPurpose);
-        expect(await myContract.purpose()).to.equal(newPurpose);
-      });
-    });
-
+  describe("Ownable", function() {
     
-  });
-});
+    it('Should deploy Ownable.', async function () {
+      const Ownable = await ethers.getContractFactory('Ownable');
+      myContract = await Ownable.deploy();
+    });
+
+    it("Should know I'm the owner.", async function () {
+      const Ownable = await ethers.getContractFactory('Ownable');
+      myContract = await Ownable.deploy();
+      expect(await myContract.amIOwner()).to.equal(true);
+    });
+
+
+  })
+})

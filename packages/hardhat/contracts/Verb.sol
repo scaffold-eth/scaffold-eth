@@ -8,13 +8,12 @@ contract Verb is DethLock {
 
     event WillCreated(
         address owner, 
-        address beneficiary,
         uint256 index,
-        uint256 deadline,
         uint256 value
         );
 
     event BeneficiarySet(
+        uint256  index,
         address  beneficiary
     );
 
@@ -81,11 +80,11 @@ contract Verb is DethLock {
     }
 
     function createWill
-        (address payable _beneficiary, uint256 _deadline)
+        (address payable beneficiary, uint256 _deadline)
         public payable returns(uint256){
-        uint256 newWillIndex = initializeWill(payable(msg.sender), _beneficiary);
+        uint256 newWillIndex = initializeWill(payable(msg.sender));
         setDeadline(newWillIndex, _deadline);
-        setBeneficiary(newWillIndex, _beneficiary);
+        setBeneficiary(newWillIndex, beneficiary);
         if (msg.value > 0) {
             fundWillETH(newWillIndex);
         }
@@ -93,31 +92,16 @@ contract Verb is DethLock {
     }
 
     function initializeWill
-        (address payable owner,address payable beneficiary) 
+        (address payable owner) 
         internal returns(uint256){
         will memory newWill = _masterWillList.push();
-        newWill.owner = payable(msg.sender);
-        newWill.beneficiary = beneficiary; */
-        will memory newWill;
-        newWill.owner = _owner;
-        newWill.beneficiary = _beneficiary;
-        newWill.deadline = _deadline;
-        newWill.tokenAddress = _tokenAddress;
+        newWill.owner = owner;
         if (msg.value > 0) {
             newWill.ethBalance = SafeMath.add(newWill.ethBalance,msg.value);
             credit(msg.sender, msg.value);
         }
-        _masterWillList.push(newWill);
-        _owners[_owner].push(_masterWillList.length);
-        _beneficiaries[_beneficiary].push(_masterWillList.length);
-        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline, msg.value);
+        emit WillCreated(owner, _masterWillList.length, msg.value);
         return _masterWillList.length;
-    }
-
-    function setBeneficiary
-        (uint256 index, address payable benificiary) 
-        public onlyWillOwner(index) beforeDeadline(index) {
-        _masterWillList[index].beneficiary = benificiary;
     }
 
     function setDeadline
@@ -128,6 +112,13 @@ contract Verb is DethLock {
         _masterWillList[index].deadline = value;
         emit DeadlineUpdated(oldDeadline, _masterWillList[index].deadline);
         return true;
+    }
+
+    function setBeneficiary
+        (uint256 index, address payable benificiary) 
+        public onlyWillOwner(index) beforeDeadline(index) {
+        _masterWillList[index].beneficiary = benificiary;
+        emit BeneficiarySet(index,benificiary);
     }
 
     function fundWillETH

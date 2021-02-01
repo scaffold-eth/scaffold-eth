@@ -4,6 +4,12 @@
     "inputs": [
       {
         "indexed": false,
+        "internalType": "uint256",
+        "name": "index",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
         "internalType": "address",
         "name": "beneficiary",
         "type": "address"
@@ -161,20 +167,8 @@
       },
       {
         "indexed": false,
-        "internalType": "address",
-        "name": "beneficiary",
-        "type": "address"
-      },
-      {
-        "indexed": false,
         "internalType": "uint256",
         "name": "index",
-        "type": "uint256"
-      },
-      {
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "deadline",
         "type": "uint256"
       },
       {
@@ -364,7 +358,7 @@
     "inputs": [
       {
         "internalType": "address payable",
-        "name": "_beneficiary",
+        "name": "beneficiary",
         "type": "address"
       },
       {

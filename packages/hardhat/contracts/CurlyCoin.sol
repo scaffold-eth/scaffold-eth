@@ -2,7 +2,7 @@
 
 pragma solidity 0.8.0;
 
-	import "./SafeMath.sol";
+import "./included/SafeMath.sol";
 
 interface IERC20 {
     /**
