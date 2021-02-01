@@ -79,6 +79,7 @@
   "stateMutability": "payable",
   "type": "function"
 },
+
 {
   "anonymous": false,
   "inputs": [
@@ -216,6 +217,12 @@
       "indexed": false,
       "internalType": "uint256",
       "name": "deadline",
+      "type": "uint256"
+    },
+    {
+      "indexed": false,
+      "internalType": "uint256",
+      "name": "value",
       "type": "uint256"
     }
   ],

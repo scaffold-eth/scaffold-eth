@@ -1,34 +1,35 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts"
 import {
-  YourContract,
-  SetPurpose
-} from "../generated/YourContract/YourContract"
-import { Purpose, Sender } from "../generated/schema"
+  Noun,
+  WillCreated,
+  WillFunded,
+  WillDeFunded
+} from "../generated/Noun/Noun"
+import { Will } from "../generated/schema"
 
-export function handleSetPurpose(event: SetPurpose): void {
+export function handleWillCreated(event: WillCreated): void {
+  let id = event.params.index.minus(BigInt.fromI32(1)).toHexString()
+  let will = new Will(id)
 
-  let senderString = event.params.sender.toHexString()
+  will.owner = event.params.owner
+  will.beneficiary = event.params.beneficiary
+  will.deadline = event.params.deadline
+  will.index = event.params.index
+  will.value = event.params.value
+  will.transactionHash = event.transaction.hash.toHex()
+  will.save()
+}
 
-  let sender = Sender.load(senderString)
+export function handleWillDeFunded(event: WillDeFunded): void {
+  let id = event.params.index.toHexString()
+  let will = Will.load(id)
+  will.value = will.value.minus(event.params.amount)
+  will.save()
+}
 
-  if (sender == null) {
-    sender = new Sender(senderString)
-    sender.address = event.params.sender
-    sender.createdAt = event.block.timestamp
-    sender.purposeCount = BigInt.fromI32(1)
-  }
-  else {
-    sender.purposeCount = sender.purposeCount.plus(BigInt.fromI32(1))
-  }
-
-  let purpose = new Purpose(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
-
-  purpose.purpose = event.params.purpose
-  purpose.sender = senderString
-  purpose.createdAt = event.block.timestamp
-  purpose.transactionHash = event.transaction.hash.toHex()
-
-  purpose.save()
-  sender.save()
-
+export function handleWillFunded(event: WillFunded): void {
+  let id = event.params.index.toHexString()
+  let will = Will.load(id)
+  will.value = will.value.plus(event.params.amount)
+  will.save()
 }
