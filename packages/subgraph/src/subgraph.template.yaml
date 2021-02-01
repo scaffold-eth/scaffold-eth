@@ -25,4 +25,10 @@ dataSources:
           handler: handleWillDeFunded
         - event: WillFunded(address,uint256,uint256)
           handler: handleWillFunded
+        - event: TokensDepositedToWill(address,address,uint256,uint256)
+          handler: handleTokensDepositedToWill
+        - event: TokensWithdrawnFromWill(address,address,uint256,uint256)
+          handler: handleTokensWithdrawnFromWill
+        - event: BenifitedTokens(address,address,uint256,uint256)
+          handler: handleBenifitedTokens
       file: ./src/mapping.ts

@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
@@ -71,6 +71,11 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider)
 
 
+  const isAdmin = async()=>{
+    let isit = await readContracts.Noun.amIOwner();
+    return isit == address ;
+  }
+
   const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
   console.log("Eventos de creacion: ", setCreate);
 
@@ -91,7 +96,13 @@ function App(props) {
     setRoute(window.location.pathname)
   }, [setRoute]);
 
-
+  const [willIndex, setWillIndex] = useState(null);
+  const [redirect, setRedirect] = useState(false);
+  const handleWillSelected = (value)=>{
+    setWillIndex(value+1);
+    setRoute('/create');
+    setRedirect(true);
+  };
   return (
     <div className="App">
 
@@ -104,58 +115,55 @@ function App(props) {
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">TODO?</Link>
-          </Menu.Item>
           <Menu.Item key="/create">
             <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
           </Menu.Item>
           <Menu.Item key="/manage">
-            <Link onClick={()=>{setRoute("/manage")}} to="/manage">Manage</Link>
+            <Link onClick={()=>{setRoute("/manage");setRedirect(false);setWillIndex(null)}} to="/manage">Manage</Link>
+          </Menu.Item>
+          <Menu.Item key="/hints">
+          <Link onClick={()=>{setRoute("/hints")}} to="/hints">TODO?</Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-          You will interact with the Verb contract proxying with the Noun contract.
-          Remember to copy Verb functions in /react-app/src/contracts/Noun.abi.js to allow the tx's
-            <Contract
-              name="Noun"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            Coins have a problem with pragma 8 compiler. Something about args requested in transfer/send functions.
-            <Contract
-              name="MoCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="LarryCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            /><Contract
-              name="CurlyCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
+          {isAdmin ?
+            <div>
+              Only owner of contract should see this (admin page)<br/>
+              <Contract
+                name="Noun"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+              <Contract
+                name="MoCoin"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+              <Contract
+                name="LarryCoin"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+              <Contract
+                name="CurlyCoin"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+            </div>
+            :<Redirect to="/manage" />}
           </Route>
           <Route path="/hints">
-            <Hints
-              address={address}
-              localProvider={localProvider}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
+            <Hints />
           </Route>
           <Route path="/create">
             <Create
@@ -169,9 +177,13 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               setCreate= {setCreate}
+              willIndex = {willIndex}
             />
           </Route>
           <Route path="/manage">
+            {redirect?
+              <Redirect to="/create" />
+              :''}
             <Manage
             subgraphUri={props.subgraphUri}
             tx={tx}
@@ -181,6 +193,8 @@ function App(props) {
             address={address}
             writeContracts={writeContracts}
             readContracts={readContracts}
+            willSelector={handleWillSelected}
+            willIndex = {willIndex}
             />
           </Route>
         </Switch>

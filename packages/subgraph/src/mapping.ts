@@ -3,7 +3,11 @@ import {
   Noun,
   WillCreated,
   WillFunded,
-  WillDeFunded
+  WillDeFunded,
+  TokensDepositedToWill,
+  TokensWithdrawnFromWill,
+  BenifitedTokens,
+  DeadlineUpdated
 } from "../generated/Noun/Noun"
 import { Will } from "../generated/schema"
 
@@ -33,3 +37,36 @@ export function handleWillFunded(event: WillFunded): void {
   will.value = will.value.plus(event.params.amount)
   will.save()
 }
+
+
+export function handleTokensDepositedToWill(event: TokensDepositedToWill): void {
+  let id = event.params.willIndex.toHexString()
+  let will = Will.load(id)
+  if(will.token == null){
+    will.token = event.params.tokenAddress
+  }
+  will.tokenBalance = will.tokenBalance.plus(event.params.value)
+  will.save()
+}
+
+export function handleTokensWithdrawnFromWill(event: TokensWithdrawnFromWill): void {
+  let id = event.params.willIndex.toHexString()
+  let will = Will.load(id)
+  will.tokenBalance = will.tokenBalance.minus(event.params.value)
+  will.save()
+}
+
+export function handleBenifitedTokens(event: BenifitedTokens): void {
+  let id = event.params.willIndex.toHexString()
+  let will = Will.load(id)
+  will.tokenBalance = will.tokenBalance.minus(event.params.value)
+  will.save()
+}
+
+
+// export function handleDeadlineUpdated(event: DeadlineUpdated): void {
+//   let id = event.params.index.toHexString()
+//   let will = Will.load(id)
+//   will.deadline = event.params.new_value
+//   will.save()
+// }
