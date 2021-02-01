@@ -6,8 +6,8 @@ import "./Storage.sol";
 
 contract Divisible is Storage{
 
-    constructor(uint decimals) {
-        _uint['decimals'] = decimals;
+    constructor(uint _decimals) {
+        _uint['decimals'] = _decimals;
     }
 
     function decimals() public view returns (uint8) {

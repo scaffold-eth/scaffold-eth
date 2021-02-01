@@ -7,7 +7,7 @@ import "./Accountable.sol";
 contract Mintable is Accountable{
     
     constructor (uint256 price){
-        _uint256['price'] = price;
+        _uint['price'] = price;
     }
 
     function totalSupply() public view returns (uint256){

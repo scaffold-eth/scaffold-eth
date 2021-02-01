@@ -8,25 +8,25 @@ contract Nameable is Ownable{
     event Renamed(string newName);
     event Resymboled(string newSymbol);
 
-    constructor(string name, string symbol) {
-        _string['name'] = name;
-        _string['symbol'] = symbol;
+    constructor(string memory _name, string memory _symbol) {
+        _string['name'] = _name;
+        _string['symbol'] = _symbol;
     }
 
-    function name() public view returns (string) {
+    function name() public view returns (string memory) {
         return _string['name'];
     }
 
-    function symbol() public view returns (string) {
+    function symbol() public view returns (string memory) {
         return _string['symbol'];
     }
 
-    function reName(string newName) public ownerOnly {
+    function reName(string calldata newName) public onlyOwner {
         _string['name'] = newName;
         emit Renamed(newName);
     }
 
-    function reSymbol(string newSymbol) public ownerOnly {
+    function reSymbol(string calldata newSymbol) public onlyOwner {
         _string['symbol'] = newSymbol;
         emit Resymboled(newSymbol);
     }

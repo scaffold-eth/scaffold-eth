@@ -3,7 +3,7 @@ import './inherited/Accountable.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
-contract DethLock is Accountable, Pausable {
+contract DethLock is Accountable {
 
     // Dethlock core: ------------------------------------
     struct will{

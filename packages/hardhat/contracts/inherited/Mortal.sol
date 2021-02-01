@@ -9,6 +9,6 @@ contract Mortal is Pausable{
     
     function implode() public onlyOwner Paused {
         emit imploding('!MOOB');
-        selfdestruct(owner);
+        selfdestruct(_payable['owner']);
     }
 }
