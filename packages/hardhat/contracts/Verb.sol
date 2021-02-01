@@ -9,7 +9,10 @@ contract Verb is DethLock {
     event WillCreated(
         address owner, 
         address beneficiary,
-        uint256 index);
+        uint256 index,
+        uint256 deadline,
+        uint256 value
+        );
 
     event BeneficiarySet(
         address  beneficiary
@@ -94,10 +97,20 @@ contract Verb is DethLock {
         internal returns(uint256){
         will memory newWill = _masterWillList.push();
         newWill.owner = payable(msg.sender);
-        newWill.beneficiary = beneficiary;
-        _owners[owner].push(_masterWillList.length);
-        _beneficiaries[beneficiary].push(_masterWillList.length);
-        emit WillCreated(owner, beneficiary, _masterWillList.length);
+        newWill.beneficiary = beneficiary; */
+        will memory newWill;
+        newWill.owner = _owner;
+        newWill.beneficiary = _beneficiary;
+        newWill.deadline = _deadline;
+        newWill.tokenAddress = _tokenAddress;
+        if (msg.value > 0) {
+            newWill.ethBalance = SafeMath.add(newWill.ethBalance,msg.value);
+            credit(msg.sender, msg.value);
+        }
+        _masterWillList.push(newWill);
+        _owners[_owner].push(_masterWillList.length);
+        _beneficiaries[_beneficiary].push(_masterWillList.length);
+        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline, msg.value);
         return _masterWillList.length;
     }
 

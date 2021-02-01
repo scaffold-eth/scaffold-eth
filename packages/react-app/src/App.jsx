@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, DethlockUI } from "./views"
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -163,11 +163,11 @@ function App(props) {
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
-          </Menu.Item>
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          </Menu.Item>
+          <Menu.Item key="/dethlockui">
+            <Link onClick={()=>{setRoute("/dethlockui")}} to="/dethlockui">DethlockUI</Link>
           </Menu.Item>
         </Menu>
 
@@ -180,6 +180,30 @@ function App(props) {
             */}
             <Contract
               name="Noun"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="CurlyCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="MoCoin"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="LarryCoin"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
@@ -205,8 +229,16 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
+          <Route path="/subgraph">
+            <Subgraph
+            subgraphUri={props.subgraphUri}
+            tx={tx}
+            writeContracts={writeContracts}
+            mainnetProvider={mainnetProvider}
+            />
+          </Route>
+          <Route path="/dethlockui">
+            <DethlockUI
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -218,14 +250,6 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
             />
           </Route>
         </Switch>
