@@ -16,7 +16,7 @@ const main = async () => {
   const CurlyCoin = await deploy("CurlyCoin",['CURLY','CRL'])
   const LarryCoin = await deploy("LarryCoin",['LARRY','LRY'])
   const MoCoin = await deploy("MoCoin",['MO','MOC'])
-  
+  const ERC721 = await deploy ("ERC721",['NFT','NFT'])
 
 
   // const exampleToken = await deploy("ExampleToken")
