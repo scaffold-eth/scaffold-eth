@@ -3,141 +3,179 @@
 import React, { useState, useEffect } from "react";
 import { Space, Form, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin, Select } from "antd";
 import { SyncOutlined, MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
-import { Address, Balance, AddressInput, EtherInput, BeneficiariesInput, TokenList } from "../components";
+import { Address, Balance, AddressInput, EtherInput, BeneficiariesInput, TokenList, TokenInput } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { useContractReader, useEventListener, useBalance, useTokenList } from '../hooks';
 import tryToDisplay from "../components/Contract/utils";
+import { useQuery, gql } from '@apollo/client';
+import GraphiQL from 'graphiql';
+import fetch from 'isomorphic-fetch';
 const { Option } = Select;
 
-export default function Create({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, setCreate }) {
+export default function Create({address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts, setCreate, willIndex, subgraphUri }) {
   const [beneficiaries, setBeneficiaries] = useState(null);
   const [beneficiariesShare, setBeneficiariesShare] = useState([1]);
-  const [depositEth, setDepositEth] = useState(0);
-  const [depositValue, setDepositValue] = useState(0);
   const [deadline, setDeadline] = useState(null);
   // const [editable, setEditable] = useState(true);
+  const [depositEth, setDepositEth] = useState(0);
   const [tokenAddress, setTokenAddress] = useState(null);
+  const [depositValue, setDepositValue] = useState(0);
 
   var ts = Math.floor(new Date().getTime()/1000);
 
+  const QUERY_WILL=gql`
+  query Will($test:BigInt!){
+      wills(where:{index:$test}) {
+      index
+      owner
+      beneficiary
+      deadline
+      value
+      token
+      tokenBalance
+    }
+  }
+  `
 
+  const { loading, data } = useQuery(QUERY_WILL,{variables:{test:willIndex}, pollInterval: 2500});
+  // if(data){setTokenAddress(data.wills[0].token)};
 
+  const ourTokensList = [{name:'MoCoin',address:readContracts.MoCoin.address},
+                       {name:'LarryCoin',address:readContracts.LarryCoin.address},
+                       {name:'CurlyCoin',address:readContracts.CurlyCoin.address}];
 
-  let ourTokensList = [readContracts.MoCoin.address, readContracts.LarryCoin.address, readContracts.CurlyCoin.address];
 
   return (
     <div>
-        <h2>Create/Update TimeLock:</h2>
-        <Divider/>
-        <div style={{border:"1px solid #cccccc", padding:16, width:600, margin:"auto",marginTop:64}}>
-
-          <Card style={{marginTop:32}}>
-
+        {data==null?
+          <h3>Create</h3>
+          :
           <div>
-          Stoodges Tokens<br />
-          {ourTokensList ?
-            <Select
-              style={{ width: 200 }}
-              onChange={(value)=>{
-                setTokenAddress(value);
-                }}
-              >
-                <Option value={ourTokensList[0]}>MoCoin</Option>
-                <Option value={ourTokensList[1]}>LarryCoin</Option>
-                <Option value={ourTokensList[2]}>CurlyCoin</Option>
-
-            </Select>
-          : 'Loading..'}
-
+            <p>Will selected: {willIndex}</p>
+            <h3>Update</h3>
           </div>
-          <Divider />
-          ERC20 Token <br />
-            <TokenList
-              token={tokenAddress}
-              onChange={e => {setTokenAddress(e)}}
-            />
-            <br />
-          to deposit
-
-          <Input disabled={!tokenAddress} onChange={(e)=>{
-              setDepositValue(e.target.value);
-          }}/>
-          <Divider />
-          ETH
-          <EtherInput
-            price={price}
-            value={depositEth}
-            onChange={value => {
-              setDepositEth(value);
-            }}
-          />
-          </Card>
-
-          <Card style={{marginTop:32}}>
-{/*
+        }
+        <h2>TimeLock</h2>
+        <div style={{border:"1px solid #cccccc", padding:16, width:600, margin:"auto",marginTop:64}}>
+          {data==null?
+              <TokenInput
+                price={price}
+                ourTokensList={ourTokensList}
+                onTokenSelected = {setTokenAddress}
+                onTokenValue = {setDepositValue}
+                onEthValue = {setDepositEth}
+              />
+          :
             <div>
-              <Switch defaultChecked onChange={
-                setEditable(!editable)
-              } /> Editable?
-            </div>
-          */}
 
+              Token: {data.wills[0].token}<br/>
+              Token Balance: {data.wills[0].tokenBalance}<br/>
+              It is needed to define tokenAddress in initialize for having it already...<br/>
+              <Input onChange={(e)=>{setDepositValue(e.target.value)}} />
+              <Button disabled={!depositValue} onClick={async ()=>{
+                await tx({
+                  to:writeContracts.Noun.address,
+                  data:writeContracts.Noun.interface.encodeFunctionData('depositTokensToWill(uint256,address,uint256)',[willIndex-1, data.wills[0].token,parseEther(depositValue)])
+                })
+              }}>Deposit tokens</Button><br/>
+              <Input onChange={(e)=>{setDepositEth(e.target.value)}} />
+              <Button disabled={!depositEth} onClick={async ()=>{
+                await tx({
+                  to:writeContracts.Noun.address,
+                  value:parseEther(depositEth),
+                  data:writeContracts.Noun.interface.encodeFunctionData('fundWillETH(uint256)',[willIndex-1])
+                })
+              }}>Deposit ETH</Button><br/>
+
+            </div>
+          }
+          <Divider />
+          {data==null?
+            <Card style={{marginTop:32}}>
             <div style={{marginTop:8}}>
               <h3> DethLOCK time </h3>
                 <DatePicker onChange={(e)=>{
                     let dateSelected = new Date(e);
                     setDeadline(Math.floor(dateSelected.getTime()/1000));
-                    {/* Js is in miliseconds, block.timestamp in sec*/}
                   }}/>
                 <Button onClick={()=>{setDeadline(ts+60)}}> +1min</Button>
             </div>
 
           </Card>
-
-{/*          <BeneficiariesInput
-            ensProvider={mainnetProvider}
-            value={beneficiaries}
-            onChange={e => {setBeneficiaries(e)}}
-          />
-*/}
-
+          :
+          <div>
+            Deadline: {new Date(data.wills[0].deadline * 1000).toISOString()} <br />
+            <DatePicker onChange={(e)=>{
+                let dateSelected = new Date(e);
+                setDeadline(Math.floor(dateSelected.getTime()/1000));
+              }}/>
+            <Button onClick={()=>{setDeadline(ts+60)}}> +1min</Button>
+            <br/>
+            <Button disabled={!deadline} onClick={async ()=>{
+              await tx({
+                to:writeContracts.Noun.address,
+                data:writeContracts.Noun.interface.encodeFunctionData('setDeadline(uint256,uint256)',[willIndex-1, deadline])
+              })
+            }}>Set new deadline</Button><br/>
+          </div>
+        }
+        <Divider />
         <AddressInput
           // ensProvider={props.ensProvider}
           placeholder="beneficiary"
           value={beneficiaries}
           onChange={setBeneficiaries}
         />
+        {data == null?
+        null:
+        <div>
+          Current Benefactor:
+          <Address
+            value={data.wills[0].beneficiary}
+            ensProvider={mainnetProvider}
+          />
+          <br/>
+          <Button disabled={!beneficiaries} onClick={async ()=>{
+            await tx({
+              to:writeContracts.Noun.address,
+              data:writeContracts.Noun.interface.encodeFunctionData('setBeneficiary(uint256,address)',[willIndex-1, beneficiaries])
+            })
+          }}>Change beneficiary</Button><br/>
 
+        </div>
+        }
 
+        <Divider />
+        {data==null?
+          <Button type="primary" disabled={!beneficiaries || !deadline} onClick={async ()=>{
+              let res = await tx({
+                to: writeContracts.Noun.address,
+                value: parseEther(depositEth),
+                data: writeContracts.Noun.interface.encodeFunctionData(
+                  "createNewWill(address, address, address, uint256)",
+                  [address, beneficiaries, tokenAddress, deadline]
+                )});
 
-
-        <Button type="primary" disabled={!beneficiaries || !deadline} onClick={async ()=>{
-            let res = await tx({
-              to: writeContracts.Noun.address,
-              value: parseEther(depositEth),
-              data: writeContracts.Noun.interface.encodeFunctionData(
-                "createWill(address, address, uint256)",
-                [beneficiaries, tokenAddress, deadline]
-              )});
-
-        }}>
-              Create
-            </Button>
+              }}>
+                Create
+              </Button>
+            :null}
             <br />
             {ts?ts:null}
-            {/*value: parseEther(depositValue),*/}
-    </div>
-    TimeLock Address:
-    <Address
-        value={readContracts?readContracts.Noun.address:readContracts}
-        ensProvider={mainnetProvider}
-        fontSize={16}
-    /> <br />
-    <Balance
-      address={readContracts?readContracts.Noun.address:readContracts}
-      provider={localProvider}
-      dollarMultiplier={price}
-    />
+
+      </div>
+
+      TimeLock Address:
+      <Address
+          value={readContracts?readContracts.Noun.address:readContracts}
+          ensProvider={mainnetProvider}
+          fontSize={16}
+      /> <br />
+      <Balance
+        address={readContracts?readContracts.Noun.address:readContracts}
+        provider={localProvider}
+        dollarMultiplier={price}
+      />
 
     </div>
   );
