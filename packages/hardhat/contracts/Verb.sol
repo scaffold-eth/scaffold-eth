@@ -1,5 +1,5 @@
 pragma solidity 0.8.0;
-import './DethLock.sol';
+import './inherited/DethLock.sol';
 import './included/SafeMath.sol';
 
 // SPDX-License-Identifier: UNLICENSED

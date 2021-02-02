@@ -1,6 +1,6 @@
 pragma solidity 0.8.0;
 import "hardhat/console.sol";
-import './DethLock.sol';
+import './inherited/DethLock.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 

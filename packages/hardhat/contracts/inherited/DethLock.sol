@@ -1,5 +1,5 @@
 pragma solidity 0.8.0;
-import './inherited/Accountable.sol';
+import './Accountable.sol';
 
 // SPDX-License-Identifier: UNLICENSED
 
