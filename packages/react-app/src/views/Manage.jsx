@@ -191,6 +191,7 @@ function Manage(props) {
           My inheritances
           </Radio>
           </Radio.Group>
+          <Divider />
           {data?<Table dataSource={data.wills} columns={willsColumns} rowKey={"index"} />:'Loading..'}
 
           <Divider />

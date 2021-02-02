@@ -20,7 +20,7 @@ contract Pausable is Ownable{
     }
 
     constructor () {
-        _bool['paused'] = true;
+        _bool['paused'] = false;//Modified!
     }
 
     function Pause() public onlyOwner Unpaused {

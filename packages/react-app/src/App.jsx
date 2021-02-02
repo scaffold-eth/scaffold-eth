@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Button, Menu, Checkbox } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -71,14 +71,11 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider)
 
 
-  const isAdmin = async()=>{
-    let isit = await readContracts.Noun.amIOwner();
-    return isit == address ;
-  }
+  const ownerNoun = useContractReader(readContracts,"Noun", "_owner")
+  const [modo, setModo]=useState(false);
 
-  const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
-  console.log("Eventos de creacion: ", setCreate);
-
+  // const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
+  // console.log("Eventos de creacion: ", setCreate);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -113,7 +110,7 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Admin</Link>
           </Menu.Item>
           <Menu.Item key="/create">
             <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
@@ -128,7 +125,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-          {isAdmin ?
+          {address==ownerNoun || !modo ?
             <div>
               Only owner of contract should see this (admin page)<br/>
               <Contract
@@ -176,7 +173,7 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              setCreate= {setCreate}
+              // setCreate= {setCreate}
               willIndex = {willIndex}
             />
           </Route>
@@ -189,7 +186,7 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
-            setCreate={setCreate}
+            // setCreate={setCreate}
             address={address}
             writeContracts={writeContracts}
             readContracts={readContracts}
@@ -199,6 +196,10 @@ function App(props) {
           </Route>
         </Switch>
       </BrowserRouter>
+
+      <div style={{ position: "fixed", textAlign: "center", right: '50%', top: 0, padding: 10 }}>
+        <Checkbox onChange={(e)=>{setModo(e.target.checked)}}>App</Checkbox>
+      </div>
 
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
@@ -216,7 +217,7 @@ function App(props) {
          />
       </div>
 
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
+      {modo?null:
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
          <Row align="middle" gutter={[4, 4]}>
            <Col span={8}>
@@ -256,7 +257,7 @@ function App(props) {
            </Col>
          </Row>
        </div>
-
+      }
     </div>
   );
 }

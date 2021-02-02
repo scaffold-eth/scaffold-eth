@@ -5,28 +5,36 @@ import "./Storage.sol";
 // SPDX-License-Identifier: UNLICENSED
 
 contract Ownable is Storage{
-
+    address public _owner;
     event OwnershipTransferred (address newOwner);
 
     modifier onlyOwner(){
-        require(msg.sender == _payable['owner'],
+        require(msg.sender == _owner,
+          /* _payable['owner'], */
             'Only the contract owner can do that.');
         _;
     }
 
     constructor() {
-        _payable['owner'] = payable(msg.sender);
+  //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+        address msgSender = payable(msg.sender);
+        _owner = msgSender;
+        /* _payable['owner'] = payable(msg.sender); */
     }
 
     function amIOwner() public view returns (bool) {
-        return (address(msg.sender) == _payable['owner']);
+        return (address(msg.sender) == _owner);
+        /* _payable['owner']); */
     }
 
     function transferOwnership(address payable newOwner) public onlyOwner {
-        require(newOwner !=  _payable['owner'],
+        require(newOwner != _owner,
+           /* _payable['owner'], */
             'Cannot transfer ownership to yourself.');
-        _payable['owner'] = newOwner;
-        assert(_payable['owner'] == newOwner);
+        /* _payable['owner']  */
+        _owner = newOwner;
+        assert(_owner == newOwner);
+          /* _payable['owner'] == newOwner); */
         emit OwnershipTransferred(newOwner);
     }
 
