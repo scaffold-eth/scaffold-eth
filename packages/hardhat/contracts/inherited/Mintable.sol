@@ -5,6 +5,7 @@ import "./Accountable.sol";
 // SPDX-License-Identifier: UNLICENSED
 
 contract Mintable is Accountable{
+    
     constructor (uint256 price){
         _uint['price'] = price;
     }

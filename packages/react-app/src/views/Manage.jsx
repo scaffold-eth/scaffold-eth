@@ -3,18 +3,18 @@
 import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Radio, Button, Typography, Table, Input, List, Divider } from "antd";
-import { Address } from "../components";
-import 'graphiql/graphiql.min.css';
 import { useQuery, gql } from '@apollo/client';
+import { Address } from "../components";
 import GraphiQL from 'graphiql';
+import 'graphiql/graphiql.min.css';
 import fetch from 'isomorphic-fetch';
 import { parseEther, formatEther } from "@ethersproject/units";
-import {  Redirect } from "react-router-dom";
+
 
 const highlight = { marginLeft: 4, marginRight: 8, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }
 
 function Manage(props) {
-  const [query, setQuery] = useState('All');
+  const [query, setQuery] = useState(null);
 
   function graphQLFetcher(graphQLParams) {
     return fetch(props.subgraphUri, {
@@ -24,22 +24,7 @@ function Manage(props) {
     }).then(response => response.json());
   }
 
-  const EXAMPLE_GRAPHQL=`
-  {
-    wills(first: 25, orderBy: deadline, orderDirection: desc) {
-      index
-      owner
-      beneficiary
-      deadline
-      value
-      token
-      tokenBalance
-
-    }
-  }
-  `;
-
-  const queries={'All':`
+  const EXAMPLE_GRAPHQL = `
   {
     wills(first: 25, orderBy: deadline, orderDirection: desc) {
       index
@@ -50,9 +35,9 @@ function Manage(props) {
     }
   }
   `
-  ,'owner':`
-  query Will($address:Bytes!){
-      wills(first: 25, orderBy: deadline, orderDirection: desc, where:{owner:$address}) {
+  const QUERY_OWN = gql`
+  query Will($address:Bytes!,$address2:Bytes!){
+      wills(first: 25, orderBy: deadline, orderDirection: desc, where:{owner:$address, beneficiary:$address2}) {
       index
       owner
       beneficiary
@@ -60,9 +45,10 @@ function Manage(props) {
       value
     }
   }
-  `,'beneficiary':`
-  query Will($address:Bytes!){
-      wills(first: 25, orderBy: deadline, orderDirection: desc,where:{beneficiary:$address}) {
+  `
+  const QUERY_INHERITANCES = gql`
+  query Will($beneficiary:Bytes!){
+      wills(where:{owner:$beneficiary}) {
       index
       owner
       beneficiary
@@ -70,10 +56,12 @@ function Manage(props) {
       value
     }
   }
-  `}
+  `
 
-  const QUERY_GQL = gql(queries[query]);
-  const { loading, data } = useQuery(QUERY_GQL,{variables:{address:props.address.toLowerCase()}, pollInterval: 2500});
+  const QUERY_GQL = gql(EXAMPLE_GRAPHQL);
+  const { loading, data } = useQuery(QUERY_GQL,{ pollInterval: 2500});
+  //useQuery(QUERY_OWN,{variables:{address2:props.address.toLowerCase(),address:props.address.toLowerCase()}, pollInterval: 2500});
+
 
   const willsColumns = [
     {
@@ -123,9 +111,9 @@ function Manage(props) {
     },
     {
       title: 'Amount Token',
-      key: 'tokenBalance',
-      dataIndex: 'tokenBalance',
-      render: (record) => <p>{record}</p>
+      key: 'tokenValue',
+      dataIndex: 'tokenValue',
+      // render: (record) => <p>{record}</p>
     },
     {
       title: 'Actions',
@@ -133,7 +121,7 @@ function Manage(props) {
       render: (record) =>
         <div>
           <Button
-            disabled={record.owner.toLowerCase() != props.address.toLowerCase()||record.value==0}
+            disabled={record.owner.toLowerCase() != props.address.toLowerCase()}
             onClick={async() =>{
                           let totalBalance = await props.readContracts.Noun.ethBalance(record.index-1);
                           await props.tx({
@@ -145,7 +133,7 @@ function Manage(props) {
                       withdraw</Button>
 
           <Button
-            disabled={record.beneficiary.toLowerCase()!= props.address.toLowerCase()||ts<record.deadline||record.value==0}
+            disabled={record.beneficiary.toLowerCase()!= props.address.toLowerCase()||ts<record.deadline}
             onClick={async() =>{
               let totalBalance = await props.readContracts.Noun.ethBalance(record.index-1);
               await props.tx({
@@ -156,18 +144,14 @@ function Manage(props) {
             }>
             claim</Button>
 
-            <Button
-              disabled={record.owner.toLowerCase()!= props.address.toLowerCase()}
-              onClick={()=>{
-                let index = record.index-1;
-                props.willSelector(index);
-              }
-                //
-              }>
-              Update</Button>
         </div>
     },
+
     ];
+  const deployWarning = (
+    <div style={{marginTop:8,padding:8}}>{"Warning: 🤔 is it any event fired yet?"}</div>
+  )
+
 
   var ts = Math.floor(new Date().getTime()/1000);
 
@@ -180,22 +164,23 @@ function Manage(props) {
   return (
       <>
           <div>
-          <Radio.Group onChange={(e)=>{setQuery(e.target.value)}} value={query}>
-          <Radio style={radioStyle} value={'All'}>
-          All wills
-          </Radio>
-          <Radio style={radioStyle} value={'owner'}>
-          My wills
-          </Radio>
-          <Radio style={radioStyle} value={'beneficiary'}>
-          My inheritances
-          </Radio>
-          </Radio.Group>
-          <Divider />
           {data?<Table dataSource={data.wills} columns={willsColumns} rowKey={"index"} />:'Loading..'}
 
           <Divider />
           <span >Current timestamp: {ts?ts:'loading..'}</span><br />
+          <Radio.Group onChange={(e)=>{setQuery(e.target.value)}} value={query}>
+                <Radio style={radioStyle} value={null}>
+                  All wills
+                </Radio>
+                <Radio style={radioStyle} value={'owner'}>
+                  My wills
+                </Radio>
+                <Radio style={radioStyle} value={'beneficiary'}>
+                  My inheritances
+                </Radio>
+          </Radio.Group>
+          <Divider />
+
             <div style={{margin:32, height:400, border:"1px solid #888888", textAlign:'left'}}>
               <GraphiQL fetcher={graphQLFetcher} docExplorerOpen={true} query={EXAMPLE_GRAPHQL}/>
             </div>
