@@ -3,12 +3,6 @@
   "inputs": [
     {
       "indexed": false,
-      "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    },
-    {
-      "indexed": false,
       "internalType": "address",
       "name": "beneficiary",
       "type": "address"
@@ -25,7 +19,56 @@
       "type": "uint256"
     }
   ],
-  "name": "ethBalance",
+  "name": "whoBenefits",
+  "outputs": [
+    {
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+},
+
+{
+  "inputs": [
+    {
+      "internalType": "uint256",
+      "name": "index",
+      "type": "uint256"
+    }
+  ],
+  "name": "whoOwns",
+  "outputs": [
+    {
+      "internalType": "address",
+      "name": "",
+      "type": "address"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+},
+{
+  "inputs": [
+    {
+      "internalType": "address payable",
+      "name": "_beneficiary",
+      "type": "address"
+    },
+    {
+      "internalType": "address payable",
+      "name": "_tokenAddress",
+      "type": "address"
+    },
+    {
+      "internalType": "uint256",
+      "name": "_deadline",
+      "type": "uint256"
+    }
+  ],
+  "name": "createWill",
   "outputs": [
     {
       "internalType": "uint256",
@@ -33,7 +76,7 @@
       "type": "uint256"
     }
   ],
-  "stateMutability": "view",
+  "stateMutability": "payable",
   "type": "function"
 },
 
@@ -74,12 +117,6 @@
     {
       "indexed": false,
       "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    },
-    {
-      "indexed": false,
-      "internalType": "uint256",
       "name": "old_value",
       "type": "uint256"
     },
@@ -91,49 +128,6 @@
     }
   ],
   "name": "DeadlineUpdated",
-  "type": "event"
-},
-{
-  "anonymous": false,
-  "inputs": [
-    {
-      "indexed": false,
-      "internalType": "address",
-      "name": "owner",
-      "type": "address"
-    },
-    {
-      "indexed": false,
-      "internalType": "address",
-      "name": "beneficiary",
-      "type": "address"
-    },
-    {
-      "indexed": false,
-      "internalType": "address",
-      "name": "tokenAddress",
-      "type": "address"
-    },
-    {
-      "indexed": false,
-      "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    },
-    {
-      "indexed": false,
-      "internalType": "uint256",
-      "name": "value",
-      "type": "uint256"
-    },
-    {
-      "indexed": false,
-      "internalType": "uint256",
-      "name": "deadline",
-      "type": "uint256"
-    }
-  ],
-  "name": "NewWillCreated",
   "type": "event"
 },
 {
@@ -209,8 +203,20 @@
     },
     {
       "indexed": false,
+      "internalType": "address",
+      "name": "beneficiary",
+      "type": "address"
+    },
+    {
+      "indexed": false,
       "internalType": "uint256",
       "name": "index",
+      "type": "uint256"
+    },
+    {
+      "indexed": false,
+      "internalType": "uint256",
+      "name": "deadline",
       "type": "uint256"
     },
     {
@@ -334,64 +340,6 @@
 {
   "inputs": [
     {
-      "internalType": "address payable",
-      "name": "_owner",
-      "type": "address"
-    },
-    {
-      "internalType": "address payable",
-      "name": "_beneficiary",
-      "type": "address"
-    },
-    {
-      "internalType": "address payable",
-      "name": "_tokenAddress",
-      "type": "address"
-    },
-    {
-      "internalType": "uint256",
-      "name": "_deadline",
-      "type": "uint256"
-    }
-  ],
-  "name": "createNewWill",
-  "outputs": [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  "stateMutability": "payable",
-  "type": "function"
-},
-{
-  "inputs": [
-    {
-      "internalType": "address payable",
-      "name": "beneficiary",
-      "type": "address"
-    },
-    {
-      "internalType": "uint256",
-      "name": "_deadline",
-      "type": "uint256"
-    }
-  ],
-  "name": "createWill",
-  "outputs": [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  "stateMutability": "payable",
-  "type": "function"
-},
-{
-  "inputs": [
-    {
       "internalType": "uint256",
       "name": "index",
       "type": "uint256"
@@ -474,6 +422,25 @@
       "type": "uint256"
     }
   ],
+  "name": "ethBalance",
+  "outputs": [
+    {
+      "internalType": "uint256",
+      "name": "",
+      "type": "uint256"
+    }
+  ],
+  "stateMutability": "view",
+  "type": "function"
+},
+{
+  "inputs": [
+    {
+      "internalType": "uint256",
+      "name": "index",
+      "type": "uint256"
+    }
+  ],
   "name": "fundWillETH",
   "outputs": [
     {
@@ -536,63 +503,6 @@
     }
   ],
   "name": "tokenAddress",
-  "outputs": [
-    {
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-},
-{
-  "inputs": [
-    {
-      "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    }
-  ],
-  "name": "tokenBalance",
-  "outputs": [
-    {
-      "internalType": "uint256",
-      "name": "",
-      "type": "uint256"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-},
-{
-  "inputs": [
-    {
-      "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    }
-  ],
-  "name": "whoBenefits",
-  "outputs": [
-    {
-      "internalType": "address",
-      "name": "",
-      "type": "address"
-    }
-  ],
-  "stateMutability": "view",
-  "type": "function"
-},
-{
-  "inputs": [
-    {
-      "internalType": "uint256",
-      "name": "index",
-      "type": "uint256"
-    }
-  ],
-  "name": "whoOwns",
   "outputs": [
     {
       "internalType": "address",
