@@ -38,11 +38,12 @@ export default function Create({address, mainnetProvider, userProvider, localPro
   `
 
   const { loading, data } = useQuery(QUERY_WILL,{variables:{test:willIndex}, pollInterval: 2500});
-  console.log(data);
+  // if(data){setTokenAddress(data.wills[0].token)};
 
   const ourTokensList = [{name:'MoCoin',address:readContracts.MoCoin.address},
                        {name:'LarryCoin',address:readContracts.LarryCoin.address},
                        {name:'CurlyCoin',address:readContracts.CurlyCoin.address}];
+
 
   return (
     <div>
@@ -66,6 +67,7 @@ export default function Create({address, mainnetProvider, userProvider, localPro
               />
           :
             <div>
+
               Token: {data.wills[0].token}<br/>
               Token Balance: {data.wills[0].tokenBalance}<br/>
               It is needed to define tokenAddress in initialize for having it already...<br/>
@@ -73,7 +75,7 @@ export default function Create({address, mainnetProvider, userProvider, localPro
               <Button disabled={!depositValue} onClick={async ()=>{
                 await tx({
                   to:writeContracts.Noun.address,
-                  data:writeContracts.Noun.interface.encodeFunctionData('depositTokensToWill(uint256,address,uint256)',[willIndex-1, tokenAddress,parseEther(depositValue)])
+                  data:writeContracts.Noun.interface.encodeFunctionData('depositTokensToWill(uint256,address,uint256)',[willIndex-1, data.wills[0].token,parseEther(depositValue)])
                 })
               }}>Deposit tokens</Button><br/>
               <Input onChange={(e)=>{setDepositEth(e.target.value)}} />
@@ -102,13 +104,14 @@ export default function Create({address, mainnetProvider, userProvider, localPro
           </Card>
           :
           <div>
-            Deadline: {data.wills[0].deadline} <br />
+            Deadline: {new Date(data.wills[0].deadline * 1000).toISOString()} <br />
             <DatePicker onChange={(e)=>{
                 let dateSelected = new Date(e);
                 setDeadline(Math.floor(dateSelected.getTime()/1000));
               }}/>
             <Button onClick={()=>{setDeadline(ts+60)}}> +1min</Button>
-            <Button disabled={!setDeadline} onClick={async ()=>{
+            <br/>
+            <Button disabled={!deadline} onClick={async ()=>{
               await tx({
                 to:writeContracts.Noun.address,
                 data:writeContracts.Noun.interface.encodeFunctionData('setDeadline(uint256,uint256)',[willIndex-1, deadline])
@@ -117,22 +120,21 @@ export default function Create({address, mainnetProvider, userProvider, localPro
           </div>
         }
         <Divider />
-        {data == null?
         <AddressInput
           // ensProvider={props.ensProvider}
           placeholder="beneficiary"
           value={beneficiaries}
           onChange={setBeneficiaries}
         />
-        :
+        {data == null?
+        null:
         <div>
-          Benefactor: {data.wills[0].beneficiary}<br/>
-          <AddressInput
-            // ensProvider={props.ensProvider}
-            placeholder="beneficiary"
-            value={beneficiaries}
-            onChange={setBeneficiaries}
+          Current Benefactor:
+          <Address
+            value={data.wills[0].beneficiary}
+            ensProvider={mainnetProvider}
           />
+          <br/>
           <Button disabled={!beneficiaries} onClick={async ()=>{
             await tx({
               to:writeContracts.Noun.address,
@@ -150,8 +152,8 @@ export default function Create({address, mainnetProvider, userProvider, localPro
                 to: writeContracts.Noun.address,
                 value: parseEther(depositEth),
                 data: writeContracts.Noun.interface.encodeFunctionData(
-                  "createWill(address, address, uint256)",
-                  [beneficiaries, tokenAddress, deadline]
+                  "createNewWill(address, address, address, uint256)",
+                  [address, beneficiaries, tokenAddress, deadline]
                 )});
 
               }}>

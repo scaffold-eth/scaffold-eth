@@ -19,8 +19,8 @@ dataSources:
         - name: Noun
           file: ./abis/Noun.json
       eventHandlers:
-        - event: WillCreated(address,address,uint256,uint256,uint256)
-          handler: handleWillCreated
+        - event: NewWillCreated(address,address,address,uint256,uint256,uint256)
+          handler: handleNewWillCreated
         - event: WillDeFunded(address,uint256,uint256)
           handler: handleWillDeFunded
         - event: WillFunded(address,uint256,uint256)
@@ -31,4 +31,8 @@ dataSources:
           handler: handleTokensWithdrawnFromWill
         - event: BenifitedTokens(address,address,uint256,uint256)
           handler: handleBenifitedTokens
+        - event: BeneficiarySet(uint256,address)
+          handler: handleBeneficiarySet
+        - event: DeadlineUpdated(uint256,uint256,uint256)
+          handler: handleDeadlineUpdated
       file: ./src/mapping.ts

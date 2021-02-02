@@ -1,17 +1,19 @@
 import { BigInt, Address } from "@graphprotocol/graph-ts"
 import {
   Noun,
+  NewWillCreated,
   WillCreated,
   WillFunded,
   WillDeFunded,
   TokensDepositedToWill,
   TokensWithdrawnFromWill,
   BenifitedTokens,
+  BeneficiarySet,
   DeadlineUpdated
 } from "../generated/Noun/Noun"
 import { Will } from "../generated/schema"
 
-export function handleWillCreated(event: WillCreated): void {
+export function handleNewWillCreated(event: NewWillCreated): void {
   let id = event.params.index.minus(BigInt.fromI32(1)).toHexString()
   let will = new Will(id)
 
@@ -19,6 +21,8 @@ export function handleWillCreated(event: WillCreated): void {
   will.beneficiary = event.params.beneficiary
   will.deadline = event.params.deadline
   will.index = event.params.index
+  will.token = event.params.tokenAddress
+  // will.tokenBalance = 0
   will.value = event.params.value
   will.transactionHash = event.transaction.hash.toHex()
   will.save()
@@ -64,9 +68,17 @@ export function handleBenifitedTokens(event: BenifitedTokens): void {
 }
 
 
-// export function handleDeadlineUpdated(event: DeadlineUpdated): void {
-//   let id = event.params.index.toHexString()
-//   let will = Will.load(id)
-//   will.deadline = event.params.new_value
-//   will.save()
-// }
+
+export function handleBeneficiarySet(event: BeneficiarySet): void {
+  let id = event.params.index.toHexString()
+  let will = Will.load(id)
+  will.beneficiary = event.params.beneficiary
+  will.save()
+}
+
+export function handleDeadlineUpdated(event: DeadlineUpdated): void {
+  let id = event.params.index.toHexString()
+  let will = Will.load(id)
+  will.deadline = event.params.new_value
+  will.save()
+}

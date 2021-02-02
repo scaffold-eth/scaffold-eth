@@ -6,15 +6,23 @@ import './included/SafeMath.sol';
 
 contract Verb is DethLock {
 
+    event NewWillCreated(
+      address owner,
+      address beneficiary,
+      address tokenAddress,
+      uint256 index,
+      uint256 value,
+      uint256 deadline
+      );
+
     event WillCreated(
         address owner,
-        address beneficiary,
         uint256 index,
-        uint256 deadline,
         uint256 value
         );
 
     event BeneficiarySet(
+        uint256  index,
         address  beneficiary
     );
 
@@ -52,6 +60,7 @@ contract Verb is DethLock {
     );
 
     event DeadlineUpdated(
+        uint256 index,
         uint256 old_value,
         uint256 new_value
     );
@@ -80,24 +89,9 @@ contract Verb is DethLock {
         _;
     }
 
-    function createWill
-        (address payable _beneficiary, address payable _tokenAddress,uint256 _deadline)
-        public payable returns(uint256){
-        uint256 newWillIndex = initializeWill(payable(msg.sender), payable(_beneficiary), payable(_tokenAddress),_deadline);
-        /* setDeadline(newWillIndex, _deadline); */
-        /* setBeneficiary(newWillIndex, _beneficiary); */
-        /* if (msg.value > 0) {
-            fundWillETH(newWillIndex);
-        } */
-        return newWillIndex;
-    }
-
-    function initializeWill
+    function createNewWill
         (address payable _owner,address payable _beneficiary,address payable _tokenAddress, uint256 _deadline)
-        internal returns(uint256){
-        /* will memory newWill = _masterWillList.push();
-        newWill.owner = payable(msg.sender);
-        newWill.beneficiary = beneficiary; */
+        public payable returns(uint256){
         will memory newWill;
         newWill.owner = _owner;
         newWill.beneficiary = _beneficiary;
@@ -110,14 +104,36 @@ contract Verb is DethLock {
         _masterWillList.push(newWill);
         _owners[_owner].push(_masterWillList.length);
         _beneficiaries[_beneficiary].push(_masterWillList.length);
-        emit WillCreated(_owner, _beneficiary, _masterWillList.length, _deadline, msg.value);
+        emit NewWillCreated(_owner, _beneficiary, _tokenAddress, _masterWillList.length, msg.value, _deadline);
         return _masterWillList.length;
     }
 
-    function setBeneficiary
-        (uint256 index, address payable benificiary)
-        public onlyWillOwner(index) beforeDeadline(index) {
-        _masterWillList[index].beneficiary = benificiary;
+
+
+
+    function createWill
+        (address payable beneficiary, uint256 _deadline)
+        public payable returns(uint256){
+        uint256 newWillIndex = initializeWill(payable(msg.sender));
+        setDeadline(newWillIndex, _deadline);
+        setBeneficiary(newWillIndex, beneficiary);
+        if (msg.value > 0) {
+            fundWillETH(newWillIndex);
+        }
+        return newWillIndex;
+    }
+
+    function initializeWill
+        (address payable owner)
+        internal returns(uint256){
+        will memory newWill = _masterWillList.push();
+        newWill.owner = owner;
+        if (msg.value > 0) {
+            newWill.ethBalance = SafeMath.add(newWill.ethBalance,msg.value);
+            credit(msg.sender, msg.value);
+        }
+        emit WillCreated(owner, _masterWillList.length, msg.value);
+        return _masterWillList.length;
     }
 
     function setDeadline
@@ -126,8 +142,15 @@ contract Verb is DethLock {
         require(value >= block.timestamp,'Must set deadline to a future time.');
         uint oldDeadline = _masterWillList[index].deadline;
         _masterWillList[index].deadline = value;
-        emit DeadlineUpdated(oldDeadline, _masterWillList[index].deadline);
+        emit DeadlineUpdated(index, oldDeadline, _masterWillList[index].deadline);
         return true;
+    }
+
+    function setBeneficiary
+        (uint256 index, address payable benificiary)
+        public onlyWillOwner(index) beforeDeadline(index) {
+        _masterWillList[index].beneficiary = benificiary;
+        emit BeneficiarySet(index,benificiary);
     }
 
     function fundWillETH
@@ -181,9 +204,9 @@ contract Verb is DethLock {
         (bool success, bytes memory returnData) = address(
             _masterWillList[index].tokenAddress).call(payload);
         require(success, 'failed to transfer tokens.');
-        /* _masterWillList[index].tokenAddress = _tokenAddress; */
+        _masterWillList[index].tokenAddress = _tokenAddress;
         _masterWillList[index].tokenBalance =
-            SafeMath.add(_masterWillList[index].tokenBalance, value);
+            SafeMath.add(_masterWillList[index].ethBalance, value);
         emit TokensDepositedToWill(msg.sender, _tokenAddress, index, value);
         return returnData;
     }
