@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import React from "react";
 // import { formatEther } from "@ethersproject/units";
 // import { Address, AddressInput, TokenList} from "../components";

@@ -17,6 +17,6 @@ contract DethLock is Accountable {
 
     will[] _masterWillList;
     mapping (address => uint[]) _owners;
-    mapping (address => uint[]) _beneficiaries;
+    mapping (address => uint[]) _beneficiaries; 
 
 }

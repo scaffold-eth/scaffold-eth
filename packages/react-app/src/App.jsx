@@ -12,8 +12,25 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, Create, Manage } from "./views"
+import { Hints, ExampleUI, Subgraph, DethlockUI } from "./views"
+/*
+    Welcome to 🏗 scaffold-eth !
 
+    Code:
+    https://github.com/austintgriffith/scaffold-eth
+
+    Support:
+    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
+    or DM @austingriffith on twitter or telegram
+
+    You should get your own Infura.io ID and put it in `constants.js`
+    (this is your connection to the main Ethereum network for ENS etc.)
+
+
+    📡 EXTERNAL CONTRACTS:
+    You can also bring in contract artifacts in `constants.js`
+    (and then use the `useExternalContractLoader()` hook!)
+*/
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
@@ -60,22 +77,25 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
+  if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
+  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
+  if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
-
 
   const ownerNoun = useContractReader(readContracts,"Noun", "_owner")
   const [modo, setModo]=useState(false);
 
   // const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
   // console.log("Eventos de creacion: ", setCreate);
+
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -100,6 +120,7 @@ function App(props) {
     setRoute('/create');
     setRedirect(true);
   };
+
   return (
     <div className="App">
 
@@ -112,8 +133,8 @@ function App(props) {
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Admin</Link>
           </Menu.Item>
-          <Menu.Item key="/create">
-            <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
+          <Menu.Item key="/subgraph">
+            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
           <Menu.Item key="/manage">
             <Link onClick={()=>{setRoute("/manage");setRedirect(false);setWillIndex(null)}} to="/manage">Manage</Link>
@@ -161,9 +182,18 @@ function App(props) {
           </Route>
           <Route path="/hints">
             <Hints />
+
           </Route>
-          <Route path="/create">
-            <Create
+          <Route path="/subgraph">
+            <Subgraph
+            subgraphUri={props.subgraphUri}
+            tx={tx}
+            writeContracts={writeContracts}
+            mainnetProvider={mainnetProvider}
+            />
+          </Route>
+          <Route path="/dethlockui">
+            <DethlockUI
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -215,6 +245,7 @@ function App(props) {
            logoutOfWeb3Modal={logoutOfWeb3Modal}
            blockExplorer={blockExplorer}
          />
+         {faucetHint}
       </div>
 
       {modo?null:

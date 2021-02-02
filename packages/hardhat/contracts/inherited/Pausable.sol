@@ -4,7 +4,7 @@ import "./Ownable.sol";
 // SPDX-License-Identifier: UNLICENSED
 
 contract Pausable is Ownable{
-
+    
     event PauseEvent(string msg);
 
     modifier Unpaused(){
@@ -18,9 +18,9 @@ contract Pausable is Ownable{
         'Method is only callable while contract is paused.');
         _;
     }
-
+    
     constructor () {
-        _bool['paused'] = false;//Modified!
+        _bool['paused'] = false; // Modified!
     }
 
     function Pause() public onlyOwner Unpaused {
@@ -36,4 +36,5 @@ contract Pausable is Ownable{
     function isPaused() public view returns (bool) {
         return _bool['paused'];
      }
+
 }

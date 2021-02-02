@@ -2,7 +2,6 @@
 
 pragma solidity 0.8.0;
 
-
 import "./included/SafeMath.sol";
 
 
@@ -75,7 +74,7 @@ interface IERC20 {
      * a call to {approve}. `value` is the new allowance.
      */
     event Approval(address indexed owner, address indexed spender, uint256 value);
-}
+} 
 
 
 /**

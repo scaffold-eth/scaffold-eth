@@ -13,5 +13,4 @@ contract Divisible is Storage{
     function decimals() public view returns (uint8) {
         return uint8(_uint['decimals']);
     }
-
 }

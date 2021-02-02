@@ -1,37 +1,47 @@
-/* eslint no-use-before-define: "warn" */
 const fs = require("fs");
 const chalk = require("chalk");
 const { config, ethers } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
-const main = async () => {
+const deploy = async (contractName, _args = [], overrides = {}) => {
+  console.log(` 🛰  Deploying: ${contractName}`);
+  const contractArgs = _args || [];
+  const contractArtifacts = await ethers.getContractFactory(contractName);
+  const deployed = await contractArtifacts.deploy(...contractArgs, overrides);
+  const encoded = abiEncodeArgs(deployed, contractArgs);
+  fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
+  console.log(
+    " 📄",
+    chalk.cyan(contractName),
+    "deployed to:",
+    chalk.magenta(deployed.address)
+  );
+  if (!encoded || encoded.length <= 2) return deployed;
+  fs.writeFileSync(`artifacts/${contractName}.args`, encoded.slice(2));
+  return deployed;
+};
 
+const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
+  const verb = await deploy("Verb"); // Verb deploys first for address
+  const noun = await deploy("Noun", [verb.address]); // Proxy
 
   // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 16 vvvv
-
-  const verb = await deploy('Verb'); // Verb deploys first for address
-  const noun = await deploy('Noun',[verb.address]); // Proxy
-  const curlyCoin = await deploy("CurlyCoin",['CURLY','CRL'])
-  const larryCoin = await deploy("LarryCoin",['LARRY','LRY'])
-  const moCoin = await deploy("MoCoin",['MO','MOC'])
-
+  const CurlyCoin = await deploy("CurlyCoin", ["CURLY", "CRL"]);
+  const LarryCoin = await deploy("LarryCoin", ["LARRY", "LRY"]);
+  const MoCoin = await deploy("MoCoin", ["MO", "MOC"]);
 
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-
   /*
-
   //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-
   const yourContract = await deploy("YourContract", [], {
   value: ethers.utils.parseEther("0.05")
   });
   */
-
 
   /*
 
@@ -44,34 +54,11 @@ const main = async () => {
   })
   */
 
-
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
     chalk.blue("packages/hardhat/artifacts/"),
     "\n\n"
   );
-};
-
-const deploy = async (contractName, _args = [], overrides = {}) => {
-  console.log(` 🛰  Deploying: ${contractName}`);
-
-  const contractArgs = _args || [];
-  const contractArtifacts = await ethers.getContractFactory(contractName);
-  const deployed = await contractArtifacts.deploy(...contractArgs, overrides);
-  const encoded = abiEncodeArgs(deployed, contractArgs);
-  fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
-
-  console.log(
-    " 📄",
-    chalk.cyan(contractName),
-    "deployed to:",
-    chalk.magenta(deployed.address),
-  );
-
-  if (!encoded || encoded.length <= 2) return deployed;
-  fs.writeFileSync(`artifacts/${contractName}.args`, encoded.slice(2));
-
-  return deployed;
 };
 
 // ------ utils -------
@@ -97,7 +84,9 @@ const abiEncodeArgs = (deployed, contractArgs) => {
 
 // checks if it is a Solidity file
 const isSolidity = (fileName) =>
-  fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp") < 0 && fileName.indexOf(".swap") < 0;
+  fileName.indexOf(".sol") >= 0 &&
+  fileName.indexOf(".swp") < 0 &&
+  fileName.indexOf(".swap") < 0;
 
 const readArgsFile = (contractName) => {
   let args = [];

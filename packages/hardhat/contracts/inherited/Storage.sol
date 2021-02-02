@@ -8,7 +8,7 @@ contract Storage {
     mapping (string => bool) _bool;
 
     mapping (string =>  int256) _int;  // All int types store as 256.
-    mapping (string => uint256) _uint;
+    mapping (string => uint256) _uint; 
 
     mapping (string => address) _address;
     mapping (string => address payable) _payable;
