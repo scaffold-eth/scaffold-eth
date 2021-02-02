@@ -7,9 +7,9 @@
 ## quickstart
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
+git clone https://github.com/austintgriffith/scaffold-eth.git
 
-cd your-next-dapp
+cd scaffold-eth
 ```
 
 ```bash
@@ -27,7 +27,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-
+cd scaffold-eth
 yarn chain
 
 ```
@@ -35,7 +35,7 @@ yarn chain
 > in a third terminal window:
 
 ```bash
-
+cd scaffold-eth
 yarn deploy
 
 ```
@@ -43,6 +43,8 @@ yarn deploy
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
 
 📱 Open http://localhost:3000 to see the app
 
@@ -164,7 +166,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ru
 
 🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
 
-👩‍🎓 You can "graduate" from 🏗 scaffold-eth and start using 👷 [HardHat](https://hardhat.org/) and 📦 [create-eth-app](https://github.com/PaulRBerg/create-eth-app) "standalone"
+⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
+
+⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
 
 ( You will probably want to take some of the 🔗 [hooks](#-hooks), 🎛 [components](#-components) with you from 🏗 scaffold-eth so we started 🖇 [eth-hooks](https://www.npmjs.com/package/eth-hooks) )
 
