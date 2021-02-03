@@ -10,7 +10,9 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
+  // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
+  // await deploy("MyV2FlashLoan", ["0x88757f2f99175387ab4c6a4b3067c77a695b0349"], { gasLimit: 3000000 });
+  await deploy("MyV2FlashLoan", ["0x88757f2f99175387ab4c6a4b3067c77a695b0349"], { gasLimit: 3000000 });
 
   //const secondContract = await deploy("SecondContract")
 
