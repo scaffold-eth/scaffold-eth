@@ -1,8 +1,86 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "d96fbcc2473445f091831576efa0255f";
+// export const INFURA_ID = process.env.REACT_APP_INFURA_ID; careful!!
 
-// MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
+
+//MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
+export const ETHERSCAN_KEY = "YKNN38FDMFTGCQJ85W34J7QDHRQ4D25M65";
+
+//Constants for ERC20's retrieval and L2 options
+export const defaultTokensUrl = {
+  100: 'https://tokens.honeyswap.org',
+  1: 'https://tokens.uniswap.org',
+  42: '',
+  77: '',
+};
+
+
+export const graphEndpoints = {
+  100: 'https://api.thegraph.com/subgraphs/name/',
+  1: 'https://api.thegraph.com/subgraphs/name/',
+  77: 'https://api.thegraph.com/subgraphs/name/',
+  42: 'https://api.thegraph.com/subgraphs/name/',
+};
+
+export const networkNames = {
+  1: 'ETH Mainnet',
+  42: 'Kovan Testnet',
+  77: 'Sokol Testnet',
+  100: 'xDai Chain',
+};
+
+
+export const chainUrls = {
+  100: {
+    rpc: process.env.REACT_APP_HOME_RPC_URL || 'https://xdai.poanetwork.dev',
+    explorer:
+      process.env.REACT_APP_HOME_EXPLORER_PREFIX ||
+      'https://blockscout.com/poa/xdai',
+    monitor:
+      process.env.REACT_APP_AMB_LIVE_MONITOR_PREFIX ||
+      'https://alm-xdai.herokuapp.com',
+    chainId: 100,
+    name: networkNames[100],
+  },
+  1: {
+    rpc:
+      process.env.REACT_APP_FOREIGN_RPC_URL ||
+      `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    explorer:
+      process.env.REACT_APP_FOREIGN_EXPLORER_PREFIX ||
+      'https://blockscout.com/eth/mainnet',
+    monitor:
+      process.env.REACT_APP_AMB_LIVE_MONITOR_PREFIX ||
+      'https://alm-xdai.herokuapp.com',
+    chainId: 1,
+    name: networkNames[1],
+  },
+  77: {
+    rpc: process.env.REACT_APP_HOME_RPC_URL || 'https://sokol.poa.network',
+    explorer:
+      process.env.REACT_APP_HOME_EXPLORER_PREFIX ||
+      'https://blockscout.com/poa/sokol',
+    monitor:
+      process.env.REACT_APP_AMB_LIVE_MONITOR_PREFIX ||
+      'https://alm-test-amb.herokuapp.com',
+    chainId: 77,
+    name: networkNames[77],
+  },
+  42: {
+    rpc:
+      process.env.REACT_APP_FOREIGN_RPC_URL ||
+      `https://kovan.infura.io/v3/${INFURA_ID}`,
+    explorer:
+      process.env.REACT_APP_FOREIGN_EXPLORER_PREFIX ||
+      'https://blockscout.com/eth/kovan',
+    monitor:
+      process.env.REACT_APP_AMB_LIVE_MONITOR_PREFIX ||
+      'https://alm-test-amb.herokuapp.com',
+    chainId: 42,
+    name: networkNames[42],
+  },
+};
+
 
 // EXTERNAL CONTRACTS
 

@@ -19,27 +19,10 @@ import {
 } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
-// import Hints from "./Hints";
-import { Hints, Subgraph, DethlockUI } from "./views";
-/*
-    Welcome to 🏗 scaffold-eth !
+//import Hints from "./Hints";
+import { Hints, Create, Manage } from "./views";
 
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-
-
-    📡 EXTERNAL CONTRACTS:
-    You can also bring in contract artifacts in `constants.js`
-    (and then use the `useExternalContractLoader()` hook!)
-*/
-import { INFURA_ID } from "./constants";
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
 const DEBUG = true;
@@ -136,38 +119,13 @@ function App(props) {
     setRoute(window.location.pathname);
   }, [setRoute]);
 
-  let faucetHint = "";
-  const [faucetClicked, setFaucetClicked] = useState(false);
-  if (
-    !faucetClicked &&
-    localProvider &&
-    localProvider.getSigner() &&
-    yourLocalBalance &&
-    formatEther(yourLocalBalance) <= 0
-  ) {
-    faucetHint = (
-      <div style={{ padding: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            faucetTx({
-              to: address,
-              value: parseEther("0.01"),
-            });
-            setFaucetClicked(true);
-          }}
-        >
-          <span role="img" aria-label="moneybags">
-            💰
-          </span>{" "}
-          Grab funds from the faucet
-          <span role="img" aria-label="gaspump">
-            ⛽️
-          </span>
-        </Button>
-      </div>
-    );
-  }
+  const [willIndex, setWillIndex] = useState(null);
+  const [redirect, setRedirect] = useState(false);
+  const handleWillSelected = (value)=>{
+    setWillIndex(value+1);
+    setRoute('/create');
+    setRedirect(true);
+  };
 
   return (
     <div className="App">
@@ -177,54 +135,24 @@ function App(props) {
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Noun
-            </Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Admin</Link>
+          </Menu.Item>
+          <Menu.Item key="/create">
+            <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
+          </Menu.Item>
+          <Menu.Item key="/manage">
+            <Link onClick={()=>{setRoute("/manage")}} to="/manage">Manage</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
+          <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/dethlockui">
-            <Link
-              onClick={() => {
-                setRoute("/dethlockui");
-              }}
-              to="/dethlockui"
-            >
-              DethlockUI
-            </Link>
-          </Menu.Item>
+{/*          <Menu.Item key="/dethlockui">
+            <Link onClick={()=>{setRoute("/dethlockui")}} to="/dethlockui">DethlockUI</Link>
+          </Menu.Item>*/}
         </Menu>
 
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
             <Contract
               name="Noun"
               signer={userProvider.getSigner()}
@@ -257,16 +185,6 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
 
-            {/* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
           </Route>
           <Route path="/hints">
             <Hints
@@ -276,15 +194,40 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
+          <Route path="/create">
+            <Create
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
               tx={tx}
               writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
+              readContracts={readContracts}
+              // setCreate= {setCreate}
+              willIndex = {willIndex}
             />
           </Route>
-          <Route path="/dethlockui">
+          <Route path="/manage">
+            <Manage
+            subgraphUri={props.subgraphUri}
+            tx={tx}
+            writeContracts={writeContracts}
+            mainnetProvider={mainnetProvider}
+            // setCreate={setCreate}
+            address={address}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            willSelector={handleWillSelected}
+            willIndex = {willIndex}
+            />
+          </Route>
+
+
+
+
+{/*          <Route path="/dethlockui">
             <DethlockUI
               address={address}
               userProvider={userProvider}
@@ -298,24 +241,24 @@ function App(props) {
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
             />
-          </Route>
+          </Route>*/}
         </Switch>
       </BrowserRouter>
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <Account
-          address={address}
-          localProvider={localProvider}
-          userProvider={userProvider}
-          mainnetProvider={mainnetProvider}
-          price={price}
-          web3Modal={web3Modal}
-          loadWeb3Modal={loadWeb3Modal}
-          logoutOfWeb3Modal={logoutOfWeb3Modal}
-          blockExplorer={blockExplorer}
-        />
-        {faucetHint}
+         <Account
+           address={address}
+           localProvider={localProvider}
+           userProvider={userProvider}
+           mainnetProvider={mainnetProvider}
+           price={price}
+           web3Modal={web3Modal}
+           loadWeb3Modal={loadWeb3Modal}
+           logoutOfWeb3Modal={logoutOfWeb3Modal}
+           blockExplorer={blockExplorer}
+         />
+
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
