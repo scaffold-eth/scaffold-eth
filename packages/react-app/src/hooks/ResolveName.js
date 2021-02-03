@@ -6,7 +6,7 @@ const useResolveName = (provider, ensName) => {
 
   useEffect(() => {
     if (provider) {
-      provider.resolveName(ensName).then((resolvedAddress) => setAddress(resolvedAddress));
+      provider.resolveName(ensName).then(resolvedAddress => setAddress(resolvedAddress));
     }
   }, [provider, ensName]);
 

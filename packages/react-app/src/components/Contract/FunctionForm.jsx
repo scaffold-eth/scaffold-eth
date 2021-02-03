@@ -66,7 +66,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             </div>
         </Tooltip>
       )
-    } else if (input.type == "uint256") {
+    } else if (input.type === "uint256") {
       buttons = (
         <Tooltip placement="right" title={"to hex"}>
           <div
@@ -171,7 +171,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               const args = functionInfo.inputs.map((input) => {
                 const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + innerIndex++
                 let value = form[key]
-                if(input.baseType=="array"){
+                if(input.baseType==="array"){
                   value = JSON.parse(value)
                 } else if(input.type === "bool"){
                   if(value==='true' || value==='1' || value ==="0x1"|| value ==="0x01"|| value ==="0x0001"){
