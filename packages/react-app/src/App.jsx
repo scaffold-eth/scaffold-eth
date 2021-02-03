@@ -157,7 +157,13 @@ function App(props) {
             setFaucetClicked(true);
           }}
         >
-          💰 Grab funds from the faucet ⛽️
+          <span role="img" aria-label="moneybags">
+            💰
+          </span>{" "}
+          Grab funds from the faucet
+          <span role="img" aria-label="gaspump">
+            ⛽️
+          </span>
         </Button>
       </div>
     );

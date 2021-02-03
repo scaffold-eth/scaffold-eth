@@ -8,9 +8,8 @@ export default function Hints() {
   return (
     <div>
       <br />      <br />
-
       <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>👷</span>
+        <span style={{ marginRight: 8 }} role='img' aria-label='hardhat'>👷</span>
         Open 4 terminals in root folder<br />
         yarn run chain --- GANACHE local network<br />
         yarn run deploy / Copy 'packages/react-app/CopyToNoun.abi.js' content into '../react-app/src/contracts/Noun.abi.js' (if there have been changes in contract, must recopy ABI from Verb) - Copy also 'the-graph-NounABI' content into 'subgraph/abis/Nouns.json' --- Artifacts and ABIs generation<br />
