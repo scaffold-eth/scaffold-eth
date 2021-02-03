@@ -1,9 +1,9 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu } from "antd";
+import { Row, Col, Button, Menu, Checkbox } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -85,17 +85,22 @@ function App(props) {
   //
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  // console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  // console.log("📟 SetPurpose events:",setPurposeEvents)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+
+  const ownerNoun = useContractReader(readContracts,"Noun", "_owner")
+  const [modo, setModo]=useState(false);
+
+  // const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -137,7 +142,7 @@ function App(props) {
             <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
           </Menu.Item>
           <Menu.Item key="/manage">
-            <Link onClick={()=>{setRoute("/manage")}} to="/manage">Manage</Link>
+          <Link onClick={()=>{setRoute("/manage");setRedirect(false);setWillIndex(null)}} to="/manage">Manage</Link>
           </Menu.Item>
           <Menu.Item key="/hints">
           <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
@@ -149,6 +154,10 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
+          {address==ownerNoun || !modo ?
+            <div>
+              Only owner of contract should see this (admin page)<br/>
+
             <Contract
               name="Noun"
               signer={userProvider.getSigner()}
@@ -180,7 +189,8 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
+            </div>
+            :<Redirect to="/manage" />}
           </Route>
           <Route path="/hints">
             <Hints
@@ -206,6 +216,9 @@ function App(props) {
             />
           </Route>
           <Route path="/manage">
+            {redirect?
+              <Redirect to="/create" />
+              :''}
             <Manage
             subgraphUri={props.subgraphUri}
             tx={tx}
@@ -219,10 +232,6 @@ function App(props) {
             willIndex = {willIndex}
             />
           </Route>
-
-
-
-
 {/*          <Route path="/dethlockui">
             <DethlockUI
               address={address}
@@ -241,6 +250,10 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
+      <div style={{ position: "fixed", textAlign: "center", right: '50%', top: 0, padding: 10 }}>
+        <Checkbox onChange={(e)=>{setModo(e.target.checked)}}>App</Checkbox>
+      </div>
+
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
@@ -257,8 +270,7 @@ function App(props) {
          />
 
       </div>
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
+      {modo?null:
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
          <Row align="middle" gutter={[4, 4]}>
            <Col span={8}>
@@ -298,7 +310,7 @@ function App(props) {
            </Col>
          </Row>
        </div>
-
+      }
     </div>
   );
 }
