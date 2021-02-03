@@ -4,10 +4,10 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Button, Typography, Table, Input } from "antd";
 import { useQuery, gql } from "@apollo/client";
-import { Address } from "../components";
-import GraphiQL from "graphiql";
-import "graphiql/graphiql.min.css";
 import fetch from "isomorphic-fetch";
+import GraphiQL from "graphiql";
+import { Address } from "../components";
+import "graphiql/graphiql.min.css";
 
 const highlight = {
   marginLeft: 4,
@@ -84,7 +84,7 @@ function Subgraph(props) {
           The Graph
         </a>{" "}
         with 🏗 scaffold-eth (
-        <a href="https://youtu.be/T5ylzOTkn-Q" target="_blank">
+        <a href="https://youtu.be/T5ylzOTkn-Q" target="_blank" rel="noopener noreferrer">
           learn more
         </a>
         ):
