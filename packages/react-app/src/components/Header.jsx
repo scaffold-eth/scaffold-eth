@@ -3,10 +3,10 @@ import { PageHeader } from "antd";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
+    <a href="https://github.com/orbitmechanic/scaffold-eth/tree/TimeLock" target="_blank" rel="noopener noreferrer">
       <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
+        title=" 🏹 TimeLock/dETHlock ☠️"
+        subTitle="Manage the future of your assets"
         style={{ cursor: "pointer" }}
       />
     </a>
