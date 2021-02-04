@@ -46,7 +46,9 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-              <span role="img" aria-label="flag-us">🇺🇸</span>
+              <span role="img" aria-label="flag-us">
+                🇺🇸
+              </span>
             </span>
             Wyre
           </Button>
@@ -70,7 +72,9 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-            <span role="img" aria-label="flag-gb">🇬🇧</span>
+              <span role="img" aria-label="flag-gb">
+                🇬🇧
+              </span>
             </span>
             Ramp
           </Button>

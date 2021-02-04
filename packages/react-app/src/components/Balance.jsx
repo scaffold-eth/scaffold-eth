@@ -12,7 +12,6 @@ import { usePoller } from "eth-hooks";
 
 */
 
-
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
   const [balance, setBalance] = useState();

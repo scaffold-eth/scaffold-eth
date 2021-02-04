@@ -53,13 +53,11 @@ export default function EtherInput(props) {
     addonAfter = option("ETH 🔀");
   }
 
-  useEffect(
-    ()=>{
-      if(!currentValue){
-        setDisplay("");
-      }
+  useEffect(() => {
+    if (!currentValue) {
+      setDisplay("");
     }
-  ,[ currentValue ])
+  }, [currentValue]);
 
   return (
     <Input
