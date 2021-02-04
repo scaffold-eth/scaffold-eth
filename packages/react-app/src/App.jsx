@@ -19,10 +19,10 @@ import {
 } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
-//import Hints from "./Hints";
+// import Hints from "./Hints";
 import { Hints, Create, Manage } from "./views";
 
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI } from "./constants";
+import { INFURA_ID } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
 const DEBUG = true;
@@ -94,7 +94,7 @@ function App(props) {
   // const purpose = useContractReader(readContracts,"YourContract", "purpose")
   // console.log("🤗 purpose:",purpose)
 
-  //📟 Listen for broadcast events
+  // 📟 Listen for broadcast events
   // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   // console.log("📟 SetPurpose events:",setPurposeEvents)
 
@@ -103,8 +103,8 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-  const ownerNoun = useContractReader(readContracts,"Noun", "_owner")
-  const [modo, setModo]=useState(false);
+  const ownerNoun = useContractReader(readContracts, "Noun", "_owner");
+  const [modo, setModo] = useState(false);
 
   // const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
 
@@ -126,9 +126,9 @@ function App(props) {
 
   const [willIndex, setWillIndex] = useState(null);
   const [redirect, setRedirect] = useState(false);
-  const handleWillSelected = (value)=>{
-    setWillIndex(value+1);
-    setRoute('/create');
+  const handleWillSelected = value => {
+    setWillIndex(value + 1);
+    setRoute("/create");
     setRedirect(true);
   };
 
@@ -140,61 +140,90 @@ function App(props) {
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Admin</Link>
+            <Link
+              onClick={() => {
+                setRoute("/");
+              }}
+              to="/"
+            >
+              Admin
+            </Link>
           </Menu.Item>
           <Menu.Item key="/create">
-            <Link onClick={()=>{setRoute("/create")}} to="/create">Create</Link>
+            <Link
+              onClick={() => {
+                setRoute("/create");
+              }}
+              to="/create"
+            >
+              Create
+            </Link>
           </Menu.Item>
           <Menu.Item key="/manage">
-          <Link onClick={()=>{setRoute("/manage");setRedirect(false);setWillIndex(null)}} to="/manage">Manage</Link>
+            <Link
+              onClick={() => {
+                setRoute("/manage");
+                setRedirect(false);
+                setWillIndex(null);
+              }}
+              to="/manage"
+            >
+              Manage
+            </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
-          <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
+            <Link
+              onClick={() => {
+                setRoute("/hints");
+              }}
+              to="/hints"
+            >
+              Hints
+            </Link>
           </Menu.Item>
-{/*          <Menu.Item key="/dethlockui">
+          {/*          <Menu.Item key="/dethlockui">
             <Link onClick={()=>{setRoute("/dethlockui")}} to="/dethlockui">DethlockUI</Link>
-          </Menu.Item>*/}
+          </Menu.Item> */}
         </Menu>
 
         <Switch>
           <Route exact path="/">
-          {address==ownerNoun || !modo ?
-            <div>
-              Only owner of contract should see this (admin page)<br/>
-
-            <Contract
-              name="Noun"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="CurlyCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="MoCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="LarryCoin"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            </div>
-            :<Redirect to="/manage" />}
+            {address == ownerNoun || !modo ? (
+              <div>
+                Only owner of contract should see this (admin page)
+                <br />
+                <Contract
+                  name="Noun"
+                  signer={userProvider.getSigner()}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                />
+                <Contract
+                  name="CurlyCoin"
+                  signer={userProvider.getSigner()}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                />
+                <Contract
+                  name="MoCoin"
+                  signer={userProvider.getSigner()}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                />
+                <Contract
+                  name="LarryCoin"
+                  signer={userProvider.getSigner()}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                />
+              </div>
+            ) : (
+              <Redirect to="/manage" />
+            )}
           </Route>
           <Route path="/hints">
             <Hints
@@ -216,27 +245,24 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               // setCreate= {setCreate}
-              willIndex = {willIndex}
+              willIndex={willIndex}
             />
           </Route>
           <Route path="/manage">
-            {redirect?
-              <Redirect to="/create" />
-              :''}
+            {redirect ? <Redirect to="/create" /> : ""}
             <Manage
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-            // setCreate={setCreate}
-            address={address}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            willSelector={handleWillSelected}
-            willIndex = {willIndex}
+              subgraphUri={props.subgraphUri}
+              tx={tx}
+              writeContracts={writeContracts}
+              mainnetProvider={mainnetProvider}
+              // setCreate={setCreate}
+              address={address}
+              readContracts={readContracts}
+              willSelector={handleWillSelected}
+              willIndex={willIndex}
             />
           </Route>
-{/*          <Route path="/dethlockui">
+          {/*          <Route path="/dethlockui">
             <DethlockUI
               address={address}
               userProvider={userProvider}
@@ -250,71 +276,79 @@ function App(props) {
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
             />
-          </Route>*/}
+          </Route> */}
         </Switch>
       </BrowserRouter>
 
-      <div style={{ position: "fixed", textAlign: "center", right: '50%', top: 0, padding: 10 }}>
-        <Checkbox onChange={(e)=>{setModo(e.target.checked)}}>App</Checkbox>
+      <div style={{ position: "fixed", textAlign: "center", right: "50%", top: 0, padding: 10 }}>
+        <Checkbox
+          onChange={e => {
+            setModo(e.target.checked);
+          }}
+        >
+          App
+        </Checkbox>
       </div>
-
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-         <Account
-           address={address}
-           localProvider={localProvider}
-           userProvider={userProvider}
-           mainnetProvider={mainnetProvider}
-           price={price}
-           web3Modal={web3Modal}
-           loadWeb3Modal={loadWeb3Modal}
-           logoutOfWeb3Modal={logoutOfWeb3Modal}
-           blockExplorer={blockExplorer}
-         />
-
+        <Account
+          address={address}
+          localProvider={localProvider}
+          userProvider={userProvider}
+          mainnetProvider={mainnetProvider}
+          price={price}
+          web3Modal={web3Modal}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          blockExplorer={blockExplorer}
+        />
       </div>
-      {modo?null:
-       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-         <Row align="middle" gutter={[4, 4]}>
-           <Col span={8}>
-             <Ramp price={price} address={address} />
-           </Col>
+      {modo ? null : (
+        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+          <Row align="middle" gutter={[4, 4]}>
+            <Col span={8}>
+              <Ramp price={price} address={address} />
+            </Col>
 
-           <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-             <GasGauge gasPrice={gasPrice} />
-           </Col>
-           <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-             <Button
-               onClick={() => {
-                 window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-               }}
-               size="large"
-               shape="round"
-             >
-               <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                 💬
-               </span>
-               Support
-             </Button>
-           </Col>
-         </Row>
+            <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+              <GasGauge gasPrice={gasPrice} />
+            </Col>
+            <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+              <Button
+                onClick={() => {
+                  window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+                }}
+                size="large"
+                shape="round"
+              >
+                <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                  💬
+                </span>
+                Support
+              </Button>
+            </Col>
+          </Row>
 
-         <Row align="middle" gutter={[4, 4]}>
-           <Col span={24}>
-             {
-
-               /*  if the local provider has a signer, let's show the faucet:  */
-               localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf(window.location.hostname)>=0 && !process.env.REACT_APP_PROVIDER && price > 1 ? (
-                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
-               ) : (
-                 ""
-               )
-             }
-           </Col>
-         </Row>
-       </div>
-      }
+          <Row align="middle" gutter={[4, 4]}>
+            <Col span={24}>
+              {
+                /*  if the local provider has a signer, let's show the faucet:  */
+                localProvider &&
+                localProvider.connection &&
+                localProvider.connection.url &&
+                localProvider.connection.url.indexOf(window.location.hostname) >= 0 &&
+                !process.env.REACT_APP_PROVIDER &&
+                price > 1 ? (
+                  <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+                ) : (
+                  ""
+                )
+              }
+            </Col>
+          </Row>
+        </div>
+      )}
     </div>
   );
 }
