@@ -73,9 +73,9 @@ function Manage(props) {
   };
 
   const QUERY_GQL = gql(queries[query]);
-  const data = useQuery(QUERY_GQL, {
+  const {loading, data} = useQuery(QUERY_GQL, {
     variables: { address: props.address.toLowerCase() },
-    pollInterval: 2500,
+    pollInterval: 10000,
   });
 
   const willsColumns = [
@@ -109,8 +109,9 @@ function Manage(props) {
     },
     {
       title: "Token",
-      key: "tokenAddress",
-      render: record => <Address value={record.tokenAddress} ensProvider={props.mainnetProvider} fontSize={16} />,
+      key: "token",
+      dataIndex: "token",
+      render: record => <Address value={record} fontSize={16} />,
     },
     {
       title: "Amount Token",
