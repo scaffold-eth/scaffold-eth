@@ -3,6 +3,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
+require("@tenderly/hardhat-tenderly")
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -18,7 +19,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "kovan";
+const defaultNetwork = "localhost";
 
 function mnemonic() {
   try {
@@ -39,6 +40,10 @@ module.exports = {
   // (then your frontend will talk to your contracts on the live network!)
   // (you will need to restart the `yarn run start` dev server after editing the .env)
 
+  tenderly: {
+    username: "ironsoul",
+    project: "project"
+  },
   networks: {
     localhost: {
       url: "http://localhost:8545",

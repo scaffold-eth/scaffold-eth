@@ -1,1 +1,1 @@
-module.exports = ["MyV2FlashLoan","YourContract"];
+module.exports = ["DAI","MyV2FlashLoan","YourContract"];

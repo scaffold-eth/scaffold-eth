@@ -12,7 +12,8 @@ const main = async () => {
 
   // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
   // await deploy("MyV2FlashLoan", ["0x88757f2f99175387ab4c6a4b3067c77a695b0349"], { gasLimit: 3000000 });
-  await deploy("MyV2FlashLoan", ["0x88757f2f99175387ab4c6a4b3067c77a695b0349"], { gasLimit: 3000000 });
+  await deploy("MyV2FlashLoan", ["0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5"], { gasLimit: 3000000 });
+  await deploy("DAI");
 
   //const secondContract = await deploy("SecondContract")
 
