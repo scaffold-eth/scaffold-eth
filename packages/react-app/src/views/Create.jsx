@@ -1,46 +1,24 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import React, { useState, useEffect } from "react";
-import {
-  Space,
-  Form,
-  Button,
-  List,
-  Divider,
-  Input,
-  Card,
-  DatePicker,
-  Slider,
-  Switch,
-  Progress,
-  Spin,
-  Select,
-} from "antd";
-import { SyncOutlined, MinusCircleOutlined, PlusOutlined } from "@ant-design/icons";
-import { parseEther, formatEther } from "@ethersproject/units";
+import React, { useState } from "react";
+import { Button, Divider, Input, Card, DatePicker, Select } from "antd";
+import { parseEther } from "@ethersproject/units";
 import { useQuery, gql } from "@apollo/client";
-import GraphiQL from "graphiql";
-import fetch from "isomorphic-fetch";
-import { useContractReader, useEventListener, useBalance, useTokenList } from "../hooks";
-import { Address, Balance, AddressInput, EtherInput, BeneficiariesInput, TokenList, TokenInput } from "../components";
+import { Address, Balance, AddressInput, TokenInput } from "../components";
 
 const { Option } = Select;
 
 export default function Create({
   address,
   mainnetProvider,
-  userProvider,
   localProvider,
-  yourLocalBalance,
   price,
   tx,
   readContracts,
   writeContracts,
   willIndex,
-  subgraphUri,
 }) {
   const [beneficiaries, setBeneficiaries] = useState(null);
-  const [beneficiariesShare, setBeneficiariesShare] = useState([1]);
   const [depositEth, setDepositEth] = useState(0);
   const [depositValue, setDepositValue] = useState(0);
   const [deadline, setDeadline] = useState(null);
@@ -63,7 +41,7 @@ export default function Create({
     }
   `;
 
-  const { loading, data } = useQuery(QUERY_WILL, { variables: { test: willIndex }, pollInterval: 2500 });
+  const { data } = useQuery(QUERY_WILL, { variables: { test: willIndex }, pollInterval: 2500 });
 
   const ourTokensList = [
     { name: "MoCoin", address: readContracts.MoCoin.address },

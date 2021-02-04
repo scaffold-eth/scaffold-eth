@@ -7,14 +7,13 @@ import { Row, Col, Button, Menu, Checkbox } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { formatEther, parseEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 import {
   useExchangePrice,
   useGasPrice,
   useUserProvider,
   useContractLoader,
   useContractReader,
-  useEventListener,
   useBalance,
 } from "./hooks";
 import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
@@ -63,6 +62,7 @@ function App(props) {
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
+  console.log(faucetTx);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
@@ -188,7 +188,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            {address == ownerNoun || !modo ? (
+            {address === ownerNoun || !modo ? (
               <div>
                 Only owner of contract should see this (admin page)
                 <br />

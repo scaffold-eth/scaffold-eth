@@ -38,7 +38,7 @@ export default function AddressInput(props) {
     </div>
   );
 
-  const {ensProvider, onChange} = props;
+  const { ensProvider, onChange } = props;
   const updateAddress = useCallback(
     async newValue => {
       if (typeof newValue !== "undefined") {
@@ -104,8 +104,8 @@ export default function AddressInput(props) {
     <div>
       {scanner}
       <Input
-        id={"0xAddress"}//name it something other than address for auto fill doxxing
-        name={"0xAddress"}//name it something other than address for auto fill doxxing
+        id="0xAddress" // name it something other than address for auto fill doxxing
+        name="0xAddress" // name it something other than address for auto fill doxxing
         autoComplete="off"
         autoFocus={props.autoFocus}
         placeholder={props.placeholder ? props.placeholder : "address"}

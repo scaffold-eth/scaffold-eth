@@ -2,26 +2,17 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Radio, Button, Typography, Table, Input, List, Divider } from "antd";
+import { Radio, Button, Table, Divider } from "antd";
 import { useQuery, gql } from "@apollo/client";
-import { Redirect } from "react-router-dom";
-import { parseEther, formatEther } from "@ethersproject/units";
+import { formatEther } from "@ethersproject/units";
 import fetch from "isomorphic-fetch";
 import GraphiQL from "graphiql";
 import { Address } from "../components";
 import "graphiql/graphiql.min.css";
 
-const highlight = {
-  marginLeft: 4,
-  marginRight: 8,
-  backgroundColor: "#f9f9f9",
-  padding: 4,
-  borderRadius: 4,
-  fontWeight: "bolder",
-};
-
 function Manage(props) {
   const [query, setQuery] = useState("All");
+  const ts = Math.floor(new Date().getTime() / 1000);
 
   function graphQLFetcher(graphQLParams) {
     return fetch(props.subgraphUri, {
@@ -82,7 +73,7 @@ function Manage(props) {
   };
 
   const QUERY_GQL = gql(queries[query]);
-  const { loading, data } = useQuery(QUERY_GQL, {
+  const data = useQuery(QUERY_GQL, {
     variables: { address: props.address.toLowerCase() },
     pollInterval: 2500,
   });
@@ -183,8 +174,6 @@ function Manage(props) {
       ),
     },
   ];
-
-  var ts = Math.floor(new Date().getTime() / 1000);
 
   const radioStyle = {
     display: "block",
