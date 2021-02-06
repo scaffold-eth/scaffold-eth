@@ -6,19 +6,6 @@
   },
   {
     "inputs": [],
-    "name": "DAI_ADDRESS",
-    "outputs": [
-      {
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }
-    ],
-    "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [],
     "name": "dai",
     "outputs": [
       {

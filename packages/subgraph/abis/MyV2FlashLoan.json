@@ -11,10 +11,6 @@
     "type": "constructor"
   },
   {
-    "stateMutability": "payable",
-    "type": "fallback"
-  },
-  {
     "inputs": [],
     "name": "ADDRESSES_PROVIDER",
     "outputs": [

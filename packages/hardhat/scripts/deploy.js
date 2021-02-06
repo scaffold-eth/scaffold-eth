@@ -10,45 +10,9 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
 
-  // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
-  // await deploy("MyV2FlashLoan", ["0x88757f2f99175387ab4c6a4b3067c77a695b0349"], { gasLimit: 3000000 });
-  await deploy("MyV2FlashLoan", ["0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5"], { gasLimit: 3000000 });
+  const providerAddress ="0xB53C1a33016B2DC2fF3653530bfF1848a515c8c5";
+  await deploy("MyV2FlashLoan", [providerAddress], { gasLimit: 3000000 });
   await deploy("DAI");
-
-  //const secondContract = await deploy("SecondContract")
-
-  // const exampleToken = await deploy("ExampleToken")
-  // const examplePriceOracle = await deploy("ExamplePriceOracle")
-  // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-
-
-
-  /*
-  //If you want to send value to an address from the deployer
-  const deployerWallet = ethers.provider.getSigner()
-  await deployerWallet.sendTransaction({
-    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
-  */
-
-
-  /*
-  //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-  const yourContract = await deploy("YourContract", [], {
-  value: ethers.utils.parseEther("0.05")
-  });
-  */
-
-
-  /*
-  //If you want to link a library into your contract:
-  // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
-  const yourContract = await deploy("YourContract", [], {}, {
-   LibraryName: **LibraryAddress**
-  });
-  */
-
 
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
