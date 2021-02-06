@@ -24,7 +24,7 @@ import { Hints, Create, Manage } from "./views";
 import { INFURA_ID } from "./constants";
 
 // 😬 Sorry for all the console logging 🤡
-const DEBUG = true;
+const DEBUG = false;
 
 // 🔭 block explorer URL
 const blockExplorer = "https://etherscan.io/"; // for xdai: "https://blockscout.com/poa/xdai/"
@@ -61,16 +61,16 @@ function App(props) {
   const tx = Transactor(userProvider, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice);
-  console.log(faucetTx);
+  // const faucetTx = Transactor(localProvider, gasPrice);
+  // console.log(faucetTx);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   if (DEBUG) console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
 
   // just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-  if (DEBUG) console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
+  // const yourMainnetBalance = useBalance(mainnetProvider, address);
+  // if (DEBUG) console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
@@ -103,7 +103,7 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-  const ownerNoun = useContractReader(readContracts, "Noun", "_owner");
+  // const ownerNoun = useContractReader(readContracts, "Noun", "_owner");
   const [modo, setModo] = useState(false);
 
   // const setCreate = useEventListener(readContracts, "Noun", "WillCreated", localProvider, 1);
@@ -188,7 +188,8 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            {address === ownerNoun || !modo ? (
+            {/*{address === ownerNoun ||*/}
+              {!modo ? (
               <div>
                 Only owner of contract should see this (admin page)
                 <br />
