@@ -48,7 +48,7 @@ Let's start our environment for tinkering and exploring how flash loans work.
 1. Clone the repo first
 ```sh
 git clone -b flash-loans-intro https://github.com/austintgriffith/scaffold-eth.git flash-loans-intro
-cd flash-loans-aave
+cd flash-loans-intro
 ```
 
 2. Install dependencies
