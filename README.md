@@ -15,7 +15,7 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#exploring-smart-contracts">Exploring smart contracts</a></li>
+    <li><a href="#smart-contracts">Exploring smart contracts</a></li>
     <li><a href="#arbitraging-flow">Arbitraging flow</a></li>
     <li><a href="#practice">Practice</a></li>
     <li><a href="#additional-resources">Additional resources</a></li>
@@ -184,7 +184,7 @@ In my case, my balance went down by 2.6 DAI :(
 
 This trade was not optimal and ideally we had to revert it. Obviously, you should do some research before arbitraging some tokens. For the sake of simplicity, we did not do these just to show how arbitraging works.
 
-## Additonal resources
+## Additional resources
 
 * [Finematics explains Flash Loans](https://www.youtube.com/watch?v=mCJUhnXQ76s) - Nice theory explanation
 * [Furucombo App](https://furucombo.app/) - Flash loans using drag and drop without coding (!)
