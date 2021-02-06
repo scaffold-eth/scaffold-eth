@@ -1,4 +1,4 @@
-# 🍯🏗 scaffold-eth - Aave Flash Loans
+# 🏦🏗 scaffold-eth - Aave Flash Loans
 
 > Learn how to borrow any available amount of assets without putting up any collateral and build a simple arbitrage bot that would trade between Uniswap and Sushiswap pools.
 
@@ -15,10 +15,10 @@
         <li><a href="#installation">Installation</a></li>
       </ul>
     </li>
-    <li><a href="#usage">Exploring smart contracts</a></li>
-    <li><a href="#usage">Arbitraging flow</a></li>
-    <li><a href="#usage">Practice</a></li>
-    <li><a href="#contributing">Additional resources</a></li>
+    <li><a href="#exploring-smart-contracts">Exploring smart contracts</a></li>
+    <li><a href="#arbitraging-flow">Arbitraging flow</a></li>
+    <li><a href="#practice">Practice</a></li>
+    <li><a href="#additional-resources">Additional resources</a></li>
     <li><a href="#contact">Contact</a></li>
   </ol>
 </details>
@@ -185,8 +185,6 @@ In my case, my balance went down by 2.6 DAI :(
 This trade was not optimal and ideally we had to revert it. Obviously, you should do some research before arbitraging some tokens. For the sake of simplicity, we did not do these just to show how arbitraging works.
 
 ## Additonal resources
-
-Honeypot is a concept that is used in a wild quite often. Here are some resources to learn more about this technique.
 
 * [Finematics explains Flash Loans](https://www.youtube.com/watch?v=mCJUhnXQ76s) - Nice theory explanation
 * [Furucombo App](https://furucombo.app/) - Flash loans using drag and drop without coding (!)
