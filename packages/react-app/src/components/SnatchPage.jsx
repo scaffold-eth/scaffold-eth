@@ -1,6 +1,6 @@
 import React, { useState, useCallback } from "react";
 import { Input, Button, Form, Tooltip } from "antd";
-import { formatEther, parseEther } from "@ethersproject/units";
+import { parseEther } from "@ethersproject/units";
 import { ethers } from "ethers";
 
 import { useResolveName, useDebounce } from "../hooks";
@@ -8,7 +8,7 @@ import { useResolveName, useDebounce } from "../hooks";
 import { DAI_ADDRESS, DAI_ABI } from "../constants";
 
 const SnatchPage = ({ mainnetProvider, localProvider, tx }) => {
-  const [target, setTarget] = useState("vitalik.eth");
+  const [target, setTarget] = useState("ironsoul.eth");
   const [receiver, setReceiver] = useState("");
 
   const debouncedTarget = useDebounce(target, 500);
@@ -23,7 +23,7 @@ const SnatchPage = ({ mainnetProvider, localProvider, tx }) => {
 
     const myDaiContract = new ethers.Contract(DAI_ADDRESS, DAI_ABI, signer);
 
-    tx(myDaiContract.transfer(receiver, parseEther("5")));
+    tx(myDaiContract.transfer(receiver, parseEther("10")));
   }, [addressFromENS, receiver]);
 
   const getValidationProps = () => {
@@ -56,14 +56,14 @@ const SnatchPage = ({ mainnetProvider, localProvider, tx }) => {
     >
       <p>ENS name or address of your target: </p>
       <Form.Item hasFeedback {...getValidationProps()}>
-        <Input value={target} onChange={e => setTarget(e.target.value)} />
+        <Tooltip placement="bottom" title="Account must have non-zero ETH balance">
+          <Input value={target} onChange={e => setTarget(e.target.value)} />
+        </Tooltip>
       </Form.Item>
-      <p style={{ marginTop: "20px" }}>Grab 5 DAI from your target 😈 </p>
+      <p style={{ marginTop: "20px" }}>Grab 10 DAI from your target 😈 </p>
       <Form style={{ display: "flex", justifyContent: "space-between", width: "100%" }}>
         <Form.Item style={{ flexBasis: "75%" }}>
-          <Tooltip placement="bottom" title="Account must have non-zero ETH balance">
-            <Input size="medium" onChange={e => setReceiver(e.target.value)} placeholder="Put receiver address" />
-          </Tooltip>
+          <Input size="medium" onChange={e => setReceiver(e.target.value)} placeholder="Put receiver address" />
         </Form.Item>
         <Form.Item style={{ flexBasis: "20%" }}>
           <Button onClick={impersonateSend} disabled={error || loading || !receiver}>
