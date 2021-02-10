@@ -15,6 +15,12 @@ import { usePoller } from "eth-hooks";
     price={price}
   />
 
+  ~ If you already have the balance as a bignumber ~
+  <Balance
+    balance={balance}
+    price={price}
+  />
+
   ~ Features ~
 
   - Provide address={address} and get balance corresponding to given address

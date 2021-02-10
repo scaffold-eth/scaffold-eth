@@ -98,7 +98,7 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
         <span style={{ marginRight: 8 }}>💧</span>
         use the <b>faucet</b> to send funds to
         <span style={{ marginLeft: 4, backgroundColor: "#f9f9f9", padding: 4, borderRadius: 4, fontWeight: "bolder" }}>
-          <Address value={address} minimized /> {address}
+          <Address address={address} minimized /> {address}
         </span>
       </div>
 
