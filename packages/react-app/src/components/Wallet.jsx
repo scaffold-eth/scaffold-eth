@@ -13,16 +13,31 @@ import { ethers } from "ethers";
 const { Text, Paragraph } = Typography;
 
 /*
+  ~ What it does? ~
 
-  Wallet UI for sending, receiving, and extracting the burner wallet
+  Displays a wallet where you can specify address and send USD/ETH, with options to
+  scan address, to convert between USD and ETH, to see and generate private keys,
+  to send, receive and extract the burner wallet
 
-  <Wallet
-    address={address}
+  ~ How can I use? ~
+
+  <Wallet 
     provider={userProvider}
-    ensProvider={mainnetProvider}
-    price={price}
+    address={address} 
+    ensProvider={mainnetProvider} 
+    price={price} 
+    color='red'
   />
 
+  ~ Features ~
+
+  - Provide provider={userProvider} to display a wallet
+  - Provide address={address} if you want to specify address, otherwise 
+                                                    your default address will be used
+  - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
+              (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
+  - Provide price={price} of ether and easily convert between USD and ETH
+  - Provide color to specify the color of wallet icon
 */
 
 export default function Wallet(props) {
