@@ -21,18 +21,18 @@ const { Text, Paragraph } = Typography;
 
   ~ How can I use? ~
 
-  <Wallet 
+  <Wallet
     provider={userProvider}
-    address={address} 
-    ensProvider={mainnetProvider} 
-    price={price} 
+    address={address}
+    ensProvider={mainnetProvider}
+    price={price}
     color='red'
   />
 
   ~ Features ~
 
   - Provide provider={userProvider} to display a wallet
-  - Provide address={address} if you want to specify address, otherwise 
+  - Provide address={address} if you want to specify address, otherwise
                                                     your default address will be used
   - Provide ensProvider={mainnetProvider} and your address will be replaced by ENS name
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
@@ -123,7 +123,7 @@ export default function Wallet(props) {
      extraPkDisplay.push(
        <div style={{fontSize:16,padding:2,backgroundStyle:"#89e789"}}>
           <a href={"/pk#"+pk}>
-            <Address minimized={true} value={wallet.address} ensProvider={props.ensProvider} /> {wallet.address.substr(0,6)}
+            <Address minimized={true} address={wallet.address} ensProvider={props.ensProvider} /> {wallet.address.substr(0,6)}
           </a>
        </div>
      )
@@ -137,7 +137,7 @@ export default function Wallet(props) {
            extraPkDisplay.push(
              <div style={{fontSize:16}}>
                 <a href={"/pk#"+pastpk}>
-                  <Address minimized={true} value={pastwallet.address} ensProvider={props.ensProvider} /> {pastwallet.address.substr(0,6)}
+                  <Address minimized={true} address={pastwallet.address} ensProvider={props.ensProvider} /> {pastwallet.address.substr(0,6)}
                 </a>
              </div>
            )
@@ -210,7 +210,7 @@ export default function Wallet(props) {
             autoFocus
             ensProvider={props.ensProvider}
             placeholder="to address"
-            value={toAddress}
+            address={toAddress}
             onChange={setToAddress}
           />
         </div>
@@ -250,7 +250,7 @@ export default function Wallet(props) {
         visible={open}
         title={
           <div>
-            {selectedAddress ? <Address value={selectedAddress} ensProvider={props.ensProvider} /> : <Spin />}
+            {selectedAddress ? <Address address={selectedAddress} ensProvider={props.ensProvider} /> : <Spin />}
             <div style={{ float: "right", paddingRight: 25 }}>
               <Balance address={selectedAddress} provider={props.provider} dollarMultiplier={props.price} />
             </div>

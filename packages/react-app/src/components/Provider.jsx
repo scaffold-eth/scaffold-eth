@@ -78,7 +78,7 @@ export default function Provider(props) {
     showWallet = (
       <span>
         <span style={{ padding: 3 }}>
-          <Address minimized value={address} />
+          <Address minimized address={address} />
         </span>
       </span>
     );
