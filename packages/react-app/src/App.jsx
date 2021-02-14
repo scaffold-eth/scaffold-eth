@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, Minesweeper } from "./views"
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -34,10 +34,10 @@ import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants"
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['ropsten']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true
+const DEBUG = false
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -67,7 +67,7 @@ function App(props) {
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
-  if(DEBUG) console.log("👩‍💼 selected address:",address)
+  console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
   let localChainId = localProvider && localProvider._network && localProvider._network.chainId
@@ -115,9 +115,22 @@ function App(props) {
   const purpose = useContractReader(readContracts,"YourContract", "purpose")
   console.log("🤗 purpose:",purpose)
 
+  const steakedValues = useContractReader(readContracts,"YourContract", "steakedValues");
+
+  const playerCount = useContractReader(readContracts,"YourContract", "playerCount");
+  const doesPlayerExist = useContractReader(readContracts,"YourContract", "doesPlayerExist");
+  const players = useContractReader(readContracts,"YourContract", "players");
+  const currentPlayer = useContractReader(readContracts,"YourContract","currentIndex");
+  const isGameOn = useContractReader(readContracts,"YourContract","isGameOn");
+  const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
+  console.log("Is Game on?", currentReveal);
+
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  const newPlayerJoinedEvents = useEventListener(readContracts, "YourContract", "NewPlayerJoined", localProvider, 1);
+  console.log("New player joined:",newPlayerJoinedEvents);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -202,6 +215,10 @@ function App(props) {
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
+          <Menu.Item key="/minesweeper">
+            <Link onClick={()=>{setRoute("/minesweeper")}} to="/minesweeper">Minesweeper</Link>
+          </Menu.Item>
+          
         </Menu>
 
         <Switch>
@@ -263,6 +280,24 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+            />
+          </Route>
+          <Route path="/minesweeper">
+            <Minesweeper
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              currentPlayer={currentPlayer}
+              playerCount={playerCount}
+              newPlayerJoinedEvents={newPlayerJoinedEvents}
+              isGameOn={isGameOn}
+              currentReveal={currentReveal}
             />
           </Route>
           <Route path="/subgraph">

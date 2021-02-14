@@ -7,34 +7,55 @@ import "hardhat/console.sol";
 contract YourContract {
 
   event SetPurpose(address sender, string purpose);
-  bool gameIsStarted = false;
+  bool public isGameOn = false;
   string public purpose = "🛠 Programming Unstoppable Money";
-  mapping(address => uint256) steakedValues;
-  mapping(address => bool) doesPlayerExist;
-  uint256 playerCount = 0;
-  // address[] public players;
-  uint256 currentIndex = 0;
+  mapping(address => uint) public steakedValues;
+  mapping(address => bool) public doesPlayerExist;
+  uint8 public playerCount = 0;
+  address[] public players;
+  uint8 public currentIndex = 0;
+  uint8 public currentReveal;
 
-  constructor(uint256 numberOfPlayers) public {
-    playerCount = numberOfPlayers;
+  constructor() public {
+
   }
-  event NewPlayerJoined(address steaker, uint256 value);
-  function steakAndParticipate(address steaker, uint256 value) public {  
-    require(gameIsStarted == false, "Game has already begun");
-    require(doesPlayerExist[steaker] == false, "Player has already staked");
-    require(playerCount>0, "Player Limit is reached, Join us in the next round!");
+  event NewPlayerJoined(address steaker, uint8 value);
 
-      playerCount -=1;
-      // players.push(steaker);
-      doesPlayerExist[steaker] == true;
-      emit NewPlayerJoined(steaker, value);
+  function steakAndParticipate(uint8 value) public {  
+
+    require(isGameOn == false, "Game has already begun");
+    require(doesPlayerExist[msg.sender] == false, "Player has already staked");
+    // require(playerCount>0, "Player Limit is reached, Join us in the next round!");
+
+      playerCount +=1;
+      players.push(msg.sender);
+      steakedValues[msg.sender] = value;
+      doesPlayerExist[msg.sender] = true;
+      emit NewPlayerJoined(msg.sender, value);
+      
+      // if(playerCount == 0){
+      //   isGameOn = true;
+      // }
   }
 
-  function generateRandomNumber(address player) public returns (uint256) {
-    // require(player == players[currentIndex], "Its not your turn!");
+  function generateRandomNumber() public payable {
+    require(msg.sender == players[currentIndex], "Its not your turn!");
     
     currentIndex+=1;
     currentIndex%=playerCount;
+    currentReveal = 200+currentIndex;
+  }
 
+  function startGame() public {
+    isGameOn = true;
+  }
+
+  function endGame() public {
+    isGameOn = false;
+  }
+
+  function reset() public {
+    isGameOn = false;
+    
   }
 }
