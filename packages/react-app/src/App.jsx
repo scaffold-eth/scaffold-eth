@@ -34,7 +34,7 @@ import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants"
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['ropsten']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false
@@ -123,11 +123,11 @@ function App(props) {
   const currentPlayer = useContractReader(readContracts,"YourContract","currentIndex");
   const isGameOn = useContractReader(readContracts,"YourContract","isGameOn");
   const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
-  console.log("Is Game on?", currentReveal);
+  console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  const turnCompletedEvents = useEventListener(readContracts, "YourContract", "TurnCompleted", localProvider, 1);
+  // console.log("📟 SetPurpose events:",turnCompletedEvents)
 
   const newPlayerJoinedEvents = useEventListener(readContracts, "YourContract", "NewPlayerJoined", localProvider, 1);
   console.log("New player joined:",newPlayerJoinedEvents);
@@ -211,29 +211,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
 
-            <Contract
-              name="YourContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/minesweeper">
             <Minesweeper
               address={address}
               userProvider={userProvider}
@@ -249,6 +227,7 @@ function App(props) {
               newPlayerJoinedEvents={newPlayerJoinedEvents}
               isGameOn={isGameOn}
               currentReveal={currentReveal}
+              turnCompletedEvents={turnCompletedEvents}
             />
           </Route>
         </Switch>

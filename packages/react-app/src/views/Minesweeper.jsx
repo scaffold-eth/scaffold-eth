@@ -5,11 +5,17 @@ import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progres
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
 
-export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedEvents, isGameOn,currentReveal, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedEvents, turnCompletedEvents, isGameOn, currentReveal, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const deadline = useContractReader(readContracts,"YourContract","timeLeft");
+  const currentP = useContractReader(readContracts,"YourContract","currentPlayer");
+  const turnCompletedEventsP = useEventListener(readContracts, "YourContract", "TurnCompleted", localProvider, 1);
+  console.log("📟 SetPurpose events:",turnCompletedEventsP)
 
+  console.log("Turn completed", currentP)
   return (
     <div>
       {/*
@@ -22,21 +28,25 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
 
         <Divider/>
 
-        {!isGameOn && <div style={{margin:8}}>
+        {!isGameOn && <div style={{margin:8, padding:5}}>
           <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
+          
           <Button onClick={()=>{
             console.log("newPurpose",newPurpose)
             /* look how you call setPurpose on your contract: */
             tx( writeContracts.YourContract.steakAndParticipate(newPurpose) )
           }}>Stake & Participate</Button>
+          <div style={{margin:8, padding:5}}>
           <Button onClick={()=>{
 
             /* look how you call setPurpose on your contract: */
             tx( writeContracts.YourContract.startGame() )
           }}>Start the Game!</Button>
+          </div>
         </div>
         }
         {isGameOn && 
+          <div>
             <div style={{margin:8}}>
                 <h2>Current Reveal is : {currentReveal}</h2>
             </div>
@@ -45,11 +55,12 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
             /* look how you call setPurpose on your contract: */
             tx( writeContracts.YourContract.generateRandomNumber() )
           }}>Spin the Roulette wheel</Button>
+          </div>
         }
 
         <Divider />
 
-        Your Address:
+        Your Address:  
         <Address
             value={address}
             ensProvider={mainnetProvider}
@@ -83,21 +94,43 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
         />
         </div>
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-            <h2>Game Deets :</h2>
-            <div style={{display:'flex', flexDirection:'row'}}>
-                <h3> Current Player : </h3>
-                <Address>
-                    value={currentPlayer}
+              <h2>Game Deets :</h2>
+            <h2>Is Game on: {(isGameOn != null) && isGameOn.toString()}</h2>
+            {isGameOn && 
+            <div>
+              <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
+                 
+                  <h3> Current Player :  </h3>
+                  {/* {turnCompletedEventsP[currentP] &&<Address>
+                      value={}
+                      ensProvider={mainnetProvider}
+                      fontSize={12}
+                  </Address>} */}
+                 <List
+          bordered
+          dataSource={turnCompletedEvents.slice(0,1)}
+          renderItem={(item) => {
+            return (
+              <List.Item key={item.blockNumber+"_"+item.sender}>
+                <Address
+                    value={item[0]}
                     ensProvider={mainnetProvider}
-                    fontSize={12}
-                </Address>
-            </div>
-            <h2>Is Game on: {isGameOn}</h2>
-            <Button onClick={()=>{
+                    fontSize={16}
+                  />
+              </List.Item>
+            )
+          }}
+        />
 
-            /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.endGame() )
-          }}>End the Game</Button>
+              </div>
+                  <h3> Current Deadline : {deadline && deadline.toNumber()}</h3>
+                <Button onClick={()=>{
+
+                /* look how you call setPurpose on your contract: */
+                tx( writeContracts.YourContract.endGame() )
+              }}>End the Game</Button>
+            </div>
+            }
         </div>
       </div>
         <Button onClick={()=>{

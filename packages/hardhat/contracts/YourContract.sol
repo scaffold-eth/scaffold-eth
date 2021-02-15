@@ -6,7 +6,7 @@ import "hardhat/console.sol";
 
 contract YourContract {
 
-  event SetPurpose(address sender, string purpose);
+
   bool public isGameOn = false;
   string public purpose = "🛠 Programming Unstoppable Money";
   mapping(address => uint) public steakedValues;
@@ -16,10 +16,13 @@ contract YourContract {
   uint8 public currentIndex = 0;
   uint8 public currentReveal;
 
-  constructor() public {
+  uint256 public deadline = now + 30 seconds;
+  
+    constructor() public {
 
   }
   event NewPlayerJoined(address steaker, uint8 value);
+  event TurnCompleted(address nextPlayer);
 
   function steakAndParticipate(uint8 value) public {  
 
@@ -44,10 +47,22 @@ contract YourContract {
     currentIndex+=1;
     currentIndex%=playerCount;
     currentReveal = 200+currentIndex;
+
+    emit TurnCompleted(players[currentIndex]);
+    deadline = now + 30 seconds;
+  }
+
+  function timeLeft() public view returns(uint256){
+    if(deadline>now){
+    return deadline - now;
+    } else {
+      return 0;
+    }
   }
 
   function startGame() public {
     isGameOn = true;
+    deadline = now + 30 seconds;
   }
 
   function endGame() public {
