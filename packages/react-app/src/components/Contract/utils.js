@@ -14,7 +14,7 @@ const tryToDisplay = thing => {
   if(thing && thing.indexOf && thing.indexOf("0x")==0 && thing.length == 42){
     return (
       <Address
-        value={thing}
+        address={thing}
         fontSize={22}
       />
     )

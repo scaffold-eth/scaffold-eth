@@ -1,5 +1,7 @@
 import { useEffect, useRef } from "react";
 
+// helper hook to call a function regularly in time intervals 
+
 export default function usePoller(fn, delay, extraWatch) {
   const savedCallback = useRef();
   // Remember the latest fn.

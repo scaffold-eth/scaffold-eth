@@ -3,6 +3,22 @@ import usePoller from "./Poller";
 
 const DEBUG = false;
 
+/*
+  ~ What it does? ~
+
+  Enables you to read values from contracts and keep track of them in the local React states
+
+  ~ How can I use? ~
+
+  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+
+  ~ Features ~
+
+  - Provide readContracts by loading contracts (see more on ContractLoader.js)
+  - Specify the name of the contract, in this case it is "YourContract"
+  - Specify the name of the variable in the contract, in this case we keep track of "purpose" variable
+*/
+
 export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
   let adjustPollTime = 1777;
   if (pollTime) {

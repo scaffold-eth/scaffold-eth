@@ -473,7 +473,7 @@ yarn run deploy
 
 The frontend has three different providers that provide different levels of access to different chains:
 
-`mainnetProvider`: (read only) [Infura](https://infura.io/) connection to main [Ethereum](https://ethereum.org/developers/) network (and contracts already deployed like [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code) or [Uniswap](https://etherscan.io/address/0x2a1530c4c41db0b0b2bb646cb5eb1a67b7158667)).
+`mainnetProvider`: (read only) [Alchemy](https://alchemyapi.io/) or [Infura](https://infura.io/) connection to main [Ethereum](https://ethereum.org/developers/) network (and contracts already deployed like [DAI](https://etherscan.io/address/0x6b175474e89094c44da98b954eedeac495271d0f#code) or [Uniswap](https://etherscan.io/address/0x2a1530c4c41db0b0b2bb646cb5eb1a67b7158667)).
 
 `localProvider`: local [HardHat](https://hardhat.org) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
 
@@ -663,7 +663,7 @@ const price = useExchangePrice(mainnetProvider);
 
 > 💡 **Notice**: the `<Account />` component will call `setAddress` and `setInjectedProvider` for you.
 
-> ☢️ **Warning**: You will need to update the configuration for `Web3Modal` to use _your_ [Infura Id](https://infura.io/login)
+> ☢️ **Warning**: You will need to update the configuration for `Web3Modal` to use _your_ [Alchemy API Key](https://dashboard.alchemyapi.io/) or [Infura Id](https://infura.io/login)
 
 <br/>
 
