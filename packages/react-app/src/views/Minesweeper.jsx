@@ -12,9 +12,6 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
   const [newPurpose, setNewPurpose] = useState("loading...");
   const deadline = useContractReader(readContracts,"YourContract","timeLeft");
   const currentP = useContractReader(readContracts,"YourContract","currentPlayer");
-  const turnCompletedEventsP = useEventListener(readContracts, "YourContract", "TurnCompleted", localProvider, 1);
-  console.log("📟 SetPurpose events:",turnCompletedEventsP)
-
   console.log("Turn completed", currentP)
   return (
     <div>
