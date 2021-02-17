@@ -17,7 +17,7 @@ contract YourContract {
   uint8 public currentReveal;
 
   uint256 public deadline = now + 30 seconds;
-  
+  uint256 public steakingDeadline = now + 30 minutes;
     constructor() public {
 
   }
@@ -71,6 +71,6 @@ contract YourContract {
 
   function reset() public {
     isGameOn = false;
-    
+    steakingDeadline = now + 30 minutes; 
   }
 }
