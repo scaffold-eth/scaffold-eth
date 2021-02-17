@@ -1,27 +1,31 @@
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
-## 🚩 Challenge 1: Decentralized Staking App
+## 🚩 Challenge 2: Token Vendor
 
-> 🏦 Build a `Staker.sol` contract that collects **ETH** from numerous addresses using a payable `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allow users to `withdraw()`.
+> 🏵 Create `YourToken.sol` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set your token to `_mint()` **1000** (* 10 ** 18) tokens to the `msg.sender`. Then create a `Vendor.sol` contract that sells your token using a payable `buyTokens()` function.
 
-> 🎛 Building the frontend to display the information and UI is just as important as writing the contract. The goal is to deploy the contract and the app to allow anyone to stake using your app. Use a `Stake(address,uint256)` event to <List/> all stakes.
+> 🎛 Create a frontend that invites the user to `<input\>` an amount of tokens they want to buy. Then, display a preview of the amount of ETH (or USD) it will cost with a confirm button.
 
-> 🏆 The final **deliverable** is deploying a decentralized application to a public blockchain and then `yarn build` and `yarn surge` your app to a public webserver. Share the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01) to earn a collectible and cred! Part of the challenge is making the **UI/UX** enjoyable and clean! 🤩
+> 🔍 It will be important to verify your token's source code in the block explorer after you deploy. Supporters will want to be sure that it has a fixed supply and you can't just mint more.
+
+> 🏆 The final **deliverable** is an app that lets users purchase and transfer your token. Deploy your contracts on your public chain of choice and then `yarn build` and `yarn surge` your app to a public webserver. Share the url in the [Challenge 2 telegram channel]().
+
+> 📱 Part of the challenge is making the **UI/UX** enjoyable and clean! 🤩
 
 
-🧫 Everything starts by ✏️ Editing `Staker.sol` in `packages/hardhat/contracts`
+🧫 Everything starts by ✏️ Editing `YourToken.sol` in `packages/hardhat/contracts`
 
 ---
 ### Checkpoint 0: 📦 install 📚
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git challenge-1-decentralized-staking
-cd challenge-1-decentralized-staking
-git checkout challenge-1-decentralized-staking
+git clone https://github.com/austintgriffith/scaffold-eth.git challenge-2-token-vendor
+cd challenge-2-token-vendor
+git checkout challenge-2-token-vendor
 yarn install
 ```
 
-🔏 Edit your smart contract `Staker.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `YourToken.sol` in `packages/hardhat/contracts`
 
 ---
 
@@ -39,69 +43,56 @@ You'll have three terminals up for:
 
 ---
 
-### Checkpoint 2: 🥩 Staking 💵
+### Checkpoint 2: 🏵Your Token 💵
 
-You'll need to track individual `balances` using a mapping:
-```solidity
-mapping ( address => uint256 ) public balances;
+> 👩‍💻 Edit `YourToken.sol` to inherit the **ERC20** token standard from OpenZeppelin
+
+Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy.js`:
+
+```javascript
+const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", utils.parseEther("1000") );
 ```
-
-And also track a constant `threshold` at ```1 ether```
-```solidity
-uint256 public constant threshold = 1 ether;
-```
-
-> 👩‍💻 Write your `stake()` function and test it with the `Debug Contracts` tab in the frontend
 
 #### 🥅 Goals
 
-- [ ] Do you see the balance of the `Staker` contract go up when you `stake()`?
-- [ ] Is your `balance` correctly tracked?
-- [ ] Do you see the events in the `Staker UI` tab?
+- [ ] Can you check the `balanceOf()` your frontend address in the **YourContract** of the `Debug Contracts` tab?
+- [ ] Can you `transfer()` your token to another account and check *that* account's `balanceOf`?
 
 
 ---
 
-### Checkpoint 3: 🔬 Testing ⏱
+### Checkpoint 3: ⚖️ Vendor 🤖
 
+> 👩‍💻 Create a `Vendor.sol` contract with a payable `buyTokens()` function
 
-Set a `deadline` of ```now + 30 seconds```
+Use a price variable named `tokensPerEth` set to **100**:
+
 ```solidity
-uint256 public deadline = now + 30 seconds;
+uint256 public constant tokensPerEth = 100;
 ```
 
-> 👩‍💻 Write your `execute()` function and test it with the `Debug Contracts` tab
+> 📟 Emit **event** `BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens)` when tokens are purchased.
 
-Hint: If the `address(this).balance` of the contract is over the `threshold` by the `deadline`, you will want to call: ```exampleExternalContract.complete{value: address(this).balance}()```
+Edit `deploy.js` to deploy the `Vendor`, but also to send all the tokens to the `vendor.address`:
 
-(You'll have 30 seconds after deploying until the deadline is reached)
+```js
+const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
+```
 
-> 👩‍💻 Create a `timeLeft()` function including ```public view returns (uint256)``` that returns how much time is left.
-
-⚠️ Be careful! if `now >= deadline` you want to ```return 0;```
-
-⏳ The time will only update if a transaction occurs. You can see the time update by getting funds from the faucet just to trigger a new block.
-
-> 👩‍💻 You can call `yarn deploy` any time you want a fresh contract
 
 #### 🥅 Goals
-- [ ] Can you see `timeLeft` counting down in the `Staker UI` tab when you trigger a transaction with the faucet?
-- [ ] If you `stake()` enough ETH before the `deadline`, does it call `complete()`?
-- [ ] If you don't `stake()` enough can you `withdraw(address payable)` your funds?
+- [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?
+- [ ] Can you buy **10** tokens for **0.01** ETH?
+- [ ] Can you transfer tokens to a different account?
+- [ ] Can the `owner` withdraw the ETH from the `Vendor`?
 
-⚔️ Side Quests
-- [ ] Can execute get called more than once, and is that okay?
-- [ ] Can you deposit and withdraw freely after the `deadline`, and is that okay?
-- [ ] What are other implications of *anyone* being able to withdraw for someone?
-- [ ] Can you implement your own [modifier](https://solidity-by-example.org/function-modifier/) that checks whether `deadline` was passed or not? Where can you use it?
+#### ⚔️ Side Quests
+- [ ] Can *anyone* withdraw? Test *everything*!
+- [ ] What if you minted **2000** and only sent **1000** to the `Vendor`?
 
-🐸 It's a trap!
-- [ ] Make sure funds can't get trapped in the contract! Try sending funds after you have executed!
-- [ ] Try to create a [modifier](https://solidity-by-example.org/function-modifier/) called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
----
 
-### Checkpoint 4: 🚢 Ship it 🚁
+### Checkpoint 4: 💾 Deploy it! 🛰
 
 📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
 
@@ -109,30 +100,27 @@ Hint: If the `address(this).balance` of the contract is over the `threshold` by 
 
 🔐 If you don't have one, run `yarn generate` to create a mnemonic and save it locally for deploying.
 
-🛰 Use an [instantwallet.io](https://instantwallet.io) to fund your **deployer address** (run `yarn account` to view balances)
+🛰 Use an [instantwallet.io](https://instantwallet.io) to fund your **deployer address** (run `yarn account` again to view balances)
 
- >  🚀 Run `yarn deploy` to deploy to your public network of choice (wherever you can get ⛽️ gas)
+ >  🚀 Run `yarn deploy` to deploy to your public network of choice (😅 wherever you can get ⛽️ gas)
 
- ---
+🔬 Inspect the block explorer for the network you deployed to... make sure your contract is there.  
 
-### Checkpoint 5: 🎚 Frontend 🧘‍♀️
+👮 Your token contract source needs to be **verified**... (source code publicly available on the block explorer)
 
- 👩‍🎤 Take time to craft your user experience.
+📠 You can "flatten" your contracts with `yarn flatten > flat.txt` (the flat.txt file will need a little cleanup). Then *copy and paste* the code into the block explorer like Etherscan to verify. (optimizer "on" set to 200 runs)
 
- ...
 
- 📡 When you are ready to ship the frontend app...
+### Checkpoint 5: 🚢 Ship it! 🚁
 
- 📦  Run `yarn build` to package up your frontend.
+ 📦 Run `yarn build` to package up your frontend.
 
 💽 Upload your app to surge with `yarn surge` (you could also `yarn s3` or maybe even `yarn ipfs`?)
 
 🚔 Traffic to your url might break the [Infura](https://infura.io/) rate limit, edit your key: `constants.js` in `packages/ract-app/src`.
 
-> 🎖 Show off your app by pasting the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01)
+> 🎖 Show off your app by pasting the url in the [Challenge 2 telegram channel]()
 
 ---
-
-> 👩‍🔬 Need a longer form tutorial to guide your coding? [Try this one!](https://github.com/btogzhan2000/scaffold-eth/tree/staking-app)
 
 > 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-eth developers chat](https://t.me/joinchat/F7nCRK3kI93PoCOk)

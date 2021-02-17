@@ -9,10 +9,19 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  const exampleExternalContract = await deploy("ExampleExternalContract")
+  const yourToken = await deploy("YourToken")
 
-  const stakerContract = await deploy("Staker",[ exampleExternalContract.address ]) // <-- add in constructor args like line 16 vvvv
+  const vendor = await deploy("Vendor",[ yourToken.address ])
 
+  console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
+
+  const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
+
+  //const stakerContract = await deploy("Staker",[ exampleExternalContract.address ]) // <-- add in constructor args like line 16 vvvv
+
+  console.log("\n 🤹  Sending ownership to frontend address...\n")
+
+  await vendor.transferOwnership( "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1" );
 
   //const secondContract = await deploy("SecondContract")
 
@@ -115,6 +124,10 @@ const readArgsFile = (contractName) => {
   }
   return args;
 };
+
+function sleep(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 main()
   .then(() => process.exit(0))

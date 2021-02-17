@@ -1,1 +1,1 @@
-module.exports = ["ExampleExternalContract","Staker"];
+module.exports = ["Vendor","YourToken"];

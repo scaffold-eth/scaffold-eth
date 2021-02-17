@@ -3,12 +3,12 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, List } from "antd";
+import { Row, Col, Card, Button, Menu, Alert, List, Input, Divider } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, Balance, Address } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, Balance, Address, EtherInput, AddressInput } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { Hints, ExampleUI, Subgraph } from "./views"
@@ -110,42 +110,36 @@ function App(props) {
   //const myMainnetBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
   //
 
-  //keep track of contract balance to know how much has been staked total:
-  const stakerContractBalance = useBalance(localProvider, readContracts && readContracts.Staker.address);
-  if(DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance )
 
-  //keep track of total 'threshold' needed of ETH
-  const threshold = useContractReader(readContracts,"Staker", "threshold" )
-  console.log("💵 threshold:",threshold)
+  const vendorAddress = readContracts && readContracts.Vendor.address
 
-  // keep track of a variable from the contract in the local React state:
-  const balanceStaked = useContractReader(readContracts,"Staker", "balances",[ address ])
-  console.log("💸 balanceStaked:",balanceStaked)
+  const vendorETHBalance = useBalance(localProvider, vendorAddress);
+  if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance)
 
-  //📟 Listen for broadcast events
-  const stakeEvents = useEventListener(readContracts, "Staker", "Stake", localProvider, 1);
-  console.log("📟 stake events:",stakeEvents)
+  const vendorTokenBalance = useContractReader(readContracts,"YourToken", "balanceOf", [ vendorAddress ])
+  console.log("🏵 vendorTokenBalance:",vendorTokenBalance)
 
-  // keep track of a variable from the contract in the local React state:
-  const timeLeft = useContractReader(readContracts,"Staker", "timeLeft")
-  console.log("⏳ timeLeft:",timeLeft)
+  const yourTokenBalance = useContractReader(readContracts,"YourToken", "balanceOf", [ address ])
+  console.log("🏵 yourTokenBalance:",yourTokenBalance)
+
+  const tokensPerEth = useContractReader(readContracts,"Vendor", "tokensPerEth")
+  console.log("🏦 tokensPerEth:",tokensPerEth)
 
 
-
-  const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
-  console.log("✅ complete:",complete)
-
-  const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract.address);
-  if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
+  // const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
+  // console.log("✅ complete:",complete)
+  //
+  // const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract.address);
+  // if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
 
 
   let completeDisplay = ""
-  if(complete){
+  if(false){
     completeDisplay = (
       <div style={{padding:64, backgroundColor:"#eeffef", fontWeight:"bolder"}}>
         🚀 🎖 👩‍🚀  -  Staking App triggered `ExampleExternalContract` -- 🎉  🍾   🎊
         <Balance
-          balance={exampleExternalContractBalance}
+          balance={0}
           fontSize={64}
         /> ETH staked!
       </div>
@@ -176,7 +170,7 @@ function App(props) {
     )
   }else{
     networkDisplay = (
-      <div style={{zIndex:2, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
         {targetNetwork.name}
       </div>
     )
@@ -206,7 +200,7 @@ function App(props) {
         <Button type={"primary"} onClick={()=>{
           faucetTx({
             to: address,
-            value: parseEther("0.01"),
+            value: parseEther("1"),
           });
           setFaucetClicked(true)
         }}>
@@ -216,8 +210,52 @@ function App(props) {
     )
   }
 
+  const buyTokensEvents = useEventListener(readContracts, "Vendor", "BuyTokens", localProvider, 1);
+  console.log("📟 buyTokensEvents:",buyTokensEvents)
 
+  const [ tokenBuyAmount, setTokenBuyAmount ] = useState()
 
+  const ethCostToPurchaseTokens = tokenBuyAmount && tokensPerEth &&  parseEther(""+(tokenBuyAmount / parseFloat(tokensPerEth)))
+  console.log("ethCostToPurchaseTokens:",ethCostToPurchaseTokens)
+
+  const [ tokenSendToAddress, setTokenSendToAddress ] = useState()
+  const [ tokenSendAmount, setTokenSendAmount ] = useState()
+
+  const [ buying, setBuying ] = useState()
+
+  let transferDisplay = ""
+  if(yourTokenBalance){
+    transferDisplay = (
+      <div style={{padding:8, marginTop: 32, width: 420, margin:"auto" }}>
+        <Card title="Transfer tokens" >
+          <div>
+            <div style={{padding:8}}>
+              <AddressInput
+                ensProvider={mainnetProvider}
+                placeholder="to address"
+                value={tokenSendToAddress}
+                onChange={setTokenSendToAddress}
+              />
+            </div>
+            <div style={{padding:8}}>
+              <Input
+                style={{textAlign:"center"}}
+                placeholder={"amount of tokens to send"}
+                value={tokenSendAmount}
+                onChange={(e)=>{setTokenSendAmount(e.target.value)}}
+              />
+            </div>
+          </div>
+          <div style={{padding:8}}>
+            <Button type={"primary"} onClick={()=>{
+              tx( writeContracts.YourToken.transfer(tokenSendToAddress,parseEther(""+tokenSendAmount)) )
+            }}>Send Tokens</Button>
+          </div>
+
+        </Card>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -229,7 +267,7 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Staker UI</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">YourToken</Link>
           </Menu.Item>
           <Menu.Item key="/contracts">
             <Link onClick={()=>{setRoute("/contracts")}} to="/contracts">Debug Contracts</Link>
@@ -241,81 +279,119 @@ function App(props) {
 
           {completeDisplay}
 
-          <div style={{padding:8,marginTop:32}}>
-            <div>Timeleft:</div>
-            {timeLeft && humanizeDuration(timeLeft.toNumber()*1000)}
+          <div style={{padding:8, marginTop: 32 ,width: 300, margin:"auto" }}>
+            <Card title="Your Tokens" extra={<a href="#">code</a>} >
+              <div style={{padding:8}}>
+                <Balance
+                  balance={yourTokenBalance}
+                  fontSize={64}
+                />
+              </div>
+            </Card>
           </div>
 
-          <div style={{padding:8}}>
-            <div>Total staked:</div>
+
+
+          {transferDisplay}
+
+              <Divider/>
+
+          <div style={{padding:8, marginTop: 32 ,width: 300, margin:"auto" }}>
+            <Card title="Buy Tokens" extra={<a href="#">code</a>} >
+
+              <div style={{padding:8}}>
+                {tokensPerEth && tokensPerEth.toNumber()} tokens per ETH
+              </div>
+
+              <div style={{padding:8}}>
+                <Input
+                  style={{textAlign:"center"}}
+                  placeholder={"amount of tokens to buy"}
+                  value={tokenBuyAmount}
+                  onChange={(e)=>{setTokenBuyAmount(e.target.value)}}
+                />
+                <Balance
+                  balance={ethCostToPurchaseTokens}
+                  dollarMultiplier={price}
+                />
+              </div>
+
+              <div style={{padding:8}}>
+                <Button type={"primary"} loading={buying} onClick={async ()=>{
+                  setBuying(true)
+                  await tx( writeContracts.Vendor.buyTokens({value: ethCostToPurchaseTokens}) )
+                  setBuying(false)
+                }}>Buy Tokens</Button>
+              </div>
+
+            </Card>
+          </div>
+
+
+
+
+
+
+
+
+
+
+          <div style={{padding:8, marginTop: 32}}>
+            <div>Vendor Token Balance:</div>
             <Balance
-              balance={stakerContractBalance}
-              fontSize={64}
-            />/<Balance
-              balance={threshold}
+              balance={vendorTokenBalance}
               fontSize={64}
             />
           </div>
 
 
           <div style={{padding:8}}>
-            <div>You staked:</div>
+            <div>Vendor ETH Balance:</div>
             <Balance
-              balance={balanceStaked}
+              balance={vendorETHBalance}
               fontSize={64}
+            /> ETH
+          </div>
+
+          <div style={{width:500, margin:"auto",marginTop:64}}>
+            <div>Buy Token Events:</div>
+            <List
+              dataSource={buyTokensEvents}
+              renderItem={(item) => {
+                return (
+                  <List.Item key={item[0]+item[1]+item.blockNumber}>
+                    <Address
+                        value={item[0]}
+                        ensProvider={mainnetProvider}
+                        fontSize={16}
+                      /> paid
+                      <Balance
+                        balance={item[1]}
+
+                      />ETH to get
+
+                      <Balance
+                        balance={item[2]}
+
+                      />Tokens
+                  </List.Item>
+                )
+              }}
             />
           </div>
-
-
-          <div style={{padding:8}}>
-            <Button type={"default"} onClick={()=>{
-              tx( writeContracts.Staker.execute() )
-            }}>📡  Execute!</Button>
-          </div>
-
-          <div style={{padding:8}}>
-            <Button type={"default"} onClick={()=>{
-              tx( writeContracts.Staker.withdraw( address ) )
-            }}>🏧  Withdraw</Button>
-          </div>
-
-          <div style={{padding:8}}>
-            <Button type={ balanceStaked ? "success" : "primary"} onClick={()=>{
-              tx( writeContracts.Staker.stake({value: parseEther("0.5")}) )
-            }}>🥩  Stake 0.5 ether!</Button>
-          </div>
-
 
 
             {/*
+
+
+
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
-            */}
 
-            <div style={{width:500, margin:"auto",marginTop:64}}>
-              <div>Stake Events:</div>
-              <List
-                dataSource={stakeEvents}
-                renderItem={(item) => {
-                  return (
-                    <List.Item key={item[0]+item[1]+item.blockNumber}>
-                      <Address
-                          value={item[0]}
-                          ensProvider={mainnetProvider}
-                          fontSize={16}
-                        /> =>
-                        <Balance
-                          balance={item[1]}
 
-                        />
 
-                    </List.Item>
-                  )
-                }}
-              />
-            </div>
-
+*/}
 
 
 
@@ -342,14 +418,14 @@ function App(props) {
           </Route>
           <Route path="/contracts">
             <Contract
-              name="Staker"
+              name="Vendor"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
             <Contract
-              name="ExampleExternalContract"
+              name="YourToken"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
@@ -382,7 +458,7 @@ function App(props) {
         fontSize={16}
       /></div>
 
-      <div style={{marginTop:32,opacity:0.5}}><a target="_blank" style={{padding:32,color:"#000"}} href="https://github.com/austintgriffith/scaffold-eth">🍴 Fork me!</a></div>
+      <div style={{marginTop:32,paddingBottom:128,opacity:0.5}}><a target="_blank" style={{padding:32,color:"#000"}} href="https://github.com/austintgriffith/scaffold-eth">🍴 Fork me!</a></div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
        <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
