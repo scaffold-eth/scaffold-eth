@@ -11,9 +11,11 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, isGameOn, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
-  const timeLeft = useContractReader(readContracts,"YourContract","timeLeft");
+  const turnTimeLeft = useContractReader(readContracts,"YourContract","turnTimeLeft");
+  const stakingTimeLeft = useContractReader(readContracts,"YourContract","steakingTimeLeft");
   const playerCount = useContractReader(readContracts,"YourContract","playerCount");
   const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
+  const totalStakingPool = useContractReader(readContracts,"YourContract","totalStakingPool");
 
   return (
     <div>
@@ -28,12 +30,17 @@ export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, 
         <Divider/>
 
         {!isGameOn && <div style={{margin:8, padding:5}}>
+        <h2>Current Pool Value: </h2>
+        <Balance
+              balance={totalStakingPool}
+              fontSize={64}
+            />
           <Input onChange={(e)=>{setNewPurpose(e.target.value)}} />
           
           <Button onClick={()=>{
             console.log("newPurpose",newPurpose)
             /* look how you call setPurpose on your contract: */
-            tx( writeContracts.YourContract.steakAndParticipate(newPurpose) )
+            tx( writeContracts.YourContract.steakAndParticipate({value:parseEther(newPurpose)}) )
           }}>Stake & Participate</Button>
           <div style={{margin:8, padding:5}}>
           <Button onClick={()=>{
@@ -86,7 +93,9 @@ export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, 
                     ensProvider={mainnetProvider}
                     fontSize={16}
                   /> =>
-                {item[1]}
+                        <Balance
+                          balance={item[1]}
+                        />
               </List.Item>
             )
           }}
@@ -102,7 +111,7 @@ export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, 
                   <h3> Current Player :  </h3>
                  <List
           bordered
-          dataSource={(false) ? turnCompletedEvents.slice(0,1) : newPlayerJoinedEvents.slice(0,1)}
+          dataSource={(turnCompletedEvents.length > 0) ? turnCompletedEvents.slice(0,1) : newPlayerJoinedEvents.slice(newPlayerJoinedEvents.length-1,newPlayerJoinedEvents.length)}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.sender}>
@@ -117,7 +126,7 @@ export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, 
         />
 
               </div>
-                  <h3> Current Deadline : {timeLeft && timeLeft.toNumber()}</h3>
+                  <h3> Current Deadline : {turnTimeLeft && turnTimeLeft.toNumber()}</h3>
                 <Button onClick={()=>{tx( writeContracts.YourContract.endGame() )
               }}>End the Game</Button>
             </div>

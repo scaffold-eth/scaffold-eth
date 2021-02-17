@@ -1,6 +1,12 @@
 [
   {
-    "inputs": [],
+    "inputs": [
+      {
+        "internalType": "address",
+        "name": "stakerContractAddress",
+        "type": "address"
+      }
+    ],
     "stateMutability": "nonpayable",
     "type": "constructor"
   },
@@ -15,9 +21,9 @@
       },
       {
         "indexed": false,
-        "internalType": "uint8",
+        "internalType": "uint256",
         "name": "value",
-        "type": "uint8"
+        "type": "uint256"
       }
     ],
     "name": "NewPlayerJoined",
@@ -34,6 +40,25 @@
       }
     ],
     "name": "TurnCompleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "steaker",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "WithdrawWinnings",
     "type": "event"
   },
   {
@@ -105,7 +130,7 @@
     "inputs": [],
     "name": "generateRandomNumber",
     "outputs": [],
-    "stateMutability": "payable",
+    "stateMutability": "nonpayable",
     "type": "function"
   },
   {
@@ -175,22 +200,29 @@
   },
   {
     "inputs": [],
+    "name": "stakerContract",
+    "outputs": [
+      {
+        "internalType": "contract StakerContract",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "startGame",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
   },
   {
-    "inputs": [
-      {
-        "internalType": "uint8",
-        "name": "value",
-        "type": "uint8"
-      }
-    ],
+    "inputs": [],
     "name": "steakAndParticipate",
     "outputs": [],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
@@ -227,7 +259,7 @@
   },
   {
     "inputs": [],
-    "name": "timeLeft",
+    "name": "steakingTimeLeft",
     "outputs": [
       {
         "internalType": "uint256",
@@ -236,6 +268,39 @@
       }
     ],
     "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "totalStakingPool",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "turnTimeLeft",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "withdrawWinnings",
+    "outputs": [],
+    "stateMutability": "payable",
     "type": "function"
   }
 ]

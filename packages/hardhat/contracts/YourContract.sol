@@ -2,10 +2,11 @@ pragma solidity >=0.6.0 <0.7.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./StakerContract.sol";
 
 contract YourContract {
 
+  StakerContract public stakerContract;
 
   bool public isGameOn = false;
   string public purpose = "🛠 Programming Unstoppable Money";
@@ -18,30 +19,39 @@ contract YourContract {
 
   uint256 public deadline = now + 30 seconds;
   uint256 public steakingDeadline = now + 30 minutes;
-    constructor() public {
+  uint256 public totalStakingPool = 0;
 
+  constructor(address stakerContractAddress) public {
+    stakerContract = StakerContract(stakerContractAddress);
   }
-  event NewPlayerJoined(address steaker, uint8 value);
+  event NewPlayerJoined(address steaker, uint256 value);
   event TurnCompleted(address nextPlayer);
+  event WithdrawWinnings(address steaker, uint256 value);
 
-  function steakAndParticipate(uint8 value) public {  
+  function steakAndParticipate() public payable {  
 
     require(isGameOn == false, "Game has already begun");
     require(doesPlayerExist[msg.sender] == false, "Player has already staked");
-    // require(playerCount>0, "Player Limit is reached, Join us in the next round!");
+    require(now < steakingDeadline, "Deadline has passed, please reset the game to be able to steak again");
 
+      totalStakingPool += msg.value;
       playerCount +=1;
       players.push(msg.sender);
-      steakedValues[msg.sender] = value;
+      steakedValues[msg.sender] = msg.value;
       doesPlayerExist[msg.sender] = true;
-      emit NewPlayerJoined(msg.sender, value);
-      
-      // if(playerCount == 0){
-      //   isGameOn = true;
-      // }
+      emit NewPlayerJoined(msg.sender, msg.value);
   }
 
-  function generateRandomNumber() public payable {
+  function withdrawWinnings() public payable {
+    uint256 amount = steakedValues[msg.sender];
+    steakedValues[msg.sender] = 0;
+    msg.sender.transfer(amount);
+
+    emit WithdrawWinnings(msg.sender, amount);
+
+  }
+
+  function generateRandomNumber() public {
     require(msg.sender == players[currentIndex], "Its not your turn!");
     
     currentIndex+=1;
@@ -52,9 +62,17 @@ contract YourContract {
     deadline = now + 30 seconds;
   }
 
-  function timeLeft() public view returns(uint256){
+  function turnTimeLeft() public view returns(uint256){
     if(deadline>now){
     return deadline - now;
+    } else {
+      return 0;
+    }
+  }
+
+  function steakingTimeLeft() public view returns(uint256){
+    if(steakingDeadline>now){
+    return steakingDeadline - now;
     } else {
       return 0;
     }
@@ -63,6 +81,8 @@ contract YourContract {
   function startGame() public {
     isGameOn = true;
     deadline = now + 30 seconds;
+    stakerContract.complete{ value : address(this).balance}();
+    steakingDeadline = 0;
   }
 
   function endGame() public {
@@ -72,5 +92,7 @@ contract YourContract {
   function reset() public {
     isGameOn = false;
     steakingDeadline = now + 30 minutes; 
+    stakerContract.reset{ value : 0}();
+
   }
 }
