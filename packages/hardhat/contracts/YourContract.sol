@@ -11,10 +11,10 @@ contract YourContract {
   string public purpose = "🛠 Programming Unstoppable Money";
   mapping(address => uint) public steakedValues;
   mapping(address => bool) public doesPlayerExist;
-  uint8 public playerCount = 0;
+  uint256 public playerCount = 0;
   address[] public players;
-  uint8 public currentIndex = 0;
-  uint8 public currentReveal;
+  uint256 public currentIndex = 0;
+  uint256 public currentReveal;
 
   uint256 public deadline = now + 30 seconds;
   uint256 public steakingDeadline = now + 30 minutes;

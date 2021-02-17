@@ -5,12 +5,15 @@ import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progres
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import { BigNumber} from "@ethersproject/bignumber";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
 
-export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedEvents, turnCompletedEvents, isGameOn, currentReveal, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function Minsweeper({newPlayerJoinedEvents, turnCompletedEvents, isGameOn, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
   const timeLeft = useContractReader(readContracts,"YourContract","timeLeft");
+  const playerCount = useContractReader(readContracts,"YourContract","playerCount");
+  const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
 
   return (
     <div>
@@ -20,7 +23,7 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
         <h2>Minesweeper 🤖</h2>
 
-        <h4>Player Count: {playerCount}</h4>
+        <h4>Player Count: {playerCount && playerCount.toNumber()}</h4>
 
         <Divider/>
 
@@ -44,7 +47,7 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
         {isGameOn && 
           <div>
             <div style={{margin:8}}>
-                <h2>Current Reveal is : {currentReveal}</h2>
+                <h2>Current Reveal is : {currentReveal && currentReveal.toNumber()}</h2>
             </div>
             <Button onClick={()=>{
 
@@ -99,7 +102,7 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
                   <h3> Current Player :  </h3>
                  <List
           bordered
-          dataSource={turnCompletedEvents.slice(0,1)}
+          dataSource={(false) ? turnCompletedEvents.slice(0,1) : newPlayerJoinedEvents.slice(0,1)}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.sender}>
