@@ -10,9 +10,8 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedEvents, turnCompletedEvents, isGameOn, currentReveal, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
-  const deadline = useContractReader(readContracts,"YourContract","timeLeft");
-  const currentP = useContractReader(readContracts,"YourContract","currentPlayer");
-  console.log("Turn completed", currentP)
+  const timeLeft = useContractReader(readContracts,"YourContract","timeLeft");
+
   return (
     <div>
       {/*
@@ -98,11 +97,6 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
               <div style={{display:'flex', flexDirection:'row', justifyContent:'center', alignItems:'center'}}>
                  
                   <h3> Current Player :  </h3>
-                  {/* {turnCompletedEventsP[currentP] &&<Address>
-                      value={}
-                      ensProvider={mainnetProvider}
-                      fontSize={12}
-                  </Address>} */}
                  <List
           bordered
           dataSource={turnCompletedEvents.slice(0,1)}
@@ -120,18 +114,15 @@ export default function Minsweeper({currentPlayer, playerCount, newPlayerJoinedE
         />
 
               </div>
-                  <h3> Current Deadline : {deadline && deadline.toNumber()}</h3>
-                <Button onClick={()=>{
-
-                /* look how you call setPurpose on your contract: */
-                tx( writeContracts.YourContract.endGame() )
+                  <h3> Current Deadline : {timeLeft && timeLeft.toNumber()}</h3>
+                <Button onClick={()=>{tx( writeContracts.YourContract.endGame() )
               }}>End the Game</Button>
             </div>
             }
         </div>
       </div>
         <Button onClick={()=>{
-            /* look how you call setPurpose on your contract: */
+            /* look how you call resret on your contract: */
             tx( writeContracts.YourContract.reset() )
           }}>
             Reset 💀

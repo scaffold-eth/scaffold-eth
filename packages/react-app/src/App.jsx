@@ -12,8 +12,8 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components"
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph, Minesweeper } from "./views"
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import { Minesweeper } from "./views"
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -79,10 +79,10 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice)
+  const tx = Transactor(userProvider, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice)
+  const faucetTx = Transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
@@ -90,15 +90,15 @@ function App(props) {
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
-  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
+  if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...");
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
-  if(DEBUG) console.log("📝 readContracts",readContracts)
+  const readContracts = useContractLoader(localProvider);
+  if(DEBUG) console.log("📝 readContracts",readContracts);
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
-  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
+  const writeContracts = useContractLoader(userProvider);
+  if(DEBUG) console.log("🔐 writeContracts",writeContracts);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -112,17 +112,11 @@ function App(props) {
   //
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
-
-  const steakedValues = useContractReader(readContracts,"YourContract", "steakedValues");
-
   const playerCount = useContractReader(readContracts,"YourContract", "playerCount");
-  const doesPlayerExist = useContractReader(readContracts,"YourContract", "doesPlayerExist");
-  const players = useContractReader(readContracts,"YourContract", "players");
   const currentPlayer = useContractReader(readContracts,"YourContract","currentIndex");
   const isGameOn = useContractReader(readContracts,"YourContract","isGameOn");
   const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
+
   console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
 
   //📟 Listen for broadcast events
