@@ -11,9 +11,10 @@ contract Vendor {
     yourToken = YourToken(tokenAddress);
   }
 
-  //create a payable buyTokens() function:
+  //ToDo: create a payable buyTokens() function:
 
-  //create a withdraw() function that lets the owner
+  //ToDo: create a sellTokens() function:
 
-
+  //ToDo: create a withdraw() function that lets the owner, you can 
+  //use the Ownable.sol import above:
 }

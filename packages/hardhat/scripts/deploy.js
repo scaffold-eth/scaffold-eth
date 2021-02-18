@@ -13,14 +13,16 @@ const main = async () => {
 
   const vendor = await deploy("Vendor",[ yourToken.address ])
 
-  console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
+  //console.log("\n 🏵  Sending all 1000 tokens to the vendor...\n");
 
+  //Todo: transfer the tokens to the vendor
   const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
 
-  //const stakerContract = await deploy("Staker",[ exampleExternalContract.address ]) // <-- add in constructor args like line 16 vvvv
+  //const stakerContract = await deploy("Staker",[ exampleExternalContract.address ]) // <-- add in constructor args like line 14 ^^^
 
   console.log("\n 🤹  Sending ownership to frontend address...\n")
 
+  //ToDo: change address with your burner wallet address vvvv
   await vendor.transferOwnership( "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1" );
 
   //const secondContract = await deploy("SecondContract")
@@ -28,8 +30,6 @@ const main = async () => {
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-
-
 
   /*
   //If you want to send value to an address from the deployer
@@ -40,14 +40,12 @@ const main = async () => {
   })
   */
 
-
   /*
   //If you want to send some ETH to a contract on deploy (make your constructor payable!)
   const yourContract = await deploy("YourContract", [], {
   value: ethers.utils.parseEther("0.05")
   });
   */
-
 
   /*
   //If you want to link a library into your contract:
@@ -56,7 +54,6 @@ const main = async () => {
    LibraryName: **LibraryAddress**
   });
   */
-
 
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",

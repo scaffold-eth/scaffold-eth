@@ -132,21 +132,18 @@ function App(props) {
   // const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract.address);
   // if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
 
-
-  let completeDisplay = ""
-  if(false){
-    completeDisplay = (
-      <div style={{padding:64, backgroundColor:"#eeffef", fontWeight:"bolder"}}>
-        🚀 🎖 👩‍🚀  -  Staking App triggered `ExampleExternalContract` -- 🎉  🍾   🎊
-        <Balance
-          balance={0}
-          fontSize={64}
-        /> ETH staked!
-      </div>
-    )
-  }
-
-
+  // let completeDisplay = ""
+  // if(false){
+  //   completeDisplay = (
+  //     <div style={{padding:64, backgroundColor:"#eeffef", fontWeight:"bolder"}}>
+  //       🚀 🎖 👩‍🚀  -  Staking App triggered `ExampleExternalContract` -- 🎉  🍾   🎊
+  //       <Balance
+  //         balance={0}
+  //         fontSize={64}
+  //       /> ETH staked!
+  //     </div>
+  //   )
+  // }
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -276,9 +273,6 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-
-          {completeDisplay}
-
           <div style={{padding:8, marginTop: 32 ,width: 300, margin:"auto" }}>
             <Card title="Your Tokens" extra={<a href="#">code</a>} >
               <div style={{padding:8}}>
@@ -289,13 +283,8 @@ function App(props) {
               </div>
             </Card>
           </div>
-
-
-
           {transferDisplay}
-
               <Divider/>
-
           <div style={{padding:8, marginTop: 32 ,width: 300, margin:"auto" }}>
             <Card title="Buy Tokens" extra={<a href="#">code</a>} >
 
