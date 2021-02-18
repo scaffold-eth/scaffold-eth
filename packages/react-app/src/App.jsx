@@ -114,16 +114,16 @@ function App(props) {
   const vendorAddress = readContracts && readContracts.Vendor.address
 
   const vendorETHBalance = useBalance(localProvider, vendorAddress);
-  if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance)
+  if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance ? formatEther(vendorETHBalance) : '...')
 
-  const vendorTokenBalance = useContractReader(readContracts,"YourToken", "balanceOf", [ vendorAddress ])
-  console.log("🏵 vendorTokenBalance:",vendorTokenBalance)
+  const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [ vendorAddress ])
+  console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? formatEther(vendorTokenBalance) : '...')
 
-  const yourTokenBalance = useContractReader(readContracts,"YourToken", "balanceOf", [ address ])
-  console.log("🏵 yourTokenBalance:",yourTokenBalance)
+  const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [ address ])
+  console.log("🏵 yourTokenBalance:", yourTokenBalance ? formatEther(yourTokenBalance) : '...')
 
-  const tokensPerEth = useContractReader(readContracts,"Vendor", "tokensPerEth")
-  console.log("🏦 tokensPerEth:",tokensPerEth)
+  const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth")
+  console.log("🏦 tokensPerEth:", tokensPerEth ? tokensPerEth.toString() : '...')
 
 
   // const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
