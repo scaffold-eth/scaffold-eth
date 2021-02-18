@@ -58,6 +58,9 @@ export default function Balance(props) {
   if (typeof props.balance !== "undefined") {
     usingBalance = props.balance;
   }
+  if (typeof props.value !== "undefined") {
+    usingBalance = props.value;
+  }
 
   if (usingBalance) {
     const etherBalance = formatEther(usingBalance);
