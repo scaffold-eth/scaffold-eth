@@ -1,28 +1,30 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import usePoller from "./Poller.js";
 import useBlockNumber from "./BlockNumber.js";
 
-export default function useTimestamp(provider,pollTime) {
+export default function useTimestamp(provider, pollTime) {
+  const blockNumber = useBlockNumber(provider, pollTime);
 
-  const blockNumber = useBlockNumber(provider,pollTime)
-
-  const [timestamp, setTimestamp] = useState()
+  const [timestamp, setTimestamp] = useState();
 
   useEffect(() => {
-    if(typeof provider !== "undefined"){
+    if (typeof provider !== "undefined") {
       async function getTimestamp() {
-        let nextBlock = await provider.getBlock(blockNumber)
-        if(typeof nextBlock !== "undefined" && nextBlock && nextBlock.timestamp){
-          const nextTimestamp = nextBlock.timestamp
-          if(nextTimestamp!==timestamp){
-            setTimestamp(nextTimestamp)
+        let nextBlock = await provider.getBlock(blockNumber);
+        if (
+          typeof nextBlock !== "undefined" &&
+          nextBlock &&
+          nextBlock.timestamp
+        ) {
+          const nextTimestamp = nextBlock.timestamp;
+          if (nextTimestamp !== timestamp) {
+            setTimestamp(nextTimestamp);
           }
         }
       }
       getTimestamp();
     }
-  }, [provider,blockNumber]);
+  }, [provider, blockNumber]);
 
   return timestamp;
 }
-

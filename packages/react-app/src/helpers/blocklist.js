@@ -1,4 +1,3 @@
-
 const blocklist = [
   "QmUr59dCZeXR4ozGNV7D8TYtVvTAGoZcvaPg6FALqxvWTG",
   "QmYto8RMovpQfpdGL2z5eVzCaEDtz1ckhpWSezVct2rjd9",
@@ -10,9 +9,9 @@ const blocklist = [
   "QmNnoHKiWHnfqQ4CjLgbJEeFvFqC1h5Be4Dwaa25t6TJXs",
   "QmQZmDkMiv8EsrMwmb8Wt5REEp3SmoMFJJ6UAL8YNsKFnd",
   "QmWaSkL3MaYvnYUuWsRbrJyFmH7pirUFRYoNUiAF9FEojN",
-  "QmU65N3U9hBHh2j4nocUERYpbkdytHhdbE4W3WCrzaK3aY"
+  "QmU65N3U9hBHh2j4nocUERYpbkdytHhdbE4W3WCrzaK3aY",
 ];
 
 export default function isBlocklisted(hash) {
-  return (blocklist.indexOf(hash)>=0)
+  return blocklist.indexOf(hash) >= 0;
 }

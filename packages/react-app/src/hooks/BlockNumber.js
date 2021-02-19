@@ -1,21 +1,23 @@
-import { useState } from 'react';
+import { useState } from "react";
 import usePoller from "./Poller.js";
 
-export default function useBlockNumber(provider,pollTime) {
+export default function useBlockNumber(provider, pollTime) {
+  const [blockNumber, setBlockNumber] = useState();
 
-  const [blockNumber, setBlockNumber] = useState()
-
-  usePoller(() => {
-    if(typeof provider !== "undefined"){
-      async function getBlockNumber() {
-        let nextBlockNumber = await provider.getBlockNumber()
-        if(nextBlockNumber!==blockNumber){
-          setBlockNumber(nextBlockNumber)
+  usePoller(
+    () => {
+      if (typeof provider !== "undefined") {
+        async function getBlockNumber() {
+          let nextBlockNumber = await provider.getBlockNumber();
+          if (nextBlockNumber !== blockNumber) {
+            setBlockNumber(nextBlockNumber);
+          }
         }
+        getBlockNumber();
       }
-      getBlockNumber();
-    }
-  },pollTime?pollTime:1777)
+    },
+    pollTime ? pollTime : 1777
+  );
 
   return blockNumber;
 }

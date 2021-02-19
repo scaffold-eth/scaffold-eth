@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import { gql } from "apollo-boost";
 
 export const ARTISTS_QUERY = gql`
   query artists($address: Bytes!) {
@@ -61,47 +61,48 @@ export const HOLDINGS_QUERY = gql`
 `;
 
 export const INK_QUERY = gql`
-query ink($inkUrl: String!) {
-  metaData(id: "blockNumber") {
-    id
-    value
-  }
-  ink(id: $inkUrl) {
-    id
-    inkNumber
-    jsonUrl
-    artist {
+  query ink($inkUrl: String!) {
+    metaData(id: "blockNumber") {
       id
+      value
     }
-    limit
-    count
-    mintPrice
-    mintPriceNonce
-    tokens {
+    ink(id: $inkUrl) {
       id
-      owner
-      network
-      price
+      inkNumber
+      jsonUrl
+      artist {
+        id
+      }
+      limit
+      count
+      mintPrice
+      mintPriceNonce
+      tokens {
+        id
+        owner
+        network
+        price
+      }
     }
   }
-}
 `;
 
 export const INK_MAIN_QUERY = gql`
-query token($inkUrl: String!) {
-  tokens(where: {ink: $inkUrl}) {
-    id
-    owner
-    ink
+  query token($inkUrl: String!) {
+    tokens(where: { ink: $inkUrl }) {
+      id
+      owner
+      ink
+    }
   }
-}`
+`;
 
 export const HOLDINGS_MAIN_QUERY = gql`
   query tokens($owner: Bytes!) {
     tokens(where: { owner: $owner }) {
       id
-    	owner
-     	network
+      owner
+      network
       createdAt
       ink
       jsonUrl
@@ -111,7 +112,7 @@ export const HOLDINGS_MAIN_QUERY = gql`
 
 export const HOLDINGS_MAIN_INKS_QUERY = gql`
   query inks($inkList: [String!]) {
-    inks(where: {id_in: $inkList}) {
+    inks(where: { id_in: $inkList }) {
       id
       jsonUrl
       limit

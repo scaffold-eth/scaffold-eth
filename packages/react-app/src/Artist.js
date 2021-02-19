@@ -2,12 +2,12 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { useParams, Link, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
-import { ARTISTS_QUERY } from "./apollo/queries"
+import { ARTISTS_QUERY } from "./apollo/queries";
 import { isBlocklisted } from "./helpers";
 import { Row, Col, Divider, Button, Popover, Form, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Blockies from "react-blockies";
-import { AddressInput, Loader } from "./components"
+import { AddressInput, Loader } from "./components";
 
 export default function Artist(props) {
   const { address } = useParams();
@@ -16,57 +16,58 @@ export default function Artist(props) {
   const history = useHistory();
 
   const { loading, error, data } = useQuery(ARTISTS_QUERY, {
-    variables: { address: address }
+    variables: { address: address },
   });
 
   const search = async (values) => {
     try {
       const newAddress = ethers.utils.getAddress(values["address"]);
       setInks([]);
-      history.push("/artist/"+newAddress);
+      history.push("/artist/" + newAddress);
     } catch (e) {
       console.log("not an address");
       notification.open({
         message: "📛 Not a valid address!",
-        description: "Please try again"
+        description: "Please try again",
       });
     }
   };
 
-  const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
+  const onFinishFailed = (errorInfo) => {
+    console.log("Failed:", errorInfo);
   };
 
   const SearchForm = () => {
     return (
-    <Row style={{ justifyContent: "center" }}>
-      <Form
-        form={searchArtist}
-        layout={"inline"}
-        name="searchArtist"
-        onFinish={search}
-        onFinishFailed={onFinishFailed}
-      >
-        <Form.Item
-          name="address"
-          rules={[{ required: true, message: "Search for an Address or ENS" }]}
+      <Row style={{ justifyContent: "center" }}>
+        <Form
+          form={searchArtist}
+          layout={"inline"}
+          name="searchArtist"
+          onFinish={search}
+          onFinishFailed={onFinishFailed}
         >
-          <AddressInput
-            ensProvider={props.mainnetProvider}
-            placeholder={"Search artist"}
-          />
-        </Form.Item>
+          <Form.Item
+            name="address"
+            rules={[
+              { required: true, message: "Search for an Address or ENS" },
+            ]}
+          >
+            <AddressInput
+              ensProvider={props.mainnetProvider}
+              placeholder={"Search artist"}
+            />
+          </Form.Item>
 
-        <Form.Item>
-          <Button type="primary" htmlType="submit" disabled={loading}>
-            <SearchOutlined />
-          </Button>
-        </Form.Item>
-      </Form>
-    </Row>
-  )
+          <Form.Item>
+            <Button type="primary" htmlType="submit" disabled={loading}>
+              <SearchOutlined />
+            </Button>
+          </Form.Item>
+        </Form>
+      </Row>
+    );
   };
-
 
   useEffect(() => {
     const getMetadata = async (jsonURL) => {
@@ -85,10 +86,12 @@ export default function Artist(props) {
       });
     };
 
-    data !== undefined && data.artists[0] ? getInks(data.artists[0].inks) : console.log("loading");
+    data !== undefined && data.artists[0]
+      ? getInks(data.artists[0].inks)
+      : console.log("loading");
   }, [data]);
 
-  if (loading) return <Loader/>;
+  if (loading) return <Loader />;
   if (error) return `Error! ${error.message}`;
 
   return (
@@ -126,7 +129,9 @@ export default function Artist(props) {
       </div>
       <Divider />
       <Row style={{ marginBottom: 20 }}>
-        <Col span={24}><SearchForm/></Col>
+        <Col span={24}>
+          <SearchForm />
+        </Col>
       </Row>
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
@@ -141,20 +146,20 @@ export default function Artist(props) {
                     padding: 10,
                     border: "1px solid #e5e5e6",
                     borderRadius: "10px",
-                    fontWeight: "bold"
+                    fontWeight: "bold",
                   }}
                 >
-                <Link
-                  to={{pathname: "/ink/"+ink.id}}
-                  style={{ color: "black" }}
-                >
+                  <Link
+                    to={{ pathname: "/ink/" + ink.id }}
+                    style={{ color: "black" }}
+                  >
                     <img
                       src={ink.metadata.image}
                       alt={ink.metadata.name}
                       width="150"
                       style={{
                         border: "1px solid #e5e5e6",
-                        borderRadius: "10px"
+                        borderRadius: "10px",
                       }}
                     />
                     <h3
@@ -169,32 +174,39 @@ export default function Artist(props) {
                       align="middle"
                       style={{ textAlign: "center", justifyContent: "center" }}
                     >
-                      {(ink.mintPrice > 0 && (ink.limit === 0 || ink.count < ink.limit))
-                        ? (<><p
-                        style={{
-                          color: "#5e5e5e",
-                          margin: "0"
-                        }}
-                      >
-                        <b>{ink.mintPrice / 1e18} </b>
-                      </p>
+                      {ink.mintPrice > 0 &&
+                      (ink.limit === 0 || ink.count < ink.limit) ? (
+                        <>
+                          <p
+                            style={{
+                              color: "#5e5e5e",
+                              margin: "0",
+                            }}
+                          >
+                            <b>{ink.mintPrice / 1e18} </b>
+                          </p>
 
-                      <img
-                        src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
-                        alt="xdai"
-                        style={{ marginLeft: 5 }}
-                      /></>)
-                      : <>
-                      <img
-                        src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
-                        alt="xdai"
-                        style={{ marginLeft: 5, visibility: "hidden" }}
-                      />
-                      </> }
+                          <img
+                            src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
+                            alt="xdai"
+                            style={{ marginLeft: 5 }}
+                          />
+                        </>
+                      ) : (
+                        <>
+                          <img
+                            src="https://gateway.pinata.cloud/ipfs/QmQicgCRLfrrvdvioiPHL55mk5QFaQiX544b4tqBLzbfu6"
+                            alt="xdai"
+                            style={{ marginLeft: 5, visibility: "hidden" }}
+                          />
+                        </>
+                      )}
                     </Row>
                     <Divider style={{ margin: "8px 0px" }} />
                     <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
-                      {'Edition: ' + ink.count + (ink.limit>0?'/' + ink.limit:'')}
+                      {"Edition: " +
+                        ink.count +
+                        (ink.limit > 0 ? "/" + ink.limit : "")}
                     </p>
                   </Link>
                 </li>

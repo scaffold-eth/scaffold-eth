@@ -18,13 +18,13 @@ const Web3HttpProvider = require("web3-providers-http");
 const ipfsConfigInfura = {
   host: "ipfs.infura.io",
   port: "5001",
-  protocol: "https"
+  protocol: "https",
 };
 const ipfsConfig = {
   host: "ipfs.nifty.ink",
   port: "3001",
   protocol: "https",
-  timeout: 2500
+  timeout: 2500,
 };
 
 export default function NftyWallet(props) {
@@ -54,7 +54,7 @@ export default function NftyWallet(props) {
     localProvider: props.kovanProvider,
     injectedProvider: props.injectedProvider,
     injectedGsnSigner: injectedGsnSigner,
-    metaSigner: props.metaProvider
+    metaSigner: props.metaProvider,
   };
 
   let nftyBalance = useContractReader(
@@ -80,7 +80,8 @@ export default function NftyWallet(props) {
 
   let displayBalance;
   if (nftyMainBalance && nftyBalance) {
-    displayBalance = Number(nftyMainBalance.toString()) + Number(nftyBalance.toString());
+    displayBalance =
+      Number(nftyMainBalance.toString()) + Number(nftyBalance.toString());
   }
 
   const showDrawer = () => {
@@ -94,7 +95,7 @@ export default function NftyWallet(props) {
   const badgeStyle = {
     backgroundColor: "#fff",
     color: "#999",
-    boxShadow: "0 0 0 1px #d9d9d9 inset"
+    boxShadow: "0 0 0 1px #d9d9d9 inset",
   };
 
   let accountDisplay = (
@@ -122,23 +123,23 @@ export default function NftyWallet(props) {
         bottom: 20,
         padding: 10,
         backgroundColor: "#FFFFFF",
-        borderRadius: 16
+        borderRadius: 16,
       }}
     >
       <Row gutter={16} align={"middle"}>
         <Col>{accountDisplay}</Col>
 
         <Col>
-        <NavLink to="create">
-          <Button
-            style={{ marginRight: 8, marginTop: 8 }}
-            shape="round"
-            size="large"
-            type="primary"
-          >
-            <span style={{ marginRight: 12 }}>🖌</span>
-          </Button>
-        </NavLink>
+          <NavLink to="create">
+            <Button
+              style={{ marginRight: 8, marginTop: 8 }}
+              shape="round"
+              size="large"
+              type="primary"
+            >
+              <span style={{ marginRight: 12 }}>🖌</span>
+            </Button>
+          </NavLink>
         </Col>
       </Row>
     </div>
@@ -154,7 +155,7 @@ export default function NftyWallet(props) {
         bottom: 20,
         padding: 10,
         backgroundColor: "#FFFFFF",
-        borderRadius: 16
+        borderRadius: 16,
       }}
     >
       <Row gutter={4} align={"middle"}>
@@ -234,79 +235,82 @@ export default function NftyWallet(props) {
         tabBarExtraContent={""}
         defaultActiveKey="create"
       >
-
-        <TabPane tab={
-          <NavLink to="/allinks">
-          <>
-            <span
-              style={{ fontSize: 24, padding: 8 }}
-              role="img"
-              aria-label="Artist Palette"
-            >
-              🎨 Nifty Ink
-            </span>
-          </>
-          </NavLink>
+        <TabPane
+          tab={
+            <NavLink to="/allinks">
+              <>
+                <span
+                  style={{ fontSize: 24, padding: 8 }}
+                  role="img"
+                  aria-label="Artist Palette"
+                >
+                  🎨 Nifty Ink
+                </span>
+              </>
+            </NavLink>
           }
-          key="1">
-        </TabPane>
+          key="1"
+        ></TabPane>
 
         <TabPane
           disabled={!props.address}
           tab={
-            <NavLink to={"/artist/"+props.address}>
-            <>
-              <span>
-                <span style={{ padding: 8 }} role="img" aria-label="Painting">
-                  🖼
+            <NavLink to={"/artist/" + props.address}>
+              <>
+                <span>
+                  <span style={{ padding: 8 }} role="img" aria-label="Painting">
+                    🖼
+                  </span>{" "}
+                  inks
                 </span>{" "}
-                inks
-              </span>{" "}
-            </>
-          </NavLink>
+              </>
+            </NavLink>
           }
           key="inks"
-        >
-        </TabPane>
+        ></TabPane>
 
         <TabPane
-          disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
+          disabled={
+            !(
+              nftyBalance &&
+              nftyBalance.toString &&
+              nftyMainBalance &&
+              nftyMainBalance.toString
+            )
+          }
           tab={
             <NavLink to="/holdings">
-            <>
-              <span>
-                <span style={{ padding: 8 }} role="img" aria-label="Purse">
-                  👛
+              <>
+                <span>
+                  <span style={{ padding: 8 }} role="img" aria-label="Purse">
+                    👛
+                  </span>{" "}
+                  holdings
                 </span>{" "}
-                holdings
-              </span>{" "}
-              <Badge style={badgeStyle} count={displayBalance} showZero />
-            </>
-          </NavLink>
+                <Badge style={badgeStyle} count={displayBalance} showZero />
+              </>
+            </NavLink>
           }
           key="holdings"
-        >
-        </TabPane>
+        ></TabPane>
 
         <TabPane
           tab={
-             <NavLink to="/create">
-            <Button
-              style={{ marginBottom: 8 }}
-              shape="round"
-              size="large"
-              type={
-                tab === "create" && mode === "edit" ? "secondary" : "primary"
-              }
-            >
-              <PlusOutlined /> Create
-            </Button>
+            <NavLink to="/create">
+              <Button
+                style={{ marginBottom: 8 }}
+                shape="round"
+                size="large"
+                type={
+                  tab === "create" && mode === "edit" ? "secondary" : "primary"
+                }
+              >
+                <PlusOutlined /> Create
+              </Button>
             </NavLink>
           }
           key="4"
-        >
-        </TabPane>
-
+        ></TabPane>
       </Tabs>
 
       {supportButton}
@@ -318,11 +322,12 @@ export default function NftyWallet(props) {
         </Route>
 
         <Route path="/holdings">
-            <Holdings {...props}
-              address={props.address}
-              transactionConfig={transactionConfig}
-              upgradePrice={upgradePrice}
-            />
+          <Holdings
+            {...props}
+            address={props.address}
+            transactionConfig={transactionConfig}
+            upgradePrice={upgradePrice}
+          />
         </Route>
 
         <Route path="/artist/:address">
@@ -330,8 +335,9 @@ export default function NftyWallet(props) {
         </Route>
 
         <Route path="/create">
-              <div>
-              <CreateInk {...props}
+          <div>
+            <CreateInk
+              {...props}
               key={renderKey}
               canvasKey={canvasKey}
               address={props.address}
@@ -355,13 +361,14 @@ export default function NftyWallet(props) {
               gasPrice={props.gasPrice}
               calculatedVmin={calculatedVmin}
               transactionConfig={transactionConfig}
-              />
-            </div>
+            />
+          </div>
         </Route>
 
         <Route path="/ink/:hash">
-              <div>
-              <ViewInk {...props}
+          <div>
+            <ViewInk
+              {...props}
               address={props.address}
               artist={artist}
               calculatedVmin={calculatedVmin}
@@ -389,20 +396,20 @@ export default function NftyWallet(props) {
               transactionConfig={transactionConfig}
               upgradePrice={upgradePrice}
               viewDrawing={viewDrawing}
-              />
-            </div>
+            />
+          </div>
         </Route>
 
-        <Route path="/:hash(Qm[A-Z]\w+)"
-        render={props => (
-              <Redirect to={`/ink/${props.match.params.hash}`} />
-            )}
+        <Route
+          path="/:hash(Qm[A-Z]\w+)"
+          render={(props) => (
+            <Redirect to={`/ink/${props.match.params.hash}`} />
+          )}
         />
 
         <Route path="/">
-              <Redirect to="/create" />
+          <Redirect to="/create" />
         </Route>
-
       </Switch>
       <Drawer
         title="How to use"
@@ -413,7 +420,7 @@ export default function NftyWallet(props) {
         footer={
           <div
             style={{
-              textAlign: "right"
+              textAlign: "right",
             }}
           >
             <button onClick={onCloseDrawer} style={{ marginRight: 8 }}>
@@ -422,7 +429,7 @@ export default function NftyWallet(props) {
           </div>
         }
       >
-      <Help/>
+        <Help />
       </Drawer>
     </div>
   );

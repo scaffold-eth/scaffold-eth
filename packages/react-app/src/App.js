@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ApolloClient, { gql, InMemoryCache } from 'apollo-boost'
-import { ApolloProvider, Query } from 'react-apollo'
+import ApolloClient, { gql, InMemoryCache } from "apollo-boost";
+import { ApolloProvider, Query } from "react-apollo";
 import "antd/dist/antd.css";
 import { Row, Col, Button, Spin } from "antd";
 import { ethers } from "ethers";
@@ -12,13 +12,15 @@ import { Ramp, Faucet } from "./components";
 import NftyWallet from "./NftyWallet.js";
 
 if (!process.env.REACT_APP_GRAPHQL_ENDPOINT) {
-  throw new Error('REACT_APP_GRAPHQL_ENDPOINT environment variable not defined')
+  throw new Error(
+    "REACT_APP_GRAPHQL_ENDPOINT environment variable not defined"
+  );
 }
 
 const client = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT,
   cache: new InMemoryCache(),
-})
+});
 
 const INKS_QUERY = gql`
   query inks {
@@ -28,7 +30,7 @@ const INKS_QUERY = gql`
       jsonUrl
     }
   }
-`
+`;
 
 const mainnetProvider = new ethers.providers.InfuraProvider(
   "mainnet",
@@ -78,13 +80,13 @@ if (process.env.REACT_APP_NETWORK_NAME) {
         textAlign: "left",
         paddingLeft: 32,
         opacity: 0.125,
-        filter: "blur(1.2px)"
+        filter: "blur(1.2px)",
       }}
     >
       {"localhost"}
     </div>
   );
-  localProvider = mainnetProvider;//new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  localProvider = mainnetProvider; //new ethers.providers.JsonRpcProvider("http://localhost:8545");
   kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546"); // yarn run sidechain
 }
 
@@ -102,28 +104,25 @@ function App() {
 
   return (
     <ApolloProvider client={client}>
-    <Router>
-    <div className="App">
-      {networkBanner}
-
-    </div>
-      <Switch>
-        <Route path="/">
-          <NftyWallet
-            address={address}
-            setAddress={setAddress}
-            localProvider={localProvider}
-            injectedProvider={injectedProvider}
-            setInjectedProvider={setInjectedProvider}
-            mainnetProvider={mainnetProvider}
-            price={price}
-            minimized={true}
-            readContracts={readContracts}
-            readKovanContracts={readKovanContracts}
-            gasPrice={gasPrice}
-            kovanProvider={kovanProvider}
-            metaProvider={metaProvider}
-            setMetaProvider={setMetaProvider}
+      <Router>
+        <div className="App">{networkBanner}</div>
+        <Switch>
+          <Route path="/">
+            <NftyWallet
+              address={address}
+              setAddress={setAddress}
+              localProvider={localProvider}
+              injectedProvider={injectedProvider}
+              setInjectedProvider={setInjectedProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              minimized={true}
+              readContracts={readContracts}
+              readKovanContracts={readKovanContracts}
+              gasPrice={gasPrice}
+              kovanProvider={kovanProvider}
+              metaProvider={metaProvider}
+              setMetaProvider={setMetaProvider}
             />
             <div
               style={{
@@ -131,7 +130,7 @@ function App() {
                 textAlign: "left",
                 left: 0,
                 bottom: 20,
-                padding: 10
+                padding: 10,
               }}
             >
               <Row gutter={8}>
@@ -193,9 +192,9 @@ function App() {
                 )}
               </a>
             </div>
-      </Route>
-      </Switch>
-    </Router>
+          </Route>
+        </Switch>
+      </Router>
     </ApolloProvider>
   );
 }

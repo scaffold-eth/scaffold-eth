@@ -35,19 +35,16 @@ export async function isValidSignature(
   data: string,
   provider: providers.Provider,
   abi = spec.abi,
-  magicValue = spec.magicValue,
+  magicValue = spec.magicValue
 ) {
   let returnValue;
   try {
-    let contract = new Contract(address, abi, provider)
-    console.log(contract)
-    returnValue = await contract.isValidSignature(
-      utils.arrayify(data),
-      sig,
-    );
-    console.log('returnValue', returnValue)
+    let contract = new Contract(address, abi, provider);
+    console.log(contract);
+    returnValue = await contract.isValidSignature(utils.arrayify(data), sig);
+    console.log("returnValue", returnValue);
   } catch (e) {
-    console.log(e)
+    console.log(e);
     return false;
   }
   return returnValue.toLowerCase() === magicValue.toLowerCase();
