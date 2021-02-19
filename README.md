@@ -82,6 +82,12 @@ Edit `deploy.js` to deploy the `Vendor`, but also to send all the tokens to the 
 const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
 ```
 
+In `deploy.js` you will also need to call `transferOwnership()` on the `Vendor` to make *your frontend address* the `owner`:
+
+```js
+await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
+```
+
 (You will use the `YourToken` UI tab and the frontend for most of your testing. Most of the UI is already built for you for this challenge.)
 
 #### 🥅 Goals
