@@ -60,12 +60,13 @@ const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", utils.pars
 - [ ] Can you check the `balanceOf()` your frontend address in the **YourContract** of the `Debug Contracts` tab?
 - [ ] Can you `transfer()` your token to another account and check *that* account's `balanceOf`?
 
+(Use an incognito window to create a new address and try sending to that new address. Use the `transfer()` function in the `Debug Contracts` tab.)
 
 ---
 
 ### Checkpoint 3: ⚖️ Vendor 🤖
 
-> 👩‍💻 Create a `Vendor.sol` contract with a payable `buyTokens()` function
+> 👩‍💻 Create a `Vendor.sol` contract with a **payable** `buyTokens()` function
 
 Use a price variable named `tokensPerEth` set to **100**:
 
@@ -81,6 +82,7 @@ Edit `deploy.js` to deploy the `Vendor`, but also to send all the tokens to the 
 const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
 ```
 
+(You will use the `YourToken` UI tab and the frontend for most of your testing. Most of the UI is already built for you for this challenge.)
 
 #### 🥅 Goals
 - [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?
