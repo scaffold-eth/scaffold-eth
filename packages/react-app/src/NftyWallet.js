@@ -313,7 +313,7 @@ export default function NftyWallet(props) {
         ></TabPane>
       </Tabs>
 
-      {supportButton}
+      {process.env.REACT_APP_NETWORK_NAME && supportButton}
       {accountWithCreateButton}
 
       <Switch>

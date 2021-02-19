@@ -36,3 +36,5 @@ yarn-error.log*
 
 .idea/
 __MACOSX/
+
+generated/
