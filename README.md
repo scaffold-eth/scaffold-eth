@@ -53,6 +53,8 @@ Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then sen
 const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", utils.parseEther("1000") );
 ```
 
+(Your frontend address is the address in the top right of your frontend. Go to localhost:3000 and copy the address from the top right.)
+
 #### 🥅 Goals
 
 - [ ] Can you check the `balanceOf()` your frontend address in the **YourContract** of the `Debug Contracts` tab?
