@@ -86,7 +86,8 @@ if (process.env.REACT_APP_NETWORK_NAME) {
       {"localhost"}
     </div>
   );
-  localProvider = mainnetProvider; //new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  // localProvider = mainnetProvider; //new ethers.providers.JsonRpcProvider("http://localhost:8545");
+  localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546");
   kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546"); // yarn run sidechain
 }
 

@@ -11,6 +11,7 @@ import Artist from "./Artist.js";
 import CreateInk from "./CreateInk.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
+import DebugContracts from "./DebugContracts.js";
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require("web3-providers-http");
@@ -317,6 +318,9 @@ export default function NftyWallet(props) {
       {accountWithCreateButton}
 
       <Switch>
+        <Route exact path="/debug">
+          <DebugContracts {...props} />
+        </Route>
         <Route path="/allinks">
           <AllInks />
         </Route>
