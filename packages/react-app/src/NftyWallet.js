@@ -9,6 +9,7 @@ import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
 import CreateInk from "./CreateInk.js";
+import CreateFile from "./CreateFile.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
 import DebugContracts from "./DebugContracts.js";
@@ -312,6 +313,26 @@ export default function NftyWallet(props) {
           }
           key="4"
         ></TabPane>
+
+        <TabPane
+          tab={
+            <NavLink to="/create-file">
+              <Button
+                style={{ marginBottom: 8 }}
+                shape="round"
+                size="large"
+                type={
+                  tab === "create-file" && mode === "edit"
+                    ? "secondary"
+                    : "primary"
+                }
+              >
+                <PlusOutlined /> Create File
+              </Button>
+            </NavLink>
+          }
+          key="5"
+        ></TabPane>
       </Tabs>
 
       {process.env.REACT_APP_NETWORK_NAME && supportButton}
@@ -336,6 +357,37 @@ export default function NftyWallet(props) {
 
         <Route path="/artist/:address">
           <Artist {...props} />
+        </Route>
+
+        <Route path="/create-file">
+          <div>
+            <CreateFile
+              {...props}
+              key={renderKey}
+              canvasKey={canvasKey}
+              address={props.address}
+              mainnetProvider={props.mainnetProvider}
+              injectedProvider={props.injectedProvider}
+              metaProvider={props.metaProvider}
+              kovanProvider={props.kovanProvider}
+              readKovanContracts={props.readKovanContracts}
+              mode={mode}
+              ink={ink}
+              ipfsHash={ipfsHash}
+              setMode={setMode}
+              setIpfsHash={setIpfsHash}
+              setInk={setInk}
+              drawing={drawing}
+              setDrawing={setDrawing}
+              viewDrawing={viewDrawing}
+              setViewDrawing={setViewDrawing}
+              ipfsConfig={ipfsConfig}
+              ipfsConfigInfura={ipfsConfigInfura}
+              gasPrice={props.gasPrice}
+              calculatedVmin={calculatedVmin}
+              transactionConfig={transactionConfig}
+            />
+          </div>
         </Route>
 
         <Route path="/create">
