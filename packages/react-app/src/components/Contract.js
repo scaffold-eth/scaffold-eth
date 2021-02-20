@@ -243,7 +243,7 @@ export default function Contract(props) {
       }
     };
     loadDisplay();
-  }, [contracts, values, form]);
+  }, [contracts, contract, values, form]);
 
   return (
     <Card
@@ -264,7 +264,7 @@ export default function Contract(props) {
         </div>
       }
       size="large"
-      style={{ width: 550, marginTop: 25 }}
+      style={{ width: 850, margin: "0 auto", marginTop: 25 }}
       loading={display && display.length <= 0}
     >
       {display}

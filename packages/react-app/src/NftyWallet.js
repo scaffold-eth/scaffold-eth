@@ -318,7 +318,7 @@ export default function NftyWallet(props) {
       {accountWithCreateButton}
 
       <Switch>
-        <Route exact path="/debug">
+        <Route path="/debug">
           <DebugContracts {...props} />
         </Route>
         <Route path="/allinks">
