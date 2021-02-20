@@ -2230,6 +2230,64 @@
   dependencies:
     body-scroll-lock "^2.6.4"
 
+"@rpldy/life-events@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/life-events/-/life-events-0.9.0.tgz#416dc727f5750b5e3218ff4584fcbd574207e740"
+  integrity sha512-Kz0p8OY24vGqykZDf65tw21TBvo5uP1sUHirUgTZ2upM/BUAId0zq7eORPqmMMxwyKmVLWNtuUNaMStQHED0iw==
+  dependencies:
+    "@rpldy/shared" "^0.9.0"
+    is-promise "^4.0.0"
+
+"@rpldy/sender@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/sender/-/sender-0.9.0.tgz#e1f0ed4346cdb5a84e4a034d4cb5010f1d97036e"
+  integrity sha512-7gtR8BzQyXoOBVhs/23pkrq5YefwU2gIXWAsgD89BjuLr6FT6p1JfmKXBAcFRd6wDmhfedNDI8EFVWXYIibKNw==
+  dependencies:
+    "@rpldy/shared" "^0.9.0"
+
+"@rpldy/shared-ui@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/shared-ui/-/shared-ui-0.9.0.tgz#3dda1c5a2f801fc522cc75c9538329f56082d41f"
+  integrity sha512-q/7CJtpeOxblc52KkQznU85efcd9As+5W4IbJeZwycwanMwQhiuLTrMnijnNNQ94XWdLTxjjNcLdknnpwBC+oQ==
+  dependencies:
+    "@rpldy/shared" "^0.9.0"
+    "@rpldy/uploader" "^0.9.0"
+
+"@rpldy/shared@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/shared/-/shared-0.9.0.tgz#dc4259620e3bb7f496ad904dbca5464039993578"
+  integrity sha512-juCQhfSKcmMu8jIpmbvQJkWEfpQVYk0D0Rwi05WK/sokMX7HnqEWyr/fjfa9VLiiUdbhiq18IjoEfSSCsKbMSQ==
+  dependencies:
+    invariant "^2.2.4"
+    just-throttle "^1.1.0"
+
+"@rpldy/simple-state@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/simple-state/-/simple-state-0.9.0.tgz#42ff2142ad65b7176579a76dc510befa323b71a3"
+  integrity sha512-aW612OIq+pkl/JRdskzbV2qLi4mnNMrO0TmzyFj3O9d590NQlJ0mKUsiRSAUoq8KiHCI9eVYb/cGGVqe4Qlmgw==
+  dependencies:
+    "@rpldy/shared" "^0.9.0"
+
+"@rpldy/uploader@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/uploader/-/uploader-0.9.0.tgz#cbc44b7ad49bfc1f67f8c3104d6060fe2af1fc0a"
+  integrity sha512-lBx0F7TJ5subOYI+MYU72fGbRBx3xRf7Z0iz/Um/+t/jOuULAPg0g4T4Eez97ESWVWv2ScuoG7nS3WGQGRTKdA==
+  dependencies:
+    "@rpldy/life-events" "^0.9.0"
+    "@rpldy/sender" "^0.9.0"
+    "@rpldy/shared" "^0.9.0"
+    "@rpldy/simple-state" "^0.9.0"
+
+"@rpldy/uploady@^0.9.0":
+  version "0.9.0"
+  resolved "https://registry.yarnpkg.com/@rpldy/uploady/-/uploady-0.9.0.tgz#99aad3e2353aebce4a09349878f32aec565758fb"
+  integrity sha512-rX3M9ZfP+neTyDnijHHBa98Rj2DE1V9q2MeE/LvDSCbBBFiTRYe7W0Uq7EtjjaG3kzyXqdZr0GkuZXPyaRCgUg==
+  dependencies:
+    "@rpldy/life-events" "^0.9.0"
+    "@rpldy/shared" "^0.9.0"
+    "@rpldy/shared-ui" "^0.9.0"
+    "@rpldy/uploader" "^0.9.0"
+
 "@sentry/apm@5.20.1":
   version "5.20.1"
   resolved "https://registry.yarnpkg.com/@sentry/apm/-/apm-5.20.1.tgz#2126407ec8ecc6f78f42a8a8de99b90dec982036"
@@ -11516,6 +11574,11 @@ is-promise@^2.1.0:
   resolved "https://registry.yarnpkg.com/is-promise/-/is-promise-2.1.0.tgz#79a2a9ece7f096e80f36d2b2f3bc16c1ff4bf3fa"
   integrity sha1-eaKp7OfwlugPNtKy87wWwf9L8/o=
 
+is-promise@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.yarnpkg.com/is-promise/-/is-promise-4.0.0.tgz#42ff9f84206c1991d26debf520dd5c01042dd2f3"
+  integrity sha512-hvpoI6korhJMnej285dSg6nu1+e6uxs7zG3BYAm5byqDsgJNWwxzM6z6iZiAgQR4TJ30JmBTOwqZUw3WlyH3AQ==
+
 is-promise@~1, is-promise@~1.0.0:
   version "1.0.1"
   resolved "https://registry.yarnpkg.com/is-promise/-/is-promise-1.0.1.tgz#31573761c057e33c2e91aab9e96da08cefbe76e5"
@@ -12575,6 +12638,11 @@ just-safe-set@^2.1.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/just-safe-set/-/just-safe-set-2.1.0.tgz#237234e681a4f330b5dfa71a5251f34962813ef9"
   integrity sha512-wSTg/2bQpzyivBYbWPqQgafdfxW0tr3hX9qYGDRS2ws+AXwc7tvn8ABqkp8iPQHChjj4F5JvL3t0FQLbcNuKig==
+
+just-throttle@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/just-throttle/-/just-throttle-1.1.0.tgz#178d305ece9876a8a0759abd8d403aafcc6e4849"
+  integrity sha512-iePC/13XYX1Tyn9C6jY+DG3UEejkDvrKsw5xxgGhtGUwYWmoJm4CoKexscBKELOu3FTyCDzjr21ZJ67AXnz+bg==
 
 keccak@^1.0.2:
   version "1.4.0"

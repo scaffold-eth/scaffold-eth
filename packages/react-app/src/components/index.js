@@ -14,3 +14,4 @@ export { default as Header } from "./Header.js";
 export { default as Timeline } from "./Timeline.js";
 export { default as AdminWidget } from "./AdminWidget.js";
 export { default as Loader } from "./Loader.js";
+export { default as Uploader } from "./Uploader.js";

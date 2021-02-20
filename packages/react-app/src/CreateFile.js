@@ -31,6 +31,7 @@ import {
   AlphaPicker,
 } from "react-color";
 import LZ from "lz-string";
+import { Uploader } from "./components";
 
 const Hash = require("ipfs-only-hash");
 const pickers = [CirclePicker, TwitterPicker, SketchPicker];
@@ -88,9 +89,12 @@ export default function CreateFile(props) {
     <div
       style={{
         textAlign: "center",
+        maxWidth: "600px",
+        margin: "0 auto",
       }}
     >
       {top}
+      <Uploader />
     </div>
   );
 }
