@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, Switch as SwitchD } from "antd";
+import { Row, Col, Button, Menu, Alert, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -307,14 +307,9 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <div className="main fade-in">
+      <div className="main fade-in" style={{padding: 100}}>
         <h1>The current theme is: {currentTheme}</h1>
         <SwitchD checked={isDarkMode} onChange={toggleTheme} />
-
-        <Input
-          style={{ width: 300, marginTop: 30 }}
-          placeholder="I will change with the theme!"
-        />
       </div>
 
 
