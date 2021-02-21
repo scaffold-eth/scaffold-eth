@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -13,6 +13,7 @@ import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
+import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -183,6 +184,21 @@ function App(props) {
     )
   }
 
+  // dark mode functionality
+  const [isDarkMode, setIsDarkMode] = React.useState();
+  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
+
+  const toggleTheme = (isChecked) => {
+    setIsDarkMode(isChecked);
+    switcher({ theme: isChecked ? themes.dark : themes.light });
+  };
+
+  // Avoid theme change flicker
+  if (status === "loading") {
+    return null;
+  }
+  // end dark mode stuff
+
   return (
     <div className="App">
 
@@ -290,6 +306,16 @@ function App(props) {
           </Route>
         </Switch>
       </BrowserRouter>
+
+      <div className="main fade-in">
+        <h1>The current theme is: {currentTheme}</h1>
+        <SwitchD checked={isDarkMode} onChange={toggleTheme} />
+
+        <Input
+          style={{ width: 300, marginTop: 30 }}
+          placeholder="I will change with the theme!"
+        />
+      </div>
 
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
