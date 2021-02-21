@@ -8,10 +8,10 @@ import {
 } from "@graphprotocol/graph-ts";
 import {
   NiftyInk,
-  newInk,
+  newFile,
   SetPriceCall,
   SetPriceFromSignatureCall,
-  newInkPrice,
+  newFilePrice,
 } from "../generated/NiftyInk/NiftyInk";
 import {
   NiftyToken,
@@ -27,7 +27,7 @@ import {
   tokenSentViaBridge,
 } from "../generated/NiftyMediator/NiftyMediator";
 import {
-  Ink,
+  File,
   Artist,
   Token,
   TokenTransfer,
@@ -75,7 +75,7 @@ function incrementTotal(metric: String, timestamp: BigInt): void {
   stats.save();
 }
 
-export function handlenewInk(event: newInk): void {
+export function handlenewInk(event: newFile): void {
   let artist = Artist.load(event.params.artist.toHexString());
 
   if (artist == null) {
@@ -87,10 +87,10 @@ export function handlenewInk(event: newInk): void {
     artist.inkCount = artist.inkCount.plus(BigInt.fromI32(1));
   }
 
-  let ink = Ink.load(event.params.inkUrl);
+  let ink = File.load(event.params.fileUrl);
 
   if (ink == null) {
-    ink = new Ink(event.params.inkUrl);
+    ink = new File(event.params.fileUrl);
   }
 
   //  let jsonBytes = ipfs.cat(event.params.jsonUrl)
@@ -127,13 +127,13 @@ function _handleSetPrice(
   price: BigInt,
   timestamp: BigInt
 ): void {
-  let ink = Ink.load(inkUrl);
+  let file = File.load(inkUrl);
 
-  ink.mintPrice = price;
-  ink.mintPriceSetAt = timestamp;
-  ink.mintPriceNonce = ink.mintPriceNonce + BigInt.fromI32(1);
+  file.mintPrice = price;
+  file.mintPriceSetAt = timestamp;
+  file.mintPriceNonce = file.mintPriceNonce + BigInt.fromI32(1);
 
-  ink.save();
+  file.save();
 }
 
 export function handleSetPriceFromSignature(
@@ -148,14 +148,14 @@ export function handleSetPrice(call: SetPriceCall): void {
   updateMetaData("blockNumber", call.block.number.toString());
 }
 
-export function handleNewInkPrice(event: newInkPrice): void {
-  let ink = Ink.load(event.params.inkUrl);
+export function handleNewInkPrice(event: newFilePrice): void {
+  let file = File.load(event.params.fileUrl);
 
-  ink.mintPrice = event.params.price;
-  ink.mintPriceSetAt = event.block.timestamp;
-  ink.mintPriceNonce = ink.mintPriceNonce + BigInt.fromI32(1);
+  file.mintPrice = event.params.price;
+  file.mintPriceSetAt = event.block.timestamp;
+  file.mintPriceNonce = file.mintPriceNonce + BigInt.fromI32(1);
 
-  ink.save();
+  file.save();
   updateMetaData("blockNumber", event.block.number.toString());
 }
 
@@ -180,13 +180,13 @@ export function handleSetTokenPrice(call: SetTokenPriceCall): void {
 }
 
 export function handleMintedInk(event: mintedInk): void {
-  let ink = Ink.load(event.params.inkUrl);
+  let file = File.load(event.params.inkUrl);
 
-  if (ink == null) {
-    ink = new Ink(event.params.inkUrl);
+  if (file == null) {
+    file = new File(event.params.inkUrl);
   }
 
-  ink.count = ink.count.plus(BigInt.fromI32(1));
+  file.count = file.count.plus(BigInt.fromI32(1));
 
   let token = new Token(event.params.id.toString());
 
@@ -195,7 +195,7 @@ export function handleMintedInk(event: mintedInk): void {
   token.createdAt = event.block.timestamp;
   token.network = "xdai";
 
-  ink.save();
+  file.save();
   token.save();
 
   incrementTotal("tokens", event.block.timestamp);
@@ -249,8 +249,8 @@ export function handleBoughtInk(event: boughtInk): void {
   let tokenId = event.params.id.toString();
 
   let token = Token.load(tokenId);
-  let ink = Ink.load(event.params.inkUrl);
-  let artist = Artist.load(ink.artist);
+  let file = File.load(event.params.inkUrl);
+  let artist = Artist.load(file.artist);
   let transfer = TokenTransfer.load(event.transaction.hash.toHex());
 
   //let contract = NiftyInk.bind(Address.fromString("0x49dE55fbA08af88f55EB797a456fdf76B151c8b0"))
@@ -281,7 +281,7 @@ export function handleBoughtInk(event: boughtInk): void {
   sale.token = tokenId;
   sale.price = event.transaction.value;
   sale.buyer = event.transaction.from;
-  sale.artist = ink.artist;
+  sale.artist = file.artist;
   sale.ink = event.params.inkUrl;
   sale.createdAt = event.block.timestamp;
   sale.transfer = event.transaction.hash.toHex();

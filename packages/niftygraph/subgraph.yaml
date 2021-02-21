@@ -14,16 +14,16 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Ink
+        - File
         - Artist
         - InkNumberLookUp
       abis:
         - name: NiftyInk
           file: ./abis/NiftyInk.json
       eventHandlers:
-        - event: newInk(uint256,indexed address,string,string,uint256)
+        - event: newFile(uint256,indexed address,string,string,uint256)
           handler: handlenewInk
-        - event: newInkPrice(string,uint256)
+        - event: newFilePrice(string,uint256)
           handler: handleNewInkPrice
 #      callHandlers:
 #        - function: setPrice(string,uint256)

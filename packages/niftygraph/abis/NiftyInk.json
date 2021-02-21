@@ -41,7 +41,7 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {
@@ -57,7 +57,7 @@
         "type": "uint256"
       }
     ],
-    "name": "newInk",
+    "name": "newFile",
     "type": "event"
   },
   {
@@ -66,7 +66,7 @@
       {
         "indexed": false,
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {
@@ -76,7 +76,7 @@
         "type": "uint256"
       }
     ],
-    "name": "newInkPrice",
+    "name": "newFilePrice",
     "type": "event"
   },
   {
@@ -138,7 +138,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {
