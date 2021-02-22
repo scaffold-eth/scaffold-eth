@@ -75,7 +75,7 @@ function incrementTotal(metric: String, timestamp: BigInt): void {
   stats.save();
 }
 
-export function handlenewInk(event: newFile): void {
+export function handlenewFile(event: newFile): void {
   let artist = Artist.load(event.params.artist.toHexString());
 
   if (artist == null) {

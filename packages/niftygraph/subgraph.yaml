@@ -22,7 +22,7 @@ dataSources:
           file: ./abis/NiftyInk.json
       eventHandlers:
         - event: newFile(uint256,indexed address,string,string,uint256)
-          handler: handlenewInk
+          handler: handlenewFile
         - event: newFilePrice(string,uint256)
           handler: handleNewInkPrice
 #      callHandlers:
@@ -43,7 +43,7 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Ink
+        - File
         - Token
         - Sale
         - Transfer
