@@ -21,3 +21,7 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
 }
+
+.avatar-uploader {
+  width: auto;
+}

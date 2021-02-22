@@ -142,6 +142,7 @@ export default function CreateInk(props) {
 
   const createInk = async (values) => {
     console.log("Success:", values);
+    console.log("PROPS: ", props);
 
     setSending(true);
 

@@ -12,3 +12,4 @@ export { default as useExchangePrice } from "./ExchangePrice.js";
 export { default as useGasPrice } from "./GasPrice.js";
 export { default as usePoller } from "./Poller.js";
 export { default as useUserProvider } from "./UserProvider.js";
+export { default as useUploader } from "./Uploader.js";
