@@ -22,6 +22,12 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
 
     uint public artistTake;
 
+    struct Ownership {
+      address newOwner;
+      mapping(address => bool) artistApproval;
+      mapping(address => bool) newArtistApproval;
+    }
+
     function setArtistTake(uint _take) public onlyOwner {
       require(_take < 100, 'take is more than 99 percent');
       artistTake = _take;
@@ -53,6 +59,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
 
     mapping (string => uint256) public inkIdByInkUrl;
     mapping (uint256 => File) private _inkById;
+    mapping (uint256 => Ownership) private _ownership;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
 
     function _createInk(string memory fileUrl, string memory jsonUrl, uint256 limit, address payable artist) internal returns (uint256) {
@@ -129,6 +136,27 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this price");
 
       return _setPrice(_ink.id, price);
+    }
+
+    function setOwnership(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
+      uint256 _inkId = inkIdByInkUrl[fileUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), artist, fileUrl));
+      bool isArtistSignature = checkSignature(messageHash, signature, artist);
+      require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this ink");
+      Ownership storage ownerDetails = _ownership[_inkId];
+      ownerDetails.newOwner = newArtist;
+      ownerDetails.artistApproval[artist] = true;
+    }
+
+    function acknowledgeOwnershipChange(string memory fileUrl, address newArtist, bytes memory signature) public {
+      uint256 _inkId = inkIdByInkUrl[fileUrl];
+      require(_inkId > 0, "this ink does not exist!");
+      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), newArtist, fileUrl));
+      bool isArtistSignature = checkSignature(messageHash, signature, newArtist);
+      require(isArtistSignature || !checkSignatureFlag, "New Artist did not sign this ink");
+      Ownership storage ownerDetails = _ownership[_inkId];
+      ownerDetails.newArtistApproval[newArtist] = true;
     }
 
 
