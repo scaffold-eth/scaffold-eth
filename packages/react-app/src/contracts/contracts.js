@@ -1,1 +1,1 @@
-module.exports = ["StakerContract","YourContract"];
+module.exports = ["YourContract"];

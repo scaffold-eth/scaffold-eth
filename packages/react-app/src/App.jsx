@@ -34,7 +34,7 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['mumbai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false
@@ -67,7 +67,7 @@ function App(props) {
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userProvider = useUserProvider(injectedProvider, localProvider);
   const address = useUserAddress(userProvider);
-  console.log("👩‍💼 selected address:",address)
+  if(DEBUG)console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
   let localChainId = localProvider && localProvider._network && localProvider._network.chainId
@@ -117,14 +117,14 @@ function App(props) {
   const isGameOn = useContractReader(readContracts,"YourContract","isGameOn");
   const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
 
-  console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
+  if(DEBUG)console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
 
   //📟 Listen for broadcast events
   const turnCompletedEvents = useEventListener(readContracts, "YourContract", "TurnCompleted", localProvider, 1);
   // console.log("📟 SetPurpose events:",turnCompletedEvents)
 
   const newPlayerJoinedEvents = useEventListener(readContracts, "YourContract", "NewPlayerJoined", localProvider, 1);
-  console.log("New player joined:",newPlayerJoinedEvents);
+  if(DEBUG) console.log("New player joined:",newPlayerJoinedEvents);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");

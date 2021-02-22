@@ -3,7 +3,7 @@ import usePoller from "./Poller";
 
 const DEBUG = false;
 
-export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
+export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange, conditionals) {
   let adjustPollTime = 1777;
   if (pollTime) {
     adjustPollTime = pollTime;
