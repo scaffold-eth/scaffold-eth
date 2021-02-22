@@ -186,12 +186,7 @@ export default function Minesweeper({newPlayerJoinedEvents, turnCompletedEvents,
       </div>
       <Button onClick={()=>{tx( writeContracts.YourContract.endGame() )
               }}>End the Game</Button>
-        <Button onClick={()=>{
-            /* look how you call resret on your contract: */
-            tx( writeContracts.YourContract.reset() )
-          }}>
-            Reset 💀
-          </Button>    
+       
     </div>
   );
 }
