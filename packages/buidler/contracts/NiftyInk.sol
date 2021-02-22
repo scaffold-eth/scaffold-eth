@@ -23,7 +23,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
     uint public artistTake;
 
     struct Ownership {
-      address newOwner;
       mapping(address => bool) artistApproval;
       mapping(address => bool) newArtistApproval;
     }
@@ -145,7 +144,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       bool isArtistSignature = checkSignature(messageHash, signature, artist);
       require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this ink");
       Ownership storage ownerDetails = _ownership[_inkId];
-      ownerDetails.newOwner = newArtist;
       ownerDetails.artistApproval[artist] = true;
     }
 
