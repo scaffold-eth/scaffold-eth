@@ -33,7 +33,7 @@ import {
 import LZ from "lz-string";
 import { useAtom } from "jotai";
 import { Uploader } from "./components";
-import { fileAtom } from "./hooks/Uploader";
+import { imageUrlAtom } from "./hooks/Uploader";
 
 const Hash = require("ipfs-only-hash");
 const pickers = [CirclePicker, TwitterPicker, SketchPicker];
@@ -43,7 +43,7 @@ export default function CreateFile(props) {
   const [sending, setSending] = useState(false);
   const [name, setName] = useState("");
   const [number, setNumber] = useState(0);
-  const [file] = useAtom(fileAtom);
+  const [imageUrl] = useAtom(imageUrlAtom);
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
     let contractName = "NiftyInk";
@@ -99,16 +99,11 @@ export default function CreateFile(props) {
 
   const createInk = async (values) => {
     console.log("Success:", values);
+    console.log("imageUrl", imageUrl);
 
     setSending(true);
 
-    let imageData; //= drawingCanvas.current.canvas.drawing.toDataURL("image/png");
-
-    let decompressed = LZ.decompress(props.drawing);
-    let compressedArray = LZ.compressToUint8Array(decompressed);
-
-    let drawingBuffer = Buffer.from(compressedArray);
-    let imageBuffer = Buffer.from(imageData.split(",")[1], "base64");
+    let imageBuffer = Buffer.from(imageUrl.split(",")[1], "base64");
 
     let currentInk = props.ink;
 
@@ -135,14 +130,11 @@ export default function CreateFile(props) {
 
     props.setIpfsHash();
 
-    const drawingHash = await Hash.of(drawingBuffer);
-    console.log("drawingHash", drawingHash);
     const imageHash = await Hash.of(imageBuffer);
     console.log("imageHash", imageHash);
 
-    currentInk["drawing"] = drawingHash;
     currentInk["image"] = "https://ipfs.io/ipfs/" + imageHash;
-    currentInk["external_url"] = "https://nifty.ink/" + drawingHash;
+    currentInk["external_url"] = "https://nifty.ink/" + imageHash;
     props.setInk(currentInk);
     console.log("Ink:", props.ink);
 
@@ -154,7 +146,7 @@ export default function CreateFile(props) {
 
     try {
       var mintResult = await mintInk(
-        drawingHash,
+        imageHash,
         jsonHash,
         values.limit.toString()
       );
@@ -164,33 +156,21 @@ export default function CreateFile(props) {
     }
 
     if (mintResult) {
-      const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig);
       const imageResult = addToIPFS(imageBuffer, props.ipfsConfig);
       const inkResult = addToIPFS(inkBuffer, props.ipfsConfig);
 
-      const drawingResultInfura = addToIPFS(
-        drawingBuffer,
-        props.ipfsConfigInfura
-      );
       const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura);
       const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura);
 
-      Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+      Promise.all([imageResult, inkResult]).then((values) => {
         console.log("FINISHED UPLOADING TO PINNER", values);
         message.destroy();
       });
 
       setSending(false);
-      props.setViewDrawing(LZ.decompress(props.drawing));
-      // setDrawingSize(10000);
-      props.setDrawing("");
-      history.push("/ink/" + drawingHash);
+      history.push("/ink/" + imageHash);
 
-      Promise.all([
-        drawingResultInfura,
-        imageResultInfura,
-        inkResultInfura,
-      ]).then((values) => {
+      Promise.all([imageResultInfura, inkResultInfura]).then((values) => {
         console.log("INFURA FINISHED UPLOADING!", values);
       });
     }
@@ -243,7 +223,7 @@ export default function CreateFile(props) {
             loading={sending}
             type="primary"
             htmlType="submit"
-            disabled={!name || !number || !file}
+            disabled={!name || !number || !imageUrl}
           >
             Upload
           </Button>

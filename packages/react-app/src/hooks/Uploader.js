@@ -20,12 +20,11 @@ const beforeUpload = (file) => {
   return isJpgOrPng && isLt2M;
 };
 
-export const fileAtom = atom(null);
+export const imageUrlAtom = atom(null);
 
 const useUploader = () => {
   const [loading, setLoading] = useState(false);
-  const [, setFile] = useAtom(fileAtom);
-  const [imageUrl, setImageUrl] = useState("");
+  const [imageUrl, setImageUrl] = useAtom(imageUrlAtom);
 
   const handleChange = (info) => {
     if (info.file.status === "uploading") {
@@ -41,9 +40,8 @@ const useUploader = () => {
     }
   };
 
-  const customRequest = ({ file, onSuccess }) => {
+  const customRequest = ({ onSuccess }) => {
     setTimeout(onSuccess, 1000);
-    setFile(file);
   };
 
   return { loading, imageUrl, handleChange, customRequest, beforeUpload };
