@@ -46,6 +46,14 @@ yarn deploy
 
 💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
 
+🖥️ Edit your themes `dark-theme.less` and `light-theme.less` in `packages/react-app/src/themes`
+
+> to update your themes
+
+```bash
+yarn theme
+```
+
 📱 Open http://localhost:3000 to see the app
 
 📚 Keep [solidity by example](https://solidity-by-example.org) handy and check out the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
