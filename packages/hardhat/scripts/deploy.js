@@ -1,14 +1,13 @@
 /* eslint no-use-before-define: "warn" */
 const fs = require("fs");
 const chalk = require("chalk");
-const { config, ethers } = require("hardhat");
+const { config, ethers, tenderly } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
-
 
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
 
@@ -47,6 +46,20 @@ const main = async () => {
   */
 
 
+  // If you want to verify on https://tenderly.co/
+
+  await tenderly.persistArtifacts({
+    name: "YourContract",
+    address: yourContract.address
+  });
+
+  await tenderly.verify({
+    name: "YourContract",
+    address: yourContract.address,
+  })
+
+
+
   console.log(
     " 💾  Artifacts (address, abi, and args) saved to: ",
     chalk.blue("packages/hardhat/artifacts/"),
@@ -66,7 +79,7 @@ const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) 
   let extraGasInfo = ""
   if(deployed&&deployed.deployTransaction){
     const gasUsed = deployed.deployTransaction.gasLimit.mul(deployed.deployTransaction.gasPrice)
-    extraGasInfo = "("+utils.formatEther(gasUsed)+" ETH)"
+    extraGasInfo = `${utils.formatEther(gasUsed)} ETH, tx hash ${deployed.deployTransaction.hash}`
   }
 
   console.log(
@@ -74,6 +87,10 @@ const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) 
     chalk.cyan(contractName),
     "deployed to:",
     chalk.magenta(deployed.address),
+    chalk.grey(extraGasInfo)
+  );
+  console.log(
+    " ⛽",
     chalk.grey(extraGasInfo)
   );
 

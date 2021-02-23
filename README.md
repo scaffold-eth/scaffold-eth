@@ -744,3 +744,51 @@ OR
 
 yarn run ipfs
 ```
+
+## tenderly
+Tenderly is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
+
+Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
+
+You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
+
+### Exporting local Transactions
+
+Installing the Tenderly CLI:
+```
+brew tap tenderly/tenderly
+brew install tenderly
+```
+_See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
+You need to log in and configure for your local chain (including any forking information)
+```
+tenderly login
+tenderly export init
+```
+You can then take transaction hashes from your local chain and run:
+```
+tenderly export <transactionHash>
+```
+Which will upload them to tenderly.co/dashboard
+
+### Verifying contracts on Tenderly
+scaffold-eth now includes hardhat-tenderly!
+Update the tenderly settings in hardhat.config.js to match your account:
+```
+tenderly: {
+  username: "azf20",
+  project: "scaffold-eth"
+}
+```
+When deploying testnets, you can then persist artifacts and verify contracts as part of the deploy script:
+```
+await tenderly.persistArtifacts({
+  name: "YourContract",
+  address: yourContract.address
+});
+
+await tenderly.verify({
+  name: "YourContract",
+  address: yourContract.address,
+})
+```

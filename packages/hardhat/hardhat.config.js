@@ -3,6 +3,7 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
+require("@tenderly/hardhat-tenderly")
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -124,6 +125,10 @@ module.exports = {
     ],
 
   },
+	tenderly: {
+		username: "azf20",
+		project: "scaffold-eth"
+	}
 };
 
 const DEBUG = false;
