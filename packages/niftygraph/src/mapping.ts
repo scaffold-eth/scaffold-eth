@@ -333,17 +333,17 @@ export function handleNewRelayPrice(event: newPrice): void {
 }
 
 export function handlenewOwnershipRequest(event: newOwnershipRequest): void {
-  let ink = Ownership.load(event.params.id.toHex());
+  let file = Ownership.load(event.params.id.toHex());
 
-  if (ink == null) {
-    ink = new Ownership(event.params.id.toHex());
+  if (file == null) {
+    file = new Ownership(event.params.id.toHex());
   }
-  ink.ownerApproval = true;
-  ink.save();
+  file.ownerApproval = true;
+  file.save();
 }
 
 export function handlenewOwnershipAcknowledgement(event: newOwnershipAcknowledgement): void {
-  let ink = Ownership.load(event.params.id.toHex());
-  ink.newOwnerAcknowledgement = true;
-  ink.save();
+  let file = Ownership.load(event.params.id.toHex());
+  file.newOwnerAcknowledgement = true;
+  file.save();
 }
