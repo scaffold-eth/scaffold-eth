@@ -48,6 +48,7 @@ contract YourContract {
   }
 
   function withdrawWinnings() public payable {
+    require(balances[msg.sender]>0,"No eth left to withdraw");
     balances[msg.sender] -= (balances[msg.sender]*50)/100;
     if( msg.sender == currentWinner.winnerAddress){
       balances[msg.sender] += (playerCount*50)/uint(100);

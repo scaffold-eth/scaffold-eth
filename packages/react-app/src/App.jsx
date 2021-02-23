@@ -34,7 +34,7 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['mumbai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false
@@ -113,11 +113,11 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const playerCount = useContractReader(readContracts,"YourContract", "playerCount");
-  const currentPlayer = useContractReader(readContracts,"YourContract","currentIndex");
+  // const currentPlayer = useContractReader(readContracts,"YourContract","currentIndex");
   const isGameOn = useContractReader(readContracts,"YourContract","isGameOn");
   const currentReveal = useContractReader(readContracts,"YourContract","currentReveal");
 
-  if(DEBUG)console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
+  // if(DEBUG)console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
 
   //📟 Listen for broadcast events
   const turnCompletedEvents = useEventListener(readContracts, "YourContract", "TurnCompleted", localProvider, 1);
@@ -216,7 +216,6 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              currentPlayer={currentPlayer}
               playerCount={playerCount}
               newPlayerJoinedEvents={newPlayerJoinedEvents}
               isGameOn={isGameOn}

@@ -6,10 +6,12 @@ import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { BigNumber} from "@ethersproject/bignumber";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "../hooks";
+import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useCurrentPlayerReader } from "../hooks";
+const humanizeDuration = require("humanize-duration");
 
 export default function Minesweeper({newPlayerJoinedEvents, turnCompletedEvents, isGameOn, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
-
+  
+  const [notifState, setNotifState] = useState(false);
   let currentPlayer;
   const steakValue = 0.01;
   var balances = {};
@@ -21,12 +23,27 @@ export default function Minesweeper({newPlayerJoinedEvents, turnCompletedEvents,
   const totalStakingPool = useContractReader(readContracts,"YourContract","totalStakingPool");
   const currentWinner = useContractReader(readContracts,"YourContract","currentWinner");
   const currentIndex = useContractReader(readContracts,"YourContract","currentIndex");
-  const players = useContractReader(readContracts,"YourContract", "players",[0]);
-  
-  currentPlayer = useContractReader(readContracts,"YourContract", "players",[currentIndex]);
 
+  currentPlayer = useCurrentPlayerReader(readContracts,"YourContract", "players",[currentIndex], isGameOn);
+  useEffect(() => {
+    if (!("Notification" in window)) {
+      console.log("This browser does not support desktop notification");
+    } else {
+      Notification.requestPermission();
+    }
+  })
+  useEffect(() => {
+    if(notifState === false && isGameOn && isGameOn === true && currentPlayer && address == currentPlayer && turnTimeLeft && turnTimeLeft.toNumber() <20){
+      setNotifState(true);
+      new Notification("Your timer is running out!");
+    }});
   return (
     <div>
+    {/* <Button onClick={()=> {
+      new Notification("Your timer is running out!")
+    }}>Test notifs
+          </Button> */}
+      {/* <ReactNotification /> */}
       <div style={{border:"1px solid #cccccc", padding:16, width:600, margin:"auto",marginTop:64}}>
         <h2>Minesweeper 🤖</h2>
 
@@ -34,29 +51,28 @@ export default function Minesweeper({newPlayerJoinedEvents, turnCompletedEvents,
 
         <Divider/>
 
-        {!isGameOn && <div style={{margin:8, padding:5}}>
-        <div style={{display:'flex', flexDirection:'column', justifyContent:'space-around'}}>        
-        <div>
+        {!isGameOn && <div style={{margin:  8, padding:5}}>
+        <div style={{display:'flex',flexDirection:'row', justifyContent:'center'}}>
+        <h1> Staking time left : </h1>
+            <h1>{stakingTimeLeft && humanizeDuration(stakingTimeLeft.toNumber()*1000)}</h1>
+                      </div>
+          <div style={{margin:8, padding:5}}>
+          <Button type='primary' onClick={()=> tx( writeContracts.YourContract.steakAndParticipate({value:parseEther(steakValue.toString())}))}>
+            Stake 0.01 ETH to participate
+          </Button>
+          </div>
+        <div style={{padding: 10,display:'flex', flexDirection:'column', justifyContent:'space-around'}}>        
         <h2>Current Pool Value: </h2>
         <Balance
               balance={totalStakingPool}
               fontSize={64}
             />
-          </div>
-            <div>
-            <h2> Staking time left : </h2>
-            <h2> {stakingTimeLeft && stakingTimeLeft.toNumber()}</h2>
-            </div>
-          </div>
-          <div style={{margin:8, padding:5}}>
-          <Button onClick={()=> tx( writeContracts.YourContract.steakAndParticipate({value:parseEther(steakValue.toString())}))}>
-            Stake & Participate
-          </Button>
-          </div>
-          <div style={{margin:8, padding:5}}>
+            
+          <div style={{margin:8}}>
           <Button onClick={()=>{
             tx( writeContracts.YourContract.startGame())
             }}>Start the Game!</Button>
+          </div>
           </div>
         </div>
         }
@@ -184,7 +200,10 @@ export default function Minesweeper({newPlayerJoinedEvents, turnCompletedEvents,
             }
         </div> */}
       </div>
-      <Button onClick={()=>{tx( writeContracts.YourContract.endGame() )
+      <Button onClick={()=>{
+        
+        setNotifState(false);
+        tx( writeContracts.YourContract.endGame() )
               }}>End the Game</Button>
        
     </div>

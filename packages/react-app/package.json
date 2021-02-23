@@ -40,6 +40,7 @@
     "eth-hooks": "^1.1.2",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
+    "humanize-duration": "^3.25.1",
     "isomorphic-fetch": "^3.0.0",
     "qrcode.react": "^1.0.0",
     "react": "^16.14.0",
