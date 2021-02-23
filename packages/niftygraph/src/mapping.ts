@@ -12,6 +12,8 @@ import {
   SetPriceCall,
   SetPriceFromSignatureCall,
   newFilePrice,
+  newOwnershipAcknowledgement,
+  newOwnershipRequest,
 } from "../generated/NiftyInk/NiftyInk";
 import {
   NiftyToken,
@@ -35,6 +37,7 @@ import {
   RelayPrice,
   Total,
   MetaData,
+  Ownership
 } from "../generated/schema";
 
 function updateMetaData(metric: String, value: String): void {
@@ -139,12 +142,12 @@ function _handleSetPrice(
 export function handleSetPriceFromSignature(
   call: SetPriceFromSignatureCall
 ): void {
-  _handleSetPrice(call.inputs.inkUrl, call.inputs.price, call.block.timestamp);
+  _handleSetPrice(call.inputs.fileUrl, call.inputs.price, call.block.timestamp);
   updateMetaData("blockNumber", call.block.number.toString());
 }
 
 export function handleSetPrice(call: SetPriceCall): void {
-  _handleSetPrice(call.inputs.inkUrl, call.inputs.price, call.block.timestamp);
+  _handleSetPrice(call.inputs.fileUrl, call.inputs.price, call.block.timestamp);
   updateMetaData("blockNumber", call.block.number.toString());
 }
 
@@ -327,4 +330,20 @@ export function handleNewRelayPrice(event: newPrice): void {
   updatedPrice.createdAt = event.block.timestamp;
   updatedPrice.save();
   updateMetaData("blockNumber", event.block.number.toString());
+}
+
+export function handlenewOwnershipRequest(event: newOwnershipRequest): void {
+  let ink = Ownership.load(event.params.id.toHex());
+
+  if (ink == null) {
+    ink = new Ownership(event.params.id.toHex());
+  }
+  ink.ownerApproval = true;
+  ink.save();
+}
+
+export function handlenewOwnershipAcknowledgement(event: newOwnershipAcknowledgement): void {
+  let ink = Ownership.load(event.params.id.toHex());
+  ink.newOwnerAcknowledgement = true;
+  ink.save();
 }

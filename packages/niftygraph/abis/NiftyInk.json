@@ -80,6 +80,84 @@
     "type": "event"
   },
   {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "artist",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newArtist",
+        "type": "address"
+      }
+    ],
+    "name": "newOwnershipAcknowledgement",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "id",
+        "type": "uint256"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "artist",
+        "type": "address"
+      },
+      {
+        "indexed": true,
+        "internalType": "address",
+        "name": "newArtist",
+        "type": "address"
+      }
+    ],
+    "name": "newOwnershipRequest",
+    "type": "event"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "fileUrl",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "artist",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "newArtist",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "acknowledgeOwnershipChange",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "artistTake",
     "outputs": [
@@ -167,7 +245,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {
@@ -316,7 +394,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       }
     ],
@@ -455,6 +533,34 @@
     "type": "function"
   },
   {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "fileUrl",
+        "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "artist",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "newArtist",
+        "type": "address"
+      },
+      {
+        "internalType": "bytes",
+        "name": "signature",
+        "type": "bytes"
+      }
+    ],
+    "name": "ownershipRequest",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
     "inputs": [],
     "name": "renounceOwnership",
     "outputs": [],
@@ -504,7 +610,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {
@@ -528,7 +634,7 @@
     "inputs": [
       {
         "internalType": "string",
-        "name": "inkUrl",
+        "name": "fileUrl",
         "type": "string"
       },
       {

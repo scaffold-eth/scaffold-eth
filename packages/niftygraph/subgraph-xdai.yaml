@@ -28,6 +28,10 @@ dataSources:
           handler: handleSetPrice
         - function: setPriceFromSignature(string,uint256,bytes)
           handler: handleSetPriceFromSignature
+        - event: newOwnershipRequest(uint256,indexed address,indexed address)
+          handler: handlenewOwnershipRequest
+        - event: acknowledgeOwnershipChange(uint256,indexed address,indexed address)
+          handler: handleacknowledgeOwnershipChange
       file: ./src/mapping.ts
   - kind: ethereum/contract
     name: NiftyToken

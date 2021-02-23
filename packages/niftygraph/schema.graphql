@@ -91,3 +91,11 @@ type Total @entity {
   upgrades: BigInt
   artists: BigInt
 }
+
+type Ownership @entity {
+  id: ID!
+  owner: Bytes!
+  newOwner: Bytes!
+  ownerApproval: Boolean!
+  newOwnerAcknowledgement: Boolean!
+} 
