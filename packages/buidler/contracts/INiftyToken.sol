@@ -6,6 +6,7 @@ interface INiftyToken {
     function mint(address, string calldata) external returns (uint256);
     function buyInk(string calldata) external payable returns (uint256);
     function buyToken(uint256) external payable;
+    function transferOwnership(address from, address to, uint256 tokenId) external;
     function lock(uint256) external;
     function unlock(uint256, address) external;
     function ownerOf(uint256) external view returns (address);

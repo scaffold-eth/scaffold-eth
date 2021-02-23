@@ -157,7 +157,10 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
     }
 
     function _transfer(address from, address to, uint256 tokenId) internal override(ERC721) {
-        delete tokenPrice[tokenId];
+        ERC721._transfer(from, to, tokenId);
+    }
+
+    function transferOwnership(address from, address to, uint256 tokenId) public {
         ERC721._transfer(from, to, tokenId);
     }
 

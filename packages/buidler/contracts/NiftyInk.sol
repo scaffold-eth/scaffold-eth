@@ -45,6 +45,9 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
     event newFile(uint256 id, address indexed artist, string fileUrl, string jsonUrl, uint256 limit);
     event newFilePrice(string fileUrl, uint256 price);
 
+    event newOwnershipRequest(uint256 id, address indexed artist, address indexed newArtist);
+    event newOwnershipAcknowledgement(uint256 id, address indexed artist, address indexed newArtist);
+
     struct File {
       uint256 id;
       address payable artist;
@@ -137,7 +140,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       return _setPrice(_ink.id, price);
     }
 
-    function setOwnership(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
+    function ownershipRequest(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
       uint256 _inkId = inkIdByInkUrl[fileUrl];
       require(_inkId > 0, "this ink does not exist!");
       bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), artist, fileUrl));
@@ -145,9 +148,10 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this ink");
       Ownership storage ownerDetails = _ownership[_inkId];
       ownerDetails.artistApproval[artist] = true;
+      emit newOwnershipRequest(_inkId, artist, newArtist);
     }
 
-    function acknowledgeOwnershipChange(string memory fileUrl, address newArtist, bytes memory signature) public {
+    function acknowledgeOwnershipChange(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
       uint256 _inkId = inkIdByInkUrl[fileUrl];
       require(_inkId > 0, "this ink does not exist!");
       bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), newArtist, fileUrl));
@@ -155,6 +159,8 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       require(isArtistSignature || !checkSignatureFlag, "New Artist did not sign this ink");
       Ownership storage ownerDetails = _ownership[_inkId];
       ownerDetails.newArtistApproval[newArtist] = true;
+      niftyToken().transferOwnership(artist, newArtist, _inkId);
+      emit newOwnershipAcknowledgement(_inkId, artist, newArtist);
     }
 
 
