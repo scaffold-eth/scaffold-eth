@@ -1,4 +1,4 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity >=0.6.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
@@ -8,9 +8,9 @@ contract YourContract {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "🛠 Programming Unstoppable Money";
+  string public purpose = "Programming Unstoppable Money";
 
-  constructor() public {
+  constructor() {
     // what should we do on deploy?
   }
 

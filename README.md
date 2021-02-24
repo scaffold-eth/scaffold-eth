@@ -760,7 +760,7 @@ brew tap tenderly/tenderly
 brew install tenderly
 ```
 _See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
-You need to log in and configure for your local chain (including any forking information)
+You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do in the base directory or under `/packages/hardhat`
 ```
 tenderly login
 tenderly export init
@@ -772,23 +772,18 @@ tenderly export <transactionHash>
 Which will upload them to tenderly.co/dashboard
 
 ### Verifying contracts on Tenderly
-scaffold-eth now includes hardhat-tenderly!
-Update the tenderly settings in hardhat.config.js to match your account:
+scaffold-eth now includes hardhat-tenderly - update the tenderly settings in `hardhat.config.js` to match your account:
 ```
 tenderly: {
   username: "azf20",
   project: "scaffold-eth"
 }
 ```
-When deploying testnets, you can then persist artifacts and verify contracts as part of the deploy script:
+When deploying testnets, you can then persist artifacts and verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function:
 ```
-await tenderly.persistArtifacts({
-  name: "YourContract",
-  address: yourContract.address
-});
-
-await tenderly.verify({
-  name: "YourContract",
-  address: yourContract.address,
+await tenderlyVerify(
+  {contractName: "YourContract",
+   contractAddress: yourContract.address
 })
 ```
+Once verified, they will then be available in the Tenderly Dashboard!
