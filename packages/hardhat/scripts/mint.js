@@ -8,7 +8,7 @@ const R = require("ramda");
 const main = async () => {
 
   console.log("\n\n 🎫 Minting...\n");
-  
+
   const yourCollectible = await ethers.getContractAt('YourCollectible', fs.readFileSync("./artifacts/YourCollectible.address").toString())
 
   console.log("Minting antelope...")
@@ -19,6 +19,9 @@ const main = async () => {
   console.log("Minting zebra...")
   await yourCollectible.mintItem("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1","zebra.jpg")
 
+
+  console.log("Giving up Ownership...")
+  await yourCollectible.transferOwnership("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1")
 
   //const secondContract = await deploy("SecondContract")
 
