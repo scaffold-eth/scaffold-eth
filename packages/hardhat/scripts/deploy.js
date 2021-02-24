@@ -10,7 +10,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
 
-  const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
+  const yourCollectible = await deploy("YourCollectible") // <-- add in constructor args like line 19 vvvv
 
   //const secondContract = await deploy("SecondContract")
 
