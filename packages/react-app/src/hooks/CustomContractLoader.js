@@ -7,6 +7,22 @@ import { useState, useEffect } from "react";
   when you want to load a local contract's abi but supply a custom address
 */
 
+/*
+  ~ What it does? ~
+
+  Enables you to load a local contract with custom address
+
+  ~ How can I use? ~
+
+  const customContract = useCustomContractLoader(localProvider, "YourContract", customAddress)
+
+  ~ Features ~
+
+  - Specify the localProvider
+  - Specify the name of the contract, in this case it is "YourContract"
+  - Specify the customAddress of your contract
+*/
+
 export default function useCustomContractLoader(provider, contractName, address) {
   const [contract, setContract] = useState();
   useEffect(() => {

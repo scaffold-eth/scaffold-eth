@@ -34,7 +34,7 @@ yarn start
 :arrow_forward: Run the local chain:
 
 ```bash
-
+cd scaffold-eth
 yarn chain
 
 ```
@@ -42,7 +42,7 @@ yarn chain
 :arrow_forward: Deploy our smart contract:
 
 ```bash
-
+cd scaffold-eth
 yarn deploy
 
 ```

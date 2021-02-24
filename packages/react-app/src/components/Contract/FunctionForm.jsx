@@ -6,6 +6,7 @@ import { BigNumber } from "@ethersproject/bignumber";
 import { Row, Col, Input, Divider, Tooltip, Button } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
+import Blockies from "react-blockies";
 const { utils } = require("ethers");
 
 
@@ -68,7 +69,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
       )
     } else if (input.type == "uint256") {
       buttons = (
-        <Tooltip placement="right" title={"to hex"}>
+        <Tooltip placement="right" title={"* 10 ** 18"}>
           <div
             type="dashed"
             style={{ cursor: "pointer" }}
@@ -82,6 +83,15 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             </div>
         </Tooltip>
       )
+    } else if (input.type == "address") {
+      const possibleAddress = form[key]&&form[key].toLowerCase&&form[key].toLowerCase().trim()
+      if(possibleAddress && possibleAddress.length==42){
+        buttons = (
+          <Tooltip placement="right" title={"blockie"}>
+            <Blockies seed={possibleAddress} scale={3} />
+          </Tooltip>
+        )
+      }
     }
 
 
@@ -92,6 +102,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
         <Input
           size="large"
           placeholder={input.name ? input.type + " " + input.name : input.type}
+          autoComplete="off"
           value={form[key]}
           name={key}
           onChange={(event) => {
@@ -170,7 +181,9 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               const args = functionInfo.inputs.map((input) => {
                 const key = functionInfo.name + "_" + input.name + "_" + input.type + "_" + innerIndex++
                 let value = form[key]
-                if(input.type === "bool"){
+                if(input.baseType=="array"){
+                  value = JSON.parse(value)
+                } else if(input.type === "bool"){
                   if(value==='true' || value==='1' || value ==="0x1"|| value ==="0x01"|| value ==="0x0001"){
                     value = 1;
                   }else{
@@ -179,7 +192,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 }
                 return value
               });
-
 
               let result
               if(functionInfo.stateMutability === "view"||functionInfo.stateMutability === "pure"){

@@ -18,19 +18,22 @@
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.0.17",
-    "hardhat": "^2.0.2",
+    "hardhat": "^2.0.6",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
   },
   "scripts": {
-    "chain": "hardhat node",
-    "test": "hardhat test --network hardhatevm",
+    "chain": "hardhat node --hostname 0.0.0.0",
+    "fork": "hardhat node --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",
+    "test": "hardhat test --network hardhat",
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.js && hardhat run scripts/publish.js",
     "watch": "node scripts/watch.js",
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",
-    "send": "hardhat send"
+    "send": "hardhat send",
+    "generate": "hardhat generate",
+    "account": "hardhat account"
   }
 }
