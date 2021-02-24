@@ -108,7 +108,7 @@ module.exports = {
 
   },
 	tenderly: {
-		username: "YOUR-USERNAME-HERE", //tenderly.co
+		username: "YOUR-USERNAME-HERE",
 		project: "YOUR-PROJECT-HERE"
 	}
 };

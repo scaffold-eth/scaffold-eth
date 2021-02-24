@@ -12,7 +12,7 @@ import { useState, useEffect } from "react";
 
   ~ Features ~
 
-  - specify chainId to filter by chainId
+  - Optional - specify chainId to filter by chainId
 */
 
 const useTokenList = (tokenListUri, chainId) => {
