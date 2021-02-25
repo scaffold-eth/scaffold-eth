@@ -24,7 +24,7 @@ export const ARTISTS_QUERY = gql`
 
 export const INKS_QUERY = gql`
   query inks($first: Int, $skip: Int) {
-    inks(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
+    inks: files(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
       id
       inkNumber
       createdAt
@@ -66,7 +66,7 @@ export const INK_QUERY = gql`
       id
       value
     }
-    ink(id: $inkUrl) {
+    ink: file(id: $inkUrl) {
       id
       inkNumber
       jsonUrl

@@ -617,15 +617,6 @@ export default function ViewInk(props) {
           </a>
         </Typography.Text>
 
-        <Button
-          style={{ marginTop: 4, marginLeft: 4 }}
-          onClick={() => {
-            setDrawingSize(0);
-            drawingCanvas.current.loadSaveData(drawing, false);
-          }}
-        >
-          <PlaySquareOutlined /> PLAY
-        </Button>
       </Row>
     </div>
   );
@@ -642,19 +633,7 @@ export default function ViewInk(props) {
           boxShadow: "2px 2px 8px #AAAAAA",
         }}
       >
-        <CanvasDraw
-          key={canvasKey}
-          ref={drawingCanvas}
-          canvasWidth={size[0]}
-          canvasHeight={size[1]}
-          lazyRadius={4}
-          disabled={true}
-          hideGrid={true}
-          hideInterface={true}
-          saveData={drawing}
-          immediateLoading={drawingSize >= 10000}
-          loadTimeOffset={3}
-        />
+        <img src={inkJson.image} style={{ width: "100%", display: "block"}}/>
       </div>
       {bottom}
     </div>
