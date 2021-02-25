@@ -8,7 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -184,21 +184,6 @@ function App(props) {
     )
   }
 
-  // dark mode functionality
-  const [isDarkMode, setIsDarkMode] = React.useState();
-  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
-
-  const toggleTheme = (isChecked) => {
-    setIsDarkMode(isChecked);
-    switcher({ theme: isChecked ? themes.light : themes.dark });
-  };
-
-  // Avoid theme change flicker
-  // if (status === "loading") {
-  //   return null;
-  // }
-  // end dark mode stuff
-
   return (
     <div className="App">
 
@@ -307,10 +292,7 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <div className="main fade-in" style={{padding: 100}}>
-        <h1>The current theme is: {currentTheme}</h1>
-        <SwitchD checked={isDarkMode} onChange={toggleTheme} />
-      </div>
+      <ThemeSwitch />
 
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
