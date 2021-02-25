@@ -194,9 +194,9 @@ function App(props) {
   };
 
   // Avoid theme change flicker
-  if (status === "loading") {
-    return null;
-  }
+  // if (status === "loading") {
+  //   return null;
+  // }
   // end dark mode stuff
 
   return (
