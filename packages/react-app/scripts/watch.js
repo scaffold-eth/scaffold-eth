@@ -2,7 +2,7 @@ const watch = require("node-watch");
 const { exec } = require("child_process");
 
 const run = () => {
-  console.log("🛠  Compiling & Deploying...");
+  console.log("Compiling & Generating...");
   exec("npx gulp less", function (error, stdout, stderr) {
     console.log(stdout);
     if (error) console.log(error);
