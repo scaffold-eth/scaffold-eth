@@ -41,6 +41,7 @@ const useUploader = () => {
   };
 
   const customRequest = ({ onSuccess }) => {
+    setLoading(true);
     setTimeout(onSuccess, 1000);
   };
 

@@ -327,7 +327,7 @@ export default function NftyWallet(props) {
                     : "primary"
                 }
               >
-                <PlusOutlined /> Create File
+                <PlusOutlined /> Upload art
               </Button>
             </NavLink>
           }
@@ -464,7 +464,7 @@ export default function NftyWallet(props) {
         />
 
         <Route path="/">
-          <Redirect to="/create" />
+          <Redirect to="/allinks" />
         </Route>
       </Switch>
       <Drawer

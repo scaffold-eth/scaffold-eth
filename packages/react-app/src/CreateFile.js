@@ -19,7 +19,7 @@ import {
   message,
   Col,
   Slider,
-  Space,
+  Space, Typography,
 } from "antd";
 import { useLocalStorage } from "./hooks";
 import { addToIPFS, transactionHandler } from "./helpers";
@@ -182,6 +182,7 @@ export default function CreateFile(props) {
 
   const top = (
     <div>
+      <Typography.Title level={3} style={{ marginBottom: 25 }}>Upload your own art</Typography.Title>
       <Form
         layout={"inline"}
         name="createFile"
@@ -198,7 +199,7 @@ export default function CreateFile(props) {
         >
           <Input
             onChange={(e) => setName(e.target.value)}
-            placeholder={"name"}
+            placeholder={"Name"}
             style={{ fontSize: 16 }}
           />
         </Form.Item>
@@ -211,7 +212,7 @@ export default function CreateFile(props) {
             onChange={(e) => {
               setNumber(e);
             }}
-            placeholder={"limit"}
+            placeholder={"Limit"}
             style={{ fontSize: 16 }}
             min={0}
             precision={0}
