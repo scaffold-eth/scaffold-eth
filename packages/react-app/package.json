@@ -41,6 +41,7 @@
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
+    "node-watch": "^0.7.1",
     "postcss": "^8.2.6",
     "qrcode.react": "^1.0.0",
     "react": "^16.14.0",
@@ -85,6 +86,7 @@
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
-    "ship": "yarn surge"
+    "ship": "yarn surge",
+    "watch": "node ./scripts/watch.js"
   }
 }

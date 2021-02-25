@@ -48,7 +48,7 @@ yarn deploy
 
 🖥️ Edit your themes `dark-theme.less` and `light-theme.less` in `packages/react-app/src/themes`
 
-> to update your themes
+> in a fourth terminal to update themes when edited
 
 ```bash
 yarn theme
