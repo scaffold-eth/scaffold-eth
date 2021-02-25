@@ -296,23 +296,23 @@ export default function NftyWallet(props) {
           key="holdings"
         ></TabPane>
 
-        <TabPane
-          tab={
-            <NavLink to="/create">
-              <Button
-                style={{ marginBottom: 8 }}
-                shape="round"
-                size="large"
-                type={
-                  tab === "create" && mode === "edit" ? "secondary" : "primary"
-                }
-              >
-                <PlusOutlined /> Create
-              </Button>
-            </NavLink>
-          }
-          key="4"
-        ></TabPane>
+        {/* <TabPane */}
+        {/*   tab={ */}
+        {/*     <NavLink to="/create"> */}
+        {/*       <Button */}
+        {/*         style={{ marginBottom: 8 }} */}
+        {/*         shape="round" */}
+        {/*         size="large" */}
+        {/*         type={ */}
+        {/*           tab === "create" && mode === "edit" ? "secondary" : "primary" */}
+        {/*         } */}
+        {/*       > */}
+        {/*         <PlusOutlined /> Create */}
+        {/*       </Button> */}
+        {/*     </NavLink> */}
+        {/*   } */}
+        {/*   key="4" */}
+        {/* ></TabPane> */}
 
         <TabPane
           tab={
