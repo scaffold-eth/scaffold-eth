@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, List } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, List, Card } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -39,29 +39,25 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['rinkeby']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
 
 //EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  "description": "Friendly OpenSea Creature that enjoys long swims in the ocean.",
-  "external_url": "https://openseacreatures.io/3",
-  "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png",
-  "name": "Dave Starbelly",
+  "description": "It's actually a bison?",
+  "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
+  "image": "https://austingriffith.com/images/paintings/buffalo.jpg",
+  "name": "Buffalo",
   "attributes": [
      {
-       "trait_type": "Base",
-       "value": "Starfish"
+       "trait_type": "BackgroundColor",
+       "value": "green"
      },
      {
        "trait_type": "Eyes",
-       "value": "Big"
-     },
-     {
-       "trait_type": "Mouth",
-       "value": "Surprised"
+       "value": "googly"
      }
   ]
 }
@@ -167,10 +163,22 @@ function App(props) {
       for(let tokenIndex=0;tokenIndex<balance;tokenIndex++){
         try{
           console.log("GEtting token index",tokenIndex)
-          let tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex)
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex)
           console.log("tokenId",tokenId)
-          let tokenURI = await readContracts.YourCollectible.tokenURI(tokenId)
-          collectibleUpdate.push({ id:tokenId, uri:tokenURI, owner: address })
+          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId)
+          console.log("tokenURI",tokenURI)
+
+          const ipfsHash =  tokenURI.replace("https://ipfs.io/ipfs/","")
+          console.log("ipfsHash",ipfsHash)
+
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash)
+
+          try{
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString())
+            console.log("jsonManifest",jsonManifest)
+            collectibleUpdate.push({ id:tokenId, uri:tokenURI, owner: address, ...jsonManifest })
+          }catch(e){console.log(e)}
+
         }catch(e){console.log(e)}
       }
       setYourCollectibles(collectibleUpdate)
@@ -294,7 +302,12 @@ function App(props) {
                   return (
                     <List.Item key={item.id.toNumber()+"_"+item.uri+"_"+item.owner}>
                       <span style={{fontSize:16, marginRight:8}}>#{item.id.toNumber()}</span>
-                      <div><img src={item.uri} style={{maxWidth:150}} /></div>
+                      <Card title={item.name}>
+                      <div><img src={item.image} style={{maxWidth:150}} /></div>
+                      <div>{item.description}</div>
+                      </Card>
+
+
                       <Address
                           address={item.owner}
                           ensProvider={mainnetProvider}
@@ -460,7 +473,6 @@ function App(props) {
          <Row align="middle" gutter={[4, 4]}>
            <Col span={24}>
              {
-
                /*  if the local provider has a signer, let's show the faucet:  */
                faucetAvailable ? (
                  <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
