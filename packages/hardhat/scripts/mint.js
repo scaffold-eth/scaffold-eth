@@ -9,7 +9,8 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 const main = async () => {
 
-  const toAddress = "0x6F8b07a67d45FC8F40907eEFCd3A3C82C888b206"
+  const toAddress = "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"
+  const delayMS = 0
 
   console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
 
@@ -39,7 +40,7 @@ const main = async () => {
   await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
 
 
-  await sleep(10000)
+  await sleep(delayMS)
 
 
   const zebra = {
@@ -66,7 +67,7 @@ const main = async () => {
 
 
 
-    await sleep(10000)
+    await sleep(delayMS)
 
 
     const rhino = {

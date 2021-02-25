@@ -8,7 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, AddressInput } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -259,6 +259,7 @@ function App(props) {
   const [ downloading, setDownloading ] = useState()
   const [ ipfsContent, setIpfsContent ] = useState()
 
+  const [ transferToAddresses, setTransferToAddresses ] = useState({})
 
   return (
     <div className="App">
@@ -294,32 +295,44 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+            <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
               <List
                 bordered
                 dataSource={yourCollectibles}
                 renderItem={(item) => {
+                  const id = item.id.toNumber()
                   return (
-                    <List.Item key={item.id.toNumber()+"_"+item.uri+"_"+item.owner}>
-                      <span style={{fontSize:16, marginRight:8}}>#{item.id.toNumber()}</span>
+                    <List.Item key={id+"_"+item.uri+"_"+item.owner}>
+                      <span style={{fontSize:16, marginRight:8}}>#{id}</span>
                       <Card title={item.name}>
                       <div><img src={item.image} style={{maxWidth:150}} /></div>
                       <div>{item.description}</div>
                       </Card>
 
-
-                      <Address
-                          address={item.owner}
+                      <div>
+                        owner: <Address
+                            address={item.owner}
+                            ensProvider={mainnetProvider}
+                            blockExplorer={blockExplorer}
+                            fontSize={16}
+                        />
+                        <AddressInput
                           ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                      />
-                      <Button onClick={()=>{
-                        console.log("writeContracts",writeContracts)
-                        tx( writeContracts.YourCollectible.transferFrom(address, "0x34aA3F359A9D614239015126635CE7732c18fDF3", item.id.toNumber()) )
-                      }}>
-                        Send to atg
-                      </Button>
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={(newValue)=>{
+                            let update = {}
+                            update[id] = newValue
+                            setTransferToAddresses({ ...transferToAddresses, ...update})
+                          }}
+                        />
+                        <Button onClick={()=>{
+                          console.log("writeContracts",writeContracts)
+                          tx( writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id) )
+                        }}>
+                          Transfer
+                        </Button>
+                      </div>
                     </List.Item>
                   )
                 }}
