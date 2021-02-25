@@ -22,11 +22,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
 
     uint public artistTake;
 
-    struct Ownership {
-      mapping(address => bool) artistApproval;
-      mapping(address => bool) newArtistApproval;
-    }
-
     function setArtistTake(uint _take) public onlyOwner {
       require(_take < 100, 'take is more than 99 percent');
       artistTake = _take;
@@ -45,8 +40,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
     event newFile(uint256 id, address indexed artist, string fileUrl, string jsonUrl, uint256 limit);
     event newFilePrice(string fileUrl, uint256 price);
 
-    event newOwnershipRequest(uint256 id, address indexed artist, address indexed newArtist);
-    event newOwnershipAcknowledgement(uint256 id, address indexed artist, address indexed newArtist);
+    event ownershipChange(string fileUrl, address indexed artist, address indexed newArtist);
 
     struct File {
       uint256 id;
@@ -61,7 +55,6 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
 
     mapping (string => uint256) public inkIdByInkUrl;
     mapping (uint256 => File) private _inkById;
-    mapping (uint256 => Ownership) private _ownership;
     mapping (address => EnumerableSet.UintSet) private _artistInks;
 
     function _createInk(string memory fileUrl, string memory jsonUrl, uint256 limit, address payable artist) internal returns (uint256) {
@@ -140,29 +133,16 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
       return _setPrice(_ink.id, price);
     }
 
-    function ownershipRequest(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
+    function transferOwnership(string memory fileUrl, address artist, address payable newArtist, bytes memory signature) public {
       uint256 _inkId = inkIdByInkUrl[fileUrl];
       require(_inkId > 0, "this ink does not exist!");
       bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), artist, fileUrl));
       bool isArtistSignature = checkSignature(messageHash, signature, artist);
       require(isArtistSignature || !checkSignatureFlag, "Artist did not sign this ink");
-      Ownership storage ownerDetails = _ownership[_inkId];
-      ownerDetails.artistApproval[artist] = true;
-      emit newOwnershipRequest(_inkId, artist, newArtist);
+      File storage _file = _inkById[_inkId];
+      _file.artist = newArtist;
+      emit ownershipChange(fileUrl, artist, newArtist);
     }
-
-    function acknowledgeOwnershipChange(string memory fileUrl, address artist, address newArtist, bytes memory signature) public {
-      uint256 _inkId = inkIdByInkUrl[fileUrl];
-      require(_inkId > 0, "this ink does not exist!");
-      bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19), byte(0), address(this), newArtist, fileUrl));
-      bool isArtistSignature = checkSignature(messageHash, signature, newArtist);
-      require(isArtistSignature || !checkSignatureFlag, "New Artist did not sign this ink");
-      Ownership storage ownerDetails = _ownership[_inkId];
-      ownerDetails.newArtistApproval[newArtist] = true;
-      niftyToken().transferOwnership(artist, newArtist, _inkId);
-      emit newOwnershipAcknowledgement(_inkId, artist, newArtist);
-    }
-
 
     function inkInfoById(uint256 id) public view returns (uint256, address, string memory, bytes memory, uint256, uint256, string memory, uint256) {
       require(id > 0 && id <= totalInks.current(), "this ink does not exist!");

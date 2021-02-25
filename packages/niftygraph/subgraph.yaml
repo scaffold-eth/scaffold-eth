@@ -25,10 +25,8 @@ dataSources:
           handler: handlenewFile
         - event: newFilePrice(string,uint256)
           handler: handleNewInkPrice
-        - event: newOwnershipRequest(uint256,indexed address,indexed address)
-          handler: handlenewOwnershipRequest
-        - event: newOwnershipAcknowledgement(uint256,indexed address,indexed address)
-          handler: handlenewOwnershipAcknowledgement
+        - event: ownershipChange(string,indexed address,indexed address)
+          handler: handleownershipChange
         
 #      callHandlers:
 #        - function: setPrice(string,uint256)

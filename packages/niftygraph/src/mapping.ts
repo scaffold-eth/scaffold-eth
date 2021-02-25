@@ -12,8 +12,7 @@ import {
   SetPriceCall,
   SetPriceFromSignatureCall,
   newFilePrice,
-  newOwnershipAcknowledgement,
-  newOwnershipRequest,
+  ownershipChange,
 } from "../generated/NiftyInk/NiftyInk";
 import {
   NiftyToken,
@@ -332,18 +331,12 @@ export function handleNewRelayPrice(event: newPrice): void {
   updateMetaData("blockNumber", event.block.number.toString());
 }
 
-export function handlenewOwnershipRequest(event: newOwnershipRequest): void {
-  let file = Ownership.load(event.params.id.toHex());
+export function handleownershipChange(event: ownershipChange): void {
+  let file = File.load(event.params.fileUrl);
 
   if (file == null) {
-    file = new Ownership(event.params.id.toHex());
+    file = File.load(event.params.fileUrl);
   }
-  file.ownerApproval = true;
-  file.save();
-}
-
-export function handlenewOwnershipAcknowledgement(event: newOwnershipAcknowledgement): void {
-  let file = Ownership.load(event.params.id.toHex());
-  file.newOwnerAcknowledgement = true;
+  file.artist = event.params.newArtist.toString();
   file.save();
 }
