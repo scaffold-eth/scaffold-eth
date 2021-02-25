@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
@@ -14,13 +14,17 @@ const Web3HttpProvider = require("web3-providers-http");
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
+  network: "xdai", // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: INFURA_ID
+        infuraId: INFURA_ID,
+        rpc: {
+          100: "https://rpc.xdaichain.com/",
+          // ...
+        },
       }
     },
     /*fortmatic: {
@@ -66,7 +70,7 @@ export default function Account(props) {
 
   gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
 
-  gsnConfig.relayLookupWindowBlocks= 1e5
+  gsnConfig.relayLookupWindowBlocks= 1e18
   gsnConfig.verbose = true
 
 }
@@ -139,13 +143,29 @@ export default function Account(props) {
     pollInjectedProvider()
   },props.pollTime?props.pollTime:1999)
 
-  const loadWeb3Modal = async ()=>{
-    const provider = await web3Modal.connect();
-    if(typeof props.setInjectedProvider == "function"){
-      updateProviders(provider)
-    }
-    pollInjectedProvider()
-  }
+  const loadWeb3Modal = useCallback(async () => {
+
+      const provider = await web3Modal.connect();
+
+      if(typeof props.setInjectedProvider == "function"){
+        updateProviders(provider)
+
+        provider.on("chainChanged", (chainId) => {
+            console.log(`chain changed to ${chainId}! updating providers`)
+            updateProviders(provider)
+        });
+
+        provider.on("accountsChanged", (accounts: string[]) => {
+            console.log(`account changed!`)
+            updateProviders(provider)
+        });
+      }
+
+      pollInjectedProvider()
+
+    }, [props.setInjectedProvider]);
+
+
 
   const logoutOfWeb3Modal = async ()=>{
     await web3Modal.clearCachedProvider();
@@ -190,7 +210,6 @@ export default function Account(props) {
       console.log(web3Modal.cachedProvider)
       loadWeb3Modal()
     }
-
     } catch (e) {
       console.log("Could not get a wallet connection", e);
       return;

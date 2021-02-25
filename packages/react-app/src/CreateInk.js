@@ -48,6 +48,14 @@ export default function CreateInk(props) {
         if (props.drawing && props.drawing !== "") {
           try {
             let decompressed = LZ.decompress(props.drawing)
+            let points = 0
+            for (const line of JSON.parse(decompressed)['lines']){
+              points = points + line.points.length
+            }
+
+            //console.log('Drawing points', points)
+            setDrawingSize(points)
+            //console.log(decompressed)
             drawingCanvas.current.loadSaveData(decompressed, false)
           } catch (e) {
             console.log(e)

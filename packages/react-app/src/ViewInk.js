@@ -251,6 +251,16 @@ export default function ViewInk(props) {
       inkChainInfoDisplay = (
         <div style={{marginTop:32}}>
           <Spin/>
+          {(drawing)&&<Popover
+            content={
+              <Button onClick={()=>{
+                let _savedData = LZ.compress(drawing)
+                props.setDrawing(_savedData)
+                console.log('saved',props.drawing)
+              }}>Set Drawing</Button>
+            }>
+                      <QuestionCircleOutlined />
+                      </Popover>}
         </div>
       )
     } else {
@@ -310,7 +320,7 @@ export default function ViewInk(props) {
           return (
             <List.Item>
               <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider}/>
-              <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item[1]} target="_blank"><LinkOutlined /></a>
+              <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item.id} target="_blank"><LinkOutlined /></a>
               {mainnetTokens[item.id]?openseaButton:(item.network === 'mainnet'?(<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>)}
               {sendInkButton(item.owner, item.id)}
               {relayTokenButton(item.network === 'mainnet', item.owner, item.id)}
