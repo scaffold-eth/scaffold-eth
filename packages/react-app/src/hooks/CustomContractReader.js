@@ -3,14 +3,11 @@ import usePoller from "./Poller";
 
 const DEBUG = false;
 
-export default function useCurrentPlayerReader(
+export default function useContractReader(
   contracts,
   contractName,
   functionName,
   args,
-  isGameOn,
-  playerCount,
-  currentIndex,
   pollTime,
   formatter,
   onChange,
@@ -33,7 +30,7 @@ export default function useCurrentPlayerReader(
 
   usePoller(
     async () => {
-      if (contracts && contracts[contractName] && isGameOn === true && currentIndex < playerCount) {
+      if (contracts && contracts[contractName]) {
         try {
           let newValue;
           if (DEBUG)

@@ -1,10 +1,19 @@
 import { useState, useEffect } from "react";
 import usePoller from "./Poller";
 
-const DEBUG = false;
+const DEBUG = true;
 
-export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange, conditionals) {
-  let adjustPollTime = 1777;
+export default function useContractReader(
+  contracts,
+  contractName,
+  functionName,
+  args,
+  pollTime,
+  formatter,
+  onChange,
+  conditionals
+) {
+  let adjustPollTime = 3000;
   if (pollTime) {
     adjustPollTime = pollTime;
   } else if (!pollTime && typeof args === "number") {
@@ -19,30 +28,50 @@ export default function useContractReader(contracts, contractName, functionName,
     }
   }, [value, onChange]);
 
-  usePoller(async () => {
-    if (contracts && contracts[contractName]) {
-      try {
-        let newValue;
-        if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
-        if (args && args.length > 0) {
-          newValue = await contracts[contractName][functionName](...args);
+  usePoller(
+    async () => {
+      if (contracts && contracts[contractName]) {
+        try {
+          let newValue;
           if (DEBUG)
-            console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
-        } else {
-          newValue = await contracts[contractName][functionName]();
+            console.log(
+              "CALLING ",
+              contractName,
+              functionName,
+              "with args",
+              args
+            );
+          if (args && args.length > 0) {
+            newValue = await contracts[contractName][functionName](...args);
+            if (DEBUG)
+              console.log(
+                "contractName",
+                contractName,
+                "functionName",
+                functionName,
+                "args",
+                args,
+                "RESULT:",
+                newValue
+              );
+          } else {
+            newValue = await contracts[contractName][functionName]();
+          }
+          if (formatter && typeof formatter === "function") {
+            newValue = formatter(newValue);
+          }
+          // console.log("GOT VALUE",newValue)
+          if (newValue !== value) {
+            setValue(newValue);
+          }
+        } catch (e) {
+          console.log(e);
         }
-        if (formatter && typeof formatter === "function") {
-          newValue = formatter(newValue);
-        }
-        // console.log("GOT VALUE",newValue)
-        if (newValue !== value) {
-          setValue(newValue);
-        }
-      } catch (e) {
-        console.log(e);
       }
-    }
-  }, adjustPollTime, contracts && contracts[contractName]);
+    },
+    adjustPollTime,
+    contracts && contracts[contractName]
+  );
 
   return value;
 }

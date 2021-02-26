@@ -9,7 +9,7 @@ export default function usePoller(fn, delay, extraWatch) {
   // Set up the interval.
   // eslint-disable-next-line consistent-return
   useEffect(() => {
-    console.log("tick")
+    console.log("tick");
     function tick() {
       savedCallback.current();
     }
@@ -21,5 +21,5 @@ export default function usePoller(fn, delay, extraWatch) {
   // run at start too
   useEffect(() => {
     fn();
-  },[ extraWatch ]);
+  }, [extraWatch]);
 }

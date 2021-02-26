@@ -1,4 +1,5 @@
 pragma solidity >=0.6.0 <0.7.0;
+pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
@@ -47,6 +48,21 @@ contract YourContract {
       emit NewPlayerJoined(msg.sender, msg.value);
   }
 
+  // isGameOn,
+  // currentReveal,
+  // turnTimeLeft,
+  // stakingTimeLeft,
+  // playerCount,
+  // totalStakingPool,
+  // currentWinner,
+  // currentIndex,
+
+  function frontendDataProvider() public view returns(bool, uint256, uint256, uint256, uint256, uint256, uint256, Winner memory){
+    return(isGameOn, currentReveal, turnTimeLeft(), steakingTimeLeft(), playerCount, totalStakingPool, currentIndex, currentWinner);
+  }
+  function playerCounter() public view returns(uint256, string memory){
+    return (playerCount, "This is a string");
+  }
   function withdrawWinnings() public payable {
     require(balances[msg.sender]>0,"No eth left to withdraw");
     balances[msg.sender] -= (balances[msg.sender]*50)/100;
@@ -77,6 +93,8 @@ contract YourContract {
     currentIndex+=1;
     if(currentIndex<=playerCount){
     emit TurnCompleted(players[currentIndex-1], random);
+    } else {
+      isGameOn = false;
     }
     deadline = now + 30 seconds;
   }

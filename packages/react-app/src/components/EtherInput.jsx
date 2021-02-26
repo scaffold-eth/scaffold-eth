@@ -30,7 +30,8 @@ export default function EtherInput(props) {
           } else {
             setMode("USD");
             if (currentValue) {
-              const usdValue = "" + (parseFloat(currentValue) * props.price).toFixed(2);
+              const usdValue =
+                "" + (parseFloat(currentValue) * props.price).toFixed(2);
               setDisplay(usdValue);
             } else {
               setDisplay(currentValue);
@@ -53,13 +54,11 @@ export default function EtherInput(props) {
     addonAfter = option("ETH 🔀");
   }
 
-  useEffect(
-    ()=>{
-      if(!currentValue){
-        setDisplay("");
-      }
+  useEffect(() => {
+    if (!currentValue) {
+      setDisplay("");
     }
-  ,[ currentValue ])
+  }, [currentValue]);
 
   return (
     <Input
