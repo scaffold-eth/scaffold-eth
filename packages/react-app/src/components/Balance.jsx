@@ -12,7 +12,6 @@ import { usePoller } from "eth-hooks";
 
 */
 
-
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
   const [balance, setBalance] = useState();
@@ -32,7 +31,7 @@ export default function Balance(props) {
     () => {
       getBalance();
     },
-    props.pollTime ? props.pollTime : 1999,
+    props.pollTime ? props.pollTime : 1999
   );
 
   let floatBalance = parseFloat("0.00");
@@ -61,7 +60,7 @@ export default function Balance(props) {
         verticalAlign: "middle",
         fontSize: props.size ? props.size : 24,
         padding: 8,
-        cursor: "pointer",
+        cursor: "pointer"
       }}
       onClick={() => {
         setDollarMode(!dollarMode);

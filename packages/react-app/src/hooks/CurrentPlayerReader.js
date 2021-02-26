@@ -1,19 +1,22 @@
 import { useState, useEffect } from "react";
 import usePoller from "./Poller";
 
-const DEBUG = true;
+const DEBUG = false;
 
-export default function useContractReader(
+export default function useCurrentPlayerReader(
   contracts,
   contractName,
   functionName,
   args,
+  isGameOn,
+  playerCount,
+  currentIndex,
   pollTime,
   formatter,
   onChange,
   conditionals
 ) {
-  let adjustPollTime = 3000;
+  let adjustPollTime = 1777;
   if (pollTime) {
     adjustPollTime = pollTime;
   } else if (!pollTime && typeof args === "number") {
@@ -30,7 +33,7 @@ export default function useContractReader(
 
   usePoller(
     async () => {
-      if (contracts && contracts[contractName]) {
+      if (contracts && contracts[contractName] && isGameOn === true && currentIndex < playerCount) {
         try {
           let newValue;
           if (DEBUG)
