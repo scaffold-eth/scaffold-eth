@@ -9,7 +9,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 const main = async () => {
 
-  const toAddress = "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"
+  const toAddress = "0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B"
   const delayMS = 0
 
   console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
