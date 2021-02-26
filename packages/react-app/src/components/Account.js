@@ -12,6 +12,7 @@ import { RelayProvider } from '@opengsn/gsn';
 const Web3HttpProvider = require("web3-providers-http");
 
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
+const XDAI_RPC = "https://rpc.xdaichain.com/"
 
 const web3Modal = new Web3Modal({
   network: "xdai", // optional
@@ -22,7 +23,7 @@ const web3Modal = new Web3Modal({
       options: {
         infuraId: INFURA_ID,
         rpc: {
-          100: "https://rpc.xdaichain.com/",
+          100: XDAI_RPC,
           // ...
         },
       }
@@ -93,7 +94,7 @@ export default function Account(props) {
         !web3Modal.cachedProvider){
       let burner
       if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
-      burner = new BurnerProvider("https://dai.poa.network")
+      burner = new BurnerProvider(XDAI_RPC)//"https://dai.poa.network")
     } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
       burner = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
     } else {
@@ -222,7 +223,7 @@ export default function Account(props) {
   const createBurnerMetaSigner = async () => {
     let origProvider;
     if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-      origProvider = new Web3HttpProvider("https://dai.poa.network");
+      origProvider = new Web3HttpProvider(XDAI_RPC);//"https://dai.poa.network");
     } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
       origProvider = new ethers.providers.InfuraProvider(
         "kovan",
