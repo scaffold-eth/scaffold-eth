@@ -48,7 +48,7 @@ export default function Account({
   web3Modal,
   loadWeb3Modal,
   logoutOfWeb3Modal,
-  blockExplorer,
+  blockExplorer
 }) {
   const modalButtons = [];
   if (web3Modal) {
@@ -62,7 +62,7 @@ export default function Account({
           onClick={logoutOfWeb3Modal}
         >
           logout
-        </Button>,
+        </Button>
       );
     } else {
       modalButtons.push(
@@ -75,7 +75,7 @@ export default function Account({
           onClick={loadWeb3Modal}
         >
           connect
-        </Button>,
+        </Button>
       );
     }
   }
@@ -84,9 +84,26 @@ export default function Account({
     ""
   ) : (
     <span>
-      {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
-      <Balance address={address} provider={localProvider} price={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+      {address ? (
+        <Address
+          value={address}
+          ensProvider={mainnetProvider}
+          blockExplorer={blockExplorer}
+        />
+      ) : (
+        "Connecting..."
+      )}
+      <Balance
+        address={address}
+        provider={localProvider}
+        dollarMultiplier={price}
+      />
+      <Wallet
+        address={address}
+        provider={userProvider}
+        ensProvider={mainnetProvider}
+        price={price}
+      />
     </span>
   );
 

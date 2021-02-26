@@ -40,6 +40,7 @@
     "eth-hooks": "^1.1.2",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
+    "humanize-duration": "^3.25.1",
     "isomorphic-fetch": "^3.0.0",
     "qrcode.react": "^1.0.0",
     "react": "^16.14.0",
@@ -60,7 +61,6 @@
     "eslint-plugin-babel": "^5.3.1",
     "eslint-plugin-prettier": "^3.1.4",
     "ipfs-http-client": "^45.0.0",
-    "prettier": "^2.0.5",
     "s3-folder-upload": "^2.3.1",
     "surge": "^0.21.5"
   },

@@ -29,7 +29,7 @@ const loadContract = (contractName, signer) => {
   const newContract = new Contract(
     require(`../contracts/${contractName}.address.js`),
     require(`../contracts/${contractName}.abi.js`),
-    signer,
+    signer
   );
   try {
     newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
@@ -48,7 +48,10 @@ export default function useContractLoader(providerOrSigner) {
           // we need to check to see if this providerOrSigner has a signer or not
           let signer;
           let accounts;
-          if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
+          if (
+            providerOrSigner &&
+            typeof providerOrSigner.listAccounts === "function"
+          ) {
             accounts = await providerOrSigner.listAccounts();
           }
 
@@ -60,10 +63,13 @@ export default function useContractLoader(providerOrSigner) {
 
           const contractList = require("../contracts/contracts.js");
 
-          const newContracts = contractList.reduce((accumulator, contractName) => {
-            accumulator[contractName] = loadContract(contractName, signer);
-            return accumulator;
-          }, {});
+          const newContracts = contractList.reduce(
+            (accumulator, contractName) => {
+              accumulator[contractName] = loadContract(contractName, signer);
+              return accumulator;
+            },
+            {}
+          );
           setContracts(newContracts);
         } catch (e) {
           console.log("ERROR LOADING CONTRACTS!!", e);

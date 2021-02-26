@@ -4,7 +4,12 @@ import React, { useState, useEffect, useCallback } from "react";
 import { Row, Col, Divider } from "antd";
 import tryToDisplay from "./utils";
 
-const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh}) => {
+const DisplayVariable = ({
+  contractFunction,
+  functionInfo,
+  refreshRequired,
+  triggerRefresh
+}) => {
   const [variable, setVariable] = useState("");
 
   const refresh = useCallback(async () => {
@@ -30,7 +35,7 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
             textAlign: "right",
             opacity: 0.333,
             paddingRight: 6,
-            fontSize: 24,
+            fontSize: 24
           }}
         >
           {functionInfo.name}

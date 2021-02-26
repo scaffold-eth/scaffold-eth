@@ -86,14 +86,19 @@ export default function Faucet(props) {
               onClick={() => {
                 tx({
                   to: address,
-                  value: parseEther("0.01"),
+                  value: parseEther("0.01")
                 });
                 setAddress("");
               }}
               shape="circle"
               icon={<SendOutlined />}
             />
-            <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} />
+            <Wallet
+              color="#888888"
+              provider={props.localProvider}
+              ensProvider={props.ensProvider}
+              price={props.price}
+            />
           </Tooltip>
         }
       />
