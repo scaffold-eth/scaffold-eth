@@ -80,7 +80,7 @@
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "start": "react-scripts start",
+    "start": "npx gulp less && react-scripts start",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
