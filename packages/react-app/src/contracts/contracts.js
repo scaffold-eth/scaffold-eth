@@ -1,1 +1,1 @@
-module.exports = ["Unlimited","YourContract"];
+module.exports = ["YourContract"];

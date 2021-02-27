@@ -96,7 +96,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.0",
+        version: "0.7.6",
         settings: {
           optimizer: {
             enabled: true,
@@ -107,13 +107,10 @@ module.exports = {
     ],
 
   },
-/*
-  //Only required if you are a tenderly pro and want to push!
 	tenderly: {
-		username: "YOUR-USERNAME",
-		project: "YOUR-PROJECT"
+		username: "YOUR-USERNAME-HERE",
+		project: "YOUR-PROJECT-HERE"
 	}
-*/
 };
 
 const DEBUG = false;
