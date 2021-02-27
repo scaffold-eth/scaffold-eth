@@ -750,9 +750,23 @@ Tenderly is a platform for monitoring, alerting and trouble-shooting smart contr
 
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
-You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
+### Verifying contracts on Tenderly
+scaffold-eth now includes the hardhat-tenderly plugin. When deploying testnets, you can then persist artifacts and verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function:
+```
+await tenderlyVerify(
+  {contractName: "YourContract",
+   contractAddress: yourContract.address
+})
+```
+Either update the default network in `hardhat.config.js` to your network of choice, or run:
+```
+yarn workspace @scaffold-eth/hardhat hardhat --network NETWORK_OF_CHOICE run scripts/deploy.js
+yarn workspace @scaffold-eth/hardhat hardhat run scripts/publish.js
+```
+Once verified, they will then be available to view on Tenderly!
 
 ### Exporting local Transactions
+You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
 
 Installing the Tenderly CLI:
 ```
@@ -769,21 +783,19 @@ You can then take transaction hashes from your local chain and run:
 ```
 tenderly export <transactionHash>
 ```
-Which will upload them to tenderly.co/dashboard
+Which will upload them to tenderly.co/dashboard!
 
-### Verifying contracts on Tenderly
-scaffold-eth now includes hardhat-tenderly - update the tenderly settings in `hardhat.config.js` to match your account:
+If you are on the [Tenderly pro plan](https://tenderly.co/pricing) (they have a free trial!), you will also be able to `push` local contracts too. You will need to download the Tenderly CLI and login (as above), then update the tenderly settings in `hardhat.config.js` to match your account:
 ```
 tenderly: {
-  username: "azf20",
-  project: "scaffold-eth"
+  username: "YOUR-USERNAME",
+  project: "YOUR-PROJECT"
 }
 ```
-When deploying testnets, you can then persist artifacts and verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function:
+You can then execute:
 ```
-await tenderlyVerify(
+await tenderlyPush(
   {contractName: "YourContract",
    contractAddress: yourContract.address
 })
 ```
-Once verified, they will then be available in the Tenderly Dashboard!
