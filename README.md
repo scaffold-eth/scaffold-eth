@@ -746,12 +746,12 @@ yarn run ipfs
 ```
 
 ## tenderly
-Tenderly is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
+[Tenderly](https://tenderly.co) is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
 
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
 ### Verifying contracts on Tenderly
-scaffold-eth now includes the hardhat-tenderly plugin. When deploying to any of the following networks:
+scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the following networks:
 ```
 ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
 ```
@@ -769,27 +769,29 @@ yarn deploy --network NETWORK_OF_CHOICE
 Once verified, they will then be available to view on Tenderly!
 
 ### Exporting local Transactions
-One of Tenderly's best features for builders is the ability to upload local transactions so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
+One of Tenderly's best features for builders is the ability to [upload local transactions](https://dashboard.tenderly.co/tx/main/0xb8f28a9cace2bdf6d10809b477c9c83e81ce1a1b2f75f35ddd19690bbc6612aa/local-transactions) so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
 
-Exporting local transactions can be done using the Tenderly CLI. Installing the Tenderly CLI:
+Exporting local transactions can be done using the [Tenderly CLI](https://github.com/tenderly/tenderly-cli). Installing the Tenderly CLI:
 ```
 brew tap tenderly/tenderly
 brew install tenderly
 ```
 _See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
+
 You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do under `/packages/hardhat` to ensure that local contracts are also uploaded with the local transaction (see more below!)
 ```
-tenderly login
 cd packages/hardhat
+tenderly login
 tenderly export init
 ```
-You can then take transaction hashes from your local chain and run:
+You can then take transaction hashes from your local chain and run the following from the `packages/hardhat` directory:
 ```
 tenderly export <transactionHash>
 ```
 Which will upload them to tenderly.co/dashboard!
 
 **A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We have added a call to `tenderly.persistArtifacts()` as part of the scaffold-eth deploy() script, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
+
 **One gotcha** - Tenderly does not (currently) support yarn workspaces, so any imported solidity contracts need to be local to `packages/hardhat` for your contracts to be exported. You can achieve this by using [`nohoist`](https://classic.yarnpkg.com/blog/2018/02/15/nohoist/) - this has been done for `hardhat` so that we can export `console.sol` - see the top-level `package.json` to see how!
 ```
 "workspaces": {
