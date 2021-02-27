@@ -6,7 +6,7 @@ dataSources:
     name: NiftyInk
     network: xdai
     source:
-      address: '0xE6896ae8E1a3C8173bD97AAc9336F5B89875b3CD'
+      address: '0x0e3A6257d87E7fc94aF832215182b7108B0532d7'
       abi: NiftyInk
       startBlock: 1
     mapping:
@@ -25,9 +25,6 @@ dataSources:
           handler: handlenewFile
         - event: newFilePrice(string,uint256)
           handler: handleNewInkPrice
-        - event: ownershipChange(string,indexed address,indexed address)
-          handler: handleownershipChange
-        
 #      callHandlers:
 #        - function: setPrice(string,uint256)
 #          handler: handleSetPrice
@@ -38,7 +35,7 @@ dataSources:
     name: NiftyToken
     network: xdai
     source:
-      address: '0xdEa3B73F895E09d0fC9213EaaEBEC2DCfbb5A744'
+      address: '0x9544443AD59DcF3b13d2Bb1061161bC254019265'
       abi: NiftyToken
       startBlock: 1
     mapping:
@@ -97,7 +94,7 @@ dataSources:
     name: NiftyMediator
     network: xdai
     source:
-      address: '0x7674A635D2BaD451aE31057fe72B66A42C79aB2E'
+      address: '0x95189a0d9837fb1Dd3bE547a65bD6b61757c9Ccd'
       abi: NiftyMediator
       startBlock: 1
     mapping:

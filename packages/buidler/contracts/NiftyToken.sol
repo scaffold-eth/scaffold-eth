@@ -1,8 +1,10 @@
 pragma solidity >=0.6.0 <0.7.0;
+pragma experimental ABIEncoderV2;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
+import "@openzeppelin/contracts/utils/EnumerableSet.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@opengsn/gsn/contracts/BaseRelayRecipient.sol";
 import "./INiftyRegistry.sol";
@@ -39,12 +41,31 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
 
     mapping (string => EnumerableSet.UintSet) private _inkTokens;
     mapping (uint256 => string) public tokenInk;
-
+   mapping (address => EnumerableSet.UintSet) private _addressTokens;
     mapping (uint256 => uint256) public tokenPrice;
 
     function inkTokenCount(string memory _inkUrl) public view returns(uint256) {
       uint256 _inkTokenCount = _inkTokens[_inkUrl].length();
       return _inkTokenCount;
+    }
+
+    function doesAddressOwnCopyOfThisFile(address _address, string memory inkUrl) public returns (bool){
+      for (uint256 i = 0; i < _addressTokens[_address].length(); i++) {
+          uint256 id = _addressTokens[_address].at(i);
+          if (keccak256(bytes(tokenInk[id])) == keccak256(bytes(inkUrl))) {
+            return true;
+          }
+      }
+      return false;
+    }
+
+    function filesOfThisAddress(address _address) public returns (string[] memory) {
+      uint256 len = _addressTokens[_address].length();
+      string[] memory fileUrls = new string[](len);
+      for (uint256 i = 0; i < len; i++) {
+        fileUrls[i] = tokenInk[_addressTokens[_address].at(i)];
+      }
+      return fileUrls;
     }
 
     function _mintInkToken(address to, string memory inkUrl, string memory jsonUrl) internal returns (uint256) {
@@ -53,7 +74,7 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
       uint256 id = _tokenIds.current();
       _inkTokens[inkUrl].add(id);
       tokenInk[id] = inkUrl;
-
+      _addressTokens[to].add(id);
       _mint(to, id);
       _setTokenURI(id, jsonUrl);
 
@@ -151,12 +172,15 @@ contract NiftyToken is BaseRelayRecipient, ERC721, SignatureChecker {
       (, address payable _artist, , , , , ) = niftyInk().inkInfoByInkUrl(_inkUrl);
 
       _artist.transfer(_artistTake);
+      
       _seller.transfer(_sellerTake);
 
       emit boughtInk(_tokenId, _inkUrl, _buyer, msg.value);
     }
 
     function _transfer(address from, address to, uint256 tokenId) internal override(ERC721) {
+        _addressTokens[from].remove(tokenId);
+        _addressTokens[to].add(tokenId);
         ERC721._transfer(from, to, tokenId);
     }
 
