@@ -751,32 +751,36 @@ Tenderly is a platform for monitoring, alerting and trouble-shooting smart contr
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
 ### Verifying contracts on Tenderly
-scaffold-eth now includes the hardhat-tenderly plugin. When deploying testnets, you can then persist artifacts and verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function:
+scaffold-eth now includes the hardhat-tenderly plugin. When deploying to any of the following networks:
+```
+["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
+```
+You can verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function, which takes your contract name and its deployed address:
 ```
 await tenderlyVerify(
   {contractName: "YourContract",
    contractAddress: yourContract.address
 })
 ```
-Either update the default network in `hardhat.config.js` to your network of choice, or run:
+Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
 ```
-yarn workspace @scaffold-eth/hardhat hardhat --network NETWORK_OF_CHOICE run scripts/deploy.js
-yarn workspace @scaffold-eth/hardhat hardhat run scripts/publish.js
+yarn deploy --network NETWORK_OF_CHOICE
 ```
 Once verified, they will then be available to view on Tenderly!
 
 ### Exporting local Transactions
-You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
+One of Tenderly's best features for builders is the ability to upload local transactions so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
 
-Installing the Tenderly CLI:
+Exporting local transactions can be done using the Tenderly CLI. Installing the Tenderly CLI:
 ```
 brew tap tenderly/tenderly
 brew install tenderly
 ```
 _See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
-You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do in the base directory or under `/packages/hardhat`
+You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do under `/packages/hardhat` to ensure that local contracts are also uploaded with the local transaction (see more below!)
 ```
 tenderly login
+cd packages/hardhat
 tenderly export init
 ```
 You can then take transaction hashes from your local chain and run:
@@ -785,17 +789,16 @@ tenderly export <transactionHash>
 ```
 Which will upload them to tenderly.co/dashboard!
 
-If you are on the [Tenderly pro plan](https://tenderly.co/pricing) (they have a free trial!), you will also be able to `push` local contracts too. You will need to download the Tenderly CLI and login (as above), then update the tenderly settings in `hardhat.config.js` to match your account:
+**A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We have added a call to `tenderly.persistArtifacts()` as part of the scaffold-eth deploy() script, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
+**One gotcha** - Tenderly does not (currently) support yarn workspaces, so any imported solidity contracts need to be local to `packages/hardhat` for your contracts to be exported. You can achieve this by using [`nohoist`](https://classic.yarnpkg.com/blog/2018/02/15/nohoist/) - this has been done for `hardhat` so that we can export `console.sol` - see the top-level `package.json` to see how!
 ```
-tenderly: {
-  username: "YOUR-USERNAME",
-  project: "YOUR-PROJECT"
+"workspaces": {
+  "packages": [
+    "packages/*"
+  ],
+  "nohoist": [
+    "**/hardhat",
+    "**/hardhat/**"
+  ]
 }
-```
-You can then execute:
-```
-await tenderlyPush(
-  {contractName: "YourContract",
-   contractAddress: yourContract.address
-})
 ```
