@@ -10,6 +10,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
+  const unlimited = await deploy("Unlimited") // <-- add in constructor args like line 19 vvvv
 
   //const secondContract = await deploy("SecondContract")
 
@@ -87,6 +88,11 @@ const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) 
     " ⛽",
     chalk.grey(extraGasInfo)
   );
+
+  await tenderly.persistArtifacts({
+    name: contractName,
+    address: deployed.address
+  });
 
   if (!encoded || encoded.length <= 2) return deployed;
   fs.writeFileSync(`artifacts/${contractName}.args`, encoded.slice(2));

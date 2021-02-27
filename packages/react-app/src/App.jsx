@@ -224,6 +224,13 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+            <Contract
+              name="Unlimited"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
 
 
             { /* uncomment for a second contract:
