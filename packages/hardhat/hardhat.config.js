@@ -107,10 +107,13 @@ module.exports = {
     ],
 
   },
+/*
+  //Only required if you are a tenderly pro and want to push!
 	tenderly: {
-		username: "YOUR-USERNAME-HERE",
-		project: "YOUR-PROJECT-HERE"
+		username: "YOUR-USERNAME",
+		project: "YOUR-PROJECT"
 	}
+*/
 };
 
 const DEBUG = false;

@@ -12,6 +12,7 @@ const main = async () => {
   const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
   const unlimited = await deploy("Unlimited") // <-- add in constructor args like line 19 vvvv
 
+  ///const yourContract = await ethers.getContractAt('YourContract', "0x472dD60330d68388Bd9Fc6d8359B1BC934491490") <-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")
 
   // const exampleToken = await deploy("ExampleToken")
@@ -46,13 +47,19 @@ const main = async () => {
   });
   */
 
-  /*
+
   //If you want to verify your contract on tenderly.co (see setup details in the scaffold-eth README!)
+  /*
   await tenderlyVerify(
     {contractName: "YourContract",
      contractAddress: yourContract.address
   })
   */
+  await tenderlyPush(
+    {contractName: "YourContract",
+     contractAddress: yourContract.address
+  })
+
 
 
   console.log(
@@ -147,28 +154,47 @@ const tenderlyVerify = async ({contractName, contractAddress}) => {
 
   let tenderlyNetworks = ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
   let targetNetwork = process.env.HARDHAT_NETWORK || config.defaultNetwork
-  let tenderlyConfig = config.tenderly&&config.tenderly.username!=="YOUR-USERNAME-HERE"&&config.tenderly.project!=="YOUR-PROJECT-HERE"
 
-  if(tenderlyConfig&&tenderlyNetworks.includes(targetNetwork)) {
+  if(tenderlyNetworks.includes(targetNetwork)) {
     console.log(chalk.blue(` 📁 Attempting tenderly verification of ${contractName} on ${targetNetwork}`))
     await tenderly.persistArtifacts({
       name: contractName,
       address: contractAddress
     });
 
-    let verification = await tenderly.verify({
-      name: contractName,
-      address: contractAddress,
-      network: process.env.HARDHAT_NETWORK || config.defaultNetwork
-    })
+    let verification = await tenderly.push({
+        name: contractName,
+        address: contractAddress,
+        network: targetNetwork
+      })
 
     return verification
   } else {
-    if(!tenderlyNetworks.includes(targetNetwork)) {
       console.log(chalk.grey(` 🧐 Contract verification not supported on ${targetNetwork}`))
-    } else if(!tenderlyConfig) {
+  }
+}
+
+// If you want to verify on https://tenderly.co/
+const tenderlyPush = async ({contractName, contractAddress}) => {
+
+  let tenderlyConfig = config.tenderly&&config.tenderly.username!=="YOUR-USERNAME-HERE"&&config.tenderly.project!=="YOUR-PROJECT-HERE"
+  let targetNetwork = process.env.HARDHAT_NETWORK || config.defaultNetwork
+
+  if(tenderlyConfig) {
+    console.log(chalk.blue(` 📁 Attempting tenderly push of ${contractName} on ${targetNetwork}`))
+    await tenderly.persistArtifacts({
+      name: contractName,
+      address: contractAddress
+    });
+
+    let verification = await tenderly.push({
+        name: contractName,
+        address: contractAddress
+      })
+
+    return verification
+  } else {
       console.log(chalk.grey(` Tenderly config has not been updated`))
-    }
   }
 }
 
