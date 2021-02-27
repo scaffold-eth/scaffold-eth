@@ -12,6 +12,7 @@ import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
 import { SendOutlined, RocketOutlined } from "@ant-design/icons";
 import { AddressInput, Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
+import TransferOwnershipForm from "./TransferOwnershipForm"
 import UpgradeInkButton from "./UpgradeInkButton.js";
 
 const mainClient = new ApolloClient({
@@ -92,6 +93,7 @@ export default function Holdings(props) {
       let _newToken = {};
       _newToken[_token.id] = _token;
       setTokens((tokens) => ({ ...tokens, ..._newToken }));
+      console.log(tokens)
     });
     updateHoldings(
       data && data.tokens ? data.tokens : [],
@@ -104,7 +106,7 @@ export default function Holdings(props) {
     let tokenList = _tokens.map((i) => i.id);
     let mainTokenList = _mainTokens.map((i) => i.id);
     setHoldings([...tokenList, ...mainTokenList]);
-    console.log(holdings);
+    console.log(_tokens);
   };
 
   const handleFilter = () => {
@@ -176,11 +178,11 @@ export default function Holdings(props) {
             <b>My Inks: </b>
             {holdings && tokens
               ? holdings.filter(
-                  (id) =>
-                    id in tokens &&
-                    tokens[id].ink.artist.address ===
-                      props.address.toLowerCase()
-                ).length
+                (id) =>
+                  id in tokens &&
+                  tokens[id].ink.artist.address ===
+                  props.address.toLowerCase()
+              ).length
               : 0}
           </p>
         </Col>
@@ -197,84 +199,105 @@ export default function Holdings(props) {
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
           {holdings
             ? holdings
-                .filter((id) => id in tokens)
-                .map((id) => (
-                  <li
-                    key={id}
-                    style={{
-                      display: "inline-block",
-                      verticalAlign: "top",
-                      margin: 4,
-                      padding: 5,
-                      border: "1px solid #e5e5e6",
-                      borderRadius: "10px",
-                      fontWeight: "bold",
-                    }}
+              .filter((id) => id in tokens)
+              .map((id) => (
+                <li
+                  key={id}
+                  style={{
+                    display: "inline-block",
+                    verticalAlign: "top",
+                    margin: 4,
+                    padding: 5,
+                    border: "1px solid #e5e5e6",
+                    borderRadius: "10px",
+                    fontWeight: "bold",
+                  }}
+                >
+                  <Link
+                    to={"ink/" + tokens[id].ink.id}
+                    style={{ color: "black" }}
                   >
-                    <Link
-                      to={"ink/" + tokens[id].ink.id}
-                      style={{ color: "black" }}
+                    <img
+                      src={tokens[id].ink.metadata.image}
+                      alt={tokens[id].ink.metadata.name}
+                      width="150"
+                      style={{
+                        border: "1px solid #e5e5e6",
+                        borderRadius: "10px",
+                      }}
+                    />
+                    <h3
+                      style={{
+                        margin: "10px 0px 5px 0px",
+                        fontWeight: "700",
+                      }}
                     >
-                      <img
-                        src={tokens[id].ink.metadata.image}
-                        alt={tokens[id].ink.metadata.name}
-                        width="150"
-                        style={{
-                          border: "1px solid #e5e5e6",
-                          borderRadius: "10px",
-                        }}
-                      />
-                      <h3
-                        style={{
-                          margin: "10px 0px 5px 0px",
-                          fontWeight: "700",
-                        }}
-                      >
-                        {tokens[id].ink.metadata.name.length > 18
-                          ? tokens[id].ink.metadata.name
-                              .slice(0, 15)
-                              .concat("...")
-                          : tokens[id].ink.metadata.name}
-                      </h3>
+                      {tokens[id].ink.metadata.name.length > 18
+                        ? tokens[id].ink.metadata.name
+                          .slice(0, 15)
+                          .concat("...")
+                        : tokens[id].ink.metadata.name}
+                    </h3>
 
-                      <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
-                        Edition: {tokens[id].ink.count}/{tokens[id].ink.limit}
-                      </p>
-                    </Link>
-                    <Divider style={{ margin: "10px 0" }} />
-                    <Row justify={"space-between"}>
-                      {tokens[id].network === "xDai" ? (
-                        <>
-                          <Popover
-                            content={
-                              <SendInkForm
-                                tokenId={tokens[id].id}
-                                address={props.address}
-                                mainnetProvider={props.mainnetProvider}
-                                injectedProvider={props.injectedProvider}
-                                transactionConfig={props.transactionConfig}
-                              />
-                            }
-                            title="Send Ink"
+                    <p style={{ color: "#5e5e5e", margin: "0", zoom: 0.8 }}>
+                      Edition: {tokens[id].ink.count}/{tokens[id].ink.limit}
+                    </p>
+                  </Link>
+                  <Divider style={{ margin: "10px 0" }} />
+                  <Row justify={"space-between"}>
+                    {tokens[id].network === "xDai" ? (
+                      <>
+                        <Popover
+                          content={
+                            <SendInkForm
+                              tokenId={tokens[id].id}
+                              address={props.address}
+                              mainnetProvider={props.mainnetProvider}
+                              injectedProvider={props.injectedProvider}
+                              transactionConfig={props.transactionConfig}
+                            />
+                          }
+                          title="Send Ink"
+                        >
+                          <Button
+                            size="small"
+                            type="secondary"
+                            style={{ margin: 4, marginBottom: 12 }}
                           >
-                            <Button
-                              size="small"
-                              type="secondary"
-                              style={{ margin: 4, marginBottom: 12 }}
-                            >
-                              <SendOutlined /> Send
+                            <SendOutlined /> Send
                             </Button>
-                          </Popover>
-                          <UpgradeInkButton
-                            tokenId={tokens[id].id}
-                            injectedProvider={props.injectedProvider}
-                            gasPrice={props.gasPrice}
-                            upgradePrice={props.upgradePrice}
-                            transactionConfig={props.transactionConfig}
-                            buttonSize="small"
-                          />
-                        </>
-                      ) : (
+                        </Popover>
+                        <Popover
+                          content={
+                            <TransferOwnershipForm
+                              tokenId={tokens[id].id}
+                              fileUrl={tokens[id].ink.id}
+                              address={props.address}
+                              mainnetProvider={props.mainnetProvider}
+                              injectedProvider={props.injectedProvider}
+                              transactionConfig={props.transactionConfig}
+                            />
+                          }
+                          title="Transfer Ownership"
+                        >
+                          <Button
+                            size="small"
+                            type="secondary"
+                            style={{ margin: 4, marginBottom: 12 }}
+                          >
+                            <SendOutlined /> Transfer Ownership
+                            </Button>
+                        </Popover>
+                        <UpgradeInkButton
+                          tokenId={tokens[id].id}
+                          injectedProvider={props.injectedProvider}
+                          gasPrice={props.gasPrice}
+                          upgradePrice={props.upgradePrice}
+                          transactionConfig={props.transactionConfig}
+                          buttonSize="small"
+                        />
+                      </>
+                    ) : (
                         <Button
                           type="primary"
                           style={{
@@ -286,19 +309,20 @@ export default function Holdings(props) {
                             console.log("item", id);
                             window.open(
                               "https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/" +
-                                id
+                              id
                             );
                           }}
                         >
                           <RocketOutlined /> View on OpenSea
                         </Button>
                       )}
-                    </Row>
-                  </li>
-                ))
+                  </Row>
+                </li>
+              ))
             : null}
         </ul>
       </div>
     </div>
   );
 }
+
