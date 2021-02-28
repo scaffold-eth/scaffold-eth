@@ -4,7 +4,7 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 
 export default function ThemeSwitcher() {
 
-  const [isDarkMode, setIsDarkMode] = useState(window.localStorage.getItem("theme") == "dark" || window.localStorage.getItem("theme") == null ? false : true);
+  const [isDarkMode, setIsDarkMode] = useState(window.localStorage.getItem("theme") == "light" || window.localStorage.getItem("theme") == null ? false : true);
   const { switcher, currentTheme, status, themes } = useThemeSwitcher();
 
   useEffect(() => {
@@ -13,7 +13,7 @@ export default function ThemeSwitcher() {
 
   const toggleTheme = (isChecked) => {
     setIsDarkMode(isChecked);
-    switcher({ theme: isChecked ? themes.light : themes.dark });
+    switcher({ theme: isChecked ? themes.dark : themes.light });
   };
 
   // Avoid theme change flicker
