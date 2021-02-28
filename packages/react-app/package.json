@@ -80,13 +80,14 @@
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "start": "npx gulp less && react-scripts start",
+    "start": "react-scripts start",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
     "ship": "yarn surge",
+    "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js"
   }
 }
