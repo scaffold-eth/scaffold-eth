@@ -337,6 +337,11 @@ export function handleownershipChange(event: ownershipChange): void {
   if (file == null) {
     file = File.load(event.params.fileUrl);
   }
-  file.artist = event.params.newArtist.toString();
+  let artist = Artist.load(event.params.artist.toHexString());
+  artist.id = event.params.newArtist.toHexString();
+  artist.address = event.params.newArtist;
+  file.artist = artist.id;
+  artist.save();
   file.save();
 }
+
