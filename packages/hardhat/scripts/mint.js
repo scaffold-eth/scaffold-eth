@@ -7,10 +7,12 @@ const R = require("ramda");
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
+const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
+
 const main = async () => {
 
+  // ADDRESS TO MINT TO:
   const toAddress = "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"
-  const delayMS = 0
 
   console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
 
@@ -30,6 +32,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 42
        }
     ]
   }
@@ -56,6 +62,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 38
        }
     ]
   }
@@ -83,6 +93,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 22
        }
     ]
   }
@@ -91,9 +105,6 @@ const main = async () => {
 
   console.log("Minting rhino with IPFS hash ("+uploadedrhino.path+")")
   await yourCollectible.mintItem(toAddress,uploadedrhino.path,{gasLimit:400000})
-
-
-
 
 
 
@@ -113,6 +124,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 15
        }
     ]
   }
@@ -140,6 +155,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 6
        }
     ]
   }
@@ -166,6 +185,10 @@ const main = async () => {
        {
          "trait_type": "Eyes",
          "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 99
        }
     ]
   }
@@ -175,15 +198,23 @@ const main = async () => {
   console.log("Minting godzilla with IPFS hash ("+uploadedgodzilla.path+")")
   await yourCollectible.mintItem(toAddress,uploadedgodzilla.path,{gasLimit:400000})
 
+
+
+
+  await sleep(delayMS)
+
+  console.log("Transferring Ownership of YourCollectible to "+toAddress+"...")
+
+  await yourCollectible.transferOwnership(toAddress)
+
+  await sleep(delayMS)
+
   /*
 
 
   console.log("Minting zebra...")
   await yourCollectible.mintItem("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1","zebra.jpg")
 
-
-  console.log("Giving up Ownership...")
-  await yourCollectible.transferOwnership("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1")
   */
 
 

@@ -62,6 +62,8 @@ const STARTING_JSON = {
   ]
 }
 
+//helper function to "Get" from IPFS
+// you usually go content.toString() after this...
 const getFromIPFS = async hashToGet => {
   for await (const file of ipfs.get(hashToGet)) {
     console.log(file.path)
@@ -155,6 +157,11 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:",transferEvents)
 
+
+
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
   const yourBalance = balance && balance.toNumber && balance.toNumber()
   const [ yourCollectibles, setYourCollectibles ] = useState()
   useEffect(()=>{
@@ -183,7 +190,7 @@ function App(props) {
       }
       setYourCollectibles(collectibleUpdate)
     }
-    if(yourBalance>0) updateYourCollectibles()
+    updateYourCollectibles()
   },[ address, yourBalance ])
 
   /*
@@ -303,8 +310,12 @@ function App(props) {
                   const id = item.id.toNumber()
                   return (
                     <List.Item key={id+"_"+item.uri+"_"+item.owner}>
-                      <span style={{fontSize:16, marginRight:8}}>#{id}</span>
-                      <Card title={item.name}>
+
+                      <Card title={(
+                        <div>
+                          <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
+                        </div>
+                      )}>
                       <div><img src={item.image} style={{maxWidth:150}} /></div>
                       <div>{item.description}</div>
                       </Card>
