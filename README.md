@@ -745,6 +745,8 @@ OR
 yarn run ipfs
 ```
 
+---
+
 ## tenderly
 [Tenderly](https://tenderly.co) is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
 
@@ -827,8 +829,10 @@ const returned = await tx(contractFunction(...args, overrides));
 }
 ```
 
+---
+
 ## Etherscan
-Hardhat has a truly wonderful `hardhat-etherscan` plugin that takes care of contract verification after deployment. You need to add the following to your hardhat config imports:
+Hardhat has a truly wonderful [`hardhat-etherscan` plugin](https://www.npmjs.com/package/@nomiclabs/hardhat-etherscan) that takes care of contract verification after deployment. You need to add the following to your `hardhat.config.js` imports:
 ```
 require("@nomiclabs/hardhat-etherscan");
 ```
