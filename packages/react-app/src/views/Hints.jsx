@@ -1,11 +1,18 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import React from "react";
+import React, { useState } from "react";
 import { formatEther } from "@ethersproject/units";
 import { Address, AddressInput } from "../components";
+import { Select } from "antd";
+import { useTokenList } from "../hooks";
 
+const { Option } = Select;
 
 export default function Hints({yourLocalBalance, mainnetProvider, price, address }) {
+
+  // Get a list of tokens from a tokenlist -> see tokenlists.org!
+  const [selectedToken, setSelectedToken] = useState("Pick a token!");
+  let listOfTokens = useTokenList("https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json")
 
   return (
     <div>
@@ -68,6 +75,22 @@ export default function Hints({yourLocalBalance, mainnetProvider, price, address
           useBalance()
         </span>{" "}
         hook keeps track of your balance: <b>{formatEther(yourLocalBalance?yourLocalBalance:0)}</b>
+      </div>
+
+      <div style={{margin:8}}>
+      <div><b>useTokenList()</b> can get you an array of tokens from <a href="https://tokenlists.org" target="_blank">tokenlists.org!</a></div>
+      <Select showSearch value={selectedToken}
+        onChange={(value) => {
+          console.log(`selected ${value}`)
+          setSelectedToken(value)
+          }}
+        filterOption={(input, option) =>
+          option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
+        optionFilterProp="children">
+        {listOfTokens.map(token => (
+        <Option key={token.symbol} value={token.symbol}>{token.symbol}</Option>
+        ))}
+        </Select>
       </div>
 
       <div style={{ marginTop: 32 }}>
