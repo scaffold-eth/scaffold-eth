@@ -9,9 +9,9 @@
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
 
-git checkout simple-nft-example
-
 cd simple-nft-example
+
+git checkout simple-nft-example
 ```
 
 ```bash
