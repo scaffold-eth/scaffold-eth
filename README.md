@@ -67,6 +67,10 @@ yarn mint
 
 👛 Open an *incognito* window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
+⛽️ Grab some gas for each account using the faucet:
+
+![image](https://user-images.githubusercontent.com/2653167/109543971-35b10f00-7a84-11eb-832e-36d6b66afbe7.png)
+
 🎟 Send an NFT to the *incognito* window address:
 
 ![image](https://user-images.githubusercontent.com/2653167/109536955-925bfc00-7a7b-11eb-855d-bf1523ac524d.png)
