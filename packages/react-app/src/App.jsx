@@ -164,6 +164,7 @@ function App(props) {
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber()
   const [ yourCollectibles, setYourCollectibles ] = useState()
+
   useEffect(()=>{
     const updateYourCollectibles = async () => {
       let collectibleUpdate = []
