@@ -8,7 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, Swap } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -207,9 +207,6 @@ function App(props) {
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
           </Menu.Item>
-          <Menu.Item key="/swap">
-            <Link onClick={()=>{setRoute("/swap")}} to="/swap">Swap</Link>
-          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -290,13 +287,6 @@ function App(props) {
             writeContracts={writeContracts}
             mainnetProvider={mainnetProvider}
             />
-          </Route>
-          <Route exact path="/swap">
-            <Row justify="center">
-            <Swap
-              selectedProvider={userProvider}
-              />
-            </Row>
           </Route>
         </Switch>
       </BrowserRouter>

@@ -826,3 +826,25 @@ const returned = await tx(contractFunction(...args, overrides));
   ]
 }
 ```
+
+## Etherscan
+Hardhat has a truly wonderful `hardhat-etherscan` plugin that takes care of contract verification after deployment. You need to add the following to your hardhat config imports:
+```
+require("@nomiclabs/hardhat-etherscan");
+```
+Then add your etherscan API key to the module.exports:
+```
+etherscan: {
+  // Your API key for Etherscan
+  // Obtain one at https://etherscan.io/
+  apiKey: "YOUR-API-KEY-HERE"
+}
+```
+Verifying is simple, assuming you are verifying a contract that you have just deployed from your hardhat setup - you just need to run the verify script, passing constructor arguments as an array if necessary (there is an example commented out in the `deploy.js`):
+```
+await run("verify:verify", {
+  address: yourContract.address,
+  // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
+})
+```
+You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!

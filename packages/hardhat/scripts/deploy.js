@@ -1,7 +1,7 @@
 /* eslint no-use-before-define: "warn" */
 const fs = require("fs");
 const chalk = require("chalk");
-const { config, ethers, tenderly } = require("hardhat");
+const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
@@ -17,8 +17,6 @@ const main = async () => {
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
-
-
 
   /*
   //If you want to send value to an address from the deployer
@@ -52,6 +50,15 @@ const main = async () => {
   await tenderlyVerify(
     {contractName: "YourContract",
      contractAddress: yourContract.address
+  })
+  */
+
+  // If you want to verify your contract on etherscan
+  /*
+  console.log(chalk.blue('verifying on etherscan'))
+  await run("verify:verify", {
+    address: yourContract.address,
+    // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
   })
   */
 
