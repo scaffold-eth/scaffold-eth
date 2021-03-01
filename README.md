@@ -104,7 +104,7 @@ yarn mint
 ![image](https://user-images.githubusercontent.com/2653167/109537873-a2c0a680-7a7c-11eb-95de-729dbf3399a3.png)
 
 
-👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](instantwallet.io) to fund your account via QR code)
+👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](https://instantwallet.io) to fund your account via QR code)
 
 ![image](https://user-images.githubusercontent.com/2653167/109537339-ff6f9180-7a7b-11eb-85b0-46cd72311d12.png)
 
