@@ -14,6 +14,7 @@ packages/hardhat/cache
 docker/**/data
 
 packages/subgraph/config/config.json
+tenderly.yaml
 
 # dependencies
 /node_modules
