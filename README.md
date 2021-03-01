@@ -46,15 +46,15 @@ yarn deploy
 
 ---
 
-> ✏️ Edit the mint script `mint.js` in `packages/hardhat/scripts` and update the `toAddress` to your frontend address (wallet address in the top right).
+> ✏️ Edit the mint script `mint.js` in `packages/hardhat/scripts` and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
 
 ![image](https://user-images.githubusercontent.com/2653167/109536489-03e77a80-7a7b-11eb-8464-4876dc22547c.png)
 
 
-> in a fourth terminal window run the mint script:
+> in a terminal window run the **mint** script:
 
 ```bash
-cd simple-nft-example
+
 yarn mint
 
 ```
