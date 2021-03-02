@@ -744,3 +744,111 @@ OR
 
 yarn run ipfs
 ```
+
+---
+
+## tenderly
+[Tenderly](https://tenderly.co) is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
+
+Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
+
+### Verifying contracts on Tenderly
+scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the following networks:
+```
+["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
+```
+You can verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function, which takes your contract name and its deployed address:
+```
+await tenderlyVerify(
+  {contractName: "YourContract",
+   contractAddress: yourContract.address
+})
+```
+Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
+```
+yarn deploy --network NETWORK_OF_CHOICE
+```
+Once verified, they will then be available to view on Tenderly!
+
+### Exporting local Transactions
+One of Tenderly's best features for builders is the ability to [upload local transactions](https://dashboard.tenderly.co/tx/main/0xb8f28a9cace2bdf6d10809b477c9c83e81ce1a1b2f75f35ddd19690bbc6612aa/local-transactions) so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
+
+Exporting local transactions can be done using the [Tenderly CLI](https://github.com/tenderly/tenderly-cli). Installing the Tenderly CLI:
+```
+brew tap tenderly/tenderly
+brew install tenderly
+```
+_See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
+
+You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do under `/packages/hardhat` to ensure that local contracts are also uploaded with the local transaction (see more below!)
+```
+cd packages/hardhat
+tenderly login
+tenderly export init
+```
+You can then take transaction hashes from your local chain and run the following from the `packages/hardhat` directory:
+```
+tenderly export <transactionHash>
+```
+Which will upload them to tenderly.co/dashboard!
+
+Tenderly also allows users to debug smart contracts deployed to a local fork of some network (see `yarn fork`). To let Tenderly know that we are dealing with a fork, run the following command:
+
+```
+tenderly export init
+```
+
+CLI will ask you for your network's name and whether you are forking a public network. After choosing the right fork, your exporting will look something like this:
+
+```
+tenderly export <transactionHash> --export-network <networkName>
+```
+
+Note that `tenderly.yaml` file stores information about all networks that you initialized for exporting transactions. There can be multiple of them in a single file. You only need the `--export-network` if you have more than one network in your tenderly.yaml config!
+
+**A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We have added a call to `tenderly.persistArtifacts()` as part of the scaffold-eth deploy() script, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
+
+Another pitfall when dealing with a local network (fork or not) is that you will not see the transaction hash if it fails. This happens because the hardhat detects an error while `eth_estimateGas` is executed. To prevent such behaviour, you can skip this estimation by passing a `gasLimit` override when making a call - an example of this is demonstrated in the `FunctionForm.jsx` file of the Contract component:
+```
+let overrides = {}
+// Uncomment the next line if you want to skip the gas estimation for each transaction
+// overrides.gasLimit = hexlify(1200000);
+const returned = await tx(contractFunction(...args, overrides));
+```
+
+**One gotcha** - Tenderly does not (currently) support yarn workspaces, so any imported solidity contracts need to be local to `packages/hardhat` for your contracts to be exported. You can achieve this by using [`nohoist`](https://classic.yarnpkg.com/blog/2018/02/15/nohoist/) - this has been done for `hardhat` so that we can export `console.sol` - see the top-level `package.json` to see how!
+```
+"workspaces": {
+  "packages": [
+    "packages/*"
+  ],
+  "nohoist": [
+    "**/hardhat",
+    "**/hardhat/**"
+  ]
+}
+```
+
+---
+
+## Etherscan
+Hardhat has a truly wonderful [`hardhat-etherscan` plugin](https://www.npmjs.com/package/@nomiclabs/hardhat-etherscan) that takes care of contract verification after deployment. You need to add the following to your `hardhat.config.js` imports:
+```
+require("@nomiclabs/hardhat-etherscan");
+```
+Then add your etherscan API key to the module.exports:
+```
+etherscan: {
+  // Your API key for Etherscan
+  // Obtain one at https://etherscan.io/
+  apiKey: "YOUR-API-KEY-HERE"
+}
+```
+Verifying is simple, assuming you are verifying a contract that you have just deployed from your hardhat setup - you just need to run the verify script, passing constructor arguments as an array if necessary (there is an example commented out in the `deploy.js`):
+```
+await run("verify:verify", {
+  address: yourContract.address,
+  // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
+})
+```
+You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!
