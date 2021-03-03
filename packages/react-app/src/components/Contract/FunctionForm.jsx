@@ -3,6 +3,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import React, { useState } from "react";
 import { BigNumber } from "@ethersproject/bignumber";
+import { hexlify } from "@ethersproject/bytes";
 import { Row, Col, Input, Divider, Tooltip, Button } from "antd";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
@@ -202,6 +203,9 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 if (txValue) {
                   overrides.value = txValue; // ethers.utils.parseEther()
                 }
+                // Uncomment this if you want to skip the gas estimation for each transaction
+                // overrides.gasLimit = hexlify(1200000);
+
 
                 // console.log("Running with extras",extras)
                 const returned = await tx(contractFunction(...args, overrides));
