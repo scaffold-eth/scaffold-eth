@@ -112,25 +112,23 @@ dataSources:
         - event: newPrice(uint256)
           handler: handleNewRelayPrice
       file: ./src/mapping.ts
-#  - kind: ethereum/contract
-#    name: Liker
-#    network: xdai
-#    source:
-#      address: "0xBD0621dcb64e1EEd503f709422b019B2fA197aF6"
-#      abi: Liker
-#      startBlock: 11296637
-#    mapping:
-#      kind: ethereum/events
-#      apiVersion: 0.0.4
-#      language: wasm/assemblyscript
-#      entities:
-#        - InkNumberLookUp
-#        - Like
-#        - Ink
-#      abis:
-#        - name: Liker
-#          file: ./abis/Liker.json
-#      eventHandlers:
-#        - event: liked(uint256,address,uint256,uint256,address)
-#          handler: handleLikedInk
-#      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Liker
+    network: xdai
+    source:
+      address: "0xBD0621dcb64e1EEd503f709422b019B2fA197aF6"
+      abi: Liker
+      startBlock: 11296637
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - File
+      abis:
+        - name: Liker
+          file: ./abis/Liker.json
+      eventHandlers:
+        - event: liked(uint256,address,uint256,uint256,address,string)
+          handler: handleliked
+      file: ./src/mapping.ts

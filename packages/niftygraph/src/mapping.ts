@@ -5,6 +5,7 @@ import {
   json,
   JSONValueKind,
   log,
+  Bytes,
 } from "@graphprotocol/graph-ts";
 import {
   NiftyInk,
@@ -27,6 +28,10 @@ import {
   newPrice,
   tokenSentViaBridge,
 } from "../generated/NiftyMediator/NiftyMediator";
+
+import {
+liked
+} from "../generated/Liker/Liker";
 import {
   File,
   Artist,
@@ -113,6 +118,7 @@ export function handlenewFile(event: newFile): void {
 
   ink.inkNumber = event.params.id;
   ink.artist = artist.id;
+  ink.likers = new Array<Bytes>();
   ink.limit = event.params.limit;
   ink.jsonUrl = event.params.jsonUrl;
   ink.createdAt = event.block.timestamp;
@@ -343,5 +349,13 @@ export function handleownershipChange(event: ownershipChange): void {
   file.artist = artist.id;
   artist.save();
   file.save();
+}
+
+export function handleliked(event: liked): void {
+let file = File.load(event.params.fileUrl);
+let likers = file.likers;
+likers.push(event.params.liker);
+file.likers = likers;
+file.save();
 }
 
