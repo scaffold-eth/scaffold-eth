@@ -4,27 +4,27 @@
 
 ---
 
-* <B> [ 💻 Installation ]() </B>
-* <B> [ ‍📽 Demo ]() </B>
-* <B> [ 🏃‍♀️ Getting Started ]() </B>
-* <B> [ 🔭 Learning Solidity ]() </B>
-* <B> [ 🔏 Providers ]() </B>
-* <B> [ ⛑ Helpers ]() </B>
-* <B> [ 🖇 Hooks ]() </B>
-* <B> [ 📦 Components ]() </B>
-* <B> [ 🎚 Extras ]() </B>
-* <B> [ 📡 Deploy ]() </B>
-* <B> [ 👩‍💻 Examples & Tutorials ]() </B>
-* <B> [ 🚩 Challenges ]() </B>
-* <B> [ 📺 UI Library ]() </B>
-* <B> [ 🛰 Using The Graph ]() </B>
-* <B> [ 🔬 Using Tenderly ]() </B>
-* <B> [ 🔶 Using Infura ]() </B>
-* <B> [ 🌐 Etherscan ]() </B>
-* <B> [ 🛳 Ship it! ]() </B>
-* <B> [ 📠 Legacy Content ]() </B>
-* <B> [ 🔨 Built with 🏗 scaffold-eth ]() </B>
-* <B> [ 💬 Support Chat ]() </B>
+* <B> [ 💻 Installation ](https://github.com/austintgriffith/scaffold-eth#-installation) </B>
+* <B> [ ‍📽 Demo ](https://github.com/austintgriffith/scaffold-eth#-demo) </B>
+* <B> [ 🏃‍♀️ Getting Started ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-getting-started) </B>
+* <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B>
+* <B> [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) </B>
+* <B> [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) </B>
+* <B> [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) </B>
+* <B> [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components) </B>
+* <B> [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras) </B>
+* <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B>
+* <B> [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials) </B>
+* <B> [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges) </B>
+* <B> [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) </B>
+* <B> [ 🔶 Using Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) </B>
+* <B> [ 🛰 Using The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) </B>
+* <B> [ 🔬 Using Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly) </B>
+* <B> [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) </B>
+* <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
+* <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B>
+* <B> [ 🔨 Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth) </B>
+* <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>
 
 ---
 
