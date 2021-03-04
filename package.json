@@ -46,7 +46,7 @@
     "graph-deploy-local": "yarn workspace @scaffold-eth/subgraph graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 scaffold-eth/your-contract",
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
-    "mint": "yarn workspace @scaffold-eth/hardhat mint"
+    "upload": "yarn workspace @scaffold-eth/hardhat upload"
   },
   "workspaces": {
     "packages": [

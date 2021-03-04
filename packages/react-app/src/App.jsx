@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import {  LinkOutlined } from "@ant-design/icons"
 import "./App.css";
 import { Row, Col, Button, Menu, Alert, Input, List, Card } from "antd";
 import Web3Modal from "web3modal";
@@ -11,14 +12,21 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, AddressInput } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
+import { utils } from "ethers";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import StackGrid from "react-stack-grid";
 import ReactJson from 'react-json-view'
+import assets from './assets.js'
+
 const { BufferList } = require('bl')
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+
+console.log("📦 Assets: ",assets)
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -269,17 +277,78 @@ function App(props) {
 
   const [ transferToAddresses, setTransferToAddresses ] = useState({})
 
+  const [ loadedAssets, setLoadedAssets ] = useState()
+  useEffect(()=>{
+    const updateYourCollectibles = async () => {
+      let assetUpdate = []
+      for(let a in assets){
+        try{
+          //console.log("inspecting asset",a,assets[a],utils.id(a))
+          const forSale = await readContracts.YourCollectible.forSale(utils.id(a))
+          //console.log("forSale",forSale)
+          assetUpdate.push({id:a,...assets[a],forSale:forSale})
+        }catch(e){console.log(e)}
+      }
+      setLoadedAssets(assetUpdate)
+    }
+    if(readContracts && readContracts.YourCollectible) updateYourCollectibles()
+  }, [ assets, readContracts, transferEvents ]);
+
+  let galleryList = []
+  for(let a in loadedAssets){
+    console.log("loadedAssets",a,loadedAssets[a])
+
+    let cardActions = []
+    if(loadedAssets[a].forSale){
+      cardActions.push(
+        <div>
+          <Button onClick={()=>{
+            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id) )
+          }}>
+            Mint
+          </Button>
+        </div>
+      )
+    }
+
+    /*cardActions.push(
+      <div>
+        2
+      </div>
+    )*/
+
+    galleryList.push(
+      <Card style={{width:200}} key={loadedAssets[a].name}
+        actions={cardActions}
+        title={(
+          <div>
+            {loadedAssets[a].name} <a style={{cursor:"pointer",opacity:0.33}} href={loadedAssets[a].external_url} target="_blank"><LinkOutlined /></a>
+          </div>
+        )}
+      >
+        <img style={{maxWidth:130}} src={loadedAssets[a].image}/>
+        <div style={{opacity:0.77}}>
+          {loadedAssets[a].description}
+        </div>
+      </Card>
+    )
+  }
+
   return (
     <div className="App">
 
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
+
       <BrowserRouter>
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourCollectibles</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Gallery</Link>
+          </Menu.Item>
+          <Menu.Item key="/yourcollectibles">
+            <Link onClick={()=>{setRoute("/yourcollectibles")}} to="/yourcollectibles">YourCollectibles</Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
             <Link onClick={()=>{setRoute("/transfers")}} to="/transfers">Transfers</Link>
@@ -303,6 +372,19 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
+            <div style={{ maxWidth:820, margin: "auto", marginTop:32, paddingBottom:32 }}>
+              <StackGrid
+                columnWidth={200}
+                gutterWidth={16}
+                gutterHeight={16}
+              >
+                {galleryList}
+              </StackGrid>
+            </div>
+
+          </Route>
+
+          <Route path="/yourcollectibles">
             <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
               <List
                 bordered
@@ -311,14 +393,13 @@ function App(props) {
                   const id = item.id.toNumber()
                   return (
                     <List.Item key={id+"_"+item.uri+"_"+item.owner}>
-
                       <Card title={(
                         <div>
                           <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
                         </div>
                       )}>
-                      <div><img src={item.image} style={{maxWidth:150}} /></div>
-                      <div>{item.description}</div>
+                        <div><img src={item.image} style={{maxWidth:150}} /></div>
+                        <div>{item.description}</div>
                       </Card>
 
                       <div>
@@ -350,7 +431,6 @@ function App(props) {
                 }}
               />
             </div>
-
           </Route>
 
           <Route path="/transfers">

@@ -35,6 +35,6 @@
     "send": "hardhat send",
     "generate": "hardhat generate",
     "account": "hardhat account",
-    "mint": "hardhat run scripts/mint.js"
+    "upload": "hardhat run scripts/upload.js"
   }
 }
