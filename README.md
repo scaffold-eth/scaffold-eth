@@ -130,7 +130,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 ---
 
-================================================= [⏫ Back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
 
@@ -395,6 +395,10 @@ yarn deploy
 
 ---
 
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+
 ## 📺 UI Library
 
 🐜 [Ant.design](https://ant.design/components/button/) is the UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
@@ -462,6 +466,11 @@ yarn ipfs
 🚀 Good luck!
 
 ---
+
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+
 
 # 🧹 Upkeep
 
@@ -592,6 +601,10 @@ You only have to pass the contract because the plugin figures out which of the l
 
 ---
 
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+
 ## 🔨 Built with 🏗 scaffold-eth:
 
 [<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
@@ -646,6 +659,9 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 ---
 
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
 
 ## 📠 Legacy Content
 
@@ -708,5 +724,9 @@ Learn how to deploy your smart contract to a production blockchain. Then deploy 
 ## 💬 Support Chat
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
+
+---
+
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
