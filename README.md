@@ -655,11 +655,6 @@ Learn how to [quickly iterate on a smart contract app](https://github.com/austin
 [<h5>🧫 Building on Ethereum in 2020 (research for this repo)</h5>  ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
 
 
-###### 🏃‍♂️ Speedrun (🎥 7 min):
-
-[![speedrun](https://user-images.githubusercontent.com/2653167/80823035-13ffa680-8b99-11ea-880e-ae37b752ca59.png)](https://youtu.be/eUAc2FtC0_s)
-
-
 [![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://www.youtube.com/watch?v=ShJZf5lsXiM&feature=youtu.be&t=19)
 
 ---
