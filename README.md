@@ -15,15 +15,14 @@
 
 
 
+|   <B> [🧹 Upkeep ](https://github.com/austintgriffith/scaffold-eth#-upkeep) </B>  | | | |
+| --- | --- | --- | --- |
+| [ 🔶 Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) | [ 🛰 The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) | [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)  | [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) |
+
 | <B> [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth) </B>  | <B> [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials) </B> | <B> [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges) </B>|
 | --- | --- | --- |
 
 
-
-|   <B> [🧹 Upkeep ](https://github.com/austintgriffith/scaffold-eth#-upkeep) </B>  | |
-| --- | --- |
-| [ 🔶 Using Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) | [ 🛰 Using The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) |
-| [ 🔬 Using Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)  | [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) |
 
 |   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> | <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>|
 | --- | --- |
@@ -461,61 +460,6 @@ yarn ipfs
 
 ---
 
-
-## 🔨 Built with 🏗 scaffold-eth:
-
-[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
-
-Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
-
-🏃‍♂️ SpeedRun 📹 (TODO)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
-
-
-[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
-
-An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
-
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
-
-
-[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
-
-Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
-
-[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
-
-
-^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
-
----
-
-## 📡 Examples and Tutorials
-
-(todo: insert all the cool active branches)
-
-
-| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
-| --- |
-| [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
-
-
-^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
-
----
-
-## 🚩 Challenges
-
-1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
-
-2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
-
----
-
 # 🧹 Upkeep
 
 ---
@@ -644,6 +588,61 @@ await run("verify:verify", {
 You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!
 
 ---
+
+## 🔨 Built with 🏗 scaffold-eth:
+
+[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
+
+Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
+
+🏃‍♂️ SpeedRun 📹 (TODO)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
+
+
+[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
+
+An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
+
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
+
+
+[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+
+Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
+
+[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
+
+
+^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
+
+---
+
+## 📡 Examples and Tutorials
+
+(todo: insert all the cool active branches)
+
+
+| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
+| --- |
+| [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
+
+
+^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
+
+---
+
+## 🚩 Challenges
+
+1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
+
+2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
+
+---
+
 
 ## 📠 Legacy Content
 
