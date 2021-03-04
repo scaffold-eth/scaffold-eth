@@ -4,8 +4,8 @@
 
 ---
 
-| <B> [ 💻 Installation ](https://github.com/austintgriffith/scaffold-eth#-installation) </B> | <B> [ 🏃‍♀️ Getting Started ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-getting-started) </B> |
-| --- | --- |
+| <B> [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start) </B> |
+| --- |
 
 
 | <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B> | | | |
@@ -33,8 +33,7 @@
 
 ---
 
-
-## 💻 Installation
+## 🏃‍♀️ Quick Start
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
@@ -72,10 +71,6 @@ cd scaffold-eth
 yarn deploy
 
 ```
-
----
-
-## 🏃‍♀️ Getting Started
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
