@@ -4,29 +4,38 @@
 
 ---
 
-* <B> [ 💻 Installation ](https://github.com/austintgriffith/scaffold-eth#-installation) </B>
-* <B> [ ‍📽 Demo ](https://github.com/austintgriffith/scaffold-eth#-demo) </B>
-* <B> [ 🏃‍♀️ Getting Started ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-getting-started) </B>
-* <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B>
-* <B> [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) </B>
-* <B> [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) </B>
-* <B> [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) </B>
-* <B> [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components) </B>
-* <B> [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras) </B>
-* <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B>
-* <B> [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials) </B>
-* <B> [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges) </B>
-* <B> [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) </B>
-* <B> [ 🔶 Using Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) </B>
-* <B> [ 🛰 Using The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) </B>
-* <B> [ 🔬 Using Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly) </B>
-* <B> [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) </B>
-* <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
-* <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B>
-* <B> [ 🔨 Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth) </B>
-* <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>
+| <B> [ 💻 Installation ](https://github.com/austintgriffith/scaffold-eth#-installation) </B> | <B> [ 🏃‍♀️ Getting Started ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-getting-started) </B> |
+| --- | --- |
+
+
+
+| <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B> | | | |
+| --- | --- | --- | --- |
+| [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) | [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) | [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) | [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)  |
+|  [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) |  [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)  | <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B> | <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B> |
+
+
+
+| <B> [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth) </B>  | <B> [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials) </B> | <B> [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges) </B>|
+| --- | --- | --- |
+
+
+
+|   <B> [🧹 Upkeep ](https://github.com/austintgriffith/scaffold-eth#-upkeep) </B>  | |
+| --- | --- |
+| [ 🔶 Using Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) | [ 🛰 Using The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) |
+| [ 🔬 Using Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)  | [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) |
+
+|   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> | <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>|
+| --- | --- |
+
 
 ---
+
+[![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/33gnKe7ttCc?t=477)
+
+---
+
 
 ## 💻 Installation
 
@@ -69,13 +78,6 @@ yarn deploy
 
 ---
 
-## 📽 Demo
-
-[![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://www.youtube.com/watch?t=312&v=33gnKe7ttCc)
-
-
----
-
 ## 🏃‍♀️ Getting Started
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
@@ -86,10 +88,11 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+🏗 scaffold-eth is a hackthon stack for quick product prototyping on Ethereum.
 
-🏗 scaffold-eth is a **hackthon** stack for quick product prototyping on Ethereum.
+👩‍🔬 This scaffolding leverages state of the art tooling from the ecosystem.
 
-🦸‍♀️ Its super power is letting you make small changes to an existing decentralized application with tons of useful components you can pull of the shelf.
+🧪 It is a free standing dapp so you can learn by making small changes.
 
 
 > *After installing*, your dev environment should look like this:
@@ -125,6 +128,9 @@ yarn deploy
 Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn chain` terminal:
 
 ![image](https://user-images.githubusercontent.com/2653167/93687934-2f534b80-fa7f-11ea-84b2-c0ba99533dc2.png)
+
+> ⚗️ Spend some time tinkering with `YourContract.sol`
+
 
 ---
 
@@ -205,6 +211,8 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 ---
 
 ## 🔏 Providers:
+
+Providers are your connections to different blockchains.
 
 The frontend has three different providers that provide different levels of access to different chains:
 
@@ -419,6 +427,31 @@ const price = useExchangePrice(mainnetProvider);
 yarn deploy
 ```
 
+---
+
+## 🛳 Ship it!
+
+You can deploy your app with:
+
+```bash
+
+# packge up the static site:
+
+yarn build
+
+# ship it!
+
+yarn surge
+
+OR
+
+yarn s3
+
+OR
+
+yarn ipfs
+```
+
 🚀 Good luck!
 
 ---
@@ -427,13 +460,21 @@ yarn deploy
 
 (todo: insert all the cool active branches)
 
+
+| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
+| --- |
+| [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
+
+
 ^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
 
 ---
 
 ## 🚩 Challenges
 
-(todo: insert all challenges)
+1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
+
+2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
 
 ---
@@ -442,6 +483,10 @@ yarn deploy
 ## 📺 UI Library
 
 🐜 [Ant.design](https://ant.design/components/button/) is the UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
+
+---
+
+# 🧹 Upkeep
 
 ---
 
@@ -567,32 +612,6 @@ await run("verify:verify", {
 })
 ```
 You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!
-
----
-
-
-## 🛳 Ship it!
-
-You can deploy your app with:
-
-```bash
-
-# packge up the static site:
-
-yarn build
-
-# ship it!
-
-yarn surge
-
-OR
-
-yarn s3
-
-OR
-
-yarn ipfs
-```
 
 ---
 
