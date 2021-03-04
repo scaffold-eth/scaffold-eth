@@ -128,6 +128,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 > ⚗️ Spend some time tinkering with `YourContract.sol`
 
+---
+
+================================================= [⏫ Back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
 
