@@ -8,11 +8,10 @@
 | --- | --- |
 
 
-
 | <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B> | | | |
 | --- | --- | --- | --- |
-| [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) | [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) | [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) | [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)  |
-|  [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) |  [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)  | <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B> | <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B> |
+| [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) | [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) | [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)  | <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B> |
+|  [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) |  [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) | [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)  | <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B> |
 
 
 
@@ -28,7 +27,6 @@
 
 |   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> | <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>|
 | --- | --- |
-
 
 ---
 
@@ -224,31 +222,6 @@ The frontend has three different providers that provide different levels of acce
 
 ---
 
-## ⛑ Helpers:
-
-`Transactor`: The transactor returns a `tx()` function to make running and tracking transactions as simple and standardized as possible. We will bring in [BlockNative's Notify](https://www.blocknative.com/notify) library to track our testnet and mainnet transactions.
-
-```js
-const tx = Transactor(props.injectedProvider, props.gasPrice);
-```
-
-Then you can use the `tx()` function to send funds and write to your smart contracts:
-
-```js
-tx({
-  to: readContracts[contractName].address,
-  value: parseEther("0.001"),
-});
-```
-
-```js
-tx(writeContracts["SmartContractWallet"].updateOwner(newOwner));
-```
-
-> ☢️ **Warning**: You will need to update the configuration for `react-app/src/helpers/Transactor.js` to use _your_ [BlockNative dappId](https://www.blocknative.com/notify)
-
----
-
 ## 🖇 Hooks:
 
 Commonly used Ethereum hooks located in `packages/react-app/src/`:
@@ -402,15 +375,6 @@ const price = useExchangePrice(mainnetProvider);
 
 ---
 
-## 🎚 Extras:
-
-🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
-
-⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
-
-⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
-
----
 
 ## 📡 Deploy
 
@@ -426,6 +390,47 @@ const price = useExchangePrice(mainnetProvider);
 ```bash
 yarn deploy
 ```
+
+---
+
+## 📺 UI Library
+
+🐜 [Ant.design](https://ant.design/components/button/) is the UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
+
+---
+
+## ⛑ Helpers:
+
+`Transactor`: The transactor returns a `tx()` function to make running and tracking transactions as simple and standardized as possible. We will bring in [BlockNative's Notify](https://www.blocknative.com/notify) library to track our testnet and mainnet transactions.
+
+```js
+const tx = Transactor(props.injectedProvider, props.gasPrice);
+```
+
+Then you can use the `tx()` function to send funds and write to your smart contracts:
+
+```js
+tx({
+  to: readContracts[contractName].address,
+  value: parseEther("0.001"),
+});
+```
+
+```js
+tx(writeContracts["SmartContractWallet"].updateOwner(newOwner));
+```
+
+> ☢️ **Warning**: You will need to update the configuration for `react-app/src/helpers/Transactor.js` to use _your_ [BlockNative dappId](https://www.blocknative.com/notify)
+
+---
+
+## 🎚 Extras:
+
+🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
+
+⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
+
+⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
 
 ---
 
@@ -456,6 +461,39 @@ yarn ipfs
 
 ---
 
+
+## 🔨 Built with 🏗 scaffold-eth:
+
+[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
+
+Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
+
+🏃‍♂️ SpeedRun 📹 (TODO)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
+
+
+[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
+
+An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
+
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
+
+
+[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+
+Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
+
+[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
+
+
+^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
+
+---
+
 ## 📡 Examples and Tutorials
 
 (todo: insert all the cool active branches)
@@ -475,14 +513,6 @@ yarn ipfs
 1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
 
 2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
-
-
----
-
-
-## 📺 UI Library
-
-🐜 [Ant.design](https://ant.design/components/button/) is the UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
 
 ---
 
@@ -677,41 +707,6 @@ Learn how to deploy your smart contract to a production blockchain. Then deploy 
 
 ---
 
-
-## 🔨 Built with 🏗 scaffold-eth:
-
-[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
-
-Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
-
-🏃‍♂️ SpeedRun 📹 (TODO)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
-
----
-
-[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
-
-An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
-
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
-
----
-
-[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
-
-Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
-
-[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
-
----
-
-^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
-
----
 
 ## 💬 Support Chat
 
