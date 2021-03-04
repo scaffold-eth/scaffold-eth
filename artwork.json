@@ -238,5 +238,105 @@
          "value": 70
        }
     ]
+  },
+  {
+    "name": "Octopus",
+    "description": "Dope 'stach.",
+    "external_url": "https://austingriffith.com/portfolio/paintings/?id=octopus",
+    "image": "https://austingriffith.com/images/paintings/octopus.jpg",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "purple"
+       },
+       {
+         "trait_type": "Eyes",
+         "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 41
+       }
+    ]
+  },
+  {
+    "name": "Ox",
+    "description": "The ringer.",
+    "external_url": "https://austingriffith.com/portfolio/paintings/?id=ox",
+    "image": "https://austingriffith.com/images/paintings/ox.jpg",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "blue"
+       },
+       {
+         "trait_type": "Eyes",
+         "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 59
+       }
+    ]
+  },
+  {
+    "name": "Penguin",
+    "description": "It's cold out here.",
+    "external_url": "https://austingriffith.com/portfolio/paintings/?id=penguin",
+    "image": "https://austingriffith.com/images/paintings/penguin.jpg",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "orange"
+       },
+       {
+         "trait_type": "Eyes",
+         "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 23
+       }
+    ]
+  },
+  {
+    "name": "Walrus",
+    "description": "Seems nice.",
+    "external_url": "https://austingriffith.com/portfolio/paintings/?id=walrus",
+    "image": "https://austingriffith.com/images/paintings/walrus.jpg",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "orange"
+       },
+       {
+         "trait_type": "Eyes",
+         "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 23
+       }
+    ]
+  },
+  {
+    "name": "Killer Whale",
+    "description": "Killers.",
+    "external_url": "https://austingriffith.com/portfolio/paintings/?id=killerwhale",
+    "image": "https://austingriffith.com/images/paintings/killerwhale.jpg",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "green"
+       },
+       {
+         "trait_type": "Eyes",
+         "value": "googly"
+       },
+       {
+         "trait_type": "Stamina",
+         "value": 87
+       }
+    ]
   }
 ]
