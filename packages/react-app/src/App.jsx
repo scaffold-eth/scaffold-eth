@@ -372,7 +372,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <div style={{ maxWidth:820, margin: "auto", marginTop:32, paddingBottom:32 }}>
+            <div style={{ maxWidth:820, margin: "auto", marginTop:32, paddingBottom:256 }}>
               <StackGrid
                 columnWidth={200}
                 gutterWidth={16}
@@ -588,7 +588,7 @@ function App(props) {
            </Col>
          </Row>
        </div>
-       
+
     </div>
   );
 }
