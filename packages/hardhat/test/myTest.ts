@@ -1,15 +1,19 @@
-const { ethers } = require("hardhat");
-const { use, expect } = require("chai");
-const { solidity } = require("ethereum-waffle");
+import { ethers } from "hardhat";
+import { use, expect } from "chai";
+import { solidity } from "ethereum-waffle";
+
+import { YourContract, YourContract__factory } from "../typechain";
 
 use(solidity);
 
 describe("My Dapp", function () {
-  let myContract;
+  let myContract: YourContract;
 
   describe("YourContract", function () {
     it("Should deploy YourContract", async function () {
-      const YourContract = await ethers.getContractFactory("YourContract");
+      const YourContract = (await ethers.getContractFactory(
+        "YourContract"
+      )) as YourContract__factory;
 
       myContract = await YourContract.deploy();
     });
