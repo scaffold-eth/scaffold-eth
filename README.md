@@ -67,10 +67,11 @@ Start a round by pressing Start Game, you'll see something like this 👇🏽
 The game here on is pretty straightforward
 - The goal is to generate the largest number by sheer luck
 - The account whose turn it is to play is allowed to click the "Spin the Roulette wheel" button
-- Once he clicks the button, a random number is generated via the commit-reveal scheme and the winning number is updated if this number is the largest yet. 
+- Once he clicks the button, a random number is generated via the commit-reveal scheme
+- The winning number is updated if this number is the largest yet. 
 - There is 30 second deadline before he loses his turn
 - If he loses his turn, anybody but him can "Skip Turn" for him
-- When everyone is done play, the winner is declared and everyone can withdraw their winnings
+- When everyone is done playing, the winner is declared and everyone can withdraw their winnings
 ---
 
 
