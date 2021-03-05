@@ -191,24 +191,24 @@ function App(props) {
   // );
   // if(DEBUG)console.log("Is Game on?", currentReveal, isGameOn, currentPlayer);
 
-  //📟 Listen for broadcast events
-  // const turnCompletedEvents = useEventListener(
-  //   readContracts,
-  //   "YourContract",
-  //   "TurnCompleted",
-  //   localProvider,
-  //   1
-  // );
-  // // console.log("📟 SetPurpose events:",turnCompletedEvents)
+  // 📟 Listen for broadcast events
+  const turnCompletedEvents = useEventListener(
+    readContracts,
+    "YourContract",
+    "TurnCompleted",
+    localProvider,
+    1
+  );
+  // console.log("📟 SetPurpose events:",turnCompletedEvents)
 
-  // const newPlayerJoinedEvents = useEventListener(
-  //   readContracts,
-  //   "YourContract",
-  //   "NewPlayerJoined",
-  //   localProvider,
-  //   1
-  // );
-  // if (DEBUG) console.log("New player joined:", newPlayerJoinedEvents);
+  const newPlayerJoinedEvents = useEventListener(
+    readContracts,
+    "YourContract",
+    "NewPlayerJoined",
+    localProvider,
+    1
+  );
+  if (DEBUG) console.log("New player joined:", newPlayerJoinedEvents);
 
   // isGameOn,
   // currentReveal,
@@ -223,6 +223,9 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+    
+  const currentPlayer = useCurrentPlayerReader(readContracts,"YourContract", "players",playerCounter &&[playerCounter[6].toNumber()], playerCounter &&playerCounter[0], playerCounter &&playerCounter[4],playerCounter && playerCounter[6]);
+  const nextPlayer =   useCurrentPlayerReader(readContracts,"YourContract", "players",playerCounter &&[playerCounter[6].toNumber()+1],playerCounter &&playerCounter[0], playerCounter &&playerCounter[4],playerCounter && playerCounter[6])
   let networkDisplay = "";
   if (localChainId && selectedChainId && localChainId != selectedChainId) {
     networkDisplay = (
@@ -352,6 +355,10 @@ function App(props) {
               totalStakingPool={playerCounter[5]}
               currentIndex={playerCounter[6]}
               currentWinner={playerCounter[7]}
+              currentPlayer={currentPlayer}
+              nextPlayer = {nextPlayer} 
+              newPlayerJoinedEvents = {newPlayerJoinedEvents}
+              turnCompletedEvents = {turnCompletedEvents}
             />}
           </Route>
         </Switch>
