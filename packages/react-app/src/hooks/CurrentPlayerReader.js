@@ -11,19 +11,19 @@ export default function useCurrentPlayerReader(
   isGameOn,
   playerCount,
   currentIndex,
+  showNextPlayer,
   pollTime,
   formatter,
-  onChange,
-  conditionals
+  onChange
 ) {
-  let adjustPollTime = 1777;
+  let adjustPollTime = 2000;
   if (pollTime) {
     adjustPollTime = pollTime;
   } else if (!pollTime && typeof args === "number") {
     // it's okay to pass poll time as last argument without args for the call
     adjustPollTime = args;
   }
-
+  console.log("currentIndex", currentIndex && currentIndex.toNumber() , "playerCount", playerCount && playerCount.toNumber(), "args", args);
   const [value, setValue] = useState();
   useEffect(() => {
     if (typeof onChange === "function") {
@@ -33,7 +33,7 @@ export default function useCurrentPlayerReader(
 
   usePoller(
     async () => {
-      if (contracts && contracts[contractName] && isGameOn === true && currentIndex < playerCount) {
+      if (playerCount && args[0] < playerCount.toNumber() && contracts && contracts[contractName] && isGameOn === true) {
         try {
           let newValue;
           if (DEBUG)
@@ -70,6 +70,8 @@ export default function useCurrentPlayerReader(
         } catch (e) {
           console.log(e);
         }
+      } else {
+        setValue(null);
       }
     },
     adjustPollTime,

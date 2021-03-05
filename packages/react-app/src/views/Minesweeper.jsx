@@ -39,6 +39,8 @@ export default function Minesweeper({
   totalStakingPool,
   currentWinner,
   currentIndex,
+  currentPlayer,
+  nextPlayer,
   newPlayerJoinedEvents,
   turnCompletedEvents,
   address,
@@ -53,11 +55,9 @@ export default function Minesweeper({
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
   const [notifState, setNotifState] = useState(false);
-  let currentPlayer;
   const steakValue = 0.01;
   var balances = {};
-  currentPlayer = useCurrentPlayerReader(readContracts,"YourContract", "players",[currentIndex], isGameOn, playerCount, currentIndex);
-
+  console.log("currentplaya + 1",currentIndex+1<playerCount )
   useEffect(() => {
     if (!("Notification" in window)) {
       console.log("This browser does not support desktop notification");
@@ -244,9 +244,11 @@ export default function Minesweeper({
             )}
           </div>
         )}
+        { (isGameOn && nextPlayer!=null) && <div>
         <Divider />
-        Your Address:
-        <Address value={address} ensProvider={mainnetProvider} fontSize={16} />
+        Next Up:
+        <Address value={nextPlayer} ensProvider={mainnetProvider} fontSize={16} />
+        </div>}
       </div>
 
       {/*
