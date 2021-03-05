@@ -37,7 +37,7 @@ function mnemonic() {
   return "";
 }
 
-module.exports = {
+const config: HardhatUserConfig = {
   defaultNetwork,
 
   // don't forget to set your provider like:
