@@ -92,7 +92,8 @@ export default function Provider(props) {
         setShowMore(!showMore);
       }}
     >
-      <Badge status={status} /> {props.name} {showWallet} #{blockNumber} {showExtra}
+      <Badge status={status} /> {props.name} {showWallet} #{blockNumber}{" "}
+      {showExtra}
     </Button>
   );
 }

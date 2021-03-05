@@ -47,7 +47,8 @@ export default function EtherInput(props) {
           } else {
             setMode("USD");
             if (currentValue) {
-              const usdValue = "" + (parseFloat(currentValue) * props.price).toFixed(2);
+              const usdValue =
+                "" + (parseFloat(currentValue) * props.price).toFixed(2);
               setDisplay(usdValue);
             } else {
               setDisplay(currentValue);
@@ -79,7 +80,7 @@ export default function EtherInput(props) {
         setDisplay(currentValue);
       }
     }
-  ,[ currentValue ])
+  }, [currentValue]);
 
   return (
     <Input

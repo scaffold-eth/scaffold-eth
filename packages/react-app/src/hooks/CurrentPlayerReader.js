@@ -1,33 +1,29 @@
 import { useState, useEffect } from "react";
 import usePoller from "./Poller";
 
-const DEBUG = true;
+const DEBUG = false;
 
-/*
-  ~ What it does? ~
-
-  Enables you to read values from contracts and keep track of them in the local React states
-
-  ~ How can I use? ~
-
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-
-  ~ Features ~
-
-  - Provide readContracts by loading contracts (see more on ContractLoader.js)
-  - Specify the name of the contract, in this case it is "YourContract"
-  - Specify the name of the variable in the contract, in this case we keep track of "purpose" variable
-*/
-
-export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
-  let adjustPollTime = 1777;
+export default function useCurrentPlayerReader(
+  contracts,
+  contractName,
+  functionName,
+  args,
+  isGameOn,
+  playerCount,
+  currentIndex,
+  showNextPlayer,
+  pollTime,
+  formatter,
+  onChange
+) {
+  let adjustPollTime = 2000;
   if (pollTime) {
     adjustPollTime = pollTime;
   } else if (!pollTime && typeof args === "number") {
     // it's okay to pass poll time as last argument without args for the call
     adjustPollTime = args;
   }
-
+  console.log("currentIndex", currentIndex && currentIndex.toNumber() , "playerCount", playerCount && playerCount.toNumber(), "args", args);
   const [value, setValue] = useState();
   useEffect(() => {
     if (typeof onChange === "function") {
@@ -37,7 +33,7 @@ export default function useContractReader(contracts, contractName, functionName,
 
   usePoller(
     async () => {
-      if (contracts && contracts[contractName]) {
+      if (playerCount && args[0] < playerCount.toNumber() && contracts && contracts[contractName] && isGameOn === true) {
         try {
           let newValue;
           if (DEBUG)
@@ -74,6 +70,8 @@ export default function useContractReader(contracts, contractName, functionName,
         } catch (e) {
           console.log(e);
         }
+      } else {
+        setValue(null);
       }
     },
     adjustPollTime,
