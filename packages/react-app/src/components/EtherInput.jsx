@@ -5,11 +5,8 @@ import { Input } from "antd";
 
 /*
   ~ What it does? ~
-
   Displays input field for ETH/USD amount, with an option to convert between ETH and USD
-
   ~ How can I use? ~
-
   <EtherInput
     autofocus
     price={price}
@@ -19,9 +16,7 @@ import { Input } from "antd";
       setAmount(value);
     }}
   />
-
   ~ Features ~
-
   - Provide price={price} of ether and easily convert between USD and ETH
   - Provide value={value} to specify initial amount of ether
   - Provide placeholder="Enter amount" value for the input
@@ -34,7 +29,6 @@ export default function EtherInput(props) {
   const [value, setValue] = useState();
 
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
-
   const option = title => {
     if (!props.price) return "";
     return (
@@ -47,8 +41,7 @@ export default function EtherInput(props) {
           } else {
             setMode("USD");
             if (currentValue) {
-              const usdValue =
-                "" + (parseFloat(currentValue) * props.price).toFixed(2);
+              const usdValue = "" + (parseFloat(currentValue) * props.price).toFixed(2);
               setDisplay(usdValue);
             } else {
               setDisplay(currentValue);
@@ -80,7 +73,7 @@ export default function EtherInput(props) {
         setDisplay(currentValue);
       }
     }
-  }, [currentValue]);
+  ,[ currentValue ])
 
   return (
     <Input

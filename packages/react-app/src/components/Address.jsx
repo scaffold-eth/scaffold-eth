@@ -64,7 +64,7 @@ export default function Address(props) {
           href={etherscanLink}
           rel="noopener noreferrer"
         >
-          <Blockies seed={props.value.toLowerCase()} size={8} scale={2} />
+          <Blockies seed={props.address.toLowerCase()} size={8} scale={2} />
         </a>
       </span>
     );
@@ -75,7 +75,7 @@ export default function Address(props) {
     text = (
       <Text
         editable={{ onChange: props.onChange }}
-        copyable={{ text: props.value }}
+        copyable={{ text: props.address }}
       >
         <a
           style={{ color: "#222222" }}
@@ -89,7 +89,7 @@ export default function Address(props) {
     );
   } else {
     text = (
-      <Text copyable={{ text: props.value }}>
+      <Text copyable={{ text: props.address }}>
         <a
           style={{ color: "#222222" }}
           target={"_blank"}
@@ -106,7 +106,7 @@ export default function Address(props) {
     <span>
       <span style={{ verticalAlign: "middle" }}>
         <Blockies
-          seed={props.value.toLowerCase()}
+          seed={props.address.toLowerCase()}
           size={8}
           scale={props.fontSize ? props.fontSize / 7 : 4}
         />

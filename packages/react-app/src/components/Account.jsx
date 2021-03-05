@@ -86,7 +86,7 @@ export default function Account({
     <span>
       {address ? (
         <Address
-          value={address}
+          address={address}
           ensProvider={mainnetProvider}
           blockExplorer={blockExplorer}
         />

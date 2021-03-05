@@ -29,7 +29,7 @@ import {
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Minesweeper } from "./views";
+import { PushTheButton } from "./views";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -51,7 +51,7 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS["mumbai"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS["localhost"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false;
@@ -223,7 +223,7 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
-    
+
   const currentPlayer = useCurrentPlayerReader(readContracts,"YourContract", "players",playerCounter &&[playerCounter[6].toNumber()], playerCounter &&playerCounter[0], playerCounter &&playerCounter[4],playerCounter && playerCounter[6]);
   const nextPlayer =   useCurrentPlayerReader(readContracts,"YourContract", "players",playerCounter &&[playerCounter[6].toNumber()+1],playerCounter &&playerCounter[0], playerCounter &&playerCounter[4],playerCounter && playerCounter[6])
   let networkDisplay = "";
@@ -301,7 +301,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: parseEther("0.01")
+              value: parseEther("1")
             });
             setFaucetClicked(true);
           }}
@@ -330,14 +330,14 @@ function App(props) {
               }}
               to="/"
             >
-              Minesweeper
+                Push The Button
             </Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-            {playerCounter && <Minesweeper
+            {playerCounter && <PushTheButton
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -356,7 +356,7 @@ function App(props) {
               currentIndex={playerCounter[6]}
               currentWinner={playerCounter[7]}
               currentPlayer={currentPlayer}
-              nextPlayer = {nextPlayer} 
+              nextPlayer = {nextPlayer}
               newPlayerJoinedEvents = {newPlayerJoinedEvents}
               turnCompletedEvents = {turnCompletedEvents}
             />}
