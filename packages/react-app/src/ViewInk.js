@@ -293,41 +293,6 @@ export default function ViewInk(props) {
     props.setTab("inks");
   };
 
-  useEffect(() => {
-    setCanvasKey(Date.now());
-    const showDrawing = async () => {
-      if (hash) {
-        let tIpfsConfig = { ...props.ipfsConfig };
-        tIpfsConfig["timeout"] = 10000;
-        let drawingContent;
-        try {
-          drawingContent = await getFromIPFS(hash, tIpfsConfig);
-        } catch (e) {
-          console.log("Loading error:", e);
-        }
-        try {
-          const arrays = new Uint8Array(
-            drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], [])
-          );
-          let decompressed = LZ.decompressFromUint8Array(arrays);
-          console.log(decompressed);
-
-          let points = 0;
-          for (const line of JSON.parse(decompressed)["lines"]) {
-            points = points + line.points.length;
-          }
-
-          console.log("Drawing points", points);
-          setDrawingSize(points);
-          setDrawing(decompressed);
-        } catch (e) {
-          console.log("Drawing Error:", e);
-        }
-      }
-    };
-    showDrawing();
-  }, [hash]);
-
   if (!inkJson || !inkJson.name || !data) {
     inkChainInfoDisplay = (
       <div style={{ marginTop: 32 }}>
@@ -524,7 +489,7 @@ export default function ViewInk(props) {
         <div
           style={{ marginRight: -props.calculatedVmin * 0.8, marginTop: -20 }}
         >
-          <LikeButton
+          <LikeButton injectedProvider={props.injectedProvider}
             metaProvider={props.metaProvider}
             metaSigner={props.metaSigner}
             injectedGsnSigner={props.injectedGsnSigner}
@@ -537,6 +502,7 @@ export default function ViewInk(props) {
             }
             targetId={data.ink.inkNumber}
             likerAddress={props.address}
+                      fileUrl={data.ink.id}
             transactionConfig={props.transactionConfig}
           />
         </div>

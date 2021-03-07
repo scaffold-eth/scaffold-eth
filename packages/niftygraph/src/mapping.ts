@@ -118,7 +118,7 @@ export function handlenewFile(event: newFile): void {
 
   ink.inkNumber = event.params.id;
   ink.artist = artist.id;
-  ink.likers = new Array<Bytes>();
+  ink.likers = new Array<string>();
   ink.limit = event.params.limit;
   ink.jsonUrl = event.params.jsonUrl;
   ink.createdAt = event.block.timestamp;
@@ -354,7 +354,7 @@ export function handleownershipChange(event: ownershipChange): void {
 export function handleliked(event: liked): void {
 let file = File.load(event.params.fileUrl);
 let likers = file.likers;
-likers.push(event.params.liker);
+likers.push(event.params.liker.toHexString());
 file.likers = likers;
 file.save();
 }

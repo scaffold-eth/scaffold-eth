@@ -16,7 +16,7 @@ type File @entity {
   inkNumber: BigInt!
   jsonUrl: String!
   artist: Artist!
-  likers: [Bytes!]
+  likers: [String!]
   limit: BigInt!
   count: BigInt
   tokens: [Token!] @derivedFrom(field: "ink")

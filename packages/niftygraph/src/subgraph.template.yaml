@@ -122,7 +122,7 @@ dataSources:
     source:
       address: '{{LikerAddress}}'
       abi: Liker
-      startBlock: 11296637
+      startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
