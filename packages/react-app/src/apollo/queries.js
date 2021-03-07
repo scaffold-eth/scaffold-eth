@@ -37,6 +37,21 @@ export const INKS_QUERY = gql`
   }
 `;
 
+export const ADMIN_INKS_QUERY = gql`
+    query inks($first: Int, $skip: Int, $admins: [String!]) {
+        inks: files(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc, where: { likers_contains: $admins }) {
+            id
+            inkNumber
+            createdAt
+            jsonUrl
+            artist {
+                id
+                address
+            }
+        }
+    }
+`;
+
 export const HOLDINGS_QUERY = gql`
   query tokens($owner: Bytes!) {
     metaData(id: "blockNumber") {

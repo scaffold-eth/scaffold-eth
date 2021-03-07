@@ -6,7 +6,7 @@ dataSources:
     name: NiftyInk
     network: xdai
     source:
-      address: '0xA76Dd7970380659CfeDA4128022534b0e35B99b4'
+      address: '0xB61A6De66486Ba461934477Ca65bbFdD3703BEa9'
       abi: NiftyInk
       startBlock: 1
     mapping:
@@ -37,7 +37,7 @@ dataSources:
     name: NiftyToken
     network: xdai
     source:
-      address: '0xa5f033c107F7fa502cfa10DCdf773cf304883133'
+      address: '0x26eae9F3Fd929fa4B4df3C35b935240D956c5d13'
       abi: NiftyToken
       startBlock: 1
     mapping:
@@ -96,7 +96,7 @@ dataSources:
     name: NiftyMediator
     network: xdai
     source:
-      address: '0x0B384e776B4cCCc596723dD1838eF6b68C0744e3'
+      address: '0xb803315CD6A24C7520104Ad37556aF420e38C91d'
       abi: NiftyMediator
       startBlock: 1
     mapping:
@@ -116,25 +116,23 @@ dataSources:
         - event: newPrice(uint256)
           handler: handleNewRelayPrice
       file: ./src/mapping.ts
-#  - kind: ethereum/contract
-#    name: Liker
-#    network: xdai
-#    source:
-#      address: "0xBD0621dcb64e1EEd503f709422b019B2fA197aF6"
-#      abi: Liker
-#      startBlock: 11296637
-#    mapping:
-#      kind: ethereum/events
-#      apiVersion: 0.0.4
-#      language: wasm/assemblyscript
-#      entities:
-#        - InkNumberLookUp
-#        - Like
-#        - Ink
-#      abis:
-#        - name: Liker
-#          file: ./abis/Liker.json
-#      eventHandlers:
-#        - event: liked(uint256,address,uint256,uint256,address)
-#          handler: handleLikedInk
-#      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: Liker
+    network: xdai
+    source:
+      address: '0x2df0629e8A51Aa86FED98Ec6af403bB6e8141A50'
+      abi: Liker
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - File
+      abis:
+        - name: Liker
+          file: ./abis/Liker.json
+      eventHandlers:
+        - event: liked(uint256,address,uint256,uint256,address,string)
+          handler: handleliked
+      file: ./src/mapping.ts

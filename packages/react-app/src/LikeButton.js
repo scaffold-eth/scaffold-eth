@@ -9,7 +9,8 @@ export default function LikeButton(props) {
 
   //const writeContracts = useContractLoader(props.signingProvider);
   const metaWriteContracts = useContractLoader(
-    props.metaProvider ? props.localProvider : props.metaProvider
+    // props.metaProvider ? props.localProvider : props.metaProvider
+      props.injectedProvider
   );
   const readContracts = useContractLoader(props.localProvider);
 
@@ -52,6 +53,7 @@ export default function LikeButton(props) {
         <Button
           onClick={async (e) => {
             e.preventDefault();
+            debugger;
             if (!hasLiked && !minting) {
               setMinting(true);
               try {
@@ -61,9 +63,9 @@ export default function LikeButton(props) {
 
                 let contractName = "Liker";
                 let regularFunction = "like";
-                let regularFunctionArgs = [contractAddress, target];
+                let regularFunctionArgs = [contractAddress, target, props.fileUrl];
                 let signatureFunction = "likeWithSignature";
-                let signatureFunctionArgs = [contractAddress, target, liker];
+                let signatureFunctionArgs = [contractAddress, target, liker, props.fileUrl];
                 let getSignatureTypes = [
                   "bytes",
                   "bytes",

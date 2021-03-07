@@ -1,18 +1,24 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "react-apollo";
 import { Link } from "react-router-dom";
-import { INKS_QUERY } from "./apollo/queries";
+import { ADMIN_INKS_QUERY } from "./apollo/queries";
 import { isBlocklisted } from "./helpers";
 import { Row } from "antd";
 import { Loader } from "./components";
+import {useUserProvider} from "./hooks";
 
-export default function AllInks(props) {
+const ADMIN_ADDRESSES = ["0x859c736870af2abe057265a7a5685ae7b6c94f15"];
+
+export default function CuratedInks(props) {
   let [allInks, setAllInks] = useState([]);
   let [inks, setInks] = useState({});
-  const { loading, error, data, fetchMore } = useQuery(INKS_QUERY, {
+  const userProvider = useUserProvider(props.localProvider, props.injectedProvider);
+  console.log("userProvider: ", userProvider);
+  const { loading, error, data, fetchMore } = useQuery(ADMIN_INKS_QUERY, {
     variables: {
       first: 48,
       skip: 0,
+      admins: ADMIN_ADDRESSES
     },
     fetchPolicy: "no-cache"
   });

@@ -15,13 +15,14 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
 
   Counters.Counter public totalLikes;
 
-  event liked(uint256 LikeId, address targetContract, uint256 target, uint256 targetId, address liker);
+  event liked(uint256 LikeId, address targetContract, uint256 target, uint256 targetId, address liker, string fileUrl);
   event contractAdded(address targetContract, address contractOwner);
   event contractRemoved(address targetContract, address contractOwner);
 
   struct Like {
     uint256 id;
     address liker;
+    string fileUrl;
     uint256 targetId;
     address contractAddress;
     uint256 target;
@@ -47,7 +48,7 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
     )));
   }
 
-  function _newLike(address contractAddress, uint256 target, address liker) internal returns (uint256) {
+  function _newLike(address contractAddress, uint256 target, address liker, string memory _fileUrl) internal returns (uint256) {
     require(registeredContracts[contractAddress],"this contract is not registered");
     uint256 targetId = getTargetId(contractAddress, target);
     uint256 likeId = uint256(keccak256(abi.encodePacked(byte(0x19),byte(0),address(this),contractAddress,target,liker)));
@@ -58,6 +59,7 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
     Like memory _like = Like({
       id: likeId,
       liker: liker,
+      fileUrl: _fileUrl,
       targetId: targetId,
       contractAddress: contractAddress,
       target: target,
@@ -70,18 +72,18 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
     targetLikes[targetId].add(likeId);
     contractLikes[contractAddress].add(likeId);
 
-    emit liked(likeId, contractAddress, target, targetId, liker);
+    emit liked(likeId, contractAddress, target, targetId, liker, _fileUrl);
   }
 
-  function like(address contractAddress, uint256 target) public returns (uint256) {
-    return _newLike(contractAddress, target, _msgSender());
+  function like(address contractAddress, uint256 target, string memory _fileUrl) public returns (uint256) {
+    return _newLike(contractAddress, target, _msgSender(), _fileUrl);
   }
 
-  function likeWithSignature(address contractAddress, uint256 target, address liker, bytes memory signature) public returns (uint256) {
+  function likeWithSignature(address contractAddress, uint256 target, address liker, string memory _fileUrl, bytes memory signature) public returns (uint256) {
     bytes32 messageHash = keccak256(abi.encodePacked(byte(0x19),byte(0),address(this),contractAddress,target,liker));
     bool isArtistSignature = checkSignature(messageHash, signature, liker);
     require(isArtistSignature || !checkSignatureFlag, "Unable to verify the artist signature");
-    return _newLike(contractAddress, target, liker);
+    return _newLike(contractAddress, target, liker, _fileUrl);
   }
 
   function checkLike(address contractAddress, uint256 target, address liker) public view returns (bool) {
@@ -152,3 +154,4 @@ contract Liker is Ownable, BaseRelayRecipient, SignatureChecker {
       return BaseRelayRecipient._msgSender();
   }
 }
+
