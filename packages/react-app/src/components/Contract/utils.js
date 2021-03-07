@@ -17,7 +17,7 @@ const tryToDisplay = thing => {
     thing.indexOf("0x") == 0 &&
     thing.length == 42
   ) {
-    return <Address value={thing} fontSize={22} />;
+    return <Address address={thing} fontSize={22} />;
   }
   return JSON.stringify(thing);
 };

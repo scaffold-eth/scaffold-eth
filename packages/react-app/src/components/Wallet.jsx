@@ -134,7 +134,7 @@ export default function Wallet(props) {
           <a href={"/pk#" + pk}>
             <Address
               minimized={true}
-              value={wallet.address}
+              address={wallet.address}
               ensProvider={props.ensProvider}
             />{" "}
             {wallet.address.substr(0, 6)}
@@ -315,7 +315,7 @@ export default function Wallet(props) {
           <div>
             {selectedAddress ? (
               <Address
-                value={selectedAddress}
+                address={selectedAddress}
                 ensProvider={props.ensProvider}
               />
             ) : (
