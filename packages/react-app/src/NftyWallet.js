@@ -13,6 +13,7 @@ import CreateFile from "./CreateFile.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
 import DebugContracts from "./DebugContracts.js";
+import CuratedInks from "./CuratedInks";
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require("web3-providers-http");
@@ -239,7 +240,7 @@ export default function NftyWallet(props) {
       >
         <TabPane
           tab={
-            <NavLink to="/allinks">
+            <NavLink to="/">
               <>
                 <span
                   style={{ fontSize: 24, padding: 8 }}
@@ -263,19 +264,19 @@ export default function NftyWallet(props) {
                   <span style={{ padding: 8 }} role="img" aria-label="Painting">
                     🖼
                   </span>{" "}
-                  inks
+                  my arts
                 </span>{" "}
               </>
             </NavLink>
           }
-          key="inks"
+          key="2"
         ></TabPane>
 
         <TabPane
           disabled={
             !(
               nftyBalance &&
-              nftyBalance.toString &&
+              nftyBalance.toString ||
               nftyMainBalance &&
               nftyMainBalance.toString
             )
@@ -293,7 +294,32 @@ export default function NftyWallet(props) {
               </>
             </NavLink>
           }
-          key="holdings"
+          key="3"
+        ></TabPane>
+
+        <TabPane
+            disabled={
+              !(
+                  nftyBalance &&
+                  nftyBalance.toString ||
+                  nftyMainBalance &&
+                  nftyMainBalance.toString
+              )
+            }
+            tab={
+              <NavLink to="/recent">
+                <>
+                <span>
+                  <span style={{ padding: 8 }} role="img" aria-label="Purse">
+                    🔥
+                  </span>{" "}
+                  recent arts
+                </span>{" "}
+                  <Badge style={badgeStyle} count={displayBalance} showZero />
+                </>
+              </NavLink>
+            }
+            key="4"
         ></TabPane>
 
         {/* <TabPane */}
@@ -316,13 +342,13 @@ export default function NftyWallet(props) {
 
         <TabPane
           tab={
-            <NavLink to="/create-file">
+            <NavLink to="/create-art">
               <Button
                 style={{ marginBottom: 8 }}
                 shape="round"
                 size="large"
                 type={
-                  tab === "create-file" && mode === "edit"
+                  tab === "create-art" && mode === "edit"
                     ? "secondary"
                     : "primary"
                 }
@@ -342,8 +368,11 @@ export default function NftyWallet(props) {
         <Route path="/debug">
           <DebugContracts {...props} />
         </Route>
-        <Route path="/allinks">
+        <Route path="/recent">
           <AllInks />
+        </Route>
+        <Route path="/curated">
+          <CuratedInks {...props} />
         </Route>
 
         <Route path="/holdings">
@@ -359,7 +388,7 @@ export default function NftyWallet(props) {
           <Artist {...props} />
         </Route>
 
-        <Route path="/create-file">
+        <Route path="/create-art">
           <div>
             <CreateFile
               {...props}
@@ -464,7 +493,7 @@ export default function NftyWallet(props) {
         />
 
         <Route path="/">
-          <Redirect to="/allinks" />
+          <Redirect to="/curated" />
         </Route>
       </Switch>
       <Drawer

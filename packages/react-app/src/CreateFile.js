@@ -43,7 +43,7 @@ export default function CreateFile(props) {
   const [sending, setSending] = useState(false);
   const [name, setName] = useState("");
   const [number, setNumber] = useState(0);
-  const [imageUrl] = useAtom(imageUrlAtom);
+  const [imageUrl, setImageUrl] = useAtom(imageUrlAtom);
 
   const mintInk = async (inkUrl, jsonUrl, limit) => {
     let contractName = "NiftyInk";
@@ -173,6 +173,8 @@ export default function CreateFile(props) {
       Promise.all([imageResultInfura, inkResultInfura]).then((values) => {
         console.log("INFURA FINISHED UPLOADING!", values);
       });
+
+      setImageUrl(null);
     }
   };
 
