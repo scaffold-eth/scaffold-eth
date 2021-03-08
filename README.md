@@ -1,13 +1,13 @@
-# 🏗 scaffold-eth / Nifty Ink
+# 🏗 scaffold-eth / XNFT
 
 NFT artwork created and sold on xDAI using meta transactions, burner wallets, and bridged to Ethereum.
 
 ```
-git clone -b nifty-ink-dev https://github.com/austintgriffith/scaffold-eth.git nifty-ink
+git clone -b xnft https://github.com/austintgriffith/scaffold-eth.git xnft
 ```
 
-### Running nifty.ink on xDai / Mainnet
-_This will run the nifty.ink frontend on the production smart contracts on xDai / Mainnet._
+### Running xnft on xDai / Mainnet
+_This will run the xnft frontend on the production smart contracts on xDai / Mainnet._
 
 Create a .env file with the following variables in `packages/react-app`
 ```
@@ -21,7 +21,7 @@ Unzip `contracts_xdai_mainnet` in `packages/react-app/src` -> this should create
 
 Get the react front-end up and running - http://localhost:3000
 ```
-cd nifty-ink
+cd xnft
 
 yarn install
 
@@ -29,7 +29,7 @@ yarn start
 ```
 
 ### Running nifty.ink locally
-It is not currently possible to easily run cross-chain nifty.ink locally. Below are instructions for running the xDai portion of nifty.ink on a local chain ("sidechain") running on port=8456.
+It is not currently possible to easily run cross-chain xnft locally. Below are instructions for running the xDai portion of xnft on a local chain ("sidechain") running on port=8456.
 - The app will still look tokens on the mainchain, but it will refer to mainnet and bridge functionality will not be usable (there is a setup to test the bridge using Kovan <> Sokol)
 - The instructions below do not use the GSN setup we have in the production app
 
@@ -38,12 +38,11 @@ Create a .env file with the following variables in `packages/react-app`
 REACT_APP_NETWORK_COLOR=#f6c343
 REACT_APP_GRAPHQL_ENDPOINT=http://localhost:8000/subgraphs/name/azf20/nifty-ink
 REACT_APP_GRAPHQL_ENDPOINT_MAINNET=https://api.thegraph.com/subgraphs/name/azf20/nifty-ink-main
+REACT_APP_USE_GSN=false
 ```
-Unzip `contracts_xdai_mainnet` in `packages/react-app/src` -> this should create a new `contracts` folder
-
 *Terminal A:* Get the react front-end up and running - http://localhost:3000
 ```
-cd nifty-ink
+cd xnft
 
 yarn install
 
@@ -51,12 +50,12 @@ yarn start
 ```
 *Terminal B:* Run the local chain
 ```
-cd nifty-ink
+cd xnft
 yarn run sidechain
 ```
 *Terminal C:* Generate a deployment account
 ```
-cd nifty-ink
+cd xnft
 yarn run generate
 ```
 Take the address generated, and send it some funds using the faucet in the react-app (this is necessary to deploy the contracts). If you lose this terminal, you can find the address (and the mnemonic!) in `/packages/buidler`
@@ -64,26 +63,25 @@ Then deploy the contracts:
 ```
 yarn run sidechaindeploy
 ```
-You will need the contract deployment addresses to update the subgraph configuration:
-Go to `packages/niftygraph/subgraph.yaml` and update the addresses for the three datasources to match the addresses from your deployment
-
-
 *Terminal D:* Run a local graph node <- Requires docker
+Before that delete a generated folder: `/docker/graph-node/data`
 ```
-cd nifty-ink/docker/graph-node
+cd xnft/docker/graph-node
 docker-compose up
 ```
-
 *Terminal E:* Create and deploy the subgraph on your local graph node
-NOTE: if you update the Nifty smart contracts, you will need to update the ABIs in `/packages/niftygraph/abis`
+NOTE: if you update the XNFT smart contracts, you will need to update the ABIs in `/packages/niftygraph/abis`
 ```
-cd nifty-ink/packages/niftygraph
+cd xnft/packages/niftygraph
 yarn codegen
 yarn build
 yarn create-local
 yarn deploy-local
 ```
+After yarn codegen - your contract addresses inside `/packages/niftygraph/subgraph.yaml` should have been updated
 Your local environment is up and running, get inking!
+
+And after you update your page you are ready to go!
 
 _We welcome and are eternally grateful for features and pull requests!_
 
