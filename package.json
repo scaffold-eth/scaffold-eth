@@ -32,7 +32,7 @@
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "yarn workspace @scaffold-eth/hardhat generate",
     "account": "yarn workspace @scaffold-eth/hardhat account",
-    "mine": "cd packages/hardhat && npx hardhat mine",
+    "mineContractAddress": "cd packages/hardhat && npx hardhat mineContractAddress",
     "wallet": "cd packages/hardhat && npx hardhat wallet",
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
