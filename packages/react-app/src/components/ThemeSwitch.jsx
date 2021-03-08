@@ -23,8 +23,8 @@ export default function ThemeSwitcher() {
   // }
 
   return (
-    <div className="main fade-in" style={{paddingTop: "60px", paddingBottom: "170px"}}>
-      <h2>The current theme is: {currentTheme ? currentTheme : "light"}</h2>
+    <div className="main fade-in" style={{position:"fixed",right:8,bottom:8}}>
+      <span style={{padding:8}}>{currentTheme=="light" ? "☀️" : "🌜"}</span>
       <Switch checked={isDarkMode} onChange={toggleTheme} />
     </div>
   );
