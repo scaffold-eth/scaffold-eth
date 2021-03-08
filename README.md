@@ -688,7 +688,7 @@ Learn about tokens. [coming soon] What is a token? Why is it cool? How can I dep
 
 [<H6>Tutorial 3: ⚖️ Minimum Viable Decentralized Exchange</H6>](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
 
-Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liqudity.
+Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liquidity.
 
 [🏃‍♀️ SpeedRun  📹](https://youtu.be/eP5w6Ger1EQ)
 
