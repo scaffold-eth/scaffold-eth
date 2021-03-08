@@ -28,7 +28,7 @@ yarn install
 yarn start
 ```
 
-### Running nifty.ink locally
+### Running xnft locally
 It is not currently possible to easily run cross-chain xnft locally. Below are instructions for running the xDai portion of xnft on a local chain ("sidechain") running on port=8456.
 - The app will still look tokens on the mainchain, but it will refer to mainnet and bridge functionality will not be usable (there is a setup to test the bridge using Kovan <> Sokol)
 - The instructions below do not use the GSN setup we have in the production app
