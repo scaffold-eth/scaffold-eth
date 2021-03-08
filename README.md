@@ -64,6 +64,7 @@ Then deploy the contracts:
 yarn run sidechaindeploy
 ```
 *Terminal D:* Run a local graph node <- Requires docker
+
 Before that delete a generated folder: `/docker/graph-node/data`
 ```
 cd xnft/docker/graph-node
