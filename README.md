@@ -146,7 +146,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 📧 Learn all the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
-👨‍🏫 Start super simple counter `uint8 public count = 1;`
+👨‍🏫 Start super simple with a counter: `uint8 public count = 1;`
 
 ⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
 
