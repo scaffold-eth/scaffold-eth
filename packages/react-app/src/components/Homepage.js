@@ -9,7 +9,7 @@ function Homepage({ localProvider, injectedProvider }) {
     <div className="container">
       <div className="banner">
         <div>
-          <h1 className="banner__title">Collect and create your own ethmoji</h1>
+          <h1 className="banner__title">Collect and create your own NFT Art</h1>
           <p className="banner__description">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Curabitur
             ante tellus, condimentum eget ante vitae, dignissim fermentum dui.
