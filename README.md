@@ -11,7 +11,7 @@
 
 #### [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy)
 
-#### [ 📺 Frontend](https://github.com/austintgriffith/scaffold-eth#-learning-solidity)
+#### [ 📺 Frontend](https://github.com/austintgriffith/scaffold-eth#-frontend)
 - [ 🛰 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers)
 - [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks)
 - [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)
@@ -30,7 +30,7 @@
 #### [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth)
 - [ 🎨 Nifty.ink ](https://nifty.ink) ([code](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev))
 
-#### [🌉 Infrastructure ](https://github.com/austintgriffith/scaffold-eth#-upkeep)
+#### [🌉 Infrastructure ](https://github.com/austintgriffith/scaffold-eth#-infrastructure)
 
 - [ 🛰 The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph)
 - [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)
