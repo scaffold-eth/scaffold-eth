@@ -627,6 +627,11 @@ yarn deploy --network NETWORK_OF_CHOICE
 ```
 Once verified, they will then be available to view on Tenderly!
 
+
+
+[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://youtu.be/c04rrld1IiE)
+
+
 #### Exporting local Transactions
 One of Tenderly's best features for builders is the ability to [upload local transactions](https://dashboard.tenderly.co/tx/main/0xb8f28a9cace2bdf6d10809b477c9c83e81ce1a1b2f75f35ddd19690bbc6612aa/local-transactions) so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
 
@@ -685,9 +690,6 @@ const returned = await tx(contractFunction(...args, overrides));
   ]
 }
 ```
-
-
-[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://youtu.be/c04rrld1IiE)
 
 
 ---
