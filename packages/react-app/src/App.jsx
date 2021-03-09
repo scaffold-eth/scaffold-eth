@@ -283,10 +283,13 @@ function App(props) {
       let assetUpdate = []
       for(let a in assets){
         try{
-          //console.log("inspecting asset",a,assets[a],utils.id(a))
           const forSale = await readContracts.YourCollectible.forSale(utils.id(a))
-          //console.log("forSale",forSale)
-          assetUpdate.push({id:a,...assets[a],forSale:forSale})
+          let owner
+          if(!forSale){
+            const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a))
+            owner = await readContracts.YourCollectible.ownerOf(tokenId)
+          }
+          assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner})
         }catch(e){console.log(e)}
       }
       setLoadedAssets(assetUpdate)
@@ -303,19 +306,25 @@ function App(props) {
       cardActions.push(
         <div>
           <Button onClick={()=>{
-            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id) )
+            console.log("gasPrice,",gasPrice)
+            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
           }}>
             Mint
           </Button>
         </div>
       )
+    }else{
+      cardActions.push(
+        <div>
+          owned by: <Address
+            address={loadedAssets[a].owner}
+            ensProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            minimized={true}
+          />
+        </div>
+      )
     }
-
-    /*cardActions.push(
-      <div>
-        2
-      </div>
-    )*/
 
     galleryList.push(
       <Card style={{width:200}} key={loadedAssets[a].name}

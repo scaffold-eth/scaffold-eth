@@ -14,13 +14,14 @@ const main = async () => {
   let uploadedAssets = JSON.parse(fs.readFileSync("./uploaded.json"))
   let bytes32Array = []
   for(let a in uploadedAssets){
-    //console.log("IPFS hash:",a)
+    console.log(" 🏷 IPFS:",a)
     let bytes32 = utils.id(a)
-    //console.log("bytes32",bytes32)
+    console.log(" #️⃣ hashed:",bytes32)
     bytes32Array.push(bytes32)
   }
+  console.log(" \n")
 
-  // deploy the contract with all the artworks forSale 
+  // deploy the contract with all the artworks forSale
   const yourCollectible = await deploy("YourCollectible",[ bytes32Array ]) // <-- add in constructor args like line 19 vvvv
 
   //const secondContract = await deploy("SecondContract")

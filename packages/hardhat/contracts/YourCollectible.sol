@@ -21,13 +21,18 @@ contract YourCollectible is ERC721 {
     }
   }
 
+  //this marks an item in IPFS as "forsale"
   mapping (bytes32 => bool) public forSale;
+  //this lets you look up a token by the uri (assuming there is only one of each uri for now)
+  mapping (bytes32 => uint256) public uriToTokenId;
 
   function mintItem(string memory tokenURI)
       public
       returns (uint256)
   {
       bytes32 uriHash = keccak256(abi.encodePacked(tokenURI));
+
+      //make sure they are only minting something that is marked "forsale"
       require(forSale[uriHash],"NOT FOR SALE");
       forSale[uriHash]=false;
 
@@ -36,6 +41,8 @@ contract YourCollectible is ERC721 {
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
       _setTokenURI(id, tokenURI);
+
+      uriToTokenId[uriHash] = id;
 
       return id;
   }
