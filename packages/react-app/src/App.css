@@ -22,7 +22,25 @@
   width: auto;
 }
 
+/* Antd Overrides */
+.ant-btn-lg {
+  font-weight: 500;
+}
+.ant-btn-round.ant-btn-lg {
+  border-radius: 6px;
+}
+
+/* Utilities */
 .container {
   margin: 0 auto;
-  max-width: 1400px;
+  padding: 0 40px;
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
 }
