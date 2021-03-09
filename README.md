@@ -22,7 +22,7 @@
 
 #### [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges)
 - [ 🥩 Staking App](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
-- [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
+- [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
 #### [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials)
 - [ 🎟 Simple NFT ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
