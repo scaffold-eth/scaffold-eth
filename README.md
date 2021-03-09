@@ -1,6 +1,8 @@
 # 🏗 scaffold-eth - 🎫 Buyer Mints NFT
 
-> (Counterfactual NFT minting exmaple...)
+> (Counterfactual NFT minting example...)
+
+Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initial contract but then NFTs are only minted once a buyer wants them. (The buyer of the NFT pays the gas to mint. ~$55)
 
 ---
 
@@ -37,10 +39,18 @@ yarn chain
 
 ```
 
+---
+
+> ✏️ Edit the artwork manifest `artwork.js` with all of your art, then upload it to IPFS:
+
 > in a third terminal window:
+
 
 ```bash
 cd simple-nft-example
+
+yarn upload
+
 yarn deploy
 
 ```
@@ -49,24 +59,17 @@ yarn deploy
 
 ---
 
-> ✏️ Edit the mint script `mint.js` in `packages/hardhat/scripts` and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
+Your artwork from `artwork.json` (if uploaded and deployed correctly) should show a gallery of possible NFTS to mint:
 
-![image](https://user-images.githubusercontent.com/2653167/109536489-03e77a80-7a7b-11eb-8464-4876dc22547c.png)
+![image](https://user-images.githubusercontent.com/2653167/110538535-5fe87980-80e1-11eb-83aa-fe2b53f9c277.png)
 
 
-> in a terminal window run the **mint** script:
+💦 Use the faucet wallet icon in the bottom left of the frontend to give your address **$1000** in testnet ETH.
 
-```bash
+🎫 Try to "Mint" an NFT:
 
-yarn mint
+![image](https://user-images.githubusercontent.com/2653167/110538992-ec933780-80e1-11eb-9d15-aaa7efea698d.png)
 
-```
-
-![image](https://user-images.githubusercontent.com/2653167/109536688-44df8f00-7a7b-11eb-9382-7205f927c628.png)
-
-👀 You should see your collectibles show up if you minted to the correct address:
-
-![image](https://user-images.githubusercontent.com/2653167/109536827-6c365c00-7a7b-11eb-8482-2a7bb33a1bb5.png)
 
 👛 Open an *incognito* window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
@@ -74,12 +77,9 @@ yarn mint
 
 ![image](https://user-images.githubusercontent.com/2653167/109543971-35b10f00-7a84-11eb-832e-36d6b66afbe7.png)
 
-🎟 Send an NFT to the *incognito* window address:
+🎟 Send an NFT to the *incognito* window just to make sure it works.
 
-![image](https://user-images.githubusercontent.com/2653167/109536955-925bfc00-7a7b-11eb-855d-bf1523ac524d.png)
-
-
-<br/>
+---
 
 🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `YourCollectible`?
 
@@ -113,10 +113,20 @@ yarn mint
 
 ![image](https://user-images.githubusercontent.com/2653167/109537339-ff6f9180-7a7b-11eb-85b0-46cd72311d12.png)
 
+📝 Triple check your `artwork.json` file and run:
+
+```bash
+
+yarn upload
+
+```
+
 👨‍🎤 Deploy your NFT smart contract:
 
 ```bash
+
 yarn deploy
+
 ```
 ---
 ---
@@ -130,25 +140,6 @@ You should see the correct network in the frontend:
 ![image](https://user-images.githubusercontent.com/2653167/109539305-655d1880-7a7e-11eb-9385-c169645dc2b5.png)
 
 An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
-
-🎫 Ready to mint a batch of NFTs for reals?
-
-```bash
-yarn mint
-```
-await tenderlyVerify(
-  {contractName: "YourContract",
-   contractAddress: yourContract.address
-})
-```
-Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
-```
-yarn deploy --network NETWORK_OF_CHOICE
-```
-Once verified, they will then be available to view on Tenderly!
-
-![image](https://user-images.githubusercontent.com/2653167/109539529-a5240000-7a7e-11eb-8d58-6dd7a14e1454.png)
-
 
 ## ⚔️ Side Quests
 
@@ -206,6 +197,6 @@ yarn ipfs
 
 ![image](https://user-images.githubusercontent.com/2653167/109540985-7575f780-7a80-11eb-9ebd-39079cc2eb55.png)
 
-> 👩‍❤️‍👨 Share your public url with a friend and ask them for their address to send them a collectible :)
+> 👩‍❤️‍👨 Share your public url with a friend and ask them to buy a collectible 
 
-![transfernft2](https://user-images.githubusercontent.com/2653167/109542105-df42d100-7a81-11eb-9e3a-7cc1f1ee0fb7.gif)
+![buyerpaysgastomint mov](https://user-images.githubusercontent.com/2653167/110540616-f322ae80-80e3-11eb-9009-41e445fdd0ff.gif)
