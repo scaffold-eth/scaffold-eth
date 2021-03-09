@@ -1,6 +1,6 @@
-# 🏗 scaffold-eth - 🎟 Simple NFT Example
+# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
 
-> Mint and display NFTs on Ethereum with a full example app...
+> (Counterfactual NFT minting exmaple...)
 
 ---
 
@@ -10,11 +10,11 @@ required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://clas
 
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
+git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
 
-cd simple-nft-example
+cd buyer-mints-nft
 
-git checkout simple-nft-example
+git checkout buyer-mints-nft
 ```
 
 ```bash
