@@ -629,7 +629,7 @@ Once verified, they will then be available to view on Tenderly!
 
 
 
-[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://youtu.be/c04rrld1IiE)
+[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://www.youtube.com/watch?v=c04rrld1IiE&t=47s)
 
 
 #### Exporting local Transactions
