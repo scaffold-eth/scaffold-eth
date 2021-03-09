@@ -253,6 +253,18 @@ yarn deploy
 ---
 # 📺 Frontend
 
+> Edit your frontend `App.jsx` in `packages/react-app/src`
+
+📡 Make sure your `targetNetwork` is the same as the `deployedNetwork` where you deployed your contracts.
+
+![image](https://user-images.githubusercontent.com/2653167/110499459-7d9fe980-80b5-11eb-8713-3e4a025b1dcf.png)
+
+
+🤡 Adjust your debugging settings as needed:
+
+![image](https://user-images.githubusercontent.com/2653167/110499550-95776d80-80b5-11eb-8024-287878b180d5.png)
+
+
 ---
 
 ## 🔏 Providers:
@@ -267,11 +279,18 @@ The frontend has three different providers that provide different levels of acce
 
 `injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), or other injected wallet (generates [burner-provider](https://www.npmjs.com/package/burner-provider) on page load)
 
+![image](https://user-images.githubusercontent.com/2653167/110499705-bc35a400-80b5-11eb-826d-44815b89296c.png)
+
+
 ---
 
 ## 🖇 Hooks:
 
+![image](https://user-images.githubusercontent.com/2653167/110499834-dcfdf980-80b5-11eb-9d2d-de7046bf5c2b.png)
+
+
 Commonly used Ethereum hooks located in `packages/react-app/src/`:
+
 
 `usePoller(fn, delay)`: runs a function on app load and then on a custom interval
 
@@ -348,6 +367,9 @@ const ownerUpdates = useEventListener(
 ---
 
 ## 📦 Components:
+
+![image](https://user-images.githubusercontent.com/2653167/110500019-04ed5d00-80b6-11eb-97a4-74068fa90846.png)
+
 
 Your commonly used React Ethereum components located in `packages/react-app/src/`:
 
