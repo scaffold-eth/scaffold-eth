@@ -55,10 +55,20 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         {  /* use formatEther to display a BigNumber: */ }
         <h2>Your Balance: {yourLocalBalance?formatEther(yourLocalBalance):"..."}</h2>
 
-        OR
+        <div>OR</div>
 
         <Balance
           address={address}
+          provider={localProvider}
+          price={price}
+        />
+
+        <Divider/>
+
+        <div>🐳  Example Whale Balance:</div>
+
+        <Balance
+          balance={parseEther("1000")}
           provider={localProvider}
           price={price}
         />

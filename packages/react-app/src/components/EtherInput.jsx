@@ -75,9 +75,6 @@ export default function EtherInput(props) {
       if(!currentValue){
         setDisplay("");
       }
-      else {
-        setDisplay(currentValue);
-      }
     }
   ,[ currentValue ])
 
@@ -91,12 +88,17 @@ export default function EtherInput(props) {
       onChange={async e => {
         const newValue = e.target.value;
         if (mode === "USD") {
-          const ethValue = parseFloat(newValue) / props.price;
-          setValue(ethValue);
-          if (typeof props.onChange === "function") {
-            props.onChange(ethValue);
+          const possibleNewValue = parseFloat(newValue)
+          if(possibleNewValue){
+            const ethValue = possibleNewValue / props.price;
+            setValue(ethValue);
+            if (typeof props.onChange === "function") {
+              props.onChange(ethValue);
+            }
+            setDisplay(newValue);
+          }else{
+            setDisplay(newValue);
           }
-          setDisplay(newValue);
         } else {
           setValue(newValue);
           if (typeof props.onChange === "function") {

@@ -63,11 +63,18 @@ const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) 
   const encoded = abiEncodeArgs(deployed, contractArgs);
   fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
 
+  let extraGasInfo = ""
+  if(deployed&&deployed.deployTransaction){
+    const gasUsed = deployed.deployTransaction.gasLimit.mul(deployed.deployTransaction.gasPrice)
+    extraGasInfo = "("+utils.formatEther(gasUsed)+" ETH)"
+  }
+
   console.log(
     " 📄",
     chalk.cyan(contractName),
     "deployed to:",
     chalk.magenta(deployed.address),
+    chalk.grey(extraGasInfo)
   );
 
   if (!encoded || encoded.length <= 2) return deployed;
