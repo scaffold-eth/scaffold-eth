@@ -328,7 +328,10 @@ export default function NftyWallet(props) {
 
         <Switch>
           <Route exact path="/">
-            <Homepage />
+            <Homepage
+              localProvider={props.localProvider}
+              injectedProvider={props.injectedProvider}
+            />
           </Route>
           <Route path="/debug">
             <DebugContracts {...props} />

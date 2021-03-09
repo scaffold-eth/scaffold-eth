@@ -1,9 +1,10 @@
 import { Button } from 'antd';
 import React from 'react';
 import { NavLink } from 'react-router-dom';
+import CuratedInks from '../CuratedInks';
 import '../styles/homepage.css';
 
-function Homepage() {
+function Homepage({ localProvider, injectedProvider }) {
   return (
     <div className="container">
       <div className="banner">
@@ -19,15 +20,13 @@ function Homepage() {
                 Upload Your Art
               </Button>
             </NavLink>
-            &nbsp; &nbsp; &nbsp;
-            <NavLink to="/curated">
-              <Button type="default" size="large" shape="round">
-                View Curated Art
-              </Button>
-            </NavLink>
           </p>
         </div>
       </div>
+      <CuratedInks
+        localProvider={localProvider}
+        injectedProvider={injectedProvider}
+      />
     </div>
   );
 }

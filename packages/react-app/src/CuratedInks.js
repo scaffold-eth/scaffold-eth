@@ -9,10 +9,10 @@ import {useUserProvider} from "./hooks";
 
 const ADMIN_ADDRESSES = ["0x859c736870af2abe057265a7a5685ae7b6c94f15"];
 
-export default function CuratedInks(props) {
+export default function CuratedInks({ localProvider, injectedProvider }) {
   let [allInks, setAllInks] = useState([]);
   let [inks, setInks] = useState({});
-  const userProvider = useUserProvider(props.localProvider, props.injectedProvider);
+  const userProvider = useUserProvider(localProvider, injectedProvider);
   console.log("userProvider: ", userProvider);
   const { loading, error, data, fetchMore } = useQuery(ADMIN_INKS_QUERY, {
     variables: {

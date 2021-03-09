@@ -13,9 +13,9 @@ function Navigation({ address }) {
         <Col>
           <div className="flex-center">
             <ul className="nav-menu">
-              <li>
+              {/* <li>
                 <NavLink to="/curated">Curated Art</NavLink>
-              </li>
+              </li> */}
               <li>
                 <NavLink to={'/artist/' + address}>My Art</NavLink>
               </li>
