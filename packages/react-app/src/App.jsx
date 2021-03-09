@@ -29,7 +29,7 @@ import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants"
     (this is your connection to the main Ethereum network for ENS etc.)
 
 
-    📡 EXTERNAL CONTRACTS:
+    🌏 EXTERNAL CONTRACTS:
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
@@ -63,7 +63,7 @@ const blockExplorer = targetNetwork.blockExplorer;
 
 
 function App(props) {
-  
+
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork,mainnetProvider);
