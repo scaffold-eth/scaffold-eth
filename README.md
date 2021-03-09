@@ -608,6 +608,7 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
+
 ### Verifying contracts on Tenderly
 scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the following networks:
 ```
@@ -685,6 +686,10 @@ const returned = await tx(contractFunction(...args, overrides));
 }
 ```
 
+
+[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://youtu.be/c04rrld1IiE)
+
+
 ---
 
 ## 🌐 Etherscan
@@ -729,11 +734,6 @@ You will need to update the `constants.js` in `packages/react-app/src` with [you
 
 
 ## 📠 Legacy Content
-
-
-[<H6>⏱ Quickstart: 🔬 Smart Contract Sandbox</H6>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
-
-Learn how to [quickly iterate on a smart contract app](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox) using the <b>\<Contract /\></b> component.
 
 
 [<h5>🧫 Building on Ethereum in 2020 (research for this repo)</h5>  ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
