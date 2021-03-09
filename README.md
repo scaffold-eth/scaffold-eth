@@ -255,7 +255,7 @@ yarn deploy
 
 > Edit your frontend `App.jsx` in `packages/react-app/src`
 
-📡 Make sure your `targetNetwork` is the same as the `deployedNetwork` (where you deployed your contracts).
+📡 Make sure your `targetNetwork` is the same as 👷‍♀️ HardHat's `defaultNetwork` (where you deployed your contracts).
 
 ![image](https://user-images.githubusercontent.com/2653167/110500412-68778a80-80b6-11eb-91bd-194d47d62771.png)
 
