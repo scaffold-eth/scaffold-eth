@@ -255,9 +255,9 @@ yarn deploy
 
 > Edit your frontend `App.jsx` in `packages/react-app/src`
 
-📡 Make sure your `targetNetwork` is the same as the `deployedNetwork` where you deployed your contracts.
+📡 Make sure your `targetNetwork` is the same as the `deployedNetwork` (where you deployed your contracts).
 
-![image](https://user-images.githubusercontent.com/2653167/110499459-7d9fe980-80b5-11eb-8713-3e4a025b1dcf.png)
+![image](https://user-images.githubusercontent.com/2653167/110500412-68778a80-80b6-11eb-91bd-194d47d62771.png)
 
 
 🤡 Adjust your debugging settings as needed:
