@@ -3,6 +3,9 @@ const fs = require("fs");
 const chalk = require("chalk");
 
 require("@nomiclabs/hardhat-waffle");
+require("@tenderly/hardhat-tenderly")
+
+require("@nomiclabs/hardhat-etherscan");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -42,6 +45,7 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
+      //gasPrice: 125000000000,//you can adjust gasPrice locally to see how much it will cost on production 
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -95,16 +99,7 @@ module.exports = {
   solidity: {
     compilers: [
       {
-        version: "0.8.0",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200
-          }
-        }
-      },
-      {
-        version: "0.5.5",
+        version: "0.7.6",
         settings: {
           optimizer: {
             enabled: true,
@@ -124,6 +119,11 @@ module.exports = {
     ],
 
   },
+  etherscan: {
+    // Your API key for Etherscan
+    // Obtain one at https://etherscan.io/
+    apiKey: "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8"
+  }
 };
 
 const DEBUG = false;
@@ -208,7 +208,7 @@ task("generate", "Create a mnemonic for builder deploys", async (_, { ethers }) 
   fs.writeFileSync("./mnemonic.txt", mnemonic.toString())
 });
 
-task("mine", "Looks for a deployer account that will give leading zeros")
+task("mineContractAddress", "Looks for a deployer account that will give leading zeros")
   .addParam("searchFor", "String to search for")
   .setAction(async (taskArgs, { network, ethers }) => {
 

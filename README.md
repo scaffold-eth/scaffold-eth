@@ -4,14 +4,17 @@
 
 ---
 
-## quickstart
+## 🏃‍♀️ Quick Start
+
+required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
 
-git checkout simple-nft-example
-
 cd simple-nft-example
+
+git checkout simple-nft-example
 ```
 
 ```bash
@@ -46,15 +49,15 @@ yarn deploy
 
 ---
 
-> ✏️ Edit the mint script `mint.js` in `packages/hardhat/scripts` and update the `toAddress` to your frontend address (wallet address in the top right).
+> ✏️ Edit the mint script `mint.js` in `packages/hardhat/scripts` and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
 
 ![image](https://user-images.githubusercontent.com/2653167/109536489-03e77a80-7a7b-11eb-8464-4876dc22547c.png)
 
 
-> in a fourth terminal window run the mint script:
+> in a terminal window run the **mint** script:
 
 ```bash
-cd simple-nft-example
+
 yarn mint
 
 ```
@@ -67,12 +70,16 @@ yarn mint
 
 👛 Open an *incognito* window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
+⛽️ Grab some gas for each account using the faucet:
+
+![image](https://user-images.githubusercontent.com/2653167/109543971-35b10f00-7a84-11eb-832e-36d6b66afbe7.png)
+
 🎟 Send an NFT to the *incognito* window address:
 
 ![image](https://user-images.githubusercontent.com/2653167/109536955-925bfc00-7a7b-11eb-855d-bf1523ac524d.png)
 
 
----
+<br/>
 
 🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `YourCollectible`?
 
@@ -85,7 +92,9 @@ yarn mint
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 
----
+🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
+
+⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
 
 ## 📡 Deploy NFT smart contract!
 
@@ -100,7 +109,7 @@ yarn mint
 ![image](https://user-images.githubusercontent.com/2653167/109537873-a2c0a680-7a7c-11eb-95de-729dbf3399a3.png)
 
 
-👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](instantwallet.io) to fund your account via QR code)
+👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](https://instantwallet.io) to fund your account via QR code)
 
 ![image](https://user-images.githubusercontent.com/2653167/109537339-ff6f9180-7a7b-11eb-85b0-46cd72311d12.png)
 
@@ -109,6 +118,7 @@ yarn mint
 ```bash
 yarn deploy
 ```
+---
 ---
 
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
@@ -119,17 +129,26 @@ You should see the correct network in the frontend:
 
 ![image](https://user-images.githubusercontent.com/2653167/109539305-655d1880-7a7e-11eb-9385-c169645dc2b5.png)
 
----
+An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
 
 🎫 Ready to mint a batch of NFTs for reals?
 
 ```bash
 yarn mint
 ```
+await tenderlyVerify(
+  {contractName: "YourContract",
+   contractAddress: yourContract.address
+})
+```
+Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
+```
+yarn deploy --network NETWORK_OF_CHOICE
+```
+Once verified, they will then be available to view on Tenderly!
 
 ![image](https://user-images.githubusercontent.com/2653167/109539529-a5240000-7a7e-11eb-8d58-6dd7a14e1454.png)
 
----
 
 ## ⚔️ Side Quests
 
@@ -176,11 +195,11 @@ yarn build
 
 yarn surge
 
-OR
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
 
 yarn s3
 
-OR
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 yarn ipfs
 ```
