@@ -104,6 +104,7 @@ export default function LikeButton(props) {
                     description: (
                       <a
                         target="_blank"
+                        rel="noopener noreferrer"
                         href={
                           "https://blockscout.com/poa/xdai/tx/" + result.hash
                         }

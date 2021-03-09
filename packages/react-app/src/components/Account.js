@@ -1,20 +1,20 @@
-import React, { useEffect } from "react";
-import { ethers } from "ethers";
-import BurnerProvider from "burner-provider";
-import Web3Modal from "web3modal";
-import { Balance, Address, Wallet } from ".";
-import { usePoller } from "../hooks";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button } from "antd";
-import { RelayProvider } from "@opengsn/gsn";
+import React, { useEffect } from 'react';
+import { ethers } from 'ethers';
+import BurnerProvider from 'burner-provider';
+import Web3Modal from 'web3modal';
+import { Balance, Address, Wallet } from '.';
+import { usePoller } from '../hooks';
+import WalletConnectProvider from '@walletconnect/web3-provider';
+import { Button } from 'antd';
+import { RelayProvider } from '@opengsn/gsn';
 //import Fortmatic from "fortmatic";
 //import Portis from "@portis/web3";
-const Web3HttpProvider = require("web3-providers-http");
+const Web3HttpProvider = require('web3-providers-http');
 
-const INFURA_ID = "9ea7e149b122423991f56257b882261c"; // MY INFURA_ID, SWAP IN YOURS!
+const INFURA_ID = '9ea7e149b122423991f56257b882261c'; // MY INFURA_ID, SWAP IN YOURS!
 
 const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
+  network: 'mainnet', // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
@@ -41,25 +41,25 @@ const web3Modal = new Web3Modal({
 
 export default function Account(props) {
   let gsnConfig;
-  if (process.env.REACT_APP_USE_GSN === "true") {
+  if (process.env.REACT_APP_USE_GSN === 'true') {
     let relayHubAddress;
     let stakeManagerAddress;
     let paymasterAddress;
     let chainId;
-    if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-      relayHubAddress = "0xA58B6fC9264ce507d0B0B477ceE31674341CB27e";
-      stakeManagerAddress = "0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B";
-      paymasterAddress = "0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC";
+    if (process.env.REACT_APP_NETWORK_NAME === 'xdai') {
+      relayHubAddress = '0xA58B6fC9264ce507d0B0B477ceE31674341CB27e';
+      stakeManagerAddress = '0xd1Fa0c7E52440078cC04a9e99beA727f3e0b981B';
+      paymasterAddress = '0x2ebc08948d0DD5D034FBE0b1084C65f57eF7D0bC';
       chainId = 100;
-    } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
-      relayHubAddress = "0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6";
-      stakeManagerAddress = "0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83";
-      paymasterAddress = "0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619";
+    } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
+      relayHubAddress = '0xA17C8F25668a5748E9B80ED8Ff842f8909258bF6';
+      stakeManagerAddress = '0xbE9B5be78bdB068CaE705EdF1c18F061698B6F83';
+      paymasterAddress = '0x205091FE2AFAEbCB8843EDa0A8ee28B170aa0619';
       chainId = 42;
     } else {
-      relayHubAddress = require(".././gsn/RelayHub.json").address;
-      stakeManagerAddress = require(".././gsn/StakeManager.json").address;
-      paymasterAddress = require(".././gsn/Paymaster.json").address;
+      relayHubAddress = require('.././gsn/RelayHub.json').address;
+      stakeManagerAddress = require('.././gsn/StakeManager.json').address;
+      paymasterAddress = require('.././gsn/Paymaster.json').address;
       //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
     }
 
@@ -88,21 +88,21 @@ export default function Account(props) {
     if (
       !props.injectedProvider &&
       props.localProvider &&
-      typeof props.setInjectedGsnSigner == "function" &&
-      typeof props.setInjectedProvider == "function" &&
+      typeof props.setInjectedGsnSigner == 'function' &&
+      typeof props.setInjectedProvider == 'function' &&
       !web3Modal.cachedProvider
     ) {
       let burner;
-      if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-        burner = new BurnerProvider("https://dai.poa.network");
-      } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
+      if (process.env.REACT_APP_NETWORK_NAME === 'xdai') {
+        burner = new BurnerProvider('https://dai.poa.network');
+      } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
         burner = new BurnerProvider(
-          "https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c"
+          'https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c'
         ); //new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
       } else {
-        burner = new BurnerProvider("http://localhost:8546"); //
+        burner = new BurnerProvider('http://localhost:8546'); //
       }
-      console.log("🔥📡 burner", burner);
+      console.log('🔥📡 burner', burner);
       updateProviders(burner);
     } else {
       pollInjectedProvider();
@@ -113,17 +113,17 @@ export default function Account(props) {
   }, [props.injectedProvider]);
 
   const updateProviders = async (provider) => {
-    console.log("UPDATE provider:", provider);
+    console.log('UPDATE provider:', provider);
     let newWeb3Provider = await new ethers.providers.Web3Provider(provider);
     props.setInjectedProvider(newWeb3Provider);
 
-    if (process.env.REACT_APP_USE_GSN === "true") {
+    if (process.env.REACT_APP_USE_GSN === 'true') {
       if (provider._metamask) {
         //console.log('using metamask')
         gsnConfig = {
           ...gsnConfig,
           gasPriceFactorPercent: 70,
-          methodSuffix: "_v4",
+          methodSuffix: '_v4',
           jsonStringifyRequest: true /*, chainId: provider.networkVersion*/,
         };
       }
@@ -141,7 +141,7 @@ export default function Account(props) {
       let accounts = await props.injectedProvider.listAccounts();
       if (accounts && accounts[0] && accounts[0] !== props.account) {
         //console.log("ADDRESS: ",accounts[0])
-        if (typeof props.setAddress == "function")
+        if (typeof props.setAddress == 'function')
           props.setAddress(accounts[0]);
       }
     }
@@ -155,7 +155,7 @@ export default function Account(props) {
 
   const loadWeb3Modal = async () => {
     const provider = await web3Modal.connect();
-    if (typeof props.setInjectedProvider == "function") {
+    if (typeof props.setInjectedProvider == 'function') {
       updateProviders(provider);
     }
     pollInjectedProvider();
@@ -163,7 +163,7 @@ export default function Account(props) {
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
-    window.localStorage.removeItem("walletconnect");
+    window.localStorage.removeItem('walletconnect');
     //console.log("Cleared cache provider!?!",clear)
     setTimeout(() => {
       window.location.reload();
@@ -171,14 +171,14 @@ export default function Account(props) {
   };
 
   let modalButtons = [];
-  if (typeof props.setInjectedProvider == "function") {
+  if (typeof props.setInjectedProvider == 'function') {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
         <Button
           key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape={"round"}
-          size={"large"}
+          style={{ verticalAlign: 'top', marginLeft: 8, marginTop: 4 }}
+          shape={'round'}
+          size={'large'}
           onClick={logoutOfWeb3Modal}
         >
           logout
@@ -188,10 +188,10 @@ export default function Account(props) {
       modalButtons.push(
         <Button
           key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape={"round"}
-          size={"large"}
-          type={props.minimized ? "default" : "primary"}
+          style={{ verticalAlign: 'top', marginLeft: 8, marginTop: 4 }}
+          shape={'round'}
+          size={'large'}
+          type={props.minimized ? 'default' : 'primary'}
           onClick={loadWeb3Modal}
         >
           connect
@@ -204,16 +204,16 @@ export default function Account(props) {
     const checkForProvider = async () => {
       if (web3Modal.cachedProvider) {
         try {
-          if (web3Modal.cachedProvider === "injected") {
+          if (web3Modal.cachedProvider === 'injected') {
             const accounts = await window.ethereum.request({
-              method: "eth_accounts",
+              method: 'eth_accounts',
             });
-            console.log("injected accounts", accounts);
+            console.log('injected accounts', accounts);
             if (!accounts.length) {
               await web3Modal.clearCachedProvider();
-              window.localStorage.removeItem("walletconnect");
+              window.localStorage.removeItem('walletconnect');
               createBurnerIfNoAddress();
-              throw new Error("Injected provider is not accessible");
+              throw new Error('Injected provider is not accessible');
             } else {
               loadWeb3Modal();
             }
@@ -222,26 +222,26 @@ export default function Account(props) {
             loadWeb3Modal();
           }
         } catch (e) {
-          console.log("Could not get a wallet connection", e);
+          console.log('Could not get a wallet connection', e);
           return;
         }
       }
     };
     checkForProvider();
 
-    if (process.env.REACT_APP_USE_GSN === "true") {
+    if (process.env.REACT_APP_USE_GSN === 'true') {
       const createBurnerMetaSigner = async () => {
         let origProvider;
-        if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-          origProvider = new Web3HttpProvider("https://dai.poa.network");
-        } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
+        if (process.env.REACT_APP_NETWORK_NAME === 'xdai') {
+          origProvider = new Web3HttpProvider('https://dai.poa.network');
+        } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
           origProvider = new ethers.providers.InfuraProvider(
-            "kovan",
-            "9ea7e149b122423991f56257b882261c"
+            'kovan',
+            '9ea7e149b122423991f56257b882261c'
           );
         } else {
           origProvider = new ethers.providers.JsonRpcProvider(
-            "http://localhost:8546"
+            'http://localhost:8546'
           );
         }
         const gsnProvider = new RelayProvider(origProvider, gsnConfig);
@@ -258,31 +258,26 @@ export default function Account(props) {
     }
   }, []);
 
-  let display = "";
-  display = (
-    <span>
-      {props.address ? (
-        <Address value={props.address} ensProvider={props.mainnetProvider} />
-      ) : (
-        "Connecting..."
-      )}
-      <Balance
-        address={props.address}
-        provider={props.localProvider}
-        dollarMultiplier={props.price}
-      />
-      <Wallet
-        address={props.address}
-        provider={props.injectedProvider}
-        ensProvider={props.mainnetProvider}
-        price={props.price}
-      />
-    </span>
-  );
-
   return (
     <div>
-      {display}
+      <span>
+        {props.address ? (
+          <Address value={props.address} ensProvider={props.mainnetProvider} />
+        ) : (
+          'Connecting...'
+        )}
+        <Balance
+          address={props.address}
+          provider={props.localProvider}
+          dollarMultiplier={props.price}
+        />
+        <Wallet
+          address={props.address}
+          provider={props.injectedProvider}
+          ensProvider={props.mainnetProvider}
+          price={props.price}
+        />
+      </span>
       {modalButtons}
     </div>
   );

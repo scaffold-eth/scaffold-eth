@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 
-import { Card, Row, Col, Input, Button, Divider } from "antd";
+import { Card, Row, Col, Input, Divider } from "antd";
 import { useBalance, useContractLoader } from "../hooks";
-import { Account, Address } from ".";
+import { Account } from ".";
 
 const tryToDisplay = (thing) => {
   if (thing && thing.toNumber) {

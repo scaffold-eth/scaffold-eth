@@ -12,40 +12,26 @@ import {
   Space,
   Descriptions,
   notification,
-  message,
-  Badge,
-  Skeleton,
-  InputNumber,
 } from "antd";
 import { AddressInput, Address } from "./components";
 import {
   SendOutlined,
   QuestionCircleOutlined,
   RocketOutlined,
-  StarTwoTone,
-  LikeTwoTone,
-  ShoppingCartOutlined,
-  ShopOutlined,
   SyncOutlined,
   LinkOutlined,
-  PlaySquareOutlined,
 } from "@ant-design/icons";
-import { useContractLoader, usePoller } from "./hooks";
+import { useContractLoader } from "./hooks";
 import {
-  Transactor,
   getFromIPFS,
-  getSignature,
   transactionHandler,
 } from "./helpers";
 import SendInkForm from "./SendInkForm.js";
 import LikeButton from "./LikeButton.js";
 import NiftyShop from "./NiftyShop.js";
 import UpgradeInkButton from "./UpgradeInkButton.js";
-import axios from "axios";
 import { useQuery } from "react-apollo";
 import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries";
-import CanvasDraw from "react-canvas-draw";
-import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from "apollo-boost";
 
 const mainClient = new ApolloClient({

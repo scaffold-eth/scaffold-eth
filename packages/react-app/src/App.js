@@ -1,20 +1,18 @@
-import React, { useState } from "react";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
-import ApolloClient, { gql, InMemoryCache } from "apollo-boost";
-import { ApolloProvider, Query } from "react-apollo";
-import "antd/dist/antd.css";
-import { Row, Col, Button, Spin } from "antd";
-import { ethers } from "ethers";
-import { Provider as JotaiProvider } from "jotai";
-import "./App.css";
-import { useContractLoader } from "./hooks";
-import { Ramp, Faucet } from "./components";
-
-import NftyWallet from "./NftyWallet.js";
+import { Button, Col, Row, Spin } from 'antd';
+import 'antd/dist/antd.css';
+import ApolloClient, { gql, InMemoryCache } from 'apollo-boost';
+import { ethers } from 'ethers';
+import { Provider as JotaiProvider } from 'jotai';
+import React, { useState } from 'react';
+import { ApolloProvider } from 'react-apollo';
+import './App.css';
+import { Faucet, Ramp } from './components';
+import { useContractLoader } from './hooks';
+import NftyWallet from './NftyWallet.js';
 
 if (!process.env.REACT_APP_GRAPHQL_ENDPOINT) {
   throw new Error(
-    "REACT_APP_GRAPHQL_ENDPOINT environment variable not defined"
+    'REACT_APP_GRAPHQL_ENDPOINT environment variable not defined'
   );
 }
 
@@ -34,62 +32,43 @@ const INKS_QUERY = gql`
 `;
 
 const mainnetProvider = new ethers.providers.InfuraProvider(
-  "mainnet",
-  "9ea7e149b122423991f56257b882261c"
+  'mainnet',
+  '9ea7e149b122423991f56257b882261c'
 );
 let kovanProvider;
 
 let localProvider;
-let networkBanner = <></>;
+let networkBanner = null;
 if (process.env.REACT_APP_NETWORK_NAME) {
-  if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-    console.log("🎉 XDAINETWORK + 🚀 Mainnet Ethereum");
+  if (process.env.REACT_APP_NETWORK_NAME === 'xdai') {
+    console.log('🎉 XDAINETWORK + 🚀 Mainnet Ethereum');
     localProvider = mainnetProvider;
     kovanProvider = new ethers.providers.JsonRpcProvider(
-      "https://dai.poa.network"
+      'https://dai.poa.network'
     );
-  } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
-    console.log("THIS.IS.SOKOL");
+  } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
+    console.log('THIS.IS.SOKOL');
     localProvider = new ethers.providers.JsonRpcProvider(
-      "https://sokol.poa.network"
+      'https://sokol.poa.network'
     );
     kovanProvider = new ethers.providers.InfuraProvider(
-      "kovan",
-      "9ea7e149b122423991f56257b882261c"
+      'kovan',
+      '9ea7e149b122423991f56257b882261c'
     );
   } else {
     localProvider = new ethers.providers.InfuraProvider(
       process.env.REACT_APP_NETWORK_NAME,
-      "9ea7e149b122423991f56257b882261c"
+      '9ea7e149b122423991f56257b882261c'
     );
     kovanProvider = new ethers.providers.InfuraProvider(
-      "kovan",
-      "9ea7e149b122423991f56257b882261c"
+      'kovan',
+      '9ea7e149b122423991f56257b882261c'
     );
   }
 } else {
-  networkBanner = (
-    <div
-      style={{
-        backgroundColor: "#666666",
-        color: "#FFFFFF",
-        position: "absolute",
-        left: 0,
-        top: 0,
-        width: "100%",
-        fontSize: 54,
-        textAlign: "left",
-        paddingLeft: 32,
-        opacity: 0.125,
-        filter: "blur(1.2px)",
-      }}
-    >
-      {"localhost"}
-    </div>
-  );
   // localProvider = mainnetProvider; //new ethers.providers.JsonRpcProvider("http://localhost:8545");
-  localProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546");
-  kovanProvider = new ethers.providers.JsonRpcProvider("http://localhost:8546"); // yarn run sidechain
+  localProvider = new ethers.providers.JsonRpcProvider('http://localhost:8546');
+  kovanProvider = new ethers.providers.JsonRpcProvider('http://localhost:8546'); // yarn run sidechain
 }
 
 function App() {
@@ -107,100 +86,93 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <JotaiProvider>
-        <Router>
-          <div className="App">{networkBanner}</div>
-          <Switch>
-            <Route path="/">
-              <NftyWallet
-                address={address}
-                setAddress={setAddress}
-                localProvider={localProvider}
-                injectedProvider={injectedProvider}
-                setInjectedProvider={setInjectedProvider}
-                mainnetProvider={mainnetProvider}
-                price={price}
-                minimized={true}
-                readContracts={readContracts}
-                readKovanContracts={readKovanContracts}
-                gasPrice={gasPrice}
-                kovanProvider={kovanProvider}
-                metaProvider={metaProvider}
-                setMetaProvider={setMetaProvider}
-              />
-              <div
+        <NftyWallet
+          address={address}
+          setAddress={setAddress}
+          localProvider={localProvider}
+          injectedProvider={injectedProvider}
+          setInjectedProvider={setInjectedProvider}
+          mainnetProvider={mainnetProvider}
+          price={price}
+          minimized={true}
+          readContracts={readContracts}
+          readKovanContracts={readKovanContracts}
+          gasPrice={gasPrice}
+          kovanProvider={kovanProvider}
+          metaProvider={metaProvider}
+          setMetaProvider={setMetaProvider}
+        />
+        <div
+          style={{
+            position: 'fixed',
+            textAlign: 'left',
+            left: 0,
+            bottom: 20,
+            padding: 10,
+          }}
+        >
+          <Row gutter={8}>
+            {!process.env.REACT_APP_NETWORK_NAME ||
+            process.env.REACT_APP_NETWORK_NAME === 'xdai' ? (
+              ''
+            ) : (
+              <>
+                <Col>
+                  <Ramp price={price} address={address} />
+                </Col>
+                <Col>
+                  <Button
+                    onClick={() => {
+                      window.open('https://ethgasstation.info/');
+                    }}
+                    size="large"
+                    shape="round"
+                  >
+                    <span
+                      style={{ marginRight: 8 }}
+                      role="img"
+                      aria-label="Fuel_pump"
+                    >
+                      ⛽️
+                    </span>
+                    {parseInt(gasPrice) / 10 ** 9}g
+                  </Button>
+                </Col>
+              </>
+            )}
+            {process.env.REACT_APP_NETWORK_NAME ? (
+              ''
+            ) : (
+              <>
+                <Col>
+                  <Faucet
+                    localProvider={kovanProvider}
+                    placeholder={'sidechain faucet'}
+                    price={price}
+                  />
+                </Col>
+              </>
+            )}
+          </Row>
+        </div>
+        <div style={{ padding: 50 }}>
+          <a
+            href="https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            {readContracts ? (
+              ''
+            ) : (
+              <Spin
                 style={{
-                  position: "fixed",
-                  textAlign: "left",
-                  left: 0,
-                  bottom: 20,
-                  padding: 10,
+                  padding: 64,
+                  opacity: metaProvider ? 0.125 : 0.3,
                 }}
-              >
-                <Row gutter={8}>
-                  {!process.env.REACT_APP_NETWORK_NAME ||
-                  process.env.REACT_APP_NETWORK_NAME === "xdai" ? (
-                    ""
-                  ) : (
-                    <>
-                      <Col>
-                        <Ramp price={price} address={address} />
-                      </Col>
-                      <Col>
-                        <Button
-                          onClick={() => {
-                            window.open("https://ethgasstation.info/");
-                          }}
-                          size="large"
-                          shape="round"
-                        >
-                          <span
-                            style={{ marginRight: 8 }}
-                            role="img"
-                            aria-label="Fuel_pump"
-                          >
-                            ⛽️
-                          </span>
-                          {parseInt(gasPrice) / 10 ** 9}g
-                        </Button>
-                      </Col>
-                    </>
-                  )}
-                  {process.env.REACT_APP_NETWORK_NAME ? (
-                    ""
-                  ) : (
-                    <>
-                      <Col>
-                        <Faucet
-                          localProvider={kovanProvider}
-                          placeholder={"sidechain faucet"}
-                          price={price}
-                        />
-                      </Col>
-                    </>
-                  )}
-                </Row>
-              </div>
-              <div style={{ padding: 50 }}>
-                <a
-                  href="https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  {readContracts ? (
-                    ""
-                  ) : (
-                    <Spin
-                      style={{
-                        padding: 64,
-                        opacity: metaProvider ? 0.125 : 0.3,
-                      }}
-                    />
-                  )}
-                </a>
-              </div>
-            </Route>
-          </Switch>
-        </Router>
+              />
+            )}
+          </a>
+        </div>
       </JotaiProvider>
     </ApolloProvider>
   );

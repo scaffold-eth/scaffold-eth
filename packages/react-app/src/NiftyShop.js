@@ -11,7 +11,7 @@ import {
 } from "antd";
 import { ShoppingCartOutlined, ShopOutlined } from "@ant-design/icons";
 import { useContractLoader } from "./hooks";
-import { Transactor, transactionHandler } from "./helpers";
+import { transactionHandler } from "./helpers";
 
 export default function NiftyShop(props) {
   const [buying, setBuying] = useState(false);
@@ -257,7 +257,7 @@ export default function NiftyShop(props) {
         onConfirm={buyInk}
         okText="Purchase"
         cancelText="Cancel"
-        icon=<ShoppingCartOutlined />
+        icon={<ShoppingCartOutlined />}
       >
         <Button type="primary" style={{ marginBottom: 12 }}>
           <ShoppingCartOutlined />

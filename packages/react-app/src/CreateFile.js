@@ -1,36 +1,21 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState } from "react";
 import { useHistory } from "react-router-dom";
 import "antd/dist/antd.css";
 import "./App.css";
 import {
-  UndoOutlined,
-  ClearOutlined,
-  PlaySquareOutlined,
-  HighlightOutlined,
-  BgColorsOutlined,
-  BorderOutlined,
-} from "@ant-design/icons";
-import {
-  Row,
   Button,
   Input,
   InputNumber,
   Form,
   message,
-  Col,
-  Slider,
-  Space, Typography,
+  Typography,
 } from "antd";
-import { useLocalStorage } from "./hooks";
 import { addToIPFS, transactionHandler } from "./helpers";
-import CanvasDraw from "react-canvas-draw";
 import {
   SketchPicker,
   CirclePicker,
   TwitterPicker,
-  AlphaPicker,
 } from "react-color";
-import LZ from "lz-string";
 import { useAtom } from "jotai";
 import { Uploader } from "./components";
 import { imageUrlAtom } from "./hooks/Uploader";

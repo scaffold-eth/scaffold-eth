@@ -1,7 +1,3 @@
-.App {
-  text-align: center;
-}
-
 #WEB3_CONNECT_MODAL_ID {
   z-index: 999;
   position: absolute;
@@ -24,4 +20,9 @@
 
 .avatar-uploader {
   width: auto;
+}
+
+.container {
+  margin: 0 auto;
+  max-width: 1400px;
 }

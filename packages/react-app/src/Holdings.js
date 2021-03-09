@@ -10,7 +10,7 @@ import { isBlocklisted } from "./helpers";
 import { Link } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
 import { SendOutlined, RocketOutlined } from "@ant-design/icons";
-import { AddressInput, Loader } from "./components";
+import { Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
 import TransferOwnershipForm from "./TransferOwnershipForm"
 import UpgradeInkButton from "./UpgradeInkButton.js";

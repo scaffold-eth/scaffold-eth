@@ -4,7 +4,7 @@ import { useParams, Link, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
 import { ARTISTS_QUERY } from "./apollo/queries";
 import { isBlocklisted } from "./helpers";
-import { Row, Col, Divider, Button, Popover, Form, notification } from "antd";
+import { Row, Col, Divider, Button, Form, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Blockies from "react-blockies";
 import { AddressInput, Loader } from "./components";

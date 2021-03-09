@@ -1,0 +1,30 @@
+.site-nav {
+  margin-bottom: 40px;
+  padding: 20px 30px;
+}
+
+.nav-menu {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.nav-menu li,
+.nav-menu li a {
+  display: inline-block;
+}
+
+.nav-menu li {
+  margin: 0 10px;
+}
+
+.nav-menu li a {
+  padding: 5px 10px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.nav-menu li a:hover {
+  text-decoration: underline;
+}
