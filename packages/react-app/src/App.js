@@ -104,6 +104,7 @@ function App() {
         />
         <div
           style={{
+            zIndex: 10,
             position: 'fixed',
             textAlign: 'left',
             left: 0,
@@ -155,23 +156,14 @@ function App() {
             )}
           </Row>
         </div>
-        <div style={{ padding: 50 }}>
-          <a
-            href="https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            {readContracts ? (
-              ''
-            ) : (
-              <Spin
-                style={{
-                  padding: 64,
-                  opacity: metaProvider ? 0.125 : 0.3,
-                }}
-              />
-            )}
-          </a>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          {!readContracts && (
+            <Spin
+              style={{
+                opacity: metaProvider ? 0.125 : 0.3,
+              }}
+            />
+          )}
         </div>
       </JotaiProvider>
     </ApolloProvider>

@@ -1,0 +1,29 @@
+.inks-grid {
+  margin: 80px 0;
+  display: grid;
+  gap: 30px;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+}
+
+.ink-item {
+  border: 1px solid #eee;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  overflow: hidden;
+}
+
+.ink-item img {
+  max-width: 100%;
+  height: auto;
+}
+
+.ink-item__meta {
+  padding: 20px;
+}
+
+.ink-item__title {
+  margin: 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 600;
+}
