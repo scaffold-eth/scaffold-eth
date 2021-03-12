@@ -4,36 +4,53 @@
 
 ---
 
-| <B> [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start) </B> |
-| --- |
 
+#### [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start)
 
-| <B> [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity) </B> | | | |
-| --- | --- | --- | --- |
-| [ 🔏 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers) | [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks) | [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)  | <B> [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy) </B> |
-|  [ 📺 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library) |  [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers) | [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)  | <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B> |
+#### [ 🔭 Learning Solidity ](https://github.com/austintgriffith/scaffold-eth#-learning-solidity)
 
+#### [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy)
 
+#### [ 📺 Frontend](https://github.com/austintgriffith/scaffold-eth#-frontend)
+- [ 🛰 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers)
+- [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks)
+- [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)
+- [ 🖲 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library)
+- [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers)
+- [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)
+-  <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
 
-|   <B> [🧹 Upkeep ](https://github.com/austintgriffith/scaffold-eth#-upkeep) </B>  | | | |
-| --- | --- | --- | --- |
-| [ 🔶 Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura) | [ 🛰 The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph) | [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)  | [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan) |
+#### [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges)
+- [ 🥩 Staking App](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
+- [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
-| <B> [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth) </B>  | <B> [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials) </B> | <B> [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges) </B>|
-| --- | --- | --- |
+#### [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials)
+- [ 🎟 Simple NFT ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
 
+#### [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth)
+- [ 🎨 Nifty.ink ](https://nifty.ink) ([code](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev))
 
+#### [🌉 Infrastructure ](https://github.com/austintgriffith/scaffold-eth#-infrastructure)
 
-|   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> | <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B>|
-| --- | --- |
+- [ 🛰 The Graph ](https://github.com/austintgriffith/scaffold-eth#-using-the-graph)
+- [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)
+- [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan)
+- [ 🔶 Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura)
+-  🟪 [ Blocknative ](https://github.com/austintgriffith/scaffold-eth#-blocknative)
+
+|-   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> - | - <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B> -|
+
 
 ---
 
 [![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/33gnKe7ttCc?t=477)
 
+
+---
+---
 ---
 
-## 🏃‍♀️ Quick Start
+# 🏃‍♀️ Quick Start
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
@@ -128,8 +145,9 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+---
 
-## 🔭 Learning Solidity
+# 🔭 Learning Solidity
 
 📕 Read the docs: https://docs.soliditylang.org
 
@@ -146,7 +164,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 📧 Learn all the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
-👨‍🏫 Start super simple counter `uint8 public count = 1;`
+👨‍🏫 Start super simple with a counter: `uint8 public count = 1;`
 
 ⬇️ Then a `function dec() public {}` that does a `count = count - 1;`
 
@@ -157,7 +175,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 ![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
 
-🚽 UNDERFLOW!
+🚽 UNDERFLOW!?! (🚑 [Solidity >0.8.0](https://docs.soliditylang.org/en/v0.8.0/) will catch this!)
 
 🧫 You can iterate and learn as you go. Test your assumptions!
 
@@ -205,6 +223,50 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 ---
 
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+---
+
+
+# 📡 Deploy
+
+
+🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
+
+🔐 Generate a deploy account with `yarn generate` and view it with `yarn account`
+
+💵 Fund your deployer account (pro tip: use an [instant wallet](https://instantwallet.io) to send funds to the QR code from `yarn account`)
+
+> Deploy your contract:
+
+```bash
+yarn deploy
+```
+
+---
+
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+
+---
+---
+# 📺 Frontend
+
+> Edit your frontend `App.jsx` in `packages/react-app/src`
+
+📡 Make sure your `targetNetwork` is the same as 👷‍♀️ HardHat's `defaultNetwork` (where you deployed your contracts).
+
+![image](https://user-images.githubusercontent.com/2653167/110500412-68778a80-80b6-11eb-91bd-194d47d62771.png)
+
+
+🤡 Adjust your debugging settings as needed:
+
+![image](https://user-images.githubusercontent.com/2653167/110499550-95776d80-80b5-11eb-8024-287878b180d5.png)
+
+
+---
+
 ## 🔏 Providers:
 
 Providers are your connections to different blockchains.
@@ -217,11 +279,18 @@ The frontend has three different providers that provide different levels of acce
 
 `injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), or other injected wallet (generates [burner-provider](https://www.npmjs.com/package/burner-provider) on page load)
 
+![image](https://user-images.githubusercontent.com/2653167/110499705-bc35a400-80b5-11eb-826d-44815b89296c.png)
+
+
 ---
 
 ## 🖇 Hooks:
 
+![image](https://user-images.githubusercontent.com/2653167/110499834-dcfdf980-80b5-11eb-9d2d-de7046bf5c2b.png)
+
+
 Commonly used Ethereum hooks located in `packages/react-app/src/`:
+
 
 `usePoller(fn, delay)`: runs a function on app load and then on a custom interval
 
@@ -299,6 +368,9 @@ const ownerUpdates = useEventListener(
 
 ## 📦 Components:
 
+![image](https://user-images.githubusercontent.com/2653167/110500019-04ed5d00-80b6-11eb-97a4-74068fa90846.png)
+
+
 Your commonly used React Ethereum components located in `packages/react-app/src/`:
 
 <br/>
@@ -372,31 +444,13 @@ const price = useExchangePrice(mainnetProvider);
 
 ---
 
-
-## 📡 Deploy
-
-
-🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
-
-🔐 Generate a deploy account with `yarn generate` and view it with `yarn account`
-
-💵 Fund your deployer account (pro tip: use an [instant wallet](https://instantwallet.io) to send funds to the QR code from `yarn account`)
-
-> Deploy your contract:
-
-```bash
-yarn deploy
-```
-
----
-
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
 
-## 📺 UI Library
+## 🖲 UI Library
 
-🐜 [Ant.design](https://ant.design/components/button/) is the UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
+🐜 [Ant.design](https://ant.design/components/button/) is a fantastic UI library with components like the [grids](https://ant.design/components/grid/), [menus](https://ant.design/components/menu/), [dates](https://ant.design/components/date-picker/), [times](https://ant.design/components/time-picker/), [buttons](https://ant.design/components/button/), etc.
 
 ---
 
@@ -465,16 +519,77 @@ yarn ipfs
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+---
 
+## 🚩 Challenges
 
-# 🧹 Upkeep
+1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
+
+2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
 ---
 
-## 🔶 Using Infura
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
-You will need to update the `constants.js` in `packages/react-app/src` with [your own Infura ID](https://infura.io).
+---
+---
 
+## 📡 Examples and Tutorials
+
+(todo: insert all the cool active branches)
+
+
+| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
+| --- |
+| [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
+
+
+^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
+
+---
+
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+---
+
+# 🔨 Built with 🏗 scaffold-eth:
+
+[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
+
+Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
+
+🏃‍♂️ SpeedRun 📹 (TODO)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
+
+
+[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
+
+An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
+
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
+
+
+[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
+
+Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
+
+[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
+
+[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
+
+
+^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
+
+---
+===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
+
+---
+---
+
+# 📟 Infrastructure
 
 ---
 
@@ -493,7 +608,8 @@ You will need to update the `constants.js` in `packages/react-app/src` with [you
 
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
-###$ Verifying contracts on Tenderly
+
+### Verifying contracts on Tenderly
 scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the following networks:
 ```
 ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
@@ -510,6 +626,11 @@ Make sure your target network is present in the hardhat networks config, then ei
 yarn deploy --network NETWORK_OF_CHOICE
 ```
 Once verified, they will then be available to view on Tenderly!
+
+
+
+[![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://www.youtube.com/watch?v=c04rrld1IiE&t=47s)
+
 
 #### Exporting local Transactions
 One of Tenderly's best features for builders is the ability to [upload local transactions](https://dashboard.tenderly.co/tx/main/0xb8f28a9cace2bdf6d10809b477c9c83e81ce1a1b2f75f35ddd19690bbc6612aa/local-transactions) so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
@@ -570,6 +691,7 @@ const returned = await tx(contractFunction(...args, overrides));
 }
 ```
 
+
 ---
 
 ## 🌐 Etherscan
@@ -596,74 +718,24 @@ You only have to pass the contract because the plugin figures out which of the l
 
 ---
 
+## 🔶 Using Infura
+
+You will need to update the `constants.js` in `packages/react-app/src` with [your own Infura ID](https://infura.io).
+
+---
+
+## 🟪 Blocknative
+
+> update the `BLOCKNATIVE_DAPPID` in `packages/react-app/src/constants.js` with [your own Blocknative DappID](https://docs.blocknative.com/notify)
+
+---
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
-
-## 🔨 Built with 🏗 scaffold-eth:
-
-[<H3>👩‍🎨 Nifty Ink</H3>](https://nifty.ink)
-
-Paintings come to life as you "ink" new creations and trade them on Ethereum. A deep dive into 🖼 NFTs, 🐳 OpenSea, 🖍 react-canvas-draw, 🎨 react-color, and 🛬 onboarding user experience.
-
-🏃‍♂️ SpeedRun 📹 (TODO)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
-
-
-[<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
-
-An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
-
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
-
-
-[<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
-
-Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-eth</b>. 🔏 Cryptographically signed votes but tracked off-chain with 📡 Zapier and 📑 Google Sheets.
-
-[🏃‍♂️ SpeedRun 📹 ](https://youtu.be/Q5zgxcQtwWI)
-
-[💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
-
-
-^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
-
 ---
 
-## 📡 Examples and Tutorials
-
-(todo: insert all the cool active branches)
-
-
-| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
-| --- |
-| [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
-
-
-^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
-
----
-
-## 🚩 Challenges
-
-1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
-
-2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
-
----
-
-===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
-
----
 
 ## 📠 Legacy Content
-
-
-[<H6>⏱ Quickstart: 🔬 Smart Contract Sandbox</H6>](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox)
-
-Learn how to [quickly iterate on a smart contract app](https://github.com/austintgriffith/scaffold-eth#-smart-contract-sandbox) using the <b>\<Contract /\></b> component.
 
 
 [<h5>🧫 Building on Ethereum in 2020 (research for this repo)</h5>  ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
@@ -688,7 +760,7 @@ Learn about tokens. [coming soon] What is a token? Why is it cool? How can I dep
 
 [<H6>Tutorial 3: ⚖️ Minimum Viable Decentralized Exchange</H6>](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
 
-Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liqudity.
+Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liquidity.
 
 [🏃‍♀️ SpeedRun  📹](https://youtu.be/eP5w6Ger1EQ)
 
