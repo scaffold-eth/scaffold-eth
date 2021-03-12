@@ -110,6 +110,7 @@ export default function Account(props) {
   };
   useEffect(() => {
     createBurnerIfNoAddress();
+  // eslint-disable-next-line
   }, [props.injectedProvider]);
 
   const updateProviders = async (provider) => {
@@ -170,31 +171,29 @@ export default function Account(props) {
     }, 1);
   };
 
-  let modalButtons = [];
+  let modalButtons;
   if (typeof props.setInjectedProvider == 'function') {
     if (web3Modal.cachedProvider) {
-      modalButtons.push(
+      modalButtons = (
         <Button
-          key="logoutbutton"
           style={{ verticalAlign: 'top', marginLeft: 8, marginTop: 4 }}
           shape={'round'}
           size={'large'}
           onClick={logoutOfWeb3Modal}
         >
-          logout
+          Logout
         </Button>
       );
     } else {
-      modalButtons.push(
+      modalButtons = (
         <Button
-          key="loginbutton"
           style={{ verticalAlign: 'top', marginLeft: 8, marginTop: 4 }}
           shape={'round'}
           size={'large'}
           type={props.minimized ? 'default' : 'primary'}
           onClick={loadWeb3Modal}
         >
-          connect
+          Connect Wallet
         </Button>
       );
     }
@@ -256,6 +255,7 @@ export default function Account(props) {
       };
       createBurnerMetaSigner();
     }
+  // eslint-disable-next-line
   }, []);
 
   return (

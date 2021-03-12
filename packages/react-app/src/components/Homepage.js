@@ -16,7 +16,7 @@ function Homepage({ localProvider, injectedProvider }) {
           </p>
           <p className="text-center">
             <NavLink to="/create-art">
-              <Button type="primary" size="large" shape="round">
+              <Button type="primary" shape="round" className="button--xl">
                 Upload Your Art
               </Button>
             </NavLink>

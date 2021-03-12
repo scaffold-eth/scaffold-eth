@@ -1,14 +1,13 @@
-import { Drawer } from 'antd';
+import { Button, Drawer } from 'antd';
 import React, { useState } from 'react';
 import { BrowserRouter, Redirect, Route, Switch } from 'react-router-dom';
 import AllInks from './AllInks.js';
 import Artist from './Artist.js';
 import { Account } from './components';
+import Footer from './components/Footer';
 import Homepage from './components/Homepage';
 import Navigation from './components/Navigation';
 import CreateFile from './CreateFile.js';
-import CreateInk from './CreateInk.js';
-import CuratedInks from './CuratedInks';
 import DebugContracts from './DebugContracts.js';
 import Help from './Help.js';
 import Holdings from './Holdings.js';
@@ -94,270 +93,69 @@ export default function NftyWallet(props) {
     setDrawerVisibility(false);
   };
 
-  const badgeStyle = {
-    backgroundColor: '#fff',
-    color: '#999',
-    boxShadow: '0 0 0 1px #d9d9d9 inset',
-  };
-
-  // let supportButton = (
-  //   <div
-  //     style={{
-  //       zIndex: 99,
-  //       position: 'fixed',
-  //       textAlign: 'left',
-  //       left: 0,
-  //       bottom: 20,
-  //       padding: 10,
-  //       backgroundColor: '#FFFFFF',
-  //       borderRadius: 16,
-  //     }}
-  //   >
-  //     <Row gutter={4} align={'middle'}>
-  //       <Col>
-  //         <Button
-  //           style={{ marginRight: 8, marginTop: 8 }}
-  //           shape="round"
-  //           size="large"
-  //           type="secondary"
-  //           onClick={() => {
-  //             window.open('https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg');
-  //           }}
-  //         >
-  //           <span
-  //             style={{ marginRight: 12 }}
-  //             role="img"
-  //             aria-label="Speech Bubble"
-  //           >
-  //             💬
-  //           </span>
-  //           Chat
-  //         </Button>
-  //       </Col>
-
-  //       <Col>
-  //         <Button
-  //           style={{ marginRight: 8, marginTop: 8 }}
-  //           shape="round"
-  //           size="large"
-  //           type="secondary"
-  //           onClick={() => {
-  //             window.open(
-  //               'https://medium.com/@austin_48503/nifty-ink-an-ethereum-tutorial-c860a4904cb2'
-  //             );
-  //           }}
-  //         >
-  //           <span
-  //             style={{ marginRight: 12 }}
-  //             role="img"
-  //             aria-label="Face with Monocle"
-  //           >
-  //             🧐
-  //           </span>
-  //           About
-  //         </Button>
-  //       </Col>
-  //       <Col>
-  //         <Button
-  //           style={{ marginRight: 8, marginTop: 8 }}
-  //           shape="round"
-  //           size="large"
-  //           type="secondary"
-  //           onClick={showDrawer}
-  //         >
-  //           <span
-  //             style={{ marginRight: 12 }}
-  //             role="img"
-  //             aria-label="Light Bulb"
-  //           >
-  //             💡
-  //           </span>
-  //           Help
-  //         </Button>
-  //       </Col>
-  //     </Row>
-  //   </div>
-  // );
-
   return (
     <BrowserRouter>
-      <div>
-        <Navigation address={props.address} />
-        {/* <Tabs
-        activeKey={tab}
-        onChange={(t) => {
-          setTab(t);
-        }}
-        style={{ marginTop: 0, padding: 8, textAlign: "center" }}
-        tabBarExtraContent={""}
-        defaultActiveKey="create"
-      >
-        <TabPane
-          tab={
-            <NavLink to="/">
-              <>
-                <span
-                  style={{ fontSize: 24, padding: 8 }}
-                  role="img"
-                  aria-label="Artist Palette"
-                >
-                  🎨 Nifty Ink
-                </span>
-              </>
-            </NavLink>
-          }
-          key="1"
-        ></TabPane>
-
-        <TabPane
-          disabled={!props.address}
-          tab={
-            <NavLink to={"/artist/" + props.address}>
-              <>
-                <span>
-                  <span style={{ padding: 8 }} role="img" aria-label="Painting">
-                    🖼
-                  </span>{" "}
-                  my arts
-                </span>{" "}
-              </>
-            </NavLink>
-          }
-          key="2"
-        ></TabPane>
-
-        <TabPane
-          disabled={
-            !(
-              nftyBalance &&
-              nftyBalance.toString ||
-              nftyMainBalance &&
-              nftyMainBalance.toString
-            )
-          }
-          tab={
-            <NavLink to="/holdings">
-              <>
-                <span>
-                  <span style={{ padding: 8 }} role="img" aria-label="Purse">
-                    👛
-                  </span>{" "}
-                  holdings
-                </span>{" "}
-                <Badge style={badgeStyle} count={displayBalance} showZero />
-              </>
-            </NavLink>
-          }
-          key="3"
-        ></TabPane>
-
-        <TabPane
-            disabled={
-              !(
-                  nftyBalance &&
-                  nftyBalance.toString ||
-                  nftyMainBalance &&
-                  nftyMainBalance.toString
-              )
-            }
-            tab={
-              <NavLink to="/recent">
-                <>
-                <span>
-                  <span style={{ padding: 8 }} role="img" aria-label="Purse">
-                    🔥
-                  </span>{" "}
-                  recent arts
-                </span>{" "}
-                  <Badge style={badgeStyle} count={displayBalance} showZero />
-                </>
-              </NavLink>
-            }
-            key="4"
-        ></TabPane>
-
-        <TabPane
-          tab={
-            <NavLink to="/create-art">
-              <Button
-                style={{ marginBottom: 8 }}
-                shape="round"
-                size="large"
-                type={
-                  tab === "create-art" && mode === "edit"
-                    ? "secondary"
-                    : "primary"
-                }
-              >
-                <PlusOutlined /> Upload art
-              </Button>
-            </NavLink>
-          }
-          key="5"
-        ></TabPane>
-      </Tabs> */}
-
-        {/* {process.env.REACT_APP_NETWORK_NAME && supportButton}
-      {accountWithCreateButton} */}
-
-        <div
-          style={{
-            zIndex: 99,
-            position: 'fixed',
-            textAlign: 'right',
-            right: 0,
-            bottom: 20,
-            padding: 10,
-            backgroundColor: '#FFFFFF',
-            borderRadius: 16,
-          }}
-        >
-          <Account
-            address={props.address}
-            setAddress={props.setAddress}
-            localProvider={props.kovanProvider}
-            injectedProvider={props.injectedProvider}
-            setInjectedProvider={props.setInjectedProvider}
-            setInjectedGsnSigner={setInjectedGsnSigner}
-            mainnetProvider={props.mainnetProvider}
-            price={props.price}
-            minimized={props.minimized}
-            setMetaProvider={props.setMetaProvider}
-          />
-        </div>
-
-        <Switch>
-          <Route exact path="/">
-            <Homepage
-              localProvider={props.localProvider}
-              injectedProvider={props.injectedProvider}
-            />
-          </Route>
-          <Route path="/debug">
-            <DebugContracts {...props} />
-          </Route>
-          <Route path="/recent">
-            <AllInks />
-          </Route>
-          <Route path="/curated">
-            <CuratedInks {...props} />
-          </Route>
-
-          <Route path="/holdings">
-            <Holdings
-              {...props}
+      <main className="site-main">
+        <div className="content">
+          <Navigation address={props.address} />
+          {/* {process.env.REACT_APP_NETWORK_NAME && supportButton}*/}
+          <div
+            style={{
+              zIndex: 99,
+              position: 'fixed',
+              textAlign: 'right',
+              right: 0,
+              bottom: 20,
+              padding: 10,
+              backgroundColor: '#FFFFFF',
+              borderRadius: 16,
+            }}
+          >
+            <Account
               address={props.address}
-              transactionConfig={transactionConfig}
-              upgradePrice={upgradePrice}
+              setAddress={props.setAddress}
+              localProvider={props.kovanProvider}
+              injectedProvider={props.injectedProvider}
+              setInjectedProvider={props.setInjectedProvider}
+              setInjectedGsnSigner={setInjectedGsnSigner}
+              mainnetProvider={props.mainnetProvider}
+              price={props.price}
+              minimized={props.minimized}
+              setMetaProvider={props.setMetaProvider}
             />
-          </Route>
+          </div>
 
-          <Route path="/artist/:address">
-            <Artist {...props} />
-          </Route>
+          <Switch>
+            <Route exact path="/">
+              <Homepage
+                localProvider={props.localProvider}
+                injectedProvider={props.injectedProvider}
+              />
+            </Route>
+            <Route path="/debug">
+              <DebugContracts {...props} />
+            </Route>
+            <Route path="/recent">
+              <AllInks />
+            </Route>
+            {/* <Route path="/curated">
+            <CuratedInks {...props} />
+          </Route> */}
 
-          <Route path="/create-art">
-            <div>
+            <Route path="/holdings">
+              <Holdings
+                {...props}
+                address={props.address}
+                transactionConfig={transactionConfig}
+                upgradePrice={upgradePrice}
+              />
+            </Route>
+
+            <Route path="/artist/:address">
+              <Artist {...props} />
+            </Route>
+
+            <Route path="/create-art">
               <CreateFile
                 {...props}
                 key={renderKey}
@@ -384,10 +182,9 @@ export default function NftyWallet(props) {
                 calculatedVmin={calculatedVmin}
                 transactionConfig={transactionConfig}
               />
-            </div>
-          </Route>
+            </Route>
 
-          <Route path="/create">
+            {/* <Route path="/create">
             <div>
               <CreateInk
                 {...props}
@@ -416,50 +213,54 @@ export default function NftyWallet(props) {
                 transactionConfig={transactionConfig}
               />
             </div>
-          </Route>
+          </Route> */}
 
-          <Route path="/ink/:hash">
-            <div>
-              <ViewInk
-                {...props}
-                address={props.address}
-                artist={artist}
-                calculatedVmin={calculatedVmin}
-                canvasKey={canvasKey}
-                drawing={drawing}
-                gasPrice={props.gasPrice}
-                injectedProvider={props.injectedProvider}
-                ink={ink}
-                ipfsConfig={ipfsConfig}
-                ipfsConfigInfura={ipfsConfigInfura}
-                ipfsHash={ipfsHash}
-                key={renderKey}
-                kovanProvider={props.kovanProvider}
-                mainnetProvider={props.mainnetProvider}
-                metaProvider={props.metaProvider}
-                readContracts={props.readContracts}
-                readKovanContracts={props.readKovanContracts}
-                setArtist={setArtist}
-                setDrawing={setDrawing}
-                setInk={setInk}
-                setIpfsHash={setIpfsHash}
-                setMode={setMode}
-                setTab={setTab}
-                setViewDrawing={setViewDrawing}
-                transactionConfig={transactionConfig}
-                upgradePrice={upgradePrice}
-                viewDrawing={viewDrawing}
-              />
-            </div>
-          </Route>
+            <Route path="/ink/:hash">
+              <div>
+                <ViewInk
+                  {...props}
+                  address={props.address}
+                  artist={artist}
+                  calculatedVmin={calculatedVmin}
+                  canvasKey={canvasKey}
+                  drawing={drawing}
+                  gasPrice={props.gasPrice}
+                  injectedProvider={props.injectedProvider}
+                  ink={ink}
+                  ipfsConfig={ipfsConfig}
+                  ipfsConfigInfura={ipfsConfigInfura}
+                  ipfsHash={ipfsHash}
+                  key={renderKey}
+                  kovanProvider={props.kovanProvider}
+                  mainnetProvider={props.mainnetProvider}
+                  metaProvider={props.metaProvider}
+                  readContracts={props.readContracts}
+                  readKovanContracts={props.readKovanContracts}
+                  setArtist={setArtist}
+                  setDrawing={setDrawing}
+                  setInk={setInk}
+                  setIpfsHash={setIpfsHash}
+                  setMode={setMode}
+                  setTab={setTab}
+                  setViewDrawing={setViewDrawing}
+                  transactionConfig={transactionConfig}
+                  upgradePrice={upgradePrice}
+                  viewDrawing={viewDrawing}
+                />
+              </div>
+            </Route>
 
-          <Route
-            path="/:hash(Qm[A-Z]\w+)"
-            render={(props) => (
-              <Redirect to={`/ink/${props.match.params.hash}`} />
-            )}
-          />
-        </Switch>
+            <Route
+              path="/:hash(Qm[A-Z]\w+)"
+              render={(props) => (
+                <Redirect to={`/ink/${props.match.params.hash}`} />
+              )}
+            />
+          </Switch>
+        </div>
+
+        <Footer showDrawer={showDrawer} />
+
         <Drawer
           title="How to use"
           width={520}
@@ -472,15 +273,13 @@ export default function NftyWallet(props) {
                 textAlign: 'right',
               }}
             >
-              <button onClick={onCloseDrawer} style={{ marginRight: 8 }}>
-                Close
-              </button>
+              <Button onClick={onCloseDrawer}>Close</Button>
             </div>
           }
         >
           <Help />
         </Drawer>
-      </div>
+      </main>
     </BrowserRouter>
   );
 }

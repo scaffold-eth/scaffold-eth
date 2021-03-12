@@ -17,18 +17,36 @@
   width: auto;
 }
 
+.site-main {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  width: 100%;
+}
+
+.content {
+  flex: 1 0 auto;
+}
+
 /* Antd Overrides */
 .ant-btn-lg {
   font-weight: 500;
 }
+.ant-btn-round,
 .ant-btn-round.ant-btn-lg {
   border-radius: 6px;
+}
+.ant-btn.button--xl {
+  height: auto;
+  padding: 8px 22px;
+  font-size: 20px;
 }
 
 /* Utilities */
 .container {
   margin: 0 auto;
   padding: 0 40px;
+  max-width: 1800px;
 }
 
 .text-center {

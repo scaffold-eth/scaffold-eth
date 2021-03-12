@@ -1,5 +1,11 @@
 .site-nav {
-  padding: 20px 40px;
+  margin: 0 auto;
+  padding: 40px 40px;
+  max-width: 1800px;
+}
+
+.nav-menu-wrapper {
+  justify-content: flex-end;
 }
 
 .nav-menu {
@@ -26,4 +32,17 @@
 
 .nav-menu li a:hover {
   text-decoration: underline;
+}
+
+@media screen and (max-width: 992px) {
+  .logo {
+    margin-bottom: 30px;
+    text-align: center;
+  }
+  .nav-menu-wrapper {
+    justify-content: center;
+  }
+  .nav-menu {
+    margin-right: 0;
+  }
 }

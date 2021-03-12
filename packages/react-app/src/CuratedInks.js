@@ -3,9 +3,8 @@ import { useQuery } from 'react-apollo';
 import { Link } from 'react-router-dom';
 import { ADMIN_INKS_QUERY } from './apollo/queries';
 import { Loader } from './components';
-import { fakeData } from './fake/fakeData';
 import { isBlocklisted } from './helpers';
-// import { useUserProvider } from './hooks';
+import { useUserProvider } from './hooks';
 import './styles/inks.css';
 
 const ADMIN_ADDRESSES = ['0x859c736870af2abe057265a7a5685ae7b6c94f15'];
@@ -13,8 +12,8 @@ const ADMIN_ADDRESSES = ['0x859c736870af2abe057265a7a5685ae7b6c94f15'];
 export default function CuratedInks({ localProvider, injectedProvider }) {
   let [allInks, setAllInks] = useState([]);
   let [inks, setInks] = useState({});
-  // const userProvider = useUserProvider(localProvider, injectedProvider);
-  // console.log('userProvider: ', userProvider);
+  const userProvider = useUserProvider(localProvider, injectedProvider);
+  console.log('userProvider: ', userProvider);
   const { loading, error, data, fetchMore } = useQuery(ADMIN_INKS_QUERY, {
     variables: {
       first: 48,
@@ -60,14 +59,15 @@ export default function CuratedInks({ localProvider, injectedProvider }) {
     }
   }, [fetchMore, allInks.length]);
 
-  useEffect(() => {
-    fakeData ? getInks(fakeData.data.inks) : console.log('loading');
-    // eslint-disable-next-line
-  }, [fakeData]);
   // useEffect(() => {
-  //   data ? getInks(data.inks) : console.log('loading');
+  //   fakeData ? getInks(fakeData.data.inks) : console.log('loading');
   //   // eslint-disable-next-line
-  // }, [data]);
+  // }, [fakeData]);
+
+  useEffect(() => {
+    data ? getInks(data.inks) : console.log('loading');
+    // eslint-disable-next-line
+  }, [data]);
 
   useEffect(() => {
     window.addEventListener('scroll', onLoadMore);
@@ -92,9 +92,6 @@ export default function CuratedInks({ localProvider, injectedProvider }) {
                   alt={inks[ink].metadata.name}
                 />
               </Link>
-              <div className="ink-item__meta">
-                <p className="ink-item__title">{inks[ink].metadata.name}</p>
-              </div>
             </div>
           ))}
     </div>
