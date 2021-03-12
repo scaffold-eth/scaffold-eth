@@ -66,6 +66,7 @@ if (process.env.REACT_APP_NETWORK_NAME) {
     );
   }
 } else {
+  networkBanner = <div className="network-banner">localhost</div>;
   // localProvider = mainnetProvider; //new ethers.providers.JsonRpcProvider("http://localhost:8545");
   localProvider = new ethers.providers.JsonRpcProvider('http://localhost:8546');
   kovanProvider = new ethers.providers.JsonRpcProvider('http://localhost:8546'); // yarn run sidechain
@@ -86,6 +87,7 @@ function App() {
   return (
     <ApolloProvider client={client}>
       <JotaiProvider>
+        {networkBanner}
         <NftyWallet
           address={address}
           setAddress={setAddress}
