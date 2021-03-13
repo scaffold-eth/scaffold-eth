@@ -12,9 +12,9 @@ const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
 const main = async () => {
 
   // ADDRESS TO MINT TO:
-  const toAddress = "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"
+  const toAddress = "0xceeaF9BBf52bb33F36F945aC09c38739766D1e48"
 
-  console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
+  console.log("\n\n 🎫 Minting to " + toAddress + "...\n");
 
   const yourCollectible = await ethers.getContractAt('YourCollectible', fs.readFileSync("./artifacts/YourCollectible.address").toString())
 
@@ -39,11 +39,12 @@ const main = async () => {
        }
     ]
   }
+
   console.log("Uploading buffalo...")
   const uploaded = await ipfs.add(JSON.stringify(buffalo))
 
-  console.log("Minting buffalo with IPFS hash ("+uploaded.path+")")
-  await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
+  console.log("Minting buffalo with IPFS hash (" + uploaded.path + ")")
+  await yourCollectible.mintItem(toAddress, uploaded.path, {gasLimit:400000})
 
 
   await sleep(delayMS)

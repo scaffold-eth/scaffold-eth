@@ -6,12 +6,27 @@ import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 
-export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({purpose, setPurposeEvents, vrfEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
-
+  let counter = 0;
   return (
     <div>
+    <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Parts Picked:</h2>
+        <List
+          bordered
+          dataSource={vrfEvents}
+          renderItem={(item) => {
+            return (
+              <List.Item key={ counter++ }>
+                { item.background + "_" + item.face + "_" + item.eyes + "_" + item.iris + "_" + item.nose + "_" + item.mouth + "_" + item.horns + "_" + item.misc }
+              </List.Item>
+            )
+          }}
+        />
+      </div>
+      <Divider />
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}

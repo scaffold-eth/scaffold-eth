@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, AddressInpu
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, MaskBuilder } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 import ReactJson from 'react-json-view'
@@ -41,7 +41,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['mumbai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -161,6 +161,9 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:",transferEvents)
 
+  const vrfEvents = useEventListener(readContracts, "RandomNumberConsumer", "PartsPicked", localProvider, 1);
+  console.log("📟 VRF Events:", vrfEvents)
+
 
 
   //
@@ -176,9 +179,9 @@ function App(props) {
         try{
           console.log("GEtting token index",tokenIndex)
           const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex)
-          console.log("tokenId",tokenId)
+          console.log("tokenId", tokenId)
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId)
-          console.log("tokenURI",tokenURI)
+          console.log("tokenURI", tokenURI)
 
           const ipfsHash =  tokenURI.replace("https://ipfs.io/ipfs/","")
           console.log("ipfsHash",ipfsHash)
@@ -296,6 +299,9 @@ function App(props) {
           <Menu.Item key="/ipfsdown">
             <Link onClick={()=>{setRoute("/ipfsdown")}} to="/ipfsdown">IPFS Download</Link>
           </Menu.Item>
+          <Menu.Item key="/mask-builder">
+            <Link onClick={()=>{setRoute("/mask-builder")}} to="/mask-builder">NFT</Link>
+          </Menu.Item>
           <Menu.Item key="/debugcontracts">
             <Link onClick={()=>{setRoute("/debugcontracts")}} to="/debugcontracts">Debug Contracts</Link>
           </Menu.Item>
@@ -358,7 +364,15 @@ function App(props) {
             </div>
 
           </Route>
-
+          <Route path='/mask-builder'>
+            <MaskBuilder
+              address={address}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              vrfEvents={vrfEvents}
+              tx={tx}
+            />
+          </Route>
           <Route path="/transfers">
             <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
               <List
@@ -448,12 +462,19 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
               <Contract
-                name="YourCollectible"
+                name="RandomNumberConsumer"
                 signer={userProvider.getSigner()}
                 provider={localProvider}
                 address={address}
                 blockExplorer={blockExplorer}
               />
+              <Contract
+                name="YourCollectible"
+                signer={userProvider.getSigner()}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />              
           </Route>
         </Switch>
       </BrowserRouter>
