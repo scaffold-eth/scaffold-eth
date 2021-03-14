@@ -145,12 +145,12 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
-  console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
+  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  //console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
   //
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
-  console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
+  //const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
+  //console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
 
 
   // keep track of a variable from the contract in the local React state:
@@ -191,7 +191,7 @@ function App(props) {
           try{
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString())
             console.log("jsonManifest",jsonManifest)
-            collectibleUpdate.push({ id:tokenId, uri:tokenURI, owner: address, ...jsonManifest })
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest })
           }catch(e){console.log(e)}
 
         }catch(e){console.log(e)}
@@ -419,7 +419,7 @@ function App(props) {
             </div>
 
             <Button style={{margin:8}} loading={sending} size="large" shape="round" type="primary" onClick={async()=>{
-                console.log("UPLOADING...",yourJSON)
+                console.log("UPLOADING...", yourJSON)
                 setSending(true)
                 setIpfsHash()
                 const result = await ipfs.add(JSON.stringify(yourJSON))//addToIPFS(JSON.stringify(yourJSON))
