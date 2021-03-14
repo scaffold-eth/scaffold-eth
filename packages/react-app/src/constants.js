@@ -5,7 +5,7 @@ export const INFURA_ID = "1ad03ac212da4523b6c8337eace81a14";
 export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
 
 //BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
+export const BLOCKNATIVE_DAPPID = "f7ade5aa-89c0-428d-b8ec-abe8ed95a3f2"
 
 
 // EXTERNAL CONTRACTS
@@ -94,7 +94,7 @@ export const NETWORKS = {
         chainId: 80001,
         price: 1,
         gasPrice:1000000000,
-        rpcUrl: "https://rpc-mumbai.maticvigil.com",
+        rpcUrl: "https://rpc-mumbai.matic.today/",
         faucet: "https://faucet.matic.network/",
         blockExplorer: "https://mumbai-explorer.matic.today/",
     }

@@ -29,6 +29,8 @@ const STARTING_JSON_NFT = {
      ]
  }
 
+ 
+
 const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) => {
     const [newImage, setNewImage] = useState();
     const [events, setEvents] = useState([]);
@@ -44,43 +46,20 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
 
     const [randomNumber, setRandomNumber] = useState(0);
 
-    function numStringToBytes32(num) { 
-        var bn = new bn(num).toTwos(256);
-        return padToBytes32(bn.toString(16));
-     }
-     
-     function bytes32ToNumString(bytes32str) {
-         bytes32str = bytes32str.replace(/^0x/, '');
-         var bn = new bn(bytes32str, 16).fromTwos(256);
-         return bn.toString();
-     }
-     
-     function padToBytes32(n) {
-         while (n.length < 64) {
-             n = "0" + n;
-         }
-         return "0x" + n;
-     }
+    useEffect(() => {
+        
+    }, []);
 
-
+    // get a random number from vrf to assemble mask
     const getMaskParts = async () => {
         const sendTx = tx( writeContracts.RandomNumberConsumer.getRandomNumber(7777777) );
         setTimeout(() => {
             readContracts.RandomNumberConsumer.randomResult()
                 .then((res) => {
-                    // vrfEvents.map((item, index) => {
-                    //     if(index == 0) {
-                    //         console.log(item, index)
-                    //         setFace(PARTS.FACE[item.face]);
-                    //         setEyes(PARTS.EYES[item.eyes]);
-                    //         setMouth(PARTS.MOUTH[item.mouth]);
-                    //         setNose(PARTS.NOSE[item.nose]);
-                    //         setIris(PARTS.IRIS[item.iris]);
-                    //         setHorns(PARTS.HORNS[item.horns]);
-                    //         setTop(PARTS.MISC.TOP[item.misc]);
-                    //         setBottom(PARTS.MISC.BOTTOM[item.misc]);
-                    //     }                        
-                    // })
+                    // update the json for ipfs upload
+                    console.log(STARTING_JSON_NFT.image)
+
+                    // set all the parts
                     setRandomNumber(res);
                     console.log(res.toString())                    
                     console.log(res.toString().substring(0, 2) % 8);                    
@@ -102,9 +81,9 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 });
         }, 15000);
         
-        setTimeout(() => {
-            makeMask();
-        }, 20000);
+        // setTimeout(() => {
+        //     makeMask();
+        // }, 20000);
         
         
     }
@@ -125,8 +104,26 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
             ],{
             }).then(b64 => {
                 // console.log(b64);
-                setNewImage(b64); 
+                setNewImage(b64);
                 // todo: save image to ipfs and get the uri for minting token
+                let generatedMaskImage = document.getElementById("generated-mask-image");
+                let imgCanvas = document.getElementsByTagName("canvas");
+                let imgContext = imgCanvas.getContext("2d");
+
+                imgCanvas.width = generatedMaskImage.width;
+                imgCanvas.height = generatedMaskImage.height;
+
+                imgContext.drawImage(generatedMaskImage, 0, 0, generatedMaskImage.width, generatedMaskImage.height);
+
+                const imgDataAsUrl = imgCanvas.toDataURL("image/png");
+                
+
+                try {
+                    localStorage.setItem("generatedMaskImage", imgDataAsUrl);
+
+                } catch (error) {
+                    console.error('Save to Local Storage', error);
+                }
 
             })//.then(b64 => document.querySelector('img').src = b64);            
         } catch (error) {
@@ -138,22 +135,25 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
 
     return (
         <div>
-            <Button onClick={ () => getMaskParts() }>Make Mask</Button>
-            <img src={newImage} height={325} width={275}/>
-            {/* <Button onClick={ () => getMaskParts() }>Get Parts</Button> */}
+            <Button onClick={ () => getMaskParts() }>Get Parts</Button>
+            <img id='generated-mask-image' src={newImage} height={325} width={275}/>
+            <Button onClick={ () => makeMask() }>Make Mask</Button>
             <div style={{ width: 800, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-            <h2>Parts Picked History:</h2>
-            <List
-            bordered
-            dataSource={vrfEvents}
-            renderItem={(item) => {
-                return (
-                <List.Item key={ counter++ }>
-                    { item.background + "_" + item.face + "_" + item.eyes + "_" + item.iris + "_" + item.nose + "_" + item.mouth + "_" + item.horns + "_" + item.misc }
-                </List.Item>
-                )
-            }}
-            />
+            
+
+            <canvas></canvas>
+
+            {/* <List
+                bordered
+                dataSource={vrfEvents}
+                renderItem={(item) => {
+                    return (
+                    <List.Item key={ counter++ }>
+                        { item.background + "_" + item.face + "_" + item.eyes + "_" + item.iris + "_" + item.nose + "_" + item.mouth + "_" + item.horns + "_" + item.misc }
+                    </List.Item>
+                    )
+                }}
+            /> */}
         </div>
         <Divider />
         </div>
