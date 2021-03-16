@@ -4,7 +4,7 @@ import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
-import { Account } from "./components";
+import { Account, Faucet } from "./components";
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
@@ -423,6 +423,19 @@ export default function NftyWallet(props) {
         }
       >
       <Help/>
+      {process.env.REACT_APP_NETWORK_NAME ? (
+        ""
+      ) : (
+        <>
+          <Col>
+            <Faucet
+              localProvider={props.kovanProvider}
+              placeholder={"sidechain faucet"}
+              price={props.price}
+            />
+          </Col>
+        </>
+      )}
       </Drawer>
     </div>
   );

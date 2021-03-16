@@ -29,7 +29,7 @@ export default function SendInkForm(props) {
     let result
     try {
 
-      const mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
+      let mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
       if (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00") {
         result = await transactionHandler(txConfig)
         notification.open({

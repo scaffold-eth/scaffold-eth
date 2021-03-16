@@ -169,4 +169,7 @@ contract NiftyInk is BaseRelayRecipient, Ownable, SignatureChecker {
         return BaseRelayRecipient._msgSender();
     }
 
+    function _msgData() internal override(BaseRelayRecipient, Context) view returns (bytes memory ret) {
+        return BaseRelayRecipient._msgData();
+    }
 }

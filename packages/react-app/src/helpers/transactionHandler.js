@@ -35,6 +35,10 @@ export async function transactionHandler(c) {
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
 
+      let overrideOptions = {
+          gasPrice: 1,
+      }
+
       if (c['payment'] && parseFloat(ethers.utils.formatEther(balance)) < parseFloat(ethers.utils.formatEther(c['payment']))) {
         showXDaiModal()
         let m = 'You need more than ' + ethers.utils.formatEther(c['payment']) + ' xDai to make this transaction'
@@ -86,7 +90,7 @@ export async function transactionHandler(c) {
               c['metaSigner'],
             );
 
-          let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature])
+          let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature], overrideOptions)
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
         }
@@ -97,7 +101,7 @@ export async function transactionHandler(c) {
               contractAbi,
               c['injectedGsnSigner'],
             );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
+            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
           console.log("Regular GSN RESULT!!!!!!",result)
         return result
         } else if (injectedNetwork.chainId !== localNetwork.chainId) {

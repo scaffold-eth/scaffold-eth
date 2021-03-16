@@ -69,10 +69,17 @@ export default function Account(props) {
     //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
 
-  gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
+  //gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
 
-  gsnConfig.relayLookupWindowBlocks= 1e18
-  gsnConfig.verbose = true
+  gsnConfig = {
+    forwarderAddress: "0xb851b09efe4a5021e9a4ecddbc5d9c9ce2640ccb",
+    paymasterAddress: "0x4734356359c48ba2Cb50BA048B1404A78678e5C2",
+    verbose: true,
+    relayLookupWindowBlocks: 1e18,
+    minGasPrice: 20000000000
+  }
+
+  //gsnConfig.relayLookupWindowBlocks= 1e18
 
 }
   //gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
@@ -122,7 +129,8 @@ export default function Account(props) {
     gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
     }
 
-    const gsnProvider = new RelayProvider(provider, gsnConfig);
+    const gsnProvider = await RelayProvider.newProvider({provider, config: gsnConfig}).init();
+    console.log(gsnProvider)
     const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
     //console.log("GOT GSN PROVIDER",gsnProvider)
     const gsnSigner = gsnWeb3Provider.getSigner(props.address)
@@ -230,16 +238,23 @@ export default function Account(props) {
         "9ea7e149b122423991f56257b882261c"
       );
     } else {
-      origProvider = new ethers.providers.JsonRpcProvider(
+      origProvider = new Web3HttpProvider("http://localhost:8546"); /*new ethers.providers.JsonRpcProvider(
         "http://localhost:8546"
-      );
+      );*/
     }
-    const gsnProvider = new RelayProvider(origProvider, gsnConfig);
+    console.log('making the burner meta signer', origProvider, gsnConfig)
+    const gsnProvider = await RelayProvider.newProvider({provider: origProvider, config: gsnConfig}).init();
+    console.log(gsnProvider)
 
     const account = await gsnProvider.newAccount();
+
     let from = account.address;
 
     const provider = new ethers.providers.Web3Provider(gsnProvider);
+
+    let gasPrice = await provider.getGasPrice()
+    console.log(gasPrice.toString())
+
     const signer = provider.getSigner(from);
 
     props.setMetaProvider(signer);
