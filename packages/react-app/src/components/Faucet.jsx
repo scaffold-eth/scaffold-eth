@@ -18,9 +18,9 @@ import { useLookupAddress } from "eth-hooks";
 
   ~ How can I use? ~
 
-  <Faucet 
+  <Faucet
     price={price}
-    localProvider={localProvider}  
+    localProvider={localProvider}
     ensProvider={mainnetProvider}
     placeholder={"Send local faucet"}
   />
@@ -86,7 +86,7 @@ export default function Faucet(props) {
               onClick={() => {
                 tx({
                   to: address,
-                  value: parseEther("0.01"),
+                  value: parseEther("0.5"),
                 });
                 setAddress("");
               }}
