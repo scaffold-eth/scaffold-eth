@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { WalletOutlined, QrcodeOutlined, SendOutlined, KeyOutlined } from "@ant-design/icons";
-import { Tooltip, Spin, Modal, Button, Typography } from "antd";
+import { Tooltip, Spin, Modal, Button, Typography, message } from "antd";
 import QR from "qrcode.react";
 import { parseEther } from "@ethersproject/units";
 import { useUserAddress } from "eth-hooks";
@@ -174,7 +174,21 @@ export default function Wallet(props) {
          <div>
           <Text style={{fontSize:11}} copyable>{pk}</Text>
          </div>
-         <QR value={window.origin+"/pk#"+pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+         <div style={{cursor:"pointer"}} onClick={()=>{
+              const el = document.createElement('textarea');
+              el.value = window.origin+"/pk#"+pk;
+              document.body.appendChild(el);
+              el.select();
+              document.execCommand('copy');
+              document.body.removeChild(el);
+              message.success(
+                <span style={{position:"relative"}}>
+                 Copied Private Key Link
+                </span>
+              );
+         }}>
+           <QR value={window.origin+"/pk#"+pk} size={"450"} level={"H"} includeMargin={true} renderAs={"svg"} imageSettings={{excavate:false}}/>
+         </div>
          </div>
        )
      }
