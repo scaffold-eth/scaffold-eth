@@ -10,7 +10,7 @@ contract YourContract {
 
   string public purpose = "Building Unstoppable Apps";
 
-  constructor() {
+  constructor() public {
     // what should we do on deploy?
   }
 
