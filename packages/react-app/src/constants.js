@@ -1,5 +1,5 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+export const INFURA_ID = "95ff362df12840c98fa418bcd4b27c8a";
 
 //MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
 export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
@@ -26,6 +26,7 @@ export const NETWORKS = {
     localhost: {
         name: "localhost",
         color: '#666666',
+        price: "uniswap",//use mainnet eth price for localhost
         chainId: 31337,
         blockExplorer: '',
         rpcUrl: "http://" + window.location.hostname + ":8545",
@@ -34,6 +35,7 @@ export const NETWORKS = {
         name: "mainnet",
         color: '#ff8b9e',
         chainId: 1,
+        price: "uniswap",
         rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
         blockExplorer: "https://etherscan.io/",
     },
@@ -74,6 +76,11 @@ export const NETWORKS = {
         color: '#48a9a6',
         chainId: 100,
         price: 1,
+        nativeCurrency: {
+          name: 'xDAI',
+          symbol: 'xDAI',
+          decimals: 18
+        },
         gasPrice:1000000000,
         rpcUrl: "https://dai.poa.network",
         faucet: "https://xdai-faucet.top/",
@@ -82,8 +89,8 @@ export const NETWORKS = {
     matic: {
         name: "matic",
         color: '#2bbdf7',
+        price: "uniswap:0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
         chainId: 137,
-        price: 1,
         gasPrice:1000000000,
         rpcUrl: "https://rpc-mainnet.maticvigil.com",
         faucet: "https://faucet.matic.network/",

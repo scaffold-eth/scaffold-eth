@@ -18,9 +18,9 @@ import { useLookupAddress } from "eth-hooks";
 
   ~ How can I use? ~
 
-  <Faucet 
+  <Faucet
     price={price}
-    localProvider={localProvider}  
+    localProvider={localProvider}
     ensProvider={mainnetProvider}
     placeholder={"Send local faucet"}
   />
@@ -93,7 +93,7 @@ export default function Faucet(props) {
               shape="circle"
               icon={<SendOutlined />}
             />
-            <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} />
+            {/* <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} /> */} 
           </Tooltip>
         }
       />

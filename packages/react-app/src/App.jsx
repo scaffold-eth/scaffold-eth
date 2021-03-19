@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-
+import { SendOutlined, CaretUpOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD } from "antd";
+import { Select, Row, Col, Button, Menu, Alert, Spin, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie } from "./components";
+import { AddressInput, EtherInput, Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, Address, Balance } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -38,10 +38,11 @@ const { ethers } = require("ethers");
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['xdai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const cachedNetwork = window.localStorage.getItem("network")
+let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'xdai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true
+const DEBUG = false
 
 
 
@@ -60,11 +61,12 @@ const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if(DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
+let localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 
 
 // 🔭 block explorer URL
-const blockExplorer = targetNetwork.blockExplorer;
+let blockExplorer = targetNetwork.blockExplorer;
+
 
 
 function App(props) {
@@ -73,6 +75,7 @@ function App(props) {
   if(DEBUG) console.log("🌎 mainnetProvider",mainnetProvider)
 
   const [injectedProvider, setInjectedProvider] = useState();
+
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork,mainnetProvider);
 
@@ -147,7 +150,22 @@ function App(props) {
           message={"⚠️ Wrong Network"}
           description={(
             <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
+              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <Button onClick={async ()=>{
+                 let ethereum = window.ethereum;
+                 const data = [{
+                     chainId: "0x"+targetNetwork.chainId.toString(16),
+                     chainName: targetNetwork.name,
+                     nativeCurrency:targetNetwork.nativeCurrency,
+                     rpcUrls: [targetNetwork.rpcUrl],
+                     blockExplorerUrls: [targetNetwork.blockExplorer],
+                 }]
+                 console.log("data",data)
+                 const tx = await ethereum.request({method: 'wallet_addEthereumChain', params:data}).catch()
+                 if (tx) {
+                     console.log(tx)
+
+                 }
+              }}>{NETWORK(localChainId).name}</Button>.
             </div>
           )}
           type="error"
@@ -156,10 +174,26 @@ function App(props) {
       </div>
     )
   }else{
+    let options = []
+    for(let id in NETWORKS){
+      options.push(
+        <Select.Option key={id} value={NETWORKS[id].name}><span style={{color:NETWORKS[id].color}}>
+          {NETWORKS[id].name}
+        </span></Select.Option>
+      )
+    }
+
     networkDisplay = (
-      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-        {targetNetwork.name}
-      </div>
+      <Select defaultValue={targetNetwork.name} style={{ textAlign:"left", width: 120 }} onChange={(value)=>{
+        if(targetNetwork.chainId != NETWORKS[value].chainId){
+          window.localStorage.setItem("network",value);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1);
+        }
+      }}>
+        {options}
+      </Select>
     )
   }
 
@@ -199,21 +233,116 @@ function App(props) {
     )
   }
 
+  let startingAddress = ""
+  if(window.location.pathname){
+    if(window.location.pathname.indexOf("/")>=0){
+      let incoming = window.location.pathname.replace("/","")
+      if(incoming && ethers.utils.isAddress(incoming)){
+        startingAddress = incoming
+      }
+
+      /*let rawPK
+      if(incomingPK.length===64||incomingPK.length===66){
+        console.log("🔑 Incoming Private Key...");
+        rawPK=incomingPK
+        burnerConfig.privateKey = rawPK
+        window.history.pushState({},"", "/");
+        let currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
+        if(currentPrivateKey && currentPrivateKey!==rawPK){
+          window.localStorage.setItem("metaPrivateKey_backup"+Date.now(),currentPrivateKey);
+        }
+        window.localStorage.setItem("metaPrivateKey",rawPK);
+      }*/
+    }
+  }
+
+  const [amount, setAmount] = useState();
+  const [toAddress, setToAddress] = useState(startingAddress);
+
+  const [loading, setLoading] = useState(false);
 
   return (
     <div className="App">
+
+      <div style={{float:"left"}}>
+        <Header />
+      </div>
+      <div style={{float:"right", padding:16}}>
+        {address ? (
+        <div>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer}/>
+          <Button
+            key="history"
+            type="text"
+            onClick={async () => {
+              window.open("https://zapper.fi/?address="+address)
+            }}
+          >🗄</Button>
+        </div>
+      ) : <Spin />}
+      </div>
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
 
-
-      <div style={{padding:64}}>
-        <QRPunkBlockie address={address} />
+      <div style={{ clear:"both", opacity:yourLocalBalance?1:0.2, width:500, margin:"auto" }}>
+        <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkDisplay}</span>
       </div>
 
-      <div>
-        <Button>
+      <div style={{padding:16,cursor:"pointer",backgroundColor:"#FFFFFF",width:420,margin:"auto"}}>
+        <QRPunkBlockie withQr={true} address={address} />
+      </div>
 
-        </Button>
+      <div style={{position:"relative", width:320, margin:"auto",textAlign:"center",marginTop:32}}>
+        <div style={{padding: 10}}>
+          <AddressInput
+            ensProvider={mainnetProvider}
+            placeholder="to address"
+            address={toAddress}
+            onChange={setToAddress}
+          />
+        </div>
+        <div style={{padding: 10}}>
+          <EtherInput
+            price={price?price:1}
+            value={amount}
+            onChange={value => {
+              setAmount(value);
+            }}
+          />
+        </div>
+        <div style={{padding: 10}}>
+          <Button
+            key="submit"
+            type="primary"
+            disabled={loading || !amount || !toAddress }
+            loading={loading}
+            onClick={async () => {
+              setLoading(true)
+
+              let value;
+              try {
+                value = parseEther("" + amount);
+              } catch (e) {
+                let floatVal = parseFloat(amount).toFixed(8)
+                // failed to parseEther, try something else
+                value = parseEther("" + floatVal);
+              }
+
+              let result = tx({
+                to: toAddress,
+                value,
+                gasPrice: gasPrice,
+                gasLimit: 21000
+              });
+              //setToAddress("")
+              setAmount("")
+              result = await result
+              console.log(result)
+              setLoading(false)
+            }}
+          >
+            {loading || !amount || !toAddress ? <CaretUpOutlined /> : <SendOutlined style={{color:"#FFFFFF"}} /> } Send
+          </Button>
+        </div>
       </div>
 
       {/*<BrowserRouter>
@@ -299,62 +428,51 @@ function App(props) {
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
-         <Account
-           address={address}
-           localProvider={localProvider}
-           userProvider={userProvider}
-           mainnetProvider={mainnetProvider}
-           price={price}
-           web3Modal={web3Modal}
-           loadWeb3Modal={loadWeb3Modal}
-           logoutOfWeb3Modal={logoutOfWeb3Modal}
-           blockExplorer={blockExplorer}
-         />
+        <Account
+          address={address}
+          localProvider={localProvider}
+          userProvider={userProvider}
+          mainnetProvider={mainnetProvider}
+          price={price}
+          web3Modal={web3Modal}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          blockExplorer={blockExplorer}
+        />
          {faucetHint}
-         {networkDisplay}
       </div>
-
       {/*
-       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-         <Row align="middle" gutter={[4, 4]}>
-           <Col span={8}>
-             <Ramp price={price} address={address} networks={NETWORKS}/>
-           </Col>
 
-           <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-             <GasGauge gasPrice={gasPrice} />
-           </Col>
-           <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-             <Button
-               onClick={() => {
-                 window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-               }}
-               size="large"
-               shape="round"
-             >
-               <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                 💬
-               </span>
-               Support
-             </Button>
-           </Col>
-         </Row>
-
-         <Row align="middle" gutter={[4, 4]}>
-           <Col span={24}>
-             {
-
-
-               faucetAvailable ? (
-                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
-               ) : (
-                 ""
-               )
-             }
-           </Col>
-         </Row>
-       </div>
 🗺 Extra UI like gas price, eth price, faucet, and support: */}
+<div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+  <Row align="middle" gutter={[16, 16]}>
+    <Col span={12}>
+      <Ramp price={price} address={address} networks={NETWORKS}/>
+    </Col>
+
+    <Col span={12} style={{ textAlign: "center", opacity: 0.8 }}>
+      <GasGauge gasPrice={gasPrice} />
+    </Col>
+  </Row>
+
+  <Row align="middle" gutter={[4, 4]}>
+    <Col span={24}>
+      {
+        faucetAvailable ? (
+          <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
+        ) : (
+          ""
+        )
+      }
+    </Col>
+  </Row>
+</div>
+
+      <div style={{padding:64, opacity:0.5, fontSize:12 }}>
+        created with <span style={{marginRight:4}}>🏗</span><a href="https://github.com/austintgriffith/scaffold-eth#-scaffold-eth" target="_blank">scaffold-eth</a>
+      </div>
+      <div style={{padding:32}}>
+      </div>
     </div>
   );
 }

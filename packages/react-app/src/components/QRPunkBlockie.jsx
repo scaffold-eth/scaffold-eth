@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import QR from 'qrcode.react';
 import { Blockie, Balance } from "."
-import { Typography } from 'antd';
+import { message, Typography } from 'antd';
 const { Text } = Typography;
 
 
@@ -31,10 +31,31 @@ export default function QRPunkBlockie(props) {
   const x = parseInt(part1, 16)%100
   const y = parseInt(part2, 16)%100
 
-  return (
-    <div style={{margin:"auto", position:"relative",width:hardcodedSizeForNow}}>
+  //console.log("window.location",window.location)
 
-      <div style={{position:"absolute",opacity:0.2,left:hardcodedSizeForNow/2-46,top:hardcodedSizeForNow/2-46}}>
+  return (
+    <div style={{transform:"scale("+(props.scale?props.scale:"1")+")",transformOrigin:"50% 50%",margin:"auto", position:"relative",width:hardcodedSizeForNow}} onClick={()=>{
+       const el = document.createElement('textarea');
+       el.value = props.address;
+       document.body.appendChild(el);
+       el.select();
+       document.execCommand('copy');
+       document.body.removeChild(el);
+       const iconHardcodedSizeForNow = 380
+       const iconPunkSize = 40
+       message.success(
+         <span style={{position:"relative"}}>
+          Copied Address
+          <div style={{position:"absolute",left:-60,top:-14}}>
+            <div style={{position:"relative",width:iconPunkSize, height:iconPunkSize, overflow: "hidden"}}>
+              <img src="/punks.png" style={{position:"absolute",left:-iconPunkSize*x,top:-iconPunkSize*y,width:iconPunkSize*100, height:iconPunkSize*100,imageRendering:"pixelated"}} />
+            </div>
+          </div>
+         </span>
+       );
+    }}>
+
+      <div style={{position:"absolute",opacity:0.5,left:hardcodedSizeForNow/2-46,top:hardcodedSizeForNow/2-46}}>
         <Blockie address={props.address} scale={11.5}/>
       </div>
 
@@ -44,13 +65,14 @@ export default function QRPunkBlockie(props) {
         </div>
       </div>
 
-      <QR
+      {props.withQr ? <QR
         level={"H"}
         includeMargin={false}
-        value={props.address?props.address:""}
+        value={props.address?window.origin+"/"+props.address:""}
         size={hardcodedSizeForNow}
         imageSettings={{width:100,height:100,excavate:true}}
-      />
+      /> : ""}
+
     </div>
   );
 }

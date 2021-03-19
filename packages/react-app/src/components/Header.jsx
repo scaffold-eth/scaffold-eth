@@ -5,9 +5,9 @@ import { PageHeader } from "antd";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
+    <a href="https://punkwallet.io">
       <PageHeader
-        title="👨‍🎤PunkWallet"
+        title="🧑‍🎤  PunkWallet.io"
         subTitle=""
         style={{ cursor: "pointer" }}
       />

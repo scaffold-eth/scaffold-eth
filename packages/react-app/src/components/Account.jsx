@@ -7,7 +7,7 @@ import Wallet from "./Wallet";
 /*
   ~ What it does? ~
 
-  Displays an Address, Balance, and Wallet as one Account component, 
+  Displays an Address, Balance, and Wallet as one Account component,
   also allows users to log in to existing accounts and log out
 
   ~ How can I use? ~
@@ -25,7 +25,7 @@ import Wallet from "./Wallet";
   />
 
   ~ Features ~
-  
+
   - Provide address={address} and get balance corresponding to the given address
   - Provide localProvider={localProvider} to access balance on local network
   - Provide userProvider={userProvider} to display a wallet
@@ -84,8 +84,6 @@ export default function Account({
     ""
   ) : (
     <span>
-      {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
-      <Balance address={address} provider={localProvider} price={price} />
       <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
     </span>
   );
