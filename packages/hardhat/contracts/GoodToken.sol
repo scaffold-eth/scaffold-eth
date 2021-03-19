@@ -3,7 +3,7 @@ pragma solidity >=0.6.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "./GoodERC721.sol";
-import "./IBalanceOf.sol";
+import "./IToken.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
@@ -54,7 +54,7 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
-        uint256 tokenBalance = IBalanceOf(ownerData.targetAddress).balanceOf(tokenOwner);
+        uint256 tokenBalance = IToken(ownerData.targetAddress).balanceOf(tokenOwner);
 
         bool ownershipValid = true;
 
@@ -114,12 +114,18 @@ contract GoodToken is GoodERC721, AccessControl {
         uint256 balanceRequirement, // could be static or dynamic
         uint256 balanceDuration,
         uint256 price
-    ) public {
+    ) public returns (uint256) {
         address sender = _msgSender();
 
         require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
+
+        // get metadata from associated token contract
+        IToken token = IToken(ownerData.targetAddress);
+
+        string memory tokenName = token.name();
+        string memory tokenSymbol = token.symbol();
 
         // mint new token to current token index
         _safeMint(sender, currentArtwork);
@@ -141,8 +147,12 @@ contract GoodToken is GoodERC721, AccessControl {
             block.timestamp
         );
 
+        // emit artwork creation event
+
         // increment token index for next mint
         _tokenIdTracker.increment();
+
+        return currentArtwork;
     }
 
     function buyArtwork(uint256 artwork) public payable {

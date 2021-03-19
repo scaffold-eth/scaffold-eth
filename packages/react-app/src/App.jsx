@@ -240,15 +240,13 @@ function App(props) {
             />
 
 
-            { /* uncomment for a second contract:
             <Contract
-              name="SecondContract"
+              name="GoodTokenFund"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
-            */ }
 
             { /* Uncomment to display and interact with an external contract (DAI on mainnet):
             <Contract
