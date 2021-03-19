@@ -214,7 +214,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = ""
-  const faucetAvailable = localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf(window.location.hostname)>=0 && !process.env.REACT_APP_PROVIDER && price > 1;
+  const faucetAvailable = localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf("localhost")>=0 && !process.env.REACT_APP_PROVIDER && price > 1;
 
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider._network&&localProvider._network.chainId==31337&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
@@ -235,27 +235,26 @@ function App(props) {
 
   let startingAddress = ""
   if(window.location.pathname){
-    if(window.location.pathname.indexOf("/")>=0){
-      let incoming = window.location.pathname.replace("/","")
-      if(incoming && ethers.utils.isAddress(incoming)){
-        startingAddress = incoming
-      }
-
-      /*let rawPK
-      if(incomingPK.length===64||incomingPK.length===66){
-        console.log("🔑 Incoming Private Key...");
-        rawPK=incomingPK
-        burnerConfig.privateKey = rawPK
-        window.history.pushState({},"", "/");
-        let currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
-        if(currentPrivateKey && currentPrivateKey!==rawPK){
-          window.localStorage.setItem("metaPrivateKey_backup"+Date.now(),currentPrivateKey);
-        }
-        window.localStorage.setItem("metaPrivateKey",rawPK);
-      }*/
+    let incoming = window.location.pathname.replace("/","")
+    if(incoming && ethers.utils.isAddress(incoming)){
+      startingAddress = incoming
+      window.history.pushState({},"", "/");
     }
-  }
 
+    /*let rawPK
+    if(incomingPK.length===64||incomingPK.length===66){
+      console.log("🔑 Incoming Private Key...");
+      rawPK=incomingPK
+      burnerConfig.privateKey = rawPK
+      window.history.pushState({},"", "/");
+      let currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
+      if(currentPrivateKey && currentPrivateKey!==rawPK){
+        window.localStorage.setItem("metaPrivateKey_backup"+Date.now(),currentPrivateKey);
+      }
+      window.localStorage.setItem("metaPrivateKey",rawPK);
+    }*/
+  }
+  //console.log("startingAddress",startingAddress)
   const [amount, setAmount] = useState();
   const [toAddress, setToAddress] = useState(startingAddress);
 

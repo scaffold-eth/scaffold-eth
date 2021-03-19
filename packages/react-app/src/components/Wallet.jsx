@@ -161,12 +161,12 @@ export default function Wallet(props) {
      }
 
      let currentButton = (
-      <span><span style={{marginRight:8}}>⛔️</span> Reveal</span>
+      <span style={{marginRight:4}}><span style={{marginRight:8}}>⛔️</span> Reveal </span>
      )
      let privateKeyDisplay = ""
      if(showPrivate){
        currentButton = (
-         <span><span style={{marginRight:8}}>😅</span> Hide</span>
+         <span style={{marginRight:4}}><span style={{marginRight:8}}>😅</span> Hide </span>
        )
        privateKeyDisplay = (
          <div>

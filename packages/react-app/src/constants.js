@@ -29,7 +29,7 @@ export const NETWORKS = {
         price: "uniswap",//use mainnet eth price for localhost
         chainId: 31337,
         blockExplorer: '',
-        rpcUrl: "http://" + window.location.hostname + ":8545",
+        rpcUrl: "http://localhost:8545",
     },
     mainnet: {
         name: "mainnet",

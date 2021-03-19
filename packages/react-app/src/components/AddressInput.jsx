@@ -34,7 +34,7 @@ import { QRPunkBlockie } from ".";
 */
 
 export default function AddressInput(props) {
-  const [value, setValue] = useState(props.value);
+  const [value, setValue] = useState(props.address);
   const [scan, setScan] = useState(false);
 
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
@@ -59,6 +59,7 @@ export default function AddressInput(props) {
     async newValue => {
       if (typeof newValue !== "undefined") {
         let address = newValue;
+        setValue(address);
         if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
           try {
             const possibleAddress = await ensProvider.resolveName(address);

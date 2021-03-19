@@ -1,5 +1,5 @@
 {
-  "short_name": "🧑‍🎤 PunkWallet.io",
+  "short_name": "PunkWallet.io",
   "start_url": ".",
   "name": "PunkWallet.io",
   "icons": [
@@ -20,6 +20,7 @@
     }
   ],
   "start_url": ".",
+  "display": "browser",
   "theme_color": "#000000",
   "background_color": "#ffffff"
 }
