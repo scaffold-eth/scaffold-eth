@@ -25,7 +25,7 @@ const ipfsConfig = {
   };
 //EXAMPLE STARTING JSON:
 const STARTING_JSON_NFT = {
-    "description": "MR DEE",
+    "description": "Masks of Gods",
      "external_url": "",// <-- this can link to a page for the specific file too
      "image": "",
      "name": "",
@@ -140,7 +140,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                     .then((res) => {
                         STARTING_JSON_NFT.image = 'https://ipfs.io/ipfs/' + res.path;
                         STARTING_JSON_NFT.external_url = 'https://ipfs.io/ipfs/' + res.path;
-                        STARTING_JSON_NFT.name = 'Masks of Gods'
+                        STARTING_JSON_NFT.name = 'Mask'
                         setImageHash(res.path);
                         setImageUri('https://ipfs.io/ipfs/' + res.path);
                     });                   
