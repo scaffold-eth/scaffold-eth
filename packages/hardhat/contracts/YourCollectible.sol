@@ -1,4 +1,4 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity 0.6.6;
 //SPDX-License-Identifier: MIT
 
 //import "hardhat/console.sol";
@@ -14,13 +14,14 @@ contract YourCollectible is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("YourCollectible", "YCB") {
+  constructor() public ERC721("MR DEE", "MRD") {
+    
     _setBaseURI("https://ipfs.io/ipfs/");
   }
 
   function mintItem(address to, string memory tokenURI)
       public
-      onlyOwner
+      //onlyOwner
       returns (uint256)
   {
       _tokenIds.increment();

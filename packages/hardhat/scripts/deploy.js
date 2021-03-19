@@ -9,11 +9,10 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-
   const yourCollectible = await deploy("YourCollectible") // <-- add in constructor args like line 19 vvvv
-
-  const randomNumberConsumer = await deploy("RandomNumberConsumer");
+  //const randomNumberConsumer = await deploy("RandomNumberConsumer");
   // todo: fund contract with link
+
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")

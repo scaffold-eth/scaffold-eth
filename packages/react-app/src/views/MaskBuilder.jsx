@@ -77,22 +77,22 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 .then((res) => {
                     // set all the parts
                     setRandomNumber(res);
-                    console.log(res.toString())                    
-                    console.log(res.toString().substring(0, 2) % 8);                    
+                    //console.log(res.toString())                    
+                    //console.log(res.toString().substring(0, 2) % 8);                    
                     setFace(PARTS.FACE[res.toString().substring(0, 2) % 10]);
-                    console.log(res.toString().substring(2, 4) % 8);
+                    //console.log(res.toString().substring(2, 4) % 8);
                     setEyes(PARTS.EYES[res.toString().substring(2, 4) % 8]);
-                    console.log(res.toString().substring(4, 6) % 8);
+                    //console.log(res.toString().substring(4, 6) % 8);
                     setMouth(PARTS.MOUTH[res.toString().substring(4, 6) % 8]);
-                    console.log(res.toString().substring(6, 8) % 8)
+                    //console.log(res.toString().substring(6, 8) % 8)
                     setNose(PARTS.NOSE[res.toString().substring(6, 8) % 8]);
-                    console.log(res.toString().substring(8, 10) % 8);
+                    //console.log(res.toString().substring(8, 10) % 8);
                     setIris(PARTS.IRIS[res.toString().substring(8, 10) % 8]);
-                    console.log(res.toString().substring(10, 12) % 8);
+                    //console.log(res.toString().substring(10, 12) % 8);
                     setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
-                    console.log(res.toString().substring(12, 14) % 8);
+                    //console.log(res.toString().substring(12, 14) % 8);
                     setTop(PARTS.MISC.TOP[res.toString().substring(12, 14) % 8]);
-                    console.log(res.toString().substring(14, 16) % 8);
+                    //console.log(res.toString().substring(14, 16) % 8);
                     setBottom(PARTS.MISC.BOTTOM[res.toString().substring(14, 16) % 8]);
                 });
                 setLoadingParts(false);
@@ -124,7 +124,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
             }).then(b64 => {
                 // console.log(b64);
                 setNewImage(b64);
-                // todo: save image to ipfs and get the uri for minting token
+                // save image to ipfs and get the uri for minting token
                 let generatedMaskImage = document.getElementById("generated-mask-image");
                 let imgCanvas = document.getElementById("canvas");
                 let imgContext = imgCanvas.getContext("2d");
@@ -140,10 +140,11 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                     .then((res) => {
                         STARTING_JSON_NFT.image = 'https://ipfs.io/ipfs/' + res.path;
                         STARTING_JSON_NFT.external_url = 'https://ipfs.io/ipfs/' + res.path;
-                        STARTING_JSON_NFT.name = 'Random Mask'
+                        STARTING_JSON_NFT.name = 'Masks of Gods'
                         setImageHash(res.path);
                         setImageUri('https://ipfs.io/ipfs/' + res.path);
-                    });                
+                    });                   
+                //https://ipfs.io/ipfs/QmVX2o5BGmhVXKApP4n8AyCMqYgPauThM5q9v7ycgRUZXP
             });            
               
         } catch (error) {
@@ -154,65 +155,21 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
     }
 
     const mintNft = async () => {        
-        console.table(STARTING_JSON_NFT);
-        //const yourCollectible = await ethers.getContractAt('YourCollectible', fs.readFileSync("./artifacts/YourCollectible.address").toString());
+        //console.table(STARTING_JSON_NFT);
         console.log('Uploading your nft to ipfs...');
         const uploaded = await ipfs.add(JSON.stringify(STARTING_JSON_NFT));
 
         console.log(`Minting your nft with ipfs hash ${imageHash}`);
+        console.log(uploaded.path);
         await writeContracts.YourCollectible.mintItem(address, uploaded.path, { gasLimit: 400000 });
     }
 
-    function savebase64AsImageFile(folderpath, filename, content, contentType){
-        // Convert the base64 string in a Blob
-        var DataBlob = b64toBlob(content, contentType);
-        
-        console.log("Starting to write the file :3");
-        
-        window.resolveLocalFileSystemURL(folderpath, function(dir) {
-            console.log("Access to the directory granted succesfully");
-            dir.getFile(filename, {create:true}, function(file) {
-                console.log("File created succesfully.");
-                file.createWriter(function(fileWriter) {
-                    console.log("Writing content to file");
-                    fileWriter.write(DataBlob);
-                }, function(){
-                    alert('Unable to save file in path '+ folderpath);
-                });
-            });
-        });
-    }
-
-    function b64toBlob(b64Data, contentType, sliceSize) {
-        contentType = contentType || '';
-        sliceSize = sliceSize || 512;
-
-        var byteCharacters = atob(b64Data);
-        var byteArrays = [];
-
-        for (var offset = 0; offset < byteCharacters.length; offset += sliceSize) {
-            var slice = byteCharacters.slice(offset, offset + sliceSize);
-
-            var byteNumbers = new Array(slice.length);
-            for (var i = 0; i < slice.length; i++) {
-                byteNumbers[i] = slice.charCodeAt(i);
-            }
-
-            var byteArray = new Uint8Array(byteNumbers);
-
-            byteArrays.push(byteArray);
-        }
-
-      var blob = new Blob(byteArrays, {type: contentType});
-      return blob;
-    }
-
-    let counter = 0;
+    //let counter = 0;
 
     return (
         <div>
             <Button loading={loadingParts} onClick={ () => getMaskParts() }>Get Parts</Button>
-            <img id='generated-mask-image' src={newImage} height={325} width={275}/>
+            <img id='generated-mask-image' src={newImage} style={{ maxWidth: 150 }}/>
             <Button loading={loadingMask} onClick={ () => makeMask() } disabled={!partsLoaded}>Make Mask</Button>
             <Divider />
             {imageHash} <br />

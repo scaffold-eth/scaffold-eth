@@ -41,7 +41,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['mumbai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['matic']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -83,7 +83,10 @@ const getFromIPFS = async hashToGet => {
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // const mainnetProvider = getDefaultProvider("mainnet", { infura: INFURA_ID, etherscan: ETHERSCAN_KEY, quorum: 1 });
 // const mainnetProvider = new InfuraProvider("mainnet",INFURA_ID);
-const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+const scaffoldEthProvider = new JsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+const mainnetInfura = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+
+//const mainnetProvider = new JsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID)
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -99,6 +102,7 @@ const blockExplorer = targetNetwork.blockExplorer;
 
 
 function App(props) {
+  const mainnetProvider = (scaffoldEthProvider && scaffoldEthProvider._network) ? scaffoldEthProvider : mainnetInfura
 
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -446,7 +450,7 @@ function App(props) {
                 />
               </div>
               <Button style={{margin:8}} loading={sending} size="large" shape="round" type="primary" onClick={async()=>{
-                  console.log("DOWNLOADING...",ipfsDownHash)
+                  console.log("DOWNLOADING...", ipfsDownHash)
                   setDownloading(true)
                   setIpfsContent()
                   const result = await getFromIPFS(ipfsDownHash)//addToIPFS(JSON.stringify(yourJSON))
@@ -456,7 +460,7 @@ function App(props) {
                   setDownloading(false)
               }}>Download from IPFS</Button>
 
-              <pre  style={{padding:16, width:500, margin:"auto",paddingBottom:150}}>
+              <pre  style={{padding:16, width:500, margin:"auto", paddingBottom:150}}>
                 {ipfsContent}
               </pre>
           </Route>
