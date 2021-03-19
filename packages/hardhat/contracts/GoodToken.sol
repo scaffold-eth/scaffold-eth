@@ -20,6 +20,8 @@ contract GoodToken is GoodERC721, AccessControl {
         DYNAMIC_BALANCE
     }
 
+    event ArtworkRevoked(uint256 tokenId, address revokedFrom);
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     Counters.Counter private _tokenIdTracker;
@@ -114,7 +116,7 @@ contract GoodToken is GoodERC721, AccessControl {
         uint256 balanceRequirement, // could be static or dynamic
         uint256 balanceDuration,
         uint256 price
-    ) public {
+    ) public returns (uint256) {
         address sender = _msgSender();
 
         require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
@@ -143,6 +145,8 @@ contract GoodToken is GoodERC721, AccessControl {
 
         // increment token index for next mint
         _tokenIdTracker.increment();
+
+        return currentArtwork;
     }
 
     function buyArtwork(uint256 artwork) public payable {
@@ -157,6 +161,10 @@ contract GoodToken is GoodERC721, AccessControl {
         
         // verify artwork is up for sale
         require(owner == address(this) || owner == currentArtwork.artist, "GoodToken: Artwork is not currently for sale");
+
+        if(owner == address(this)) {
+            emit ArtworkRevoked(artwork, super.ownerOf(artwork));
+        }
 
         // transfer ownership
         safeTransferFrom(owner, sender, artwork);
