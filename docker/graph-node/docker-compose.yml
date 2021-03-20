@@ -19,6 +19,7 @@ services:
       ipfs: 'ipfs:5001'
       ethereum: 'localhost:http://host.docker.internal:8545'
       RUST_LOG: info
+      GRAPH_ALLOW_NON_DETERMINISTIC_IPFS: 'true'
   ipfs:
     image: ipfs/go-ipfs:v0.4.23
     ports:
