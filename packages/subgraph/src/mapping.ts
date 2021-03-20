@@ -1,4 +1,4 @@
-import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap, ethereum } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
@@ -8,6 +8,7 @@ import {
 } from '../generated/GoodToken/GoodToken'
 
 import {
+    Contract,
     Artist,
     Artwork,
     Beneficiary,
@@ -15,7 +16,35 @@ import {
     Revocation
 } from "../generated/schema"
 
+function setContractAdrress(event: ethereum.Event): void {
+    // get contract address
+    let contractAddress = event.address
+    
+    // check if contract is stored already
+    let contract = Contract.load('CONTRACT')
+
+    // store address singleton
+    if(contract == null) {
+        let contract = new Contract('CONTRACT') 
+        contract.address = contractAddress
+        contract.save()
+    }
+        
+}
+
+function getContractAddress(): (Bytes | null) {
+    let contract = Contract.load('CONTRACT')
+
+    if(contract == null) {
+        return null
+    }
+
+    return null
+    // return contract.address
+}
+
 export function handleArtworkMinted(event: ArtworkMinted): void {
+    setContractAdrress(event)
 
     // get artist address and create entity if needed
     let artistAddress = event.params.artist.toHexString()
@@ -73,11 +102,9 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
 
 }
 
-export function handleArtworkMetadata(value: JSONValue, artwork: Value): void {
-    log.info('IPFS Data: {}', [value.toString()]);
-}
-
 export function handleArtworkRevoked(event: ArtworkRevoked): void {
+    setContractAdrress(event)
+
     // creata new revocation record
     let revocation = new Revocation(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
     revocation.createdAt = event.block.timestamp
@@ -88,6 +115,8 @@ export function handleArtworkRevoked(event: ArtworkRevoked): void {
 }
 
 export function handleTransfer(event: TransferEvent): void {
+    setContractAdrress(event)
+    
     // creata new transfer record
     let transfer = new Transfer(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
     transfer.createdAt = event.block.timestamp
@@ -96,4 +125,12 @@ export function handleTransfer(event: TransferEvent): void {
     transfer.from = event.params.from
 
     transfer.save()
+}
+
+export function handleBlock(block: ethereum.Block): void {
+    let contract = getContractAddress()
+
+    if(contract == null) {
+        return
+    }
 }
