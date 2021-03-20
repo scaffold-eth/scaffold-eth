@@ -15,34 +15,19 @@ dataSources:
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - Artwork
+        - Artist
+        - Transfer
+        - Revocation
+        - Beneficiary
       abis:
         - name: GoodToken
           file: ./abis/GoodToken.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
-      file: ./src/mapping.ts
-
-  - kind: ethereum/contract
-    name: GoodTokenFund
-    network: localhost
-    source:
-      address: '{{GoodTokenFundAddress}}'
-      abi: GoodTokenFund
-      startBlock: 1
-    mapping:
-      kind: ethereum/events
-      apiVersion: 0.0.4
-      language: wasm/assemblyscript
-      entities:
-        - Purpose
-        - Sender
-      abis:
-        - name: GoodTokenFund
-          file: ./abis/GoodTokenFund.json
-      eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: ArtworkMinted(uint256,address,uint256,string,string,address,string,string)
+          handler: handleArtworkMinted
+        - event: ArtworkRevoked(uint256,address)
+          handler: handleArtworkRevoked
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
       file: ./src/mapping.ts

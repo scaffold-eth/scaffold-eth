@@ -1,15 +1,43 @@
-type Purpose @entity {
+type Artwork @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
   createdAt: BigInt!
-  transactionHash: String!
+  tokenId: BigInt!
+  artist: Artist!
+  price: BigInt!
+  artworkUrl: String!
+  revokedurl: String!
+  beneficiary: Beneficiary!
+  transfers: [Transfer!] @derivedFrom(field: "artwork")
 }
 
-type Sender @entity {
+type Artist @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
   createdAt: BigInt!
-  purposeCount: BigInt!
+  address: Bytes!
+  artworks: [Artwork!] @derivedFrom(field: "artist")
+}
+
+type Transfer @entity {
+  id: ID!
+  createdAt: BigInt!
+  artwork: Artwork!
+  to: Bytes!
+  from: Bytes!
+}
+
+type Revocation @entity {
+  id: ID!
+  createdAt: BigInt!
+  artwork: Artwork!
+  owner: Bytes!
+}
+
+type Beneficiary @entity {
+  id: ID!
+  createdAt: BigInt!
+  name: String!
+  symbol: String!
+  address: Bytes!
+  artworks: [Artwork!] @derivedFrom(field: "beneficiary")
+  artists: [Artist!] 
 }

@@ -20,13 +20,19 @@ contract GoodToken is GoodERC721, AccessControl {
         DYNAMIC_BALANCE
     }
 
+    event ArtworkRevoked(uint256 tokenId, address revokedFrom);
+    event ArtworkMinted(
+        uint256 artwork, address artist, uint256 price, string artworkUrl, string artworkRevokedUrl, 
+        address beneficiaryAddress, string beneficiaryName, string beneficiarySymbol
+    );
+
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
     Counters.Counter private _tokenIdTracker;
 
     struct OwnershipConditionData {
         OwnershipModel ownershipModel;
-        address targetAddress;
+        address beneficiaryAddress;
         uint256 balanceRequirement;
         uint256 balanceDuration; // for dynamic model
         uint256 purchaseDate;
@@ -54,7 +60,7 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
-        uint256 tokenBalance = IToken(ownerData.targetAddress).balanceOf(tokenOwner);
+        uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
 
         bool ownershipValid = true;
 
@@ -110,7 +116,7 @@ contract GoodToken is GoodERC721, AccessControl {
         string memory artworkUrl,
         string memory revokedArtworkUrl,
         OwnershipModel ownershipModel,
-        address targetAddress, 
+        address beneficiaryAddress, 
         uint256 balanceRequirement, // could be static or dynamic
         uint256 balanceDuration,
         uint256 price
@@ -122,10 +128,7 @@ contract GoodToken is GoodERC721, AccessControl {
         uint256 currentArtwork = _tokenIdTracker.current();
 
         // get metadata from associated token contract
-        IToken token = IToken(ownerData.targetAddress);
-
-        string memory tokenName = token.name();
-        string memory tokenSymbol = token.symbol();
+        IToken token = IToken(beneficiaryAddress);
 
         // mint new token to current token index
         _safeMint(sender, currentArtwork);
@@ -141,13 +144,23 @@ contract GoodToken is GoodERC721, AccessControl {
         // stoer artwork ownership data
         ownershipData[currentArtwork] = OwnershipConditionData (
             ownershipModel,
-            targetAddress,
+            beneficiaryAddress,
             balanceRequirement,
             balanceDuration,
             block.timestamp
         );
 
         // emit artwork creation event
+        emit ArtworkMinted(
+            currentArtwork,
+            sender,
+            price,
+            artworkUrl,
+            revokedArtworkUrl,
+            beneficiaryAddress,
+            token.name(),
+            token.symbol()
+        );
 
         // increment token index for next mint
         _tokenIdTracker.increment();
@@ -167,6 +180,10 @@ contract GoodToken is GoodERC721, AccessControl {
         
         // verify artwork is up for sale
         require(owner == address(this) || owner == currentArtwork.artist, "GoodToken: Artwork is not currently for sale");
+
+        if(owner == address(this)) {
+            emit ArtworkRevoked(artwork, super.ownerOf(artwork));
+        }
 
         // transfer ownership
         safeTransferFrom(owner, sender, artwork);
