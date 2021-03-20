@@ -74,8 +74,8 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     let artworkRevokedMetadata:TypedMap<string, JSONValue>
     
     if(artworkRevokedPayload != null) {
-        artwork.artworkRevokedImageUrl = artworkRevokedMetadata.get('image').toString()
         artworkRevokedMetadata = json.fromBytes(artworkRevokedPayload as Bytes).toObject()
+        artwork.artworkRevokedImageUrl = artworkRevokedMetadata.get('image').toString()
     }
 
     artwork.save()
