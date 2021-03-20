@@ -10,6 +10,75 @@
       {
         "indexed": false,
         "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "a_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "ActivityCompleted",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "witness",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "a_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "ActivityLive",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "a_id",
+        "type": "uint256"
+      },
+      {
+        "indexed": false,
+        "internalType": "string",
+        "name": "description",
+        "type": "string"
+      }
+    ],
+    "name": "NewActivityReady",
+    "type": "event"
+  },
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
         "name": "sender",
         "type": "address"
       },
@@ -24,13 +93,34 @@
     "type": "event"
   },
   {
-    "inputs": [],
-    "name": "purpose",
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "activities",
     "outputs": [
       {
+        "internalType": "enum YourContract.AStatus",
+        "name": "status",
+        "type": "uint8"
+      },
+      {
         "internalType": "string",
-        "name": "",
+        "name": "description",
         "type": "string"
+      },
+      {
+        "internalType": "address",
+        "name": "player",
+        "type": "address"
+      },
+      {
+        "internalType": "address",
+        "name": "witness",
+        "type": "address"
       }
     ],
     "stateMutability": "view",
@@ -39,12 +129,38 @@
   {
     "inputs": [
       {
+        "internalType": "uint256",
+        "name": "a_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "becomeWitness",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
-        "name": "newPurpose",
+        "name": "_description",
         "type": "string"
       }
     ],
-    "name": "setPurpose",
+    "name": "createActivity",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "a_id",
+        "type": "uint256"
+      }
+    ],
+    "name": "markCompleted",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
