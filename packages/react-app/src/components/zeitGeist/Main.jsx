@@ -34,10 +34,18 @@ export default function Main({
       as={as.ready} address={address}
       writeContracts={writeContracts}
       tx={tx}
+      userProvider={userProvider}
+      localProvider={localProvider}
     /> 
     </TabPane>
     <TabPane tab="Live" key="3">
-      <MemCardList as={as.live} address={address} /> 
+      <MemCardList 
+      as={as.live} address={address} 
+      writeContracts={writeContracts}
+      tx={tx}
+      userProvider={userProvider}
+      localProvider={localProvider}
+      /> 
     </TabPane>
   </Tabs>
   </div>

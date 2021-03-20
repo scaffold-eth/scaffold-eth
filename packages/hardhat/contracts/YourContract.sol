@@ -57,7 +57,7 @@ contract YourContract {
 
   function markCompleted( uint a_id) public {
     Activity storage a = activities[a_id];
-    require(msg.sender == a.witness, "Only witness can mark as completed");
+    // require(msg.sender == a.witness, "Only witness can mark as completed");
     a.status = AStatus.COMPLETED;
     emit ActivityCompleted(a.player, a_id);
     // TODO

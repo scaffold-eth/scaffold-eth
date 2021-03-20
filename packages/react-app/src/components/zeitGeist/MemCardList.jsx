@@ -23,8 +23,9 @@ export default function MemCardList({
   const becomeWitness = (a_id) => {
     tx( writeContracts.YourContract.becomeWitness(parseInt(a_id)) )
   }
+
   const markAsCompleted = (a_id) => {
-    tx( writeContracts.YourContract.markAsCompleted(parseInt(a_id)) )
+    tx( writeContracts.YourContract.markCompleted(parseInt(a_id)) )
   }
 
 

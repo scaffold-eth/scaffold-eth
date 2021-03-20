@@ -22,7 +22,7 @@ export default function MintMemoryDrawer ({
   };
 
     return (
-      <>
+      <div>
         <Button type="primary" onClick={showDrawer}>
           <PlusOutlined /> Mint New Memory
         </Button>
@@ -41,7 +41,7 @@ export default function MintMemoryDrawer ({
               <Button onClick={onClose} style={{ marginRight: 8 }}>
                 Back
               </Button>
-              <Button onClick={markAsCompleted} type="primary">
+              <Button onClick={() => markAsCompleted(a_id)} type="primary">
                 Mint Token
               </Button>
             </div>
@@ -89,7 +89,7 @@ export default function MintMemoryDrawer ({
             </Row>
           </Form>
         </Drawer>
-      </>
+      </div>
     );
   }
 // })
