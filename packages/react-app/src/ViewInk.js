@@ -40,7 +40,7 @@ export default function ViewInk(props) {
   const [buyButton, setBuyButton] = useState()
   const [mintFlow, setMintFlow] = useState()
 
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.kovanProvider);
+  const metaWriteContracts = useContractLoader(props.kovanProvider);
 
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
@@ -168,7 +168,7 @@ export default function ViewInk(props) {
     let signatureFunction = "mintFromSignature"
     let signatureFunctionArgs = [values['to'], hash]
     let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
+    let getSignatureArgs = ['0x19','0x00',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
 
     let mintInkConfig = {
       ...props.transactionConfig,

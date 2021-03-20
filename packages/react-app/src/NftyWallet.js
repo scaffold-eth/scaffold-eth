@@ -57,6 +57,8 @@ export default function NftyWallet(props) {
     metaSigner: props.metaProvider
   };
 
+  console.log(transactionConfig)
+
   let nftyBalance = useContractReader(
     props.readKovanContracts,
     "NiftyToken",
@@ -109,6 +111,7 @@ export default function NftyWallet(props) {
       price={props.price}
       minimized={props.minimized}
       setMetaProvider={props.setMetaProvider}
+      metaProvider={props.metaProvider}
     />
   );
 

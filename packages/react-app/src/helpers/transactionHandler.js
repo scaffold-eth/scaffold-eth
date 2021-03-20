@@ -6,6 +6,8 @@ import { default as Transactor } from "./Transactor";
 
 export async function transactionHandler(c) {
 
+    console.log(c)
+
     try {
 
     function chainWarning(network, chainId) {
@@ -31,7 +33,13 @@ export async function transactionHandler(c) {
 
       let balance = await c['localProvider'].getBalance(c['address'])
       console.log('artist balance', balance)
-      let injectedNetwork = await c['injectedProvider'].getNetwork()
+      let injectedNetwork
+      if(ethers.Signer.isSigner(c['injectedProvider'])) {
+       injectedNetwork = await c['injectedProvider'].provider.getNetwork()
+     } else {
+       injectedNetwork = await c['injectedProvider'].getNetwork()
+     }
+
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
 
@@ -53,7 +61,7 @@ export async function transactionHandler(c) {
             let contract = new ethers.Contract(
                 contractAddress,
                 contractAbi,
-                c['injectedProvider'].getSigner(),
+                (ethers.Signer.isSigner(c['injectedProvider']) ? c['injectedProvider'] : c['injectedProvider'].getSigner()),
               );
 
             let metaData = {}
@@ -61,7 +69,13 @@ export async function transactionHandler(c) {
               metaData['value'] = c['payment']
             }
 
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+            let result
+            if(c['injectedProvider'].provider && c['injectedProvider'].provider.wc) {
+              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+              result = await c['injectedProvider'].send('eth_sendTransaction', [populatedTransaction])
+            } else {
+              result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+            }
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {
@@ -74,7 +88,8 @@ export async function transactionHandler(c) {
         if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
-          c['getSignatureArgs']) {
+          c['getSignatureArgs'] &&
+          c['metaSigner']) {
           console.log('Doing it the chain-agnostic signature way!')
           let signature = await getSignature(
             c['injectedProvider'],
@@ -83,6 +98,7 @@ export async function transactionHandler(c) {
             c['getSignatureArgs'])
 
           console.log("Got signature: ",signature)
+          console.log(c['metaSigner'])
 
           let contract = new ethers.Contract(
               contractAddress,

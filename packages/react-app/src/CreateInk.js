@@ -76,7 +76,7 @@ export default function CreateInk(props) {
     let signatureFunction = "createInkFromSignature"
     let signatureFunctionArgs = [inkUrl, jsonUrl, props.ink.attributes[0]['value'], props.address]
     let getSignatureTypes = ['bytes','bytes','address','address','string','string','uint256']
-    let getSignatureArgs = ['0x19','0x0',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
+    let getSignatureArgs = ['0x19','0x00',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
 
     let createInkConfig = {
       ...props.transactionConfig,

@@ -34,7 +34,7 @@ export default function NiftyShop(props) {
     let signatureFunction = "setPriceFromSignature"
     let signatureFunctionArgs = [props.itemForSale, multipliedPrice]
     let getSignatureTypes = ['bytes','bytes','address','string','uint256','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce]
+    let getSignatureArgs = ['0x19','0x00',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce]
 
     let txConfig = {
       ...props.transactionConfig,

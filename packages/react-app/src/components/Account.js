@@ -1,9 +1,9 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { ethers } from "ethers";
 import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { Balance, Address, Wallet } from "."
-import { usePoller } from "../hooks"
+import { usePoller, useBurnerSigner } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
@@ -12,7 +12,7 @@ import { RelayProvider } from '@opengsn/gsn';
 const Web3HttpProvider = require("web3-providers-http");
 
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
-const XDAI_RPC = "https://rpc.xdaichain.com/"
+const XDAI_RPC = "https://xdai-archive.blockscout.com"
 
 const web3Modal = new Web3Modal({
   network: "xdai", // optional
@@ -46,6 +46,16 @@ const web3Modal = new Web3Modal({
 
 export default function Account(props) {
 
+  let httpProvider = new Web3HttpProvider(process.env.REACT_APP_NETWORK_NAME === 'xdai'?XDAI_RPC:"http://localhost:8546");
+  const burner = useBurnerSigner(props.localProvider)
+  /*const [burner, setBurner] = useState()
+
+  useEffect(() => {
+    if(_burner) {
+      setBurner(_burner)
+    }
+  },[_burner])*/
+
   let gsnConfig
   if(process.env.REACT_APP_USE_GSN === 'true') {
     let relayHubAddress
@@ -72,85 +82,73 @@ export default function Account(props) {
   //gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
 
   gsnConfig = {
-    forwarderAddress: "0xb851b09efe4a5021e9a4ecddbc5d9c9ce2640ccb",
+    //forwarderAddress: "0xb851b09efe4a5021e9a4ecddbc5d9c9ce2640ccb",
     paymasterAddress: "0x4734356359c48ba2Cb50BA048B1404A78678e5C2",
     verbose: true,
     relayLookupWindowBlocks: 1e18,
     minGasPrice: 20000000000
   }
 
-  //gsnConfig.relayLookupWindowBlocks= 1e18
+  gsnConfig.relayLookupWindowBlocks= 1e18
 
 }
-  //gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
-
-  /*
-  function warning(network, chainId) {
-      Modal.warning({
-        title: 'MetaMask Network Mismatch',
-        content: <>Please connect to <b>https://dai.poa.network</b></>,
-      });
-    }
-    */
-
-  const createBurnerIfNoAddress = async () => {
-    if (!props.injectedProvider &&
-        props.localProvider &&
-        typeof props.setInjectedGsnSigner == "function" &&
-        typeof props.setInjectedProvider == "function" &&
-        !web3Modal.cachedProvider){
-      let burner
-      if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
-      burner = new BurnerProvider(XDAI_RPC)//"https://dai.poa.network")
-    } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
-      burner = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
-    } else {
-      burner = new BurnerProvider("http://localhost:8546")//
-    }
-      console.log("🔥📡 burner",burner)
-      updateProviders(burner)
-
-    }else{
-      pollInjectedProvider()
-    }
-  }
-    useEffect(() => {
-      createBurnerIfNoAddress()
-    }, [props.injectedProvider]);
 
   const updateProviders =  async (provider) => {
-    console.log("UPDATE provider:",provider)
-    let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
-    props.setInjectedProvider(newWeb3Provider)
 
-  if(process.env.REACT_APP_USE_GSN === 'true') {
-    if (provider._metamask) {
-      //console.log('using metamask')
-    gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
-    }
+    if(provider && ethers.Signer.isSigner(provider)) {
+      let burnerAddress = await burner.getAddress()
+      props.setAddress(burnerAddress)
+      props.setInjectedProvider(provider)
+    } else if (provider) {
+      console.log('using injected provider')
 
-    const gsnProvider = await RelayProvider.newProvider({provider, config: gsnConfig}).init();
-    console.log(gsnProvider)
-    const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
-    //console.log("GOT GSN PROVIDER",gsnProvider)
-    const gsnSigner = gsnWeb3Provider.getSigner(props.address)
-    props.setInjectedGsnSigner(gsnSigner)
-  }
+      // Set provider
+      let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
+      props.setInjectedProvider(newWeb3Provider)
 
-  }
+      let accounts = await newWeb3Provider.listAccounts()
 
-  const pollInjectedProvider = async ()=>{
-    if(props.injectedProvider){
-      let accounts = await props.injectedProvider.listAccounts()
+      console.log(newWeb3Provider)
+
       if(accounts && accounts[0] && accounts[0] !== props.account){
-        //console.log("ADDRESS: ",accounts[0])
-        if(typeof props.setAddress == "function") props.setAddress(accounts[0])
+        console.log(accounts)
+      props.setAddress(accounts[0])
       }
+
+      let injectedNetwork = await newWeb3Provider.getNetwork()
+      let localNetwork = await props.localProvider.getNetwork()
+
+      if(injectedNetwork.chainId === localNetwork.chainId && !provider.wc) {
+         // If the injected provider is on the right network, create an injected GSN signer
+         const gsnProvider = await RelayProvider.newProvider({provider, config: gsnConfig}).init();
+         const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
+         const gsnSigner = gsnWeb3Provider.getSigner(accounts[0])
+         props.setInjectedGsnSigner(gsnSigner)
+       }
+    }
+
+    if(burner) {
+      console.log("UPDATE provider:", provider, burner)
+      let burnerAddress = await burner.getAddress()
+
+      // Adding a burner meta provider
+      const burnerGsnProvider = await RelayProvider.newProvider({provider: httpProvider, config: gsnConfig}).init();
+      burnerGsnProvider.addAccount(burner.privateKey);
+      const burnerGsnWeb3Provider = new ethers.providers.Web3Provider(burnerGsnProvider);
+      const burnerGsnSigner = burnerGsnWeb3Provider.getSigner(burnerAddress);
+
+      props.setMetaProvider(burnerGsnSigner);
+      console.log('setMetaProvider', burnerGsnSigner)
+
+    if(provider && ethers.Signer.isSigner(provider)) {
+
+      props.setInjectedGsnSigner(burnerGsnSigner)
+      console.log('setGsnSigner')
     }
   }
-  usePoller(()=>{
-    pollInjectedProvider()
-  },props.pollTime?props.pollTime:1999)
+
+  }
+
 
   const loadWeb3Modal = useCallback(async () => {
 
@@ -168,22 +166,40 @@ export default function Account(props) {
             console.log(`account changed!`)
             updateProviders(provider)
         });
+
+        // Subscribe to session disconnection
+        provider.on("disconnect", (code, reason) => {
+          console.log(code, reason);
+          logoutOfWeb3Modal()
+        });
       }
 
-      pollInjectedProvider()
-
-    }, [props.setInjectedProvider]);
-
-
+    }, [props.setInjectedProvider, burner]);
 
   const logoutOfWeb3Modal = async ()=>{
     await web3Modal.clearCachedProvider();
     window.localStorage.removeItem('walletconnect');
-    //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
     },1)
   }
+
+  useEffect(() => {
+  const checkForProvider =  async () => {
+    if (web3Modal.cachedProvider) {
+      console.log('using cached provider')
+        loadWeb3Modal()
+    } else {
+      console.log("🔥📡 burner", burner)
+      updateProviders(burner)
+    }
+  }
+
+  checkForProvider()
+
+
+}, [burner]);
+
 
   let modalButtons = []
   if(typeof props.setInjectedProvider == "function"){
@@ -197,72 +213,6 @@ export default function Account(props) {
       )
     }
   }
-
-
-  React.useEffect(() => {
-
-    const checkForProvider =  async () => {
-    if (web3Modal.cachedProvider) {
-      try {
-      if (web3Modal.cachedProvider === "injected") {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
-        console.log('injected accounts', accounts)
-        if (!accounts.length) {
-          await web3Modal.clearCachedProvider();
-          window.localStorage.removeItem('walletconnect');
-          createBurnerIfNoAddress()
-          throw new Error("Injected provider is not accessible");
-        } else {
-        loadWeb3Modal()
-      }
-      } else {
-      console.log(web3Modal.cachedProvider)
-      loadWeb3Modal()
-    }
-    } catch (e) {
-      console.log("Could not get a wallet connection", e);
-      return;
-    }
-    }
-  }
-  checkForProvider()
-
-  if(process.env.REACT_APP_USE_GSN === 'true') {
-  const createBurnerMetaSigner = async () => {
-    let origProvider;
-    if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-      origProvider = new Web3HttpProvider(XDAI_RPC);//"https://dai.poa.network");
-    } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
-      origProvider = new ethers.providers.InfuraProvider(
-        "kovan",
-        "9ea7e149b122423991f56257b882261c"
-      );
-    } else {
-      origProvider = new Web3HttpProvider("http://localhost:8546"); /*new ethers.providers.JsonRpcProvider(
-        "http://localhost:8546"
-      );*/
-    }
-    console.log('making the burner meta signer', origProvider, gsnConfig)
-    const gsnProvider = await RelayProvider.newProvider({provider: origProvider, config: gsnConfig}).init();
-    console.log(gsnProvider)
-
-    const account = await gsnProvider.newAccount();
-
-    let from = account.address;
-
-    const provider = new ethers.providers.Web3Provider(gsnProvider);
-
-    let gasPrice = await provider.getGasPrice()
-    console.log(gasPrice.toString())
-
-    const signer = provider.getSigner(from);
-
-    props.setMetaProvider(signer);
-  }
-  createBurnerMetaSigner()
-}
-
-  }, []);
 
   let display=""
   display = (
