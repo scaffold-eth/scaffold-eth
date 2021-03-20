@@ -15,6 +15,7 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
 
   let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, description: x.description, status: "ready"}})
   let live_activities = setActivityLiveEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, witness: x.witness}})
+  let completed_activities = setActivityCompletedEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, witness: x.witness}})
   let live_ids_only = new_activities.map(x => x.a_id)
   let as = {}
   for (var a of new_activities) {
@@ -35,11 +36,19 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
       witness : a.witness
     }
   }
+  for (var a of completed_activities) {
+    as[a.a_id] = {
+      ...as[a.a_id],
+      status : "completed",
+    }
+  }
+
   console.log('all', as)
 
   const activities = {
     ready: Object.values(as).filter(x => x.status == "ready"),
     live: Object.values(as).filter(x => x.status == "live"),
+    completed: Object.values(as).filter(x => x.status == "completed"),
   }
 
   return (
