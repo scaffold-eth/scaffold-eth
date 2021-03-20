@@ -8,12 +8,12 @@ function onChange(a, b, c) {
   }
 const { TabPane } = Tabs;
 
-export default function Main({name}) {
+export default function Main({address, as}) {
   return (
     <div>
     <Tabs defaultActiveKey="1" centered>
     <TabPane tab="Ready" key="1">
-      <MemCardList name="ougaguga" /> 
+      <MemCardList as={as.ready} /> 
     </TabPane>
     <TabPane tab="Create" key="2">
       <StartMemory />

@@ -289,7 +289,10 @@ function App(props) {
             />
           </Route>
           <Route path="/zeitgeist">
-            <ZeitGeist />
+            <ZeitGeist 
+              address={address}
+              setNewActivityEvent={setNewActivityEvent}
+            />
           </Route>
 
         </Switch>
