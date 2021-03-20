@@ -37,3 +37,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+#keys
+packages/hardhat/.keys.js

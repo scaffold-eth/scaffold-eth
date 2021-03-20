@@ -3,6 +3,7 @@ import ReactDOM from "react-dom";
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import "./index.css";
 import App from "./App";
+import { THEGRAPH } from "./constants";
 
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 
@@ -13,7 +14,9 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-let subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract"
+const theGraphNetwork = 'localhost';
+const subgraphUri = THEGRAPH[theGraphNetwork].subgraphUri;
+
 
 const client = new ApolloClient({
   uri: subgraphUri,

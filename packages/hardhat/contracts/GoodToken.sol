@@ -27,6 +27,8 @@ contract GoodToken is GoodERC721, AccessControl {
     );
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    uint256 public constant PAYMENT_GRACE_PERIOD = 10 seconds;
+
 
     Counters.Counter private _tokenIdTracker;
 
@@ -34,7 +36,7 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipModel ownershipModel;
         address beneficiaryAddress;
         uint256 balanceRequirement;
-        uint256 balanceDuration; // for dynamic model
+        uint256 balanceDurationInSeconds; // for dynamic model
         uint256 purchaseDate;
     }
 
@@ -65,7 +67,6 @@ contract GoodToken is GoodERC721, AccessControl {
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
         uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
-
         bool revoked = false;
 
         // check if artwork is still owned by artist
@@ -73,19 +74,31 @@ contract GoodToken is GoodERC721, AccessControl {
             return false;
         }
 
+        // if we are still within the grace period, ownership is not revoked
+        if(ownerData.purchaseDate + PAYMENT_GRACE_PERIOD >= block.timestamp) {
+            console.log("purchase date: %s\ncurrent time: %s", ownerData.purchaseDate, block.timestamp);
+            console.log("Token still within grace period!");
+            return false;
+        }
+
         // Check ownership requirements
         if(ownerData.ownershipModel == OwnershipModel.STATIC_BALANCE) {
-
+            console.log("required balance: %s\nsupplied balance: %s", ownerData.balanceRequirement, tokenBalance);
+            
             if(tokenBalance < ownerData.balanceRequirement) {
+                console.log("STATIC_BALANCE not enough. Ownership revoked!");
                 revoked = true;
             }
             
         } else if (ownerData.ownershipModel == OwnershipModel.DYNAMIC_BALANCE) {
             uint256 holdDuration = block.timestamp - ownerData.purchaseDate;
-            uint256 holdWeeks = holdDuration.div(ownerData.balanceDuration);
-            uint256 requiredBalance = ownerData.balanceRequirement * holdWeeks;
+            uint256 holdPeriod = holdDuration.div(ownerData.balanceDurationInSeconds);
+            uint256 requiredBalance = ownerData.balanceRequirement * holdPeriod;
+            console.log("required balance: %s\nsupplied balance: %s", requiredBalance, tokenBalance);
+            console.log("holdDuration: %s\nholdPeriod: %s", holdDuration, holdPeriod);
 
             if(tokenBalance < requiredBalance) {
+                console.log("DYNAMIC_BALANCE not enough. Ownership revoked!");
                 revoked = true;
             }            
 
@@ -151,12 +164,12 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipModel ownershipModel,
         address beneficiaryAddress, 
         uint256 balanceRequirement, // could be static or dynamic
-        uint256 balanceDuration,
+        uint256 balanceDurationInSeconds,
         uint256 price
     ) public returns (uint256) {
         address sender = _msgSender();
 
-        require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
+        //require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
 
@@ -179,9 +192,10 @@ contract GoodToken is GoodERC721, AccessControl {
             ownershipModel,
             beneficiaryAddress,
             balanceRequirement,
-            balanceDuration,
+            balanceDurationInSeconds,
             block.timestamp
         );
+        console.log("artwork created at: %s", block.timestamp);
 
         // emit artwork creation event
         emit ArtworkMinted(
@@ -235,6 +249,6 @@ contract GoodToken is GoodERC721, AccessControl {
         // update purchase data
         ownerData.purchaseDate = block.timestamp;
 
-        _transfer(from, to, tokenId);
+        _safeTransfer(from, to, tokenId, "");
     }
 }

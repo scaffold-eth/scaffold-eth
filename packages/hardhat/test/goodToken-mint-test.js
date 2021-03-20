@@ -63,10 +63,7 @@ describe("GoodToken Create Tests", () => {
 
         const tx = await goodToken.connect(buyer).buyArtwork(0, {value: ethers.constants.WeiPerEther});
         await tx.wait();
-        
-
-
-    })
+    });
 
 
 })

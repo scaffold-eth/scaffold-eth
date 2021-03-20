@@ -11,9 +11,9 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { GraphExamples } from "./views"
+import { GraphExamples, MintArtwork } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -76,13 +76,13 @@ function App(props) {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork,"fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
+  const userProvider = useUserProvider(injectedProvider, undefined);
   const address = useUserAddress(userProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
-  let localChainId = localProvider && localProvider._network && localProvider._network.chainId
-  if(DEBUG) console.log("🏠 localChainId",localChainId)
+  //let localChainId = localProvider && localProvider._network && localProvider._network.chainId
+  //if(DEBUG) console.log("🏠 localChainId",localChainId)
 
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
   if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
@@ -93,39 +93,30 @@ function App(props) {
   const tx = Transactor(userProvider, gasPrice)
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
-  if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+  //const yourLocalBalance = useBalance(localProvider, address);
+  //if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
   if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
-  if(DEBUG) console.log("📝 readContracts",readContracts)
+  //const readContracts = useContractLoader(localProvider)
+  //if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
-  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
-
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
-  console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
-  //
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
-  console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
+  const contracts = useContractLoader(userProvider)
+  if(DEBUG) console.log("🔐 writeContracts",contracts)
 
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
 
-  //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  // // keep track of a variable from the contract in the local React state:
+  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  // console.log("🤗 purpose:",purpose)
+
+  // //📟 Listen for broadcast events
+  // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  // console.log("📟 SetPurpose events:",setPurposeEvents)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -134,28 +125,28 @@ function App(props) {
 
 
   let networkDisplay = ""
-  if(localChainId && selectedChainId && localChainId != selectedChainId ){
-    networkDisplay = (
-      <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
-        <Alert
-          message={"⚠️ Wrong Network"}
-          description={(
-            <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
-            </div>
-          )}
-          type="error"
-          closable={false}
-        />
-      </div>
-    )
-  }else{
-    networkDisplay = (
-      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-        {targetNetwork.name}
-      </div>
-    )
-  }
+  // if(localChainId && selectedChainId && localChainId != selectedChainId ){
+  //   networkDisplay = (
+  //     <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
+  //       <Alert
+  //         message={"⚠️ Wrong Network"}
+  //         description={(
+  //           <div>
+  //             You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
+  //           </div>
+  //         )}
+  //         type="error"
+  //         closable={false}
+  //       />
+  //     </div>
+  //   )
+  // }else{
+  //   networkDisplay = (
+  //     <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+  //       {targetNetwork.name}
+  //     </div>
+  //   )
+  // }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -187,6 +178,9 @@ function App(props) {
           <Menu.Item key="/funds">
             <Link onClick={()=>{setRoute("/funds")}} to="/graphexamples">Funds</Link>
           </Menu.Item>
+          <Menu.Item key="/mint">
+            <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
+          </Menu.Item>
           <Menu.Item key="/wall-of-shame">
             <Link onClick={()=>{setRoute("/wall-of-shame")}} to="/wall-of-shame">Wall of Shame</Link>
           </Menu.Item>
@@ -196,20 +190,11 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/*">
-            <GraphExamples
-                address={address}
-                userProvider={userProvider}
-                mainnetProvider={mainnetProvider}
-                localProvider={localProvider}
-                yourLocalBalance={yourLocalBalance}
-                price={price}
-                tx={tx}
-                writeContracts={writeContracts}
-                readContracts={readContracts}
-                purpose={purpose}
-                setPurposeEvents={setPurposeEvents}
-              />
+          <Route exact path="/mint">
+            <MintArtwork
+              tx={tx}
+              writeContracts={contracts}
+            />
           </Route>
 
           <Route exact path="/mint"></Route>
@@ -223,7 +208,18 @@ function App(props) {
           <Route exact path="/funds"></Route>
           <Route exact path="/funds/:fund"></Route>
 
+
           <Route exact path="/wall-of-shame">
+          <Route exact path="/*">
+            <GraphExamples
+                address={address}
+                userProvider={userProvider}
+                mainnetProvider={mainnetProvider}
+                price={price}
+                tx={tx}
+                writeContracts={contracts}
+              />
+          </Route>
 
           </Route>
         </Switch>
@@ -238,7 +234,6 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
          <Account
            address={address}
-           localProvider={localProvider}
            userProvider={userProvider}
            mainnetProvider={mainnetProvider}
            price={price}
