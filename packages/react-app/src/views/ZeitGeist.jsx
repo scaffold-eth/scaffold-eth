@@ -7,12 +7,27 @@ import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Main } from "../components/zeitGeist"
+// import {  useContractReader, useEventListener, useExternalContractLoader } from "../hooks"
 
-export default function ZeitGeist({address, setNewActivityEvent}) {
+export default function ZeitGeist({address, setNewActivityEvent, setActivityLiveEvent, setActivityCompletedEvent}) {
 
-  let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id, player: x.player, desc: x.description}})
-  let activities = {
-    ready: new_activities
+  let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, desc: x.description, status: "ready"}})
+  let live_activities = setActivityLiveEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, witness: x.witness}})
+  let live_ids_only = new_activities.map(x => x.a_id)
+  let as = {}
+  for (var a of new_activities) {
+    console.log('looking at', a)
+    as[a.a_id] = a
+  }
+  for (var a of live_activities) {
+    as[a.a_id].status = "live"
+    as[a.a_id].witness = a.witness
+  }
+  console.log('all', as)
+
+  const activities = {
+    ready: Object.values(as).filter(x => x.status == "ready"),
+    live: Object.values(as).filter(x => x.status == "live"),
   }
 
   return (

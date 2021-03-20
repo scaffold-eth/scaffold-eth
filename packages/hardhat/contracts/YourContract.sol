@@ -49,7 +49,7 @@ contract YourContract {
 
   function becomeWitness(uint a_id) public {
     Activity storage a = activities[a_id];
-    require(msg.sender == a.player, "The best memories are created with others");
+    // require(msg.sender == a.player, "The best memories are created with others");
     a.witness = msg.sender;
     a.status = AStatus.LIVE;
     emit ActivityLive(a.player, msg.sender, a_id);

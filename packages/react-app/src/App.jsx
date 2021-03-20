@@ -131,7 +131,7 @@ function App(props) {
   //📟 Listen for broadcast events
   // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   const setNewActivityEvent = useEventListener(readContracts, "YourContract", "NewActivityReady", localProvider, 1);
-  // const setActivityLiveEvent = useEventListener(readContracts, "YourContract", "ActivityLive", localProvider, 1);
+  const setActivityLiveEvent = useEventListener(readContracts, "YourContract", "ActivityLive", localProvider, 1);
   // const setActivityCompletedEvent = useEventListener(readContracts, "YourContract", "ActivityCompleted", localProvider, 1);
   console.log("📟 New Activity events:", setNewActivityEvent)
   // console.log("📟 New Activity events:", setActivityLiveEvent)
@@ -292,6 +292,7 @@ function App(props) {
             <ZeitGeist 
               address={address}
               setNewActivityEvent={setNewActivityEvent}
+              setActivityLiveEvent={setActivityLiveEvent}
             />
           </Route>
 

@@ -19,7 +19,7 @@ export default function Main({address, as}) {
       <StartMemory />
     </TabPane>
     <TabPane tab="Live" key="3">
-      <MemCardList name="ougaguga" /> 
+      <MemCardList as={as.live} /> 
     </TabPane>
   </Tabs>
   </div>
