@@ -132,6 +132,20 @@ function App(props) {
       }
     }
   },7777)
+  setTimeout(()=>{
+    if(!cachedNetwork){
+      if(balance==0){
+        checkBalances(address)
+      }
+    }
+  },1777)
+  setTimeout(()=>{
+    if(!cachedNetwork){
+      if(balance==0){
+        checkBalances(address)
+      }
+    }
+  },3777)
 
 
   // Just plug in different 🛰 providers to get your balance on different chains:
