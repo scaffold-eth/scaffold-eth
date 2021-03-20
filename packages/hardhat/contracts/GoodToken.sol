@@ -22,7 +22,7 @@ contract GoodToken is GoodERC721, AccessControl {
 
     event ArtworkRevoked(uint256 tokenId, address revokedFrom);
     event ArtworkMinted(
-        uint256 artwork, address artist, uint256 price, string artworkUrl, string artworkRevokedUrl, 
+        uint256 artwork, address artist, uint256 price, string artworkCid, string artworkRevokedCid, 
         address beneficiaryAddress, string beneficiaryName, string beneficiarySymbol
     );
 
@@ -42,8 +42,8 @@ contract GoodToken is GoodERC721, AccessControl {
 
     struct ArtworkData {
         address artist;
-        string artworkUrl;
-        string artworkRevokedUrl;
+        string artworkCid;
+        string artworkRevokedCid;
         uint256 price;
     }
 
@@ -54,6 +54,31 @@ contract GoodToken is GoodERC721, AccessControl {
     // Mapping of token ids to artwork data
     mapping (uint256 => ArtworkData) artworkData;
 
+
+    // returns the current balance and required balance for a token
+    function checkBalanceState(uint256 tokenId) public view returns (uint256, uint256) {
+        address tokenOwner = super.ownerOf(tokenId);
+        OwnershipConditionData memory ownerData = ownershipData[tokenId];
+        ArtworkData memory currentArtwork = artworkData[tokenId];
+
+        uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
+        
+        // Check ownership requirements
+        if(ownerData.ownershipModel == OwnershipModel.STATIC_BALANCE) {
+            console.log("required balance: %s\nsupplied balance: %s", ownerData.balanceRequirement, tokenBalance);
+            return (tokenBalance, ownerData.balanceRequirement);
+
+        } else if (ownerData.ownershipModel == OwnershipModel.DYNAMIC_BALANCE) {
+            uint256 holdDuration = block.timestamp - ownerData.purchaseDate;
+            uint256 holdPeriod = holdDuration.div(ownerData.balanceDurationInSeconds);
+            uint256 requiredBalance = ownerData.balanceRequirement * holdPeriod;
+            console.log("holdDuration: %s\nholdPeriod: %s", holdDuration, holdPeriod);
+
+            return (tokenBalance, requiredBalance);           
+        }
+
+        return (0, 0);
+    }
 
     /**
      * @dev Check if a token owner has defaulted on their artwork, resulting in
@@ -66,7 +91,6 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
-        uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
         bool revoked = false;
 
         // check if artwork is still owned by artist
@@ -81,28 +105,13 @@ contract GoodToken is GoodERC721, AccessControl {
             return false;
         }
 
-        // Check ownership requirements
-        if(ownerData.ownershipModel == OwnershipModel.STATIC_BALANCE) {
-            console.log("required balance: %s\nsupplied balance: %s", ownerData.balanceRequirement, tokenBalance);
-            
-            if(tokenBalance < ownerData.balanceRequirement) {
-                console.log("STATIC_BALANCE not enough. Ownership revoked!");
-                revoked = true;
-            }
-            
-        } else if (ownerData.ownershipModel == OwnershipModel.DYNAMIC_BALANCE) {
-            uint256 holdDuration = block.timestamp - ownerData.purchaseDate;
-            uint256 holdPeriod = holdDuration.div(ownerData.balanceDurationInSeconds);
-            uint256 requiredBalance = ownerData.balanceRequirement * holdPeriod;
-            console.log("required balance: %s\nsupplied balance: %s", requiredBalance, tokenBalance);
-            console.log("holdDuration: %s\nholdPeriod: %s", holdDuration, holdPeriod);
-
-            if(tokenBalance < requiredBalance) {
-                console.log("DYNAMIC_BALANCE not enough. Ownership revoked!");
-                revoked = true;
-            }            
-
+        (uint256 currentBalance, uint256 requiredBalance) = checkBalanceState(tokenId);
+        console.log("required balance: %s\ncurrent balance: %s", requiredBalance, currentBalance);
+        if(currentBalance < requiredBalance) {
+            console.log("Balance insufficient! Ownership revoked!");
+            revoked = true;
         }
+
         return revoked;
     }
 
@@ -130,14 +139,18 @@ contract GoodToken is GoodERC721, AccessControl {
         bool revoked = isRevoked(tokenId);
 
         ArtworkData memory currentArtwork = artworkData[tokenId];
+        string memory ipfsPrefix = "ipfs://";
 
         if(revoked) {
-            return currentArtwork.artworkRevokedUrl;
+            return string(abi.encodePacked(ipfsPrefix, currentArtwork.artworkRevokedCid));
         }
 
-        return currentArtwork.artworkUrl;
+        return string(abi.encodePacked(ipfsPrefix, currentArtwork.artworkCid));
     }
 
+    function totalSupply() public view override virtual returns (uint256) {
+        return _tokenIdTracker.current();
+    }
 
 
     constructor () GoodERC721("GoodToken", "GDTKN") public {
@@ -159,8 +172,8 @@ contract GoodToken is GoodERC721, AccessControl {
      * @dev Create tokens with ownership models
      */
     function createArtwork(
-        string memory artworkUrl,
-        string memory revokedArtworkUrl,
+        string memory artworkCid,
+        string memory artworkRevokedCid,
         OwnershipModel ownershipModel,
         address beneficiaryAddress, 
         uint256 balanceRequirement, // could be static or dynamic
@@ -182,8 +195,8 @@ contract GoodToken is GoodERC721, AccessControl {
         // store artwork URLs and initial min bid
         artworkData[currentArtwork] = ArtworkData (
             sender,
-            artworkUrl,
-            revokedArtworkUrl,
+            artworkCid,
+            artworkRevokedCid,
             price
         );
 
@@ -202,8 +215,8 @@ contract GoodToken is GoodERC721, AccessControl {
             currentArtwork,
             sender,
             price,
-            artworkUrl,
-            revokedArtworkUrl,
+            artworkCid,
+            artworkRevokedCid,
             beneficiaryAddress,
             token.name(),
             token.symbol()

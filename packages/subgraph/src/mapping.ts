@@ -15,6 +15,8 @@ import {
     Revocation
 } from "../generated/schema"
 
+const ipfsBaseUrl = 'https://ipfs.io/ipfs/';
+
 export function handleArtworkMinted(event: ArtworkMinted): void {
 
     // get artist address and create entity if needed
@@ -47,27 +49,34 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
 
     // create new artwork entity
     let artworkId = event.params.artwork
-
-    // fetch artwork data
-    log.info('Fetching IPFS CID {}', [event.params.artworkUrl]);
-    let artworkPayload = ipfs.cat(event.params.artworkUrl.toString());  
-    let artworkMetadata:TypedMap<string, JSONValue>
-
-    if(artworkPayload != null)
-        artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
-
-
     let artwork = new Artwork(artworkId.toString())
     artwork.tokenId = artworkId
     artwork.artist = artistAddress
     artwork.beneficiary = beneficiaryAddress
     artwork.price = event.params.price
-    artwork.artworkUrl = event.params.artworkUrl
-    artwork.revokedurl = event.params.artworkRevokedUrl
+    artwork.artworkCid = event.params.artworkCid
+    artwork.artworkRevokedCid = event.params.artworkRevokedCid
     artwork.createdAt = event.block.timestamp
 
-    artwork.name = artworkMetadata.get('name').toString()
-    artwork.desc = artworkMetadata.get('description').toString()
+    // fetch artwork data
+    log.info('Fetching IPFS CID {}', [event.params.artworkCid]);
+    let artworkPayload = ipfs.cat('/ipfs/' + event.params.artworkCid.toString());  
+    let artworkMetadata:TypedMap<string, JSONValue>
+
+    if(artworkPayload != null) {
+        artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
+        artwork.name = artworkMetadata.get('name').toString()
+        artwork.desc = artworkMetadata.get('description').toString()
+        artwork.artworkImageUrl = artworkMetadata.get('image').toString()
+    }
+    
+    let artworkRevokedPayload = ipfs.cat('/ipfs/' + event.params.artworkRevokedCid.toString())
+    let artworkRevokedMetadata:TypedMap<string, JSONValue>
+    
+    if(artworkRevokedPayload != null) {
+        artwork.artworkRevokedImageUrl = artworkRevokedMetadata.get('image').toString()
+        artworkRevokedMetadata = json.fromBytes(artworkRevokedPayload as Bytes).toObject()
+    }
 
     artwork.save()
 
