@@ -3,7 +3,7 @@ pragma solidity >=0.6.0 <0.9.0;
 
 import "hardhat/console.sol";
 import "./GoodERC721.sol";
-import "./IBalanceOf.sol";
+import "./IToken.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
 
@@ -21,6 +21,10 @@ contract GoodToken is GoodERC721, AccessControl {
     }
 
     event ArtworkRevoked(uint256 tokenId, address revokedFrom);
+    event ArtworkMinted(
+        uint256 artwork, address artist, uint256 price, string artworkUrl, string artworkRevokedUrl, 
+        address beneficiaryAddress, string beneficiaryName, string beneficiarySymbol
+    );
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
 
@@ -28,7 +32,7 @@ contract GoodToken is GoodERC721, AccessControl {
 
     struct OwnershipConditionData {
         OwnershipModel ownershipModel;
-        address targetAddress;
+        address beneficiaryAddress;
         uint256 balanceRequirement;
         uint256 balanceDuration; // for dynamic model
         uint256 purchaseDate;
@@ -60,7 +64,7 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
-        uint256 tokenBalance = IBalanceOf(ownerData.targetAddress).balanceOf(tokenOwner);
+        uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
 
         bool revoked = false;
 
@@ -145,7 +149,7 @@ contract GoodToken is GoodERC721, AccessControl {
         string memory artworkUrl,
         string memory revokedArtworkUrl,
         OwnershipModel ownershipModel,
-        address targetAddress, 
+        address beneficiaryAddress, 
         uint256 balanceRequirement, // could be static or dynamic
         uint256 balanceDuration,
         uint256 price
@@ -155,6 +159,9 @@ contract GoodToken is GoodERC721, AccessControl {
         require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
+
+        // get metadata from associated token contract
+        IToken token = IToken(beneficiaryAddress);
 
         // mint new token to current token index
         _safeMint(sender, currentArtwork);
@@ -170,10 +177,22 @@ contract GoodToken is GoodERC721, AccessControl {
         // stoer artwork ownership data
         ownershipData[currentArtwork] = OwnershipConditionData (
             ownershipModel,
-            targetAddress,
+            beneficiaryAddress,
             balanceRequirement,
             balanceDuration,
             block.timestamp
+        );
+
+        // emit artwork creation event
+        emit ArtworkMinted(
+            currentArtwork,
+            sender,
+            price,
+            artworkUrl,
+            revokedArtworkUrl,
+            beneficiaryAddress,
+            token.name(),
+            token.symbol()
         );
 
         // increment token index for next mint
