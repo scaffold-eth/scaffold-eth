@@ -20,8 +20,8 @@ export default function MemCardList({name}) {
   return (
       <div>
         <list>
-          <li> <MemCard /> </li>
-          <li> <MemCard /> </li>
+          <li> <MemCard isWitness={false} name="name2"/> </li>
+          <li> <MemCard isWitness={true} name="name1"/> </li>
         </list>
       </div>
   );

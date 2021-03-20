@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Card, Carousel, Tabs } from "antd";
+import { Card, Carousel, Divider, Tabs } from "antd";
 import MemCardList from "./MemCardList"
 import StartMemory from "./StartMemory"
 
@@ -10,6 +10,7 @@ const { TabPane } = Tabs;
 
 export default function Main({name}) {
   return (
+    <div>
     <Tabs defaultActiveKey="1" centered>
     <TabPane tab="Ready" key="1">
       <MemCardList name="ougaguga" /> 
@@ -21,13 +22,6 @@ export default function Main({name}) {
       <MemCardList name="ougaguga" /> 
     </TabPane>
   </Tabs>
+  </div>
   );
 }
-
-// TODO
-// beispiehlaufgabe 1, alle zusammen
-// hier gibts alle components:
-// https://ant.design/components/
-
-// cheat sheet:
-// ctrl + / -> kommentiert etwas aus
