@@ -8,6 +8,7 @@ require("@tenderly/hardhat-tenderly")
 require("@nomiclabs/hardhat-etherscan");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
+const { TEST_NET_PRIVATE_KEY, ETHERSCAN_KEY } = require('./.keys.js');
 
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
@@ -52,47 +53,33 @@ module.exports = {
     },
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     kovan: {
       url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     goerli: {
       url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     xdai: {
       url: 'https://rpc.xdaichain.com/',
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
     matic: {
       url: 'https://rpc-mainnet.maticvigil.com/',
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: [`0x${TEST_NET_PRIVATE_KEY}`]
     },
   },
   solidity: {
@@ -113,9 +100,7 @@ module.exports = {
     timeout: 50000
   },
   etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8"
+    apiKey: ETHERSCAN_KEY
   }
 };
 
