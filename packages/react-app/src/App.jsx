@@ -39,9 +39,9 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network")
-let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'xdai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'ethereum']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if(!targetNetwork){
-  targetNetwork =  NETWORKS['xdai'];
+  targetNetwork =  NETWORKS['ethereum'];
 }
 // 😬 Sorry for all the console logging
 const DEBUG = false

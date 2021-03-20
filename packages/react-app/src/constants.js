@@ -23,9 +23,9 @@ export const NETWORK = (chainId)=>{
 }
 
 export const NETWORKS = {
-    mainnet: {
-        name: "mainnet",
-        color: '#ff8b9e',
+    ethereum: {
+        name: "ethereum",
+        color: '#ceb0fa',
         chainId: 1,
         price: "uniswap",
         rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
