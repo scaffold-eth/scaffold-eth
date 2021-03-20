@@ -9,7 +9,7 @@ import { parseEther, formatEther } from "@ethersproject/units";
 import { Main } from "../components/zeitGeist"
 import Logo from './logo.png';
 
-export default function ZeitGeist({address, setNewActivityEvent, setActivityLiveEvent, setActivityCompletedEvent}) {
+export default function ZeitGeist({address, setNewActivityEvent, setActivityLiveEvent,tx, setActivityCompletedEvent, readContracts, writeContracts, localProvider, userProvider}) {
 
   let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, description: x.description, status: "ready"}})
   let live_activities = setActivityLiveEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, witness: x.witness}})
@@ -48,7 +48,14 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
         <h2>ZeitGeist</h2>
         <h4>Mint memories with friends!</h4>
         {/* <Divider/> */}
-        <Main as={activities} />
+        <Main 
+        as={activities} 
+        userProvider={userProvider}
+              tx={tx}
+        localProvider={localProvider}
+        writeContracts={writeContracts}
+        readContracts={readContracts}
+        />
         {/* <Divider/> */}
       </div>
     </div>

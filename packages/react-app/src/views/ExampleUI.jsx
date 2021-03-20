@@ -10,6 +10,7 @@ import { Main } from "../components/zeitGeist"
 export default function ExampleUI({purpose, setNewActivityEvent, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const [newActivity, setnewActivity] = useState("loading...");
 
   console.log(setNewActivityEvent)
 
@@ -33,6 +34,7 @@ export default function ExampleUI({purpose, setNewActivityEvent, address, mainne
             tx( writeContracts.YourContract.setPurpose(newPurpose) )
           }}>Set Purpose</Button>
         </div>
+
 
 
         <Divider />

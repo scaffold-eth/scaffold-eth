@@ -291,8 +291,13 @@ function App(props) {
           <Route path="/zeitgeist">
             <ZeitGeist 
               address={address}
+              tx={tx}
               setNewActivityEvent={setNewActivityEvent}
               setActivityLiveEvent={setActivityLiveEvent}
+              userProvider={userProvider}
+              localProvider={localProvider}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
             />
           </Route>
 

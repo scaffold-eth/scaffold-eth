@@ -8,7 +8,9 @@ function onChange(a, b, c) {
   }
 const { TabPane } = Tabs;
 
-export default function Main({address, as}) {
+export default function Main({
+  address, as, readContracts, writeContracts, localProvider, userProvider, tx
+}) {
   return (
     <div>
     <Tabs defaultActiveKey="1" centered>
@@ -16,7 +18,13 @@ export default function Main({address, as}) {
       <MemCardList as={as.ready} address={address}/> 
     </TabPane>
     <TabPane tab="Create" key="2">
-      <StartMemory />
+      <StartMemory 
+        userProvider={userProvider}
+        localProvider={localProvider}
+        writeContracts={writeContracts}
+        tx={tx}
+        readContracts={readContracts}
+      />
     </TabPane>
     <TabPane tab="Live" key="3">
       <MemCardList as={as.live} address={address} /> 
