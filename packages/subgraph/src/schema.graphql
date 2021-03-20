@@ -1,3 +1,8 @@
+type Contract @entity {
+  id: ID!
+  address: Bytes!
+}
+
 type Artwork @entity {
   id: ID!
   createdAt: BigInt!
