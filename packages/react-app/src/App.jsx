@@ -13,7 +13,7 @@ import { Main } from "./components/zeitGeist";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, ZeitGeist } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 /*
@@ -216,6 +216,9 @@ function App(props) {
           <Menu.Item key="/exampleui">
             <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
           </Menu.Item>
+          <Menu.Item key="/zeitgeist">
+            <Link onClick={()=>{setRoute("/zeitgeist")}} to="/zeitgeist">ZeitGeist</Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -279,6 +282,10 @@ function App(props) {
               setPurposeEvents={setPurposeEvents}
             />
           </Route>
+          <Route path="/zeitgeist">
+            <ZeitGeist />
+          </Route>
+
         </Switch>
       </BrowserRouter>
 
