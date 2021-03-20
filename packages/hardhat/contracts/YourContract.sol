@@ -34,7 +34,7 @@ contract YourContract {
   ) 
     public 
   {
-    uint a_id = next_a_id++;
+    uint a_id = ++next_a_id;
     activities[a_id] = Activity({
       status: AStatus.READY,
       description: _description,

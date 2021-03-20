@@ -129,8 +129,13 @@ function App(props) {
   console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const setNewActivityEvent = useEventListener(readContracts, "YourContract", "NewActivityReady", localProvider, 1);
+  // const setActivityLiveEvent = useEventListener(readContracts, "YourContract", "ActivityLive", localProvider, 1);
+  // const setActivityCompletedEvent = useEventListener(readContracts, "YourContract", "ActivityCompleted", localProvider, 1);
+  console.log("📟 New Activity events:", setNewActivityEvent)
+  // console.log("📟 New Activity events:", setActivityLiveEvent)
+  // console.log("📟 New Activity events:", setActivityCompletedEvent)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -279,7 +284,8 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
+              // setPurposeEvents={setPurposeEvents}
+              setNewActivityEvent={setNewActivityEvent}
             />
           </Route>
           <Route path="/zeitgeist">

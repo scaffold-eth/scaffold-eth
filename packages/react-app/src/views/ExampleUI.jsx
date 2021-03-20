@@ -7,9 +7,11 @@ import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Main } from "../components/zeitGeist"
 
-export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({purpose, setNewActivityEvent, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [newPurpose, setNewPurpose] = useState("loading...");
+
+  console.log(setNewActivityEvent)
 
   return (
     <div>
@@ -17,12 +19,6 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
-        <h2>ZeitGeist</h2>
-
-        <h4>Mint memories with friends! {purpose}</h4>
-        <Divider/>
-        <Main />
-
 
         <Divider/>
         {/* <p> Display something from a smart contract like this: {purpose}</p> */}
@@ -153,16 +149,20 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         <h2>Events:</h2>
         <List
           bordered
-          dataSource={setPurposeEvents}
+          dataSource={setNewActivityEvent}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.sender+"_"+item.purpose}>
-                <Address
+              <List.Item key={item.blockNumber+"_"}>
+                {/* <Address
                     address={item[0]}
                     ensProvider={mainnetProvider}
                     fontSize={16}
-                  /> =>
-                {item[1]}
+                  />  */}
+                {/* {item[1]} */}
+                <p>
+                one event found in block {item.blockNumber}:
+                </p>
+                <p>{item.description}</p>
               </List.Item>
             )
           }}
