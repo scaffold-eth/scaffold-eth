@@ -68,8 +68,8 @@ const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
   // generate sample tokens
   const numTokens = 10;
   
-  const artworkUrl = theGraphNode + 'cat?arg=' + pin.path
-  const artworkRevokedUrl = theGraphNode + 'cat?arg=' + pin.path
+  const artworkUrl = '/ipfs/' + pin.path
+  const artworkRevokedUrl = '/ipfs/' + pin.path
 
   const fundAddress = goodTokenFundContract.address;
   let ownershipModel = 0;
