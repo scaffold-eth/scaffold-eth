@@ -92,22 +92,6 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     let artworkPayload = ipfs.cat('/ipfs/' + event.params.artworkCid.toString());  
     let artworkMetadata:TypedMap<string, JSONValue>
 
-
-    if(artworkPayload != null) {
-        artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
-        artwork.name = artworkMetadata.get('name').toString()
-        artwork.desc = artworkMetadata.get('description').toString()
-        artwork.artworkImageUrl = artworkMetadata.get('image').toString()
-    }
-    
-    let artworkRevokedPayload = ipfs.cat('/ipfs/' + event.params.artworkRevokedCid.toString())
-    let artworkRevokedMetadata:TypedMap<string, JSONValue>
-    
-    if(artworkRevokedPayload != null) {
-        artworkRevokedMetadata = json.fromBytes(artworkRevokedPayload as Bytes).toObject()
-        artwork.artworkRevokedImageUrl = artworkRevokedMetadata.get('image').toString()
-    }
-
     if(artworkPayload != null) {
         artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
         artwork.name = artworkMetadata.get('name').toString()
