@@ -173,7 +173,7 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">Good Tokens</Link>
           </Menu.Item>
           <Menu.Item key="/funds">
             <Link onClick={()=>{setRoute("/funds")}} to="/graphexamples">Funds</Link>
@@ -190,6 +190,17 @@ function App(props) {
         </Menu>
 
         <Switch>
+          <Route exact path="/">
+            <GraphExamples
+                address={address}
+                userProvider={userProvider}
+                mainnetProvider={mainnetProvider}
+                price={price}
+                tx={tx}
+                writeContracts={contracts}
+              />
+          </Route>
+
           <Route exact path="/mint">
             <MintArtwork
               tx={tx}
@@ -210,16 +221,6 @@ function App(props) {
 
 
           <Route exact path="/wall-of-shame">
-          <Route exact path="/*">
-            <GraphExamples
-                address={address}
-                userProvider={userProvider}
-                mainnetProvider={mainnetProvider}
-                price={price}
-                tx={tx}
-                writeContracts={contracts}
-              />
-          </Route>
 
           </Route>
         </Switch>

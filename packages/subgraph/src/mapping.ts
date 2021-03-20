@@ -1,4 +1,4 @@
-import { BigInt, Address, ipfs } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
@@ -21,7 +21,7 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     let artistAddress = event.params.artist.toHexString()
 
     let artist = Artist.load(artistAddress)
-  
+
     if (artist == null) {
       artist = new Artist(artistAddress)
       artist.address = event.params.artist
@@ -48,6 +48,20 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     // create new artwork entity
     let artworkId = event.params.artwork
 
+    // fetch artwork data
+    log.info('Fetching IPFS CID {}', [event.params.artworkUrl]);
+    const artworkMetadata = ipfs.cat(event.params.artworkUrl.toString());
+    if(artworkMetadata != null)
+        log.info('IPFS Data: {}', [artworkMetadata.toString()]);
+
+    
+    // // fetch revoked artwork data
+    log.info('Fetching IPFS CID {}', [event.params.artworkRevokedUrl]);
+    const revokedkMetadata = ipfs.cat(event.params.artworkUrl.toString());
+    if(revokedkMetadata != null)
+        log.info('IPFS Data: {}', [revokedkMetadata.toString()]);
+
+
     let artwork = new Artwork(artworkId.toString())
     artwork.tokenId = artworkId
     artwork.artist = artistAddress
@@ -58,6 +72,10 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.createdAt = event.block.timestamp
     artwork.save()
 
+}
+
+export function handleArtworkMetadata(value: JSONValue, artwork: Value): void {
+    log.info('IPFS Data: {}', [value.toString()]);
 }
 
 export function handleArtworkRevoked(event: ArtworkRevoked): void {

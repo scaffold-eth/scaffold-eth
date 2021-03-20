@@ -1,13 +1,13 @@
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
-export const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
 
 //MY ETHERSCAN_ID, SWAP IN YOURS FROM https://etherscan.io/myapikey
-export const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
+const ETHERSCAN_KEY = "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8";
 
 //BLOCKNATIVE ID FOR Notify.js:
-export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
+const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
 
-export const THEGRAPH = {
+const THEGRAPH = {
     localhost: {
         ipfsUri: "http://localhost:5001/api/v0",
         subgraphUri: "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract"
@@ -19,7 +19,7 @@ export const THEGRAPH = {
 }
 
 
-export const NETWORK = (chainId)=>{
+const NETWORK = (chainId)=>{
   for(let n in NETWORKS){
     if(NETWORKS[n].chainId==chainId){
       return NETWORKS[n]
@@ -27,13 +27,13 @@ export const NETWORK = (chainId)=>{
   }
 }
 
-export const NETWORKS = {
+const NETWORKS = {
     localhost: {
         name: "localhost",
         color: '#666666',
         chainId: 31337,
         blockExplorer: '',
-        rpcUrl: "http://" + window.location.hostname + ":8545",
+        rpcUrl: "http://localhost:8545",
     },
     mainnet: {
         name: "mainnet",
@@ -105,3 +105,10 @@ export const NETWORKS = {
         blockExplorer: "https://mumbai-explorer.matic.today/",
     }
 }
+
+module.exports.INFURA_ID = INFURA_ID
+module.exports.ETHERSCAN_KEY = ETHERSCAN_KEY
+module.exports.BLOCKNATIVE_DAPPID = BLOCKNATIVE_DAPPID
+module.exports.THEGRAPH = THEGRAPH
+module.exports.NETWORK = NETWORK
+module.exports.NETWORKS = NETWORKS

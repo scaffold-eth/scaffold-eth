@@ -28,7 +28,7 @@ async function pinAndAnchor(tx, writeContracts) {
 
 
     // 2. Create JSON metadata using cid of pinned imgs
-    const theGraphNode = THEGRAPH['localhost'].ipfsUri;
+    const theGraphNode = THEGRAPH.localhost.ipfsUri;
     const ipfs = ipfsApi(theGraphNode);
     const ipfsInfo = await ipfs.addJson(metadata);
 

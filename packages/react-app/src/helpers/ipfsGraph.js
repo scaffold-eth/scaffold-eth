@@ -53,4 +53,4 @@ const ipfs = (graphUrl) => {
 
 // addJson(testJson);
 
-export default ipfs;
+module.exports = ipfs
