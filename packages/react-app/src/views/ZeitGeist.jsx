@@ -2,7 +2,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import React, { useState } from "react";
-import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin, Image } from "antd";
+import { Carousel, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin, Image } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
@@ -51,13 +51,33 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
     completed: Object.values(as).filter(x => x.status == "completed"),
   }
 
+  const logoLane = [
+    // <div>
+    // <div style={{margin:"auto"}}>
+    <div style={{padding:16, width:300, margin:"auto",marginTop:64}}>
+      <img src={LogoPure} width={300}/>
+    </div>
+  ]
+
+  let memoryLane = activities.completed.map((a) => 
+    <div>
+      test {a.description}
+    </div>
+    )
+  memoryLane = logoLane.concat(memoryLane)
+
+
   return (
       // use this divider to draw a box around everything
     <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
     <div>
-      {/* <img src={Logo} width={200}/> */}
       {/* <img src={LogoAndLetters} width={200}/> */}
         <h2>ZeitGeist</h2>
+        {/* <Carousel autoplay> */}
+          {/* {memoryLane} */}
+        {/* </Carousel> */}
+
+
         <img src={LogoPure} width={200}/>
         <h4>Mint memories with friends!</h4>
         {/* <Divider/> */}
