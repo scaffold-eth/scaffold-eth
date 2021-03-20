@@ -212,6 +212,8 @@ function App(props) {
               />
           </Route>
 
+          <Route exact path="/mint"></Route>
+
           <Route exact path="/artists"></Route>
           <Route exact path="/artists/:artist"></Route>
 

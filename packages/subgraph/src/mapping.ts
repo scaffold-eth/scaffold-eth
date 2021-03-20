@@ -1,4 +1,4 @@
-import { BigInt, Address } from "@graphprotocol/graph-ts"
+import { BigInt, Address, ipfs } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
