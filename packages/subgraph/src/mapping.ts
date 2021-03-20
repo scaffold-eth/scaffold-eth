@@ -153,9 +153,15 @@ export function handleTransfer(event: TransferEvent): void {
 }
 
 export function handleBlock(block: ethereum.Block): void {
-    let contract = getContractAddress()
+    let contractAddress = getContractAddress()
 
-    if(contract == null) {
+    if(contractAddress == null) {
         return
     }
+
+    // bind entity to contract state
+    const gooToken = GoodToken.bind(contractAddress)
+
+    log.info('BLOCK: updating GoodToken')
+    // gooToken.
 }
