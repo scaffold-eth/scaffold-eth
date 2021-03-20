@@ -48,9 +48,13 @@ contract GoodToken is GoodERC721, AccessControl {
     // Mapping of token ids to artwork data
     mapping (uint256 => ArtworkData) artworkData;
 
-    function ownerOf(uint256 tokenId) public view override returns (address) {
+
+    /**
+     * @dev Check if a token owner has defaulted on their artwork, resulting in
+     * revoked ownership.
+     */
+    function isRevoked(uint256 tokenId) public view returns (bool) {
         require(_exists(tokenId), "Token does not exist!");
-        
         address tokenOwner = super.ownerOf(tokenId);
         
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
@@ -58,18 +62,18 @@ contract GoodToken is GoodERC721, AccessControl {
 
         uint256 tokenBalance = IBalanceOf(ownerData.targetAddress).balanceOf(tokenOwner);
 
-        bool ownershipValid = true;
+        bool revoked = false;
 
         // check if artwork is still owned by artist
         if(tokenOwner == currentArtwork.artist) {
-            return tokenOwner;
+            return false;
         }
 
         // Check ownership requirements
         if(ownerData.ownershipModel == OwnershipModel.STATIC_BALANCE) {
 
             if(tokenBalance < ownerData.balanceRequirement) {
-                ownershipValid = false;
+                revoked = true;
             }
             
         } else if (ownerData.ownershipModel == OwnershipModel.DYNAMIC_BALANCE) {
@@ -78,17 +82,46 @@ contract GoodToken is GoodERC721, AccessControl {
             uint256 requiredBalance = ownerData.balanceRequirement * holdWeeks;
 
             if(tokenBalance < requiredBalance) {
-                ownershipValid = false;
+                revoked = true;
             }            
 
         }
+        return revoked;
+    }
 
-        if(ownershipValid) {
-            return tokenOwner;
+
+
+    function ownerOf(uint256 tokenId) public view override returns (address) {
+        require(_exists(tokenId), "Token does not exist!");
+        
+        bool revoked = isRevoked(tokenId);
+
+        // If is revoked, the owner becomes the platform so can resell
+        if(revoked) {
+            return address(this);
         }
 
-        return address(this);
+        return super.ownerOf(tokenId);
     }
+
+    /**
+     * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
+     */
+    function tokenURI(uint256 tokenId) public override view returns (string memory) {
+        require(_exists(tokenId), "Token does not exist!");
+
+        bool revoked = isRevoked(tokenId);
+
+        ArtworkData memory currentArtwork = artworkData[tokenId];
+
+        if(revoked) {
+            return currentArtwork.artworkRevokedUrl;
+        }
+
+        return currentArtwork.artworkUrl;
+    }
+
+
 
     constructor () GoodERC721("GoodToken", "GDTKN") public {
         _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
