@@ -84,9 +84,9 @@ export default function AddressInput(props) {
       style={{
         zIndex: 256,
         position: "absolute",
-        left: 0,
-        top: 0,
-        width: "100%",
+        left: "-25%",
+        top: "-100%",
+        width: "150%",
         backgroundColor:"#333333"
       }}
       onClick={() => {
@@ -108,6 +108,7 @@ export default function AddressInput(props) {
           if (newValue) {
             console.log("SCAN VALUE", newValue);
             let possibleNewValue = newValue;
+            possibleNewValue = possibleNewValue.replace("ethereum:","")
             if (possibleNewValue.indexOf("/") >= 0) {
               possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
               console.log("CLEANED VALUE", possibleNewValue);

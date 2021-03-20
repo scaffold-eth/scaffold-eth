@@ -68,7 +68,8 @@ export default function QRPunkBlockie(props) {
       {props.withQr ? <QR
         level={"H"}
         includeMargin={false}
-        value={props.address?window.origin+"/"+props.address:""}
+        //ethereum:0x34aA3F359A9D614239015126635CE7732c18fDF3
+        value={props.address?props.address:""}
         size={hardcodedSizeForNow}
         imageSettings={{width:100,height:100,excavate:true}}
       /> : ""}

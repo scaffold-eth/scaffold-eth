@@ -23,14 +23,6 @@ export const NETWORK = (chainId)=>{
 }
 
 export const NETWORKS = {
-    localhost: {
-        name: "localhost",
-        color: '#666666',
-        price: "uniswap",//use mainnet eth price for localhost
-        chainId: 31337,
-        blockExplorer: '',
-        rpcUrl: "http://localhost:8545",
-    },
     mainnet: {
         name: "mainnet",
         color: '#ff8b9e',
@@ -39,37 +31,13 @@ export const NETWORKS = {
         rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
         blockExplorer: "https://etherscan.io/",
     },
-    kovan: {
-        name: "kovan",
-        color: '#7003DD',
-        chainId: 42,
-        rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
-        blockExplorer: "https://kovan.etherscan.io/",
-        faucet: "https://gitter.im/kovan-testnet/faucet",//https://faucet.kovan.network/
-    },
-    rinkeby: {
-        name: "rinkeby",
-        color: '#e0d068',
-        chainId: 4,
-        rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
-        faucet: "https://faucet.rinkeby.io/",
-        blockExplorer: "https://rinkeby.etherscan.io/",
-    },
-    ropsten: {
-        name: "ropsten",
-        color: '#F60D09',
-        chainId: 3,
-        faucet: "https://faucet.ropsten.be/",
-        blockExplorer: "https://ropsten.etherscan.io/",
-        rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
-    },
-    goerli: {
-        name: "goerli",
-        color: '#0975F6',
-        chainId: 5,
-        faucet: "https://goerli-faucet.slock.it/",
-        blockExplorer: "https://goerli.etherscan.io/",
-        rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+    localhost: {
+        name: "localhost",
+        color: '#666666',
+        price: "uniswap",//use mainnet eth price for localhost
+        chainId: 31337,
+        blockExplorer: '',
+        rpcUrl: "http://localhost:8545",
     },
     xdai: {
         name: "xdai",
@@ -96,11 +64,57 @@ export const NETWORKS = {
         faucet: "https://faucet.matic.network/",
         blockExplorer: "https://explorer-mainnet.maticvigil.com//",
     },
+    kovan: {
+        name: "kovan",
+        color: '#7003DD',
+        chainId: 42,
+        rpcUrl: `https://kovan.infura.io/v3/${INFURA_ID}`,
+        blockExplorer: "https://kovan.etherscan.io/",
+        faucet: "https://gitter.im/kovan-testnet/faucet",//https://faucet.kovan.network/
+    },
+    rinkeby: {
+        name: "rinkeby",
+        color: '#e0d068',
+        chainId: 4,
+        rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
+        faucet: "https://faucet.rinkeby.io/",
+        blockExplorer: "https://rinkeby.etherscan.io/",
+    },
+    ropsten: {
+        name: "ropsten",
+        color: '#ff4a8d',
+        chainId: 3,
+        faucet: "https://faucet.ropsten.be/",
+        blockExplorer: "https://ropsten.etherscan.io/",
+        rpcUrl: `https://ropsten.infura.io/v3/${INFURA_ID}`,
+    },
+    goerli: {
+        name: "goerli",
+        color: '#0975F6',
+        chainId: 5,
+        faucet: "https://goerli-faucet.slock.it/",
+        blockExplorer: "https://goerli.etherscan.io/",
+        rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+    },
+    'OE': {
+        name: "OE",
+        color: '#f1304a',
+        chainId: 10,
+        price: "uniswap",
+        blockExplorer: "https://mainnet-l2-explorer.surge.sh",
+        rpcUrl: `https://mainnet.optimism.io`,
+    },
+    'kOE': {
+        name: "kOE",
+        color: '#f1809a',
+        chainId: 69,
+        blockExplorer: "https://mainnet-l2-explorer.surge.sh",
+        rpcUrl: `https://kovan.optimism.io`,
+    },
     mumbai: {
         name: "mumbai",
         color: '#92D9FA',
         chainId: 80001,
-        price: 1,
         gasPrice:1000000000,
         rpcUrl: "https://rpc-mumbai.maticvigil.com",
         faucet: "https://faucet.matic.network/",

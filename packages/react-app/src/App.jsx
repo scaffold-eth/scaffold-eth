@@ -2,13 +2,13 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { SendOutlined, CaretUpOutlined } from "@ant-design/icons";
+import { SendOutlined, CaretUpOutlined, HistoryOutlined } from "@ant-design/icons";
 import "./App.css";
 import { Select, Row, Col, Button, Menu, Alert, Spin, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
+import { usePoller, useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
 import { AddressInput, EtherInput, Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, Address, Balance } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
@@ -40,7 +40,9 @@ const { ethers } = require("ethers");
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network")
 let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'xdai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-
+if(!targetNetwork){
+  targetNetwork =  NETWORKS['xdai'];
+}
 // 😬 Sorry for all the console logging
 const DEBUG = false
 
@@ -67,7 +69,21 @@ let localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 // 🔭 block explorer URL
 let blockExplorer = targetNetwork.blockExplorer;
 
-
+// a function to check your balance on every network and switch networks if found...
+const checkBalances = async (address)=>{
+  for(let n in NETWORKS){
+    let tempProvider = new JsonRpcProvider(NETWORKS[n].rpcUrl);
+    let tempBalance = await tempProvider.getBalance(address);
+    let result = tempBalance && tempBalance.toNumber()
+    if(result!=0){
+      console.log("Found a balance in ",n)
+      window.localStorage.setItem("network",n);
+      setTimeout(() => {
+        window.location.reload();
+      }, 1);
+    }
+  }
+}
 
 function App(props) {
 
@@ -104,6 +120,19 @@ function App(props) {
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
   if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+
+  const balance = yourLocalBalance && formatEther(yourLocalBalance)
+
+
+  //if you don't have any money, scan the other networks for money
+  usePoller(()=>{
+    if(!cachedNetwork){
+      if(balance==0){
+        checkBalances(address)
+      }
+    }
+  },7777)
+
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
@@ -142,10 +171,12 @@ function App(props) {
   */
 
 
+
+
   let networkDisplay = ""
   if(localChainId && selectedChainId && localChainId != selectedChainId ){
     networkDisplay = (
-      <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
+      <div style={{zIndex:2, position:'absolute', right:0,top:0,padding:8}}>
         <Alert
           message={"⚠️ Wrong Network"}
           description={(
@@ -173,29 +204,30 @@ function App(props) {
         />
       </div>
     )
-  }else{
-    let options = []
-    for(let id in NETWORKS){
-      options.push(
-        <Select.Option key={id} value={NETWORKS[id].name}><span style={{color:NETWORKS[id].color}}>
-          {NETWORKS[id].name}
-        </span></Select.Option>
-      )
-    }
+  }
 
-    networkDisplay = (
-      <Select defaultValue={targetNetwork.name} style={{ textAlign:"left", width: 120 }} onChange={(value)=>{
-        if(targetNetwork.chainId != NETWORKS[value].chainId){
-          window.localStorage.setItem("network",value);
-          setTimeout(() => {
-            window.location.reload();
-          }, 1);
-        }
-      }}>
-        {options}
-      </Select>
+  let options = []
+  for(let id in NETWORKS){
+    options.push(
+      <Select.Option key={id} value={NETWORKS[id].name}><span style={{color:NETWORKS[id].color}}>
+        {NETWORKS[id].name}
+      </span></Select.Option>
     )
   }
+
+  const networkSelect = (
+    <Select defaultValue={targetNetwork.name} style={{ textAlign:"left", width: 120 }} onChange={(value)=>{
+      if(targetNetwork.chainId != NETWORKS[value].chainId){
+        window.localStorage.setItem("network",value);
+        setTimeout(() => {
+          window.location.reload();
+        }, 1);
+      }
+    }}>
+      {options}
+    </Select>
+  )
+
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -262,7 +294,7 @@ function App(props) {
 
   return (
     <div className="App">
-
+      {networkDisplay}
       <div style={{float:"left"}}>
         <Header />
       </div>
@@ -274,16 +306,16 @@ function App(props) {
             key="history"
             type="text"
             onClick={async () => {
-              window.open("https://zapper.fi/?address="+address)
+              window.open("https://zapper.fi/transactions?address="+address)
             }}
-          >🗄</Button>
+          ><HistoryOutlined /></Button>
         </div>
       ) : <Spin />}
       </div>
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ clear:"both", opacity:yourLocalBalance?1:0.2, width:500, margin:"auto" }}>
-        <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkDisplay}</span>
+        <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkSelect}</span>
       </div>
 
       <div style={{padding:16,cursor:"pointer",backgroundColor:"#FFFFFF",width:420,margin:"auto"}}>
@@ -301,7 +333,7 @@ function App(props) {
         </div>
         <div style={{padding: 10}}>
           <EtherInput
-            price={price?price:1}
+            price={price?price:targetNetwork.price}
             value={amount}
             onChange={value => {
               setAmount(value);
@@ -342,6 +374,7 @@ function App(props) {
             {loading || !amount || !toAddress ? <CaretUpOutlined /> : <SendOutlined style={{color:"#FFFFFF"}} /> } Send
           </Button>
         </div>
+
       </div>
 
       {/*<BrowserRouter>
@@ -423,7 +456,11 @@ function App(props) {
 */}
 
 
-
+<div style={{zIndex:-1,padding:64, opacity:0.5, fontSize:12 }}>
+  created with <span style={{marginRight:4}}>🏗</span><a href="https://github.com/austintgriffith/scaffold-eth#-scaffold-eth" target="_blank">scaffold-eth</a>
+</div>
+<div style={{padding:32}}>
+</div>
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
@@ -467,11 +504,7 @@ function App(props) {
   </Row>
 </div>
 
-      <div style={{padding:64, opacity:0.5, fontSize:12 }}>
-        created with <span style={{marginRight:4}}>🏗</span><a href="https://github.com/austintgriffith/scaffold-eth#-scaffold-eth" target="_blank">scaffold-eth</a>
-      </div>
-      <div style={{padding:32}}>
-      </div>
+
     </div>
   );
 }
