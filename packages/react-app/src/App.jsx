@@ -11,9 +11,9 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { GraphExamples } from "./views"
+import { GraphExamples, MintArtwork } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -108,24 +108,15 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",writeContracts)
 
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
-  console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
-  //
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
-  console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
 
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  // // keep track of a variable from the contract in the local React state:
+  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  // console.log("🤗 purpose:",purpose)
 
-  //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  // //📟 Listen for broadcast events
+  // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  // console.log("📟 SetPurpose events:",setPurposeEvents)
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -187,6 +178,9 @@ function App(props) {
           <Menu.Item key="/funds">
             <Link onClick={()=>{setRoute("/funds")}} to="/graphexamples">Funds</Link>
           </Menu.Item>
+          <Menu.Item key="/mint">
+            <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
+          </Menu.Item>
           <Menu.Item key="/wall-of-shame">
             <Link onClick={()=>{setRoute("/wall-of-shame")}} to="/wall-of-shame">Wall of Shame</Link>
           </Menu.Item>
@@ -196,20 +190,11 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/*">
-            <GraphExamples
-                address={address}
-                userProvider={userProvider}
-                mainnetProvider={mainnetProvider}
-                localProvider={localProvider}
-                yourLocalBalance={yourLocalBalance}
-                price={price}
-                tx={tx}
-                writeContracts={writeContracts}
-                readContracts={readContracts}
-                purpose={purpose}
-                setPurposeEvents={setPurposeEvents}
-              />
+          <Route exact path="/mint">
+            <MintArtwork
+              tx={tx}
+              writeContracts={writeContracts}
+            />
           </Route>
 
           <Route exact path="/artists"></Route>
@@ -221,7 +206,21 @@ function App(props) {
           <Route exact path="/funds"></Route>
           <Route exact path="/funds/:fund"></Route>
 
+
           <Route exact path="/wall-of-shame">
+          <Route exact path="/*">
+            <GraphExamples
+                address={address}
+                userProvider={userProvider}
+                mainnetProvider={mainnetProvider}
+                localProvider={localProvider}
+                yourLocalBalance={yourLocalBalance}
+                price={price}
+                tx={tx}
+                writeContracts={writeContracts}
+                readContracts={readContracts}
+              />
+          </Route>
 
           </Route>
         </Switch>

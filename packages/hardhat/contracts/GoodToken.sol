@@ -169,7 +169,7 @@ contract GoodToken is GoodERC721, AccessControl {
     ) public returns (uint256) {
         address sender = _msgSender();
 
-        require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
+        //require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
 
