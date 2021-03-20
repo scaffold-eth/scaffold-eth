@@ -169,7 +169,7 @@ contract GoodERC721 is Context, ERC165, IERC721, IERC721Metadata, IERC721Enumera
     /**
      * @dev See {IERC721Enumerable-totalSupply}.
      */
-    function totalSupply() public view override returns (uint256) {
+    function totalSupply() public view override virtual returns (uint256) {
         // _tokenOwners are indexed by tokenIds, so .length() returns the number of tokenIds
         return _tokenOwners.length();
     }

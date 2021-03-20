@@ -68,8 +68,8 @@ const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
   // generate sample tokens
   const numTokens = 10;
   
-  const artworkUrl = '/ipfs/' + pin.path
-  const artworkRevokedUrl = '/ipfs/' + pin.path
+  const artworkUrl = pin.path
+  const artworkRevokedUrl = pin.path
 
   const fundAddress = goodTokenFundContract.address;
   let ownershipModel = 0;
@@ -116,6 +116,7 @@ const main = async () => {
   if(hre.network.name === 'localhost') {
     await bootstrapLocalData(goodToken, goodTokenFund)
   } else {
+    await bootstrapLocalData(goodToken, goodTokenFund)
     await verifyContract(goodToken.address);
     await verifyContract(goodTokenFund.address);
   }
