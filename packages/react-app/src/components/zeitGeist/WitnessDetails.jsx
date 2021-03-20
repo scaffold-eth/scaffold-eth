@@ -2,8 +2,9 @@ import React, { useState } from "react";
 import { Card, Button, Modal, Space, Row, Col, Divider} from "antd";
 import MintMemoryDrawer from "./MintMemoryDrawer"
 
-export default function WitnessDetails({name, description, isWitness, isPlayer}) {
-
+export default function WitnessDetails({
+    a_id, description, markAsCompleted
+}) {
     return (
     <div>
         <p>Finalize memory. This is what you aimed for:</p>
@@ -11,7 +12,11 @@ export default function WitnessDetails({name, description, isWitness, isPlayer})
         <Divider />
         <div>
             <p>Click here if it worked</p>
-            <MintMemoryDrawer />
+            <MintMemoryDrawer 
+                description={description}
+                a_id={a_id}
+                markAsCompleted={markAsCompleted}
+            />
         </div>
         <Divider />
         <div>

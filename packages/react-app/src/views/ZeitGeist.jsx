@@ -8,6 +8,8 @@ import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import { Main } from "../components/zeitGeist"
 import Logo from './logo.png';
+import LogoAndLetters from './logo_mit.png';
+import LogoPure from './logoOhne.png';
 
 export default function ZeitGeist({address, setNewActivityEvent, setActivityLiveEvent,tx, setActivityCompletedEvent, readContracts, writeContracts, localProvider, userProvider}) {
 
@@ -30,7 +32,7 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
     as[a.a_id] = {
       ...as[a.a_id],
       status : "live",
-    witness : a.witness
+      witness : a.witness
     }
   }
   console.log('all', as)
@@ -44,11 +46,14 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
       // use this divider to draw a box around everything
     <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
     <div>
-      <img src={Logo} width={200}/>
+      {/* <img src={Logo} width={200}/> */}
+      {/* <img src={LogoAndLetters} width={200}/> */}
         <h2>ZeitGeist</h2>
+        <img src={LogoPure} width={200}/>
         <h4>Mint memories with friends!</h4>
         {/* <Divider/> */}
         <Main 
+        address={address}
         as={activities} 
         userProvider={userProvider}
         tx={tx}

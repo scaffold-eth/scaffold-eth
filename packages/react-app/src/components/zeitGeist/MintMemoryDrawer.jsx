@@ -4,32 +4,33 @@ import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;
 
-class MintMemoryDrawer extends React.Component {
-  state = { visible: false };
+// class MintMemoryDrawer extends React.Component {
+// class MintMemoryDrawer extends React.Component {
+export default function MintMemoryDrawer ({
+  becomeWitness, markAsCompleted, a_id
+}) {
 
-  showDrawer = () => {
-    this.setState({
-      visible: true,
-    });
+  // state = { visible: false };
+  const [visible, setVisible] = useState(false);
+
+  const showDrawer = () => {
+    setVisible(true)
   };
 
-  onClose = () => {
-    this.setState({
-      visible: false,
-    });
+  const onClose = () => {
+    setVisible(false)
   };
 
-  render() {
     return (
       <>
-        <Button type="primary" onClick={this.showDrawer}>
+        <Button type="primary" onClick={showDrawer}>
           <PlusOutlined /> Mint New Memory
         </Button>
         <Drawer
           title="Create a commemaritive token"
           width={720}
-          onClose={this.onClose}
-          visible={this.state.visible}
+          onClose={onClose}
+          visible={visible}
           bodyStyle={{ paddingBottom: 80 }}
           footer={
             <div
@@ -37,10 +38,10 @@ class MintMemoryDrawer extends React.Component {
                 textAlign: 'right',
               }}
             >
-              <Button onClick={this.onClose} style={{ marginRight: 8 }}>
-                Cancel
+              <Button onClick={onClose} style={{ marginRight: 8 }}>
+                Back
               </Button>
-              <Button onClick={this.onClose} type="primary">
+              <Button onClick={markAsCompleted} type="primary">
                 Mint Token
               </Button>
             </div>
@@ -91,6 +92,6 @@ class MintMemoryDrawer extends React.Component {
       </>
     );
   }
-}
+// })
 
-export default MintMemoryDrawer
+// export default MintMemoryDrawer

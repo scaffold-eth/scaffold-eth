@@ -7,7 +7,7 @@ import MintMemoryDrawer from "./MintMemoryDrawer"
 const style = { background: '#0092ff', padding: '8px 0' };
 
 export default function MemCard({
-  address, activity, becomeWitness
+  address, activity, becomeWitness, markAsCompleted
 }) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const name = activity.description
@@ -35,7 +35,7 @@ export default function MemCard({
           </h2>
           <p> Description</p>
         <Button type="primary" onClick={showModal}>
-          {isWitness ? "judge" : "see Details"}
+          {isWitness ? "finalize" : "see Details"}
           {/* More */}
         </Button>
       </Card>
@@ -44,13 +44,14 @@ export default function MemCard({
       title={name} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}
       description="some description" isWitness={isWitness} isPlayer={true}
       >
-        {/* {!isWitness ? <MemDetails player={activity.player} description={activity.description} /> : <WitnessDetails description="some descr"/>} */}
-        <div>
-         <MemDetails 
-         player={activity.player} description={activity.description} 
-         becomeWitness={becomeWitness} a_id={activity.a_id}
-         /> 
-        </div>
+        {!isWitness ? <MemDetails 
+          player={activity.player} description={activity.description} 
+          becomeWitness={becomeWitness} a_id={activity.a_id}
+        /> : <WitnessDetails 
+        description={activity.description}
+        a_id={activity.a_id}
+        markAsCompleted={markAsCompleted}
+      />}
       </Modal>
   </div>
   );

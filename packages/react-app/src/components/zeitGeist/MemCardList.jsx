@@ -23,6 +23,11 @@ export default function MemCardList({
   const becomeWitness = (a_id) => {
     tx( writeContracts.YourContract.becomeWitness(parseInt(a_id)) )
   }
+  const markAsCompleted = (a_id) => {
+    tx( writeContracts.YourContract.markAsCompleted(parseInt(a_id)) )
+  }
+
+
 
   return (
     <div>
@@ -35,7 +40,11 @@ export default function MemCardList({
               <div>
               <List.Item key={item.desc+"_"} >
                 {/* <MemCard isWitness={item.player === address} name={item.desc}/> */}
-                <MemCard activity={item} address={address} becomeWitness={becomeWitness}/>
+                <MemCard 
+                  activity={item} address={address}
+                  becomeWitness={becomeWitness}
+                  markAsCompleted={markAsCompleted}
+                />
               </List.Item>
               </div>
             )

@@ -5,7 +5,7 @@ const { TextArea } = Input;
 const { Header, Footer, Sider, Content } = Layout;
 
 export default function StartMemory({
-  readContracts, writeContracts, localProvider, userProvider, tx
+  readContracts, writeContracts, localProvider, userProvider, tx, afterCreated
 }) {
 
   const onChange = e => {
@@ -14,7 +14,8 @@ export default function StartMemory({
   };
   const onSubmit = () =>{
     tx( writeContracts.YourContract.createActivity(newActivity) )
-    setnewActivity("another one?")
+    afterCreated()
+    // setnewActivity("another one?")
   }
 
   const [newActivity, setnewActivity] = useState("loading...");
