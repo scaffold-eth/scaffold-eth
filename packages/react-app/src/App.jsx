@@ -74,7 +74,7 @@ const checkBalances = async (address)=>{
   for(let n in NETWORKS){
     let tempProvider = new JsonRpcProvider(NETWORKS[n].rpcUrl);
     let tempBalance = await tempProvider.getBalance(address);
-    let result = tempBalance && tempBalance.toNumber()
+    let result = tempBalance && formatEther(tempBalance)
     if(result!=0){
       console.log("Found a balance in ",n)
       window.localStorage.setItem("network",n);
