@@ -21,9 +21,22 @@ let metadata = {
   };
 
 async function pinAndAnchor(tx, writeContracts) {
+
+    console.log(writeContracts);
+    // 1. Pin imgs to ipfs
+
+
+
+    // 2. Create JSON metadata using cid of pinned imgs
     const theGraphNode = THEGRAPH['localhost'].ipfsUri;
     const ipfs = ipfsApi(theGraphNode);
-    const { cid } = await ipfs.addJson(metadata);
+    const ipfsInfo = await ipfs.addJson(metadata);
+
+    console.log(ipfsInfo);
+    
+
+    // 3. Tx to contract to mint new artwork
+
 
     // create test artwork
     const testPrice = ethers.constants.WeiPerEther;
@@ -31,8 +44,8 @@ async function pinAndAnchor(tx, writeContracts) {
    
 
     tx(writeContracts.GoodToken.createArtwork(
-        theGraphNode + 'cat?arg=' + cid, 
-        theGraphNode + 'cat?arg=' + cid,
+        theGraphNode + 'cat?arg=' + ipfsInfo.name, 
+        theGraphNode + 'cat?arg=' + ipfsInfo.name,
         0, // static ownership
         ethers.constants.AddressZero,
         minBalance,

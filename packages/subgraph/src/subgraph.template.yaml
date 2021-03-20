@@ -5,7 +5,7 @@ dataSources:
 
   - kind: ethereum/contract
     name: GoodToken
-    network: localhost
+    network: {{network}}
     source:
       address: '{{GoodTokenAddress}}'
       abi: GoodToken

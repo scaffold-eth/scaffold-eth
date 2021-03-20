@@ -18,14 +18,9 @@ const ipfs = (graphUrl) => {
     };
 
   const addJson = async (jsonObj) => {
-    try {
-      const res = await ipfsGateway.add(JSON.stringify(jsonObj), addOptions);
-      console.log(res);
-      return res;
-    } catch(e) {
-      console.log(e);
-    }
-    return undefined;
+    const res = await ipfsGateway.add(JSON.stringify(jsonObj), addOptions);
+    console.log(res);
+    return res;
   }
 
 

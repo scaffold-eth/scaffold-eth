@@ -4,47 +4,95 @@ const chalk = require("chalk");
 const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
+const hre = require("hardhat");
 
+const graphDir = "../subgraph";
 
+function publishNetwork() {
+  let graphConfigPath = `${graphDir}/config/config.json`
+  let graphConfig
+  try {
+    if (fs.existsSync(graphConfigPath)) {
+      graphConfig = fs
+        .readFileSync(graphConfigPath)
+        .toString();
+    } else {
+      graphConfig = '{}'
+    }
+  } catch (e) {
+    console.log(e)
+  }
+  graphConfig = JSON.parse(graphConfig)
+  graphConfig['network'] = hre.network.name
+  const folderPath = graphConfigPath.replace("/config.json","")
+  if (!fs.existsSync(folderPath)){
+    fs.mkdirSync(folderPath);
+  }
+  fs.writeFileSync(
+    graphConfigPath,
+    JSON.stringify(graphConfig, null, 2)
+  ); 
+}
+
+async function verifyContract(addr, constructorArgs){
+  await run("verify:verify", {
+    address: addr,
+    constructorArguments: constructorArgs
+  });
+}
 
 
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
-  const goodToken = await deploy("GoodToken") // <-- add in constructor args like line 19 vvvv
-  const goodTokenFund = await deploy("GoodTokenFund");
+  // // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
+  //const goodToken = await deploy("GoodToken") // <-- add in constructor args like line 19 vvvv
+  // const goodTokenFund = await deploy("GoodTokenFund");
+  // await goodToken.deployed();
+  // await goodTokenFund.deployed();
 
-  const accounts = await ethers.getSigners();
-  const artistAccount = accounts[1];
-  // whitelist artist
-  await goodToken.whitelistArtist(artistAccount.address, true);
-  console.log("whitelisted artists");
+  console.log(hre.network);
+  publishNetwork();
 
-  // generate sample tokens
-  const numTokens = 10;
-  const artworkUrl = "sampleArtwork";
-  const artworkRevokedUrl = "revokedArtwork";
-  const fundAddress = goodTokenFund.address;
-  let ownershipModel = 0;
-  let balanceRequired = 10;
-  let balanceDuration = 1000 * 60;
-  let price = 1;
-  for(let i = 0; i < numTokens; i++) {
-    const tx = await goodToken.connect(artistAccount).createArtwork(
-      artworkUrl,
-      artworkRevokedUrl,
-      ownershipModel,
-      fundAddress,
-      balanceRequired,
-      balanceDuration,
-      ethers.constants.WeiPerEther.mul(price)
-    );
-    await tx.wait();
-    price++;
-    ownershipModel = (ownershipModel + 1) % 2;
-  }
+  // verify contracts
+ // await verifyContract(goodToken.address);
+//  await verifyContract(goodTokenFund.address);
+
+
+ 
+ 
+  // const accounts = await ethers.getSigners();
+  // const artistAccount = accounts[1];
+  // // whitelist artist
+  // await goodToken.whitelistArtist(artistAccount.address, true);
+  // console.log("whitelisted artists");
+
+
+
+  // // generate sample tokens
+  // const numTokens = 10;
+  // const artworkUrl = "sampleArtwork";
+  // const artworkRevokedUrl = "revokedArtwork";
+  // const fundAddress = goodTokenFund.address;
+  // let ownershipModel = 0;
+  // let balanceRequired = 10;
+  // let balanceDuration = 1000 * 60;
+  // let price = 1;
+  // for(let i = 0; i < numTokens; i++) {
+  //   const tx = await goodToken.connect(artistAccount).createArtwork(
+  //     artworkUrl,
+  //     artworkRevokedUrl,
+  //     ownershipModel,
+  //     fundAddress,
+  //     balanceRequired,
+  //     balanceDuration,
+  //     ethers.constants.WeiPerEther.mul(price)
+  //   );
+  //   await tx.wait();
+  //   price++;
+  //   ownershipModel = (ownershipModel + 1) % 2;
+  // }
 
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!

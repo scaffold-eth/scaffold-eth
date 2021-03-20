@@ -75,6 +75,22 @@ function publishContract(contractName) {
   }
 }
 
+// function publishNetwork() {
+//   let graphConfigPath = `${graphDir}/config/config.json`
+//   let graphConfig
+//   try {
+//     if (fs.existsSync(graphConfigPath)) {
+//       graphConfig = fs
+//         .readFileSync(graphConfigPath)
+//         .toString();
+//     } else {
+//       graphConfig = '{}'
+//     }
+//   } catch (e) {
+//     console.log(e)
+//   }
+// }
+
 async function main() {
   if (!fs.existsSync(publishDir)) {
     fs.mkdirSync(publishDir);

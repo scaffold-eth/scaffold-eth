@@ -76,13 +76,13 @@ function App(props) {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork,"fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
+  const userProvider = useUserProvider(injectedProvider, undefined);
   const address = useUserAddress(userProvider);
   if(DEBUG) console.log("👩‍💼 selected address:",address)
 
   // You can warn the user if you would like them to be on a specific network
-  let localChainId = localProvider && localProvider._network && localProvider._network.chainId
-  if(DEBUG) console.log("🏠 localChainId",localChainId)
+  //let localChainId = localProvider && localProvider._network && localProvider._network.chainId
+  //if(DEBUG) console.log("🏠 localChainId",localChainId)
 
   let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
   if(DEBUG) console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
@@ -93,20 +93,20 @@ function App(props) {
   const tx = Transactor(userProvider, gasPrice)
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
-  if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+  //const yourLocalBalance = useBalance(localProvider, address);
+  //if(DEBUG) console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
   if(DEBUG) console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
-  if(DEBUG) console.log("📝 readContracts",readContracts)
+  //const readContracts = useContractLoader(localProvider)
+  //if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
-  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
+  const contracts = useContractLoader(userProvider)
+  if(DEBUG) console.log("🔐 writeContracts",contracts)
 
 
 
@@ -125,28 +125,28 @@ function App(props) {
 
 
   let networkDisplay = ""
-  if(localChainId && selectedChainId && localChainId != selectedChainId ){
-    networkDisplay = (
-      <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
-        <Alert
-          message={"⚠️ Wrong Network"}
-          description={(
-            <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
-            </div>
-          )}
-          type="error"
-          closable={false}
-        />
-      </div>
-    )
-  }else{
-    networkDisplay = (
-      <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-        {targetNetwork.name}
-      </div>
-    )
-  }
+  // if(localChainId && selectedChainId && localChainId != selectedChainId ){
+  //   networkDisplay = (
+  //     <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
+  //       <Alert
+  //         message={"⚠️ Wrong Network"}
+  //         description={(
+  //           <div>
+  //             You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
+  //           </div>
+  //         )}
+  //         type="error"
+  //         closable={false}
+  //       />
+  //     </div>
+  //   )
+  // }else{
+  //   networkDisplay = (
+  //     <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
+  //       {targetNetwork.name}
+  //     </div>
+  //   )
+  // }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -193,7 +193,7 @@ function App(props) {
           <Route exact path="/mint">
             <MintArtwork
               tx={tx}
-              writeContracts={writeContracts}
+              writeContracts={contracts}
             />
           </Route>
 
@@ -213,12 +213,9 @@ function App(props) {
                 address={address}
                 userProvider={userProvider}
                 mainnetProvider={mainnetProvider}
-                localProvider={localProvider}
-                yourLocalBalance={yourLocalBalance}
                 price={price}
                 tx={tx}
-                writeContracts={writeContracts}
-                readContracts={readContracts}
+                writeContracts={contracts}
               />
           </Route>
 
@@ -235,7 +232,6 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
          <Account
            address={address}
-           localProvider={localProvider}
            userProvider={userProvider}
            mainnetProvider={mainnetProvider}
            price={price}
