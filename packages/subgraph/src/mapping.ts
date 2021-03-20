@@ -1,4 +1,4 @@
-import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
@@ -50,16 +50,11 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
 
     // fetch artwork data
     log.info('Fetching IPFS CID {}', [event.params.artworkUrl]);
-    const artworkMetadata = ipfs.cat(event.params.artworkUrl.toString());
-    if(artworkMetadata != null)
-        log.info('IPFS Data: {}', [artworkMetadata.toString()]);
+    let artworkPayload = ipfs.cat(event.params.artworkUrl.toString());  
+    let artworkMetadata:TypedMap<string, JSONValue>
 
-    
-    // // fetch revoked artwork data
-    log.info('Fetching IPFS CID {}', [event.params.artworkRevokedUrl]);
-    const revokedkMetadata = ipfs.cat(event.params.artworkUrl.toString());
-    if(revokedkMetadata != null)
-        log.info('IPFS Data: {}', [revokedkMetadata.toString()]);
+    if(artworkPayload != null)
+        artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
 
 
     let artwork = new Artwork(artworkId.toString())
@@ -70,6 +65,10 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.artworkUrl = event.params.artworkUrl
     artwork.revokedurl = event.params.artworkRevokedUrl
     artwork.createdAt = event.block.timestamp
+
+    artwork.name = artworkMetadata.get('name').toString()
+    artwork.desc = artworkMetadata.get('description').toString()
+
     artwork.save()
 
 }

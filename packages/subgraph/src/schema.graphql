@@ -1,6 +1,8 @@
 type Artwork @entity {
   id: ID!
   createdAt: BigInt!
+  name: String!
+  desc: String!
   tokenId: BigInt!
   artist: Artist!
   price: BigInt!
