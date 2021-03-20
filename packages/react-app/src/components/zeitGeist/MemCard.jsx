@@ -42,7 +42,10 @@ export default function MemCard({address, activity}) {
       title={name} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}
       description="some description" isWitness={isWitness} isPlayer={true}
       >
-        {!isWitness ? <MemDetails player={activity.player} description={activity.description} /> : <WitnessDetails description="some descr"/>}
+        {/* {!isWitness ? <MemDetails player={activity.player} description={activity.description} /> : <WitnessDetails description="some descr"/>} */}
+        <div>
+         <MemDetails player={activity.player} description={activity.description} /> 
+        </div>
       </Modal>
   </div>
   );

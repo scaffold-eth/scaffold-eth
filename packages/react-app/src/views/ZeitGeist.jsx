@@ -19,6 +19,11 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
     console.log('looking at', a)
     if (!(a.a_id in as)) {
       as[a.a_id] = a
+    } else {
+      as[a.a_id] = {
+        ...as[a.a_id],
+        description: a.description
+      }
     }
   }
   for (var a of live_activities) {
