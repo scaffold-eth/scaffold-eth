@@ -5,6 +5,7 @@ import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progres
 import { SyncOutlined } from '@ant-design/icons';
 import { Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import { Main } from "../components/zeitGeist"
 
 export default function ExampleUI({purpose, setPurposeEvents, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
@@ -16,9 +17,15 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
-        <h2>Example UI:</h2>
+        <h2>ZeitGeist</h2>
 
-        <h4>purpose: {purpose}</h4>
+        <h4>Mint memories with friends! {purpose}</h4>
+        <Divider/>
+        <Main />
+
+
+        <Divider/>
+        {/* <p> Display something from a smart contract like this: {purpose}</p> */}
 
         <Divider/>
 
