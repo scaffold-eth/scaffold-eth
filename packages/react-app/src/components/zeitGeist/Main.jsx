@@ -26,7 +26,7 @@ export default function Main({
         writeContracts={writeContracts}
         tx={tx}
         readContracts={readContracts}
-        afterCreated={() => setActiveTab("2")}
+        afterCreated={() => setActiveTab("1")}
       />
     </TabPane>
     <TabPane tab="Ready" key="1">
@@ -36,6 +36,7 @@ export default function Main({
       tx={tx}
       userProvider={userProvider}
       localProvider={localProvider}
+      afterWitnessed={() => setActiveTab("3")}
     /> 
     </TabPane>
     <TabPane tab="Live" key="3">
@@ -45,6 +46,7 @@ export default function Main({
       tx={tx}
       userProvider={userProvider}
       localProvider={localProvider}
+      afterMinted={() => setActiveTab("2")}
       /> 
     </TabPane>
   </Tabs>

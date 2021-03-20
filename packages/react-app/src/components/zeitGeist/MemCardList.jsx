@@ -17,15 +17,17 @@ import {MemCard} from "../zeitGeist"
 //   };
 
 export default function MemCardList({
-  address, as, writeContracts, tx
+  address, as, writeContracts, tx, afterWitnessed, afterMinted
 }) {
 
   const becomeWitness = (a_id) => {
     tx( writeContracts.YourContract.becomeWitness(parseInt(a_id)) )
+    afterWitnessed()
   }
 
   const markAsCompleted = (a_id) => {
     tx( writeContracts.YourContract.markCompleted(parseInt(a_id)) )
+    afterMinted()
   }
 
 
