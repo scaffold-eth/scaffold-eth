@@ -1,8 +1,6 @@
 import React from "react";
 import { Button } from "antd";
 import Address from "./Address";
-import Balance from "./Balance";
-import Wallet from "./Wallet";
 
 /*
   ~ What it does? ~
@@ -40,10 +38,7 @@ import Wallet from "./Wallet";
 
 export default function Account({
   address,
-  userProvider,
-  localProvider,
   mainnetProvider,
-  price,
   minimized,
   web3Modal,
   loadWeb3Modal,
@@ -85,8 +80,6 @@ export default function Account({
   ) : (
     <span>
       {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
-      <Balance address={address} provider={localProvider} price={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
     </span>
   );
 
