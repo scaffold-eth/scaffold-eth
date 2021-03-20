@@ -6,8 +6,12 @@ import MintMemoryDrawer from "./MintMemoryDrawer"
 
 const style = { background: '#0092ff', padding: '8px 0' };
 
-export default function MemCard({isWitness, name}) {
+export default function MemCard({address, activity}) {
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const name = activity.description
+  const isWitness = activity.witness && activity.witness === address ? true : false
+  console.log('memcard', activity.description, activity.witness)
+  console.log('amwitnes', isWitness)
 
   const showModal = () => {
     setIsModalVisible(true);
@@ -38,7 +42,7 @@ export default function MemCard({isWitness, name}) {
       title={name} visible={isModalVisible} onOk={handleOk} onCancel={handleCancel}
       description="some description" isWitness={isWitness} isPlayer={true}
       >
-        {!isWitness ? <MemDetails /> : <WitnessDetails description="some descr"/>}
+        {!isWitness ? <MemDetails player={activity.player} description={activity.description} /> : <WitnessDetails description="some descr"/>}
       </Modal>
   </div>
   );

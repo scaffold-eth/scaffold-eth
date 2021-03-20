@@ -11,17 +11,22 @@ import { Main } from "../components/zeitGeist"
 
 export default function ZeitGeist({address, setNewActivityEvent, setActivityLiveEvent, setActivityCompletedEvent}) {
 
-  let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, desc: x.description, status: "ready"}})
+  let new_activities = setNewActivityEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, description: x.description, status: "ready"}})
   let live_activities = setActivityLiveEvent.map((x) => {return {a_id: x.a_id.toString(), player: x.player, witness: x.witness}})
   let live_ids_only = new_activities.map(x => x.a_id)
   let as = {}
   for (var a of new_activities) {
     console.log('looking at', a)
-    as[a.a_id] = a
+    if (!(a.a_id in as)) {
+      as[a.a_id] = a
+    }
   }
   for (var a of live_activities) {
-    as[a.a_id].status = "live"
-    as[a.a_id].witness = a.witness
+    as[a.a_id] = {
+      ...as[a.a_id],
+      status : "live",
+    witness : a.witness
+    }
   }
   console.log('all', as)
 

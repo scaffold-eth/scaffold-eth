@@ -13,13 +13,13 @@ export default function Main({address, as}) {
     <div>
     <Tabs defaultActiveKey="1" centered>
     <TabPane tab="Ready" key="1">
-      <MemCardList as={as.ready} /> 
+      <MemCardList as={as.ready} address={address}/> 
     </TabPane>
     <TabPane tab="Create" key="2">
       <StartMemory />
     </TabPane>
     <TabPane tab="Live" key="3">
-      <MemCardList as={as.live} /> 
+      <MemCardList as={as.live} address={address} /> 
     </TabPane>
   </Tabs>
   </div>

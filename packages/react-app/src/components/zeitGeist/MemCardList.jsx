@@ -27,7 +27,8 @@ export default function MemCardList({address, as}) {
             return (
               <div>
               <List.Item key={item.desc+"_"} >
-                <MemCard isWitness={item.player === address} name={item.desc}/>
+                {/* <MemCard isWitness={item.player === address} name={item.desc}/> */}
+                <MemCard activity={item} address={address}/>
               </List.Item>
               </div>
             )
@@ -35,7 +36,7 @@ export default function MemCardList({address, as}) {
         />
         {/* <p>this is just a dummy to have a witness-activity</p> */}
         <div>
-        <MemCard isWitness={true} name={"Sample"}/>
+        {/* <MemCard isWitness={true} name={"Sample"}/> */}
       </div>
       </div>
       );
