@@ -15,7 +15,11 @@ export default function Main({
     <div>
     <Tabs defaultActiveKey="1" centered>
     <TabPane tab="Ready" key="1">
-      <MemCardList as={as.ready} address={address}/> 
+      <MemCardList 
+      as={as.ready} address={address}
+      writeContracts={writeContracts}
+      tx={tx}
+    /> 
     </TabPane>
     <TabPane tab="Create" key="2">
       <StartMemory 

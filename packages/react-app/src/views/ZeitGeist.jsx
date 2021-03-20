@@ -51,7 +51,7 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
         <Main 
         as={activities} 
         userProvider={userProvider}
-              tx={tx}
+        tx={tx}
         localProvider={localProvider}
         writeContracts={writeContracts}
         readContracts={readContracts}

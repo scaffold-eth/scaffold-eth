@@ -16,7 +16,14 @@ import {MemCard} from "../zeitGeist"
 //     background: '#364d79',
 //   };
 
-export default function MemCardList({address, as}) {
+export default function MemCardList({
+  address, as, writeContracts, tx
+}) {
+
+  const becomeWitness = (a_id) => {
+    tx( writeContracts.YourContract.becomeWitness(parseInt(a_id)) )
+  }
+
   return (
     <div>
         <List
@@ -28,7 +35,7 @@ export default function MemCardList({address, as}) {
               <div>
               <List.Item key={item.desc+"_"} >
                 {/* <MemCard isWitness={item.player === address} name={item.desc}/> */}
-                <MemCard activity={item} address={address}/>
+                <MemCard activity={item} address={address} becomeWitness={becomeWitness}/>
               </List.Item>
               </div>
             )
