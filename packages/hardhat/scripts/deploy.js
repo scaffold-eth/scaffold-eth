@@ -7,6 +7,7 @@ const R = require("ramda");
 const hre = require("hardhat");
 const ipfsApi = require('../../react-app/src/helpers/ipfsGraph');
 const constants = require('../../react-app/src/constants');
+const generateTokens = require('./mintTestTokens');
 
 
 const graphDir = "../subgraph";
@@ -113,6 +114,9 @@ const main = async () => {
 
 
   console.log('NETWORK NAME: ' + hre.network.name)
+
+  await generateTokens(goodToken.address, goodTokenFund.address);
+
   if(hre.network.name === 'localhost') {
     //await bootstrapLocalData(goodToken, goodTokenFund)
   } else {

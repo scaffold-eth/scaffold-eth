@@ -153,16 +153,16 @@ const bootstrapLocalData = async (
   }
 
 
-  async function main(){
-      const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
-      const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
+  async function generateTokens(goodTokenAddress, goodTokenFundAddress){
+      //const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
+      //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
       const goodTokenFundContract = new ethers.Contract(goodTokenFundAddress, goodFundAbi, accounts[0]);
-      bootstrapLocalData(goodTokenContract, goodTokenFundContract, 30);
+      await bootstrapLocalData(goodTokenContract, goodTokenFundContract, 30);
 
   }
 
-  main();
+ // main();
 
-module.exports = main
+module.exports = generateTokens
