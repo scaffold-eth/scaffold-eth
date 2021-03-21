@@ -89,12 +89,12 @@ async function pinAndAnchor(
 const MintArtwork = ( {tx, writeContracts, address} ) => {
 
   const formItemLayout = {
-    labelCol: { span: 8 },
-    wrapperCol: { span: 14, align: 'left' },
+    labelCol: { span: 10 },
+    wrapperCol: { span: 6, align: 'left' },
   };
 
   const tailLayout = {
-    wrapperCol: { offset: 8 },
+    wrapperCol: { offset: 0 },
   };
 
   const onFinish = (values) => {
@@ -120,6 +120,9 @@ const MintArtwork = ( {tx, writeContracts, address} ) => {
         {...formItemLayout}
         onFinish={onFinish}
       >
+        <Title level={3}>Mint a new artwork with Good Token</Title>
+        <br/>
+
         <Form.Item name="artist" label="Artist Name" value="Good Artist" rules={[{ required: true }]}>
           <Input/>
         </Form.Item>
@@ -140,8 +143,8 @@ const MintArtwork = ( {tx, writeContracts, address} ) => {
         </Form.Item>
         <Form.Item  name="beneficiaryType" label="Beneficiary Type" rules={[{ required: true }]}>
           <Radio.Group value='horizontal'>
-            <Radio.Button value="0">Minimum Balance</Radio.Button>
-            <Radio.Button value="1">Dynamic Balance</Radio.Button>
+            <Radio.Button value="0">⚖️ Minimum Balance</Radio.Button>
+            <Radio.Button value="1">📊 Dynamic Balance</Radio.Button>
           </Radio.Group>
         </Form.Item>
         <Form.Item name="requiredBalance" label="Required Balance" rules={[{ required: true }]}>
@@ -155,8 +158,9 @@ const MintArtwork = ( {tx, writeContracts, address} ) => {
             stringMode />
         </Form.Item>
         <Form.Item {...tailLayout}>
-          <Button type="primary" htmlType="submit">
-            Mint Artwork!
+          <br/> <br/>
+          <Button size="large" type="primary" htmlType="submit">
+          🤝 Mint Artwork! 🤝
           </Button>
         </Form.Item>
       </Form>

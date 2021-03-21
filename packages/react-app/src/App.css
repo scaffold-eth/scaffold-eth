@@ -6,3 +6,7 @@
   aspect-ratio: 1/1;
   object-fit: cover;
 }
+
+.ant-ribbon.ant-ribbon-placement-end {
+  top: 70px;
+}

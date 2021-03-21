@@ -2,7 +2,7 @@
 
 import React from "react";
 import "antd/dist/antd.css";
-import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Carousel } from "antd";
+import { Typography, List, Card, Skeleton, Divider, Badge, Row, Col, Image, Carousel } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { useHistory } from 'react-router-dom'
@@ -86,31 +86,46 @@ function string_to_slug(str) {
   return str;
 }
 
-const renderArtworkListing = (artwork, history) => (
-  <List.Item>
-    <Card hoverable onClick={()=>history.push(`/artworks/${artwork.tokenId}/${string_to_slug(artwork.name)}`)}
-      title={
-        <Row justify="space-between">
-        <Col>
-          <Blockies seed={artwork.artist.address} scale={2} />
-          <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
-        </Col>
-        <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
-      </Row>
-      }
-      cover={<Image src={artwork.artworkImageUrl} />}
-    >
-      <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.beneficiary.name}</Text> 
-      </Row>
-    </Card>
-  </List.Item>
-)
+const renderArtworkListing = (artwork, history) => {
+  const isForSale = artwork.revoked || (artwork.artist.address ===  artwork.owner)
+
+  let content = (
+      <Card hoverable onClick={()=>history.push(`/artworks/${artwork.tokenId}/${string_to_slug(artwork.name)}`)}
+        title={
+          <Row justify="space-between">
+          <Col>
+            <Blockies seed={artwork.artist.address} scale={2} />
+            <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
+          </Col>
+          <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
+        </Row>
+        }
+        cover={<Image src={artwork.artworkImageUrl} />}
+        >
+        <Row justify="start">
+          <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.beneficiary.name}</Text> 
+        </Row>
+      </Card>
+  )
+    
+  if(isForSale || artwork.revoked)
+    content = (
+      <Badge.Ribbon color={artwork.revoked ? "gold" : "cyan"} text={artwork.revoked ? "Revoked!" : "on sale!"}>
+        {content}
+      </Badge.Ribbon>
+    )
+
+  return (
+    <List.Item>
+      {content}
+    </List.Item>
+  )
+}
 
 const Subgraph = (props) => {
   const variables = {
     firstArtists: 3,
-    firstArtworks: 12
+    firstArtworks: 60
   }
 
   const history = useHistory()

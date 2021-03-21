@@ -132,9 +132,6 @@ const Subgraph = (props) => {
 
   const { loading, data } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 5000});
 
-  console.log(data)
-
-  
   if(loading)
     return (
       <Col span={12} offset={6}>
@@ -197,6 +194,7 @@ const Subgraph = (props) => {
                   <Col>
                     <Row>
                       <Text type="secondary">current price</Text></Row>
+                      {data.artwork.revoked && "ARTWORK IS REVOKED!"}
                     <Row>
                       <Col>
                         <Title level={2}>☰{formatEther(data.artwork.price)}</Title>
@@ -207,7 +205,9 @@ const Subgraph = (props) => {
                     </Row>
                   </Col>
                   <Col>
-                    <Button type="primary" size="large">🤝 Buy now</Button>
+                    {
+                      isForSale && (<Button type="primary" size="large">🤝 Buy now</Button>)
+                    }
                   </Col>
                   </Row>
                 </Card>
