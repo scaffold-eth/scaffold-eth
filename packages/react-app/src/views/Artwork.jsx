@@ -17,7 +17,7 @@ const zeroAddress = "0x0000000000000000000000000000000000000000"
 const mapOwnershipData = (transfers) => (
   transfers.map(transfer => ({
     key: transfer.id,
-    event:  (transfer.from === zeroAddress) ? '🖼️' : '💱',
+    event:  (transfer.from === zeroAddress) ? {icon:'🖼️', label:'List'} : {icon:'💱', label:'Transfer'},
     from: transfer.from,
     to: transfer.to,
     date: (new Date((+transfer.createdAt) * 1000)).toDateString()
@@ -93,7 +93,7 @@ const ownershipColumns  = [
     title: 'Event',
     dataIndex: 'event',
     key: 'event',
-    render: event => <Title level={3}>{event}</Title>
+    render: event => (<span><Title style={{float: 'left', lineHeight: '1rem'}} level={3}>{event.icon}</Title> &nbsp;<Text> {event.label}</Text></span>)
   }, {
     title: 'From',
     dataIndex: 'from',
