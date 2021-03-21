@@ -86,6 +86,7 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.artworkCid = event.params.artworkCid
     artwork.artworkRevokedCid = event.params.artworkRevokedCid
     artwork.createdAt = event.block.timestamp
+    artwork.owner = event.params.artist
 
     // fetch artwork data
     log.info('Fetching IPFS CID {}', [event.params.artworkCid]);
