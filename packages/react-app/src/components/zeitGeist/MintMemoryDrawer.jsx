@@ -8,9 +8,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 //EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  "description": "",
-  "player_memory": "",
-  "witness_memory": "enter ipfs image url here",
+  "witness_memory": "<enter ipfs image url here>",
   "other": "Berlin cloud high"
 }
 
@@ -116,6 +114,11 @@ export default function MintMemoryDrawer ({
                   if(result && result.toString) {
                     setIpfsContent(result.toString())
                   }
+                  setYourJSON({
+                    player_memory: ipfsDownHash,
+                    activity_id: a_id,
+                    ...yourJSON
+                  })
                   setDownloading(false)
               }}>Download from IPFS</Button>
 
@@ -163,8 +166,7 @@ export default function MintMemoryDrawer ({
                 <Input.TextArea rows={4} placeholder="Leave another greeting here if you want" />
               </Form.Item> */}
               <p>
-                If you're happy with the players submission, copy his url into
-                the json below and feel free to add a ipfs-hash/url-link yourself or a note yourself.
+                If you're happy with the players submission, add your own note or ipfs-hash/url-link to the token metadata below
               </p>
 
             <div style={{ paddingTop:32, width:740, margin:"auto", textAlign:"left" }}>
