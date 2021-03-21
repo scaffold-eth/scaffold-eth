@@ -16,6 +16,13 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Hints, ExampleUI, Subgraph, ZeitGeist } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+
+import ReactJson from 'react-json-view'
+const { BufferList } = require('bl')
+// https://www.npmjs.com/package/ipfs-http-client
+const ipfsAPI = require('ipfs-http-client');
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -42,7 +49,27 @@ const targetNetwork = NETWORKS['localhost']; // <------- select your target fron
 // 😬 Sorry for all the console logging
 const DEBUG = true
 
+//EXAMPLE STARTING JSON:
+const STARTING_JSON = {
+  "description": "It's actually a bison?",
+  "image": "enter ipfs image url here",
+  "place": "Berlin cloud high"
+}
 
+//helper function to "Get" from IPFS
+// you usually go content.toString() after this...
+const getFromIPFS = async hashToGet => {
+  for await (const file of ipfs.get(hashToGet)) {
+    console.log(file.path)
+    if (!file.content) continue;
+    const content = new BufferList()
+    for await (const chunk of file.content) {
+      content.append(chunk)
+    }
+    console.log(content)
+    return content
+  }
+}
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -185,6 +212,17 @@ function App(props) {
 
   let faucetHint = ""
   const faucetAvailable = localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf(window.location.hostname)>=0 && !process.env.REACT_APP_PROVIDER && price > 1;
+
+  const [ yourJSON, setYourJSON ] = useState( STARTING_JSON );
+  const [ sending, setSending ] = useState()
+  const [ ipfsHash, setIpfsHash ] = useState()
+  const [ ipfsDownHash, setIpfsDownHash ] = useState()
+
+  const [ downloading, setDownloading ] = useState()
+  const [ ipfsContent, setIpfsContent ] = useState()
+
+  const [ transferToAddresses, setTransferToAddresses ] = useState({})
+
 
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider._network&&localProvider._network.chainId==31337&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){

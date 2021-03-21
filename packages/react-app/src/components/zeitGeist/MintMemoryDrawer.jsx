@@ -1,6 +1,34 @@
 import { Drawer, Form, Button, Col, Row, Input, Select, DatePicker } from 'antd';
 import React, { useState } from "react";
 import { PlusOutlined } from '@ant-design/icons';
+import ReactJson from 'react-json-view'
+const { BufferList } = require('bl')
+const ipfsAPI = require('ipfs-http-client');
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+
+//EXAMPLE STARTING JSON:
+const STARTING_JSON = {
+  "description": "",
+  "player_memory": "",
+  "witness_memory": "enter ipfs image url here",
+  "other": "Berlin cloud high"
+}
+
+//helper function to "Get" from IPFS
+// you usually go content.toString() after this...
+const getFromIPFS = async hashToGet => {
+  for await (const file of ipfs.get(hashToGet)) {
+    console.log(file.path)
+    if (!file.content) continue;
+    const content = new BufferList()
+    for await (const chunk of file.content) {
+      content.append(chunk)
+    }
+    console.log(content)
+    return content
+  }
+}
+
 
 const { Option } = Select;
 
@@ -12,6 +40,14 @@ export default function MintMemoryDrawer ({
 
   // state = { visible: false };
   const [visible, setVisible] = useState(false);
+  const [ yourJSON, setYourJSON ] = useState( STARTING_JSON );
+  const [ sending, setSending ] = useState()
+  const [ ipfsHash, setIpfsHash ] = useState("")
+  const [ ipfsDownHash, setIpfsDownHash ] = useState()
+
+  const [ downloading, setDownloading ] = useState()
+  const [ ipfsContent, setIpfsContent ] = useState()
+
 
   const showDrawer = () => {
     setVisible(true)
@@ -41,7 +77,7 @@ export default function MintMemoryDrawer ({
               <Button onClick={onClose} style={{ marginRight: 8 }}>
                 Back
               </Button>
-              <Button onClick={() => markAsCompleted(a_id)} type="primary">
+              <Button disabled={ipfsHash ? false : true} onClick={() => markAsCompleted(a_id)} type="primary">
                 Mint Token
               </Button>
             </div>
@@ -67,13 +103,54 @@ export default function MintMemoryDrawer ({
                     addonBefore="ipfs://"
                     // addonAfter=".com"
                     placeholder="Please enter the ipfs hash of the data you and your friend created of the activity"
+                  onChange={(e)=>{
+                    setIpfsDownHash(e.target.value)
+                  }}
                   />
                 </Form.Item>
+              <Button style={{margin:8}} loading={sending} size="large" shape="round" type="primary" onClick={async()=>{
+                  console.log("DOWNLOADING...",ipfsDownHash)
+                setDownloading(true)
+                setIpfsContent()
+                  const result = await getFromIPFS(ipfsDownHash)//addToIPFS(JSON.stringify(yourJSON))
+                  if(result && result.toString) {
+                    setIpfsContent(result.toString())
+                  }
+                  setDownloading(false)
+              }}>Download from IPFS</Button>
+
+
+
+                {/* <div style={{ paddingTop:32, width:740, margin:"auto" }}>
+                <Input
+                  value={ipfsDownHash}
+                  placeHolder={"IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"}
+                  onChange={(e)=>{
+                    setIpfsDownHash(e.target.value)
+                  }}
+                />
+              </div>
+              <Button style={{margin:8}} loading={sending} size="large" shape="round" type="primary" onClick={async()=>{
+                  console.log("DOWNLOADING...",ipfsDownHash)
+                setDownloading(true)
+                setIpfsContent()
+                  const result = await getFromIPFS(ipfsDownHash)//addToIPFS(JSON.stringify(yourJSON))
+                  if(result && result.toString) {
+                    setIpfsContent(result.toString())
+                  }
+                  setDownloading(false)
+              }}>Download from IPFS</Button> */}
+
+              <pre  style={{padding:16, width:500, margin:"auto",paddingBottom:150}}>
+                {ipfsContent}
+              </pre>
+
+
               </Col>
             </Row>
             <Row gutter={16}>
               <Col span={24}>
-                <Form.Item
+                {/* <Form.Item
                   name="description"
                   label="Description"
                   rules={[
@@ -83,8 +160,48 @@ export default function MintMemoryDrawer ({
                     },
                   ]}
                 >
-                  <Input.TextArea rows={4} placeholder="Leave another greeting here if you want" />
-                </Form.Item>
+                <Input.TextArea rows={4} placeholder="Leave another greeting here if you want" />
+              </Form.Item> */}
+              <p>
+                If you're happy with the players submission, copy his url into
+                the json below and feel free to add a ipfs-hash/url-link yourself or a note yourself.
+              </p>
+
+            <div style={{ paddingTop:32, width:740, margin:"auto", textAlign:"left" }}>
+              <ReactJson
+                style={{ padding:8 }}
+                src={yourJSON}
+                theme={"pop"}
+                enableClipboard={false}
+                onEdit={(edit,a)=>{
+                  setYourJSON(edit.updated_src)
+                }}
+                onAdd={(add,a)=>{
+                  setYourJSON(add.updated_src)
+                }}
+                onDelete={(del,a)=>{
+                  setYourJSON(del.updated_src)
+                }}
+              />
+            </div>
+
+            <Button style={{margin:8}} loading={sending} size="large" shape="round" type="primary" onClick={async()=>{
+                console.log("UPLOADING...",yourJSON)
+                setSending(true)
+                setIpfsHash()
+                const result = await ipfs.add(JSON.stringify(yourJSON))//addToIPFS(JSON.stringify(yourJSON))
+                if(result && result.path) {
+                  setIpfsHash(result.path)
+                }
+                setSending(false)
+                console.log("RESULT:",result)
+            }}>Upload to IPFS</Button>
+
+            <div  style={{padding:16,paddingBottom:150}}>
+              {ipfsHash}
+            </div>
+
+
               </Col>
             </Row>
           </Form>
