@@ -244,7 +244,7 @@ const Subgraph = (props) => {
             <Row>
               <Col flex="1">
                 <br/>
-                <Card headStyle={data.artwork.revoked && {background: '#ffc53d'}} title={data.artwork.revoked ? 'Artwork is revoked and up for sale!' : `Artwork is ${isForSale ? '' : 'not '}available for sale`}>
+                <Card headStyle={data.artwork.revoked ? {background: '#ffc53d'} : {}} title={data.artwork.revoked ? 'Artwork is revoked and up for sale!' : `Artwork is ${isForSale ? '' : 'not '}available for sale`}>
                   <Row justify="space-between" align="middle">
                   <Col>
                     <Row>
