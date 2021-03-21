@@ -79,7 +79,7 @@ const Subgraph = (props) => {
 
         <Row>
           <Title level={2}>👨‍💻 Technical Challenges</Title>
-          <Text style={{'text-align': 'left'}}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur aliquid at natus illo eos quas esse, ea officia modi saepe placeat aut incidunt quam provident debitis voluptates porro dolor voluptate!</Text>
+          <Text style={{'text-align': 'left'}}>We are using TheGraph and ipfs to minimize onchain storage and interaction, pulling data from emitted events as well as metadata stored in ipfs.<br/>Our base ERC721 inherits from OpenZeppelin's widely used NFT contracts.<br/>Our conditional ownership standard allows you to create tokens that point to a fund contract where you can specify amount thresholds that owners must maintain in order to keep possession of their artworks. This means that you can point to any ERC-20 token, such as a charity or a liquidity pool or a governance token, and require the owner to maintain a minimum or growing balance over time to ensure they are an active member of a community or are directly engaged in a platform the artist cares about. This same method also works for POAPs, where you can require the owner to have at least 1 new POAP token a month, for example, to retain ownership. The protocol is very flexible and has tons of exciting use cases.</Text>
           <br/><br/>
         </Row>
 

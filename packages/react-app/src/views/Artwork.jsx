@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
 import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Spin, Carousel, Button, Table, Tag } from "antd";
 import { useQuery, gql } from '@apollo/client';
@@ -146,11 +146,20 @@ const Subgraph = (props) => {
       const t = await props.tx(props.writeContracts.GoodToken.buyArtwork(data.artwork.tokenId, {value: data.artwork.price}));
       console.log(t);
       console.log(await t.wait());
+      console.log("Owner is: " + await props.writeContracts.GoodToken.ownerOf(data.artwork.tokenId));
     }catch(e) {
       console.log(e);
     }
     setIsPurchasing(false);
   }
+
+
+  const getOwner = async () => {
+    console.log(props.writeContracts.GoodToken);
+    console.log(`Owner of token ${data.artwork.tokenId} is: ` + await props.writeContracts.GoodToken.ownerOf(data.artwork.tokenId));
+
+  }
+
 
   if(loading)
     return (
@@ -252,7 +261,6 @@ const Subgraph = (props) => {
                     {
                       isForSale && (<Button type="primary" size="large"  onClick={buyArtwork}>{isPurchasing ? (<Spin />) : '🤝 Buy now'}</Button>)
                     }
-                    
                   </Col>
                   </Row>
                 </Card>

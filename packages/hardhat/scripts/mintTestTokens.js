@@ -93,7 +93,7 @@ const revokedImg = 'http://clipartmag.com/images/big-bird-clipart-24.png';
 
 const bootstrapLocalData = async (
     goodTokenContract, 
-    goodTokenFundContract,
+    goodTokenFunds,
     numTokens) => {
 
     const accounts = await ethers.getSigners();
@@ -131,16 +131,20 @@ const bootstrapLocalData = async (
         // generate metadata
         const baseBird = imgListings[i % imgListings.length];
         const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
-        const price = ethers.constants.WeiPerEther.mul(i).div(10);
+        const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(10);
+        const targetFund = goodTokenFunds[i % goodTokenFunds.length];
+        const fundName = await targetFund.name();
         const tokenMetadata = {
             "name": tokenName,
             "artist": artistAccount.address,
             "artistName": artistNames[artistIdx % artistNames.length],
-            "description": "For the love of birds, one must fly.",
+            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + fundName + ":)",
             "image": baseBird.img,
             "date": Date.now(),
-            "price": price
+            "price": price,
         }
+
+        console.log(tokenMetadata);
 
         // pin metadata
         const pin = await ipfs.addJson(tokenMetadata);
@@ -152,7 +156,7 @@ const bootstrapLocalData = async (
         // eslint-disable-next-line no-await-in-loop
     
         // add funds
-        await goodTokenFundContract.connect(targetAccount)
+        await targetFund.connect(targetAccount)
             .mint({value: balanceInWei}).then(tx => tx.wait);
 
 
@@ -162,7 +166,7 @@ const bootstrapLocalData = async (
             pin.path,
             pinRevoked.path,
             ownershipModel,
-            goodTokenFundContract.address,
+            targetFund.address,
             ethers.constants.WeiPerEther.mul(requiredBalance).div(divisor),
             randomNumber(1, 1000),
             price
@@ -171,7 +175,7 @@ const bootstrapLocalData = async (
         // eslint-disable-next-line no-await-in-loop
         await tx.wait();  
 
-        if(Math.random() > 0.5){
+        if(targetAccount !== artistAccount && Math.random() > 0.5){
         // have random account purchase token
             const purchase = await goodTokenContract.connect(targetAccount)
             .buyArtwork(i, {value: price});
@@ -192,13 +196,12 @@ const bootstrapLocalData = async (
   }
 
 
-  async function generateTokens(goodTokenAddress, goodTokenFundAddress){
+  async function generateTokens(goodTokenAddress, goodTokenFunds){
       //const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
-      const goodTokenFundContract = new ethers.Contract(goodTokenFundAddress, goodFundAbi, accounts[0]);
-      await bootstrapLocalData(goodTokenContract, goodTokenFundContract, 10);
+      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 10);
 
   }
 
