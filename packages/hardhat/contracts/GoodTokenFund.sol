@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 contract GoodTokenFund is ERC20 {
 
     
-    constructor () ERC20("Good Token Fund", "GTF") public {
+    constructor (string memory tokenName, string memory tokenSymbol) ERC20("Good Token Fund", "GTF") public {
 
     }
 

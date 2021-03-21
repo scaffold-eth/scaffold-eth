@@ -97,15 +97,30 @@ const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
   }
 }
 
+let funds = [];
+
+let fundNames = [
+  ["The Good Fund", "TGF"],
+  ["Renewable Energy Fund", "RNEF"],
+  ["Sustainablele Water Fund", "SNF"],
+  ["Solar/Wind Fund", "SWF"],
+  ["International Cleanng Fund", "ICF"],
+  ["Bird Fund", "BRDF"],
+];
+
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
   // // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
   const goodToken = await deploy("GoodToken") // <-- add in constructor args like line 19 vvvv
-  const goodTokenFund = await deploy("GoodTokenFund");
   await goodToken.deployed();
-  await goodTokenFund.deployed();
+  for(let i = 0; i < fundNames.length; i++) {
+    const fund = fundNames[i];
+    const goodTokenFund = await deploy("GoodTokenFund", fund);
+    await goodTokenFund.deployed();
+    funds.push(goodTokenFund);
+  }
 
   console.log(hre.network);
   publishNetwork();
@@ -115,14 +130,14 @@ const main = async () => {
 
   console.log('NETWORK NAME: ' + hre.network.name)
 
-  await generateTokens(goodToken.address, goodTokenFund.address);
+  await generateTokens(goodToken.address, funds);
 
   if(hre.network.name === 'localhost') {
     //await bootstrapLocalData(goodToken, goodTokenFund)
   } else {
     //await bootstrapLocalData(goodToken, goodTokenFund)
     await verifyContract(goodToken.address);
-    await verifyContract(goodTokenFund.address);
+    await verifyContract(funds[0].address);
   }
 
 
