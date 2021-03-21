@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Carousel } from "antd";
+import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Carousel, Button, Table } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { useParams } from 'react-router-dom'
@@ -12,9 +12,17 @@ import { formatEther } from "@ethersproject/units";
 
 const { Text, Title } = Typography
 
-const dateOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric', timeZoneName : 'short' };
+const zeroAddress = "0x0000000000000000000000000000000000000000"
 
-
+const mapOwnershipData = (transfers) => (
+  transfers.map(transfer => ({
+    key: transfer.id,
+    event:  (transfer.from === zeroAddress) ? 'CREATE' : 'TRANSFER',
+    from: transfer.from,
+    to: transfer.to,
+    date: (new Date((+transfer.createdAt) * 1000)).toDateString()
+  }))
+)
 
 const ARTWORK_QUERY = gql`
   query ($artwork: String!) {
@@ -22,6 +30,8 @@ const ARTWORK_QUERY = gql`
       id
       createdAt
       tokenId
+      owner
+      revoked
       price
       revoked
       name
@@ -35,6 +45,13 @@ const ARTWORK_QUERY = gql`
       
       beneficiary {
         name
+      }
+
+      transfers {
+        id
+        createdAt
+        to
+        from
       }
     }
   }
@@ -71,6 +88,28 @@ const renderArtworkListing = artwork => (
   </List.Item>
 )
 
+const ownershipColumns  = [
+  {
+    title: 'Event',
+    dataIndex: 'event',
+    key: 'event',
+  }, {
+    title: 'From',
+    dataIndex: 'from',
+    key: 'from',
+
+  }, {
+    title: 'To',
+    key: 'to',
+    dataIndex: 'to',
+  },
+  {
+    title: 'Date',
+    key: 'date',
+
+  },
+];
+
 const Subgraph = (props) => {
   const { artwork } = useParams()
 
@@ -80,21 +119,6 @@ const Subgraph = (props) => {
 
   console.log(data)
 
-  // const featuredArtists = (
-  //   <Skeleton loading={loading} active>
-  //     <Carousel>
-  //       {data && data.featuredArtists.map(artist => 
-  //         <List grid={grid} dataSource={artist.artworks} renderItem={renderArtworkListing} />
-  //       )}
-  //     </Carousel>
-  //   </Skeleton>
-  // )
-
-  // const featuredArtworks = (
-  //   <Skeleton loading={loading} active>
-  //     <List grid={grid} dataSource={data && data.featuredArtworks} renderItem={renderArtworkListing} />
-  //   </Skeleton>
-  // )
   
   if(loading)
     return (
@@ -103,6 +127,10 @@ const Subgraph = (props) => {
         <Skeleton active />
       </Col>
     )
+
+  const isForSale = data.artwork.revoked || (data.artwork.artist.address ===  data.artwork.owner)
+
+  console.log(mapOwnershipData(data.artwork.transfers))
 
   return (
     <Row direction="vertical" style={{textAlign: 'left'}}>
@@ -143,13 +171,30 @@ const Subgraph = (props) => {
               <Title level={2}> {data.artwork.name}</Title>
             </Row>
             <Row>
-                <div style={{marginTop:2}}><Blockies seed={data.artwork.artist.address} scale={2} /></div>
-                <Text type="secondary"> &nbsp; Owned by 0x{data.artwork.artist.address.substr(-4).toUpperCase()}</Text>
+                <div style={{marginTop:2}}><Blockies seed={data.artwork.owner} scale={2} /></div>
+                <Text type="secondary"> &nbsp; Owned by 0x{data.artwork.owner.substr(-4).toUpperCase()}</Text>
             </Row>
             <Row>
               <Col flex="1">
                 <br/>
-                <Card title="FOR SALEEEEE">
+                <Card title={`Artwork is ${isForSale ? '' : 'not '}available for sale`}>
+                  <Row justify="space-between" align="middle">
+                  <Col>
+                    <Row>
+                      <Text type="secondary">current price</Text></Row>
+                    <Row>
+                      <Col>
+                        <Title level={2}>☰{formatEther(data.artwork.price)}</Title>
+                      </Col>
+                      <Col>
+                        <Text type="secondary" style={{display: 'block', 'marginTop': 14}}> &nbsp; ($4.5)</Text>
+                      </Col>
+                    </Row>
+                  </Col>
+                  <Col>
+                    <Button type="primary" size="large">🤝 Buy now</Button>
+                  </Col>
+                  </Row>
                 </Card>
               </Col>
             </Row>
@@ -168,7 +213,7 @@ const Subgraph = (props) => {
           <Col flex="1">
             <br/>
             <Card title="Ownership history">
-
+              <Table columns={ownershipColumns} dataSource={mapOwnershipData(data.artwork.transfers)} />
             </Card>
           </Col>
         </Row>
