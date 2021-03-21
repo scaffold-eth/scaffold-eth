@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Carousel, Button, Table } from "antd";
+import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Spin, Carousel, Button, Table } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { useParams } from 'react-router-dom'
@@ -41,6 +41,7 @@ const ARTWORK_QUERY = gql`
       
       artist {
         address
+        name
       }
       
       beneficiary {
@@ -127,10 +128,26 @@ const ownershipColumns  = [
 
 const Subgraph = (props) => {
   const { artwork } = useParams()
-
+  
+  const [isPurchasing, setIsPurchasing] = useState(false);
+  
+  
   const variables = { artwork }
-
+  
   const { loading, data } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 5000});
+  
+  console.log(data)
+  const buyArtwork = async() => {
+    setIsPurchasing(true);
+    try{
+      const t = await props.tx(props.writeContracts.GoodToken.buyArtwork(data.artwork.tokenId, {value: data.artwork.price}));
+      console.log(t);
+      console.log(await t.wait());
+    }catch(e) {
+      console.log(e);
+    }
+    setIsPurchasing(false);
+  }
 
   if(loading)
     return (
@@ -206,8 +223,9 @@ const Subgraph = (props) => {
                   </Col>
                   <Col>
                     {
-                      isForSale && (<Button type="primary" size="large">🤝 Buy now</Button>)
+                      isForSale && (<Button type="primary" size="large"  onClick={buyArtwork}>{isPurchasing ? (<Spin />) : '🤝 Buy now'}</Button>)
                     }
+                    
                   </Col>
                   </Row>
                 </Card>

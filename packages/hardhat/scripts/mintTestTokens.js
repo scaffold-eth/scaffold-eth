@@ -171,12 +171,13 @@ const bootstrapLocalData = async (
         // eslint-disable-next-line no-await-in-loop
         await tx.wait();  
 
-        
+        if(Math.random() > 0.5){
         // have random account purchase token
-        const purchase = await goodTokenContract.connect(targetAccount)
+            const purchase = await goodTokenContract.connect(targetAccount)
             .buyArtwork(i, {value: price});
 
-        await purchase.wait();
+            await purchase.wait();
+        }
 
     }
     await checkRevoked(goodTokenContract);

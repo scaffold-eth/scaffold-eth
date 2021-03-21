@@ -67,13 +67,13 @@ const Subgraph = (props) => {
         <Row>
           <Title level={2}>💡 Concept & Project Scope</Title>
           <br/>
-          <Text style={{'text-align': 'left'}}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur aliquid at natus illo eos quas esse, ea officia modi saepe placeat aut incidunt quam provident debitis voluptates porro dolor voluptate!</Text>
+          <Text style={{'text-align': 'left'}}>Good Tokens rethinks the responsibilities of owning art. Is it enough to simply purchase an artwork and then own it forever, or should ownership be earned and maintained by supporting causes linked to the art or by participating in communities linked to the artist. This way, artworks can be more sustainable and the artist is assured their art aligns with their values.</Text>
                 <br/><br/>
         </Row>
 
         <Row>
           <Title level={2}>🤝 Good Tokens</Title>
-          <Text style={{'text-align': 'left'}}>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Consequatur aliquid at natus illo eos quas esse, ea officia modi saepe placeat aut incidunt quam provident debitis voluptates porro dolor voluptate!</Text>
+          <Text style={{'text-align': 'left'}}>Good Tokens rethink the responsibilities of owning art. Is it enough to simply purchase an artwork and then own it forever, or should ownership be earned and maintained by supporting causes linked to the art or by participating in communities linked to the artist. This way, artworks can be more sustainable and the artist is assured their art aligns with their values.</Text>
           <br/><br/>
         </Row>
 
