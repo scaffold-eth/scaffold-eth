@@ -8,9 +8,7 @@ export default function LikeButton(props) {
 
   const [minting, setMinting] = useState(false)
 
-  //const writeContracts = useContractLoader(props.signingProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.localProvider:props.metaProvider);
-  const readContracts = useContractLoader(props.localProvider);
+  const readContracts = useContractLoader(props.metaProvider);
 
   const [likes, setLikes] = useState()
   const [hasLiked, setHasLiked] = useState()
@@ -24,7 +22,7 @@ export default function LikeButton(props) {
 
   usePoller(() => {
     const getLikeInfo = async () => {
-      if(readContracts){
+      if(readContracts && props.likerAddress && props.contractAddress){
         try {
         const newInkLikes = await readContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
         setLikes(newInkLikes)
@@ -34,8 +32,9 @@ export default function LikeButton(props) {
       }
     }
     getLikeInfo()
-  }, 2987
+  }, 4333
 )
+
 
 
     likeButton = (<>
@@ -55,10 +54,10 @@ export default function LikeButton(props) {
             let signatureFunction = "likeWithSignature"
             let signatureFunctionArgs = [contractAddress, target, liker]
             let getSignatureTypes = ['bytes','bytes','address','address','uint256','address']
-            let getSignatureArgs = ['0x19','0x0',metaWriteContracts["Liker"].address,contractAddress,target,liker]
+            let getSignatureArgs = ['0x19','0x00',readContracts["Liker"].address,contractAddress,target,liker]
 
             let likeConfig = {
-              ...props.transactionConfig,
+              ...props.transactionConfig.current,
               contractName,
               regularFunction,
               regularFunctionArgs,

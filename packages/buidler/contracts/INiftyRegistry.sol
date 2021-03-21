@@ -1,4 +1,4 @@
-pragma solidity ^0.6.6;
+pragma solidity >=0.6.0 <0.7.0;
 
 interface INiftyRegistry {
     function inkAddress() external view returns (address);

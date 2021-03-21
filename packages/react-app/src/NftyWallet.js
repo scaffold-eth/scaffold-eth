@@ -1,10 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
-import { Account } from "./components";
+import { Account, Faucet } from "./components";
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
@@ -47,35 +47,43 @@ export default function NftyWallet(props) {
   const [injectedGsnSigner, setInjectedGsnSigner] = useState();
 
   const [artist, setArtist] = useState();
-  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false)
 
-  let transactionConfig = {
-    address: props.address,
-    localProvider: props.kovanProvider,
-    injectedProvider: props.injectedProvider,
-    injectedGsnSigner: injectedGsnSigner,
-    metaSigner: props.metaProvider
-  };
+  const transactionConfig = useRef({})
+
+  useEffect(()=> {
+    transactionConfig.current = {
+      address: props.address,
+      localProvider: props.kovanProvider,
+      injectedProvider: props.injectedProvider,
+      injectedGsnSigner: injectedGsnSigner,
+      metaSigner: props.metaProvider
+    }
+  },[props.address, props.kovanProvider, props.injectedProvider, injectedGsnSigner, props.metaProvider])
+
+
 
   let nftyBalance = useContractReader(
     props.readKovanContracts,
     "NiftyToken",
     "balanceOf",
     [props.address],
-    4000
+    4500
   );
+
   let nftyMainBalance = useContractReader(
     props.readContracts,
     "NiftyMain",
     "balanceOf",
     [props.address],
-    4000
+    6555
   );
+
   let upgradePrice = useContractReader(
     props.readKovanContracts,
     "NiftyMediator",
     "relayPrice",
-    29999
+    19999
   );
 
   let displayBalance;
@@ -109,6 +117,7 @@ export default function NftyWallet(props) {
       price={props.price}
       minimized={props.minimized}
       setMetaProvider={props.setMetaProvider}
+      metaProvider={props.metaProvider}
     />
   );
 
@@ -423,6 +432,19 @@ export default function NftyWallet(props) {
         }
       >
       <Help/>
+      {process.env.REACT_APP_NETWORK_NAME ? (
+        ""
+      ) : (
+        <>
+          <Col>
+            <Faucet
+              localProvider={props.kovanProvider}
+              placeholder={"sidechain faucet"}
+              price={props.price}
+            />
+          </Col>
+        </>
+      )}
       </Drawer>
     </div>
   );

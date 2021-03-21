@@ -18,6 +18,9 @@ REACT_APP_GRAPHQL_ENDPOINT=https://api.thegraph.com/subgraphs/name/azf20/nifty-i
 REACT_APP_GRAPHQL_ENDPOINT_MAINNET=https://api.thegraph.com/subgraphs/name/azf20/nifty-ink-main
 ```
 Unzip `contracts_xdai_mainnet` in `packages/react-app/src` -> this should create a new `contracts` folder
+Web3 Provider Engine patch:
+- https://github.com/MetaMask/web3-provider-engine/blob/c8d9a8e46703ab417aeeeba583694057f38cfdf7/index.js#L30
+Set true -> false
 
 Get the react front-end up and running - http://localhost:3000
 ```

@@ -31,7 +31,7 @@ const INKS_QUERY = gql`
 `
 
 const mainnetProvider = new ethers.providers.InfuraProvider(
-  "mainnet",
+  "homestead",
   "9ea7e149b122423991f56257b882261c"
 );
 let kovanProvider;
