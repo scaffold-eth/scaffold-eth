@@ -5,7 +5,7 @@ import "antd/dist/antd.css";
 import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Carousel, Button, Table } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
-import { useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
 
 
@@ -41,6 +41,7 @@ const ARTWORK_QUERY = gql`
       
       artist {
         address
+        name
       }
       
       beneficiary {
@@ -74,7 +75,7 @@ const renderArtworkListing = artwork => (
         <Row justify="space-between">
         <Col>
           <Blockies seed={artwork.artist.address} scale={2} />
-          <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
+          <Text type="secondary"> &nbsp;{artwork.artist.name}</Text>
         </Col>
         <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
       </Row>
@@ -131,6 +132,7 @@ const Subgraph = (props) => {
   const variables = { artwork }
 
   const { loading, data } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 5000});
+  const history = useHistory()
 
   if(loading)
     return (
@@ -140,10 +142,18 @@ const Subgraph = (props) => {
       </Col>
     )
 
+  if(!loading && (!data || !data.artwork)) {
+    history.replace('/')
+    return (
+      <Col span={12} offset={6}>
+        <br/><br/>
+        <Skeleton active />
+      </Col>
+    )
+  }
+
   const isForSale = data.artwork.revoked || (data.artwork.artist.address ===  data.artwork.owner)
-
-  console.log(mapOwnershipData(data.artwork.transfers))
-
+  
   return (
     <Row direction="vertical" style={{textAlign: 'left'}}>
       <Col span={12} offset={6}>
@@ -159,7 +169,7 @@ const Subgraph = (props) => {
                 <Card title="Artwork details">
                   <Row justify="space-between">
                     <Text type="secondary">Created by</Text>
-                    <span><span><Blockies seed={data.artwork.artist.address} scale={2} /></span> 0x{data.artwork.artist.address.substr(-4).toUpperCase()}</span>
+                    <span><span><Blockies seed={data.artwork.artist.address} scale={2} /></span> {data.artwork.artist.name}</span>
                   </Row>
                   <Row justify="space-between">
                     <Text type="secondary">Published on</Text>
@@ -177,7 +187,7 @@ const Subgraph = (props) => {
             <br/>
             <Row>
                 <div style={{marginTop:5}}><Blockies seed={data.artwork.artist.address} scale={3} /></div>
-                <Title level={3} type="secondary"> &nbsp; 0x{data.artwork.artist.address.substr(-4).toUpperCase()}</Title>
+                <Title level={3} type="secondary"> &nbsp; {data.artwork.artist.name}</Title>
             </Row>
             <Row>
               <Title level={2}> {data.artwork.name}</Title>

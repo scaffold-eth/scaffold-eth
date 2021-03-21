@@ -25,6 +25,7 @@ const ARTWORKS_QUERY = gql`
       
       artist {
         address
+        name
       }
       
       beneficiary {
@@ -48,6 +49,7 @@ const ARTWORKS_QUERY = gql`
         
         artist {
           address
+          name
         }
         
         beneficiary {
@@ -95,7 +97,7 @@ const renderArtworkListing = (artwork, history) => {
         <Row justify="space-between">
           <Col>
             <Blockies seed={artwork.artist.address} scale={2} />
-            <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
+            <Text type="secondary"> &nbsp; {artwork.artist.name}</Text>
           </Col>
           <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
         </Row>
