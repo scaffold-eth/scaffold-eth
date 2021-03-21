@@ -49,6 +49,7 @@ const ARTWORK_QUERY = gql`
       
       beneficiary {
         name
+        symbol
       }
 
       transfers(orderBy: createdAt, orderDirection: desc) {
@@ -83,7 +84,7 @@ const renderArtworkListing = artwork => (
         <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
       </Row>
       }
-      cover={<Image src={artwork.artworkImageUrl} />}
+      cover={<Image src={artwork.revoked ? artwork.artworkRevokedImageUrl : artwork.artworkImageUrl} />}
     >
       <Row justify="start">
         <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.beneficiary.name}</Text> 
@@ -211,7 +212,7 @@ const Subgraph = (props) => {
                   </Row>
                   {(data.artwork.ownershipModel == 0) && <Row justify="space-between">
                     <Text type="secondary">Minimum balance</Text>
-                    <Text type="secondary">{formatEther(data.artwork.balanceRequirement)}☰</Text>
+                    <Text type="secondary">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.beneficiary.symbol}</i></Text>
                   </Row>}
                   {(data.artwork.ownershipModel == 1) && <Row justify="space-between">
                     <Text type="secondary">Balance period</Text>
@@ -288,7 +289,7 @@ const Subgraph = (props) => {
                       </Row>
                     ) : (
                       <Row>
-                        <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}</Text> with <Text type="warning">{data.artwork.beneficiary.name}</Text>.</Text>
+                        <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.beneficiary.symbol}</i> tokens</Text> with <Text type="warning">{data.artwork.beneficiary.name}</Text>.</Text>
                         {
                         data.artwork.revoked ?
                         <Text mark>The current owner failed to maintain the required balance and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>                        
