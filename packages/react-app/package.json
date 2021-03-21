@@ -28,7 +28,6 @@
     "aws-sdk": "^2.709.0",
     "axios": "^0.19.2",
     "bnc-notify": "^1.1.2",
-    "burner-provider": "^1.0.38",
     "dotenv": "^8.2.0",
     "ethers": "^5.0.32",
     "graphql": "^14.7.0",

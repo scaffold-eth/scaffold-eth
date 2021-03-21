@@ -79,7 +79,7 @@ export default function CreateInk(props) {
     let getSignatureArgs = ['0x19','0x00',props.readKovanContracts["NiftyInk"].address,props.address,inkUrl,jsonUrl,limit]
 
     let createInkConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,

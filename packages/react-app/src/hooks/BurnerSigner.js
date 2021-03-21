@@ -24,8 +24,6 @@ export default function useBurnerSigner(provider) {
       let _newWallet = ethers.Wallet.createRandom()
       let _newKey = _newWallet.privateKey
       setValue(_newKey)
-      console.log(_newKey)
-      return _newKey
     } else {
       setValue(storedKey)
     }

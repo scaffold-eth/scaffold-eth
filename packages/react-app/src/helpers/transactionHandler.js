@@ -51,7 +51,7 @@ export async function transactionHandler(c) {
         showXDaiModal()
         let m = 'You need more than ' + ethers.utils.formatEther(c['payment']) + ' xDai to make this transaction'
         console.log(m)
-        throw m
+        throw {message: m}
       }
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){
@@ -71,7 +71,11 @@ export async function transactionHandler(c) {
 
             let result
             if(c['injectedProvider'].provider && c['injectedProvider'].provider.wc) {
-              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'])
+              if(c['payment']) {
+                populatedTransaction['value'] = c['payment']
+              }
+              console.log(populatedTransaction)
               result = await c['injectedProvider'].send('eth_sendTransaction', [populatedTransaction])
             } else {
               result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
@@ -80,12 +84,32 @@ export async function transactionHandler(c) {
           return result
         } else {
           chainWarning()
-          throw 'Got xDai, but Metamask is on the wrong network'
+          throw {message: 'Got xDai, but Metamask is on the wrong network'}
         }
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (c['signatureFunction'] &&
+        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c && c['injectedGsnSigner']) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+
+            //let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
+            let result
+            if(c['injectedProvider'].provider && c['injectedProvider'].provider.wc) {
+              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'])
+              console.log(populatedTransaction)
+              result = await c['injectedGsnSigner'].send('eth_sendTransaction', [populatedTransaction])
+            } else {
+              result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
+            }
+
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+      } else if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
           c['getSignatureArgs'] &&
@@ -109,28 +133,21 @@ export async function transactionHandler(c) {
           let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature], overrideOptions)
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
-        }
-        else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
         } else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()
-          throw 'Metamask is on the wrong network'
-        }
+          throw {message: 'Metamask is on the wrong network'}
+        } else {
+            showXDaiModal()
+            throw {message: 'Need XDai'}
+          }
       }
       else {
         showXDaiModal()
-        throw 'Need XDai'
+        throw {message: 'Need XDai'}
       }
 
     } catch(e) {
+      console.log(e)
       if(e.message.indexOf("Relay not ready")>=0){
         notification.open({
           message: '📛 Sorry! Transaction limit reached. 😅',
@@ -142,6 +159,12 @@ export async function transactionHandler(c) {
           message: '📛 Sorry! 📡 Relay Error. 😅',
           description:
           "⏳ Please try again in a few seconds. 📡",
+        });
+      }else if(e.message.indexOf("no registered relayers")>=0){
+        notification.open({
+          message: '📛 Sorry! 📡 Relay Error. 😅',
+          description:
+          "⏳ Please wait a moment and try again. 📡",
         });
       }else{
         notification.open({

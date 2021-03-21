@@ -14,11 +14,11 @@ export default function SendInkForm(props) {
     console.log('Success:', props.address, values, props.tokenId);
 
     let contractName = "NiftyToken"
-    let regularFunction = "safeTransferFrom"
+    let regularFunction = "safeTransferFrom(address,address,uint256)"
     let regularFunctionArgs = [props.address, values['to'], props.tokenId]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs
@@ -50,7 +50,7 @@ export default function SendInkForm(props) {
     form.resetFields();
     setSending(false)
   } catch (e) {
-    console.log(result)
+    console.log(e, result)
     form.resetFields();
     setSending(false)
   }

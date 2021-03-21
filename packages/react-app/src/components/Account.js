@@ -1,9 +1,8 @@
-import React, { useEffect, useCallback, useState } from 'react'
+import React, { useEffect, useCallback } from 'react'
 import { ethers } from "ethers";
-import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { Balance, Address, Wallet } from "."
-import { usePoller, useBurnerSigner } from "../hooks"
+import { useBurnerSigner } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
@@ -12,7 +11,7 @@ import { RelayProvider } from '@opengsn/gsn';
 const Web3HttpProvider = require("web3-providers-http");
 
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
-const XDAI_RPC = "https://xdai-archive.blockscout.com"
+const XDAI_RPC = "https://rpc.xdaichain.com/"
 
 const web3Modal = new Web3Modal({
   network: "xdai", // optional
@@ -48,16 +47,11 @@ export default function Account(props) {
 
   let httpProvider = new Web3HttpProvider(process.env.REACT_APP_NETWORK_NAME === 'xdai'?XDAI_RPC:"http://localhost:8546");
   const burner = useBurnerSigner(props.localProvider)
-  /*const [burner, setBurner] = useState()
-
-  useEffect(() => {
-    if(_burner) {
-      setBurner(_burner)
-    }
-  },[_burner])*/
 
   let gsnConfig
+
   if(process.env.REACT_APP_USE_GSN === 'true') {
+    /*
     let relayHubAddress
     let stakeManagerAddress
     let paymasterAddress
@@ -76,20 +70,16 @@ export default function Account(props) {
     relayHubAddress = require('.././gsn/RelayHub.json').address
     stakeManagerAddress = require('.././gsn/StakeManager.json').address
     paymasterAddress = require('.././gsn/Paymaster.json').address
-    //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
-
   //gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
+  */
 
   gsnConfig = {
-    //forwarderAddress: "0xb851b09efe4a5021e9a4ecddbc5d9c9ce2640ccb",
-    paymasterAddress: "0x4734356359c48ba2Cb50BA048B1404A78678e5C2",
+    paymasterAddress: process.env.REACT_APP_NETWORK_NAME === 'xdai' ? "0x4734356359c48ba2Cb50BA048B1404A78678e5C2" : require('.././gsn/Paymaster.json').address,
     verbose: true,
     relayLookupWindowBlocks: 1e18,
     minGasPrice: 20000000000
   }
-
-  gsnConfig.relayLookupWindowBlocks= 1e18
 
 }
 
@@ -100,7 +90,6 @@ export default function Account(props) {
       props.setAddress(burnerAddress)
       props.setInjectedProvider(provider)
     } else if (provider) {
-      console.log('using injected provider')
 
       // Set provider
       let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
@@ -108,11 +97,8 @@ export default function Account(props) {
 
       let accounts = await newWeb3Provider.listAccounts()
 
-      console.log(newWeb3Provider)
-
       if(accounts && accounts[0] && accounts[0] !== props.account){
-        console.log(accounts)
-      props.setAddress(accounts[0])
+        props.setAddress(accounts[0])
       }
 
       let injectedNetwork = await newWeb3Provider.getNetwork()
@@ -128,7 +114,6 @@ export default function Account(props) {
     }
 
     if(burner) {
-      console.log("UPDATE provider:", provider, burner)
       let burnerAddress = await burner.getAddress()
 
       // Adding a burner meta provider
@@ -138,12 +123,10 @@ export default function Account(props) {
       const burnerGsnSigner = burnerGsnWeb3Provider.getSigner(burnerAddress);
 
       props.setMetaProvider(burnerGsnSigner);
-      console.log('setMetaProvider', burnerGsnSigner)
 
     if(provider && ethers.Signer.isSigner(provider)) {
 
       props.setInjectedGsnSigner(burnerGsnSigner)
-      console.log('setGsnSigner')
     }
   }
 
@@ -155,6 +138,7 @@ export default function Account(props) {
       const provider = await web3Modal.connect();
 
       if(typeof props.setInjectedProvider == "function"){
+        props.setInjectedGsnSigner()
         updateProviders(provider)
 
         provider.on("chainChanged", (chainId) => {

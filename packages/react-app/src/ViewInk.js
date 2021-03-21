@@ -40,8 +40,6 @@ export default function ViewInk(props) {
   const [buyButton, setBuyButton] = useState()
   const [mintFlow, setMintFlow] = useState()
 
-  const metaWriteContracts = useContractLoader(props.kovanProvider);
-
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
 //  const [inkPrice, setInkPrice] = useState(0)
@@ -69,7 +67,7 @@ export default function ViewInk(props) {
 
     const getInk = async (_data) => {
       let _blockNumber = parseInt(_data.metaData.value)
-      console.log(blockNumber, _blockNumber)
+      //console.log(blockNumber, _blockNumber)
       if(_blockNumber >= blockNumber) {
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
@@ -118,7 +116,7 @@ export default function ViewInk(props) {
           setMintFlow(
             <Popover content={mintInkForm}
             title="Mint">
-            <Button type="secondary"><SendOutlined/> Mint</Button>
+            <Button type="secondary" loading={minting}><SendOutlined/> Mint</Button>
             </Popover>
           )
         }
@@ -140,7 +138,6 @@ export default function ViewInk(props) {
   }, [data, props.address, inkJson]);
 
   useEffect(() => {
-    console.log('running dataMain', dataMain)
     if(dataMain) {
       let tempMainnetTokens = {}
       for (let i of dataMain.tokens) {
@@ -159,7 +156,7 @@ export default function ViewInk(props) {
   let detailsDisplay
   let nextHolders
 
-  const mint = async (values) => {
+  let mint = async (values) => {
     setMinting(true)
 
     let contractName = "NiftyToken"
@@ -168,10 +165,10 @@ export default function ViewInk(props) {
     let signatureFunction = "mintFromSignature"
     let signatureFunctionArgs = [values['to'], hash]
     let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
-    let getSignatureArgs = ['0x19','0x00',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
+    let getSignatureArgs = ['0x19','0x00',require('./contracts/NiftyToken.address.js'),values['to'],hash,parseInt(data.ink.count)]
 
     let mintInkConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -183,7 +180,7 @@ export default function ViewInk(props) {
 
     console.log(mintInkConfig)
 
-    const bytecode = await props.transactionConfig.localProvider.getCode(values['to']);
+    const bytecode = await props.transactionConfig.current.localProvider.getCode(values['to']);
     const mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
     let result
     if ((!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") && (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00")) {
@@ -229,7 +226,7 @@ export default function ViewInk(props) {
       try{
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
         let decompressed = LZ.decompressFromUint8Array(arrays)
-        console.log(decompressed)
+        //console.log(decompressed)
 
         let points = 0
         for (const line of JSON.parse(decompressed)['lines']){

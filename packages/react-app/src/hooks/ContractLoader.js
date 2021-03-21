@@ -1,47 +1,71 @@
-import { ethers } from "ethers";
-import { useState, useEffect } from 'react';
+/* eslint-disable import/no-dynamic-require */
+/* eslint-disable global-require */
+import { Contract } from "@ethersproject/contracts";
+import { useState, useEffect } from "react";
 
-export default function useContractLoader(provider) {
+/*
+  ~ What it does? ~
+  Loads your local contracts and gives options to read values from contracts
+                                              or write transactions into them
+  ~ How can I use? ~
+  const readContracts = useContractLoader(localProvider) // or
+  const writeContracts = useContractLoader(userProvider)
+  ~ Features ~
+  - localProvider enables reading values from contracts
+  - userProvider enables writing transactions into contracts
+  - Example of keeping track of "purpose" variable by loading contracts into readContracts
+    and using ContractReader.js hook:
+    const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  - Example of using setPurpose function from our contract and writing transactions by Transactor.js helper:
+    tx( writeContracts.YourContract.setPurpose(newPurpose) )
+*/
+
+const loadContract = (contractName, signer) => {
+  const newContract = new Contract(
+    require(`../contracts/${contractName}.address.js`),
+    require(`../contracts/${contractName}.abi.js`),
+    signer,
+  );
+  try {
+    newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
+  } catch (e) {
+    console.log(e);
+  }
+  return newContract;
+};
+
+export default function useContractLoader(providerOrSigner) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
-    async function loadContract() {
-      if(typeof provider != "undefined")
-      {
-        try{
-          let contractList = require("../contracts/contracts.js")
-          let newContracts = []
-
-          //we need to check to see if this provider has a signer or not
-          let signer
-          let accounts
-          if(provider.listAccounts){
-            accounts = await provider.listAccounts()
-          }
-          if(accounts && accounts.length>0){
-            signer = provider.getSigner()
-          }else{
-            signer = provider
+    async function loadContracts() {
+      if (typeof providerOrSigner !== "undefined") {
+        try {
+          // we need to check to see if this providerOrSigner has a signer or not
+          let signer;
+          let accounts;
+          if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
+            accounts = await providerOrSigner.listAccounts();
           }
 
-          for(let c in contractList){
-            newContracts[contractList[c]] = new ethers.Contract(
-              require("../contracts/"+contractList[c]+".address.js"),
-              require("../contracts/"+contractList[c]+".abi.js"),
-              signer,
-            );
-            try{
-              newContracts[contractList[c]].bytecode = require("../contracts/"+contractList[c]+".bytecode.js")
-            }catch(e){
-              console.log(e)
-            }
+          if (accounts && accounts.length > 0) {
+            signer = providerOrSigner.getSigner();
+          } else {
+            signer = providerOrSigner;
           }
-          setContracts(newContracts)
-        }catch(e){
-          console.log("ERROR LOADING CONTRACTS!!",e)
+
+          const contractList = require("../contracts/contracts.js");
+
+          const newContracts = contractList.reduce((accumulator, contractName) => {
+            accumulator[contractName] = loadContract(contractName, signer);
+            return accumulator;
+          }, {});
+          setContracts(newContracts);
+        } catch (e) {
+          console.log("ERROR LOADING CONTRACTS!!", e);
         }
       }
     }
-    loadContract()
-  },[provider])
-  return contracts
+    loadContracts();
+  }, [providerOrSigner]);
+  return contracts;
 }

@@ -15,7 +15,7 @@ export default function UpgradeInkButton(props) {
 
   const relayToken = async (tokenId) => {
     setUpgrading(true)
-    let bigNumber = ethers.utils.bigNumberify(relayPrice)
+    let bigNumber = ethers.BigNumber.from(relayPrice)
     let hex = bigNumber.toHexString()
 
     try {
@@ -27,7 +27,7 @@ export default function UpgradeInkButton(props) {
       let regularFunction = "relayToken"
 
       let txConfig = {
-        ...props.transactionConfig,
+        ...props.transactionConfig.current,
         contractName,
         regularFunction,
         regularFunctionArgs,
@@ -65,6 +65,6 @@ export default function UpgradeInkButton(props) {
                 </div>
               }
               title={"Upgrade to Ethereum mainnet"}>
-              <Button type="secondary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><UploadOutlined/>{relayPrice?'Upgrade: $'+parseFloat(ethers.utils.formatEther(relayPrice)).toFixed(2):'Upgrade'}</Button>
+              <Button type="secondary" size={buttonSize} disabled={!relayPrice} style={{ margin:4, marginBottom:12 }}><UploadOutlined/>{relayPrice?'Upgrade: $'+parseFloat(ethers.utils.formatEther(relayPrice)).toFixed(2):'Upgrade'}</Button>
             </Popover>)
   }

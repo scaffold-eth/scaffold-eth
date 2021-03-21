@@ -10,9 +10,6 @@ export default function NiftyShop(props) {
   const [buying, setBuying] = useState(false)
   const [priceForm] = Form.useForm();
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.injectedProvider);
-
   let shopButton
   let [newPrice, setNewPrice] = useState(0)
 
@@ -27,17 +24,16 @@ export default function NiftyShop(props) {
 
     if(props.type === 'ink') {
 
-
     let contractName = "NiftyInk"
     let regularFunction = "setPrice"
     let regularFunctionArgs = [props.itemForSale, multipliedPrice]
     let signatureFunction = "setPriceFromSignature"
     let signatureFunctionArgs = [props.itemForSale, multipliedPrice]
     let getSignatureTypes = ['bytes','bytes','address','string','uint256','uint256']
-    let getSignatureArgs = ['0x19','0x00',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce]
+    let getSignatureArgs = ['0x19','0x00',require('./contracts/NiftyInk.address.js'),props.itemForSale,multipliedPrice,props.priceNonce]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -65,7 +61,7 @@ export default function NiftyShop(props) {
     let regularFunctionArgs = [props.itemForSale, multipliedPrice]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs
@@ -99,7 +95,7 @@ export default function NiftyShop(props) {
   const buyInk = async (values) => {
     console.log("values", values)
     setBuying(true)
-    let bigNumber = ethers.utils.bigNumberify(props.price)
+    let bigNumber = ethers.BigNumber.from(props.price)
     let hex = bigNumber.toHexString()
 
     let result
@@ -116,7 +112,7 @@ export default function NiftyShop(props) {
   }
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -139,7 +135,7 @@ export default function NiftyShop(props) {
   }
 } catch(e) {
   setBuying(false)
-
+  console.log(e)
 }
   }
 

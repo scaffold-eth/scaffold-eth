@@ -32,8 +32,9 @@ export default function LikeButton(props) {
       }
     }
     getLikeInfo()
-  }, 2987
+  }, 4333
 )
+
 
 
     likeButton = (<>
@@ -56,7 +57,7 @@ export default function LikeButton(props) {
             let getSignatureArgs = ['0x19','0x00',readContracts["Liker"].address,contractAddress,target,liker]
 
             let likeConfig = {
-              ...props.transactionConfig,
+              ...props.transactionConfig.current,
               contractName,
               regularFunction,
               regularFunctionArgs,
