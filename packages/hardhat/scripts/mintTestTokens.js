@@ -201,7 +201,7 @@ const bootstrapLocalData = async (
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
-      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 10);
+      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 20);
 
   }
 
