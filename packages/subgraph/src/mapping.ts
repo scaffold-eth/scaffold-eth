@@ -140,6 +140,7 @@ export function handleTransfer(event: TransferEvent): void {
     if(artwork == null) return
     
     artwork.revoked = false
+    artwork.owner = event.params.to
     artwork.save()
 }
 
