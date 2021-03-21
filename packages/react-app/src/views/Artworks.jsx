@@ -19,12 +19,14 @@ const ARTWORKS_QUERY = gql`
       price
       revoked
       name
+      owner
       desc
       artworkImageUrl
       artworkRevokedImageUrl
       
       artist {
         address
+        name
       }
       
       beneficiary {
@@ -36,18 +38,21 @@ const ARTWORKS_QUERY = gql`
     featuredArtists: artists(first: $firstArtists) {
       id
       address
+      name
       artworks(first: 4, orderBy: createdAt, orderDirection: desc) {
         id
         tokenId
         price
         revoked
         name
+        owner
         desc
         artworkImageUrl
         artworkRevokedImageUrl
         
         artist {
           address
+          name
         }
         
         beneficiary {
@@ -87,7 +92,7 @@ function string_to_slug(str) {
 }
 
 const renderArtworkListing = (artwork, history) => {
-  const isForSale = artwork.revoked || (artwork.artist.address === artwork.owner)
+  const isForSale = artwork.revoked || (artwork.artist.address == artwork.owner)
 
   let content = (
     <Card hoverable onClick={() => history.push(`/artworks/${artwork.tokenId}/${string_to_slug(artwork.name)}`)}
@@ -95,7 +100,7 @@ const renderArtworkListing = (artwork, history) => {
         <Row justify="space-between">
           <Col>
             <Blockies seed={artwork.artist.address} scale={2} />
-            <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
+            <Text type="secondary"> &nbsp; {artwork.artist.name}</Text>
           </Col>
           <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
         </Row>
@@ -108,7 +113,7 @@ const renderArtworkListing = (artwork, history) => {
     </Card>
   )
 
-  if (isForSale || artwork.revoked)
+  if (isForSale)
     content = (
       <Badge.Ribbon color={artwork.revoked ? "gold" : "cyan"} text={artwork.revoked ? "Revoked!" : "on sale!"}>
         {content}
@@ -129,12 +134,13 @@ const Subgraph = (props) => {
     offsetArtworks: 0
   }
 
+  const [featured, setFeatured] = useState(0)
   const history = useHistory()
   const { loading, data, refetch } = useQuery(ARTWORKS_QUERY, { variables }, { pollInterval: 5000 });
 
   const featuredArtists = (
     <Skeleton loading={!data} active>
-      <Carousel>
+      <Carousel effect="fade" autoplay afterChange={setFeatured}>
         {data && data.featuredArtists.map(artist =>
           <List key={artist.id} grid={grid} dataSource={artist.artworks} renderItem={artwork => renderArtworkListing(artwork, history)} />
         )}
@@ -155,7 +161,7 @@ const Subgraph = (props) => {
       <Col span={12} offset={6}>
         <br />
         <Row>
-          <Title level={3}>👨‍🎨 Featured artists</Title>
+          <Title level={3}>👨‍🎨 Featured artists - works by {data && data.featuredArtists[featured].name}</Title>
         </Row>
         <br />
         {featuredArtists}

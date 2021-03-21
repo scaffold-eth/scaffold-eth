@@ -2,10 +2,10 @@
 
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Spin, Carousel, Button, Table } from "antd";
+import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Spin, Carousel, Button, Table, Tag } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
-import { useParams } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
 
 
@@ -38,6 +38,9 @@ const ARTWORK_QUERY = gql`
       desc
       artworkImageUrl
       artworkRevokedImageUrl
+      ownershipModel
+      balanceRequirement
+      balanceDurationInSeconds
       
       artist {
         address
@@ -75,7 +78,7 @@ const renderArtworkListing = artwork => (
         <Row justify="space-between">
         <Col>
           <Blockies seed={artwork.artist.address} scale={2} />
-          <Text type="secondary"> 0x{artwork.artist.address.substr(-4).toUpperCase()}</Text>
+          <Text type="secondary"> &nbsp;{artwork.artist.name}</Text>
         </Col>
         <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
       </Row>
@@ -135,8 +138,8 @@ const Subgraph = (props) => {
   const variables = { artwork }
   
   const { loading, data } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 5000});
+  const history = useHistory()
   
-  console.log(data)
   const buyArtwork = async() => {
     setIsPurchasing(true);
     try{
@@ -166,10 +169,18 @@ const Subgraph = (props) => {
       </Col>
     )
 
+  if(!loading && (!data || !data.artwork)) {
+    history.replace('/')
+    return (
+      <Col span={12} offset={6}>
+        <br/><br/>
+        <Skeleton active />
+      </Col>
+    )
+  }
+
   const isForSale = data.artwork.revoked || (data.artwork.artist.address ===  data.artwork.owner)
-
-  console.log(mapOwnershipData(data.artwork.transfers))
-
+  
   return (
     <Row direction="vertical" style={{textAlign: 'left'}}>
       <Col span={12} offset={6}>
@@ -185,12 +196,24 @@ const Subgraph = (props) => {
                 <Card title="Artwork details">
                   <Row justify="space-between">
                     <Text type="secondary">Created by</Text>
-                    <span><span><Blockies seed={data.artwork.artist.address} scale={2} /></span> 0x{data.artwork.artist.address.substr(-4).toUpperCase()}</span>
+                    <span><span><Blockies seed={data.artwork.artist.address} scale={2} /></span> {data.artwork.artist.name}</span>
                   </Row>
                   <Row justify="space-between">
                     <Text type="secondary">Published on</Text>
                     <Text type="secondary">{(new Date(+data.artwork.createdAt * 1000)).toDateString()}</Text>
                   </Row>
+                  <Row justify="space-between">
+                    <Text type="secondary">Ownership model</Text>
+                    <Text type="secondary">{data.artwork.ownershipModel ?  '📊 Dynamic balance' :'⚖️ Static balance'}</Text>
+                  </Row>
+                  {(data.artwork.ownershipModel == 0) && <Row justify="space-between">
+                    <Text type="secondary">Minimum balance</Text>
+                    <Text type="secondary">{formatEther(data.artwork.balanceRequirement)}☰</Text>
+                  </Row>}
+                  {(data.artwork.ownershipModel == 1) && <Row justify="space-between">
+                    <Text type="secondary">Balance period</Text>
+                    <Text type="secondary">{data.artwork.balanceDurationInSeconds} seconds</Text>
+                  </Row>}
                   <br/>
                   <Row>
                     {data.artwork.desc}
@@ -201,9 +224,15 @@ const Subgraph = (props) => {
           </Col>
           <Col span={13} offset={1}>
             <br/>
-            <Row>
-                <div style={{marginTop:5}}><Blockies seed={data.artwork.artist.address} scale={3} /></div>
-                <Title level={3} type="secondary"> &nbsp; 0x{data.artwork.artist.address.substr(-4).toUpperCase()}</Title>
+            <Row justify="space-between">
+                <Col flex={1}>
+                <div style={{marginTop:5, float: 'left'}}><Blockies seed={data.artwork.artist.address} scale={3} /></div>
+                <Title level={3} type="secondary"> &nbsp; {data.artwork.artist.name}</Title>
+                </Col>
+                <Col>
+                {isForSale && (data.artwork.revoked ? <Tag color="gold">Revoked!</Tag> : <Tag color="blue">For sale!</Tag>)}
+
+                </Col>
             </Row>
             <Row>
               <Title level={2}> {data.artwork.name}</Title>
@@ -215,7 +244,7 @@ const Subgraph = (props) => {
             <Row>
               <Col flex="1">
                 <br/>
-                <Card title={`Artwork is ${isForSale ? '' : 'not '}available for sale`}>
+                <Card headStyle={data.artwork.revoked && {background: '#ffc53d'}} title={data.artwork.revoked ? 'Artwork is revoked and up for sale!' : `Artwork is ${isForSale ? '' : 'not '}available for sale`}>
                   <Row justify="space-between" align="middle">
                   <Col>
                     <Row>
@@ -225,9 +254,7 @@ const Subgraph = (props) => {
                       <Col>
                         <Title level={2}>☰{formatEther(data.artwork.price)}</Title>
                       </Col>
-                      <Col>
-                        <Text type="secondary" style={{display: 'block', 'marginTop': 14}}> &nbsp; ($4.5)</Text>
-                      </Col>
+      
                     </Row>
                   </Col>
                   <Col>
@@ -242,8 +269,36 @@ const Subgraph = (props) => {
             <Row>
               <Col flex="1">
                 <br/>
-                <Card title="The good stuff">
-                  This artwork supports {data.artwork.beneficiary.name} through the dynamic contribution model of the Good Token protocol.
+                <Card title="The Good stuff">
+                  This artwork supports <Text type="warning">{data.artwork.beneficiary.name}</Text> using the Good Token protocol.
+                    <br/>
+                    <br/>
+                  {
+                    data.artwork.ownershipModel ? (
+                      <Row>
+                        <Text>This Good Token uses a dynamic ownership model. This means the owner must contribute  <Text type="warning">1 token</Text> to <Text type="warning">{data.artwork.beneficiary.name}</Text> every <Text type="warning">{data.artwork.balanceDurationInSeconds}</Text> seconds.</Text>
+                        {
+                          data.artwork.revoked ?
+                           <Text mark>The current owner failed to make the required contribution and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>
+                           : 
+                           <Text>If the owner fails to make the required contribution, his ownership will be revoked and this artwork aill automatically go on sale.</Text>
+                        }
+                      </Row>
+                    ) : (
+                      <Row>
+                        <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}</Text> with <Text type="warning">{data.artwork.beneficiary.name}</Text>.</Text>
+                        {
+                        data.artwork.revoked ?
+                        <Text mark>The current owner failed to maintain the required balance and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>                        
+                        :
+                        <Text>If the owner fails to maintain a sufficient balance, his ownership will be revoced and this artwork aill automatically go on sale.</Text>
+                        }
+                      </Row>
+                    )
+                  }
+
+                  <br/>
+                  <Link href="/about">Learn more about the Good Token.</Link>
                 </Card>
               </Col>
             </Row>

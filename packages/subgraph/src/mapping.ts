@@ -78,7 +78,6 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
         beneficiary.address = event.params.beneficiaryAddress
         beneficiary.createdAt = event.block.timestamp
         beneficiary.name = event.params.beneficiaryName
-        beneficiary.symbol = event.params.beneficiarySymbol
 
         beneficiary.save()
     }
@@ -95,7 +94,9 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.artworkRevokedCid = event.params.artworkRevokedCid
     artwork.createdAt = event.block.timestamp
     artwork.owner = event.params.artist
-
+    artwork.ownershipModel = event.params.ownershipModel
+    artwork.balanceRequirement = event.params.balanceRequirement
+    artwork.balanceDurationInSeconds = event.params.balanceDurationInSeconds
 
     if(artworkPayload != null) {
         artwork.name = artworkMetadata.get('name').toString()
