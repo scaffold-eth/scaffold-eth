@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { Artworks, Artwork, MintArtwork } from "./views"
+import { About, Artworks, Artwork, MintArtwork } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
@@ -191,6 +191,11 @@ function App(props) {
 
         <Switch>
 
+        <Route exact path="/about">
+            <About />
+          </Route>
+          
+
           <Route exact path="/mint">
             <MintArtwork
               tx={tx}
@@ -198,8 +203,6 @@ function App(props) {
             />
           </Route>
           
-          <Route exact path="/mint"></Route>
-
           <Route exact path="/artists"></Route>
           <Route exact path="/artists/:artist"></Route>
 
