@@ -17,7 +17,7 @@ const zeroAddress = "0x0000000000000000000000000000000000000000"
 const mapOwnershipData = (transfers) => (
   transfers.map(transfer => ({
     key: transfer.id,
-    event:  (transfer.from === zeroAddress) ? 'CREATE' : 'TRANSFER',
+    event:  (transfer.from === zeroAddress) ? '🖼️' : '💱',
     from: transfer.from,
     to: transfer.to,
     date: (new Date((+transfer.createdAt) * 1000)).toDateString()
@@ -47,7 +47,7 @@ const ARTWORK_QUERY = gql`
         name
       }
 
-      transfers {
+      transfers(orderBy: createdAt, orderDirection: desc) {
         id
         createdAt
         to
@@ -93,19 +93,34 @@ const ownershipColumns  = [
     title: 'Event',
     dataIndex: 'event',
     key: 'event',
+    render: event => <Title level={3}>{event}</Title>
   }, {
     title: 'From',
     dataIndex: 'from',
     key: 'from',
+    render: addr => (
+      <span>
+        <span><Blockies seed={addr} scale={2} /></span>
+        <Text > &nbsp; 0x{addr.substr(-4).toUpperCase()}</Text>
+      </span>
+    )
 
   }, {
     title: 'To',
     key: 'to',
     dataIndex: 'to',
+    render: addr => (
+      <span>
+        <span><Blockies seed={addr} scale={2} /></span>
+        <Text > &nbsp; 0x{addr.substr(-4).toUpperCase()}</Text>
+      </span>
+    )
   },
   {
     title: 'Date',
     key: 'date',
+    dataIndex: 'date',
+    render: date => <Text>{date}</Text>
 
   },
 ];
@@ -212,8 +227,8 @@ const Subgraph = (props) => {
         <Row>
           <Col flex="1">
             <br/>
-            <Card title="Ownership history">
-              <Table columns={ownershipColumns} dataSource={mapOwnershipData(data.artwork.transfers)} />
+            <Card title="Ownership history" bodyStyle={{padding:0}}>
+              <Table pagination={false} columns={ownershipColumns} dataSource={mapOwnershipData(data.artwork.transfers)} />
             </Card>
           </Col>
         </Row>

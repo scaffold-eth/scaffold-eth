@@ -258,7 +258,9 @@ function App(props) {
            blockExplorer={blockExplorer}
          />
       </div>
-
+      <br></br>
+      <br></br>
+      <br></br>
     </div>
   );
 }
