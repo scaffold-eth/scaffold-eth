@@ -114,9 +114,9 @@ const main = async () => {
 
   console.log('NETWORK NAME: ' + hre.network.name)
   if(hre.network.name === 'localhost') {
-    await bootstrapLocalData(goodToken, goodTokenFund)
+    //await bootstrapLocalData(goodToken, goodTokenFund)
   } else {
-    await bootstrapLocalData(goodToken, goodTokenFund)
+    //await bootstrapLocalData(goodToken, goodTokenFund)
     await verifyContract(goodToken.address);
     await verifyContract(goodTokenFund.address);
   }
