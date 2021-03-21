@@ -46,16 +46,24 @@ function getContractAddress(): (Bytes | null) {
 
 export function handleArtworkMinted(event: ArtworkMinted): void {
     setContractAdrress(event)
+    
+    // fetch artwork data
+    log.info('Fetching IPFS CID {}', [event.params.artworkCid]);
+    let artworkPayload = ipfs.cat('/ipfs/' + event.params.artworkCid.toString());  
+    let artworkMetadata:TypedMap<string, JSONValue>
+    artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
 
     // get artist address and create entity if needed
     let artistAddress = event.params.artist.toHexString()
-
+    
     let artist = Artist.load(artistAddress)
 
     if (artist == null) {
       artist = new Artist(artistAddress)
       artist.address = event.params.artist
       artist.createdAt = event.block.timestamp
+      
+      artist.name = artworkMetadata.get('artistName').toString()
 
       artist.save()
     }
@@ -88,16 +96,13 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.createdAt = event.block.timestamp
     artwork.owner = event.params.artist
 
-    // fetch artwork data
-    log.info('Fetching IPFS CID {}', [event.params.artworkCid]);
-    let artworkPayload = ipfs.cat('/ipfs/' + event.params.artworkCid.toString());  
-    let artworkMetadata:TypedMap<string, JSONValue>
 
     if(artworkPayload != null) {
-        artworkMetadata = json.fromBytes(artworkPayload as Bytes).toObject()
         artwork.name = artworkMetadata.get('name').toString()
         artwork.desc = artworkMetadata.get('description').toString()
         artwork.artworkImageUrl = artworkMetadata.get('image').toString()
+
+
     }
     
     let artworkRevokedPayload = ipfs.cat('/ipfs/' + event.params.artworkRevokedCid.toString())

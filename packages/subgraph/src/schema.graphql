@@ -25,6 +25,7 @@ type Artist @entity {
   id: ID!
   createdAt: BigInt!
   address: Bytes!
+  name: String!
   artworks: [Artwork!] @derivedFrom(field: "artist")
 }
 

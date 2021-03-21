@@ -77,6 +77,15 @@ const nameAddons = [
     'Funny'
 ]
 
+const artistNames = [
+    "Jasper",
+    "Birdman",
+    "Barak",
+    "WingDing",
+    "FlyinHigh",
+    "BadBird"
+]
+
 const revokedImg = 'http://clipartmag.com/images/big-bird-clipart-24.png';
 
 
@@ -92,7 +101,8 @@ const bootstrapLocalData = async (
     for(let i = 0; i < numTokens; i++) {
 
         // creata dummy data
-        const artistAccount = accounts[randomNumber(0, accounts.length)];
+        const artistIdx = randomNumber(0, accounts.length)
+        const artistAccount = accounts[artistIdx];
         
        
     
@@ -103,7 +113,7 @@ const bootstrapLocalData = async (
         const ownershipModel = (i % 2) === 0 ? 0 : 1;
 
         // deposit funds into the fund contract from the user
-        const balance = requiredBalance - randomNumber(-300, 300);
+        const balance = requiredBalance + randomNumber(-300, 300);
         const divisor = 100;
         const balanceInWei = ethers.constants.WeiPerEther.mul(balance.toString()).div(divisor);
         // eslint-disable-next-line no-await-in-loop
@@ -125,7 +135,7 @@ const bootstrapLocalData = async (
         const tokenMetadata = {
             "name": tokenName,
             "artist": artistAccount.address,
-            "artistName": "Birdman",
+            "artistName": artistNames[artistIdx % artistNames.length],
             "description": "For the love of birds, one must fly.",
             "image": baseBird.img,
             "date": Date.now(),
@@ -168,9 +178,16 @@ const bootstrapLocalData = async (
 
         await purchase.wait();
 
-
-
     }
+    await checkRevoked(goodTokenContract);
+  }
+
+  async function checkRevoked(goodTokenContract) {
+      const numTokens = await goodTokenContract.totalSupply();
+      for(let i = 0; i < numTokens; i++) {
+          const isRevoked = await goodTokenContract.isRevoked(i);
+          console.log(`Token ${i} is ${isRevoked ? 'revoked' : 'not revoked'}`);
+      }
   }
 
 
@@ -180,7 +197,7 @@ const bootstrapLocalData = async (
       const accounts = await ethers.getSigners();
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
       const goodTokenFundContract = new ethers.Contract(goodTokenFundAddress, goodFundAbi, accounts[0]);
-      await bootstrapLocalData(goodTokenContract, goodTokenFundContract, 30);
+      await bootstrapLocalData(goodTokenContract, goodTokenFundContract, 10);
 
   }
 
