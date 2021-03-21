@@ -106,6 +106,9 @@ let fundNames = [
   ["Solar/Wind Fund", "SWF"],
   ["International Cleanng Fund", "ICF"],
   ["Bird Fund", "BRDF"],
+  ["Aave Governance Token", "AAVE"],
+  ["Uniswap CRV/ETH LP", "FRETH"],
+  ["POAP Token Pool", "POAP"]
 ];
 
 const main = async () => {
