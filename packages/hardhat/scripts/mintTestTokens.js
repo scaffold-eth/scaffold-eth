@@ -44,6 +44,22 @@ const imgListings = [
   {
     img: 'https://www.nerjarob.com/nature/wp-content/uploads/2016/11/Bird-Castellar-5.jpg',
     name: 'Bird-Castellar'
+  },
+  {
+    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2019/09/Barbet-Black-billed-10.jpg',
+    name: 'Barbet Black Billed'
+  },
+  {
+    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2018/12/BrownBabbler-Nov-3.jpg',
+    name: 'Brown Babbler'
+  },
+  {
+    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2018/01/Barbet-Double-toothed-1.jpg',
+    name: 'Barbet Double Toothed'
+  },
+  {
+    img: 'https://www.nerjarob.com/nature/wp-content/uploads/Little-Bee-Eater-2.jpg',
+    name: 'Little Bee Eater'
   }
 ];
 
@@ -53,7 +69,12 @@ const nameAddons = [
     'Rad',
     'Chipry',
     'Peckish',
-    'Hyper'
+    'Hyper',
+    'Squishy',
+    'Fluffy',
+    'Angry',
+    'Happy',
+    'Funny'
 ]
 
 const revokedImg = 'http://clipartmag.com/images/big-bird-clipart-24.png';
@@ -66,13 +87,13 @@ const bootstrapLocalData = async (
     goodTokenFundContract,
     numTokens) => {
 
+    const accounts = await ethers.getSigners();
         
     for(let i = 0; i < numTokens; i++) {
 
         // creata dummy data
-        const accounts = await ethers.getSigners();
-        const artistAccount = accounts[1 % accounts.length];
-    
+        const artistAccount = accounts[randomNumber(0, accounts.length)];
+        
        
     
         
