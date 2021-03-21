@@ -137,9 +137,11 @@ const Subgraph = (props) => {
   
   const variables = { artwork }
   
-  const { loading, data } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 5000});
+  const { loading, data, startPolling } = useQuery(ARTWORK_QUERY, {variables},{pollInterval: 2500, fetchPolicy: 'network-only'});
   const history = useHistory()
   
+  startPolling()
+
   const buyArtwork = async() => {
     setIsPurchasing(true);
     try{
@@ -180,7 +182,8 @@ const Subgraph = (props) => {
   }
 
   const isForSale = data.artwork.revoked || (data.artwork.artist.address ===  data.artwork.owner)
-  
+  const isOwner = (props.address.toLowerCase() == data.artwork.owner.toLowerCase())
+
   return (
     <Row direction="vertical" style={{textAlign: 'left'}}>
       <Col span={12} offset={6}>
@@ -244,12 +247,11 @@ const Subgraph = (props) => {
             <Row>
               <Col flex="1">
                 <br/>
-                <Card headStyle={data.artwork.revoked ? {background: '#ffc53d'} : {}} title={data.artwork.revoked ? 'Artwork is revoked and up for sale!' : `Artwork is ${isForSale ? '' : 'not '}available for sale`}>
+                <Card headStyle={data.artwork.revoked ? {background: '#ffc53d'} : (isOwner ? {background: '#ffd666'} : {})} title={data.artwork.revoked ? 'Artwork is revoked and up for sale!' : (isOwner ? 'This one is yours! Good own ya! 🤝' : (`Artwork is ${isForSale ? '' : 'not '}available for sale`))}>
                   <Row justify="space-between" align="middle">
                   <Col>
                     <Row>
                       <Text type="secondary">current price</Text></Row>
-                      {data.artwork.revoked && "ARTWORK IS REVOKED!"}
                     <Row>
                       <Col>
                         <Title level={2}>☰{formatEther(data.artwork.price)}</Title>

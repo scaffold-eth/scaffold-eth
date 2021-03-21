@@ -136,7 +136,7 @@ const Subgraph = (props) => {
 
   const [featured, setFeatured] = useState(0)
   const history = useHistory()
-  const { loading, data, refetch } = useQuery(ARTWORKS_QUERY, { variables }, { pollInterval: 5000 });
+  const { loading, data, refetch } = useQuery(ARTWORKS_QUERY, { variables }, { pollInterval: 2500 });
 
   const featuredArtists = (
     <Skeleton loading={!data} active>
