@@ -40,8 +40,7 @@ function getContractAddress(): (Bytes | null) {
         return null
     }
 
-    return null
-    // return contract.address
+    return contract.address
 }
 
 
@@ -83,6 +82,7 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     artwork.artist = artistAddress
     artwork.beneficiary = beneficiaryAddress
     artwork.price = event.params.price
+    artwork.revoked = false
     artwork.artworkCid = event.params.artworkCid
     artwork.artworkRevokedCid = event.params.artworkRevokedCid
     artwork.createdAt = event.block.timestamp
@@ -134,6 +134,13 @@ export function handleTransfer(event: TransferEvent): void {
     transfer.from = event.params.from
 
     transfer.save()
+
+    let artwork = Artwork.load(transfer.artwork)
+
+    if(artwork == null) return
+    
+    artwork.revoked = false
+    artwork.save()
 }
 
 export function handleBlock(block: ethereum.Block): void {
@@ -144,8 +151,16 @@ export function handleBlock(block: ethereum.Block): void {
     }
 
     // bind entity to contract state
-    const gooToken = GoodToken.bind(contractAddress)
+    let goodToken = GoodToken.bind(contractAddress as Address)
 
-    log.info('BLOCK: updating GoodToken')
-    // gooToken.
+    let tokenSupply = goodToken.totalSupply().toI32()
+
+    
+    for (let token = 0; token < tokenSupply; token++) {
+        let revoked = goodToken.isRevoked(BigInt.fromI32(token))
+        
+        let artwork = new Artwork(token.toString())
+        artwork.revoked = revoked
+        artwork.save()
+    }
 }

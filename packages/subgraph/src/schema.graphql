@@ -11,6 +11,7 @@ type Artwork @entity {
   tokenId: BigInt!
   artist: Artist!
   price: BigInt!
+  revoked: Boolean!
   artworkImageUrl: String!
   artworkRevokedImageUrl: String!
   artworkCid: String!

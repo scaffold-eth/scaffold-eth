@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
+import { BrowserRouter, Switch, Route, Link, Redirect } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { GraphExamples, MintArtwork } from "./views"
+import { Artworks, Artwork, MintArtwork } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
@@ -171,7 +171,7 @@ function App(props) {
       <Header />
       <BrowserRouter>
 
-        <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+        <Menu style={{ textAlign:"left" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">Good Tokens</Link>
           </Menu.Item>
@@ -190,8 +190,40 @@ function App(props) {
         </Menu>
 
         <Switch>
+
+          <Route exact path="/mint">
+            <MintArtwork
+              tx={tx}
+              writeContracts={contracts}
+            />
+          </Route>
+          
+          <Route exact path="/mint"></Route>
+
+          <Route exact path="/artists"></Route>
+          <Route exact path="/artists/:artist"></Route>
+
+          <Route path="/artworks/:artwork/:slug?">
+            <Artwork
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              tx={tx}
+              writeContracts={contracts}
+            />
+          </Route>
+
+          <Route exact path="/funds"></Route>
+          <Route exact path="/funds/:fund"></Route>
+
+
+          <Route exact path="/wall-of-shame">
+
+          </Route>
+
           <Route exact path="/">
-            <GraphExamples
+            <Artworks
                 address={address}
                 userProvider={userProvider}
                 mainnetProvider={mainnetProvider}
@@ -201,28 +233,7 @@ function App(props) {
               />
           </Route>
 
-          <Route exact path="/mint">
-            <MintArtwork
-              tx={tx}
-              writeContracts={contracts}
-            />
-          </Route>
-
-          <Route exact path="/mint"></Route>
-
-          <Route exact path="/artists"></Route>
-          <Route exact path="/artists/:artist"></Route>
-
-          <Route exact path="/artworks"></Route>
-          <Route exact path="/artworks/:artwork"></Route>
-
-          <Route exact path="/funds"></Route>
-          <Route exact path="/funds/:fund"></Route>
-
-
-          <Route exact path="/wall-of-shame">
-
-          </Route>
+          <Redirect to="/" />
         </Switch>
 
         {/* Footer */}
