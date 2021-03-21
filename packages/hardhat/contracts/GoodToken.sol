@@ -27,7 +27,7 @@ contract GoodToken is GoodERC721, AccessControl {
     );
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    uint256 public constant PAYMENT_GRACE_PERIOD = 10 seconds;
+    uint256 public constant PAYMENT_GRACE_PERIOD = 20 seconds;
 
 
     Counters.Counter private _tokenIdTracker;
@@ -238,8 +238,7 @@ contract GoodToken is GoodERC721, AccessControl {
         // verify minimum price
         require(msg.value >= currentArtwork.price, "GoodToken: Offer must meet minimum price");
         
-        // verify artwork is up for sale
-        require(owner == address(this) || owner == currentArtwork.artist, "GoodToken: Artwork is not currently for sale");
+        require(owner != sender, "GoodToken: Artwork already owned by you!");
 
         if(owner == address(this)) {
             emit ArtworkRevoked(artwork, super.ownerOf(artwork));
@@ -263,7 +262,6 @@ contract GoodToken is GoodERC721, AccessControl {
 
         // update purchase data
         ownerData.purchaseDate = block.timestamp;
-
         _safeTransfer(from, to, tokenId, "");
     }
 }
