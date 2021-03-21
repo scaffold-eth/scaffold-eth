@@ -93,6 +93,13 @@ export default function ZeitGeist({address, setNewActivityEvent, setActivityLive
         {/* <Divider/> */}
       </div>
     </div>
-
   );
 }
+
+// TODO
+// - add nft
+// - mint nft with hash
+// - adjust metadata to match nft standard
+// - display memoryLane component
+// - pull all memories from 
+// - deploy to a testnet (ideally)
