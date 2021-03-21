@@ -200,7 +200,8 @@ function App(props) {
             <MintArtwork
               tx={tx}
               writeContracts={contracts}
-            />
+              address={address}
+              />
           </Route>
           
           <Route exact path="/artists"></Route>

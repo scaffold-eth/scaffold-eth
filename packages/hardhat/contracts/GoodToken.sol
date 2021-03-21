@@ -247,6 +247,8 @@ contract GoodToken is GoodERC721, AccessControl {
 
         // transfer ownership
         safeTransferFrom(owner, sender, artwork);
+
+        payable(currentArtwork.artist).transfer(msg.value);
     }
 
     function transferFrom(address from, address to, uint256 tokenId) public override {
