@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { About, Artworks, Artwork, MintArtwork } from "./views"
+import { About, Artworks, Artwork, MintArtwork, Funds } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
@@ -176,13 +176,10 @@ function App(props) {
             <Link onClick={()=>{setRoute("/")}} to="/">Good Tokens</Link>
           </Menu.Item>
           <Menu.Item key="/funds">
-            <Link onClick={()=>{setRoute("/funds")}} to="/graphexamples">Funds</Link>
+            <Link onClick={()=>{setRoute("/funds")}} to="/funds">Funds</Link>
           </Menu.Item>
           <Menu.Item key="/mint">
             <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
-          </Menu.Item>
-          <Menu.Item key="/wall-of-shame">
-            <Link onClick={()=>{setRoute("/wall-of-shame")}} to="/wall-of-shame">Wall of Shame</Link>
           </Menu.Item>
           <Menu.Item key="/about">
             <Link onClick={()=>{setRoute("/about")}} to="/about">About Good Tokens</Link>
@@ -218,12 +215,15 @@ function App(props) {
             />
           </Route>
 
-          <Route exact path="/funds"></Route>
-          <Route exact path="/funds/:fund"></Route>
-
-
-          <Route exact path="/wall-of-shame">
-
+          <Route exact path="/funds">
+            <Funds
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              tx={tx}
+              writeContracts={contracts}
+            />
           </Route>
 
           <Route exact path="/">
