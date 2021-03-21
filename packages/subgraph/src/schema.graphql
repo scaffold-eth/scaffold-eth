@@ -13,6 +13,9 @@ type Artwork @entity {
   owner: Bytes!
   price: BigInt!
   revoked: Boolean!
+  ownershipModel: Int!
+  balanceRequirement: BigInt!
+  balanceDurationInSeconds: BigInt!
   artworkImageUrl: String!
   artworkRevokedImageUrl: String!
   artworkCid: String!
@@ -48,7 +51,6 @@ type Beneficiary @entity {
   id: ID!
   createdAt: BigInt!
   name: String!
-  symbol: String!
   address: Bytes!
   artworks: [Artwork!] @derivedFrom(field: "beneficiary")
   artists: [Artist!] 

@@ -22,8 +22,8 @@ contract GoodToken is GoodERC721, AccessControl {
 
     event ArtworkRevoked(uint256 tokenId, address revokedFrom);
     event ArtworkMinted(
-        uint256 artwork, address artist, uint256 price, string artworkCid, string artworkRevokedCid, 
-        address beneficiaryAddress, string beneficiaryName, string beneficiarySymbol
+        uint256 artwork, address artist, uint256 price, uint8 ownershipModel, uint256 balanceRequirement, uint64 balanceDurationInSeconds, string artworkCid, string artworkRevokedCid, 
+        address beneficiaryAddress, string beneficiaryName
     );
 
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
@@ -36,7 +36,7 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipModel ownershipModel;
         address beneficiaryAddress;
         uint256 balanceRequirement;
-        uint256 balanceDurationInSeconds; // for dynamic model
+        uint64 balanceDurationInSeconds; // for dynamic model
         uint256 purchaseDate;
     }
 
@@ -177,11 +177,9 @@ contract GoodToken is GoodERC721, AccessControl {
         OwnershipModel ownershipModel,
         address beneficiaryAddress, 
         uint256 balanceRequirement, // could be static or dynamic
-        uint256 balanceDurationInSeconds,
+        uint64 balanceDurationInSeconds,
         uint256 price
-    ) public returns (uint256) {
-        address sender = _msgSender();
-
+    ) public  {
         //require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
@@ -190,11 +188,11 @@ contract GoodToken is GoodERC721, AccessControl {
         IToken token = IToken(beneficiaryAddress);
 
         // mint new token to current token index
-        _safeMint(sender, currentArtwork);
+        _safeMint(_msgSender(), currentArtwork);
         
         // store artwork URLs and initial min bid
         artworkData[currentArtwork] = ArtworkData (
-            sender,
+            _msgSender(),
             artworkCid,
             artworkRevokedCid,
             price
@@ -208,24 +206,23 @@ contract GoodToken is GoodERC721, AccessControl {
             balanceDurationInSeconds,
             block.timestamp
         );
-        console.log("artwork created at: %s", block.timestamp);
 
         // emit artwork creation event
         emit ArtworkMinted(
             currentArtwork,
-            sender,
+            _msgSender(),
             price,
+            uint8(ownershipModel),
+            balanceRequirement,
+            balanceDurationInSeconds,
             artworkCid,
             artworkRevokedCid,
             beneficiaryAddress,
-            token.name(),
-            token.symbol()
+            token.name()
         );
 
         // increment token index for next mint
         _tokenIdTracker.increment();
-
-        return currentArtwork;
     }
 
     function buyArtwork(uint256 artwork) public payable {
