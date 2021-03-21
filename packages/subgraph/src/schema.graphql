@@ -52,6 +52,7 @@ type Beneficiary @entity {
   createdAt: BigInt!
   name: String!
   address: Bytes!
+  symbol: String!
   artworks: [Artwork!] @derivedFrom(field: "beneficiary")
   artists: [Artist!] 
 }

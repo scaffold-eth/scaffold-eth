@@ -78,6 +78,7 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
         beneficiary.address = event.params.beneficiaryAddress
         beneficiary.createdAt = event.block.timestamp
         beneficiary.name = event.params.beneficiaryName
+        beneficiary.symbol = artworkMetadata.get('fundSymbol').toString()
 
         beneficiary.save()
     }
