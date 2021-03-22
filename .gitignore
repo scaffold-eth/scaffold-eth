@@ -10,6 +10,9 @@ packages/hardhat/artifacts
 packages/hardhat/deployments
 packages/react-app/src/contracts
 packages/hardhat/cache
+packages/circom/circuits/*/compiled/
+packages/circom/circuits/*/contracts/
+packages/circom/circuits/*/keys/
 
 docker/**/data
 
@@ -37,3 +40,15 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+**/proof.json
+**/circuit.r1cs
+**/circuit.sym
+**/circuit.wasm
+**/circuit.zkey
+**/circuit_*.zkey
+**/*.zkey
+**/public.json
+**/verification_key.json
+**/verifier.sol
+**/witness.wtns
