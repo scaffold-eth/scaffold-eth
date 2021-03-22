@@ -58,7 +58,9 @@
       "**/@graphprotocol/graph-ts",
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
-      "**/hardhat/**"
+      "**/hardhat/**",
+      "**/snarkjs",
+      "**/snarkjs/**"
     ]
   }
 }
