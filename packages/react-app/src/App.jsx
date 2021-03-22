@@ -41,7 +41,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['matic']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['mumbai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -140,11 +140,11 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
-  if(DEBUG) console.log("📝 readContracts",readContracts)
+  if(DEBUG) console.log("📝 readContracts", readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
-  if(DEBUG) console.log("🔐 writeContracts",writeContracts)
+  if(DEBUG) console.log("🔐 writeContracts", writeContracts)
 
   // EXTERNAL CONTRACT EXAMPLE:
   //

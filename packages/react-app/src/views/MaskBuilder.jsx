@@ -43,6 +43,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
     const [newImage, setNewImage] = useState();
     const [events, setEvents] = useState([]);
 
+    const [background, setBackground] = useState(PARTS.BACKGROUND[0]);
     const [face, setFace] = useState(PARTS.FACE[0]);
     const [eyes, setEyes] = useState(PARTS.EYES[0]);
     const [mouth, setMouth] = useState(PARTS.MOUTH[0]);
@@ -73,7 +74,8 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 .then((res) => {
                     // set all the parts
                     setRandomNumber(res);
-                    //console.log(res.toString())                    
+                    //console.log(res.toString())  
+                    setBackground(PARTS.BACKGROUND[res.toString().substring(16, 18) % 10])                  
                     //console.log(res.toString().substring(0, 2) % 8);                    
                     setFace(PARTS.FACE[res.toString().substring(0, 2) % 10]);
                     //console.log(res.toString().substring(2, 4) % 8);
@@ -88,6 +90,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
 
                     // todo: need to randomly set the horns
                     setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
+
                     //console.log(res.toString().substring(12, 14) % 8);
                     setTop(PARTS.MISC.TOP[res.toString().substring(12, 14) % 8]);
                     //console.log(res.toString().substring(14, 16) % 8);
@@ -103,7 +106,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
         try {
             await mergeImages([
                 //{ src: './images/Backgrounds/background1.png', x: 0, y: 0 }, 
-                //{ src: background1 },
+                { src: background },
                 { src: face }, 
                 { src: eyes },
                 { src: mouth },
@@ -117,13 +120,13 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 // console.log(b64);
                 setNewImage(b64);
                 // save image to ipfs and get the uri for minting token
-                let generatedMaskImage = document.getElementById("generated-mask-image");
-                let imgCanvas = document.getElementById("canvas");
-                let imgContext = imgCanvas.getContext("2d");
+                // let generatedMaskImage = document.getElementById("generated-mask-image");
+                // let imgCanvas = document.getElementById("canvas");
+                // let imgContext = imgCanvas.getContext("2d");
 
-                imgCanvas.width = generatedMaskImage.width;
-                imgCanvas.height = generatedMaskImage.height;
-                imgContext.drawImage(generatedMaskImage, 0, 0, generatedMaskImage.width, generatedMaskImage.height);
+                // imgCanvas.width = generatedMaskImage.width;
+                // imgCanvas.height = generatedMaskImage.height;
+                // imgContext.drawImage(generatedMaskImage, 0, 0, generatedMaskImage.width, generatedMaskImage.height);
 
                 //const imgDataAsUrl = imgCanvas.toDataURL("image/png");
                 let imageBuffer = Buffer.from(b64.split(",")[1], 'base64');
@@ -170,9 +173,6 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
             <Button onClick={ () => { mintNft() } } disabled={partsLoaded}>Mint NFT</Button>
             <div style={{ width: 800, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
             
-
-            <canvas id='canvas'></canvas>
-
             {/* <List
                 bordered
                 dataSource={vrfEvents}
