@@ -18,6 +18,7 @@ if (process.argv.length < 3 || process.argv.length > 4) {
 }
 
 const cwd = process.cwd();
+console.log(cwd);
 
 for (circuitName of circuitsList.split(',')) {
   if (!process.env['beacon']) {
@@ -108,6 +109,10 @@ for (circuitName of circuitsList.split(',')) {
       { stdio: 'inherit' }
     );
     // copy files to appropriate places when integrated with scaffold-eth (zkaffold-eth)
+    fs.copyFileSync(
+      'contracts/verifier.sol',
+      cwd + '/../hardhat/contracts/' + circuitName +'Verifier.sol'
+    );
   } catch (error) {
     console.log(error);
     process.exit(1);
