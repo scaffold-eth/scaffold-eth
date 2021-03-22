@@ -4,13 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { bn } from '@ethersproject/bignumber'
-
 // Image manipulation
 import mergeImages from 'merge-images';
-import { Canvas, Image, createCanvas, loadImage  } from 'canvas';
-
 import { addToIPFS, transactionHandler } from "../helpers"
-
 import { PARTS } from '../partPicker';
 
 const { BufferList } = require('bl')
@@ -192,32 +188,6 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
         <Divider />
         </div>
     )
-
-    function testCanvas () {
-        const canvas = createCanvas(200, 200)
-        const ctx = canvas.getContext('2d')
-    
-        // Write "Awesome!"
-        ctx.font = '30px Impact'
-        //ctx.rotate(0.1)
-        ctx.fillText('Awesome!', 50, 100)
-    
-        // Draw line under text
-        var text = ctx.measureText('Awesome!')
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-        ctx.beginPath()
-        ctx.lineTo(50, 102)
-        ctx.lineTo(50 + text.width, 102)
-        ctx.stroke()
-    
-        // Draw cat with lime helmet
-        loadImage(PARTS.BACKGROUND[2]).then((image) => {
-        ctx.drawImage(image, 50, 0, 70, 70)
-    
-        console.log('<img src="' + canvas.toDataURL() + '" />')
-        })
-        setNewImage('<img src="' + canvas.toDataURL() + '" />');
-    }    
 }
 
 export default MaskBuilder;
