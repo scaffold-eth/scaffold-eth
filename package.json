@@ -48,7 +48,10 @@
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
     "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "fab": "yarn workspace @scaffold-eth/circom compile"
+    "compcir": "yarn workspace @scaffold-eth/circom compile",
+    "verify": "yarn workspace @scaffold-eth/circom verify",
+    "draft": "yarn workspace @scaffold-eth/circom draft",
+    "call": "yarn workspace @scaffold-eth/circom call"
   },
   "workspaces": {
     "packages": [
