@@ -60,7 +60,11 @@
       "**/hardhat",
       "**/hardhat/**",
       "**/snarkjs",
-      "**/snarkjs/**"
+      "**/snarkjs/**",
+      "**/circom",
+      "**/circom/**",
+      "**/circomlib",
+      "**/circomlib/**"
     ]
   }
 }
