@@ -33,6 +33,7 @@ build
 # misc
 .DS_Store
 .env*
+!packages/circom/.env
 
 # debug
 npm-debug.log*
