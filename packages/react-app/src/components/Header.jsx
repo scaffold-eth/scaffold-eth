@@ -3,14 +3,19 @@ import { PageHeader } from "antd";
 
 // displays a page header
 
-export default function Header() {
+export default function Header( props ) {
   return (
-    <a href="https://punkwallet.io">
+
       <PageHeader
-        title="🧑‍🎤  PunkWallet.io"
+        title={(
+          <a href="https://punkwallet.io">
+            {window.innerWidth<600?"🧑‍🎤":"🧑‍🎤  PunkWallet.io"}
+          </a>
+        )}
         subTitle=""
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer",fontSize:32 }}
+        extra={props.extra}
       />
-    </a>
+
   );
 }

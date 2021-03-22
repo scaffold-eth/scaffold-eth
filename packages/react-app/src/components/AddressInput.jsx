@@ -85,7 +85,7 @@ export default function AddressInput(props) {
         zIndex: 256,
         position: "absolute",
         left: "-25%",
-        top: "-100%",
+        top: "-150%",
         width: "150%",
         backgroundColor:"#333333"
       }}
@@ -132,6 +132,10 @@ export default function AddressInput(props) {
   let part2= currentValue && currentValue.substr(22)
   const x = parseInt(part1, 16)%100
   const y = parseInt(part2, 16)%100
+
+  props.hoistScanner(()=>{
+    setScan(!scan)
+  })
 
   return (
     <div>

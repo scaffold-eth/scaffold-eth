@@ -6,18 +6,10 @@ import "hardhat/console.sol";
 
 contract YourContract {
 
-  event SetPurpose(address sender, string purpose);
+  event Wave(address sender);
 
-  string public purpose = "Building Unstoppable Apps";
-
-  constructor() {
-    // what should we do on deploy?
-  }
-
-  function setPurpose(string memory newPurpose) public {
-    purpose = newPurpose;
-    console.log(msg.sender,"set purpose to",purpose);
-    emit SetPurpose(msg.sender, purpose);
+  function wave() public {
+    emit Wave(msg.sender);
   }
 
 }

@@ -2,14 +2,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { SendOutlined, CaretUpOutlined, HistoryOutlined } from "@ant-design/icons";
+import { SendOutlined, CaretUpOutlined, HistoryOutlined, ScanOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Select, Row, Col, Button, Menu, Alert, Spin, Switch as SwitchD } from "antd";
+import { Tooltip, Select, Row, Col, Button, Menu, Alert, Spin, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { usePoller, useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { AddressInput, EtherInput, Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, Address, Balance } from "./components";
+import { Wallet, AddressInput, EtherInput, Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, Address, Balance } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -84,6 +84,8 @@ const checkBalances = async (address)=>{
     }
   }
 }
+
+let scanner;
 
 function App(props) {
 
@@ -306,31 +308,49 @@ function App(props) {
 
   const [loading, setLoading] = useState(false);
 
+  const walletDisplay = web3Modal && web3Modal.cachedProvider ? "":<Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+
   return (
     <div className="App">
       {networkDisplay}
-      <div style={{float:"left"}}>
-        <Header />
+      <div className="site-page-header-ghost-wrapper">
+        <Header extra={
+          [
+            <Address
+              fontSize={32}
+              address={address}
+              ensProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+            />,
+            /*<span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
+              <Tooltip title="History">
+                <HistoryOutlined onClick={async () => {
+                  window.open("https://zapper.fi/transactions?address="+address)
+                }}/>
+              </Tooltip>
+            </span>,*/
+            walletDisplay,
+            <Account
+              address={address}
+              localProvider={localProvider}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              web3Modal={web3Modal}
+              loadWeb3Modal={loadWeb3Modal}
+              logoutOfWeb3Modal={logoutOfWeb3Modal}
+              blockExplorer={blockExplorer}
+            />
+          ]
+        }/>
       </div>
-      <div style={{float:"right", padding:16}}>
-        {address ? (
-        <div>
-          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer}/>
-          <Button
-            key="history"
-            type="text"
-            onClick={async () => {
-              window.open("https://zapper.fi/transactions?address="+address)
-            }}
-          ><HistoryOutlined /></Button>
-        </div>
-      ) : <Spin />}
-      </div>
+
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ clear:"both", opacity:yourLocalBalance?1:0.2, width:500, margin:"auto" }}>
         <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkSelect}</span>
       </div>
+
 
       <div style={{padding:16,cursor:"pointer",backgroundColor:"#FFFFFF",width:420,margin:"auto"}}>
         <QRPunkBlockie withQr={true} address={address} />
@@ -343,6 +363,9 @@ function App(props) {
             placeholder="to address"
             address={toAddress}
             onChange={setToAddress}
+            hoistScanner={(toggle)=>{
+              scanner=toggle
+            }}
           />
         </div>
         <div style={{padding: 10}}>
@@ -476,22 +499,28 @@ function App(props) {
 <div style={{padding:32}}>
 </div>
 
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
-        <Account
-          address={address}
-          localProvider={localProvider}
-          userProvider={userProvider}
-          mainnetProvider={mainnetProvider}
-          price={price}
-          web3Modal={web3Modal}
-          loadWeb3Modal={loadWeb3Modal}
-          logoutOfWeb3Modal={logoutOfWeb3Modal}
-          blockExplorer={blockExplorer}
-        />
-         {faucetHint}
-      </div>
-      {/*
+  {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
+  <div style={{ position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
+     {faucetHint}
+  </div>
+
+
+  <div style={{ transform:"scale(2.7)",transformOrigin:"70% 80%", position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
+
+     <Button type={"primary"}  shape="circle" size={"large"} onClick={()=>{
+       scanner(true)
+     }}>
+       <ScanOutlined style={{color:"#FFFFFF"}}/>
+     </Button>
+  </div>
+
+
+  {/*
+
+
+
+
+
 
 🗺 Extra UI like gas price, eth price, faucet, and support: */}
 <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>

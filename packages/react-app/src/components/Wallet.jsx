@@ -57,17 +57,10 @@ export default function Wallet(props) {
   const [showPrivate, setShowPrivate] = useState();
 
   const providerSend = props.provider ? (
-    <Tooltip title="Wallet">
-      <Button
-        style={{margin:8}}
-        key="submit"
-        type="secondary"
-        onClick={() => {
+    <Tooltip title="Private Keys">
+      <WalletOutlined style={{fontSize:32}} onClick={() => {
           setOpen(!open);
-        }}
-      >
-        <WalletOutlined /> Keys
-      </Button>
+      }}/>
     </Tooltip>
   ) : (
     ""
@@ -274,7 +267,7 @@ export default function Wallet(props) {
   }*/
 
   return (
-    <span>
+    <span style={{ verticalAlign: "middle", paddingLeft: 16,fontSize: 32 }}>
       {providerSend}
       <Modal
         visible={open}

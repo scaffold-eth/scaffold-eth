@@ -1,9 +1,9 @@
 import React from "react";
-import { Button } from "antd";
+import { Button, Tooltip } from "antd";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
-
+import { LoginOutlined , LogoutOutlined } from "@ant-design/icons";
 /*
   ~ What it does? ~
 
@@ -54,44 +54,27 @@ export default function Account({
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
-        <Button
-          key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          onClick={logoutOfWeb3Modal}
-        >
-          logout
-        </Button>,
+        <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
+          <Tooltip title="Disconnect Wallet">
+            <LogoutOutlined key="logoutbutton" onClick={logoutOfWeb3Modal} />
+          </Tooltip>
+        </span>
       );
     } else {
       modalButtons.push(
-        <Button
-          key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          /*type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time*/
-          onClick={loadWeb3Modal}
-        >
-          connect
-        </Button>,
+        <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
+          <Tooltip title="Connect Wallet">
+            <LoginOutlined key="loginbutton" onClick={loadWeb3Modal} />
+          </Tooltip>
+        </span>
       );
     }
   }
 
-  const display = minimized ? (
-    ""
-  ) : (
-    <span>
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
-    </span>
-  );
 
   return (
-    <div>
-      {display}
+    <>
       {modalButtons}
-    </div>
+    </>
   );
 }
