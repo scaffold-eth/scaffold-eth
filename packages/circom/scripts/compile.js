@@ -113,6 +113,22 @@ for (circuitName of circuitsList.split(',')) {
       'contracts/verifier.sol',
       cwd + '/../hardhat/contracts/' + circuitName +'Verifier.sol'
     );
+
+    if (!fs.existsSync(cwd + '/../react-app/src/circuits/')){
+      fs.mkdirSync(cwd + '/../react-app/src/circuits/');
+    }
+    fs.copyFileSync(
+      'compiled/circuit.wasm',
+      cwd + '/../react-app/src/circuits/' + circuitName +'_circuit.wasm'
+    );
+    fs.copyFileSync(
+      'keys/circuit_final.zkey',
+      cwd + '/../react-app/src/circuits/' + circuitName +'_circuit_final.zkey'
+    );
+    fs.copyFileSync(
+      'keys/verification_key.json',
+      cwd + '/../react-app/src/circuits/' + circuitName +'_verification_key.json'
+    );
   } catch (error) {
     console.log(error);
     process.exit(1);
