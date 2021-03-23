@@ -171,7 +171,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 ![image](https://user-images.githubusercontent.com/2653167/93150263-dae25180-f6b5-11ea-94e1-b24ab2a63fa5.png)
 
 
-🚽 UNDERFLOW!?! (🚑 [Solidity >0.8.0](https://docs.soliditylang.org/en/v0.8.0/) catchs this [with Checked Arithmetic](https://blog.soliditylang.org/2020/12/16/solidity-v0.8.0-release-announcement/)!
+🚽 UNDERFLOW!?! 🚑 [Solidity >0.8.0](https://docs.soliditylang.org/en/v0.8.0/) catchs this [with Checked Arithmetic](https://blog.soliditylang.org/2020/12/16/solidity-v0.8.0-release-announcement/)!
 
 ![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
 
