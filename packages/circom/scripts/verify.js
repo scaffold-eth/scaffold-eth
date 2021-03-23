@@ -7,7 +7,7 @@ const inputJson = process.argv[3];
 if (process.argv.length < 3 || process.argv.length > 4) {
   console.log('usage');
   console.log(
-    'verify comma,seperated,list,of,circuits optionalinput,json'
+    'verify comma,seperated,list,of,circuits optionalinput.json'
   );
   process.exit(1);
 }
