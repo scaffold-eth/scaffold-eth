@@ -64,13 +64,13 @@ import iris10 from './images/IRIS/dark_blue.png';
 import iris11 from './images/IRIS/Purple.png';
 import iris12 from './images/IRIS/rainbow.png';
 
-import horn1 from './images/HORNS/Horn_6.png';
+import horn1 from './images/HORNS/Horn_1.png';
 import horn2 from './images/HORNS/Horn_2.png';
 import horn3 from './images/HORNS/Horn_3.png';
 import horn4 from './images/HORNS/Horn_4.png';
 import horn5 from './images/HORNS/Horn_5.png';
 import horn6 from './images/HORNS/Horn_6.png';
-import horn7 from './images/HORNS/Horn_6.png';
+import horn7 from './images/HORNS/Horn_1.png';
 import horn8 from './images/HORNS/Horn_2.png';
 import horn9 from './images/HORNS/Horn_3.png';
 import horn10 from './images/HORNS/Horn_4.png';

@@ -94,7 +94,7 @@ export const NETWORKS = {
         chainId: 80001,
         price: 1,
         gasPrice:10000000,
-        rpcUrl: "https://rpc-mumbai.maticvigil.com/",
+        rpcUrl: "https://rpc-mumbai.matic.today",
         faucet: "https://faucet.matic.network/",
         blockExplorer: "https://mumbai-explorer.matic.today/",
         gasStation: "https://gasstation-mumbai.matic.today",

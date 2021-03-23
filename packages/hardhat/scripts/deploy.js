@@ -9,8 +9,8 @@ const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourCollectible = await deploy("YourCollectible") // <-- add in constructor args like line 19 vvvv
-  //const randomNumberConsumer = await deploy("RandomNumberConsumer");
+  //const yourCollectible = await deploy("YourCollectible") // <-- add in constructor args like line 19 vvvv
+  const randomNumberConsumer = await deploy("RandomNumberConsumer");
   // todo: fund contract with link
 
 
