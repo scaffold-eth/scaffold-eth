@@ -65,13 +65,13 @@ export default function Address(props) {
   let text
   if(props.onChange){
     text = (
-      <Text editable={{onChange:props.onChange}} copyable={{text:props.value}}>
+      <Text editable={{onChange:props.onChange}} copyable={props.notCopyable?false:{text:props.value}}>
         {clickable?<a style={{color:"#222222"}} href={blockExplorer+props.value}>{displayAddress}</a>:<span>{displayAddress}</span>}
       </Text>
     )
   }else{
     text = (
-      <Text copyable={{text:props.value}}>
+      <Text copyable={props.notCopyable?false:{text:props.value}}>
         {clickable?<a style={{color:"#222222"}} href={blockExplorer+props.value}>{displayAddress}</a>:<span>{displayAddress}</span>}
       </Text>
     )

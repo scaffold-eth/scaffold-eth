@@ -110,6 +110,8 @@ export default function Account(props) {
          const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
          const gsnSigner = gsnWeb3Provider.getSigner(accounts[0])
          props.setInjectedGsnSigner(gsnSigner)
+       } else {
+          props.setInjectedGsnSigner()
        }
     }
 
@@ -138,7 +140,6 @@ export default function Account(props) {
       const provider = await web3Modal.connect();
 
       if(typeof props.setInjectedProvider == "function"){
-        props.setInjectedGsnSigner()
         updateProviders(provider)
 
         provider.on("chainChanged", (chainId) => {

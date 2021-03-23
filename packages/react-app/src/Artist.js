@@ -15,6 +15,16 @@ export default function Artist(props) {
   const [searchArtist] = Form.useForm();
   const history = useHistory();
 
+  const [ens, setEns] = useState()
+
+  useEffect(()=> {
+    const getEns = async () => {
+    let _ens = await props.mainnetProvider.lookupAddress(address)
+    setEns(_ens)
+  }
+    getEns()
+  },[address])
+
   const { loading, error, data } = useQuery(ARTISTS_QUERY, {
     variables: { address: address }
   });
@@ -98,10 +108,10 @@ export default function Artist(props) {
           <Col span={12} offset={6}>
             <Blockies
               seed={address.toLowerCase()}
-              size={25}
+              size={12} scale={6}
               className="artist_blockie"
             />
-            <h2 style={{ margin: 10 }}>{address.slice(0, 12)}</h2>
+            <h2 style={{ margin: 10 }}>{ens ? ens : address.slice(0, 6)}</h2>
             <Row>
               <Col span={12}>
                 <p style={{ margin: 0 }}>

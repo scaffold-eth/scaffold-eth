@@ -394,7 +394,7 @@ export default function ViewInk(props) {
             {" artist: "}
             </span>
             </Typography>
-            <Address value={data.ink.artist.id} ensProvider={props.mainnetProvider} clickable={false}/>
+            <Address value={data.ink.artist.id} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
             </Link>
 
             </Space>

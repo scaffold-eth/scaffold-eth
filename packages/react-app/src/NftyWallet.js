@@ -281,7 +281,7 @@ export default function NftyWallet(props) {
         <TabPane
           disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
           tab={
-            <NavLink to="/holdings">
+            <NavLink to={"/holdings/"+props.address}>
             <>
               <span>
                 <span style={{ padding: 8 }} role="img" aria-label="Purse">
@@ -324,6 +324,14 @@ export default function NftyWallet(props) {
       <Switch>
         <Route path="/allinks">
           <AllInks />
+        </Route>
+
+        <Route path="/holdings/:address">
+            <Holdings {...props}
+              address={props.address}
+              transactionConfig={transactionConfig}
+              upgradePrice={upgradePrice}
+            />
         </Route>
 
         <Route path="/holdings">

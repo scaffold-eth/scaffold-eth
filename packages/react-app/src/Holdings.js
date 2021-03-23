@@ -3,12 +3,13 @@ import { useQuery, useLazyQuery } from "react-apollo";
 import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY, HOLDINGS_MAIN_INKS_QUERY } from "./apollo/queries";
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlocklisted } from "./helpers";
-import { Link } from "react-router-dom";
+import { useParams, Link, useHistory } from "react-router-dom";
 import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
 import { SendOutlined, RocketOutlined } from "@ant-design/icons";
 import { AddressInput, Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
 import UpgradeInkButton from "./UpgradeInkButton.js";
+import Blockies from "react-blockies";
 
 const mainClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
@@ -16,6 +17,21 @@ const mainClient = new ApolloClient({
 })
 
 export default function Holdings(props) {
+
+  let { address } = useParams();
+
+  address = address ? address : props.address
+
+  const [ens, setEns] = useState()
+
+  useEffect(()=> {
+    const getEns = async () => {
+    let _ens = await props.mainnetProvider.lookupAddress(address)
+    setEns(_ens)
+  }
+    getEns()
+  },[address])
+
   const [holdings, setHoldings] = useState() // Array with the token id's currently held
   const [tokens, setTokens] = useState({}); // Object holding information about relevant tokens
   const [myCreationOnly, setmyCreationOnly] = useState(true);
@@ -24,7 +40,7 @@ export default function Holdings(props) {
   const [data, setData] = useState() // Data filtered for latest block update that we have seen
 
   const { loading: loadingMain, error: errorMain, data: dataMain } = useQuery(HOLDINGS_MAIN_QUERY, {
-    variables: { owner: props.address },
+    variables: { owner: address },
     client: mainClient,
     pollInterval: 4000
   });
@@ -32,7 +48,7 @@ export default function Holdings(props) {
   const [mainInksQuery, { loading: loadingMainInks, error: errorMainInks, data: dataMainInks }] = useLazyQuery(HOLDINGS_MAIN_INKS_QUERY)
 
   const { loading, error, data: dataRaw } = useQuery(HOLDINGS_QUERY, {
-    variables: { owner: props.address },
+    variables: { owner: address },
     pollInterval: 4000
   });
 
@@ -70,7 +86,7 @@ export default function Holdings(props) {
       let _token = Object.assign({}, token);
       const _tokenInk = inks.filter(ink => ink.id === _token.ink)
       _token.ink = _tokenInk[0]
-      if (ownerIsArtist && _token.ink.artist.address !== props.address.toLowerCase()) return;
+      if (ownerIsArtist && _token.ink.artist.address !== address.toLowerCase()) return;
       _token.network = 'Mainnet'
       _token.ink.metadata = await getMetadata(token.jsonUrl);
       let _newToken = {}
@@ -100,7 +116,7 @@ export default function Holdings(props) {
           data.tokens
             .filter(
               (token) =>
-                token.ink.artist.address === props.address.toLowerCase()
+                token.ink.artist.address === address.toLowerCase()
             )
             .reverse()
         );
@@ -138,7 +154,7 @@ export default function Holdings(props) {
 
   if (loading) return <Loader/>;
   if (error) {
-    if(!props.address || (data && data.tokens && data.tokens.length <= 0)){
+    if(!address || (data && data.tokens && data.tokens.length <= 0)){
       return <Empty/>
     } else {
     return `Error! ${error.message}`;
@@ -147,6 +163,12 @@ export default function Holdings(props) {
 
   return (
     <div style={{maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
+    <Blockies
+      seed={address.toLowerCase()}
+      size={12} scale={6}
+      className="holdings_blockie"
+    />
+    <h2 style={{ margin: 10 }}>{ens ? ens : address.slice(0, 6)}</h2>
       <Row>
         <Col span={12}>
           <p style={{ margin: 0 }}>
@@ -155,11 +177,11 @@ export default function Holdings(props) {
         </Col>
         <Col span={12}>
           <p style={{ margin: 0 }}>
-            <b>My Inks: </b>
+            <b>{`${props.address == address ? 'My' : "Holder's"} inks: `}</b>
             {(holdings && tokens)
               ? holdings.filter(
                   (id) =>
-                    id in tokens && tokens[id].ink.artist.address === props.address.toLowerCase()
+                    id in tokens && tokens[id].ink.artist.address === address.toLowerCase()
                 ).length
               : 0}
           </p>
@@ -169,7 +191,7 @@ export default function Holdings(props) {
       <Divider />
       <Row justify="end" style={{ marginBottom: 20 }}>
         <Col>
-          Created by me only:{" "}
+          {`Created by ${props.address == address ? 'me' : 'holder'}:  `}
           <Switch defaultChecked={!myCreationOnly} onChange={handleFilter} />
         </Col>
       </Row>
