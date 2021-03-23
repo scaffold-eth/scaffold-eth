@@ -9,6 +9,7 @@ packages/hardhat/*.txt
 packages/hardhat/artifacts
 packages/hardhat/deployments
 packages/react-app/src/contracts
+packages/react-app/src/circuits/
 packages/hardhat/cache
 packages/circom/circuits/*/compiled/
 packages/circom/circuits/*/contracts/
