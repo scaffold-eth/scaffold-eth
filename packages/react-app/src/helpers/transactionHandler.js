@@ -4,6 +4,7 @@ import { Modal, notification, Button, Space, Typography } from 'antd';
 import { getSignature } from "./getSignature";
 import { default as Transactor } from "./Transactor";
 import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
+import { DepositXDai } from '../components'
 const { Text } = Typography;
 
 export async function transactionHandler(c) {
@@ -34,9 +35,9 @@ export async function transactionHandler(c) {
         title: 'You need some xDai to make this transaction!',
         content: (
           <Space direction="vertical">
-          <Text> Nifty.ink runs on xDAI. </Text>
           <Text><a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).</Text>
-          <Button onClick={showRampModal}>Buy xDai with Ramp</Button>
+          {ethers.Signer.isSigner(c['injectedProvider']) ? null : <Button onClick={showRampModal}>Buy xDai with Ramp</Button>}
+          {/*<DepositXDai selectedProvider={c['injectedProvider']} address={c['address']}/>*/}
           <Text><a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a></Text>
           </Space>
         ),
@@ -166,9 +167,9 @@ export async function transactionHandler(c) {
       console.log(e)
       if(e.message.indexOf("Relay not ready")>=0){
         notification.open({
-          message: '📛 Sorry! Transaction limit reached. 😅',
+          message: '📛 Sorry! Relay not ready. 😅',
           description:
-          "⏳ Please try again in a few seconds. 📡",
+          "⏳ Please wait a moment and try again. If you continue seeing this error please get in touch via chat! 📡",
         });
       }else if(e.message.indexOf("Ping errors")>=0){
         notification.open({
