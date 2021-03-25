@@ -1,12 +1,24 @@
 import React from 'react'
 import { ethers } from "ethers";
-import { Modal, notification } from 'antd';
+import { Modal, notification, Button, Space, Typography } from 'antd';
 import { getSignature } from "./getSignature";
 import { default as Transactor } from "./Transactor";
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
+const { Text } = Typography;
 
 export async function transactionHandler(c) {
 
     console.log(c)
+
+    const showRampModal = () => {
+      new RampInstantSDK({
+        hostAppName: 'nifty.ink',
+        hostLogoUrl: 'https://nifty.ink/logo512.png',
+        //swapAmount: '50000000000000000000', // 50 DAI
+        swapAsset: 'XDAI',
+        userAddress: c['address'],
+      }).on('*', event => console.log(event)).show();
+    }
 
     try {
 
@@ -21,8 +33,12 @@ export async function transactionHandler(c) {
       Modal.info({
         title: 'You need some xDai to make this transaction!',
         content: (
-          <span> Nifty.ink runs on xDAI. <a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).  <a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a>
-          </span>
+          <Space direction="vertical">
+          <Text> Nifty.ink runs on xDAI. </Text>
+          <Text><a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).</Text>
+          <Button onClick={showRampModal}>Buy xDai with Ramp</Button>
+          <Text><a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a></Text>
+          </Space>
         ),
         onOk() {},
       });

@@ -43,7 +43,7 @@ export const HOLDINGS_QUERY = gql`
       id
       value
     }
-    tokens(where: { owner: $owner }) {
+    tokens(where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
       owner
       id
       ink {

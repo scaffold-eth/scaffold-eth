@@ -175,7 +175,7 @@ export default function Account(props) {
       console.log('using cached provider')
         loadWeb3Modal()
     } else {
-      console.log("🔥📡 burner", burner)
+      console.log("🔥📡 burner")
       updateProviders(burner)
     }
   }
