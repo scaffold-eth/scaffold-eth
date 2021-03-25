@@ -19,6 +19,7 @@ import faceBLA1 from './images/FACE/FACE_BOTTOM_LAYER_A.png';
 import faceBLB1 from './images/FACE/FACE_BOTTOM_LAYER_B.png';
 import faceBLC1 from './images/FACE/FACE_BOTTOM_LAYER_C.png';
 import faceBLD1 from './images/FACE/FACE_BOTTOM_LAYER_D.png';
+import faceShadow from './images/FACE/FACE_TOP_OVERLAY.png';
 
 import eye1 from './images/EYES/eye_1.png';
 import eye2 from './images/EYES/eye_2.png';
@@ -134,7 +135,8 @@ export const PARTS = {
         6: faceBLA1,
         7: faceBLB1,
         8: faceBLC1,
-        9: faceBLD1
+        9: faceBLD1,
+        10: faceShadow
     },
     HORNS: {
         0: horn1,

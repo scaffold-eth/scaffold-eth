@@ -45,6 +45,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
 
     const [background, setBackground] = useState(PARTS.BACKGROUND[0]);
     const [face, setFace] = useState(PARTS.FACE[0]);
+    const [faceShadow, setFaceShadow] = useState(PARTS.FACE[10]);
     const [eyes, setEyes] = useState(PARTS.EYES[0]);
     const [mouth, setMouth] = useState(PARTS.MOUTH[0]);
     const [nose, setNose] = useState(PARTS.NOSE[0]);
@@ -110,6 +111,7 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
             await mergeImages([
                 { src: background },
                 { src: face }, 
+                { src: faceShadow },
                 { src: eyes },
                 { src: mouth },
                 { src: nose },
