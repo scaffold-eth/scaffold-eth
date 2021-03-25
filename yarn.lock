@@ -6014,7 +6014,7 @@ circom@0.5.33:
     tmp-promise "^2.0.2"
     wasmbuilder "0.0.10"
 
-circom@^0.5.38:
+circom@^0.5.38, circom@^0.5.42:
   version "0.5.42"
   resolved "https://registry.yarnpkg.com/circom/-/circom-0.5.42.tgz#96a456f9538f4425654df091d15e3158e9da2acc"
   integrity sha512-v6+f9g3z2ia17NQvQmyZjvh8cE8O3GtxRE36KfJfx/a+s58Y7aEDWsUG+GFRJhp1ajiQELdj3NehY9vHSf5Rkg==
@@ -9318,7 +9318,7 @@ ffjavascript@0.2.34:
     wasmcurves "0.0.14"
     worker-threads "^1.0.0"
 
-ffjavascript@0.2.35, ffjavascript@^0.2.30:
+ffjavascript@0.2.35, ffjavascript@^0.2.30, ffjavascript@^0.2.35:
   version "0.2.35"
   resolved "https://registry.yarnpkg.com/ffjavascript/-/ffjavascript-0.2.35.tgz#9166d95173b1c0a743b455bb03a72b581922a42e"
   integrity sha512-xnC51tWbi0ah4SH+02jEfJyO+P+NiZWnxQrLDLtBYY1Dv3QM5ydxzd+gxnLEfWdT8i1bMM5pIh5P25l6fNCaVQ==
