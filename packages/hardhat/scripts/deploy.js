@@ -12,7 +12,7 @@ const generateTokens = require('./mintTestTokens');
 
 const graphDir = "../subgraph";
 
-const theGraphNode = constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
+const theGraphNode = constants.THEGRAPH['localhost'].ipfsUri;//constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
 const ipfs = ipfsApi(theGraphNode)
 
 function publishNetwork() {
@@ -61,7 +61,7 @@ const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
 
   // creata dummy data
   const accounts = await ethers.getSigners();
-  const artistAccount = accounts[1];
+  const artistAccount = accounts[1 % accounts.length];
   // whitelist artist
   await goodTokenContract.whitelistArtist(artistAccount.address, true);
   console.log("whitelisted artists");
@@ -89,9 +89,6 @@ const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
       ethers.constants.WeiPerEther.mul(price)
     );
 
-    // eslint-disable-next-line no-await-in-loop
-    await tx.wait();
-    
     price++;
     ownershipModel = (ownershipModel + 1) % 2;
   }
@@ -118,11 +115,18 @@ const main = async () => {
   // // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
   const goodToken = await deploy("GoodToken") // <-- add in constructor args like line 19 vvvv
   await goodToken.deployed();
+  const gTx = goodToken.deployTransaction;
+  await gTx.wait();
+
+  // temporary beneficiary address, in prod should be charity address
+  const beneficiaryAddress = (await ethers.getSigners())[0].address;
+
   for(let i = 0; i < fundNames.length; i++) {
     const fund = fundNames[i];
-    const goodTokenFund = await deploy("GoodTokenFund", fund);
+    const goodTokenFund = await deploy("GoodTokenFund", [fund, beneficiaryAddress].flat());
     await goodTokenFund.deployed();
     funds.push(goodTokenFund);
+    await goodTokenFund.deployTransaction.wait()
   }
 
   console.log(hre.network);

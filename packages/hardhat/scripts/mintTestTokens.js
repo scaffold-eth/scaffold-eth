@@ -11,7 +11,7 @@ const fs = require('fs');
 
 const graphDir = "../subgraph";
 
-const theGraphNode = constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
+const theGraphNode = constants.THEGRAPH['localhost'].ipfsUri; //constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
 const ipfs = ipfsApi(theGraphNode)
 
 function randomNumber(min, max){
@@ -114,7 +114,7 @@ const bootstrapLocalData = async (
 
         // deposit funds into the fund contract from the user
         const balance = requiredBalance + randomNumber(-300, 300);
-        const divisor = 100;
+        const divisor = 10000000;
         const balanceInWei = ethers.constants.WeiPerEther.mul(balance.toString()).div(divisor);
         // eslint-disable-next-line no-await-in-loop
         
@@ -131,7 +131,7 @@ const bootstrapLocalData = async (
         // generate metadata
         const baseBird = imgListings[i % imgListings.length];
         const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
-        const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(10);
+        const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
         const targetFund = goodTokenFunds[i % goodTokenFunds.length];
         const fundName = await targetFund.name();
         const fundSymbol = await targetFund.symbol();
@@ -204,7 +204,7 @@ const bootstrapLocalData = async (
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
-      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 25);
+      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 5);
 
   }
 

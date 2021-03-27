@@ -6,10 +6,11 @@ import "./GoodERC721.sol";
 import "./IToken.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/AccessControl.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 
-contract GoodToken is GoodERC721, AccessControl {
+contract GoodToken is GoodERC721, AccessControl, Ownable {
     using Counters for Counters.Counter;
 
     /**
@@ -20,17 +21,10 @@ contract GoodToken is GoodERC721, AccessControl {
         DYNAMIC_BALANCE
     }
 
-    event ArtworkRevoked(uint256 tokenId, address revokedFrom);
     event ArtworkMinted(
         uint256 artwork, address artist, uint256 price, uint8 ownershipModel, uint256 balanceRequirement, uint64 balanceDurationInSeconds, string artworkCid, string artworkRevokedCid, 
         address beneficiaryAddress, string beneficiaryName
     );
-
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
-    uint256 public constant PAYMENT_GRACE_PERIOD = 20 seconds;
-
-
-    Counters.Counter private _tokenIdTracker;
 
     struct OwnershipConditionData {
         OwnershipModel ownershipModel;
@@ -47,17 +41,29 @@ contract GoodToken is GoodERC721, AccessControl {
         uint256 price;
     }
 
+    // Constants
+    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
+    uint256 public constant PAYMENT_GRACE_PERIOD = 20 seconds;
+    uint8 public constant GOOD_SAMARITAN_BONUS = 100;
+
     // Mapping of tokenId => ownership conditions
     mapping (uint256 => OwnershipConditionData) ownershipData;
-
 
     // Mapping of token ids to artwork data
     mapping (uint256 => ArtworkData) artworkData;
 
+    // Mapping of tokenId to previous owner
+    mapping (uint256 => address) previousOwner;
+
+    // Mapping of revoker
+    mapping (uint256 => address) goodSamaritans;
+
+    Counters.Counter private _tokenIdTracker;
+
 
     // returns the current balance and required balance for a token
     function checkBalanceState(uint256 tokenId) public view returns (uint256, uint256) {
-        address tokenOwner = super.ownerOf(tokenId);
+        address tokenOwner = ownerOf(tokenId);
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
@@ -76,17 +82,20 @@ contract GoodToken is GoodERC721, AccessControl {
 
             return (tokenBalance, requiredBalance);           
         }
-
         return (0, 0);
     }
 
     /**
-     * @dev Check if a token owner has defaulted on their artwork, resulting in
-     * revoked ownership.
+     * @dev Called by liquidation bot to revoke artworks from owner
      */
-    function isRevoked(uint256 tokenId) public view returns (bool) {
+    function canRevoke(uint256 tokenId) public view returns (bool) {
         require(_exists(tokenId), "Token does not exist!");
-        address tokenOwner = super.ownerOf(tokenId);
+        address tokenOwner = ownerOf(tokenId);
+        
+        // ensure contract does not own the artwork
+        if(tokenOwner == address(this)) {
+            return false;
+        }
         
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
@@ -115,20 +124,13 @@ contract GoodToken is GoodERC721, AccessControl {
         return revoked;
     }
 
-
-
-    function ownerOf(uint256 tokenId) public view override returns (address) {
-        require(_exists(tokenId), "Token does not exist!");
-        
-        bool revoked = isRevoked(tokenId);
-
-        // If is revoked, the owner becomes the platform so can resell
-        if(revoked) {
-            return address(this);
-        }
-
-        return super.ownerOf(tokenId);
+    /**
+     @dev Check if is revoked.
+     */
+    function isRevoked(uint256 tokenId) public view returns (bool) {
+        return ownerOf(tokenId) == address(this);
     }
+
 
     /**
      * @dev Returns the Uniform Resource Identifier (URI) for `tokenId` token.
@@ -136,12 +138,10 @@ contract GoodToken is GoodERC721, AccessControl {
     function tokenURI(uint256 tokenId) public override view returns (string memory) {
         require(_exists(tokenId), "Token does not exist!");
 
-        bool revoked = isRevoked(tokenId);
-
         ArtworkData memory currentArtwork = artworkData[tokenId];
         string memory ipfsPrefix = "ipfs://";
 
-        if(revoked) {
+        if(isRevoked(tokenId)) {
             return string(abi.encodePacked(ipfsPrefix, currentArtwork.artworkRevokedCid));
         }
 
@@ -225,40 +225,79 @@ contract GoodToken is GoodERC721, AccessControl {
         _tokenIdTracker.increment();
     }
 
-    function buyArtwork(uint256 artwork) public payable {
-        address sender = _msgSender();
-        address owner = ownerOf(artwork);
-        ArtworkData memory currentArtwork = artworkData[artwork];
+    function payout(uint256 tokenId, address artistAddress) internal {
+        // if was revoked, payout to good samaritan and previous owner
+        if (isRevoked(tokenId)) {
+            uint256 goodSamaritanFee = msg.value.div(GOOD_SAMARITAN_BONUS);
+            uint256 previousOwnerValue = msg.value.sub(goodSamaritanFee);
 
-        require(_exists(artwork), "GoodToken: artwork id doesn't exist");
+            // transfer payments
+            payable(goodSamaritans[tokenId]).transfer(goodSamaritanFee);
+            payable(previousOwner[tokenId]).transfer(previousOwnerValue);
 
-        // verify minimum price
-        require(msg.value >= currentArtwork.price, "GoodToken: Offer must meet minimum price");
+        } else {
+            payable(artistAddress).transfer(msg.value);
+        }
+    }
+
+    function buyArtwork(uint256 tokenId) public payable {
+        require(_exists(tokenId), "GoodToken: artwork id doesn't exist");
         
+        address sender = _msgSender();
+        address owner = ownerOf(tokenId);
         require(owner != sender, "GoodToken: Artwork already owned by you!");
 
-        if(owner == address(this)) {
-            emit ArtworkRevoked(artwork, super.ownerOf(artwork));
-        }
+        ArtworkData memory currentArtwork = artworkData[tokenId];
+        // ensure token can actually be purchased
+        require(owner == currentArtwork.artist || isRevoked(tokenId));
+        // verify minimum price
+        require(msg.value >= currentArtwork.price, "GoodToken: Offer must meet minimum price");        
 
-        // transfer ownership
-        safeTransferFrom(owner, sender, artwork);
-
-        payable(currentArtwork.artist).transfer(msg.value);
+        // handle payments
+        payout(tokenId, currentArtwork.artist);
+       
+        // transfer ownership -- bypass safeTransferFrom checks because already validated
+        _safeTransfer(owner, sender, tokenId, "");
     }
 
     function transferFrom(address from, address to, uint256 tokenId) public override {
         safeTransferFrom(from, to, tokenId);
     }
 
+    /**
+     * @dev EXTERNAL transfer function -- needs to have proper checks
+     */
     function safeTransferFrom(address from, address to, uint256 tokenId) public override {
-        //solhint-disable-next-line max-line-length
-        require(_isApprovedOrOwner(ownerOf(tokenId), tokenId), "GoodToken: transfer caller is not owner nor approved");
+        
+        bool isApprovedOrOwner = _isApprovedOrOwner(_msgSender(), tokenId);
+        bool isRevokable = canRevoke(tokenId) && (to == address(this));
 
+        require(isApprovedOrOwner || isRevokable, "GoodToken: cannot transfer if not owner, not approved, or not valid revokation!");
+        
+        _safeTransfer(from, to, tokenId, "");
+    }
+
+    /**
+     * @dev INTERNAL transfer function -- updates ownership data
+     */
+    function _safeTransfer(address from, address to, uint256 tokenId, bytes memory _data) internal override {
         OwnershipConditionData storage ownerData = ownershipData[tokenId];
-
         // update purchase data
         ownerData.purchaseDate = block.timestamp;
-        _safeTransfer(from, to, tokenId, "");
+        super._safeTransfer(from, to, tokenId, "");
+    }
+
+
+
+    /**
+     * @dev Revocation of artwork -- called by bot or liquidator
+     *   - 
+     */
+    function revokeArtwork(uint256 tokenId) public {
+        previousOwner[tokenId] = ownerOf(tokenId);
+        
+        safeTransferFrom(address(this), address(this), tokenId);
+
+        goodSamaritans[tokenId] = _msgSender();
     }
 }
