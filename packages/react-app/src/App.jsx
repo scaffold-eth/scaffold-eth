@@ -12,7 +12,7 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, CommitReveal } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 /*
@@ -125,11 +125,14 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts,"YourContract", "purpose")
-  console.log("🤗 purpose:",purpose)
+  //console.log("🤗 purpose:",purpose)
 
   //📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  console.log("📟 SetPurpose events:",setPurposeEvents)
+  //console.log("📟 SetPurpose events:",setPurposeEvents)
+
+  const commitEvents = useEventListener(readContracts, "YourContract", "CommitHash", localProvider, 1);
+  const revealEvents = useEventListener(readContracts, "YourContract", "RevealHash", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -209,6 +212,9 @@ function App(props) {
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
           </Menu.Item>
+          <Menu.Item key="/commitreveal">
+            <Link onClick={()=>{setRoute("/commitreveal")}} to="/commitreveal">Commit Reveal</Link>
+          </Menu.Item>
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
@@ -260,6 +266,17 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
             */ }
+          </Route>
+          <Route path="/commitreveal">
+            <CommitReveal
+              mainnetProvider={mainnetProvider}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              commitEvents={commitEvents}
+              revealEvents={revealEvents}
+            />
           </Route>
           <Route path="/hints">
             <Hints
