@@ -6,12 +6,13 @@ export const ARTISTS_QUERY = gql`
       id
       inkCount
       address
+      earnings
       inks(orderBy: createdAt, orderDirection: desc) {
         id
         jsonUrl
         limit
         count
-        mintPrice
+        bestPrice
         createdAt
         sales {
           id

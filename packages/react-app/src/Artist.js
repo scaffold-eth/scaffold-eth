@@ -179,14 +179,14 @@ export default function Artist(props) {
                       align="middle"
                       style={{ textAlign: "center", justifyContent: "center" }}
                     >
-                      {(ink.mintPrice > 0 && (ink.limit === 0 || ink.count < ink.limit))
+                      {(ink.bestPrice > 0)
                         ? (<><p
                         style={{
                           color: "#5e5e5e",
                           margin: "0"
                         }}
                       >
-                        <b>{ink.mintPrice / 1e18} </b>
+                        <b>{ethers.utils.formatEther(ink.bestPrice)} </b>
                       </p>
 
                       <img
