@@ -144,39 +144,37 @@ export default function CreateInk(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
+    const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
+    const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
+    const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+
+    const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
+    const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
+    const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+
+    Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+      console.log("FINISHED UPLOADING TO PINNER",values);
+      message.destroy()
+    });
+
     try {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
       console.log(e)
       setSending(false)
-
     }
-
 
     if(mintResult) {
 
-  const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
-  const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
-  const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+    Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
+      console.log("INFURA FINISHED UPLOADING!",values);
+    });
 
-  const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
-  const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
-  const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
-
-  Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-    console.log("FINISHED UPLOADING TO PINNER",values);
-    message.destroy()
-  });
-
-  setSending(false)
-  props.setViewDrawing(LZ.decompress(props.drawing))
-  setDrawingSize(10000)
-  props.setDrawing("")
-  history.push('/ink/' + drawingHash)
-
-  Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
-    console.log("INFURA FINISHED UPLOADING!",values);
-  });
+    setSending(false)
+    props.setViewDrawing(LZ.decompress(props.drawing))
+    setDrawingSize(10000)
+    props.setDrawing("")
+    history.push('/ink/' + drawingHash)
 
 }
 };
