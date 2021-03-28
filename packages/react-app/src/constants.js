@@ -98,5 +98,19 @@ export const NETWORKS = {
         faucet: "https://faucet.matic.network/",
         blockExplorer: "https://mumbai-explorer.matic.today/",
         gasStation: "https://gasstation-mumbai.matic.today",
+    },
+    bsctest: {
+        name: "BSC TESTNET",
+        color: '',
+        rpcUrl: "https://data-seed-prebsc-1-s1.binance.org:8545",
+        chainId: 97,
+        gasPrice: 20000000000,
+    },
+    bscmain: {
+        name: 'BSC MAINNET',
+        color: '',
+        rpcUrl: "https://bsc-dataseed.binance.org/",
+        chainId: 56,
+        gasPrice: 20000000000,
     }
 }
