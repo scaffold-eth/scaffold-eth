@@ -122,12 +122,7 @@ export default function Artist(props) {
               <Col span={12}>
                 <p style={{ margin: 0 }}>
                   <b>Total sales:</b> $
-                  {inks
-                    .filter((ink) => ink.sales.length)
-                    .map((ink) => ink.sales)
-                    .map((e) => e.flatMap((e) => Number.parseInt(e.price, 0)))
-                    .flatMap((e) => e)
-                    .reduce((a, b) => a + b, 0) / 1e18}
+                  {data.artists.length ? ethers.utils.formatEther(data.artists[0].earnings) : 0}
                 </p>
               </Col>
             </Row>

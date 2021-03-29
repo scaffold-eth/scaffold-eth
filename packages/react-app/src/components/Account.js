@@ -1,4 +1,4 @@
-import React, { useEffect, useCallback } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { ethers } from "ethers";
 import Web3Modal from "web3modal";
 import { Balance, Address, Wallet } from "."
@@ -8,7 +8,8 @@ import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
 import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 import Blockies from 'react-blockies';
-import { BankOutlined } from  '@ant-design/icons';
+import { BankOutlined, SwapOutlined } from  '@ant-design/icons';
+import { ConnextModal } from '@connext/vector-modal';
 //import Fortmatic from "fortmatic";
 //import Portis from "@portis/web3";
 const Web3HttpProvider = require("web3-providers-http");
@@ -57,6 +58,8 @@ export default function Account(props) {
       userAddress: props.address,
     }).on('*', event => console.log(event)).show();
   }
+
+  const [showConnext, setShowConnext] = useState(false)
 
   let httpProvider = new Web3HttpProvider(process.env.REACT_APP_NETWORK_NAME === 'xdai'?XDAI_RPC:"http://localhost:8546");
   const burner = useBurnerSigner(props.localProvider)
@@ -221,7 +224,24 @@ export default function Account(props) {
       ):"Connecting..."}
       <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
-      {web3Modal.cachedProvider&&<BankOutlined onClick={showRampModal} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
+      {(web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc)&&<BankOutlined onClick={showRampModal} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
+//{
+//      web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc&&<SwapOutlined onClick={() => {setShowConnext(true)}} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
+//      <ConnextModal
+//        showModal={showConnext}
+//        onClose={() => setShowConnext(false)}
+//        onReady={params => console.log('MODAL IS READY =======>', params)}
+//        withdrawalAddress={props.address}
+//        routerPublicIdentifier="vector892GMZ3CuUkpyW8eeXfW2bt5W73TWEXtgV71nphXUXAmpncnj8"
+//        //depositAssetId={'0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'}
+//        //depositChainProvider={`https://rpc-mainnet.maticvigil.com/`}
+//        depositAssetId={'0x6b175474e89094c44da98b954eedeac495271d0f'}
+//        depositChainProvider={`https://mainnet.infura.io/v3/${INFURA_ID}`}
+//        withdrawAssetId={'0x0000000000000000000000000000000000000000'}
+//        withdrawChainProvider="https://rpc.xdaichain.com/"
+//      />
+}
+
     </span>)
 
   return (

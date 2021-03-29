@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space } from 'antd';
+import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification } from 'antd';
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -144,18 +144,32 @@ export default function CreateInk(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
-    const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
-    const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
-    const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+    let drawingResultInfura
+    let imageResultInfura
+    let inkResultInfura
 
-    const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
-    const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
-    const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+    try {
+      const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
+      const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
+      const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
 
-    Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-      console.log("FINISHED UPLOADING TO PINNER",values);
-      message.destroy()
-    });
+      drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
+      imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
+      inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+
+      Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+        console.log("FINISHED UPLOADING TO PINNER",values);
+        message.destroy()
+      });
+    } catch (e) {
+      console.log(e)
+      setSending(false)
+      notification.open({
+        message: '📛 Ink upload failed',
+        description:
+        `Please wait a moment and try again ${e.message}`,
+      });
+    }
 
     try {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());

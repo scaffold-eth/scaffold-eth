@@ -38,6 +38,26 @@ export const INKS_QUERY = gql`
   }
 `;
 
+export const FOR_SALE_QUERY = gql`
+  query inks($first: Int, $skip: Int, $orderBy: String, $orderDirection: String) {
+    inks(first: $first, skip: $skip where: {bestPrice_gt: "0"}, orderBy: $orderBy, orderDirection: $orderDirection) {
+      id
+      inkNumber
+      createdAt
+      jsonUrl
+      bestPrice
+      bestPriceSource
+      bestPriceSetAt
+      count
+      limit
+      artist {
+        id
+        address
+      }
+    }
+  }
+`;
+
 export const HOLDINGS_QUERY = gql`
   query tokens($owner: Bytes!) {
     metaData(id: "blockNumber") {
@@ -47,6 +67,7 @@ export const HOLDINGS_QUERY = gql`
     tokens(where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
       owner
       id
+      price
       ink {
         id
         jsonUrl
@@ -76,6 +97,7 @@ query ink($inkUrl: String!) {
     }
     limit
     count
+    createdAt
     mintPrice
     mintPriceNonce
     tokens {

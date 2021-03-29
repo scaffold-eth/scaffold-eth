@@ -143,6 +143,9 @@ export default function NiftyShop(props) {
     console.log('Failed:', errorInfo);
   };
 
+  let buttonSize
+  if(props.buttonSize) {buttonSize = props.buttonSize}
+
   if(props.visible === false) {
     shopButton = (<></>)
   } else if(props.address && props.ownerAddress && props.address.toLowerCase() === props.ownerAddress) {
@@ -180,14 +183,14 @@ export default function NiftyShop(props) {
     shopButton = (
       <Popover content={setPriceForm}
       title={"Set price:"}>
-        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
+        <Button type="secondary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
       </Popover>
     )
   } else if (props.type === 'ink' && (props.price > 0 || newPrice > 0)) {
     shopButton = (
     <Popover content={setPriceForm}
     title={"Set price:"}>
-      <Button type="secondary"><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+      <Button type="secondary" size={buttonSize}><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
     </Popover>
   )
   } else if (props.type === 'ink') {
@@ -203,7 +206,7 @@ export default function NiftyShop(props) {
         cancelText="Cancel"
         icon=<ShoppingCartOutlined/>
       >
-      <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+      <Button type="primary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><ShoppingCartOutlined />{'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
       </Popconfirm>
     )
   } else {

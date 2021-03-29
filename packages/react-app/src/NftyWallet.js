@@ -11,6 +11,7 @@ import Artist from "./Artist.js";
 import CreateInk from "./CreateInk.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
+import ForSale from "./ForSale.js";
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require("web3-providers-http");
@@ -324,6 +325,10 @@ export default function NftyWallet(props) {
       <Switch>
         <Route path="/allinks">
           <AllInks />
+        </Route>
+
+        <Route path="/forsale">
+          <ForSale />
         </Route>
 
         <Route path="/holdings/:address">
