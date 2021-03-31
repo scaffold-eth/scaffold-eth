@@ -31,14 +31,6 @@ export const NETWORKS = {
         rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
         blockExplorer: "https://etherscan.io/",
     },
-    localhost: {
-        name: "localhost",
-        color: '#666666',
-        price: "uniswap",//use mainnet eth price for localhost
-        chainId: 31337,
-        blockExplorer: '',
-        rpcUrl: "http://localhost:8545",
-    },
     xdai: {
         name: "xdai",
         color: '#48a9a6',
@@ -95,6 +87,14 @@ export const NETWORKS = {
         faucet: "https://goerli-faucet.slock.it/",
         blockExplorer: "https://goerli.etherscan.io/",
         rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+    },
+    localhost: {
+        name: "localhost",
+        color: '#666666',
+        price: "uniswap",//use mainnet eth price for localhost
+        chainId: 31337,
+        blockExplorer: '',
+        rpcUrl: "http://localhost:8545",
     },
     'OE': {
         name: "OE",

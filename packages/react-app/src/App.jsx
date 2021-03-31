@@ -8,7 +8,7 @@ import { Tooltip, Select, Row, Col, Button, Menu, Alert, Spin, Switch as SwitchD
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
-import { usePoller, useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
+import { useLocalStorage, usePoller, useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
 import { Wallet, AddressInput, EtherInput, Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, Address, Balance } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
@@ -192,7 +192,7 @@ function App(props) {
   let networkDisplay = ""
   if(localChainId && selectedChainId && localChainId != selectedChainId ){
     networkDisplay = (
-      <div style={{zIndex:2, position:'absolute', right:0,top:0,padding:8}}>
+      <div style={{zIndex:2, position:'absolute', right:0,top:16,padding:8}}>
         <Alert
           message={"⚠️ Wrong Network"}
           description={(
@@ -304,7 +304,7 @@ function App(props) {
   }
   //console.log("startingAddress",startingAddress)
   const [amount, setAmount] = useState();
-  const [toAddress, setToAddress] = useState(startingAddress);
+  const [toAddress, setToAddress] = useLocalStorage("punkWalletToAddress", startingAddress)
 
   const [loading, setLoading] = useState(false);
 
@@ -312,7 +312,6 @@ function App(props) {
 
   return (
     <div className="App">
-      {networkDisplay}
       <div className="site-page-header-ghost-wrapper">
         <Header extra={
           [
@@ -348,7 +347,7 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ clear:"both", opacity:yourLocalBalance?1:0.2, width:500, margin:"auto" }}>
-        <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkSelect}</span>
+        <Balance value={yourLocalBalance} size={52} price={price} /><span style={{verticalAlign:"middle"}}>{networkSelect}{faucetHint}</span>
       </div>
 
 
@@ -376,6 +375,9 @@ function App(props) {
               setAmount(value);
             }}
           />
+        </div>
+        <div style={{position:"relative"}}>
+          {networkDisplay}
         </div>
         <div style={{padding: 10}}>
           <Button
@@ -410,6 +412,7 @@ function App(props) {
           >
             {loading || !amount || !toAddress ? <CaretUpOutlined /> : <SendOutlined style={{color:"#FFFFFF"}} /> } Send
           </Button>
+
         </div>
 
       </div>
@@ -499,10 +502,7 @@ function App(props) {
 <div style={{padding:32}}>
 </div>
 
-  {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-  <div style={{ position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>
-     {faucetHint}
-  </div>
+
 
 
   <div style={{ transform:"scale(2.7)",transformOrigin:"70% 80%", position: "fixed", textAlign: "right", right: 0, bottom: 16, padding: 10 }}>

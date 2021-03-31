@@ -24,7 +24,7 @@ export default function QRPunkBlockie(props) {
 
   const hardcodedSizeForNow = 380
 
-  const punkSize = 110
+  const punkSize = 112
 
   let part1 = props.address && props.address.substr(2,20)
   let part2= props.address && props.address.substr(22)
@@ -61,7 +61,7 @@ export default function QRPunkBlockie(props) {
 
       <div style={{position:"absolute",left:hardcodedSizeForNow/2-53,top:hardcodedSizeForNow/2-65}}>
         <div style={{position:"relative",width:punkSize, height:punkSize-1, overflow: "hidden"}}>
-          <img src="/punks.png" style={{position:"absolute",left:-punkSize*x,top:(-punkSize*y),width:punkSize*100, height:punkSize*100,imageRendering:"pixelated"}} />
+          <img src="/punks.png" style={{position:"absolute",left:-punkSize*x,top:(-punkSize*y)-1,width:punkSize*100, height:punkSize*100,imageRendering:"pixelated"}} />
         </div>
       </div>
 
