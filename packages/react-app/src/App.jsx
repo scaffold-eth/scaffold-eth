@@ -209,7 +209,12 @@ function App(props) {
       }
       setYourCollectibles(collectibleUpdate)
     }
-    updateYourCollectibles()
+
+    const updateTree = async () => {
+      setTree(await readContracts.MerkleTreeContract.merkleRoot);
+    }
+    await updateTree();
+    await updateYourCollectibles();
   },[ address, yourBalance ])
 
   /*
@@ -288,6 +293,7 @@ function App(props) {
   const [ ipfsContent, setIpfsContent ] = useState()
 
   const [ transferToAddresses, setTransferToAddresses ] = useState({})
+  const [ tree, setTree ] = useState()
 
   const [ loadedAssets, setLoadedAssets ] = useState()
   useEffect(()=>{
@@ -310,7 +316,7 @@ function App(props) {
   }, [ assets, readContracts, transferEvents ]);
 
   let galleryList = []
-  for(let a in loadedAssets){
+  for(const [index, [a, value]] of Object.entries(Object.entries(object))){
     console.log("loadedAssets",a,loadedAssets[a])
 
     let cardActions = []
@@ -319,9 +325,10 @@ function App(props) {
         <div>
           <Button onClick={()=>{
             console.log("gasPrice,",gasPrice)
-            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
+            var proof = tree.getProof(index, a);
+            tx( writeContracts.MerkleTreeContract.claim(index, a, proof, {gasPrice:gasPrice}) )
           }}>
-            Mint
+            Claim
           </Button>
         </div>
       )

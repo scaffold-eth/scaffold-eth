@@ -5,11 +5,14 @@ pragma solidity >=0.6.0 <0.9.0;
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/cryptography/MerkleProof.sol";
+import "./YourCollectible.sol";
+
+
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract MerkleTreeContract {
 
-  event Claimed(uint256 index, address account, uint256 amount);
+  event Claimed(uint256 index, string tokenURI);
 
     address public immutable token;
     bytes32 public immutable merkleRoot;
@@ -36,18 +39,18 @@ contract MerkleTreeContract {
         claimedBitMap[claimedWordIndex] = claimedBitMap[claimedWordIndex] | (1 << claimedBitIndex);
     }
 
-    function claim(uint256 index, address account, uint256 amount, bytes32[] calldata merkleProof) external {
+    function claim(uint256 index, string calldata tokenURI, bytes32[] calldata merkleProof) external {
         require(!isClaimed(index), 'MerkleDistributor: Drop already claimed.');
 
         // Verify the merkle proof.
-        bytes32 node = keccak256(abi.encodePacked(index, account, amount));
+        bytes32 node = keccak256(abi.encodePacked(index, tokenURI));
         require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
 
         // Mark it claimed and send the token.
         _setClaimed(index);
-        require(IERC20(token).transfer(account, amount), 'MerkleDistributor: Transfer failed.');
+        require(YourCollectible(token).mintItem(tokenURI) > 0, 'MerkleDistributor: Transfer failed.');
 
-        emit Claimed(index, account, amount);
+        emit Claimed(index, tokenURI);
     }
 
 }
