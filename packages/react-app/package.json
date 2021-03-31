@@ -38,9 +38,12 @@
     "axios": "^0.20.0",
     "bnc-notify": "^1.5.0",
     "burner-provider": "^1.0.38",
+    "commander": "^6.1.0",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
+    "ethereumjs-util": "^7.0.9",
     "ethers": "^5.0.31",
+    "global": "^4.4.0",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
@@ -56,6 +59,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-stack-grid": "^0.7.1",
+    "ts-node": "^9.1.1",
+    "typescript": "^4.2.3",
     "web3modal": "^1.9.1"
   },
   "devDependencies": {
@@ -97,6 +102,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "yarn surge",
     "theme": "npx gulp less",
-    "watch": "node ./scripts/watch.js"
+    "watch": "node ./scripts/watch.js",
+    "generate-merkle-root": "ts-node ./scripts/generate-merkle-root.ts --input scripts/example.json"
   }
 }
