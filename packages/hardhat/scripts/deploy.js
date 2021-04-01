@@ -4,7 +4,25 @@ const chalk = require("chalk");
 const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
+const { series } = require("async");
+const { promisify } = require('util');
+const exec = promisify(require("child_process").exec);
 
+const executeCommand = async (cmd, successCallback, errorCallback) => {
+  await exec(cmd, async (error, stdout, stderr) => {
+    if (stderr) {
+      // console.log(`stderr: ${stderr}`);
+      if (errorCallback) {
+        await errorCallback(stderr);
+      }
+      return;
+    }
+    // console.log(`stdout: ${stdout}`);
+    if (successCallback) {
+      await successCallback(stdout);
+    }
+  });
+};
 
 const main = async () => {
 
@@ -21,13 +39,37 @@ const main = async () => {
     hashes.push(a);
   }
 
-  const storage = await deploy("Storage",[ hashes ]);
+
+
+  var response;
+  // await executeCommand(
+  //   `ts-node ../react-app/scripts/generate-merkle-root.ts --input ../react-app/scripts/uploaded.json`,
+  //   async json => {
+  //     response = json;
+  //   },
+  //   error => console.log("ERROR", error)
+  // );
+
+
+  // var options = {
+  //   timeout: 20000,
+  //   killSignal: 'SIGKILL'
+  // }
+  let res;
+  try {
+    res = await exec('ts-node ../react-app/scripts/generate-merkle-root.ts --input ../hardhat/uploaded.json')
+    console.log("success", res)
+  } catch(e) {
+    console.log("error", e.stdout);
+    res = e.stdout;
+  }
+
+  // const storage = await deploy("Storage",[ hashes ]);
 
   // deploy the contract with all the artworks forSale
   const yourCollectible = await deploy("YourCollectible",[ bytes32Array ]) // <-- add in constructor args like line 19 vvvv
 
-  // TODO: GENERATE MERKLE ROOT WITH THE uploaded.json above
-  let merkleRoot = utils.id('GENERATE-MERKLE-ROOT');
+  let merkleRoot = JSON.parse(res).merkleRoot;
 
   const merkleDistributor = await deploy("MerkleTreeContract",[ yourCollectible.address, merkleRoot ]) // <-- add in constructor args like line 19 vvvv
 

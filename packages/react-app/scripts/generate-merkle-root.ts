@@ -1,5 +1,6 @@
 import { program } from 'commander'
-import fs from 'fs'
+// import fs from 'fs'
+import * as fs from 'fs';
 import { parseBalanceMap } from './parse-balance-map'
 
 program

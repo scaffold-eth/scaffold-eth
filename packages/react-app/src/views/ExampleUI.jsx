@@ -142,7 +142,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
         📑 Maybe display a list of events?
           (uncomment the event and emit line in YourContract.sol! )
       */}
-      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
+      {/* <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
         <h2>Events:</h2>
         <List
           bordered
@@ -160,7 +160,7 @@ export default function ExampleUI({purpose, setPurposeEvents, address, mainnetPr
             )
           }}
         />
-      </div>
+      </div> */}
 
 
       <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:256 }}>

@@ -10,6 +10,7 @@ const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 const main = async () => {
 
   let allAssets = {}
+  let uploads = {}
 
   console.log("\n\n Loading artwork.json...\n");
   const artwork = JSON.parse(fs.readFileSync("../../artwork.json").toString())
@@ -19,13 +20,14 @@ const main = async () => {
     const stringJSON = JSON.stringify(artwork[a])
     const uploaded = await ipfs.add(stringJSON)
     console.log("   "+artwork[a].name+" ipfs:",uploaded.path)
-    allAssets[uploaded.path] = artwork[a]
+    allAssets[uploaded.path] = artwork[a];
+    uploads[uploaded.path] = true;
   }
 
   console.log("\n Injecting assets into the frontend...")
   const finalAssetFile = "export default "+JSON.stringify(allAssets)+""
   fs.writeFileSync("../react-app/src/assets.js",finalAssetFile)
-  fs.writeFileSync("./uploaded.json",JSON.stringify(allAssets))
+  fs.writeFileSync("./uploaded.json",JSON.stringify(uploads))
 
 
 

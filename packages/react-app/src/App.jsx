@@ -213,8 +213,8 @@ function App(props) {
     const updateTree = async () => {
       setTree(await readContracts.MerkleTreeContract.merkleRoot);
     }
-    await updateTree();
-    await updateYourCollectibles();
+    updateTree();
+    updateYourCollectibles();
   },[ address, yourBalance ])
 
   /*
@@ -316,7 +316,8 @@ function App(props) {
   }, [ assets, readContracts, transferEvents ]);
 
   let galleryList = []
-  for(const [index, [a, value]] of Object.entries(Object.entries(object))){
+  console.log(loadedAssets);
+  for(const [index, [a, value]] of Object.entries(Object.entries(loadedAssets))){
     console.log("loadedAssets",a,loadedAssets[a])
 
     let cardActions = []
@@ -474,7 +475,7 @@ function App(props) {
                           address={item[0]}
                           ensProvider={mainnetProvider}
                           fontSize={16}
-                      /> =>
+                      /> {'=>'}
                       <Address
                           address={item[1]}
                           ensProvider={mainnetProvider}
