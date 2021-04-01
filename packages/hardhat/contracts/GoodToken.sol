@@ -23,12 +23,13 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
 
     event ArtworkMinted(
         uint256 artwork, address artist, uint256 price, uint8 ownershipModel, uint256 balanceRequirement, uint64 balanceDurationInSeconds, string artworkCid, string artworkRevokedCid, 
-        address beneficiaryAddress, string beneficiaryName
+        address targetTokenAddress, string beneficiaryName
     );
 
     struct OwnershipConditionData {
         OwnershipModel ownershipModel;
-        address beneficiaryAddress;
+        address targetTokenAddress;
+        uint256 targetTokenId; // if > 0, then ERC1155 token!
         uint256 balanceRequirement;
         uint64 balanceDurationInSeconds; // for dynamic model
         uint256 purchaseDate;
@@ -44,7 +45,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     // Constants
     bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint256 public constant PAYMENT_GRACE_PERIOD = 20 seconds;
-    uint8 public constant GOOD_SAMARITAN_BONUS = 100;
+    uint8 public constant GOOD_SAMARITAN_BONUS = 20; // 5% of revoked price -- basically platform fee
 
     // Mapping of tokenId => ownership conditions
     mapping (uint256 => OwnershipConditionData) ownershipData;
@@ -61,13 +62,26 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     Counters.Counter private _tokenIdTracker;
 
 
+
+    constructor () GoodERC721("GoodToken", "GDTKN") public {
+        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
+        _setupRole(MINTER_ROLE, _msgSender());
+    }
+
+
     // returns the current balance and required balance for a token
     function checkBalanceState(uint256 tokenId) public view returns (uint256, uint256) {
         address tokenOwner = ownerOf(tokenId);
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
         ArtworkData memory currentArtwork = artworkData[tokenId];
 
-        uint256 tokenBalance = IToken(ownerData.beneficiaryAddress).balanceOf(tokenOwner);
+        uint256 tokenBalance;
+        if(ownerData.targetTokenId > 0) {
+            tokenBalance = IToken(ownerData.targetTokenAddress)
+                .balanceOf(tokenOwner, ownerData.targetTokenId);
+        } else {
+            tokenBalance = IToken(ownerData.targetTokenAddress).balanceOf(tokenOwner);
+        }
         
         // Check ownership requirements
         if(ownerData.ownershipModel == OwnershipModel.STATIC_BALANCE) {
@@ -153,10 +167,6 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     }
 
 
-    constructor () GoodERC721("GoodToken", "GDTKN") public {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MINTER_ROLE, _msgSender());
-    }
 
     function whitelistArtist(address artistAddress, bool whitelisted) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "GoodToken: must have admin role to whitelist");
@@ -175,17 +185,18 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         string memory artworkCid,
         string memory artworkRevokedCid,
         OwnershipModel ownershipModel,
-        address beneficiaryAddress, 
+        address targetTokenAddress, 
+        uint256 targetTokenId, // tokenId exists if using ERC1155 fund
         uint256 balanceRequirement, // could be static or dynamic
         uint64 balanceDurationInSeconds,
         uint256 price
-    ) public  {
+    ) public {
         //require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
         
         uint256 currentArtwork = _tokenIdTracker.current();
 
         // get metadata from associated token contract
-        IToken token = IToken(beneficiaryAddress);
+        IToken token = IToken(targetTokenAddress);
 
         // mint new token to current token index
         _safeMint(_msgSender(), currentArtwork);
@@ -201,7 +212,8 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         // stoer artwork ownership data
         ownershipData[currentArtwork] = OwnershipConditionData (
             ownershipModel,
-            beneficiaryAddress,
+            targetTokenAddress,
+            targetTokenId,
             balanceRequirement,
             balanceDurationInSeconds,
             block.timestamp
@@ -211,13 +223,13 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         emit ArtworkMinted(
             currentArtwork,
             _msgSender(),
-            price,
-            uint8(ownershipModel),
-            balanceRequirement,
-            balanceDurationInSeconds,
-            artworkCid,
-            artworkRevokedCid,
-            beneficiaryAddress,
+            artworkData[currentArtwork].price,
+            uint8(ownershipData[currentArtwork].ownershipModel),
+            ownershipData[currentArtwork].balanceRequirement,
+            ownershipData[currentArtwork].balanceDurationInSeconds,
+            artworkData[currentArtwork].artworkCid,
+            artworkData[currentArtwork].artworkRevokedCid,
+            targetTokenAddress,
             token.name()
         );
 
