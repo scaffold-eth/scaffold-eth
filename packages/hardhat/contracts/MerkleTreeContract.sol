@@ -43,7 +43,7 @@ contract MerkleTreeContract {
         require(!isClaimed(index), 'MerkleDistributor: Drop already claimed.');
 
         // Verify the merkle proof.
-        bytes32 node = keccak256(abi.encodePacked(index, tokenURI));
+        bytes32 node = keccak256(abi.encodePacked(index, tokenURI, true));
         require(MerkleProof.verify(merkleProof, merkleRoot, node), 'MerkleDistributor: Invalid proof.');
 
         // Mark it claimed and send the token.
