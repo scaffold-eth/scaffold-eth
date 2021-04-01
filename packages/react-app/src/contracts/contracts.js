@@ -1,1 +1,1 @@
-module.exports = ["MerkleTreeContract","Storage","YourCollectible"];
+module.exports = ["MerkleTreeContract","YourCollectible"];

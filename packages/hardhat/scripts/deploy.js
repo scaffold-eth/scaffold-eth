@@ -36,6 +36,7 @@ const main = async () => {
     console.log(" 🏷 IPFS:",a)
     let bytes32 = utils.id(a)
     console.log(" #️⃣ hashed:",bytes32)
+    bytes32Array.push(bytes32)
     hashes.push(a);
   }
 
@@ -62,6 +63,7 @@ const main = async () => {
   } catch(e) {
     console.log("error", e.stdout);
     res = e.stdout;
+    return;
   }
 
   // const storage = await deploy("Storage",[ hashes ]);
@@ -69,7 +71,11 @@ const main = async () => {
   // deploy the contract with all the artworks forSale
   const yourCollectible = await deploy("YourCollectible",[ bytes32Array ]) // <-- add in constructor args like line 19 vvvv
 
-  let merkleRoot = JSON.parse(res).merkleRoot;
+  const merkleTree = JSON.parse(res.stdout);
+  const { merkleRoot } = merkleTree;
+  console.log("root is", merkleRoot);
+
+  fs.writeFileSync(`../react-app/src/tree.json`, res.stdout);
 
   const merkleDistributor = await deploy("MerkleTreeContract",[ yourCollectible.address, merkleRoot ]) // <-- add in constructor args like line 19 vvvv
 
