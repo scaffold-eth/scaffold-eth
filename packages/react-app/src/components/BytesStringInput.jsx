@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import { Input } from 'antd'
+
 const { utils, constants } = require('ethers')
 
 /*
@@ -86,8 +87,8 @@ export default function BytesStringInput(props) {
       onChange={async e => {
         const newValue = e.target.value
         if (mode === 'STRING') {
-          //const ethValue = parseFloat(newValue) / props.price;
-          //setValue(ethValue);
+          // const ethValue = parseFloat(newValue) / props.price;
+          // setValue(ethValue);
           if (typeof props.onChange === 'function') {
             props.onChange(utils.formatBytes32String(newValue))
           }

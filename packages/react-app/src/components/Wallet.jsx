@@ -70,7 +70,7 @@ export default function Wallet(props) {
   let display
   let receiveButton
   let privateKeyButton
-  /*if (qr) {
+  /* if (qr) {
     display = (
       <div>
         <div>
@@ -97,8 +97,8 @@ export default function Wallet(props) {
 
   const punkSize = 45
 
-  let pk = localStorage.getItem('metaPrivateKey')
-  let wallet = new ethers.Wallet(pk)
+  const pk = localStorage.getItem('metaPrivateKey')
+  const wallet = new ethers.Wallet(pk)
 
   if (wallet.address !== selectedAddress) {
     display = (
@@ -107,16 +107,24 @@ export default function Wallet(props) {
       </div>
     )
   } else {
-    let extraPkDisplayAdded = {}
-    let extraPkDisplay = []
-    let mypart1 = wallet.address && wallet.address.substr(2, 20)
-    let mypart2 = wallet.address && wallet.address.substr(22)
+    const extraPkDisplayAdded = {}
+    const extraPkDisplay = []
+    const mypart1 = wallet.address && wallet.address.substr(2, 20)
+    const mypart2 = wallet.address && wallet.address.substr(22)
     const myx = parseInt(mypart1, 16) % 100
     const myy = parseInt(mypart2, 16) % 100
     extraPkDisplayAdded[wallet.address] = true
     extraPkDisplay.push(
       <div style={{ fontSize: 38, fontWeight: 'bolder', padding: 2, backgroundStyle: '#89e789' }}>
-        <div style={{ float: 'left', position: 'relative', width: punkSize, height: punkSize, overflow: 'hidden' }}>
+        <div
+          style={{
+            float: 'left',
+            position: 'relative',
+            width: punkSize,
+            height: punkSize,
+            overflow: 'hidden'
+          }}
+        >
           <img
             src='/punks.png'
             style={{
@@ -125,31 +133,37 @@ export default function Wallet(props) {
               top: -punkSize * myy,
               width: punkSize * 100,
               height: punkSize * 100,
-              imageRendering: 'pixelated',
+              imageRendering: 'pixelated'
             }}
           />
         </div>
         <a href={'/pk#' + pk}>
           <Blockie address={wallet.address} scale={4} /> {wallet.address.substr(0, 6)}
         </a>
-      </div>,
+      </div>
     )
-    for (var key in localStorage) {
+    for (const key in localStorage) {
       if (key.indexOf('metaPrivateKey_backup') >= 0) {
-        //console.log(key)
-        let pastpk = localStorage.getItem(key)
-        let pastwallet = new ethers.Wallet(pastpk)
-        if (!extraPkDisplayAdded[pastwallet.address] /*&& selectedAddress!=pastwallet.address*/) {
+        // console.log(key)
+        const pastpk = localStorage.getItem(key)
+        const pastwallet = new ethers.Wallet(pastpk)
+        if (!extraPkDisplayAdded[pastwallet.address] /* && selectedAddress!=pastwallet.address */) {
           extraPkDisplayAdded[pastwallet.address] = true
-          let part1 = pastwallet.address && pastwallet.address.substr(2, 20)
-          let part2 = pastwallet.address && pastwallet.address.substr(22)
+          const part1 = pastwallet.address && pastwallet.address.substr(2, 20)
+          const part2 = pastwallet.address && pastwallet.address.substr(22)
           const x = parseInt(part1, 16) % 100
           const y = parseInt(part2, 16) % 100
           extraPkDisplay.push(
             <div style={{ fontSize: 32 }}>
               <a href={'/pk#' + pastpk}>
                 <div
-                  style={{ float: 'left', position: 'relative', width: punkSize, height: punkSize, overflow: 'hidden' }}
+                  style={{
+                    float: 'left',
+                    position: 'relative',
+                    width: punkSize,
+                    height: punkSize,
+                    overflow: 'hidden'
+                  }}
                 >
                   <img
                     src='/punks.png'
@@ -159,13 +173,14 @@ export default function Wallet(props) {
                       top: -punkSize * y,
                       width: punkSize * 100,
                       height: punkSize * 100,
-                      imageRendering: 'pixelated',
+                      imageRendering: 'pixelated'
                     }}
                   />
                 </div>
-                <Blockie address={pastwallet.address} scale={3.8} /> {pastwallet.address.substr(0, 6)}
+                <Blockie address={pastwallet.address} scale={3.8} />{' '}
+                {pastwallet.address.substr(0, 6)}
               </a>
-            </div>,
+            </div>
           )
         }
       }
@@ -205,10 +220,10 @@ export default function Wallet(props) {
           >
             <QR
               value={window.origin + '/pk#' + pk}
-              size={'450'}
-              level={'H'}
-              includeMargin={true}
-              renderAs={'svg'}
+              size='450'
+              level='H'
+              includeMargin
+              renderAs='svg'
               imageSettings={{ excavate: false }}
             />
           </div>
@@ -237,11 +252,15 @@ export default function Wallet(props) {
             <Button
               style={{ marginTop: 16 }}
               onClick={() => {
-                let currentPrivateKey = window.localStorage.getItem('metaPrivateKey')
+                const currentPrivateKey = window.localStorage.getItem('metaPrivateKey')
                 if (currentPrivateKey) {
-                  window.localStorage.setItem('metaPrivateKey_backup' + Date.now(), currentPrivateKey)
+                  window.localStorage.setItem(
+                    'metaPrivateKey_backup' + Date.now(),
+                    currentPrivateKey
+                  )
                 }
                 const randomWallet = ethers.Wallet.createRandom()
+                // eslint-disable-next-line no-underscore-dangle
                 const privateKey = randomWallet._signingKey().privateKey
                 window.localStorage.setItem('metaPrivateKey', privateKey)
                 window.location.reload()
@@ -257,7 +276,7 @@ export default function Wallet(props) {
     )
   }
 
-  /*} else {
+  /* } else {
     const inputStyle = {
       padding: 10,
     };
@@ -300,7 +319,7 @@ export default function Wallet(props) {
         <KeyOutlined /> Private Key
       </Button>
     );
-  }*/
+  } */
 
   return (
     <span style={{ verticalAlign: 'middle', paddingLeft: 16, fontSize: 32 }}>
@@ -309,9 +328,17 @@ export default function Wallet(props) {
         visible={open}
         title={
           <div>
-            {selectedAddress ? <Address address={selectedAddress} ensProvider={props.ensProvider} /> : <Spin />}
+            {selectedAddress ? (
+              <Address address={selectedAddress} ensProvider={props.ensProvider} />
+            ) : (
+              <Spin />
+            )}
             <div style={{ float: 'right', paddingRight: 25 }}>
-              <Balance address={selectedAddress} provider={props.provider} dollarMultiplier={props.price} />
+              <Balance
+                address={selectedAddress}
+                provider={props.provider}
+                dollarMultiplier={props.price}
+              />
             </div>
           </div>
         }
@@ -334,7 +361,7 @@ export default function Wallet(props) {
             }}
           >
             Hide
-          </Button>,
+          </Button>
         ]}
       >
         {display}

@@ -48,7 +48,7 @@ export default function Account({
   web3Modal,
   loadWeb3Modal,
   logoutOfWeb3Modal,
-  blockExplorer,
+  blockExplorer
 }) {
   const modalButtons = []
   if (web3Modal) {
@@ -58,7 +58,7 @@ export default function Account({
           <Tooltip title='Disconnect Wallet'>
             <LogoutOutlined key='logoutbutton' onClick={logoutOfWeb3Modal} />
           </Tooltip>
-        </span>,
+        </span>
       )
     } else {
       modalButtons.push(
@@ -66,7 +66,7 @@ export default function Account({
           <Tooltip title='Connect Wallet'>
             <LoginOutlined key='loginbutton' onClick={loadWeb3Modal} />
           </Tooltip>
-        </span>,
+        </span>
       )
     }
   }

@@ -11,7 +11,7 @@ function useWindowSize() {
   function getSize() {
     return {
       width: isClient ? window.innerWidth : undefined,
-      height: isClient ? window.innerHeight : undefined,
+      height: isClient ? window.innerHeight : undefined
     }
   }
 
@@ -67,7 +67,7 @@ export default function QRPunkBlockie(props) {
         transformOrigin: '50% 50%',
         margin: 'auto',
         position: 'relative',
-        width: hardcodedSizeForNow,
+        width: hardcodedSizeForNow
       }}
       onClick={() => {
         const el = document.createElement('textarea')
@@ -82,7 +82,14 @@ export default function QRPunkBlockie(props) {
           <span style={{ position: 'relative' }}>
             Copied Address
             <div style={{ position: 'absolute', left: -60, top: -14 }}>
-              <div style={{ position: 'relative', width: iconPunkSize, height: iconPunkSize - 1, overflow: 'hidden' }}>
+              <div
+                style={{
+                  position: 'relative',
+                  width: iconPunkSize,
+                  height: iconPunkSize - 1,
+                  overflow: 'hidden'
+                }}
+              >
                 <img
                   src='/punks.png'
                   style={{
@@ -91,12 +98,12 @@ export default function QRPunkBlockie(props) {
                     top: -iconPunkSize * y,
                     width: iconPunkSize * 100,
                     height: iconPunkSize * 100,
-                    imageRendering: 'pixelated',
+                    imageRendering: 'pixelated'
                   }}
                 />
               </div>
             </div>
-          </span>,
+          </span>
         )
       }}
     >
@@ -105,14 +112,27 @@ export default function QRPunkBlockie(props) {
           position: 'absolute',
           opacity: 0.5,
           left: hardcodedSizeForNow / 2 - 46,
-          top: hardcodedSizeForNow / 2 - 46,
+          top: hardcodedSizeForNow / 2 - 46
         }}
       >
         <Blockie address={props.address} scale={11.5} />
       </div>
 
-      <div style={{ position: 'absolute', left: hardcodedSizeForNow / 2 - 53, top: hardcodedSizeForNow / 2 - 65 }}>
-        <div style={{ position: 'relative', width: punkSize, height: punkSize - 1, overflow: 'hidden' }}>
+      <div
+        style={{
+          position: 'absolute',
+          left: hardcodedSizeForNow / 2 - 53,
+          top: hardcodedSizeForNow / 2 - 65
+        }}
+      >
+        <div
+          style={{
+            position: 'relative',
+            width: punkSize,
+            height: punkSize - 1,
+            overflow: 'hidden'
+          }}
+        >
           <img
             src='/punks.png'
             style={{
@@ -121,7 +141,7 @@ export default function QRPunkBlockie(props) {
               top: -punkSize * y,
               width: punkSize * 100,
               height: punkSize * 100,
-              imageRendering: 'pixelated',
+              imageRendering: 'pixelated'
             }}
           />
         </div>

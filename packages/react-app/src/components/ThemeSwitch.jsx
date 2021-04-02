@@ -4,7 +4,7 @@ import { useThemeSwitcher } from 'react-css-theme-switcher'
 
 export default function ThemeSwitcher() {
   const theme = window.localStorage.getItem('theme')
-  const [isDarkMode, setIsDarkMode] = useState(!theme || theme == 'light' ? false : true)
+  const [isDarkMode, setIsDarkMode] = useState(!(!theme || theme === 'light'))
   const { switcher, currentTheme, status, themes } = useThemeSwitcher()
 
   useEffect(() => {

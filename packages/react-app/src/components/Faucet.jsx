@@ -63,7 +63,7 @@ export default function Faucet(props) {
         setAddress(address)
       }
     },
-    [props.ensProvider, props.onChange],
+    [props.ensProvider, props.onChange]
   )
 
   const tx = Transactor(props.localProvider)
@@ -74,10 +74,10 @@ export default function Faucet(props) {
         size='large'
         placeholder={props.placeholder ? props.placeholder : 'local faucet'}
         prefix={blockie}
-        //value={address}
+        // value={address}
         value={ens || address}
         onChange={e => {
-          //setAddress(e.target.value);
+          // setAddress(e.target.value);
           updateAddress(e.target.value)
         }}
         suffix={
@@ -86,7 +86,7 @@ export default function Faucet(props) {
               onClick={() => {
                 tx({
                   to: address,
-                  value: parseEther('0.01'),
+                  value: parseEther('0.01')
                 })
                 setAddress('')
               }}

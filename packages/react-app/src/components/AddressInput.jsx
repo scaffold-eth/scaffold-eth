@@ -75,7 +75,7 @@ export default function AddressInput(props) {
         }
       }
     },
-    [ensProvider, onChange],
+    [ensProvider, onChange]
   )
 
   const scanner = scan ? (
@@ -86,14 +86,21 @@ export default function AddressInput(props) {
         left: '-25%',
         top: '-150%',
         width: '150%',
-        backgroundColor: '#333333',
+        backgroundColor: '#333333'
       }}
       onClick={() => {
         setScan(false)
       }}
     >
       <div
-        style={{ fontSize: 16, position: 'absolute', width: '100%', textAlign: 'center', top: '25%', color: '#FFFFFF' }}
+        style={{
+          fontSize: 16,
+          position: 'absolute',
+          width: '100%',
+          textAlign: 'center',
+          top: '25%',
+          color: '#FFFFFF'
+        }}
       >
         <Spin /> connecting to camera...
       </div>
@@ -127,8 +134,8 @@ export default function AddressInput(props) {
 
   const punkSize = 45
 
-  let part1 = currentValue && currentValue.substr(2, 20)
-  let part2 = currentValue && currentValue.substr(22)
+  const part1 = currentValue && currentValue.substr(2, 20)
+  const part2 = currentValue && currentValue.substr(22)
   const x = parseInt(part1, 16) % 100
   const y = parseInt(part2, 16) % 100
 
@@ -139,14 +146,18 @@ export default function AddressInput(props) {
   return (
     <div>
       <div style={{ position: 'absolute', left: -202, top: -88 }}>
-        {currentValue && currentValue.length > 41 ? <QRPunkBlockie scale={0.6} address={currentValue} /> : ''}
+        {currentValue && currentValue.length > 41 ? (
+          <QRPunkBlockie scale={0.6} address={currentValue} />
+        ) : (
+          ''
+        )}
       </div>
 
       {scanner}
 
       <Input
-        id={'0xAddress'} //name it something other than address for auto fill doxxing
-        name={'0xAddress'} //name it something other than address for auto fill doxxing
+        id='0xAddress' // name it something other than address for auto fill doxxing
+        name='0xAddress' // name it something other than address for auto fill doxxing
         autoComplete='off'
         autoFocus={props.autoFocus}
         placeholder={props.placeholder ? props.placeholder : 'address'}
