@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import $ from 'jquery'
+import isMobile from 'is-mobile'
 import { CodeContainer } from './views'
 import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
 
@@ -35,8 +36,8 @@ const DialogModal = ({ dialogVisible, dialogs, currentDialog, actions }) => {
       style={{
         position: 'fixed',
         top: '94px',
-        left: '20%',
-        right: '20%',
+        left: isMobile() ? '5%' : '20%',
+        right: isMobile() ? '5%' : '20%',
         height: '73vh',
         zIndex: 100
       }}
