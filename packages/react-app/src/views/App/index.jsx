@@ -164,7 +164,7 @@ const App = props => {
 
         <DialogModal />
 
-        <Terminal />
+        {/* <Terminal /> */}
 
         <WalletView
           web3Modal={web3Modal}
@@ -176,9 +176,9 @@ const App = props => {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
 
-        <Dish />
+        {/* <Dish /> */}
 
-        <Toolbelt />
+        {/* <Toolbelt /> */}
 
         {networkSelectWarning}
 
