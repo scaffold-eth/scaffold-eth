@@ -3,9 +3,8 @@ import QrReader from 'react-qr-reader'
 import { CameraOutlined, QrcodeOutlined } from '@ant-design/icons'
 import { Input, Badge, Spin, message } from 'antd'
 import { useLookupAddress } from 'eth-hooks'
-import Blockie from './Blockie'
+// import { QRPunkBlockie } from '.'
 
-import { QRPunkBlockie } from '.'
 // probably we need to change value={toAddress} to address={toAddress}
 
 /*
@@ -145,6 +144,7 @@ export default function AddressInput(props) {
 
   return (
     <div>
+      {/*
       <div style={{ position: 'absolute', left: -202, top: -88 }}>
         {currentValue && currentValue.length > 41 ? (
           <QRPunkBlockie scale={0.6} address={currentValue} />
@@ -152,6 +152,7 @@ export default function AddressInput(props) {
           ''
         )}
       </div>
+      */}
 
       {scanner}
 

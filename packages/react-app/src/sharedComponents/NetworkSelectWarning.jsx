@@ -1,6 +1,6 @@
 import React from 'react'
 import { Button, Alert } from 'antd'
-import { getNetworkByChainId } from '../../../constants'
+import { getNetworkByChainId } from '../constants'
 
 const NetworkSelectWarning = ({ targetNetwork, selectedChainId, localChainId }) => {
   const selectedNetwork = getNetworkByChainId(selectedChainId)
