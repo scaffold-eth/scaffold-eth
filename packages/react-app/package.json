@@ -46,6 +46,7 @@
     "ethers": "^5.0.31",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
+    "is-mobile": "^3.0.0",
     "isomorphic-fetch": "^3.0.0",
     "jquery": "^3.6.0",
     "node-watch": "^0.7.1",
