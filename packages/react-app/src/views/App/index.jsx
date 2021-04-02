@@ -22,34 +22,19 @@ import {
   useExternalContractLoader
 } from '../../hooks'
 import {
-  Wallet,
   AddressInput,
   EtherInput,
   Header,
-  Account,
-  Faucet,
   Ramp,
-  GasGauge,
   ThemeSwitch,
-  QRPunkBlockie,
-  Address,
-  Balance
-} from '../../components'
+  NetworkSelectWarning,
+  NetworkSelectDropdown
+} from '../../sharedComponents'
 import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
 import { Transactor, checkBalancesAndSwitchNetwork } from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
-import {
-  Background,
-  Terminal,
-  Wallet as WalletView,
-  Toolbelt,
-  Dish,
-  DialogModal,
-  NetworkSelectDropdown,
-  NetworkSelectWarning,
-  FaucetHint
-} from './views'
+import { Background, Terminal, Wallet as WalletView, Toolbelt, Dish, DialogModal } from './views'
 import './index.css'
 
 const { ethers } = require('ethers')
@@ -129,35 +114,6 @@ const App = props => {
   // The transactor wraps transactions and provides notificiations
   const tx = Transactor(userProvider, gasPrice)
 
-  const yourLocalBalance = useBalance(localProvider, address)
-
-  const balance = yourLocalBalance && formatEther(yourLocalBalance)
-
-  const yourMainnetBalance = useBalance(mainnetProvider, address)
-
-  // if you don't have any money, scan the other networks for money
-  usePoller(() => {
-    if (!cachedNetwork) {
-      if (balance === 0) {
-        checkBalancesAndSwitchNetwork(address)
-      }
-    }
-  }, 7777)
-  setTimeout(() => {
-    if (!cachedNetwork) {
-      if (balance === 0) {
-        checkBalancesAndSwitchNetwork(address)
-      }
-    }
-  }, 1777)
-  setTimeout(() => {
-    if (!cachedNetwork) {
-      if (balance === 0) {
-        checkBalancesAndSwitchNetwork(address)
-      }
-    }
-  }, 3777)
-
   const networkSelectWarning = (
     <NetworkSelectWarning
       targetNetwork={targetNetwork}
@@ -186,17 +142,6 @@ const App = props => {
     setRoute(window.location.pathname)
   }, [setRoute])
 
-  const faucetHint = (
-    <FaucetHint localProvider={localProvider} gasPrice={gasPrice} address={address} />
-  )
-  const faucetAvailable =
-    localProvider &&
-    localProvider.connection &&
-    localProvider.connection.url &&
-    localProvider.connection.url.indexOf('localhost') >= 0 &&
-    !process.env.REACT_APP_PROVIDER &&
-    price > 1
-
   let startingAddress = ''
   if (window.location.pathname) {
     const incoming = window.location.pathname.replace('/', '')
@@ -212,20 +157,6 @@ const App = props => {
 
   const [loading, setLoading] = useState(false)
 
-  const gotWeb3Provider = web3Modal && web3Modal.cachedProvider
-
-  let walletDisplay = ''
-  if (gotWeb3Provider) {
-    walletDisplay = (
-      <Wallet
-        address={address}
-        provider={userProvider}
-        ensProvider={mainnetProvider}
-        price={price}
-      />
-    )
-  }
-
   return (
     <ReduxProvider store={store} key='reduxProvider'>
       <div className='App'>
@@ -235,40 +166,27 @@ const App = props => {
 
         <Terminal />
 
-        <WalletView />
+        <WalletView
+          web3Modal={web3Modal}
+          address={address}
+          provider={userProvider}
+          ensProvider={mainnetProvider}
+          price={price}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+        />
 
         <Dish />
 
         <Toolbelt />
 
         {networkSelectWarning}
+
         <div className='site-page-header-ghost-wrapper'>
-          <Header
-            extra={[
-              <Address
-                fontSize={20}
-                address={address}
-                ensProvider={mainnetProvider}
-                blockExplorer={blockExplorer}
-              />,
-              walletDisplay,
-              <Balance value={yourLocalBalance} fontSize={20} price={price} />,
-              <span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>,
-              <Account
-                address={address}
-                localProvider={localProvider}
-                userProvider={userProvider}
-                mainnetProvider={mainnetProvider}
-                price={price}
-                web3Modal={web3Modal}
-                loadWeb3Modal={loadWeb3Modal}
-                logoutOfWeb3Modal={logoutOfWeb3Modal}
-                blockExplorer={blockExplorer}
-              />
-            ]}
-          />
+          <Header extra={[<span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>]} />
         </div>
 
+        {/*
         <div
           style={{
             clear: 'both',
@@ -276,8 +194,8 @@ const App = props => {
             width: 500,
             margin: 'auto'
           }}
-        >
-        </div>
+        />
+        */}
 
         {/*
         <BrowserRouter>
@@ -285,18 +203,7 @@ const App = props => {
             <Menu.Item key="/">
               <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
             </Menu.Item>
-            <Menu.Item key="/hints">
-              <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-            </Menu.Item>
-            <Menu.Item key="/exampleui">
-              <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
-            </Menu.Item>
-            <Menu.Item key="/mainnetdai">
-              <Link onClick={()=>{setRoute("/mainnetdai")}} to="/mainnetdai">Mainnet DAI</Link>
-            </Menu.Item>
-            <Menu.Item key="/subgraph">
-              <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
-            </Menu.Item>
+
           </Menu>
           <Switch>
             <Route exact path="/">
@@ -309,13 +216,6 @@ const App = props => {
                 blockExplorer={blockExplorer}
               />
             </Route>
-            <Route path="/hints">
-              <Hints
-                address={address}
-                yourLocalBalance={yourLocalBalance}
-                mainnetProvider={mainnetProvider}
-                price={price}
-              />
             </Route>
             <Route path="/mainnetdai">
               <Contract
@@ -338,34 +238,6 @@ const App = props => {
           </Switch>
         </BrowserRouter>
         */}
-
-        <div
-          style={{
-            position: 'fixed',
-            textAlign: 'right',
-            right: 0,
-            bottom: 16,
-            padding: 10
-          }}
-        >
-          {faucetHint}
-        </div>
-
-        <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
-          <Row align='middle' gutter={[16, 16]}>
-            <Col span={12} style={{ textAlign: 'center', opacity: 0.8 }}>
-              <GasGauge gasPrice={gasPrice} />
-            </Col>
-          </Row>
-
-          <Row align='right' gutter={[4, 4]}>
-            <Col span={12}>
-              {faucetAvailable && (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              )}
-            </Col>
-          </Row>
-        </div>
       </div>
     </ReduxProvider>
   )

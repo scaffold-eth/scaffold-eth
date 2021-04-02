@@ -6,7 +6,8 @@ import { Button, Typography, Table, Input } from 'antd'
 import { useQuery, gql } from '@apollo/client'
 import fetch from 'isomorphic-fetch'
 import GraphiQL from 'graphiql'
-import { Address } from '../components'
+// TODO: remove this
+import { Address } from './App/views/Wallet/views'
 import 'graphiql/graphiql.min.css'
 
 const highlight = {
