@@ -1,23 +1,33 @@
 module.exports = {
   env: {
-    mocha: true,
+    browser: true,
   },
-  extends: ["airbnb", "plugin:prettier/recommended"],
-  plugins: ["babel"],
+  extends: ['airbnb', 'plugin:prettier/recommended', 'prettier/react'],
+  plugins: ['babel'],
   rules: {
-    "prettier/prettier": ["error"],
-    "import/extensions": [
-      "error",
-      "ignorePackages",
+    'prettier/prettier': [
+      'error',
       {
-        js: "never",
-        ts: "never",
+        semi: false,
+        singleQuote: true,
+        'space-before-function-paren': [2, 'never'],
+        'object-curly-newline': false,
       },
     ],
-    "import/prefer-default-export": "off",
-    "prefer-destructuring": "off",
-    "prefer-template": "off",
-    "no-console": "off",
-    "func-names": "off",
+    'import/extensions': [
+      'error',
+      'ignorePackages',
+      {
+        js: 'never',
+        jsx: 'never',
+        ts: 'never',
+        tsx: 'never',
+      },
+    ],
+    'import/prefer-default-export': 'off',
+    'prefer-destructuring': 'off',
+    'prefer-template': 'off',
+    'no-unused-vars': 1,
+    'no-console': 'off',
   },
-};
+}
