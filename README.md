@@ -2,8 +2,6 @@
 
 > is everything you need to get started building decentralized applications powered by Ethereum
 
-[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/austintgriffith/scaffold-eth)
-
 ---
 
 
@@ -41,6 +39,8 @@
 -  🟪 [ Blocknative ](https://github.com/austintgriffith/scaffold-eth#-blocknative)
 
 |-   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> - | - <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B> -|
+
+[![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/austintgriffith/scaffold-eth)
 
 
 ---
