@@ -1,10 +1,9 @@
-import React from "react";
-import { Button } from "antd";
-import Address from "./Address";
-import Balance from "./Balance";
-import Wallet from "./Wallet";
-import { useThemeSwitcher } from "react-css-theme-switcher";
-
+import React from 'react'
+import { Button, Tooltip } from 'antd'
+import { LoginOutlined, LogoutOutlined } from '@ant-design/icons'
+import Address from './Address'
+import Balance from './Balance'
+import Wallet from './Wallet'
 /*
   ~ What it does? ~
 
@@ -51,52 +50,26 @@ export default function Account({
   logoutOfWeb3Modal,
   blockExplorer,
 }) {
-  const modalButtons = [];
+  const modalButtons = []
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
-        <Button
-          key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          onClick={logoutOfWeb3Modal}
-        >
-          logout
-        </Button>,
-      );
+        <span style={{ verticalAlign: 'middle', paddingLeft: 16, fontSize: 32 }}>
+          <Tooltip title='Disconnect Wallet'>
+            <LogoutOutlined key='logoutbutton' onClick={logoutOfWeb3Modal} />
+          </Tooltip>
+        </span>,
+      )
     } else {
       modalButtons.push(
-        <Button
-          key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          /*type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time*/
-          onClick={loadWeb3Modal}
-        >
-          connect
-        </Button>,
-      );
+        <span style={{ verticalAlign: 'middle', paddingLeft: 16, fontSize: 32 }}>
+          <Tooltip title='Connect Wallet'>
+            <LoginOutlined key='loginbutton' onClick={loadWeb3Modal} />
+          </Tooltip>
+        </span>,
+      )
     }
   }
 
-  const { currentTheme } = useThemeSwitcher();
-
-  const display = minimized ? (
-    ""
-  ) : (
-    <span>
-      {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
-      <Balance address={address} provider={localProvider} price={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} color={currentTheme == "light" ? "#1890ff" : "#2caad9"} />
-    </span>
-  );
-
-  return (
-    <div>
-      {display}
-      {modalButtons}
-    </div>
-  );
+  return <>{modalButtons}</>
 }

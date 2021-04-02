@@ -1,0 +1,10 @@
+#wallet {
+  top: calc(90vh - 380px);
+  transition: all 1s;
+  cursor: pointer;
+}
+
+#wallet.close {
+  top: calc(100vh - 50px);
+  height: 0;
+}

@@ -1,0 +1,23 @@
+#dish {
+  bottom: 0;
+  transition: all 1s;
+  cursor: pointer;
+}
+
+/*
+#dish.close {
+  bottom: calc(100vh - 180px);
+  height: 0;
+}
+*/
+
+#dish > .dish-bubble {
+  width: 100%;
+  margin-left: 60px;
+  padding: 15px;
+  border-bottom: none;
+  background-color: blue;
+  pointer-events: auto;
+  background-color: #fff;
+  box-shadow: 0 -4px #fff, 0 -8px #212529, 4px 0 #fff, 4px -4px #212529, 8px 0 #212529, 0 4px #fff, 0 8px #212529, -4px 0 #fff, -4px 4px #212529, -8px 0 #212529, -4px -4px #212529, 4px 4px #212529;
+}

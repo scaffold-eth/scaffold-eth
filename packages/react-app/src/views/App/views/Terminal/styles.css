@@ -1,0 +1,21 @@
+#terminal {
+  top: calc(90vh - 430px);
+  transition: all 1s;
+  cursor: pointer;
+}
+
+#terminal.close {
+  top: calc(100vh - 200px);
+  height: 0;
+}
+
+#terminal > .terminal-bubble {
+  width: 320px;
+  margin-left: 60px;
+  padding: 15px;
+  border-bottom: none;
+  background-color: blue;
+  pointer-events: auto;
+  background-color: #fff;
+  box-shadow: 0 -4px #fff, 0 -8px #212529, 4px 0 #fff, 4px -4px #212529, 8px 0 #212529, 0 4px #fff, 0 8px #212529, -4px 0 #fff, -4px 4px #212529, -8px 0 #212529, -4px -4px #212529, 4px 4px #212529;
+}

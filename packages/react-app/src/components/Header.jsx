@@ -1,16 +1,23 @@
-import React from "react";
-import { PageHeader } from "antd";
+import React from 'react'
+import { PageHeader } from 'antd'
 
-// displays a page header
-
-export default function Header() {
+export default function Header({ extra }) {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
-      <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
-        style={{ cursor: "pointer" }}
-      />
-    </a>
-  );
+    <PageHeader
+      title={
+        <div style={{ zIndex: -1, opacity: 0.5, fontSize: 12 }}>
+          <a href='https://eth.dev' target='_blank'>
+            {window.innerWidth < 600 ? '👨‍💻' : '👨‍💻  eth.dev'}
+          </a>
+          {' - '}created with <span style={{ marginRight: 4 }}>🏗</span>
+          <a href='https://github.com/austintgriffith/scaffold-eth#-scaffold-eth' target='_blank'>
+            scaffold-eth
+          </a>
+        </div>
+      }
+      subTitle=''
+      style={{ cursor: 'pointer', fontSize: 32 }}
+      extra={extra}
+    />
+  )
 }

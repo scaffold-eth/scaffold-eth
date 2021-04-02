@@ -1,1 +1,4 @@
-export { default as Transactor } from "./Transactor";
+import checkBalancesAndSwitchNetwork from './checkBalancesAndSwitchNetwork'
+import Transactor from './Transactor'
+
+export { Transactor, checkBalancesAndSwitchNetwork }
