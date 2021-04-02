@@ -6,12 +6,8 @@ export default function Header({ extra }) {
     <PageHeader
       title={
         <div style={{ zIndex: -1, opacity: 0.5, fontSize: 12 }}>
-          <a href='https://eth.dev' target='_blank'>
+          <a href='https://eth.dev' target='_blank' rel='noreferrer'>
             {window.innerWidth < 600 ? '👨‍💻' : '👨‍💻  eth.dev'}
-          </a>
-          {' - '}created with <span style={{ marginRight: 4 }}>🏗</span>
-          <a href='https://github.com/austintgriffith/scaffold-eth#-scaffold-eth' target='_blank'>
-            scaffold-eth
           </a>
         </div>
       }
