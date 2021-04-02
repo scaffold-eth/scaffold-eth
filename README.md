@@ -21,6 +21,9 @@ yarn start
 # > in a second terminal window:
 # start local eth chain
 yarn chain
+
+# deploy contracts
+yarn deploy
 ```
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
