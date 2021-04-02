@@ -9,7 +9,7 @@ import { RelayProvider } from '@opengsn/gsn';
 import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 import Blockies from 'react-blockies';
 import { BankOutlined, SwapOutlined } from  '@ant-design/icons';
-import { ConnextModal } from '@connext/vector-modal';
+//import { ConnextModal } from '@connext/vector-modal';
 //import Fortmatic from "fortmatic";
 //import Portis from "@portis/web3";
 const Web3HttpProvider = require("web3-providers-http");
@@ -59,7 +59,7 @@ export default function Account(props) {
     }).on('*', event => console.log(event)).show();
   }
 
-  const [showConnext, setShowConnext] = useState(false)
+  //const [showConnext, setShowConnext] = useState(false)
 
   let httpProvider = new Web3HttpProvider(process.env.REACT_APP_NETWORK_NAME === 'xdai'?XDAI_RPC:"http://localhost:8546");
   const burner = useBurnerSigner(props.localProvider)
@@ -225,7 +225,7 @@ export default function Account(props) {
       <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
       {(web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc)&&<BankOutlined onClick={showRampModal} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
-//{
+{
 //      web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc&&<SwapOutlined onClick={() => {setShowConnext(true)}} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
 //      <ConnextModal
 //        showModal={showConnext}

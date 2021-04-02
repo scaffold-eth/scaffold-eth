@@ -59,7 +59,7 @@ export default function ViewInk(props) {
   });
 
   const { loading, error, data: dataRaw } = useQuery(INK_QUERY, {
-    variables: { inkUrl: hash },
+    variables: { inkUrl: hash, liker: props.address ? props.address.toLowerCase() : '' },
     pollInterval: 2500
   });
 
@@ -316,7 +316,9 @@ export default function ViewInk(props) {
 
           return (
             <List.Item>
-              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider}/>
+              <Link to={`/holdings/${mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner}`}>
+              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+              </Link>
               <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item.id} target="_blank"><LinkOutlined /></a>
               {mainnetTokens[item.id]?openseaButton:(item.network === 'mainnet'?(<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>)}
               {sendInkButton(item.owner, item.id)}
@@ -370,6 +372,8 @@ export default function ViewInk(props) {
               targetId={data.ink.inkNumber}
               likerAddress={props.address}
               transactionConfig={props.transactionConfig}
+              likeCount={data.ink.likeCount}
+              hasLiked={data.ink&&data.ink.likes.length>0}
             />
           </div>
 

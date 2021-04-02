@@ -22,7 +22,7 @@ export default function CreateInk(props) {
   const [brushRadius, setBrushRadius] = useState(8)
 
   const drawingCanvas = useRef(null);
-  const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
+  const [size, setSize] = useState([0.85 * props.calculatedVmin, 0.85 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
   const [drawingSize, setDrawingSize] = useState(0)
@@ -157,7 +157,7 @@ export default function CreateInk(props) {
       imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
       inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
 
-      Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+      await Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
         console.log("FINISHED UPLOADING TO PINNER",values);
         message.destroy()
       });
@@ -417,7 +417,7 @@ return (
   canvasWidth={size[0]}
   canvasHeight={size[1]}
   brushColor={color}
-  lazyRadius={4}
+  lazyRadius={3}
   brushRadius={brushRadius}
 //  disabled={props.mode !== "edit"}
 //  hideGrid={props.mode !== "edit"}
