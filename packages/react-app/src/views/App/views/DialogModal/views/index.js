@@ -1,5 +1,3 @@
 import CodeContainer from './CodeContainer'
 
-export {
-  CodeContainer
-}
+export { CodeContainer }

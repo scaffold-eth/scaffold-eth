@@ -7,17 +7,34 @@ const setupCodingEnv = [
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
-    text: 'Open a terminal and run the following instructions:',
+    text: 'Connection successfull. Found <one> compatible interface nearby.',
+    choices: [
+      {
+        id: 'continue',
+        buttonText: 'Connect to interface'
+      }
+    ]
+  },
+  {
+    avatar: 'old_gtx.png',
+    alignment: 'right',
+    text: 'Connection to interface established.',
     code: `
-      $ git clone https://github.com/austintgriffith/scaffold-eth.git
+    contract Clicker {
+      event Click(address sender);
 
-      $ cd scaffold-eth
+      mapping(address => uint256) public clicks;
 
-      $ git checkout clicker
+      function increment() public {
+        clicks[msg.sender]++;
+        emit Click(msg.sender);
+      }
 
-      $ yarn install
-
-      $ yarn start
+      function decrement() public {
+        clicks[msg.sender]--;
+        emit Click(msg.sender);
+      }
+    }
     `,
     choices: [
       {
@@ -25,44 +42,8 @@ const setupCodingEnv = [
         buttonText: 'Continue'
       }
     ]
-  },
-  {
-    avatar: 'old_gtx.png',
-    alignment: 'right',
-    text: 'Open 2 additional terminals inside scaffold-eth and run the following instructions:',
-    code: `
-      # terminal 1
-      $ cd scaffold-eth
-      $ yarn chain
-
-      # terminal 2
-      $ cd scaffold-eth
-      $ yarn deploy
-    `,
-    choices: [
-      {
-        id: 'continue',
-        buttonText: 'Continue'
-      }
-    ]
-  },
-  {
-    avatar: 'old_gtx.png',
-    alignment: 'right',
-    text: 'Checking integrity of MetaMask module...',
-    choices: [
-      {
-        id: 'metamask-not-installed',
-        buttonText: 'What is MetaMask?',
-        goToDialog: 'installMetaMask'
-      },
-      {
-        id: 'metamask-installed',
-        buttonText: 'I have MetaMask installed',
-        goToDialog: 'connectMetaMaskToLocalNetwork'
-      }
-    ]
-  },
+  }
+  /*
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
@@ -74,19 +55,17 @@ const setupCodingEnv = [
     text: 'Interface loaded!',
     choices: [
       {
-        id: 'open-interface',
-        buttonText: 'Open interface at http://localhost:3000'
+        id: 'continue',
+        buttonText: 'Open interface'
       }
     ]
   },
   {
-    avatar: 'punk5950.png',
-    alignment: 'left',
-    text: `
-      Looks like this is one of the old city token contracts.
-      What is it doing out here?
-    `
+    avatar: 'old_gtx.png',
+    alignment: 'right',
+    text: 'Interact with contract'
   }
+  */
 ]
 
 export default setupCodingEnv

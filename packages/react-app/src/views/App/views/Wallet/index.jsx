@@ -83,22 +83,13 @@ const mainnetInfura = new JsonRpcProvider('https://mainnet.infura.io/v3/' + INFU
 const mainnetProvider =
   scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura
 
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
-
-// 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = targetNetwork.rpcUrl
-// as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER
-  ? process.env.REACT_APP_PROVIDER
-  : localProviderUrl
-const localProvider = new JsonRpcProvider(localProviderUrlFromEnv)
-
 const Wallet = ({
   visible,
   actions,
   web3Modal,
   address,
-  provider,
+  localProvider,
+  userProvider,
   ensProvider,
   price,
   loadWeb3Modal,
@@ -140,7 +131,12 @@ const Wallet = ({
   let walletDisplay = ''
   if (gotWeb3Provider) {
     walletDisplay = (
-      <WalletView address={address} provider={provider} ensProvider={ensProvider} price={price} />
+      <WalletView
+        address={address}
+        provider={userProvider}
+        ensProvider={ensProvider}
+        price={price}
+      />
     )
   }
 
@@ -225,7 +221,7 @@ const Wallet = ({
           <Account
             address={address}
             localProvider={localProvider}
-            userProvider={provider}
+            userProvider={userProvider}
             mainnetProvider={mainnetProvider}
             price={price}
             web3Modal={web3Modal}

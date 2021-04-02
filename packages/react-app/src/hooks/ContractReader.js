@@ -19,7 +19,15 @@ const DEBUG = false
   - Specify the name of the variable in the contract, in this case we keep track of "purpose" variable
 */
 
-export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
+export default function useContractReader(
+  contracts,
+  contractName,
+  functionName,
+  args,
+  pollTime,
+  formatter,
+  onChange
+) {
   let adjustPollTime = 3777
   if (pollTime) {
     adjustPollTime = pollTime
@@ -44,7 +52,16 @@ export default function useContractReader(contracts, contractName, functionName,
           if (args && args.length > 0) {
             newValue = await contracts[contractName][functionName](...args)
             if (DEBUG)
-              console.log('contractName', contractName, 'functionName', functionName, 'args', args, 'RESULT:', newValue)
+              console.log(
+                'contractName',
+                contractName,
+                'functionName',
+                functionName,
+                'args',
+                args,
+                'RESULT:',
+                newValue
+              )
           } else {
             newValue = await contracts[contractName][functionName]()
           }
@@ -61,7 +78,7 @@ export default function useContractReader(contracts, contractName, functionName,
       }
     },
     adjustPollTime,
-    contracts && contracts[contractName],
+    contracts && contracts[contractName]
   )
 
   return value

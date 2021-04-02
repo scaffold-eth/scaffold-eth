@@ -2,8 +2,12 @@ import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
 import $ from 'jquery'
 import isMobile from 'is-mobile'
+import { Button, Typography } from 'antd'
+import { useContractLoader, useContractReader, useEventListener } from '../../../../hooks'
 import { CodeContainer } from './views'
 import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
+
+const { Title } = Typography
 
 const styles = {
   button: {
@@ -15,7 +19,16 @@ const styles = {
   }
 }
 
-const DialogModal = ({ dialogVisible, dialogs, currentDialog, actions }) => {
+const DialogModal = ({
+  localProvider,
+  userProvider,
+  transactor,
+  address,
+  dialogVisible,
+  dialogs,
+  currentDialog,
+  actions
+}) => {
   const scrollToBottom = element => {
     const { scrollHeight } = $(element)[0]
     $(element).animate({ scrollTop: scrollHeight }, 'slow')
@@ -30,6 +43,19 @@ const DialogModal = ({ dialogVisible, dialogs, currentDialog, actions }) => {
 
   console.log({ dialogs })
   console.log({ currentDialog })
+
+  // Load in your local 📝 contract and read a value from it:
+  const readContracts = useContractLoader(localProvider)
+  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
+  const writeContracts = useContractLoader(userProvider)
+
+  // keep track of a variable from the contract in the local React state:
+  const yourClicks = useContractReader(readContracts, 'Clicker', 'clicks', [address])
+  console.log('🤗 yourClicks:', yourClicks)
+
+  // 📟 Listen for broadcast events
+  const clickEvents = useEventListener(readContracts, 'Clicker', 'Click', localProvider, 1)
+  console.log('📟 clickEvents:', clickEvents)
 
   return (
     <div
@@ -55,6 +81,7 @@ const DialogModal = ({ dialogVisible, dialogs, currentDialog, actions }) => {
             const { avatar, alignment, text, code, choices } = dialog
 
             const isLastVisibleDialog = index === currentDialog.index
+            const isFinalDialog = index === dialogs[currentDialog.name].length - 1
 
             if (index <= currentDialog.index) {
               return (
@@ -87,6 +114,31 @@ const DialogModal = ({ dialogVisible, dialogs, currentDialog, actions }) => {
                       {text}
                       {code && <CodeContainer language='bash' children={code} />}
                     </p>
+                    {isFinalDialog && currentDialog.name === 'setupCodingEnv' && (
+                      <div style={{ padding: '20px', border: '1px solid #ccc' }}>
+                        <div style={{ textAlign: 'center' }}>
+                          <Title level={3}>{yourClicks && yourClicks.toString()}</Title>
+                        </div>
+
+                        <Button
+                          block
+                          onClick={() => {
+                            transactor(writeContracts.Clicker.increment())
+                          }}
+                          style={{ marginBottom: '15px' }}
+                        >
+                          increment
+                        </Button>
+                        <Button
+                          block
+                          onClick={() => {
+                            transactor(writeContracts.Clicker.decrement())
+                          }}
+                        >
+                          decrement
+                        </Button>
+                      </div>
+                    )}
                   </div>
                   {alignment === 'right' && (
                     <img

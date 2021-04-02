@@ -86,6 +86,7 @@ const logoutOfWeb3Modal = async () => {
   }, 1)
 }
 
+// eslint-disable-next-line no-unused-expressions
 window.ethereum &&
   window.ethereum.on('chainChanged', chainId => {
     setTimeout(() => {
@@ -162,14 +163,20 @@ const App = props => {
       <div className='App'>
         <Background />
 
-        <DialogModal />
+        <DialogModal
+          localProvider={localProvider}
+          userProvider={userProvider}
+          transactor={tx}
+          address={address}
+        />
 
         {/* <Terminal /> */}
 
         <WalletView
           web3Modal={web3Modal}
           address={address}
-          provider={userProvider}
+          localProvider={localProvider}
+          userProvider={userProvider}
           ensProvider={mainnetProvider}
           price={price}
           loadWeb3Modal={loadWeb3Modal}
