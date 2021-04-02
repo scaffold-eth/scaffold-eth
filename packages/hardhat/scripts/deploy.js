@@ -8,7 +8,7 @@ const hre = require("hardhat");
 const ipfsApi = require('../../react-app/src/helpers/ipfsGraph');
 const constants = require('../../react-app/src/constants');
 const generateTokens = require('./mintTestTokens');
-
+const { feedData } = require('./feedData');
 
 const graphDir = "../subgraph";
 
@@ -49,64 +49,44 @@ async function verifyContract(addr, constructorArgs){
 }
 
 
-const bootstrapLocalData = async (goodTokenContract, goodTokenFundContract) => {
-  // pin metadata
-  const pin = await ipfs.addJson({
-    "description": "Good Token IPFS test.", 
-    "external_url": "https://openseacreatures.io/3", 
-    "image": "https://storage.googleapis.com/opensea-prod.appspot.com/puffs/3.png", 
-    "name": "Good Token #0"
-  })
-
-
-  // creata dummy data
-  const accounts = await ethers.getSigners();
-  const artistAccount = accounts[1 % accounts.length];
-  // whitelist artist
-  await goodTokenContract.whitelistArtist(artistAccount.address, true);
-  console.log("whitelisted artists");
-
-  // generate sample tokens
-  const numTokens = 10;
-  
-  const artworkUrl = pin.path
-  const artworkRevokedUrl = pin.path
-
-  const fundAddress = goodTokenFundContract.address;
-  let ownershipModel = 0;
-  const balanceRequired = 10;
-  const balanceDuration = 1000 * 60;
-  let price = 1;
-  for(let i = 0; i < numTokens; i++) {
-    // eslint-disable-next-line no-await-in-loop
-    const tx = await goodTokenContract.connect(artistAccount).createArtwork(
-      artworkUrl,
-      artworkRevokedUrl,
-      ownershipModel,
-      fundAddress,
-      balanceRequired,
-      balanceDuration,
-      ethers.constants.WeiPerEther.mul(price)
-    );
-
-    price++;
-    ownershipModel = (ownershipModel + 1) % 2;
+async function deployGoodDataFeed() {
+  const goodDataFeed = await deploy("GoodDataFeed");
+  await goodDataFeed.deployed();
+  // Register apis
+  for(let i = 0; i < feedData.length; i++) {
+    const feed = feedData[i];
+    await goodDataFeed.registerApi(
+      feed.symbol,
+      feed.apiUrl,
+      feed.apiValueParseMap,
+      feed.yearOffset
+    ).then(tx => tx.wait);
   }
+
+  return goodDataFeed;
 }
 
-let funds = [];
+async function deployGoodTokenFund(dataFeedContract) {
+  const goodTokenFund = await deploy("GoodTokenFund", [dataFeedContract.address]);
+  await goodTokenFund.deployed();
 
-let fundNames = [
-  ["The Good Fund", "TGF"],
-  ["Renewable Energy Fund", "RNEF"],
-  ["Sustainablele Water Fund", "SNF"],
-  ["Solar/Wind Fund", "SWF"],
-  ["International Cleanng Fund", "ICF"],
-  ["Bird Fund", "BRDF"],
-  ["Aave Governance Token", "AAVE"],
-  ["Uniswap CRV/ETH LP", "FRETH"],
-  ["POAP Token Pool", "POAP"]
-];
+  // for now set beneficiary as main account
+  const accounts = await ethers.getSigners();
+  const beneficiary = accounts[0].address;
+  // add in feeds
+  for(let i = 0; i < feedData.length; i++) {
+    const feed = feedData[i];
+    await goodTokenFund.createNewToken(
+      beneficiary,
+      feed.symbol,
+      feed.rangeMin,
+      feed.rangeMax
+    ).then(tx => tx.wait)
+  }
+
+  return goodTokenFund;
+}
+
 
 const main = async () => {
 
@@ -117,19 +97,14 @@ const main = async () => {
   await goodToken.deployed();
   const gTx = goodToken.deployTransaction;
   await gTx.wait();
+  
+  // Deploy the GoodDataFeed contract
+  const goodDataFeed = await deployGoodDataFeed();
+  
+  // Deploy the GoodTokenFund contract
+  const goodTokenFund = await deployGoodTokenFund(goodDataFeed);
 
-  // temporary beneficiary address, in prod should be charity address
-  const beneficiaryAddress = (await ethers.getSigners())[0].address;
-
-  for(let i = 0; i < fundNames.length; i++) {
-    const fund = fundNames[i];
-    const goodTokenFund = await deploy("GoodTokenFund", [fund, beneficiaryAddress].flat());
-    await goodTokenFund.deployed();
-    funds.push(goodTokenFund);
-    await goodTokenFund.deployTransaction.wait()
-  }
-
-  console.log(hre.network);
+  // console.log(hre.network);
   publishNetwork();
 
   // verify contracts
@@ -137,14 +112,17 @@ const main = async () => {
 
   console.log('NETWORK NAME: ' + hre.network.name)
 
-  await generateTokens(goodToken.address, funds);
+  // create test tokens!
+  await generateTokens(goodToken.address, goodTokenFund.address);
+
 
   if(hre.network.name === 'localhost') {
     //await bootstrapLocalData(goodToken, goodTokenFund)
   } else {
     //await bootstrapLocalData(goodToken, goodTokenFund)
     await verifyContract(goodToken.address);
-    await verifyContract(funds[0].address);
+    await verifyContract(goodDataFeed.address);
+    await verifyContract(goodTokenFund.address);
   }
 
 

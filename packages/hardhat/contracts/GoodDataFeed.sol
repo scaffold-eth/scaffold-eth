@@ -51,6 +51,19 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     IDateTime dateTime;
 
 
+    constructor() public {
+        
+        // link to datetime contract
+        // https://kovan.etherscan.io/address/0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E
+        dateTime = IDateTime(0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E); // KOVAN ADDRESS
+
+        // setup chainlink props
+        //setPublicChainlinkToken();
+        oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
+    	jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/0609deab-6d61-4937-85e4-a8e810b8b272?network=42
+    	fee = 0.1 * 10 ** 18; // 0.1 LINK
+    }
+
     function decimals() external override view returns (uint8) {
         return API_DECIMALS;
     }
@@ -89,24 +102,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     function feedExists(string memory feedId) public view returns (bool) {
         return bytes(registeredFeeds[feedId].apiBaseUrl).length != 0;
-    }
-
-    constructor() public {
-        
-        // link to datetime contract
-        // https://kovan.etherscan.io/address/0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E
-        dateTime = IDateTime(0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E); // KOVAN ADDRESS
-
-        // setup chainlink props
-        //setPublicChainlinkToken();
-        oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
-    	jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/0609deab-6d61-4937-85e4-a8e810b8b272?network=42
-    	fee = 0.1 * 10 ** 18; // 0.1 LINK
-       
-
-        // register base apis
-        
-
     }
 
     /**
@@ -168,7 +163,12 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     }
 
 
-    function registerApi(string memory feedId, string memory apiBaseUrl, string memory apiValueParseMap, uint8 yearOffset) public onlyOwner {
+    function registerApi(
+        string memory feedId,
+        string memory apiBaseUrl,
+        string memory apiValueParseMap,
+        uint8 yearOffset
+    ) public onlyOwner {
         // ensure api is not already registered
         require(!feedExists(feedId), "GoodDataFeed: FeedId already exists!");
 

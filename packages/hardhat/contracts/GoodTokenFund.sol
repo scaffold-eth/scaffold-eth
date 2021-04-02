@@ -11,6 +11,8 @@ import "hardhat/console.sol";
 contract GoodTokenFund is ERC1155, Ownable {
     using Counters for Counters.Counter;
 
+    event FundCreated(address beneficiary, string feedId, uint256 tokenId);
+
     struct FundData {
         // fund recipient -- most likely will be a charity
         address beneficiary;
@@ -25,10 +27,11 @@ contract GoodTokenFund is ERC1155, Ownable {
     // Orable contract that updates real data from nonprofits
     IGoodDataFeed dataFeed;
 
+    // Tracks the next available fundId
     Counters.Counter private _tokenIdTracker;
 
     // mapping from tokenId => FundData
-    mapping( uint256 => FundData) tokenData;
+    mapping (uint256 => FundData) fundForToken;
 
 
     constructor (
@@ -40,22 +43,31 @@ contract GoodTokenFund is ERC1155, Ownable {
         _tokenIdTracker.increment();
     }
 
-
-    function calculateTokensToMint(uint256 tokenId, uint256 ethSupplied) public view returns (uint256) {
+    /**
+     * @dev Calculates the correct amount of tokens to mint for a provided price.
+     *   - Pulls in the feed data and then maps it to a range to find correct rate.
+     */
+    function calculateTokensToMint(uint256 tokenId, uint256 weiSupplied) public view returns (uint256) {
         
-        FundData memory targetFund = tokenData[tokenId];
+        // TODO!!!!!!!!
+
+        return weiSupplied;
+
+
+        FundData memory targetFund = fundForToken[tokenId];
         // check to make sure data exists
         require(targetFund.beneficiary != address(0), "GoodTokenFund: Not valid fund data!");
         
         uint256 latestFeedData = dataFeed.latestDataForFeed(targetFund.feedId);
 
         // TODO: mapping of range here!
-        return latestFeedData * ethSupplied;
+        return latestFeedData * weiSupplied;
     }
 
 
     /**
      * @dev Create a new token that is linked to a realworld data feed!
+     *   - For now, only callable by the contract owner
      */
     function createNewToken(
         address beneficiary,
@@ -64,12 +76,25 @@ contract GoodTokenFund is ERC1155, Ownable {
         uint256 rangeMax
     ) external onlyOwner {
 
+        uint256 tokenId = _tokenIdTracker.current();
 
+        // no need to mint anything, just add new fund data
+        fundForToken[tokenId] = FundData(
+            beneficiary,
+            feedId,
+            rangeMin,
+            rangeMax
+        );
 
+        emit FundCreated(beneficiary, feedId, tokenId);
+        _tokenIdTracker.increment();
 
     }
 
 
+    /**
+     * @dev Mints new tokens to msg.sender based on dynamic data feed and ETH provided
+     */
     function mint(uint256 tokenId) public payable {
         
         uint256 tokensToMint = calculateTokensToMint(tokenId, msg.value);
@@ -78,7 +103,7 @@ contract GoodTokenFund is ERC1155, Ownable {
         require(tokensToMint > 0, "GoodTokenFund: Attempting to mint 0 tokens, aborting.");
 
         _mint(_msgSender(), tokenId, tokensToMint, "");
-        address beneficiary = tokenData[tokenId].beneficiary;
+        address beneficiary = fundForToken[tokenId].beneficiary;
         payable(beneficiary).transfer(msg.value);
     }
 }

@@ -23,7 +23,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
 
     event ArtworkMinted(
         uint256 artwork, address artist, uint256 price, uint8 ownershipModel, uint256 balanceRequirement, uint64 balanceDurationInSeconds, string artworkCid, string artworkRevokedCid, 
-        address targetTokenAddress, string beneficiaryName
+        address targetTokenAddress, uint256 targetTokenId
     );
 
     struct OwnershipConditionData {
@@ -167,7 +167,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     }
 
 
-
+/*
     function whitelistArtist(address artistAddress, bool whitelisted) public {
         require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "GoodToken: must have admin role to whitelist");
         
@@ -177,6 +177,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
             revokeRole(MINTER_ROLE, artistAddress);
         }
     }
+*/
 
     /**
      * @dev Create tokens with ownership models
@@ -230,7 +231,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
             artworkData[currentArtwork].artworkCid,
             artworkData[currentArtwork].artworkRevokedCid,
             targetTokenAddress,
-            token.name()
+            targetTokenId
         );
 
         // increment token index for next mint
@@ -296,7 +297,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         OwnershipConditionData storage ownerData = ownershipData[tokenId];
         // update purchase data
         ownerData.purchaseDate = block.timestamp;
-        super._safeTransfer(from, to, tokenId, "");
+        super._safeTransfer(from, to, tokenId, _data);
     }
 
 

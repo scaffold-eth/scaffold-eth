@@ -2,10 +2,12 @@
 const hre = require("hardhat");
 const ipfsApi = require('../../react-app/src/helpers/ipfsGraph');
 const constants = require('../../react-app/src/constants');
-const { config, ethers, tenderly, run } = require("hardhat");
+const { ethers, tenderly, run } = require("hardhat");
 const goodTokenAbi = require("../artifacts/contracts/GoodToken.sol/GoodToken.json").abi;
-const goodFundAbi = require("../artifacts/contracts/GoodTokenFund.sol/GoodTokenFund.json").abi;
+const goodTokenFundAbi = require("../artifacts/contracts/GoodTokenFund.sol/GoodTokenFund.json").abi;
 const fs = require('fs');
+
+const { feedData } = require('./feedData');
 
 //fs.readSync("../artifacts/contracts/GoodToken"))
 
@@ -91,21 +93,17 @@ const revokedImg = 'http://clipartmag.com/images/big-bird-clipart-24.png';
 
 
 
-const bootstrapLocalData = async (
+const mintTestTokens = async (
+    accounts,
     goodTokenContract, 
-    goodTokenFunds,
+    goodTokenFundContract,
     numTokens) => {
 
-    const accounts = await ethers.getSigners();
-        
     for(let i = 0; i < numTokens; i++) {
 
         // creata dummy data
         const artistIdx = randomNumber(0, accounts.length)
-        const artistAccount = accounts[artistIdx];
-        
-       
-    
+        const artistAccount = accounts[artistIdx];    
         
         const targetAccount = accounts[randomNumber(0, accounts.length)];
         const requiredBalance = randomNumber(500, 1000);
@@ -132,22 +130,23 @@ const bootstrapLocalData = async (
         const baseBird = imgListings[i % imgListings.length];
         const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
-        const targetFund = goodTokenFunds[i % goodTokenFunds.length];
-        const fundName = await targetFund.name();
-        const fundSymbol = await targetFund.symbol();
+        const targetFeed = feedData[i % feedData.length];
+        const targetFeedTokenId = (i % feedData.length) + 1; // 1 indexed
+        const feedName = targetFeed.name
+        const feedSymbol = targetFeed.symbol;
         const tokenMetadata = {
             "name": tokenName,
             "artist": artistAccount.address,
             "artistName": artistNames[artistIdx % artistNames.length],
-            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + fundName + ":)",
+            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + feedName + ":)",
             "image": baseBird.img,
             "date": Date.now(),
             "price": price,
-            "fundName": fundName,
-            "fundSymbol": fundSymbol
+            "feedName": feedName,
+            "feedSymbol": feedSymbol,
         }
 
-        console.log(tokenMetadata);
+        // console.log(tokenMetadata);
 
         // pin metadata
         const pin = await ipfs.addJson(tokenMetadata);
@@ -155,21 +154,19 @@ const bootstrapLocalData = async (
         tokenMetadata.image = revokedImg;
         const pinRevoked = await ipfs.addJson(tokenMetadata);
        
-       
         // eslint-disable-next-line no-await-in-loop
     
         // add funds
-        await targetFund.connect(targetAccount)
-            .mint({value: balanceInWei}).then(tx => tx.wait);
-
-
+        await goodTokenFundContract.connect(targetAccount)
+            .mint(targetFeedTokenId, {value: balanceInWei}).then(tx => tx.wait);
 
         // eslint-disable-next-line no-await-in-loop
         const tx = await goodTokenContract.connect(artistAccount).createArtwork(
             pin.path,
             pinRevoked.path,
             ownershipModel,
-            targetFund.address,
+            goodTokenFundContract.address,
+            targetFeedTokenId,
             ethers.constants.WeiPerEther.mul(requiredBalance).div(divisor),
             randomNumber(1, 1000),
             price
@@ -187,7 +184,7 @@ const bootstrapLocalData = async (
         }
 
     }
-    await checkRevoked(goodTokenContract);
+    //await checkRevoked(goodTokenContract);
   }
 
   async function checkRevoked(goodTokenContract) {
@@ -199,12 +196,14 @@ const bootstrapLocalData = async (
   }
 
 
-  async function generateTokens(goodTokenAddress, goodTokenFunds){
+  async function generateTokens(goodTokenAddress, goodTokenFundAddress, numberOfTokens = 5){
       //const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
+      
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
-      await bootstrapLocalData(goodTokenContract, goodTokenFunds, 5);
+      const goodTokenFundContract = new ethers.Contract(goodTokenFundAddress, goodTokenFundAbi, accounts[0]);
+      await mintTestTokens(accounts, goodTokenContract, goodTokenFundContract, numberOfTokens);
 
   }
 
