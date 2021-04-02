@@ -1,18 +1,19 @@
 {
-  "name": "@scaffold-eth/react-app",
-  "version": "1.0.0",
+  "name": "eth-dev",
+  "version": "0.2.0",
   "homepage": ".",
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "scripts": {
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
+    "ipfs": "node ./scripts/ipfs.js",
+    "surge": "surge ./build",
+    "s3": "node ./scripts/s3.js",
+    "ship": "yarn surge",
+    "theme": "npx gulp less",
+    "watch": "node ./scripts/watch.js"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -52,8 +53,11 @@
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^16.14.0",
     "react-qr-reader": "^2.2.1",
+    "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
+    "redux": "^4.0.5",
+    "redux-logger": "^3.0.6",
     "web3modal": "^1.9.1"
   },
   "devDependencies": {
@@ -84,17 +88,16 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "scripts": {
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "start": "react-scripts start",
-    "test": "react-scripts test",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
-    "ipfs": "node ./scripts/ipfs.js",
-    "surge": "surge ./build",
-    "s3": "node ./scripts/s3.js",
-    "ship": "yarn surge",
-    "theme": "npx gulp less",
-    "watch": "node ./scripts/watch.js"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   }
 }
