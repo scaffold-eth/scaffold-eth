@@ -55,12 +55,15 @@ async function deployGoodDataFeed() {
   // Register apis
   for(let i = 0; i < feedData.length; i++) {
     const feed = feedData[i];
-    await goodDataFeed.registerApi(
-      feed.symbol,
-      feed.apiUrl,
-      feed.apiValueParseMap,
-      feed.yearOffset
-    ).then(tx => tx.wait);
+    const exists = await goodDataFeed.feedExists(feed.symbol);
+    if(!exists) {
+      await goodDataFeed.registerApi(
+        feed.symbol,
+        feed.apiUrl,
+        feed.apiValueParseMap,
+        feed.yearOffset
+      ).then(tx => tx.wait);
+    }
   }
 
   return goodDataFeed;

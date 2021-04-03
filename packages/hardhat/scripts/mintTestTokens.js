@@ -158,7 +158,7 @@ const mintTestTokens = async (
     
         // add funds
         await goodTokenFundContract.connect(targetAccount)
-            .mint(targetFeedTokenId, {value: balanceInWei}).then(tx => tx.wait);
+          .mintFeedToken(feedSymbol, {value: balanceInWei}).then(tx => tx.wait);
 
         // eslint-disable-next-line no-await-in-loop
         const tx = await goodTokenContract.connect(artistAccount).createArtwork(

@@ -17,17 +17,17 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     // TODO: Could maybe just a graph CALL_HALNDER callback??
     event FeedDataUpdated(string feedId, uint256 latestFeedData);
 
+    // Base struct for storing feed information.
+    struct FeedParameters {
+        string apiBaseUrl;
+        string apiValueParseMap; // JSONParse string for Chainlink request. i.e. 0.data.value
+        uint8 yearOffset;
+    }
+
     // Chainlink request parameter storage
     struct FeedRequestData {
         string feedId;
         string requestedDate;
-    }
-
-    // Base struct for storing feed information.
-    struct FeedParameters {
-        string apiBaseUrl;
-        string apiValueParseMap; // JSONParse string for Chainlink request. i.e. [0].data.value
-        uint8 yearOffset;
     }
    
     // mapping from feedId to apiBaseUrl
@@ -57,7 +57,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         //dateTime = IDateTime(0x92482Ba45A4D2186DafB486b322C6d0B88410FE7); // RINKEBY ADDRESS
 
         // setup chainlink props
-        setPublicChainlinkToken();
+        //setPublicChainlinkToken();
         
         // KOVAN DATA
         oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
@@ -80,7 +80,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
             educationApiParseMap,
             yearOffset  
         );
-
 
 
     }
@@ -121,7 +120,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
      * @dev Takes timestamp and returns the year as a string.
      */
     function formatDateByYear(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
-        uint16 year = dateTime.getYear(timestamp) - yearOffset;
+        uint16 year = 2021 - yearOffset;//dateTime.getYear(timestamp) - yearOffset;
         return uint2str(year);
     }
 
@@ -132,12 +131,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         return bytes(registeredFeeds[feedId].apiBaseUrl).length != 0;
     }
 
-    /**
-     * @dev Request latest feed data.
-     */
-    function requestLatestFeedData(string memory feedId) public {
-        requestFeedData(feedId, block.timestamp);
-    }
 
     /**
      * @dev Creates a SDMX query request that filters on a specific time range.
@@ -149,6 +142,15 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     ) public pure returns (string memory) {
         return string(abi.encodePacked(baseUrl, "&startPeriod=", startDate, "&endPeriod=", endDate));
     }
+
+
+    /**
+     * @dev Request latest feed data.
+     */
+    function requestLatestFeedData(string memory feedId) public {
+        requestFeedData(feedId, block.timestamp);
+    }
+
 
     /**
      * @dev Request offchain api data for feed.
@@ -176,13 +178,13 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // Answer in decimals so remove decimals
         req.addUint("times", 10**uint256(API_DECIMALS));
 
-    	bytes32 requestId = sendChainlinkRequestTo(oracle, req, fee); //bytes32("fasdf");//
+    	bytes32 requestId = bytes32("faketest");//sendChainlinkRequestTo(oracle, req, fee); //bytes32("fasdf");//
 
         // register request data
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
 
         // FOR LOCAL TEST, AUTOMATICALLY FULFILL
-        //fulfilFeedRequest(requestId, 100);
+        fulfilFeedRequest(requestId, 10 * 10**18);
     }
 
     /**
@@ -216,6 +218,10 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
             apiValueParseMap,
             yearOffset
         );
+
+        // request data by default for local dev
+        requestLatestFeedData(feedId);
+
 
         emit FeedRegistered(feedId, apiBaseUrl);
     }
