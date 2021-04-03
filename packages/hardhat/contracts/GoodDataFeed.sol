@@ -23,6 +23,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         string requestedDate;
     }
 
+    // Base struct for storing feed information.
     struct FeedParameters {
         string apiBaseUrl;
         string apiValueParseMap; // JSONParse string for Chainlink request. i.e. [0].data.value
@@ -34,9 +35,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     // mapping from feedId => latestData
     mapping(string => uint256) latestData;
-
-    // mapping from apiSymbol => (mapping from YYYY-Q => data feed value)
-    mapping(string => mapping(string => uint256)) historicalFeedData;
 
     // mapping from Chainlink _requestId => data feed shortcode
     mapping (bytes32 => FeedRequestData) pendingRequests;
@@ -56,12 +54,35 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // link to datetime contract
         // https://kovan.etherscan.io/address/0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E
         dateTime = IDateTime(0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E); // KOVAN ADDRESS
+        //dateTime = IDateTime(0x92482Ba45A4D2186DafB486b322C6d0B88410FE7); // RINKEBY ADDRESS
 
         // setup chainlink props
-        //setPublicChainlinkToken();
+        setPublicChainlinkToken();
+        
+        // KOVAN DATA
         oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
-    	jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/0609deab-6d61-4937-85e4-a8e810b8b272?network=42
-    	fee = 0.1 * 10 ** 18; // 0.1 LINK
+    	jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/f870737d-7550-4ec9-a009-eb596719dff8/runs?network=42
+
+        // RINKEBY DATA
+        //oracle = 0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+        //jobId = "6d1bfe27e7034b1d87b5270556b17277"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+
+    	fee = 1 * 10 ** (18 - 1); // 0.1 LINK
+
+        // register test api
+        string memory educationApiId = "ROFST";
+        string memory educationApiBaseUrl = "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json";
+        string memory educationApiParseMap = "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0";
+        uint8 yearOffset = 3; // good data exists in 2018
+        registerApi(
+            educationApiId, 
+            educationApiBaseUrl,
+            educationApiParseMap,
+            yearOffset  
+        );
+
+
+
     }
 
     function decimals() external override view returns (uint8) {
@@ -73,10 +94,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         return latestData[feedId];
     }
 
-    function feedDataForDate(string memory feedId, string memory date) public view returns (uint256) {
-        return historicalFeedData[feedId][date];
-    }
-
     /**
      * @dev Formats a timestamp to a valid feed date, as api use format YYYYMM
      */
@@ -86,7 +103,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     }
 
     function formatDateByQuarter(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
-        uint16 year = 2019 - yearOffset;//dateTime.getYear(timestamp);
+        uint16 year = 2021 - yearOffset;//dateTime.getYear(timestamp);
         uint8 month = 4;//dateTime.getMonth(timestamp);
         string memory quarter = "Q1";
         if(month > 9) {
@@ -100,6 +117,17 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         return string(abi.encodePacked(uint2str(year), "-", quarter));
     }
 
+    /**
+     * @dev Takes timestamp and returns the year as a string.
+     */
+    function formatDateByYear(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
+        uint16 year = dateTime.getYear(timestamp) - yearOffset;
+        return uint2str(year);
+    }
+
+    /**
+     * @dev Checks if a feed already exists.
+     */
     function feedExists(string memory feedId) public view returns (bool) {
         return bytes(registeredFeeds[feedId].apiBaseUrl).length != 0;
     }
@@ -112,6 +140,17 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     }
 
     /**
+     * @dev Creates a SDMX query request that filters on a specific time range.
+     */
+    function createSDMXDateRangeRequest(
+        string memory baseUrl, 
+        string memory startDate,
+        string memory endDate
+    ) public pure returns (string memory) {
+        return string(abi.encodePacked(baseUrl, "&startPeriod=", startDate, "&endPeriod=", endDate));
+    }
+
+    /**
      * @dev Request offchain api data for feed.
      */
     function requestFeedData(string memory feedId, uint256 timestamp) public {
@@ -120,9 +159,9 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
         // build api url based on date
         FeedParameters memory feedData = registeredFeeds[feedId];
-        string memory baseUrl = feedData.apiBaseUrl;
-        string memory dateString = formatDateByQuarter(timestamp, feedData.yearOffset);
-        string memory formattedUrl = string(abi.encodePacked(baseUrl, dateString));
+        string memory dateString = formatDateByYear(timestamp, feedData.yearOffset);
+        // Filter for time period based on entire year
+        string memory formattedUrl = createSDMXDateRangeRequest(feedData.apiBaseUrl, dateString, dateString);
 
         console.log(formattedUrl);
     	
@@ -137,21 +176,21 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // Answer in decimals so remove decimals
         req.addUint("times", 10**uint256(API_DECIMALS));
 
-    	bytes32 requestId = bytes32("hfsadf");//sendChainlinkRequestTo(oracle, req, fee);
+    	bytes32 requestId = sendChainlinkRequestTo(oracle, req, fee); //bytes32("fasdf");//
 
         // register request data
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
 
-        fulfilFeedRequest(requestId, 100);
+        // FOR LOCAL TEST, AUTOMATICALLY FULFILL
+        //fulfilFeedRequest(requestId, 100);
     }
 
     /**
-     * @dev Chainlink API fulfilled handler. Updates historical data of feed
+     * @dev Chainlink API fulfilled handler. Updates latest data for feed
      */
     function fulfilFeedRequest(bytes32 _requestId, uint256 feedData) public /*recordChainlinkFulfillment(_requestId)*/ {
     	
         FeedRequestData memory reqData = pendingRequests[_requestId];
-        historicalFeedData[reqData.feedId][reqData.requestedDate] = feedData;
 
         // update latest data? still need to update historical data?
         latestData[reqData.feedId] = feedData;
