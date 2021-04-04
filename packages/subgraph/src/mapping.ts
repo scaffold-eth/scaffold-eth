@@ -3,7 +3,6 @@ import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap, et
 import {
     GoodToken,
     ArtworkMinted,
-    ArtworkRevoked,
     Transfer as TransferEvent
 } from '../generated/GoodToken/GoodToken'
 
@@ -69,16 +68,16 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
     }
  
     // load or create fund entity
-    let beneficiaryAddress = event.params.beneficiaryAddress.toHexString()
+    let beneficiaryAddress = event.params.targetTokenAddress.toHexString()
 
     let beneficiary = Beneficiary.load(beneficiaryAddress)
   
     if (beneficiary == null) {
         beneficiary = new Beneficiary(beneficiaryAddress)
-        beneficiary.address = event.params.beneficiaryAddress
+        beneficiary.address = event.params.targetTokenAddress
         beneficiary.createdAt = event.block.timestamp
-        beneficiary.name = event.params.beneficiaryName
-        beneficiary.symbol = artworkMetadata.get('fundSymbol').toString()
+        beneficiary.name = "TODO: Fix beneficiary model"
+        beneficiary.symbol = "TODO: Fix beneficiary model"
 
         beneficiary.save()
     }
@@ -117,18 +116,6 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
 
     artwork.save()
 
-}
-
-export function handleArtworkRevoked(event: ArtworkRevoked): void {
-    setContractAdrress(event)
-
-    // creata new revocation record
-    let revocation = new Revocation(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
-    revocation.createdAt = event.block.timestamp
-    revocation.artwork = event.params.tokenId.toString()
-    revocation.owner = event.params.revokedFrom
-
-    revocation.save()
 }
 
 export function handleTransfer(event: TransferEvent): void {

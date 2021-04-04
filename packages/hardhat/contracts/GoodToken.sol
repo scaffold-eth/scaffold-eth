@@ -22,7 +22,9 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     }
 
     event ArtworkMinted(
-        uint256 artwork, address artist, uint256 price, uint8 ownershipModel, uint256 balanceRequirement, uint64 balanceDurationInSeconds, string artworkCid, string artworkRevokedCid, 
+        uint256 artwork, address artist, uint256 price, uint8 ownershipModel, 
+        uint256 balanceRequirement, uint64 balanceDurationInSeconds, 
+        string artworkCid, string artworkRevokedCid, 
         address targetTokenAddress, uint256 targetTokenId
     );
 

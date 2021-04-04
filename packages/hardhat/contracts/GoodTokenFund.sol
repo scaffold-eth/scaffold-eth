@@ -66,6 +66,7 @@ contract GoodTokenFund is ERC1155, Ownable {
 
         uint256 rangeDecimals = 5;
         // the lerp value extended out "rangeDecimals" decimal places
+        // need to check division by 0...
         uint256 lerp = 1 * 10 ** rangeDecimals;//((clampedDataFeed.sub(minRange)).mul(rangeDecimals)).div(maxRange.sub(minRange));
         
         // check if should invert range

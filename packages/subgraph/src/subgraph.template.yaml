@@ -24,10 +24,8 @@ dataSources:
         - name: GoodToken
           file: ./abis/GoodToken.json
       eventHandlers:
-        - event: ArtworkMinted(uint256,address,uint256,uint8,uint256,uint64,string,string,address,string)
+        - event: ArtworkMinted(uint256,address,uint256,uint8,uint256,uint64,string,string,address,uint256)
           handler: handleArtworkMinted
-        - event: ArtworkRevoked(uint256,address)
-          handler: handleArtworkRevoked
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
       blockHandlers:
