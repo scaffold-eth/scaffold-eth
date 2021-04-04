@@ -11,7 +11,7 @@ import "./IDateTime.sol";
 contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     // FeedRegistered event
-    event FeedRegistered(string feedId, string apuBaseUrl);
+    event FeedRegistered(string feedId, string apiBaseUrl, uint256 yearOffset);
 
     // FeedDataUpdated
     // TODO: Could maybe just a graph CALL_HALNDER callback??
@@ -53,19 +53,21 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         
         // link to datetime contract
         // https://kovan.etherscan.io/address/0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E
-        dateTime = IDateTime(0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E); // KOVAN ADDRESS
-        //dateTime = IDateTime(0x92482Ba45A4D2186DafB486b322C6d0B88410FE7); // RINKEBY ADDRESS
+        //dateTime = IDateTime(0x5C3D0ABABf110CdC54af47445D9739F5C1776E9E); // KOVAN ADDRESS
+        dateTime = IDateTime(0x92482Ba45A4D2186DafB486b322C6d0B88410FE7); // RINKEBY ADDRESS
 
         // setup chainlink props
+        // #if !IS_LOCAL_NETWORK
         //setPublicChainlinkToken();
+        // #endif
         
         // KOVAN DATA
-        oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
-    	jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/f870737d-7550-4ec9-a009-eb596719dff8/runs?network=42
+        //oracle = 0xAA1DC356dc4B18f30C347798FD5379F3D77ABC5b; // https://market.link/nodes/323602b9-3831-4f8d-a66b-3fb7531649eb/jobs?network=42
+    	//jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/f870737d-7550-4ec9-a009-eb596719dff8/runs?network=42
 
         // RINKEBY DATA
-        //oracle = 0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
-        //jobId = "6d1bfe27e7034b1d87b5270556b17277"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+        oracle = 0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+        jobId = "6d1bfe27e7034b1d87b5270556b17277"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
 
     	fee = 1 * 10 ** (18 - 1); // 0.1 LINK
 
@@ -80,9 +82,18 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
             educationApiParseMap,
             yearOffset  
         );
-
-
+        latestData[educationApiId] = 102134 * (10 ** (18 -  4));
     }
+
+
+    /**
+     @dev Update chainlink oracla and jobId if need be.
+     */
+    function setChainlinkTarget(address newOracleAddress, bytes32 newJobId) external onlyOwner {
+        oracle = newOracleAddress;
+        jobId = newJobId;
+    }
+
 
     function decimals() external override view returns (uint8) {
         return API_DECIMALS;
@@ -120,7 +131,12 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
      * @dev Takes timestamp and returns the year as a string.
      */
     function formatDateByYear(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
-        uint16 year = 2021 - yearOffset;//dateTime.getYear(timestamp) - yearOffset;
+        uint16 year;
+        // #if IS_LOCAL_NETWORK
+        year = 2021 - yearOffset;
+        // #else
+      //  year = dateTime.getYear(timestamp) - yearOffset;
+        // #endif
         return uint2str(year);
     }
 
@@ -223,7 +239,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         requestLatestFeedData(feedId);
 
 
-        emit FeedRegistered(feedId, apiBaseUrl);
+        emit FeedRegistered(feedId, apiBaseUrl, yearOffset);
     }
     
 

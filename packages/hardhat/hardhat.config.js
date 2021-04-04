@@ -111,7 +111,12 @@ module.exports = {
   },
   etherscan: {
     apiKey: ETHERSCAN_KEY
-  }
+  },
+  // solpp : {
+  //   defs:{
+  //     IS_LOCAL_NETWORK : 1
+  //   }
+  // }
 };
 
 const DEBUG = false;

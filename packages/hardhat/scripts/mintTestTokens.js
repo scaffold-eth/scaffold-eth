@@ -8,6 +8,7 @@ const goodTokenFundAbi = require("../artifacts/contracts/GoodTokenFund.sol/GoodT
 const fs = require('fs');
 
 const { feedData } = require('./feedData');
+const testTokenData = require('./testTokenData');
 
 //fs.readSync("../artifacts/contracts/GoodToken"))
 
@@ -20,50 +21,6 @@ function randomNumber(min, max){
     const r = Math.random()*(max-min) + min
     return Math.floor(r)
 }
-
-
-const imgListings = [
-  { 
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/African-Wattled-Lapwing-2015-17.jpg',
-    name: 'African Wattler'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/New-Guinea-Masked-Lapwing-5.jpg',
-    name: 'Masked Lapwig'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/Lapwing-MGL-2-sized.jpg',
-    name: 'Northern Lapwig'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/Spur-winged-Lapwing-11.jpg',
-    name: 'Spur-winged-Lapwing'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2016/03/Linnet-March30th-2.jpg',
-    name: 'Linnet'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2016/11/Bird-Castellar-5.jpg',
-    name: 'Bird-Castellar'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2019/09/Barbet-Black-billed-10.jpg',
-    name: 'Barbet Black Billed'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2018/12/BrownBabbler-Nov-3.jpg',
-    name: 'Brown Babbler'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/2018/01/Barbet-Double-toothed-1.jpg',
-    name: 'Barbet Double Toothed'
-  },
-  {
-    img: 'https://www.nerjarob.com/nature/wp-content/uploads/Little-Bee-Eater-2.jpg',
-    name: 'Little Bee Eater'
-  }
-];
 
 const nameAddons = [
     'Spunky',
@@ -127,7 +84,7 @@ const mintTestTokens = async (
         //   };
 
         // generate metadata
-        const baseBird = imgListings[i % imgListings.length];
+        const baseBird = testTokenData[i % testTokenData.length];
         const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
         const targetFeed = feedData[i % feedData.length];

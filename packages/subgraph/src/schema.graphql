@@ -20,7 +20,7 @@ type Artwork @entity {
   artworkRevokedImageUrl: String!
   artworkCid: String!
   artworkRevokedCid: String!
-  beneficiary: Beneficiary!
+  fund: Fund!
   transfers: [Transfer!] @derivedFrom(field: "artwork")
 }
 
@@ -40,19 +40,24 @@ type Transfer @entity {
   from: Bytes!
 }
 
-type Revocation @entity {
+type Fund @entity {
   id: ID!
   createdAt: BigInt!
-  artwork: Artwork!
-  owner: Bytes!
+  beneficiary: Bytes!
+  tokenId: BigInt!
+  name: String!
+  description: String!
+  feed: Feed!
+  rangeMin: BigInt!
+  rangeMax: BigInt!
+  artworks: [Artwork!] @derivedFrom(field: "fund")
 }
 
-type Beneficiary @entity {
+type Feed @entity {
   id: ID!
   createdAt: BigInt!
   name: String!
-  address: Bytes!
-  symbol: String!
-  artworks: [Artwork!] @derivedFrom(field: "beneficiary")
-  artists: [Artist!] 
+  description: String!
+  url: String!
+  yearOffset: BigInt!
 }

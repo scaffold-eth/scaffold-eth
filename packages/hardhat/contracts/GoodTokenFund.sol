@@ -12,7 +12,7 @@ import "hardhat/console.sol";
 contract GoodTokenFund is ERC1155, Ownable {
     using Counters for Counters.Counter;
 
-    event FundCreated(address beneficiary, string feedId, uint256 tokenId);
+    event FundCreated(address beneficiary, string feedId, uint256 tokenId, uint256 rangeMin, uint256 rangeMax);
 
     struct FundData {
         // fund recipient -- most likely will be a charity
@@ -37,6 +37,7 @@ contract GoodTokenFund is ERC1155, Ownable {
     // mapping from feedId => tokenId
     mapping(string => uint256) tokenForFeed;
 
+    uint256 constant RANGE_DECIMALS = 5;
 
     constructor (
         address dataFeedAddress
@@ -64,27 +65,29 @@ contract GoodTokenFund is ERC1155, Ownable {
         uint256 maxRange = Math.max(targetFund.rangeMin, targetFund.rangeMax);
         uint256 clampedDataFeed = Math.max(minRange, Math.min(maxRange, latestFeedData));
 
-        uint256 rangeDecimals = 5;
-        // the lerp value extended out "rangeDecimals" decimal places
+        // the lerp value extended out "RANGE_DECIMALS" decimal places
         // need to check division by 0...
-        uint256 lerp = 1 * 10 ** rangeDecimals;//((clampedDataFeed.sub(minRange)).mul(rangeDecimals)).div(maxRange.sub(minRange));
+        uint256 divisor = Math.max(maxRange.sub(minRange), 1);
+        uint256 lerp = ((clampedDataFeed.sub(minRange)).mul(RANGE_DECIMALS)).div(divisor);
         
         // check if should invert range
         if(targetFund.rangeMax < targetFund.rangeMin) {
-            lerp = (10 ** rangeDecimals) - lerp;
+            lerp = (10 ** RANGE_DECIMALS) - lerp;
         }
 
         console.log("lerp: %s", lerp);
         
         // mapping to range
-        uint256 minMultiplier = 5 * (10 ** (rangeDecimals - 1)); // 50%
-        uint256 maxMultiplier = 2 * (10 ** (rangeDecimals + 1)); // 200%
+        uint256 minMultiplier = 5 * (10 ** (RANGE_DECIMALS - 1)); // 50%
+        uint256 maxMultiplier = 2 * (10 ** (RANGE_DECIMALS + 1)); // 200%
 
         uint256 lerpedMultipler = (minMultiplier + (maxMultiplier.sub(minMultiplier)).mul(lerp));
         console.log("Lerp multiplier: %s", lerpedMultipler);
 
         // TODO: mapping of range here!
-        return weiSupplied.mul(lerpedMultipler).div(rangeDecimals);
+        return weiSupplied.mul(lerpedMultipler).div(RANGE_DECIMALS);
+        //console.log("Supplied wei: %s, Returned tokens: %s", weiSupplied, finalTokens);
+
     }
 
 
@@ -111,7 +114,7 @@ contract GoodTokenFund is ERC1155, Ownable {
 
         tokenForFeed[feedId] = tokenId;
 
-        emit FundCreated(beneficiary, feedId, tokenId);
+        emit FundCreated(beneficiary, feedId, tokenId, rangeMin, rangeMax);
         _tokenIdTracker.increment();
 
     }
