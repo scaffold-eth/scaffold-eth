@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { About, Artworks, Artwork, MintArtwork, Funds } from "./views"
+import { About, Artworks, Vault, Artwork, MintArtwork, Funds } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
@@ -181,6 +181,9 @@ function App(props) {
           <Menu.Item key="/mint">
             <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
           </Menu.Item>
+          <Menu.Item key="/vault">
+            <Link onClick={()=>{setRoute("/vault")}} to="/vault">My Artworks</Link>
+          </Menu.Item>
           <Menu.Item key="/about">
             <Link onClick={()=>{setRoute("/about")}} to="/about">About Good Tokens</Link>
           </Menu.Item>
@@ -224,6 +227,17 @@ function App(props) {
               tx={tx}
               writeContracts={contracts}
             />
+          </Route>
+
+          <Route exact path="/vault">
+            <Vault
+                address={address}
+                userProvider={userProvider}
+                mainnetProvider={mainnetProvider}
+                price={price}
+                tx={tx}
+                writeContracts={contracts}
+              />
           </Route>
 
           <Route exact path="/">
