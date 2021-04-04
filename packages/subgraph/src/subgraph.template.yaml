@@ -18,8 +18,8 @@ dataSources:
         - Artwork
         - Artist
         - Transfer
-        - Revocation
-        - Beneficiary
+        - Fund
+        - Feed
       abis:
         - name: GoodToken
           file: ./abis/GoodToken.json
@@ -30,5 +30,56 @@ dataSources:
           handler: handleTransfer
       blockHandlers:
         - handler: handleBlock
-        
+      file: ./src/mapping.ts
+
+
+  - kind: ethereum/contract
+    name: GoodTokenFund
+    network: '{{network}}'
+    source:
+      address: '{{GoodTokenFundAddress}}'
+      abi: GoodTokenFund
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Artwork
+        - Artist
+        - Transfer
+        - Fund
+        - Feed
+      abis:
+        - name: GoodTokenFund
+          file: ./abis/GoodTokenFund.json
+      eventHandlers:
+        - event: FundCreated(address,string,uint256,uint256,uint256)
+          handler: handleFundCreated
+      file: ./src/mapping.ts
+
+
+  - kind: ethereum/contract
+    name: GoodDataFeed
+    network: '{{network}}'
+    source:
+      address: '{{GoodDataFeedAddress}}'
+      abi: GoodDataFeed
+      startBlock: 1
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.4
+      language: wasm/assemblyscript
+      entities:
+        - Artwork
+        - Artist
+        - Transfer
+        - Fund
+        - Feed
+      abis:
+        - name: GoodDataFeed
+          file: ./abis/GoodDataFeed.json
+      eventHandlers:
+        - event: FeedRegistered(string,string,uint256)
+          handler: handleFeedRegistered
       file: ./src/mapping.ts

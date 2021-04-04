@@ -7,12 +7,21 @@ import {
 } from '../generated/GoodToken/GoodToken'
 
 import {
+    FundCreated
+} from '../generated/GoodTokenFund/GoodTokenFund';
+
+import {
+    FeedRegistered
+} from '../generated/GoodDataFeed/GoodDataFeed';
+
+
+import {
     Contract,
     Artist,
     Artwork,
-    Beneficiary,
+    Fund,
+    Feed,
     Transfer,
-    Revocation
 } from "../generated/schema"
 
 
@@ -69,25 +78,14 @@ export function handleArtworkMinted(event: ArtworkMinted): void {
  
     // load or create fund entity
     let beneficiaryAddress = event.params.targetTokenAddress.toHexString()
-
-    let beneficiary = Beneficiary.load(beneficiaryAddress)
-  
-    if (beneficiary == null) {
-        beneficiary = new Beneficiary(beneficiaryAddress)
-        beneficiary.address = event.params.targetTokenAddress
-        beneficiary.createdAt = event.block.timestamp
-        beneficiary.name = "TODO: Fix beneficiary model"
-        beneficiary.symbol = "TODO: Fix beneficiary model"
-
-        beneficiary.save()
-    }
+    let targetFundTokenId = event.params.targetTokenId.toString()
 
     // create new artwork entity
     let artworkId = event.params.artwork
     let artwork = new Artwork(artworkId.toString())
     artwork.tokenId = artworkId
     artwork.artist = artistAddress
-    artwork.beneficiary = beneficiaryAddress
+    artwork.fund = targetFundTokenId
     artwork.price = event.params.price
     artwork.revoked = false
     artwork.artworkCid = event.params.artworkCid
@@ -159,4 +157,41 @@ export function handleBlock(block: ethereum.Block): void {
         artwork.revoked = revoked
         artwork.save()
     }
+}
+
+export function handleFundCreated(event: FundCreated): void {
+
+    let tokenId = event.params.tokenId
+    let fundId = tokenId.toString()
+    let fund = Fund.load(fundId)
+
+    if(fund == null) {
+        fund = new Fund(fundId);
+        fund.tokenId = tokenId;
+        fund.createdAt = event.block.timestamp
+        fund.name = "TODO -- maybe ipfs"
+        fund.description = "TODO"
+        fund.beneficiary = event.params.beneficiary
+        fund.feed = event.params.feedId
+        fund.rangeMin = event.params.rangeMin
+        fund.rangeMax = event.params.rangeMax
+    }
+    fund.save();
+}
+
+export function handleFeedRegistered(event: FeedRegistered): void {
+
+    let feedId = event.params.feedId;
+
+    let feed = Feed.load(feedId);
+    if(feed == null) {
+        feed = new Feed(feedId);
+        feed.name = "TODO: GIVE A NAME -- either ipfs or in contract event";
+        feed.description = "TODO: GIVE A DESCRIPTION -- ipfs or contract event"
+        feed.url = event.params.apiBaseUrl
+        feed.yearOffset = event.params.yearOffset    
+        feed.createdAt = event.block.timestamp
+    }
+
+    feed.save();
 }
