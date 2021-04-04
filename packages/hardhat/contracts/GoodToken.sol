@@ -240,9 +240,9 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         _tokenIdTracker.increment();
     }
 
-    function payout(uint256 tokenId, address artistAddress) internal {
+    function payout(uint256 tokenId, address artistAddress, bool wasRevoked) internal {
         // if was revoked, payout to good samaritan and previous owner
-        if (isRevoked(tokenId)) {
+        if (wasRevoked) {
             uint256 goodSamaritanFee = msg.value.div(GOOD_SAMARITAN_BONUS);
             uint256 previousOwnerValue = msg.value.sub(goodSamaritanFee);
 
@@ -264,12 +264,18 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
 
         ArtworkData memory currentArtwork = artworkData[tokenId];
         // ensure token can actually be purchased
-        require(owner == currentArtwork.artist || isRevoked(tokenId));
+        bool wasRevoked = isRevoked(tokenId); 
+        // if revoke is possible, but not yet revoked, good samaritan is the buyer
+        if(!wasRevoked && canRevoke(tokenId)) {
+            goodSamaritans[tokenId] = sender;
+            wasRevoked = true;
+        }
+        require(owner == currentArtwork.artist || wasRevoked );
         // verify minimum price
         require(msg.value >= currentArtwork.price, "GoodToken: Offer must meet minimum price");        
 
         // handle payments
-        payout(tokenId, currentArtwork.artist);
+        payout(tokenId, currentArtwork.artist, wasRevoked);
        
         // transfer ownership -- bypass safeTransferFrom checks because already validated
         _safeTransfer(owner, sender, tokenId, "");

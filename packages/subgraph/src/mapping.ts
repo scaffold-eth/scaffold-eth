@@ -1,4 +1,4 @@
-import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap, ethereum } from "@graphprotocol/graph-ts"
+import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap, ethereum, BigInt } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
@@ -151,7 +151,8 @@ export function handleBlock(block: ethereum.Block): void {
 
     
     for (let token = 0; token < tokenSupply; token++) {
-        let revoked = goodToken.isRevoked(BigInt.fromI32(token))
+        let revoked = goodToken.canRevoke(BigInt.fromI32(token)) || 
+            goodToken.isRevoked(BigInt.fromI32(token))
         
         let artwork = new Artwork(token.toString())
         artwork.revoked = revoked
