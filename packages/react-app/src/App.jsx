@@ -178,7 +178,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = ""
-  const faucetAvailable = localProvider && localProvider.connection && localProvider.connection.url && localProvider.connection.url.indexOf(window.location.hostname)>=0 && !process.env.REACT_APP_PROVIDER && price > 1;
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name == "localhost"
 
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider._network&&localProvider._network.chainId==31337&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
