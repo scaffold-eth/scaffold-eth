@@ -29,7 +29,7 @@ const ARTWORKS_QUERY = gql`
         name
       }
       
-      beneficiary {
+      fund {
         name
       }
     }
@@ -55,7 +55,7 @@ const ARTWORKS_QUERY = gql`
           name
         }
         
-        beneficiary {
+        fund {
           name
         }
       }
@@ -108,7 +108,7 @@ const renderArtworkListing = (artwork, history) => {
       cover={<Image src={artwork.artworkImageUrl} />}
     >
       <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">supports {artwork.beneficiary.name}</Text>
+        <Text strong>{artwork.name}</Text> <Text type="secondary">supports {artwork.fund.name}</Text>
       </Row>
     </Card>
   )
