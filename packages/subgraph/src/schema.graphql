@@ -46,6 +46,7 @@ type Fund @entity {
   beneficiary: Bytes!
   tokenId: BigInt!
   name: String!
+  image: String!
   description: String!
   feed: Feed!
   rangeMin: BigInt!

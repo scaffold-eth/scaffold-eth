@@ -2,17 +2,21 @@
 
 pragma solidity ^0.6.0;
 
-import "@openzeppelin/contracts/token/ERC1155/ERC1155.sol";
+import "./GoodFundERC1155.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/math/Math.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./IGoodDataFeed.sol";
 import "hardhat/console.sol";
 
-contract GoodTokenFund is ERC1155, Ownable {
+contract GoodTokenFund is GoodFundERC1155, Ownable {
     using Counters for Counters.Counter;
 
-    event FundCreated(address beneficiary, string feedId, uint256 tokenId, uint256 rangeMin, uint256 rangeMax);
+    event FundCreated(
+        address beneficiary,
+        string metadataCid,
+        uint256 tokenId
+    );
 
     struct FundData {
         // fund recipient -- most likely will be a charity
@@ -34,18 +38,29 @@ contract GoodTokenFund is ERC1155, Ownable {
     // mapping from tokenId => FundData
     mapping (uint256 => FundData) fundForToken;
 
-    // mapping from feedId => tokenId
-    mapping(string => uint256) tokenForFeed;
+    // mapping from fundId => tokenId
+    mapping(string => uint256) tokenForFund;
+
+    // mapping from tokenId => metadata ipfs cid
+    mapping(uint256 => string) cidForToken;
 
     uint256 constant RANGE_DECIMALS = 5;
 
     constructor (
         address dataFeedAddress
-    ) ERC1155("GoodTokenFund") public {
+    ) GoodFundERC1155("GoodTokenFund") public {
         dataFeed = IGoodDataFeed(dataFeedAddress);
 
         // start token tracker at 1 because 0 tokenId not in use
         _tokenIdTracker.increment();
+    }
+
+    /**
+     @dev Returns the URI for a given token
+     */
+    function uri(uint256 id) external override view returns (string memory) {
+        string memory ipfsPrefix = "ipfs://";
+        return string(abi.encodePacked(ipfsPrefix, cidForToken[id]));
     }
 
     /**
@@ -97,11 +112,12 @@ contract GoodTokenFund is ERC1155, Ownable {
      */
     function createNewToken(
         address beneficiary,
+        string calldata fundId, // name of this fund
         string calldata feedId, // feedId on GoodDataFeed contract
+        string calldata metadataCid,
         uint256 rangeMin,
         uint256 rangeMax
     ) external onlyOwner {
-
         uint256 tokenId = _tokenIdTracker.current();
 
         // no need to mint anything, just add new fund data
@@ -112,9 +128,10 @@ contract GoodTokenFund is ERC1155, Ownable {
             rangeMax
         );
 
-        tokenForFeed[feedId] = tokenId;
+        tokenForFund[fundId] = tokenId;
+        cidForToken[tokenId] = metadataCid;
 
-        emit FundCreated(beneficiary, feedId, tokenId, rangeMin, rangeMax);
+        emit FundCreated(beneficiary, metadataCid, tokenId);
         _tokenIdTracker.increment();
 
     }
@@ -123,9 +140,9 @@ contract GoodTokenFund is ERC1155, Ownable {
     /**
      * @dev Mints new tokens to msg.sender based on dynamic data feed and ETH provided
      */
-    function mintFeedToken(string memory feedId) public payable {
-        console.log(feedId);
-        uint256 tokenId = tokenForFeed[feedId];
+    function mintFeedToken(string memory fundId) public payable {
+        console.log(fundId);
+        uint256 tokenId = tokenForFund[fundId];
         mint(tokenId);
     }
 

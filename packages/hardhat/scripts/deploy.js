@@ -8,7 +8,7 @@ const hre = require("hardhat");
 const ipfsApi = require('../../react-app/src/helpers/ipfsGraph');
 const constants = require('../../react-app/src/constants');
 const generateTokens = require('./mintTestTokens');
-const { feedData } = require('./feedData');
+const { feedData, fundData } = require('./feedData');
 
 const graphDir = "../subgraph";
 
@@ -77,13 +77,19 @@ async function deployGoodTokenFund(dataFeedContract) {
   const accounts = await ethers.getSigners();
   const beneficiary = accounts[0].address;
   // add in feeds
-  for(let i = 0; i < feedData.length; i++) {
-    const feed = feedData[i];
+  for(let i = 0; i < fundData.length; i++) {
+    const fund = fundData[i];
+
+    // push fund metadata to ipfs
+    const fundCid = await ipfs.addJson(fund);
+
     await goodTokenFund.createNewToken(
-      beneficiary,
-      feed.symbol,
-      feed.rangeMin,
-      feed.rangeMax
+      beneficiary, // for now just account as beneficiary
+      fund.symbol,
+      fund.targetFeedId,
+      fundCid.path,
+      fund.rangeMin,
+      fund.rangeMax
     ).then(tx => tx.wait)
   }
 

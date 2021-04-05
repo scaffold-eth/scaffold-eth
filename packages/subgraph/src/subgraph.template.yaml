@@ -54,7 +54,7 @@ dataSources:
         - name: GoodTokenFund
           file: ./abis/GoodTokenFund.json
       eventHandlers:
-        - event: FundCreated(address,string,uint256,uint256,uint256)
+        - event: FundCreated(address,string,uint256)
           handler: handleFundCreated
       file: ./src/mapping.ts
 

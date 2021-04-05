@@ -7,7 +7,7 @@ const goodTokenAbi = require("../artifacts/contracts/GoodToken.sol/GoodToken.jso
 const goodTokenFundAbi = require("../artifacts/contracts/GoodTokenFund.sol/GoodTokenFund.json").abi;
 const fs = require('fs');
 
-const { feedData } = require('./feedData');
+const { fundData } = require('./feedData');
 const testTokenData = require('./testTokenData');
 
 //fs.readSync("../artifacts/contracts/GoodToken"))
@@ -87,20 +87,20 @@ const mintTestTokens = async (
         const baseBird = testTokenData[i % testTokenData.length];
         const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
-        const targetFeed = feedData[i % feedData.length];
-        const targetFeedTokenId = (i % feedData.length) + 1; // 1 indexed
-        const feedName = targetFeed.name
-        const feedSymbol = targetFeed.symbol;
+        const targetFund = fundData[i % fundData.length];
+        const targetFeedTokenId = (i % fundData.length) + 1; // 1 indexed
+        const fundName = targetFund.name
+        const fundSymbol = targetFund.symbol;
         const tokenMetadata = {
             "name": tokenName,
             "artist": artistAccount.address,
             "artistName": artistNames[artistIdx % artistNames.length],
-            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + feedName + ":)",
+            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + fundName + ":)",
             "image": baseBird.img,
             "date": Date.now(),
             "price": price,
-            "feedName": feedName,
-            "feedSymbol": feedSymbol,
+            "fundName": fundName,
+            "fundSymbol": fundSymbol,
         }
 
         // console.log(tokenMetadata);
@@ -115,7 +115,7 @@ const mintTestTokens = async (
     
         // add funds
         await goodTokenFundContract.connect(targetAccount)
-          .mintFeedToken(feedSymbol, {value: balanceInWei}).then(tx => tx.wait);
+          .mintFeedToken(fundSymbol, {value: balanceInWei}).then(tx => tx.wait);
 
         // eslint-disable-next-line no-await-in-loop
         const tx = await goodTokenContract.connect(artistAccount).createArtwork(

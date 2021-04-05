@@ -165,18 +165,27 @@ export function handleFundCreated(event: FundCreated): void {
     let tokenId = event.params.tokenId
     let fundId = tokenId.toString()
     let fund = Fund.load(fundId)
-
+    
     if(fund == null) {
         fund = new Fund(fundId);
         fund.tokenId = tokenId;
         fund.createdAt = event.block.timestamp
-        fund.name = "TODO -- maybe ipfs"
-        fund.description = "TODO"
         fund.beneficiary = event.params.beneficiary
-        fund.feed = event.params.feedId
-        fund.rangeMin = event.params.rangeMin
-        fund.rangeMax = event.params.rangeMax
     }
+    
+    // add in additional data via ipfs
+    let fundPayload = ipfs.cat('/ipfs/' + event.params.metadataCid.toString());  
+    if(fundPayload != null) {
+        let fundMetadata:TypedMap<string, JSONValue>
+        fundMetadata = json.fromBytes(fundPayload as Bytes).toObject();
+        fund.name = fundMetadata.get('name').toString();
+        fund.description = fundMetadata.get('description').toString();
+        fund.feed = fundMetadata.get('targetFeedId').toString();
+        fund.image = fundMetadata.get('image').toString();
+        fund.rangeMin = fundMetadata.get('rangeMin').toBigInt();
+        fund.rangeMax = fundMetadata.get('rangeMax').toBigInt();
+    }
+
     fund.save();
 }
 
