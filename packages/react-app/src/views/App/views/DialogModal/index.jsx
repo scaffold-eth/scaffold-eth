@@ -15,7 +15,8 @@ const styles = {
     width: '80%',
     marginTop: '30px',
     marginLeft: '15%',
-    marginRight: '10%'
+    marginRight: '10%',
+    fontSize: '12px'
   }
 }
 
@@ -97,7 +98,7 @@ const DialogModal = ({
                       src={`./assets/${avatar}`}
                       alt='avatar'
                       style={{
-                        minWidth: '120px',
+                        minWidth: '90px',
                         imageRendering: 'pixelated',
                         transform: 'scaleX(1)'
                       }}
@@ -107,7 +108,9 @@ const DialogModal = ({
                     className={`nes-balloon from-${alignment}`}
                     style={{
                       width: 'calc(100% - 160px)',
-                      lineHeight: '30px'
+                      padding: '12px',
+                      fontSize: '12px',
+                      lineHeight: '19px'
                     }}
                   >
                     <p>
@@ -145,7 +148,7 @@ const DialogModal = ({
                       src={`./assets/${avatar}`}
                       alt='avatar'
                       style={{
-                        minWidth: '120px',
+                        minWidth: '90px',
                         imageRendering: 'pixelated',
                         transform: 'scaleX(-1)'
                       }}
