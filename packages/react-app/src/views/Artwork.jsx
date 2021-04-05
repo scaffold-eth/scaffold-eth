@@ -47,9 +47,11 @@ const ARTWORK_QUERY = gql`
         name
       }
       
-      beneficiary {
+      fund {
         name
-        symbol
+        feed {
+          id
+        }
       }
 
       transfers(orderBy: createdAt, orderDirection: desc) {
@@ -87,7 +89,7 @@ const renderArtworkListing = artwork => (
       cover={<Image src={artwork.revoked ? artwork.artworkRevokedImageUrl : artwork.artworkImageUrl} />}
     >
       <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.beneficiary.name}</Text> 
+        <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.fund.name}</Text> 
       </Row>
     </Card>
   </List.Item>
@@ -212,7 +214,7 @@ const Subgraph = (props) => {
                   </Row>
                   {(data.artwork.ownershipModel == 0) && <Row justify="space-between">
                     <Text type="secondary">Minimum balance</Text>
-                    <Text type="secondary">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.beneficiary.symbol}</i></Text>
+                    <Text type="secondary">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.fund.feed.id}</i></Text>
                   </Row>}
                   {(data.artwork.ownershipModel == 1) && <Row justify="space-between">
                     <Text type="secondary">Balance period</Text>
@@ -273,13 +275,13 @@ const Subgraph = (props) => {
               <Col flex="1">
                 <br/>
                 <Card title="The Good stuff">
-                  This artwork supports <Text type="warning">{data.artwork.beneficiary.name}</Text> using the Good Token protocol.
+                  This artwork supports <Text type="warning">{data.artwork.fund.name}</Text> using the Good Token protocol.
                     <br/>
                     <br/>
                   {
                     data.artwork.ownershipModel ? (
                       <Row>
-                        <Text>This Good Token uses a dynamic ownership model. This means the owner must contribute  <Text type="warning">1 token</Text> to <Text type="warning">{data.artwork.beneficiary.name}</Text> every <Text type="warning">{data.artwork.balanceDurationInSeconds}</Text> seconds.</Text>
+                        <Text>This Good Token uses a dynamic ownership model. This means the owner must contribute  <Text type="warning">1 token</Text> to <Text type="warning">{data.artwork.fund.name}</Text> every <Text type="warning">{data.artwork.balanceDurationInSeconds}</Text> seconds.</Text>
                         {
                           data.artwork.revoked ?
                            <Text mark>The current owner failed to make the required contribution and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>
@@ -289,7 +291,7 @@ const Subgraph = (props) => {
                       </Row>
                     ) : (
                       <Row>
-                        <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.beneficiary.symbol}</i> tokens</Text> with <Text type="warning">{data.artwork.beneficiary.name}</Text>.</Text>
+                        <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.fund.feed.id}</i> tokens</Text> with <Text type="warning">{data.artwork.fund.name}</Text>.</Text>
                         {
                         data.artwork.revoked ?
                         <Text mark>The current owner failed to maintain the required balance and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>                        
