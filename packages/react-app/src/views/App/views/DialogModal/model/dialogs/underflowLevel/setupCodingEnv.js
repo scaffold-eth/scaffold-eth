@@ -7,11 +7,22 @@ const setupCodingEnv = [
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
-    text: 'Connection successfull. Found <one> compatible interface nearby.',
+    text: 'Connection successfull.',
     choices: [
       {
         id: 'continue',
-        buttonText: 'Connect to interface'
+        buttonText: 'Continue'
+      }
+    ]
+  },
+  {
+    avatar: 'old_gtx.png',
+    alignment: 'right',
+    text: 'Searching for interfaces... Found <one> compatible interface nearby.',
+    choices: [
+      {
+        id: 'continue',
+        buttonText: 'Connect to human compatible interface'
       }
     ]
   },
@@ -19,8 +30,20 @@ const setupCodingEnv = [
     avatar: 'old_gtx.png',
     alignment: 'right',
     text: 'Connection to interface established.',
+    choices: [
+      {
+        id: 'continue',
+        buttonText: 'Show interface'
+      }
+    ]
+  },
+  {
+    anchorId: 'cityFundsContract',
+    avatar: 'old_gtx.png',
+    alignment: 'right',
+    text: '',
     code: `
-    contract Clicker {
+    contract EthereumCityERC20TokenMinter {
       event Click(address sender);
 
       mapping(address => uint256) public clicks;
@@ -42,13 +65,13 @@ const setupCodingEnv = [
         buttonText: 'Continue'
       }
     ]
-  }
-  /*
+  },
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
-    text: 'Loading human compatible interface...'
-  },
+    text: `Hmm, I can't quite put my finger on it, but something about this contract seems off...`
+  }
+  /*
   {
     avatar: 'old_gtx.png',
     alignment: 'right',

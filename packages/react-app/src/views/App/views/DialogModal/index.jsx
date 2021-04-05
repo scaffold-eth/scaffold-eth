@@ -51,12 +51,21 @@ const DialogModal = ({
   const writeContracts = useContractLoader(userProvider)
 
   // keep track of a variable from the contract in the local React state:
-  const yourClicks = useContractReader(readContracts, 'Clicker', 'clicks', [address])
-  console.log('🤗 yourClicks:', yourClicks)
+  const userClicks = useContractReader(readContracts, 'Clicker', 'clicks', [address])
+  console.log('🤗 userClicks:', userClicks)
 
   // 📟 Listen for broadcast events
   const clickEvents = useEventListener(readContracts, 'Clicker', 'Click', localProvider, 1)
   console.log('📟 clickEvents:', clickEvents)
+
+  const userFoundContractTrick =
+    userClicks > 115792089237316195423570985008687907853269984665640564039457584007913129639
+
+  if (userFoundContractTrick) {
+    console.log('user found the trick -> set dialog to xxx')
+  } else {
+    console.log('user did not find trick yet')
+  }
 
   return (
     <div
@@ -79,7 +88,7 @@ const DialogModal = ({
           }}
         >
           {dialogs[currentDialog.name].map((dialog, index) => {
-            const { avatar, alignment, text, code, choices } = dialog
+            const { anchorId, avatar, alignment, text, code, choices } = dialog
 
             const isLastVisibleDialog = index === currentDialog.index
             const isFinalDialog = index === dialogs[currentDialog.name].length - 1
@@ -110,17 +119,15 @@ const DialogModal = ({
                       width: 'calc(100% - 160px)',
                       padding: '12px',
                       fontSize: '12px',
-                      lineHeight: '19px'
+                      lineHeight: '27px'
                     }}
                   >
-                    <p>
-                      {text}
-                      {code && <CodeContainer language='bash' children={code} />}
-                    </p>
-                    {isFinalDialog && currentDialog.name === 'setupCodingEnv' && (
+                    <p>{text}</p>
+                    {code && <CodeContainer language='bash' children={code} />}
+                    {currentDialog.name === 'setupCodingEnv' && anchorId === 'cityFundsContract' && (
                       <div style={{ padding: '20px', border: '1px solid #ccc' }}>
                         <div style={{ textAlign: 'center' }}>
-                          <Title level={3}>{yourClicks && yourClicks.toString()}</Title>
+                          <Title level={3}>{userClicks && userClicks.toString()}</Title>
                         </div>
 
                         <Button
@@ -191,6 +198,20 @@ const DialogModal = ({
                       style={{ ...styles.button }}
                     >
                       Continue ...
+                    </button>
+                  )}
+                  {isFinalDialog && userFoundContractTrick && (
+                    <button
+                      type='button'
+                      className='nes-btn is-warning'
+                      id='continue'
+                      onClick={() => {
+                        // actions.continueCurrentDialog()
+                        scrollToBottom('#speechContainer')
+                      }}
+                      style={{ ...styles.button }}
+                    >
+                      Transfer funds to wallet
                     </button>
                   )}
                 </div>
