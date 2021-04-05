@@ -134,10 +134,10 @@ We just proved that we know the input value that hashes to `verifiedHash` withou
 
 (Although, we did not do this securely, like at all)
 
-#### Create your own circuits
+#### Create your own circuit
 
 Give the `draft` command a try!
 ```
 yarn draft <YOUR_CIRCUIT_NAME>
 ```
-This will create a blank circuit template fro you to try out!
+This will create a blank circuit template for you to try out!
