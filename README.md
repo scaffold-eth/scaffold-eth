@@ -2,7 +2,7 @@
 
 Write and compile zero knowledge circuits with [circom](https://docs.circom.io/) and [snarkjs](https://github.com/iden3/snarkjs) in the `circom` workspace.
 
-## Guide
+## `Hash` Circuit Guide
 
 #### Compile `hash` Circuit
 
@@ -104,7 +104,7 @@ On line 32 we see this require statement:
 ```
 require(verifyProof(a, b, c, input), "Invalid Proof");
 ```
-This line calls the `1verifyProof` function we were playing with before and requires it to return a `true` boolean for the transaction to be accepted.
+This line calls the `verifyProof` function we were playing with before and requires it to return a `true` boolean for the transaction to be accepted.
 
 Now let's use the solidity calldata for our valid proof:
 
@@ -133,3 +133,11 @@ YES!! It went though this time. And we modified a state variable of our solidity
 We just proved that we know the input value that hashes to `verifiedHash` without revealing what that value actually is!
 
 (Although, we did not do this securely, like at all)
+
+#### Create your own circuits
+
+Give the `draft` command a try!
+```
+yarn draft <YOUR_CIRCUIT_NAME>
+```
+This will create a blank circuit template fro you to try out!
