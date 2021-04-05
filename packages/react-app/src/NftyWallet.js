@@ -5,6 +5,7 @@ import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
 import { Account, Faucet } from "./components";
+import { createClient } from '@supabase/supabase-js'
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
@@ -27,6 +28,10 @@ const ipfsConfig = {
   protocol: "https",
   timeout: 2500
 };
+
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY
+let supabase
 
 export default function NftyWallet(props) {
   const calculatedVmin = Math.min(
@@ -51,6 +56,10 @@ export default function NftyWallet(props) {
   const [drawerVisibility, setDrawerVisibility] = useState(false)
 
   const transactionConfig = useRef({})
+
+  if(process.env.REACT_APP_SUPABASE_KEY) {
+    supabase = createClient(supabaseUrl, supabaseKey)
+  }
 
   useEffect(()=> {
     transactionConfig.current = {
@@ -104,10 +113,6 @@ export default function NftyWallet(props) {
     color: "#999",
     boxShadow: "0 0 0 1px #d9d9d9 inset"
   };
-
-  useEffect(()=>{
-
-  },[])
 
   let accountDisplay = (
     <Account
@@ -335,6 +340,8 @@ export default function NftyWallet(props) {
             contractAddress={props.readKovanContracts?props.readKovanContracts['NiftyInk']['address']:''}
             address={props.address}
             transactionConfig={transactionConfig}
+            supabase={supabase}
+            ipfsConfig={ipfsConfig}
           />
         </Route>
 
@@ -355,7 +362,7 @@ export default function NftyWallet(props) {
         </Route>
 
         <Route path="/artist/:address">
-          <Artist {...props} />
+          <Artist {...props} supabase={supabase} />
         </Route>
 
         <Route path="/create">

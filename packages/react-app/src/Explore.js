@@ -1,16 +1,17 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { useQuery } from "react-apollo";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useHistory } from "react-router-dom";
 import { EXPLORE_QUERY, INK_LIKES_QUERY } from "./apollo/queries";
-import { isBlocklisted } from "./helpers";
-import { Row, Divider, Select, Switch, Space, Badge } from "antd";
+import { isBlocklisted, getFromIPFS } from "./helpers";
+import { Row, Divider, Select, Switch, Space, Badge, Button, Radio, Form } from "antd";
+import { FilterOutlined } from "@ant-design/icons";
 import { Loader } from "./components"
 import { ethers } from "ethers";
 import dayjsGenerateConfig from 'rc-picker/lib/generate/dayjs';
 import generatePicker from 'antd/lib/date-picker/generatePicker';
 import 'antd/lib/date-picker/style/index';
 import LikeButton from "./LikeButton.js"
-import { useDebounce } from "./hooks";
+import { useDebounce, useLocalStorage } from "./hooks";
 
 const { Option } = Select;
 
@@ -29,6 +30,8 @@ export default function ForSale(props) {
   let location = useLocation();
   let searchParams = useSearchParams()
 
+  let history = useHistory()
+
   let [allInks, setAllInks] = useState([]);
   let [inks, setInks] = useState({});
 
@@ -37,11 +40,13 @@ export default function ForSale(props) {
   let [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || 'createdAt')
   let [orderDirection, setOrderDirection] = useState(searchParams.get("orderDirection") || 'desc')
 
-  let [startDate, setStartDate] = useState(searchParams.get("startDate") ? dayjs(searchParams.get("startDate")) : dayjs().subtract(29, 'days'))
+  let [startDate, setStartDate] = useState(searchParams.has("startDate") ? dayjs(searchParams.get("startDate")) : dayjs().subtract(29, 'days'))
 
-  let [endDate, setEndDate] = useState((searchParams.get("endDate") ? dayjs(searchParams.get("endDate")) : dayjs()))
+  let [endDate, setEndDate] = useState((searchParams.has("endDate") ? dayjs(searchParams.get("endDate")) : dayjs()))
 
   let [forSale, setForSale] = useState(searchParams.get("forSale") || "all-inks")
+
+  let [layout, setLayout] = useLocalStorage("exploreLayout", "cards")
 
   let [inkFilters, setInkFilters] = useState({
     createdAt_gt: startDate.unix(),
@@ -97,10 +102,16 @@ export default function ForSale(props) {
     return data;
   };
 
-  const getInks = (data) => {
+  const getInks = async (data) => {
     setAllInks([...allInks, ...data])
+    let { data: blocklist, error } = await props.supabase
+      .from('blocklist')
+      .select('jsonUrl')
     data.forEach(async (ink) => {
       if (isBlocklisted(ink.jsonUrl)) return;
+      if (blocklist && blocklist.find(el => el.jsonUrl === ink.jsonUrl)) {
+        return;
+      }
       let _ink = ink;
       _ink.metadata = await getMetadata(ink.jsonUrl);
       let _newInk = {}
@@ -148,22 +159,36 @@ export default function ForSale(props) {
 
     return (
     <div style={{ width: "90%", margin: "0 auto" }}>
-    <Row justify="center">
-    <Space>
-    <CustomTimeRangePicker
+    {<Row justify="center" style={{margin: 5}}>
+    <Form
+      layout={"inline"}
+      initialValues={{ layout: layout, dateRange: [startDate, endDate], orderBy: orderBy, orderDirection: orderDirection, forSale: forSale }}
+    >
+    <Form.Item name="layout">
+    <Radio.Group size="large" value={layout} onChange={(v)=>{setLayout(v.target.value)}}>
+      <Radio.Button value={"cards"}>Cards</Radio.Button>
+      <Radio.Button value={"tiles"}>Tiles</Radio.Button>
+    </Radio.Group>
+    </Form.Item>
+    {layout=="cards"&&
+    <>
+    <Form.Item name="dateRange">
+    <CustomTimeRangePicker size="large"
     value={[startDate, endDate]}
     onChange={(moments, dateStrings) => {
       searchParams.set("startDate", dateStrings[0])
       searchParams.set("endDate", dateStrings[1])
-      window.history.pushState({}, '', `${location.pathname}?${searchParams.toString()}`);
+      history.push(`${location.pathname}?${searchParams.toString()}`);
       setStartDate(dayjs(dateStrings[0]))
       setEndDate(dayjs(dateStrings[1]))
       setInks({})
     }}/>
-    <Select value={orderBy} style={{ width: 120 }}
+    </Form.Item>
+    <Form.Item name="orderBy">
+    <Select value={orderBy} style={{ width: 120 }} size="large"
       onChange={(val) => {
         searchParams.set("orderBy", val)
-        window.history.pushState({}, '', `${location.pathname}?${searchParams.toString()}`);
+        history.push(`${location.pathname}?${searchParams.toString()}`);
         setInks({})
         setOrderBy(val)
       }
@@ -173,28 +198,35 @@ export default function ForSale(props) {
       <Option value="likeCount">Likes</Option>
       <Option value="count">Token Count</Option>
     </Select>
-    <Select value={orderDirection} style={{ width: 120 }}
+    </Form.Item>
+    <Form.Item name="orderDirection">
+    <Select value={orderDirection} style={{ width: 120 }} size="large"
       onChange={(val) => {
         searchParams.set("orderDirection", val)
-        window.history.pushState({}, '', `${location.pathname}?${searchParams.toString()}`);
+        history.push(`${location.pathname}?${searchParams.toString()}`);
         setOrderDirection(val)
         setInks({})
       }}>
       <Option value="desc">Descending</Option>
       <Option value="asc">Ascending</Option>
     </Select>
-    <Select value={forSale} style={{ width: 120 }}
+    </Form.Item>
+    <Form.Item name="forSale">
+    <Select value={forSale} style={{ width: 120 }} size="large"
       onChange={(val) => {
         searchParams.set("forSale", val)
-        window.history.pushState({}, '', `${location.pathname}?${searchParams.toString()}`);
+        history.push(`${location.pathname}?${searchParams.toString()}`);
         setForSale(val)
         setInks({})
       }}>
       <Option value={"for-sale"}>For sale</Option>
       <Option value={"all-inks"}>All inks</Option>
     </Select>
-    </Space>
-    </Row>
+    </Form.Item>
+    </>
+    }
+    </Form>
+    </Row>}
       <div className="inks-grid">
         <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
         {inks
@@ -205,7 +237,7 @@ export default function ForSale(props) {
                 return (
               <li
                 key={inks[ink].id}
-                style={{
+                style={layout=="cards"?{
                   display: "inline-block",
                   verticalAlign: "top",
                   margin: 10,
@@ -213,7 +245,8 @@ export default function ForSale(props) {
                   border: "1px solid #e5e5e6",
                   borderRadius: "10px",
                   fontWeight: "bold"
-                }}
+                }:{display: "inline-block", border: "1px solid #e5e5e6",
+                borderRadius: "10px",}}
               >
               <Link
                 to={{pathname: "/ink/"+inks[ink].id}}
@@ -222,15 +255,16 @@ export default function ForSale(props) {
                   <img
                     src={inks[ink].metadata.image}
                     alt={inks[ink].metadata.name}
-                    width="180"
-                    style={{
+                    width={layout=="cards"?"180":"150"}
+                    style={layout=="cards"?{
                       border: "1px solid #e5e5e6",
                       borderRadius: "10px"
-                    }}
+                    }:{}}
                   />
+                  {layout=="cards"&&<>
                   <Row
                   align="middle"
-                  style={{ textAlign: "center", justifyContent: "center" }}
+                  style={{ textAlign: "center", justifyContent: "center", width:"180" }}
                   >
                   <h3
                     style={{ margin: "10px 0px 5px 0px", fontWeight: "700" }}
@@ -243,7 +277,7 @@ export default function ForSale(props) {
 
                   <Row
                     align="middle"
-                    style={{ textAlign: "center", justifyContent: "center" }}
+                    style={{ textAlign: "center", justifyContent: "center", width: "180" }}
                   >
                     {(inks[ink].bestPrice > 0)
                       ? (<><p
@@ -252,7 +286,7 @@ export default function ForSale(props) {
                         margin: "0"
                       }}
                     >
-                      <b>{ethers.utils.formatEther(inks[ink].bestPrice)} </b>
+                      <b>{parseFloat(ethers.utils.formatEther(inks[ink].bestPrice))} </b>
                     </p>
 
                     <img
@@ -284,6 +318,7 @@ export default function ForSale(props) {
                     />
                     </div>
                   </Row>
+                  </>}
                 </Link>
               </li>)
             })

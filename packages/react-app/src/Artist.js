@@ -85,10 +85,16 @@ export default function Artist(props) {
       return data;
     };
 
-    const getInks = (data) => {
+    const getInks = async (data) => {
       setInks([]);
+      let { data: blocklist, error } = await props.supabase
+        .from('blocklist')
+        .select('jsonUrl')
       data.forEach(async (ink) => {
         if (isBlocklisted(ink.jsonUrl)) return;
+        if (blocklist.find(el => el.jsonUrl === ink.jsonUrl)) {
+          return;
+        }
         let _ink = ink;
         _ink.metadata = await getMetadata(ink.jsonUrl);
         setInks((inks) => [...inks, _ink]);
