@@ -7,7 +7,7 @@ import { Row, Col, Button, Spin } from "antd";
 import { ethers } from "ethers";
 import "./App.css";
 import { useContractLoader } from "./hooks";
-import { Ramp, Faucet } from "./components";
+import { Faucet } from "./components";
 import { INFURA_ID } from "./constants"
 
 import NftyWallet from "./NftyWallet.js";
@@ -141,9 +141,6 @@ function App() {
                   ""
                 ) : (
                   <>
-                    <Col>
-                      <Ramp price={price} address={address} />
-                    </Col>
                     <Col>
                       <Button
                         onClick={() => {

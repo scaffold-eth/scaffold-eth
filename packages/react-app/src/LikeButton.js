@@ -10,38 +10,14 @@ export default function LikeButton(props) {
 
   const readContracts = useContractLoader(props.metaProvider);
 
-  const [likes, setLikes] = useState()
-  const [hasLiked, setHasLiked] = useState()
-
   let likeButton
-
-  let displayLikes
-  if(likes) {
-    displayLikes = likes.toString()
-  }
-
-  usePoller(() => {
-    const getLikeInfo = async () => {
-      if(readContracts && props.likerAddress && props.contractAddress){
-        try {
-        const newInkLikes = await readContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
-        setLikes(newInkLikes)
-        const newHasLiked = await readContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
-        setHasLiked(newHasLiked)
-      } catch(e){ console.log(e)}
-      }
-    }
-    getLikeInfo()
-  }, 4333
-)
-
 
 
     likeButton = (<>
-      <Badge style={{ backgroundColor: '#2db7f5' }} count={displayLikes}>
+      <Badge style={{ backgroundColor: '#2db7f5' }} count={props.likeCount&&props.likeCount.toString()}>
       <Button onClick={async (e)=>{
         e.preventDefault();
-        if(!hasLiked&&!minting){
+        if(!props.hasLiked&&!minting){
           setMinting(true)
           try {
             let contractAddress = props.contractAddress
@@ -88,8 +64,8 @@ export default function LikeButton(props) {
           }
         }
         return false;
-      }} loading={minting} shape={"circle"} type={hasLiked||minting?"primary":"secondary"} style={{ zIndex:99, cursor:"pointer", marginBottom: 12, boxShadow: "2px 2px 3px #d0d0d0" }}>
-        {minting?"":hasLiked?<LikeOutlined />:<LikeTwoTone />}
+      }} loading={minting} shape={"circle"} type={props.hasLiked||minting?"primary":"secondary"} style={{ zIndex:99, cursor:"pointer", marginBottom: props.marginBottom || 12, boxShadow: "2px 2px 3px #d0d0d0" }}>
+        {minting?"":props.hasLiked?<LikeOutlined />:<LikeTwoTone />}
       </Button>
       </Badge>
       </>

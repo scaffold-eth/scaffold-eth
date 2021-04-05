@@ -4,12 +4,14 @@ import { HOLDINGS_QUERY, HOLDINGS_MAIN_QUERY, HOLDINGS_MAIN_INKS_QUERY } from ".
 import ApolloClient, { InMemoryCache } from 'apollo-boost';
 import { isBlocklisted } from "./helpers";
 import { useParams, Link, useHistory } from "react-router-dom";
-import { Row, Col, Divider, Switch, Button, Empty, Popover } from "antd";
-import { SendOutlined, RocketOutlined } from "@ant-design/icons";
+import { Row, Col, Divider, Switch, Button, Empty, Popover, notification, Form } from "antd";
+import { SendOutlined, RocketOutlined, SearchOutlined } from "@ant-design/icons";
 import { AddressInput, Loader } from "./components";
 import SendInkForm from "./SendInkForm.js";
 import UpgradeInkButton from "./UpgradeInkButton.js";
 import Blockies from "react-blockies";
+import NiftyShop from "./NiftyShop.js"
+import { ethers } from "ethers";
 
 const mainClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
@@ -17,6 +19,9 @@ const mainClient = new ApolloClient({
 })
 
 export default function Holdings(props) {
+
+  const [searchCollector] = Form.useForm();
+  const history = useHistory();
 
   let { address } = useParams();
 
@@ -101,7 +106,6 @@ export default function Holdings(props) {
     let tokenList = _tokens.map(i => i.id)
     let mainTokenList = _mainTokens.map(i => i.id)
     setHoldings([...tokenList, ...mainTokenList])
-    console.log(holdings)
   }
 
   const handleFilter = () => {
@@ -161,6 +165,52 @@ export default function Holdings(props) {
     }
   }
 
+  const search = async (values) => {
+    try {
+      const newAddress = ethers.utils.getAddress(values["address"]);
+      setData();
+      history.push("/holdings/"+newAddress);
+    } catch (e) {
+      console.log("not an address");
+      notification.open({
+        message: "📛 Not a valid address!",
+        description: "Please try again"
+      });
+    }
+  };
+
+  const onFinishFailed = errorInfo => {
+    console.log('Failed:', errorInfo);
+  };
+
+  const SearchForm = () => {
+    return (
+      <Form
+        form={searchCollector}
+        layout={"inline"}
+        name="searchCollector"
+        onFinish={search}
+        onFinishFailed={onFinishFailed}
+      >
+        <Form.Item
+          name="address"
+          rules={[{ required: true, message: "Search for an Address or ENS" }]}
+        >
+          <AddressInput
+            ensProvider={props.mainnetProvider}
+            placeholder={"Search collector"}
+          />
+        </Form.Item>
+
+        <Form.Item>
+          <Button type="primary" htmlType="submit" disabled={loading}>
+            <SearchOutlined />
+          </Button>
+        </Form.Item>
+      </Form>
+  )
+  };
+
   return (
     <div style={{maxWidth: 700, margin: "0 auto", textAlign: "center" }}>
     <Blockies
@@ -190,6 +240,7 @@ export default function Holdings(props) {
 
       <Divider />
       <Row justify="end" style={{ marginBottom: 20 }}>
+        <Col><SearchForm/></Col>
         <Col>
           {`Created by ${props.address == address ? 'me' : 'holder'}:  `}
           <Switch defaultChecked={!myCreationOnly} onChange={handleFilter} />
@@ -236,11 +287,10 @@ export default function Holdings(props) {
                       Edition: {tokens[id].ink.count}/{tokens[id].ink.limit}
                     </p>
                   </Link>
-                  <Divider style={{ margin: "10px 0" }} />
-                  <Row justify={"space-between"}>
+                  <Row justify={"center"}>
                   {tokens[id].network==="xDai"
                   ? <>
-                  <Popover content={
+                  {address==props.address&&<><Popover content={
                     <SendInkForm tokenId={tokens[id].id} address={props.address} mainnetProvider={props.mainnetProvider} injectedProvider={props.injectedProvider} transactionConfig={props.transactionConfig}/>
                   }
                   title="Send Ink">
@@ -253,7 +303,22 @@ export default function Holdings(props) {
                     upgradePrice={props.upgradePrice}
                     transactionConfig={props.transactionConfig}
                     buttonSize="small"
-                  /></>
+                  /></>}
+                  <NiftyShop
+                    injectedProvider={props.injectedProvider}
+                    metaProvider={props.metaProvider}
+                    type={'token'}
+                    ink={tokens[id].ink.id}
+                    itemForSale={tokens[id].id}
+                    gasPrice={props.gasPrice}
+                    address={props.address?props.address.toLowerCase():null}
+                    ownerAddress={address.toLowerCase()}
+                    price={tokens[id].price}
+                    visible={true}
+                    transactionConfig={props.transactionConfig}
+                    buttonSize="small"
+                  />
+                  </>
                   : <Button type="primary" style={{ margin:8, background: "#722ed1", borderColor: "#722ed1"  }} onClick={()=>{
                       console.log("item",id)
                       window.open("https://opensea.io/assets/0xc02697c417ddacfbe5edbf23edad956bc883f4fb/"+id)

@@ -3,7 +3,7 @@ import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space } from 'antd';
+import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification } from 'antd';
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -22,7 +22,7 @@ export default function CreateInk(props) {
   const [brushRadius, setBrushRadius] = useState(8)
 
   const drawingCanvas = useRef(null);
-  const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
+  const [size, setSize] = useState([0.85 * props.calculatedVmin, 0.85 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
 
   const [sending, setSending] = useState()
   const [drawingSize, setDrawingSize] = useState(0)
@@ -144,39 +144,51 @@ export default function CreateInk(props) {
     const jsonHash = await Hash.of(inkBuffer)
     console.log("jsonHash", jsonHash)
 
+    let drawingResultInfura
+    let imageResultInfura
+    let inkResultInfura
+
+    try {
+      const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
+      const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
+      const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+
+      drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
+      imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
+      inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
+
+      await Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
+        console.log("FINISHED UPLOADING TO PINNER",values);
+        message.destroy()
+      });
+    } catch (e) {
+      console.log(e)
+      setSending(false)
+      notification.open({
+        message: '📛 Ink upload failed',
+        description:
+        `Please wait a moment and try again ${e.message}`,
+      });
+    }
+
     try {
       var mintResult = await mintInk(drawingHash, jsonHash, values.limit.toString());
     } catch (e) {
       console.log(e)
       setSending(false)
-
     }
-
 
     if(mintResult) {
 
-  const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
-  const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
-  const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
+    Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
+      console.log("INFURA FINISHED UPLOADING!",values);
+    });
 
-  const drawingResultInfura = addToIPFS(drawingBuffer, props.ipfsConfigInfura)
-  const imageResultInfura = addToIPFS(imageBuffer, props.ipfsConfigInfura)
-  const inkResultInfura = addToIPFS(inkBuffer, props.ipfsConfigInfura)
-
-  Promise.all([drawingResult, imageResult, inkResult]).then((values) => {
-    console.log("FINISHED UPLOADING TO PINNER",values);
-    message.destroy()
-  });
-
-  setSending(false)
-  props.setViewDrawing(LZ.decompress(props.drawing))
-  setDrawingSize(10000)
-  props.setDrawing("")
-  history.push('/ink/' + drawingHash)
-
-  Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
-    console.log("INFURA FINISHED UPLOADING!",values);
-  });
+    setSending(false)
+    props.setViewDrawing(LZ.decompress(props.drawing))
+    setDrawingSize(10000)
+    props.setDrawing("")
+    history.push('/ink/' + drawingHash)
 
 }
 };
@@ -405,7 +417,7 @@ return (
   canvasWidth={size[0]}
   canvasHeight={size[1]}
   brushColor={color}
-  lazyRadius={4}
+  lazyRadius={3}
   brushRadius={brushRadius}
 //  disabled={props.mode !== "edit"}
 //  hideGrid={props.mode !== "edit"}

@@ -85,10 +85,16 @@ export default function Artist(props) {
       return data;
     };
 
-    const getInks = (data) => {
+    const getInks = async (data) => {
       setInks([]);
+      let { data: blocklist, error } = await props.supabase
+        .from('blocklist')
+        .select('jsonUrl')
       data.forEach(async (ink) => {
         if (isBlocklisted(ink.jsonUrl)) return;
+        if (blocklist.find(el => el.jsonUrl === ink.jsonUrl)) {
+          return;
+        }
         let _ink = ink;
         _ink.metadata = await getMetadata(ink.jsonUrl);
         setInks((inks) => [...inks, _ink]);
@@ -122,12 +128,7 @@ export default function Artist(props) {
               <Col span={12}>
                 <p style={{ margin: 0 }}>
                   <b>Total sales:</b> $
-                  {inks
-                    .filter((ink) => ink.sales.length)
-                    .map((ink) => ink.sales)
-                    .map((e) => e.flatMap((e) => Number.parseInt(e.price, 0)))
-                    .flatMap((e) => e)
-                    .reduce((a, b) => a + b, 0) / 1e18}
+                  {data.artists.length ? ethers.utils.formatEther(data.artists[0].earnings) : 0}
                 </p>
               </Col>
             </Row>
@@ -179,14 +180,14 @@ export default function Artist(props) {
                       align="middle"
                       style={{ textAlign: "center", justifyContent: "center" }}
                     >
-                      {(ink.mintPrice > 0 && (ink.limit === 0 || ink.count < ink.limit))
+                      {(ink.bestPrice > 0)
                         ? (<><p
                         style={{
                           color: "#5e5e5e",
                           margin: "0"
                         }}
                       >
-                        <b>{ink.mintPrice / 1e18} </b>
+                        <b>{ethers.utils.formatEther(ink.bestPrice)} </b>
                       </p>
 
                       <img
