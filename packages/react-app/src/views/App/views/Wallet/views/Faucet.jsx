@@ -51,7 +51,7 @@ export default function Faucet(props) {
     async newValue => {
       if (typeof newValue !== 'undefined') {
         let _address = newValue
-        if (address.indexOf('.eth') > 0 || _address.indexOf('.xyz') > 0) {
+        if (_address.indexOf('.eth') > 0 || _address.indexOf('.xyz') > 0) {
           try {
             const possibleAddress = await props.ensProvider.resolveName(_address)
             if (possibleAddress) {
