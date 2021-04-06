@@ -53,10 +53,9 @@ const revokedImg = 'http://clipartmag.com/images/big-bird-clipart-24.png';
 const mintTestTokens = async (
     accounts,
     goodTokenContract, 
-    goodTokenFundContract,
-    numTokens) => {
+    goodTokenFundContract) => {
 
-    for(let i = 0; i < numTokens; i++) {
+    for(let i = 0; i < testTokenData.length; i++) {
 
         // creata dummy data
         const artistIdx = randomNumber(0, accounts.length)
@@ -84,7 +83,7 @@ const mintTestTokens = async (
         //   };
 
         // generate metadata
-        const tokenData = testTokenData[i % testTokenData.length];
+        const tokenData = testTokenData[i];
         const tokenName = tokenData.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
         const targetFund = fundData[i % fundData.length];
@@ -153,14 +152,14 @@ const mintTestTokens = async (
   }
 
 
-  async function generateTokens(goodTokenAddress, goodTokenFundAddress, numberOfTokens = 15){
+  async function generateTokens(goodTokenAddress, goodTokenFundAddress){
       //const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
       
       const goodTokenContract = new ethers.Contract(goodTokenAddress, goodTokenAbi, accounts[0]);
       const goodTokenFundContract = new ethers.Contract(goodTokenFundAddress, goodTokenFundAbi, accounts[0]);
-      await mintTestTokens(accounts, goodTokenContract, goodTokenFundContract, numberOfTokens);
+      await mintTestTokens(accounts, goodTokenContract, goodTokenFundContract);
 
   }
 
