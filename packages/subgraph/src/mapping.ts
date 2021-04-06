@@ -196,8 +196,8 @@ export function handleFeedRegistered(event: FeedRegistered): void {
     let feed = Feed.load(feedId);
     if(feed == null) {
         feed = new Feed(feedId);
-        feed.name = "TODO: GIVE A NAME -- either ipfs or in contract event";
-        feed.description = "TODO: GIVE A DESCRIPTION -- ipfs or contract event"
+        feed.name = event.params.feedId;
+        feed.description = event.params.description;
         feed.url = event.params.apiBaseUrl
         feed.yearOffset = event.params.yearOffset    
         feed.createdAt = event.block.timestamp

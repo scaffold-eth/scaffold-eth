@@ -3,6 +3,7 @@ const feedData = [
   {
     name: "Education Rate Feed",
     symbol: "ROFST",
+    description: "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
     apiUrl: "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json",
     apiValueParseMap: "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0",
     yearOffset: 1,
@@ -11,24 +12,27 @@ const feedData = [
   {
       name: "Migration Data Feed",
       symbol: "MDF",
+      description: "The MDF feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
       apiUrl: "http://migration",
       apiValueParseMap: "0.data.value",
       yearOffset: 1,
-    },
-    {
+  },
+  {
       name: "Carbon Data Feed",
       symbol: "CDF",
+      description: "The CDF feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
       apiUrl: "http://migration",
       apiValueParseMap: "0.data.value",
       yearOffset: 1,
-    },
-    {
+  },
+  {
       name: "Education Data Feed",
       symbol: "EDF",
+      description: "The EDF feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
       apiUrl: "http://migration",
       apiValueParseMap: "0.data.value",
       yearOffset: 1,
-    },
+  },
 ];
 
 const fundData = [

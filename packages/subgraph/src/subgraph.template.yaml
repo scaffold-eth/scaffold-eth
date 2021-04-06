@@ -80,6 +80,6 @@ dataSources:
         - name: GoodDataFeed
           file: ./abis/GoodDataFeed.json
       eventHandlers:
-        - event: FeedRegistered(string,string,uint256)
+        - event: FeedRegistered(string,string,string,uint256)
           handler: handleFeedRegistered
       file: ./src/mapping.ts

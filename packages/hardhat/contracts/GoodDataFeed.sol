@@ -11,7 +11,7 @@ import "./IDateTime.sol";
 contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     // FeedRegistered event
-    event FeedRegistered(string feedId, string apiBaseUrl, uint256 yearOffset);
+    event FeedRegistered(string feedId, string apiBaseUrl, string description, uint256 yearOffset);
 
     // FeedDataUpdated
     // TODO: Could maybe just a graph CALL_HALNDER callback??
@@ -75,11 +75,13 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         string memory educationApiId = "ROFST";
         string memory educationApiBaseUrl = "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json";
         string memory educationApiParseMap = "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0";
+        string memory educationApiDescription = "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.";
         uint8 yearOffset = 3; // good data exists in 2018
         registerApi(
             educationApiId, 
             educationApiBaseUrl,
             educationApiParseMap,
+            educationApiDescription,
             yearOffset  
         );
         latestData[educationApiId] = 102134 * (10 ** (18 -  4));
@@ -194,13 +196,13 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // Answer in decimals so remove decimals
         req.addUint("times", 10**uint256(API_DECIMALS));
 
-    	bytes32 requestId = bytes32("faketest");//sendChainlinkRequestTo(oracle, req, fee); //bytes32("fasdf");//
+    	bytes32 requestId =  bytes32("fasdf");//sendChainlinkRequestTo(oracle, req, fee);
 
         // register request data
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
 
         // FOR LOCAL TEST, AUTOMATICALLY FULFILL
-        fulfilFeedRequest(requestId, 10 * 10**18);
+        //fulfilFeedRequest(requestId, 10 * 10**18);
     }
 
     /**
@@ -224,6 +226,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         string memory feedId,
         string memory apiBaseUrl,
         string memory apiValueParseMap,
+        string memory description, // used only to emit in event for TheGraph
         uint8 yearOffset
     ) public onlyOwner {
         // ensure api is not already registered
@@ -236,10 +239,10 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         );
 
         // request data by default for local dev
-        requestLatestFeedData(feedId);
+        //requestLatestFeedData(feedId);
 
 
-        emit FeedRegistered(feedId, apiBaseUrl, yearOffset);
+        emit FeedRegistered(feedId, apiBaseUrl, description, yearOffset);
     }
     
 

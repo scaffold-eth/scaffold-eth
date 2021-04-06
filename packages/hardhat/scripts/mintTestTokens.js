@@ -84,8 +84,8 @@ const mintTestTokens = async (
         //   };
 
         // generate metadata
-        const baseBird = testTokenData[i % testTokenData.length];
-        const tokenName = nameAddons[randomNumber(0, nameAddons.length)] + ' ' + baseBird.name;
+        const tokenData = testTokenData[i % testTokenData.length];
+        const tokenName = tokenData.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
         const targetFund = fundData[i % fundData.length];
         const targetFeedTokenId = (i % fundData.length) + 1; // 1 indexed
@@ -94,9 +94,9 @@ const mintTestTokens = async (
         const tokenMetadata = {
             "name": tokenName,
             "artist": artistAccount.address,
-            "artistName": artistNames[artistIdx % artistNames.length],
-            "description": "Ever seen a " + tokenName + "? They are amazing!. For the love of birds, one must fly. This token supports the " + fundName + ":)",
-            "image": baseBird.img,
+            "artistName": tokenData.artistName,
+            "description": `${tokenData.description}.`,
+            "image": tokenData.img,
             "date": Date.now(),
             "price": price,
             "fundName": fundName,
@@ -114,8 +114,8 @@ const mintTestTokens = async (
         // eslint-disable-next-line no-await-in-loop
     
         // add funds
-        await goodTokenFundContract.connect(targetAccount)
-          .mintFeedToken(fundSymbol, {value: balanceInWei}).then(tx => tx.wait);
+        // await goodTokenFundContract.connect(targetAccount)
+        //   .mintFeedToken(fundSymbol, {value: balanceInWei}).then(tx => tx.wait);
 
         // eslint-disable-next-line no-await-in-loop
         const tx = await goodTokenContract.connect(artistAccount).createArtwork(
@@ -153,7 +153,7 @@ const mintTestTokens = async (
   }
 
 
-  async function generateTokens(goodTokenAddress, goodTokenFundAddress, numberOfTokens = 5){
+  async function generateTokens(goodTokenAddress, goodTokenFundAddress, numberOfTokens = 15){
       //const goodTokenAddress = "0xc5657b5f5F14811A231e1230DA9199e9510a0882";
       //const goodTokenFundAddress = "0xe7f1725e7734ce288f8367e1bb143e90bb3f0512"
       const accounts = await ethers.getSigners();
