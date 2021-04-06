@@ -202,7 +202,7 @@ export function handleFeedRegistered(event: FeedRegistered): void {
         feed.url = event.params.apiBaseUrl
         feed.yearOffset = event.params.yearOffset    
         feed.createdAt = event.block.timestamp
-        feed.value = BigInt.fromI32(1000)
+        feed.value = BigInt.fromI32(1500)
     }
 
     feed.save();

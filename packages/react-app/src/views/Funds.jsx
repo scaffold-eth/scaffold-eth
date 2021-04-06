@@ -4,15 +4,21 @@ import React, { useState } from "react";
 import "antd/dist/antd.css";
 import { Switch, Typography, List, Card, Skeleton, Divider, Badge, Row, Col, Image, Carousel, Button, Tag, Slider } from "antd";
 import { useQuery, gql } from '@apollo/client';
-import Blockies from 'react-blockies'
-import { useHistory } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
 import Avatar from "antd/lib/avatar/avatar";
+import Artwork from "../components/Artwork";
+import { ethers } from 'ethers'
 
 function mapPrice(val, valMin, valMax, rangeMin, rangeMax) {
   const clamped = (Math.min(valMax, Math.max(val, valMin)))
   const normalized = ((clamped - valMin) / (valMax - valMin)) || 0
   return rangeMin + (rangeMax - rangeMin) * normalized
+}
+
+function mapRange(val, valMin, valMax) {
+  const clamped = (Math.min(valMax, Math.max(val, valMin)))
+  const normalized = ((clamped - valMin) / (valMax - valMin)) || 0
+  return normalized
 }
 
 const { Text, Title } = Typography
@@ -64,59 +70,11 @@ const grid = {
   xxl: 4,
 }
 
-function string_to_slug(str) {
-  str = str.replace(/^\s+|\s+$/g, ''); // trim
-  str = str.toLowerCase();
-
-  // remove accents, swap ñ for n, etc
-  var from = "àáäâèéëêìíïîòóöôùúüûñç·/_,:;";
-  var to = "aaaaeeeeiiiioooouuuunc------";
-  for (var i = 0, l = from.length; i < l; i++) {
-    str = str.replace(new RegExp(from.charAt(i), 'g'), to.charAt(i));
-  }
-
-  str = str.replace(/[^a-z0-9 -]/g, '') // remove invalid chars
-    .replace(/\s+/g, '-') // collapse whitespace and replace by -
-    .replace(/-+/g, '-'); // collapse dashes
-
-  return str;
-}
-
-const renderArtworkListing = (artwork, history) => {
-  const isForSale = artwork.revoked || (artwork.artist.address == artwork.owner)
-
-  let content = (
-    <Card hoverable onClick={() => history.push(`/artworks/${artwork.tokenId}/${string_to_slug(artwork.name)}`)}
-      title={
-        <Row justify="space-between">
-          <Col>
-            <Blockies seed={artwork.artist.address} scale={2} />
-            <Text type="secondary"> &nbsp; {artwork.artist.name}</Text>
-          </Col>
-          <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
-        </Row>
-      }
-      cover={<Image src={artwork.artworkImageUrl} />}
-    >
-      <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">🤝 {artwork.fund.name}</Text>
-      </Row>
-    </Card>
-  )
-
-  if (isForSale)
-    content = (
-      <Badge.Ribbon color={artwork.revoked ? "gold" : "cyan"} text={artwork.revoked ? "Revoked!" : "on sale!"}>
-        {content}
-      </Badge.Ribbon>
-    )
-
-  return (
-    <List.Item key={artwork.id}>
-      {content}
-    </List.Item>
-  )
-}
+const renderArtworkListing = (artwork) => (
+  <List.Item key={artwork.id}>
+    <Artwork artwork={artwork} />
+  </List.Item>
+)
 
 const Subgraph = (props) => {
   const variables = {
@@ -125,7 +83,6 @@ const Subgraph = (props) => {
     // offsetArtworks: 0
   }
 
-  const history = useHistory()
   const { loading, data } = useQuery(ARTWORKS_QUERY, {  }, { pollInterval: 2500 });
 
   return (
@@ -138,7 +95,15 @@ const Subgraph = (props) => {
         <br />
         
         {
-          data && data.funds.map(fund => (
+          data && data.funds.map(fund =>  {
+            const value = +fund.feed.value
+            const rangeMin = +fund.rangeMin
+            const rangeMax = +fund.rangeMax
+            
+            const price = mapPrice(value, rangeMin, rangeMax, 0.5, 2.0)
+            const ratio = Math.round(mapPrice(value, rangeMin, rangeMax, 0, 100))
+
+            return (
             <Row>
               <Row>
                 <Col span={11}>
@@ -175,11 +140,11 @@ const Subgraph = (props) => {
                     </Row>
                     <Row justify="space-between">
                       <Text type="secondary">Token price</Text>
-                    <Text>1 Good Token ⇔ {mapPrice(fund.feed.value, fund.rangeMin, fund.rangeMax, 0.5, 2.0)} Eth({formatEther(fund.feed.value)})</Text>
+                    <Text>1 Good Token ⇔ ☰{price}</Text>
                     </Row>
                     <Row justify="space-between">
                       <Text type="secondary">index value</Text>
-                      <Slider marks={{ 0: fund.rangeMin, 100: fund.rangeMax }} included={false} disabled defaultValue={fund.feed.value} style={{width: 200}} />
+                      <Slider step={null} marks={{ 0: fund.rangeMin, [ratio]: fund.feed.value, 100: fund.rangeMax }} included={false} disabled defaultValue={ratio} style={{width: 200}} />
                     </Row>
                   </Card>
                 </Col>
@@ -187,12 +152,13 @@ const Subgraph = (props) => {
                 <Title level={5} type="secondary"><br/>Recent supporting artworks:</Title>
               </Row>
               <Row>
-                <List grid={grid} dataSource={fund.artworks} renderItem={artwork => renderArtworkListing(artwork, history)} loading={loading} />
+                <List grid={grid} dataSource={fund.artworks} renderItem={renderArtworkListing} loading={loading} />
               </Row>
               </Row>
               <Divider/>
             </Row>
-          ))
+          )
+        })
         }
       </Col>
     </Row>

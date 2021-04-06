@@ -17,7 +17,7 @@ const feedData = [
       apiUrl: "http://migration",
       apiValueParseMap: "0.data.value",
       yearOffset: 1,
-      value: 1000
+      value: 1400
   },
   {
       name: "Carbon Data Feed",
@@ -35,7 +35,7 @@ const feedData = [
       apiUrl: "http://migration",
       apiValueParseMap: "0.data.value",
       yearOffset: 1,
-      value: 1000
+      value: 1300
     },
 ];
 

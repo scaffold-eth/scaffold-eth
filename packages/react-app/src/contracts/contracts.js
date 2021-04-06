@@ -1,1 +1,1 @@
-module.exports = ["GoodDataFeed","GoodToken","GoodTokenFund"];
+module.exports = ["GoodDataFeed","GoodToken","GoodTokenFund","YourContract"];

@@ -7,6 +7,7 @@ import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { useHistory } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
+import Artwork from "../components/Artwork";
 
 
 const { Text, Title } = Typography
@@ -91,41 +92,11 @@ function string_to_slug(str) {
   return str;
 }
 
-const renderArtworkListing = (artwork, history) => {
-  const isForSale = artwork.revoked || (artwork.artist.address == artwork.owner)
-
-  let content = (
-    <Card hoverable onClick={() => history.push(`/artworks/${artwork.tokenId}/${string_to_slug(artwork.name)}`)}
-      title={
-        <Row justify="space-between">
-          <Col>
-            <Blockies seed={artwork.artist.address} scale={2} />
-            <Text type="secondary"> &nbsp; {artwork.artist.name}</Text>
-          </Col>
-          <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
-        </Row>
-      }
-      cover={<Image src={artwork.artworkImageUrl} />}
-    >
-      <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">supports {artwork.fund.name}</Text>
-      </Row>
-    </Card>
-  )
-
-  if (isForSale)
-    content = (
-      <Badge.Ribbon color={artwork.revoked ? "gold" : "cyan"} text={artwork.revoked ? "Revoked!" : "on sale!"}>
-        {content}
-      </Badge.Ribbon>
-    )
-
-  return (
-    <List.Item key={artwork.id}>
-      {content}
-    </List.Item>
-  )
-}
+const renderArtworkListing = (artwork) => (
+  <List.Item key={artwork.id}>
+    <Artwork artwork={artwork} />
+  </List.Item>
+)
 
 const Subgraph = (props) => {
   const variables = {
@@ -142,7 +113,7 @@ const Subgraph = (props) => {
     <Skeleton loading={!data} active>
       <Carousel effect="fade" autoplay afterChange={setFeatured}>
         {data && data.featuredArtists.map(artist =>
-          <List key={artist.id} grid={grid} dataSource={artist.artworks} renderItem={artwork => renderArtworkListing(artwork, history)} />
+          <List key={artist.id} grid={grid} dataSource={artist.artworks} renderItem={renderArtworkListing} />
         )}
       </Carousel>
     </Skeleton>
