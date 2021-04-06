@@ -82,4 +82,6 @@ dataSources:
       eventHandlers:
         - event: FeedRegistered(string,string,uint256)
           handler: handleFeedRegistered
+        - event: FeedDataUpdated(string,uint256)
+          handler: handleFeedDataUpdated
       file: ./src/mapping.ts
