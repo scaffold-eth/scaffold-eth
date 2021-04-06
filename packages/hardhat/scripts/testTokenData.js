@@ -82,9 +82,9 @@ const testTokenData = [
       balanceRequirement: 1000, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/42687164_475442476277895_1509474159277735114_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=9VEmtU2t-PUAX-Ht3tV&edm=AP_V10EAAAAA&ccb=7-4&oh=3d965b22a9a3d78e987affa16b2619c1&oe=606EEBD5&_nc_sid=4f375e',
-      name: 'Pop AV',
-      description: "Live audio-visual practice for drawing on everything to Moderat's A new Error.",
+      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/97963827_160778202110352_8089073529478805236_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=JFGwbrr8VS4AX_KSnRK&edm=AP_V10EAAAAA&ccb=7-4&oh=86f441005aa40e43e7088f0171a4e808&oe=606F37CA&_nc_sid=4f375e',
+      name: 'Shoreditch HDRI',
+      description: "Algorithmic design practive, virtually in London.",
       artistName: "Barak",
       price: 1000,
       ownershipModel: 0,
