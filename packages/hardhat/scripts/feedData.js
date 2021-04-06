@@ -46,8 +46,8 @@ const fundData = [
     targetFeedId: 'ROFST',
     description: 'The Education Impact Fund features variable pricing based on the percentage of primary school age children out of school. All donations to the Education Impact Fund are transferred to UNICEF.',
     image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Unicef.png',
-    rangeMin: 1000,
-    rangeMax: 2000,
+    rangeMin: 5,
+    rangeMax: 20,
     attributes: [
       {
         trait_type: "Beneficiary Address",
@@ -61,8 +61,8 @@ const fundData = [
     targetFeedId: 'CDF',
     description: 'The Environmental Awareness Fund features variable pricing based on the carbon emissions of countries in the European Union. All donations to the Enbironmental Awareness Fund are transferred to the WWF.',
     image: 'https://1000logos.net/wp-content/uploads/2017/05/WWF-logo.png',
-    rangeMin: 1000,
-    rangeMax: 2000,
+    rangeMin: 5,
+    rangeMax: 20,
     attributes: [
       {
         trait_type: "Beneficiary Address",

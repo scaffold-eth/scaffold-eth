@@ -89,8 +89,8 @@ async function deployGoodTokenFund(dataFeedContract) {
       fund.symbol,
       fund.targetFeedId,
       fundCid.path,
-      fund.rangeMin,
-      fund.rangeMax
+      ethers.BigNumber.from(10).pow(18).mul(fund.rangeMin),
+      ethers.BigNumber.from(10).pow(18).mul(fund.rangeMax)
     ).then(tx => tx.wait)
   }
 
