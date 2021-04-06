@@ -61,4 +61,13 @@ type Feed @entity {
   description: String!
   url: String!
   yearOffset: BigInt!
+  funds: [Fund!] @derivedFrom(field: "feed")
+  value: BigInt!
 }
+
+# type FeedRecord @entity {
+#   id: ID!
+#   createdAt: BigInt!
+#   value: BigInt!
+#   index: Int!
+# }

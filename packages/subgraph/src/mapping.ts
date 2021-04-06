@@ -11,6 +11,7 @@ import {
 } from '../generated/GoodTokenFund/GoodTokenFund';
 
 import {
+    FeedDataUpdated,
     FeedRegistered
 } from '../generated/GoodDataFeed/GoodDataFeed';
 
@@ -201,7 +202,24 @@ export function handleFeedRegistered(event: FeedRegistered): void {
         feed.url = event.params.apiBaseUrl
         feed.yearOffset = event.params.yearOffset    
         feed.createdAt = event.block.timestamp
+        feed.value = BigInt.fromI32(1000)
     }
+
+    feed.save();
+}
+
+export function handleFeedDataUpdated(event: FeedDataUpdated): void {
+
+    let feedId = event.params.feedId;
+
+    let feed = Feed.load(feedId);
+    if(feed == null) 
+        return
+    
+    let latestData = event.params.latestFeedData
+
+    // let feedRecord = new FeedRecord()
+    feed.value = latestData //feedRecord
 
     feed.save();
 }

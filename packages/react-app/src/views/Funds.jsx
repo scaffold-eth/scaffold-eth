@@ -2,36 +2,55 @@
 
 import React, { useState } from "react";
 import "antd/dist/antd.css";
-import { Switch, Typography, List, Card, Skeleton, Divider, Badge, Row, Col, Image, Carousel, Button } from "antd";
+import { Switch, Typography, List, Card, Skeleton, Divider, Badge, Row, Col, Image, Carousel, Button, Tag, Slider } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { useHistory } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
+import Avatar from "antd/lib/avatar/avatar";
 
+function mapPrice(val, valMin, valMax, rangeMin, rangeMax) {
+  const clamped = (Math.min(valMax, Math.max(val, valMin)))
+  const normalized = ((clamped - valMin) / (valMax - valMin)) || 0
+  return rangeMin + (rangeMax - rangeMin) * normalized
+}
 
 const { Text, Title } = Typography
 
 const ARTWORKS_QUERY = gql`
   query {
-    beneficiaries(first: 10) {
+    funds {
+      id
       name
-      artworks(first: 4) {
+      rangeMin
+      rangeMax
+      tokenId
+      image
+      description
+      
+      feed {
+        id
         name
-        price
+        description
+        yearOffset
+        value
+      }
+      
+      artworks(first: 4) {
+        id
+        name
         tokenId
-        owner
-        revoked
+        price
         artworkImageUrl
-        beneficiary {
-          name
-        }
         artist {
-          id
-          address
           name
+          id
+        }
+        fund {
+          name 
         }
       }
-    }
+    } 
   }
 `
 
@@ -80,7 +99,7 @@ const renderArtworkListing = (artwork, history) => {
       cover={<Image src={artwork.artworkImageUrl} />}
     >
       <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">supports {artwork.beneficiary.name}</Text>
+        <Text strong>{artwork.name}</Text> <Text type="secondary">🤝 {artwork.fund.name}</Text>
       </Row>
     </Card>
   )
@@ -101,17 +120,17 @@ const renderArtworkListing = (artwork, history) => {
 
 const Subgraph = (props) => {
   const variables = {
-    firstArtists: 3,
-    firstArtworks: 8,
-    offsetArtworks: 0
+    // firstArtists: 3,
+    // firstArtworks: 8,
+    // offsetArtworks: 0
   }
 
   const history = useHistory()
-  const { loading, data } = useQuery(ARTWORKS_QUERY, { variables }, { pollInterval: 2500 });
+  const { loading, data } = useQuery(ARTWORKS_QUERY, {  }, { pollInterval: 2500 });
 
   return (
     <Row direction="vertical">
-      <Col span={16} offset={6}>
+      <Col span={12} offset={6}>
         <br />
         <Row>
           <Title level={3}>🤝 Funds & orgs supported by Good Tokens</Title>
@@ -119,17 +138,58 @@ const Subgraph = (props) => {
         <br />
         
         {
-          data && data.beneficiaries.map(fund => (
+          data && data.funds.map(fund => (
             <Row>
-              <Col flex="1">
               <Row>
+                <Col span={11}>
+              <Row>
+                <Avatar style={{marginTop:1, border:2, marginRight: 10, background: '#EEE'}} shape="square" size="default" src={fund.image} />
                 <Title level={3}>{fund.name}</Title>
               </Row>
               <Row>
-                <Title level={5} type="secondary">Supporting artworks:</Title>
+                  <Row>
+
+                  <div style={{textAlign: "left"}}>
+                    <Text type="secondary">{fund.description}<br/><br/></Text>
+                  </div>
+                  </Row>
+                  <Row>
+                    <Button type="primary">Buy {fund.name} token</Button>
+                  </Row>
               </Row>
-              </Col>
-              <List grid={grid} dataSource={fund.artworks} renderItem={artwork => renderArtworkListing(artwork, history)} loading={loading} />
+                </Col>
+                <Col span={12} offset={1}>
+                  <Card style={{textAlign:'left'}} size="small" title={
+                    <Row justify="space-between">
+                      <Text>{fund.feed.name}</Text>
+                      <Tag>{fund.feed.id}</Tag>
+
+                    </Row>
+                  }>
+                    <Row>
+                      <Text type='secondary'>{fund.feed.description}</Text>
+                    </Row>
+                    <Row justify="space-between">
+                      <Text type="secondary">Currently tracked period</Text>
+                      <Text>{(new Date()).getFullYear() - parseInt(fund.feed.yearOffset, 10)}</Text>
+                    </Row>
+                    <Row justify="space-between">
+                      <Text type="secondary">Token price</Text>
+                    <Text>1 Good Token ⇔ {mapPrice(fund.feed.value, fund.rangeMin, fund.rangeMax, 0.5, 2.0)} Eth({formatEther(fund.feed.value)})</Text>
+                    </Row>
+                    <Row justify="space-between">
+                      <Text type="secondary">index value</Text>
+                      <Slider marks={{ 0: fund.rangeMin, 100: fund.rangeMax }} included={false} disabled defaultValue={fund.feed.value} style={{width: 200}} />
+                    </Row>
+                  </Card>
+                </Col>
+              <Row>
+                <Title level={5} type="secondary"><br/>Recent supporting artworks:</Title>
+              </Row>
+              <Row>
+                <List grid={grid} dataSource={fund.artworks} renderItem={artwork => renderArtworkListing(artwork, history)} loading={loading} />
+              </Row>
+              </Row>
               <Divider/>
             </Row>
           ))
