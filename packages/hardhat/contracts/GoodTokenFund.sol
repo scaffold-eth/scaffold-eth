@@ -18,6 +18,8 @@ contract GoodTokenFund is GoodFundERC1155, Ownable {
         uint256 tokenId
     );
 
+    event ArtworkContribution(uint256 artworkId, uint256 weiContributed);
+
     struct FundData {
         // fund recipient -- most likely will be a charity
         address beneficiary;
@@ -45,6 +47,7 @@ contract GoodTokenFund is GoodFundERC1155, Ownable {
     mapping(uint256 => string) cidForToken;
 
     uint256 constant RANGE_DECIMALS = 5;
+    uint256 constant TOKEN_DECIMALS_PER_ETH = 2; // basically 100 tokens per ETH
 
     constructor (
         address dataFeedAddress
@@ -100,7 +103,7 @@ contract GoodTokenFund is GoodFundERC1155, Ownable {
         console.log("Lerp multiplier: %s", lerpedMultipler);
 
         // TODO: mapping of range here!
-        return weiSupplied.mul(lerpedMultipler).div(RANGE_DECIMALS);
+        return weiSupplied.mul(lerpedMultipler).div(RANGE_DECIMALS + TOKEN_DECIMALS_PER_ETH);
         //console.log("Supplied wei: %s, Returned tokens: %s", weiSupplied, finalTokens);
 
     }
@@ -149,6 +152,14 @@ contract GoodTokenFund is GoodFundERC1155, Ownable {
     /**
      * @dev Mints new tokens to msg.sender based on dynamic data feed and ETH provided
      */
+    function mint(uint256 tokenId, uint256 artworkId) public payable {
+        
+        mint(tokenId);
+
+        // emit artwork funding event
+        emit ArtworkContribution(artworkId, msg.value);
+    }
+
     function mint(uint256 tokenId) public payable {
         
         uint256 tokensToMint = calculateTokensToMint(tokenId, msg.value);
@@ -159,5 +170,6 @@ contract GoodTokenFund is GoodFundERC1155, Ownable {
         _mint(_msgSender(), tokenId, tokensToMint, "");
         address beneficiary = fundForToken[tokenId].beneficiary;
         payable(beneficiary).transfer(msg.value);
+
     }
 }

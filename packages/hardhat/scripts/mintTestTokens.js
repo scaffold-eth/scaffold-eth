@@ -62,28 +62,12 @@ const mintTestTokens = async (
         const artistAccount = accounts[artistIdx];    
         
         const targetAccount = accounts[randomNumber(0, accounts.length)];
-        const requiredBalance = randomNumber(500, 1000);
         
-        const ownershipModel = (i % 2) === 0 ? 0 : 1;
-
-        // deposit funds into the fund contract from the user
-        const balance = requiredBalance + randomNumber(-300, 300);
-        const divisor = 10000000;
-        const balanceInWei = ethers.constants.WeiPerEther.mul(balance.toString()).div(divisor);
-        // eslint-disable-next-line no-await-in-loop
-        
-        // const artworkMetadata = {
-        //     artist: address,
-        //     "artistName": artistName,
-        //     name: artworkTitle,
-        //     description: artworkDescription,
-        //     image: artworkUrl,
-        //     date: Date.now(),
-        //     price: priceInWei.toString(),
-        //   };
+        const tokenData = testTokenData[i];
+        const requiredBalance = tokenData.balanceRequirement;
+        const ownershipModel = tokenData.ownershipModel;
 
         // generate metadata
-        const tokenData = testTokenData[i];
         const tokenName = tokenData.name;
         const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
         const targetFund = fundData[i % fundData.length];
@@ -94,15 +78,19 @@ const mintTestTokens = async (
             "name": tokenName,
             "artist": artistAccount.address,
             "artistName": tokenData.artistName,
-            "description": `${tokenData.description}.`,
+            "description": `${tokenData.description}`,
             "image": tokenData.img,
             "date": Date.now(),
             "price": price,
             "fundName": fundName,
             "fundSymbol": fundSymbol,
+            "attributes": [
+                {
+                    "trait_type": "Fund Supported",
+                    "value": fundName
+                }
+            ]
         }
-
-        // console.log(tokenMetadata);
 
         // pin metadata
         const pin = await ipfs.addJson(tokenMetadata);
@@ -110,12 +98,10 @@ const mintTestTokens = async (
         tokenMetadata.image = revokedImg;
         const pinRevoked = await ipfs.addJson(tokenMetadata);
        
-        // eslint-disable-next-line no-await-in-loop
+        // deposit funds into the fund contract from the user
+        const balanceExchange = ethers.BigNumber.from(10).pow(16);
     
-        // add funds
-        // await goodTokenFundContract.connect(targetAccount)
-        //   .mintFeedToken(fundSymbol, {value: balanceInWei}).then(tx => tx.wait);
-
+        
         // eslint-disable-next-line no-await-in-loop
         const tx = await goodTokenContract.connect(artistAccount).createArtwork(
             pin.path,
@@ -123,14 +109,18 @@ const mintTestTokens = async (
             ownershipModel,
             goodTokenFundContract.address,
             targetFeedTokenId,
-            ethers.constants.WeiPerEther.mul(requiredBalance).div(divisor),
-            randomNumber(1, 1000),
+            balanceExchange.mul(tokenData.balanceRequirement),
+            randomNumber(1, 30),
             price
-        );
-    
-        // eslint-disable-next-line no-await-in-loop
-        await tx.wait();  
-
+            );
+            
+            // eslint-disable-next-line no-await-in-loop
+            await tx.wait();  
+            
+        // add funds
+        // await goodTokenFundContract.connect(targetAccount)
+        //   .mintFeedToken(fundSymbol, i, {value: balanceInWei}).then(tx => tx.wait);
+        
         if(targetAccount !== artistAccount && Math.random() > 0.5){
         // have random account purchase token
             const purchase = await goodTokenContract.connect(targetAccount)
