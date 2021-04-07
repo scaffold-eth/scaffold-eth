@@ -61,6 +61,7 @@ async function deployGoodDataFeed() {
         feed.symbol,
         feed.apiUrl,
         feed.apiValueParseMap,
+        feed.name,
         feed.description,
         feed.yearOffset
       ).then(tx => tx.wait);

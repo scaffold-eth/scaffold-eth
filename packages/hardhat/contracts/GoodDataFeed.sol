@@ -11,7 +11,7 @@ import "./IDateTime.sol";
 contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     // FeedRegistered event
-    event FeedRegistered(string feedId, string apiBaseUrl, string description, uint256 yearOffset);
+    event FeedRegistered(string feedId, string apiBaseUrl, string name, string description, uint256 yearOffset);
 
     // FeedDataUpdated
     // TODO: Could maybe just a graph CALL_HALNDER callback??
@@ -71,20 +71,20 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
     	fee = 1 * 10 ** (18 - 1); // 0.1 LINK
 
-        // register test api
-        string memory educationApiId = "ROFST";
-        string memory educationApiBaseUrl = "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json";
-        string memory educationApiParseMap = "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0";
-        string memory educationApiDescription = "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.";
-        uint8 yearOffset = 3; // good data exists in 2018
-        registerApi(
-            educationApiId, 
-            educationApiBaseUrl,
-            educationApiParseMap,
-            educationApiDescription,
-            yearOffset  
-        );
-        latestData[educationApiId] = 102134 * (10 ** (18 -  4));
+        // // register test api
+        // string memory educationApiId = "ROFST";
+        // string memory educationApiBaseUrl = "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json";
+        // string memory educationApiParseMap = "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0";
+        // string memory educationApiDescription = "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.";
+        // uint8 yearOffset = 3; // good data exists in 2018
+        // registerApi(
+        //     educationApiId, 
+        //     educationApiBaseUrl,
+        //     educationApiParseMap,
+        //     educationApiDescription,
+        //     yearOffset  
+        // );
+        // latestData[educationApiId] = 102134 * (10 ** (18 -  4));
     }
 
 
@@ -226,6 +226,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         string memory feedId,
         string memory apiBaseUrl,
         string memory apiValueParseMap,
+        string memory name, // used only to emit in event for TheGraph
         string memory description, // used only to emit in event for TheGraph
         uint8 yearOffset
     ) public onlyOwner {
@@ -241,8 +242,11 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // request data by default for local dev
         //requestLatestFeedData(feedId);
 
+        // put in temporary test data while rinekby chainlink node is not solved
+        latestData[feedId] = 102134 * (10 ** (18 -  4));
 
-        emit FeedRegistered(feedId, apiBaseUrl, description, yearOffset);
+
+        emit FeedRegistered(feedId, apiBaseUrl, name, description, yearOffset);
     }
     
 

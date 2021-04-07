@@ -197,7 +197,7 @@ export function handleFeedRegistered(event: FeedRegistered): void {
     let feed = Feed.load(feedId);
     if(feed == null) {
         feed = new Feed(feedId);
-        feed.name = event.params.feedId;
+        feed.name = event.params.name;
         feed.description = event.params.description;
         feed.url = event.params.apiBaseUrl
         feed.yearOffset = event.params.yearOffset    

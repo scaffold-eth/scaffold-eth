@@ -78,7 +78,7 @@ const mintTestTokens = async (
             "name": tokenName,
             "artist": artistAccount.address,
             "artistName": tokenData.artistName,
-            "description": `${tokenData.description}`,
+            "description": `${tokenData.description} This token supports the ${fundName}.`,
             "image": tokenData.img,
             "date": Date.now(),
             "price": price,
