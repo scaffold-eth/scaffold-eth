@@ -20,13 +20,13 @@ const feedData = [
       value: 100
   },
   {
-      name: "Carbon Data Feed",
-      symbol: "CDF",
-      description: "The CDF feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
-      apiUrl: "http://migration",
-      apiValueParseMap: "0.data.value",
-      yearOffset: 1,
-      value: 1500
+      name: "Greenhouse Gas Emission Feed",
+      symbol: "GGEF",
+      description: "The GGEF feed tracks the greenhouse gas emissions in tonnes per capita in the EU. Data is provided by the European Environmental Agency (EEA)",
+      apiUrl: "https://ec.europa.eu/eurostat/api/dissemination/sdmx/2.1/data/sdg_13_10/A.GHG_T_HAB.EU28?format=json",
+      apiValueParseMap: "value.0",
+      yearOffset: 3,
+      value: 100
     },
 ];
 
@@ -47,13 +47,13 @@ const fundData = [
     ]
   },
   {
-    name: 'Environmental Awareness Fund',
+    name: 'Environmental Action Fund',
     symbol: 'EAF',
-    targetFeedId: 'CDF',
-    description: 'The Environmental Awareness Fund uses variable pricing based on the carbon emissions of countries in the European Union. All donations to the Environmental Awareness Fund are transferred to the WWF.',
+    targetFeedId: 'GGEF',
+    description: 'The Environmental Action Fund uses variable pricing based on greenhouse gas emissions in the European Union. All donations to the Environmental Action Fund are transferred to the World Wide Fund for Nature.',
     image: 'https://1000logos.net/wp-content/uploads/2017/05/WWF-logo.png',
     rangeMin: 5,
-    rangeMax: 20,
+    rangeMax: 10,
     attributes: [
       {
         trait_type: "Beneficiary Address",
@@ -65,7 +65,7 @@ const fundData = [
     name: 'Immunization Awareness Fund',
     symbol: 'IAF',
     targetFeedId: 'IDF',
-    description: 'The Immunization Awareness Fund uses variable pricing based on the percentage of of surviving infants who received the third dose of hep B-containing vaccine in the East Asia and Pacific region. All donations to the Immunization Awareness Fund are transferred to the WHO.',
+    description: 'The Immunization Awareness Fund uses variable pricing based on the percentage of surviving infants who received the third dose of hep B-containing vaccine in the East Asia and Pacific region. All donations to the Immunization Awareness Fund are transferred to the WHO.',
     image: 'https://w7.pngwing.com/pngs/10/325/png-transparent-world-health-organization-computer-icons-business-organization-emblem-logo-innovation.png',
     rangeMin: 70,
     rangeMax: 100,
