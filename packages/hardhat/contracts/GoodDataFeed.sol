@@ -66,8 +66,8 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     	//jobId = "c7dd72ca14b44f0c9b6cfcd4b7ec0a2c"; // https://market.link/jobs/f870737d-7550-4ec9-a009-eb596719dff8/runs?network=42
 
         // RINKEBY DATA
-        oracle = 0x7AFe1118Ea78C1eae84ca8feE5C65Bc76CcF879e; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
-        jobId = "6d1bfe27e7034b1d87b5270556b17277"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+        oracle = 0x032887D0D0055e0f90447369F57EEb76b7a8e210; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
+        jobId = "f4b27e1552f0429294e1d138e643b041"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
 
     	fee = 1 * 10 ** (18 - 1); // 0.1 LINK
 
@@ -84,7 +84,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         //     educationApiDescription,
         //     yearOffset  
         // );
-        // latestData[educationApiId] = 102134 * (10 ** (18 -  4));
+        //latestData[educationApiId] = 102134 * (10 ** (18 -  4));
     }
 
 
@@ -104,29 +104,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     function latestDataForFeed(string calldata feedId) external override view returns (uint256) {
         // get year offset
         return latestData[feedId];
-    }
-
-    /**
-     * @dev Formats a timestamp to a valid feed date, as api use format YYYYMM
-     */
-    function formatDate(uint256 timestamp) public pure returns (uint16) {
-        // TODO!!!!
-        return uint16(timestamp);
-    }
-
-    function formatDateByQuarter(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
-        uint16 year = 2021 - yearOffset;//dateTime.getYear(timestamp);
-        uint8 month = 4;//dateTime.getMonth(timestamp);
-        string memory quarter = "Q1";
-        if(month > 9) {
-            quarter = "Q4";
-        } else if (month > 6) {
-            quarter = "Q3";
-        } else if (month > 3) {
-            quarter = "Q2";
-        }
-
-        return string(abi.encodePacked(uint2str(year), "-", quarter));
     }
 
     /**
@@ -196,7 +173,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // Answer in decimals so remove decimals
         req.addUint("times", 10**uint256(API_DECIMALS));
 
-    	bytes32 requestId =  bytes32("fasdf");//sendChainlinkRequestTo(oracle, req, fee);
+    	bytes32 requestId = bytes32("fda"); //sendChainlinkRequestTo(oracle, req, fee);
 
         // register request data
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
@@ -208,7 +185,10 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     /**
      * @dev Chainlink API fulfilled handler. Updates latest data for feed
      */
-    function fulfilFeedRequest(bytes32 _requestId, uint256 feedData) public /*recordChainlinkFulfillment(_requestId)*/ {
+    function fulfilFeedRequest(bytes32 _requestId, uint256 feedData) 
+        public 
+    //    recordChainlinkFulfillment(_requestId) 
+    {
     	
         FeedRequestData memory reqData = pendingRequests[_requestId];
 
@@ -216,6 +196,8 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         latestData[reqData.feedId] = feedData;
 
         console.log("Request fulfilled: %s at %s", reqData.requestedDate, feedData);
+
+        emit FeedDataUpdated(reqData.feedId, feedData);
 
         // cleanup pending requests
         delete pendingRequests[_requestId];
@@ -240,7 +222,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         );
 
         // request data by default for local dev
-        requestLatestFeedData(feedId);
+        //requestLatestFeedData(feedId);
 
         // put in temporary test data while rinekby chainlink node is not solved
         latestData[feedId] = 102134 * (10 ** (18 -  4));

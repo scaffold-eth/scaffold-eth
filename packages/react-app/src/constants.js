@@ -18,6 +18,11 @@ const THEGRAPH = {
     }
 }
 
+const LINK_ADDRESS = {
+    'rinkeby': '0x01be23585060835e02b77ef475b0cc51aa1e0709',
+    'kovan': '0xa36085F69e2889c224210F603D836748e7dC0088',
+}
+
 
 const NETWORK = (chainId)=>{
   for(let n in NETWORKS){
@@ -112,3 +117,4 @@ module.exports.BLOCKNATIVE_DAPPID = BLOCKNATIVE_DAPPID
 module.exports.THEGRAPH = THEGRAPH
 module.exports.NETWORK = NETWORK
 module.exports.NETWORKS = NETWORKS
+module.exports.LINK_ADDRESS = LINK_ADDRESS;

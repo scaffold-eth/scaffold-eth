@@ -9,7 +9,8 @@ const ipfsApi = require('../../react-app/src/helpers/ipfsGraph');
 const constants = require('../../react-app/src/constants');
 const generateTokens = require('./mintTestTokens');
 const { feedData, fundData } = require('./feedData');
-
+const erc20 = require('./erc20Helpers');
+const goodDataFeedAbi = require('../artifacts/contracts/GoodDataFeed.sol/GoodDataFeed.json').abi;
 const graphDir = "../subgraph";
 
 const theGraphNode = constants.THEGRAPH['localhost'].ipfsUri;//constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
@@ -67,6 +68,27 @@ async function deployGoodDataFeed() {
       ).then(tx => tx.wait);
     }
   }
+  const accounts = await ethers.getSigners();
+  // try and transfer link to contract and to update feeds if not localhost
+  if(hre.network.name !== 'localhost') {
+    const lnkAddress = constants.LINK_ADDRESS[hre.network.name];
+    try{  
+      const lnkContract = erc20(lnkAddress);
+      console.log('Funding dada feed with LINK');
+      await lnkContract.connect(accounts[0]).transfer(
+        goodDataFeed.address,
+        ethers.constants.WeiPerEther.mul(1)
+      ).then(tx => tx.wait);
+
+      console.log('requesting latest data');
+      // update feeds for each 
+      for(let i = 0; i < feedData.length; i++) {
+        await goodDataFeed.connect(accounts[0]).requestLatestFeedData(feedData[i].symbol);
+      }
+    }catch (e){
+      console.log(e);
+    }
+  }
 
   return goodDataFeed;
 }
@@ -102,16 +124,16 @@ async function deployGoodTokenFund(dataFeedContract) {
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
+  
+  // Deploy the GoodDataFeed contract
+  const goodDataFeed = await deployGoodDataFeed();
+  await goodDataFeed.deployed();
 
   // // const yourContract = await deploy("YourContract") // <-- add in constructor args like line 19 vvvv
   const goodToken = await deploy("GoodToken") // <-- add in constructor args like line 19 vvvv
   await goodToken.deployed();
   const gTx = goodToken.deployTransaction;
   await gTx.wait();
-  
-  // Deploy the GoodDataFeed contract
-  const goodDataFeed = await deployGoodDataFeed();
-  
   // Deploy the GoodTokenFund contract
   const goodTokenFund = await deployGoodTokenFund(goodDataFeed);
 
