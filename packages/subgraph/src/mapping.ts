@@ -179,6 +179,7 @@ export function handleFundCreated(event: FundCreated): void {
     if(fundPayload != null) {
         let fundMetadata:TypedMap<string, JSONValue>
         fundMetadata = json.fromBytes(fundPayload as Bytes).toObject();
+        fund.symbol = fundMetadata.get('symbol').toString();
         fund.name = fundMetadata.get('name').toString();
         fund.description = fundMetadata.get('description').toString();
         fund.feed = fundMetadata.get('targetFeedId').toString();

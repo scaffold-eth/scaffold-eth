@@ -7,6 +7,7 @@ import { useQuery, gql } from '@apollo/client';
 import { formatEther } from "@ethersproject/units";
 import Avatar from "antd/lib/avatar/avatar";
 import Artwork from "../components/Artwork";
+import BuyTokenModal from "./BuyTokenModal";
 import { ethers } from 'ethers'
 
 function mapPrice(val, valMin, valMax, rangeMin, rangeMax) {
@@ -27,6 +28,7 @@ const ARTWORKS_QUERY = gql`
   query {
     funds {
       id
+      symbol
       name
       rangeMin
       rangeMax
@@ -86,9 +88,23 @@ const Subgraph = (props) => {
     // offsetArtworks: 0
   }
 
+  const [showModal, setShowModal] = useState(false);
   const { loading, data } = useQuery(ARTWORKS_QUERY, {  }, { pollInterval: 2500 });
+  const [currentFund, setCurrentFund] = useState([]);
+
+  const buyFund = (fund) => {
+    setCurrentFund(fund);
+    setShowModal(true);
+  }
 
   return (
+  <>
+    <BuyTokenModal
+      writeContracts={props.writeContracts}
+      visible={showModal}
+      handleClose={() => setShowModal(false)}
+      fund={currentFund}
+    />
     <Row direction="vertical">
       <Col span={12} offset={6}>
         <br />
@@ -122,7 +138,10 @@ const Subgraph = (props) => {
                   </div>
                   </Row>
                   <Row>
-                    <Button type="primary">Buy {fund.name} token</Button>
+                    <Button 
+                      type="primary"
+                      onClick={() => buyFund(fund)}
+                    >Buy {fund.name} token</Button>
                   </Row>
               </Row>
                 </Col>
@@ -165,6 +184,7 @@ const Subgraph = (props) => {
         }
       </Col>
     </Row>
+  </>
   )
 }
 

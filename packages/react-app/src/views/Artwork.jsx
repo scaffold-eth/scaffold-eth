@@ -8,7 +8,7 @@ import Blockies from 'react-blockies'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
 import Avatar from "antd/lib/avatar/avatar";
-
+import BuyTokenModal from './BuyTokenModal';
 
 
 const { Text, Title } = Typography
@@ -49,6 +49,7 @@ const ARTWORK_QUERY = gql`
       }
       
       fund {
+        symbol
         name
         image
         feed {
@@ -109,6 +110,7 @@ const Subgraph = (props) => {
   const { artwork } = useParams()
   
   const [isPurchasing, setIsPurchasing] = useState(false);
+  const [showModal, setShowModal] = useState(false);
   
   
   const variables = { artwork }
@@ -162,6 +164,13 @@ const Subgraph = (props) => {
   const isImage = !!data.artwork.artworkImageUrl.match(/.jpg|.png/)
     
   return (
+  <>
+    <BuyTokenModal
+      writeContracts={props.writeContracts}
+      visible={showModal}
+      handleClose={() => setShowModal(false)}
+      fund={data.artwork.fund}
+    />
     <Row direction="vertical" style={{textAlign: 'left'}}>
       <Col span={12} offset={6}>
         <br/><br/>
@@ -253,8 +262,8 @@ const Subgraph = (props) => {
                     <Avatar style={{marginTop:1, border:2, marginRight: 10, background: '#EEE'}} shape="square" size="large" src={data.artwork.fund.image} />
                     <Col flex="1">
                       <Row justify="space-between">
-                        <Text type="secondary">this artwork supports</Text>
-                        <Text type="secondary">tracked index</Text>
+                        <Text type="secondary">This artwork supports</Text>
+                        <Text type="secondary">Tracked index</Text>
                       </Row>
                       <Row justify="space-between">
                         <Text>{data.artwork.fund.name}</Text>
@@ -293,7 +302,10 @@ const Subgraph = (props) => {
                   {
                     isOwner
                     ? <Link href="/about">Learn more about the Good Token.</Link>
-                    : <Button block type="primary">Buy {data.artwork.fund.feed.id} tokens</Button>
+                    : <Button 
+                      block type="primary"
+                      onClick={() => setShowModal(true)}
+                    >Buy {data.artwork.fund.symbol} tokens</Button>
                   }
                 </Card>
               </Col>
@@ -323,6 +335,7 @@ const Subgraph = (props) => {
         {featuredArtworks} */}
     </Col>
     </Row>
+  </>
   )
 }
 
