@@ -69,7 +69,7 @@ const mintTestTokens = async (
 
         // generate metadata
         const tokenName = tokenData.name;
-        const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(100000);
+        const price = ethers.constants.WeiPerEther.mul((i+ 1)).div(10);
         const targetFund = fundData[i % fundData.length];
         const targetFeedTokenId = (i % fundData.length) + 1; // 1 indexed
         const fundName = targetFund.name

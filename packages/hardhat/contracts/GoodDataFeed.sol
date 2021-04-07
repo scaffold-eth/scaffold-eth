@@ -202,7 +202,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
 
         // FOR LOCAL TEST, AUTOMATICALLY FULFILL
-        //fulfilFeedRequest(requestId, 10 * 10**18);
+        fulfilFeedRequest(requestId, 10 * 10**18);
     }
 
     /**
@@ -240,7 +240,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         );
 
         // request data by default for local dev
-        //requestLatestFeedData(feedId);
+        requestLatestFeedData(feedId);
 
         // put in temporary test data while rinekby chainlink node is not solved
         latestData[feedId] = 102134 * (10 ** (18 -  4));
