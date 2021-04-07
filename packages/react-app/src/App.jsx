@@ -11,7 +11,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { About, Artworks, Vault, Artwork, MintArtwork, Funds } from "./views"
+import { About, Artworks, Vault, Artwork, MintArtwork, Funds, Feeds } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 /*
@@ -178,6 +178,9 @@ function App(props) {
           <Menu.Item key="/funds">
             <Link onClick={()=>{setRoute("/funds")}} to="/funds">Funds</Link>
           </Menu.Item>
+          <Menu.Item key="/feeds">
+            <Link onClick={()=>{setRoute("/feeds")}} to="/feeds">Feeds</Link>
+          </Menu.Item>
           <Menu.Item key="/mint">
             <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
           </Menu.Item>
@@ -220,6 +223,17 @@ function App(props) {
 
           <Route exact path="/funds">
             <Funds
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              tx={tx}
+              writeContracts={contracts}
+            />
+          </Route>
+
+          <Route exact path="/feeds">
+            <Feeds
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}

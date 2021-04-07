@@ -2,11 +2,12 @@
 
 import React, { useState, useEffect } from "react";
 import "antd/dist/antd.css";
-import { Typography, List, Card, Skeleton, Divider, Space, Row, Col, Image, Spin, Carousel, Button, Table, Tag } from "antd";
+import { Typography, Card, Skeleton, Row, Col, Image, Spin, Button, Table, Tag, Tooltip } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
 import { Link, useHistory, useParams } from 'react-router-dom'
 import { formatEther } from "@ethersproject/units";
+import Avatar from "antd/lib/avatar/avatar";
 
 
 
@@ -49,8 +50,11 @@ const ARTWORK_QUERY = gql`
       
       fund {
         name
+        image
         feed {
           id
+          name
+          description
         }
       }
 
@@ -63,37 +67,6 @@ const ARTWORK_QUERY = gql`
     }
   }
 `
-
-const grid = {
-  gutter: 16,
-  xs: 1,
-  sm: 2,
-  md: 4,
-  lg: 4,
-  xl: 6,
-  xxl: 4,
-}
-
-const renderArtworkListing = artwork => (
-  <List.Item>
-    <Card hoverable
-      title={
-        <Row justify="space-between">
-        <Col>
-          <Blockies seed={artwork.artist.address} scale={2} />
-          <Text type="secondary"> &nbsp;{artwork.artist.name}</Text>
-        </Col>
-        <Col><Text>{formatEther(artwork.price)} ☰</Text></Col>
-      </Row>
-      }
-      cover={<Image src={artwork.revoked ? artwork.artworkRevokedImageUrl : artwork.artworkImageUrl} />}
-    >
-      <Row justify="start">
-        <Text strong>{artwork.name}</Text> <Text type="secondary">support {artwork.fund.name}</Text> 
-      </Row>
-    </Card>
-  </List.Item>
-)
 
 const ownershipColumns  = [
   {
@@ -186,7 +159,8 @@ const Subgraph = (props) => {
 
   const isForSale = data.artwork.revoked || (data.artwork.artist.address ===  data.artwork.owner)
   const isOwner = (props.address.toLowerCase() == data.artwork.owner.toLowerCase())
-
+  const isImage = !!data.artwork.artworkImageUrl.match(/.jpg|.png/)
+    
   return (
     <Row direction="vertical" style={{textAlign: 'left'}}>
       <Col span={12} offset={6}>
@@ -194,7 +168,8 @@ const Subgraph = (props) => {
         <Row>
           <Col span={10}>
             <Card >
-              <Image src={data.artwork.artworkImageUrl} />
+
+              {isImage ? <Image src={data.artwork.artworkImageUrl} /> : <video width="100%" autoPlay loop src={data.artwork.artworkImageUrl} />}
               </Card>
               <Row>
               <Col flex="1">
@@ -257,9 +232,8 @@ const Subgraph = (props) => {
                       <Text type="secondary">current price</Text></Row>
                     <Row>
                       <Col>
-                        <Title level={2}>☰{formatEther(data.artwork.price)}</Title>
+                        <Title style={{marginBottom:0}} level={2}>☰{formatEther(data.artwork.price)}</Title>
                       </Col>
-      
                     </Row>
                   </Col>
                   <Col>
@@ -275,8 +249,21 @@ const Subgraph = (props) => {
               <Col flex="1">
                 <br/>
                 <Card title="The Good stuff">
-                  This artwork supports <Text type="warning">{data.artwork.fund.name}</Text> using the Good Token protocol.
-                    <br/>
+                  <Row>
+                    <Avatar style={{marginTop:1, border:2, marginRight: 10, background: '#EEE'}} shape="square" size="large" src={data.artwork.fund.image} />
+                    <Col flex="1">
+                      <Row justify="space-between">
+                        <Text type="secondary">this artwork supports</Text>
+                        <Text type="secondary">tracked index</Text>
+                      </Row>
+                      <Row justify="space-between">
+                        <Text>{data.artwork.fund.name}</Text>
+                        <Tooltip title={data.artwork.fund.feed.description}>
+                          <Tag style={{margin: 0}}>{data.artwork.fund.feed.id}</Tag>
+                        </Tooltip>
+                      </Row>
+                    </Col>
+                  </Row>
                     <br/>
                   {
                     data.artwork.ownershipModel ? (
@@ -303,7 +290,11 @@ const Subgraph = (props) => {
                   }
 
                   <br/>
-                  <Link href="/about">Learn more about the Good Token.</Link>
+                  {
+                    isOwner
+                    ? <Link href="/about">Learn more about the Good Token.</Link>
+                    : <Button block type="primary">Buy {data.artwork.fund.feed.id} tokens</Button>
+                  }
                 </Card>
               </Col>
             </Row>

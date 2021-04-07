@@ -47,8 +47,11 @@ const ARTWORKS_QUERY = gql`
         name
         tokenId
         price
+        revoked
         artworkImageUrl
+        owner
         artist {
+          address
           name
           id
         }
