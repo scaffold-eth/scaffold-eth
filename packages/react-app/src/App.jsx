@@ -105,7 +105,6 @@ function App(props) {
   //if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  console.log(userProvider);
   const contracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",contracts)
 

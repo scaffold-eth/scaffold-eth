@@ -7,7 +7,7 @@ import { Typography, List, Card,
   Button, Input, InputNumber, Radio, Form, } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
-import ipfsApi from "../helpers/ipfsGraph";
+import {ipfsApi} from "../helpers/ipfsGraph";
 import { THEGRAPH } from "../constants";
 import { ethers } from "ethers";
 
