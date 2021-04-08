@@ -1,7 +1,7 @@
 
 const testTokenData = [
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/83068667_1184550315080295_1347700470932041073_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=OF2h21XHApkAX9-SpBG&edm=AP_V10EAAAAA&ccb=7-4&oh=de35bd254deb20f54d0bdb6e6ebb6ac4&oe=606E8E6A&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/complx-forms.mp4',
       name: 'Wall Drawing 692',
       description: "Continuous forms with color ink washes superimposed, reimagined.",
       artistName: "Barak",
@@ -10,7 +10,7 @@ const testTokenData = [
       balanceRequirement: 1, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/83177650_607779330039867_3031861050316155571_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=103&_nc_ohc=5khzWZDCvb8AX--0BXf&edm=AABBvjUAAAAA&ccb=7-4&oh=8ec6955794b86453780420f3141a3e6a&oe=606DF2E5&_nc_sid=83d603',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/color-bands.mp4',
       name: 'Wall Drawing 793B',
       description: "Irregular Wavy Color Bands, reimagined.",
       artistName: "Barak",
@@ -19,7 +19,7 @@ const testTokenData = [
       balanceRequirement: 1, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/64426706_333746000651804_6919093309907332785_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=XmTsJMAWiCMAX8i1ToI&edm=AP_V10EAAAAA&ccb=7-4&oh=0e4f2470ad275ce89a1fa6249ac906d6&oe=606E6817&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/displacement-color.mp4',
       name: 'Vertex Displacement 1',
       description: "Playing around with vertex displacement in TouchDesigner.",
       artistName: "Barak",
@@ -28,7 +28,7 @@ const testTokenData = [
       balanceRequirement: 2, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/64301805_429675494255165_5149542059569337435_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=105&_nc_ohc=8XGchQwa5VYAX8J7Pzf&edm=AP_V10EAAAAA&ccb=7-4&oh=eb3e2dbdb804f4340d80a46329d5391a&oe=606ED8B2&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/displacement-gold.mp4',
       name: 'Vertex Displacement 2',
       description: "Playing around with vertex displacement in TouchDesigner.",
       artistName: "Barak",
@@ -37,7 +37,7 @@ const testTokenData = [
       balanceRequirement: 5, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t51.2885-15/e35/51405355_1171231999705009_5143939826133886352_n.jpg?tp=1&_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=101&_nc_ohc=CY_B4XwguYQAX_7puoW&edm=AP_V10EAAAAA&ccb=7-4&oh=352df0fb5f7303d1165977b997c7bd24&oe=60923231&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/portrait.jpg',
       name: 'Dithered Portrait',
       description: "Dithered portrait made with Processing and Axidraw using the Floyd-Steinberg algorithm.",
       artistName: "Barak",
@@ -46,7 +46,7 @@ const testTokenData = [
       balanceRequirement: 3, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/36816195_229305341034984_508108548895537930_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=YY1W5KFKzp4AX_zQ7GL&edm=AP_V10EAAAAA&ccb=7-4&oh=33693f2ea4dfdc1f6ad028e28ef9aeb0&oe=606E7A89&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/land.mp4',
       name: 'Land Unknown',
       description: "Painting a land unknown.",
       artistName: "Barak",
@@ -55,7 +55,7 @@ const testTokenData = [
       balanceRequirement: 10, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/37234834_243120386416075_5017263472271803284_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=107&_nc_ohc=N9qUOhvJkaQAX_yjFtW&edm=AP_V10EAAAAA&ccb=7-4&oh=f9e629b4f63f0e35c5c186c2189da9fb&oe=606EDFFD&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/zen.mp4',
       name: 'Zen',
       description: "-",
       artistName: "Barak",
@@ -64,7 +64,7 @@ const testTokenData = [
       balanceRequirement: 5, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/36709220_1842270635857724_7385235278670332241_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=108&_nc_ohc=w6inJe5DTV8AX83U5Kh&edm=AP_V10EAAAAA&ccb=7-4&oh=adadf6512b38d8be1f4786ee1301a58c&oe=606E50A9&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/internal-state.mp4',
       name: 'Internal State',
       description: "-",
       artistName: "Barak",
@@ -73,7 +73,7 @@ const testTokenData = [
       balanceRequirement: 1, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/37102861_431171667366626_790613980571236049_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=102&_nc_ohc=iln2HmksH70AX98FHYJ&edm=AP_V10EAAAAA&ccb=7-4&oh=0a125ba4b6a14d35a921dd48b76afc06&oe=606EB78B&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/drift.mp4',
       name: 'Drift',
       description: "-",
       artistName: "Barak",
@@ -82,7 +82,7 @@ const testTokenData = [
       balanceRequirement: 20, 
     },
     { 
-      img: 'https://scontent-nrt1-1.cdninstagram.com/v/t50.2886-16/97963827_160778202110352_8089073529478805236_n.mp4?_nc_ht=scontent-nrt1-1.cdninstagram.com&_nc_cat=100&_nc_ohc=JFGwbrr8VS4AX_KSnRK&edm=AP_V10EAAAAA&ccb=7-4&oh=86f441005aa40e43e7088f0171a4e808&oe=606F37CA&_nc_sid=4f375e',
+      img: 'http://jasperdegens.com/scaffold-eth/assets/shoreditch.mp4',
       name: 'Shoreditch HDRI',
       description: "Algorithmic design practive, virtually in London.",
       artistName: "Barak",

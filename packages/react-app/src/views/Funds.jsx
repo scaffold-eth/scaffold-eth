@@ -109,7 +109,7 @@ const Subgraph = (props) => {
       <Col span={12} offset={6}>
         <br />
         <Row>
-          <Title level={3}>🤝 Funds & orgs supported by Good Tokens</Title>
+          <Title level={3}>🤝 Funds & Orgs supported by Good Tokens</Title>
         </Row>
         <br />
         
@@ -121,7 +121,6 @@ const Subgraph = (props) => {
             
             const price = mapPrice(value, rangeMin, rangeMax, 0.5, 2.0)
             const ratio = Math.round(mapPrice(value, rangeMin, rangeMax, 0, 100))
-
             return (
             <Row>
               <Row>

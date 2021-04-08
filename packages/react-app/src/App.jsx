@@ -35,7 +35,7 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['rinkeby']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false
@@ -105,6 +105,7 @@ function App(props) {
   //if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
+  console.log(userProvider);
   const contracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",contracts)
 

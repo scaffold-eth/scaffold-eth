@@ -82,7 +82,7 @@ const ownershipColumns  = [
     render: addr => (
       <span>
         <span><Blockies seed={addr} scale={2} /></span>
-        <Text > &nbsp; 0x{addr.substr(-4).toUpperCase()}</Text>
+        <Text > &nbsp; 0x{addr.substr(2, 4).toUpperCase()}</Text>
       </span>
     )
 
@@ -93,7 +93,7 @@ const ownershipColumns  = [
     render: addr => (
       <span>
         <span><Blockies seed={addr} scale={2} /></span>
-        <Text > &nbsp; 0x{addr.substr(-4).toUpperCase()}</Text>
+        <Text > &nbsp; 0x{addr.substr(2, 4).toUpperCase()}</Text>
       </span>
     )
   },
@@ -123,6 +123,7 @@ const Subgraph = (props) => {
   const buyArtwork = async() => {
     setIsPurchasing(true);
     try{
+      //const account = await ethers.getSigners()[0];
       const t = await props.tx(props.writeContracts.GoodToken.buyArtwork(data.artwork.tokenId, {value: data.artwork.price}));
       console.log(t);
       console.log(await t.wait());
@@ -229,7 +230,7 @@ const Subgraph = (props) => {
             </Row>
             <Row>
                 <div style={{marginTop:2}}><Blockies seed={data.artwork.owner} scale={2} /></div>
-                <Text type="secondary"> &nbsp; Owned by 0x{data.artwork.owner.substr(-4).toUpperCase()}</Text>
+                <Text type="secondary"> &nbsp; Owned by 0x{data.artwork.owner.substr(2, 4).toUpperCase()}</Text>
             </Row>
             <Row>
               <Col flex="1">

@@ -6,7 +6,7 @@ const feedData = [
     description: "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.",
     apiUrl: "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json",
     apiValueParseMap: "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0",
-    yearOffset: 3,
+    yearOffset: 4,
     value: 1200
    
   },  
@@ -37,8 +37,8 @@ const fundData = [
     targetFeedId: 'ROFST',
     description: 'The Education Impact Fund uses variable pricing based on the percentage of primary school age children out of school. All donations to the Education Impact Fund are transferred to UNICEF.',
     image: 'https://upload.wikimedia.org/wikipedia/commons/7/78/Unicef.png',
-    rangeMin: 5,
-    rangeMax: 20,
+    rangeMin: 20,
+    rangeMax: 5,
     attributes: [
       {
         trait_type: "Beneficiary Address",
@@ -52,8 +52,8 @@ const fundData = [
     targetFeedId: 'GGEF',
     description: 'The Environmental Action Fund uses variable pricing based on greenhouse gas emissions in the European Union. All donations to the Environmental Action Fund are transferred to the World Wide Fund for Nature.',
     image: 'https://1000logos.net/wp-content/uploads/2017/05/WWF-logo.png',
-    rangeMin: 5,
-    rangeMax: 10,
+    rangeMin: 10,
+    rangeMax: 5,
     attributes: [
       {
         trait_type: "Beneficiary Address",

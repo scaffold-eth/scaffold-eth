@@ -58,7 +58,7 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
 
         // setup chainlink props
         // #if !IS_LOCAL_NETWORK
-        //setPublicChainlinkToken();
+        setPublicChainlinkToken();
         // #endif
         
         // KOVAN DATA
@@ -112,9 +112,9 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
     function formatDateByYear(uint256 timestamp, uint8 yearOffset) public view returns (string memory) {
         uint16 year;
         // #if IS_LOCAL_NETWORK
-        year = 2021 - yearOffset;
+        //year = 2021 - yearOffset;
         // #else
-      //  year = dateTime.getYear(timestamp) - yearOffset;
+        year = dateTime.getYear(timestamp) - yearOffset;
         // #endif
         return uint2str(year);
     }
@@ -173,21 +173,20 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         // Answer in decimals so remove decimals
         req.addUint("times", 10**uint256(API_DECIMALS));
 
-    	bytes32 requestId = bytes32("fda"); //sendChainlinkRequestTo(oracle, req, fee);
+    	bytes32 requestId = sendChainlinkRequestTo(oracle, req, fee);
 
         // register request data
         pendingRequests[requestId] = FeedRequestData(feedId, dateString);
 
         // FOR LOCAL TEST, AUTOMATICALLY FULFILL
-        fulfilFeedRequest(requestId, 10 * 10**18);
+        //fulfilFeedRequest(requestId, 10 * 10**18);
     }
 
     /**
      * @dev Chainlink API fulfilled handler. Updates latest data for feed
      */
     function fulfilFeedRequest(bytes32 _requestId, uint256 feedData) 
-        public 
-    //    recordChainlinkFulfillment(_requestId) 
+        public recordChainlinkFulfillment(_requestId) 
     {
     	
         FeedRequestData memory reqData = pendingRequests[_requestId];

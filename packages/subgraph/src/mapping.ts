@@ -1,4 +1,4 @@
-import { BigInt, Bytes, Address, Value, JSONValue, ipfs, log, json, TypedMap, ethereum, BigInt } from "@graphprotocol/graph-ts"
+import { Bytes, ByteArray, Address, Value, JSONValue, ipfs, log, json, TypedMap, ethereum, BigInt } from "@graphprotocol/graph-ts"
 
 import {
     GoodToken,
@@ -203,7 +203,15 @@ export function handleFeedRegistered(event: FeedRegistered): void {
         feed.url = event.params.apiBaseUrl
         feed.yearOffset = event.params.yearOffset    
         feed.createdAt = event.block.timestamp
-        feed.value = BigInt.fromI32(1500)
+        if(event.params.yearOffset.equals(BigInt.fromI32(2))){
+            feed.value = BigInt.fromI32(90)
+        }
+        else if(event.params.yearOffset.equals(BigInt.fromI32(3))){
+            feed.value = BigInt.fromI32(10)
+        }
+        else {
+            feed.value = BigInt.fromI32(8)
+        }
     }
 
     feed.save();

@@ -10,11 +10,11 @@ const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77"
 const THEGRAPH = {
     localhost: {
         ipfsUri: "http://localhost:5001/api/v0",
-        subgraphUri: "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract"
+        subgraphUri: "http://localhost:8000/subgraphs/name/scaffold-eth/good-tokens"
     },
     hosted: {
         ipfsUri: "https://api.thegraph.com/ipfs/api/v0",
-        subgraphUri: "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract"
+        subgraphUri: "https://api.thegraph.com/subgraphs/name/jasperdegens/good-tokens"
     }
 }
 

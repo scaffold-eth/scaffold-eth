@@ -1,4 +1,6 @@
-specVersion: 0.0.2
+specVersion: 0.0.1
+description: Good Tokens
+repository: https://github.com/jasperdegens/scaffold-eth/tree/good-tokens
 schema:
   file: ./src/schema.graphql
 dataSources:
@@ -9,7 +11,7 @@ dataSources:
     source:
       address: '{{GoodTokenAddress}}'
       abi: GoodToken
-      startBlock: 1
+      startBlock: 8376794
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -39,7 +41,7 @@ dataSources:
     source:
       address: '{{GoodTokenFundAddress}}'
       abi: GoodTokenFund
-      startBlock: 1
+      startBlock: 8376794
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
@@ -65,7 +67,7 @@ dataSources:
     source:
       address: '{{GoodDataFeedAddress}}'
       abi: GoodDataFeed
-      startBlock: 1
+      startBlock: 8376794
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4

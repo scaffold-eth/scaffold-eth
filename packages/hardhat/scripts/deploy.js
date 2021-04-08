@@ -13,7 +13,7 @@ const erc20 = require('./erc20Helpers');
 const goodDataFeedAbi = require('../artifacts/contracts/GoodDataFeed.sol/GoodDataFeed.json').abi;
 const graphDir = "../subgraph";
 
-const theGraphNode = constants.THEGRAPH['localhost'].ipfsUri;//constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
+const theGraphNode = constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
 const ipfs = ipfsApi(theGraphNode)
 
 function publishNetwork() {
@@ -155,7 +155,7 @@ const main = async () => {
     //await bootstrapLocalData(goodToken, goodTokenFund)
     await verifyContract(goodToken.address);
     await verifyContract(goodDataFeed.address);
-    await verifyContract(goodTokenFund.address);
+    await verifyContract(goodTokenFund.address, [goodDataFeed.address]);
   }
 
 

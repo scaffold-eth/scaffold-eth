@@ -14,7 +14,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const theGraphNetwork = 'localhost';
+const theGraphNetwork = 'hosted';
 const subgraphUri = THEGRAPH[theGraphNetwork].subgraphUri;
 
 

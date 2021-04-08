@@ -14,7 +14,7 @@ const testTokenData = require('./testTokenData');
 
 const graphDir = "../subgraph";
 
-const theGraphNode = constants.THEGRAPH['localhost'].ipfsUri; //constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
+const theGraphNode = constants.THEGRAPH[hre.network.name === 'localhost' ? 'localhost' : 'hosted'].ipfsUri;
 const ipfs = ipfsApi(theGraphNode)
 
 function randomNumber(min, max){
