@@ -133,8 +133,8 @@ const Subgraph = props => {
               const rangeMin = +fund.rangeMin;
               const rangeMax = +fund.rangeMax;
 
-              const price = mapPrice(value, rangeMin, rangeMax, 0.5, 2.0);
-              const ratio = Math.round(mapPrice(value, rangeMin, rangeMax, 0, 100));
+              const price = mapPrice(value, rangeMax, rangeMin, 0.5, 2.0);
+              const ratio = Math.round(mapPrice(value, rangeMax, rangeMin, 0, 100));
 
               return (
                 <Row>
@@ -192,7 +192,7 @@ const Subgraph = props => {
                           <Text type="secondary">index value</Text>
                           <Slider
                             step={null}
-                            marks={{ 0: fund.rangeMin, [ratio]: value.toFixed(2), 100: fund.rangeMax }}
+                            marks={{ 0: fund.rangeMax, [ratio]: value.toFixed(2), 100: fund.rangeMin }}
                             included={false}
                             disabled
                             defaultValue={ratio}
