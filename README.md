@@ -45,16 +45,24 @@ Many NGOs and non-profit organizations use the SDMX protocol to provide their da
 <br/>
 
 ## [🖇️ The Graph + IPFS](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
-We leveraged The Graph to bind together the data from our contracts and our metadata stored on IPFS. Our subgraph listens for events emitted from the GoodToken, GoodTokenFund, and GoodDataFeed contracts, and then using IPFS CIDs from those events pulls in additional pinned metadata for our ERC721 and ERC1155 tokens. We also used a Block Handler to query whether tokens on our contract were revoked and then update our subgraph. We would have liked to use Call Handlers as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test [intergration with OpenSea](https://testnets.opensea.io/collection/goodtokens));
+We leveraged The Graph to bind together the data from our contracts and our metadata stored on IPFS.
+
+Interesting tidbits:
+  - Event Handlers for GoodToken, GoodTokenFund, and GoodDataFeed contracts.
+  - IPFS cat calls to pull in pinned metadata for frontend magic.
+  - Block Handler to query and update subgraph if tokens on our GoodToken contract were revoked.
+
+We would have liked to use Call Handlers as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test [intergration with OpenSea](https://testnets.opensea.io/collection/goodtokens));
 
 You can view our [hosted subgraph here](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)!
 
 
 <br/>
+<br/>
 
 ## 🙏 Special thanks to:
-- 🐦 Keenan and Patrick at Chainlink
-- Javier for hosting a Chainlink node on Rinkeby
+- 🐦 Keenan and Patrick at Chainlink for amazing advice and support.
+- Javier for hosting a Chainlink node on Rinkeby.
 - Mehran at UNICEF for sharing the orgniazations inspiring vision for blockchain tech.
 - The Graph for making block-chain querying an absolute pleasure.
 - Austin Griffith for incredible scaffold code-base to get started with.
