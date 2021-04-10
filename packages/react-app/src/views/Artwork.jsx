@@ -119,8 +119,12 @@ const Subgraph = (props) => {
   const history = useHistory()
   
   startPolling()
+  
+  function sleep(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+  }
 
-  const buyArtwork = async() => {
+  const tryPurchase = async() => {
     setIsPurchasing(true);
     try{
       //const account = await ethers.getSigners()[0];
@@ -132,8 +136,22 @@ const Subgraph = (props) => {
       console.log(e);
     }
     setIsPurchasing(false);
+
   }
 
+  const buyArtwork = async() => {
+    if(props.writeContracts === undefined) {
+      await props.loadWeb3Modal();
+    }
+    await tryPurchase();
+  }
+
+  const buyFund = async() => {
+    if(props.writeContracts === undefined) {
+      await props.loadWeb3Modal();
+    }
+    setShowModal(true);
+  };
 
   const getOwner = async () => {
     console.log(props.writeContracts.GoodToken);
@@ -305,7 +323,7 @@ const Subgraph = (props) => {
                     ? <Link href="/about">Learn more about the Good Token.</Link>
                     : <Button 
                       block type="primary"
-                      onClick={() => setShowModal(true)}
+                      onClick={buyFund}
                     >Buy {data.artwork.fund.symbol} tokens</Button>
                   }
                 </Card>

@@ -183,9 +183,9 @@ function App(props) {
           <Menu.Item key="/feeds">
             <Link onClick={()=>{setRoute("/feeds")}} to="/feeds">Feeds</Link>
           </Menu.Item>
-          <Menu.Item key="/mint">
+          {/* <Menu.Item key="/mint">
             <Link onClick={()=>{setRoute("/mint")}} to="/mint">Mint</Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/vault">
             <Link onClick={()=>{setRoute("/vault")}} to="/vault">My Artworks</Link>
           </Menu.Item>
@@ -201,13 +201,13 @@ function App(props) {
           </Route>
           
 
-          <Route exact path="/mint">
+          {/* <Route exact path="/mint">
             <MintArtwork
               tx={tx}
               writeContracts={contracts}
               address={address}
               />
-          </Route>
+          </Route> */}
           
           <Route exact path="/artists"></Route>
           <Route exact path="/artists/:artist"></Route>
@@ -220,6 +220,7 @@ function App(props) {
               price={price}
               tx={tx}
               writeContracts={contracts}
+              loadWeb3Modal={loadWeb3Modal}
             />
           </Route>
 
@@ -231,6 +232,7 @@ function App(props) {
               price={price}
               tx={tx}
               writeContracts={contracts}
+              loadWeb3Modal={loadWeb3Modal}
             />
           </Route>
 
@@ -264,6 +266,7 @@ function App(props) {
                 price={price}
                 tx={tx}
                 writeContracts={contracts}
+                loadWeb3Modal={loadWeb3Modal}
               />
           </Route>
 

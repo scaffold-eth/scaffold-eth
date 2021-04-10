@@ -74,7 +74,7 @@ const BuyTokenModal = (props) => {
             visible={props.visible}
             confirmLoading={tryPurchase}
             onCancel={props.handleClose}
-            width={620}
+            width={650}
             footer={[
                 <Button key="back" onClick={props.handleClose}>
                   Cancel

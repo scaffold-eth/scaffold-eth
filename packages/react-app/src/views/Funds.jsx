@@ -125,7 +125,10 @@ const Subgraph = props => {
   const { loading, data } = useQuery(ARTWORKS_QUERY, {}, { pollInterval: 2500 });
   const [currentFund, setCurrentFund] = useState([]);
 
-  const buyFund = fund => {
+  const buyFund = async fund => {
+    if(props.writeContracts === undefined) {
+      await props.loadWeb3Modal();
+    }
     setCurrentFund(fund);
     setShowModal(true);
   };
@@ -137,6 +140,7 @@ const Subgraph = props => {
         visible={showModal}
         handleClose={() => setShowModal(false)}
         fund={currentFund}
+        loadWeb3Modal={props.loadWeb3Modal}
       />
       <Row direction="vertical">
         <Col span={12} offset={6}>
