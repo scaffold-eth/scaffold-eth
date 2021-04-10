@@ -39,6 +39,7 @@ const FEEDS_QUERY = gql`
       description
       yearOffset
       value
+      url
       funds {
         id
         name
@@ -99,6 +100,11 @@ const Subgraph = (props) => {
                       <Text type="secondary">About this index feed:</Text>
                       <br/>
                       <Text>{feed.description}</Text>
+                      <br/>
+                      <br/>
+                      <Button type="primary">
+                        <a href={feed.url}>Check out {feed.id} data!</a>
+                      </Button>
                       <Divider/>
                       <Row justify="space-between">
                         <Text type="secondary">current index period</Text>

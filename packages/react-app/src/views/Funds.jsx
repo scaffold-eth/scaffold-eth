@@ -89,6 +89,25 @@ const grid = {
   xxl: 4,
 };
 
+const beneficiaryUrls = {
+  'EAF': {
+    link: 'https://www.worldwildlife.org/',
+    beneficiary: 'WWF'
+  },
+  'EIF': {
+    link: 'https://gigaconnect.org/',
+    beneficiary: 'UNICEF',
+  },
+  'IAFU': {
+    link: 'https://gigaconnect.org/',
+    beneficiary: 'UNICEF',
+  },
+  'IAF': {
+    link: 'https://www.who.int/',
+    beneficiary: 'WHO',
+  }
+}
+
 const renderArtworkListing = artwork => (
   <List.Item key={artwork.id}>
     <Artwork artwork={artwork} />
@@ -163,6 +182,11 @@ const Subgraph = props => {
                           <Button type="primary" onClick={() => buyFund(fund)}>
                             Buy {fund.name} token
                           </Button>
+                          <br/>&nbsp;&nbsp;
+                          { (fund !== undefined) ? 
+                          (<Button type="secondary">
+                            <a href={beneficiaryUrls[fund.symbol].link}>Learn more about {beneficiaryUrls[fund.symbol].beneficiary}</a>
+                          </Button>) : ''}
                         </Row>
                       </Row>
                     </Col>

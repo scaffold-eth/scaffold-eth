@@ -1,8 +1,29 @@
-# 🏗 scaffold-eth
+# 🤝 Good Tokens 🤝
 
-> is everything you need to get started building decentralized applications powered by Ethereum
+## 💡 Concept & Project Scope
 
----
+Good Tokens rethinks the responsibilities of owning art. Is it enough to simply purchase an artwork and then own it forever, or should ownership be earned and maintained by supporting causes linked to the art or by participating in communities linked to the artist. This way, artworks can be more sustainable and the artist is assured their art aligns with their values.
+
+
+## 🔨 Implementation / Technical Bits
+
+The Good Tokens system consists of three main contracts:
+  - 📝 GoodToken []
+  - 📝 GoodTokenFund
+  - 📝 GoodTokenFeed
+
+Add etherscan links for all contracts
+Add link to main site
+add in infographics
+add submission video
+Add link to subgraph explorer
+
+
+special thanks
+- Keenan and Patrick at Chainlink
+- Mehran at UNICEF
+- The Graph for making block-chain querying an absolute pleasure.
+- Austin Griffith for incredible code-base to get started with.
 
 
 #### [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start)
