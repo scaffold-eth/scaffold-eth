@@ -11,7 +11,7 @@ const testTokenData = [
     },
     { 
       img: 'http://jasperdegens.com/scaffold-eth/assets/color-bands.mp4',
-      name: 'Wall Drawing 793B',
+      name: 'Wall Drawing 793',
       description: "Irregular Wavy Color Bands, reimagined.",
       artistName: "Barak",
       price: 1000,
@@ -57,7 +57,7 @@ const testTokenData = [
     { 
       img: 'http://jasperdegens.com/scaffold-eth/assets/zen.mp4',
       name: 'Zen',
-      description: "-",
+      description: "Discover zen.",
       artistName: "Barak",
       price: 1000,
       ownershipModel: 1,
@@ -66,7 +66,7 @@ const testTokenData = [
     { 
       img: 'http://jasperdegens.com/scaffold-eth/assets/internal-state.mp4',
       name: 'Internal State',
-      description: "-",
+      description: "A turbulent internal state.",
       artistName: "Barak",
       price: 1000,
       ownershipModel: 1,
@@ -75,7 +75,7 @@ const testTokenData = [
     { 
       img: 'http://jasperdegens.com/scaffold-eth/assets/drift.mp4',
       name: 'Drift',
-      description: "-",
+      description: "Experiments with noise and patterns.",
       artistName: "Barak",
       price: 1000,
       ownershipModel: 0,

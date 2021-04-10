@@ -7,6 +7,7 @@ import { useQuery, gql } from '@apollo/client';
 import Avatar from "antd/lib/avatar/avatar";
 import Artwork from "../components/Artwork";
 import { Artworks } from ".";
+import { ethers } from 'ethers';
 
 function mapPrice(val, valMin, valMax, rangeMin, rangeMax) {
   const clamped = (Math.min(valMax, Math.max(val, valMin)))
@@ -105,7 +106,7 @@ const Subgraph = (props) => {
                       </Row>
                       <Row justify="space-between">
                         <Text type="secondary">current index value</Text>
-                        <Text>{feed.value}</Text>
+                        <Text>{ethers.BigNumber.from(feed.value.toString()).div(ethers.constants.WeiPerEther.div(100)).toNumber() / 100}</Text>
                       </Row>
                       <Row justify="space-between">
                         <Text type="secondary">total raised with Good Tokens</Text>

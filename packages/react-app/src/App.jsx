@@ -105,7 +105,6 @@ function App(props) {
   //if(DEBUG) console.log("📝 readContracts",readContracts)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  console.log(userProvider);
   const contracts = useContractLoader(userProvider)
   if(DEBUG) console.log("🔐 writeContracts",contracts)
 
@@ -124,27 +123,28 @@ function App(props) {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-
+  let targetChainId = 4;
   let networkDisplay = ""
-  // if(localChainId && selectedChainId && localChainId != selectedChainId ){
-  //   networkDisplay = (
-  //     <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
-  //       <Alert
-  //         message={"⚠️ Wrong Network"}
-  //         description={(
-  //           <div>
-  //             You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(localChainId).name}</b>.
-  //           </div>
-  //         )}
-  //         type="error"
-  //         closable={false}
-  //       />
-  //     </div>
-  //   )
-  // }else{
+  if(!!selectedChainId && selectedChainId !== targetChainId ){
+    networkDisplay = (
+      <div style={{zIndex:2, position:'absolute', right:0,top:60,padding:16}}>
+        <Alert
+          message={"⚠️ Wrong Network! Please switch to the Rinkeby testnet!"}
+          description={(
+            <div>
+              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on <b>{NETWORK(targetChainId).name}</b>.
+            </div>
+          )}
+          type="error"
+          closable={false}
+        />
+      </div>
+    )
+  }
+  // else{
   //   networkDisplay = (
   //     <div style={{zIndex:-1, position:'absolute', right:154,top:28,padding:16,color:targetNetwork.color}}>
-  //       {targetNetwork.name}
+  //       {NETWORK(targetChainId).name}
   //     </div>
   //   )
   // }
@@ -170,6 +170,7 @@ function App(props) {
 
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
+      {networkDisplay}
       <BrowserRouter>
 
         <Menu style={{ textAlign:"left" }} selectedKeys={[route]} mode="horizontal">

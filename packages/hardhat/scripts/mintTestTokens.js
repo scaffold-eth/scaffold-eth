@@ -95,7 +95,7 @@ const mintTestTokens = async (
         // pin metadata
         const pin = await ipfs.addJson(tokenMetadata);
         // pin revoked metadata
-        tokenMetadata.image = revokedImg;
+        tokenMetadata.description = `This artwork has been revoked from the owner! Please visit the GoodTokens website for information on how to buy this artwork. ${tokenMetadata.description}`;
         const pinRevoked = await ipfs.addJson(tokenMetadata);
        
         // deposit funds into the fund contract from the user

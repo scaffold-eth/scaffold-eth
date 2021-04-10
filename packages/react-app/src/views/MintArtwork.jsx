@@ -7,7 +7,7 @@ import { Typography, List, Card,
   Button, Input, InputNumber, Radio, Form, } from "antd";
 import { useQuery, gql } from '@apollo/client';
 import Blockies from 'react-blockies'
-import ipfsApi from "../helpers/ipfsGraph";
+//import { ipfsApi } from "../helpers/ipfsGraph";
 import { THEGRAPH } from "../constants";
 import { ethers } from "ethers";
 
@@ -56,13 +56,13 @@ async function pinAndAnchor(
 
     // Pin artwork metadata 
     const theGraphNode = THEGRAPH.localhost.ipfsUri;
-    const ipfs = ipfsApi(theGraphNode);
-    const artworkInfo = await ipfs.addJson(artworkMetadata);
+    //const ipfs = ipfsApi(theGraphNode);
+    //const artworkInfo = await ipfs.addJson(artworkMetadata);
 
     // Pin revoked artwork metadata
     const revokedArtworkMetadata = artworkMetadata;
     revokedArtworkMetadata.image = revokedUrl;
-    const revokedInfo = await ipfs.addJson(revokedArtworkMetadata);
+    //const revokedInfo = await ipfs.addJson(revokedArtworkMetadata);
     
     console.log(revokedArtworkMetadata);
 
@@ -70,8 +70,8 @@ async function pinAndAnchor(
     // create test artwork
     try{
       await tx(writeContracts.GoodToken.createArtwork(
-          artworkInfo.path, 
-          revokedInfo.path,
+          "artworkInfo.path", 
+          "revokedInfo.path",
           beneficiaryType,
           beneficiaryContractAddress,
           requiredBalance,

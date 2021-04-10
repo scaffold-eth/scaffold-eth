@@ -196,6 +196,7 @@ const Subgraph = props => {
                             included={false}
                             disabled
                             defaultValue={ratio}
+                            tooltipVisible={false}
                             style={{ width: 200 }}
                           />
                         </Row>

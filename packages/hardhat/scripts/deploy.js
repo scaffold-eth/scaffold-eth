@@ -75,10 +75,11 @@ async function deployGoodDataFeed() {
     try{  
       const lnkContract = erc20(lnkAddress);
       console.log('Funding dada feed with LINK');
-      await lnkContract.connect(accounts[0]).transfer(
+      const tx = await lnkContract.connect(accounts[0]).transfer(
         goodDataFeed.address,
         ethers.constants.WeiPerEther.mul(1)
-      ).then(tx => tx.wait);
+      );
+      await tx.wait();
 
       console.log('requesting latest data');
       // update feeds for each 
