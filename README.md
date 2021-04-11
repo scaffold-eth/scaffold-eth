@@ -83,6 +83,18 @@ You can view our [hosted subgraph here](https://thegraph.com/explorer/subgraph/j
 <br/>
 <br/>
 
+## 🤯 Other Interesting Tidbits
+
+For this project, we have proposed the GoodTokens, GoodTokenFund, and GoodDataFeed network. However, the GoodToken protocol can create conditional ownership systems reliant on any contract with a ```balanceOf``` or ```balanceOf(uint256)``` function selector (e.g. ERC-20, ERC-721, ERC-1155). This creates a range of interesting and compelling use cases. Some examples for target contracts are:
+  - Liquidity Provider pool, which would ensure that the buyer of an NFT is involved and invested in a protocol. 
+  - POAP token contract, which would ensure the buyer is actively engaging in crypto events.
+  - Governance or voting receipt token contracts, which would ensure that the buyer is actively participating in a protocol.
+  - Volunteer hours tracking contract, to ensure buyer participates in community building programmes.
+  - GoodTokens issued to companies that would be revoked if company stops supporting selected causes. This would hold companies accountable for supporting causes they claim to actively support.
+
+<br/>
+<br/>
+
 ## 🙏 Special thanks to:
 - 🐦 Keenan and Patrick at Chainlink for amazing advice and support.
 - Javier for hosting a Chainlink node on Rinkeby.
