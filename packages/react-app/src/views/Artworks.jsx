@@ -130,14 +130,14 @@ const Subgraph = (props) => {
   return (
     <Row direction="vertical">
       <Col span={12} offset={6}>
-        <br />
+        {/* <br />
         <Row>
           <Title level={3}>👨‍🎨 Featured artists - works by {data && data.featuredArtists[featured].name}</Title>
-        </Row>
+        </Row> 
         <br />
         {featuredArtists}
 
-        <Divider plain />
+        <Divider plain /> */}
 
         <br />
         <Row>

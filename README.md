@@ -2,11 +2,20 @@
 
 ## 💡 Concept
 
+Good Tokens is a radical new model for art ownership that guarantees works of art support causes artists care about.
+
+Rather than just a transactional asset that is bought once and held, Good Token NFTs require continuous contribution or engagement with a cause as a prerequisite for ownership. This rethinks the responsibilities of art ownership and creates a long-lasting relationship between the artist, art, owner, and supported organizations.
+
+To maintain ownership, buyers must accumulate Good Token Funds donation tokens, the price of which track Good Token Feeds, NGO real-world data oracle indices.
+
+
 Good Tokens rethinks the responsibilities of owning art. Is it enough to simply purchase an artwork and then own it forever, or should ownership be earned and maintained by supporting causes linked to the art or by participating in communities linked to the artist. This way, artworks can be more sustainable and the artist is assured their art aligns with their values.
 
 <br/>
 
 ## [Live Demo Here!](https://good-tokens.surge.sh/)
+Please connect to the Rinkeby network! 
+
 ## Youtube video here
 
 <br/>
@@ -49,8 +58,8 @@ We leveraged The Graph to bind together the data from our contracts and our meta
 
 Interesting tidbits:
   - Event Handlers for GoodToken, GoodTokenFund, and GoodDataFeed contracts.
-  - IPFS cat calls to pull in pinned metadata for frontend magic.
   - Block Handler to query and update subgraph if tokens on our GoodToken contract were revoked.
+  - IPFS cat calls to pull in pinned metadata for frontend magic.
 
 We would have liked to use Call Handlers as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test [intergration with OpenSea](https://testnets.opensea.io/collection/goodtokens));
 

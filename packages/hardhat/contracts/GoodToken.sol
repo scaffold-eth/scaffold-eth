@@ -10,7 +10,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 
 
-contract GoodToken is GoodERC721, AccessControl, Ownable {
+contract GoodToken is GoodERC721, Ownable {
     using Counters for Counters.Counter;
 
     /**
@@ -45,7 +45,6 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     }
 
     // Constants
-    bytes32 public constant MINTER_ROLE = keccak256("MINTER_ROLE");
     uint256 public constant PAYMENT_GRACE_PERIOD = 20 seconds;
     uint8 public constant GOOD_SAMARITAN_BONUS = 20; // 5% of revoked price -- basically platform fee
 
@@ -58,7 +57,7 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     // Mapping of tokenId to previous owner
     mapping (uint256 => address) previousOwner;
 
-    // Mapping of revoker
+    // Mapping of revoker to transfer funds to later
     mapping (uint256 => address) goodSamaritans;
 
     Counters.Counter private _tokenIdTracker;
@@ -66,8 +65,6 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
 
 
     constructor () GoodERC721("GoodToken", "GDTKN") public {
-        _setupRole(DEFAULT_ADMIN_ROLE, _msgSender());
-        _setupRole(MINTER_ROLE, _msgSender());
     }
 
 
@@ -75,7 +72,6 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     function checkBalanceState(uint256 tokenId) public view returns (uint256, uint256) {
         address tokenOwner = ownerOf(tokenId);
         OwnershipConditionData memory ownerData = ownershipData[tokenId];
-        ArtworkData memory currentArtwork = artworkData[tokenId];
 
         uint256 tokenBalance;
         if(ownerData.targetTokenId > 0) {
@@ -169,18 +165,6 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
     }
 
 
-/*
-    function whitelistArtist(address artistAddress, bool whitelisted) public {
-        require(hasRole(DEFAULT_ADMIN_ROLE, _msgSender()), "GoodToken: must have admin role to whitelist");
-        
-        if(whitelisted) {
-            grantRole(MINTER_ROLE, artistAddress);
-        } else {
-            revokeRole(MINTER_ROLE, artistAddress);
-        }
-    }
-*/
-
     /**
      * @dev Create tokens with ownership models
      */
@@ -189,17 +173,12 @@ contract GoodToken is GoodERC721, AccessControl, Ownable {
         string memory artworkRevokedCid,
         OwnershipModel ownershipModel,
         address targetTokenAddress, 
-        uint256 targetTokenId, // tokenId exists if using ERC1155 fund
+        uint256 targetTokenId, // tokenId exists if using ERC1155 token
         uint256 balanceRequirement, // could be static or dynamic
         uint64 balanceDurationInSeconds,
         uint256 price
     ) public {
-        //require(hasRole(MINTER_ROLE, sender), "GoodToken: must have minter role to mint");
-        
         uint256 currentArtwork = _tokenIdTracker.current();
-
-        // get metadata from associated token contract
-        IToken token = IToken(targetTokenAddress);
 
         // mint new token to current token index
         _safeMint(_msgSender(), currentArtwork);

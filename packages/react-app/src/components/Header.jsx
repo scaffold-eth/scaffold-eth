@@ -8,7 +8,7 @@ export default function Header() {
     <a href="/">
       <PageHeader
         title="🤝 Good Tokens"
-        subTitle="not bad tokens"
+        subTitle="putiing NFTs to good work ⚒️"
         style={{ cursor: "pointer" }}
       />
     </a>
