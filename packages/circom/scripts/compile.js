@@ -3,7 +3,7 @@ require('dotenv').config();
 const { execSync } = require('child_process');
 const fs = require('fs');
 
-const circuitsList = process.argv[2];
+let circuitsList = process.argv[2];
 const deterministic = process.argv[3] === 'true' || process.argv[3] === undefined;
 
 
@@ -19,6 +19,21 @@ if (process.argv.length < 3 || process.argv.length > 4) {
 
 const cwd = process.cwd();
 console.log(cwd);
+
+if (circuitsList === "-A" || circuitsList === "--all") {
+  try {
+    circuitsList = fs.readdirSync(cwd + "/circuits", { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name).join();
+
+      console.log("Compiling all circuits...");
+      console.log(circuitsList);
+  } catch(error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
 
 for (circuitName of circuitsList.split(',')) {
   if (!process.env['beacon']) {
