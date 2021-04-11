@@ -16,18 +16,22 @@ Rather than just a transactional asset that is bought once and held, Good Token 
 
 As one model to maintain ownership, buyers must accumulate Good Fund engagement tokens, the price of which track Good Data Feeds, oracles that index NGO real-world data.
 
+
 <br/>
+
+## 👨‍🎨 Overview and Walkthrough
+[![Good Tokens - Putting NFTs to good work](https://img.youtube.com/vi/HPe-l8ncYFY/0.jpg)](https://www.youtube.com/watch?v=HPe-l8ncYFY)
+
+<br/>
+
 
 ## [🏁 Live Demo Here!](https://good-tokens.surge.sh/)
 Please connect to the Rinkeby network! 
-## [Hosted Subgraph Here!](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
-
-## Youtube video here
+## [🖇️ Hosted Subgraph Here!](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
 
 <br/>
 
-
-## 🔨 Contracts
+## 🔨 Live Contracts and other links
 
 The Good Tokens system consists of three main contracts, deployed to the Rinkeby testnet:
   - 📝 GoodToken  [[0xA508d9bf37baB3162894b4559c001e763537Bc77](https://rinkeby.etherscan.io/address/0xa508d9bf37bab3162894b4559c001e763537bc77)]
@@ -37,19 +41,16 @@ The Good Tokens system consists of three main contracts, deployed to the Rinkeby
   - 🌊 [OpenSea Marketplace](https://testnets.opensea.io/collection/goodtokens)
 
 <br/>
-<br/>
 
 ## 👍 Good Tokens Overview
 ![Good Token Overview](https://raw.githubusercontent.com/jasperdegens/scaffold-eth/389679d08a84bfd9a186f4525ff2cd654bee4dfb/packages/react-app/public/GoodTokens.png)
 
-<br/>
 <br/>
 
 ## 🦾 Technical Overview
 ![Technical Overview](https://raw.githubusercontent.com/jasperdegens/scaffold-eth/good-tokens/packages/react-app/public/GoodTokensTechnical.png)
 
 
-<br/>
 <br/>
 
 ## 🔗 Chainlink Oracle and Jobs
@@ -58,13 +59,11 @@ For this project we used a Chainlink oracle on the Rinkeby network at address [0
 
 
 <br/>
-<br/>
 
 ## 🌐 UNICEF, EEA, SDMX Data Queries
 Many NGOs and non-profit organizations use the SDMX protocol to provide their data to 3rd parties. Our [GoodDataFeed](https://rinkeby.etherscan.io/address/0x6E293e996f4D40D66025A7520D7cCd037f93779c) contract can register any open SDMX compatable data source and query data for a given year onchain via a [Chainlink oracle](https://rinkeby.etherscan.io/address/0x032887D0D0055e0f90447369F57EEb76b7a8e210) and node for transparent and trusted data. For our prototype, we selected [two data feeds](https://sdmx.data.unicef.org/databrowser/index.html) from UNICEF, one focused on immunizations and the other on out of school rates, and we also used a greenhouse gas emission metric from the [EEA](https://ec.europa.eu/eurostat/web/sdmx-infospace/welcome).
 
 
-<br/>
 <br/>
 
 ## [🖇️ The Graph + IPFS](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
@@ -81,7 +80,6 @@ You can view our [hosted subgraph here](https://thegraph.com/explorer/subgraph/j
 
 
 <br/>
-<br/>
 
 ## 🤯 Other Interesting Tidbits
 
@@ -92,7 +90,6 @@ For this project, we have proposed the GoodTokens, GoodTokenFund, and GoodDataFe
   - Volunteer hours tracking contract, to ensure buyer participates in community building programmes.
   - GoodTokens issued to companies that would be revoked if company stops supporting selected causes. This would hold companies accountable for supporting causes they claim to actively support.
 
-<br/>
 <br/>
 
 ## 🙏 Special thanks to:

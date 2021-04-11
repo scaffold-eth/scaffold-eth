@@ -70,21 +70,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
         jobId = "f4b27e1552f0429294e1d138e643b041"; // https://docs.chain.link/docs/decentralized-oracles-ethereum-mainnet
 
     	fee = 1 * 10 ** (18 - 1); // 0.1 LINK
-
-        // // register test api
-        // string memory educationApiId = "ROFST";
-        // string memory educationApiBaseUrl = "https://sdmx.data.unicef.org/ws/public/sdmxapi/rest/data/UNESCO,UIS,1.0/USA.ROFST._T.._T._T....PCNT?format=sdmx-json";
-        // string memory educationApiParseMap = "data.dataSets.0.series.0:0:0:0:0:0:0:0:0:0.observations.0.0";
-        // string memory educationApiDescription = "The ROFST feed tracks the out-of-school rate for children of primary school age. The dataset is provided by UNICEF.";
-        // uint8 yearOffset = 3; // good data exists in 2018
-        // registerApi(
-        //     educationApiId, 
-        //     educationApiBaseUrl,
-        //     educationApiParseMap,
-        //     educationApiDescription,
-        //     yearOffset  
-        // );
-        //latestData[educationApiId] = 102134 * (10 ** (18 -  4));
     }
 
 
@@ -219,9 +204,6 @@ contract GoodDataFeed is ChainlinkClient, IGoodDataFeed, Ownable {
             apiValueParseMap,
             yearOffset
         );
-
-        // request data by default for local dev
-        //requestLatestFeedData(feedId);
 
         // put in temporary test data while rinekby chainlink node is not solved
         latestData[feedId] = 102134 * (10 ** (18 -  4));

@@ -75,11 +75,12 @@ const Subgraph = (props) => {
         <p>Rather than just a transactional asset that is bought once and held, Good Token NFTs require continuous contribution or engagement with a cause. This creates a long-lasting relationship between the artist, art, owner, and supported organizations.</p>
         <p>As one model to maintain ownership, buyers must accumulate Good Fund engagement tokens, the price of which track Good Data Feeds, oracles that index NGO real-world data.</p>
         <p><br/></p>
+        <h2 id="youtube-video-here">👨‍🎨 Overview and Walkthrough</h2>
+        <iframe width="560" height="315" src="https://www.youtube.com/embed/HPe-l8ncYFY" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen />
+        <p><br/></p>
         <h2 id="-live-demo-here-https-good-tokens-surge-sh-"><a href="https://good-tokens.surge.sh/">🏁 Live Demo Here!</a></h2>
         <p>Please connect to the Rinkeby network! </p>
         <h2 id="-hosted-subgraph-here-https-thegraph-com-explorer-subgraph-jasperdegens-good-tokens-"><a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">Hosted Subgraph Here!</a></h2>
-        <h2 id="youtube-video-here">Youtube video here</h2>
-        <p><br/></p>
         <h2 id="-contracts">🔨 Contracts</h2>
         <p>The Good Tokens system consists of three main contracts, deployed to the Rinkeby testnet:</p>
         <ul>
