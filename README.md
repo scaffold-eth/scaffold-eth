@@ -1,20 +1,26 @@
 # [🤝 Good Tokens 🤝](https://good-tokens.surge.sh/)
 
-## 💡 Concept
+## 💭 Inspiration
 
-Good Tokens is a radical new model for art ownership that guarantees works of art support causes artists care about.
+As digital artists, we wanted to explore the potential of creating a more balanced model for art ownership, in which NFTs could be used to create positive impact, from addressing the environmental impact of crypto mining to encouraging engagement in targeted communities.
 
-Rather than just a transactional asset that is bought once and held, Good Token NFTs require continuous contribution or engagement with a cause as a prerequisite for ownership. This rethinks the responsibilities of art ownership and creates a long-lasting relationship between the artist, art, owner, and supported organizations.
-
-To maintain ownership, buyers must accumulate Good Token Funds donation tokens, the price of which track Good Token Feeds, NGO real-world data oracle indices.
-
-
-Good Tokens rethinks the responsibilities of owning art. Is it enough to simply purchase an artwork and then own it forever, or should ownership be earned and maintained by supporting causes linked to the art or by participating in communities linked to the artist. This way, artworks can be more sustainable and the artist is assured their art aligns with their values.
+Smart contracts make it possible to imbue assets with agency, an opportunity to make the work itself a continuous, evolving project.
 
 <br/>
 
-## [Live Demo Here!](https://good-tokens.surge.sh/)
+## 💡 Concept
+
+Good Tokens is our radical new model for art ownership that guarantees works of art support causes artists care about.
+
+Rather than just a transactional asset that is bought once and held, Good Token NFTs require continuous contribution or engagement with a cause. This creates a long-lasting relationship between the artist, art, owner, and supported organizations.
+
+As one model to maintain ownership, buyers must accumulate Good Fund engagement tokens, the price of which track Good Data Feeds, oracles that index NGO real-world data.
+
+<br/>
+
+## [🏁 Live Demo Here!](https://good-tokens.surge.sh/)
 Please connect to the Rinkeby network! 
+## [Hosted Subgraph Here!](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
 
 ## Youtube video here
 
@@ -33,14 +39,22 @@ The Good Tokens system consists of three main contracts, deployed to the Rinkeby
 <br/>
 <br/>
 
-## Good Tokens Overview
-![Good Token Overview](./packages/react-app/public/GoodTokens.png)
+## 👍 Good Tokens Overview
+![Good Token Overview](https://raw.githubusercontent.com/jasperdegens/scaffold-eth/389679d08a84bfd9a186f4525ff2cd654bee4dfb/packages/react-app/public/GoodTokens.png)
 
 <br/>
 <br/>
 
-## Technical Overview
-![Technical Overview](./packages/react-app/public/GoodTokensTechnical.png)
+## 🦾 Technical Overview
+![Technical Overview](https://raw.githubusercontent.com/jasperdegens/scaffold-eth/good-tokens/packages/react-app/public/GoodTokensTechnical.png)
+
+
+<br/>
+<br/>
+
+## 🔗 Chainlink Oracle and Jobs
+
+For this project we used a Chainlink oracle on the Rinkeby network at address [0x032887D0D0055e0f90447369F57EEb76b7a8e210](https://rinkeby.etherscan.io/address/0x032887D0D0055e0f90447369F57EEb76b7a8e210). We leveraged the HttpGet, JSONParse,  Multiply, EthUint256, and EthTx core adapters. Thanks to Javier, Keenan, Patrick, the excellent node-operator network for making this possible!
 
 
 <br/>
@@ -57,11 +71,11 @@ Many NGOs and non-profit organizations use the SDMX protocol to provide their da
 We leveraged The Graph to bind together the data from our contracts and our metadata stored on IPFS.
 
 Interesting tidbits:
-  - Event Handlers for GoodToken, GoodTokenFund, and GoodDataFeed contracts.
-  - Block Handler to query and update subgraph if tokens on our GoodToken contract were revoked.
-  - IPFS cat calls to pull in pinned metadata for frontend magic.
+  - **Event Handlers** for GoodToken, GoodTokenFund, and GoodDataFeed contracts.
+  - **Block Handler** to query and update subgraph if tokens on our GoodToken contract were revoked.
+  - **IPFS cat** calls to pull in pinned metadata for frontend magic.
 
-We would have liked to use Call Handlers as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test [intergration with OpenSea](https://testnets.opensea.io/collection/goodtokens));
+We would have liked to use **Call Handlers** as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test [intergration with OpenSea](https://testnets.opensea.io/collection/goodtokens));
 
 You can view our [hosted subgraph here](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)!
 
@@ -73,5 +87,5 @@ You can view our [hosted subgraph here](https://thegraph.com/explorer/subgraph/j
 - 🐦 Keenan and Patrick at Chainlink for amazing advice and support.
 - Javier for hosting a Chainlink node on Rinkeby.
 - Mehran at UNICEF for sharing the orgniazations inspiring vision for blockchain tech.
-- The Graph for making block-chain querying an absolute pleasure.
+- The Graph for making block-chain querying, IPFS integration, and frontent development an absolute pleasure.
 - Austin Griffith for incredible scaffold code-base to get started with.

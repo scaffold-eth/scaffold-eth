@@ -10,3 +10,12 @@
 .ant-ribbon.ant-ribbon-placement-end {
   top: 70px;
 }
+
+.full-width * {
+  width: 100%;
+}
+
+
+.full-width a {
+  color: #1890ff;
+}

@@ -24,7 +24,7 @@ export default function Header() {
           textAlign: "left",
           height: 350,
           backgroundPosition: "100% 10%",
-          backgroundSize: "100%",
+          backgroundSize: "cover",
           backgroundImage: `url(https://www.communities.qld.gov.au/images/dcdss/features/central-qld-bushfires-grants.jpg)`,
         }}
       />
