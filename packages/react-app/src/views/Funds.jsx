@@ -214,7 +214,7 @@ const Subgraph = props => {
                         </Row>
                         <Row justify="space-between">
                           <Text type="secondary">Token price</Text>
-                          <Text>1 Good Token ⇔ ☰{price.toFixed(4)}</Text>
+                          <Text>100 Good Tokens ⇔ ☰{price.toFixed(4)}</Text>
                         </Row>
                         <Row justify="space-between">
                           <Text type="secondary">index value</Text>

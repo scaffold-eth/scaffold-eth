@@ -280,7 +280,7 @@ function App(props) {
 
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+      <div style={{ position: "absolute", textAlign: "right", right: 0, top: '250px', padding: 10 }}>
          <Account
            address={address}
            userProvider={userProvider}

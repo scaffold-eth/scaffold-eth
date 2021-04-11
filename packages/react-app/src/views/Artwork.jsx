@@ -299,9 +299,9 @@ const Subgraph = (props) => {
                         <Text>This Good Token uses a dynamic ownership model. This means the owner must contribute  <Text type="warning">1 token</Text> to <Text type="warning">{data.artwork.fund.name}</Text> every <Text type="warning">{data.artwork.balanceDurationInSeconds}</Text> seconds.</Text>
                         {
                           data.artwork.revoked ?
-                           <Text mark>The current owner failed to make the required contribution and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>
+                           <Text mark>The current owner failed to make the required contribution and their ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>
                            : 
-                           <Text>If the owner fails to make the required contribution, his ownership will be revoked and this artwork aill automatically go on sale.</Text>
+                           <Text>If the owner fails to make the required contribution, their ownership will be revoked and this artwork aill automatically go on sale.</Text>
                         }
                       </Row>
                     ) : (
@@ -309,9 +309,9 @@ const Subgraph = (props) => {
                         <Text>This Good Token uses a static ownership model. This means the owner must maintain a balance of  <Text type="warning">{formatEther(data.artwork.balanceRequirement)}<i>{data.artwork.fund.feed.id}</i> tokens</Text> with <Text type="warning">{data.artwork.fund.name}</Text>.</Text>
                         {
                         data.artwork.revoked ?
-                        <Text mark>The current owner failed to maintain the required balance and his ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>                        
+                        <Text mark>The current owner failed to maintain the required balance and their ownership is revoked! Now's your chance to buy the work and become a Good owner!</Text>                        
                         :
-                        <Text>If the owner fails to maintain a sufficient balance, his ownership will be revoced and this artwork aill automatically go on sale.</Text>
+                        <Text>If the owner fails to maintain a sufficient balance, their ownership will be revoced and this artwork aill automatically go on sale.</Text>
                         }
                       </Row>
                     )
