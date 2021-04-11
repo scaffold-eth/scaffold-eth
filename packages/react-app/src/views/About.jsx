@@ -80,7 +80,9 @@ const Subgraph = (props) => {
         <p><br/></p>
         <h2 id="-live-demo-here-https-good-tokens-surge-sh-"><a href="https://good-tokens.surge.sh/">🏁 Live Demo Here!</a></h2>
         <p>Please connect to the Rinkeby network! </p>
-        <h2 id="-hosted-subgraph-here-https-thegraph-com-explorer-subgraph-jasperdegens-good-tokens-"><a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">Hosted Subgraph Here!</a></h2>
+        <h2 id="-hosted-subgraph-here-https-thegraph-com-explorer-subgraph-jasperdegens-good-tokens-"><a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">🖇️ Hosted Subgraph Here!</a></h2>
+        <h2 id="-opensea-marketplace-https-testnets-opensea-io-collection-goodtokens-"><a href="https://testnets.opensea.io/collection/goodtokens">🌊 OpenSea Marketplace</a></h2>
+        <p><br/></p>
         <h2 id="-contracts">🔨 Contracts</h2>
         <p>The Good Tokens system consists of three main contracts, deployed to the Rinkeby testnet:</p>
         <ul>
@@ -90,24 +92,19 @@ const Subgraph = (props) => {
         <li>🖇️ <a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">Good Tokens Subgraph</a></li>
         <li>🌊 <a href="https://testnets.opensea.io/collection/goodtokens">OpenSea Marketplace</a></li>
         </ul>
-        <p><br/>
-        <br/></p>
+        <p><br/></p>
         <h2 id="-good-tokens-overview">👍 Good Tokens Overview</h2>
         <p><img style={{maxWidth: '100%'}} src="https://raw.githubusercontent.com/jasperdegens/scaffold-eth/389679d08a84bfd9a186f4525ff2cd654bee4dfb/packages/react-app/public/GoodTokens.png" alt="Good Token Overview"/></p>
-        <p><br/>
-        <br/></p>
+        <p><br/></p>
         <h2 id="-technical-overview">🦾 Technical Overview</h2>
         <p><img style={{maxWidth: '100%'}}src="https://raw.githubusercontent.com/jasperdegens/scaffold-eth/good-tokens/packages/react-app/public/GoodTokensTechnical.png" alt="Technical Overview"/></p>
-        <p><br/>
-        <br/></p>
+        <p><br/></p>
         <h2 id="-chainlink-oracle-and-jobs">🔗 Chainlink Oracle and Jobs</h2>
         <p>For this project we used a Chainlink oracle on the Rinkeby network at address <a href="https://rinkeby.etherscan.io/address/0x032887D0D0055e0f90447369F57EEb76b7a8e210">0x032887D0D0055e0f90447369F57EEb76b7a8e210</a>. We leveraged the HttpGet, JSONParse,  Multiply, EthUint256, and EthTx core adapters. Thanks to Javier, Keenan, Patrick, the excellent node-operator network for making this possible!</p>
-        <p><br/>
-        <br/></p>
+        <p><br/></p>
         <h2 id="-unicef-eea-sdmx-data-queries">🌐 UNICEF, EEA, SDMX Data Queries</h2>
         <p>Many NGOs and non-profit organizations use the SDMX protocol to provide their data to 3rd parties. Our <a href="https://rinkeby.etherscan.io/address/0x6E293e996f4D40D66025A7520D7cCd037f93779c">GoodDataFeed</a> contract can register any open SDMX compatable data source and query data for a given year onchain via a <a href="https://rinkeby.etherscan.io/address/0x032887D0D0055e0f90447369F57EEb76b7a8e210">Chainlink oracle</a> and node for transparent and trusted data. For our prototype, we selected <a href="https://sdmx.data.unicef.org/databrowser/index.html">two data feeds</a> from UNICEF, one focused on immunizations and the other on out of school rates, and we also used a greenhouse gas emission metric from the <a href="https://ec.europa.eu/eurostat/web/sdmx-infospace/welcome">EEA</a>.</p>
-        <p><br/>
-        <br/></p>
+        <p><br/></p>
         <h2 id="-the-graph-ipfs-https-thegraph-com-explorer-subgraph-jasperdegens-good-tokens-"><a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">🖇️ The Graph + IPFS</a></h2>
         <p>We leveraged The Graph to bind together the data from our contracts and our metadata stored on IPFS.</p>
         <p>Interesting tidbits:</p>
@@ -118,9 +115,19 @@ const Subgraph = (props) => {
         </ul>
         <p>We would have liked to use <strong>Call Handlers</strong> as well in order to cut down on gas costs, however at this time they are not supported on Rinkeby (we wanted to stick with Rinkeby to test <a href="https://testnets.opensea.io/collection/goodtokens">intergration with OpenSea</a>);</p>
         <p>You can view our <a href="https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens">hosted subgraph here</a>!</p>
-        <p><br/>
-        <br/></p>
-        <h2 id="-special-thanks-to-">🙏 Special thanks to:</h2>
+        <p><br/></p>
+        <h2 id="-other-interesting-tidbits">🤯 Other Interesting Tidbits</h2>
+        <p>For this project, we have proposed the GoodTokens, GoodTokenFund, and GoodDataFeed network. However, the GoodToken protocol can create conditional ownership systems reliant on any contract with a <code>balanceOf</code> or <code>balanceOf(uint256)</code> function selector (e.g. ERC-20, ERC-721, ERC-1155). This creates a range of interesting and compelling use cases. Some examples for target contracts are:</p>
+        <ul>
+        <li>Liquidity Provider pool, which would ensure that the buyer of an NFT is involved and invested in a protocol. </li>
+        <li>POAP token contract, which would ensure the buyer is actively engaging in crypto events.</li>
+        <li>Governance or voting receipt token contracts, which would ensure that the buyer is actively participating in a protocol.</li>
+        <li>Volunteer hours tracking contract, to ensure buyer participates in community building programmes.</li>
+        <li>GoodTokens issued to companies that would be revoked if company stops supporting selected causes. This would hold companies accountable for supporting causes they claim to actively support.</li>
+        </ul>
+        <p><br/></p>
+
+        <h2 id="-special-thanks-to-">🙏 Special Thanks to:</h2>
         <ul>
         <li>🐦 Keenan and Patrick at Chainlink for amazing advice and support.</li>
         <li>Javier for hosting a Chainlink node on Rinkeby.</li>

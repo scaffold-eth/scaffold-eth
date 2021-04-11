@@ -29,6 +29,7 @@ As one model to maintain ownership, buyers must accumulate Good Fund engagement 
 Please connect to the Rinkeby network! 
 ## [🖇️ Hosted Subgraph Here!](https://thegraph.com/explorer/subgraph/jasperdegens/good-tokens)
 
+## [🌊 OpenSea Marketplace](https://testnets.opensea.io/collection/goodtokens)
 <br/>
 
 ## 🔨 Live Contracts and other links
@@ -92,7 +93,7 @@ For this project, we have proposed the GoodTokens, GoodTokenFund, and GoodDataFe
 
 <br/>
 
-## 🙏 Special thanks to:
+## 🙏 Special Thanks to:
 - 🐦 Keenan and Patrick at Chainlink for amazing advice and support.
 - Javier for hosting a Chainlink node on Rinkeby.
 - Mehran at UNICEF for sharing the orgniazations inspiring vision for blockchain tech.
