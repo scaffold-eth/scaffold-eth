@@ -41,6 +41,8 @@ for (circuitName of circuitsList.split(',')) {
     process.exit(1);
   }
 
+  console.log("\nCompiling and sorting files for circuit: " + circuitName + "...");
+
   process.chdir(cwd + '/circuits/' + circuitName);
 
   if(!fs.existsSync("compiled")) {

@@ -104,7 +104,7 @@ async function run() {
     // const genCalldata = getSolidityCalldata(JSON.stringify(publicSignals), JSON.stringify(proof));
     const genCalldata = await genSolidityCalldata(publicSignals, proof);
 
-    console.log("Generated " + circuitName + "_CALLDATA:\n" + genCalldata);
+    console.log("\nGenerated " + circuitName + "_CALLDATA:\n" + genCalldata);
 
   }
 

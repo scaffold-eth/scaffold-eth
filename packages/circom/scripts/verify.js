@@ -63,6 +63,7 @@ async function run() {
 }
 
 run().then(() => {
+  console.log("\nVerification summary:");
   for (let i = 0; i < proofLog.length; i++) {
     console.log(proofLog[i]);
   }
