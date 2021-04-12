@@ -2,7 +2,7 @@ const snarkjs = require("snarkjs");
 const fs = require("fs");
 const { execSync } = require('child_process');
 
-const circuitsList = process.argv[2];
+let circuitsList = process.argv[2];
 const inputJson = process.argv[3];
 
 if (process.argv.length < 3 || process.argv.length > 4) {
@@ -64,6 +64,21 @@ async function genSolidityCalldata(publicName, proofName) {
 }
 
 const cwd = process.cwd();
+
+if (circuitsList === "-A" || circuitsList === "--all") {
+  try {
+    circuitsList = fs.readdirSync(cwd + "/circuits", { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name).join();
+
+      console.log("Compiling all circuits...");
+      console.log(circuitsList);
+  } catch(error) {
+    console.log(error);
+    process.exit(1);
+  }
+}
+
 
 async function run() {
 
