@@ -1,6 +1,6 @@
 # 🏗 zkaffold-eth
 
-Write and compile zero knowledge circuits with [circom](https://docs.circom.io/) and [snarkjs](https://github.com/iden3/snarkjs) in the `circom` workspace.
+Write and compile zero knowledge circuits with [circom](https://docs.circom.io/) and [snarkjs](https://github.com/iden3/snarkjs) in the `circom` workspace, develop smart contracts utilizing zero knowledge proofs with scaffold-eth.
 
 ## `Hash` Circuit Guide
 
