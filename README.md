@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
+# 🏗 scaffold-eth - 🎫 NFT store with bonding curve
 
 > (Counterfactual NFT minting example...)
 
@@ -12,11 +12,11 @@ required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://clas
 
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
+git clone https://github.com/austintgriffith/scaffold-eth.git nft-store-bonding-curve
 
-cd buyer-mints-nft
+cd nft-store-bonding-curve
 
-git checkout buyer-mints-nft
+git checkout nft-store-bonding-curve
 ```
 
 ```bash
@@ -34,7 +34,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd simple-nft-example
+cd nft-store-bonding-curve
 yarn chain
 
 ```
@@ -47,7 +47,7 @@ yarn chain
 
 
 ```bash
-cd simple-nft-example
+cd nft-store-bonding-curve
 
 yarn upload
 
@@ -96,9 +96,27 @@ Your artwork from `artwork.json` (if uploaded and deployed correctly) should sho
 
 ⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
 
+## Bonding curve
+Initial price for the item (NFT token) in the collection is 0.01 ether. Each time an item is minted (purchased in the store), the price goes up according to bonding curve since the supply of items in the store is limited. The next item is minted with new increased price. Once the token is minted, its owner can sell it to other users or transfer it.
+
+![mint](https://user-images.githubusercontent.com/45527668/114863727-ef382980-9e11-11eb-8718-b6589c82004a.gif)
+
+Similarly, let's have the second user from incognito window and mint third NFT token. 
+
+![mint_second](https://user-images.githubusercontent.com/45527668/114863768-00813600-9e12-11eb-8877-c6474470d749.gif)
+
+Since the price increases, now the first user can benefit from it and make a profit by selling previously purchased tokens. Let's put the first token for sale.
+
+![sale](https://user-images.githubusercontent.com/45527668/114863800-0d058e80-9e12-11eb-92cf-effb3e0e2776.gif)
+
+Another user can buy it and become owner of the token. So, there are three ways to become the owner of the token: 1) mint, 2) receive by transfer for free, 3) buy token that is on sale.
+
+![buy](https://user-images.githubusercontent.com/45527668/114864061-5bb32880-9e12-11eb-8232-ec8c182f51e5.gif)
+
 ## 📡 Deploy NFT smart contract!
 
 🛰 Ready to deploy to a testnet?
+ 
 
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
