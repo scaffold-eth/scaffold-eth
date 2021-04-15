@@ -175,7 +175,9 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:",transferEvents)
 
+  const actionEvents = useEventListener(readContracts, "YourCollectible", "Action", localProvider, 1);
 
+  const totalPrice = useContractReader(readContracts,"YourCollectible", "price")
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -296,35 +298,38 @@ function App(props) {
       for(let a in assets){
         try{
           const forSale = await readContracts.YourCollectible.forSale(utils.id(a))
+          const forSecondarySale = await readContracts.YourCollectible.forSecondarySale(utils.id(a))
           let owner
           if(!forSale){
             const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a))
             owner = await readContracts.YourCollectible.ownerOf(tokenId)
           }
-          assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner})
+          assetUpdate.push({id:a,...assets[a],forSale:forSale,forSecondarySale:forSecondarySale,owner:owner})
         }catch(e){console.log(e)}
       }
       setLoadedAssets(assetUpdate)
     }
     if(readContracts && readContracts.YourCollectible) updateYourCollectibles()
-  }, [ assets, readContracts, transferEvents ]);
+  }, [ assets, readContracts, transferEvents, actionEvents ]);
 
   let galleryList = []
   for(let a in loadedAssets){
     console.log("loadedAssets",a,loadedAssets[a])
 
     let cardActions = []
+
     if(loadedAssets[a].forSale){
       cardActions.push(
         <div>
           <Button onClick={()=>{
             console.log("gasPrice,",gasPrice)
-            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
+            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{value: totalPrice}) )
           }}>
             Mint
           </Button>
         </div>
       )
+      
     }else{
       cardActions.push(
         <div>
@@ -334,8 +339,41 @@ function App(props) {
             blockExplorer={blockExplorer}
             minimized={true}
           />
+        
         </div>
       )
+      if (loadedAssets[a].owner == address && !loadedAssets[a].forSecondarySale) {
+        cardActions.push(
+          <Button onClick={()=>{
+            tx( writeContracts.YourCollectible.sellItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
+          }}>
+            Sell
+          </Button>
+        )
+      }
+      else if (loadedAssets[a].owner == address && loadedAssets[a].forSecondarySale) {
+        cardActions.push(
+          <Button onClick={()=>{
+            tx( writeContracts.YourCollectible.cancelSellItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
+          }}>
+            Cancell Sell
+          </Button>
+        )
+      }
+      else if (loadedAssets[a].forSecondarySale) {
+        cardActions.push(
+          <Button onClick={()=>{
+            tx( writeContracts.YourCollectible.buyItem(loadedAssets[a].id,{value: totalPrice}) )
+          }}>
+            Buy
+          </Button>
+        )
+      }
+      else {
+        cardActions.push(
+          <div>NOT FOR SALE</div>
+        )
+      }
     }
 
     galleryList.push(
@@ -392,8 +430,9 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
+            
             <div style={{ maxWidth:820, margin: "auto", marginTop:32, paddingBottom:256 }}>
+              <h1>Price {totalPrice && formatEther(totalPrice)} Ξ</h1>
               <StackGrid
                 columnWidth={200}
                 gutterWidth={16}
@@ -473,6 +512,24 @@ function App(props) {
                           ensProvider={mainnetProvider}
                           fontSize={16}
                       />
+                    </List.Item>
+                  )
+                }}
+              />
+
+              <List
+                bordered
+                dataSource={actionEvents}
+                renderItem={(item) => {
+                  return (
+                    <List.Item key={item[0]+"_"+item[1]+"_"+item.blockNumber}>
+                      <span style={{fontSize:16, marginRight:8}}>#{item[1].toNumber()}</span>
+                      <Address
+                          address={item[0]}
+                          ensProvider={mainnetProvider}
+                          fontSize={16}
+                      /> =>
+                      {item[2]}
                     </List.Item>
                   )
                 }}

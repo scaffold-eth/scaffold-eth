@@ -61,5 +61,8 @@
       "**/hardhat",
       "**/hardhat/**"
     ]
+  },
+  "dependencies": {
+    "react-stack-grid": "^0.7.1"
   }
 }
