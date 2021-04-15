@@ -16,8 +16,7 @@ contract Auction {
 
     mapping(address => mapping(uint256 => tokenDetails)) public tokenToAuction;
 
-    mapping(address => mapping(uint256 => mapping(address => uint256)))
-        public bids;
+    mapping(address => mapping(uint256 => mapping(address => uint256))) public bids;
     
     /**
        Seller puts the item on auction
@@ -69,7 +68,7 @@ contract Auction {
         auction.bidAmounts.push(msg.value);
     }
     /**
-       Called by the seller when the auction duration is over the hightest biid user get's the nft and other bidders get eth back
+       Called by the seller when the auction duration is over the hightest bid user get's the nft and other bidders get eth back
     */
     function executeSale(address _nft, uint256 _tokenId) external {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
@@ -79,11 +78,6 @@ contract Auction {
         auction.isActive = false;
         (bool success, ) = auction.seller.call{value: auction.maxBid}("");
         require(success);
-        ERC721(_nft).safeTransferFrom(
-            address(this),
-            auction.maxBidUser,
-            _tokenId
-        );
         for (uint256 i = 0; i < auction.users.length; i++) {
             if (auction.users[i] != auction.maxBidUser) {
                 (success, ) = auction.users[i].call{
@@ -92,6 +86,28 @@ contract Auction {
                 require(success);
             }
         }
+        ERC721(_nft).safeTransferFrom(
+            address(this),
+            auction.maxBidUser,
+            _tokenId
+        );
+    }
+
+    /**
+       Called by the seller if they want to cancel the auction for their nft so the bidders get back the locked eeth and the seller get's back the nft
+    */
+    function cancelAution(address _nft, uint256 _tokenId) external {
+        tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
+        require(auction.duration > block.timestamp);
+        require(auction.seller == msg.sender);
+        require(auction.isActive);
+        auction.isActive = false;
+        bool success;
+        for (uint256 i = 0; i < auction.users.length; i++) {
+        (success, ) = auction.users[i].call{value: bids[_nft][_tokenId][auction.users[i]]}("");        
+        require(success);
+        }
+        ERC721(_nft).safeTransferFrom(address(this), auction.maxBidUser, _tokenId);
     }
 
     receive() external payable {}
