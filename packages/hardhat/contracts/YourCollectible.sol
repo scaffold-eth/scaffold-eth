@@ -26,7 +26,7 @@ contract YourCollectible is ERC721 {
   //this lets you look up a token by the uri (assuming there is only one of each uri for now)
   mapping (bytes32 => uint256) public uriToTokenId;
 
-  function mintItem(string memory tokenURI)
+  function mintItem(address _user, string memory tokenURI)
       public
       returns (uint256)
   {
@@ -39,7 +39,7 @@ contract YourCollectible is ERC721 {
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
-      _mint(msg.sender, id);
+      _mint(_user, id);
       _setTokenURI(id, tokenURI);
 
       uriToTokenId[uriHash] = id;

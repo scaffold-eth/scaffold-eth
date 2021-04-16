@@ -329,7 +329,6 @@ function App(props) {
               console.log("curProof", target.proof);
 
               // console.log("converted", utils.formatBytes32String(target.proof[0]))
-              // tx(writeContracts.YourCollectible.mintItem(loadedAssets[a].id, {gasPrice: gasPrice}))
               tx(writeContracts.MerkleTreeContract.claim(target.index, loadedAssets[a].id, target.proof), { gasPrice: gasPrice})
             }}>
               Mint

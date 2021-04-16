@@ -48,7 +48,8 @@ contract MerkleTreeContract {
 
         // Mark it claimed and send the token.
         _setClaimed(index);
-        require(YourCollectible(token).mintItem(tokenURI) > 0, 'MerkleDistributor: Transfer failed.');
+        address user = msg.sender;
+        require(YourCollectible(token).mintItem(user, tokenURI) > 0, 'MerkleDistributor: Transfer failed.');
 
         emit Claimed(index, tokenURI);
     }
