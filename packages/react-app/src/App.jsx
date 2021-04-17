@@ -514,6 +514,8 @@ function App(props) {
             */}
 
             <div style={{ maxWidth:1024, margin: "auto", marginTop:32, paddingBottom:56 }}>
+              <Button disabled={galleryList.length === 0} onClick={updateYourCollectibles} style={{marginBottom: "25px"}}>Update collectibles</Button>
+
               <StackGrid
                 columnWidth={300}
                 gutterWidth={16}

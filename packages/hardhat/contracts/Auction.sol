@@ -54,7 +54,11 @@ contract Auction is IERC721Receiver {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
         require(msg.value >= auction.price);
         require(auction.isActive);
-        require(auction.duration > block.timestamp);
+        require(auction.duration > block.timestamp, "Deadline already passed");
+        if (bids[_nft][_tokenId][msg.sender] > 0) {
+            (bool success, ) = msg.sender.call{value: bids[_nft][_tokenId][msg.sender]}("");
+            require(success);
+        }
         bids[_nft][_tokenId][msg.sender] = msg.value;
         if (auction.bidAmounts.length == 0) {
             auction.maxBid = msg.value;
@@ -73,7 +77,7 @@ contract Auction is IERC721Receiver {
     */
     function executeSale(address _nft, uint256 _tokenId) external {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
-        require(auction.duration <= block.timestamp);
+        require(auction.duration <= block.timestamp, "Deadline did not pass yet");
         require(auction.seller == msg.sender);
         require(auction.isActive);
         auction.isActive = false;
