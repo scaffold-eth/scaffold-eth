@@ -38,6 +38,7 @@
     "axios": "^0.20.0",
     "bnc-notify": "^1.5.0",
     "burner-provider": "^1.0.38",
+    "date-fns": "^2.21.1",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
     "ethers": "^5.0.31",

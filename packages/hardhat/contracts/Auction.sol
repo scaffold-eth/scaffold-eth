@@ -1,8 +1,10 @@
 pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract Auction {
+
+contract Auction is IERC721Receiver {
     struct tokenDetails {
         address seller;
         uint128 price;
@@ -59,10 +61,9 @@ contract Auction {
             auction.maxBidUser = msg.sender;
         } else {
             uint256 lastIndex = auction.bidAmounts.length - 1;
-            if (auction.bidAmounts[lastIndex] < msg.value) {
-                auction.maxBid = msg.value;
-                auction.maxBidUser = msg.sender;
-            }
+            require(auction.bidAmounts[lastIndex] < msg.value, "Current max bid is higher than your bid");
+            auction.maxBid = msg.value;
+            auction.maxBidUser = msg.sender;
         }
         auction.users.push(msg.sender);
         auction.bidAmounts.push(msg.value);
@@ -76,21 +77,29 @@ contract Auction {
         require(auction.seller == msg.sender);
         require(auction.isActive);
         auction.isActive = false;
-        (bool success, ) = auction.seller.call{value: auction.maxBid}("");
-        require(success);
-        for (uint256 i = 0; i < auction.users.length; i++) {
-            if (auction.users[i] != auction.maxBidUser) {
-                (success, ) = auction.users[i].call{
-                    value: bids[_nft][_tokenId][auction.users[i]]
-                }("");
-                require(success);
+        if (auction.bidAmounts.length == 0) {
+            ERC721(_nft).safeTransferFrom(
+                address(this),
+                auction.seller,
+                _tokenId
+            );
+        } else {
+            (bool success, ) = auction.seller.call{value: auction.maxBid}("");
+            require(success);
+            for (uint256 i = 0; i < auction.users.length; i++) {
+                if (auction.users[i] != auction.maxBidUser) {
+                    (success, ) = auction.users[i].call{
+                        value: bids[_nft][_tokenId][auction.users[i]]
+                    }("");
+                    require(success);
+                }
             }
+            ERC721(_nft).safeTransferFrom(
+                address(this),
+                auction.maxBidUser,
+                _tokenId
+            );
         }
-        ERC721(_nft).safeTransferFrom(
-            address(this),
-            auction.maxBidUser,
-            _tokenId
-        );
     }
 
     /**
@@ -98,7 +107,6 @@ contract Auction {
     */
     function cancelAution(address _nft, uint256 _tokenId) external {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
-        require(auction.duration > block.timestamp);
         require(auction.seller == msg.sender);
         require(auction.isActive);
         auction.isActive = false;
@@ -107,7 +115,21 @@ contract Auction {
         (success, ) = auction.users[i].call{value: bids[_nft][_tokenId][auction.users[i]]}("");        
         require(success);
         }
-        ERC721(_nft).safeTransferFrom(address(this), auction.maxBidUser, _tokenId);
+        ERC721(_nft).safeTransferFrom(address(this), auction.seller, _tokenId);
+    }
+
+    function getTokenAuctionDetails(address _nft, uint256 _tokenId) public view returns (tokenDetails memory) {
+        tokenDetails memory auction = tokenToAuction[_nft][_tokenId];
+        return auction;
+    }
+
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    )external override returns(bytes4) {
+        return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
     }
 
     receive() external payable {}
