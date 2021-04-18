@@ -53,7 +53,7 @@ export default function WindowModal({
         }}
       >
         <div style={{ float: 'left', width: '100%', cursor: 'move' }}>
-          <div style={{ float: 'left', padding: 5, fontSize: 12, color: '#000' }}>{title}</div>
+          <div style={{ float: 'left', padding: 5, paddingLeft: 7, fontSize: 12, color: '#000' }}>{title}</div>
           <button
             type='button'
             style={{ float: 'right' }}
