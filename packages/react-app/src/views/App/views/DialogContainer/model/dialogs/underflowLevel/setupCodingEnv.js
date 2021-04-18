@@ -70,12 +70,12 @@ const setupCodingEnv = [
   },
   {
     avatar: 'punk5950.png',
-    alignment: 'right',
+    alignment: 'left',
     text: `Hmm, I can't quite put my finger on it, but something about this contract seems off...`
   },
   {
     avatar: 'punk5950.png',
-    alignment: 'right',
+    alignment: 'left',
     text: `Something is off...`
   }
   /*
