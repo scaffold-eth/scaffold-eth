@@ -77,7 +77,8 @@ const DialogWindow = ({
             height: 600 - 30,
             overflowY: 'scroll',
             marginTop: 32,
-            padding: 15
+            padding: 15,
+            background: 'rgb(166, 207, 247, 0.5)'
             // backgroundColor: '#0A2227'
           }}
         >
