@@ -123,10 +123,10 @@ function App(props) {
 
   //
   // ☝️ These effects will log your major set up and upcoming transferEvents- and balance changes
-  // 
+  //
   useEffect(()=>{
     if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts && mainnetDAIContract){
-      console.log("_____________________________________")
+      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________")
       console.log("🌎 mainnetProvider",mainnetProvider)
       console.log("🏠 localChainId",localChainId)
       console.log("👩‍💼 selected address:",address)
@@ -134,12 +134,12 @@ function App(props) {
       console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
       console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
       console.log("📝 readContracts",readContracts)
-      console.log("🌍 DAI contract on mainnet:",mainnetDAIContract) 
+      console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
       console.log("🔐 writeContracts",writeContracts)
     }
   }, [mainnetProvider, address, selectedChainId, yourLocalBalance, yourMainnetBalance, readContracts, writeContracts, mainnetDAIContract])
 
-  
+
   const [oldMainnetBalance, setOldMainnetDAIBalance] = useState(0)
 
   // For Master Branch Example
