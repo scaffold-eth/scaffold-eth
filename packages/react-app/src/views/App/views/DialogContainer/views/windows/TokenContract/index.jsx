@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Typography } from 'antd'
+import { Button, Typography, notification } from 'antd'
 import { useContractLoader, useContractReader, useEventListener } from '../../../../../../../hooks'
 import { CodeContainer, WindowModal } from '../../../../../../../sharedComponents'
 
@@ -10,7 +10,8 @@ const TokenContractWindow = ({
   userProvider,
   transactor,
   address,
-  contractCode
+  contractCode,
+  actions
 }) => {
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
@@ -40,6 +41,10 @@ const TokenContractWindow = ({
     1
   )
   console.log('📟 mintEvents:', mintEvents)
+
+  const userFoundContractTrick =
+    parseInt(claimableSupply, 10) >
+    115792089237316195423570985008687907853269984665640564039457584007913129639
 
   return (
     <WindowModal
@@ -97,7 +102,16 @@ const TokenContractWindow = ({
           <Button
             block
             onClick={() => {
-              transactor(writeContracts.EthereumCityERC20TokenMinter.claim(claimableSupply))
+              // NOTE: we need to do this or otherwise the same overflow bug occures in the userSupply variable
+              if (userFoundContractTrick) {
+                let amountToClaim = claimableSupply
+                if (userBalance > 0 && userFoundContractTrick) {
+                  amountToClaim = claimableSupply - userBalance
+                }
+                transactor(writeContracts.EthereumCityERC20TokenMinter.claim(amountToClaim))
+              } else {
+                actions.continueCurrentDialog()
+              }
             }}
           >
             claim supply
