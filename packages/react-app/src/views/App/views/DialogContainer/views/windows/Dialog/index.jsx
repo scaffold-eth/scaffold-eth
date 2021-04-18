@@ -1,29 +1,21 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
 import $ from 'jquery'
-import isMobile from 'is-mobile'
-import { Button, Typography } from 'antd'
-import { useContractLoader, useContractReader, useEventListener } from '../../../../hooks'
-import { CodeContainer } from './views'
-import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
-
-const { Title } = Typography
+import { useContractLoader, useContractReader } from '../../../../../../../hooks'
+import { WindowModal } from '../../../../../../../sharedComponents'
 
 const styles = {
   button: {
-    float: 'right',
-    width: '80%',
+    float: 'left',
+    width: '96%',
     marginTop: '30px',
-    marginLeft: '15%',
-    marginRight: '10%',
+    marginLeft: '2%',
+    marginRight: '5%',
     fontSize: '12px'
   }
 }
 
-const DialogModal = ({
+const DialogWindow = ({
   localProvider,
-  userProvider,
-  transactor,
   address,
   dialogVisible,
   dialogs,
@@ -48,18 +40,20 @@ const DialogModal = ({
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
 
-  // keep track of a variable from the contract in the local React state:
-  const userClicks = useContractReader(readContracts, 'Clicker', 'clicks', [address])
-  console.log('🤗 userClicks:', userClicks)
-
-  // 📟 Listen for broadcast events
-  const clickEvents = useEventListener(readContracts, 'Clicker', 'Click', localProvider, 1)
-  console.log('📟 clickEvents:', clickEvents)
+  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'balances', [
+    address
+  ])
+  console.log('🤗 userBalance:', userBalance && userBalance.toString())
+  /*
+  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'clicks', [
+    address
+  ])
+  */
 
   const userFoundContractTrick =
-    userClicks > 115792089237316195423570985008687907853269984665640564039457584007913129639
+    parseInt(userBalance, 10) >
+    115792089237316195423570985008687907853269984665640564039457584007913129639
 
   if (userFoundContractTrick) {
     console.log('user found the trick -> set dialog to xxx')
@@ -68,23 +62,23 @@ const DialogModal = ({
   }
 
   return (
-    <div
-      style={{
-        position: 'fixed',
-        top: '94px',
-        left: isMobile() ? '5%' : '20%',
-        right: isMobile() ? '5%' : '20%',
-        height: '73vh',
-        zIndex: 100
-      }}
+    <WindowModal
+      initWidth={600}
+      initHeight={600}
+      initTop={100}
+      initLeft={30}
+      title='Communication'
+      isOpen
     >
       {dialogVisible && (
         <div
           id='speechContainer'
           style={{
-            height: '73vh',
+            height: 600 - 30,
             overflowY: 'scroll',
-            padding: '15px'
+            marginTop: 32,
+            padding: 15
+            // backgroundColor: '#0A2227'
           }}
         >
           {dialogs[currentDialog.name].map((dialog, index) => {
@@ -93,7 +87,7 @@ const DialogModal = ({
             const isLastVisibleDialog = index === currentDialog.index
             const isFinalDialog = index === dialogs[currentDialog.name].length - 1
 
-            if (index <= currentDialog.index) {
+            if (index <= currentDialog.index && !currentDialog.skip) {
               return (
                 <div
                   style={{
@@ -123,32 +117,6 @@ const DialogModal = ({
                     }}
                   >
                     <p>{text}</p>
-                    {code && <CodeContainer language='bash' children={code} />}
-                    {currentDialog.name === 'setupCodingEnv' && anchorId === 'cityFundsContract' && (
-                      <div style={{ padding: '20px', border: '1px solid #ccc' }}>
-                        <div style={{ textAlign: 'center' }}>
-                          <Title level={3}>{userClicks && userClicks.toString()}</Title>
-                        </div>
-
-                        <Button
-                          block
-                          onClick={() => {
-                            transactor(writeContracts.Clicker.increment())
-                          }}
-                          style={{ marginBottom: '15px' }}
-                        >
-                          increment
-                        </Button>
-                        <Button
-                          block
-                          onClick={() => {
-                            transactor(writeContracts.Clicker.decrement())
-                          }}
-                        >
-                          decrement
-                        </Button>
-                      </div>
-                    )}
                   </div>
                   {alignment === 'right' && (
                     <img
@@ -186,7 +154,8 @@ const DialogModal = ({
                         </button>
                       )
                     })}
-                  {isLastVisibleDialog && !choices && (
+
+                  {!isFinalDialog && isLastVisibleDialog && !choices && (
                     <button
                       type='button'
                       className='nes-btn'
@@ -197,13 +166,13 @@ const DialogModal = ({
                       }}
                       style={{ ...styles.button }}
                     >
-                      Continue ...
+                      Continue
                     </button>
                   )}
                   {isFinalDialog && userFoundContractTrick && (
                     <button
                       type='button'
-                      className='nes-btn is-warning'
+                      className='nes-btn'
                       id='continue'
                       onClick={() => {
                         // actions.continueCurrentDialog()
@@ -211,7 +180,7 @@ const DialogModal = ({
                       }}
                       style={{ ...styles.button }}
                     >
-                      Transfer funds to wallet
+                      Continue
                     </button>
                   )}
                 </div>
@@ -220,10 +189,8 @@ const DialogModal = ({
           })}
         </div>
       )}
-    </div>
+    </WindowModal>
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(DialogModal)
-
-export { reducer }
+export default DialogWindow

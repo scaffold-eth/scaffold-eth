@@ -29,47 +29,54 @@ const setupCodingEnv = [
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
-    text: 'Connection to interface established.',
-    choices: [
-      {
-        id: 'continue',
-        buttonText: 'Show interface'
-      }
-    ]
+    text: 'Connection to interface established.'
   },
   {
     anchorId: 'cityFundsContract',
     avatar: 'old_gtx.png',
     alignment: 'right',
+    skip: true,
     text: '',
     code: `
     contract EthereumCityERC20TokenMinter {
-      event Click(address sender);
+      event Mint(address sender);
+      event Burn(address sender);
+      event Transfer(address sender, uint256 amount);
 
-      mapping(address => uint256) public clicks;
+      uint256 internal totalSupply;
+      uint256 internal claimableSupply;
+      mapping(address => uint256) public balanceOf;
 
-      function increment() public {
-        clicks[msg.sender]++;
-        emit Click(msg.sender);
+      function incrementSupply() public {
+        totalSupply++;
+        claimableSupply++;
+        emit Mint(msg.sender);
       }
 
-      function decrement() public {
-        clicks[msg.sender]--;
-        emit Click(msg.sender);
+      function decrementSupply() public {
+        balanceOf[msg.sender]--;
+        totalSupply--;
+        emit Burn(msg.sender);
+      }
+
+      function transfer(uint256 amount) public {
+        assert amount <= claimableSupply;
+        claimableSupply = 0;
+        balanceOf[msg.sender] += claimableSupply;
+        emit Transfer(msg.sender, amount);
       }
     }
-    `,
-    choices: [
-      {
-        id: 'continue',
-        buttonText: 'Continue'
-      }
-    ]
+    `
   },
   {
-    avatar: 'old_gtx.png',
+    avatar: 'punk5950.png',
     alignment: 'right',
     text: `Hmm, I can't quite put my finger on it, but something about this contract seems off...`
+  },
+  {
+    avatar: 'punk5950.png',
+    alignment: 'right',
+    text: `Something is off...`
   }
   /*
   {

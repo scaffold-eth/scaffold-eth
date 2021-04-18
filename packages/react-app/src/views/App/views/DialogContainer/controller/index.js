@@ -3,9 +3,9 @@ import dialogs from '../model/dialogs/underflowLevel'
 import { actionCreators as terminalActionCreators } from '../../Terminal/controller'
 import { actionCreators as toolbeltActionCreators } from '../../Toolbelt/controller'
 
-export const TOGGLE_DIALOG_VISIBILITY = 'dialogModal/TOGGLE_DIALOG_VISIBILITY'
-export const CURRENT_DIALOG_SET = 'dialogModal/CURRENT_DIALOG_SET'
-export const CURRENT_DIALOG_CONTINUE = 'dialogModal/CURRENT_DIALOG_CONTINUE'
+export const TOGGLE_DIALOG_VISIBILITY = 'dialogContainer/TOGGLE_DIALOG_VISIBILITY'
+export const CURRENT_DIALOG_SET = 'dialogContainer/CURRENT_DIALOG_SET'
+export const CURRENT_DIALOG_CONTINUE = 'dialogContainer/CURRENT_DIALOG_CONTINUE'
 
 const initialState = {
   dialogVisible: true,
@@ -18,9 +18,9 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { dialogModal } = state
+  const { dialogContainer } = state
   return {
-    ...dialogModal
+    ...dialogContainer
   }
 }
 
