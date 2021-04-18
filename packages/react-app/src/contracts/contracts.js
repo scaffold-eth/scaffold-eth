@@ -1,1 +1,1 @@
-module.exports = ["Clicker"];
+module.exports = ["EthereumCityERC20TokenMinter"];
