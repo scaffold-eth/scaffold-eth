@@ -88,7 +88,7 @@ const DialogWindow = ({
             const isLastVisibleDialog = index === currentDialog.index
             const isFinalDialog = index === dialogs[currentDialog.name].length - 1
 
-            if (index <= currentDialog.index && !currentDialog.skip) {
+            if (index <= currentDialog.index && !dialog.skip) {
               return (
                 <div
                   style={{
