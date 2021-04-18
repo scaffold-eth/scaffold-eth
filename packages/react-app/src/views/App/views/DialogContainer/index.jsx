@@ -37,6 +37,7 @@ const DialogContainer = ({
                 address={address}
                 transactor={transactor}
                 contractCode={code}
+                actions={actions}
               />
             )
           }
