@@ -69,8 +69,8 @@ const TokenContractWindow = ({
         </div>
         <div style={{ padding: '20px' }}>
           <div style={{ textAlign: 'center' }}>
-            <Title level={5}>Claimable Supply:</Title>
-            <Title level={3}>{claimableSupply && claimableSupply.toString()}</Title>
+            <p>Claimable Supply:</p>
+            <Title level={4}>{claimableSupply && claimableSupply.toString()}</Title>
           </div>
 
           <Button
@@ -91,8 +91,8 @@ const TokenContractWindow = ({
             decrement
           </Button>
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <Title level={5}>Your balance:</Title>
-            <Title level={3}>{userBalance && userBalance.toString()}</Title>
+            <p>Your balance:</p>
+            <Title level={4}>{userBalance && userBalance.toString()}</Title>
           </div>
           <Button
             block
