@@ -56,6 +56,7 @@
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^16.14.0",
+    "react-modal-resizable-draggable": "^0.1.5",
     "react-qr-reader": "^2.2.1",
     "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
@@ -64,6 +65,7 @@
     "react-typist": "^2.0.5",
     "redux": "^4.0.5",
     "redux-logger": "^3.0.6",
+    "shortid": "^2.2.16",
     "typewriter-effect": "^2.17.0",
     "web3modal": "^1.9.1"
   },
