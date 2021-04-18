@@ -9,10 +9,10 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { toolbelt, dialogModal } = state
+  const { toolbelt, dialogContainer } = state
   return {
     ...toolbelt,
-    dialogModal
+    dialogContainer
   }
 }
 

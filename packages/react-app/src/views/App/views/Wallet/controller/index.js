@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable'
-import { actionCreators as dialogModalActionCreators } from '../../DialogModal/controller'
+import { actionCreators as dialogContainerActionCreators } from '../../DialogContainer/controller'
 
 export const TOGGLE_VISIBLITY = 'wallet/TOGGLE_VISIBLITY'
 
@@ -8,10 +8,10 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { wallet, dialogModal } = state
+  const { wallet, dialogContainer } = state
   return {
     ...wallet,
-    dialogModal
+    dialogContainer
   }
 }
 
@@ -45,7 +45,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(actionCreators.toggleVisibility())
     },
     setCurrentDialog(payload) {
-      dispatch(dialogModalActionCreators.setCurrentDialog(payload))
+      dispatch(dialogContainerActionCreators.setCurrentDialog(payload))
     }
   }
 })

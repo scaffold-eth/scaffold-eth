@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable'
-import { actionCreators as dialogModalActionCreators } from '../../DialogModal/controller'
+import { actionCreators as dialogContainerActionCreators } from '../../DialogContainer/controller'
 
 export const TOGGLE_VISIBLITY = 'terminal/TOGGLE_VISIBLITY'
 export const TOGGLE_RINGING = 'terminal/TOGGLE_RINGING'
@@ -10,10 +10,10 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { terminal, dialogModal } = state
+  const { terminal, dialogContainer } = state
   return {
     ...terminal,
-    dialogModal
+    dialogContainer
   }
 }
 
@@ -59,7 +59,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(actionCreators.toggleRinging())
     },
     setCurrentDialog(payload) {
-      dispatch(dialogModalActionCreators.setCurrentDialog(payload))
+      dispatch(dialogContainerActionCreators.setCurrentDialog(payload))
     }
   }
 })

@@ -3,6 +3,6 @@ import Terminal from './Terminal'
 import Wallet from './Wallet'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
-import DialogModal from './DialogModal/index'
+import DialogContainer from './DialogContainer/index'
 
-export { Background, Terminal, Wallet, Toolbelt, Dish, DialogModal }
+export { Background, Terminal, Wallet, Toolbelt, Dish, DialogContainer }
