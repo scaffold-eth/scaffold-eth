@@ -59,19 +59,8 @@ required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://clas
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
-
 cd scaffold-eth
-```
-
-```bash
-
-yarn install
-
-```
-
-```bash
-
-yarn start
+yarn chain
 
 ```
 
@@ -79,7 +68,8 @@ yarn start
 
 ```bash
 cd scaffold-eth
-yarn chain
+yarn install
+yarn start
 
 ```
 
