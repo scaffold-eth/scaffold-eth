@@ -16,21 +16,23 @@ Creates a new file structure for `<CIRCUIT_NAME>` under `packages/circom/circuit
 yarn compcir <CIRCUIT_NAME>
 ```
 
-Compiles the `circuit.circom` under `packages/circom/circuits/<CIRCUIT_NAME>` and create all the necessary files for the zero knowledge circuit. A solidity smart contract verifier will also be created in `packages/hardhat/contracts` as `<CIRCUIT_NAME>Verifier.sol`
+Compiles the `circuit.circom` under `packages/circom/circuits/<CIRCUIT_NAME>` and creates all the necessary files for the zero knowledge circuit. A solidity smart contract verifier will also be created in `packages/hardhat/contracts` as `<CIRCUIT_NAME>Verifier.sol`
 
 #### `verify`
 ```
 yarn verify <CIRCUIT_NAME> <INPUT_NAME>.json
 ```
 
-Verifies whether a proof generated with the set of inputs found in `packages/circom/circuits/<CIRCUIT_NAME>/inputs/<INPUT_NAME>.json` is valid for the `<CIRCUIT_NAME>` zk circuit. If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
+Verifies whether a proof generated with the set of inputs found in `packages/circom/circuits/<CIRCUIT_NAME>/inputs/<INPUT_NAME>.json` is valid for the `<CIRCUIT_NAME>` zk circuit.
+If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
 
 #### `call`
 ```
 yarn call <CIRCUIT_NAME> <INPUT_NAME>.json
 ```
 
-Prints the calldata needed to call the solidity smart contract verifier `<CIRCUIT_NAME>Verifier.sol` with `<INPUT_NAME>.json` into the terminal. If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
+Prints the calldata necessary to call the solidity smart contract verifier `<CIRCUIT_NAME>Verifier.sol` with `<INPUT_NAME>.json` into the terminal.
+If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
 
 ## `Hash` Circuit Guide
 
