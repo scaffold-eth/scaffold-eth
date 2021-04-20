@@ -2,6 +2,36 @@
 
 Write and compile zero knowledge circuits with [circom](https://docs.circom.io/) and [snarkjs](https://github.com/iden3/snarkjs) in the `circom` workspace, develop smart contracts utilizing zero knowledge proofs with scaffold-eth.
 
+## Commands
+
+#### `draft`
+```
+yarn draft <CIRCUIT_NAME>
+```
+
+Creates a new file structure for `<CIRCUIT_NAME>` under `packages/circom/circuits/<CIRCUIT_NAME>` with a `circuit.circom` file and and `inputs` folder.
+
+#### `compcir`
+```
+yarn compcir <CIRCUIT_NAME>
+```
+
+Compiles the `circuit.circom` under `packages/circom/circuits/<CIRCUIT_NAME>` and create all the necessary files for the zero knowledge circuit. A solidity smart contract verifier will also be created in `packages/hardhat/contracts` as `<CIRCUIT_NAME>Verifier.sol`
+
+#### `verify`
+```
+yarn verify <CIRCUIT_NAME> <INPUT_NAME>.json
+```
+
+Verifies whether a proof generated with the set of inputs found in `packages/circom/circuits/<CIRCUIT_NAME>/inputs/<INPUT_NAME>.json` is valid for the `<CIRCUIT_NAME>` zk circuit. If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
+
+#### `call`
+```
+yarn call <CIRCUIT_NAME> <INPUT_NAME>.json
+```
+
+Prints the calldata needed to call the solidity smart contract verifier `<CIRCUIT_NAME>Verifier.sol` with `<INPUT_NAME>.json` into the terminal. If no `<INPUT_NAME>.json` is provided the command will default to `input.json`.
+
 ## `Hash` Circuit Guide
 
 #### Compile `hash` Circuit
@@ -14,7 +44,7 @@ Write and compile zero knowledge circuits with [circom](https://docs.circom.io/)
 
 - You should now see the message `[INFO]  snarkJS: OK!` in your terminal after the compilation has completed.
 
-- The contract found in `packages/hardhat/contracts/hashverifier.sol` should now be updated as well.
+- The contract found in `packages/hardhat/contracts/hashVerifier.sol` should now be updated as well.
 
 #### Verify `hash` Proofs with Various Inputs
 
