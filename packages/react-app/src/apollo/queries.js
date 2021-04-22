@@ -120,7 +120,7 @@ query ink($inkUrl: String!, $liker: String) {
     likes(where: {liker: $liker}) {
       id
     }
-    tokens {
+    tokens(first: 500) {
       id
       owner
       network

@@ -149,6 +149,7 @@ export default function CreateInk(props) {
     let inkResultInfura
 
     try {
+
       const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
       const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
       const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
@@ -161,6 +162,7 @@ export default function CreateInk(props) {
         console.log("FINISHED UPLOADING TO PINNER",values);
         message.destroy()
       });
+
     } catch (e) {
       console.log(e)
       setSending(false)
@@ -169,6 +171,7 @@ export default function CreateInk(props) {
         description:
         `Please wait a moment and try again ${e.message}`,
       });
+      return;
     }
 
     try {
