@@ -34,7 +34,14 @@ import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
 import { Transactor, checkBalancesAndSwitchNetwork } from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
-import { Background, Terminal, Wallet as WalletView, Toolbelt, Dish, DialogContainer } from './views'
+import {
+  Background,
+  Terminal,
+  Wallet as WalletView,
+  Toolbelt,
+  Dish,
+  DialogContainer
+} from './views'
 import './index.css'
 
 const { ethers } = require('ethers')
@@ -172,6 +179,7 @@ const App = props => {
 
         {/* <Terminal /> */}
 
+        {/*
         <WalletView
           web3Modal={web3Modal}
           address={address}
@@ -182,6 +190,7 @@ const App = props => {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
+        */}
 
         {/* <Dish /> */}
 

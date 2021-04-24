@@ -13,6 +13,7 @@ export default function WindowModal({
   onRequestClose,
   isOpen,
   title,
+  containerStyle,
   children
 }) {
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
@@ -27,6 +28,12 @@ export default function WindowModal({
       $(`.${uniqueWindowId}`).height(initHeight)
     }
   }, [minimized])
+
+  const buttonStyles = {
+    float: 'right',
+    height: 27,
+    cursor: 'pointer'
+  }
 
   return (
     <ReactModal
@@ -46,37 +53,61 @@ export default function WindowModal({
           right: 0,
           top: 0,
           background: '#fff',
-          height: 'auto',
           width: '100%',
           borderBottom: 'solid 4px #000',
           cursor: 'move'
         }}
       >
         <div style={{ float: 'left', width: '100%', cursor: 'move' }}>
-          <div style={{ float: 'left', padding: 5, paddingLeft: 7, fontSize: 12, color: '#000' }}>{title}</div>
-          <button
-            type='button'
-            style={{ float: 'right' }}
-            onClick={() => console.log('click close')}
-            className='close'
-          >
-            X
-          </button>
-          <button
-            type='button'
-            style={{ float: 'right', cursor: 'pointer' }}
-            onClick={() => {
-              console.log('click minimize')
-              setMinimized(!minimized)
+          <div
+            style={{
+              fontSize: 12,
+              color: '#000'
             }}
-            className='minimize'
           >
-            _
-          </button>
+            <div
+              style={{
+                float: 'left',
+                padding: 5,
+                paddingLeft: 7
+              }}
+            >
+              {title}
+            </div>
+            <button
+              type='button'
+              style={{ ...buttonStyles }}
+              onClick={() => console.log('click close')}
+              className='close'
+            >
+              X
+            </button>
+            <button
+              type='button'
+              style={{ ...buttonStyles }}
+              onClick={() => {
+                console.log('click minimize')
+                setMinimized(!minimized)
+              }}
+              className='minimize'
+            >
+              _
+            </button>
+          </div>
         </div>
       </div>
 
-      <div>{children}</div>
+      <div
+        style={{
+          height: 'calc(100% - 30px)',
+          overflowY: 'scroll',
+          marginTop: 30,
+          padding: 15,
+          ...containerStyle
+        }}
+      >
+        {children}
+      </div>
     </ReactModal>
   )
 }

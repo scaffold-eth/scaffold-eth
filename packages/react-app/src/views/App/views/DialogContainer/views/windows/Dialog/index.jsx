@@ -23,6 +23,7 @@ const DialogWindow = ({
   actions
 }) => {
   const scrollToBottom = element => {
+    console.log('in scrollToBottom: ')
     const { scrollHeight } = $(element)[0]
     $(element).animate({ scrollTop: scrollHeight }, 'slow')
   }
@@ -69,19 +70,13 @@ const DialogWindow = ({
       initLeft={30}
       title='Communication'
       isOpen
+      containerStyle={{
+        // backgroundColor: '#0A2227'
+        background: 'rgb(166, 207, 247, 0.5)'
+      }}
     >
       {dialogVisible && (
-        <div
-          id='speechContainer'
-          style={{
-            height: 600 - 30,
-            overflowY: 'scroll',
-            marginTop: 32,
-            padding: 15,
-            background: 'rgb(166, 207, 247, 0.5)'
-            // backgroundColor: '#0A2227'
-          }}
-        >
+        <div id='speechContainer'>
           {dialogs[currentDialog.name].map((dialog, index) => {
             const { anchorId, avatar, alignment, text, code, choices } = dialog
 
