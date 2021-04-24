@@ -71,6 +71,7 @@ const DialogWindow = ({
       title='Communication'
       isOpen
       containerStyle={{
+        padding: 15,
         // backgroundColor: '#0A2227'
         background: 'rgb(166, 207, 247, 0.5)'
       }}

@@ -57,18 +57,11 @@ const TokenContractWindow = ({
         console.log('Modal is clicked')
       }}
       isOpen
+      containerStyle={{
+        background: '#fff'
+      }}
     >
-      <div
-        className='body'
-        style={{
-          // float: alignment,
-          width: '100%',
-          height: 600 - 30,
-          overflowY: 'scroll',
-          marginTop: 30,
-          backgroundColor: '#fff'
-        }}
-      >
+      <div>
         <div style={{ margin: '-8px 0' }}>
           <CodeContainer language='bash'>{contractCode}</CodeContainer>
         </div>

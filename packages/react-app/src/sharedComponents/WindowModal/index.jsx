@@ -102,7 +102,6 @@ export default function WindowModal({
           height: 'calc(100% - 30px)',
           overflowY: 'scroll',
           marginTop: 30,
-          padding: 15,
           ...containerStyle
         }}
       >
