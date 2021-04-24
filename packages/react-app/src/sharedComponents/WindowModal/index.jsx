@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
-import shortid from 'shortid'
 import $ from 'jquery'
 import './styles.css'
 
 export default function WindowModal({
+  uniqueWindowId,
   initWidth,
   initHeight,
   initTop,
@@ -16,7 +16,6 @@ export default function WindowModal({
   containerStyle,
   children
 }) {
-  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
   const [minimized, setMinimized] = useState(false)
 
   const menubarHeight = 28
@@ -37,10 +36,10 @@ export default function WindowModal({
 
   return (
     <ReactModal
+      className={uniqueWindowId}
       initWidth={initWidth}
       initHeight={initHeight}
       onFocus={onFocus}
-      className={uniqueWindowId}
       onRequestClose={onRequestClose}
       isOpen={isOpen}
       top={initTop}
@@ -98,6 +97,7 @@ export default function WindowModal({
       </div>
 
       <div
+        className='content'
         style={{
           height: 'calc(100% - 30px)',
           overflowY: 'scroll',

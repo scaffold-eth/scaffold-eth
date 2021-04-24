@@ -1,5 +1,6 @@
-import React from 'react'
-import { Button, Typography, notification } from 'antd'
+import React, { useState } from 'react'
+import { Button, Typography } from 'antd'
+import shortid from 'shortid'
 import { useContractLoader, useContractReader, useEventListener } from '../../../../../../../hooks'
 import { CodeContainer, WindowModal } from '../../../../../../../sharedComponents'
 
@@ -46,8 +47,11 @@ const TokenContractWindow = ({
     parseInt(claimableSupply, 10) >
     115792089237316195423570985008687907853269984665640564039457584007913129639
 
+  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
   return (
     <WindowModal
+      uniqueWindowId={uniqueWindowId}
       initWidth={600}
       initHeight={600}
       initTop={130}

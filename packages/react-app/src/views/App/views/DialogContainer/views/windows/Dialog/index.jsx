@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
+import shortid from 'shortid'
 import $ from 'jquery'
 import { useContractLoader, useContractReader } from '../../../../../../../hooks'
 import { WindowModal } from '../../../../../../../sharedComponents'
@@ -22,10 +23,11 @@ const DialogWindow = ({
   currentDialog,
   actions
 }) => {
-  const scrollToBottom = element => {
+  const scrollToBottom = elementSelector => {
     console.log('in scrollToBottom: ')
-    const { scrollHeight } = $(element)[0]
-    $(element).animate({ scrollTop: scrollHeight }, 'slow')
+    console.log({ elementSelector })
+    const { scrollHeight } = $(elementSelector)[0]
+    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
 
   useEffect(() => {
@@ -62,8 +64,11 @@ const DialogWindow = ({
     console.log('user did not find trick yet')
   }
 
+  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
   return (
     <WindowModal
+      uniqueWindowId={uniqueWindowId}
       initWidth={600}
       initHeight={600}
       initTop={100}
@@ -143,7 +148,7 @@ const DialogWindow = ({
                             } else {
                               actions.continueCurrentDialog()
                             }
-                            scrollToBottom('#speechContainer')
+                            scrollToBottom(`.${uniqueWindowId} > .content`)
                           }}
                           style={{ ...styles.button }}
                         >
@@ -159,7 +164,7 @@ const DialogWindow = ({
                       id='continue'
                       onClick={() => {
                         actions.continueCurrentDialog()
-                        scrollToBottom('#speechContainer')
+                        scrollToBottom(`.${uniqueWindowId} > .content`)
                       }}
                       style={{ ...styles.button }}
                     >
@@ -173,7 +178,7 @@ const DialogWindow = ({
                       id='continue'
                       onClick={() => {
                         // actions.continueCurrentDialog()
-                        scrollToBottom('#speechContainer')
+                        scrollToBottom(`.${uniqueWindowId} > .content`)
                       }}
                       style={{ ...styles.button }}
                     >
