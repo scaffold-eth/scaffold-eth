@@ -179,7 +179,6 @@ const App = props => {
 
         {/* <Terminal /> */}
 
-        {/*
         <WalletView
           web3Modal={web3Modal}
           address={address}
@@ -190,7 +189,6 @@ const App = props => {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
         />
-        */}
 
         {/* <Dish /> */}
 
