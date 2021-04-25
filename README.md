@@ -1,202 +1,134 @@
-# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
+# 🏦🏗 scaffold-eth - NFT Auction
 
-> (Counterfactual NFT minting example...)
+> Discover how you can build your own NFT auction where the highest bid gets an NFT
 
-Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initial contract but then NFTs are only minted once a buyer wants them. (The buyer of the NFT pays the gas to mint. ~$55)
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a href="#about-the-project">About The Project</a>
+    </li>
+    <li>
+      <a href="#getting-started">Getting Started</a>
+      <ul>
+        <li><a href="#prerequisites">Prerequisites</a></li>
+        <li><a href="#installation">Installation</a></li>
+      </ul>
+    </li>
+    <li><a href="#smart-contracts">Exploring smart contracts</a></li>
+    <li><a href="#practice">Practice</a></li>
+    <li><a href="#additional-resources">Additional resources</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ol>
+</details>
 
----
+## About The Project
 
-## 🏃‍♀️ Quick Start
+This branch uses [buyer-mints-nft](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft) as a starting point. Please refer to its own README for the context.
 
-required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+We will show you how a simple NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
 
+## Getting Started
 
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
+### Prerequisites
 
-cd buyer-mints-nft
+You have to know what is an ERC721 standard and what is NFT. Please refer to [this](http://erc721.org/) and [this](https://docs.openzeppelin.com/contracts/4.x/erc721) for more information if you are not familiar with these terms.
 
-git checkout buyer-mints-nft
+### Installation
+
+Let's start our environment for tinkering and exploring how NFT auction would work.
+
+1. Clone the repo first
+```sh
+git clone -b nft-auction https://github.com/austintgriffith/scaffold-eth.git nft-auction
+cd nft-auction
 ```
 
+2. Install dependencies
 ```bash
-
 yarn install
-
 ```
 
+3. Start your React frontend
 ```bash
-
 yarn start
-
 ```
 
-> in a second terminal window:
-
+4. Deploy your smart contracts to a local blockchain
 ```bash
-cd simple-nft-example
-yarn chain
-
-```
-
----
-
-> ✏️ Edit the artwork manifest `artwork.js` with all of your art, then upload it to IPFS:
-
-> in a third terminal window:
-
-
-```bash
-cd simple-nft-example
-
-yarn upload
-
 yarn deploy
-
 ```
 
-📱 Open http://localhost:3000 to see the app
+## Smart contracts
 
----
+Let's navigate to `packages/hardhat/contracts` folder and check out what contracts we have there.
 
-Your artwork from `artwork.json` (if uploaded and deployed correctly) should show a gallery of possible NFTS to mint:
+We are mostly interested in `Auction.sol` smart contract which contains all the logic for NFT auction.
 
-![image](https://user-images.githubusercontent.com/2653167/110538535-5fe87980-80e1-11eb-83aa-fe2b53f9c277.png)
+### Auction.sol
 
+First of all, note how we are initializing our smart contract using this line.
 
-💦 Use the faucet wallet icon in the bottom left of the frontend to give your address **$1000** in testnet ETH.
-
-🎫 Try to "Mint" an NFT:
-
-![image](https://user-images.githubusercontent.com/2653167/110538992-ec933780-80e1-11eb-9d15-aaa7efea698d.png)
-
-
-👛 Open an *incognito* window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
-
-⛽️ Grab some gas for each account using the faucet:
-
-![image](https://user-images.githubusercontent.com/2653167/109543971-35b10f00-7a84-11eb-832e-36d6b66afbe7.png)
-
-🎟 Send an NFT to the *incognito* window just to make sure it works.
-
----
-
-🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `YourCollectible`?
-
-💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
-
----
-
-🔏 Edit your smart contract `YourCollectible.sol` in `packages/hardhat/contracts`
-
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
-
-
-🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
-
-⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
-
-## 📡 Deploy NFT smart contract!
-
-🛰 Ready to deploy to a testnet?
-
-> Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
-
-![image](https://user-images.githubusercontent.com/2653167/109538427-4d38c980-7a7d-11eb-878b-b59b6d316014.png)
-
-🔐 Generate a deploy account with `yarn generate`
-
-![image](https://user-images.githubusercontent.com/2653167/109537873-a2c0a680-7a7c-11eb-95de-729dbf3399a3.png)
-
-
-👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](https://instantwallet.io) to fund your account via QR code)
-
-![image](https://user-images.githubusercontent.com/2653167/109537339-ff6f9180-7a7b-11eb-85b0-46cd72311d12.png)
-
-📝 Triple check your `artwork.json` file and run:
-
-```bash
-
-yarn upload
-
+```solidity
+contract Auction is IERC721Receiver
 ```
 
-👨‍🎤 Deploy your NFT smart contract:
+We inherit from [IERC721Receiver](https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#IERC721Receiver) which is an interface created by OpenZeppelin. Inheriting from this contract will allow us to receive transfer of NFT from another account to our contract.
 
-```bash
+Inheriting from this contract also requires us to paste the implementation of `onERC721Received` which you can find at the bottom of the contract.
 
-yarn deploy
+The logic for creating an auction is in `createTokenAuction` function. It takes an address of NFT contract which in our case is an address of `YourCollectible.sol` deployed to our local chain, unique token ID which is going to be sold, minimum bid and duration in seconds.
 
-```
----
----
-
-> ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
-
-![image](https://user-images.githubusercontent.com/2653167/109539175-3e9ee200-7a7e-11eb-8d26-3b107a276461.png)
-
-You should see the correct network in the frontend:
-
-![image](https://user-images.githubusercontent.com/2653167/109539305-655d1880-7a7e-11eb-9385-c169645dc2b5.png)
-
-An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
-
-## ⚔️ Side Quests
-
-#### 🐟 Open Sea
-
-> Add your contract to OpenSea ( create -> submit NFTs -> "or add an existing contract" )
-
-(It can take a while before they show up, but here is an example:)
-
-https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
-
----
-
-
-#### 🔍 Etherscan Contract Verification
-
-> run `yarn flatten > flat.txt` (You will need to clean up extra junk at the top and bottom of flat.txt. Sorry, rookie stuff here.)
-
-> copy the contents of `flat.txt` to the block explorer and select compiler `v0.6.7` and `Yes` to `Optimization` (200 runs if anyone asks)
-
-![image](https://user-images.githubusercontent.com/2653167/109540618-f84a8280-7a7f-11eb-9a34-c239f1271247.png)
-
----
-
-#### 🔶 Infura
-
-> You will need to get a key from [infura.io](https://infura.io) and paste it into `constants.js` in `packages/react-app/src`:
-
-![image](https://user-images.githubusercontent.com/2653167/109541146-b5d57580-7a80-11eb-9f9e-04ea33f5f45a.png)
-
----
-
-## 🛳 Ship the app!
-
-> ⚙️ build and upload your frontend and share the url with your friends...
-
-```bash
-
-# build it:
-
-yarn build
-
-# upload it:
-
-yarn surge
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
-
-yarn s3
-
-===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
-
-yarn ipfs
+```solidity
+ERC721(_nft).safeTransferFrom(owner, address(this), _tokenId);
+tokenToAuction[_nft][_tokenId] = _auction;
 ```
 
-![image](https://user-images.githubusercontent.com/2653167/109540985-7575f780-7a80-11eb-9ebd-39079cc2eb55.png)
+As you can see above, creating an auction means temporarily transfer an NFT to the Auction contract and also save information about auction to our Solidity mapping.
 
-> 👩‍❤️‍👨 Share your public url with a friend and ask them to buy a collectible
+Users place bids by calling `bid` function which basically checks that the bid which is going to be made is currently the highest one. Note that we store the entire history of all bids made to allow us to return funds back to users who did not win an auction.
 
-![buyerpaysgastomint mov](https://user-images.githubusercontent.com/2653167/110540616-f322ae80-80e3-11eb-9009-41e445fdd0ff.gif)
+`executeSale` is a function used to complete the auction and identify the winner. It simply checks the last element of all bids placed and transfers NFT to the winner. If no bids were made, NFT is returned back to the initial owner.
+
+`cancelAuction` allows to prematurely cancel the auction and lets the initial owner to get back his NFT.
+
+
+## Practice
+
+Firstly, let's get us some funds using local faucet and mint any NFT, so we become its owner. 
+
+![image](./resources/mint.png)
+
+You can now note that we have an option to Start auction because we are an owner of this newly minted NFT. Let's try to start an auction!
+
+![image](./resources/start_auction.png)
+
+The minimal bid that users will be able to place is 0.1 ETH, and the total duration for our auction will be 5 minutes.
+
+![image](./resources/started_auction.png)
+
+Auction is now in progress, and we can complete it or cancel it. No bids were made yet so there is no information about them yet. Let's try to put some bid now.
+
+After you submit your bid, the information about auction will be updated if your bid is the highest at this point of time.
+
+![image](./resources/first_bid.png)
+
+We placed a bid of 0.2 ETH and now we are the highest bidder. Yay!
+
+Now let's try to open an incognito window and place a higher bid by a different user.
+
+![image](./resources/highest_bid.png)
+
+We placed 0.5 ETH big as a different user and now it's the highest bid. Now let's get back to our first account to complete an auction.
+
+![image](./resources/finished_auction.png)
+
+As you see, after we finished the auction, we are no longer an owner of the NFT. The account which placed 0.5 ETH is now a new owner. This is why we do not have an option to start an auction now.
+
+## Additional resources
+
+* [Dutch auction](https://en.wikipedia.org/wiki/Dutch_auction) - The idea behind auctions used in this contract
+
+## Contact
+
+Join the [telegram support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
