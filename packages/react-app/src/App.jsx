@@ -378,6 +378,14 @@ const logoutOfWeb3Modal = async () => {
 };
 
  window.ethereum && window.ethereum.on('chainChanged', chainId => {
+  web3Modal.cachedProvider && 
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+})
+
+ window.ethereum && window.ethereum.on('accountsChanged', accounts => {
+  web3Modal.cachedProvider && 
   setTimeout(() => {
     window.location.reload();
   }, 1);
