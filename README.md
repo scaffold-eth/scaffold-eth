@@ -1,5 +1,7 @@
 # 🏗 scaffold-eth - 🧑‍🎤 [PunkWallet.io](https://PunkWallet.io)
 
+> A quick web wallet for demonstrating identity of keypairs and sending around ETH
+
 ![image](https://user-images.githubusercontent.com/2653167/111859677-3234d900-8908-11eb-9614-815f5b945705.png)
 
 ---
