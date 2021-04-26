@@ -1,0 +1,19 @@
+{
+  "name": "@scaffold-eth/circom",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "dependencies": {},
+  "devDependencies": {
+    "circom": "^0.5.38",
+    "circomlib": "^0.4.1",
+    "dotenv": "^8.2.0",
+    "snarkjs": "^0.3.60"
+  },
+  "scripts": {
+    "compile": "node ./scripts/compile.js",
+    "verify": "node ./scripts/verify.js",
+    "draft": "node ./scripts/draft.js",
+    "call": "node ./scripts/call.js"
+  }
+}

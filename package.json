@@ -47,7 +47,11 @@
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
+    "compcir": "yarn workspace @scaffold-eth/circom compile",
+    "verify": "yarn workspace @scaffold-eth/circom verify",
+    "draft": "yarn workspace @scaffold-eth/circom draft",
+    "call": "yarn workspace @scaffold-eth/circom call"
   },
   "workspaces": {
     "packages": [
@@ -57,7 +61,13 @@
       "**/@graphprotocol/graph-ts",
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
-      "**/hardhat/**"
+      "**/hardhat/**",
+      "**/snarkjs",
+      "**/snarkjs/**",
+      "**/circom",
+      "**/circom/**",
+      "**/circomlib",
+      "**/circomlib/**"
     ]
   }
 }
