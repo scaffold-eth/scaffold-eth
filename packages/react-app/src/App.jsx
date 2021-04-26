@@ -105,16 +105,18 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
 
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
+  //const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  const streamBalance = useContractReader(readContracts,"SimpleStream", "streamBalance")
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const withdrawEvents = useEventListener(readContracts, "SimpleStream", "Withdraw", localProvider, 1);
+
+  const depositEvents = useEventListener(readContracts, "SimpleStream", "Deposit", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -125,7 +127,7 @@ function App(props) {
   // ☝️ These effects will log your major set up and upcoming transferEvents- and balance changes
   //
   useEffect(()=>{
-    if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts && mainnetDAIContract){
+    if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts){
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________")
       console.log("🌎 mainnetProvider",mainnetProvider)
       console.log("🏠 localChainId",localChainId)
@@ -134,10 +136,9 @@ function App(props) {
       console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
       console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
       console.log("📝 readContracts",readContracts)
-      console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
       console.log("🔐 writeContracts",writeContracts)
     }
-  }, [mainnetProvider, address, selectedChainId, yourLocalBalance, yourMainnetBalance, readContracts, writeContracts, mainnetDAIContract])
+  }, [mainnetProvider, address, selectedChainId, yourLocalBalance, yourMainnetBalance, readContracts, writeContracts])
 
 
   const [oldMainnetBalance, setOldMainnetDAIBalance] = useState(0)
@@ -148,32 +149,6 @@ function App(props) {
   // For Buyer-Lazy-Mint Branch Example
   // const [oldTransferEvents, setOldTransferEvents] = useState([])
   // const [oldBalance, setOldBalance] = useState(0)
-
-  // Use this effect for often changing things like your balance and transfer events or contract-specific effects
-  useEffect(()=>{
-    if(DEBUG){
-      if(myMainnetDAIBalance && !myMainnetDAIBalance.eq(oldMainnetBalance)){
-        console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
-        setOldMainnetDAIBalance(myMainnetDAIBalance)
-      }
-
-      // For Buyer-Lazy-Mint Branch Example
-      //if(transferEvents && oldTransferEvents !== transferEvents){
-      //  console.log("📟 Transfer events:", transferEvents)
-      //  setOldTransferEvents(transferEvents)
-      //}
-      //if(balance && !balance.eq(oldBalance)){
-      //  console.log("🤗 balance:", balance)
-      //  setOldBalance(balance)
-      //}
-
-      // For Master Branch Example
-      if(setPurposeEvents && setPurposeEvents !== oldPurposeEvents){
-        console.log("📟 SetPurpose events:",setPurposeEvents)
-        setOldPurposeEvents(setPurposeEvents)
-      }
-    }
-  }, [myMainnetDAIBalance]) // For Buyer-Lazy-Mint Branch: balance, transferEvents
 
 
   let networkDisplay = ""
@@ -246,19 +221,10 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">SimpleStream</Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link onClick={()=>{setRoute("/mainnetdai")}} to="/mainnetdai">Mainnet DAI</Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          <Menu.Item key="/debug">
+            <Link onClick={()=>{setRoute("/debug")}} to="/debug">debug</Link>
           </Menu.Item>
         </Menu>
 
@@ -269,47 +235,11 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            <Contract
-              name="YourContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-
-            { /* uncomment for a second contract:
-            <Contract
-              name="SecondContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */ }
-
-            { /* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */ }
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
             <ExampleUI
+              streamBalance={streamBalance}
+              withdrawEvents={withdrawEvents}
+              depositEvents={depositEvents}
+
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -319,28 +249,19 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
             />
+
           </Route>
-          <Route path="/mainnetdai">
+          <Route path="/debug">
             <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
+              name="SimpleStream"
               signer={userProvider.getSigner()}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
-              blockExplorer={"https://etherscan.io/"}
+              blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/subgraph">
-            <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-            />
-          </Route>
+
         </Switch>
       </BrowserRouter>
 
