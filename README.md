@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🎫 Buyer Merkle Mints NFT
+# 🏗 scaffold-eth - 🌲 Merkle Mint NFTs
 
 > Use a Merkle tree of possible artworks and then submit a proof it is valid to mint.
 
