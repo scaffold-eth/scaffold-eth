@@ -1,6 +1,6 @@
-# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
+# 🏗 scaffold-eth - 🎫 Buyer Merkle Mints NFT
 
-> (Counterfactual NFT minting example...)
+> Use a Merkle tree of possible artworks and then submit a proof it is valid to mint.
 
 Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initial contract but then NFTs are only minted once a buyer wants them. (The buyer of the NFT pays the gas to mint. ~$55)
 
