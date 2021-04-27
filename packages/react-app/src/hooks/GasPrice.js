@@ -2,7 +2,7 @@ import { useState } from "react";
 import { usePoller } from "eth-hooks";
 import axios from "axios";
 
-export default function useGasPrice(targetNetwork,speed) {
+export default function useGasPrice(targetNetwork,speed, pollTime) {
   const [gasPrice, setGasPrice] = useState();
   const loadGasPrice = async () => {
     if(targetNetwork.gasPrice){
@@ -20,6 +20,6 @@ export default function useGasPrice(targetNetwork,speed) {
     }
   };
 
-  usePoller(loadGasPrice, 39999);
+  usePoller(loadGasPrice, pollTime || 39999);
   return gasPrice;
 }

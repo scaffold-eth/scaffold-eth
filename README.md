@@ -291,6 +291,7 @@ The frontend has three different providers that provide different levels of acce
 
 ![image](https://user-images.githubusercontent.com/2653167/110499834-dcfdf980-80b5-11eb-9d2d-de7046bf5c2b.png)
 
+`REACT_APP_POLLING`: polling interval for infura calls (`.env` file). sometimes rpc calls are extensive draining infura request limits. it will help reduce the rpc request calls
 
 Commonly used Ethereum hooks located in `packages/react-app/src/`:
 
