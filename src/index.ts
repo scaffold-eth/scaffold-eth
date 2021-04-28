@@ -10,3 +10,4 @@ export { default as useTokenBalance } from "./TokenBalance";
 export { default as useUserAddress } from "./UserAddress";
 export { default as useUserProvider } from "./UserProvider";
 export { default as useContractLoader } from "./ContractLoader";
+export { default as useExternalContractLoader } from "./ExternalContractLoader";
