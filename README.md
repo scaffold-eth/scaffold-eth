@@ -9,6 +9,9 @@
       <a href="#about-the-project">About The Project</a>
     </li>
     <li>
+      <a href="#speed-run">Speed Run</a>
+    </li>
+    <li>
       <a href="#getting-started">Getting Started</a>
       <ul>
         <li><a href="#prerequisites">Prerequisites</a></li>
@@ -27,7 +30,8 @@
 This branch uses [buyer-mints-nft](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft) as a starting point. Please refer to its own README for the context.
 
 We will show you how a simple NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
-
+## Speed Run
+[![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/ws1bZ5VTolw)
 ## Getting Started
 
 ### Prerequisites
