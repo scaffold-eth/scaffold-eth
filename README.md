@@ -31,7 +31,7 @@ This branch uses [buyer-mints-nft](https://github.com/austintgriffith/scaffold-e
 
 We will show you how a simple NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
 ## Speed Run
-[![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/ws1bZ5VTolw)
+[![ethdenvervideo](https://i9.ytimg.com/vi/ws1bZ5VTolw/mq2.jpg?sqp=CMybpIQG&rs=AOn4CLArZMBK72XW5Siz5BmIZd0d86SjlQ)](https://youtu.be/ws1bZ5VTolw)
 ## Getting Started
 
 ### Prerequisites
