@@ -32,6 +32,8 @@ yarn start
 
 📱 Open http://localhost:3000 to see the app
 
+📝 Edit your `constants.js` in `packages/react-app/src` to change **INFURA_ID** or external contract address/abi 
+
 🏗 scaffold-eth is a hackthon stack for quick product prototyping on Ethereum.
 
 👩‍🔬 This scaffolding leverages state of the art tooling from the ecosystem.
