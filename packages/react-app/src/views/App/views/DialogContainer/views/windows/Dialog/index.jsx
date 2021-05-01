@@ -24,11 +24,13 @@ const DialogWindow = ({
   currentDialog,
   actions
 }) => {
-  const scrollToBottom = elementSelector => {
-    console.log('in scrollToBottom: ')
-    console.log({ elementSelector })
-    // const { scrollHeight } = $(elementSelector)[0]
-    // $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
+  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
+  const scrollToBottom = _elementSelector => {
+    let elementSelector = `#dialog .flexible-modal .content`
+    if (_elementSelector) elementSelector = _elementSelector
+    const { scrollHeight } = $(elementSelector)[0]
+    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
 
   useEffect(() => {
@@ -64,8 +66,6 @@ const DialogWindow = ({
   } else {
     console.log('user did not find trick yet')
   }
-
-  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
 
   return (
     <span id='dialog'>
@@ -166,7 +166,7 @@ const DialogWindow = ({
                                 } else {
                                   actions.continueCurrentDialog()
                                 }
-                                scrollToBottom(`.${uniqueWindowId} > .content`)
+                                scrollToBottom()
                               }}
                               style={{ ...styles.button }}
                             >
@@ -182,7 +182,7 @@ const DialogWindow = ({
                           id='continue'
                           onClick={() => {
                             actions.continueCurrentDialog()
-                            scrollToBottom(`.${uniqueWindowId} > .content`)
+                            scrollToBottom()
                           }}
                           style={{ ...styles.button }}
                         >
@@ -196,7 +196,7 @@ const DialogWindow = ({
                           id='continue'
                           onClick={() => {
                             // actions.continueCurrentDialog()
-                            scrollToBottom(`.${uniqueWindowId} > .content`)
+                            scrollToBottom()
                           }}
                           style={{ ...styles.button }}
                         >
