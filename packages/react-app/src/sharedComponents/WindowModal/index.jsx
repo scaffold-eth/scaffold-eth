@@ -51,9 +51,9 @@ export default function WindowModal({
           position: 'absolute',
           right: 0,
           top: 0,
-          background: '#fff',
           width: '100%',
-          borderBottom: 'solid 4px #000',
+          background: '#fff',
+          borderBottom: 'solid 4px #414141',
           cursor: 'move'
         }}
       >

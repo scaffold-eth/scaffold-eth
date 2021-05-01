@@ -8,8 +8,6 @@
   position: absolute;
   z-index: 1;
 
-  border: solid 4px #000;
-
   background: none;
   overflow: hidden;
   /*overflow-y: scroll;*/

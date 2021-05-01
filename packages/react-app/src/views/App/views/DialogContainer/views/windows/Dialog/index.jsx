@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react'
+import ReactModal from 'react-modal-resizable-draggable'
 import shortid from 'shortid'
 import $ from 'jquery'
 import { useContractLoader, useContractReader } from '../../../../../../../hooks'
-import { WindowModal } from '../../../../../../../sharedComponents'
+import './styles.css'
 
 const styles = {
   button: {
@@ -11,7 +12,7 @@ const styles = {
     marginTop: '30px',
     marginLeft: '2%',
     marginRight: '5%',
-    fontSize: '12px'
+    fontSize: '8px'
   }
 }
 
@@ -26,8 +27,8 @@ const DialogWindow = ({
   const scrollToBottom = elementSelector => {
     console.log('in scrollToBottom: ')
     console.log({ elementSelector })
-    const { scrollHeight } = $(elementSelector)[0]
-    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
+    // const { scrollHeight } = $(elementSelector)[0]
+    // $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
 
   useEffect(() => {
@@ -67,131 +68,150 @@ const DialogWindow = ({
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
 
   return (
-    <WindowModal
-      uniqueWindowId={uniqueWindowId}
-      initWidth={600}
-      initHeight={600}
-      initTop={100}
-      initLeft={30}
-      title='Communication'
-      isOpen
-      containerStyle={{
-        padding: 15,
-        // backgroundColor: '#0A2227'
-        background: 'rgb(166, 207, 247, 0.5)'
-      }}
-    >
-      {dialogVisible && (
-        <div id='speechContainer'>
-          {dialogs[currentDialog.name].map((dialog, index) => {
-            const { anchorId, avatar, alignment, text, code, choices } = dialog
+    <span id='dialog'>
+      <ReactModal
+        className={uniqueWindowId}
+        initWidth={359}
+        initHeight={709}
+        isOpen
+        top={100}
+        left={30}
+      >
+        {dialogVisible && (
+          <>
+            <div
+              className='background'
+              style={{
+                height: '100%',
+                overflowY: 'scroll',
+                background: 'url(./assets/trimmed/terminal_trimmed.png)',
+                backgroundSize: '100% 100%',
+                imageRendering: 'pixelated'
+              }}
+            />
+            <div
+              className='content'
+              style={{
+                position: 'absolute',
+                top: '33%',
+                right: 0,
+                height: '62%',
+                marginLeft: '10%',
+                marginRight: '20%',
+                overflow: 'scroll'
+              }}
+            >
+              {dialogs[currentDialog.name].map((dialog, index) => {
+                const { anchorId, avatar, alignment, text, code, choices } = dialog
 
-            const isLastVisibleDialog = index === currentDialog.index
-            const isFinalDialog = index === dialogs[currentDialog.name].length - 1
+                const isLastVisibleDialog = index === currentDialog.index
+                const isFinalDialog = index === dialogs[currentDialog.name].length - 1
 
-            if (index <= currentDialog.index && !dialog.skip) {
-              return (
-                <div
-                  style={{
-                    float: alignment,
-                    width: '100%',
-                    margin: '15px 0'
-                  }}
-                >
-                  {alignment === 'left' && (
-                    <img
-                      src={`./assets/${avatar}`}
-                      alt='avatar'
+                if (index <= currentDialog.index && !dialog.skip) {
+                  return (
+                    <div
                       style={{
-                        minWidth: '90px',
-                        imageRendering: 'pixelated',
-                        transform: 'scaleX(1)'
+                        float: alignment,
+                        width: '100%',
+                        margin: '15px 0'
                       }}
-                    />
-                  )}
-                  <div
-                    className={`nes-balloon from-${alignment}`}
-                    style={{
-                      width: 'calc(100% - 160px)',
-                      padding: '12px',
-                      fontSize: '12px',
-                      lineHeight: '27px'
-                    }}
-                  >
-                    <p>{text}</p>
-                  </div>
-                  {alignment === 'right' && (
-                    <img
-                      src={`./assets/${avatar}`}
-                      alt='avatar'
-                      style={{
-                        minWidth: '90px',
-                        imageRendering: 'pixelated',
-                        transform: 'scaleX(-1)'
-                      }}
-                    />
-                  )}
+                    >
+                      {alignment === 'left' && (
+                        <img
+                          src={`./assets/${avatar}`}
+                          alt='avatar'
+                          style={{
+                            minWidth: '40px',
+                            imageRendering: 'pixelated',
+                            transform: 'scaleX(1)'
+                          }}
+                        />
+                      )}
+                      <div
+                        className={`nes-balloon from-${alignment}`}
+                        style={{
+                          width: 'calc(100% - 60px)',
+                          padding: '6px',
+                          fontSize: '8px',
+                          lineHeight: '15px'
+                        }}
+                      >
+                        <p>{text}</p>
+                      </div>
+                      {alignment === 'right' && (
+                        <img
+                          src={`./assets/${avatar}`}
+                          alt='avatar'
+                          style={{
+                            minWidth: '40px',
+                            imageRendering: 'pixelated',
+                            transform: 'scaleX(-1)'
+                          }}
+                        />
+                      )}
 
-                  {isLastVisibleDialog &&
-                    choices &&
-                    choices.length &&
-                    choices.map(choice => {
-                      return (
+                      {isLastVisibleDialog &&
+                        choices &&
+                        choices.length &&
+                        choices.map(choice => {
+                          return (
+                            <button
+                              type='button'
+                              className='nes-btn is-warning'
+                              id={choice.id}
+                              onClick={() => {
+                                if (choice.goToDialog) {
+                                  console.log('now going to dialog: ' + choice.goToDialog)
+                                  actions.setCurrentDialog({ name: choice.goToDialog })
+                                } else {
+                                  actions.continueCurrentDialog()
+                                }
+                                scrollToBottom(`.${uniqueWindowId} > .content`)
+                              }}
+                              style={{ ...styles.button }}
+                            >
+                              {choice.buttonText}
+                            </button>
+                          )
+                        })}
+
+                      {!isFinalDialog && isLastVisibleDialog && !choices && (
                         <button
                           type='button'
-                          className='nes-btn is-warning'
-                          id={choice.id}
+                          className='nes-btn'
+                          id='continue'
                           onClick={() => {
-                            if (choice.goToDialog) {
-                              console.log('now going to dialog: ' + choice.goToDialog)
-                              actions.setCurrentDialog({ name: choice.goToDialog })
-                            } else {
-                              actions.continueCurrentDialog()
-                            }
+                            actions.continueCurrentDialog()
                             scrollToBottom(`.${uniqueWindowId} > .content`)
                           }}
                           style={{ ...styles.button }}
                         >
-                          {choice.buttonText}
+                          Continue
                         </button>
-                      )
-                    })}
-
-                  {!isFinalDialog && isLastVisibleDialog && !choices && (
-                    <button
-                      type='button'
-                      className='nes-btn'
-                      id='continue'
-                      onClick={() => {
-                        actions.continueCurrentDialog()
-                        scrollToBottom(`.${uniqueWindowId} > .content`)
-                      }}
-                      style={{ ...styles.button }}
-                    >
-                      Continue
-                    </button>
-                  )}
-                  {isFinalDialog && userFoundContractTrick && (
-                    <button
-                      type='button'
-                      className='nes-btn'
-                      id='continue'
-                      onClick={() => {
-                        // actions.continueCurrentDialog()
-                        scrollToBottom(`.${uniqueWindowId} > .content`)
-                      }}
-                      style={{ ...styles.button }}
-                    >
-                      Continue
-                    </button>
-                  )}
-                </div>
-              )
-            }
-          })}
-        </div>
-      )}
-    </WindowModal>
+                      )}
+                      {isFinalDialog && userFoundContractTrick && (
+                        <button
+                          type='button'
+                          className='nes-btn'
+                          id='continue'
+                          onClick={() => {
+                            // actions.continueCurrentDialog()
+                            scrollToBottom(`.${uniqueWindowId} > .content`)
+                          }}
+                          style={{ ...styles.button }}
+                        >
+                          Continue
+                        </button>
+                      )}
+                    </div>
+                  )
+                }
+              })}
+            </div>
+          </>
+        )}
+      </ReactModal>
+    </span>
   )
 }
 
