@@ -1,10 +1,12 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import ReactModal from 'react-modal-resizable-draggable'
 import Typist from 'react-typist'
 import Typewriter from 'typewriter-effect/dist/core'
+import shortid from 'shortid'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
 import $ from 'jquery'
@@ -39,6 +41,7 @@ import {
 import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
 import './styles.css'
 
+/*
 const styles = {
   container: {
     position: 'fixed',
@@ -66,6 +69,7 @@ const styles = {
     color: 'white'
   }
 }
+*/
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem('network')
@@ -84,7 +88,6 @@ const mainnetProvider =
   scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura
 
 const Wallet = ({
-  visible,
   actions,
   web3Modal,
   address,
@@ -95,23 +98,10 @@ const Wallet = ({
   loadWeb3Modal,
   logoutOfWeb3Modal
 }) => {
-  const toggleVisibility = () => {
-    $('#wallet')
-      .toggleClass('close')
-      .promise()
-      .done(() => {
-        console.log('effect done')
-      })
-  }
-
-  useEffect(() => {
-    toggleVisibility()
-  }, [visible])
-
   /*
   const activateConnectionSearchAnimation = () => {
     // eslint-disable-next-line no-new
-    new Typewriter('#walletContentContainer > .message', {
+    new Typewriter('#wallet .content > .message', {
       strings: ['Searching for network ...'],
       cursor: '',
       autoStart: true,
@@ -186,65 +176,92 @@ const Wallet = ({
     !process.env.REACT_APP_PROVIDER &&
     price > 1
 
+  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
   return (
-    <div id='wallet' style={{ ...styles.container }}>
-      <div
-        id='walletClickableTop'
-        style={{ ...styles.walletClickableTop }}
-        onClick={() => {
-          actions.toggleVisibility()
-        }}
-      />
-      <div id='walletContentContainer' style={{ ...styles.walletContentContainer }}>
-        {/*
-        <div className='message' style={{ ...styles.message }}>
-          <Typist cursor={{ show: false }} avgTypingDelay={50} loop />
-        </div>
-        */}
-
-        {walletDisplay}
-
-        <Balance value={yourLocalBalance} fontSize={20} price={price} />
-
-        <div style={{ float: 'left', width: '100%' }}>
-          <Address
-            fontSize={20}
-            size='short'
-            color='white'
-            address={address}
-            ensProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-          />
-        </div>
-
-        <div style={{ float: 'right' }}>
-          <Account
-            address={address}
-            localProvider={localProvider}
-            userProvider={userProvider}
-            mainnetProvider={mainnetProvider}
-            price={price}
-            web3Modal={web3Modal}
-            loadWeb3Modal={loadWeb3Modal}
-            logoutOfWeb3Modal={logoutOfWeb3Modal}
-            blockExplorer={blockExplorer}
-          />
-        </div>
-
-        <div style={{ position: 'absolute', bottom: 0, marginBottom: 70 }}>
-          <GasGauge gasPrice={gasPrice} />
-        </div>
-
-        {faucetHint && (
-          <div style={{ position: 'absolute', bottom: 120, marginRight: '29px' }}>{faucetHint}</div>
-        )}
-
-        {faucetAvailable && (
-          <div style={{ position: 'absolute', bottom: 0, marginBottom: 29, marginRight: 29 }}>
-            <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+    <div id='wallet'>
+      <ReactModal
+        className={uniqueWindowId}
+        initWidth={290}
+        initHeight={500}
+        isOpen
+        top={160}
+        left={430}
+      >
+        <div
+          className='background'
+          style={{
+            height: '100%',
+            overflowY: 'scroll',
+            background: 'url(./assets/trimmed/wallet_trimmed.png)',
+            backgroundSize: '100% 100%',
+            imageRendering: 'pixelated'
+          }}
+        />
+        <div
+          className='content'
+          style={{
+            position: 'absolute',
+            top: '13%',
+            right: 0,
+            height: '86%',
+            marginLeft: '9%',
+            marginRight: '9%',
+            overflow: 'scroll'
+          }}
+        >
+          {/*
+          <div className='message' style={{ ...styles.message }}>
+            <Typist cursor={{ show: false }} avgTypingDelay={50} loop />
           </div>
-        )}
-      </div>
+          */}
+
+          {walletDisplay}
+
+          <Balance value={yourLocalBalance} fontSize={20} price={price} />
+
+          <div style={{ float: 'left', width: '100%' }}>
+            <Address
+              fontSize={20}
+              size='short'
+              color='white'
+              address={address}
+              ensProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+            />
+          </div>
+
+          <div style={{ float: 'right' }}>
+            <Account
+              address={address}
+              localProvider={localProvider}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              web3Modal={web3Modal}
+              loadWeb3Modal={loadWeb3Modal}
+              logoutOfWeb3Modal={logoutOfWeb3Modal}
+              blockExplorer={blockExplorer}
+            />
+          </div>
+
+          <div style={{ position: 'absolute', bottom: 0, marginBottom: 70 }}>
+            <GasGauge gasPrice={gasPrice} />
+          </div>
+
+          {faucetHint && (
+            <div style={{ position: 'absolute', bottom: 120, marginRight: '29px' }}>
+              {faucetHint}
+            </div>
+          )}
+
+          {faucetAvailable && (
+            <div style={{ position: 'absolute', bottom: 0, marginBottom: 29, marginRight: 29 }}>
+              <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
+            </div>
+          )}
+        </div>
+      </ReactModal>
     </div>
   )
 }

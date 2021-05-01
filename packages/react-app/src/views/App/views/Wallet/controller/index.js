@@ -3,9 +3,7 @@ import { actionCreators as dialogContainerActionCreators } from '../../DialogCon
 
 export const TOGGLE_VISIBLITY = 'wallet/TOGGLE_VISIBLITY'
 
-const initialState = {
-  visible: false
-}
+const initialState = {}
 
 const mapStateToProps = state => {
   const { wallet, dialogContainer } = state
