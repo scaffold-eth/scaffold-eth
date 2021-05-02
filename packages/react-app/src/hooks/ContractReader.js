@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import usePoller from "./Poller";
+import useOnBlock from "./OnBlock";
 import { Provider } from "@ethersproject/providers";
 
 const DEBUG = false;
@@ -18,6 +19,8 @@ const DEBUG = false;
   - Provide readContracts by loading contracts (see more on ContractLoader.js)
   - Specify the name of the contract, in this case it is "YourContract"
   - Specify the name of the variable in the contract, in this case we keep track of "purpose" variable
+  - Pass an args array if the function requires
+  - Pass pollTime - if no pollTime is specified, the function will update on every new block
 */
 
 export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
@@ -59,22 +62,16 @@ export default function useContractReader(contracts, contractName, functionName,
     }
   }
 
-  useEffect(() => {
-  if (contracts && contracts[contractName] && adjustPollTime === 0) {
-
-    const listener = (blockNumber) => {
-      if (DEBUG) console.log(blockNumber, contractName, functionName, contracts[contractName].provider.listeners())
+// Only pass a provider to watch on a block if we have a contract and no PollTime
+  useOnBlock(
+    (contracts && contracts[contractName] && adjustPollTime === 0)&&contracts[contractName].provider,
+    () => {
+    if (contracts && contracts[contractName] && adjustPollTime === 0) {
       updateValue()
-    }
+  }
+  })
 
-    contracts[contractName].provider.on("block", listener)
-
-    return () => {
-        contracts[contractName].provider.off("block", listener)
-    }
-}
-},[contracts, args])
-
+// Use a poller if a pollTime is provided
 usePoller(async () => {
   if (contracts && contracts[contractName] && adjustPollTime > 0) {
     if (DEBUG) console.log('polling!', contractName, functionName)

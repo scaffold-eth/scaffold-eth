@@ -1,5 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import usePoller from "./Poller";
+import useOnBlock from "./OnBlock";
 
 /*
   ~ What it does? ~
@@ -14,9 +15,12 @@ import usePoller from "./Poller";
 
   - Provide address and get balance corresponding to given address
   - Change provider to access balance on different chains (ex. mainnetProvider)
+  - If no pollTime is passed, the balance will update on every new block
 */
 
-export default function useBalance(provider, address) {
+let DEBUG = false
+
+export default function useBalance(provider, address, pollTime = 0) {
 
 const [balance, setBalance] = useState();
 
@@ -29,20 +33,20 @@ const pollBalance = useCallback(async (provider, address) => {
   }
 }, [provider, address]);
 
-useEffect(() => {
-  if (provider && address) {
+// Only pass a provider to watch on a block if there is no pollTime
+useOnBlock((pollTime === 0)&&provider, () => {
+  if (provider && address && pollTime === 0) {
     pollBalance(provider, address);
-
-    const listener = (blockNumber) => {
-      pollBalance(provider, address);
-    }
-
-    provider.on("block", listener)
-    return () => {
-      provider.off("block", listener)
-  }
 }
-},[provider, address])
+})
+
+// Use a poller if a pollTime is provided
+usePoller(async () => {
+  if (provider && address && pollTime > 0) {
+    if (DEBUG) console.log('polling!', address)
+    pollBalance()
+  }
+}, pollTime, provider && address)
 
 return balance;
 }
