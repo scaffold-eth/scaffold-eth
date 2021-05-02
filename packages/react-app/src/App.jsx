@@ -212,14 +212,14 @@ function App(props) {
   let options = []
   for(let id in NETWORKS){
     options.push(
-      <Select.Option key={id} value={NETWORKS[id].name}><span style={{color:NETWORKS[id].color}}>
+      <Select.Option key={id} value={NETWORKS[id].name}><span style={{color:NETWORKS[id].color, fontSize:24}}>
         {NETWORKS[id].name}
       </span></Select.Option>
     )
   }
 
   const networkSelect = (
-    <Select defaultValue={targetNetwork.name} style={{ textAlign:"left", width: 120 }} onChange={(value)=>{
+    <Select size={"large"} defaultValue={targetNetwork.name} style={{ textAlign:"left", width: 140, fontSize:30}} onChange={(value)=>{
       if(targetNetwork.chainId != NETWORKS[value].chainId){
         window.localStorage.setItem("network",value);
         setTimeout(() => {
