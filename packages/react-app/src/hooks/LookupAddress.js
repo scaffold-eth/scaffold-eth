@@ -20,6 +20,7 @@ import { useLocalStorage } from "."
 
 const lookupAddress = async (provider, address) => {
   if(isAddress(address)) {
+    //console.log(`looking up ${address}`)
     try {
       // Accuracy of reverse resolution is not enforced.
       // We then manually ensure that the reported ens name resolves to address
@@ -41,25 +42,29 @@ const lookupAddress = async (provider, address) => {
 
 const useLookupAddress = (provider, address) => {
   const [ensName, setEnsName] = useState(address);
-  const [ensCache, setEnsCache] = useLocalStorage('ensCache_'+address);
+  //const [ensCache, setEnsCache] = useLocalStorage('ensCache_'+address); Writing directly due to sync issues
 
   useEffect(() => {
-    if( ensCache && ensCache.timestamp>Date.now()){
-      setEnsName(ensCache.name)
+
+    let cache = window.localStorage.getItem('ensCache_'+address);
+    cache = cache && JSON.parse(cache)
+
+    if( cache && cache.timestamp>Date.now()){
+      setEnsName(cache.name)
     }else{
       if (provider) {
         lookupAddress(provider, address).then((name) => {
           if (name) {
             setEnsName(name);
-            setEnsCache({
+            window.localStorage.setItem('ensCache_'+address, JSON.stringify({
               timestamp:Date.now()+360000,
               name:name
-            })
+            }))
           }
         });
       }
     }
-  }, [ensCache, provider, address, setEnsName, setEnsCache]);
+  }, [provider, address, setEnsName]);
 
   return ensName;
 };
