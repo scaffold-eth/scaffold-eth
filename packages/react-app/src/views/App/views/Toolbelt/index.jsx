@@ -14,15 +14,12 @@ const styles = {
       right: 0,
       height: '100%',
       width: '100%',
-      imageRendering: 'pixelated',
-      pointerEvents: 'none',
       cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
       zIndex: 1000
     },
     icon: {
       float: 'left',
       marginRight: '10px',
-      imageRendering: 'pixelated',
       cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
       zIndex: 1000
     }
@@ -103,7 +100,7 @@ const Toolbelt = ({ visible, actions }) => {
       $('#toolbelt').show()
     } else {
       console.log('now slide down')
-      //$('#toolbelt').slideDown('slow')
+      // $('#toolbelt').slideDown('slow')
     }
   }, [visible])
 
@@ -111,6 +108,7 @@ const Toolbelt = ({ visible, actions }) => {
     <div id='toolbelt' style={{ ...styles.toolbelt }}>
       <div
         id='menuBottom'
+        className='background-image'
         style={{
           ...styles.shared.menu,
           ...styles.menuBottom
@@ -118,6 +116,7 @@ const Toolbelt = ({ visible, actions }) => {
       />
       <div
         id='menuRight'
+        className='background-image'
         style={{
           ...styles.shared.menu,
           ...styles.menuRight

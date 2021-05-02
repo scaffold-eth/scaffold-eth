@@ -80,13 +80,12 @@ const DialogWindow = ({
         {dialogVisible && (
           <>
             <div
-              className='background'
+              className='background-image'
               style={{
                 height: '100%',
                 overflowY: 'scroll',
                 background: 'url(./assets/trimmed/terminal_trimmed.png)',
-                backgroundSize: '100% 100%',
-                imageRendering: 'pixelated'
+                backgroundSize: '100% 100%'
               }}
             />
             <div
@@ -120,9 +119,9 @@ const DialogWindow = ({
                         <img
                           src={`./assets/${avatar}`}
                           alt='avatar'
+                          className='background-image'
                           style={{
                             minWidth: '40px',
-                            imageRendering: 'pixelated',
                             transform: 'scaleX(1)'
                           }}
                         />
@@ -142,9 +141,9 @@ const DialogWindow = ({
                         <img
                           src={`./assets/${avatar}`}
                           alt='avatar'
+                          className='background-image'
                           style={{
                             minWidth: '40px',
-                            imageRendering: 'pixelated',
                             transform: 'scaleX(-1)'
                           }}
                         />

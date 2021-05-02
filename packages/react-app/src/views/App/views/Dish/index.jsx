@@ -18,7 +18,6 @@ const styles = {
   background: 'url(./assets/layers/dish.png) no-repeat bottom right fixed',
   backgroundSize: 'contain',
   cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
-  imageRendering: 'pixelated',
   zIndex: 1000
 }
 
@@ -44,7 +43,7 @@ const Dish = ({ connecting, visible, actions }) => {
   return (
     <div
       id='dish'
-      className='close'
+      className='close background-image'
       style={{
         ...styles,
         display: visible ? 'block' : 'none'

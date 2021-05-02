@@ -7,8 +7,7 @@ const styles = {
     left: 0,
     height: '100%',
     width: '100%',
-    pointerEvents: 'none',
-    imageRendering: 'pixelated'
+    pointerEvents: 'none'
   },
   nightSky0: {
     background: 'url(./assets/layers/night_sky_0.png) no-repeat center center fixed',
@@ -56,48 +55,56 @@ const BackgroundCityInner = () => {
   return (
     <>
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.nightSky0
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.nightSky1
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.fog
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.citySkyline0
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.citySkyline1
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.citySkyline2
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.citySkyline3
         }}
       />
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.street

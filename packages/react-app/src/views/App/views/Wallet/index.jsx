@@ -53,7 +53,6 @@ const styles = {
     background: 'url(./assets/wallet_new.png)',
     backgroundSize: 'cover',
     cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
-    imageRendering: 'pixelated',
     zIndex: 1050
   },
   walletClickableTop: {
@@ -189,13 +188,12 @@ const Wallet = ({
         left={430}
       >
         <div
-          className='background'
+          className='background-image'
           style={{
             height: '100%',
             overflowY: 'scroll',
             background: 'url(./assets/trimmed/wallet_trimmed.png)',
-            backgroundSize: '100% 100%',
-            imageRendering: 'pixelated'
+            backgroundSize: '100% 100%'
           }}
         />
         <div

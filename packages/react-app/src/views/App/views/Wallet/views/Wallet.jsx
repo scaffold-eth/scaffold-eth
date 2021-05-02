@@ -124,13 +124,13 @@ export default function Wallet(props) {
         >
           <img
             src='/punks.png'
+            className='background-image'
             style={{
               position: 'absolute',
               left: -punkSize * myx,
               top: -punkSize * myy,
               width: punkSize * 100,
-              height: punkSize * 100,
-              imageRendering: 'pixelated'
+              height: punkSize * 100
             }}
           />
         </div>
@@ -164,13 +164,13 @@ export default function Wallet(props) {
                 >
                   <img
                     src='/punks.png'
+                    className='background-image'
                     style={{
                       position: 'absolute',
                       left: -punkSize * x,
                       top: -punkSize * y,
                       width: punkSize * 100,
-                      height: punkSize * 100,
-                      imageRendering: 'pixelated'
+                      height: punkSize * 100
                     }}
                   />
                 </div>

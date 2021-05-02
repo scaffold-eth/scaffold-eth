@@ -7,8 +7,7 @@ const styles = {
     left: 0,
     height: '100%',
     width: '100%',
-    pointerEvents: 'none',
-    imageRendering: 'pixelated'
+    pointerEvents: 'none'
   },
   city: {
     background: 'url(./assets/layers/city_outskirts.png) no-repeat center center fixed',
@@ -21,6 +20,7 @@ const BackgroundCityOutskirts = () => {
   return (
     <>
       <div
+        className='background-image'
         style={{
           ...styles.shared,
           ...styles.city

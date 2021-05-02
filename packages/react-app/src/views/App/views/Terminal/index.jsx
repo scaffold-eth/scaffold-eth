@@ -16,7 +16,6 @@ const styles = {
   background: 'url(./assets/trimmed/terminal_trimmed.png)',
   backgroundSize: 'cover',
   cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
-  imageRendering: 'pixelated',
   zIndex: 0
 }
 
@@ -55,6 +54,7 @@ const Terminal = ({ ringing, visible, actions }) => {
   return (
     <div
       id='terminal'
+      className='background-image'
       onClick={() => {
         if (!ringing) {
           actions.toggleVisibility()
