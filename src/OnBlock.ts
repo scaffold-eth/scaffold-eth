@@ -8,7 +8,7 @@ let DEBUG = false
 export default function useOnBlock(
   provider: Web3Provider,
   fn: (...args: any[]) => void,
-  args: any
+  args?: any
 ): void {
   const savedCallback = useRef<(...args: any[]) => void>();
   // Remember the latest fn.
