@@ -63,7 +63,7 @@ export default function useContractReader(contracts, contractName, functionName,
   if (contracts && contracts[contractName] && adjustPollTime === 0) {
 
     const listener = (blockNumber) => {
-      console.log(blockNumber, contractName, functionName, contracts[contractName].provider.listeners())
+      if (DEBUG) console.log(blockNumber, contractName, functionName, contracts[contractName].provider.listeners())
       updateValue()
     }
 
@@ -77,7 +77,7 @@ export default function useContractReader(contracts, contractName, functionName,
 
 usePoller(async () => {
   if (contracts && contracts[contractName] && adjustPollTime > 0) {
-    console.log('polling!', contractName, functionName)
+    if (DEBUG) console.log('polling!', contractName, functionName)
     updateValue()
   }
 }, adjustPollTime, contracts && contracts[contractName])
