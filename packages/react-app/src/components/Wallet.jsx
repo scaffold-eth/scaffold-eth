@@ -58,7 +58,7 @@ export default function Wallet(props) {
 
   const providerSend = props.provider ? (
     <Tooltip title="Private Keys">
-      <WalletOutlined style={{fontSize:32}} onClick={() => {
+      <WalletOutlined style={{fontSize:32,color:"#1890ff"}} onClick={() => {
           setOpen(!open);
       }}/>
     </Tooltip>
