@@ -39,9 +39,9 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem("network")
-let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'ethereum']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+let targetNetwork =  NETWORKS[cachedNetwork?cachedNetwork:'xdai']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if(!targetNetwork){
-  targetNetwork =  NETWORKS['ethereum'];
+  targetNetwork =  NETWORKS['xdai'];
 }
 // 😬 Sorry for all the console logging
 const DEBUG = false
@@ -126,6 +126,7 @@ function App(props) {
   const balance = yourLocalBalance && formatEther(yourLocalBalance)
 
 
+
   //if you don't have any money, scan the other networks for money
   usePoller(()=>{
     if(!cachedNetwork){
@@ -134,6 +135,7 @@ function App(props) {
       }
     }
   },7777)
+  /*
   setTimeout(()=>{
     if(!cachedNetwork){
       if(balance==0){
@@ -148,7 +150,7 @@ function App(props) {
       }
     }
   },3777)
-
+*/
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
