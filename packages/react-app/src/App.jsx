@@ -128,7 +128,7 @@ function App(props) {
   */
 
   //
-  // ☝️ These effects will log your major set up and upcoming transferEvents- and balance changes
+  // 🧫 DEBUG 👨🏻‍🔬
   //
   useEffect(()=>{
     if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts && mainnetDAIContract){
@@ -144,42 +144,6 @@ function App(props) {
       console.log("🔐 writeContracts",writeContracts)
     }
   }, [mainnetProvider, address, selectedChainId, yourLocalBalance, yourMainnetBalance, readContracts, writeContracts, mainnetDAIContract])
-
-
-  const [oldMainnetBalance, setOldMainnetDAIBalance] = useState(0)
-
-  // For Master Branch Example
-  const [oldPurposeEvents, setOldPurposeEvents] = useState([])
-
-  // For Buyer-Lazy-Mint Branch Example
-  // const [oldTransferEvents, setOldTransferEvents] = useState([])
-  // const [oldBalance, setOldBalance] = useState(0)
-
-  // Use this effect for often changing things like your balance and transfer events or contract-specific effects
-  useEffect(()=>{
-    if(DEBUG){
-      if(myMainnetDAIBalance && !myMainnetDAIBalance.eq(oldMainnetBalance)){
-        console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
-        setOldMainnetDAIBalance(myMainnetDAIBalance)
-      }
-
-      // For Buyer-Lazy-Mint Branch Example
-      //if(transferEvents && oldTransferEvents !== transferEvents){
-      //  console.log("📟 Transfer events:", transferEvents)
-      //  setOldTransferEvents(transferEvents)
-      //}
-      //if(balance && !balance.eq(oldBalance)){
-      //  console.log("🤗 balance:", balance)
-      //  setOldBalance(balance)
-      //}
-
-      // For Master Branch Example
-      if(setPurposeEvents && setPurposeEvents !== oldPurposeEvents){
-        console.log("📟 SetPurpose events:",setPurposeEvents)
-        setOldPurposeEvents(setPurposeEvents)
-      }
-    }
-  }, [myMainnetDAIBalance]) // For Buyer-Lazy-Mint Branch: balance, transferEvents
 
 
   let networkDisplay = ""
