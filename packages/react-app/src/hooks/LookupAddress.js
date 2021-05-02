@@ -1,8 +1,8 @@
 import { useState, useEffect } from "react";
-import { getAddress } from "@ethersproject/address";
+import { getAddress, isAddress } from "@ethersproject/address";
 import { useLocalStorage } from "."
 
-// resolved if(name){} to not save "" into cache 
+// resolved if(name){} to not save "" into cache
 
 /*
   ~ What it does? ~
@@ -19,18 +19,22 @@ import { useLocalStorage } from "."
 */
 
 const lookupAddress = async (provider, address) => {
-  try {
-    // Accuracy of reverse resolution is not enforced.
-    // We then manually ensure that the reported ens name resolves to address
-    const reportedName = await provider.lookupAddress(address);
-    
-    const resolvedAddress = await provider.resolveName(reportedName);
+  if(isAddress(address)) {
+    try {
+      // Accuracy of reverse resolution is not enforced.
+      // We then manually ensure that the reported ens name resolves to address
+      const reportedName = await provider.lookupAddress(address);
 
-    if (getAddress(address) === getAddress(resolvedAddress)) {
-      return reportedName;
+      const resolvedAddress = await provider.resolveName(reportedName);
+
+      if (getAddress(address) === getAddress(resolvedAddress)) {
+        return reportedName;
+      } else {
+        return getAddress(address)
+      }
+    } catch (e) {
+      return getAddress(address)
     }
-  } catch (e) {
-    // Do nothing
   }
   return 0;
 };

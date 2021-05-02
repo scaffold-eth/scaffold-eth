@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useCallback } from "react";
 import usePoller from "./Poller";
 
 /*
@@ -16,18 +16,33 @@ import usePoller from "./Poller";
   - Change provider to access balance on different chains (ex. mainnetProvider)
 */
 
-export default function useBalance(provider, address, pollTime) {
+export default function useBalance(provider, address) {
+
 const [balance, setBalance] = useState();
-const pollBalance = async () => {
-  if (address && provider) {
+
+const pollBalance = useCallback(async (provider, address) => {
+  if (provider && address) {
     const newBalance = await provider.getBalance(address);
     if (newBalance !== balance) {
-      // console.log("NEW BALANCE:",newBalance,"Current balance",balance)
       setBalance(newBalance);
     }
   }
-};
-usePoller(pollBalance, 27777, address && provider );
+}, [provider, address]);
+
+useEffect(() => {
+  if (provider && address) {
+    pollBalance(provider, address);
+
+    const listener = (blockNumber) => {
+      pollBalance(provider, address);
+    }
+
+    provider.on("block", listener)
+    return () => {
+      provider.off("block", listener)
+  }
+}
+},[provider, address])
 
 return balance;
 }

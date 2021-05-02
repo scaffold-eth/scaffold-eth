@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import usePoller from "./Poller";
+import { Provider } from "@ethersproject/providers";
 
 const DEBUG = false;
 
@@ -20,7 +21,7 @@ const DEBUG = false;
 */
 
 export default function useContractReader(contracts, contractName, functionName, args, pollTime, formatter, onChange) {
-  let adjustPollTime = 1777;
+  let adjustPollTime = 0;
   if (pollTime) {
     adjustPollTime = pollTime;
   } else if (!pollTime && typeof args === "number") {
@@ -35,30 +36,51 @@ export default function useContractReader(contracts, contractName, functionName,
     }
   }, [value, onChange]);
 
-  usePoller(async () => {
-    if (contracts && contracts[contractName]) {
-      try {
-        let newValue;
-        if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
-        if (args && args.length > 0) {
-          newValue = await contracts[contractName][functionName](...args);
-          if (DEBUG)
-            console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
-        } else {
-          newValue = await contracts[contractName][functionName]();
-        }
-        if (formatter && typeof formatter === "function") {
-          newValue = formatter(newValue);
-        }
-        // console.log("GOT VALUE",newValue)
-        if (newValue !== value) {
-          setValue(newValue);
-        }
-      } catch (e) {
-        console.log(e);
+  const updateValue = async () => {
+    try {
+      let newValue;
+      if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
+      if (args && args.length > 0) {
+        newValue = await contracts[contractName][functionName](...args);
+        if (DEBUG)
+          console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
+      } else {
+        newValue = await contracts[contractName][functionName]();
       }
+      if (formatter && typeof formatter === "function") {
+        newValue = formatter(newValue);
+      }
+      // console.log("GOT VALUE",newValue)
+      if (newValue !== value) {
+        setValue(newValue);
+      }
+    } catch (e) {
+      console.log(e);
     }
-  }, adjustPollTime, contracts && contracts[contractName]);
+  }
+
+  useEffect(() => {
+  if (contracts && contracts[contractName] && adjustPollTime === 0) {
+
+    const listener = (blockNumber) => {
+      console.log(blockNumber, contractName, functionName, contracts[contractName].provider.listeners())
+      updateValue()
+    }
+
+    contracts[contractName].provider.on("block", listener)
+
+    return () => {
+        contracts[contractName].provider.off("block", listener)
+    }
+}
+},[contracts, args])
+
+usePoller(async () => {
+  if (contracts && contracts[contractName] && adjustPollTime > 0) {
+    console.log('polling!', contractName, functionName)
+    updateValue()
+  }
+}, adjustPollTime, contracts && contracts[contractName])
 
   return value;
 }
