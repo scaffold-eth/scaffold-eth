@@ -11,9 +11,11 @@ required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://clas
 
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/austintgriffith/scaffold-eth.git mainnet-starter
 
 cd scaffold-eth
+
+git checkout mainnet-starter
 ```
 
 ```bash
