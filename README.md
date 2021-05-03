@@ -1,6 +1,6 @@
 # 🏗 scaffold-eth
 
-> is everything you need to get started building decentralized applications powered by Ethereum
+> is everything you need to get started building decentralized applications on Ethereum! 🚀 
 
 ---
 
