@@ -2,9 +2,6 @@
 
 > is everything you need to get started building decentralized applications on Ethereum! 🚀 
 
-![tinyscaffold](https://user-images.githubusercontent.com/2653167/116893177-e905c380-abed-11eb-9839-58359af426c9.png)
-
-
 ---
 
 
