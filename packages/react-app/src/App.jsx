@@ -85,36 +85,36 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice)
+  //const tx = Transactor(userProvider, gasPrice)
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice)
+  //const faucetTx = Transactor(localProvider, gasPrice)
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  //const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  //const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
+  //const readContracts = useContractLoader(localProvider)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider)
+  //const writeContracts = useContractLoader(userProvider)
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
 
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
+  //const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  //const purpose = useContractReader(readContracts,"YourContract", "purpose")
 
   //📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  //const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -125,19 +125,19 @@ function App(props) {
   // ☝️ These effects will log your major set up and upcoming transferEvents- and balance changes
   //
   useEffect(()=>{
-    if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts && mainnetDAIContract){
+    if(DEBUG && mainnetProvider && address && selectedChainId){
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________")
       console.log("🌎 mainnetProvider",mainnetProvider)
       console.log("🏠 localChainId",localChainId)
       console.log("👩‍💼 selected address:",address)
       console.log("🕵🏻‍♂️ selectedChainId:",selectedChainId)
-      console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+      /*console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
       console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
       console.log("📝 readContracts",readContracts)
       console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
-      console.log("🔐 writeContracts",writeContracts)
+      console.log("🔐 writeContracts",writeContracts)*/
     }
-  }, [mainnetProvider, address, selectedChainId, yourLocalBalance, yourMainnetBalance, readContracts, writeContracts, mainnetDAIContract])
+  }, [mainnetProvider, address, selectedChainId])
 
 
   const [oldMainnetBalance, setOldMainnetDAIBalance] = useState(0)
@@ -150,7 +150,7 @@ function App(props) {
   // const [oldBalance, setOldBalance] = useState(0)
 
   // Use this effect for often changing things like your balance and transfer events or contract-specific effects
-  useEffect(()=>{
+  /*useEffect(()=>{
     if(DEBUG){
       if(myMainnetDAIBalance && !myMainnetDAIBalance.eq(oldMainnetBalance)){
         console.log("🥇 myMainnetDAIBalance:",myMainnetDAIBalance)
@@ -173,7 +173,7 @@ function App(props) {
         setOldPurposeEvents(setPurposeEvents)
       }
     }
-  }, [myMainnetDAIBalance]) // For Buyer-Lazy-Mint Branch: balance, transferEvents
+  }, [myMainnetDAIBalance]) // For Buyer-Lazy-Mint Branch: balance, transferEvents*/
 
 
   let networkDisplay = ""
@@ -217,8 +217,8 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = ""
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name == "localhost"
-
+  const faucetAvailable = false && localProvider && localProvider.connection && targetNetwork.name == "localhost"
+/*
   const [ faucetClicked, setFaucetClicked ] = useState( false );
   if(!faucetClicked&&localProvider&&localProvider._network&&localProvider._network.chainId==31337&&yourLocalBalance&&formatEther(yourLocalBalance)<=0){
     faucetHint = (
@@ -234,7 +234,187 @@ function App(props) {
         </Button>
       </div>
     )
-  }
+  }*/
+
+
+  const builds = [
+    {
+      name: "🎟 Simple NFT Example",
+      desc: "Mint and display NFTs on Ethereum with a full example app...",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example",
+      readMore: "",
+      image: "simplenft.png"
+    },
+    {
+      name: "🧑‍🎤 PunkWallet.io",
+      desc: "A quick web wallet for demonstrating identity of keypairs and sending around ETH.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/punk-wallet",
+      readMore: "https://punkwallet.io",
+      image: "punkwallet.png"
+    },
+    {
+      name: "🔴 Optimism Starter Pack",
+      desc: "A 🏗 scaffold-eth dev stack for 🔴 Optimism",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/local-optimism",
+      readMore: "https://azfuller20.medium.com/optimism-scaffold-eth-draft-b76d3e6849e8",
+      image: "op.png"
+    },
+    {
+      name: "⚖️ Uniswapper",
+      desc: "A component for swapping erc20s on Uniswap (plus tokenlists + local forks of mainnet!)",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/uniswapper",
+      readMore: "https://azfuller20.medium.com/swap-with-uniswap-wip-f15923349b3d",
+      image: "uniswapper.png"
+    },
+    {
+      name: "👻 Lender",
+      desc: "A component for depositing & borrowing assets on Aave",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/lender",
+      readMore: "https://azfuller20.medium.com/lend-with-aave-v2-20bacceedade",
+      image: "lender.png"
+    },
+    {
+      name: "🐸Chainlink 🎲 VRF 🎫 NFT",
+      desc: "Use VRF to get a 🎲 random \"⚔️ strength\" for each NFT as it is minted...",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/chainlink-vrf-nft",
+      readMore: "https://youtu.be/63sXEPIEh-k?t=1773",
+      image: "randomimage.png"
+    },
+    {
+      name: "👨‍👦 Minimal Proxy",
+      desc: "A clever workaround where you can deploy the same contract thousands of times with minimal deployment costs",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/minimal_proxy",
+      readMore: "",
+      image: "proxy.png"
+    },
+    {
+      name: "🍯 Honeypot",
+      desc: "How you can catch hackers by putting bait into your \"vulnerable\" smart contract 🤭",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/honeypot-example",
+      readMore: "",
+      image: "honeypot.png"
+    },
+    {
+      name: "😈 Denial of Service",
+      desc: "Make contract unusable by exploiting push external calls 😈 (DOS)",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/denial-of-service-example",
+      readMore: "",
+      image: "dos.png"
+    },
+    {
+      name: "⚡️ Aave Flash Loans Intro",
+      desc: "Learn how to borrow any available amount of assets without putting up any collateral and build a simple arbitrage bot that would trade between Uniswap and Sushiswap pools.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/flash-loans-intro",
+      readMore: "",
+      image: "flash.png"
+    },
+    {
+      name: "🧾 rTokens",
+      desc: "tokens that represent redirected yield from lending",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/defi-rtokens",
+      readMore: "",
+      image: "rtokens"
+    },
+    {
+      name: "🌱 radwallet.io",
+      desc: "A simple web wallet to send around Rad tokens (ERC20 on mainnet).",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/radwallet",
+      readMore: "https://radwallet.io",
+      image: ""
+    },
+    {
+      name: "🎨 Nifty.ink",
+      desc: "NFT artwork platform powered by meta transactions, burner wallets, sidechains, and bridged to Ethereum.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev",
+      readMore: "https://nifty.ink",
+      image: "niftyink.png"
+    },
+    {
+      name: "🌐 GTGS Voice Gems",
+      desc: "NFT \"shards\" collected from original \"Voice Gems\" for the Global Technology and Governance Summit.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/gtgs-voice-gems",
+      readMore: "https://gtgs.io",
+      image: "gtgs.png"
+    },
+    {
+      name: "🐊 Token Allocator",
+      desc: "Allocator.sol distributes tokens to addresses on a ratio defined by Governor.sol",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/new-allocator",
+      readMore: "",
+      image: "allocator.png"
+    },
+    {
+      name: "💎 Diamond Standard exploration",
+      desc: "Diamond standard in 🏗 scaffold-eth?",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/diamond-standard",
+      readMore: "",
+      image: "diamond.png"
+    },
+    {
+      name: "⏳ Streaming Meta Multi Sig",
+      desc: "An off-chain signature based multi sig with streaming.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig",
+      readMore: "https://bank.buidlguidl.com/streams",
+      image: "smms.png"
+    },
+    {
+      name: "🔮 Chainlink Example",
+      desc: "oracles and vrf",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/chainlink-tutorial-1",
+      readMore: "",
+      image: "vrf.png"
+    },
+    {
+      name: "👻 Aave 🦍 Ape",
+      desc: "A helper contract that lets you go long on the Aave asset of your choice.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/aave-ape",
+      readMore: "https://www.youtube.com/watch?v=4uAzju3efqY",
+      image: "ape.png"
+    },
+    {
+      name: "🔴 Optimism 🎟 NFTs ",
+      desc: "A \"buyer mints\" NFT gallery running on Optimism",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/optimistic-nft-dev-session",
+      readMore: "",
+      image: "opnfts.png"
+    },
+    {
+      name: "🎫 Nifty Viewer",
+      desc: "A forkable nft gallery with transfer functionality and burner wallets.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-viewer",
+      readMore: "",
+      image: "niftyview.png"
+    },
+    {
+      name: "🏷 NFT Auction",
+      desc: "Discover how you can build your own NFT auction where the highest bid gets an NFT!",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-viewer",
+      readMore: "",
+      image: "highestbid.png"
+    },
+    {
+      name: "🌲 Merkle Mint NFTs",
+      desc: "Use a Merkle tree of possible artworks and then submit a proof it is valid to mint.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/merkle-root-buyer-mints",
+      readMore: "",
+      image: ""
+    }
+    /*{
+      name: "⏳ Simple Stream",
+      desc: "A simple ETH stream where the beneficiary reports work via links when they withdraw.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/simple-stream",
+      readMore: "",
+      image: ""
+    },
+    {
+      name: "",
+      desc: "",
+      branch: "",
+      readMore: "",
+      image: ""
+    }*/
+  ]
+
 
   return (
     <div className="App">
@@ -246,19 +426,10 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/builds">🛠 Builds</Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link onClick={()=>{setRoute("/mainnetdai")}} to="/mainnetdai">Mainnet DAI</Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+          <Menu.Item key="/builders">
+            <Link onClick={()=>{setRoute("/builders")}} to="/builders">👩‍🏭 Builders</Link>
           </Menu.Item>
         </Menu>
 
@@ -268,7 +439,7 @@ function App(props) {
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
-            */}
+
 
             <Contract
               name="YourContract"
@@ -276,7 +447,13 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-            />
+            />*/}
+
+            quick intro and goal / north star
+
+
+            filterable list of builds?
+
 
 
             { /* uncomment for a second contract:
@@ -300,46 +477,8 @@ function App(props) {
             />
             */ }
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={"https://etherscan.io/"}
-            />
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-            />
+          <Route path="/builders">
+            builders
           </Route>
         </Switch>
       </BrowserRouter>
@@ -433,14 +572,14 @@ const logoutOfWeb3Modal = async () => {
 };
 
  window.ethereum && window.ethereum.on('chainChanged', chainId => {
-  web3Modal.cachedProvider && 
+  web3Modal.cachedProvider &&
   setTimeout(() => {
     window.location.reload();
   }, 1);
 })
 
  window.ethereum && window.ethereum.on('accountsChanged', accounts => {
-  web3Modal.cachedProvider && 
+  web3Modal.cachedProvider &&
   setTimeout(() => {
     window.location.reload();
   }, 1);
