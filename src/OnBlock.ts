@@ -1,12 +1,12 @@
 import { useEffect, useRef } from "react";
-import { Web3Provider } from "@ethersproject/providers";
+import { Provider } from "@ethersproject/providers";
 
 
 // helper hook to call a function regularly in time intervals
 let DEBUG = false
 
 export default function useOnBlock(
-  provider: Web3Provider,
+  provider: Provider,
   fn: (...args: any[]) => void,
   args?: any
 ): void {
