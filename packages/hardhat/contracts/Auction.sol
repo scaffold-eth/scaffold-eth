@@ -102,8 +102,8 @@ contract Auction is IERC721Receiver, ECRecovery {
     */
     function executeSale(address _nft, uint256 _tokenId, SignedBid calldata signedBid) external {
         require(signedBid.bid.bidder != address(0));
-        require(signedBid.bid.amount > 0);
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
+        require(signedBid.bid.amount >= auction.price);
         require(auction.duration <= block.timestamp, "Deadline did not pass yet");
         require(auction.seller == msg.sender);
         require(auction.isActive);
