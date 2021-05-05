@@ -64,6 +64,10 @@ contract Auction is IERC721Receiver, ECRecovery {
     mapping(address => mapping(uint256 => tokenDetails)) public tokenToAuction;
     // users who want to buy art work first stake eth before bidding
     mapping(address => uint256) public stakeInfo;
+
+    function getStakeInfo(address addr) public view returns (uint256) {
+        return stakeInfo[addr];
+    }
     
     /**
        Seller puts the item on auction

@@ -4,7 +4,21 @@ import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import {  LinkOutlined } from "@ant-design/icons"
 import "./App.css";
-import {Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Modal, InputNumber, Tooltip} from "antd";
+import {
+  Row,
+  Col,
+  Button,
+  Menu,
+  Alert,
+  Input,
+  List,
+  Card,
+  Switch as SwitchD,
+  Modal,
+  InputNumber,
+  Tooltip,
+  notification
+} from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -13,7 +27,8 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, AddressInput, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { utils, constants } from "ethers";
+import { utils, BigNumber, constants } from "ethers";
+import { getSignature } from './helpers';
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
@@ -172,6 +187,8 @@ function App(props) {
   const balance = useContractReader(readContracts,"YourCollectible", "balanceOf", [ address ])
   if (DEBUG) console.log("🤗 balance:",balance)
 
+  const stakedEth = useContractReader(readContracts, "Auction", "getStakeInfo", [address])
+
   //📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   if (DEBUG) console.log("📟 Transfer events:",transferEvents)
@@ -253,6 +270,8 @@ function App(props) {
     setInjectedProvider(new Web3Provider(provider));
   }, [setInjectedProvider]);
 
+  const [stakeAmount, setStakeAmount] = useState(0);
+
   useEffect(() => {
     if (web3Modal.cachedProvider) {
       loadWeb3Modal();
@@ -304,15 +323,20 @@ function App(props) {
         const forSale = await readContracts.YourCollectible.forSale(utils.id(a))
         let owner
         let auctionInfo
+        let bidsInfo = {}
         if(!forSale){
           const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a))
           owner = await readContracts.YourCollectible.ownerOf(tokenId)
           const nftAddress = readContracts.YourCollectible.address;
           auctionInfo = await readContracts.Auction.getTokenAuctionDetails(nftAddress, tokenId);
+          try {
+            bidsInfo = await fetch(`http://localhost:8001/${a}`).then(data => data.json());
+          } catch {
+            bidsInfo = {}
+          }
         }
 
-
-        assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner, auctionInfo})
+        assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner, auctionInfo, bidsInfo})
       }catch(e){console.log(e)}
     }
     setLoadedAssets(assetUpdate)
@@ -328,22 +352,57 @@ function App(props) {
     }
   }
 
-  const placeBid = async (tokenUri, ethAmount) => {
+  const placeBid = async (loadedAsset, ethAmount) => {
+    const tokenUri = loadedAsset.id;
     const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
     const nftAddress = readContracts.YourCollectible.address;
-    await tx( writeContracts.Auction.bid(nftAddress, tokenId, {
-      value: parseEther(ethAmount.toString())
-    }));
+    const parsedAmount = parseEther(ethAmount.toString());
+    const minPrice = loadedAsset.auctionInfo.price
+    if (parsedAmount.gt(stakedEth) || parsedAmount.lt(minPrice)) {
+      return notification.error({
+        message: "Invalid amount for bid",
+        description: "This bid is not allowed. It is either less than minimum price or you do not have enough staked ETH.",
+      });
+    }
+    const signature = await getSignature(userProvider, address, ['uint256', 'address', 'address', 'uint256'], [tokenId, nftAddress, address, parsedAmount]);
+    await fetch('http://localhost:8001/', {
+      method: 'POST',
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        address: tokenUri,
+        hash: signature,
+        id: tokenId.toString(),
+        nft: nftAddress,
+        bidder: address,
+        amount: parsedAmount.toString()
+      })
+    });
     updateYourCollectibles();
   }
 
-  const completeAuction = (tokenUri) => {
-    return async () => {
-      const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
-      const nftAddress = readContracts.YourCollectible.address;
-      await tx(writeContracts.Auction.executeSale(nftAddress, tokenId));
-      updateYourCollectibles();
+  const completeAuction = async (loadedAsset, bidInfo) => {
+    console.log('WINNER:', loadedAsset, bidInfo);
+    const nftAddress = readContracts.YourCollectible.address;
+    const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(loadedAsset.id));
+
+    const signedBid = {
+      id: tokenId,
+      nft: nftAddress,
+      bidder: bidInfo.bidder,
+      amount: BigNumber.from(bidInfo.amount)
     }
+
+    await tx(writeContracts.Auction.executeSale(nftAddress, tokenId, { bid: signedBid, sig: bidInfo.hash }));
+
+    // return async () => {
+    //   const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
+    //   const nftAddress = readContracts.YourCollectible.address;
+    //   await tx(writeContracts.Auction.executeSale(nftAddress, tokenId));
+    //   updateYourCollectibles();
+    // }
   }
 
   const cancelAuction = (tokenUri) => {
@@ -377,6 +436,7 @@ function App(props) {
       const { auctionInfo } = loadedAssets[a];
       const deadline = new Date(auctionInfo.duration * 1000);
       const isEnded = deadline <= new Date();
+      const { bidsInfo } = loadedAssets[a];
 
       cardActions.push(
         <div>
@@ -389,23 +449,22 @@ function App(props) {
           />
           </div>
           {!loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].owner && <><Button style={{ marginBottom: "10px" }} onClick={startAuction(loadedAssets[a].id)} disabled={address !== loadedAssets[a].owner}>Start auction</Button><br/></>}
-          {loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={completeAuction(loadedAssets[a].id)}>Complete auction</Button><br/></>}
+          {/*{loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={completeAuction(loadedAssets[a].id)}>Complete auction</Button><br/></>}*/}
           {loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={cancelAuction(loadedAssets[a].id)}>Cancel auction</Button><br/></>}
         </div>
       )
 
       auctionDetails.push(auctionInfo.isActive ? (
           <div style={{ marginTop: "20px" }}>
-            <p style={{ fontWeight: "bold" }}>Auction is in progress</p>
             <p style={{ margin: 0, marginBottom: "2px"}}>Minimal price is {utils.formatEther(auctionInfo.price)} ETH</p>
             <p style={{ marginTop: 0 }}>{!isEnded ? `Auction ends at ${format(deadline, "MMMM dd, hh:mm:ss")}` : 'Auction has already ended'}</p>
             <div>
-              {auctionInfo.maxBidUser === constants.AddressZero ? "Highest bid was not made yet" : <div>Highest bid by: <Address
-                  address={auctionInfo.maxBidUser}
-                  ensProvider={mainnetProvider}
-                  blockExplorer={blockExplorer}
-                  minimized={true}
-              /><p>{utils.formatEther(auctionInfo.maxBid)} ETH</p></div>}
+              {/*{auctionInfo.maxBidUser === constants.AddressZero ? "Highest bid was not made yet" : <div>Highest bid by: <Address*/}
+              {/*    address={auctionInfo.maxBidUser}*/}
+              {/*    ensProvider={mainnetProvider}*/}
+              {/*    blockExplorer={blockExplorer}*/}
+              {/*    minimized={true}*/}
+              {/*/><p>{utils.formatEther(auctionInfo.maxBid)} ETH</p></div>}*/}
             </div>
 
             <div>
@@ -413,8 +472,26 @@ function App(props) {
               <p style={{margin:0, marginRight: "15px"}}>Your bid in ETH: </p>
               <InputNumber placeholder="0.1" value={yourBid[loadedAssets[a].id]} onChange={newBid => setYourBid({...yourBid, [loadedAssets[a].id]: newBid})} style={{ flexGrow: 1 }}/>
             </div>
-              <Button style={{marginTop: "7px"}} onClick={() => placeBid(loadedAssets[a].id, yourBid[loadedAssets[a].id])} disabled={!yourBid[loadedAssets[a].id] || isEnded}>Place a bid</Button>
+              <Button style={{marginTop: "7px", marginBottom: "20px"}} onClick={() => placeBid(loadedAssets[a], yourBid[loadedAssets[a].id])} disabled={!yourBid[loadedAssets[a].id] || isEnded}>Place a bid</Button>
             </div>
+
+            {loadedAssets[a].auctionInfo.isActive && (
+                <div>
+                  {Object.entries(bidsInfo).map(([_, bidInfo]) => (
+                      <div style={{ marginBottom: "20px"}}>
+                      Bid by: <Address
+                    address={bidInfo.bidder}
+                    ensProvider={mainnetProvider}
+                    blockExplorer={blockExplorer}
+                    minimized={true}
+                    />
+                      <p style={{ margin: 0 }}>{formatEther(bidInfo.amount)} ETH</p>
+                        {address === loadedAssets[a].auctionInfo.seller && <Button disabled={!isEnded} onClick={() => completeAuction(loadedAssets[a], bidInfo)}>Pick as a winner</Button>}
+                      </div>
+                  ))}
+                </div>
+            )}
+
 
           </div>
       ) : null);
@@ -462,6 +539,16 @@ function App(props) {
   const handleCancel = () => {
     setModalVisible(false);
   }
+
+  const checkSigning = async () => {
+    const signature = await getSignature(userProvider, address, ['bytes'], ['0x21']);
+    console.log('MY SIGNATURE: ', { signature });
+  }
+
+  const stakeEth = async () => {
+    await tx(writeContracts.Auction.stake({ value: parseEther(stakeAmount.toString())}));
+  }
+
 
   return (
     <div className="App">
@@ -514,7 +601,14 @@ function App(props) {
             */}
 
             <div style={{ maxWidth:1024, margin: "auto", marginTop:32, paddingBottom:56 }}>
+              <p>Staked ETH: {stakedEth ? formatEther(stakedEth) : 0.0}</p>
+
+              <p style={{margin:0, marginRight: "15px"}}>How much ETH you want to stake: </p>
+              <InputNumber placeholder="0.1" value={stakeAmount} onChange={newPrice => setStakeAmount(newPrice)} style={{ flexGrow: 1, marginTop: "7px", marginBottom: "20px", marginRight: "15px" }}/>
+              <Button disabled={stakeAmount === 0.0} onClick={stakeEth} style={{marginBottom: "25px"}}>Stake ETH</Button>
+              <br/>
               <Button disabled={galleryList.length === 0} onClick={updateYourCollectibles} style={{marginBottom: "25px"}}>Update collectibles</Button>
+
 
               <StackGrid
                 columnWidth={300}

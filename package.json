@@ -49,7 +49,8 @@
     "upload": "yarn workspace @scaffold-eth/hardhat upload",
     "mint": "yarn workspace @scaffold-eth/hardhat mint",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
+    "backend": "yarn workspace @scaffold-eth/backend dev"
   },
   "workspaces": {
     "packages": [
