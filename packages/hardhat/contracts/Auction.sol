@@ -104,7 +104,7 @@ contract Auction is IERC721Receiver, ECRecovery {
     /**
        Called by the seller when the auction duration, since all bids are made offchain so the seller needs to pick the highest bid infoirmation and pass it on-chain ito this function
     */
-    function executeSale(address _nft, uint256 _tokenId, SignedBid calldata signedBid, SignedBid[] calldata nonWinningBids) external {
+    function executeSale(address _nft, uint256 _tokenId, SignedBid calldata signedBid) external {
         require(signedBid.bid.bidder != address(0));
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
         require(signedBid.bid.amount >= auction.price);
@@ -120,13 +120,15 @@ contract Auction is IERC721Receiver, ECRecovery {
             );
         (bool success, ) = auction.seller.call{value: signedBid.bid.amount}("");
         require(success);
-        for (uint256 i = 0; i < nonWinningBids.length; i++) {
-        require(stakeInfo[nonWinningBids[i].bid.bidder] > 0);
-        uint amount = stakeInfo[nonWinningBids[i].bid.bidder];
-        delete stakeInfo[nonWinningBids[i].bid.bidder];
-        (success, ) = nonWinningBids[i].bid.bidder.call{value: amount}("");        
+    }
+
+    function withdrawStake() external {
+        require(msg.sender != address(0));
+        require(stakeInfo[msg.sender] > 0); 
+        uint amount = stakeInfo[msg.sender];
+        delete stakeInfo[msg.sender];
+        (bool success, ) = msg.sender.call{value: amount}("");
         require(success);
-        }
     }
 
     // /**
