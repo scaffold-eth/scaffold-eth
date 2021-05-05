@@ -62,6 +62,12 @@ yarn deploy
 
 ---
 
+
+![image](https://user-images.githubusercontent.com/2653167/117220266-1ad08300-adc4-11eb-9f14-cd794b018299.png)
+
+
+---
+
 > Set the stream **to Address** in `deploy.js` to your address in the frontend:
 
 ![image](https://user-images.githubusercontent.com/2653167/117186936-9c122080-ad98-11eb-9fd6-5e951c3c39d9.png)
