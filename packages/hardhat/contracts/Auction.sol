@@ -2,6 +2,8 @@ pragma solidity 0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "hardhat/console.sol";
+
 
 contract ECRecovery {
 
@@ -49,17 +51,17 @@ contract Auction is IERC721Receiver, ECRecovery {
         bool isActive;
     }
 
-    struct Bid { 
-        uint256 id;
-        address nft;
-        address bidder;
-        uint256 amount;
-    }
-
-    struct SignedBid {
-        Bid bid;
-        bytes sig;
-    }
+//    struct Bid {
+//        uint256 id;
+//        address nft;
+//        address bidder;
+//        uint256 amount;
+//    }
+//
+//    struct SignedBid {
+//        Bid bid;
+//        bytes sig;
+//    }
 
     mapping(address => mapping(uint256 => tokenDetails)) public tokenToAuction;
     // users who want to buy art work first stake eth before bidding
@@ -104,21 +106,24 @@ contract Auction is IERC721Receiver, ECRecovery {
     /**
        Called by the seller when the auction duration, since all bids are made offchain so the seller needs to pick the highest bid infoirmation and pass it on-chain ito this function
     */
-    function executeSale(address _nft, uint256 _tokenId, SignedBid calldata signedBid) external {
-        require(signedBid.bid.bidder != address(0));
+    function executeSale(address _nft, uint256 _tokenId, address bidder, uint256 amount, bytes memory sig) external {
+        require(bidder != address(0));
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
-        require(signedBid.bid.amount >= auction.price);
+        require(amount >= auction.price);
         require(auction.duration <= block.timestamp, "Deadline did not pass yet");
         require(auction.seller == msg.sender);
         require(auction.isActive);
         auction.isActive = false;
-        verifyBidSignature(_tokenId, _nft, signedBid.bid.bidder, signedBid.bid.amount, signedBid.sig);
+
+        console.log(bidder);
+        console.log(amount);
+        verifyBidSignature(_tokenId, _nft, bidder, amount, sig);
         ERC721(_nft).safeTransferFrom(
                 address(this),
-                signedBid.bid.bidder,
+                bidder,
                 _tokenId
             );
-        (bool success, ) = auction.seller.call{value: signedBid.bid.amount}("");
+        (bool success, ) = auction.seller.call{value: amount}("");
         require(success);
     }
 

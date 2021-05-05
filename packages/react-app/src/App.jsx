@@ -395,7 +395,11 @@ function App(props) {
       amount: BigNumber.from(bidInfo.amount)
     }
 
-    await tx(writeContracts.Auction.executeSale(nftAddress, tokenId, { bid: signedBid, sig: bidInfo.hash }));
+    console.log('signedBid', { signedBid });
+    console.log('signature', bidInfo.hash);
+
+    await tx(writeContracts.Auction.executeSale(nftAddress, tokenId, bidInfo.bidder, BigNumber.from(bidInfo.amount), bidInfo.hash));
+    updateYourCollectibles();
 
     // return async () => {
     //   const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
