@@ -18,9 +18,9 @@ import { useLookupAddress } from "eth-hooks";
 
   ~ How can I use? ~
 
-  <Faucet 
+  <Faucet
     price={price}
-    localProvider={localProvider}  
+    localProvider={localProvider}
     ensProvider={mainnetProvider}
     placeholder={"Send local faucet"}
   />

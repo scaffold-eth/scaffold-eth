@@ -1,40 +1,120 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import React, { useState, useEffect } from "react";
-import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
+import { message, Row, Col, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
-import { EtherInput, Address, Balance } from "../components";
+import { QRBlockie, EtherInput, Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
+import pretty from 'pretty-time';
 
-export default function ExampleUI({depositEvents, withdrawEvents, streamBalance, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({streamfrequency, totalStreamBalance, streamCap, depositEvents, withdrawEvents, streamBalance, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [amount, setAmount] = useState();
+
+  const [reason, setReason] = useState();
+
+  console.log("streamCap",streamCap)
+  console.log("streamBalance",streamBalance)
+  const percent = streamCap && streamBalance && (streamBalance.mul(100).div(streamCap)).toNumber()
+
+  console.log("percent",percent )
+
+  let streamNetPercentSeconds = totalStreamBalance && streamCap&& totalStreamBalance.mul(100).div(streamCap)
+
+  console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds&&streamNetPercentSeconds.toNumber())
+
+  const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
+
+  const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
+  console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
+
+  const remainder = streamNetPercent && streamNetPercent.mod(1);
+  console.log("remainder",remainder,remainder&&remainder.toNumber())
+
+  const totalUnclaimable = totalStreamBalance && streamBalance && totalStreamBalance.sub(streamBalance)
+
+  //const unclaimedPercent = totalStreamBalance && totalUnclaimable && totalUnclaimable.mul(100).div(totalStreamBalance)
+  //console.log("unclaimedPercent",unclaimedPercent,unclaimedPercent&&unclaimedPercent.toNumber())
+
+  const WIDTH = "calc(min(77vw,520px))"
+
+  let totalProgress = []
+
+  const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
+
+  for(let c=0;c<numberOfTimesFull;c++){
+    totalProgress.push(
+      <Progress percent={100} showInfo={false} style={{width:widthOfStacks,padding:4}}/>
+    )
+  }
+  if(streamNetPercent && streamNetPercent.toNumber()>0){
+    totalProgress.push(
+      <Progress percent={streamNetPercent&&streamNetPercent.toNumber()} showInfo={false} status="active" style={{width:widthOfStacks,padding:4}}/>
+    )
+  }
+
 
   return (
     <div>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
-      <div style={{border:"1px solid #cccccc", padding:16, width:400, margin:"auto",marginTop:64}}>
+      <div style={{padding:16, width:WIDTH, margin:"auto"}}>
 
-        <h4>stream balance: {streamBalance && formatEther(streamBalance)}</h4>
+
+        <QRBlockie scale={0.6} withQr={true} address={readContracts && readContracts.SimpleStream.address} />
+        <div style={{marginTop:-64}}>
+          <Address value={readContracts && readContracts.SimpleStream.address} justAddress={true} />
+        </div>
+
+        <div style={{padding:32}}>
+          <div style={{padding:32}}>
+            <Balance address={readContracts && readContracts.SimpleStream.address} provider={localProvider} price={price}/>
+            <span style={{opacity:0.5}}> @ <Balance value={streamCap} price={price}/> / {streamfrequency&&pretty(streamfrequency.toNumber()*1000000000)}</span>
+          </div>
+          <div>
+            {totalProgress} ({streamNetPercentSeconds&&pretty(streamNetPercentSeconds.toNumber()*1000000000)})
+          </div>
+        </div>
+      </div>
+
+      <div style={{border:"1px solid #cccccc", padding:16, width:WIDTH, margin:"auto",marginTop:64}}>
+
+        {/*<h4>stream balance: {streamBalance && formatEther(streamBalance)}</h4>*/}
+
+        <Progress strokeLinecap="square" type="dashboard" percent={percent} format={()=>{
+          return <Balance price={price} value={streamBalance} size={18}/>
+        }} />
 
         <Divider/>
 
         <div style={{margin:8}}>
-        <EtherInput
-          autofocus
-          price={price}
-          value={amount}
-          placeholder="Enter amount"
-          onChange={value => {
-            setAmount(value);
-          }}
-        />
-          <Button onClick={()=>{
-            //console.log("newPurpose",newPurpose)
-            /* look how you call setPurpose on your contract: */
-            tx( writeContracts.SimpleStream.streamWithdraw(parseEther(""+amount),"no reason yet") )
+          <Input
+            style={{marginBottom:8}}
+            value={reason}
+            placeholder={"reason / work / link"}
+            onChange={e => {
+              setReason(e.target.value);
+            }}
+          />
+          <EtherInput
+            mode={"USD"}
+            autofocus
+            price={price}
+            value={amount}
+            placeholder="Withdraw amount"
+            onChange={value => {
+              setAmount(value);
+            }}
+          />
+          <Button   style={{marginTop:8}} onClick={()=>{
+            if(!reason || reason.length<6){
+              message.error("Please provide a longer reason / work / length");
+            }else{
+              tx( writeContracts.SimpleStream.streamWithdraw(parseEther(""+amount),reason) )
+              setReason();
+              setAmount();
+            }
           }}>Withdraw</Button>
         </div>
 
@@ -44,42 +124,55 @@ export default function ExampleUI({depositEvents, withdrawEvents, streamBalance,
         📑 Maybe display a list of events?
           (uncomment the event and emit line in YourContract.sol! )
       */}
-      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-        <h2>withdrawEvents:</h2>
+      <div style={{ width:WIDTH, margin: "auto", marginTop:32, paddingBottom:32 }}>
+        <h2>Work log:</h2>
         <List
           bordered
           dataSource={withdrawEvents}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.to}>
-                <Address
-                    address={item.to}
-                    ensProvider={mainnetProvider}
-                    fontSize={16}
-                  /> =>
-                {item.reason}
-                {formatEther(item.amount)}
+
+                <Balance
+                  value={item.amount}
+                  price={price}
+                />
+                <span style={{fontSize:14}}>
+                  <span style={{padding:4}}>
+                    {item.reason}
+                  </span>
+                  <Address
+                      minimized={true}
+                      address={item.to}
+                  />
+                </span>
               </List.Item>
             )
           }}
         />
       </div>
 
-      <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
-        <h2>depositEvents:</h2>
+      <div style={{ width:WIDTH, margin: "auto", marginTop:32, paddingBottom:256 }}>
+        <h2>Deposit Log:</h2>
         <List
           bordered
           dataSource={depositEvents}
           renderItem={(item) => {
             return (
               <List.Item key={item.blockNumber+"_"+item.from}>
-                <Address
-                    address={item.from}
-                    ensProvider={mainnetProvider}
-                    fontSize={16}
-                  /> =>
-                {item.reason}
-                {formatEther(item.amount)}
+                <Balance
+                  value={item.amount}
+                  price={price}
+                />
+                <span style={{fontSize:14}}>
+                  <span style={{padding:4}}>
+                    {item.reason}
+                  </span>
+                  <Address
+                      minimized={true}
+                      address={item.from}
+                  />
+                </span>
               </List.Item>
             )
           }}
