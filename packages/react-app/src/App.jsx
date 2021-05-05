@@ -127,6 +127,11 @@ function App(props) {
   const streamfrequency = useContractReader(readContracts,"SimpleStream", "frequency")
   console.log("streamfrequency",streamfrequency,streamfrequency&&streamfrequency.toNumber())
 
+  const streamToAddress = useContractReader(readContracts,"SimpleStream", "toAddress")
+  console.log("streamToAddress",streamToAddress)
+
+
+
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const totalStreamBalance = useBalance(localProvider, readContracts&&readContracts.SimpleStream.address);
   console.log("totalStreamBalance",totalStreamBalance,totalStreamBalance&&formatEther(totalStreamBalance))
@@ -245,6 +250,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
             <ExampleUI
+              streamToAddress={streamToAddress}
               totalStreamBalance={totalStreamBalance}
               streamfrequency={streamfrequency}
               streamBalance={streamBalance}

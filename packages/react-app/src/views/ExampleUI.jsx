@@ -7,11 +7,13 @@ import { QRBlockie, EtherInput, Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import pretty from 'pretty-time';
 
-export default function ExampleUI({streamfrequency, totalStreamBalance, streamCap, depositEvents, withdrawEvents, streamBalance, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
+export default function ExampleUI({streamToAddress, streamfrequency, totalStreamBalance, streamCap, depositEvents, withdrawEvents, streamBalance, address, mainnetProvider, userProvider, localProvider, yourLocalBalance, price, tx, readContracts, writeContracts }) {
 
   const [amount, setAmount] = useState();
-
   const [reason, setReason] = useState();
+
+  const [ depositAmount, setDepositAmount ] = useState();
+  const [ depositReason, setDepositReason ] = useState();
 
   console.log("streamCap",streamCap)
   console.log("streamBalance",streamBalance)
@@ -53,20 +55,24 @@ export default function ExampleUI({streamfrequency, totalStreamBalance, streamCa
     )
   }
 
-
   return (
     <div>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
-      <div style={{padding:16, width:WIDTH, margin:"auto"}}>
+      <QRBlockie scale={0.6} withQr={true} address={readContracts && readContracts.SimpleStream.address} />
+      <div style={{marginTop:-64}}>
+        <Address value={readContracts && readContracts.SimpleStream.address} justAddress={true} />
+      </div>
 
-
-        <QRBlockie scale={0.6} withQr={true} address={readContracts && readContracts.SimpleStream.address} />
-        <div style={{marginTop:-64}}>
-          <Address value={readContracts && readContracts.SimpleStream.address} justAddress={true} />
+      <div style={{width:400, margin:"auto", marginTop:32}}>
+        <div style={{padding:16}}>
+          <span style={{opacity:0.5}}>streaming to:</span>
         </div>
+        <Address value={streamToAddress} ensProvider={mainnetProvider} />
+      </div>
 
+      <div style={{padding:16, width:WIDTH, margin:"auto"}}>
         <div style={{padding:32}}>
           <div style={{padding:32}}>
             <Balance address={readContracts && readContracts.SimpleStream.address} provider={localProvider} price={price}/>
@@ -152,8 +158,8 @@ export default function ExampleUI({streamfrequency, totalStreamBalance, streamCa
         />
       </div>
 
-      <div style={{ width:WIDTH, margin: "auto", marginTop:32, paddingBottom:256 }}>
-        <h2>Deposit Log:</h2>
+      <div style={{ width:WIDTH, margin: "auto", marginTop:32}}>
+        <h2>Deposits:</h2>
         <List
           bordered
           dataSource={depositEvents}
@@ -177,8 +183,38 @@ export default function ExampleUI({streamfrequency, totalStreamBalance, streamCa
             )
           }}
         />
+        <hr style={{opacity:0.3333}}/>
+        <Input
+          style={{marginBottom:8}}
+          value={depositReason}
+          placeholder={"reason / guidance / north star"}
+          onChange={e => {
+            setDepositReason(e.target.value);
+          }}
+        />
+        <EtherInput
+          mode={"USD"}
+          autofocus
+          price={price}
+          value={depositAmount}
+          placeholder="Deposit amount"
+          onChange={value => {
+            setDepositAmount(value);
+          }}
+        />
+        <Button style={{marginTop:8}} onClick={()=>{
+          tx( writeContracts.SimpleStream.streamDeposit(depositReason,{
+            value: parseEther(""+depositAmount)
+          }) )
+          setDepositReason();
+          setDepositAmount();
+        }}>Deposit</Button>
       </div>
 
+
+      <div style={{paddingBottom:256 }}>
+
+      </div>
 
     </div>
   );
