@@ -63,7 +63,7 @@ contract Auction is IERC721Receiver, SignatureChecker {
     function executeSale(address _nft, uint256 _tokenId, address bidder, uint256 amount, bytes memory sig) external {
         require(bidder != address(0));
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
-        require(amount >= stakeInfo[bidder]);
+        require(amount <= stakeInfo[bidder]);
         require(amount >= auction.price);
         require(auction.duration <= block.timestamp, "Deadline did not pass yet");
         require(auction.seller == msg.sender);
