@@ -498,13 +498,13 @@ function App(props) {
               {/*/><p>{utils.formatEther(auctionInfo.maxBid)} ETH</p></div>}*/}
             </div>
 
-            <div>
+            {auctionInfo.seller !== address ? (<div>
             <div style={{display: "flex", alignItems: "center", marginTop: "20px"}}>
               <p style={{margin:0, marginRight: "15px"}}>Your bid in ETH: </p>
               <InputNumber placeholder="0.1" value={yourBid[loadedAssets[a].id]} onChange={newBid => setYourBid({...yourBid, [loadedAssets[a].id]: newBid})} style={{ flexGrow: 1 }}/>
             </div>
               <Button style={{marginTop: "7px", marginBottom: "20px"}} onClick={() => placeBid(loadedAssets[a], yourBid[loadedAssets[a].id])} disabled={!yourBid[loadedAssets[a].id] || isEnded || isBidderIncluded(bidsInfo)}>{isBidderIncluded(bidsInfo) ? "You already made a bid" : "Place a bid"}</Button>
-            </div>
+            </div>) : <b>You are selling this item</b>}
 
             {loadedAssets[a].auctionInfo.isActive && (
                 <div>
