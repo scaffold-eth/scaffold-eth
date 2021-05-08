@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
-import { connect } from 'react-redux'
 import $ from 'jquery'
-import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
+import { connectController } from './controller'
 
 const styles = {
   toolbelt: {
@@ -190,6 +189,4 @@ const Toolbelt = ({ visible, actions }) => {
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Toolbelt)
-
-export { reducer }
+export default connectController(Toolbelt)

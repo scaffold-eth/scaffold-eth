@@ -1,30 +1,27 @@
 import dotProp from 'dot-prop-immutable'
+import { actionCreators as terminalActionCreators } from '../../Terminal/controller'
 
-const stateContainerId = 'dish'
+const stateContainerId = 'wallet'
 
 export const TOGGLE_VISIBLITY = `${stateContainerId}/TOGGLE_VISIBLITY`
-export const TOGGLE_CONNECTING = `${stateContainerId}/TOGGLE_CONNECTING`
 
 const initialState = {
-  visible: false,
-  connecting: false
+  visible: false
 }
 
 const mapStateToProps = state => {
-  const { dish } = state
+  const { wallet, terminal } = state
   return {
-    ...dish
+    ...wallet,
+    terminal
   }
 }
 
 const reducer = (state = initialState, action) => {
   if (action.type.includes(stateContainerId)) {
-    const { payload } = action
     switch (action.type) {
       case TOGGLE_VISIBLITY:
         return dotProp.set(state, 'visible', !state.visible)
-      case TOGGLE_CONNECTING:
-        return dotProp.set(state, 'connecting', !state.connecting)
       default:
         return state
     }
@@ -35,18 +32,12 @@ const reducer = (state = initialState, action) => {
 const actionCreators = {
   toggleVisibility: () => ({
     type: TOGGLE_VISIBLITY
-  }),
-  toggleConnecting: () => ({
-    type: TOGGLE_CONNECTING
   })
 }
 
 const dispatchers = {
   toggleVisibility: () => {
     return actionCreators.toggleVisibility()
-  },
-  toggleConnecting: () => {
-    return actionCreators.toggleConnecting()
   }
 }
 
@@ -55,16 +46,10 @@ const mapDispatchToProps = dispatch => ({
     toggleVisibility() {
       dispatch(actionCreators.toggleVisibility())
     },
-    toggleConnecting() {
-      dispatch(actionCreators.toggleConnecting())
+    setCurrentDialog(payload) {
+      dispatch(terminalActionCreators.setCurrentDialog(payload))
     }
   }
 })
 
-export {
-  reducer,
-  mapStateToProps,
-  actionCreators,
-  dispatchers,
-  mapDispatchToProps
-}
+export { reducer, mapStateToProps, actionCreators, dispatchers, mapDispatchToProps }

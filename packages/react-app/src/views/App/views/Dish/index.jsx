@@ -1,10 +1,8 @@
 import React, { useEffect } from 'react'
 import { connect } from 'react-redux'
-import { Button } from 'antd'
-import $ from 'jquery'
 import Typist from 'react-typist'
 import Typewriter from 'typewriter-effect/dist/core'
-import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
+import { mapStateToProps, mapDispatchToProps } from './controller'
 import './styles.css'
 
 const styles = {
@@ -67,5 +65,3 @@ const Dish = ({ connecting, visible, actions }) => {
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(Dish)
-
-export { reducer }

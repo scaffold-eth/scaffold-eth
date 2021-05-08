@@ -38,7 +38,7 @@ import {
   Balance,
   FaucetHint
 } from './views'
-import { mapStateToProps, mapDispatchToProps, reducer } from './controller'
+import { connectController } from './controller'
 import './styles.css'
 
 /*
@@ -264,6 +264,4 @@ const Wallet = ({
   )
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(Wallet)
-
-export { reducer }
+export default connectController(Wallet)

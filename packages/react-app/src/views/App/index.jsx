@@ -4,12 +4,10 @@ import { Provider as ReduxProvider } from 'react-redux'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import 'antd/dist/antd.css'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
-import { Row, Col } from 'antd'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
 import { formatEther } from '@ethersproject/units'
-import { useThemeSwitcher } from 'react-css-theme-switcher'
 import {
   usePoller,
   useExchangePrice,
@@ -34,14 +32,7 @@ import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
 import { Transactor, checkBalancesAndSwitchNetwork } from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
-import {
-  Background,
-  Terminal,
-  Wallet as WalletView,
-  Toolbelt,
-  Dish,
-  DialogContainer
-} from './views'
+import { LevelContainer, Background, Terminal, Wallet as WalletView, Toolbelt, Dish } from './views'
 import './index.css'
 
 const { ethers } = require('ethers')
@@ -167,91 +158,86 @@ const App = props => {
 
   return (
     <ReduxProvider store={store} key='reduxProvider'>
-      <div className='App'>
-        <Background />
+      <div id='app'>
+        <LevelContainer>
+          <Background />
 
-        <DialogContainer
-          localProvider={localProvider}
-          userProvider={userProvider}
-          transactor={tx}
-          address={address}
-        />
+          <Terminal />
 
-        {/* <Terminal /> */}
+          <WalletView
+            web3Modal={web3Modal}
+            address={address}
+            localProvider={localProvider}
+            userProvider={userProvider}
+            ensProvider={mainnetProvider}
+            price={price}
+            loadWeb3Modal={loadWeb3Modal}
+            logoutOfWeb3Modal={logoutOfWeb3Modal}
+          />
 
-        <WalletView
-          web3Modal={web3Modal}
-          address={address}
-          localProvider={localProvider}
-          userProvider={userProvider}
-          ensProvider={mainnetProvider}
-          price={price}
-          loadWeb3Modal={loadWeb3Modal}
-          logoutOfWeb3Modal={logoutOfWeb3Modal}
-        />
+          {/* <Dish /> */}
 
-        {/* <Dish /> */}
+          {/* <Toolbelt /> */}
 
-        {/* <Toolbelt /> */}
+          {networkSelectWarning}
 
-        {networkSelectWarning}
+          <div className='site-page-header-ghost-wrapper'>
+            <Header extra={[<span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>]} />
+          </div>
 
-        <div className='site-page-header-ghost-wrapper'>
-          <Header extra={[<span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>]} />
-        </div>
+          {/*
+          <div
+            style={{
+              clear: 'both',
+              opacity: yourLocalBalance ? 1 : 0.2,
+              width: 500,
+              margin: 'auto'
+            }}
+          />
+          */}
 
-        {/*
-        <div
-          style={{
-            clear: 'both',
-            opacity: yourLocalBalance ? 1 : 0.2,
-            width: 500,
-            margin: 'auto'
-          }}
-        />
-        */}
+          {/*
+          <BrowserRouter>
+            <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+              <Menu.Item key="/">
+                <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+              </Menu.Item>
 
-        {/*
-        <BrowserRouter>
-          <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
-            <Menu.Item key="/">
-              <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
-            </Menu.Item>
-
-          </Menu>
-          <Switch>
-            <Route exact path="/">
-              }
-              <Contract
-                name="YourContract"
-                signer={userProvider.getSigner()}
-                provider={localProvider}
-                address={address}
-                blockExplorer={blockExplorer}
-              />
-            </Route>
-            </Route>
-            <Route path="/mainnetdai">
-              <Contract
-                name="DAI"
-                customContract={mainnetDAIContract}
-                signer={userProvider.getSigner()}
-                provider={mainnetProvider}
-                address={address}
-                blockExplorer={"https://etherscan.io/"}
-              />
-            </Route>
-            <Route path="/subgraph">
-              <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
-              />
-            </Route>
-          </Switch>
-        </BrowserRouter>
-        */}
+            </Menu>
+            <Switch>
+              <Route exact path="/">
+                }
+                <Contract
+                  name="YourContract"
+                  signer={userProvider.getSigner()}
+                  provider={localProvider}
+                  address={address}
+                  blockExplorer={blockExplorer}
+                />
+              </Route>
+              </Route>
+              <Route path="/mainnetdai">
+                <Contract
+                  name="DAI"
+                  customContract={mainnetDAIContract}
+                  signer={userProvider.getSigner()}
+                  provider={mainnetProvider}
+                  address={address}
+                  blockExplorer={"https://etherscan.io/"}
+                />
+              </Route>
+              <Route path="/subgraph">
+                <Subgraph
+                subgraphUri={props.subgraphUri}
+                tx={tx}
+                writeContracts={writeContracts}
+                mainnetProvider={mainnetProvider}
+                />
+              </Route>
+            </Switch>
+          </BrowserRouter>
+          */}
+        </LevelContainer>
       </div>
     </ReduxProvider>
   )

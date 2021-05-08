@@ -1,13 +1,9 @@
 import React from 'react'
-import CityInner from './CityInner'
-import CityOutskirts from './CityOutskirts'
+import { connectController } from './controller'
+import BACKGROUNDS_MAP from './backgroundsMap'
 
-const Background = () => {
-  return (
-    <>
-      <CityOutskirts />
-    </>
-  )
+const Background = ({ background }) => {
+  return <>{BACKGROUNDS_MAP[background].component}</>
 }
 
-export default Background
+export default connectController(Background)

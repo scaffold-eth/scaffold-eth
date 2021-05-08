@@ -29,3 +29,17 @@ yarn deploy
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 📱 Open http://localhost:3000 to see the app
+
+## Deploy to surge
+
+```bash
+yarn build
+
+yarn surge
+```
+
+## TODO's
+
+* [store redux state in browser](https://github.com/grofers/redux-cookies-middleware)
+* [add nice scrollbar for all browser](https://www.npmjs.com/package/perfect-scrollbar)
+* [maybe use this](https://github.com/nextapps-de/winbox)

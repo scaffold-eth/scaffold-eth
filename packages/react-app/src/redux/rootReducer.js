@@ -1,17 +1,25 @@
 import { combineReducers } from 'redux'
 
-import { reducer as terminal } from '../views/App/views/Terminal'
-import { reducer as wallet } from '../views/App/views/Wallet'
-import { reducer as dialogContainer } from '../views/App/views/DialogContainer'
-import { reducer as toolbelt } from '../views/App/views/Toolbelt'
-import { reducer as dish } from '../views/App/views/Dish'
+import { reducer as levelContainer } from '../views/App/views/LevelContainer/controller'
+import { reducer as background } from '../views/App/views/Background/controller'
+
+import { reducer as terminal } from '../views/App/views/Terminal/controller'
+import { reducer as wallet } from '../views/App/views/Wallet/controller'
+import { reducer as toolbelt } from '../views/App/views/Toolbelt/controller'
+import { reducer as dish } from '../views/App/views/Dish/controller'
+
+import { reducer as underflowLevel } from '../views/App/views/levels/underflow/controller'
 
 const rootReducer = combineReducers({
+  levelContainer,
+  background,
+
   terminal,
   wallet,
-  dialogContainer,
   toolbelt,
-  dish
+  dish,
+
+  underflowLevel
 })
 
 export default rootReducer
