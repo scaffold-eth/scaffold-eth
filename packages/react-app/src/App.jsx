@@ -352,6 +352,20 @@ function App(props) {
     }
   }
 
+  const clearTokenUri = async (tokenUri) => {
+    await fetch('http://localhost:8001/clearAddress', {
+      method: 'POST',
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        address: tokenUri,
+      })
+    });
+    updateYourCollectibles();
+  }
+
   const placeBid = async (loadedAsset, ethAmount) => {
     const tokenUri = loadedAsset.id;
     const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
@@ -400,6 +414,7 @@ function App(props) {
 
     await tx(writeContracts.Auction.executeSale(nftAddress, tokenId, bidInfo.bidder, BigNumber.from(bidInfo.amount), bidInfo.hash));
     updateYourCollectibles();
+    clearTokenUri(loadedAsset.id);
 
     // return async () => {
     //   const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
@@ -409,13 +424,25 @@ function App(props) {
     // }
   }
 
-  const cancelAuction = (tokenUri) => {
+  const cancelAuction = (loadedAsset) => {
+    const tokenUri = loadedAsset.id;
+    const { bidsInfo } = loadedAsset;
+
+    const bidders = Object.entries(bidsInfo).map(([_, bidInfo]) => bidInfo.bidder);
+
     return async () => {
       const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
       const nftAddress = readContracts.YourCollectible.address;
-      await tx(writeContracts.Auction.cancelAution(nftAddress, tokenId));
+      await tx(writeContracts.Auction.cancelAution(nftAddress, tokenId, bidders));
       updateYourCollectibles();
+      clearTokenUri(tokenUri);
     }
+  }
+
+  const isBidderIncluded = (bidsInfo) => {
+    const bidders = Object.entries(bidsInfo).map(([_, bidInfo]) => bidInfo.bidder);
+    console.log('all bidders', bidders);
+    return bidders.includes(address);
   }
 
   let galleryList = []
@@ -454,7 +481,7 @@ function App(props) {
           </div>
           {!loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].owner && <><Button style={{ marginBottom: "10px" }} onClick={startAuction(loadedAssets[a].id)} disabled={address !== loadedAssets[a].owner}>Start auction</Button><br/></>}
           {/*{loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={completeAuction(loadedAssets[a].id)}>Complete auction</Button><br/></>}*/}
-          {loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={cancelAuction(loadedAssets[a].id)}>Cancel auction</Button><br/></>}
+          {loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={cancelAuction(loadedAssets[a])}>Cancel auction</Button><br/></>}
         </div>
       )
 
@@ -476,7 +503,7 @@ function App(props) {
               <p style={{margin:0, marginRight: "15px"}}>Your bid in ETH: </p>
               <InputNumber placeholder="0.1" value={yourBid[loadedAssets[a].id]} onChange={newBid => setYourBid({...yourBid, [loadedAssets[a].id]: newBid})} style={{ flexGrow: 1 }}/>
             </div>
-              <Button style={{marginTop: "7px", marginBottom: "20px"}} onClick={() => placeBid(loadedAssets[a], yourBid[loadedAssets[a].id])} disabled={!yourBid[loadedAssets[a].id] || isEnded}>Place a bid</Button>
+              <Button style={{marginTop: "7px", marginBottom: "20px"}} onClick={() => placeBid(loadedAssets[a], yourBid[loadedAssets[a].id])} disabled={!yourBid[loadedAssets[a].id] || isEnded || isBidderIncluded(bidsInfo)}>{isBidderIncluded(bidsInfo) ? "You already made a bid" : "Place a bid"}</Button>
             </div>
 
             {loadedAssets[a].auctionInfo.isActive && (
@@ -554,6 +581,10 @@ function App(props) {
   }
 
 
+  const withdrawStake = async () => {
+    await tx(writeContracts.Auction.withdrawStake());
+  }
+
   return (
     <div className="App">
 
@@ -609,8 +640,10 @@ function App(props) {
 
               <p style={{margin:0, marginRight: "15px"}}>How much ETH you want to stake: </p>
               <InputNumber placeholder="0.1" value={stakeAmount} onChange={newPrice => setStakeAmount(newPrice)} style={{ flexGrow: 1, marginTop: "7px", marginBottom: "20px", marginRight: "15px" }}/>
-              <Button disabled={stakeAmount === 0.0} onClick={stakeEth} style={{marginBottom: "25px"}}>Stake ETH</Button>
+              <Button disabled={stakeAmount === 0.0} onClick={stakeEth} style={{marginBottom: "10px"}}>Stake ETH</Button>
               <br/>
+              <Button disabled={!stakedEth || formatEther(stakedEth) == 0.0} onClick={withdrawStake} style={{marginBottom: "15px"}}>Withdraw your stake</Button>
+              <br />
               <Button disabled={galleryList.length === 0} onClick={updateYourCollectibles} style={{marginBottom: "25px"}}>Update collectibles</Button>
 
 

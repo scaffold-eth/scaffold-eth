@@ -20,6 +20,13 @@ app.get("/:address", function(req, res) {
   res.status(200).send(transactions[address]);
 });
 
+app.post('/clearAddress', function(request, response){
+  console.log("CLEARING!!!!",request.body);      // your JSON
+  response.send(request.body);    // echo the result back
+  transactions[request.body.address] = {}
+  console.log("transactions",transactions)
+});
+
 
 app.post('/', function(request, response){
   console.log("POOOOST!!!!",request.body);      // your JSON
