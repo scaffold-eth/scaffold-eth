@@ -81,40 +81,8 @@ export default [
   {
     avatar: 'old_gtx.png',
     alignment: 'right',
-    text: 'Connection to interface established.'
-  },
-  {
-    anchorId: 'cityFundsContract',
-    avatar: 'old_gtx.png',
-    alignment: 'right',
-    skip: true,
-    text: '',
-    code: `
-    contract EthereumCityERC20TokenMinter {
-      event Mint(address sender);
-      event Burn(address sender);
-      event Transfer(address sender, uint256 amount);
-      uint256 internal totalSupply;
-      uint256 internal claimableSupply;
-      mapping(address => uint256) public balanceOf;
-      function incrementSupply() public {
-        totalSupply++;
-        claimableSupply++;
-        emit Mint(msg.sender);
-      }
-      function decrementSupply() public {
-        balanceOf[msg.sender]--;
-        totalSupply--;
-        emit Burn(msg.sender);
-      }
-      function transfer(uint256 amount) public {
-        assert amount <= claimableSupply;
-        claimableSupply = 0;
-        balanceOf[msg.sender] += claimableSupply;
-        emit Transfer(msg.sender, amount);
-      }
-    }
-    `
+    text: 'Connection to interface established.',
+    anchorId: 'cityFundsContract'
   },
   {
     avatar: 'punk5950.png',

@@ -1,17 +1,20 @@
 import dotProp from 'dot-prop-immutable'
+import shortid from 'shortid'
 
-import { actionCreators as levelContainerActionCreators } from '../../../../../../containers/level/controller'
-import { actionCreators as dialogsContainerActionCreators } from '../../../../../../containers/dialogs/controller'
+import { actionCreators as dialogsContainerActionCreators } from '../../../../../../../containers/dialogs/controller'
 
-const stateContainerId = 'levels/underflowLevel/terminalContent'
+const stateContainerId = 'levels/underflow/levelContainerContent/tokenContractWindow'
 
-const initialState = {}
+const initialState = {
+  uniqueWindowId: shortid.generate()
+}
 
 const mapStateToProps = state => {
-  const { dialogs, underflowLevel } = state
+  const {
+    underflowLevel: { tokenContractWindow }
+  } = state
   return {
-    dialogs,
-    ...underflowLevel.terminalContent
+    ...tokenContractWindow
   }
 }
 
@@ -33,9 +36,6 @@ const mapDispatchToProps = dispatch => ({
   actions: {
     continueDialog() {
       dispatch(dialogsContainerActionCreators.continueDialog())
-    },
-    startCityLevel() {
-      dispatch(levelContainerActionCreators.setCurrentLevel('city')) // TODO: import string from constants list
     }
   }
 })

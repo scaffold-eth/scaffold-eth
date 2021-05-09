@@ -1,21 +1,44 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Button, Typography } from 'antd'
-import shortid from 'shortid'
+import { useUserAddress } from 'eth-hooks'
 import {
+  usePoller,
+  useExchangePrice,
+  useGasPrice,
+  useUserProvider,
   useContractLoader,
   useContractReader,
-  useEventListener
+  useEventListener,
+  useBalance,
+  useExternalContractLoader
 } from '../../../../../../../../hooks'
+import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../../helpers'
 import { CodeContainer, WindowModal } from '../../../../../../../../sharedComponents'
+import { connectController } from './controller'
+
+const localProvider = getLocalProvider()
+const targetNetwork = getTargetNetwork()
 
 const { Title } = Typography
 
-// TODO: pass correct props
-const TokenContractWindow = ({ localProvider, userProvider, transactor, address, actions }) => {
+const TokenContractWindow = (props) => {
+  // TODO: this is not working - mapStateToProps in controller is incorrect
+  const { uniqueWindowId, actions } = props
+  console.log('TokenContractWindow:')
+  console.log({ props })
+
+  const injectedProvider = null // TODO:
+  const userProvider = useUserProvider(injectedProvider, localProvider)
+
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   const writeContracts = useContractLoader(userProvider)
+
+  const userAddress = useUserAddress(userProvider)
+
+  const gasPrice = useGasPrice(targetNetwork, 'fast')
+  const transactor = Transactor(userProvider, gasPrice)
 
   // keep track of a variable from the contract in the local React state:
   // const userClicks = useContractReader(readContracts, 'Clicker', 'clicks', [address])
@@ -26,10 +49,13 @@ const TokenContractWindow = ({ localProvider, userProvider, transactor, address,
   )
   console.log('💸 claimableSupply:', claimableSupply && claimableSupply.toString())
 
-  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'balances', [
-    address
-  ])
-  console.log('🤗 userBalance:', userBalance && userBalance.toString())
+  const userERC20Balance = useContractReader(
+    readContracts,
+    'EthereumCityERC20TokenMinter',
+    'balances',
+    [userAddress]
+  )
+  console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
 
   // 📟 Listen for broadcast events
   const mintEvents = useEventListener(
@@ -44,8 +70,6 @@ const TokenContractWindow = ({ localProvider, userProvider, transactor, address,
   const userFoundContractTrick =
     parseInt(claimableSupply, 10) >
     115792089237316195423570985008687907853269984665640564039457584007913129639
-
-  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
 
   // TODO: move this into redux initial state
   const contractCode = `
@@ -120,7 +144,7 @@ const TokenContractWindow = ({ localProvider, userProvider, transactor, address,
           </Button>
           <div style={{ marginTop: '20px', textAlign: 'center' }}>
             <p>Your balance:</p>
-            <Title level={4}>{userBalance && userBalance.toString()}</Title>
+            <Title level={4}>{userERC20Balance && userERC20Balance.toString()}</Title>
           </div>
           <Button
             block
@@ -128,12 +152,12 @@ const TokenContractWindow = ({ localProvider, userProvider, transactor, address,
               // NOTE: we need to do this or otherwise the same overflow bug occures in the userSupply variable
               if (userFoundContractTrick) {
                 let amountToClaim = claimableSupply
-                if (userBalance > 0 && userFoundContractTrick) {
-                  amountToClaim = claimableSupply - userBalance
+                if (userERC20Balance > 0 && userFoundContractTrick) {
+                  amountToClaim = claimableSupply - userERC20Balance
                 }
                 transactor(writeContracts.EthereumCityERC20TokenMinter.claim(amountToClaim))
               } else {
-                actions.continueCurrentDialog()
+                actions.continueDialog()
               }
             }}
           >
@@ -145,4 +169,4 @@ const TokenContractWindow = ({ localProvider, userProvider, transactor, address,
   )
 }
 
-export default TokenContractWindow
+export default connectController(TokenContractWindow)

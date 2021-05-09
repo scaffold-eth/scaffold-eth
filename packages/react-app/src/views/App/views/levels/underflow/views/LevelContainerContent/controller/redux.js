@@ -5,11 +5,10 @@ const stateContainerId = 'levels/underflow/levelContainerContent'
 const initialState = {}
 
 const mapStateToProps = state => {
-  const {
-    underflowLevel: { terminalContent }
-  } = state
+  const { dialogs, underflowLevel } = state
   return {
-    terminalContent
+    dialogs,
+    ...underflowLevel.terminalContent
   }
 }
 

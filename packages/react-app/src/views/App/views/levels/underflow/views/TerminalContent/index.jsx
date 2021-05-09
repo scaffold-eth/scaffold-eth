@@ -1,7 +1,22 @@
 import React from 'react'
 import $ from 'jquery'
+import { useUserAddress } from 'eth-hooks'
 import { connectController } from './controller'
-import { useContractLoader, useContractReader } from '../../../../../../../hooks'
+import {
+  usePoller,
+  useExchangePrice,
+  useGasPrice,
+  useUserProvider,
+  useContractLoader,
+  useContractReader,
+  useEventListener,
+  useBalance,
+  useExternalContractLoader
+} from '../../../../../../../hooks'
+import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../helpers'
+
+const localProvider = getLocalProvider()
+const targetNetwork = getTargetNetwork()
 
 const styles = {
   button: {
@@ -14,22 +29,20 @@ const styles = {
   }
 }
 
-const TerminalContent = ({
-  localProvider,
-  userAddress,
-  dialogs: { currentDialog, currentDialogIndex },
-  actions
-}) => {
+const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actions }) => {
+  const injectedProvider = null // TODO:
+  const userProvider = useUserProvider(injectedProvider, localProvider)
+
+  const readContracts = useContractLoader(localProvider)
+
+  const userAddress = useUserAddress(userProvider)
+
   const scrollToBottom = _elementSelector => {
     let elementSelector = `#dialogContainer .flexible-modal .content`
     if (_elementSelector) elementSelector = _elementSelector
     const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
-
-  // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider)
-  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
 
   const userERC20Balance = useContractReader(
     readContracts,
@@ -38,11 +51,6 @@ const TerminalContent = ({
     [userAddress]
   )
   console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
-  /*
-  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'clicks', [
-    address
-  ])
-  */
 
   const userFoundContractTrick =
     parseInt(userERC20Balance, 10) >
@@ -53,6 +61,18 @@ const TerminalContent = ({
   } else {
     console.log('user did not find trick yet')
   }
+
+  // TODO: move this into redux state and reducer
+  // TODO: find better variable name (eg. isAtOrPast)
+  let userIsAtCityFundsContractAnchor = false
+
+  // check if the user has gotten to the step in the
+  // dialog where 'cityFundsContract' anchorId is present
+  currentDialog.map((dialogStep, index) => {
+    if (dialogStep.anchorId === 'cityFundsContract' && currentDialogIndex >= index) {
+      userIsAtCityFundsContractAnchor = true
+    }
+  })
 
   return (
     <>
@@ -147,24 +167,25 @@ const TerminalContent = ({
                   Continue
                 </button>
               )}
-              {isFinalDialog && userFoundContractTrick && (
-                <button
-                  type='button'
-                  className='nes-btn'
-                  id='continue'
-                  onClick={() => {
-                    actions.startCityLevel()
-                    scrollToBottom()
-                  }}
-                  style={{ ...styles.button }}
-                >
-                  Continue
-                </button>
-              )}
             </div>
           )
         }
       })}
+
+      {userIsAtCityFundsContractAnchor && userFoundContractTrick && (
+        <button
+          type='button'
+          className='nes-btn is-warning'
+          id='continue'
+          onClick={() => {
+            actions.startCityLevel()
+            scrollToBottom()
+          }}
+          style={{ ...styles.button }}
+        >
+          Drive into city
+        </button>
+      )}
     </>
   )
 }
