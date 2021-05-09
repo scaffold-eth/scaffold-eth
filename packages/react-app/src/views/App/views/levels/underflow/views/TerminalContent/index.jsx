@@ -149,7 +149,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
                   )
                 })}
 
-              {!isFinalDialog && isLastVisibleDialog && !choices && (
+              {!isFinalDialog && isLastVisibleDialog && !choices && !userCompletedLevel && (
                 <button
                   type='button'
                   className='nes-btn'
@@ -167,6 +167,31 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
           )
         }
       })}
+
+      {userCompletedLevel && (
+        <>
+          <img
+            src='./assets/punk5950.png'
+            alt='avatar'
+            className='background-image'
+            style={{
+              minWidth: '40px',
+              transform: 'scaleX(1)'
+            }}
+          />
+          <div
+            className='nes-balloon from-left'
+            style={{
+              width: 'calc(100% - 60px)',
+              padding: '6px',
+              fontSize: '8px',
+              lineHeight: '15px'
+            }}
+          >
+            <p>Jackpot! I'm sure these coins will be usefull ...</p>
+          </div>
+        </>
+      )}
 
       {userCompletedLevel && (
         <button
