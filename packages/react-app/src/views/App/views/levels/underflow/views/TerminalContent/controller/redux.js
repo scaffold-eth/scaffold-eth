@@ -1,6 +1,7 @@
 import dotProp from 'dot-prop-immutable'
 
 import { actionCreators as levelContainerActionCreators } from '../../../../../../containers/level/controller'
+import { actionCreators as backgroundActionCreators } from '../../../../../Background/controller'
 import { actionCreators as dialogsContainerActionCreators } from '../../../../../../containers/dialogs/controller'
 
 const stateContainerId = 'levels/underflowLevel/terminalContent'
@@ -36,6 +37,9 @@ const mapDispatchToProps = dispatch => ({
     },
     startCityLevel() {
       dispatch(levelContainerActionCreators.setCurrentLevel('city')) // TODO: import string from constants list
+    },
+    setCityLevelBackground() {
+      dispatch(backgroundActionCreators.setBackground('cityInner')) // TODO: import string from constants list
     }
   }
 })

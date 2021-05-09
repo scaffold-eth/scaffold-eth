@@ -200,6 +200,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
           id='continue'
           onClick={() => {
             actions.startCityLevel()
+            actions.setCityLevelBackground() // TODO: move this into city level component
             scrollToBottom()
           }}
           style={{ ...styles.button }}
