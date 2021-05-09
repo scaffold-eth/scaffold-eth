@@ -1,4 +1,4 @@
-const intro = [
+export default [
   {
     avatar: 'punk5950.png',
     alignment: 'left',
@@ -26,5 +26,3 @@ const intro = [
     text: 'Feels like home...'
   }
 ]
-
-export default intro

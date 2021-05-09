@@ -1,25 +1,31 @@
 import dotProp from 'dot-prop-immutable'
 
-import { actionCreators as terminalActionCreators } from '../../../../../Terminal/controller/redux'
+import { actionCreators as levelContainerActionCreators } from '../../../../../../containers/level/controller'
+import { actionCreators as backgroundActionCreators } from '../../../../../Background/controller'
+import { actionCreators as dialogsContainerActionCreators } from '../../../../../../containers/dialogs/controller'
 
-const initialState = {
-  currentLevel: 'underflow'
-}
+const stateContainerId = 'levels/city/terminalContent'
+
+const initialState = {}
 
 const mapStateToProps = state => {
-  const { terminal } = state
+  const { dialogs, cityLevel } = state
+  // TODO:
+  console.log({ cityLevelState: cityLevel })
   return {
-    ...terminal
+    dialogs
+    // ...cityLevel.terminalContent
   }
 }
 
 const reducer = (state = initialState, action) => {
-  const newState = { ...state }
-
-  switch (action.type) {
-    default:
-      return newState
+  if (action.type.includes(stateContainerId)) {
+    switch (action.type) {
+      default:
+        return state
+    }
   }
+  return state
 }
 
 const actionCreators = {}
@@ -28,11 +34,14 @@ const dispatchers = {}
 
 const mapDispatchToProps = dispatch => ({
   actions: {
-    setCurrentDialog(payload) {
-      dispatch(terminalActionCreators.setCurrentDialog(payload))
+    continueDialog() {
+      dispatch(dialogsContainerActionCreators.continueDialog())
     },
-    continueCurrentDialog() {
-      dispatch(terminalActionCreators.continueCurrentDialog())
+    startCityLevel() {
+      dispatch(levelContainerActionCreators.setCurrentLevel('TODO')) // TODO: import string from constants list
+    },
+    setCityLevelBackground() {
+      dispatch(backgroundActionCreators.setBackground('TODO')) // TODO: import string from constants list
     }
   }
 })

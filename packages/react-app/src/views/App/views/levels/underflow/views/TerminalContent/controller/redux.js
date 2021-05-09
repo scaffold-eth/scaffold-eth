@@ -36,10 +36,15 @@ const mapDispatchToProps = dispatch => ({
       dispatch(dialogsContainerActionCreators.continueDialog())
     },
     startCityLevel() {
-      dispatch(levelContainerActionCreators.setCurrentLevel('city')) // TODO: import string from constants list
+      dispatch(levelContainerActionCreators.setCurrentLevel({ level: 'city' })) // TODO: import string from constants list
     },
+    // TODO: move this into levelContainer reducer
     setCityLevelBackground() {
-      dispatch(backgroundActionCreators.setBackground('cityInner')) // TODO: import string from constants list
+      dispatch(backgroundActionCreators.setBackground({ background: 'city' })) // TODO: import string from constants list
+    },
+    // TODO: move this into levelContainer reducer
+    setCityLevelDialog() {
+      dispatch(dialogsContainerActionCreators.setCurrentDialog({ dialog: 'city' })) // TODO: import string from constants list
     }
   }
 })

@@ -1,14 +1,14 @@
 import React from 'react'
-import { CityOutskirts, CityInner } from './backgrounds'
+import { CityOutskirts, City } from './backgrounds'
 
 const BACKGROUNDS = {
   cityOutskirts: {
     id: 'cityOutskirts',
     component: <CityOutskirts />
   },
-  cityInner: {
-    id: 'cityInner',
-    component: <CityInner />
+  city: {
+    id: 'city',
+    component: <City />
   }
 }
 

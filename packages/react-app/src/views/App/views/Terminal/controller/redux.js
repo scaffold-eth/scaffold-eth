@@ -10,8 +10,9 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { terminal } = state
+  const { terminal, levelContainer } = state
   return {
+    levelContainer,
     ...terminal
   }
 }

@@ -22,7 +22,7 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case SET_BACKGROUND:
-        return dotProp.set(state, 'background', payload)
+        return dotProp.set(state, 'background', payload.background)
       default:
         return state
     }

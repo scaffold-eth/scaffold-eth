@@ -50,7 +50,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
     'balances',
     [userAddress]
   )
-  console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
+  // console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
 
   const userFoundContractTrick =
     parseInt(userERC20Balance, 10) >
@@ -201,6 +201,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
           onClick={() => {
             actions.startCityLevel()
             actions.setCityLevelBackground() // TODO: move this into city level component
+            actions.setCityLevelDialog()
             scrollToBottom()
           }}
           style={{ ...styles.button }}

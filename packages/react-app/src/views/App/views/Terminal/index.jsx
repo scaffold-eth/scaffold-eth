@@ -3,8 +3,8 @@ import { connectController } from './controller'
 import { DialogContainer } from './views'
 import './styles.css'
 
-const Terminal = ({ terminalVisible }) => {
-  return <DialogContainer terminalVisible={terminalVisible} />
+const Terminal = ({ terminalVisible, levelContainer: { currentLevel } }) => {
+  return <DialogContainer terminalVisible={terminalVisible} currentLevel={currentLevel} />
 }
 
 export default connectController(Terminal)

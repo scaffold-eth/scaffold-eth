@@ -1,12 +1,24 @@
 import React, { useState } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
 import shortid from 'shortid'
-import { UnderflowLevel } from './levelContents'
+import { UnderflowLevel, CityLevel } from './levelContents'
 import { connectController } from '../../controller'
 import './styles.css'
 
-const DialogContainer = ({ terminalVisible }) => {
+const DialogContainer = ({ terminalVisible, currentLevel }) => {
+  // TODO: move this into redux
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
+  // TODO: move this into own file
+  const getCurrentLevelView = () => {
+    if (currentLevel === 'city') {
+      return <CityLevel />
+    }
+    // initial level
+    return <UnderflowLevel />
+  }
+
+  const currentLevelView = getCurrentLevelView()
 
   return (
     <span id='terminalDialogContainer'>
@@ -41,7 +53,7 @@ const DialogContainer = ({ terminalVisible }) => {
                 overflow: 'scroll'
               }}
             >
-              <UnderflowLevel />
+              {currentLevelView}
             </div>
           </>
         </ReactModal>

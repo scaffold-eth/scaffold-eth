@@ -1,6 +1,7 @@
 import dotProp from 'dot-prop-immutable'
 
 import initialDialog from '../../../views/levels/underflow/model/dialog'
+import dialogMap from '../model/dialogMap'
 
 const stateContainerId = 'dialogs'
 
@@ -23,7 +24,8 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case SET_DIALOG:
-        return dotProp.set(state, 'currentDialog', payload.dialog)
+        state = dotProp.set(state, 'currentDialogIndex', 0)
+        return dotProp.set(state, 'currentDialog', dialogMap[payload.dialog])
       case CONTINUE_DIALOG:
         if (state.currentDialogIndex < state.currentDialog.length - 1) {
           return dotProp.set(state, 'currentDialogIndex', state.currentDialogIndex + 1)

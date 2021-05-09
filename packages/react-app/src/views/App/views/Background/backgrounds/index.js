@@ -1,4 +1,4 @@
-import CityInner from './CityInner'
+import City from './City'
 import CityOutskirts from './CityOutskirts'
 
-export { CityInner, CityOutskirts }
+export { City, CityOutskirts }

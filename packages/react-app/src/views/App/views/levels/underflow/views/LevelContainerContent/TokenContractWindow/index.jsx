@@ -55,7 +55,7 @@ const TokenContractWindow = (props) => {
     'balances',
     [userAddress]
   )
-  console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
+  // console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
 
   // 📟 Listen for broadcast events
   const mintEvents = useEventListener(
@@ -149,7 +149,7 @@ const TokenContractWindow = (props) => {
           <Button
             block
             onClick={() => {
-              // NOTE: we need to do this or otherwise the same overflow bug occures in the userSupply variable
+              // NOTE: we need to do this or otherwise the same underflow bug occures on the userSupply variable
               if (userFoundContractTrick) {
                 let amountToClaim = claimableSupply
                 if (userERC20Balance > 0 && userFoundContractTrick) {

@@ -1,5 +1,6 @@
 const LEVELS = {
-  overflow: 'overflow'
+  underflow: 'underflow',
+  city: 'city'
 }
 
 export default LEVELS

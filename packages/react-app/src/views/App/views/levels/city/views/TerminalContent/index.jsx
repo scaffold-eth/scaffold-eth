@@ -1,8 +1,11 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 import $ from 'jquery'
-import dialog from '../../model/dialog'
 import { connectController } from './controller'
 import { useContractLoader, useContractReader } from '../../../../../../../hooks'
+import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../helpers'
+
+const localProvider = getLocalProvider()
+const targetNetwork = getTargetNetwork()
 
 const styles = {
   button: {
@@ -15,9 +18,12 @@ const styles = {
   }
 }
 
-const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }) => {
+const TerminalContent = (props) => {
+  console.log('in city TerminalContent:')
+  console.log({ props })
+  const { dialogs: { currentDialog = [], currentDialogIndex }, actions } = props
   const scrollToBottom = _elementSelector => {
-    let elementSelector = `#dialogContainer .flexible-modal .content`
+    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
     if (_elementSelector) elementSelector = _elementSelector
     const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
@@ -25,34 +31,23 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
-  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-
-  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'balances', [
-    address
+  /*
+  const userBalance = useContractReader(readContracts, 'contractNameTODO', 'balances', [
+    userAddress
   ])
   console.log('🤗 userBalance:', userBalance && userBalance.toString())
-  /*
-  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'clicks', [
-    address
-  ])
   */
 
-  const userFoundContractTrick =
-    parseInt(userBalance, 10) >
-    115792089237316195423570985008687907853269984665640564039457584007913129639
-
-  if (userFoundContractTrick) {
-    console.log('user found the trick -> set dialog to xxx')
-  } else {
-    console.log('user did not find trick yet')
-  }
+  // TODO:
+  const userCompletedLevel = false
 
   return (
     <>
-      {dialog.map((dialogStep, index) => {
-        const { anchorId, avatar, alignment, text, code, choices } = dialogStep
+      {currentDialog.map((dialogStep, index) => {
+        const { anchorId, avatar, alignment, text, choices } = dialogStep
+
         const isLastVisibleDialog = index === currentDialogIndex
-        const isFinalDialog = index === dialog.length - 1
+        const isFinalDialog = index === currentDialog.length - 1
 
         if (index <= currentDialogIndex) {
           return (
@@ -111,7 +106,7 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
                           console.log('now going to dialog: ' + choice.goToDialog)
                           actions.setCurrentDialog({ name: choice.goToDialog })
                         } else {
-                          actions.continueCurrentDialog()
+                          actions.continueDialog()
                         }
                         scrollToBottom()
                       }}
@@ -128,21 +123,7 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
                   className='nes-btn'
                   id='continue'
                   onClick={() => {
-                    actions.continueCurrentDialog()
-                    scrollToBottom()
-                  }}
-                  style={{ ...styles.button }}
-                >
-                  Continue
-                </button>
-              )}
-              {isFinalDialog && userFoundContractTrick && (
-                <button
-                  type='button'
-                  className='nes-btn'
-                  id='continue'
-                  onClick={() => {
-                    // actions.continueCurrentDialog()
+                    actions.continueDialog()
                     scrollToBottom()
                   }}
                   style={{ ...styles.button }}
@@ -154,6 +135,21 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
           )
         }
       })}
+
+      {userCompletedLevel && (
+        <button
+          type='button'
+          className='nes-btn'
+          id='continue'
+          onClick={() => {
+            // actions.startNextLevel()
+            scrollToBottom()
+          }}
+          style={{ ...styles.button }}
+        >
+          Go to next level
+        </button>
+      )}
     </>
   )
 }

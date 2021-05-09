@@ -51,7 +51,7 @@ const styles = {
   }
 }
 
-const BackgroundCityInner = () => {
+const BackgroundCity = () => {
   return (
     <>
       <div
@@ -114,4 +114,4 @@ const BackgroundCityInner = () => {
   )
 }
 
-export default BackgroundCityInner
+export default BackgroundCity
