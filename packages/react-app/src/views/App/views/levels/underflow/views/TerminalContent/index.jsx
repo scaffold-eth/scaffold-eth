@@ -63,6 +63,20 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
   // TODO: move this into redux state and reducer
   const userCompletedLevel = userIsAtCityFundsContractAnchor && userFoundContractTrick
 
+  // TODO: we only call scrollToBottom() when dialogs.currentDialogIndex changes
+  //       but the last dialog step is hardcoded into this component (shown on userCompletedLevel)
+  //       -> find a neater way to do this
+  if (userCompletedLevel) {
+    const scrollToBottom = _elementSelector => {
+      let elementSelector = `#terminalDialogContainer .flexible-modal .content`
+      if (_elementSelector) elementSelector = _elementSelector
+      const { scrollHeight } = $(elementSelector)[0]
+      $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
+    }
+
+    scrollToBottom()
+  }
+
   return (
     <>
       {currentDialog.map((dialogStep, index) => {
