@@ -37,7 +37,7 @@ const reducer = (state = initialState, action) => {
 }
 
 const actionCreators = {
-  setDialog: payload => ({
+  setCurrentDialog: payload => ({
     type: SET_DIALOG,
     payload
   }),
@@ -47,8 +47,8 @@ const actionCreators = {
 }
 
 const dispatchers = {
-  setDialog: payload => {
-    return actionCreators.setDialog(payload)
+  setCurrentDialog: payload => {
+    return actionCreators.setCurrentDialog(payload)
   },
   continueDialog: () => {
     return actionCreators.continueDialog()
@@ -57,8 +57,8 @@ const dispatchers = {
 
 const mapDispatchToProps = dispatch => ({
   actions: {
-    setDialog(payload) {
-      dispatch(actionCreators.setDialog(payload))
+    setCurrentDialog(payload) {
+      dispatch(actionCreators.setCurrentDialog(payload))
     },
     continueDialog() {
       dispatch(actionCreators.continueDialog())
