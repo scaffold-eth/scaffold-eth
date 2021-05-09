@@ -1,16 +1,15 @@
 import React from "react";
 import { PageHeader } from "antd";
+import { Link } from "react-router-dom";
 
 // displays a page header
 
-export default function Header() {
+export default function Header({extra}) {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
       <PageHeader
-        title="🏗 scaffold-eth"
-        subTitle="forkable Ethereum dev stack focused on fast product iteration"
-        style={{ cursor: "pointer" }}
+        title=<a href="/">✍️ signator.io</a>
+        subTitle="ethereum signer app"
+        extra={extra}
       />
-    </a>
   );
 }
