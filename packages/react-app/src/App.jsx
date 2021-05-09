@@ -65,6 +65,22 @@ function App(props) {
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new Web3Provider(provider));
+
+    provider.on("chainChanged", (chainId) => {
+            console.log(`chain changed to ${chainId}! updating providers`)
+            setInjectedProvider(new Web3Provider(provider));
+        });
+
+        provider.on("accountsChanged", (accounts: string[]) => {
+            console.log(`account changed!`)
+            setInjectedProvider(new Web3Provider(provider));
+        });
+
+        // Subscribe to session disconnection
+        provider.on("disconnect", (code, reason) => {
+          console.log(code, reason);
+          logoutOfWeb3Modal()
+        });
   }, [setInjectedProvider]);
 
   useEffect(() => {
@@ -155,19 +171,5 @@ const logoutOfWeb3Modal = async () => {
     window.location.reload();
   }, 1);
 };
-
- window.ethereum && window.ethereum.on('chainChanged', chainId => {
-  web3Modal.cachedProvider &&
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-})
-
- window.ethereum && window.ethereum.on('accountsChanged', accounts => {
-  web3Modal.cachedProvider &&
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-})
 
 export default App;
