@@ -1,6 +1,5 @@
 import React from 'react'
 import $ from 'jquery'
-import dialog from '../../model/dialog'
 import { connectController } from './controller'
 import { useContractLoader, useContractReader } from '../../../../../../../hooks'
 
@@ -15,7 +14,12 @@ const styles = {
   }
 }
 
-const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }) => {
+const TerminalContent = ({
+  localProvider,
+  userAddress,
+  dialogs: { currentDialog, currentDialogIndex },
+  actions
+}) => {
   const scrollToBottom = _elementSelector => {
     let elementSelector = `#dialogContainer .flexible-modal .content`
     if (_elementSelector) elementSelector = _elementSelector
@@ -27,10 +31,13 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
   const readContracts = useContractLoader(localProvider)
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
 
-  const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'balances', [
-    address
-  ])
-  console.log('🤗 userBalance:', userBalance && userBalance.toString())
+  const userERC20Balance = useContractReader(
+    readContracts,
+    'EthereumCityERC20TokenMinter',
+    'balances',
+    [userAddress]
+  )
+  console.log('🤗 userERC20Balance:', userERC20Balance && userERC20Balance.toString())
   /*
   const userBalance = useContractReader(readContracts, 'EthereumCityERC20TokenMinter', 'clicks', [
     address
@@ -38,7 +45,7 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
   */
 
   const userFoundContractTrick =
-    parseInt(userBalance, 10) >
+    parseInt(userERC20Balance, 10) >
     115792089237316195423570985008687907853269984665640564039457584007913129639
 
   if (userFoundContractTrick) {
@@ -49,11 +56,11 @@ const TerminalContent = ({ localProvider, address, currentDialogIndex, actions }
 
   return (
     <>
-      {dialog.map((dialogStep, index) => {
+      {currentDialog.map((dialogStep, index) => {
         const { anchorId, avatar, alignment, text, code, choices } = dialogStep
 
         const isLastVisibleDialog = index === currentDialogIndex
-        const isFinalDialog = index === dialog.length - 1
+        const isFinalDialog = index === currentDialog.length - 1
 
         if (index <= currentDialogIndex) {
           return (

@@ -1,0 +1,69 @@
+import dotProp from 'dot-prop-immutable'
+
+import initialDialog from '../../../views/levels/underflow/model/dialog'
+
+const stateContainerId = 'dialogs'
+
+export const SET_DIALOG = `${stateContainerId}/SET_DIALOG`
+export const CONTINUE_DIALOG = `${stateContainerId}/CONTINUE_DIALOG`
+
+const initialState = {
+  currentDialog: initialDialog,
+  currentDialogIndex: 0
+}
+
+const mapStateToProps = state => {
+  const { dialogs } = state
+  return {}
+}
+
+const reducer = (state = initialState, action) => {
+  if (action.type.includes(stateContainerId)) {
+    const { payload } = action
+
+    switch (action.type) {
+      case SET_DIALOG:
+        return dotProp.set(state, 'currentDialog', payload.dialog)
+      case CONTINUE_DIALOG:
+        if (state.currentDialogIndex < state.currentDialog.length - 1) {
+          return dotProp.set(state, 'currentDialogIndex', state.currentDialogIndex + 1)
+        }
+        return state
+      default:
+        return state
+    }
+  }
+  return state
+}
+
+const actionCreators = {
+  setDialog: payload => ({
+    type: SET_DIALOG,
+    payload
+  }),
+  continueDialog: () => ({
+    type: CONTINUE_DIALOG
+  })
+}
+
+const dispatchers = {
+  setDialog: payload => {
+    return actionCreators.setDialog(payload)
+  },
+  continueDialog: () => {
+    return actionCreators.continueDialog()
+  }
+}
+
+const mapDispatchToProps = dispatch => ({
+  actions: {
+    setDialog(payload) {
+      dispatch(actionCreators.setDialog(payload))
+    },
+    continueDialog() {
+      dispatch(actionCreators.continueDialog())
+    }
+  }
+})
+
+export { reducer, mapStateToProps, actionCreators, dispatchers, mapDispatchToProps }

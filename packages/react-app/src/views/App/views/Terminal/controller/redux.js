@@ -61,6 +61,4 @@ const mapDispatchToProps = dispatch => ({
   }
 })
 
-
-
 export { reducer, mapStateToProps, actionCreators, dispatchers, mapDispatchToProps }

@@ -1,21 +1,16 @@
 import dotProp from 'dot-prop-immutable'
 
-import { actionCreators as levelContainerActionCreators } from '../../../../../LevelContainer/controller'
-
-import dialog from '../../../model/dialog'
+import { actionCreators as levelContainerActionCreators } from '../../../../../../containers/level/controller'
+import { actionCreators as dialogsContainerActionCreators } from '../../../../../../containers/dialogs/controller'
 
 const stateContainerId = 'levels/underflowLevel/terminalContent'
 
-export const CONTINUE_DIALOG = `${stateContainerId}/CONTINUE_DIALOG`
-
-const initialState = {
-  dialog,
-  currentDialogIndex: 0
-}
+const initialState = {}
 
 const mapStateToProps = state => {
-  const { underflowLevel } = state
+  const { dialogs, underflowLevel } = state
   return {
+    dialogs,
     ...underflowLevel.terminalContent
   }
 }
@@ -23,11 +18,6 @@ const mapStateToProps = state => {
 const reducer = (state = initialState, action) => {
   if (action.type.includes(stateContainerId)) {
     switch (action.type) {
-      case CONTINUE_DIALOG:
-        if (state.currentDialogIndex < state.dialog.length - 1) {
-          return dotProp.set(state, 'currentDialogIndex', state.currentDialogIndex + 1)
-        }
-        return state
       default:
         return state
     }
@@ -35,22 +25,14 @@ const reducer = (state = initialState, action) => {
   return state
 }
 
-const actionCreators = {
-  continueDialog: () => ({
-    type: CONTINUE_DIALOG
-  })
-}
+const actionCreators = {}
 
-const dispatchers = {
-  continueDialog: () => {
-    return actionCreators.continueDialog()
-  }
-}
+const dispatchers = {}
 
 const mapDispatchToProps = dispatch => ({
   actions: {
     continueDialog() {
-      dispatch(actionCreators.continueDialog())
+      dispatch(dialogsContainerActionCreators.continueDialog())
     },
     startCityLevel() {
       dispatch(levelContainerActionCreators.setCurrentLevel('overflow')) // TODO: import string from constants list
