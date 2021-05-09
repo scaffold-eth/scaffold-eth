@@ -1,17 +1,7 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link, useLocation, useHistory } from "react-router-dom";
-import "antd/dist/antd.css";
-import {  StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD, Form, Input, Checkbox, Radio, Typography, Card, Space, List } from "antd";
-import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, Address } from "./components";
-import { Transactor } from "./helpers";
-import { formatEther, parseEther } from "@ethersproject/units";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import React, { useState } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+import { Row, Button, Input, Checkbox, Radio, Typography, Card, Space } from "antd";
+import { useOnBlock } from "./hooks";
 import { ethers } from "ethers";
 const { Text, Paragraph } = Typography;
 /*

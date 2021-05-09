@@ -1,23 +1,13 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link, useLocation, useHistory } from "react-router-dom";
-import "antd/dist/antd.css";
-import {  StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD, Form, Input, Checkbox, Radio, Typography, Card, Space, List, Modal } from "antd";
-import { TwitterOutlined, CheckCircleTwoTone, QrcodeOutlined, CloseCircleTwoTone, CopyOutlined } from "@ant-design/icons";
-import Web3Modal from "web3modal";
-import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, Address } from "./components";
-import { Transactor } from "./helpers";
-import { formatEther, parseEther } from "@ethersproject/units";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import React, { useEffect, useState } from "react";
+import { useLocation, useHistory } from "react-router-dom";
+import { Row, Button, Alert, Typography, Card, Space, List, Modal } from "antd";
+import { TwitterOutlined, CheckCircleTwoTone, QrcodeOutlined, CloseCircleTwoTone } from "@ant-design/icons";
+import { Address } from "./components";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
-const { Title, Text, Paragraph } = Typography;
+const { Text } = Typography;
 /*
-    Welcome to the Signator!
+    Welcome to the Signator Viewer!
 */
 
 const checkEip1271 = async (provider, address, message, signature) => {
@@ -125,13 +115,12 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
       });
 
       return Promise.all(_addressChecks)
-      setAddressChecks(_addressChecks)
     }
 
     checkAddresses().then(data => {
       setAddressChecks(data)
     })
-  },[signatures, message, addresses])
+  },[signatures, message, messageToCheck, addresses])
 
   const signMessage = async () => {
     try {
