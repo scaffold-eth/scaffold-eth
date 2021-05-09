@@ -1,6 +1,6 @@
-# 🏦🏗 scaffold-eth - NFT Auction
+# 🏦🏗 scaffold-eth - Signature based NFT Auction
 
-> Discover how you can build your own NFT auction where the highest bid gets an NFT
+> Discover how you can build your own Signature based NFT auction with off-chain bidding where the highest bid gets an NFT
 
 <details open="open">
   <summary>Table of Contents</summary>
@@ -26,10 +26,7 @@
 </details>
 
 ## About The Project
-
-This branch uses [buyer-mints-nft](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft) as a starting point. Please refer to its own README for the context.
-
-We will show you how a simple NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
+We will show you how a simple Signature based NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
 ## Speed Run
 [![ethdenvervideo](https://i9.ytimg.com/vi/ws1bZ5VTolw/mq2.jpg?sqp=CMybpIQG&rs=AOn4CLArZMBK72XW5Siz5BmIZd0d86SjlQ)](https://youtu.be/ws1bZ5VTolw)
 ## Getting Started
@@ -62,6 +59,10 @@ yarn start
 ```bash
 yarn deploy
 ```
+5. Start Node server for enabling off-chain bidding
+```bash
+yarn backend
+```
 
 ## Smart contracts
 
@@ -79,6 +80,8 @@ contract Auction is IERC721Receiver
 
 We inherit from [IERC721Receiver](https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#IERC721Receiver) which is an interface created by OpenZeppelin. Inheriting from this contract will allow us to receive transfer of NFT from another account to our contract.
 
+For signature verification we use ```Signature Checker``` contract based on [EIP 1271](https://github.com/ethereum/EIPs/blob/master/EIPS/eip-1271.md), do check that out for more details.
+
 Inheriting from this contract also requires us to paste the implementation of `onERC721Received` which you can find at the bottom of the contract.
 
 The logic for creating an auction is in `createTokenAuction` function. It takes an address of NFT contract which in our case is an address of `YourCollectible.sol` deployed to our local chain, unique token ID which is going to be sold, minimum bid and duration in seconds.
@@ -90,7 +93,7 @@ tokenToAuction[_nft][_tokenId] = _auction;
 
 As you can see above, creating an auction means temporarily transfer an NFT to the Auction contract and also save information about auction to our Solidity mapping.
 
-Users place bids by calling `bid` function which basically checks that the bid which is going to be made is currently the highest one. Note that we store the entire history of all bids made to allow us to return funds back to users who did not win an auction.
+The Bid placing takes places off-chain so first bidders need to stake eth and then they place bids off-chain which involves the bidders to sign a transaction and the signed transactions get's stored in the [server](https://github.com/austintgriffith/scaffold-eth/blob/signature-nft-auction/packages/backend/index.js) and at any point in time they can withdraw their stake.
 
 `executeSale` is a function used to complete the auction and identify the winner. It simply checks the last element of all bids placed and transfers NFT to the winner. If no bids were made, NFT is returned back to the initial owner.
 
@@ -109,9 +112,9 @@ You can now note that we have an option to Start auction because we are an owner
 
 The minimal bid that users will be able to place is 0.1 ETH, and the total duration for our auction will be 5 minutes.
 
-![image](./resources/started_auction.png)
+<img width="1643" alt="Screenshot 2021-05-08 at 5 31 03 PM" src="https://user-images.githubusercontent.com/26670962/117570036-2e425d80-b0e6-11eb-974e-d6f419ffa86f.png">
 
-Auction is now in progress, and we can complete it or cancel it. No bids were made yet so there is no information about them yet. Let's try to put some bid now.
+Auction is now in progress, and we can complete it or cancel it. No bids were made yet so there is no information about them yet. Inorder to make a bid we need to stake some eth and then make a bid which will just require our signature since that is off-chain.
 
 After you submit your bid, the information about auction will be updated if your bid is the highest at this point of time.
 
