@@ -37,13 +37,6 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
 
   const userAddress = useUserAddress(userProvider)
 
-  const scrollToBottom = _elementSelector => {
-    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
-    if (_elementSelector) elementSelector = _elementSelector
-    const { scrollHeight } = $(elementSelector)[0]
-    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
-  }
-
   const userERC20Balance = useContractReader(
     readContracts,
     'EthereumCityERC20TokenMinter',
@@ -140,7 +133,6 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
                         } else {
                           actions.continueDialog()
                         }
-                        scrollToBottom()
                       }}
                       style={{ ...styles.button }}
                     >
@@ -156,7 +148,6 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
                   id='continue'
                   onClick={() => {
                     actions.continueDialog()
-                    scrollToBottom()
                   }}
                   style={{ ...styles.button }}
                 >
@@ -202,7 +193,6 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
             actions.startCityLevel()
             actions.setCityLevelBackground() // TODO: move this into city level component
             actions.setCityLevelDialog()
-            scrollToBottom()
           }}
           style={{ ...styles.button }}
         >

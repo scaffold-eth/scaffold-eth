@@ -1,13 +1,21 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
+import $ from 'jquery'
 import shortid from 'shortid'
 import { UnderflowLevel, CityLevel } from './levelContents'
 import { connectController } from '../../controller'
 import './styles.css'
 
-const DialogContainer = ({ terminalVisible, currentLevel }) => {
+const DialogContainer = ({ terminalVisible, currentLevel, dialogs }) => {
   // TODO: move this into redux
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
+
+  const scrollToBottom = _elementSelector => {
+    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
+    if (_elementSelector) elementSelector = _elementSelector
+    const { scrollHeight } = $(elementSelector)[0]
+    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
+  }
 
   // TODO: move this into own file
   const getCurrentLevelView = () => {
@@ -19,6 +27,10 @@ const DialogContainer = ({ terminalVisible, currentLevel }) => {
   }
 
   const currentLevelView = getCurrentLevelView()
+
+  useEffect(() => {
+    scrollToBottom()
+  }, [dialogs.currentDialog, dialogs.currentDialogIndex])
 
   return (
     <span id='terminalDialogContainer'>

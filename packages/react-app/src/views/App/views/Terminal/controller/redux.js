@@ -10,9 +10,10 @@ const initialState = {
 }
 
 const mapStateToProps = state => {
-  const { terminal, levelContainer } = state
+  const { dialogs, levelContainer, terminal } = state
   return {
     levelContainer,
+    dialogs,
     ...terminal
   }
 }

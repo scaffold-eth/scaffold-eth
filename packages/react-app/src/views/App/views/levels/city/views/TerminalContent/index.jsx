@@ -1,5 +1,4 @@
 import React, { useEffect } from 'react'
-import $ from 'jquery'
 import { connectController } from './controller'
 import { useContractLoader, useContractReader } from '../../../../../../../hooks'
 import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../helpers'
@@ -19,13 +18,6 @@ const styles = {
 }
 
 const TerminalContent = ({ dialogs: { currentDialog = [], currentDialogIndex }, actions }) => {
-  const scrollToBottom = _elementSelector => {
-    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
-    if (_elementSelector) elementSelector = _elementSelector
-    const { scrollHeight } = $(elementSelector)[0]
-    $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
-  }
-
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider)
   /*
@@ -105,7 +97,6 @@ const TerminalContent = ({ dialogs: { currentDialog = [], currentDialogIndex }, 
                         } else {
                           actions.continueDialog()
                         }
-                        scrollToBottom()
                       }}
                       style={{ ...styles.button }}
                     >
@@ -121,7 +112,6 @@ const TerminalContent = ({ dialogs: { currentDialog = [], currentDialogIndex }, 
                   id='continue'
                   onClick={() => {
                     actions.continueDialog()
-                    scrollToBottom()
                   }}
                   style={{ ...styles.button }}
                 >
@@ -140,7 +130,6 @@ const TerminalContent = ({ dialogs: { currentDialog = [], currentDialogIndex }, 
           id='continue'
           onClick={() => {
             // actions.startNextLevel()
-            scrollToBottom()
           }}
           style={{ ...styles.button }}
         >
