@@ -4,8 +4,6 @@
 
 ## 🏃‍♀️ Quick Start
 
-required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
 ```bash
 # clone repository
 git clone -b eth-dev https://github.com/austintgriffith/scaffold-eth.git eth-dev
@@ -30,7 +28,33 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
-## Deploy to surge
+## Development
+
+The code structure now looks/works like this:
+
+There are global game objects (some have actions which can be accessed and called from within all 'level' components):
+
+- Terminal
+- Wallet
+- GameBackground [setBackground()]
+- Dialog [setCurrentDialog(), setCurrentDialog()]
+- Level [setCurrentLevel()]
+
+There is a levels folder that will contain one folder for each game level/story
+The content of these folders is structured in the following way:
+
+- view/LevelContainerContent
+  - the components and their logic are mapped into the global game screen
+  - (in the underflow level the smart contract window goes here)
+- view/TerminalContent
+  - the components and their logic are mapped into the Terminal component
+- view/WalletContent
+  - the components and their logic are mapped into the Wallet component
+- model/dialog
+  - contains a json structure that defines the levels story flow (atm. mostly dialogs)
+  - are aggregated in the global Dialog controller
+
+### Deploy to surge
 
 ```bash
 yarn build
@@ -40,6 +64,6 @@ yarn surge
 
 ## TODO's
 
-* [store redux state in browser](https://github.com/grofers/redux-cookies-middleware)
-* [add nice scrollbar for all browser](https://www.npmjs.com/package/perfect-scrollbar)
-* [maybe use this](https://github.com/nextapps-de/winbox)
+- [store redux state in browser](https://github.com/grofers/redux-cookies-middleware)
+- [force nice scrollbars in all browser](https://www.npmjs.com/package/perfect-scrollbar)
+- [maybe use this](https://github.com/nextapps-de/winbox)
