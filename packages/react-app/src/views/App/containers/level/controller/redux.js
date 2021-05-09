@@ -1,13 +1,14 @@
 import dotProp from 'dot-prop-immutable'
-import { actionCreators as terminalActionCreators } from '../../Terminal/controller'
 import LEVELS from '../model/levels'
+
+const initialLevel = LEVELS.overflow
 
 const stateContainerId = 'levelContainer'
 
 export const SET_CURRENT_LEVEL = `${stateContainerId}/SET_CURRENT_LEVEL`
 
 const initialState = {
-  currentLevel: LEVELS.overflow
+  currentLevel: initialLevel
 }
 
 const mapStateToProps = state => {
@@ -47,10 +48,7 @@ const dispatchers = {
 const mapDispatchToProps = dispatch => ({
   actions: {
     setCurrentLevel(payload) {
-      dispatch(terminalActionCreators.setCurrentLevel(payload))
-    },
-    setBackground(payload) {
-      dispatch(terminalActionCreators.setBackground(payload))
+      dispatch(dispatchers.setCurrentLevel(payload))
     }
   }
 })
