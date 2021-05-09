@@ -56,28 +56,24 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
     parseInt(userERC20Balance, 10) >
     115792089237316195423570985008687907853269984665640564039457584007913129639
 
-  if (userFoundContractTrick) {
-    console.log('user found the trick -> set dialog to xxx')
-  } else {
-    console.log('user did not find trick yet')
-  }
-
   // TODO: move this into redux state and reducer
   // TODO: find better variable name (eg. isAtOrPast)
   let userIsAtCityFundsContractAnchor = false
-
-  // check if the user has gotten to the step in the
-  // dialog where 'cityFundsContract' anchorId is present
   currentDialog.map((dialogStep, index) => {
+    // check if the user has gotten to the step in the
+    // dialog where 'cityFundsContract' anchorId is present
     if (dialogStep.anchorId === 'cityFundsContract' && currentDialogIndex >= index) {
       userIsAtCityFundsContractAnchor = true
     }
   })
 
+  // TODO: move this into redux state and reducer
+  const userCompletedLevel = userIsAtCityFundsContractAnchor && userFoundContractTrick
+
   return (
     <>
       {currentDialog.map((dialogStep, index) => {
-        const { anchorId, avatar, alignment, text, code, choices } = dialogStep
+        const { anchorId, avatar, alignment, text, choices } = dialogStep
 
         const isLastVisibleDialog = index === currentDialogIndex
         const isFinalDialog = index === currentDialog.length - 1
@@ -172,7 +168,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
         }
       })}
 
-      {userIsAtCityFundsContractAnchor && userFoundContractTrick && (
+      {userCompletedLevel && (
         <button
           type='button'
           className='nes-btn is-warning'
