@@ -30,16 +30,24 @@ import {
 } from '../../sharedComponents'
 import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
-import { Transactor, checkBalancesAndSwitchNetwork } from '../../helpers'
+import {
+  getTargetNetwork,
+  getLocalProvider,
+  getMainnetProvider,
+  Transactor,
+  checkBalancesAndSwitchNetwork
+} from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
-import { LevelContainer, Background, Terminal, Wallet as WalletView, Toolbelt, Dish } from './views'
+import LevelContainer from './containers/level'
+import { Background, Terminal, Wallet as WalletView, Toolbelt, Dish } from './views'
 import './index.css'
 
 const { ethers } = require('ethers')
 
 const store = configureStore()
 
-/// 📡 What chain are your contracts deployed to?
+/*
+// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem('network')
 let targetNetwork = NETWORKS[cachedNetwork || 'ethereum'] // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 if (!targetNetwork) {
@@ -59,9 +67,9 @@ const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER
   ? process.env.REACT_APP_PROVIDER
   : localProviderUrl
 const localProvider = new JsonRpcProvider(localProviderUrlFromEnv)
-
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer
+*/
 
 // Web3 modal helps us "connect" external wallets:
 const web3Modal = new Web3Modal({
@@ -93,8 +101,14 @@ window.ethereum &&
   })
 
 const App = props => {
+  /*
   const mainnetProvider =
     scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura
+  */
+
+  const targetNetwork = getTargetNetwork()
+  const mainnetProvider = getMainnetProvider()
+  const localProvider = getLocalProvider()
 
   const [injectedProvider, setInjectedProvider] = useState()
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -111,7 +125,7 @@ const App = props => {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice)
+  const transactor = Transactor(userProvider, gasPrice)
 
   const networkSelectWarning = (
     <NetworkSelectWarning

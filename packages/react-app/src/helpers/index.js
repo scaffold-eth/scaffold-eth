@@ -1,4 +1,13 @@
+import getTargetNetwork from './getTargetNetwork'
+import getLocalProvider from './getLocalProvider'
+import getMainnetProvider from './getMainnetProvider'
 import checkBalancesAndSwitchNetwork from './checkBalancesAndSwitchNetwork'
 import Transactor from './Transactor'
 
-export { Transactor, checkBalancesAndSwitchNetwork }
+export {
+  getTargetNetwork,
+  getLocalProvider,
+  getMainnetProvider,
+  Transactor,
+  checkBalancesAndSwitchNetwork
+}
