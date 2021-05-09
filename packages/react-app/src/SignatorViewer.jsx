@@ -129,7 +129,6 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
     }
 
     checkAddresses().then(data => {
-      console.log(data)
       setAddressChecks(data)
     })
   },[signatures, message, addresses])
@@ -176,8 +175,6 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
     setQrModalVisible(false);
   };
 
-  console.log(addressChecks)
-
   return (
     <>
     <Modal title="Scan Signatorio" visible={qrModalVisible} onOk={closeModal} onCancel={closeModal}>
@@ -196,7 +193,7 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
             <Space direction='vertical'>
                   <Card title={<Row justify="center" align="middle">
                                     {<Text copyable={{ text: window.location.href }} style={{fontSize: 20, padding: '4px 15px'}}></Text>}
-                                    <Button type="link" href={`https://twitter.com/intent/tweet?text=Verified%20on%20Signator.io&url=${encodeURIComponent(window.location.href)}`} target="_blank">
+                                    <Button type="link" href={`https://twitter.com/intent/tweet?text=Verified%20on%20Signatorio&url=${encodeURIComponent(window.location.href)}`} target="_blank">
                                         <TwitterOutlined style={{fontSize: 28, color: "#1890ff"}}/>
                                     </Button>
                                       <Button type="link" onClick={showModal}>
@@ -223,7 +220,6 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
                       }
 
                       let _indicator
-                      console.log(addressChecks[index])
                       if(addressChecks[index]==="MATCH") {
                         _indicator = (<CheckCircleTwoTone style={{fontSize: 32}} twoToneColor="#52c41a" />)
                       } else if(addressChecks[index]==="MISMATCH") {
@@ -233,7 +229,7 @@ function SignatorViewer({injectedProvider, mainnetProvider, address}) {
                       }
 
                       return (
-                      <List.Item>
+                      <List.Item key={item}>
                         <div style={{maxWidth: '400px', minWidth: '400px', wordWrap: 'break-word', whiteSpace: 'pre-line'}}>
                         <Space>
                          {addresses[index]&&ethers.utils.isAddress(addresses[index])&&<Address address={addresses[index]} ensProvider={mainnetProvider} />}
