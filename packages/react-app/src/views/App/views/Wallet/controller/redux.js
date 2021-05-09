@@ -1,5 +1,5 @@
 import dotProp from 'dot-prop-immutable'
-import { actionCreators as terminalActionCreators } from '../../Terminal/controller'
+import { actionCreators as dialogsContainerActionCreators } from '../../../containers/dialogs/controller'
 
 const stateContainerId = 'wallet'
 
@@ -47,7 +47,7 @@ const mapDispatchToProps = dispatch => ({
       dispatch(actionCreators.toggleVisibility())
     },
     setCurrentDialog(payload) {
-      dispatch(terminalActionCreators.setCurrentDialog(payload))
+      dispatch(dialogsContainerActionCreators.setCurrentDialog(payload))
     }
   }
 })
