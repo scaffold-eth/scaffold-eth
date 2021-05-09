@@ -38,7 +38,7 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
   const userAddress = useUserAddress(userProvider)
 
   const scrollToBottom = _elementSelector => {
-    let elementSelector = `#dialogContainer .flexible-modal .content`
+    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
     if (_elementSelector) elementSelector = _elementSelector
     const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')

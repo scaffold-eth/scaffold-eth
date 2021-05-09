@@ -9,7 +9,7 @@ const DialogContainer = ({ terminalVisible }) => {
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
 
   return (
-    <span id='dialogContainer'>
+    <span id='terminalDialogContainer'>
       {terminalVisible && (
         <ReactModal
           className={uniqueWindowId}
