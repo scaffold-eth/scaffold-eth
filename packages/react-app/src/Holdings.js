@@ -58,22 +58,56 @@ export default function Holdings(props) {
   });
 
   const getMetadata = async (jsonURL) => {
-    const response = await fetch("https://ipfs.io/ipfs/" + jsonURL);
+
+    // https://dev.to/stereobooster/fetch-with-a-timeout-3d6
+    const timeoutableFetch = (url, options = {}) => {
+      let { timeout = 5000, ...rest } = options;
+      if (rest.signal) throw new Error("Signal not supported in timeoutable fetch");
+      const controller = new AbortController();
+      const { signal } = controller;
+      return new Promise((resolve, reject) => {
+        const timer = setTimeout(() => {
+          reject(new Error("Timeout for Promise"));
+          controller.abort();
+        }, timeout);
+        fetch(url, { signal, ...rest })
+          .finally(() => clearTimeout(timer))
+          .then(resolve, reject);
+      });
+    };
+
+    const response = await timeoutableFetch("https://ipfs.io/ipfs/" + jsonURL);
     const data = await response.json();
     return data;
   };
 
-  const getTokens = (_data) => {
-    _data.forEach(async (token) => {
-      if (isBlocklisted(token.ink.jsonUrl)) return;
-      let _token = token;
-      _token.network = 'xDai'
-      _token.ink.metadata = await getMetadata(token.ink.jsonUrl);
-      //setTokens((tokens) => [...tokens, _token]);
-      let _newToken = {}
-      _newToken[_token.id] = _token
-      setTokens((tokens) => ({...tokens, ..._newToken}));
-    });
+  const getTokens = async (_data) => {
+
+    let chunkedData = []
+    let size = 25
+    for (let i = 0; i < _data.length; i += size) {
+        let chunk = _data.slice(i, i + size)
+        chunkedData.push(chunk)
+    }
+
+    for (const _dataChunk in chunkedData) {
+      try {
+        await Promise.all(chunkedData[_dataChunk].map(async (token) => {
+          if (isBlocklisted(token.ink.jsonUrl)) return;
+          let _token = token;
+          _token.network = 'xDai'
+          _token.ink.metadata = await getMetadata(token.ink.jsonUrl);
+          //setTokens((tokens) => [...tokens, _token]);
+          let _newToken = {}
+          _newToken[_token.id] = _token
+          setTokens((tokens) => ({...tokens, ..._newToken}));
+        }))
+      } catch (e) {
+        console.log(e)
+      }
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
     updateHoldings((data && data.tokens)?data.tokens:[], (dataMain && dataMain.tokens)?dataMain.tokens:[])
   };
 
@@ -99,7 +133,6 @@ export default function Holdings(props) {
       setTokens((tokens) => ({...tokens, ..._newToken}));
     });
     updateHoldings((data && data.tokens)?data.tokens:[], (dataMain && dataMain.tokens)?dataMain.tokens:[])
-    console.log(tokens)
   };
 
   const updateHoldings = (_tokens, _mainTokens) => {

@@ -244,7 +244,7 @@ export default function ViewInk(props) {
 
   }, [hash])
 
-    if (!inkJson || !inkJson.name || !data) {
+    if (!inkJson || !inkJson.name || !data ) {
       inkChainInfoDisplay = (
         <div style={{marginTop:32}}>
           <Spin/>

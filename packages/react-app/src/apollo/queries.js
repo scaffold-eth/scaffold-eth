@@ -7,7 +7,7 @@ export const ARTISTS_QUERY = gql`
       inkCount
       address
       earnings
-      inks(orderBy: createdAt, orderDirection: desc) {
+      inks(first: 999, orderBy: createdAt, orderDirection: desc) {
         id
         jsonUrl
         limit
@@ -80,7 +80,7 @@ export const HOLDINGS_QUERY = gql`
       id
       value
     }
-    tokens(where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
+    tokens(first: 999, where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
       owner
       id
       price
@@ -120,7 +120,7 @@ query ink($inkUrl: String!, $liker: String) {
     likes(where: {liker: $liker}) {
       id
     }
-    tokens(first: 500) {
+    tokens(first: 999) {
       id
       owner
       network
@@ -132,7 +132,7 @@ query ink($inkUrl: String!, $liker: String) {
 
 export const INK_MAIN_QUERY = gql`
 query token($inkUrl: String!) {
-  tokens(where: {ink: $inkUrl}) {
+  tokens(first: 999, where: {ink: $inkUrl}) {
     id
     owner
     ink
@@ -141,7 +141,7 @@ query token($inkUrl: String!) {
 
 export const HOLDINGS_MAIN_QUERY = gql`
   query tokens($owner: Bytes!) {
-    tokens(where: { owner: $owner }) {
+    tokens(first: 999, where: { owner: $owner }) {
       id
     	owner
      	network
@@ -154,7 +154,7 @@ export const HOLDINGS_MAIN_QUERY = gql`
 
 export const HOLDINGS_MAIN_INKS_QUERY = gql`
   query inks($inkList: [String!]) {
-    inks(where: {id_in: $inkList}) {
+    inks(first: 999, where: {id_in: $inkList}) {
       id
       jsonUrl
       limit

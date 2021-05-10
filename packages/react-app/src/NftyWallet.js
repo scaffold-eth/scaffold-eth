@@ -21,13 +21,13 @@ const ipfsConfigInfura = {
   host: "ipfs.infura.io",
   port: "5001",
   protocol: "https",
-  timeout: 25000
+  timeout: 250000
 };
 const ipfsConfig = {
   host: "ipfs.nifty.ink",
   port: "3001",
   protocol: "https",
-  timeout: 25000
+  timeout: 250000
 };
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL

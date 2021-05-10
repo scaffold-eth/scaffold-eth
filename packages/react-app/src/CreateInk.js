@@ -27,13 +27,20 @@ export default function CreateInk(props) {
   const [sending, setSending] = useState()
   const [drawingSize, setDrawingSize] = useState(0)
 
+  const [fullDrawing, setFullDrawing] = useState()
+  const [loaded, setLoaded] = useState(false)
+  const [loadedLines, setLoadedLines] = useState()
+
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
 
   const saveDrawing = (newDrawing) => {
-    let savedData = LZ.compress(newDrawing.getSaveData())
-    props.setDrawing(savedData)
+        if(!loadedLines || newDrawing.lines.length >= loadedLines) {
+          console.log('saving')
+          let savedData = LZ.compress(newDrawing.getSaveData())
+          props.setDrawing(savedData)
+        }
   }
 
   const updateColor = value => {
@@ -46,6 +53,7 @@ export default function CreateInk(props) {
     const loadPage = async () => {
       console.log('loadpage')
         if (props.drawing && props.drawing !== "") {
+          console.log('Loading ink')
           try {
             let decompressed = LZ.decompress(props.drawing)
             let points = 0
@@ -53,14 +61,18 @@ export default function CreateInk(props) {
               points = points + line.points.length
             }
 
-            //console.log('Drawing points', points)
+            console.log('Drawing points', JSON.parse(decompressed)['lines'].length, points)
             setDrawingSize(points)
+            setLoadedLines(JSON.parse(decompressed)['lines'].length)
+
             //console.log(decompressed)
-            drawingCanvas.current.loadSaveData(decompressed, false)
+            //drawingCanvas.current.loadSaveData(decompressed, true)
+            setFullDrawing(decompressed)
           } catch (e) {
             console.log(e)
           }
         }
+        setLoaded(true)
     }
     window.drawingCanvas = drawingCanvas
     loadPage()
@@ -208,7 +220,9 @@ const triggerOnChange = (lines) => {
     height: drawingCanvas.current.props.canvasHeight
   });
 
-  drawingCanvas.current.loadSaveData(saved, true);
+  //drawingCanvas.current.loadSaveData(saved, true);
+  setLoadedLines(lines.length)
+  setFullDrawing(saved)
   drawingCanvas.current.lines = lines;
 };
 
@@ -414,6 +428,7 @@ return (
   }*/>
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+  {(!loaded)&&<span>Loading...</span>}
   <CanvasDraw
   key={props.mode+""+props.canvasKey}
   ref={drawingCanvas}
@@ -426,7 +441,8 @@ return (
 //  hideGrid={props.mode !== "edit"}
 //  hideInterface={props.mode !== "edit"}
   onChange={saveDrawing}
-  immediateLoading={drawingSize >= 10000}
+  saveData={fullDrawing}
+  immediateLoading={true}//drawingSize >= 10000}
   loadTimeOffset={3}
   />
   </div>
