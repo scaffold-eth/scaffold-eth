@@ -1,4 +1,4 @@
-import { Button, Card, Checkbox, Input, Radio, Row, Space, Typography } from "antd";
+import { Button, Card, Checkbox, Input, Radio, Space, Typography } from "antd";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
@@ -84,8 +84,8 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   };
 
   return (
-    <Row justify="center">
-      <Card>
+    <div className="container">
+      <div className="form-wrapper">
         <Space direction="vertical">
           <Input.TextArea
             style={{ fontSize: 18 }}
@@ -155,8 +155,8 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
             {injectedProvider ? "Sign" : "Connect account to sign"}
           </Button>
         </Space>
-      </Card>
-    </Row>
+      </div>
+    </div>
   );
 }
 

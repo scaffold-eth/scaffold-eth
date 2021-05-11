@@ -1,40 +1,60 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route } from "react-router-dom";
-import "antd/dist/antd.css";
-import {  StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import "./App.css";
-import { Button } from "antd";
-import Web3Modal from "web3modal";
+import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { Button } from "antd";
+import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
-import { Header, ThemeSwitch, Address } from "./components";
+import React, { useCallback, useEffect, useState } from "react";
+import { BrowserRouter, Route, Switch } from "react-router-dom";
+import Web3Modal from "web3modal";
+import "./App.css";
+import { Address, Header } from "./components";
+import { INFURA_ID, NETWORKS } from "./constants";
 import Signator from "./Signator";
 import SignatorViewer from "./SignatorViewer";
-import { INFURA_ID, NETWORKS } from "./constants";
 /*
     Welcome to Signatorio !
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true
-
+const DEBUG = true;
 
 // 🛰 providers
-if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
-
+if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
+const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
+const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
 
-function App(props) {
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  window.localStorage.removeItem("walletconnect");
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
 
-  const mainnetProvider = (scaffoldEthProvider && scaffoldEthProvider._network) ? scaffoldEthProvider : mainnetInfura
+function App() {
+  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
@@ -44,21 +64,21 @@ function App(props) {
     const provider = await web3Modal.connect();
     setInjectedProvider(new Web3Provider(provider));
 
-    provider.on("chainChanged", (chainId) => {
-            console.log(`chain changed to ${chainId}! updating providers`)
-            setInjectedProvider(new Web3Provider(provider));
-        });
+    provider.on("chainChanged", chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+      setInjectedProvider(new Web3Provider(provider));
+    });
 
-        provider.on("accountsChanged", (accounts: string[]) => {
-            console.log(`account changed!`)
-            setInjectedProvider(new Web3Provider(provider));
-        });
+    provider.on("accountsChanged", () => {
+      console.log(`account changed!`);
+      setInjectedProvider(new Web3Provider(provider));
+    });
 
-        // Subscribe to session disconnection
-        provider.on("disconnect", (code, reason) => {
-          console.log(code, reason);
-          logoutOfWeb3Modal()
-        });
+    // Subscribe to session disconnection
+    provider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
   }, [setInjectedProvider]);
 
   useEffect(() => {
@@ -69,7 +89,7 @@ function App(props) {
 
   const [route, setRoute] = useState();
   useEffect(() => {
-    setRoute(window.location.pathname)
+    setRoute(window.location.pathname);
   }, [setRoute]);
 
   const modalButtons = [];
@@ -93,7 +113,7 @@ function App(props) {
           style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
           shape="round"
           size="large"
-          /*type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time*/
+          /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
         >
           connect
@@ -104,50 +124,27 @@ function App(props) {
 
   return (
     <div className="App">
-
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header extra={[address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,...modalButtons]} />
+      <Header
+        extra={[
+          address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
+          ...modalButtons,
+        ]}
+      />
       <BrowserRouter>
-
         <Switch>
           <Route exact path="/">
-            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address}/>
+            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} />
           </Route>
           <Route path="/view">
-            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address}/>
+            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} />
           </Route>
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
-
+      {/* <ThemeSwitch /> */}
     </div>
   );
 }
-
-
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
-const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: INFURA_ID,
-      },
-    },
-  },
-});
-
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  window.localStorage.removeItem('walletconnect');
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
 
 export default App;

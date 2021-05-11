@@ -1,3 +1,40 @@
 .App {
+  min-height: 100vh;
+  background: url(./images/sig-background.jpg) top center no-repeat;
+  background-color: #131313;
+  background-size: 1440px;
   text-align: center;
+}
+
+.container {
+  padding-top: 500px;
+  padding-bottom: 100px;
+}
+
+.form-wrapper {
+  margin: 0 auto;
+  padding: 20px;
+  max-width: 500px;
+  background: rgba(0, 0, 0, 0.85);
+  border-radius: 6px;
+}
+
+.ant-page-header.ant-page-header-ghost {
+  max-width: 1440px;
+  margin: 0 auto;
+}
+
+@media only screen and (max-width: 1440px) {
+  .App {
+    background-size: cover;
+  }
+  .container {
+    padding-top: 33%;
+  }
+}
+
+@media only screen and (max-width: 740px) {
+  .container {
+    padding-top: 220px;
+  }
 }
