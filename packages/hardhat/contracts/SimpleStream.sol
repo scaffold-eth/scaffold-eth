@@ -11,7 +11,7 @@ contract SimpleStream {
   address payable public toAddress;// = payable(0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1);
   uint256 public cap;// = 0.5 ether;
   uint256 public frequency;// 1296000 seconds == 2 weeks;
-  uint256 public last = block.timestamp - frequency; //stream starts full
+  uint256 public last;// = block.timestamp - frequency; //stream starts full
   //uint256 public last = block.timestamp; //stream starts empty
 
   constructor(address payable _toAddress, uint256 _cap, uint256 _frequency, bool _startsFull) public {
