@@ -93,15 +93,10 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
 
       let _signature;
       if (type === "typedData") {
-        _signature = await injectedProvider.send("eth_signTypedData_v4", [
-          address.toLowerCase(),
-          JSON.stringify(
-            ethers.utils._TypedDataEncoder.getPayload(typedData.domain, typedData.types, typedData.message),
-          ),
-        ]);
+        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
 
         const _compressedData = await codec.compress(typedData);
-        console.log(_compressedData);
+
         searchParams.set("typedData", _compressedData);
       } else if (type === "message") {
         const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
@@ -132,7 +127,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   return (
     <div className="container">
       <Card>
-        <Space direction="vertical">
+        <Space direction="vertical" style={{ width: "100%" }}>
           <Radio.Group
             value={type}
             buttonStyle="solid"
@@ -157,7 +152,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 }}
               />
 
-              <div>
+              <div style={{ marginTop: 20 }}>
                 <Space>
                   <Radio.Group
                     value={metaData}
@@ -185,7 +180,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                   )}
                 </Space>
               </div>
-              <div>
+              <div style={{ marginTop: 20 }}>
                 <Checkbox
                   style={{ fontSize: 18 }}
                   checked={hashMessage}
@@ -235,7 +230,14 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
             </>
           )}
 
-          <Button size="large" type="primary" onClick={signMessage} disabled={!injectedProvider} loading={signing}>
+          <Button
+            size="large"
+            type="primary"
+            onClick={signMessage}
+            disabled={!injectedProvider}
+            loading={signing}
+            style={{ marginTop: 10 }}
+          >
             {injectedProvider ? "Sign" : "Connect account to sign"}
           </Button>
         </Space>
