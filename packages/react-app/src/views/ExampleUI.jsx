@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import { message, Row, Col, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
-import { QRBlockie, EtherInput, Address, Balance } from "../components";
+import { QRPunkBlockie, QRBlockie, EtherInput, Address, Balance } from "../components";
 import { parseEther, formatEther } from "@ethersproject/units";
 import pretty from 'pretty-time';
 
@@ -65,11 +65,15 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
         <Address value={readContracts && readContracts.SimpleStream.address} justAddress={true} />
       </div>
 
-      <div style={{width:400, margin:"auto", marginTop:32}}>
-        <div style={{padding:16}}>
+      <div style={{width:400, margin:"auto", marginTop:32, position:"relative"}}>
+        <div style={{padding:16, marginBottom:64}}>
           <span style={{opacity:0.5}}>streaming to:</span>
         </div>
+        <div style={{position:"absolute",top:-50}}>
+          <QRPunkBlockie withQr={false} address={streamToAddress} scale={0.7} />
+        </div>
         <Address value={streamToAddress} ensProvider={mainnetProvider} />
+
       </div>
 
       <div style={{padding:16, width:WIDTH, margin:"auto"}}>

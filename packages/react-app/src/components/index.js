@@ -17,3 +17,4 @@ export { default as BytesStringInput } from "./BytesStringInput";
 export { default as Swap } from "./Swap";
 export { default as ThemeSwitch } from "./ThemeSwitch";
 export { default as QRBlockie } from "./QRBlockie";
+export { default as QRPunkBlockie } from "./QRPunkBlockie";
