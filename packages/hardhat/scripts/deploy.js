@@ -10,19 +10,22 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
   const simpleStream = await deploy("SimpleStream",[
-    /* to address */ "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1",
-    /* cap */ utils.parseEther("0.1"),//ether
-    /* frequency */ 60,//seconds //1296000,//2 weeks
-    /* starts full: */ true,
+    /* to address */ "0x6793344e0261937AB9684dF27e21A9b81e341d2e",
+    /* cap */ utils.parseEther("0.5"),//ether
+    /* frequency */120, //1296000,//seconds //1296000,//15 days
+    /* starts full: */ false,
   ])
 
+  // add some local funds to the stream with a little message:
+  await simpleStream.streamDeposit("Do some science, plz!",{value:ethers.utils.parseEther("2")})
+
   //If you want to send value to an address from the deployer
-/*  const deployerWallet = ethers.provider.getSigner()
+  /*const deployerWallet = ethers.provider.getSigner()
   await deployerWallet.sendTransaction({
     to: simpleStream.address,
-    value: ethers.utils.parseEther("0.5")
-  })
-*/
+    value: ethers.utils.parseEther("2")
+  })*/
+
 
 
 

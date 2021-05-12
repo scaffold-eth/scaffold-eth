@@ -11,8 +11,7 @@ contract SimpleStream {
   address payable public toAddress;// = payable(0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1);
   uint256 public cap;// = 0.5 ether;
   uint256 public frequency;// 1296000 seconds == 2 weeks;
-  uint256 public last;// = block.timestamp - frequency; //stream starts full
-  //uint256 public last = block.timestamp; //stream starts empty
+  uint256 public last;//stream starts empty (last = block.timestamp) or full (block.timestamp - frequency)
 
   constructor(address payable _toAddress, uint256 _cap, uint256 _frequency, bool _startsFull) public {
     toAddress = _toAddress;
@@ -36,6 +35,10 @@ contract SimpleStream {
        require(msg.sender==toAddress,"this stream is not for you");
        uint256 totalAmountCanWithdraw = streamBalance();
        require(totalAmountCanWithdraw>=amount,"not enough in the stream");
+       uint256 cappedLast = block.timestamp-frequency;
+       if(last<cappedLast){
+         last = cappedLast;
+       }
        last = last + ((block.timestamp - last) * amount / totalAmountCanWithdraw);
        emit Withdraw( msg.sender, amount, reason );
        toAddress.transfer(amount);

@@ -12,6 +12,7 @@ import { Input } from "antd";
 
   <EtherInput
     autofocus
+    mode={"USD"}
     price={price}
     value=100
     placeholder="Enter amount"
@@ -29,7 +30,7 @@ import { Input } from "antd";
 */
 
 export default function EtherInput(props) {
-  const [mode, setMode] = useState(props.price ? "USD" : "ETH");
+  const [mode, setMode] = useState( props.mode || (props.price ? "USD" : "ETH"));
   const [display, setDisplay] = useState();
   const [value, setValue] = useState();
 
@@ -78,6 +79,12 @@ export default function EtherInput(props) {
     }
   ,[ currentValue ])
 
+  useEffect(
+    ()=>{
+      setValue(props.value)
+    }
+  ,[props.value])
+
   return (
     <Input
       placeholder={props.placeholder ? props.placeholder : "amount in " + mode}
@@ -90,7 +97,7 @@ export default function EtherInput(props) {
         if (mode === "USD") {
           const possibleNewValue = parseFloat(newValue)
           if(possibleNewValue){
-            const ethValue = possibleNewValue / props.price;
+            const ethValue = parseFloat(possibleNewValue / props.price).toFixed(15);
             setValue(ethValue);
             if (typeof props.onChange === "function") {
               props.onChange(ethValue);
