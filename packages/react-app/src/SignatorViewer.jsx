@@ -296,16 +296,18 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
             </Button>
           )}
         </Card>
-        <Button
-          style={{ marginTop: 20 }}
-          type="primary"
-          size="large"
-          onClick={() => {
-            history.push(`/`);
-          }}
-        >
-          ✍️ &nbsp; Create new signator.io
-        </Button>
+        <div style={{ textAlign: "center" }}>
+          <Button
+            style={{ marginTop: 20 }}
+            type="primary"
+            size="large"
+            onClick={() => {
+              history.push(`/`);
+            }}
+          >
+            ✍️ &nbsp; Create new signator.io
+          </Button>
+        </div>
       </div>
     </>
   );
