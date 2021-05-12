@@ -433,7 +433,7 @@ function App(props) {
     return async () => {
       const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(tokenUri));
       const nftAddress = readContracts.YourCollectible.address;
-      await tx(writeContracts.Auction.cancelAution(nftAddress, tokenId, bidders));
+      await tx(writeContracts.Auction.cancelAuction(nftAddress, tokenId, bidders));
       updateYourCollectibles();
       clearTokenUri(tokenUri);
     }

@@ -98,7 +98,7 @@ contract Auction is IERC721Receiver, SignatureChecker {
     // /**
     //    Called by the seller if they want to cancel the auction for their nft so the bidders get back the locked eeth and the seller get's back the nft and the seller needs to do this tx by passing all bid info received off-chain
     // */
-    function cancelAution(address _nft, uint256 _tokenId, address[] memory _bidders) external {
+    function cancelAuction(address _nft, uint256 _tokenId, address[] memory _bidders) external {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
         require(auction.seller == msg.sender);
         require(auction.isActive);

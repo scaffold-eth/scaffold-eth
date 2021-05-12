@@ -41,7 +41,7 @@ Let's start our environment for tinkering and exploring how NFT auction would wo
 
 1. Clone the repo first
 ```sh
-git clone -b nft-auction https://github.com/austintgriffith/scaffold-eth.git nft-auction
+git clone -b signature-nft-auction https://github.com/austintgriffith/scaffold-eth.git nft-auction
 cd nft-auction
 ```
 
