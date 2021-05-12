@@ -48,7 +48,7 @@ yarn deploy
 ```
 ---
 
-💼 Edit your toAddress, cap, and other stream parameters in `deploy.js` in `packages/hardhat/scripts`
+💼 Edit your **toAddress**, **cap**, **frequency**, and other stream parameters in `deploy.js` in `packages/hardhat/scripts`
 
 ---
 
@@ -68,7 +68,7 @@ yarn deploy
 
 ---
 
-> Set the stream **to Address** in `deploy.js` to your address in the frontend:
+> Set the stream **toAddress** in `deploy.js` to your address in the frontend:
 
 ![image](https://user-images.githubusercontent.com/2653167/117186936-9c122080-ad98-11eb-9fd6-5e951c3c39d9.png)
 
