@@ -1,28 +1,64 @@
-import { Button, Card, Checkbox, Input, Radio, Space, Typography } from "antd";
+import { Button, Card, Checkbox, Input, Radio, Row, Space, Typography } from "antd";
 import { ethers } from "ethers";
 import React, { useState } from "react";
+import ReactJson from "react-json-view";
 import { useHistory, useLocation } from "react-router-dom";
-import { useOnBlock } from "./hooks";
+import { useLocalStorage, useOnBlock } from "./hooks";
 
-const { Text } = Typography;
+const { Text, Paragraph } = Typography;
+const codec = require("json-url")("lzw");
+
 /*
     Welcome to the Signator!
 */
 
+const eip712Example = {
+  domain: {
+    name: "Demo",
+    version: "1",
+    chainId: 1,
+  },
+  types: {
+    Person: [
+      {
+        name: "name",
+        type: "string",
+      },
+      {
+        name: "location",
+        type: "string",
+      },
+      {
+        name: "dogs",
+        type: "int32",
+      },
+    ],
+  },
+  primaryType: "Person",
+  message: {
+    name: "Adam",
+    location: "Earth",
+    dogs: 1,
+  },
+};
+
 function Signator({ injectedProvider, mainnetProvider, address }) {
-  const [messageText, setMessageText] = useState("hello world");
+  const [messageText, setMessageText] = useState("hello ethereum");
   const [addDate, setAddDate] = useState(true);
   const [metaData, setMetaData] = useState("time");
   const [messageDate, setMessageDate] = useState(new Date());
   const [hashMessage, setHashMessage] = useState(false);
   const [latestBlock, setLatestBlock] = useState();
   const [signing, setSigning] = useState(false);
+  const [typedData, setTypedData] = useLocalStorage("typedData", eip712Example);
+  const [type, setType] = useLocalStorage("signingType", "message");
 
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
     return _params;
   }
 
+  const location = useLocation();
   const searchParams = useSearchParams();
   const history = useHistory();
 
@@ -31,7 +67,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
 
     if (metaData === "time") {
       _message = `${messageDate.toLocaleString("en", { hour12: false })}: ${messageText}`;
-    } else if (metaData === "block") {
+    } else if (metaData == "block") {
       _message = `${latestBlock}: ${messageText}`;
     } else {
       _message = messageText;
@@ -55,23 +91,34 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
       const _message = getMessage();
       console.log(`Signing: ${_message}`);
       const injectedSigner = injectedProvider.getSigner();
-      // let _signature = await injectedProvider.send("personal_sign", [_message, address])
-      // let _signature = await injectedProvider.send("eth_sign", [address, _message])
-      // console.log(_personalSignature)
-
-      const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
-
-      console.log(_messageToSign);
 
       let _signature;
-      if (injectedProvider.provider.wc) {
-        _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
-      } else {
-        _signature = await injectedSigner.signMessage(_messageToSign);
+      if (type === "typedData") {
+        _signature = await injectedProvider.send("eth_signTypedData_v4", [
+          address.toLowerCase(),
+          JSON.stringify(
+            ethers.utils._TypedDataEncoder.getPayload(typedData.domain, typedData.types, typedData.message),
+          ),
+        ]);
+
+        const _compressedData = await codec.compress(typedData);
+        console.log(_compressedData);
+        searchParams.set("typedData", _compressedData);
+      } else if (type === "message") {
+        const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
+
+        console.log(_messageToSign, ethers.utils.isBytesLike(_message));
+
+        if (injectedProvider.provider.wc) {
+          _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
+        } else {
+          _signature = await injectedSigner.signMessage(_messageToSign);
+        }
+
+        searchParams.set("message", _message);
       }
       // console.log(_signature)
       console.log(`Success! ${_signature}`);
-      searchParams.set("message", _message);
       searchParams.set("signatures", _signature);
       searchParams.set("addresses", address);
       history.push(`/view?${searchParams.toString()}`);
@@ -84,79 +131,118 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   };
 
   return (
-    <div className="container">
-      <div className="form-wrapper">
+    <Row justify="center">
+      <Card>
         <Space direction="vertical">
-          <Input.TextArea
-            style={{ fontSize: 18 }}
+          <Radio.Group
+            value={type}
+            buttonStyle="solid"
             size="large"
-            rows={2}
-            value={messageText}
             onChange={e => {
-              setMessageText(e.target.value);
+              setType(e.target.value);
             }}
-          />
+          >
+            <Radio.Button value="message">Message</Radio.Button>
+            <Radio.Button value="typedData">Typed Data</Radio.Button>
+          </Radio.Group>
 
-          <div>
-            <Space>
-              <Radio.Group
-                value={metaData}
-                buttonStyle="solid"
+          {type === "message" && (
+            <>
+              <Input.TextArea
+                style={{ fontSize: 18 }}
                 size="large"
+                rows={2}
+                value={messageText}
                 onChange={e => {
-                  setMetaData(e.target.value);
+                  setMessageText(e.target.value);
                 }}
-              >
-                <Radio.Button value="time">Time</Radio.Button>
-                <Radio.Button value="block">Block</Radio.Button>
-                <Radio.Button value="none">None</Radio.Button>
-              </Radio.Group>
+              />
 
-              {metaData === "time" && (
-                <Button
-                  size="large"
-                  onClick={() => {
-                    const _date = new Date();
-                    setMessageDate(_date);
+              <div>
+                <Space>
+                  <Radio.Group
+                    value={metaData}
+                    buttonStyle="solid"
+                    size="large"
+                    onChange={e => {
+                      setMetaData(e.target.value);
+                    }}
+                  >
+                    <Radio.Button value="time">Time</Radio.Button>
+                    <Radio.Button value="block">Block</Radio.Button>
+                    <Radio.Button value="none">None</Radio.Button>
+                  </Radio.Group>
+
+                  {metaData === "time" && (
+                    <Button
+                      size="large"
+                      onClick={() => {
+                        const _date = new Date();
+                        setMessageDate(_date);
+                      }}
+                    >
+                      Refresh time
+                    </Button>
+                  )}
+                </Space>
+              </div>
+              <div>
+                <Checkbox
+                  style={{ fontSize: 18 }}
+                  checked={hashMessage}
+                  onChange={e => {
+                    setHashMessage(e.target.checked);
                   }}
                 >
-                  Refresh time
-                </Button>
-              )}
-            </Space>
-          </div>
-          <div>
-            <Checkbox
-              style={{ fontSize: 18 }}
-              checked={hashMessage}
-              onChange={e => {
-                setHashMessage(e.target.checked);
-              }}
-            >
-              Hash message
-            </Checkbox>
-          </div>
+                  Hash message
+                </Checkbox>
+              </div>
 
-          <Card>
-            <div
-              style={{
-                fontSize: 18,
-                maxWidth: "400px",
-                minWidth: "400px",
-                wordWrap: "break-word",
-                whiteSpace: "pre-line",
-              }}
-            >
-              <Text style={{ marginBottom: "0px" }}>{`${getMessage()}`}</Text>
-            </div>
-          </Card>
+              <Card>
+                <div
+                  style={{
+                    fontSize: 18,
+                    maxWidth: "400px",
+                    minWidth: "400px",
+                    wordWrap: "break-word",
+                    whiteSpace: "pre-line",
+                  }}
+                >
+                  <Text style={{ marginBottom: "0px" }}>{`${getMessage()}`}</Text>
+                </div>
+              </Card>
+            </>
+          )}
+          {type === "typedData" && (
+            <>
+              <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank">
+                Learn more about signing typed data
+              </a>
+              <Card style={{ textAlign: "left" }}>
+                <ReactJson
+                  src={typedData}
+                  onEdit={o => {
+                    setTypedData(o.updated_src);
+                  }}
+                  onAdd={o => {
+                    setTypedData(o.updated_src);
+                  }}
+                  onDelete={o => {
+                    setTypedData(o.updated_src);
+                  }}
+                  enableClipboard={false}
+                  displayObjectSize={false}
+                />
+              </Card>
+            </>
+          )}
 
           <Button size="large" type="primary" onClick={signMessage} disabled={!injectedProvider} loading={signing}>
             {injectedProvider ? "Sign" : "Connect account to sign"}
           </Button>
         </Space>
-      </div>
-    </div>
+      </Card>
+    </Row>
   );
 }
 
