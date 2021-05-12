@@ -33,6 +33,7 @@
 .ant-page-header.ant-page-header-ghost {
   max-width: 1200px;
   margin: 0 auto;
+  background: none;
 }
 
 @media only screen and (max-width: 1200px) {
