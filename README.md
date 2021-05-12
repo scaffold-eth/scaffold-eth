@@ -197,6 +197,6 @@ yarn ipfs
 
 ![image](https://user-images.githubusercontent.com/2653167/109540985-7575f780-7a80-11eb-9ebd-39079cc2eb55.png)
 
-> 👩‍❤️‍👨 Share your public url with a friend and ask them to buy a collectible 
+> 👩‍❤️‍👨 Share your public url with a friend and ask them to buy a collectible
 
 ![buyerpaysgastomint mov](https://user-images.githubusercontent.com/2653167/110540616-f322ae80-80e3-11eb-9009-41e445fdd0ff.gif)
