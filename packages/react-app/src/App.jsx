@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route } from "react-router-dom";
 import "antd/dist/antd.css";
-import {  StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import { ethers } from "ethers";
 import "./App.css";
 import { Button } from "antd";
 import Web3Modal from "web3modal";
@@ -24,8 +24,8 @@ const DEBUG = true
 
 // 🛰 providers
 if(DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+const scaffoldEthProvider = new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+const mainnetInfura = new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
 
 
 // 🔭 block explorer URL
@@ -42,16 +42,16 @@ function App(props) {
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
-    setInjectedProvider(new Web3Provider(provider));
+    setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", (chainId) => {
             console.log(`chain changed to ${chainId}! updating providers`)
-            setInjectedProvider(new Web3Provider(provider));
+            setInjectedProvider(new ethers.providers.Web3Provider(provider));
         });
 
         provider.on("accountsChanged", (accounts: string[]) => {
             console.log(`account changed!`)
-            setInjectedProvider(new Web3Provider(provider));
+            setInjectedProvider(new ethers.providers.Web3Provider(provider));
         });
 
         // Subscribe to session disconnection

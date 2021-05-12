@@ -97,14 +97,10 @@ function Signator({injectedProvider, mainnetProvider, address}) {
       let _signature
       if(type === 'typedData' ) {
 
-        _signature = await injectedProvider.send(
-          "eth_signTypedData_v4",
-          [address.toLowerCase(),
-            JSON.stringify(ethers.utils._TypedDataEncoder.getPayload(
-              typedData.domain, typedData.types, typedData.message))])
+        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message)
 
         let _compressedData = await codec.compress(typedData)
-        console.log(_compressedData)
+
         searchParams.set("typedData", _compressedData)
 
       } else if(type ==='message') {
