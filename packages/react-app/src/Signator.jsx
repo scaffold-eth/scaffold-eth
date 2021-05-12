@@ -1,11 +1,11 @@
-import { Button, Card, Checkbox, Input, Radio, Row, Space, Typography } from "antd";
+import { Button, Card, Checkbox, Input, Radio, Space, Typography } from "antd";
 import { ethers } from "ethers";
 import React, { useState } from "react";
 import ReactJson from "react-json-view";
 import { useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage, useOnBlock } from "./hooks";
 
-const { Text, Paragraph } = Typography;
+const { Text } = Typography;
 const codec = require("json-url")("lzw");
 
 /*
@@ -58,7 +58,6 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
     return _params;
   }
 
-  const location = useLocation();
   const searchParams = useSearchParams();
   const history = useHistory();
 
@@ -131,7 +130,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   };
 
   return (
-    <Row justify="center">
+    <div className="container">
       <Card>
         <Space direction="vertical">
           <Radio.Group
@@ -198,12 +197,10 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 </Checkbox>
               </div>
 
-              <Card>
+              <Card className="card-border">
                 <div
                   style={{
                     fontSize: 18,
-                    maxWidth: "400px",
-                    minWidth: "400px",
                     wordWrap: "break-word",
                     whiteSpace: "pre-line",
                   }}
@@ -215,10 +212,10 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
           )}
           {type === "typedData" && (
             <>
-              <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank">
+              <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank" rel="noopener noreferrer">
                 Learn more about signing typed data
               </a>
-              <Card style={{ textAlign: "left" }}>
+              <Card style={{ textAlign: "left" }} className="card-border">
                 <ReactJson
                   src={typedData}
                   onEdit={o => {
@@ -232,6 +229,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                   }}
                   enableClipboard={false}
                   displayObjectSize={false}
+                  theme="monokai"
                 />
               </Card>
             </>
@@ -242,7 +240,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
           </Button>
         </Space>
       </Card>
-    </Row>
+    </div>
   );
 }
 
