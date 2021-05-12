@@ -2,6 +2,7 @@ import React from "react";
 import Blockies from "react-blockies";
 import { Typography, Skeleton } from "antd";
 import { useLookupAddress } from "../hooks";
+import { QRPunkBlockie } from ".";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 
 // changed value={address} to address={address}
@@ -91,9 +92,16 @@ export default function Address(props) {
 
   return (
     <span>
-      { !props.justAddress ? <span style={{ verticalAlign: "middle" }}>
-        <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize?props.fontSize/7:4} />
-      </span>:"" }
+      {props.punkBlockie?
+        <span style={{ verticalAlign: "middle", position:"relative" }}>
+          <div style={{position:"absolute",left:-213,top:-68}}>
+            <QRPunkBlockie withQr={false} address={address.toLowerCase()} scale={0.4} />
+          </div>
+        </span>
+        :<span style={{ verticalAlign: "middle" }}>
+          <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize?props.fontSize/7:4} />
+        </span>
+      }
       <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize?props.fontSize:28 }}>{text}</span>
     </span>
   );

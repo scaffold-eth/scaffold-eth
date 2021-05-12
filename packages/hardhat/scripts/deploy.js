@@ -10,7 +10,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
   const simpleStream = await deploy("SimpleStream",[
-    /* to address */ "0x89C479761E39f05374Ec7bB6EC36b255C853A4fd",
+    /* to address */ "0x34aA3F359A9D614239015126635CE7732c18fDF3",
     /* cap */ utils.parseEther("0.5"),//ether
     /* frequency */120, //1296000,//seconds //1296000,//15 days
     /* starts full: */ false,

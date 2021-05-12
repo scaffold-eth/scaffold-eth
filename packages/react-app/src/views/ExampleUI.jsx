@@ -38,7 +38,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
   //const unclaimedPercent = totalStreamBalance && totalUnclaimable && totalUnclaimable.mul(100).div(totalStreamBalance)
   //console.log("unclaimedPercent",unclaimedPercent,unclaimedPercent&&unclaimedPercent.toNumber())
 
-  const WIDTH = "calc(min(77vw,520px))"
+  const WIDTH = "calc(min(77vw,620px))"
 
   let totalProgress = []
 
@@ -59,22 +59,12 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
     <div>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
+
+
+          //<QRBlockie scale={0.6} withQr={true} address={readContracts && readContracts.SimpleStream.address} />
+
+
       */}
-      <QRBlockie scale={0.6} withQr={true} address={readContracts && readContracts.SimpleStream.address} />
-      <div style={{marginTop:-64}}>
-        <Address value={readContracts && readContracts.SimpleStream.address} justAddress={true} />
-      </div>
-
-      <div style={{width:400, margin:"auto", marginTop:32, position:"relative"}}>
-        <div style={{padding:16, marginBottom:64}}>
-          <span style={{opacity:0.5}}>streaming to:</span>
-        </div>
-        <div style={{position:"absolute",top:-50}}>
-          <QRPunkBlockie withQr={false} address={streamToAddress} scale={0.7} />
-        </div>
-        <Address value={streamToAddress} ensProvider={mainnetProvider} />
-
-      </div>
 
       <div style={{padding:16, width:WIDTH, margin:"auto"}}>
         <div style={{padding:32}}>
@@ -87,6 +77,24 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
           </div>
         </div>
       </div>
+
+      <div style={{marginTop:-32}}>
+        <Address value={readContracts && readContracts.SimpleStream.address} />
+      </div>
+
+
+      <div style={{width:400, margin:"auto", marginTop:32, position:"relative"}}>
+        <div style={{padding:16, marginBottom:64}}>
+          <span style={{opacity:0.5}}>streaming to:</span>
+        </div>
+        <div style={{position:"absolute",top:-50}}>
+          <QRPunkBlockie withQr={false} address={streamToAddress} scale={0.7} />
+        </div>
+        <Address value={streamToAddress} ensProvider={mainnetProvider} />
+
+      </div>
+
+
 
       <div style={{border:"1px solid #cccccc", padding:16, width:WIDTH, margin:"auto",marginTop:64}}>
 
