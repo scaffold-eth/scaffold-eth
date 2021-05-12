@@ -1,23 +1,58 @@
 import React, { useState } from "react";
-import { useLocation, useHistory } from "react-router-dom";
+import { useLocation, useHistory, Link } from "react-router-dom";
 import { Row, Button, Input, Checkbox, Radio, Typography, Card, Space } from "antd";
-import { useOnBlock } from "./hooks";
+import { useOnBlock, useLocalStorage } from "./hooks";
 import { ethers } from "ethers";
+import ReactJson from 'react-json-view'
 const { Text, Paragraph } = Typography;
+const codec = require('json-url')('lzw');
+
 /*
     Welcome to the Signator!
 */
 
+let eip712Example = {
+    "domain": {
+      "name": "Demo",
+      "version": "1",
+      "chainId": 1,
+    },
+    "types": {
+      "Person": [
+        {
+          "name": "name",
+          "type": "string"
+        },
+        {
+          "name": "location",
+          "type": "string"
+        },
+        {
+          "name": "dogs",
+          "type": "int32"
+        }
+      ],
+    },
+    "primaryType": "Person",
+    "message": {
+        "name": "Adam",
+        "location": "Earth",
+        "dogs": 1
+      }
+  }
+
 
 function Signator({injectedProvider, mainnetProvider, address}) {
 
-  const [messageText, setMessageText] = useState('hello world')
+  const [messageText, setMessageText] = useState('hello ethereum')
   const [addDate, setAddDate] = useState(true)
   const [metaData, setMetaData] = useState('time')
   const [messageDate, setMessageDate] = useState(new Date())
   const [hashMessage, setHashMessage] = useState(false)
   const [latestBlock, setLatestBlock] = useState()
   const [signing, setSigning] = useState(false)
+  const [typedData, setTypedData] = useLocalStorage('typedData', eip712Example)
+  const [type, setType] = useLocalStorage('signingType','message')
 
   function useSearchParams() {
     let _params = new URLSearchParams(useLocation().search);
@@ -58,23 +93,37 @@ function Signator({injectedProvider, mainnetProvider, address}) {
       let _message = getMessage()
       console.log(`Signing: ${_message}`)
       let injectedSigner = injectedProvider.getSigner()
-      //let _signature = await injectedProvider.send("personal_sign", [_message, address])
-      //let _signature = await injectedProvider.send("eth_sign", [address, _message])
-      //console.log(_personalSignature)
-
-      let _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message
-
-      console.log(_messageToSign)
 
       let _signature
-      if(injectedProvider.provider.wc) {
-        _signature = await injectedProvider.send("personal_sign", [_messageToSign, address])
-      } else {
-        _signature = await injectedSigner.signMessage(_messageToSign)
+      if(type === 'typedData' ) {
+
+        _signature = await injectedProvider.send(
+          "eth_signTypedData_v4",
+          [address.toLowerCase(),
+            JSON.stringify(ethers.utils._TypedDataEncoder.getPayload(
+              typedData.domain, typedData.types, typedData.message))])
+
+        let _compressedData = await codec.compress(typedData)
+        console.log(_compressedData)
+        searchParams.set("typedData", _compressedData)
+
+      } else if(type ==='message') {
+
+        let _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message
+
+        console.log(_messageToSign, ethers.utils.isBytesLike(_message))
+
+        if(injectedProvider.provider.wc) {
+          _signature = await injectedProvider.send("personal_sign", [_messageToSign, address])
+        } else {
+          _signature = await injectedSigner.signMessage(_messageToSign)
+        }
+
+        searchParams.set("message", _message)
+
       }
       //console.log(_signature)
       console.log(`Success! ${_signature}`)
-      searchParams.set("message", _message)
       searchParams.set("signatures", _signature)
       searchParams.set("addresses", address)
       history.push(`/view?${searchParams.toString()}`);
@@ -91,6 +140,13 @@ function Signator({injectedProvider, mainnetProvider, address}) {
             <Card>
             <Space direction='vertical'>
 
+                  <Radio.Group value={type} buttonStyle="solid" size="large" onChange={(e)=> {
+                    setType(e.target.value) }}>
+                    <Radio.Button value="message">Message</Radio.Button>
+                    <Radio.Button value="typedData">Typed Data</Radio.Button>
+                  </Radio.Group>
+
+                  {type==='message'&&<>
                   <Input.TextArea style={{fontSize: 18}} size="large" rows={2} value={messageText} onChange={(e)=> {
                     setMessageText(e.target.value) }} />
 
@@ -122,6 +178,17 @@ function Signator({injectedProvider, mainnetProvider, address}) {
                     <Text style={{marginBottom: '0px'}}>{`${getMessage()}`}</Text>
                   </div>
                   </Card>
+                  </>
+                 }
+                 {type==='typedData'&&
+                  <>
+                    <a href="https://eips.ethereum.org/EIPS/eip-712" target="_blank">Learn more about signing typed data</a>
+                    <Card style={{textAlign:'left'}}>
+                    <ReactJson src={typedData} onEdit={(o)=>{setTypedData(o.updated_src)}} onAdd={(o)=>{setTypedData(o.updated_src)}} onDelete={(o)=>{setTypedData(o.updated_src)}}
+                      enableClipboard={false} displayObjectSize={false}/>
+                    </Card>
+                  </>
+                }
 
                   {<Button size="large" type="primary" onClick={signMessage} disabled={!injectedProvider} loading={signing}>
                     {injectedProvider?'Sign':'Connect account to sign'}
