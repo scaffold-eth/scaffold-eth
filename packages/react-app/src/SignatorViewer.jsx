@@ -1,5 +1,5 @@
-import { CheckCircleTwoTone, CloseCircleTwoTone, QrcodeOutlined, TwitterOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, List, Modal, Row, Typography } from "antd";
+import { CheckCircleTwoTone, CloseCircleTwoTone, QrcodeOutlined, TwitterOutlined, DeleteOutlined } from "@ant-design/icons";
+import { Alert, Button, Card, List, Modal, Row, Typography, notification, Input } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
@@ -100,6 +100,17 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
   }, [compressedTypedData]);
 
   useEffect(() => {
+
+    let _signatures = searchParams.get("signatures") ? searchParams.get("signatures").split(",") : []
+    let _addresses = searchParams.get("addresses") ? searchParams.get("addresses").split(",") : []
+
+    setSignatures(_signatures)
+    setAddresses(_addresses)
+
+  }, [location])
+
+  useEffect(() => {
+
     const checkAddresses = async () => {
       const _addressChecks = await signatures.map((sig, i) => {
         if (i + 1 > addresses.length) {
@@ -114,7 +125,6 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
           if (message) _signingAddress = ethers.utils.verifyMessage(messageToCheck, sig);
           if (typedData)
             _signingAddress = ethers.utils.verifyTypedData(typedData.domain, typedData.types, typedData.message, sig);
-          console.log(_signingAddress);
 
           if (_signingAddress === addresses[i]) {
             return "MATCH";
@@ -147,7 +157,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       return Promise.all(_addressChecks);
     };
 
-    if (message || typedData) {
+    if ((message || typedData) && signatures) {
       checkAddresses().then(data => {
         setAddressChecks(data);
       });
@@ -164,12 +174,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       let _signature;
 
       if (typedData) {
-        _signature = await injectedProvider.send("eth_signTypedData_v4", [
-          address.toLowerCase(),
-          JSON.stringify(
-            ethers.utils._TypedDataEncoder.getPayload(typedData.domain, typedData.types, typedData.message),
-          ),
-        ]);
+        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message)
       } else if (message) {
         if (injectedProvider.provider.wc) {
           _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
@@ -192,11 +197,45 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       searchParams.set("addresses", _addresses.join());
 
       history.push(`${location.pathname}?${searchParams.toString()}`);
+      setSigning(false)
     } catch (e) {
       console.log(e);
       setSigning(false);
+
+      if(e.message.indexOf('Provided chainId "100" must match the active chainId "1"') !== -1) {
+        notification.open({
+          message: 'Incorrect network selected',
+          description:
+          `Error: ${e.message}`,
+        });
+      }
     }
   };
+
+  const removeSignature = (i) => {
+
+    if(signatures.length > 1) {
+      const _signatures = [...signatures];
+      _signatures.splice(i,1)
+      searchParams.set("signatures", _signatures.join());
+      setSignatures(_signatures)
+    } else {
+      searchParams.delete("signatures");
+      setSignatures()
+    }
+
+    if(addresses.length > 1) {
+      const _addresses = [...addresses];
+      _addresses.splice(i,1)
+      searchParams.set("addresses", _addresses.join());
+      setSignatures(_addresses)
+    } else {
+      searchParams.delete("addresses");
+      setSignatures()
+    }
+
+    history.push(`${location.pathname}?${searchParams.toString()}`);
+  }
 
   const [qrModalVisible, setQrModalVisible] = useState(false);
 
@@ -246,12 +285,10 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
               <Text style={{ fontSize: 18, marginBottom: "0px" }}>{`${message}`}</Text>
             ) : (
               <div style={{ textAlign: "left" }}>
-                <ReactJson
-                  src={typedData && { message: typedData.message, domain: typedData.domain }}
-                  enableClipboard={false}
-                  displayDataTypes={false}
-                  displayObjectSize={false}
-                  theme="monokai"
+                <Input.TextArea
+                  size="large"
+                  autoSize={{ minRows: 2}}
+                  value={typedData&&JSON.stringify(typedData.message, null, '\t')}
                 />
               </div>
             )}
@@ -280,6 +317,12 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
                         <Address address={addresses[index]} ensProvider={mainnetProvider} />
                       )}
                       <div style={{ marginLeft: 10 }}>{_indicator}</div>
+                      <div style={{ marginLeft: 10 }}>
+                        <DeleteOutlined
+                          onClick={()=>{removeSignature(index)}}
+                          style={{ fontSize: 24 }}
+                          />
+                      </div>
                     </div>
                     <div style={{ marginTop: 10 }}>
                       <Text copyable>{`${item}`}</Text>
@@ -290,9 +333,16 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
             }}
           />
 
-          {address && addresses.indexOf(address) === -1 && (
-            <Button type="primary" size="large" onClick={signMessage} loading={signing}>
-              Sign
+          {(!injectedProvider || (address && addresses.indexOf(address) === -1)) && (
+            <Button
+              type="primary"
+              size="large"
+              onClick={signMessage}
+              loading={signing}
+              style={{ marginTop: 10 }}
+              disabled={!injectedProvider}
+            >
+              {injectedProvider?'Sign':'Connect account to sign'}
             </Button>
           )}
         </Card>

@@ -1,6 +1,6 @@
-import { Button, Card, Checkbox, Input, Radio, Space, Typography } from "antd";
+import { Button, Card, Checkbox, Input, Radio, Space, Typography, notification, Alert } from "antd";
 import { ethers } from "ethers";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import ReactJson from "react-json-view";
 import { useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage, useOnBlock } from "./hooks";
@@ -13,11 +13,6 @@ const codec = require("json-url")("lzw");
 */
 
 const eip712Example = {
-  domain: {
-    name: "Demo",
-    version: "1",
-    chainId: 1,
-  },
   types: {
     Person: [
       {
@@ -34,7 +29,6 @@ const eip712Example = {
       },
     ],
   },
-  primaryType: "Person",
   message: {
     name: "Adam",
     location: "Earth",
@@ -44,14 +38,17 @@ const eip712Example = {
 
 function Signator({ injectedProvider, mainnetProvider, address }) {
   const [messageText, setMessageText] = useState("hello ethereum");
-  const [addDate, setAddDate] = useState(true);
   const [metaData, setMetaData] = useState("time");
   const [messageDate, setMessageDate] = useState(new Date());
   const [hashMessage, setHashMessage] = useState(false);
   const [latestBlock, setLatestBlock] = useState();
   const [signing, setSigning] = useState(false);
   const [typedData, setTypedData] = useLocalStorage("typedData", eip712Example);
+  const [manualTypedData, setManualTypedData] = useLocalStorage("manualTypedData")
+  const [invalidJson, setInvalidJson] = useState(false)
   const [type, setType] = useLocalStorage("signingType", "message");
+  const [typedEditor, setTypedEditor] = useState('textArea')
+  const [typedDataChecks, setTypedDataChecks] = useState({})
 
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
@@ -62,10 +59,10 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   const history = useHistory();
 
   const getMessage = () => {
-    let _message = addDate ? `${messageDate.toLocaleString("en", { hour12: false })}: ${messageText}` : messageText;
+    let _message
 
     if (metaData === "time") {
-      _message = `${messageDate.toLocaleString("en", { hour12: false })}: ${messageText}`;
+      _message = `${messageDate.toLocaleString()}: ${messageText}`;
     } else if (metaData == "block") {
       _message = `${latestBlock}: ${messageText}`;
     } else {
@@ -84,17 +81,35 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
     setLatestBlock(mainnetProvider.blockNumber);
   });
 
-  const signMessage = async () => {
+  useEffect(()=>{
+    if(typedData) {
+      let _checks = {}
+      _checks.domain = 'domain' in typedData
+      _checks.types = 'types' in typedData
+      _checks.message = 'message' in typedData
+      let _hash
+      try {
+        _hash = ethers.utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message)
+        _checks.hash = _hash
+      } catch(e) {
+        console.log('failed to compute hash', e)
+      }
+      setTypedDataChecks(_checks)
+    }
+  },[typedData])
+
+  const signMessage = async (sign = true) => {
     try {
       setSigning(true);
       const _message = getMessage();
-      console.log(`Signing: ${_message}`);
-      const injectedSigner = injectedProvider.getSigner();
+      if(sign) console.log(`Signing: ${_message}`);
+
+      const injectedSigner = sign && injectedProvider.getSigner();
 
       let _signature;
       if (type === "typedData") {
-        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
 
+        if(sign) _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
         const _compressedData = await codec.compress(typedData);
 
         searchParams.set("typedData", _compressedData);
@@ -103,9 +118,9 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
 
         console.log(_messageToSign, ethers.utils.isBytesLike(_message));
 
-        if (injectedProvider.provider.wc) {
+        if (sign && injectedProvider.provider.wc) {
           _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
-        } else {
+        } else if(sign) {
           _signature = await injectedSigner.signMessage(_messageToSign);
         }
 
@@ -113,14 +128,23 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
       }
       // console.log(_signature)
       console.log(`Success! ${_signature}`);
-      searchParams.set("signatures", _signature);
-      searchParams.set("addresses", address);
+      if(sign) {
+        searchParams.set("signatures", _signature);
+        searchParams.set("addresses", address);
+      }
       history.push(`/view?${searchParams.toString()}`);
 
       setSigning(false);
     } catch (e) {
       console.log(e);
       setSigning(false);
+      if(e.message.indexOf('Provided chainId "100" must match the active chainId "1"') !== -1) {
+        notification.open({
+          message: 'Incorrect network selected',
+          description:
+          `Error: ${e.message}`,
+        });
+      }
     }
   };
 
@@ -163,7 +187,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                     }}
                   >
                     <Radio.Button value="time">Time</Radio.Button>
-                    <Radio.Button value="block">Block</Radio.Button>
+                    <Radio.Button value="block" disabled={!latestBlock}>Block</Radio.Button>
                     <Radio.Button value="none">None</Radio.Button>
                   </Radio.Group>
 
@@ -211,7 +235,19 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 Learn more about signing typed data
               </a>
               <Card style={{ textAlign: "left" }} className="card-border">
-                <ReactJson
+              <Space direction="vertical" style={{ width: "100%" }}>
+                <Radio.Group
+                  value={typedEditor}
+                  buttonStyle="solid"
+                  size="large"
+                  onChange={e => {
+                    setTypedEditor(e.target.value);
+                  }}
+                >
+                  <Radio.Button value="textArea">TextArea</Radio.Button>
+                  <Radio.Button value="editor">Editor</Radio.Button>
+                </Radio.Group>
+                {(typedEditor==='editor')&&<ReactJson
                   src={typedData}
                   onEdit={o => {
                     setTypedData(o.updated_src);
@@ -225,21 +261,72 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                   enableClipboard={false}
                   displayObjectSize={false}
                   theme="monokai"
+                />}
+                {(typedEditor==='textArea')&&
+                <>
+                <Input.TextArea
+                  size="large"
+                  autoSize={{ minRows: 2}}
+                  value={manualTypedData || JSON.stringify(typedData)}
+                  onChange={e => {
+                    try {
+                    setManualTypedData(e.target.value)
+                    const _newTypedData = JSON.parse(e.target.value);
+                    setTypedData(_newTypedData);
+                    setInvalidJson(false)
+                  } catch (e) {
+                    console.log(e)
+                    setInvalidJson(true)
+                    setTypedDataChecks({})
+                  }
+                  }}
                 />
+                {invalidJson&&<Alert message="Invalid Json" type="error" />}
+                {/*typedDataChecks.domain===false&&<Alert message="No domain specified" type="info" />*/}
+                {typedDataChecks.types===false&&<Alert message="Missing types" type="error" />}
+                {typedDataChecks.message===false&&<Alert message="Missing message" type="error" />}
+                {(!invalidJson&&!typedDataChecks.hash)&&<Alert message="Invalid input data" type="error" />}
+                <div>
+                <Button onClick={()=> {
+                  setManualTypedData(JSON.stringify(typedData, null, '\t'))
+                }}
+                disabled={invalidJson}
+                > Prettify</Button>
+                <Button onClick={()=> {
+                  setManualTypedData(JSON.stringify(eip712Example, null, '\t'))
+                  setTypedData(eip712Example)
+                  setInvalidJson(false)
+                }}
+                > Reset</Button>
+                </div>
+                </>}
+                </Space>
               </Card>
             </>
           )}
 
-          <Button
-            size="large"
-            type="primary"
-            onClick={signMessage}
-            disabled={!injectedProvider}
-            loading={signing}
-            style={{ marginTop: 10 }}
-          >
-            {injectedProvider ? "Sign" : "Connect account to sign"}
-          </Button>
+          <Space>
+            <Button
+              size="large"
+              type="primary"
+              onClick={signMessage}
+              disabled={!injectedProvider || (type=='typedData' && (!typedDataChecks.hash || invalidJson))}
+              loading={signing}
+              style={{ marginTop: 10 }}
+            >
+              {injectedProvider ? "Sign" : "Connect account to sign"}
+            </Button>
+            <Button
+              size="large"
+              onClick={()=>{
+                signMessage(false)
+              }}
+              disabled={signing || invalidJson}
+              style={{ marginTop: 10 }}
+            >
+              {"Create message"}
+            </Button>
+          </Space>
         </Space>
       </Card>
     </div>
