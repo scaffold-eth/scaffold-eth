@@ -1,3 +1,58 @@
 .App {
-  text-align: center;
+  min-height: 100vh;
+  background: url(./images/sig-background-new.jpg) top center no-repeat;
+  background-color: #121212;
+  background-size: 1200px;
+}
+
+.container {
+  padding-top: 400px;
+  padding-bottom: 100px;
+  max-width: 500px;
+  margin: 0 auto;
+  padding-left: 20px;
+  padding-right: 20px;
+}
+
+.App .ant-page-header-heading-extra {
+  padding: 5px;
+  background: rgba(0, 0, 0, 0.75);
+}
+
+.App .ant-card {
+  background-color: rgba(0, 0, 0, 0.75);
+  border-color: #000;
+}
+
+.App .ant-card.card-border,
+.App .ant-list-bordered {
+  border-color: #333;
+}
+
+.ant-page-header.ant-page-header-ghost {
+  max-width: 1200px;
+  margin: 0 auto;
+  background: none;
+}
+
+@media only screen and (max-width: 1200px) {
+  .App {
+    background-size: 800px;
+  }
+  .container {
+    padding-top: 220px;
+  }
+}
+
+@media only screen and (max-width: 740px) {
+  .App {
+    background-size: 600px;
+  }
+  .container {
+    padding-top: 150px;
+  }
+  .ant-page-header {
+    padding-top: 10px;
+    padding-bottom: 10px;
+  }
 }
