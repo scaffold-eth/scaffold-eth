@@ -28,7 +28,7 @@ import Blockie from "./Blockie";
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
   - Provide placeholder="Enter address" value for the input
   - Value of the address input is stored in value={toAddress}
-  - Control input change by onChange={setToAddress} 
+  - Control input change by onChange={setToAddress}
                           or onChange={address => { setToAddress(address);}}
 */
 
@@ -39,7 +39,7 @@ export default function AddressInput(props) {
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
   const ens = useLookupAddress(props.ensProvider, currentValue);
 
-  const scannerButton = (
+  const scannerButton = props.hideScanner?"":(
     <div
       style={{ marginTop: 4, cursor: "pointer" }}
       onClick={() => {

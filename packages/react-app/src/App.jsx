@@ -3,18 +3,21 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD } from "antd";
+import { ExportOutlined, ForkOutlined, ExperimentOutlined } from "@ant-design/icons";
+import { message, Input, Image, List, Row, Col, Button, Menu, Alert, Switch as SwitchD, Progress } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, EtherInput, AddressInput, Balance } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS, SIMPLE_STREAM_ABI, BUILDERS, BUILDS } from "./constants";
+import pretty from 'pretty-time';
+import { ethers } from "ethers";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -36,7 +39,7 @@ import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants"
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -86,7 +89,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  //const tx = Transactor(userProvider, gasPrice)
+  const tx = Transactor(userProvider, gasPrice)
 
   // Faucet Tx can be used to send funds from the faucet
   //const faucetTx = Transactor(localProvider, gasPrice)
@@ -98,7 +101,7 @@ function App(props) {
   //const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  //const readContracts = useContractLoader(localProvider)
+  const readContracts = useContractLoader(localProvider)
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
   //const writeContracts = useContractLoader(userProvider)
@@ -116,8 +119,44 @@ function App(props) {
   // Then read your DAI balance like:
   //const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
 
+  let streams = []
+  for(let b in BUILDERS){
+    if(BUILDERS[b].streamAddress) streams.push(BUILDERS[b].streamAddress)
+  }
+  console.log("streams",streams)
   // keep track of a variable from the contract in the local React state:
-  //const purpose = useContractReader(readContracts,"YourContract", "purpose")
+  const streamReadResult = useContractReader(readContracts,"StreamReader", "readStreams", [streams])
+  console.log("streamReadResult",streamReadResult)
+
+  const [ builderStreams, setBuilderStreams ] = useState()
+  useEffect(
+    ()=>{
+      if(streamReadResult){
+        let finalBuilderList = {}
+        for(let b in BUILDERS){
+
+          let badges = []
+          for(let c in BUILDERS[b].builds){
+            let buildString = BUILDERS[b].builds[c]
+            console.log("searching for build string ",buildString)
+            for(let d in BUILDS){
+              if(BUILDS[d].image.replace(".png","").replace(".jpg","")==buildString){
+                badges.push(
+                  <a href={BUILDS[d].branch} target="_blank"><span style={{margin:4}}>{BUILDS[d].name.substr(0,BUILDS[d].name.indexOf(" "))}</span></a>
+                )
+              }
+            }
+
+
+          }
+          finalBuilderList[BUILDERS[b].name] = {...BUILDERS[b],badges,cap:streamReadResult[b*4],frequency:streamReadResult[b*4+1],balance:streamReadResult[b*4+2],totalBalance:streamReadResult[b*4+3]}
+
+        }
+        setBuilderStreams(finalBuilderList)
+      }
+    }
+  ,[streamReadResult])
+  console.log("builderStreams",builderStreams)
 
   //📟 Listen for broadcast events
   //const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -126,6 +165,18 @@ function App(props) {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
+
+  /*let addressToUse
+  let streamLoaders
+  for(let b in BUILDERS){
+    console.log("BUILDER",b,BUILDERS[b])
+    if(BUILDERS[b].streamAddress){
+      addressToUse = BUILDERS[b].streamAddress
+      streamLoaders[b] = useExternalContractLoader(mainnetProvider, addressToUse, SIMPLE_STREAM_ABI)
+    }
+  }*/
+
+
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -207,184 +258,18 @@ function App(props) {
   }*/
 
 
-  const builds = [
-    {
-      name: "🎟 Simple NFT Example",
-      desc: "Mint and display NFTs on Ethereum with a full example app...",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example",
-      readMore: "",
-      image: "simplenft.png"
-    },
-    {
-      name: "🧑‍🎤 PunkWallet.io",
-      desc: "A quick web wallet for demonstrating identity of keypairs and sending around ETH.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/punk-wallet",
-      readMore: "https://punkwallet.io",
-      image: "punkwallet.png"
-    },
-    {
-      name: "🔴 Optimism Starter Pack",
-      desc: "A 🏗 scaffold-eth dev stack for 🔴 Optimism",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/local-optimism",
-      readMore: "https://azfuller20.medium.com/optimism-scaffold-eth-draft-b76d3e6849e8",
-      image: "op.png"
-    },
-    {
-      name: "⚖️ Uniswapper",
-      desc: "A component for swapping erc20s on Uniswap (plus tokenlists + local forks of mainnet!)",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/uniswapper",
-      readMore: "https://azfuller20.medium.com/swap-with-uniswap-wip-f15923349b3d",
-      image: "uniswapper.png"
-    },
-    {
-      name: "👻 Lender",
-      desc: "A component for depositing & borrowing assets on Aave",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/lender",
-      readMore: "https://azfuller20.medium.com/lend-with-aave-v2-20bacceedade",
-      image: "lender.png"
-    },
-    {
-      name: "🐸Chainlink 🎲 VRF 🎫 NFT",
-      desc: "Use VRF to get a 🎲 random \"⚔️ strength\" for each NFT as it is minted...",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/chainlink-vrf-nft",
-      readMore: "https://youtu.be/63sXEPIEh-k?t=1773",
-      image: "randomimage.png"
-    },
-    {
-      name: "👨‍👦 Minimal Proxy",
-      desc: "A clever workaround where you can deploy the same contract thousands of times with minimal deployment costs",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/minimal_proxy",
-      readMore: "",
-      image: "proxy.png"
-    },
-    {
-      name: "🍯 Honeypot",
-      desc: "How you can catch hackers by putting bait into your \"vulnerable\" smart contract 🤭",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/honeypot-example",
-      readMore: "",
-      image: "honeypot.png"
-    },
-    {
-      name: "😈 Denial of Service",
-      desc: "Make contract unusable by exploiting push external calls 😈 (DOS)",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/denial-of-service-example",
-      readMore: "",
-      image: "dos.png"
-    },
-    {
-      name: "⚡️ Aave Flash Loans Intro",
-      desc: "Learn how to borrow any available amount of assets without putting up any collateral and build a simple arbitrage bot that would trade between Uniswap and Sushiswap pools.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/flash-loans-intro",
-      readMore: "",
-      image: "flash.png"
-    },
-    {
-      name: "🧾 rTokens",
-      desc: "tokens that represent redirected yield from lending",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/defi-rtokens",
-      readMore: "",
-      image: "rtokens"
-    },
-    {
-      name: "🌱 radwallet.io",
-      desc: "A simple web wallet to send around Rad tokens (ERC20 on mainnet).",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/radwallet",
-      readMore: "https://radwallet.io",
-      image: ""
-    },
-    {
-      name: "🎨 Nifty.ink",
-      desc: "NFT artwork platform powered by meta transactions, burner wallets, sidechains, and bridged to Ethereum.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev",
-      readMore: "https://nifty.ink",
-      image: "niftyink.png"
-    },
-    {
-      name: "🌐 GTGS Voice Gems",
-      desc: "NFT \"shards\" collected from original \"Voice Gems\" for the Global Technology and Governance Summit.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/gtgs-voice-gems",
-      readMore: "https://gtgs.io",
-      image: "gtgs.png"
-    },
-    {
-      name: "🐊 Token Allocator",
-      desc: "Allocator.sol distributes tokens to addresses on a ratio defined by Governor.sol",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/new-allocator",
-      readMore: "",
-      image: "allocator.png"
-    },
-    {
-      name: "💎 Diamond Standard exploration",
-      desc: "Diamond standard in 🏗 scaffold-eth?",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/diamond-standard",
-      readMore: "",
-      image: "diamond.png"
-    },
-    {
-      name: "⏳ Streaming Meta Multi Sig",
-      desc: "An off-chain signature based multi sig with streaming.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig",
-      readMore: "https://bank.buidlguidl.com/streams",
-      image: "smms.png"
-    },
-    {
-      name: "🔮 Chainlink Example",
-      desc: "oracles and vrf",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/chainlink-tutorial-1",
-      readMore: "",
-      image: "vrf.png"
-    },
-    {
-      name: "👻 Aave 🦍 Ape",
-      desc: "A helper contract that lets you go long on the Aave asset of your choice.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/aave-ape",
-      readMore: "https://www.youtube.com/watch?v=4uAzju3efqY",
-      image: "ape.png"
-    },
-    {
-      name: "🔴 Optimism 🎟 NFTs ",
-      desc: "A \"buyer mints\" NFT gallery running on Optimism",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/optimistic-nft-dev-session",
-      readMore: "",
-      image: "opnfts.png"
-    },
-    {
-      name: "🎫 Nifty Viewer",
-      desc: "A forkable nft gallery with transfer functionality and burner wallets.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-viewer",
-      readMore: "",
-      image: "niftyview.png"
-    },
-    {
-      name: "🏷 NFT Auction",
-      desc: "Discover how you can build your own NFT auction where the highest bid gets an NFT!",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/nifty-viewer",
-      readMore: "",
-      image: "highestbid.png"
-    },
-    {
-      name: "🌲 Merkle Mint NFTs",
-      desc: "Use a Merkle tree of possible artworks and then submit a proof it is valid to mint.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/merkle-root-buyer-mints",
-      readMore: "",
-      image: ""
-    }
-    /*{
-      name: "⏳ Simple Stream",
-      desc: "A simple ETH stream where the beneficiary reports work via links when they withdraw.",
-      branch: "https://github.com/austintgriffith/scaffold-eth/tree/simple-stream",
-      readMore: "",
-      image: ""
-    },
-    {
-      name: "",
-      desc: "",
-      branch: "",
-      readMore: "",
-      image: ""
-    }*/
-  ]
 
+
+
+
+  const [amount, setAmount] = useState();
+  const [reason, setReason] = useState();
+  const [toAddress, setToAddress] = useState("0x97843608a00e2bbc75ab0C1911387E002565DEDE");
+
+  let extra = ""
+  if(toAddress=="0x97843608a00e2bbc75ab0C1911387E002565DEDE"){
+    extra = "(buidlguidl.eth)"
+  }
 
   return (
     <div className="App">
@@ -394,13 +279,19 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
 
-        <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
+        <Menu style={{ textAlign:"center", fontSize: 22 }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/builds">🛠 Builds</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">🛠 Builds</Link>
           </Menu.Item>
           <Menu.Item key="/builders">
             <Link onClick={()=>{setRoute("/builders")}} to="/builders">👩‍🏭 Builders</Link>
           </Menu.Item>
+          <Menu.Item key="/funding">
+            <Link onClick={()=>{setRoute("/funding")}} to="/funding">🧪 Funding</Link>
+          </Menu.Item>
+          {address=="0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"?<Menu.Item key="/debug">
+            <Link onClick={()=>{setRoute("/debug")}} to="/debug">👨🏻‍🔬 Debug</Link>
+          </Menu.Item>:<></>}
         </Menu>
 
         <Switch>
@@ -419,11 +310,95 @@ function App(props) {
               blockExplorer={blockExplorer}
             />*/}
 
-            quick intro and goal / north star
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+              <div style={{fontSize:24,opacity:0.777,fontWeight:"normal"}}>
+                <div style={{marginTop:64}}>
+                  The <b>🏰 BuidlGuidl</b> is a curated group of <b>Ethereum</b> builders
+                </div>
+                <div>
+                  creating <i>products</i>, <i>prototypes</i>, and <i>tutorials</i> with <b><a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a></b>
+                </div>
 
+                <div style={{opacity:0.77,fontSize:14,marginBottom:32,marginTop:32}}>
+                This is what we've built so far...
+                </div>
+              </div>
+            </div>
 
-            filterable list of builds?
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+{/*
+              <Input placeholder="search builds" bordered={false} style={{textAlign:"center",borderBottom:"1px solid #efefef"}} />
+*/}
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={BUILDS}
 
+                renderItem={(item) => {
+                  /*{
+                    name: "",
+                    desc: "",
+                    branch: "",
+                    readMore: "",
+                    image: ""
+                  }*/
+
+                  let extraLink = ""
+                  if(item.readMore){
+                    extraLink = (
+                      <a
+                        href={item.readMore}
+                        target="_blank"
+                        style={{marginLeft:8}}
+                      >
+                        <ExportOutlined />
+                      </a>
+                    )
+                  }
+
+                  return (
+                    <List.Item
+                      key={item.name}
+                      style={{padding:32}}
+                      extra={
+                        <Image
+                          style={{
+                            border:"1px solid #eeefff",
+                            padding:8,
+                            margin:8,
+                            backgroundColor:"#dfdfdf",
+                          }}
+                          width={220}
+                          alt={item.name}
+                          src={"./assets/"+item.image}
+                        />
+                      }
+                    >
+                      <div style={{textAlign:"left"}}>
+                        <div style={{marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}{extraLink}</div>
+                        <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.desc}</div>
+                        <div style={{marginLeft:32,paddingTop:32}}>
+                          <Row>
+                            <Col span={12}><Button size="large" onClick={()=>{
+                              //window.open(item.branch)
+                              message.success("Coming Soon!")
+                            }}>
+                              <ExperimentOutlined /> Fund
+                            </Button></Col>
+                            <Col span={12}><Button size="large" onClick={()=>{
+                              window.open(item.branch)
+                            }}>
+                              <ForkOutlined /> Fork
+                            </Button></Col>
+                          </Row>
+                        </div>
+                      </div>
+                    </List.Item>
+                  )
+                }}
+              />
+            </div>
 
 
             { /* uncomment for a second contract:
@@ -448,7 +423,240 @@ function App(props) {
             */ }
           </Route>
           <Route path="/builders">
-            builders
+
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+              <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
+                <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
+                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{color:"#222222",fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
+                  <div style={{marginTop:8}}>
+                    Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
+                     <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
+                      and
+                       <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth/branches/active">🌳 branches</a> for inspiration.
+                  </div>
+                  <div style={{marginTop:8}}>
+                    Submit creations to the <a href="https://t.me/joinchat/PXu_P6pps5I5ZmUx" target="_blank">🏰 BuidlGuidl telegram</a>!
+                  </div>
+                  <div style={{marginTop:8}}>
+                    Get help in the <a href="https://t.me/joinchat/U2UA3vBM5I7PoCOk" target="_blank">💬 Support telegram</a>.
+                  </div>
+                </div>
+
+                <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
+
+                  <div style={{marginTop:8}}>
+                    Each builder receives a <b>⏳ stream</b> of ETH.
+                  </div>
+                  <div style={{marginTop:8}}>
+                    When a builder <i>withdraws</i> from their stream, they provide a <b>🏷 link</b> to their work.
+                  </div>
+                  <div style={{marginTop:8}}>
+                    <b>👨‍👩‍👧‍👦 You</b> can fund Ethereum development; send ETH to any stream:
+                  </div>
+                </div>
+                <List
+                  /*bordered*/
+                  itemLayout="vertical"
+                  size="large"
+                  dataSource={BUILDERS}
+
+                  renderItem={(item) => {
+
+                    let extraLink = ""
+                    if(item.github){
+                      extraLink = (
+                        <a
+                          href={item.github}
+                          target="_blank"
+                          style={{marginLeft:8}}
+                        >
+                          <ExportOutlined />
+                        </a>
+                      )
+                    }
+
+
+                    const STREAMWIDTH = "calc(min(80vw,620px))"
+                    const stream = builderStreams && builderStreams[item.name]
+                    if(stream){
+
+                      //console.log("STREAM DISPLAY",stream)
+
+                      let streamNetPercentSeconds = stream.totalBalance && stream.cap && stream.totalBalance.mul(100).div(stream.cap)
+                      //console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds.toNumber())
+
+                      const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
+                      //console.log("numberOfTimesFull",numberOfTimesFull)
+
+                      const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
+                      //console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
+
+                      let totalProgress = []
+
+                      const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
+
+                      for(let c=0;c<numberOfTimesFull;c++){
+                        totalProgress.push(
+                          <Progress percent={100} showInfo={false} style={{width:widthOfStacks,padding:4}}/>
+                        )
+                      }
+                      if(streamNetPercent && streamNetPercent.toNumber()>0){
+                        totalProgress.push(
+                          <Progress percent={streamNetPercent&&streamNetPercent.toNumber()} showInfo={false} status="active" style={{width:widthOfStacks,padding:4}}/>
+                        )
+                      }
+
+                      return (
+                        <List.Item
+                          key={item.name}
+                          style={{padding:32}}
+                          extra={
+                            <div style={{marginTop:48}}>
+                              <Button size="large" onClick={()=>{
+                                  //window.open(item.branch)
+                                  message.success("Coming soon!")
+                                }}>
+                                  <ExperimentOutlined /> Fund
+                              </Button>
+                            </div>
+                          }
+                        >
+                          <div style={{textAlign:"left",position:"relative"}}>
+
+                            {item.streamAddress?<div style={{position:"absolute",left:216,top:-6}}>
+                              <div style={{padding:8}}>
+                                <div style={{padding:4, fontSize:14}}>
+                                  <Balance value={stream.totalBalance} provider={localProvider} price={price} size={14}/>
+                                  <span style={{opacity:0.5}}> @ <Balance value={stream.cap} price={price} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
+                                </div>
+                                <div>
+                                  {totalProgress} ({streamNetPercentSeconds&&pretty(streamNetPercentSeconds.toNumber()*1000000000)})
+                                </div>
+                              </div>
+                            </div>:""}
+
+                            <div style={{position:"absolute",left:-216,top:-100}}>
+                              <QRPunkBlockie withQr={false} address={item.address} scale={0.7} />
+                            </div>
+
+                            <div style={{marginLeft:32, marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}</div>
+                            <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.role}</div>
+                            <div style={{marginLeft:-32,marginTop:32, fontSize:26,fontWeight:"bold"}}>{stream.badges}</div>
+
+
+                          </div>
+                        </List.Item>
+                      )
+                    }
+
+                  }}
+                />
+
+                <div style={{paddingBottom:256}}></div>
+              </div>
+            </div>
+
+          </Route>
+          <Route path="/funding">
+
+          <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
+            <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
+
+              <div style={{marginTop:8,marginBottom:16}}>
+                The <b>🏰 BuidlGuidl</b> is an Ethereum <b>public good</b>.
+              </div>
+              <div style={{marginTop:8,marginBottom:16}}>
+                We build <i>generic web3 components</i> to make creating web3 <b>products</b> easier.
+              </div>
+              <div style={{marginTop:8,marginBottom:64}}>
+                Each <i>branch</i> of <b>🏗 scaffold-eth</b> is an educational tutorial.
+              </div>
+
+
+              <hr style={{opacity:0.1,marginBottom:64}}/>
+
+              <div style={{width:400, margin:"auto"}}>
+                <div style={{marginTop:8}}>
+                  <AddressInput
+                    hideScanner={true}
+                    ensProvider={mainnetProvider}
+                    placeholder="to address"
+                    value={toAddress}
+                    onChange={setToAddress}
+                  />
+                </div>
+                {extra?<div style={{marginTop:2,textAlign:"left",paddingLeft:16,fontSize:14}}>
+                  <b>BuidlGuidl.eth</b>
+                </div>:""}
+                <div style={{marginTop:16}}>
+                  <EtherInput
+                    autoFocus={true}
+                    price={props.price}
+                    value={amount}
+                    onChange={value => {
+                      setAmount(value);
+                    }}
+                  />
+                </div>
+                <div style={{marginTop:16}}>
+                  <Input
+                    placeholder={"reason / guidance"}
+                    value={reason}
+                    onChange={e => {
+                      setReason(e.target.value);
+                    }}
+                  />
+                </div>
+                <div style={{marginTop:16}}>
+                <Button
+                  onClick={() => {
+                    console.log("toAddress",toAddress)
+                    console.log("AMOUNT",amount)
+                    tx({
+                      to: toAddress,
+                      value: parseEther(""+amount),
+                      data: reason?ethers.utils.hexlify(ethers.utils.toUtf8Bytes(reason)):"0x"
+                    })
+                  }}
+                  size="large"
+                  type="primary"
+                >
+                  Fund
+                </Button>
+                </div>
+              </div>
+
+
+              <hr style={{opacity:0.1,marginTop:64}}/>
+
+
+              <div style={{marginTop:64}}>
+                <div style={{padding:8}}>
+                  🙏 All funding will go to developers mentored by <a  href="https://twitter.com/austingriffith" target="_blank">@austingriffith</a>.
+                </div>
+                <div style={{padding:8}}>
+                  In <a href="https://medium.com/@austin_48503/buidl-guidl-round-1-unaudited-4e1d9456e43d" target="_blank">version one</a>, we used <a href="https://support.buidlguidl.com/activity" target="_blank">quadratic matching</a> to fund a guild bank.
+                </div>
+                <div style={{padding:8}}>
+                  Then, we streamed the ETH to builders! Check out <a href="https://bank.buidlguidl.com/streams" target="_blank">all the work</a>  they turned in.
+                </div>
+                <div style={{padding:8}}>
+                  <i>Think what we could do with <b>your</b> support!</i>
+                </div>
+              </div>
+            </div>
+          </div>
+
+
+          </Route>
+          <Route path="/debug">
+            <Contract
+              name="StreamReader"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
           </Route>
         </Switch>
       </BrowserRouter>

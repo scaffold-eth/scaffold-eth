@@ -8,7 +8,7 @@ export default function Header() {
     <a href="/">
       <PageHeader
         title="🏰 BuidlGuidl"
-        subTitle="building on Ethereum in public"
+        subTitle="v2"
         style={{ cursor: "pointer" }}
       />
     </a>
