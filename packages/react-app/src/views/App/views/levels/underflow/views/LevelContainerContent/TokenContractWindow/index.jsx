@@ -1,4 +1,5 @@
 import React from 'react'
+import ReactModal from 'react-modal-resizable-draggable'
 import { Button, Typography } from 'antd'
 import { useUserAddress } from 'eth-hooks'
 import {
@@ -13,15 +14,16 @@ import {
   useExternalContractLoader
 } from '../../../../../../../../hooks'
 import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../../helpers'
-import { CodeContainer, WindowModal } from '../../../../../../../../sharedComponents'
+import { CodeContainer } from '../../../../../../../../sharedComponents'
 import { connectController } from './controller'
+import './styles.css'
 
 const localProvider = getLocalProvider()
 const targetNetwork = getTargetNetwork()
 
 const { Title } = Typography
 
-const TokenContractWindow = (props) => {
+const TokenContractWindow = props => {
   // TODO: this is not working - mapStateToProps in controller is incorrect
   const { uniqueWindowId, actions } = props
   console.log('TokenContractWindow:')
@@ -99,73 +101,124 @@ const TokenContractWindow = (props) => {
     }
   `
 
-  return (
-    <WindowModal
-      uniqueWindowId={uniqueWindowId}
-      initWidth={600}
-      initHeight={600}
-      initTop={130}
-      initLeft={60}
-      title='Interface Connection'
-      onFocus={e => {
-        console.log('Modal is clicked')
-      }}
-      isOpen
-      containerStyle={{
-        background: '#fff'
-      }}
-    >
-      <div>
-        <div style={{ margin: '-8px 0' }}>
-          <CodeContainer language='bash'>{contractCode}</CodeContainer>
-        </div>
-        <div style={{ padding: '20px' }}>
-          <div style={{ textAlign: 'center' }}>
-            <p>Claimable Supply:</p>
-            <Title level={4}>{claimableSupply && claimableSupply.toString()}</Title>
-          </div>
+  const styles = {
+    button: {
+      background: 'transparent',
+      border: '2px solid #16DC8C',
+      borderRadius: 0,
+      marginBottom: '15px',
+      color: '#16DC8C',
+      fontSize: 10
+    }
+  }
 
-          <Button
-            block
-            onClick={() => {
-              transactor(writeContracts.EthereumCityERC20TokenMinter.incrementSupply())
-            }}
-            style={{ marginBottom: '15px' }}
-          >
-            increment
-          </Button>
-          <Button
-            block
-            onClick={() => {
-              transactor(writeContracts.EthereumCityERC20TokenMinter.decrementSupply())
-            }}
-          >
-            decrement
-          </Button>
-          <div style={{ marginTop: '20px', textAlign: 'center' }}>
-            <p>Your balance:</p>
-            <Title level={4}>{userERC20Balance && userERC20Balance.toString()}</Title>
-          </div>
-          <Button
-            block
-            onClick={() => {
-              // NOTE: we need to do this or otherwise the same underflow bug occures on the userSupply variable
-              if (userFoundContractTrick) {
-                let amountToClaim = claimableSupply
-                if (userERC20Balance > 0 && userFoundContractTrick) {
-                  amountToClaim = claimableSupply - userERC20Balance
-                }
-                transactor(writeContracts.EthereumCityERC20TokenMinter.claim(amountToClaim))
-              } else {
-                actions.continueDialog()
-              }
-            }}
-          >
-            claim supply
-          </Button>
+  return (
+    <div id='tokenContractWindow'>
+      <ReactModal
+        className={uniqueWindowId}
+        initWidth={600}
+        initHeight={600}
+        isOpen
+        top={160}
+        left={430}
+      >
+        <div
+          className='background-image'
+          style={{
+            height: '100%',
+            overflowY: 'scroll',
+            background: 'url(./assets/trimmed/window_trimmed.png)',
+            backgroundSize: '100% 100%'
+          }}
+        />
+        <div
+          className='windowTitle'
+          style={{
+            position: 'absolute',
+            top: '7%',
+            left: '54%',
+            width: '31%',
+            height: '3%',
+            fontSize: '61%',
+            color: '#16DC8C'
+          }}
+        >
+          INTERFACE CONNECTION
         </div>
-      </div>
-    </WindowModal>
+        <div
+          className='content'
+          style={{
+            position: 'absolute',
+            top: '12%',
+            left: '4%',
+            width: '92%',
+            height: '85%',
+            overflow: 'scroll'
+          }}
+        >
+          <div>
+            <CodeContainer language='bash'>{contractCode}</CodeContainer>
+          </div>
+          <div
+            style={{
+              padding: '20px',
+              color: '#16DC8C',
+              backgroundColor: 'rgb(16, 59, 51, 0.6)'
+            }}
+          >
+            <div style={{ textAlign: 'center' }}>
+              <p>CLAIMABLE SUPPLY:</p>
+              <Title level={4} style={{ color: '#16DC8C' }}>
+                {claimableSupply && claimableSupply.toString()}
+              </Title>
+            </div>
+
+            <Button
+              block
+              style={{ ...styles.button }}
+              onClick={() => {
+                transactor(writeContracts.EthereumCityERC20TokenMinter.incrementSupply())
+              }}
+            >
+              INCREMENT
+            </Button>
+            <Button
+              block
+              style={{ ...styles.button }}
+              onClick={() => {
+                transactor(writeContracts.EthereumCityERC20TokenMinter.decrementSupply())
+              }}
+            >
+              DECREMENT
+            </Button>
+            <div style={{ marginTop: '20px', textAlign: 'center' }}>
+              <p>YOUR BALANCE:</p>
+              <Title level={4} style={{ color: '#16DC8C' }}>
+                {userERC20Balance && userERC20Balance.toString()}
+              </Title>
+            </div>
+            <Button
+              block
+              style={{ ...styles.button }}
+              onClick={() => {
+                // NOTE: we need to do this or otherwise the same underflow bug occures on the userSupply variable
+                if (userFoundContractTrick) {
+                  let amountToClaim = claimableSupply
+                  if (userERC20Balance > 0 && userFoundContractTrick) {
+                    amountToClaim = claimableSupply - userERC20Balance
+                  }
+                  transactor(writeContracts.EthereumCityERC20TokenMinter.claim(amountToClaim))
+                } else {
+                  actions.continueDialog()
+                }
+              }}
+            >
+              CLAIM SUPPLY
+            </Button>
+          </div>
+        </div>
+      </ReactModal>
+    </div>
   )
 }
 
