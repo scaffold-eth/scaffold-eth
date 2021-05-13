@@ -25,6 +25,9 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
 
   console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds&&streamNetPercentSeconds.toNumber())
 
+  const totalSeconds = streamNetPercentSeconds && streamfrequency && streamNetPercentSeconds.mul(streamfrequency)
+  console.log("totalSeconds",totalSeconds)
+
   const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
 
   const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
@@ -73,7 +76,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
             <span style={{opacity:0.5}}> @ <Balance value={streamCap} price={price}/> / {streamfrequency&&pretty(streamfrequency.toNumber()*1000000000)}</span>
           </div>
           <div>
-            {totalProgress} ({streamNetPercentSeconds&&pretty(streamNetPercentSeconds.toNumber()*1000000000)})
+            {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
           </div>
         </div>
       </div>
