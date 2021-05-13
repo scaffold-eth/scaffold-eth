@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
 import { isAddress } from "@ethersproject/address";
+import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~

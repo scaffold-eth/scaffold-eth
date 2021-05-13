@@ -1,11 +1,11 @@
-import React, { useState, useCallback } from "react";
-import { Input, Button, Tooltip } from "antd";
-import Blockies from "react-blockies";
 import { SendOutlined } from "@ant-design/icons";
 import { parseEther } from "@ethersproject/units";
+import { Button, Input, Tooltip } from "antd";
+import { useLookupAddress } from "eth-hooks";
+import React, { useCallback, useState } from "react";
+import Blockies from "react-blockies";
 import { Transactor } from "../helpers";
 import Wallet from "./Wallet";
-import { useLookupAddress } from "eth-hooks";
 
 // improved a bit by converting address to ens if it exists
 // added option to directly input ens name
@@ -18,9 +18,9 @@ import { useLookupAddress } from "eth-hooks";
 
   ~ How can I use? ~
 
-  <Faucet 
+  <Faucet
     price={price}
-    localProvider={localProvider}  
+    localProvider={localProvider}
     ensProvider={mainnetProvider}
     placeholder={"Send local faucet"}
   />
@@ -74,10 +74,10 @@ export default function Faucet(props) {
         size="large"
         placeholder={props.placeholder ? props.placeholder : "local faucet"}
         prefix={blockie}
-        //value={address}
+        // value={address}
         value={ens || address}
         onChange={e => {
-          //setAddress(e.target.value);
+          // setAddress(e.target.value);
           updateAddress(e.target.value);
         }}
         suffix={
@@ -93,7 +93,12 @@ export default function Faucet(props) {
               shape="circle"
               icon={<SendOutlined />}
             />
-            <Wallet color="#888888" provider={props.localProvider} ensProvider={props.ensProvider} price={props.price} />
+            <Wallet
+              color="#888888"
+              provider={props.localProvider}
+              ensProvider={props.ensProvider}
+              price={props.price}
+            />
           </Tooltip>
         }
       />
