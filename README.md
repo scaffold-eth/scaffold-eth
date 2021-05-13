@@ -28,7 +28,7 @@
 ## About The Project
 We will show you how a simple Signature based NFT auction can be built and also will demonstrate how you can spin it up locally as a playground.
 ## Speed Run
-[![ethdenvervideo](https://i9.ytimg.com/vi/ws1bZ5VTolw/mq2.jpg?sqp=CMybpIQG&rs=AOn4CLArZMBK72XW5Siz5BmIZd0d86SjlQ)](https://youtu.be/ws1bZ5VTolw)
+[![ethdenvervideo](https://img.youtube.com/vi/ws1bZ5VTolw/hqdefault.jpg)](https://youtu.be/ws1bZ5VTolw)
 ## Getting Started
 
 ### Prerequisites
