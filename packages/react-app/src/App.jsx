@@ -197,21 +197,43 @@ function App(props) {
   if (localChainId && selectedChainId && localChainId !== selectedChainId) {
     const networkSelected = NETWORK(selectedChainId)
     const networkLocal = NETWORK(localChainId)
-    networkDisplay = (
-      <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-        <Alert
-          message="⚠️ Wrong Network"
-          description={
-            <div>
-              You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-              <b>{networkLocal && networkLocal.name}</b>.
-            </div>
-          }
-          type="error"
-          closable={false}
-        />
-      </div>
-    );
+    if(selectedChainId==1337 && localChainId==31337){
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network ID"
+            description={
+              <div>
+                You have <b>chain id 1337</b> for localhost and you need to change it to{" "}
+                <b>31337</b> to work with HardHat.
+                <div>
+                  (MetaMask -> Settings -> Networks -> Chain ID -> 31337)
+                </div>
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    }else{
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network"
+            description={
+              <div>
+                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+                <b>{networkLocal && networkLocal.name}</b>.
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    }
+
   } else {
     networkDisplay = (
       <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
