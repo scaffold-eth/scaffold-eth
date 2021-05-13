@@ -14,31 +14,31 @@ const codec = require("json-url")("lzw");
 
 const eip712Example = {
   types: {
-    Person: [
+    Greeting: [
       {
-        name: "name",
+        name: "salutation",
         type: "string",
       },
       {
-        name: "location",
+        name: "target",
         type: "string",
       },
       {
-        name: "dogs",
+        name: "born",
         type: "int32",
       },
     ],
   },
   message: {
-    name: "Adam",
-    location: "Earth",
-    dogs: 1,
+    salutation: "Hello",
+    target: "Ethereum",
+    born: 2015,
   },
 };
 
 function Signator({ injectedProvider, mainnetProvider, address }) {
   const [messageText, setMessageText] = useState("hello ethereum");
-  const [metaData, setMetaData] = useState("time");
+  const [metaData, setMetaData] = useState("none");
   const [messageDate, setMessageDate] = useState(new Date());
   const [hashMessage, setHashMessage] = useState(false);
   const [latestBlock, setLatestBlock] = useState();
@@ -59,8 +59,9 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   const history = useHistory();
 
   const getMessage = () => {
-    let _message
+    let _message = messageText
 
+    /*
     if (metaData === "time") {
       _message = `${messageDate.toLocaleString()}: ${messageText}`;
     } else if (metaData == "block") {
@@ -68,6 +69,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
     } else {
       _message = messageText;
     }
+    */
 
     if (hashMessage) {
       return ethers.utils.keccak256(ethers.utils.toUtf8Bytes(_message)); // _message//ethers.utils.hashMessage(_message)
@@ -176,9 +178,9 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 }}
               />
 
-              <div style={{ marginTop: 20 }}>
+              <div>
                 <Space>
-                  <Radio.Group
+                  {/*<Radio.Group
                     value={metaData}
                     buttonStyle="solid"
                     size="large"
@@ -189,34 +191,33 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                     <Radio.Button value="time">Time</Radio.Button>
                     <Radio.Button value="block" disabled={!latestBlock}>Block</Radio.Button>
                     <Radio.Button value="none">None</Radio.Button>
-                  </Radio.Group>
+                  </Radio.Group>*/}
 
-                  {metaData === "time" && (
+                  {(
                     <Button
                       size="large"
                       onClick={() => {
                         const _date = new Date();
-                        setMessageDate(_date);
+                        setMessageText(`${_date.toLocaleString()}: ${messageText}`);
                       }}
                     >
-                      Refresh time
+                      Add time
                     </Button>
                   )}
+                  <Checkbox
+                    style={{ fontSize: 18 }}
+                    checked={hashMessage}
+                    onChange={e => {
+                      setHashMessage(e.target.checked);
+                    }}
+                  >
+                    Hash message
+                  </Checkbox>
                 </Space>
-              </div>
-              <div style={{ marginTop: 20 }}>
-                <Checkbox
-                  style={{ fontSize: 18 }}
-                  checked={hashMessage}
-                  onChange={e => {
-                    setHashMessage(e.target.checked);
-                  }}
-                >
-                  Hash message
-                </Checkbox>
+
               </div>
 
-              <Card className="card-border">
+              {/*<Card className="card-border">
                 <div
                   style={{
                     fontSize: 18,
@@ -226,7 +227,7 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 >
                   <Text style={{ marginBottom: "0px" }}>{`${getMessage()}`}</Text>
                 </div>
-              </Card>
+              </Card>*/}
             </>
           )}
           {type === "typedData" && (
