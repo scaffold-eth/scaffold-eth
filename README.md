@@ -45,23 +45,29 @@ git clone -b signature-nft-auction https://github.com/austintgriffith/scaffold-e
 cd nft-auction
 ```
 
+
 2. Install dependencies
 ```bash
 yarn install
 ```
+3. Start local chain
+```bash
+yarn chain
+```
 
-3. Start your React frontend
+4. Start your React frontend
 ```bash
 yarn start
 ```
 
-4. Deploy your smart contracts to a local blockchain
+5. Deploy your smart contracts to a local blockchain
 ```bash
 yarn deploy
 ```
-5. Start Node server for enabling off-chain bidding
+
+6. The ui currently depends on a json file so to generate that run
 ```bash
-yarn backend
+yarn upload
 ```
 
 ## Smart contracts
