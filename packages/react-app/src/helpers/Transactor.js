@@ -1,9 +1,8 @@
 import { hexlify } from "@ethersproject/bytes";
 import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
-import { BLOCKNATIVE_DAPPID, } from "../constants";
-
 import Notify from "bnc-notify";
+import { BLOCKNATIVE_DAPPID } from "../constants";
 
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js

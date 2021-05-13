@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { AddressZero } from "@ethersproject/constants";
+import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~
@@ -21,7 +21,7 @@ const useResolveName = (provider, ensName) => {
 
   useEffect(() => {
     if (provider) {
-      provider.resolveName(ensName).then((resolvedAddress) => setAddress(resolvedAddress));
+      provider.resolveName(ensName).then(resolvedAddress => setAddress(resolvedAddress));
     }
   }, [provider, ensName]);
 
