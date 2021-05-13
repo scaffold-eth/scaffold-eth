@@ -23,6 +23,8 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
+const gasPriceInGwei = 129
+
 function mnemonic() {
   try {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -45,7 +47,7 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      gasPrice: 357000000000,
+      gasPrice: gasPriceInGwei*1000000000,
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -68,6 +70,7 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
+      gasPrice: gasPriceInGwei*1000000000,
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)

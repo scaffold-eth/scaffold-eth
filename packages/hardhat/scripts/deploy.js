@@ -14,7 +14,7 @@ const main = async () => {
     /* cap */ utils.parseEther("0.5"),//ether
     /* frequency */120, //1296000,//seconds //1296000,//15 days
     /* starts full: */ false,
-  ])
+  ]/*,{nonce: 0}*/)
 
   // add some local funds to the stream with a little message:
   await simpleStream.streamDeposit("Do some science, plz!",{value:ethers.utils.parseEther("2")})

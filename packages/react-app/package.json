@@ -94,6 +94,7 @@
     "ipfs": "node ./scripts/ipfs.js",
     "surge": "surge ./build",
     "s3": "node ./scripts/s3.js",
+    "route": "node ./scripts/route.js",
     "ship": "yarn surge",
     "theme": "npx gulp less",
     "watch": "node ./scripts/watch.js"
