@@ -1,6 +1,6 @@
+import { Skeleton, Typography } from "antd";
 import React from "react";
 import Blockies from "react-blockies";
-import { Typography, Skeleton } from "antd";
 import { useLookupAddress } from "../hooks";
 import { QRPunkBlockie } from ".";
 import { useThemeSwitcher } from "react-css-theme-switcher";
@@ -32,10 +32,10 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 
 const { Text } = Typography;
 
-const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
+const blockExplorerLink = (address, blockExplorer) =>
+  `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
 
 export default function Address(props) {
-
   const address = props.value || props.address;
 
   const ens = useLookupAddress(props.ensProvider, address);
@@ -52,7 +52,7 @@ export default function Address(props) {
 
   let displayAddress = address.substr(0, 6);
 
-  if (ens && ens.indexOf("0x")<0) {
+  if (ens && ens.indexOf("0x") < 0) {
     displayAddress = ens;
   } else if (props.size === "short") {
     displayAddress += "..." + address.substr(-4);
@@ -64,7 +64,12 @@ export default function Address(props) {
   if (props.minimized) {
     return (
       <span style={{ verticalAlign: "middle" }}>
-        <a style={{ color: currentTheme == "light" ? "#222222" : "#ddd" }} target={"_blank"} href={etherscanLink} rel="noopener noreferrer">
+        <a
+          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+          target="_blank"
+          href={etherscanLink}
+          rel="noopener noreferrer"
+        >
           <Blockies seed={address.toLowerCase()} size={8} scale={2} />
         </a>
       </span>
@@ -75,7 +80,12 @@ export default function Address(props) {
   if (props.onChange) {
     text = (
       <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
-        <a style={{ color: currentTheme == "light" ? "#222222" : "#ddd" }} target={"_blank"} href={etherscanLink} rel="noopener noreferrer">
+        <a
+          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+          target="_blank"
+          href={etherscanLink}
+          rel="noopener noreferrer"
+        >
           {displayAddress}
         </a>
       </Text>
@@ -83,7 +93,12 @@ export default function Address(props) {
   } else {
     text = (
       <Text copyable={{ text: address }}>
-        <a style={{ color: currentTheme == "light" ? "#222222" : "#ddd" }} target={"_blank"} href={etherscanLink} rel="noopener noreferrer">
+        <a
+          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+          target="_blank"
+          href={etherscanLink}
+          rel="noopener noreferrer"
+        >
           {displayAddress}
         </a>
       </Text>

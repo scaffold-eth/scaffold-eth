@@ -138,7 +138,6 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
             }
           }}>Withdraw</Button>
         </div>
-
       </div>
 
       {/*
@@ -168,7 +167,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
                   />
                 </span>
               </List.Item>
-            )
+            );
           }}
         />
       </div>

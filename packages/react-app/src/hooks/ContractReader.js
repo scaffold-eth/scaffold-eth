@@ -1,7 +1,6 @@
-import { useState, useEffect } from "react";
-import usePoller from "./Poller";
+import { useEffect, useState } from "react";
 import useOnBlock from "./OnBlock";
-import { Provider } from "@ethersproject/providers";
+import usePoller from "./Poller";
 
 const DEBUG = false;
 
@@ -60,24 +59,26 @@ export default function useContractReader(contracts, contractName, functionName,
     } catch (e) {
       console.log(e);
     }
-  }
+  };
 
-// Only pass a provider to watch on a block if we have a contract and no PollTime
-  useOnBlock(
-    (contracts && contracts[contractName] && adjustPollTime === 0)&&contracts[contractName].provider,
-    () => {
+  // Only pass a provider to watch on a block if we have a contract and no PollTime
+  useOnBlock(contracts && contracts[contractName] && adjustPollTime === 0 && contracts[contractName].provider, () => {
     if (contracts && contracts[contractName] && adjustPollTime === 0) {
-      updateValue()
-  }
-  })
+      updateValue();
+    }
+  });
 
-// Use a poller if a pollTime is provided
-usePoller(async () => {
-  if (contracts && contracts[contractName] && adjustPollTime > 0) {
-    if (DEBUG) console.log('polling!', contractName, functionName)
-    updateValue()
-  }
-}, adjustPollTime, contracts && contracts[contractName])
+  // Use a poller if a pollTime is provided
+  usePoller(
+    async () => {
+      if (contracts && contracts[contractName] && adjustPollTime > 0) {
+        if (DEBUG) console.log("polling!", contractName, functionName);
+        updateValue();
+      }
+    },
+    adjustPollTime,
+    contracts && contracts[contractName],
+  );
 
   return value;
 }
