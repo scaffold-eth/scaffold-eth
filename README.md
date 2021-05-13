@@ -135,7 +135,7 @@ An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
 
 ```bash
 yarn mint
-```
+
 await tenderlyVerify(
   {contractName: "YourContract",
    contractAddress: yourContract.address
