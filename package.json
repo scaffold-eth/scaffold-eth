@@ -60,5 +60,8 @@
       "**/hardhat",
       "**/hardhat/**"
     ]
+  },
+  "dependencies": {
+    "pretty-time": "^1.1.0"
   }
 }

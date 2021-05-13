@@ -23,7 +23,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
-const gasPriceInGwei = 129
+const gasPriceInGwei = 91
 
 function mnemonic() {
   try {
