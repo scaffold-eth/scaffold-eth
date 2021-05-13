@@ -195,14 +195,16 @@ function App(props) {
 
   let networkDisplay = "";
   if (localChainId && selectedChainId && localChainId !== selectedChainId) {
+    const networkSelected = NETWORK(selectedChainId)
+    const networkLocal = NETWORK(localChainId)
     networkDisplay = (
       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
         <Alert
           message="⚠️ Wrong Network"
           description={
             <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on{" "}
-              <b>{NETWORK(localChainId).name}</b>.
+              You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+              <b>{networkLocal && networkLocal.name}</b>.
             </div>
           }
           type="error"
