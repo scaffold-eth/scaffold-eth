@@ -41,35 +41,6 @@ import {
 import { connectController } from './controller'
 import './styles.css'
 
-/*
-const styles = {
-  container: {
-    position: 'fixed',
-    bottom: 0,
-    right: '10px',
-    // pointerEvents:'none',
-    height: '511px',
-    width: '303px',
-    background: 'url(./assets/wallet_new.png)',
-    backgroundSize: 'cover',
-    cursor: 'url(https://unpkg.com/nes.css/assets/cursor-click.png), pointer',
-    zIndex: 1050
-  },
-  walletClickableTop: {
-    height: '145px',
-    width: '303px'
-  },
-  walletContentContainer: {
-    // marginTop: '145px',
-    marginLeft: '45px',
-    marginRight: '30px'
-  },
-  message: {
-    color: 'white'
-  }
-}
-*/
-
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem('network')
 
