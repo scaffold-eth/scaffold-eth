@@ -111,8 +111,12 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
       let _signature;
       if (type === "typedData") {
 
-        if(sign) _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
-        const _compressedData = await codec.compress(typedData);
+        let _typedData = {...typedData}
+        if(!_typedData.domain) _typedData.domain = {}
+        if(!_typedData.domain.chainId) _typedData.domain.chainId = 1
+
+        if(sign) _signature = await injectedSigner._signTypedData(_typedData.domain, _typedData.types, _typedData.message);
+        const _compressedData = await codec.compress(_typedData);
 
         searchParams.set("typedData", _compressedData);
       } else if (type === "message") {
@@ -327,6 +331,13 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
             >
               {"Create message"}
             </Button>
+            {signing&&<Button
+              size="large"
+              onClick={()=>{setSigning(false)}}
+              style={{ marginTop: 10 }}
+            >
+              {"Cancel"}
+            </Button>}
           </Space>
         </Space>
       </Card>

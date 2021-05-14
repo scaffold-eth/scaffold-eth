@@ -15,42 +15,47 @@ const { Text } = Typography;
 */
 
 const checkEip1271 = async (provider, address, message, signature) => {
-  const eip1271Spec = {
-    magicValue: "0x1626ba7e",
-    abi: [
-      {
-        constant: true,
-        inputs: [
-          {
-            name: "_hash",
-            type: "bytes32",
-          },
-          {
-            name: "_sig",
-            type: "bytes",
-          },
-        ],
-        name: "isValidSignature",
-        outputs: [
-          {
-            name: "magicValue",
-            type: "bytes4",
-          },
-        ],
-        payable: false,
-        stateMutability: "view",
-        type: "function",
-      },
-    ],
-  };
 
-  const _addressCode = provider.getCode(address);
-  if (_addressCode === "0x") {
-    return "MISMATCH";
+  try {
+    const eip1271Spec = {
+      magicValue: "0x1626ba7e",
+      abi: [
+        {
+          constant: true,
+          inputs: [
+            {
+              name: "_hash",
+              type: "bytes32",
+            },
+            {
+              name: "_sig",
+              type: "bytes",
+            },
+          ],
+          name: "isValidSignature",
+          outputs: [
+            {
+              name: "magicValue",
+              type: "bytes4",
+            },
+          ],
+          payable: false,
+          stateMutability: "view",
+          type: "function",
+        },
+      ],
+    };
+
+    const _addressCode = provider.getCode(address);
+    if (_addressCode === "0x") {
+      return "MISMATCH";
+    }
+    const contract = new ethers.Contract(address, eip1271Spec.abi, provider);
+    const returnValue = await contract.isValidSignature(message, signature);
+    return returnValue === eip1271Spec.magicValue ? "MATCH" : "MISMATCH";
+  } catch(e) {
+    console.log(e)
   }
-  const contract = new ethers.Contract(address, eip1271Spec.abi, provider);
-  const returnValue = await contract.isValidSignature(message, signature);
-  return returnValue === eip1271Spec.magicValue ? "MATCH" : "MISMATCH";
 };
 
 function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
@@ -91,7 +96,6 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
     const decompressTypedData = async () => {
       if (compressedTypedData) {
         const _typedData = await codec.decompress(compressedTypedData);
-        console.log(_typedData);
         setTypedData(_typedData);
       }
     };
@@ -131,7 +135,6 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
           }
 
           try {
-            console.log(ethers.utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message));
 
             let _message;
             if (message)
@@ -142,7 +145,6 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
               _message = ethers.utils._TypedDataEncoder.hash(typedData.domain, typedData.types, typedData.message);
 
             const _eip1271Check = checkEip1271(mainnetProvider, addresses[i], _message, sig);
-            console.log(_eip1271Check);
             return _eip1271Check;
           } catch (e) {
             console.log(e);
