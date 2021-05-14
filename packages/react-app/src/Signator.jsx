@@ -1,7 +1,6 @@
 import { Button, Card, Checkbox, Input, Radio, Space, Typography, notification, Alert } from "antd";
 import { ethers } from "ethers";
 import React, { useState, useEffect } from "react";
-import ReactJson from "react-json-view";
 import { useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage, useOnBlock } from "./hooks";
 
@@ -47,7 +46,6 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
   const [manualTypedData, setManualTypedData] = useLocalStorage("manualTypedData")
   const [invalidJson, setInvalidJson] = useState(false)
   const [type, setType] = useLocalStorage("signingType", "message");
-  const [typedEditor, setTypedEditor] = useState('textArea')
   const [typedDataChecks, setTypedDataChecks] = useState({})
 
   function useSearchParams() {
@@ -221,17 +219,17 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
 
               </div>
 
-              {/*<Card className="card-border">
+              {hashMessage&&<Card className="card-border">
                 <div
                   style={{
-                    fontSize: 18,
+                    fontSize: 14,
                     wordWrap: "break-word",
                     whiteSpace: "pre-line",
                   }}
                 >
                   <Text style={{ marginBottom: "0px" }}>{`${getMessage()}`}</Text>
                 </div>
-              </Card>*/}
+              </Card>}
             </>
           )}
           {type === "typedData" && (
@@ -241,34 +239,6 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
               </a>
               <Card style={{ textAlign: "left" }} className="card-border">
               <Space direction="vertical" style={{ width: "100%" }}>
-                <Radio.Group
-                  value={typedEditor}
-                  buttonStyle="solid"
-                  size="large"
-                  onChange={e => {
-                    setTypedEditor(e.target.value);
-                  }}
-                >
-                  <Radio.Button value="textArea">TextArea</Radio.Button>
-                  <Radio.Button value="editor">Editor</Radio.Button>
-                </Radio.Group>
-                {(typedEditor==='editor')&&<ReactJson
-                  src={typedData}
-                  onEdit={o => {
-                    setTypedData(o.updated_src);
-                  }}
-                  onAdd={o => {
-                    setTypedData(o.updated_src);
-                  }}
-                  onDelete={o => {
-                    setTypedData(o.updated_src);
-                  }}
-                  enableClipboard={false}
-                  displayObjectSize={false}
-                  theme="monokai"
-                />}
-                {(typedEditor==='textArea')&&
-                <>
                 <Input.TextArea
                   size="large"
                   autoSize={{ minRows: 2}}
@@ -304,7 +274,6 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
                 }}
                 > Reset</Button>
                 </div>
-                </>}
                 </Space>
               </Card>
             </>
