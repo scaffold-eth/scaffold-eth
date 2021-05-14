@@ -202,6 +202,13 @@ export const DAI_ABI = [{"inputs":[{"internalType":"uint256","name":"chainId_","
       readMore: "",
       image: "push.png"
     },
+    {
+      name: "💵 Meta-Multi Signature Wallet",
+      desc: "Ann off-chain signature based multi sig wallet",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig",
+      readMore: "",
+      image: "metamultisig.png"
+    }
     /*
     {
       name: "",
