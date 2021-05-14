@@ -261,7 +261,7 @@ export const BUILDERS = [
     role: "Solidity + React",
     address: "0x1245e96fe32b43ddec930d662b5d20239282b876",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=amogh-jrules",
-    builds: ["smms", "push"],
+    builds: ["smms", "push", "metamultisig"],
     streamAddress: placeholderStream,
   },
   {
