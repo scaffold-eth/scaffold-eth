@@ -195,6 +195,13 @@ export const DAI_ABI = [{"inputs":[{"internalType":"uint256","name":"chainId_","
       readMore: "",
       image: "merklenft.png"
     },
+    {
+      name: "🎲 Push The Button",
+      desc: "A base template for multiplayer turn-based game on Ethereum",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/push-the-button-dev",
+      readMore: "",
+      image: "push.png"
+    },
     /*
     {
       name: "",
@@ -247,7 +254,7 @@ export const BUILDERS = [
     role: "Solidity + React",
     address: "0x1245e96fe32b43ddec930d662b5d20239282b876",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=amogh-jrules",
-    builds: [],
+    builds: ["smms", "push"],
     streamAddress: placeholderStream,
   },
   {
