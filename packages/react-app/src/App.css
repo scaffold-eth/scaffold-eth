@@ -1,12 +1,12 @@
 .App {
   min-height: 100vh;
-  background: url(./images/sig-background-new.jpg) top center no-repeat;
+  background: url(./images/sig-background.jpg) top center no-repeat;
   background-color: #121212;
   background-size: 1200px;
 }
 
 .container {
-  padding-top: 400px;
+  padding-top: 40px;
   padding-bottom: 100px;
   max-width: 500px;
   margin: 0 auto;
@@ -35,23 +35,40 @@
   background: none;
 }
 
+.logo-wrapper {
+  text-align: center;
+}
+.logo {
+  padding: 20px 60px;
+  background: #121212;
+  max-width: 550px;
+}
+
 @media only screen and (max-width: 1200px) {
   .App {
     background-size: 800px;
   }
+
+  .logo {
+    max-width: 450px;
+  }
+
   .container {
-    padding-top: 220px;
+    padding-top: 30px;
   }
 }
 
 @media only screen and (max-width: 740px) {
   .App {
-    background-size: 600px;
+    background-size: cover;
   }
-  .container {
-    padding-top: 150px;
+
+  .logo {
+    padding: 15px 40px 15px;
+    max-width: 340px;
   }
-  .ant-page-header {
+
+  .ant-page-header.ant-page-header-ghost {
     padding-top: 10px;
     padding-bottom: 10px;
   }
