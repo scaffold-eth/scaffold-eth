@@ -76,7 +76,7 @@ contract Auction is IERC721Receiver, SignatureChecker {
        bytes32 messageHash = keccak256(abi.encodePacked(_tokenId, _nft, bidder, amount));
        bool isBidder = checkSignature(messageHash, sig, bidder);
        require(isBidder, "Invalid Bidder");  
-       delete stakeInfo[msg.sender];
+       stakeInfo[bidder] -= amount;
        ERC721(_nft).safeTransferFrom(
                 address(this),
                 bidder,

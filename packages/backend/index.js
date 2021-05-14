@@ -38,6 +38,10 @@ app.post('/', function(request, response){
   console.log("transactions",transactions)
 });
 
+app.get('/reset-secret', function (request, response) {
+  transactions = {};
+});
+
 var server = app.listen(8001, function () {
   console.log("app running on port.", server.address().port);
 });
