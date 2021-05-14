@@ -7,7 +7,7 @@
 
 # Live app
 
-Check it out at [signatorio.surge.sh](https://signatorio.surge.sh)
+Check it out at [signator.io](https://signator.io)
 
 # 🏃‍♀️ Quick Start
 
