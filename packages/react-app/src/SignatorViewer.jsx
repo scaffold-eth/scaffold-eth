@@ -1,9 +1,14 @@
-import { CheckCircleTwoTone, CloseCircleTwoTone, QrcodeOutlined, TwitterOutlined, DeleteOutlined } from "@ant-design/icons";
-import { Alert, Button, Card, List, Modal, Row, Typography, notification, Input } from "antd";
+import {
+  CheckCircleTwoTone,
+  CloseCircleTwoTone,
+  DeleteOutlined,
+  QrcodeOutlined,
+  TwitterOutlined,
+} from "@ant-design/icons";
+import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
-import ReactJson from "react-json-view";
 import { useHistory, useLocation } from "react-router-dom";
 import { Address } from "./components";
 
@@ -15,7 +20,6 @@ const { Text } = Typography;
 */
 
 const checkEip1271 = async (provider, address, message, signature) => {
-
   try {
     const eip1271Spec = {
       magicValue: "0x1626ba7e",
@@ -53,8 +57,8 @@ const checkEip1271 = async (provider, address, message, signature) => {
     const contract = new ethers.Contract(address, eip1271Spec.abi, provider);
     const returnValue = await contract.isValidSignature(message, signature);
     return returnValue === eip1271Spec.magicValue ? "MATCH" : "MISMATCH";
-  } catch(e) {
-    console.log(e)
+  } catch (e) {
+    console.log(e);
   }
 };
 
@@ -104,17 +108,14 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
   }, [compressedTypedData]);
 
   useEffect(() => {
+    const _signatures = searchParams.get("signatures") ? searchParams.get("signatures").split(",") : [];
+    const _addresses = searchParams.get("addresses") ? searchParams.get("addresses").split(",") : [];
 
-    let _signatures = searchParams.get("signatures") ? searchParams.get("signatures").split(",") : []
-    let _addresses = searchParams.get("addresses") ? searchParams.get("addresses").split(",") : []
-
-    setSignatures(_signatures)
-    setAddresses(_addresses)
-
-  }, [location])
+    setSignatures(_signatures);
+    setAddresses(_addresses);
+  }, [location]);
 
   useEffect(() => {
-
     const checkAddresses = async () => {
       const _addressChecks = await signatures.map((sig, i) => {
         if (i + 1 > addresses.length) {
@@ -135,7 +136,6 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
           }
 
           try {
-
             let _message;
             if (message)
               _message = ethers.utils.arrayify(
@@ -176,7 +176,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       let _signature;
 
       if (typedData) {
-        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message)
+        _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
       } else if (message) {
         if (injectedProvider.provider.wc) {
           _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
@@ -199,45 +199,43 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       searchParams.set("addresses", _addresses.join());
 
       history.push(`${location.pathname}?${searchParams.toString()}`);
-      setSigning(false)
+      setSigning(false);
     } catch (e) {
       console.log(e);
       setSigning(false);
 
-      if(e.message.indexOf('Provided chainId "100" must match the active chainId "1"') !== -1) {
+      if (e.message.indexOf('Provided chainId "100" must match the active chainId "1"') !== -1) {
         notification.open({
-          message: 'Incorrect network selected',
-          description:
-          `Error: ${e.message}`,
+          message: "Incorrect network selected",
+          description: `Error: ${e.message}`,
         });
       }
     }
   };
 
-  const removeSignature = (i) => {
-
-    if(signatures.length > 1) {
+  const removeSignature = i => {
+    if (signatures.length > 1) {
       const _signatures = [...signatures];
-      _signatures.splice(i,1)
+      _signatures.splice(i, 1);
       searchParams.set("signatures", _signatures.join());
-      setSignatures(_signatures)
+      setSignatures(_signatures);
     } else {
       searchParams.delete("signatures");
-      setSignatures()
+      setSignatures();
     }
 
-    if(addresses.length > 1) {
+    if (addresses.length > 1) {
       const _addresses = [...addresses];
-      _addresses.splice(i,1)
+      _addresses.splice(i, 1);
       searchParams.set("addresses", _addresses.join());
-      setSignatures(_addresses)
+      setSignatures(_addresses);
     } else {
       searchParams.delete("addresses");
-      setSignatures()
+      setSignatures();
     }
 
     history.push(`${location.pathname}?${searchParams.toString()}`);
-  }
+  };
 
   const [qrModalVisible, setQrModalVisible] = useState(false);
 
@@ -289,8 +287,8 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
               <div style={{ textAlign: "left" }}>
                 <Input.TextArea
                   size="large"
-                  autoSize={{ minRows: 2}}
-                  value={typedData&&JSON.stringify(typedData.message, null, '\t')}
+                  autoSize={{ minRows: 2 }}
+                  value={typedData && JSON.stringify(typedData.message, null, "\t")}
                 />
               </div>
             )}
@@ -321,9 +319,11 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
                       <div style={{ marginLeft: 10 }}>{_indicator}</div>
                       <div style={{ marginLeft: 10 }}>
                         <DeleteOutlined
-                          onClick={()=>{removeSignature(index)}}
+                          onClick={() => {
+                            removeSignature(index);
+                          }}
                           style={{ fontSize: 24 }}
-                          />
+                        />
                       </div>
                     </div>
                     <div style={{ marginTop: 10 }}>
@@ -344,7 +344,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
               style={{ marginTop: 10 }}
               disabled={!injectedProvider}
             >
-              {injectedProvider?'Sign':'Connect account to sign'}
+              {injectedProvider ? "Sign" : "Connect account to sign"}
             </Button>
           )}
         </Card>

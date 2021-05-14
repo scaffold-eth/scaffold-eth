@@ -9,6 +9,7 @@ import Web3Modal from "web3modal";
 import "./App.css";
 import { Address, Header } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
+import signatorLogo from "./images/sig-logo.png";
 import Signator from "./Signator";
 import SignatorViewer from "./SignatorViewer";
 /*
@@ -132,6 +133,9 @@ function App() {
           ...modalButtons,
         ]}
       />
+      <div className="logo-wrapper">
+        <img className="logo" src={signatorLogo} alt="Signatorio" />
+      </div>
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
