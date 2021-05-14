@@ -1,5 +1,5 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button } from "antd";
+import { Button, Affix } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import { ethers } from "ethers";
@@ -100,7 +100,7 @@ function App() {
       modalButtons.push(
         <Button
           key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
+          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 2 }}
           shape="round"
           size="large"
           onClick={logoutOfWeb3Modal}
@@ -112,7 +112,7 @@ function App() {
       modalButtons.push(
         <Button
           key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
+          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 2 }}
           shape="round"
           size="large"
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
@@ -127,22 +127,24 @@ function App() {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
+      <Affix offsetTop={0}>
       <Header
         extra={[
           address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
           ...modalButtons,
         ]}
       />
+      </Affix>
       <div className="logo-wrapper">
         <img className="logo" src={signatorLogo} alt="Signatorio" />
       </div>
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} />
+            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} />
           </Route>
           <Route path="/view">
-            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} />
+            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} />
           </Route>
         </Switch>
       </BrowserRouter>

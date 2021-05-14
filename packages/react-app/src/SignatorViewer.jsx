@@ -62,7 +62,7 @@ const checkEip1271 = async (provider, address, message, signature) => {
   }
 };
 
-function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
+function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Modal }) {
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
     return _params;
@@ -92,7 +92,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
   }
 
   if (!message && !compressedTypedData) {
-    console.log(searchParams.get("message"));
+    console.log(searchParams.get("message"), searchParams.get("typedData"));
     history.push(`/`);
   }
 
@@ -172,17 +172,20 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
       console.log(`Signing: ${message}`);
       const injectedSigner = injectedProvider.getSigner();
 
-      const _messageToSign = ethers.utils.isBytesLike(message) ? ethers.utils.arrayify(message) : message;
+      //const _messageToSign = ethers.utils.isBytesLike(message) ? ethers.utils.arrayify(message) : message;
       let _signature;
 
       if (typedData) {
         _signature = await injectedSigner._signTypedData(typedData.domain, typedData.types, typedData.message);
       } else if (message) {
+        _signature = await injectedProvider.send("personal_sign", [message, address]);
+        /*
         if (injectedProvider.provider.wc) {
           _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
         } else {
           _signature = await injectedSigner.signMessage(_messageToSign);
         }
+        */
       }
       console.log(`Success! ${_signature}`);
 
@@ -339,10 +342,9 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address }) {
             <Button
               type="primary"
               size="large"
-              onClick={signMessage}
+              onClick={injectedProvider ? signMessage : loadWeb3Modal}
               loading={signing}
               style={{ marginTop: 10 }}
-              disabled={!injectedProvider}
             >
               {injectedProvider ? "Sign" : "Connect account to sign"}
             </Button>

@@ -35,8 +35,8 @@ const eip712Example = {
   },
 };
 
-function Signator({ injectedProvider, mainnetProvider, address }) {
-  const [messageText, setMessageText] = useState("hello ethereum");
+function Signator({ injectedProvider, mainnetProvider, address, loadWeb3Modal }) {
+  const [messageText, setMessageText] = useLocalStorage("messageText","hello ethereum");
   // const [metaData, setMetaData] = useState("none");
   // const [messageDate, setMessageDate] = useState(new Date());
   const [hashMessage, setHashMessage] = useState(false);
@@ -118,15 +118,11 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
 
         searchParams.set("typedData", _compressedData);
       } else if (type === "message") {
-        const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
+        //const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
 
-        console.log(_messageToSign, ethers.utils.isBytesLike(_message));
-
-        if (sign && injectedProvider.provider.wc) {
-          _signature = await injectedProvider.send("personal_sign", [_messageToSign, address]);
-        } else if (sign) {
-          _signature = await injectedSigner.signMessage(_messageToSign);
-        }
+        console.log(_message, ethers.utils.isBytesLike(_message));
+        if(sign) _signature = await injectedProvider.send("personal_sign", [_message, address]);
+        //_signature = await injectedSigner.signMessage(_messageToSign);
 
         searchParams.set("message", _message);
       }
@@ -289,8 +285,8 @@ function Signator({ injectedProvider, mainnetProvider, address }) {
             <Button
               size="large"
               type="primary"
-              onClick={signMessage}
-              disabled={!injectedProvider || (type === "typedData" && (!typedDataChecks.hash || invalidJson))}
+              onClick={injectedProvider ? signMessage : loadWeb3Modal}
+              disabled={(type === "typedData" && (!typedDataChecks.hash || invalidJson))}
               loading={signing}
               style={{ marginTop: 10 }}
             >
