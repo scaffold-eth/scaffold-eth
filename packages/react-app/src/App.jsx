@@ -453,19 +453,54 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link
+              onClick={() => {
+                setRoute("/");
+              }}
+              to="/"
+            >
+              YourContract
+            </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
-            <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
+            <Link
+              onClick={() => {
+                setRoute("/hints");
+              }}
+              to="/hints"
+            >
+              Hints
+            </Link>
           </Menu.Item>
           <Menu.Item key="/exampleui">
-            <Link onClick={()=>{setRoute("/exampleui")}} to="/exampleui">ExampleUI</Link>
+            <Link
+              onClick={() => {
+                setRoute("/exampleui");
+              }}
+              to="/exampleui"
+            >
+              ExampleUI
+            </Link>
           </Menu.Item>
           <Menu.Item key="/mainnetdai">
-            <Link onClick={()=>{setRoute("/mainnetdai")}} to="/mainnetdai">Mainnet DAI</Link>
+            <Link
+              onClick={() => {
+                setRoute("/mainnetdai");
+              }}
+              to="/mainnetdai"
+            >
+              Mainnet DAI
+            </Link>
           </Menu.Item>
           <Menu.Item key="/subgraph">
-            <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
+            <Link
+              onClick={() => {
+                setRoute("/subgraph");
+              }}
+              to="/subgraph"
+            >
+              Subgraph
+            </Link>
           </Menu.Item>
         </Menu>
         <Switch>
@@ -512,15 +547,15 @@ function App(props) {
               signer={userProvider.getSigner()}
               provider={mainnetProvider}
               address={address}
-              blockExplorer={"https://etherscan.io/"}
+              blockExplorer="https://etherscan.io/"
             />
           </Route>
           <Route path="/subgraph">
             <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
+              subgraphUri={props.subgraphUri}
+              tx={tx}
+              writeContracts={writeContracts}
+              mainnetProvider={mainnetProvider}
             />
           </Route>
         </Switch>
