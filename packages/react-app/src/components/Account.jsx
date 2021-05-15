@@ -1,10 +1,10 @@
+import { LoginOutlined, LogoutOutlined } from "@ant-design/icons";
+import { Tooltip } from "antd";
 import React from "react";
-import { Button, Tooltip } from "antd";
+import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
-import { LoginOutlined , LogoutOutlined } from "@ant-design/icons";
-import { useThemeSwitcher } from "react-css-theme-switcher";
 
 /*
   ~ What it does? ~
@@ -58,17 +58,17 @@ export default function Account({
       modalButtons.push(
         <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
           <Tooltip title="Disconnect Wallet">
-            <LogoutOutlined key="logoutbutton" onClick={logoutOfWeb3Modal} style={{color:"#1890ff"}} />
+            <LogoutOutlined key="logoutbutton" onClick={logoutOfWeb3Modal} style={{ color: "#1890ff" }} />
           </Tooltip>
-        </span>
+        </span>,
       );
     } else {
       modalButtons.push(
         <span style={{ verticalAlign: "middle", paddingLeft: 16, fontSize: 32 }}>
           <Tooltip title="Connect Wallet">
-            <LoginOutlined key="loginbutton" onClick={loadWeb3Modal} style={{color:"#1890ff"}} />
+            <LoginOutlined key="loginbutton" onClick={loadWeb3Modal} style={{ color: "#1890ff" }} />
           </Tooltip>
-        </span>
+        </span>,
       );
     }
   }
@@ -79,15 +79,21 @@ export default function Account({
     ""
   ) : (
     <span>
-      {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
+      {address ? (
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+      ) : (
+        "Connecting..."
+      )}
       <Balance address={address} provider={localProvider} price={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} color={currentTheme == "light" ? "#1890ff" : "#2caad9"} />
+      <Wallet
+        address={address}
+        provider={userProvider}
+        ensProvider={mainnetProvider}
+        price={price}
+        color={currentTheme == "light" ? "#1890ff" : "#2caad9"}
+      />
     </span>
   );
 
-  return (
-    <>
-      {modalButtons}
-    </>
-  );
+  return <>{modalButtons}</>;
 }
