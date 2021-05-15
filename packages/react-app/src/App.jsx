@@ -3,7 +3,7 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { ExportOutlined, ForkOutlined, ExperimentOutlined } from "@ant-design/icons";
+import { ExportOutlined, ForkOutlined, ExperimentOutlined, ReconciliationOutlined } from "@ant-design/icons";
 import { message, Input, Image, List, Row, Col, Button, Menu, Alert, Switch as SwitchD, Progress } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -427,7 +427,7 @@ function App(props) {
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
               <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
                 <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
-                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{color:"#222222",fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
+                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
                   <div style={{marginTop:8}}>
                     Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
                      <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
@@ -511,12 +511,18 @@ function App(props) {
                           key={item.name}
                           style={{padding:32}}
                           extra={
-                            <div style={{marginTop:48}}>
+                            <div style={{marginTop:48,marginLeft:-100}}>
                               <Button size="large" onClick={()=>{
                                   //window.open(item.branch)
                                   message.success("Coming soon!")
                                 }}>
                                   <ExperimentOutlined /> Fund
+                              </Button>
+                              <Button style={{margin:32}} size="large" onClick={()=>{
+                                  window.open(item.streamUrl)
+                                  //message.success("Coming soon!")
+                                }}>
+                                  <ReconciliationOutlined /> Stream
                               </Button>
                             </div>
                           }

@@ -214,17 +214,15 @@ export const DAI_ABI = [{"inputs":[{"internalType":"uint256","name":"chainId_","
 
 
 
-const placeholderStream = "0x79Eeda2a3cdB90129A3Dc851556AeaF25DdF1E39"
-
-
 export const BUILDERS = [
   {
     name: "ironsoul.eth",
     role: "React + Solidity",
-    address: "0x1e2Ce012b27d0c0d3e717e943EF6e62717CEc4ea",
+    address: "0x1e2ce012b27d0c0d3e717e943ef6e62717cec4ea",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft"],
-    streamAddress: placeholderStream,
+    streamAddress: "0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "https://ironsoul.buidlguidl.com"
   },
   {
     name: "viraz.eth",
@@ -232,42 +230,47 @@ export const BUILDERS = [
     address: "0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=viraj124",
     builds: [ "xnft", "proxy", "diamond", "highestbid", "merklenft"],
-    streamAddress: placeholderStream,
+    streamAddress: "0x21e18260357D33d2e18482584a8F39D532fb71cC",
+    streamUrl: "http://viraz.buidlguidl.com"
   },
   {
     name: "sadda11asm.eth",
     role: "Solidity + React",
-    address: "0x7b945ffE9725D8e05343bEC36c0eced294097f78",
+    address: "0x7b945ffe9725d8e05343bec36c0eced294097f78",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "rokens", "highestbid", "merklenft"],
-    streamAddress: placeholderStream,
+    streamAddress: "0xd116179A26F7b36Ed7B3334679aD0B2ec8c5ec22",
+    streamUrl: "http://sadda11asm.buidlguidl.com"
   },
   {
     name: "amogh.eth",
     role: "Solidity + React",
-    address: "0x1245e96fe32b43ddec930d662b5d20239282b876",
+    address: "0x1245e96fe32B43dDEc930D662B5d20239282b876",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=amogh-jrules",
     builds: [],
-    streamAddress: placeholderStream,
+    streamAddress: "0x298F4Af778954d771A6Fc6098AFc0a19f35d3dAA",
+    streamUrl: "http://amogh.buidlguidl.com",
   },
   {
     name: "calvinquin.argent.xyz",
     role: "Solidity + React",
-    address: "0x614Ae4C6Eb91cEC9e6e178549c0745A827212B24",
+    address: "0x614ae4c6eb91cec9e6e178549c0745a827212b24",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=calvbore",
     builds: [],
-    streamAddress: placeholderStream,
+    streamAddress: "0x0dE7a22627b68F51bBE22f408e009146D6c56ee1",
+    streamUrl: "http://calvinquin.buidlguidl.com",
   },
 
   {
     name: "ssteiger.eth",
     role: "React",
-    address: "0x4ceb8dc70813ffbb2d8d6dc0755086698f977613",
+    address: "0x4ceb8dC70813fFbB2d8d6DC0755086698F977613",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ssteiger",
     builds: [
       "ethdev",
     ],
-    streamAddress: placeholderStream,
+    streamAddress: "0x271C2Fb694F38bE3FA7e6374D349A714c7E8Bba7",//streamAddress: "0x7D6DAdfb6df8ebe6fCB1C32af55252F04D79Df85",
+    streamUrl: "http://ssteiger.buidlguidl.com",
   },
   {
     name: "rawcipher.eth",
@@ -275,23 +278,26 @@ export const BUILDERS = [
     address: "0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=codenamejason",
     builds: [ "vrf" ],
-    streamAddress: placeholderStream,
+    streamAddress: "0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
+    streamUrl: "http://rawcipher.buidlguidl.com",//rawcipherstream.surge.sh
   },
   {
     name: "mrdee.eth",
     role: "Artwork",
-    address: "0xd2f016809969b4105978fdd5b112cd95bfdd6814",
+    address: "0xd2f016809969b4105978fDD5b112CD95bFDd6814",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=azf20",
     builds: [],
-    streamAddress: placeholderStream,
+    streamAddress: "0xF48BECEa4C65F0c2F3841ed00E813298C8B327ab",
+    streamUrl: "http://mrdee.buidlguidl.com",
   },
   {
     name: "hunterchang.eth",
     role: "React",
-    address: "0x55fFbCD5F80a7e22660A3B564447a0c1D5396A5C",
+    address: "0xf7e89E45502890381F9242403eA8661fad89Ca79",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=azf20",
     builds: [ "xnft", ],
-    streamAddress: placeholderStream,
+    streamAddress: "0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
+    streamUrl: "http://hunterchang.buidlguidl.com",
   },
 
   {
@@ -303,6 +309,7 @@ export const BUILDERS = [
       "niftyink", "uniswapper", "lender", "ape", "op",
     ],
     streamAddress: "0x79Eeda2a3cdB90129A3Dc851556AeaF25DdF1E39",
+    streamUrl: "adamfuller.buidlguidl.com",
   },
 
   {
@@ -312,7 +319,9 @@ export const BUILDERS = [
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=austintgriffith",
     builds: [
       "niftyink", "simplestream", "niftyview", "opnfts", "smms", "allocator", "radwallet", "punkwallet", "simplenft", "randomimage", "gtgs"
-    ]
+    ],
+    streamAddress: "0xb0D25772CB076cb4cE90a0c4dfdba6Cad07921a1",
+    streamUrl: "austingriffith.buidlguidl.com",
   },
 
 ]
