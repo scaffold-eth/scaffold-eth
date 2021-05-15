@@ -106,6 +106,29 @@ const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
+
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
+
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -634,29 +657,6 @@ function App(props) {
     </div>
   );
 }
-
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
-const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: INFURA_ID,
-      },
-    },
-  },
-});
-
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
 
 window.ethereum &&
   window.ethereum.on("chainChanged", chainId => {
