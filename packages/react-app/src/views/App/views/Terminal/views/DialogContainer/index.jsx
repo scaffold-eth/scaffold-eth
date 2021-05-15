@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
 import $ from 'jquery'
 import shortid from 'shortid'
+// IMPORT NEW LEVEL HERE
 import { UnderflowLevel, CityLevel } from './levelContents'
 import { connectController } from '../../controller'
 import './styles.css'
@@ -22,7 +23,14 @@ const DialogContainer = ({ terminalVisible, currentLevel, dialogs }) => {
     if (currentLevel === 'city') {
       return <CityLevel />
     }
-    // initial level
+    // IMPORT NEW LEVEL HERE
+    /*
+    if (currentLevel === 'city') {
+      return <CityLevel />
+    }
+    */
+
+    // the initial level
     return <UnderflowLevel />
   }
 

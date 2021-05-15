@@ -1,5 +1,6 @@
 import dotProp from 'dot-prop-immutable'
 
+// import initialDialog from '../../../views/levels/__templateLevel__/model/dialog'
 import initialDialog from '../../../views/levels/underflow/model/dialog'
 import dialogMap from '../model/dialogMap'
 
