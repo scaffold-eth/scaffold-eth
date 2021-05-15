@@ -23,9 +23,11 @@ import {
   useOnBlock,
   useUserProvider,
 } from "./hooks";
+
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
+
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 /*
     Welcome to 🏗 scaffold-eth !
@@ -47,12 +49,12 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS["localhost"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 
-//EXAMPLE STARTING JSON:
+// EXAMPLE STARTING JSON:
 const STARTING_JSON = {
   description: "It's actually a bison?",
   external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
@@ -70,7 +72,7 @@ const STARTING_JSON = {
   ],
 };
 
-//helper function to "Get" from IPFS
+// helper function to "Get" from IPFS
 // you usually go content.toString() after this...
 const getFromIPFS = async hashToGet => {
   for await (const file of ipfs.get(hashToGet)) {
@@ -143,8 +145,8 @@ function App(props) {
   const address = useUserAddress(userProvider);
 
   // You can warn the user if you would like them to be on a specific network
-  let localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  let selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
+  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
+  const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -185,7 +187,7 @@ function App(props) {
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
-  //📟 Listen for broadcast events
+  // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
@@ -197,7 +199,7 @@ function App(props) {
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
-      let collectibleUpdate = [];
+      const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
@@ -273,7 +275,7 @@ function App(props) {
   if (localChainId && selectedChainId && localChainId !== selectedChainId) {
     const networkSelected = NETWORK(selectedChainId);
     const networkLocal = NETWORK(localChainId);
-    if (selectedChainId == 1337 && localChainId == 31337) {
+    if (selectedChainId === 1337 && localChainId === 31337) {
       networkDisplay = (
         <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
           <Alert
@@ -282,7 +284,7 @@ function App(props) {
               <div>
                 You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
                 HardHat.
-                <div>(MetaMask -> Settings -> Networks -> Chain ID -> 31337)</div>
+                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
               </div>
             }
             type="error"
@@ -346,7 +348,7 @@ function App(props) {
     faucetHint = (
       <div style={{ padding: 16 }}>
         <Button
-          type={"primary"}
+          type="primary"
           onClick={() => {
             faucetTx({
               to: address,
@@ -472,7 +474,7 @@ function App(props) {
                           placeholder="transfer to address"
                           value={transferToAddresses[id]}
                           onChange={newValue => {
-                            let update = {};
+                            const update = {};
                             update[id] = newValue;
                             setTransferToAddresses({ ...transferToAddresses, ...update });
                           }}
@@ -502,7 +504,7 @@ function App(props) {
                   return (
                     <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item[2].toNumber()}>
                       <span style={{ fontSize: 16, marginRight: 8 }}>#{item[2].toNumber()}</span>
-                      <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
+                      <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
                       <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} />
                     </List.Item>
                   );
@@ -516,7 +518,7 @@ function App(props) {
               <ReactJson
                 style={{ padding: 8 }}
                 src={yourJSON}
-                theme={"pop"}
+                theme="pop"
                 enableClipboard={false}
                 onEdit={(edit, a) => {
                   setYourJSON(edit.updated_src);
@@ -540,7 +542,7 @@ function App(props) {
                 console.log("UPLOADING...", yourJSON);
                 setSending(true);
                 setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); //addToIPFS(JSON.stringify(yourJSON))
+                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
                 if (result && result.path) {
                   setIpfsHash(result.path);
                 }
@@ -557,7 +559,7 @@ function App(props) {
             <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
               <Input
                 value={ipfsDownHash}
-                placeHolder={"IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"}
+                placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
                 onChange={e => {
                   setIpfsDownHash(e.target.value);
                 }}
@@ -573,7 +575,7 @@ function App(props) {
                 console.log("DOWNLOADING...", ipfsDownHash);
                 setDownloading(true);
                 setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); //addToIPFS(JSON.stringify(yourJSON))
+                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
                 if (result && result.toString) {
                   setIpfsContent(result.toString());
                 }
