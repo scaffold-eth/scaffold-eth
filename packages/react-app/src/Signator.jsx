@@ -49,7 +49,7 @@ function Signator({ injectedProvider, mainnetProvider, address, loadWeb3Modal, c
   const [invalidJson, setInvalidJson] = useState(false);
   const [type, setType] = useLocalStorage("signingType", "message");
   const [typedDataChecks, setTypedDataChecks] = useState({});
-  const [chainId, setChainId] = useState(1)
+  const [chainId, setChainId] = useState(typedData&&typedData.domain&&typedData.domain.chainId ? parseInt(typedData.domain.chainId) : 1)
 
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
@@ -144,7 +144,7 @@ function Signator({ injectedProvider, mainnetProvider, address, loadWeb3Modal, c
       if (e.message.indexOf('Provided chainId') !== -1) {
         notification.open({
           message: "Incorrect network selected in Metamask",
-          description: `${typedData && typedData.domain && typedData.domain.chainId&&chainList&&chainList.length>0&&(`Select ${chainList.find(element => element.chainId ===typedData.domain.chainId).name}`)}. Error: ${e.message}`,
+          description: `${chainId&&(`Select ${chainList.find(element => element.chainId ===chainId).name}`)}. Error: ${e.message}`,
         });
       }
     }
@@ -179,6 +179,7 @@ function Signator({ injectedProvider, mainnetProvider, address, loadWeb3Modal, c
                           const _newTypedData = JSON.parse(e.target.value);
                           setTypedData(_newTypedData);
                           setInvalidJson(false);
+                          if(_newTypedData.domain&&_newTypedData.domain.chainId) setChainId(parseInt(_newTypedData.domain.chainId))
                         } catch (error) {
                           console.log(error);
                           setInvalidJson(true);

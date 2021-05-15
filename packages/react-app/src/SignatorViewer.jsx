@@ -4,8 +4,9 @@ import {
   DeleteOutlined,
   QrcodeOutlined,
   TwitterOutlined,
+  InfoOutlined
 } from "@ant-design/icons";
-import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography } from "antd";
+import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography, Popover, Space } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
@@ -292,8 +293,27 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                   size="large"
                   autoSize={{ minRows: 2 }}
                   value={typedData && JSON.stringify(typedData.message, null, "\t")}
+                  style={{marginBottom: 10}}
                 />
-                {typedData && typedData.domain && typedData.domain.chainId&&chainList&&chainList.length>0&&<Text code>{chainList.find(element => element.chainId ===typedData.domain.chainId).name}</Text>}
+                <Popover content={
+                    <Space direction="vertical">
+                      <Typography>Domain:</Typography>
+                      <Input.TextArea
+                        size="large"
+                        autoSize={{ minRows: 2 }}
+                        value={typedData && JSON.stringify(typedData.domain, null, "\t")}
+                      />
+                      {typedData &&
+                        typedData.domain &&
+                        typedData.domain.chainId &&
+                        chainList&&chainList.length>0
+                        &&<Text code>{chainList.find(
+                          element => element.chainId === typedData.domain.chainId).name}
+                          </Text>}
+                    </Space>
+                  }>
+                  <Button size="small" shape="circle" icon={<InfoOutlined />} />
+                </Popover>
               </div>
             )}
           </Card>
