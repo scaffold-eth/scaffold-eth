@@ -27,7 +27,7 @@ import {
   ThemeSwitch,
   NetworkSelectWarning,
   NetworkSelectDropdown
-} from '../../sharedComponents'
+} from './views/sharedComponents'
 import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
 import {

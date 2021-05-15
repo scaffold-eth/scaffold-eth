@@ -21,7 +21,7 @@ import { parseUnits, formatUnits } from '@ethersproject/units'
 import { ethers } from 'ethers'
 import { useBlockNumber, usePoller } from 'eth-hooks'
 import { abi as IUniswapV2Router02ABI } from '@uniswap/v2-periphery/build/IUniswapV2Router02.json'
-import { useDebounce } from '../hooks'
+import { useDebounce } from '../../../../hooks'
 
 const { Option } = Select
 const { Text } = Typography

@@ -14,7 +14,7 @@ import {
   useExternalContractLoader
 } from '../../../../../../../../hooks'
 import { getLocalProvider, getTargetNetwork, Transactor } from '../../../../../../../../helpers'
-import { CodeContainer } from '../../../../../../../../sharedComponents'
+import { CodeContainer } from '../../../../../sharedComponents'
 import { connectController } from './controller'
 import './styles.css'
 

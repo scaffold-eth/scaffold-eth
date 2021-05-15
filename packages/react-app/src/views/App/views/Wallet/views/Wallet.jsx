@@ -8,7 +8,7 @@ import { ethers } from 'ethers'
 import { Transactor } from '../../../../../helpers'
 import Address from './Address'
 import Balance from './Balance'
-import { AddressInput, EtherInput, Blockie } from '../../../../../sharedComponents'
+import { AddressInput, EtherInput, Blockie } from '../../sharedComponents'
 
 const { Text, Paragraph } = Typography
 
