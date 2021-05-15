@@ -201,14 +201,17 @@ function App(props) {
   */
 
   let networkDisplay = "";
-  if (localChainId && selectedChainId && localChainId != selectedChainId) {
+  if (localChainId && selectedChainId && localChainId !== selectedChainId) {
+    const networkSelected = NETWORK(selectedChainId);
+    const networkLocal = NETWORK(localChainId);
     networkDisplay = (
       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 16, padding: 8 }}>
         <Alert
           message="⚠️ Wrong Network"
           description={
             <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on{" "}
+              You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+              <b>{networkLocal && networkLocal.name}</b>.
               <Button
                 onClick={async () => {
                   const ethereum = window.ethereum;
