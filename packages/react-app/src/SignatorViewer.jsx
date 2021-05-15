@@ -62,7 +62,7 @@ const checkEip1271 = async (provider, address, message, signature) => {
   }
 };
 
-function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Modal }) {
+function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Modal, chainList }) {
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
     return _params;
@@ -207,10 +207,10 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
       console.log(e);
       setSigning(false);
 
-      if (e.message.indexOf('Provided chainId "100" must match the active chainId "1"') !== -1) {
+      if (e.message.indexOf('Provided chainId') !== -1) {
         notification.open({
-          message: "Incorrect network selected",
-          description: `Error: ${e.message}`,
+          message: "Incorrect network selected in Metamask",
+          description: `${typedData && typedData.domain && typedData.domain.chainId&&chainList&&chainList.length>0&&(`Select ${chainList.find(element => element.chainId ===typedData.domain.chainId).name}`)}. Error: ${e.message}`,
         });
       }
     }
@@ -293,6 +293,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                   autoSize={{ minRows: 2 }}
                   value={typedData && JSON.stringify(typedData.message, null, "\t")}
                 />
+                {typedData && typedData.domain && typedData.domain.chainId&&chainList&&chainList.length>0&&<Text code>{chainList.find(element => element.chainId ===typedData.domain.chainId).name}</Text>}
               </div>
             )}
           </Card>

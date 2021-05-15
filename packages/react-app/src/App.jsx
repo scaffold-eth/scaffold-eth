@@ -59,6 +59,25 @@ function App() {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
+
+  const [chainList, setChainList] = useState([]);
+
+  useEffect(() => {
+
+    const getChainList = async () => {
+      try {
+      let rawChainList = await fetch('https://chainid.network/chains.json')
+      let chainListJson = await rawChainList.json()
+
+      setChainList(chainListJson)
+
+    } catch (e) {
+      console.log(e)
+    }
+    }
+    getChainList()
+  },[])
+
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const address = useUserAddress(injectedProvider);
 
@@ -141,10 +160,10 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} />
+            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} chainList={chainList} />
           </Route>
           <Route path="/view">
-            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} />
+            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} chainList={chainList} />
           </Route>
         </Switch>
       </BrowserRouter>
