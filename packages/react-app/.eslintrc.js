@@ -28,5 +28,6 @@ module.exports = {
     "no-underscore-dangle": "off",
     "no-nested-ternary": "off",
     "no-restricted-syntax": "off",
+    "no-plusplus": "off",
   },
 };
