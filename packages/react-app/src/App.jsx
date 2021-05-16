@@ -63,20 +63,18 @@ function App() {
   const [chainList, setChainList] = useState([]);
 
   useEffect(() => {
-
     const getChainList = async () => {
       try {
-      let rawChainList = await fetch('https://chainid.network/chains.json')
-      let chainListJson = await rawChainList.json()
+        const rawChainList = await fetch("https://chainid.network/chains.json");
+        const chainListJson = await rawChainList.json();
 
-      setChainList(chainListJson)
-
-    } catch (e) {
-      console.log(e)
-    }
-    }
-    getChainList()
-  },[])
+        setChainList(chainListJson);
+      } catch (e) {
+        console.log(e);
+      }
+    };
+    getChainList();
+  }, []);
 
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const address = useUserAddress(injectedProvider);
@@ -147,12 +145,12 @@ function App() {
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Affix offsetTop={0}>
-      <Header
-        extra={[
-          address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
-          ...modalButtons,
-        ]}
-      />
+        <Header
+          extra={[
+            address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />,
+            ...modalButtons,
+          ]}
+        />
       </Affix>
       <div className="logo-wrapper">
         <img className="logo" src={signatorLogo} alt="Signatorio" />
@@ -160,10 +158,22 @@ function App() {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Signator mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} chainList={chainList} />
+            <Signator
+              mainnetProvider={mainnetProvider}
+              injectedProvider={injectedProvider}
+              address={address}
+              loadWeb3Modal={loadWeb3Modal}
+              chainList={chainList}
+            />
           </Route>
           <Route path="/view">
-            <SignatorViewer mainnetProvider={mainnetProvider} injectedProvider={injectedProvider} address={address} loadWeb3Modal={loadWeb3Modal} chainList={chainList} />
+            <SignatorViewer
+              mainnetProvider={mainnetProvider}
+              injectedProvider={injectedProvider}
+              address={address}
+              loadWeb3Modal={loadWeb3Modal}
+              chainList={chainList}
+            />
           </Route>
         </Switch>
       </BrowserRouter>

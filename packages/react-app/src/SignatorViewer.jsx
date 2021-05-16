@@ -4,9 +4,9 @@ import {
   DeleteOutlined,
   QrcodeOutlined,
   TwitterOutlined,
-  InfoOutlined
+  InfoOutlined,
 } from "@ant-design/icons";
-import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography, Popover, Space } from "antd";
+import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography, Popover, Space, Tooltip } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
@@ -60,6 +60,7 @@ const checkEip1271 = async (provider, address, message, signature) => {
     return returnValue === eip1271Spec.magicValue ? "MATCH" : "MISMATCH";
   } catch (e) {
     console.log(e);
+    return "MISMATCH";
   }
 };
 
@@ -73,8 +74,8 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
   const searchParams = useSearchParams();
   const history = useHistory();
 
-  const [message, setMessage] = useState(searchParams.get("message"));
-  const [compressedTypedData, setCompressedTypedData] = useState(searchParams.get("typedData"));
+  const [message] = useState(searchParams.get("message"));
+  const [compressedTypedData] = useState(searchParams.get("typedData"));
   const [typedData, setTypedData] = useState();
   const [signatures, setSignatures] = useState(
     searchParams.get("signatures") ? searchParams.get("signatures").split(",") : [],
@@ -173,7 +174,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
       console.log(`Signing: ${message}`);
       const injectedSigner = injectedProvider.getSigner();
 
-      //const _messageToSign = ethers.utils.isBytesLike(message) ? ethers.utils.arrayify(message) : message;
+      // const _messageToSign = ethers.utils.isBytesLike(message) ? ethers.utils.arrayify(message) : message;
       let _signature;
 
       if (typedData) {
@@ -208,10 +209,17 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
       console.log(e);
       setSigning(false);
 
-      if (e.message.indexOf('Provided chainId') !== -1) {
+      if (e.message.indexOf("Provided chainId") !== -1) {
         notification.open({
           message: "Incorrect network selected in Metamask",
-          description: `${typedData && typedData.domain && typedData.domain.chainId&&chainList&&chainList.length>0&&(`Select ${chainList.find(element => element.chainId ===typedData.domain.chainId).name}`)}. Error: ${e.message}`,
+          description: `${
+            typedData &&
+            typedData.domain &&
+            typedData.domain.chainId &&
+            chainList &&
+            chainList.length > 0 &&
+            `Select ${chainList.find(element => element.chainId === typedData.domain.chainId).name}`
+          }. Error: ${e.message}`,
         });
       }
     }
@@ -293,9 +301,10 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                   size="large"
                   autoSize={{ minRows: 2 }}
                   value={typedData && JSON.stringify(typedData.message, null, "\t")}
-                  style={{marginBottom: 10}}
+                  style={{ marginBottom: 10 }}
                 />
-                <Popover content={
+                <Popover
+                  content={
                     <Space direction="vertical">
                       <Typography>Domain:</Typography>
                       <Input.TextArea
@@ -306,12 +315,15 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                       {typedData &&
                         typedData.domain &&
                         typedData.domain.chainId &&
-                        chainList&&chainList.length>0
-                        &&<Text code>{chainList.find(
-                          element => element.chainId === typedData.domain.chainId).name}
-                          </Text>}
+                        chainList &&
+                        chainList.length > 0 && (
+                          <Text code>
+                            {chainList.find(element => element.chainId === typedData.domain.chainId).name}
+                          </Text>
+                        )}
                     </Space>
-                  }>
+                  }
+                >
                   <Button size="small" shape="circle" icon={<InfoOutlined />} />
                 </Popover>
               </div>
@@ -340,14 +352,18 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                       {addresses[index] && ethers.utils.isAddress(addresses[index]) && (
                         <Address address={addresses[index]} ensProvider={mainnetProvider} />
                       )}
-                      <div style={{ marginLeft: 10 }}>{_indicator}</div>
                       <div style={{ marginLeft: 10 }}>
-                        <DeleteOutlined
-                          onClick={() => {
-                            removeSignature(index);
-                          }}
-                          style={{ fontSize: 24 }}
-                        />
+                        <Tooltip title={addressChecks[index]}>{_indicator}</Tooltip>
+                      </div>
+                      <div style={{ marginLeft: 10 }}>
+                        <Tooltip title="Delete">
+                          <DeleteOutlined
+                            onClick={() => {
+                              removeSignature(index);
+                            }}
+                            style={{ fontSize: 24 }}
+                          />
+                        </Tooltip>
                       </div>
                     </div>
                     <div style={{ marginTop: 10 }}>
