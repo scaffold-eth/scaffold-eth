@@ -486,6 +486,7 @@ function App(props) {
   );
 }
 
+/* eslint-disable */
 window.ethereum &&
   window.ethereum.on("chainChanged", chainId => {
     web3Modal.cachedProvider &&
@@ -501,5 +502,6 @@ window.ethereum &&
         window.location.reload();
       }, 1);
   });
+/* eslint-enable */
 
 export default App;
