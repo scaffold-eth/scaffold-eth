@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import usePoller from "./Poller";
 import useOnBlock from "./OnBlock";
-import { BLOCK_TIME } from "./constants";
 
 const useBlockNumber = (
   provider: Web3Provider,
