@@ -27,5 +27,6 @@ module.exports = {
     "jsx-a11y/no-static-element-interactions": ["off"],
     "no-underscore-dangle": "off",
     "no-nested-ternary": "off",
+    "no-restricted-syntax": "off",
   },
 };
