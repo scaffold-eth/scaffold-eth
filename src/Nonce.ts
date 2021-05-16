@@ -1,20 +1,33 @@
 import { useState } from "react";
 import { Provider } from "@ethersproject/providers";
 import usePoller from "./Poller";
-import { BLOCK_TIME } from "./constants";
+import useOnBlock from "./OnBlock";
 
-const useNonce = (provider: Provider, address: string, pollTime: number = BLOCK_TIME / 2): number => {
+const useNonce = (
+  provider: Provider,
+  address: string,
+  pollTime: number = 0
+): number => {
   const [nonce, setNonce] = useState<number>(0);
 
-  usePoller((): void => {
-    const getTransactionCount = async (): Promise<void> => {
-      const nextNonce = await provider.getTransactionCount(address);
-      if (nextNonce !== nonce) {
-        setNonce(nextNonce);
-      }
-    };
+  const getTransactionCount = async (): Promise<void> => {
+    const nextNonce = await provider.getTransactionCount(address);
+    if (nextNonce !== nonce) {
+      setNonce(nextNonce);
+    }
+  };
 
-    if (typeof provider !== "undefined") getTransactionCount();
+  useOnBlock(
+    provider,
+    (): void => {
+      if (typeof provider !== "undefined" && pollTime === 0) {
+        getTransactionCount();
+      }
+    }
+  );
+
+  usePoller((): void => {
+    if (typeof provider !== "undefined" && pollTime > 0) getTransactionCount();
   }, pollTime);
 
   return nonce;
