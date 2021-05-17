@@ -6,6 +6,7 @@ import "hardhat/console.sol";
 import "./SignatureChecker.sol";
 
 contract Auction is IERC721Receiver, SignatureChecker {
+    // users who want to buy art work first stake eth before bidding
     struct tokenDetails {
         address seller;
         uint128 price;
@@ -14,15 +15,15 @@ contract Auction is IERC721Receiver, SignatureChecker {
     }
 
     mapping(address => mapping(uint256 => tokenDetails)) public tokenToAuction;
-    // users who want to buy art work first stake eth before bidding
-    mapping(address => uint256) public stakeInfo;
+
+    mapping(address => mapping(uint256 => mapping(address => uint256))) public bids;
 
     constructor() {
       setCheckSignatureFlag(true);
     }
 
-    function getStakeInfo(address addr) public view returns (uint256) {
-        return stakeInfo[addr];
+    function getStakeInfo(address _nft, uint256 _tokenId, address addr) public view returns (uint256) {
+        return bids[_nft][_tokenId][addr];
     }
     
     /**
@@ -52,9 +53,11 @@ contract Auction is IERC721Receiver, SignatureChecker {
     /**
       Before making off-chain bids potential bidders need to stake eth and either they will get it back when the auction ends or they can withdraw it any anytime.
     */
-    function stake() payable external {
+    function stake(address _nft, uint256 _tokenId) payable external {
         require(msg.sender != address(0));
-        stakeInfo[msg.sender] += msg.value;
+        tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
+        require(msg.value >= auction.price);
+        bids[_nft][_tokenId][msg.sender] += msg.value;
     }
 
     /**
@@ -64,20 +67,18 @@ contract Auction is IERC721Receiver, SignatureChecker {
         require(bidder != address(0));
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
         require(bidder != auction.seller);
-        require(amount <= stakeInfo[bidder]);
+        require(amount <=  bids[_nft][_tokenId][bidder]);
         require(amount >= auction.price);
         require(auction.duration <= block.timestamp, "Deadline did not pass yet");
         require(auction.seller == msg.sender);
         require(auction.isActive);
         auction.isActive = false;
-
-        console.log(bidder);
-        console.log(amount);
-       bytes32 messageHash = keccak256(abi.encodePacked(_tokenId, _nft, bidder, amount));
-       bool isBidder = checkSignature(messageHash, sig, bidder);
-       require(isBidder, "Invalid Bidder");  
-       stakeInfo[bidder] -= amount;
-       ERC721(_nft).safeTransferFrom(
+        bytes32 messageHash = keccak256(abi.encodePacked(_tokenId, _nft, bidder, amount));
+        bool isBidder = checkSignature(messageHash, sig, bidder);
+        require(isBidder, "Invalid Bidder"); 
+        // since this is individualized hence okay to delete
+        delete bids[_nft][_tokenId][bidder];
+        ERC721(_nft).safeTransferFrom(
                 address(this),
                 bidder,
                 _tokenId
@@ -86,11 +87,11 @@ contract Auction is IERC721Receiver, SignatureChecker {
         require(success);
     }
 
-    function withdrawStake() external {
+    function withdrawStake(address _nft, uint256 _tokenId) external {
         require(msg.sender != address(0));
-        require(stakeInfo[msg.sender] > 0); 
-        uint amount = stakeInfo[msg.sender];
-        delete stakeInfo[msg.sender];
+        require(bids[_nft][_tokenId][msg.sender] > 0); 
+        uint amount = bids[_nft][_tokenId][msg.sender];
+        delete bids[_nft][_tokenId][msg.sender];
         (bool success, ) = msg.sender.call{value: amount}("");
         require(success);
     }
@@ -105,9 +106,9 @@ contract Auction is IERC721Receiver, SignatureChecker {
         auction.isActive = false;
         bool success;
         for (uint256 i = 0; i < _bidders.length; i++) {
-        require(stakeInfo[_bidders[i]] > 0);
-        uint amount = stakeInfo[_bidders[i]];
-        delete stakeInfo[_bidders[i]];
+        require(bids[_nft][_tokenId][_bidders[i]] > 0);
+        uint amount = bids[_nft][_tokenId][_bidders[i]];
+        delete bids[_nft][_tokenId][_bidders[i]];
         (success, ) = _bidders[i].call{value: amount}("");        
         require(success);
         }
