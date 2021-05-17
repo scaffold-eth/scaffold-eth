@@ -36,6 +36,5 @@ export default function useOnBlock(
     return () => {
         provider.off("block", listener)
     }
-}
-},[provider])
+  },[provider])
 }
