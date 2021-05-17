@@ -325,7 +325,7 @@ function App(props) {
               </div>
             </div>
 
-            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto", paddingBottom: 256}}>
 {/*
               <Input placeholder="search builds" bordered={false} style={{textAlign:"center",borderBottom:"1px solid #efefef"}} />
 */}
@@ -493,6 +493,9 @@ function App(props) {
 
                       let totalProgress = []
 
+                      const totalSeconds = streamNetPercentSeconds && stream.frequency && streamNetPercentSeconds.mul(stream.frequency)
+
+
                       const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
 
                       for(let c=0;c<numberOfTimesFull;c++){
@@ -511,32 +514,32 @@ function App(props) {
                           key={item.name}
                           style={{padding:32}}
                           extra={
-                            <div style={{marginTop:48,marginLeft:-100}}>
-                              <Button size="large" onClick={()=>{
+                            <></>
+                          }
+                        >
+                          <div style={{textAlign:"left",position:"relative"}}>
+                            <div style={{float:"right",marginTop:16,width:100}}>
+                              <Button size="large" style={{zIndex:1}} onClick={()=>{
                                   //window.open(item.branch)
                                   message.success("Coming soon!")
                                 }}>
                                   <ExperimentOutlined /> Fund
                               </Button>
-                              <Button style={{margin:32}} size="large" onClick={()=>{
+                              <Button style={{marginTop:32,zIndex:1}} size="large" onClick={()=>{
                                   window.open(item.streamUrl)
                                   //message.success("Coming soon!")
                                 }}>
-                                  <ReconciliationOutlined /> Stream
+                                  <ReconciliationOutlined /> Work
                               </Button>
                             </div>
-                          }
-                        >
-                          <div style={{textAlign:"left",position:"relative"}}>
-
-                            {item.streamAddress?<div style={{position:"absolute",left:216,top:-6}}>
+                            {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
                               <div style={{padding:8}}>
                                 <div style={{padding:4, fontSize:14}}>
                                   <Balance value={stream.totalBalance} provider={localProvider} price={price} size={14}/>
                                   <span style={{opacity:0.5}}> @ <Balance value={stream.cap} price={price} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
                                 </div>
                                 <div>
-                                  {totalProgress} ({streamNetPercentSeconds&&pretty(streamNetPercentSeconds.toNumber()*1000000000)})
+                                  {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
                                 </div>
                               </div>
                             </div>:""}
