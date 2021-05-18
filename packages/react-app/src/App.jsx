@@ -1,5 +1,5 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Affix } from "antd";
+import { Button, Affix, Layout } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import { ethers } from "ethers";
@@ -12,6 +12,8 @@ import { INFURA_ID, NETWORKS } from "./constants";
 import signatorLogo from "./images/sig-logo.png";
 import Signator from "./Signator";
 import SignatorViewer from "./SignatorViewer";
+
+const { Footer } = Layout;
 /*
     Welcome to Signatorio !
 */
@@ -179,6 +181,11 @@ function App() {
       </BrowserRouter>
 
       {/* <ThemeSwitch /> */}
+      <Footer style={{ textAlign: "center" }}>
+        <a href="https://buidlguidl.com/" target="_blank">
+          🏰 Built with 💙 by the BuidlGuidl
+        </a>
+      </Footer>
     </div>
   );
 }

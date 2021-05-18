@@ -1,8 +1,22 @@
-import { Alert, Button, Card, Checkbox, Input, notification, Radio, Space, Typography, Collapse, Select } from "antd";
+import {
+  Alert,
+  Button,
+  Card,
+  Checkbox,
+  Input,
+  notification,
+  Radio,
+  Space,
+  Typography,
+  Collapse,
+  Select,
+  Switch,
+} from "antd";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";
 import { useLocalStorage } from "./hooks";
+import { AddressInput } from "./components";
 
 const { Text } = Typography;
 const { Panel } = Collapse;
@@ -37,7 +51,7 @@ const eip712Example = {
   },
 };
 
-function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
+function Signator({ injectedProvider, address, loadWeb3Modal, chainList, mainnetProvider }) {
   const [messageText, setMessageText] = useLocalStorage("messageText", "hello ethereum");
   // const [metaData, setMetaData] = useState("none");
   // const [messageDate, setMessageDate] = useState(new Date());
@@ -45,13 +59,19 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
   // const [latestBlock, setLatestBlock] = useState();
   const [signing, setSigning] = useState(false);
   const [typedData, setTypedData] = useLocalStorage("typedData", eip712Example);
-  const [manualTypedData, setManualTypedData] = useLocalStorage("manualTypedData");
+  const [manualTypedData, setManualTypedData] = useLocalStorage(
+    "manualTypedData",
+    JSON.stringify(eip712Example, null, "\t"),
+  );
   const [invalidJson, setInvalidJson] = useState(false);
   const [type, setType] = useLocalStorage("signingType", "message");
   const [typedDataChecks, setTypedDataChecks] = useState({});
   const [chainId, setChainId] = useState(
     typedData && typedData.domain && typedData.domain.chainId ? parseInt(typedData.domain.chainId, 10) : 1,
   );
+  const [action, setAction] = useState("sign");
+  const [manualSignature, setManualSignature] = useState();
+  const [manualAddress, setManualAddress] = useState();
 
   function useSearchParams() {
     const _params = new URLSearchParams(useLocation().search);
@@ -105,40 +125,45 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
     }
   }, [typedData]);
 
-  const signMessage = async (sign = true) => {
+  const signMessage = async () => {
     try {
       setSigning(true);
-      const _message = getMessage();
-      if (sign) console.log(`Signing: ${_message}`);
 
-      const injectedSigner = sign && injectedProvider.getSigner();
+      const injectedSigner = action === "sign" && injectedProvider.getSigner();
 
       let _signature;
       if (type === "typedData") {
         const _typedData = { ...typedData };
-        if (!_typedData.domain) _typedData.domain = {};
-        if (!_typedData.domain.chainId) _typedData.domain.chainId = chainId;
+        if (!_typedData.domain && action !== "verify") _typedData.domain = {};
+        if (!_typedData.domain.chainId && action !== "verify") _typedData.domain.chainId = chainId;
+        console.log(`${action}: ${_typedData}`);
 
-        if (sign)
+        if (action === "sign")
           _signature = await injectedSigner._signTypedData(_typedData.domain, _typedData.types, _typedData.message);
         const _compressedData = await codec.compress(_typedData);
 
         searchParams.set("typedData", _compressedData);
       } else if (type === "message") {
         // const _messageToSign = ethers.utils.isBytesLike(_message) ? ethers.utils.arrayify(_message) : _message;
-
-        console.log(_message, ethers.utils.isBytesLike(_message));
-        if (sign) _signature = await injectedProvider.send("personal_sign", [_message, address]);
+        const _message = getMessage();
+        console.log(`${action}: ${_message}`);
+        if (action === "sign") _signature = await injectedProvider.send("personal_sign", [_message, address]);
         // _signature = await injectedSigner.signMessage(_messageToSign);
 
         searchParams.set("message", _message);
       }
       // console.log(_signature)
-      console.log(`Success! ${_signature}`);
-      if (sign) {
+
+      if (action === "sign") console.log(`Success! ${_signature}`);
+
+      if (action === "sign") {
         searchParams.set("signatures", _signature);
         searchParams.set("addresses", address);
+      } else if (action === "verify") {
+        searchParams.set("signatures", manualSignature);
+        searchParams.set("addresses", manualAddress);
       }
+
       history.push(`/view?${searchParams.toString()}`);
 
       setSigning(false);
@@ -155,6 +180,8 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
       }
     }
   };
+
+  console.log(manualAddress, manualSignature);
 
   return (
     <div className="container">
@@ -177,15 +204,16 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
               <Input.TextArea
                 size="large"
                 autoSize={{ minRows: 2 }}
-                value={manualTypedData || JSON.stringify(typedData)}
+                value={manualTypedData}
                 onChange={e => {
                   try {
                     setManualTypedData(e.target.value);
                     const _newTypedData = JSON.parse(e.target.value);
                     setTypedData(_newTypedData);
                     setInvalidJson(false);
-                    if (_newTypedData.domain && _newTypedData.domain.chainId)
+                    if (_newTypedData.domain && _newTypedData.domain.chainId) {
                       setChainId(parseInt(_newTypedData.domain.chainId, 10));
+                    }
                   } catch (error) {
                     console.log(error);
                     setInvalidJson(true);
@@ -318,15 +346,31 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
                 </>
               )}
 
-              <Button
-                size="large"
-                onClick={() => {
-                  signMessage(false);
+              <Radio.Group
+                value={action}
+                onChange={e => {
+                  setAction(e.target.value);
                 }}
-                disabled={signing || invalidJson}
+                style={{ marginTop: 10 }}
               >
-                Create message
-              </Button>
+                <Radio value="sign">Sign</Radio>
+                <Radio value="create">Create</Radio>
+                <Radio value="verify">Verify</Radio>
+              </Radio.Group>
+              {action === "verify" && (
+                <>
+                  <AddressInput
+                    value={manualAddress}
+                    onChange={v => setManualAddress(v)}
+                    ensProvider={mainnetProvider}
+                  />
+                  <Input
+                    placeholder="signature"
+                    value={manualSignature}
+                    onChange={e => setManualSignature(e.target.value)}
+                  />
+                </>
+              )}
             </Space>
           </Panel>
         </Collapse>
@@ -335,13 +379,17 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList }) {
           <Button
             size="large"
             type="primary"
-            onClick={injectedProvider ? signMessage : loadWeb3Modal}
-            disabled={type === "typedData" && (!typedDataChecks.hash || invalidJson)}
+            onClick={action !== "sign" ? signMessage : injectedProvider ? signMessage : loadWeb3Modal}
+            disabled={
+              (type === "typedData" && (!typedDataChecks.hash || invalidJson)) ||
+              (action === "verify" && (!ethers.utils.isAddress(manualAddress) || !manualSignature))
+            }
             loading={signing}
             style={{ marginTop: 10 }}
           >
-            {injectedProvider ? "Sign" : "Connect account to sign"}
+            {action !== "sign" ? action : injectedProvider ? action : "Connect account to sign"}
           </Button>
+
           {signing && (
             <Button
               size="large"

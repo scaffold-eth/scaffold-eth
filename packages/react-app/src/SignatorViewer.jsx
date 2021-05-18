@@ -6,7 +6,21 @@ import {
   TwitterOutlined,
   InfoOutlined,
 } from "@ant-design/icons";
-import { Alert, Button, Card, Input, List, Modal, notification, Row, Typography, Popover, Space, Tooltip } from "antd";
+import {
+  Alert,
+  Button,
+  Card,
+  Input,
+  List,
+  Modal,
+  notification,
+  Row,
+  Typography,
+  Popover,
+  Space,
+  Switch,
+  Tooltip,
+} from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
 import React, { useEffect, useState } from "react";
@@ -86,6 +100,8 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
   const [addressChecks, setAddressChecks] = useState([]);
 
   const [signing, setSigning] = useState(false);
+
+  const [showAll, setShowAll] = useState(false);
 
   let messageToCheck;
 
@@ -300,32 +316,41 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                 <Input.TextArea
                   size="large"
                   autoSize={{ minRows: 2 }}
-                  value={typedData && JSON.stringify(typedData.message, null, "\t")}
+                  value={typedData && JSON.stringify(showAll === true ? typedData : typedData.message, null, "\t")}
                   style={{ marginBottom: 10 }}
                 />
-                <Popover
-                  content={
-                    <Space direction="vertical">
-                      <Typography>Domain:</Typography>
-                      <Input.TextArea
-                        size="large"
-                        autoSize={{ minRows: 2 }}
-                        value={typedData && JSON.stringify(typedData.domain, null, "\t")}
-                      />
-                      {typedData &&
-                        typedData.domain &&
-                        typedData.domain.chainId &&
-                        chainList &&
-                        chainList.length > 0 && (
-                          <Text code>
-                            {chainList.find(element => element.chainId === typedData.domain.chainId).name}
-                          </Text>
-                        )}
-                    </Space>
-                  }
-                >
-                  <Button size="small" shape="circle" icon={<InfoOutlined />} />
-                </Popover>
+                <Space>
+                  <Popover
+                    content={
+                      <Space direction="vertical">
+                        <Typography>Domain:</Typography>
+                        <Input.TextArea
+                          size="large"
+                          autoSize={{ minRows: 2 }}
+                          value={typedData && JSON.stringify(typedData.domain, null, "\t")}
+                        />
+                        {typedData &&
+                          typedData.domain &&
+                          typedData.domain.chainId &&
+                          chainList &&
+                          chainList.length > 0 && (
+                            <Text code>
+                              {chainList.find(element => element.chainId === typedData.domain.chainId).name}
+                            </Text>
+                          )}
+                      </Space>
+                    }
+                  >
+                    <Button size="small" shape="circle" icon={<InfoOutlined />} />
+                  </Popover>
+                  <Switch
+                    checkedChildren="all"
+                    unCheckedChildren="msg"
+                    onChange={checked => {
+                      setShowAll(checked);
+                    }}
+                  />
+                </Space>
               </div>
             )}
           </Card>
