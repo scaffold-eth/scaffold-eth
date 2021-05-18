@@ -2,11 +2,12 @@ import { useState } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import { Token, WETH, Fetcher, Route } from "@uniswap/sdk";
 import usePoller from "./Poller";
+import useOnBlock from "./OnBlock";
 
 export default function useExchangePrice(
   targetNetwork: any,
   mainnetProvider: Web3Provider,
-  pollTime?: number
+  pollTime: number = 0
 ) {
   const [price, setPrice] = useState(0);
 
@@ -27,7 +28,24 @@ export default function useExchangePrice(
     }
     getPrice();
   };
-  usePoller(pollPrice, pollTime || 9777);
+
+  useOnBlock(
+    mainnetProvider,
+    (): void => {
+      if(mainnetProvider && pollTime === 0) {
+        pollPrice();
+      }
+    }
+  );
+
+  usePoller(
+    (): void => {
+      if (mainnetProvider && pollTime > 0) {
+        pollPrice();
+      }
+    },
+    pollTime
+  );
 
   return price;
 }
