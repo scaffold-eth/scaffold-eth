@@ -14,3 +14,4 @@ export { default as useContractLoader } from "./ContractLoader";
 export { default as useLoaclContractsLoader } from "./LocalContractsLoader";
 export { default as useLocalStorage } from "./LocalStorage";
 export { default as useOnBlock } from "./OnBlock";
+export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
