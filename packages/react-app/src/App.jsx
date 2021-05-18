@@ -3,22 +3,25 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { ExportOutlined, ForkOutlined, ExperimentOutlined, ReconciliationOutlined } from "@ant-design/icons";
-import { message, Input, Image, List, Row, Col, Button, Menu, Alert, Switch as SwitchD, Progress } from "antd";
+import { ExportOutlined, ForkOutlined, ExperimentOutlined, ReconciliationOutlined, ShoppingCartOutlined } from "@ant-design/icons";
+import { message, Input, Image, List, Row, Col, Button, Menu, Alert, Switch as SwitchD, Progress, notification } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
-import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, EtherInput, AddressInput, Balance } from "./components";
+import { useLocalStorage, useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkBlockie, EtherInput, AddressInput, Balance, Address } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
-import { useThemeSwitcher } from "react-css-theme-switcher";
+
+import { useThemeSwitcher, ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS, SIMPLE_STREAM_ABI, BUILDERS, BUILDS } from "./constants";
 import pretty from 'pretty-time';
 import { ethers } from "ethers";
+import StackGrid from "react-stack-grid";
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -64,6 +67,15 @@ const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
+
+const themes = {
+  dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
+  light: `${process.env.PUBLIC_URL}/light-theme.css`,
+};
+
+const prevTheme = window.localStorage.getItem("theme");
+
+
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -279,10 +291,9 @@ function App(props) {
     )
   }*/
 
-
-
-
-
+  const [ cart, setCart ] = useLocalStorage("buidlguidlcart", [], 1200000) //1200000 ms timeout
+  console.log("cart",cart)
+  console.log("route",route)
 
   const [amount, setAmount] = useState();
   const [reason, setReason] = useState();
@@ -293,12 +304,33 @@ function App(props) {
     extra = "(buidlguidl.eth)"
   }
 
+  let displayCart = []
+  if(cart && cart.length>0){
+    for(let c in cart){
+      console.log("CART ITEM",c,cart[c])
+      displayCart.push(
+        <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
+          <div style={{marginLeft:32}}>
+            <Address punkBlockie={true} fontSize={18} address= {cart[c].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          </div>
+        </div>
+      )
+    }
+
+  }
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
       <BrowserRouter>
+      {cart&&cart.length>0 && route!="/funding" ?
+      <Link  onClick={()=>{setRoute("/funding")}}  style={{color:"#FFF"}} to="/funding">
+        <div className="main fade-in" style={{ zIndex:1111, position: "fixed", right: 16, bottom: 0, backgroundColor:"#1890ff", borderRadius:"8px 8px 0px 0px",padding:16, fontSize:32}}>
+          <ShoppingCartOutlined /> Checkout [{cart.length} item{cart.length==1?"":"s"}]
+        </div>
+      </Link>:""}
 
         <Menu style={{ textAlign:"center", fontSize: 22 }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
@@ -309,6 +341,9 @@ function App(props) {
           </Menu.Item>
           <Menu.Item key="/funding">
             <Link onClick={()=>{setRoute("/funding")}} to="/funding">🧪 Funding</Link>
+          </Menu.Item>
+          <Menu.Item key="/funders">
+            <Link onClick={()=>{setRoute("/funders")}} to="/funders">🦹 Funders</Link>
           </Menu.Item>
           {address=="0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"?<Menu.Item key="/debug">
             <Link onClick={()=>{setRoute("/debug")}} to="/debug">👨🏻‍🔬 Debug</Link>
@@ -529,6 +564,7 @@ function App(props) {
                         )
                       }
 
+
                       return (
                         <List.Item
                           key={item.name}
@@ -541,7 +577,17 @@ function App(props) {
                             <div style={{float:"right",marginTop:16,width:100}}>
                               <Button size="large" style={{zIndex:1}} onClick={()=>{
                                   //window.open(item.branch)
-                                  message.success("Coming soon!")
+                                  //message.success("Coming soon!")
+                                  setCart([...cart,item])
+                                  notification.success({
+                                    style:{marginBottom:64},
+                                    message: 'Added to cart!',
+                                    placement: "bottomRight",
+                                    description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+                                      <Address punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                                      </ThemeSwitcherProvider>
+                                    )
+                                  });
                                 }}>
                                   <ExperimentOutlined /> Fund
                               </Button>
@@ -597,29 +643,40 @@ function App(props) {
               <div style={{marginTop:8,marginBottom:16}}>
                 We build <i>generic web3 components</i> to make creating web3 <b>products</b> easier.
               </div>
-              <div style={{marginTop:8,marginBottom:64}}>
-                Each <i>branch</i> of <b>🏗 scaffold-eth</b> is an educational tutorial.
-              </div>
+
 
 
               <hr style={{opacity:0.1,marginBottom:64}}/>
+              <div style={{marginTop:8,marginBottom:64}}>
+                Support the <b>🏰 BuidlGuidl</b>:
+              </div>
 
-              <div style={{width:400, margin:"auto"}}>
-                <div style={{marginTop:8}}>
-                  <AddressInput
-                    hideScanner={true}
-                    ensProvider={mainnetProvider}
-                    placeholder="to address"
-                    value={toAddress}
-                    onChange={setToAddress}
-                  />
-                </div>
-                {extra?<div style={{marginTop:2,textAlign:"left",paddingLeft:16,fontSize:14}}>
-                  <b>BuidlGuidl.eth</b>
-                </div>:""}
+              <div style={{width:620, margin:"auto"}}>
+                { cart && cart.length>0?
+                  <StackGrid
+                    columnWidth={250}
+                  >
+                    {displayCart}
+                  </StackGrid>:
+                  <div style={{marginTop:8}}>
+                    <AddressInput
+                      hideScanner={true}
+                      ensProvider={mainnetProvider}
+                      placeholder="to address"
+                      value={toAddress}
+                      onChange={setToAddress}
+                    />
+                    {extra ?<div style={{marginTop:2,textAlign:"left",paddingLeft:16,fontSize:14}}>
+                      <b>BuidlGuidl.eth</b>
+                    </div>:""}
+                  </div>
+                }
+
                 <div style={{marginTop:16}}>
+
                   <EtherInput
                     autoFocus={true}
+                    placeholder={"Amount in total ETH to split between selected builders/builds"}
                     price={props.price}
                     value={amount}
                     onChange={value => {
@@ -690,7 +747,9 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
+
+
+        {/* <ThemeSwitch />*/}
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
