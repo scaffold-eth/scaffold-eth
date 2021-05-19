@@ -11,6 +11,7 @@ contract Auction is IERC721Receiver, SignatureChecker {
         address seller;
         uint128 price;
         uint256 duration;
+        bool isActive;
     }
 
     mapping(address => mapping(uint256 => tokenDetails)) public tokenToAuction;
@@ -41,7 +42,8 @@ contract Auction is IERC721Receiver, SignatureChecker {
         tokenDetails memory _auction = tokenDetails({
             seller: msg.sender,
             price: uint128(_price),
-            duration: _duration
+            duration: _duration,
+            isActive: true
             });
         address owner = msg.sender;
         ERC721(_nft).safeTransferFrom(owner, address(this), _tokenId);
@@ -70,6 +72,8 @@ contract Auction is IERC721Receiver, SignatureChecker {
         require(amount >= auction.price);
         require(auction.duration <= block.timestamp, "Auction hasn't ended yet");
         require(auction.seller == msg.sender);
+        require(auction.isActive);
+        auction.isActive = false;
         bytes32 messageHash = keccak256(abi.encodePacked(_tokenId, _nft, bidder, amount));
         bool isBidder = checkSignature(messageHash, sig, bidder);
         require(isBidder, "Invalid Bidder"); 
@@ -101,7 +105,8 @@ contract Auction is IERC721Receiver, SignatureChecker {
     function cancelAuction(address _nft, uint256 _tokenId, address[] memory _bidders) external {
         tokenDetails storage auction = tokenToAuction[_nft][_tokenId];
         require(auction.seller == msg.sender);
-        require(auction.duration > block.timestamp, "Auction for this nft has ended");
+        require(auction.isActive);
+        auction.isActive = false;
         bool success;
         for (uint256 i = 0; i < _bidders.length; i++) {
         require(bids[_nft][_tokenId][_bidders[i]] > 0);

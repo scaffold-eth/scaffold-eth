@@ -1,3 +1,11 @@
 .App {
   text-align: center;
 }
+
+.cardAction {
+  color: gray;
+}
+
+.cardAction:hover {
+  color: gray !important;
+}

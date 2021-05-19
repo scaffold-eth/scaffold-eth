@@ -312,6 +312,7 @@ function App(props) {
   const [ downloading, setDownloading ] = useState()
   const [ ipfsContent, setIpfsContent ] = useState()
   const [yourBid, setYourBid] = useState({});
+  const [stakedAmount, setStakedAmount] = useState({});
 
   const [ transferToAddresses, setTransferToAddresses ] = useState({})
 
@@ -324,11 +325,13 @@ function App(props) {
         let owner
         let auctionInfo
         let bidsInfo = {}
+        let stake = 0.0;
         if(!forSale){
           const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a))
           owner = await readContracts.YourCollectible.ownerOf(tokenId)
           const nftAddress = readContracts.YourCollectible.address;
           auctionInfo = await readContracts.Auction.getTokenAuctionDetails(nftAddress, tokenId);
+          stake = await readContracts.Auction.getStakeInfo(nftAddress, tokenId, address);
           try {
             bidsInfo = await fetch(`http://localhost:8001/${a}`).then(data => data.json());
           } catch {
@@ -336,7 +339,7 @@ function App(props) {
           }
         }
 
-        assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner, auctionInfo, bidsInfo})
+        assetUpdate.push({id:a,...assets[a],forSale:forSale,owner:owner, auctionInfo, bidsInfo, stake})
       }catch(e){console.log(e)}
     }
     setLoadedAssets(assetUpdate)
@@ -372,7 +375,8 @@ function App(props) {
     const nftAddress = readContracts.YourCollectible.address;
     const parsedAmount = parseEther(ethAmount.toString());
     const minPrice = loadedAsset.auctionInfo.price
-    if (parsedAmount.gt(stakedEth) || parsedAmount.lt(minPrice)) {
+
+    if (parsedAmount.gt(loadedAsset.stake) || parsedAmount.lt(minPrice)) {
       return notification.error({
         message: "Invalid amount for bid",
         description: "This bid is not allowed. It is either less than minimum price or you do not have enough staked ETH.",
@@ -439,6 +443,23 @@ function App(props) {
     }
   }
 
+  const stakeEth = async (loadedAsset) => {
+    const nftAddress = readContracts.YourCollectible.address;
+    const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(loadedAsset.id));
+
+     await tx(writeContracts.Auction.stake(nftAddress, tokenId, { value: parseEther(stakedAmount[loadedAsset.id].toString())}));
+     await updateYourCollectibles();
+  }
+
+  const withdrawStake = async (loadedAsset) => {
+    const nftAddress = readContracts.YourCollectible.address;
+    const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(loadedAsset.id));
+
+    await tx(writeContracts.Auction.withdrawStake(nftAddress, tokenId));
+    await updateYourCollectibles();
+  }
+
+
   const isBidderIncluded = (bidsInfo) => {
     const bidders = Object.entries(bidsInfo).map(([_, bidInfo]) => bidInfo.bidder);
     console.log('all bidders', bidders);
@@ -464,13 +485,13 @@ function App(props) {
       )
       auctionDetails.push(null)
     }else{
-      const { auctionInfo } = loadedAssets[a];
+      const { auctionInfo, stake } = loadedAssets[a];
       const deadline = new Date(auctionInfo.duration * 1000);
       const isEnded = deadline <= new Date();
       const { bidsInfo } = loadedAssets[a];
 
       cardActions.push(
-        <div>
+        <div className="cardAction">
           <div>
           owned by: <Address
             address={loadedAssets[a].owner}
@@ -482,6 +503,23 @@ function App(props) {
           {!loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].owner && <><Button style={{ marginBottom: "10px" }} onClick={startAuction(loadedAssets[a].id)} disabled={address !== loadedAssets[a].owner}>Start auction</Button><br/></>}
           {/*{loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={completeAuction(loadedAssets[a].id)}>Complete auction</Button><br/></>}*/}
           {loadedAssets[a].auctionInfo.isActive && address === loadedAssets[a].auctionInfo.seller && <><Button style={{ marginBottom: "10px" }} onClick={cancelAuction(loadedAssets[a])}>Cancel auction</Button><br/></>}
+          {
+            auctionInfo.isActive && address !== auctionInfo.seller && (
+              <>
+                <p style={{ margin:0, marginTop: "15px", marginBottom: "2px" }}>Your staked ETH: {stake ? formatEther(stake) : 0.0}</p>
+
+                {!isEnded && (<><p style={{margin:0, marginRight: "15px"}}>How much ETH you want to stake: </p>
+                <InputNumber placeholder="0.1" value={stakedAmount[loadedAssets[a].id]} onChange={newStake => setStakedAmount({...stakedAmount, [loadedAssets[a].id]: newStake})} style={{ flexGrow: 1, marginTop: "7px", marginBottom: "20px", marginRight: "15px" }}/>
+                <Button disabled={!stakedAmount[loadedAssets[a].id]} onClick={() => stakeEth(loadedAssets[a])} style={{marginBottom: "10px"}}>Stake ETH</Button>
+                <br/>
+                <br /></>)}
+
+                {isEnded && (
+                  <Button disabled={!loadedAssets[a].stake} onClick={() => withdrawStake(loadedAssets[a])} style={{marginBottom: "15px"}}>Withdraw your stake</Button>
+                )}
+              </>
+            )
+          }
         </div>
       )
 
@@ -576,15 +614,6 @@ function App(props) {
     console.log('MY SIGNATURE: ', { signature });
   }
 
-  const stakeEth = async () => {
-    await tx(writeContracts.Auction.stake({ value: parseEther(stakeAmount.toString())}));
-  }
-
-
-  const withdrawStake = async () => {
-    await tx(writeContracts.Auction.withdrawStake());
-  }
-
   return (
     <div className="App">
 
@@ -636,14 +665,6 @@ function App(props) {
             */}
 
             <div style={{ maxWidth:1024, margin: "auto", marginTop:32, paddingBottom:56 }}>
-              <p>Staked ETH: {stakedEth ? formatEther(stakedEth) : 0.0}</p>
-
-              <p style={{margin:0, marginRight: "15px"}}>How much ETH you want to stake: </p>
-              <InputNumber placeholder="0.1" value={stakeAmount} onChange={newPrice => setStakeAmount(newPrice)} style={{ flexGrow: 1, marginTop: "7px", marginBottom: "20px", marginRight: "15px" }}/>
-              <Button disabled={stakeAmount === 0.0} onClick={stakeEth} style={{marginBottom: "10px"}}>Stake ETH</Button>
-              <br/>
-              <Button disabled={!stakedEth || formatEther(stakedEth) == 0.0} onClick={withdrawStake} style={{marginBottom: "15px"}}>Withdraw your stake</Button>
-              <br />
               <Button disabled={galleryList.length === 0} onClick={updateYourCollectibles} style={{marginBottom: "25px"}}>Update collectibles</Button>
 
 
