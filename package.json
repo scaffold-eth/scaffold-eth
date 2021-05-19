@@ -21,7 +21,6 @@
     }
   ],
   "dependencies": {
-    "@uniswap/sdk": "^3.0.3",
     "axios": "^0.21.1",
     "burner-provider": "^1.0.15"
   },
