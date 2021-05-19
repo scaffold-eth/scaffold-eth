@@ -291,7 +291,7 @@ function App(props) {
     )
   }*/
 
-  const [ cart, setCart ] = useLocalStorage("buidlguidlcart", [], 1200000) //1200000 ms timeout
+  const [ cart, setCart ] = useLocalStorage("buidlguidlcart", [], 12000000) //12000000 ms timeout? idk
   console.log("cart",cart)
   console.log("route",route)
 
@@ -308,13 +308,53 @@ function App(props) {
   if(cart && cart.length>0){
     for(let c in cart){
       console.log("CART ITEM",c,cart[c])
-      displayCart.push(
-        <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
-          <div style={{marginLeft:32}}>
-            <Address punkBlockie={true} fontSize={18} address= {cart[c].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+      if(!cart[c].streamAddress){
+        displayCart.push(
+          <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
+            <div style={{marginLeft:32}}>
+              <div style={{float:"right",zIndex:2}}>
+                <Button borderless={true} onClick={()=>{
+                  console.log("REMOVE ",c,cart[c])
+                  let update = []
+                  for(let x in cart){
+                    if(cart[c].id != cart[x].id){
+                      update.push(cart[x])
+                    }
+                  }
+                  console.log("update",update)
+                  setCart(update)
+                }}>x</Button>
+              </div>
+              <div style={{fontSize:18,marginLeft:-54}}>
+                {cart[c].name}
+              </div>
+            </div>
           </div>
-        </div>
-      )
+        )
+      }else{
+        displayCart.push(
+          <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
+            <div style={{marginLeft:32}}>
+              <div style={{float:"right",zIndex:2}}>
+                <Button borderless={true} onClick={()=>{
+                  console.log("REMOVE ",c,cart[c])
+                  let update = []
+                  for(let x in cart){
+                    if(cart[c].id != cart[x].id){
+                      update.push(cart[x])
+                    }
+                  }
+                  console.log("update",update)
+                  setCart(update)
+                }}>x</Button>
+              </div>
+              <Address hideCopy={true} punkBlockie={true} fontSize={18} address= {cart[c].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+
+            </div>
+          </div>
+        )
+      }
+
     }
 
   }
@@ -438,7 +478,20 @@ function App(props) {
                           <Row>
                             <Col span={12}><Button size="large" onClick={()=>{
                               //window.open(item.branch)
-                              message.success("Coming Soon!")
+                              let copy = {...item}
+                              copy.id = Math.floor(Math.random()*100000000000)
+                              console.log("copy",copy)
+                              setCart([...cart,copy])
+                              notification.success({
+                                style:{marginBottom:64},
+                                message: 'Added to cart!',
+                                placement: "bottomRight",
+                                description:(
+                                  <div style={{fontSize:22}}>
+                                    {item.name}
+                                  </div>
+                                )
+                              });
                             }}>
                               <ExperimentOutlined /> Fund
                             </Button></Col>
@@ -578,13 +631,16 @@ function App(props) {
                               <Button size="large" style={{zIndex:1}} onClick={()=>{
                                   //window.open(item.branch)
                                   //message.success("Coming soon!")
-                                  setCart([...cart,item])
+                                  let copy = {...item}
+                                  copy.id = Math.floor(Math.random()*100000000000)
+                                  console.log("copy",copy)
+                                  setCart([...cart,copy])
                                   notification.success({
                                     style:{marginBottom:64},
                                     message: 'Added to cart!',
                                     placement: "bottomRight",
                                     description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-                                      <Address punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                                        <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
                                       </ThemeSwitcherProvider>
                                     )
                                   });
@@ -601,8 +657,8 @@ function App(props) {
                             {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
                               <div style={{padding:8}}>
                                 <div style={{padding:4, fontSize:14}}>
-                                  <Balance value={stream.totalBalance} provider={localProvider} price={price} size={14}/>
-                                  <span style={{opacity:0.5}}> @ <Balance value={stream.cap} price={price} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
+                                  Ξ<Balance value={stream.totalBalance} provider={localProvider} price={false} size={14}/>
+                                  <span style={{opacity:0.5}}> @ Ξ<Balance value={stream.cap} price={false} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
                                 </div>
                                 <div>
                                   {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
@@ -644,27 +700,26 @@ function App(props) {
                 We build <i>generic web3 components</i> to make creating web3 <b>products</b> easier.
               </div>
 
-
-
               <hr style={{opacity:0.1,marginBottom:64}}/>
               <div style={{marginTop:8,marginBottom:64}}>
                 Support the <b>🏰 BuidlGuidl</b>:
               </div>
 
-              <div style={{width:620, margin:"auto"}}>
+              <div style={{width:"calc(max(min(80vw,800px),300px))", margin:"auto"}}>
                 { cart && cart.length>0?
                   <StackGrid
                     columnWidth={250}
                   >
                     {displayCart}
                   </StackGrid>:
-                  <div style={{marginTop:8}}>
+                  <div style={{width:620,margin:"auto",marginTop:16}}>
                     <AddressInput
                       hideScanner={true}
                       ensProvider={mainnetProvider}
                       placeholder="to address"
                       value={toAddress}
                       onChange={setToAddress}
+
                     />
                     {extra ?<div style={{marginTop:2,textAlign:"left",paddingLeft:16,fontSize:14}}>
                       <b>BuidlGuidl.eth</b>
@@ -672,11 +727,11 @@ function App(props) {
                   </div>
                 }
 
-                <div style={{marginTop:16}}>
+                <div style={{width:620,margin:"auto",marginTop:16}}>
 
                   <EtherInput
                     autoFocus={true}
-                    placeholder={"Amount in total ETH to split between selected builders/builds"}
+                    placeholder={cart && cart.length>0 ? "amount in total ETH to split between the streams of the selected builders/builds" : "amount in ETH"}
                     price={props.price}
                     value={amount}
                     onChange={value => {
@@ -684,9 +739,9 @@ function App(props) {
                     }}
                   />
                 </div>
-                <div style={{marginTop:16}}>
+                <div style={{width:620,margin:"auto",marginTop:16}}>
                   <Input
-                    placeholder={"reason / guidance"}
+                    placeholder={"optional reason / guidance"}
                     value={reason}
                     onChange={e => {
                       setReason(e.target.value);
@@ -695,14 +750,47 @@ function App(props) {
                 </div>
                 <div style={{marginTop:16}}>
                 <Button
+
                   onClick={() => {
-                    console.log("toAddress",toAddress)
-                    console.log("AMOUNT",amount)
-                    tx({
-                      to: toAddress,
-                      value: parseEther(""+amount),
-                      data: reason?ethers.utils.hexlify(ethers.utils.toUtf8Bytes(reason)):"0x"
-                    })
+                    if(!amount){
+                      console.log("AMOUNT",amount)
+                      notification.warning({
+                        style:{marginBottom:64},
+                        message: 'Please enter an amount in ETH',
+                        placement: "bottomRight",
+                        description:false,
+                      });
+                    }else{
+                      if( cart && cart.length>0){
+                        console.log("okay this is a big one... we need to use a splitter contract to send to all the streams of all the people in the cart including the trickle down of projects...")
+                        console.log(cart)
+
+                        let finalAddresses = []
+                        let finalReasons = []
+
+                        for(let c in cart){
+                          if(cart[c].streamAddress){
+                            console.log("Adding stream address ")
+                            finalAddresses.push(cart[c].streamAddress)
+                            finalReasons.push(reason)
+                          }else{
+                            console.log("NO STREAM, NEED TO SPLIT...")
+                          }
+                        }
+
+                        console.log("finalAddresses",finalAddresses)
+                        console.log("finalReasons",finalReasons)
+                      }else{
+                        console.log("toAddress",toAddress)
+                        console.log("AMOUNT",amount)
+                        tx({
+                          to: toAddress,
+                          value: parseEther(""+amount),
+                          data: reason?ethers.utils.hexlify(ethers.utils.toUtf8Bytes(reason)):"0x"
+                        })
+                      }
+                    }
+
                   }}
                   size="large"
                   type="primary"
@@ -717,9 +805,11 @@ function App(props) {
 
 
               <div style={{marginTop:64}}>
-                <div style={{padding:8}}>
+                {cart && cart.length>0 ? <div style={{padding:8}}>
+                  All funding is sent to ETH streams that flow to builders as they turn in work.
+                <hr style={{opacity:0.1,marginTop:64}}/></div>:<div style={{padding:8}}>
                   🙏 All funding will go to developers mentored by <a  href="https://twitter.com/austingriffith" target="_blank">@austingriffith</a>.
-                </div>
+                </div>}
                 <div style={{padding:8}}>
                   In <a href="https://medium.com/@austin_48503/buidl-guidl-round-1-unaudited-4e1d9456e43d" target="_blank">version one</a>, we used <a href="https://support.buidlguidl.com/activity" target="_blank">quadratic matching</a> to fund a guild bank.
                 </div>

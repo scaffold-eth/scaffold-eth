@@ -77,9 +77,13 @@ export default function Address(props) {
   }
 
   let text;
+
+  let copyable = false
+  if(!props.hideCopy) copyable = { text: address }
+
   if (props.onChange) {
     text = (
-      <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
+      <Text editable={{ onChange: props.onChange }} copyable={copyable}>
         <a
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
@@ -92,7 +96,7 @@ export default function Address(props) {
     );
   } else {
     text = (
-      <Text copyable={{ text: address }}>
+      <Text copyable={copyable}>
         <a
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
