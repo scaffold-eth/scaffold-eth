@@ -363,9 +363,9 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
             renderItem={(item, index) => {
               let _indicator;
               if (addressChecks[index] === "MATCH") {
-                _indicator = <CheckCircleTwoTone style={{ fontSize: 32 }} twoToneColor="#52c41a" />;
+                _indicator = <CheckCircleTwoTone style={{ fontSize: 24 }} twoToneColor="#52c41a" />;
               } else if (addressChecks[index] === "MISMATCH") {
-                _indicator = <CloseCircleTwoTone style={{ fontSize: 32 }} twoToneColor="#ff4d4f" />;
+                _indicator = <CloseCircleTwoTone style={{ fontSize: 24 }} twoToneColor="#ff4d4f" />;
               } else {
                 _indicator = <Alert message="Invalid" type="error" />;
               }
@@ -375,7 +375,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                   <div>
                     <div style={{ display: "flex", alignItems: "center", justifyContent: "center" }}>
                       {addresses[index] && ethers.utils.isAddress(addresses[index]) && (
-                        <Address address={addresses[index]} ensProvider={mainnetProvider} />
+                        <Address address={addresses[index]} ensProvider={mainnetProvider} fontSize={24} />
                       )}
                       <div style={{ marginLeft: 10 }}>
                         <Tooltip title={addressChecks[index]}>{_indicator}</Tooltip>

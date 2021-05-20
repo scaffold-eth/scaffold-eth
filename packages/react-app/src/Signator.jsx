@@ -1,17 +1,4 @@
-import {
-  Alert,
-  Button,
-  Card,
-  Checkbox,
-  Input,
-  notification,
-  Radio,
-  Space,
-  Typography,
-  Collapse,
-  Select,
-  Switch,
-} from "antd";
+import { Alert, Button, Card, Checkbox, Input, notification, Radio, Space, Typography, Collapse, Select } from "antd";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useHistory, useLocation } from "react-router-dom";

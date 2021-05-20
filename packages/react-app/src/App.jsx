@@ -1,11 +1,12 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Button, Affix, Layout } from "antd";
+import { Button, Affix, Layout, Space } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import { ethers } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
+import { GithubOutlined } from "@ant-design/icons";
 import "./App.css";
 import { Address, Header } from "./components";
 import { INFURA_ID, NETWORKS } from "./constants";
@@ -181,10 +182,16 @@ function App() {
       </BrowserRouter>
 
       {/* <ThemeSwitch /> */}
-      <Footer style={{ textAlign: "center" }}>
-        <a href="https://buidlguidl.com/" target="_blank">
-          🏰 Built with 💙 by the BuidlGuidl
-        </a>
+      <Footer style={{ textAlign: "center", fontSize: "16px" }}>
+        <Space>
+          <a href="https://github.com/austintgriffith/scaffold-eth/tree/signatorio" target="_blank">
+            <GithubOutlined />
+          </a>
+          <span>Built with 💙</span>
+          <a href="https://buidlguidl.com/" target="_blank">
+            🏰 BuidlGuidl{" "}
+          </a>
+        </Space>
       </Footer>
     </div>
   );
