@@ -471,6 +471,21 @@ export const DAI_ABI = [
       readMore: "",
       image: "niftyview.png"
     },
+
+    {
+      name: "✍️ signator.io",
+      desc: "Sign a message with an Ethereum account & generate shareable proof-of-signature links.",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/signatorio",
+      readMore: "http://signator.io",
+      image: "signatorio.png"
+    },
+    {
+      name: "💰 Emoji Support",
+      desc: "Funding round that uses quadratic matching (capital-constrained liberal radicalism).",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/emoji-support",
+      readMore: "http://emoji.support",
+      image: "emojisupport.png"
+    },
     {
       name: "🏷 NFT Auction",
       desc: "Discover how you can build your own NFT auction where the highest bid gets an NFT!",

@@ -300,7 +300,10 @@ function App(props) {
     )
   }*/
 
-
+  const [ randomizedBuilds, setRandomizedBuilds ] = useState()
+  useEffect(()=>{
+    setRandomizedBuilds(shuffle(BUILDS))
+  },[BUILDS])
 
   const [ cart, setCart ] = useLocalStorage("buidlguidlcart", [], 12000000) //12000000 ms timeout? idk
   //console.log("cart",cart)
@@ -442,7 +445,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={BUILDS}
+                dataSource={randomizedBuilds}
 
                 renderItem={(item) => {
                   /*{
@@ -913,5 +916,25 @@ window.ethereum &&
       }, 1);
   });
 /* eslint-enable */
+
+
+function shuffle(array) {
+  var currentIndex = array.length, temporaryValue, randomIndex;
+
+  // While there remain elements to shuffle...
+  while (0 !== currentIndex) {
+
+    // Pick a remaining element...
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex -= 1;
+
+    // And swap it with the current element.
+    temporaryValue = array[currentIndex];
+    array[currentIndex] = array[randomIndex];
+    array[randomIndex] = temporaryValue;
+  }
+
+  return array;
+}
 
 export default App;
