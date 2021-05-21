@@ -11,7 +11,7 @@ export { default as useTokenBalance } from "./TokenBalance";
 export { default as useUserAddress } from "./UserAddress";
 export { default as useUserProvider } from "./UserProvider";
 export { default as useContractLoader } from "./ContractLoader";
-export { default as useLoaclContractsLoader } from "./LocalContractsLoader";
+// export { default as useLocalContractsLoader } from "./LocalContractsLoader";
 export { default as useLocalStorage } from "./LocalStorage";
 export { default as useOnBlock } from "./OnBlock";
 export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
