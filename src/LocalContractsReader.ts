@@ -1,15 +1,15 @@
 /* eslint-disable no-console */
 import { useState, useEffect } from "react";
 import { Contract } from "@ethersproject/contracts";
-import { Provider } from "@ethersproject/providers";
 import usePoller from "./Poller";
 import useOnBlock from "./OnBlock";
 import { BLOCK_TIME } from "./constants";
 
 const DEBUG = false;
 
-export default function useContractReader(
-  contract: Contract,
+export default function useLocalContractsReader(
+  contracts: any,
+  contractName: string,
   functionName: string,
   args?: any[],
   pollTime?: number,
@@ -34,13 +34,13 @@ export default function useContractReader(
   const updateValue = async () => {
     try {
       let newValue;
-      if (DEBUG) console.log("CALLING ", functionName, "with args", args);
+      if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
       if (args && args.length > 0) {
-        newValue = await contract[functionName](...args);
+        newValue = await contracts[contractName][functionName](...args);
         if (DEBUG)
-          console.log("functionName", functionName, "args", args, "RESULT:", newValue);
+          console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
       } else {
-        newValue = await contract[functionName]();
+        newValue = await contracts[contractName][functionName]();
       }
       if (formatter && typeof formatter === "function") {
         newValue = formatter(newValue);
@@ -54,22 +54,22 @@ export default function useContractReader(
     }
   }
 
-  // Only pass a provider to watch on a block if we have a contract and no PollTime
+// Only pass a provider to watch on a block if we have a contract and no PollTime
   useOnBlock(
-    contract && contract.provider,
+    (contracts && contracts[contractName] && adjustPollTime === 0)&&contracts[contractName].provider,
     () => {
-    if (contract && typeof contract[functionName] === "function" && adjustPollTime === 0) {
+    if (contracts && contracts[contractName] && adjustPollTime === 0) {
       updateValue()
-    }
+  }
   })
 
-  // Use a poller if a pollTime is provided
-  usePoller(async () => {
-    if (contract && typeof contract[functionName] === "function" && adjustPollTime > 0) {
-      if (DEBUG) console.log('polling!', functionName)
-      updateValue()
-    }
-  }, adjustPollTime, contract)
+// Use a poller if a pollTime is provided
+usePoller(async () => {
+  if (contracts && contracts[contractName] && adjustPollTime > 0) {
+    if (DEBUG) console.log('polling!', contractName, functionName)
+    updateValue()
+  }
+}, adjustPollTime, contracts && contracts[contractName])
 
   return value;
 }
