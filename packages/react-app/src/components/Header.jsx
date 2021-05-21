@@ -8,7 +8,9 @@ export default function Header() {
     <a href="/">
       <PageHeader
         title="🏰 BuidlGuidl"
-        subTitle="v2"
+        subTitle={(
+          <span>v2 - [<a href="https://youtu.be/aYMj00JoIug" target="_blank"><span style={{marginRight:4}}>🎥 </span> 8min speed run</a>]</span>
+        )}
         style={{ cursor: "pointer" }}
       />
     </a>

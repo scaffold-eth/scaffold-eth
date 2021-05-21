@@ -609,22 +609,7 @@ function App(props) {
 
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
               <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
-                <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
-                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
-                  <div style={{marginTop:16}}>Watch the latest <a target="_blank" href="https://youtu.be/mctO5EUx_wI?t=103">🎥 onboarding video</a></div>
-                  <div style={{marginTop:8}}>
-                    Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
-                     <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
-                      and
-                       <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth/branches/active">🌳 branches</a> for inspiration.
-                  </div>
-                  <div style={{marginTop:8}}>
-                    Submit creations to the <a href="https://t.me/joinchat/PXu_P6pps5I5ZmUx" target="_blank">🏰 BuidlGuidl telegram</a>!
-                  </div>
-                  <div style={{marginTop:8}}>
-                    Get help in the <a href="https://t.me/joinchat/U2UA3vBM5I7PoCOk" target="_blank">💬 Support telegram</a>.
-                  </div>
-                </div>
+
 
                 <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
 
@@ -758,6 +743,23 @@ function App(props) {
 
                   }}
                 />
+
+                <div style={{marginTop:64, borderTop:"1px solid #eeeeee",paddingTop:64,marginBottom:64}}>
+                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
+                  <div style={{marginTop:16}}>Watch the latest <a target="_blank" href="https://youtu.be/mctO5EUx_wI?t=103">🎥 onboarding video</a></div>
+                  <div style={{marginTop:8}}>
+                    Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
+                     <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
+                      and
+                       <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth/branches/active">🌳 branches</a> for inspiration.
+                  </div>
+                  <div style={{marginTop:8}}>
+                    Submit creations to the <a href="https://t.me/joinchat/PXu_P6pps5I5ZmUx" target="_blank">🏰 BuidlGuidl telegram</a>!
+                  </div>
+                  <div style={{marginTop:8}}>
+                    Get help in the <a href="https://t.me/joinchat/U2UA3vBM5I7PoCOk" target="_blank">💬 Support telegram</a>.
+                  </div>
+                </div>
 
                 <div style={{paddingBottom:256}}></div>
               </div>

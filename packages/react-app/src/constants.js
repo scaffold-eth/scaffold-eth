@@ -473,7 +473,7 @@ export const DAI_ABI = [
     },
 
     {
-      name: "✍️ signator.io",
+      name: "✍️ Signator.io",
       desc: "Sign a message with an Ethereum account & generate shareable proof-of-signature links.",
       branch: "https://github.com/austintgriffith/scaffold-eth/tree/signatorio",
       readMore: "http://signator.io",
@@ -619,7 +619,7 @@ export const BUILDERS = [
     address: "0x60Ca282757BA67f3aDbF21F3ba2eBe4Ab3eb01fc",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=azf20",
     builds: [
-      "niftyink", "uniswapper", "lender", "ape", "op",
+      "niftyink", "uniswapper", "lender", "ape", "op", "signatorio"
     ],
     streamAddress: "0x754A8a09Eae2FFEFbDE706a6ed40C0f0F3c58d7e",//"0xdC1d9454CBa690E0a33abeB08de1DD6921b15759",//"0x79Eeda2a3cdB90129A3Dc851556AeaF25DdF1E39",
     streamUrl: "http://adamfuller.buidlguidl.com",
