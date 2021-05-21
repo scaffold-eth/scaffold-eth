@@ -62,18 +62,35 @@ export default function Address(props) {
 
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   if (props.minimized) {
-    return (
-      <span style={{ verticalAlign: "middle" }}>
-        <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-          target="_blank"
-          href={etherscanLink}
-          rel="noopener noreferrer"
-        >
-          <Blockies seed={address.toLowerCase()} size={8} scale={2} />
-        </a>
-      </span>
-    );
+    if(props.noLink){
+      return (
+        <span style={{ verticalAlign: "middle" }}>
+          <span style={{ verticalAlign: "middle", position:"relative" }}>
+            <div style={{position:"absolute",left:-213,top:-68}}>
+              <QRPunkBlockie withQr={false} address={address.toLowerCase()} scale={0.35} />
+            </div>
+          </span>
+        </span>
+      );
+    }else{
+      return (
+        <span style={{ verticalAlign: "middle" }}>
+          <a
+            style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+            target="_blank"
+            href={etherscanLink}
+            rel="noopener noreferrer"
+          >
+          <span style={{ verticalAlign: "middle", position:"relative" }}>
+            <div style={{position:"absolute",left:-213,top:-68}}>
+              <QRPunkBlockie withQr={false} address={address.toLowerCase()} scale={0.35} />
+            </div>
+          </span>
+          </a>
+        </span>
+      );
+    }
+
   }
 
   let text;
@@ -110,9 +127,9 @@ export default function Address(props) {
   }
 
   return (
-    <span>
+    <span style={{position:"relative"}}>
       {props.punkBlockie?
-        <span style={{ verticalAlign: "middle", position:"relative" }}>
+        <span style={{ verticalAlign: "middle" }}>
           <div style={{position:"absolute",left:-213,top:-68}}>
             <QRPunkBlockie withQr={false} address={address.toLowerCase()} scale={0.4} />
           </div>

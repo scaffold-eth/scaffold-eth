@@ -72,7 +72,7 @@ export default function Account({
           style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
           shape="round"
           size="large"
-          /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
+          type={minimized ? "default" : "primary"}
           onClick={loadWeb3Modal}
         >
           connect

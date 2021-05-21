@@ -14,13 +14,13 @@ import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, QRPunkB
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
-import { Hints, ExampleUI, Subgraph } from "./views"
+import { Hints, ExampleUI, Subgraph, Checkout } from "./views"
 
 import { useThemeSwitcher, ThemeSwitcherProvider } from "react-css-theme-switcher";
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS, SIMPLE_STREAM_ABI, BUILDERS, BUILDS } from "./constants";
+import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS, SIMPLE_STREAM_ABI, BUILDERS, BUILDS, mainStreamReader_ADDRESS, mainStreamReader_ABI } from "./constants";
 import pretty from 'pretty-time';
 import { ethers } from "ethers";
-import StackGrid from "react-stack-grid";
+
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -40,6 +40,13 @@ import StackGrid from "react-stack-grid";
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
+
+
+const translateAddressesForLocal = (addy) => {
+  //if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
+  //if(addy=="0x21e18260357D33d2e18482584a8F39D532fb71cC") return "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+  return addy
+}
 
 /// 📡 What chain are your contracts deployed to?
 const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
@@ -135,12 +142,12 @@ function App(props) {
   const readContracts = useContractLoader(localProvider);
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  //const writeContracts = useContractLoader(userProvider)
+  const writeContracts = useContractLoader(userProvider)
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  //const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI)
+  const mainnetStreamReaderContract = useExternalContractLoader(mainnetProvider, mainStreamReader_ADDRESS, mainStreamReader_ABI)
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -154,10 +161,10 @@ function App(props) {
   for(let b in BUILDERS){
     if(BUILDERS[b].streamAddress) streams.push(BUILDERS[b].streamAddress)
   }
-  console.log("streams",streams)
+  //console.log("streams",streams)
   // keep track of a variable from the contract in the local React state:
-  const streamReadResult = useContractReader(readContracts,"StreamReader", "readStreams", [streams])
-  console.log("streamReadResult",streamReadResult)
+  const streamReadResult = useContractReader({"StreamReader":mainnetStreamReaderContract},"StreamReader", "readStreams", [streams])
+  //console.log("streamReadResult",streamReadResult)
 
   const [ builderStreams, setBuilderStreams ] = useState()
   useEffect(
@@ -169,7 +176,7 @@ function App(props) {
           let badges = []
           for(let c in BUILDERS[b].builds){
             let buildString = BUILDERS[b].builds[c]
-            console.log("searching for build string ",buildString)
+            //console.log("searching for build string ",buildString)
             for(let d in BUILDS){
               if(BUILDS[d].image.replace(".png","").replace(".jpg","")==buildString){
                 badges.push(
@@ -187,10 +194,10 @@ function App(props) {
       }
     }
   ,[streamReadResult])
-  console.log("builderStreams",builderStreams)
+  //console.log("builderStreams",builderStreams)
 
   //📟 Listen for broadcast events
-  //const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const fundingEvents = useEventListener(readContracts, "StreamFunder", "FundStreams", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -207,7 +214,9 @@ function App(props) {
     }
   }*/
 
-
+  //search filter for front page
+  const [ filter, setFilter ]= useState()
+  const [ filterExplanation, setFilterExplanation ] = useState()
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -291,18 +300,11 @@ function App(props) {
     )
   }*/
 
+
+
   const [ cart, setCart ] = useLocalStorage("buidlguidlcart", [], 12000000) //12000000 ms timeout? idk
-  console.log("cart",cart)
-  console.log("route",route)
-
-  const [amount, setAmount] = useState();
-  const [reason, setReason] = useState();
-  const [toAddress, setToAddress] = useState("0x97843608a00e2bbc75ab0C1911387E002565DEDE");
-
-  let extra = ""
-  if(toAddress=="0x97843608a00e2bbc75ab0C1911387E002565DEDE"){
-    extra = "(buidlguidl.eth)"
-  }
+  //console.log("cart",cart)
+  //console.log("route",route)
 
   let displayCart = []
   if(cart && cart.length>0){
@@ -310,7 +312,7 @@ function App(props) {
       console.log("CART ITEM",c,cart[c])
       if(!cart[c].streamAddress){
         displayCart.push(
-          <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
+          <div key={c} style={{padding:22, border:"1px solid #dddddd",borderRadius:8}}>
             <div style={{marginLeft:32}}>
               <div style={{float:"right",zIndex:2}}>
                 <Button borderless={true} onClick={()=>{
@@ -336,7 +338,7 @@ function App(props) {
           <div key={c} style={{padding:16, border:"1px solid #dddddd",borderRadius:8}}>
             <div style={{marginLeft:32}}>
               <div style={{float:"right",zIndex:2}}>
-                <Button borderless={true} onClick={()=>{
+                <Button onClick={()=>{
                   console.log("REMOVE ",c,cart[c])
                   let update = []
                   for(let x in cart){
@@ -358,6 +360,8 @@ function App(props) {
     }
 
   }
+
+
 
   return (
     <div className="App">
@@ -385,7 +389,7 @@ function App(props) {
           <Menu.Item key="/funders">
             <Link onClick={()=>{setRoute("/funders")}} to="/funders">🦹 Funders</Link>
           </Menu.Item>
-          {address=="0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"?<Menu.Item key="/debug">
+          {address=="0x34aA3F359A9D614239015126635CE7732c18fDF3"?<Menu.Item key="/debug">
             <Link onClick={()=>{setRoute("/debug")}} to="/debug">👨🏻‍🔬 Debug</Link>
           </Menu.Item>:<></>}
         </Menu>
@@ -415,8 +419,17 @@ function App(props) {
                   creating <i>products</i>, <i>prototypes</i>, and <i>tutorials</i> with <b><a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a></b>
                 </div>
 
-                <div style={{opacity:0.77,fontSize:14,marginBottom:32,marginTop:32}}>
-                This is what we've built so far...
+                <div style={{opacity:0.77,fontSize:14,marginBottom:32,marginTop:64,borderBottom:"1px solid #dfdfdf"}}>
+                <Input
+                  bordered={false}
+                  placeholder={"search everything we have built so far..."}
+                  onChange={(e)=>{setFilter(e.target.value)}}
+                  value={filter}
+                  style={{textAlign:'center'}}
+                />
+                </div>
+                <div>
+                  {filterExplanation}
                 </div>
               </div>
             </div>
@@ -439,72 +452,77 @@ function App(props) {
                     readMore: "",
                     image: ""
                   }*/
+                  if(!filter ||
+                    item.name.toLowerCase().indexOf(filter.toLowerCase())>=0 ||
+                    item.desc.toLowerCase().indexOf(filter.toLowerCase())>=0
+                  ){
+                    let extraLink = ""
+                    if(item.readMore){
+                      extraLink = (
+                        <a
+                          href={item.readMore}
+                          target="_blank"
+                          style={{marginLeft:8}}
+                        >
+                          <ExportOutlined />
+                        </a>
+                      )
+                    }
 
-                  let extraLink = ""
-                  if(item.readMore){
-                    extraLink = (
-                      <a
-                        href={item.readMore}
-                        target="_blank"
-                        style={{marginLeft:8}}
+                    return (
+                      <List.Item
+                        key={item.name}
+                        style={{padding:32}}
+                        extra={
+                          <Image
+                            style={{
+                              border:"1px solid #eeefff",
+                              padding:8,
+                              margin:8,
+                              backgroundColor:"#dfdfdf",
+                            }}
+                            width={220}
+                            alt={item.name}
+                            src={"./assets/"+item.image}
+                          />
+                        }
                       >
-                        <ExportOutlined />
-                      </a>
+                        <div style={{textAlign:"left"}}>
+                          <div style={{marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}{extraLink}</div>
+                          <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.desc}</div>
+                          <div style={{marginLeft:32,paddingTop:32}}>
+                            <Row>
+                              <Col span={12}><Button size="large" onClick={()=>{
+                                //window.open(item.branch)
+                                let copy = {...item}
+                                copy.id = Math.floor(Math.random()*100000000000)
+                                console.log("copy",copy)
+                                setCart([...cart,copy])
+                                notification.success({
+                                  style:{marginBottom:64},
+                                  message: 'Added to cart!',
+                                  placement: "bottomRight",
+                                  description:(
+                                    <div style={{fontSize:22}}>
+                                      {item.name}
+                                    </div>
+                                  )
+                                });
+                              }}>
+                                <ExperimentOutlined /> Fund
+                              </Button></Col>
+                              <Col span={12}><Button size="large" onClick={()=>{
+                                window.open(item.branch)
+                              }}>
+                                <ForkOutlined /> Fork
+                              </Button></Col>
+                            </Row>
+                          </div>
+                        </div>
+                      </List.Item>
                     )
                   }
 
-                  return (
-                    <List.Item
-                      key={item.name}
-                      style={{padding:32}}
-                      extra={
-                        <Image
-                          style={{
-                            border:"1px solid #eeefff",
-                            padding:8,
-                            margin:8,
-                            backgroundColor:"#dfdfdf",
-                          }}
-                          width={220}
-                          alt={item.name}
-                          src={"./assets/"+item.image}
-                        />
-                      }
-                    >
-                      <div style={{textAlign:"left"}}>
-                        <div style={{marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}{extraLink}</div>
-                        <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.desc}</div>
-                        <div style={{marginLeft:32,paddingTop:32}}>
-                          <Row>
-                            <Col span={12}><Button size="large" onClick={()=>{
-                              //window.open(item.branch)
-                              let copy = {...item}
-                              copy.id = Math.floor(Math.random()*100000000000)
-                              console.log("copy",copy)
-                              setCart([...cart,copy])
-                              notification.success({
-                                style:{marginBottom:64},
-                                message: 'Added to cart!',
-                                placement: "bottomRight",
-                                description:(
-                                  <div style={{fontSize:22}}>
-                                    {item.name}
-                                  </div>
-                                )
-                              });
-                            }}>
-                              <ExperimentOutlined /> Fund
-                            </Button></Col>
-                            <Col span={12}><Button size="large" onClick={()=>{
-                              window.open(item.branch)
-                            }}>
-                              <ForkOutlined /> Fork
-                            </Button></Col>
-                          </Row>
-                        </div>
-                      </div>
-                    </List.Item>
-                  )
                 }}
               />
             </div>
@@ -530,12 +548,67 @@ function App(props) {
             />
             */}
           </Route>
+          <Route path="/funders">
+            <div style={{padding:32}}>
+            </div>
+            <List
+              /*bordered*/
+              itemLayout="vertical"
+              size="large"
+              dataSource={fundingEvents}
+
+              renderItem={(item) => {
+                //console.log("item",item)
+                let inventory = []
+                for(let s in item.streams){
+                  const thisStream = item.streams[s]
+                  if(thisStream=="0x97843608a00e2bbc75ab0C1911387E002565DEDE"){
+                    inventory.push(
+                      <span style={{margin:0,fontSize:28,marginLeft:-16,marginRight:22}}>
+                        {item.reasons[s].substr(0,item.reasons[s].indexOf(" "))}
+                      </span>
+                    )
+                  }else{
+                    //console.log("looking for face...")
+                    //translate stream address to person's address face
+                    let foundFace
+                    for(let b in BUILDERS){
+                      //console.log("comparing...",BUILDERS[b].streamAddress,thisStream)
+                      if(translateAddressesForLocal(BUILDERS[b].streamAddress)==thisStream){
+                        foundFace = BUILDERS[b].address
+                      }
+                    }
+                    //console.log("foundFace", foundFace)
+                    if(foundFace){
+                      inventory.push(
+                        <span style={{margin:22}}>
+                          <Address minimized={true} noLink={true} punkBlockie={true} address={foundFace} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                        </span>
+                      )
+                    }
+                  }
+                }
+                return (<div style={{margin:32, borderBottom:"1px solid #EEEEEE"}}>
+                  <Address punkBlockie={true} address={item.sender} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                  <Balance value={item.amount} price={price}/>
+                  <div style={{marginBottom:32,marginTop:32}}>
+                    {inventory}
+                  </div>
+                </div>)
+              }}
+            />
+
+            <div style={{padding:64,paddingBottom:256,fontSize:24}}>
+              <a href="https://support.buidlguidl.com/activity" target="_blank">View <b>🦹 funders</b> from round 1</a>
+            </div>
+          </Route>
           <Route path="/builders">
 
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
               <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
                 <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
                   <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
+                  <div style={{marginTop:16}}>Watch the latest <a target="_blank" href="https://youtu.be/mctO5EUx_wI?t=103">🎥 onboarding video</a></div>
                   <div style={{marginTop:8}}>
                     Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
                      <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
@@ -705,100 +778,16 @@ function App(props) {
                 Support the <b>🏰 BuidlGuidl</b>:
               </div>
 
-              <div style={{width:"calc(max(min(80vw,800px),300px))", margin:"auto"}}>
-                { cart && cart.length>0?
-                  <StackGrid
-                    columnWidth={250}
-                  >
-                    {displayCart}
-                  </StackGrid>:
-                  <div style={{width:620,margin:"auto",marginTop:16}}>
-                    <AddressInput
-                      hideScanner={true}
-                      ensProvider={mainnetProvider}
-                      placeholder="to address"
-                      value={toAddress}
-                      onChange={setToAddress}
 
-                    />
-                    {extra ?<div style={{marginTop:2,textAlign:"left",paddingLeft:16,fontSize:14}}>
-                      <b>BuidlGuidl.eth</b>
-                    </div>:""}
-                  </div>
-                }
-
-                <div style={{width:620,margin:"auto",marginTop:16}}>
-
-                  <EtherInput
-                    autoFocus={true}
-                    placeholder={cart && cart.length>0 ? "amount in total ETH to split between the streams of the selected builders/builds" : "amount in ETH"}
-                    price={props.price}
-                    value={amount}
-                    onChange={value => {
-                      setAmount(value);
-                    }}
-                  />
-                </div>
-                <div style={{width:620,margin:"auto",marginTop:16}}>
-                  <Input
-                    placeholder={"optional reason / guidance"}
-                    value={reason}
-                    onChange={e => {
-                      setReason(e.target.value);
-                    }}
-                  />
-                </div>
-                <div style={{marginTop:16}}>
-                <Button
-
-                  onClick={() => {
-                    if(!amount){
-                      console.log("AMOUNT",amount)
-                      notification.warning({
-                        style:{marginBottom:64},
-                        message: 'Please enter an amount in ETH',
-                        placement: "bottomRight",
-                        description:false,
-                      });
-                    }else{
-                      if( cart && cart.length>0){
-                        console.log("okay this is a big one... we need to use a splitter contract to send to all the streams of all the people in the cart including the trickle down of projects...")
-                        console.log(cart)
-
-                        let finalAddresses = []
-                        let finalReasons = []
-
-                        for(let c in cart){
-                          if(cart[c].streamAddress){
-                            console.log("Adding stream address ")
-                            finalAddresses.push(cart[c].streamAddress)
-                            finalReasons.push(reason)
-                          }else{
-                            console.log("NO STREAM, NEED TO SPLIT...")
-                          }
-                        }
-
-                        console.log("finalAddresses",finalAddresses)
-                        console.log("finalReasons",finalReasons)
-                      }else{
-                        console.log("toAddress",toAddress)
-                        console.log("AMOUNT",amount)
-                        tx({
-                          to: toAddress,
-                          value: parseEther(""+amount),
-                          data: reason?ethers.utils.hexlify(ethers.utils.toUtf8Bytes(reason)):"0x"
-                        })
-                      }
-                    }
-
-                  }}
-                  size="large"
-                  type="primary"
-                >
-                  Fund
-                </Button>
-                </div>
-              </div>
+              <Checkout
+                setRoute={setRoute}
+                cart={cart}
+                setCart={setCart}
+                displayCart={displayCart}
+                tx={tx}
+                writeContracts={writeContracts}
+                mainnetProvider={mainnetProvider}
+              />
 
 
               <hr style={{opacity:0.1,marginTop:64}}/>
@@ -828,6 +817,13 @@ function App(props) {
           <Route path="/debug">
             <Contract
               name="StreamReader"
+              signer={userProvider.getSigner()}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            <Contract
+              name="StreamFunder"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}

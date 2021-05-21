@@ -9,6 +9,15 @@ export const BLOCKNATIVE_DAPPID = "0b58206a-f3c0-4701-a62f-73c7243e8c77";
 
 // EXTERNAL CONTRACTS
 
+
+//------ added by save script:
+export const mainStreamReader_ADDRESS = "0x710644C199549925E065a551b51B848d8725Bd0A"
+
+export const mainStreamReader_ABI = [{"inputs":[{"internalType":"address[]","name":"streams","type":"address[]"}],"name":"readStreams","outputs":[{"internalType":"uint256[]","name":"","type":"uint256[]"}],"stateMutability":"view","type":"function"}]
+
+export const mainStreamReader_BYTECODE = "0x608060405234801561001057600080fd5b506103b5806100206000396000f3fe608060405234801561001057600080fd5b506004361061002b5760003560e01c8063a2dd56ca14610030575b600080fd5b6100d36004803603602081101561004657600080fd5b81019060208101813564010000000081111561006157600080fd5b82018360208201111561007357600080fd5b8035906020019184602083028401116401000000008311171561009557600080fd5b919080806020026020016040519081016040528093929190818152602001838360200280828437600092019190915250929550610123945050505050565b60408051602080825283518183015283519192839290830191858101910280838360005b8381101561010f5781810151838201526020016100f7565b505050509050019250505060405180910390f35b60606000825160040267ffffffffffffffff8111801561014257600080fd5b5060405190808252806020026020018201604052801561016c578160200160208202803683370190505b50905060005b83518160ff161015610378576000848260ff168151811061018f57fe5b60200260200101519050806001600160a01b031663355274ea6040518163ffffffff1660e01b815260040160206040518083038186803b1580156101d257600080fd5b505afa1580156101e6573d6000803e3d6000fd5b505050506040513d60208110156101fc57600080fd5b50518351849060ff600486021690811061021257fe5b602002602001018181525050806001600160a01b031663ead50da36040518163ffffffff1660e01b815260040160206040518083038186803b15801561025757600080fd5b505afa15801561026b573d6000803e3d6000fd5b505050506040513d602081101561028157600080fd5b50518351849060ff600160048702011690811061029a57fe5b602002602001018181525050806001600160a01b031663c3ae1e596040518163ffffffff1660e01b815260040160206040518083038186803b1580156102df57600080fd5b505afa1580156102f3573d6000803e3d6000fd5b505050506040513d602081101561030957600080fd5b50518351849060ff600260048702011690811061032257fe5b602002602001018181525050848260ff168151811061033d57fe5b60200260200101516001600160a01b031631838360040260030160ff168151811061036457fe5b602090810291909101015250600101610172565b509291505056fea264697066735822122067e7dc07f621168ef11fadbf0eaa64166f656ecaaa2a8b492bb201804eeb98f064736f6c63430007060033"
+
+
 export const SIMPLE_STREAM_ABI = [{"inputs":[{"internalType":"address payable","name":"_toAddress","type":"address"},{"internalType":"uint256","name":"_cap","type":"uint256"},{"internalType":"uint256","name":"_frequency","type":"uint256"},{"internalType":"bool","name":"_startsFull","type":"bool"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"reason","type":"string"}],"name":"Deposit","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"amount","type":"uint256"},{"indexed":false,"internalType":"string","name":"reason","type":"string"}],"name":"Withdraw","type":"event"},{"inputs":[],"name":"cap","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"frequency","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"last","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"streamBalance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"reason","type":"string"}],"name":"streamDeposit","outputs":[],"stateMutability":"payable","type":"function"},{"inputs":[{"internalType":"uint256","name":"amount","type":"uint256"},{"internalType":"string","name":"reason","type":"string"}],"name":"streamWithdraw","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"toAddress","outputs":[{"internalType":"address payable","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"stateMutability":"payable","type":"receive"}]
 
 
@@ -510,7 +519,7 @@ export const BUILDERS = [
     address: "0x1e2ce012b27d0c0d3e717e943ef6e62717cec4ea",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft"],
-    streamAddress: "0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamAddress: "0xDbcD66b510191cD0539F7FAe8cD981B82Ee2006f",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     streamUrl: "https://ironsoul.buidlguidl.com"
   },
   {
@@ -519,7 +528,7 @@ export const BUILDERS = [
     address: "0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=viraj124",
     builds: [ "xnft", "proxy", "diamond", "highestbid", "merklenft"],
-    streamAddress: "0x21e18260357D33d2e18482584a8F39D532fb71cC",
+    streamAddress: "0x974a061A8cE5a2b07cB3f1D356Bb01Daaa9eC31d",//"0x21e18260357D33d2e18482584a8F39D532fb71cC",
     streamUrl: "http://viraz.buidlguidl.com"
   },
   {
@@ -528,7 +537,7 @@ export const BUILDERS = [
     address: "0x7b945ffe9725d8e05343bec36c0eced294097f78",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "rokens", "highestbid", "merklenft"],
-    streamAddress: "0xd116179A26F7b36Ed7B3334679aD0B2ec8c5ec22",
+    streamAddress: "0x1eB6Da6F03B6D3C0d8da0B127388Add4d78Eb652",//"0xd116179A26F7b36Ed7B3334679aD0B2ec8c5ec22",
     streamUrl: "http://sadda11asm.buidlguidl.com"
   },
   {
@@ -537,7 +546,7 @@ export const BUILDERS = [
     address: "0x1245e96fe32B43dDEc930D662B5d20239282b876",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=amogh-jrules",
     builds: ["smms", "push", "metamultisig"],
-    streamAddress: "0x298F4Af778954d771A6Fc6098AFc0a19f35d3dAA",
+    streamAddress: "0xA267be6eF185f7563354e90882c1d3332455B8F8",//"0x298F4Af778954d771A6Fc6098AFc0a19f35d3dAA",
     streamUrl: "http://amogh.buidlguidl.com",
   },
   {
@@ -546,7 +555,7 @@ export const BUILDERS = [
     address: "0x614ae4c6eb91cec9e6e178549c0745a827212b24",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=calvbore",
     builds: [],
-    streamAddress: "0x0dE7a22627b68F51bBE22f408e009146D6c56ee1",
+    streamAddress: "0x864Fa2F20e414c9534B1DE567a30a77436c7a745",//"0x0dE7a22627b68F51bBE22f408e009146D6c56ee1",
     streamUrl: "http://calvinquin.buidlguidl.com",
   },
 
@@ -558,7 +567,7 @@ export const BUILDERS = [
     builds: [
       "ethdev",
     ],
-    streamAddress: "0x271C2Fb694F38bE3FA7e6374D349A714c7E8Bba7",//streamAddress: "0x7D6DAdfb6df8ebe6fCB1C32af55252F04D79Df85",
+    streamAddress: "0x24aAc13141DbE8946433215bfdc793C2B71398c8",//"0x271C2Fb694F38bE3FA7e6374D349A714c7E8Bba7",//streamAddress: "0x7D6DAdfb6df8ebe6fCB1C32af55252F04D79Df85",
     streamUrl: "http://ssteiger.buidlguidl.com",
   },
   {
@@ -567,7 +576,7 @@ export const BUILDERS = [
     address: "0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=codenamejason",
     builds: [ "vrf" ],
-    streamAddress: "0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
+    streamAddress: "0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
     streamUrl: "http://rawcipher.buidlguidl.com",//rawcipherstream.surge.sh
   },
   {
@@ -576,7 +585,7 @@ export const BUILDERS = [
     address: "0xd2f016809969b4105978fDD5b112CD95bFDd6814",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=azf20",
     builds: [],
-    streamAddress: "0xF48BECEa4C65F0c2F3841ed00E813298C8B327ab",
+    streamAddress: "0xD31aDDE3c6659653f5BdCb237afB353155db1567",//"0xF48BECEa4C65F0c2F3841ed00E813298C8B327ab",
     streamUrl: "http://mrdee.buidlguidl.com",
   },
   {
@@ -585,7 +594,7 @@ export const BUILDERS = [
     address: "0xf7e89E45502890381F9242403eA8661fad89Ca79",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=azf20",
     builds: [ "xnft", ],
-    streamAddress: "0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
+    streamAddress: "0x560Dd59ED235446d04da7C907289E3f88e685447",//dup"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f"//"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
     streamUrl: "http://hunterchang.buidlguidl.com",
   },
 
@@ -597,7 +606,7 @@ export const BUILDERS = [
     builds: [
       "niftyink", "uniswapper", "lender", "ape", "op",
     ],
-    streamAddress: "0x79Eeda2a3cdB90129A3Dc851556AeaF25DdF1E39",
+    streamAddress: "0x754A8a09Eae2FFEFbDE706a6ed40C0f0F3c58d7e",//"0xdC1d9454CBa690E0a33abeB08de1DD6921b15759",//"0x79Eeda2a3cdB90129A3Dc851556AeaF25DdF1E39",
     streamUrl: "http://adamfuller.buidlguidl.com",
   },
 
@@ -609,7 +618,7 @@ export const BUILDERS = [
     builds: [
       "niftyink", "simplestream", "niftyview", "opnfts", "smms", "allocator", "radwallet", "punkwallet", "simplenft", "randomimage", "gtgs"
     ],
-    streamAddress: "0xb0D25772CB076cb4cE90a0c4dfdba6Cad07921a1",
+    streamAddress: "0x518Af5F20bf07C882e17731207761C174AB4F9c4",//"0xb0D25772CB076cb4cE90a0c4dfdba6Cad07921a1",
     streamUrl: "http://austingriffith.buidlguidl.com",
   },
 

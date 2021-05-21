@@ -1,1 +1,1 @@
-module.exports = ["StreamReader"];
+module.exports = ["StreamFunder","StreamReader"];

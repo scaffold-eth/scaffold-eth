@@ -45,7 +45,7 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      gasPrice: 220000000000,
+      gasPrice: 65000000000,
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
@@ -68,7 +68,7 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
-      gasPrice: 200000000000,
+      gasPrice: 77000000000,
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/3ccea23c26224daf802cf31e4699d15e", //<---- YOUR INFURA ID! (or it won't work)
