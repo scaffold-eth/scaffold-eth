@@ -67,6 +67,7 @@ export default function Balance(props) {
       style={{
         verticalAlign: 'middle',
         fontSize: props.size ? props.size : 24,
+        color: 'white',
         padding: 8,
         cursor: 'pointer'
       }}
