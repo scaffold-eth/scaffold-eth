@@ -115,6 +115,29 @@ const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
+
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
+
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -256,22 +279,43 @@ function App(props) {
   ]);
 
   let networkDisplay = "";
-  if (localChainId && selectedChainId && localChainId != selectedChainId) {
-    networkDisplay = (
-      <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-        <Alert
-          message="⚠️ Wrong Network"
-          description={
-            <div>
-              You have <b>{NETWORK(selectedChainId).name}</b> selected and you need to be on{" "}
-              <b>{NETWORK(localChainId).name}</b>.
-            </div>
-          }
-          type="error"
-          closable={false}
-        />
-      </div>
-    );
+  if (localChainId && selectedChainId && localChainId !== selectedChainId) {
+    const networkSelected = NETWORK(selectedChainId);
+    const networkLocal = NETWORK(localChainId);
+    if (selectedChainId === 1337 && localChainId === 31337) {
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network ID"
+            description={
+              <div>
+                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
+                HardHat.
+                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    } else {
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network"
+            description={
+              <div>
+                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+                <b>{networkLocal && networkLocal.name}</b>.
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    }
   } else {
     networkDisplay = (
       <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
@@ -297,14 +341,14 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name == "localhost";
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name === "localhost";
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
-    localProvider._network.chainId == 31337 &&
+    localProvider._network.chainId === 31337 &&
     yourLocalBalance &&
     formatEther(yourLocalBalance) <= 0
   ) {
@@ -398,13 +442,18 @@ function App(props) {
         title={
           <div>
             {loadedAssets[a].name}{" "}
-            <a style={{ cursor: "pointer", opacity: 0.33 }} href={loadedAssets[a].external_url} target="_blank">
+            <a
+              style={{ cursor: "pointer", opacity: 0.33 }}
+              href={loadedAssets[a].external_url}
+              target="_blank"
+              rel="noreferrer"
+            >
               <LinkOutlined />
             </a>
           </div>
         }
       >
-        <img style={{ maxWidth: 130 }} src={loadedAssets[a].image} />
+        <img style={{ maxWidth: 130 }} src={loadedAssets[a].image} alt="" />
         <div style={{ opacity: 0.77 }}>{loadedAssets[a].description}</div>
       </Card>,
     );
@@ -512,7 +561,7 @@ function App(props) {
                         }
                       >
                         <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
+                          <img src={item.image} style={{ maxWidth: 150 }} alt="" />
                         </div>
                         <div>{item.description}</div>
                       </Card>
@@ -716,29 +765,7 @@ function App(props) {
   );
 }
 
-/*
-  Web3 modal helps us "connect" external wallets:
-*/
-const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
-  cacheProvider: true, // optional
-  providerOptions: {
-    walletconnect: {
-      package: WalletConnectProvider, // required
-      options: {
-        infuraId: INFURA_ID,
-      },
-    },
-  },
-});
-
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
-
+/* eslint-disable */
 window.ethereum &&
   window.ethereum.on("chainChanged", chainId => {
     web3Modal.cachedProvider &&
@@ -754,5 +781,6 @@ window.ethereum &&
         window.location.reload();
       }, 1);
   });
+/* eslint-enable */
 
 export default App;
