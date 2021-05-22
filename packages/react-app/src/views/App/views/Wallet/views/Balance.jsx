@@ -1,8 +1,6 @@
-/* eslint-disable jsx-a11y/no-static-element-interactions */
-/* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState } from 'react'
 import { formatEther } from '@ethersproject/units'
-import { usePoller } from 'eth-hooks'
+import React, { useState } from 'react'
+import { useBalance } from '../../../../../hooks'
 
 /*
   ~ What it does? ~
@@ -32,25 +30,10 @@ import { usePoller } from 'eth-hooks'
 
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true)
-  const [balance, setBalance] = useState()
 
-  const getBalance = async () => {
-    if (props.address && props.provider) {
-      try {
-        const newBalance = await props.provider.getBalance(props.address)
-        setBalance(newBalance)
-      } catch (e) {
-        console.log(e)
-      }
-    }
-  }
+  const [listening, setListening] = useState(false)
 
-  usePoller(
-    () => {
-      getBalance()
-    },
-    props.pollTime ? props.pollTime : 1999,
-  )
+  const balance = useBalance(props.provider, props.address)
 
   let floatBalance = parseFloat('0.00')
 
@@ -81,8 +64,7 @@ export default function Balance(props) {
     <span
       style={{
         verticalAlign: 'middle',
-        fontSize: props.fontSize ? props.fontSize : 24,
-        color: 'white',
+        fontSize: props.size ? props.size : 24,
         padding: 8,
         cursor: 'pointer'
       }}
