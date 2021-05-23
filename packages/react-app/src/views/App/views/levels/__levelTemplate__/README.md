@@ -12,4 +12,5 @@
 8) Import the level dialog into `src/views/App/containers/dialogs/model/dialogMap.js`
 
 9) For development one should set the initial level to the level one is currently working on:
-   -> in `src/views/App/containers/level/controller/redux.js` update path of `import initialDialog from '../../../views/levels/underflow/model/dialog'`
+   -> in `src/views/App/containers/level/controller/redux.js` update `const initialLevel = LEVELS.__templateLevel__`
+   -> in `src/views/App/containers/dialogs/controller/redux.js` update path of `import initialDialog from '../../../views/levels/underflow/model/dialog'`
