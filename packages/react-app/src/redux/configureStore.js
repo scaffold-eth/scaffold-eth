@@ -11,21 +11,21 @@ export default function configureStore(initialState) {
     middlewares.push(logger)
   }
 
-  /*
-  const composeEnhancers = (appConfig.env !== 'production' && BROWSER &&
-    (typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function') &&
-    window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ shouldHotReload: false })) || compose
-  */
+  const composeEnhancers =
+    (process.env !== 'production' &&
+      typeof window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ === 'function' &&
+      window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__({ shouldHotReload: false })) ||
+    compose
 
   const store = createStore(
     rootReducer,
     initialState,
-    // composeEnhancers(applyMiddleware(...middlewares))
-    applyMiddleware(...middlewares)
+    composeEnhancers(applyMiddleware(...middlewares))
+    // applyMiddleware(...middlewares)
   )
 
   /*
-  if (appConfig.env === 'development' && (module as any).hot) {
+  if (process.env === 'development' && (module as any).hot) {
     (module as any).hot.accept('./rootReducer', () => {
       store.replaceReducer(require('./rootReducer').default)
     })
