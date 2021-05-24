@@ -57,12 +57,12 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
   return (
     <>
       {currentDialog.map((dialogStep, index) => {
-        const { dialogAnchor, avatar, alignment, text, choices } = dialogStep
+        const { visibleToUser, dialogAnchor, avatar, alignment, text, choices } = dialogStep
 
         const isLastVisibleDialog = index === currentDialogIndex
         const isFinalDialog = index === currentDialog.length - 1
 
-        if (index <= currentDialogIndex) {
+        if (index <= currentDialogIndex && visibleToUser) {
           return (
             <div
               className='test-mest'

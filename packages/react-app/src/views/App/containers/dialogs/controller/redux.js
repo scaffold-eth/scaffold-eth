@@ -1,5 +1,7 @@
 import dotProp from 'dot-prop-immutable'
 
+import { prepareDialog } from './helpers'
+
 // import initialDialog from '../../../views/levels/__templateLevel__/model/dialog'
 import initialDialog from '../../../views/levels/intro/model/dialog'
 import dialogMap from '../model/dialogMap'
@@ -11,7 +13,7 @@ export const GO_TO_DIALOG_ANCHOR = `${stateContainerId}/GO_TO_DIALOG_ANCHOR`
 export const CONTINUE_DIALOG = `${stateContainerId}/CONTINUE_DIALOG`
 
 const initialState = {
-  currentDialog: initialDialog,
+  currentDialog: prepareDialog(initialDialog),
   currentDialogIndex: 0
 }
 
@@ -26,11 +28,12 @@ const reducer = (state = initialState, action) => {
 
     if (action.type === SET_DIALOG) {
       state = dotProp.set(state, 'currentDialogIndex', 0)
-      return dotProp.set(state, 'currentDialog', dialogMap[payload.dialog])
+      const dialogToBeSet = dialogMap[payload.dialog]
+      const enrichedDialog = prepareDialog(dialogToBeSet)
+      return dotProp.set(state, 'currentDialog', enrichedDialog)
     }
     if (action.type === GO_TO_DIALOG_ANCHOR) {
       const { currentDialog, currentDialogIndex } = state
-
       let dialogAnchorIndex = currentDialogIndex
       currentDialog.map((dialogPart, index) => {
         console.log(dialogPart.dialogAnchor, payload.dialogAnchor)
@@ -38,11 +41,14 @@ const reducer = (state = initialState, action) => {
           dialogAnchorIndex = index
         }
       })
+      state.currentDialog[dialogAnchorIndex].visibleToUser = true
       return dotProp.set(state, 'currentDialogIndex', dialogAnchorIndex)
     }
     if (action.type === CONTINUE_DIALOG) {
       if (state.currentDialogIndex < state.currentDialog.length - 1) {
-        return dotProp.set(state, 'currentDialogIndex', state.currentDialogIndex + 1)
+        const newDialogIndex = state.currentDialogIndex + 1
+        state.currentDialog[newDialogIndex].visibleToUser = true
+        return dotProp.set(state, 'currentDialogIndex', newDialogIndex)
       }
       return state
     }

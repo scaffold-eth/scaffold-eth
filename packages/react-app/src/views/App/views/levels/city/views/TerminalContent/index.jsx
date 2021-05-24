@@ -33,12 +33,12 @@ const TerminalContent = ({ dialogs: { currentDialog = [], currentDialogIndex }, 
   return (
     <>
       {currentDialog.map((dialogStep, index) => {
-        const { anchorId, avatar, alignment, text, choices } = dialogStep
+        const { visibleToUser, anchorId, avatar, alignment, text, choices } = dialogStep
 
         const isLastVisibleDialog = index === currentDialogIndex
         const isFinalDialog = index === currentDialog.length - 1
 
-        if (index <= currentDialogIndex) {
+        if (index <= currentDialogIndex && visibleToUser) {
           return (
             <div
               style={{
