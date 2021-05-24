@@ -1,7 +1,6 @@
 import dotProp from 'dot-prop-immutable'
-import LEVELS from '../model/levels'
 
-const initialLevel = LEVELS.intro
+const initialLevel = 'intro'
 
 const stateContainerId = 'levelContainer'
 

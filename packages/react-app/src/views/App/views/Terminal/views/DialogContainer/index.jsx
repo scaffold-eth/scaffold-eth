@@ -2,8 +2,7 @@ import React, { useState, useEffect } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
 import $ from 'jquery'
 import shortid from 'shortid'
-// IMPORT NEW LEVEL HERE
-import { Intro, UnderflowLevel, CityLevel } from './levelContents'
+import levels from '../../../levels'
 import { connectController } from '../../controller'
 import './styles.css'
 
@@ -18,26 +17,7 @@ const DialogContainer = ({ terminalVisible, currentLevel, dialogs }) => {
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
 
-  // TODO: move this into own file
-  const getCurrentLevelView = () => {
-    if (currentLevel === 'city') {
-      return <CityLevel />
-    }
-    if (currentLevel === 'underflow') {
-      return <UnderflowLevel />
-    }
-    // IMPORT NEW LEVEL HERE
-    /*
-    if (currentLevel === 'city') {
-      return <CityLevel />
-    }
-    */
-
-    // the initial level
-    return <Intro />
-  }
-
-  const currentLevelView = getCurrentLevelView()
+  const TerminalLevelContent = levels[currentLevel].terminalContent
 
   useEffect(() => {
     scrollToBottom()
@@ -76,7 +56,7 @@ const DialogContainer = ({ terminalVisible, currentLevel, dialogs }) => {
                 overflow: 'scroll'
               }}
             >
-              {currentLevelView}
+              <TerminalLevelContent />
             </div>
           </>
         </ReactModal>

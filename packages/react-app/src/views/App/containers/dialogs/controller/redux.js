@@ -2,9 +2,11 @@ import dotProp from 'dot-prop-immutable'
 
 import { prepareDialog } from './helpers'
 
-// import initialDialog from '../../../views/levels/__templateLevel__/model/dialog'
-import initialDialog from '../../../views/levels/intro/model/dialog'
-import dialogMap from '../model/dialogMap'
+// eslint-disable-next-line import/no-cycle
+import levels from '../../../views/levels'
+
+const initialLevel = 'intro'
+const initialDialog = levels[initialLevel].dialog
 
 const stateContainerId = 'dialogs'
 
@@ -28,7 +30,7 @@ const reducer = (state = initialState, action) => {
 
     if (action.type === SET_DIALOG) {
       state = dotProp.set(state, 'currentDialogIndex', 0)
-      const dialogToBeSet = dialogMap[payload.dialog]
+      const dialogToBeSet = levels[payload.dialog].dialog
       const enrichedDialog = prepareDialog(dialogToBeSet)
       return dotProp.set(state, 'currentDialog', enrichedDialog)
     }

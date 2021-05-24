@@ -1,7 +1,7 @@
 import dotProp from 'dot-prop-immutable'
 import shortid from 'shortid'
 
-import { actionCreators as dialogsContainerActionCreators } from '../../../../../../../containers/dialogs/controller'
+// import { actionCreators as dialogsContainerActionCreators } from '../../../../../../../containers/dialogs/controller'
 
 const stateContainerId = 'levels/underflow/levelContainerContent/createWalletWindow'
 
@@ -34,9 +34,7 @@ const dispatchers = {}
 
 const mapDispatchToProps = dispatch => ({
   actions: {
-    continueDialog() {
-      dispatch(dialogsContainerActionCreators.continueDialog())
-    }
+
   }
 })
 
