@@ -7,8 +7,7 @@ const initialState = {}
 const mapStateToProps = state => {
   const { dialogs, intro } = state
   return {
-    dialogs,
-    ...intro.terminalContent
+    dialogs
   }
 }
 

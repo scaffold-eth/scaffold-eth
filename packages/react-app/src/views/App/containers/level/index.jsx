@@ -1,11 +1,11 @@
 import React from 'react'
-import { UnderflowLevel } from './views/levelContents'
+import { IntroLevel } from './views/levelContents'
 import { connectController } from './controller'
 
 const LevelContainer = ({ currentLevel, children }) => {
   return (
     <div id='levelContainer'>
-      <UnderflowLevel />
+      <IntroLevel />
       {children}
     </div>
   )
