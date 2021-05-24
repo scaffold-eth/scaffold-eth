@@ -11,7 +11,10 @@ import { reducer as dish } from '../views/App/views/Dish/controller'
 
 // IMPORT NEW LEVEL HERE
 // import { reducer as __templateLevel__ } from '../views/App/views/levels/__templateLevel__/controller'
+import { reducer as introLevel } from '../views/App/views/levels/intro/controller'
 import { reducer as underflowLevel } from '../views/App/views/levels/underflow/controller'
+// TODO:
+// import { reducer as cityLevel } from '../views/App/views/levels/city/controller'
 
 const rootReducer = combineReducers({
   levelContainer,
@@ -25,6 +28,7 @@ const rootReducer = combineReducers({
 
   // IMPORT NEW LEVEL HERE
   // __templateLevel__
+  introLevel,
   underflowLevel
 })
 

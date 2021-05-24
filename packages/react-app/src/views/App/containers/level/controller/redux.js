@@ -1,7 +1,7 @@
 import dotProp from 'dot-prop-immutable'
 import LEVELS from '../model/levels'
 
-const initialLevel = LEVELS.underflow
+const initialLevel = LEVELS.intro
 
 const stateContainerId = 'levelContainer'
 

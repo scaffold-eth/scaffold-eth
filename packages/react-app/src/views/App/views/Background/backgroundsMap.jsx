@@ -1,7 +1,11 @@
 import React from 'react'
-import { CityOutskirts, City } from './backgrounds'
+import { Intro, CityOutskirts, City } from './backgrounds'
 
 const BACKGROUNDS = {
+  intro: {
+    id: 'intro',
+    component: <Intro />
+  },
   cityOutskirts: {
     id: 'cityOutskirts',
     component: <CityOutskirts />

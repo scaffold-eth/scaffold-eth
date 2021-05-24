@@ -6,7 +6,7 @@ const stateContainerId = 'background'
 export const SET_BACKGROUND = `${stateContainerId}/SET_BACKGROUND`
 
 const initialState = {
-  background: BACKGROUNDS_MAP.cityOutskirts.id
+  background: BACKGROUNDS_MAP.intro.id
 }
 
 const mapStateToProps = state => {
