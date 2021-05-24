@@ -3,7 +3,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import 'antd/dist/antd.css'
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
@@ -17,7 +17,8 @@ import {
   useContractReader,
   useEventListener,
   useBalance,
-  useExternalContractLoader
+  useExternalContractLoader,
+  useOnBlock
 } from '../../hooks'
 import {
   AddressInput,
@@ -55,9 +56,9 @@ if (!targetNetwork) {
 }
 
 // TODO: turn this back on?
-// const scaffoldEthProvider = new JsonRpcProvider('https://rpc.scaffoldeth.io:48544')
+// const scaffoldEthProvider = new StaticJsonRpcProvider('https://rpc.scaffoldeth.io:48544')
 const scaffoldEthProvider = null
-const mainnetInfura = new JsonRpcProvider('https://mainnet.infura.io/v3/' + INFURA_ID)
+const mainnetInfura = new StaticJsonRpcProvider('https://mainnet.infura.io/v3/' + INFURA_ID)
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -66,7 +67,7 @@ const localProviderUrl = targetNetwork.rpcUrl
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER
   ? process.env.REACT_APP_PROVIDER
   : localProviderUrl
-const localProvider = new JsonRpcProvider(localProviderUrlFromEnv)
+const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv)
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer
 */
@@ -121,6 +122,13 @@ const App = props => {
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
+
+  // If you want to call a function on a new block
+  /*
+  useOnBlock(mainnetProvider, () => {
+    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`)
+  })
+  */
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
