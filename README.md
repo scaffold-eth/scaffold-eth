@@ -60,17 +60,15 @@ required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://clas
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
 cd scaffold-eth
+yarn install
 yarn chain
-
 ```
 
 > in a second terminal window:
 
 ```bash
 cd scaffold-eth
-yarn install
 yarn start
-
 ```
 
 > in a third terminal window:
@@ -78,7 +76,6 @@ yarn start
 ```bash
 cd scaffold-eth
 yarn deploy
-
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
