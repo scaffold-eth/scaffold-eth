@@ -1,0 +1,4 @@
+node_modules
+typechain
+.secret
+coverage.json
