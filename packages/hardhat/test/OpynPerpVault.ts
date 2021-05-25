@@ -109,9 +109,16 @@ describe('OpynPerpVault Tests', function () {
       await expect(vault.connect(depositor1).depositETH()).to.be.revertedWith('!VALUE');
     });
     it('should be able to deposit ETH and WETH', async () => {
+
+      const shares1Before = await vault.balanceOf(depositor1.address)
+      const expectedShares = await vault.getSharesByDepositAmount(depositAmount)
+
       // depositor 1 deposit 10 eth
       await vault.connect(depositor1).depositETH({ value: depositAmount });
       expect((await vault.totalAsset()).eq(depositAmount), 'total asset should update').to.be.true;
+
+      const shares1After = await vault.balanceOf(depositor1.address)
+      expect(shares1After.sub(shares1Before).eq(expectedShares)).to.be.true
 
       // depositor 2 deposit 10 weth
       await vault.connect(depositor2).deposit(depositAmount);

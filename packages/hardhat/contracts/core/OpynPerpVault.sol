@@ -125,6 +125,14 @@ contract OpynPerpVault is ERC20Upgradeable, ReentrancyGuardUpgradeable, OwnableU
   }
 
   /**
+   * @dev return how many shares you can get if you deposit asset into the pool
+   * @param _amount amount of asset you deposit
+   */
+  function getSharesByDepositAmount(uint256 _amount) external view returns (uint256) {
+    return _getSharesByDepositAmount(_amount, _totalAsset());
+  }
+
+  /**
    * @dev return how many asset you can get if you burn the number of shares, after charging the fee.
    */
   function getWithdrawAmountByShares(uint256 _shares) external view returns (uint256) {
@@ -249,7 +257,12 @@ contract OpynPerpVault is ERC20Upgradeable, ReentrancyGuardUpgradeable, OwnableU
    * @dev mint the shares to depositor, and emit the deposit event
    */
   function _deposit(uint256 _amount) internal {
-    uint256 share = _getSharesByDepositAmount(_amount);
+    // the asset is already deposited into the contract at this point, need to substract it from total
+    uint256 totalWithDepositedAmount = _totalAsset();
+    require(totalWithDepositedAmount < CAP, 'Cap exceeded');
+    uint256 totalBeforeDeposit = totalWithDepositedAmount.sub(_amount);
+
+    uint256 share = _getSharesByDepositAmount(_amount, totalBeforeDeposit);
 
     emit Deposit(msg.sender, _amount, share);
 
@@ -317,15 +330,13 @@ contract OpynPerpVault is ERC20Upgradeable, ReentrancyGuardUpgradeable, OwnableU
 
   /**
    * @dev return how many shares you can get if you deposit {_amount} asset
+   * @param _amount amount of token depositing
+   * @param _totalAssetAmount amont of asset already in the pool before deposit
    */
-  function _getSharesByDepositAmount(uint256 _amount) internal view returns (uint256) {
-    uint256 totalWithDepositedAmount = _totalAsset();
-    require(totalWithDepositedAmount < CAP, 'Cap exceeded');
-
-    uint256 totalBeforeDeposit = totalWithDepositedAmount.sub(_amount);
+  function _getSharesByDepositAmount(uint256 _amount, uint256 _totalAssetAmount) internal view returns (uint256) {
     uint256 shareSupply = totalSupply();
 
-    uint256 shares = shareSupply == 0 ? _amount : _amount.mul(shareSupply).div(totalBeforeDeposit);
+    uint256 shares = shareSupply == 0 ? _amount : _amount.mul(shareSupply).div(_totalAssetAmount);
     return shares;
   }
 
