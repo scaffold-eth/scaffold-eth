@@ -10,6 +10,7 @@ import {
   MockController,
   MockPool,
   MockOToken,
+  MockOracle,
 } from '../typechain';
 import * as fs from 'fs';
 
@@ -39,6 +40,7 @@ describe('ShortActionWithSwap Tests', function () {
   let swap: MockSwap;
   let whitelist: MockWhitelist;
   let controller: MockController;
+  let oracle: MockOracle;
 
   let accounts: SignerWithAddress[] = [];
 
@@ -91,6 +93,9 @@ describe('ShortActionWithSwap Tests', function () {
     const Controller = await ethers.getContractFactory('MockController');
     controller = (await Controller.deploy()) as MockController;
     await controller.setPool(pool.address);
+
+    const MockOracle = await ethers.getContractFactory('MockOracle');
+    oracle = (await MockOracle.deploy()) as MockOracle; 
   });
 
   describe('deployment test', () => {
@@ -102,6 +107,7 @@ describe('ShortActionWithSwap Tests', function () {
         swap.address,
         whitelist.address,
         controller.address,
+        oracle.address,
         0 // type 0 vault
       )) as ShortOTokenActionWithSwap;
 
@@ -131,6 +137,7 @@ describe('ShortActionWithSwap Tests', function () {
           ethers.constants.AddressZero,
           whitelist.address,
           controller.address,
+          oracle.address,
           0 // type 0 vault
         )
       ).to.be.revertedWith('Invalid airswap address');
@@ -143,6 +150,7 @@ describe('ShortActionWithSwap Tests', function () {
         swap.address,
         whitelist.address,
         controller.address,
+        oracle.address,
         1 // type 0 vault
       );
       expect((await action.owner()) == owner.address).to.be.true;

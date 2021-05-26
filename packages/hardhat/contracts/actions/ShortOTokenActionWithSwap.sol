@@ -13,16 +13,24 @@ import { SafeMath } from '@openzeppelin/contracts/math/SafeMath.sol';
 
 import { IController } from '../interfaces/IController.sol';
 import { IAction } from '../interfaces/IAction.sol';
+import { IChainlink } from '../interfaces/IChainlink.sol';
+import { IOToken } from '../interfaces/IOToken.sol';
 
 contract ShortOTokenActionWithSwap is IAction, OwnableUpgradeable, AirswapBase, RollOverBase {
   using SafeERC20 for IERC20;
   using SafeMath for uint256;
 
+   /// @dev 100%
+  uint256 constant public BASE = 10000;
+  /// @dev the minimum strike price of the option chosen needs to be at least 105% of spot. 
+  /// This is set expecting the contract to be a strategy selling calls. For puts should change this. 
+  uint256 constant public MIN_STRIKE = 10500;
   uint256 public lockedAsset;
 
   address public immutable vault;
   address public immutable asset;
   IController public controller;
+  IChainlink public oracle; 
 
   constructor(
     address _vault,
@@ -30,6 +38,7 @@ contract ShortOTokenActionWithSwap is IAction, OwnableUpgradeable, AirswapBase, 
     address _swap,
     address _opynWhitelist,
     address _controller,
+    address _oracle,
     uint256 _vaultType
   ) {
     vault = _vault;
@@ -39,6 +48,7 @@ contract ShortOTokenActionWithSwap is IAction, OwnableUpgradeable, AirswapBase, 
     IERC20(_asset).safeApprove(_vault, uint256(-1));
 
     controller = IController(_controller);
+    oracle = IChainlink(_oracle);
 
     // enable pool contract to pull asset from this contract to mint options.
     address pool = controller.pool();
@@ -196,9 +206,12 @@ contract ShortOTokenActionWithSwap is IAction, OwnableUpgradeable, AirswapBase, 
   /**
    * @dev funtion to add some custom logic to check the next otoken is valid to this strategy
    * this hook is triggered while action owner calls "commitNextOption"
-   * so accessing "otoken" will give u the current otoken. 
+   * so accessing otoken will give u the current otoken. 
    */
   function _customOTokenCheck(address _nextOToken) internal view override {
+    // Can override or replace this. 
+     IOToken otokenToCheck = IOToken(_nextOToken);
+     require(_isValidStrike(otokenToCheck.strikePrice()), 'Strike Price Too Low');
     /**
      * e.g.
      * check otoken strike price is lower than current spot price for put.
@@ -206,5 +219,25 @@ contract ShortOTokenActionWithSwap is IAction, OwnableUpgradeable, AirswapBase, 
      * check there's no previously committed otoken.
      * check otoken expiry is expected
      */
+  }
+
+  /**
+   * @dev funtion to check that the otoken being sold meets a minimum valid strike price
+   * this hook is triggered in the _customOtokenCheck function. 
+   */
+  function _isValidStrike(uint256 strikePrice) internal view returns (bool) {
+    /**
+     * Feel free to override this or ignore it
+     */
+    (
+      uint80 roundId,
+      int256 answer,
+      uint256 startedAt,
+      uint256 updatedAt,
+      uint80 answeredInRound
+    ) = oracle.latestRoundData();
+    // checks that the strike price set is > than 105% of current price
+    uint256 spotPrice = uint256(answer);
+    return strikePrice >= spotPrice.mul(MIN_STRIKE).div(BASE);
   }
 }
