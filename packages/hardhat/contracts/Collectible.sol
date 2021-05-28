@@ -19,7 +19,7 @@
   * @dev Throws if called by any account other than the minter.
   */
   modifier onlyMinter() {
-    require(minter() == _msgSender(), "Ownable: caller is not the owner");
+    require(minter() == _msgSender(), "Mintable: caller is not the minter");
     _;
   }
 
@@ -76,7 +76,7 @@
 		uint256 _initialSupply,
 		string calldata _uri,
 		bytes calldata _data
-	) external onlyOwner returns (uint256 tokenId) {
+	) external onlyMinter returns (uint256 tokenId) {
 		require(_initialSupply <= _maxSupply, "Initial supply cannot be more than max supply");
 		uint256 _id = _getNextTokenID();
 		_incrementTokenTypeId();

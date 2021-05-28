@@ -13,9 +13,15 @@ const main = async () => {
   const deployer = accounts[0];
   console.log("Deploying by: ", deployer.address);
 
+  // Deploys the ERC20 token used to stake in exchange of points in a collection
   const EMEMToken = await deploy("EMEMToken",[ethers.utils.parseEther("1000")]);
+  // Deploys the erc1155 contract for the cardds
   const collectible = await deploy("Collectible");
+  // Deployes the collections contract that manages erc20 stake, points generation and erc1155 minting
   const collections = await deploy("Collections",[deployer.address, collectible.address, EMEMToken.address]);
+
+  // Set the collectible minter to be the collections contract so it can create and mint the cards
+  await collectible.transferMinter(collections.address,{gasLimit:400000});
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   const yourContract = await deploy("YourContract")
