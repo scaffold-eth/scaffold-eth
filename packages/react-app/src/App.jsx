@@ -23,7 +23,7 @@ import {
   useUserProvider,
 } from "./hooks";
 // import Hints from "./Hints";
-import { Collections, ExampleUI, Hints, Subgraph } from "./views";
+import { Collections, CollectionDetail, ExampleUI, Hints, Subgraph } from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -386,6 +386,23 @@ function App(props) {
           </Route>
           <Route path="/thecollections">
             <Collections
+              address={address}
+              userProvider={userProvider}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+              poolsCount={poolsCount}
+              targetNetwork={targetNetwork}
+            />
+          </Route>
+          <Route path="/collection/:collectionId">
+            <CollectionDetail
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}

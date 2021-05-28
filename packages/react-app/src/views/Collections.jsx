@@ -41,8 +41,9 @@ export default function Collections({
       for (let collectionIndex = 0; collectionIndex < numberPoolsCount; collectionIndex++) {
         try {
           const pool = await readContracts.Collections.pools(collectionIndex);
-          console.log("POOL:", pool);
-          collectionsUpdate.push({ id: collectionIndex, artist: pool.artist});
+          const staked = await readContracts.Collections.balanceOf(address,collectionIndex);
+
+          collectionsUpdate.push({ id: collectionIndex, artist: pool.artist, title: pool.title, staked: staked});
           
           /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -80,15 +81,14 @@ export default function Collections({
           />
         }
         actions={[
-          <SettingOutlined key="setting" />,
+          <h4>Staked: {formatEther(collections[i].staked)}</h4>,
           <EditOutlined key="edit" />,
-          <EllipsisOutlined key="ellipsis" />,
         ]}
       >
         <Meta
-          avatar={<Blockies seed={address.toLowerCase()} size={8} scale={3} />}
+          avatar={<Blockies seed={collections[i].artist.toLowerCase()} size={8} scale={3} />}
           title={collections[i].artist}
-          description={"Collection #"+ collections[i].id}
+          description={collections[i].title}
         />
       </Card>
     )
@@ -98,7 +98,8 @@ export default function Collections({
 
   return (
     <div>
-      <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
+      <h2>Number of Collections: {numberPoolsCount}</h2>
         <StackGrid
             columnWidth={300}
             gutterWidth={16}
@@ -107,41 +108,6 @@ export default function Collections({
          {galleryList} 
         </StackGrid>
       </div>
-      <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <List
-                bordered
-                dataSource={collections}
-                renderItem={item => {
-                  const id = item.id;
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
-                          </div>
-                        }
-                      >
-                        <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
-                        </div>
-                        <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        Artist:{" "}
-                        <Address
-                          address={item.artist}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
 
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
         <h2>Number of Collections: {numberPoolsCount}</h2>

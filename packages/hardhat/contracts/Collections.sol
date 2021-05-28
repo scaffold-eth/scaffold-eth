@@ -31,6 +31,7 @@ contract Collections is Ownable, Pausable {
 		uint256 spentPoints; // Tally of points spent in this pool
 		uint256 controllerShare; // Revenue share scheme of eth fees collected
 		address artist;
+    string title;
 		mapping(address => uint256) lastUpdateTime;
 		mapping(address => uint256) points;
 		mapping(uint256 => Card) cards;
@@ -288,7 +289,8 @@ contract Collections is Ownable, Pausable {
 		uint256 maxStake,
 		uint256 rewardRate,
 		uint256 controllerShare,
-		address artist
+		address artist,
+    string memory title
 	) public onlyOwner returns (uint256) {
 		require(pools[id].rewardRate == 0, "pool exists");
 
@@ -299,6 +301,7 @@ contract Collections is Ownable, Pausable {
 		p.rewardRate = rewardRate;
 		p.controllerShare = controllerShare;
 		p.artist = artist;
+    p.title = title;
 
     poolsCount++;
 		emit PoolAdded(id, artist, periodStart, rewardRate, maxStake);
