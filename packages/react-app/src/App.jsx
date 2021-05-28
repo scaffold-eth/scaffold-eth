@@ -151,7 +151,7 @@ function App(props) {
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
-  const poolsCount = useContractReader(readContracts, "Collections", "poolsCount");
+  //const poolsCount = useContractReader(readContracts, "Collections", "poolsCount");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -397,7 +397,6 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-              poolsCount={poolsCount}
               targetNetwork={targetNetwork}
             />
           </Route>
@@ -414,7 +413,6 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-              poolsCount={poolsCount}
               targetNetwork={targetNetwork}
             />
           </Route>

@@ -9,10 +9,15 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/ico
 import { useContractReader, useEventListener } from "../hooks";
 import StackGrid from "react-stack-grid";
 import Blockies from "react-blockies";
+import {
+  BrowserRouter as Router,
+  Route,
+  Link,
+  useParams
+} from "react-router-dom";
 const { Meta } = Card;
 
 export default function Collections({
-  poolsCount,
   purpose,
   setPurposeEvents,
   address,
@@ -31,6 +36,9 @@ export default function Collections({
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
+
+  let poolsCount = useContractReader(readContracts, "Collections", "poolsCount", null, 1000);
+  console.log(poolsCount);
   const numberPoolsCount = poolsCount && poolsCount.toNumber && poolsCount.toNumber();
   const [collections, setCollections] = useState();
 
@@ -81,8 +89,10 @@ export default function Collections({
           />
         }
         actions={[
-          <h4>Staked: {formatEther(collections[i].staked)}</h4>,
-          <EditOutlined key="edit" />,
+          <h3>Staked: {formatEther(collections[i].staked)}</h3>,
+          <Link to={"/collection/" + i}>
+            <Button type="primary">View Collection</Button>
+          </Link>,
         ]}
       >
         <Meta

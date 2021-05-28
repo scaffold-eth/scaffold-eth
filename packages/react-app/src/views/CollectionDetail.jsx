@@ -18,7 +18,6 @@ import {
 const { Meta } = Card;
 
 export default function Collections({
-  poolsCount,
   purpose,
   setPurposeEvents,
   address,
@@ -34,12 +33,13 @@ export default function Collections({
 }) {
 
   let { collectionId } = useParams();
-  
+  const poolsCount2 = useContractReader(readContracts, "Collections", "poolsCount", null, 100);
+
   const blockExplorer = targetNetwork.blockExplorer;
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
-  const numberPoolsCount = poolsCount && poolsCount.toNumber && poolsCount.toNumber();
+  const numberPoolsCount = poolsCount2 && poolsCount2.toNumber && poolsCount2.toNumber();
   const [collections, setCollections] = useState();
 
   useEffect(() => {
