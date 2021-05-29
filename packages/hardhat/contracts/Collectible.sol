@@ -40,7 +40,7 @@
   event MinterTransferred(address indexed previousMinter, address indexed newMinter);
 
    
-  constructor() ERC1155("https://ipfs.io/ipfs/") 
+  constructor(string memory _uri) ERC1155(_uri) 
   {}
 
 	/**

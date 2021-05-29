@@ -33,25 +33,25 @@ export default function Collections({
 }) {
 
   let { collectionId } = useParams();
-  const poolsCount2 = useContractReader(readContracts, "Collections", "poolsCount", null, 100);
+  const cardsInPool= useContractReader(readContracts, "Collections", "cardsInPool", [collectionId], 100);
 
   const blockExplorer = targetNetwork.blockExplorer;
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
-  const numberPoolsCount = poolsCount2 && poolsCount2.toNumber && poolsCount2.toNumber();
-  const [collections, setCollections] = useState();
+  const numberCardsInPool = cardsInPool && cardsInPool.toNumber && cardsInPool.toNumber();
+  const [cards, setCards] = useState();
 
   useEffect(() => {
-    const updateCollections = async () => {
-      const collectionsUpdate = [];
+    const updateCards = async () => {
+      const cardsUpdate = [];
     
-      for (let collectionIndex = 0; collectionIndex < numberPoolsCount; collectionIndex++) {
+      for (let cardsIndex = 0; cardsIndex < numberCardsInPool; cardsIndex++) {
         try {
-          const pool = await readContracts.Collections.pools(collectionIndex);
-          const staked = await readContracts.Collections.balanceOf(address,collectionIndex);
+          //const pool = await readContracts.Collections.pools(collectionIndex);
+          //const staked = await readContracts.Collections.balanceOf(address,collectionIndex);
 
-          collectionsUpdate.push({ id: collectionIndex, artist: pool.artist, title: pool.title, staked: staked});
+          cardsUpdate.push({ id: cardsIndex});
           
           /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -71,14 +71,14 @@ export default function Collections({
           console.log(e);
         }
       }
-      setCollections(collectionsUpdate);
+      setCards(cardsUpdate);
     };
-    updateCollections();
-  }, [numberPoolsCount]);
+    updateCards();
+  }, [numberCardsInPool]);
 
   let galleryList = []
 
-  for(let i in collections){
+  for(let i in cards){
     galleryList.push(
       <Card
         style={{ width: 300 }}
@@ -89,14 +89,12 @@ export default function Collections({
           />
         }
         actions={[
-          <h4>Staked: {formatEther(collections[i].staked)}</h4>,
           <EditOutlined key="edit" />,
         ]}
       >
         <Meta
-          avatar={<Blockies seed={collections[i].artist.toLowerCase()} size={8} scale={3} />}
-          title={collections[i].artist}
-          description={collections[i].title}
+          title="aaa"
+          description="bbbb"
         />
       </Card>
     )
@@ -107,7 +105,7 @@ export default function Collections({
   return (
     <div>
       <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
-      <h2>Cards in collection #{collectionId}: {numberPoolsCount}</h2>
+      <h2>Cards in collection #{collectionId}: {numberCardsInPool}</h2>
         <StackGrid
             columnWidth={300}
             gutterWidth={16}

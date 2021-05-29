@@ -35,6 +35,7 @@ contract Collections is Ownable, Pausable {
 		mapping(address => uint256) lastUpdateTime;
 		mapping(address => uint256) points;
 		mapping(uint256 => Card) cards;
+    uint256 cardsInPool;
 	}
 
 	address public controller;
@@ -265,6 +266,7 @@ contract Collections is Ownable, Pausable {
 		c.points = points;
 		c.releaseTime = releaseTime;
 		c.mintFee = mintFee;
+    pools[pool].cardsInPool++;
 		emit CardAdded(pool, tokenId, points, mintFee, releaseTime);
 		return tokenId;
 	}
@@ -307,6 +309,10 @@ contract Collections is Ownable, Pausable {
 
 	function balanceOf(address account, uint256 id) public view returns (uint256) {
 		return _balances[id][account];
+	}
+
+  function cardsInPool(uint256 id) public view returns (uint256) {
+		return pools[id].cardsInPool;
 	}
 
 	function withdrawFee() public {
