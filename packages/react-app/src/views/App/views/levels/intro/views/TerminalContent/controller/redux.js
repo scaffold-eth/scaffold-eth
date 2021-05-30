@@ -35,8 +35,8 @@ const mapDispatchToProps = dispatch => ({
     continueDialog() {
       dispatch(dialogsContainerActionCreators.continueDialog())
     },
-    goToDialogAnchor(payload) {
-      dispatch(dialogsContainerActionCreators.goToDialogAnchor(payload))
+    jumpToDialogPart(payload) {
+      dispatch(dialogsContainerActionCreators.jumpToDialogPart(payload))
     },
     startCityLevel() {
       dispatch(levelContainerActionCreators.setCurrentLevel({ level: 'city' })) // TODO: import string from constants list

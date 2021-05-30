@@ -1,6 +1,8 @@
-export default [
+export const DIALOG_PART_ID = 'intro/beginner-dev'
+
+const dialog = [
   {
-    dialogAnchor: 'beginner-dev',
+    dialogPartId: DIALOG_PART_ID,
     avatar: 'punk5950.png',
     alignment: 'left',
     text:
@@ -14,3 +16,11 @@ export default [
     ]
   }
 ]
+
+const enrichDialog = _dialog => {
+  return _dialog.map(dialogStep => {
+    return { dialogPartId: DIALOG_PART_ID, ...dialogStep }
+  })
+}
+
+export default enrichDialog(dialog)

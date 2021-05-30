@@ -1,4 +1,9 @@
-export default [
+import { DIALOG_PART_ID as beginnerDev } from './beginner-dev'
+import { DIALOG_PART_ID as experiencedDev } from './experienced-dev'
+
+export const DIALOG_PART_ID = 'intro/start'
+
+const dialog = [
   {
     avatar: 'punk5950.png',
     alignment: 'left',
@@ -18,14 +23,22 @@ export default [
     choices: [
       {
         id: 'experienced-dev-select',
-        goToDialogAnchor: 'experienced-dev',
+        jumpToDialogPartId: experiencedDev,
         buttonText: `I'm an experienced developer`
       },
       {
         id: 'beginner-dev-select',
-        goToDialogAnchor: 'beginner-dev',
+        jumpToDialogPartId: beginnerDev,
         buttonText: `I'm more of a beginner`
       }
     ]
   }
 ]
+
+const enrichDialog = _dialog => {
+  return _dialog.map(dialogStep => {
+    return { dialogPartId: DIALOG_PART_ID, ...dialogStep }
+  })
+}
+
+export default enrichDialog(dialog)

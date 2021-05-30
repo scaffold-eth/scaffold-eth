@@ -29,7 +29,10 @@ const styles = {
   }
 }
 
-const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actions }) => {
+const TerminalContent = ({
+  dialogs: { currentDialog, currentDialogIndex, selectedDialogParts },
+  actions
+}) => {
   const injectedProvider = null // TODO:
   const userProvider = useUserProvider(injectedProvider, localProvider)
 
@@ -57,12 +60,16 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
   return (
     <>
       {currentDialog.map((dialogStep, index) => {
-        const { visibleToUser, dialogAnchor, avatar, alignment, text, choices } = dialogStep
+        const { visibleToUser, dialogPartId, avatar, alignment, text, choices } = dialogStep
 
         const isLastVisibleDialog = index === currentDialogIndex
         const isFinalDialog = index === currentDialog.length - 1
 
-        if (index <= currentDialogIndex && visibleToUser) {
+        if (
+          index <= currentDialogIndex &&
+          visibleToUser &&
+          selectedDialogParts.includes(dialogPartId)
+        ) {
           return (
             <div
               className='test-mest'
@@ -117,9 +124,9 @@ const TerminalContent = ({ dialogs: { currentDialog, currentDialogIndex }, actio
                       id={choice.id}
                       onClick={() => {
                         console.log('clicked choice button')
-                        console.log({ goToDialog: choice.goToDialog })
-                        if (choice.goToDialogAnchor) {
-                           actions.goToDialogAnchor({ dialogAnchor: choice.goToDialogAnchor })
+                        console.log({ jumpToDialogPartId: choice.jumpToDialogPartId })
+                        if (choice.jumpToDialogPartId) {
+                          actions.jumpToDialogPart({ dialogPartId: choice.jumpToDialogPartId })
                         } else if (choice.goToDialog) {
                           actions.setCurrentDialog({ name: choice.goToDialog })
                         } else {
