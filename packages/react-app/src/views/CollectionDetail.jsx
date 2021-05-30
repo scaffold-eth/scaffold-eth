@@ -15,7 +15,24 @@ import {
   Link,
   useParams
 } from "react-router-dom";
+
+const { BufferList } = require("bl");
+const ipfsAPI = require("ipfs-http-client");
+const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 const { Meta } = Card;
+
+const getFromIPFS = async hashToGet => {
+  for await (const file of ipfs.get(hashToGet)) {
+    //console.log(file.path);
+    if (!file.content) continue;
+    const content = new BufferList();
+    for await (const chunk of file.content) {
+      content.append(chunk);
+    }
+    console.log("CONT",content);
+    return content;
+  }
+};
 
 export default function Collections({
   purpose,
@@ -33,13 +50,21 @@ export default function Collections({
 }) {
 
   let { collectionId } = useParams();
-  const cardsInPool= useContractReader(readContracts, "Collections", "cardsInPool", [collectionId], 100);
+  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 100);
 
   const blockExplorer = targetNetwork.blockExplorer;
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
-  const numberCardsInPool = cardsInPool && cardsInPool.toNumber && cardsInPool.toNumber();
+
+  // 📟 Listen for broadcast events
+  // const setCardsEvents = useEventListener(readContracts, "Collections", "CardAdded", localProvider, 1);
+  // setCardsEvents.forEach(card => {
+  //   console.log(card[0]);
+  // });
+
+  const numberCardsInPool = cardsInPool!=null ? cardsInPool.length : 0;
+  //console.log("amount", numberCardsInPool);
   const [cards, setCards] = useState();
 
   useEffect(() => {
@@ -48,10 +73,25 @@ export default function Collections({
     
       for (let cardsIndex = 0; cardsIndex < numberCardsInPool; cardsIndex++) {
         try {
-          //const pool = await readContracts.Collections.pools(collectionIndex);
+          const cardId = cardsInPool[cardsIndex].id;
+          let uri = await readContracts.Collectible.uri(0); //All tokens have the same base uri
+          uri = uri.replace(/{(.*?)}/, cardId);
+
+          const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
+
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+          try {
+            const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
+            cardsUpdate.push({ id: cardId.toNumber(), name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+          } catch (e) {
+            console.log(e);
+          }
+
+
           //const staked = await readContracts.Collections.balanceOf(address,collectionIndex);
 
-          cardsUpdate.push({ id: cardsIndex});
+          
           
           /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -85,7 +125,7 @@ export default function Collections({
         cover={
           <img
             alt="example"
-            src="https://gw.alipayobjects.com/zos/rmsportal/JiqGstEfoWAOHiTxclqi.png"
+            src={cards[i].image}
           />
         }
         actions={[
@@ -93,8 +133,8 @@ export default function Collections({
         ]}
       >
         <Meta
-          title="aaa"
-          description="bbbb"
+          title={cards[i].name}
+          description={cards[i].description}
         />
       </Card>
     )

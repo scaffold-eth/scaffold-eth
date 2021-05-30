@@ -18,6 +18,7 @@ contract Collections is Ownable, Pausable {
 	mapping(uint256 => uint256) private _poolBalances;
 
 	struct Card {
+    uint256 id;
 		uint256 points; // Cost of minting a card in points
 		uint256 releaseTime; // When the card becomes available for minting
 		uint256 mintFee; // Cost of minting a card in eth
@@ -36,6 +37,7 @@ contract Collections is Ownable, Pausable {
 		mapping(address => uint256) points;
 		mapping(uint256 => Card) cards;
     uint256 cardsInPool;
+    Card[] cardsArray;
 	}
 
 	address public controller;
@@ -266,6 +268,8 @@ contract Collections is Ownable, Pausable {
 		c.points = points;
 		c.releaseTime = releaseTime;
 		c.mintFee = mintFee;
+    c.id = tokenId;
+    pools[pool].cardsArray.push(c);
     pools[pool].cardsInPool++;
 		emit CardAdded(pool, tokenId, points, mintFee, releaseTime);
 		return tokenId;
@@ -313,6 +317,10 @@ contract Collections is Ownable, Pausable {
 
   function cardsInPool(uint256 id) public view returns (uint256) {
 		return pools[id].cardsInPool;
+	}
+
+  function getCardsArray(uint256 id) public view returns (Card[] memory) {
+		return pools[id].cardsArray;
 	}
 
 	function withdrawFee() public {
