@@ -150,6 +150,7 @@ function App(props) {
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  
 
   //const poolsCount = useContractReader(readContracts, "Collections", "poolsCount");
 

@@ -33,9 +33,9 @@ const main = async () => {
   await collectible.transferMinter(collections.address);
 
   // Create a few collections
-  await collections.createPool(0,Date.now(),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "My first collection");
-  await collections.createPool(1,Date.now(),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "Another fine collection");
-  await collections.createPool(2,Date.now(),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "Picasso collection");
+  await collections.createPool(0,Math.floor(Date.now() / 1000),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "My first collection");
+  await collections.createPool(1,Math.floor(Date.now() / 1000),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "Another fine collection");
+  await collections.createPool(2,Math.floor(Date.now() / 1000),ethers.utils.parseEther("1000"),11574074074000,0,deployer.address, "Picasso collection");
 
   // Create a few cards as part of the collections
   await collections.createCard(0,ethers.utils.parseEther("10"), ethers.utils.parseEther("10"),0, Date.now());

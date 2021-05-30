@@ -50,22 +50,20 @@ export default function Collections({
 }) {
 
   let { collectionId } = useParams();
-  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 100);
+
+  let collectionsAddress = readContracts ? readContracts.Collections.address : readContracts
+
+  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 10000);
+  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 10000);
 
   const blockExplorer = targetNetwork.blockExplorer;
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
 
-  // 📟 Listen for broadcast events
-  // const setCardsEvents = useEventListener(readContracts, "Collections", "CardAdded", localProvider, 1);
-  // setCardsEvents.forEach(card => {
-  //   console.log(card[0]);
-  // });
+  let numberMyAllowance = myAllowance!=null ? myAllowance : 0;
 
   const numberCardsInPool = cardsInPool!=null ? cardsInPool.length : 0;
   //console.log("amount", numberCardsInPool);
   const [cards, setCards] = useState();
+  const [allowance, setAllowance] = useState("loading..."); 
 
   useEffect(() => {
     const updateCards = async () => {
@@ -88,25 +86,6 @@ export default function Collections({
             console.log(e);
           }
 
-
-          //const staked = await readContracts.Collections.balanceOf(address,collectionIndex);
-
-          
-          
-          /*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-          */
         } catch (e) {
           console.log(e);
         }
@@ -115,6 +94,15 @@ export default function Collections({
     };
     updateCards();
   }, [numberCardsInPool]);
+
+  // useEffect(() => {
+  //   const fetchAllowance = async () => {
+  //     let collectionsContract = readContracts ? readContracts.Collections.address : readContracts;
+  //     let allowance = readContracts ? await readContracts.EMEMToken.allowance(address,collectionsContract) : 0;
+  //     console.log("Owner:", address , " Spender:", collectionsContract , " Allowance:", allowance);
+  //   };
+  //   fetchAllowance();
+  // });
 
   let galleryList = []
 
@@ -140,12 +128,57 @@ export default function Collections({
     )
   }
 
-  const [newPurpose, setNewPurpose] = useState("loading...");
+  const [stake, setStake] = useState("loading...");
+
+  function StakeButton(props){
+    return(
+      <Button
+        onClick={() => {
+          /* look how you call setPurpose on your contract: */
+          tx(writeContracts.Collections.stake(collectionId, stake));
+        }}
+      >
+        Stake
+      </Button>
+    );
+  }
+
+  function ApproveButton(props){
+    return(
+      <Button
+        onClick={() => {
+          /* look how you call setPurpose on your contract: */
+          tx(writeContracts.EMEMToken.approve(collectionsAddress, parseEther("999999")));
+        }}
+      >
+        Approve EMEM Token
+      </Button>
+    );
+  }
+
+  function ShowButton(props) {
+    if(numberMyAllowance > 0)
+      return <StakeButton />;
+    else
+      return <ApproveButton />;
+  }
 
   return (
     <div>
       <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
       <h2>Cards in collection #{collectionId}: {numberCardsInPool}</h2>
+
+        <div style={{ margin: 8 }}>
+          <Input
+            onChange={e => {
+              setStake(e.target.value);
+            }}
+          />
+          <ShowButton />
+        </div>
+
+
+
         <StackGrid
             columnWidth={300}
             gutterWidth={16}
