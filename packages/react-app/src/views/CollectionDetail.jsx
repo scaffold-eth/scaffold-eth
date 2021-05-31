@@ -10,6 +10,7 @@ import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/ico
 import { useContractReader, useEventListener } from "../hooks";
 import StackGrid from "react-stack-grid";
 import Blockies from "react-blockies";
+import { BigNumber } from "@ethersproject/bignumber";
 import {
   BrowserRouter as Router,
   Route,
@@ -30,7 +31,7 @@ const getFromIPFS = async hashToGet => {
     for await (const chunk of file.content) {
       content.append(chunk);
     }
-    console.log("CONT",content);
+    //console.log("CONT",content);
     return content;
   }
 };
@@ -56,6 +57,7 @@ export default function Collections({
 
   let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 10000);
   let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 1000);
+  let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId], 1000);
 
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -73,6 +75,7 @@ export default function Collections({
       for (let cardsIndex = 0; cardsIndex < numberCardsInPool; cardsIndex++) {
         try {
           const cardId = cardsInPool[cardsIndex].id;
+          const cost = cardsInPool[cardsIndex].points;
           let uri = await readContracts.Collectible.uri(0); //All tokens have the same base uri
           uri = uri.replace(/{(.*?)}/, cardId);
 
@@ -82,7 +85,7 @@ export default function Collections({
 
           try {
             const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-            cardsUpdate.push({ id: cardId.toNumber(), name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+            cardsUpdate.push({ id: cardId.toNumber(), cost:cost, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
           } catch (e) {
             console.log(e);
           }
@@ -97,19 +100,59 @@ export default function Collections({
   }, [numberCardsInPool]);
 
   const [myStake, setMyStake] = useState("loading...");
-
   useEffect(() => {
     const fetchStake = async () => {
       setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
-      console.log("My Stake:", myStake);
+      //console.log("My Stake:", myStake);
     };
     fetchStake();
   },[myStake,readContracts, yourLocalBalance]);
 
-  // useEffect(() => {
-  //   setMyStake(readContracts ? formatEther(readContracts.Collections.balanceOf(address,collectionId)) : 0);
-  //     console.log("My Stake:", myStake);
-  // },[myStake, readContracts]);
+  const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
+  const [lastUpdate, setLastUpdate] = useState(-1);
+  const [runCounter, setRunCounter] = useState(false);
+
+  useEffect(() => {
+    const fetchPoints = async () => {
+      try{
+        setMyPoints(await readContracts.Collections.earned(address,collectionId));
+        setLastUpdate(await readContracts.Collections.getLastUpdate(address, collectionId));
+        setRunCounter(true);
+        //console.log("Last update: ", lastUpdate);
+        //console.log("My pointsq: ", myPoints);
+      }catch (e) {
+        console.log(e);
+      }
+
+    };
+    fetchPoints();
+  },[readContracts, yourLocalBalance]);
+
+  const [counter, setCounter] = useState(0);
+  const [calculatedAccruedPoints, setCalculatedAccruedPoints] = useState(BigNumber.from("0"));
+
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setCounter(counter +1);
+      if(poolData && runCounter){
+        //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
+        //console.log("Stake:", myStake);
+        //console.log("Rate:", poolData.rewardRate);
+        let reward = Math.floor((myStake * poolData.rewardRate * (Math.floor(Date.now() / 1000) - lastUpdate))).toString();
+        //console.log("REWARD: ",reward);
+        const calculatedEarned = BigNumber.from(reward);
+        setCalculatedAccruedPoints(calculatedEarned);
+      }
+        
+    }, 1000);
+
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [counter]);
+
+
 
   let galleryList = []
 
@@ -124,7 +167,10 @@ export default function Collections({
           />
         }
         actions={[
-          <EditOutlined key="edit" />,
+          <h3>Cost: {formatEther(cards[i].cost)}</h3>,
+          <RedeemButton
+            itemId={cards[i].id}
+          />
         ]}
       >
         <Meta
@@ -135,13 +181,14 @@ export default function Collections({
     )
   }
 
+  // ---------------- Stake button ---------------------
+
   const [stake, setStake] = useState("loading...");
 
   function StakeButton(props){
     return(
       <Button
         onClick={() => {
-          /* look how you call setPurpose on your contract: */
           tx(writeContracts.Collections.stake(collectionId, stake));
         }}
       >
@@ -154,7 +201,6 @@ export default function Collections({
     return(
       <Button
         onClick={() => {
-          /* look how you call setPurpose on your contract: */
           tx(writeContracts.EMEMToken.approve(collectionsAddress, parseEther("999999")));
         }}
       >
@@ -170,6 +216,31 @@ export default function Collections({
       return <ApproveButton />;
   }
 
+  // -------------------- Redeem button ------------------------
+
+  function RedeemButton(props){
+    return(
+      <Button disabled={0==1 ? true : false}
+        onClick={() => {
+          //console.log(props.itemId);
+          /* look how you call setPurpose on your contract: */
+          tx(writeContracts.Collections.redeem(collectionId, props.itemId));
+        }}
+      >
+        Redeem
+      </Button>
+    );
+  }
+
+  function SumPoints(props){
+    //console.log("XXXXX");
+    //console.log(myPoints);
+    //console.log(calculatedAccruedPoints);
+    const points = myPoints.add(calculatedAccruedPoints);
+    //console.log(points);
+    return(formatEther(points));
+  }
+
   return (
     <div>
       <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
@@ -177,10 +248,35 @@ export default function Collections({
 
       <Row>
         <Col span={12}>
-          <h2>Staked: {myStake}</h2>
+          <h2>Staked: {myStake} tokens</h2>
         </Col>
         <Col span={12}>
-          <h2>Points: 3321</h2>
+          <h2>Points: <SumPoints/> points</h2>
+        </Col>
+      </Row>
+
+      <Row>
+        <Col span={12}>
+          <h2>DEBUG Points Stored </h2>
+        </Col>
+        <Col span={12}>
+          <h2>{formatEther(myPoints)}</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <h2>DEBUG Last Update</h2>
+        </Col>
+        <Col span={12}>
+          <h2>{lastUpdate.toString()}</h2>
+        </Col>
+      </Row>
+      <Row>
+        <Col span={12}>
+          <h2>DEBUG Calculated</h2>
+        </Col>
+        <Col span={12}>
+          <h2>{formatEther(calculatedAccruedPoints)}</h2>
         </Col>
       </Row>
 

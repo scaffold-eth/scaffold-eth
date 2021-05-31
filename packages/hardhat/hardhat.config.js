@@ -44,10 +44,6 @@ module.exports = {
 
   networks: {
     localhost: {
-      mining: {
-        auto: false,
-        interval: 15000
-      },
       url: "http://localhost:8545",
       
       /*
@@ -56,7 +52,7 @@ module.exports = {
       */
     },
     rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", //<---- YOUR INFURA ID! (or it won't work)
+      url: "https://rinkeby.infura.io/v3/ac748b58b39244d2873bbccf84313350",
       accounts: {
         mnemonic: mnemonic(),
       },

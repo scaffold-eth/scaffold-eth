@@ -90,7 +90,12 @@ export default function Collections({
         }
         actions={[
           <h3>Staked: {formatEther(collections[i].staked)}</h3>,
-          <Link to={"/collection/" + i}>
+          <Link to={{
+            pathname: "/collection/" + i,
+            state: {
+              collectionTitle: collections[i].title,
+            }
+            }}>
             <Button type="primary">View Collection</Button>
           </Link>,
         ]}

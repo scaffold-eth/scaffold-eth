@@ -99,10 +99,16 @@ contract Collections is Ownable, Pausable {
 	function earned(address account, uint256 pool) public view returns (uint256) {
 		Pool storage p = pools[pool];
 		uint256 blockTime = block.timestamp;
-		return
-			balanceOf(account, pool).mul(blockTime.sub(p.lastUpdateTime[account]).mul(p.rewardRate)).div(1e8).add(
+    console.log("Balance: ", balanceOf(account, pool));
+    console.log("Blocktime: ", blockTime);
+    console.log("Last Updated: ", p.lastUpdateTime[account]);
+    console.log("Reward rate: ", p.rewardRate);
+    console.log("Points:", p.points[account]);
+    uint256 earned = balanceOf(account, pool).mul(blockTime.sub(p.lastUpdateTime[account]).mul(p.rewardRate)).div(1e18).add(
 				p.points[account]
 			);
+    console.log("Earned: ", earned);
+		return earned;
 	}
 
 	function stake(uint256 pool, uint256 amount)
@@ -176,8 +182,11 @@ contract Collections is Ownable, Pausable {
 	{
 		Pool storage p = pools[pool];
 		Card memory c = p.cards[card];
-		require(block.timestamp >= c.releaseTime, "card not released");
-		require(p.points[msg.sender] >= c.points, "not enough pineapples");
+    console.log("Points needed: ", c.points);
+    console.log("Points:", p.points[msg.sender]);
+		
+    require(block.timestamp >= c.releaseTime, "card not released");
+		require(p.points[msg.sender] >= c.points, "not enough points");
 		require(msg.value == c.mintFee, "support our artists, send eth");
 
 		if (c.mintFee > 0) {
@@ -321,6 +330,10 @@ contract Collections is Ownable, Pausable {
 
   function getCardsArray(uint256 id) public view returns (Card[] memory) {
 		return pools[id].cardsArray;
+	}
+
+  function getLastUpdate(address account, uint256 id) public view returns (uint256) {
+		return pools[id].lastUpdateTime[account];
 	}
 
 	function withdrawFee() public {
