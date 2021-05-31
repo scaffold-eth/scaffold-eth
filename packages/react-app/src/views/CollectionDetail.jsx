@@ -3,6 +3,7 @@
 import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Avatar } from "antd";
+import { Row, Col } from 'antd';
 import React, { useCallback, useEffect, useState } from "react";
 import { Address, Balance } from "../components";
 import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
@@ -54,7 +55,7 @@ export default function Collections({
   let collectionsAddress = readContracts ? readContracts.Collections.address : readContracts
 
   let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 10000);
-  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 10000);
+  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 1000);
 
   const blockExplorer = targetNetwork.blockExplorer;
 
@@ -95,14 +96,20 @@ export default function Collections({
     updateCards();
   }, [numberCardsInPool]);
 
+  const [myStake, setMyStake] = useState("loading...");
+
+  useEffect(() => {
+    const fetchStake = async () => {
+      setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
+      console.log("My Stake:", myStake);
+    };
+    fetchStake();
+  },[myStake,readContracts, yourLocalBalance]);
+
   // useEffect(() => {
-  //   const fetchAllowance = async () => {
-  //     let collectionsContract = readContracts ? readContracts.Collections.address : readContracts;
-  //     let allowance = readContracts ? await readContracts.EMEMToken.allowance(address,collectionsContract) : 0;
-  //     console.log("Owner:", address , " Spender:", collectionsContract , " Allowance:", allowance);
-  //   };
-  //   fetchAllowance();
-  // });
+  //   setMyStake(readContracts ? formatEther(readContracts.Collections.balanceOf(address,collectionId)) : 0);
+  //     console.log("My Stake:", myStake);
+  // },[myStake, readContracts]);
 
   let galleryList = []
 
@@ -168,24 +175,31 @@ export default function Collections({
       <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
       <h2>Cards in collection #{collectionId}: {numberCardsInPool}</h2>
 
-        <div style={{ margin: 8 }}>
+      <Row>
+        <Col span={12}>
+          <h2>Staked: {myStake}</h2>
+        </Col>
+        <Col span={12}>
+          <h2>Points: 3321</h2>
+        </Col>
+      </Row>
+
+      <div style={{ margin: 8 }}>
           <Input
             onChange={e => {
               setStake(e.target.value);
             }}
           />
           <ShowButton />
-        </div>
+        </div>  
 
-
-
-        <StackGrid
-            columnWidth={300}
-            gutterWidth={16}
-            gutterHeight={16}
-        >
-         {galleryList} 
-        </StackGrid>
+      <StackGrid
+          columnWidth={300}
+          gutterWidth={16}
+          gutterHeight={16}
+      >
+        {galleryList} 
+      </StackGrid>
       </div>
     </div>
   );

@@ -44,7 +44,12 @@ module.exports = {
 
   networks: {
     localhost: {
+      mining: {
+        auto: false,
+        interval: 15000
+      },
       url: "http://localhost:8545",
+      
       /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
