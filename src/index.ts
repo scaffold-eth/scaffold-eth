@@ -3,7 +3,7 @@ export { default as useBlockNumber } from "./BlockNumber";
 export { default as useContractReader } from "./ContractReader";
 export { default as useLocalContractsReader } from "./LocalContractsReader";
 export { useLookupAddress, useResolveEnsName } from "./ENS";
-export { useEventListener, useEventReader } from "./Events";
+export { useEventListener, useEventReader, useLocalEventListener } from "./Events";
 export { default as useNonce } from "./Nonce";
 export { default as usePoller } from "./Poller";
 export { default as useTimestamp } from "./Timestamp";
