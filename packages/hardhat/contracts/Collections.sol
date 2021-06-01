@@ -336,6 +336,10 @@ contract Collections is Ownable, Pausable {
 		return pools[id].lastUpdateTime[account];
 	}
 
+   function getPoints(address account, uint256 id) public view returns (uint256) {
+		return pools[id].points[account];
+	}
+
 	function withdrawFee() public {
 		uint256 amount = pendingWithdrawals[msg.sender];
 		require(amount > 0, "nothing to withdraw");

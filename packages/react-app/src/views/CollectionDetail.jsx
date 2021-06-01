@@ -58,13 +58,14 @@ export default function Collections({
   let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 10000);
   let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 1000);
   let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId], 1000);
+  //let storedPoints= useContractReader(readContracts, "Collections", "getPoints", [address, collectionId], 1000);
 
   const blockExplorer = targetNetwork.blockExplorer;
 
   let numberMyAllowance = myAllowance!=null ? myAllowance : 0;
+  //let numberStoredPoints = storedPoints!=null ? storedPoints : 0;
 
   const numberCardsInPool = cardsInPool!=null ? cardsInPool.length : 0;
-  //console.log("amount", numberCardsInPool);
   const [cards, setCards] = useState();
   const [allowance, setAllowance] = useState("loading..."); 
 
@@ -111,26 +112,26 @@ export default function Collections({
   const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
   const [lastUpdate, setLastUpdate] = useState(-1);
   const [runCounter, setRunCounter] = useState(false);
+  const [counter, setCounter] = useState(0);
+  const [calculatedAccruedPoints, setCalculatedAccruedPoints] = useState(BigNumber.from("0"));
+  const [showPoints, setShowPoints] = useState(true);
 
   useEffect(() => {
     const fetchPoints = async () => {
       try{
-        setMyPoints(await readContracts.Collections.earned(address,collectionId));
+        //console.log("RELOADED POINTS ",numberStoredPoints);
+        setShowPoints(true);
+        setMyPoints(await readContracts.Collections.getPoints(address,collectionId));
+        setCalculatedAccruedPoints(BigNumber.from("0"));
         setLastUpdate(await readContracts.Collections.getLastUpdate(address, collectionId));
         setRunCounter(true);
-        //console.log("Last update: ", lastUpdate);
-        //console.log("My pointsq: ", myPoints);
       }catch (e) {
         console.log(e);
       }
 
     };
     fetchPoints();
-  },[readContracts, yourLocalBalance]);
-
-  const [counter, setCounter] = useState(0);
-  const [calculatedAccruedPoints, setCalculatedAccruedPoints] = useState(BigNumber.from("0"));
-
+  },[yourLocalBalance]);
 
   useEffect(() => {
     const timeout = setTimeout(() => {
@@ -139,7 +140,7 @@ export default function Collections({
         //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
         //console.log("Stake:", myStake);
         //console.log("Rate:", poolData.rewardRate);
-        let reward = Math.floor((myStake * poolData.rewardRate * (Math.floor(Date.now() / 1000) - lastUpdate))).toString();
+        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)+20) - lastUpdate))).toString();
         //console.log("REWARD: ",reward);
         const calculatedEarned = BigNumber.from(reward);
         setCalculatedAccruedPoints(calculatedEarned);
@@ -222,9 +223,10 @@ export default function Collections({
     return(
       <Button disabled={0==1 ? true : false}
         onClick={() => {
-          //console.log(props.itemId);
+          console.log(props.itemId);
           /* look how you call setPurpose on your contract: */
           tx(writeContracts.Collections.redeem(collectionId, props.itemId));
+          setShowPoints(false);
         }}
       >
         Redeem
@@ -248,10 +250,10 @@ export default function Collections({
 
       <Row>
         <Col span={12}>
-          <h2>Staked: {myStake} tokens</h2>
+          <h2 >Staked: {myStake} tokens</h2>
         </Col>
         <Col span={12}>
-          <h2>Points: <SumPoints/> points</h2>
+          {(showPoints || true) && <h2>Points: <SumPoints/> points</h2>}
         </Col>
       </Row>
 
