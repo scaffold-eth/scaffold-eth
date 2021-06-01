@@ -2,7 +2,7 @@
 
 import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Avatar } from "antd";
+import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Avatar, Badge } from "antd";
 import { Row, Col } from 'antd';
 import React, { useCallback, useEffect, useState } from "react";
 import { Address, Balance } from "../components";
@@ -76,16 +76,19 @@ export default function Collections({
         try {
           const cardId = cardsInPool[cardsIndex].id;
           const cost = cardsInPool[cardsIndex].points;
+          let tokenSupply = await readContracts.Collectible.tokenSupply(cardId);
+          let tokenMaxSupply = await readContracts.Collectible.tokenMaxSupply(cardId);
+          let available = tokenMaxSupply.sub(tokenSupply);
+          console.log("AV", available);
+
           let uri = await readContracts.Collectible.uri(0); //All tokens have the same base uri
           uri = uri.replace(/{(.*?)}/, cardId);
-
           const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
-
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
           try {
             const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
-            cardsUpdate.push({ id: cardId.toNumber(), cost:cost, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
+            cardsUpdate.push({ id: cardId.toNumber(), cost:cost, name: jsonManifest.name, available:available, description: jsonManifest.description, image:jsonManifest.image });
           } catch (e) {
             console.log(e);
           }
@@ -139,7 +142,7 @@ export default function Collections({
         //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
         //console.log("Stake:", myStake);
         //console.log("Rate:", poolData.rewardRate);
-        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate))).toString();
+        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate +18))).toString();
         //console.log("REWARD: ",reward);
         const calculatedEarned = BigNumber.from(reward).add(myPoints);
         setCalculatedAccruedPoints(calculatedEarned);
@@ -153,32 +156,42 @@ export default function Collections({
   }, [counter]);
 
 
-
   let galleryList = []
 
   for(let i in cards){
     galleryList.push(
-      <Card
-        key={cards[i].id}
-        style={{ width: 300 }}
-        cover={
-          <img
-            alt="example"
-            src={cards[i].image}
+      <Badge.Ribbon 
+      style={ 
+        cards[i].available == 0 && {backgroundColor: '#ff0000'} ||
+        cards[i].available >= 0 && {backgroundColor: '#f86'}
+      } 
+      text={
+            cards[i].available >0 && ("Only " + cards[i].available + " left!") ||
+            cards[i].available == 0 && ("Sold out :(")
+            }>
+        <Card
+          key={cards[i].id}
+          style={{ width: 300 }}
+          cover={
+            <img
+              alt="example"
+              src={cards[i].image}
+            />
+          }
+          actions={[
+            <h3>Cost: {formatEther(cards[i].cost)}</h3>,
+            <RedeemButton
+              itemId={cards[i].id}
+              available={cards[i].available}
+            />
+          ]}
+        >
+          <Meta
+            title={cards[i].name}
+            description={cards[i].description}
           />
-        }
-        actions={[
-          <h3>Cost: {formatEther(cards[i].cost)}</h3>,
-          <RedeemButton
-            itemId={cards[i].id}
-          />
-        ]}
-      >
-        <Meta
-          title={cards[i].name}
-          description={cards[i].description}
-        />
-      </Card>
+        </Card>
+        </Badge.Ribbon>
     )
   }
 
@@ -240,7 +253,7 @@ export default function Collections({
 
   function RedeemButton(props){
     return(
-      <Button disabled={0==1 ? true : false}
+      <Button type="primary" disabled={props.available == 0 ? true : false}
         onClick={() => {
           console.log(props.itemId);
           /* look how you call setPurpose on your contract: */
@@ -248,7 +261,8 @@ export default function Collections({
           setShowPoints(false);
         }}
       >
-        Redeem
+        {props.available > 0 && ("Redeem")}
+        {props.available == 0 && ("Sold out")}
       </Button>
     );
   }
