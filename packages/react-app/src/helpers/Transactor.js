@@ -7,11 +7,14 @@ import { BLOCKNATIVE_DAPPID } from "../constants";
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
+const callbacks = {};
+
+const DEBUG = true
 
 export default function Transactor(provider, gasPrice, etherscan) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
-    return async tx => {
+    return async (tx, callback) => {
       const signer = provider.getSigner();
       const network = await provider.getNetwork();
       console.log("network", network);
@@ -21,7 +24,11 @@ export default function Transactor(provider, gasPrice, etherscan) {
         networkId: network.chainId,
         // darkMode: Boolean, // (default: false)
         transactionHandler: txInformation => {
-          console.log("HANDLE TX", txInformation);
+          if(DEBUG) console.log("HANDLE TX", txInformation);
+          const possibleFunction = callbacks[txInformation.transaction.hash];
+          if (typeof possibleFunction === "function") {
+            possibleFunction(txInformation.transaction);
+          }
         },
       };
       const notify = Notify(options);
@@ -39,7 +46,7 @@ export default function Transactor(provider, gasPrice, etherscan) {
       try {
         let result;
         if (tx instanceof Promise) {
-          console.log("AWAITING TX", tx);
+          if(DEBUG) console.log("AWAITING TX", tx);
           result = await tx;
         } else {
           if (!tx.gasPrice) {
@@ -48,11 +55,15 @@ export default function Transactor(provider, gasPrice, etherscan) {
           if (!tx.gasLimit) {
             tx.gasLimit = hexlify(120000);
           }
-          console.log("RUNNING TX", tx);
+          if(DEBUG) console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
         }
-        console.log("RESULT:", result);
+        if(DEBUG) console.log("RESULT:", result);
         // console.log("Notify", notify);
+
+        if (callback) {
+          callbacks[result.hash] = callback;
+        }
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
         if ([1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
@@ -68,6 +79,19 @@ export default function Transactor(provider, gasPrice, etherscan) {
             description: result.hash,
             placement: "bottomRight",
           });
+          // on most networks BlockNative will update a transaction handler,
+          // but locally we will set an interval to listen...
+          if (callback) {
+            const txResult = await tx;
+            const listeningInterval = setInterval(async () => {
+              console.log("CHECK IN ON THE TX", txResult, provider);
+              const currentTransactionReceipt = await provider.getTransactionReceipt(txResult.hash);
+              if (currentTransactionReceipt && currentTransactionReceipt.confirmations) {
+                callback({ ...txResult, ...currentTransactionReceipt });
+                clearInterval(listeningInterval);
+              }
+            }, 500);
+          }
         }
 
         return result;
@@ -78,6 +102,9 @@ export default function Transactor(provider, gasPrice, etherscan) {
           message: "Transaction Error",
           description: e.message,
         });
+        if (callback && typeof callback === "function") {
+          callback(e);
+        }
       }
     };
   }
