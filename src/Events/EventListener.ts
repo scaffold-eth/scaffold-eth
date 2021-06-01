@@ -7,17 +7,20 @@ export default function useEventListener(
   eventName: string,
   provider: Web3Provider,
   startBlock: number,
+  args?: any[]
 ): any[] {
   const [updates, setUpdates] = useState<any[]>([]);
 
   const addNewEvent = useCallback(
-    (...eventArgs: any[]) => setUpdates(messages => [...messages, eventArgs.pop().args]),
-    [],
+    (...args: any) => {
+      const blockNumber = args[args.length - 1].blockNumber;
+      setUpdates(messages => [{ blockNumber, ...args.pop().args }, ...messages]);
+    },
+    []
   );
 
-  // eslint-disable-next-line consistent-return
   useEffect(() => {
-    if (typeof provider !== "undefined" && typeof startBlock !== "undefined") {
+    if (typeof provider !== "undefined") {
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
       provider.resetEventsBlock(startBlock);
     }
@@ -28,12 +31,10 @@ export default function useEventListener(
           contract.off(eventName, addNewEvent);
         };
       } catch (e) {
-        // Event "eventName" may not exist on contract
-        // eslint-disable-next-line no-console
         console.log(e);
       }
     }
-  }, [provider, contract, eventName, startBlock, addNewEvent]);
+  }, [provider, startBlock, contract, eventName, addNewEvent]);
 
   return updates;
 }
