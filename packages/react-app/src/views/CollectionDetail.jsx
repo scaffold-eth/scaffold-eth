@@ -217,6 +217,25 @@ export default function Collections({
       return <ApproveButton />;
   }
 
+  function UnstakeButton(props){
+    return(
+      <Button danger
+        onClick={() => {
+          tx(writeContracts.Collections.withdraw(collectionId, parseEther(myStake)));
+        }}
+      >
+        Unstake all
+      </Button>
+    );
+  }
+
+  function ShowUnstakeButton(props) {
+    if(myStake > 0)
+      return <UnstakeButton />;
+    else
+      return(null);
+  }
+
   // -------------------- Redeem button ------------------------
 
   function RedeemButton(props){
@@ -289,6 +308,7 @@ export default function Collections({
             }}
           />
           <ShowButton />
+          <ShowUnstakeButton />
         </div>  
 
       <StackGrid
