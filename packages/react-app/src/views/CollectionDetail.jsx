@@ -55,9 +55,9 @@ export default function Collections({
 
   let collectionsAddress = readContracts ? readContracts.Collections.address : readContracts
 
-  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId], 10000);
-  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress], 1000);
-  let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId], 1000);
+  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId]);
+  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress]);
+  let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId]);
   //let storedPoints= useContractReader(readContracts, "Collections", "getPoints", [address, collectionId], 1000);
 
   const blockExplorer = targetNetwork.blockExplorer;
@@ -72,7 +72,6 @@ export default function Collections({
   useEffect(() => {
     const updateCards = async () => {
       const cardsUpdate = [];
-    
       for (let cardsIndex = 0; cardsIndex < numberCardsInPool; cardsIndex++) {
         try {
           const cardId = cardsInPool[cardsIndex].id;
@@ -98,17 +97,9 @@ export default function Collections({
       setCards(cardsUpdate);
     };
     updateCards();
-  }, [numberCardsInPool]);
+  }, [cardsInPool]);
 
   const [myStake, setMyStake] = useState("loading...");
-  useEffect(() => {
-    const fetchStake = async () => {
-      setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
-      //console.log("My Stake:", myStake);
-    };
-    fetchStake();
-  },[myStake,readContracts, yourLocalBalance]);
-
   const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
   const [lastUpdate, setLastUpdate] = useState(-1);
   const [runCounter, setRunCounter] = useState(false);
@@ -117,12 +108,20 @@ export default function Collections({
   const [showPoints, setShowPoints] = useState(true);
 
   useEffect(() => {
+    const fetchStake = async () => {
+      setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
+      //console.log("My Stake:", myStake);
+    };
+    fetchStake();
+  },[myStake,readContracts, yourLocalBalance]);
+
+  useEffect(() => {
     const fetchPoints = async () => {
       try{
         //console.log("RELOADED POINTS ",numberStoredPoints);
         setShowPoints(true);
         setMyPoints(await readContracts.Collections.getPoints(address,collectionId));
-        setCalculatedAccruedPoints(BigNumber.from("0"));
+        //setCalculatedAccruedPoints(BigNumber.from("0"));
         setLastUpdate(await readContracts.Collections.getLastUpdate(address, collectionId));
         setRunCounter(true);
       }catch (e) {
@@ -140,9 +139,9 @@ export default function Collections({
         //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
         //console.log("Stake:", myStake);
         //console.log("Rate:", poolData.rewardRate);
-        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)+20) - lastUpdate))).toString();
+        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate))).toString();
         //console.log("REWARD: ",reward);
-        const calculatedEarned = BigNumber.from(reward);
+        const calculatedEarned = BigNumber.from(reward).add(myPoints);
         setCalculatedAccruedPoints(calculatedEarned);
       }
         
@@ -160,6 +159,7 @@ export default function Collections({
   for(let i in cards){
     galleryList.push(
       <Card
+        key={cards[i].id}
         style={{ width: 300 }}
         cover={
           <img
@@ -253,11 +253,11 @@ export default function Collections({
           <h2 >Staked: {myStake} tokens</h2>
         </Col>
         <Col span={12}>
-          {(showPoints || true) && <h2>Points: <SumPoints/> points</h2>}
+          {(showPoints || true) && <h2>Points: {formatEther(calculatedAccruedPoints)} points</h2>}
         </Col>
       </Row>
-
-      <Row>
+      
+      {/* <Row>
         <Col span={12}>
           <h2>DEBUG Points Stored </h2>
         </Col>
@@ -280,7 +280,7 @@ export default function Collections({
         <Col span={12}>
           <h2>{formatEther(calculatedAccruedPoints)}</h2>
         </Col>
-      </Row>
+      </Row> */}
 
       <div style={{ margin: 8 }}>
           <Input
