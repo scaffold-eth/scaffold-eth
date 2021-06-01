@@ -148,13 +148,18 @@ export default function Collections({
     const timeout = setTimeout(() => {
       setCounter(counter +1);
       if(poolData && runCounter){
-        //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
-        //console.log("Stake:", myStake);
-        //console.log("Rate:", poolData.rewardRate);
-        let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate +18))).toString();
-        //console.log("REWARD: ",reward);
-        const calculatedEarned = BigNumber.from(reward).add(myPoints);
-        setCalculatedAccruedPoints(calculatedEarned);
+        try{
+          //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
+          //console.log("Stake:", myStake);
+          //console.log("Rate:", poolData.rewardRate);
+          let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate + 18)))
+          if(reward < 0) reward = 0;
+          //console.log("REWARD: ",reward);
+          const calculatedEarned = BigNumber.from(reward.toString()).add(myPoints);
+          setCalculatedAccruedPoints(calculatedEarned);
+        }catch (e) {
+          console.log(e);
+        }
       }
         
     }, 1000);
