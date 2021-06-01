@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 
 /*
@@ -28,6 +28,14 @@ export default function useLocalEventListener(
 ): any[] {
   const [updates, setUpdates] = useState<any[]>([]);
 
+  const addNewEvent = useCallback(
+    (...args: any) => {
+      const blockNumber = args[args.length - 1].blockNumber;
+      setUpdates(messages => [{ blockNumber, ...args.pop().args }, ...messages]);
+    },
+    []
+  );
+
   useEffect(() => {
     if (typeof provider !== "undefined" && typeof startBlock !== "undefined") {
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
@@ -35,18 +43,15 @@ export default function useLocalEventListener(
     }
     if (contracts && contractName && contracts[contractName]) {
       try {
-        contracts[contractName].on(eventName, (...args: any) => {
-          const blockNumber = args[args.length - 1].blockNumber;
-          setUpdates(messages => [{ blockNumber, ...args.pop().args }, ...messages]);
-        });
+        contracts[contractName].on(eventName, addNewEvent);
         return () => {
-          contracts[contractName].removeListener(eventName);
+          contracts[contractName].off(eventName, addNewEvent);
         };
       } catch (e) {
         console.log(e);
       }
     }
-  }, [provider, startBlock, contracts, contractName, eventName]);
+  }, [provider, startBlock, contracts, contractName, eventName, addNewEvent]);
 
   return updates;
 }
