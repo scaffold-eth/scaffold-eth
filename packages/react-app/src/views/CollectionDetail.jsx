@@ -102,6 +102,7 @@ export default function Collections({
     updateCards();
   }, [cardsInPool]);
 
+  const [collectionName, setCollectionName] = useState(" ");
   const [myStake, setMyStake] = useState("loading...");
   const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
   const [lastUpdate, setLastUpdate] = useState(-1);
@@ -111,7 +112,15 @@ export default function Collections({
   const [showPoints, setShowPoints] = useState(true);
 
   useEffect(() => {
+    const fetchPoolData = async () => {
+      setCollectionName(poolData ? poolData.title : "");
+    };
+    fetchPoolData();
+  },[poolData]);
+
+  useEffect(() => {
     const fetchStake = async () => {
+      setCollectionName(poolData ? poolData.title : "");
       setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
       //console.log("My Stake:", myStake);
     };
@@ -279,7 +288,7 @@ export default function Collections({
   return (
     <div>
       <div style={{ width: 996, margin: "auto", marginTop: 32, paddingBottom: 32, marginBottom:32 }}>
-      <h2>Cards in collection #{collectionId}: {numberCardsInPool}</h2>
+      <h2>Cards in {collectionName}: {numberCardsInPool}</h2>
 
       <Row>
         <Col span={12}>
