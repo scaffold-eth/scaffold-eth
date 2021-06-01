@@ -55,9 +55,9 @@ export default function Collections({
 
   let collectionsAddress = readContracts ? readContracts.Collections.address : readContracts
 
-  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId]);
-  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress]);
-  let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId]);
+  let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId],10000);
+  let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress],10000);
+  let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId],10000);
   //let storedPoints= useContractReader(readContracts, "Collections", "getPoints", [address, collectionId], 1000);
 
   const blockExplorer = targetNetwork.blockExplorer;
@@ -192,6 +192,7 @@ export default function Collections({
             <RedeemButton
               itemId={cards[i].id}
               available={cards[i].available}
+              cost={cards[i].cost}
             />
           ]}
         >
@@ -261,28 +262,24 @@ export default function Collections({
   // -------------------- Redeem button ------------------------
 
   function RedeemButton(props){
-    return(
-      <Button type="primary" disabled={props.available == 0 ? true : false}
-        onClick={() => {
-          console.log(props.itemId);
-          /* look how you call setPurpose on your contract: */
-          tx(writeContracts.Collections.redeem(collectionId, props.itemId));
-          setShowPoints(false);
-        }}
-      >
-        {props.available > 0 && ("Redeem")}
-        {props.available == 0 && ("Sold out")}
-      </Button>
-    );
-  }
-
-  function SumPoints(props){
-    //console.log("XXXXX");
-    //console.log(myPoints);
-    //console.log(calculatedAccruedPoints);
-    const points = myPoints.add(calculatedAccruedPoints);
-    //console.log(points);
-    return(formatEther(points));
+    console.log("?Q?Q",myPoints,props.cost, myPoints.gte(props.cost));
+    if(calculatedAccruedPoints.gte(props.cost)){
+      return(
+        <Button type="primary" disabled={props.available == 0 ? true : false}
+          onClick={() => {
+            console.log(props.itemId);
+            /* look how you call setPurpose on your contract: */
+            tx(writeContracts.Collections.redeem(collectionId, props.itemId));
+            setShowPoints(false);
+          }}
+        >
+          {props.available > 0 && ("Redeem")}
+          {props.available == 0 && ("Sold out")}
+        </Button>
+      );
+    }else{
+      return (<h3>Not enough points</h3>)
+    }    
   }
 
   return (

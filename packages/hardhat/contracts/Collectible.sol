@@ -106,4 +106,8 @@
 	function _incrementTokenTypeId() private {
 		_currentTokenID++;
 	}
+
+  function getCurrentTokenID() public view returns(uint256){
+    return _currentTokenID;
+  }
 }
