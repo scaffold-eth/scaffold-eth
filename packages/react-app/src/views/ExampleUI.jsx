@@ -5,6 +5,7 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
 import { Address, Balance } from "../components";
+import { useContractLoader, useContractReader } from "../hooks";
 
 export default function ExampleUI({
   purpose,
@@ -20,6 +21,10 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+
+  const readContracts2 = useContractLoader(localProvider);
+  const purpose2 = useContractReader(readContracts2, "YourContract", "purpose");
+  console.log(purpose2);
 
   return (
     <div>
