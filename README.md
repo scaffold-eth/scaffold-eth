@@ -135,8 +135,10 @@ ERC1155 defines a common interface for Non-Fungible Tokens (NFT) which can be us
 
 We won't go into much detail here as there are already tens of articles explaining how it works, but in order to understand what's happening here there's a few things that are important to know.
 
+* ERC721 vs ERC1155
 The main difference between ERC1155 and ERC721 (the most popular NFT standard) tokens is that ERC1155 allows you have multiple identical copies of a given NFT id. For example, you can mint 10 exact copies of an art piece and an account can hold a balance of 5 of them and trade them in a batch. Whereas with ERC721 this wouldn't be possible and you would have to mint 10 tokens each with it's own id and transfer them individually.
 
+* ERC1155 Metadata
 If you take a close look at the script we ran before where we mint 6 NFTs across 3 collections, you'll notice that at no point we are actually specifying anything in particular about the NFTs (I.E: what image they contain, what properties make each one of them special, if any, etc). That's because ERC1155 (similar to ERC721) specify that all those properties, called Metadata, are to be stored off-chain. If you go back to the first few lines we run on deploy (which I said we would touch on later), this is what we have:
 
 ```
@@ -145,6 +147,18 @@ If you take a close look at the script we ran before where we mint 6 NFTs across
   console.log(file.cid.toString());
   const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
 ```
+
+These lines take the content of `/erc1155metadata` and uploads it to IPFS. This foldder contains one json file per NFT with the same id we used to create each NFT.
+(1.json corresponds to NFT of id 1). 
+
+Finally, when we deploy the Collectible contract we specify the URI to be `[tokenUri]` which is where the folder with the metadata is stored on IPFS.
+So, in summary, https://ipfs.io/ipfs/cidgeneratedonipfs/1.json will contain all the metadata for the NFT of id 1. Here is where we can go crazy on the properties we want our NFTs to have. In this example, to keep it simple, I just included the name, description and image url.
+
+```
+1.json
+{"description": "It's actually a bison?","external_url": "https://austingriffith.com/portfolio/paintings/","image": "https://austingriffith.com/images/paintings/buffalo.jpg","name": "Buffalo"}
+```
+
 
 
 ## 💬 Support Chat
