@@ -295,12 +295,12 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-        <Menu.Item key="/thecollections">
+        <Menu.Item key="/">
             <Link
               onClick={() => {
-                setRoute("/thecollections");
+                setRoute("/");
               }}
-              to="/thecollections"
+              to="/"
             >
               The Collections
             </Link>
@@ -315,12 +315,12 @@ function App(props) {
               My Collectibles
             </Link>
           </Menu.Item>
-          <Menu.Item key="/">
+          <Menu.Item key="/collections">
           <Link
               onClick={() => {
-                setRoute("/");
+                setRoute("/collections");
               }}
-              to="/"
+              to="/collections"
             >
               Collections (DEBUG)
             </Link>
@@ -348,7 +348,7 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/collections">
             <Contract
               name="Collections"
               signer={userProvider.getSigner()}
@@ -375,52 +375,25 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/thecollections">
+          <Route exact path="/">
             <Collections
               address={address}
-              userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-              targetNetwork={targetNetwork}
             />
           </Route>
           <Route path="/mycollectibles">
             <MyCollectibles
               address={address}
-              userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-              targetNetwork={targetNetwork}
             />
           </Route>
           <Route path="/collection/:collectionId">
             <CollectionDetail
               address={address}
-              userProvider={userProvider}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}
-              price={price}
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-              targetNetwork={targetNetwork}
             />
           </Route>
         </Switch>

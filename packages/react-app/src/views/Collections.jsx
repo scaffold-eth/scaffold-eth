@@ -1,41 +1,23 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import { SyncOutlined } from "@ant-design/icons";
-import { formatEther, parseEther } from "@ethersproject/units";
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Avatar } from "antd";
+import { formatEther } from "@ethersproject/units";
+import { Button, Card } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
-import { Address, Balance } from "../components";
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { useContractReader, useEventListener } from "../hooks";
+import { useContractReader } from "../hooks";
 import StackGrid from "react-stack-grid";
 import Blockies from "react-blockies";
 import {
   BrowserRouter as Router,
-  Route,
   Link,
-  useParams
 } from "react-router-dom";
 const { Meta } = Card;
 
 export default function Collections({
-  purpose,
-  setPurposeEvents,
   address,
-  mainnetProvider,
-  userProvider,
-  localProvider,
-  yourLocalBalance,
-  price,
-  tx,
-  readContracts,
-  writeContracts,
-  targetNetwork,
+  readContracts
 }) {
 
-  const blockExplorer = targetNetwork.blockExplorer;
-
   let poolsCount = useContractReader(readContracts, "Collections", "poolsCount", null, 1000);
-  console.log(poolsCount);
   const numberPoolsCount = poolsCount && poolsCount.toNumber && poolsCount.toNumber();
   const [collections, setCollections] = useState();
 
