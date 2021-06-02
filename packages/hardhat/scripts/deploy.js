@@ -38,15 +38,15 @@ const main = async () => {
   await collections.createPool(2,Math.floor(Date.now() / 1000),ethers.utils.parseEther("10000"),11574074074000,0,deployer.address, "Picasso collection");
 
   // Create a few cards as part of the collections
-  await collections.createCard(0,10, ethers.utils.parseEther("1"),0, Math.floor(Date.now() / 1000));
-  await collections.createCard(0,15, ethers.utils.parseEther("2"),0, Math.floor(Date.now() / 1000));
-  await collections.createCard(1,5, ethers.utils.parseEther("10"),0, Math.floor(Date.now() / 1000));
-  await collections.createCard(1,1, ethers.utils.parseEther("1"),0, Math.floor(Date.now() / 1000));
-  await collections.createCard(1,1, ethers.utils.parseEther("100"),0, Math.floor(Date.now() / 1000));
-  await collections.createCard(2,2, ethers.utils.parseEther("2"),0, Math.floor(Date.now() / 1000));
+  await collections.createCard(0,10, ethers.utils.parseEther("1"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
+  await collections.createCard(0,15, ethers.utils.parseEther("2"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
+  await collections.createCard(1,5, ethers.utils.parseEther("10"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
+  await collections.createCard(1,1, ethers.utils.parseEther("1"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
+  await collections.createCard(1,1, ethers.utils.parseEther("100"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
+  await collections.createCard(2,2, ethers.utils.parseEther("2"),0, Math.floor(Date.now() / 1000),{gasLimit:2000000});
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
-  const yourContract = await deploy("YourContract")
+  //const yourContract = await deploy("YourContract")
 
   // const exampleToken = await deploy("ExampleToken")
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
