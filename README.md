@@ -66,6 +66,11 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+<img width="1439" alt="Screen Shot 2021-06-02 at 2 43 02 PM" src="https://user-images.githubusercontent.com/526558/120527822-2c9c4a80-c3b1-11eb-83d7-2e930310c33e.png">
+
+<img width="1434" alt="Screen Shot 2021-06-02 at 2 46 17 PM" src="https://user-images.githubusercontent.com/526558/120527967-5190bd80-c3b1-11eb-9362-99b960785654.png">
+
+
 ---
 
 ## 🏃‍♀️ Creating Collections and NFTs
@@ -75,6 +80,11 @@ Once you've followed the steps above, you shoul be able to access the app which 
 The creation of the 3 collections and the NFTs was done as part of the deploy script that you ran just now. If you open the file you should see the following code:
 
 ```
+  // First, we upload the metadata to IPFS and get the CID
+  const file = await ipfs.add(globSource("./erc1155metadata", { recursive: true }))
+  console.log(file.cid.toString());
+  const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
+  
   // Deploys the ERC20 token used to stake in exchange of points in a collection
   const EMEMToken = await deploy("EMEMToken",[ethers.utils.parseEther("1000000")]);
   // Deploys the erc1155 contract for the cardds
@@ -85,8 +95,9 @@ The creation of the 3 collections and the NFTs was done as part of the deploy sc
   // Set the collectible minter to be the collections contract so it can create and mint the cards
   await collectible.transferMinter(collections.address);
 ```
+First, we upload the NTFs metadata to IPFS (You on't need to understand this yet, we'll touch on this a bit later in this tutorial).
 
-First, we deploy the 3 contracts we have in the /packages/hardhat/contracts folder.
+Next, we deploy the 3 contracts we have in the /packages/hardhat/contracts folder.
 - EMEMToken.sol is a boilerplate erc20 token we'll use to stake in a collection
 - Collections.sol manages the collections/pools available and the NFTs within each
 - Collectible.sol is a simple ERC1155 NFT implementation
@@ -115,6 +126,25 @@ The code above creates 3 collections each with it's own release date, maximum am
 Then we create a few tokens on each collection with their own max supply, cost in points, eth fee and available date. 
 
 If you wanted to add more collections and/or more NFTs to existing collections, those are the two methods you need to run.
+
+## 📑 A (very short) primer on ERC1155
+
+Before we explore the app and how to stake tokens in order to acquire our precious NFTs, let's see what we are actually getting into.
+
+ERC1155 defines a common interface for Non-Fungible Tokens (NFT) which can be used to represent ownership of digital goods like art pieces, land, in-game items, etc.
+
+We won't go into much detail here as there are already tens of articles explaining how it works, but in order to understand what's happening here there's a few things that are important to know.
+
+The main difference between ERC1155 and ERC721 (the most popular NFT standard) tokens is that ERC1155 allows you have multiple identical copies of a given NFT id. For example, you can mint 10 exact copies of an art piece and an account can hold a balance of 5 of them and trade them in a batch. Whereas with ERC721 this wouldn't be possible and you would have to mint 10 tokens each with it's own id and transfer them individually.
+
+If you take a close look at the script we ran before where we mint 6 NFTs across 3 collections, you'll notice that at no point we are actually specifying anything in particular about the NFTs (I.E: what image they contain, what properties make each one of them special, if any, etc). That's because ERC1155 (similar to ERC721) specify that all those properties, called Metadata, are to be stored off-chain. If you go back to the first few lines we run on deploy (which I said we would touch on later), this is what we have:
+
+```
+  // First, we upload the metadata to IPFS and get the CID
+  const file = await ipfs.add(globSource("./erc1155metadata", { recursive: true }))
+  console.log(file.cid.toString());
+  const tokenUri = "https://ipfs.io/ipfs/"+file.cid.toString()+"/{id}.json"
+```
 
 
 ## 💬 Support Chat
