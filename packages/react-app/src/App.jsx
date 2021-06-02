@@ -23,7 +23,7 @@ import {
   useUserProvider,
 } from "./hooks";
 // import Hints from "./Hints";
-import { Collections, CollectionDetail, ExampleUI, Hints, Subgraph } from "./views";
+import { Collections, CollectionDetail, MyCollectibles} from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -295,7 +295,7 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/thecollections">
+        <Menu.Item key="/thecollections">
             <Link
               onClick={() => {
                 setRoute("/thecollections");
@@ -305,6 +305,16 @@ function App(props) {
               The Collections
             </Link>
           </Menu.Item>
+          <Menu.Item key="/mycollectibles">
+            <Link
+              onClick={() => {
+                setRoute("/mycollectibles");
+              }}
+              to="/mycollectibles"
+            >
+              My Collectibles
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/">
           <Link
               onClick={() => {
@@ -312,7 +322,7 @@ function App(props) {
               }}
               to="/"
             >
-              Collections
+              Collections (DEBUG)
             </Link>
           </Menu.Item>
           <Menu.Item key="/collectible">
@@ -322,7 +332,7 @@ function App(props) {
               }}
               to="/collectible"
             >
-              Collectible
+              Collectible (DEBUG)
             </Link>
           </Menu.Item>
           <Menu.Item key="/erc20token">
@@ -332,27 +342,7 @@ function App(props) {
               }}
               to="/erc20token"
             >
-              EMEM Token
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              EMEM Token (DEBUG)
             </Link>
           </Menu.Item>
         </Menu>
@@ -401,8 +391,8 @@ function App(props) {
               targetNetwork={targetNetwork}
             />
           </Route>
-          <Route path="/collection/:collectionId">
-            <CollectionDetail
+          <Route path="/mycollectibles">
+            <MyCollectibles
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -417,8 +407,8 @@ function App(props) {
               targetNetwork={targetNetwork}
             />
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
+          <Route path="/collection/:collectionId">
+            <CollectionDetail
               address={address}
               userProvider={userProvider}
               mainnetProvider={mainnetProvider}
@@ -430,14 +420,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
+              targetNetwork={targetNetwork}
             />
           </Route>
         </Switch>

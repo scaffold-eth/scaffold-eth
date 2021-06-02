@@ -1,20 +1,13 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
-
-import { SyncOutlined } from "@ant-design/icons";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Avatar, Badge } from "antd";
+import { Button, Card, Input, Badge } from "antd";
 import { Row, Col } from 'antd';
-import React, { useCallback, useEffect, useState } from "react";
-import { Address, Balance } from "../components";
-import { EditOutlined, EllipsisOutlined, SettingOutlined } from '@ant-design/icons';
-import { useContractReader, useEventListener } from "../hooks";
+import React, { useEffect, useState } from "react";
+import { useContractReader } from "../hooks";
 import StackGrid from "react-stack-grid";
-import Blockies from "react-blockies";
 import { BigNumber } from "@ethersproject/bignumber";
 import {
   BrowserRouter as Router,
-  Route,
-  Link,
   useParams
 } from "react-router-dom";
 
@@ -25,30 +18,21 @@ const { Meta } = Card;
 
 const getFromIPFS = async hashToGet => {
   for await (const file of ipfs.get(hashToGet)) {
-    //console.log(file.path);
     if (!file.content) continue;
     const content = new BufferList();
     for await (const chunk of file.content) {
       content.append(chunk);
     }
-    //console.log("CONT",content);
     return content;
   }
 };
 
 export default function Collections({
-  purpose,
-  setPurposeEvents,
   address,
-  mainnetProvider,
-  userProvider,
-  localProvider,
   yourLocalBalance,
-  price,
   tx,
   readContracts,
   writeContracts,
-  targetNetwork,
 }) {
 
   let { collectionId } = useParams();
@@ -58,16 +42,18 @@ export default function Collections({
   let cardsInPool= useContractReader(readContracts, "Collections", "getCardsArray", [collectionId],10000);
   let myAllowance= useContractReader(readContracts, "EMEMToken", "allowance", [address, collectionsAddress],10000);
   let poolData= useContractReader(readContracts, "Collections", "pools", [collectionId],10000);
-  //let storedPoints= useContractReader(readContracts, "Collections", "getPoints", [address, collectionId], 1000);
-
-  const blockExplorer = targetNetwork.blockExplorer;
-
   let numberMyAllowance = myAllowance!=null ? myAllowance : 0;
-  //let numberStoredPoints = storedPoints!=null ? storedPoints : 0;
 
   const numberCardsInPool = cardsInPool!=null ? cardsInPool.length : 0;
   const [cards, setCards] = useState();
-  const [allowance, setAllowance] = useState("loading..."); 
+  const [collectionName, setCollectionName] = useState(" ");
+  const [myStake, setMyStake] = useState(" ");
+  const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
+  const [lastUpdate, setLastUpdate] = useState(-1);
+  const [runCounter, setRunCounter] = useState(false);
+  const [counter, setCounter] = useState(0);
+  const [calculatedAccruedPoints, setCalculatedAccruedPoints] = useState(BigNumber.from("0"));
+  const [showPoints, setShowPoints] = useState(true);
 
   useEffect(() => {
     const updateCards = async () => {
@@ -79,7 +65,6 @@ export default function Collections({
           let tokenSupply = await readContracts.Collectible.tokenSupply(cardId);
           let tokenMaxSupply = await readContracts.Collectible.tokenMaxSupply(cardId);
           let available = tokenMaxSupply.sub(tokenSupply);
-          console.log("AV", available);
 
           let uri = await readContracts.Collectible.uri(0); //All tokens have the same base uri
           uri = uri.replace(/{(.*?)}/, cardId);
@@ -102,15 +87,6 @@ export default function Collections({
     updateCards();
   }, [cardsInPool]);
 
-  const [collectionName, setCollectionName] = useState(" ");
-  const [myStake, setMyStake] = useState("loading...");
-  const [myPoints, setMyPoints] = useState(BigNumber.from("0"));
-  const [lastUpdate, setLastUpdate] = useState(-1);
-  const [runCounter, setRunCounter] = useState(false);
-  const [counter, setCounter] = useState(0);
-  const [calculatedAccruedPoints, setCalculatedAccruedPoints] = useState(BigNumber.from("0"));
-  const [showPoints, setShowPoints] = useState(true);
-
   useEffect(() => {
     const fetchPoolData = async () => {
       setCollectionName(poolData ? poolData.title : "");
@@ -122,7 +98,6 @@ export default function Collections({
     const fetchStake = async () => {
       setCollectionName(poolData ? poolData.title : "");
       setMyStake(readContracts ? formatEther(await readContracts.Collections.balanceOf(address,collectionId)) : 0);
-      //console.log("My Stake:", myStake);
     };
     fetchStake();
   },[myStake,readContracts, yourLocalBalance]);
@@ -130,10 +105,8 @@ export default function Collections({
   useEffect(() => {
     const fetchPoints = async () => {
       try{
-        //console.log("RELOADED POINTS ",numberStoredPoints);
         setShowPoints(true);
         setMyPoints(await readContracts.Collections.getPoints(address,collectionId));
-        //setCalculatedAccruedPoints(BigNumber.from("0"));
         setLastUpdate(await readContracts.Collections.getLastUpdate(address, collectionId));
         setRunCounter(true);
       }catch (e) {
@@ -149,12 +122,8 @@ export default function Collections({
       setCounter(counter +1);
       if(poolData && runCounter){
         try{
-          //console.log("Last:", Math.floor(Date.now() / 1000) - lastUpdate);
-          //console.log("Stake:", myStake);
-          //console.log("Rate:", poolData.rewardRate);
-          let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate + 18)))
+          let reward = Math.floor((myStake * poolData.rewardRate * ((Math.floor(Date.now() / 1000)) - lastUpdate)))
           if(reward < 0) reward = 0;
-          //console.log("REWARD: ",reward);
           const calculatedEarned = BigNumber.from(reward.toString()).add(myPoints);
           setCalculatedAccruedPoints(calculatedEarned);
         }catch (e) {
@@ -267,7 +236,6 @@ export default function Collections({
   // -------------------- Redeem button ------------------------
 
   function RedeemButton(props){
-    console.log("?Q?Q",myPoints,props.cost, myPoints.gte(props.cost));
     if(calculatedAccruedPoints.gte(props.cost)){
       return(
         <Button type="primary" disabled={props.available == 0 ? true : false}
@@ -300,32 +268,7 @@ export default function Collections({
           {(showPoints || true) && <h2>Points: {formatEther(calculatedAccruedPoints)} points</h2>}
         </Col>
       </Row>
-      
-      {/* <Row>
-        <Col span={12}>
-          <h2>DEBUG Points Stored </h2>
-        </Col>
-        <Col span={12}>
-          <h2>{formatEther(myPoints)}</h2>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <h2>DEBUG Last Update</h2>
-        </Col>
-        <Col span={12}>
-          <h2>{lastUpdate.toString()}</h2>
-        </Col>
-      </Row>
-      <Row>
-        <Col span={12}>
-          <h2>DEBUG Calculated</h2>
-        </Col>
-        <Col span={12}>
-          <h2>{formatEther(calculatedAccruedPoints)}</h2>
-        </Col>
-      </Row> */}
-
+  
       <div style={{ margin: 8 }}>
           <Input
             onChange={e => {
