@@ -42,7 +42,6 @@ contract Collections is Ownable, Pausable {
 	}
 
 	address public controller;
-	address public rescuer;
 	mapping(address => uint256) public pendingWithdrawals;
 	mapping(uint256 => Pool) public pools;
   uint256 public poolsCount;
@@ -82,33 +81,6 @@ contract Collections is Ownable, Pausable {
 		controller = _controller;
 		collectible = _collectibleAddress;  
     token = IERC20(_tokenAddress);
-	}
-
-	function cardMintFee(uint256 pool, uint256 card) public view returns (uint256) {
-		return pools[pool].cards[card].mintFee;
-	}
-
-	function cardReleaseTime(uint256 pool, uint256 card) public view returns (uint256) {
-		return pools[pool].cards[card].releaseTime;
-	}
-
-	function cardPoints(uint256 pool, uint256 card) public view returns (uint256) {
-		return pools[pool].cards[card].points;
-	}
-
-	function earned(address account, uint256 pool) public view returns (uint256) {
-		Pool storage p = pools[pool];
-		uint256 blockTime = block.timestamp;
-    console.log("Balance: ", balanceOf(account, pool));
-    console.log("Blocktime: ", blockTime);
-    console.log("Last Updated: ", p.lastUpdateTime[account]);
-    console.log("Reward rate: ", p.rewardRate);
-    console.log("Points:", p.points[account]);
-    uint256 earned = balanceOf(account, pool).mul(blockTime.sub(p.lastUpdateTime[account]).mul(p.rewardRate)).div(1e18).add(
-				p.points[account]
-			);
-    console.log("Earned: ", earned);
-		return earned;
 	}
 
 	function stake(uint256 pool, uint256 amount)
@@ -205,40 +177,6 @@ contract Collections is Ownable, Pausable {
 		emit Redeemed(msg.sender, pool, c.points);
 	}
 
-  /**
-	 * @dev Allows rescuer to forcefully remove an account from the pool (sets points to 0 and transfers erc20 token back)
-	 * @param account the selected account
-	 * @param pool which pool to remove the accoutn from
-	 * @return earnedPoints points redeemed
-	 */
-
-	function rescuePoints(address account, uint256 pool)
-		public
-		poolExists(pool)
-		updateReward(account, pool)
-		returns (uint256)
-	{
-		require(msg.sender == rescuer, "!rescuer");
-		Pool storage p = pools[pool];
-
-		uint256 earnedPoints = p.points[account];
-		p.spentPoints = p.spentPoints.add(earnedPoints);
-		p.points[account] = 0;
-
-		// transfer remaining EMEM to the account
-		if (balanceOf(account, pool) > 0) {
-			uint256 amount = _balances[pool][account];
-      _totalSupply = _totalSupply.sub(amount);
-      _poolBalances[pool] = _poolBalances[pool].sub(amount);
-      _accountBalances[msg.sender] = _accountBalances[msg.sender].sub(amount);
-      _balances[pool][account] = _balances[pool][account].sub(amount);
-      token.transfer(account, amount);
-		}
-
-		emit Redeemed(account, pool, earnedPoints);
-		return earnedPoints;
-	}
-
 	function setArtist(uint256 pool, address artist) public onlyOwner {
 		uint256 amount = pendingWithdrawals[artist];
 		pendingWithdrawals[artist] = 0;
@@ -253,10 +191,6 @@ contract Collections is Ownable, Pausable {
 		pendingWithdrawals[controller] = 0;
 		pendingWithdrawals[_controller] = pendingWithdrawals[_controller].add(amount);
 		controller = _controller;
-	}
-
-	function setRescuer(address _rescuer) public onlyOwner {
-		rescuer = _rescuer;
 	}
 
 	function setControllerShare(uint256 pool, uint256 _controllerShare) public onlyOwner poolExists(pool) {
@@ -306,6 +240,33 @@ contract Collections is Ownable, Pausable {
 
     poolsCount++;
 		emit PoolAdded(id, artist, periodStart, rewardRate, maxStake);
+	}
+
+  	function cardMintFee(uint256 pool, uint256 card) public view returns (uint256) {
+		return pools[pool].cards[card].mintFee;
+	}
+
+	function cardReleaseTime(uint256 pool, uint256 card) public view returns (uint256) {
+		return pools[pool].cards[card].releaseTime;
+	}
+
+	function cardPoints(uint256 pool, uint256 card) public view returns (uint256) {
+		return pools[pool].cards[card].points;
+	}
+
+	function earned(address account, uint256 pool) public view returns (uint256) {
+		Pool storage p = pools[pool];
+		uint256 blockTime = block.timestamp;
+    console.log("Balance: ", balanceOf(account, pool));
+    console.log("Blocktime: ", blockTime);
+    console.log("Last Updated: ", p.lastUpdateTime[account]);
+    console.log("Reward rate: ", p.rewardRate);
+    console.log("Points:", p.points[account]);
+    uint256 earned = balanceOf(account, pool).mul(blockTime.sub(p.lastUpdateTime[account]).mul(p.rewardRate)).div(1e18).add(
+				p.points[account]
+			);
+    console.log("Earned: ", earned);
+		return earned;
 	}
 
   function totalSupply() public view returns (uint256) {

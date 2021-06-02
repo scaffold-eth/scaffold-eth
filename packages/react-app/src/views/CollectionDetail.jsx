@@ -249,7 +249,7 @@ export default function Collections({
     return(
       <Button danger
         onClick={() => {
-          tx(writeContracts.Collections.withdraw(collectionId, parseEther(myStake)));
+          tx(writeContracts.Collections.exit(collectionId));
         }}
       >
         Unstake all
