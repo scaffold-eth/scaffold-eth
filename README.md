@@ -158,7 +158,7 @@ So, in summary, https://ipfs.io/ipfs/cidgeneratedonipfs/1.json will contain all 
 {"description": "It's actually a bison?","external_url": "https://austingriffith.com/portfolio/paintings/","image": "https://austingriffith.com/images/paintings/buffalo.jpg","name": "Buffalo"}
 ```
 
-# 💰 Staking ERC20 on a Collection
+## 💰 Staking ERC20 on a Collection
 
 Up until now all we did was to create the skeleton for our NFTs. We have the collections, each collection knows what NFTs they can hold, but there's actually no NFT supply yet. That's because the tokens are actually minted the moment a user exchanges the points they have in a collection for one of the collectibles. That's when the corresponding NFT is actually minted (up to it's designated max supply).
 
@@ -168,12 +168,25 @@ In order to try this out, select one of the 3 collections on the app in order to
 
 When you enter a collection you can see how many EMEM ERC20 tokens you have stakes in that collection and how many points you have generated (according to how many tokens you have staked, for how long and what's the pool's reward rate). 
 
-Go ahead and stake a good number of tokens so you can generate enough points quicky (staking 1000 -1000e18- will do the trick in a few seconds). Once you do that you can see your points reward go up (there's some front-end calculations involved since the contract doesn't keep track of accrued rewards in real-time). 
+Go ahead and stake a good number of tokens so you can generate enough points quicky (staking 1000 -1000e18- will do the trick in a few seconds). Remember you first need to approve the Collections contract to spend your EMEM tokens.
+
+Once you do that you can see your points reward go up (there's some front-end calculations involved since the contract doesn't keep track of accrued rewards in real-time). 
+
+<img width="1421" alt="Screen Shot 2021-06-02 at 3 21 33 PM" src="https://user-images.githubusercontent.com/526558/120532853-82bfbc80-c3b6-11eb-96ad-baf8724fd939.png">
+
+## 🗃️ Redeeming an NFT
+
+Now that you have staked your tokens, if you want so you can Unstake them by clicking the corresponding button, which will execute `Collections.exit(pool)` on the corresponding pool.
 
 Once you have enough points to redeem any of the tokens in that collection you should see a "Redeem" button on the item card.
 
 Redeeming an NFT will execute `Collections.redeem(pool,id)` which in turn mints the selected token id of Collectible to the sender.
 
+<img width="1432" alt="Screen Shot 2021-06-02 at 3 21 57 PM" src="https://user-images.githubusercontent.com/526558/120532917-9408c900-c3b6-11eb-8a80-7d6dac0cdc52.png">
+
+## 🎨 Seeing your NFTs
+
+Now that you have acquired some unique, priceless NFTs, you can see them by navigating to `/mycollectibles` which actually shows all the available NFTs in all the collections and how many of each of them you own (vs how many have been minted so far).
 
 ## 💬 Support Chat
 
