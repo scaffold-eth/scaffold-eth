@@ -68,9 +68,6 @@ yarn deploy
 
 <img width="1439" alt="Screen Shot 2021-06-02 at 2 43 02 PM" src="https://user-images.githubusercontent.com/526558/120527822-2c9c4a80-c3b1-11eb-83d7-2e930310c33e.png">
 
-<img width="1434" alt="Screen Shot 2021-06-02 at 2 46 17 PM" src="https://user-images.githubusercontent.com/526558/120527967-5190bd80-c3b1-11eb-9362-99b960785654.png">
-
-
 ---
 
 ## 🏃‍♀️ Creating Collections and NFTs
@@ -135,10 +132,12 @@ ERC1155 defines a common interface for Non-Fungible Tokens (NFT) which can be us
 
 We won't go into much detail here as there are already tens of articles explaining how it works, but in order to understand what's happening here there's a few things that are important to know.
 
-* ERC721 vs ERC1155
+### ERC721 vs ERC1155 
+
 The main difference between ERC1155 and ERC721 (the most popular NFT standard) tokens is that ERC1155 allows you have multiple identical copies of a given NFT id. For example, you can mint 10 exact copies of an art piece and an account can hold a balance of 5 of them and trade them in a batch. Whereas with ERC721 this wouldn't be possible and you would have to mint 10 tokens each with it's own id and transfer them individually.
 
-* ERC1155 Metadata
+### ERC1155 Metadata 
+
 If you take a close look at the script we ran before where we mint 6 NFTs across 3 collections, you'll notice that at no point we are actually specifying anything in particular about the NFTs (I.E: what image they contain, what properties make each one of them special, if any, etc). That's because ERC1155 (similar to ERC721) specify that all those properties, called Metadata, are to be stored off-chain. If you go back to the first few lines we run on deploy (which I said we would touch on later), this is what we have:
 
 ```
@@ -159,6 +158,21 @@ So, in summary, https://ipfs.io/ipfs/cidgeneratedonipfs/1.json will contain all 
 {"description": "It's actually a bison?","external_url": "https://austingriffith.com/portfolio/paintings/","image": "https://austingriffith.com/images/paintings/buffalo.jpg","name": "Buffalo"}
 ```
 
+# 💰 Staking ERC20 on a Collection
+
+Up until now all we did was to create the skeleton for our NFTs. We have the collections, each collection knows what NFTs they can hold, but there's actually no NFT supply yet. That's because the tokens are actually minted the moment a user exchanges the points they have in a collection for one of the collectibles. That's when the corresponding NFT is actually minted (up to it's designated max supply).
+
+In order to try this out, select one of the 3 collections on the app in order to see the NFTs you can possibly mint from it:
+
+<img width="1434" alt="Screen Shot 2021-06-02 at 2 46 17 PM" src="https://user-images.githubusercontent.com/526558/120527967-5190bd80-c3b1-11eb-9362-99b960785654.png">
+
+When you enter a collection you can see how many EMEM ERC20 tokens you have stakes in that collection and how many points you have generated (according to how many tokens you have staked, for how long and what's the pool's reward rate). 
+
+Go ahead and stake a good number of tokens so you can generate enough points quicky (staking 1000 -1000e18- will do the trick in a few seconds). Once you do that you can see your points reward go up (there's some front-end calculations involved since the contract doesn't keep track of accrued rewards in real-time). 
+
+Once you have enough points to redeem any of the tokens in that collection you should see a "Redeem" button on the item card.
+
+Redeeming an NFT will execute `Collections.redeem(pool,id)` which in turn mints the selected token id of Collectible to the sender.
 
 
 ## 💬 Support Chat
