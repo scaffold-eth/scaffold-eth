@@ -299,10 +299,10 @@ function App(props) {
               }}
               to="/"
             >
-              Freelancer 🦍
+              Freelancer Contract 🦍
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          {/* <Menu.Item key="/hints">
             <Link
               onClick={() => {
                 setRoute("/hints");
@@ -311,8 +311,8 @@ function App(props) {
             >
               Hints
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
+          </Menu.Item> */}
+          {/* <Menu.Item key="/exampleui">
             <Link
               onClick={() => {
                 setRoute("/exampleui");
@@ -321,8 +321,8 @@ function App(props) {
             >
               ExampleUI
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
+          </Menu.Item> */}
+          {/* <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
                 setRoute("/mainnetdai");
@@ -331,8 +331,8 @@ function App(props) {
             >
               Mainnet DAI
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
+          </Menu.Item> */}
+          {/* <Menu.Item key="/subgraph">
             <Link
               onClick={() => {
                 setRoute("/subgraph");
@@ -341,7 +341,7 @@ function App(props) {
             >
               Subgraph
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/freelancer">
             <Link
               onClick={() => {

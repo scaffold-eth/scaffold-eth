@@ -9,7 +9,7 @@
  
 pragma solidity ^0.8.4;
 
-contract freelancer {
+contract Freelancer {
     
     enum ScheduleState { planned, funded, started, approved, released }
     enum ProjectState { initiated, accepted, closed }

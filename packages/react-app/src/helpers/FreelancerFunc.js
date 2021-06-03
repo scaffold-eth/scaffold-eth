@@ -4,7 +4,7 @@ import 'bootstrap';
 import { Modal, Popover } from 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-export const FreelancerFunc = {
+export const App = {
 
   //web3 declarations
   web3: null,
@@ -64,7 +64,7 @@ export const FreelancerFunc = {
     }
   },
 
-  //16th May 2021 to figure this
+  //
   utilToggerAllButtonOnOff: function(state){
     if (state == 0){
       let buttons = document.getElementsByTagName("button");
