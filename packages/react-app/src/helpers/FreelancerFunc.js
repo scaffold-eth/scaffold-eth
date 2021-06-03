@@ -4,7 +4,7 @@ import 'bootstrap';
 import { Modal, Popover } from 'bootstrap';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
-const App = {
+export const FreelancerFunc = {
 
   //web3 declarations
   web3: null,

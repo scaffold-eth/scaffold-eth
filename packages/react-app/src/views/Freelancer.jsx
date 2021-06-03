@@ -5,6 +5,9 @@ import { Select } from "antd";
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
 import { useTokenList } from "../hooks";
+import 'bootstrap';
+import { Modal, Popover } from 'bootstrap';
+import 'bootstrap/dist/css/bootstrap.min.css';
 
 
 const Freelancer = ({}) => {
