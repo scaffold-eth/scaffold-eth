@@ -667,6 +667,8 @@ function App(props) {
 
                       const totalSeconds = streamNetPercentSeconds && stream.frequency && streamNetPercentSeconds.mul(stream.frequency)
 
+                      const percent = stream.cap && stream.balance && (stream.balance.mul(100).div(stream.cap)).toNumber()
+
 
                       const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
 
@@ -687,7 +689,9 @@ function App(props) {
                           key={item.name}
                           style={{padding:32}}
                           extra={
-                            <></>
+                            <div style={{marginRight:-128,marginTop:64}}>
+
+                            </div>
                           }
                         >
                           <div style={{textAlign:"left",position:"relative"}}>
@@ -726,6 +730,11 @@ function App(props) {
                                 </div>
                                 <div>
                                   {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
+                                </div>
+                                <div style={{position:'absolute',left:-45,top:24}}>
+                                <Progress style={{marginTop:4}} strokeLinecap="square" type="dashboard" percent={percent} width={50}  format={()=>{
+                                    return <Balance value={stream.balance} size={9}/>
+                                }} />
                                 </div>
                               </div>
                             </div>:""}

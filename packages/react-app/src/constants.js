@@ -611,6 +611,15 @@ export const BUILDERS = [
     streamUrl: "http://mrdee.buidlguidl.com",
   },
   {
+    name: "pileofscraps.eth",
+    role: " Solidity + React ",
+    address: "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=pileofscraps",
+    builds: [  ],
+    streamAddress: "0x0A9eDE9A66683F23d369FC6bAAA9D1fa7198Ebf2",//dup"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f"//"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
+    streamUrl: "http://pileofscraps.buidlguidl.com/",
+  },
+  {
     name: "hunterchang.eth",
     role: "React",
     address: "0xf7e89E45502890381F9242403eA8661fad89Ca79",
