@@ -23,7 +23,7 @@ import {
   useUserProvider,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, Freelancer, Client } from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -342,9 +342,35 @@ function App(props) {
               Subgraph
             </Link>
           </Menu.Item>
+          <Menu.Item key="/freelancer">
+            <Link
+              onClick={() => {
+                setRoute("/freelancer");
+              }}
+              to="/freelancer"
+            >
+              Freelancer
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/client">
+            <Link
+              onClick={() => {
+                setRoute("/client");
+              }}
+              to="/client"
+            >
+              Client
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
+          <Route path="/freelancer">
+            <Freelancer />
+          </Route>
+          <Route path="/client">
+            <Client />
+          </Route>
           <Route exact path="/">
             {/*
                 🎛 this scaffolding is full of commonly used components
