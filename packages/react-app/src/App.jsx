@@ -299,7 +299,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Freelancer 🦍
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -353,7 +353,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="Freelancer"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}

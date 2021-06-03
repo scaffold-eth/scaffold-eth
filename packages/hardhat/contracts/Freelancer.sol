@@ -11,10 +11,10 @@ pragma solidity ^0.8.4;
 
 contract freelancer {
     
-    enum ScheduleState {planned, funded, started, approved, released}
-    enum ProjectState {initiated, accepted, closed}
+    enum ScheduleState { planned, funded, started, approved, released }
+    enum ProjectState { initiated, accepted, closed }
     
-    struct schedule{
+    struct schedule {
         string shortCode;
         string description;
         uint256 value;
@@ -43,7 +43,7 @@ contract freelancer {
 		_;
 	}
 	
-	modifier bothClientFreelancer(){
+	modifier bothClientFreelancer() {
 		require(msg.sender == clientAddress || msg.sender == freelancerAddress);
 		_;	    
 	}
@@ -53,13 +53,13 @@ contract freelancer {
 		_;
 	}
 
-    modifier inScheduleState(int256 _scheduleID, ScheduleState _state){
-        require((_scheduleID <= totalSchedules - 1) && scheduleRegister[_scheduleID].scheduleState == _state);
+    modifier inScheduleState(int256 _scheduleId, ScheduleState _state){
+        require((_scheduleId <= totalSchedules - 1) && scheduleRegister[_scheduleId].scheduleState == _state);
         _;
     }
 
-    modifier ampleFunding(int256 _scheduleID, uint256 _funding){
-        require(scheduleRegister[_scheduleID].value == _funding);
+    modifier ampleFunding(int256 _scheduleId, uint256 _funding){
+        require(scheduleRegister[_scheduleId].value == _funding);
         _;
     }
 
@@ -70,10 +70,10 @@ contract freelancer {
 
     event scheduleAdded(string shortCode);
     event projectAccepted(address clientAddress);
-    event taskFunded(int256 scheduleID);
-    event taskStarted(int256 scheduleID);
-    event taskApproved(int256 scheduleID);
-    event fundsReleased(int256 scheduleID, uint256 valueReleased);
+    event taskFunded(int256 scheduleId);
+    event taskStarted(int256 scheduleId);
+    event taskApproved(int256 scheduleId);
+    event fundsReleased(int256 scheduleId, uint256 valueReleased);
     event projectEnded();
     
     constructor()
@@ -106,50 +106,51 @@ contract freelancer {
         emit projectAccepted(msg.sender);
     }
     
-    function fundTask(int256 _scheduleID)
+    function fundTask(int256 _scheduleId)
         public
         payable
         inProjectState(ProjectState.accepted)
-        inScheduleState(_scheduleID, ScheduleState.planned)
-        ampleFunding(_scheduleID, msg.value)
+        inScheduleState(_scheduleId, ScheduleState.planned)
+        ampleFunding(_scheduleId, msg.value)
         onlyClient
     {
-        scheduleRegister[_scheduleID].scheduleState = ScheduleState.funded;
-        emit taskFunded(_scheduleID);
+        scheduleRegister[_scheduleId].scheduleState = ScheduleState.funded;
+        emit taskFunded(_scheduleId);
     }
     
-    function startTask(int256 _scheduleID)
+    function startTask(int256 _scheduleId)
         public
         inProjectState(ProjectState.accepted)
-        inScheduleState(_scheduleID, ScheduleState.funded)
+        inScheduleState(_scheduleId, ScheduleState.funded)
         onlyFreelancer
     {
-        scheduleRegister[_scheduleID].scheduleState = ScheduleState.started;
-        emit taskStarted(_scheduleID);
+        scheduleRegister[_scheduleId].scheduleState = ScheduleState.started;
+        emit taskStarted(_scheduleId);
     }
 
-    function approveTask(int256 _scheduleID)
+    function approveTask(int256 _scheduleId)
         public
         inProjectState(ProjectState.accepted)
-        inScheduleState(_scheduleID, ScheduleState.started)
+        inScheduleState(_scheduleId, ScheduleState.started)
         onlyClient
     {
-        scheduleRegister[_scheduleID].scheduleState = ScheduleState.approved;
-        emit taskApproved(_scheduleID);
+        scheduleRegister[_scheduleId].scheduleState = ScheduleState.approved;
+        emit taskApproved(_scheduleId);
     }
     
-    function releaseFunds(int256 _scheduleID)
+    function releaseFunds(int256 _scheduleId)
         public
         payable
         inProjectState(ProjectState.accepted)
-        inScheduleState(_scheduleID, ScheduleState.approved)
+        inScheduleState(_scheduleId, ScheduleState.approved)
         onlyFreelancer
     {
-        freelancerAddress.transfer(scheduleRegister[_scheduleID].value);
-        scheduleRegister[_scheduleID].scheduleState = ScheduleState.released;
-        emit fundsReleased(_scheduleID, scheduleRegister[_scheduleID].value);
+        freelancerAddress.transfer(scheduleRegister[_scheduleId].value);
+        scheduleRegister[_scheduleId].scheduleState = ScheduleState.released;
+        emit fundsReleased(_scheduleId, scheduleRegister[_scheduleId].value);
     }
     
+    // End the project
     function endProject()
         public
         bothClientFreelancer
@@ -159,6 +160,7 @@ contract freelancer {
         emit projectEnded();
     }
     
+    // Get the Freelancer balance
     function getBalance()
         public
         view
