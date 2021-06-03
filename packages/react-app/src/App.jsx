@@ -215,7 +215,10 @@ function App(props) {
   }*/
 
   //search filter for front page
-  const [ filter, setFilter ]= useState()
+  const [ filter, setFilter ]= useState(() => {
+    const { search } = window.location;
+    return new URLSearchParams(search).get('s');
+  });
   const [ filterExplanation, setFilterExplanation ] = useState()
 
   //
