@@ -311,6 +311,13 @@ export const DAI_ABI = [
       image: "simplenft.png"
     },
     {
+      name: "🏷 ✍️ NFT Signature Based Auction",
+      desc: "Discover how you can build your own NFT auction where the bids go off-chain!",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/signature-nft-auction",
+      readMore: "",
+      image: "highestbid.png"
+    },
+    {
       name: "👻 Lender",
       desc: "A component for depositing & borrowing assets on Aave",
       branch: "https://github.com/austintgriffith/scaffold-eth/tree/lender",
