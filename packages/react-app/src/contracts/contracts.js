@@ -1,1 +1,1 @@
-module.exports = ["Freelancer","YourContract"];
+module.exports = ["Freelancer"];

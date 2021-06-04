@@ -11,6 +11,7 @@ import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   useBalance,
   useContractLoader,
@@ -366,7 +367,14 @@ function App(props) {
 
         <Switch>
           <Route path="/freelancer">
-            <Freelancer />
+            <Freelancer
+            address={address}
+            readContracts={readContracts}
+            localProvider={localProvider}
+            userProvider={userProvider}
+            tx={tx}
+
+            />
           </Route>
           <Route path="/client">
             <Client />
