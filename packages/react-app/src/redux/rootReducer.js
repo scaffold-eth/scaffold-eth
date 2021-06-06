@@ -9,11 +9,6 @@ import { reducer as wallet } from '../views/App/views/Wallet/controller'
 import { reducer as toolbelt } from '../views/App/views/Toolbelt/controller'
 import { reducer as dish } from '../views/App/views/Dish/controller'
 
-import { reducer as introLevel } from '../views/App/views/levels/intro/controller'
-import { reducer as underflowLevel } from '../views/App/views/levels/underflow/controller'
-// TODO:
-// import { reducer as cityLevel } from '../views/App/views/levels/city/controller'
-
 import levels from '../views/App/views/levels'
 
 const levelsReducer = {}
@@ -33,10 +28,7 @@ const rootReducer = combineReducers({
   toolbelt,
   dish,
 
-  // IMPORT NEW LEVEL HERE
-  // __templateLevel__
-  introLevel,
-  underflowLevel
+  ...levelsReducer
 })
 
 export default rootReducer
