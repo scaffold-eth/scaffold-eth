@@ -19,26 +19,26 @@ export default function Freelancer({
   function parseProjectState(enumIndex){
     switch (enumIndex) {
       case 0:
-        return "initiated";
+        return "Initiated";
       case 1:
-        return "accepted";
+        return "Accepted";
       case 2:
-        return "closed";
+        return "Closed";
     }
   }
 
   function parseScheduleState(enumIndex){
     switch (enumIndex) {
       case 0:
-        return "planned";
+        return "Planned";
       case 1:
-        return "funded";
+        return "Funded";
       case 2:
-        return "started";
+        return "Started";
       case 3:
-        return "approved";
+        return "Approved";
       case 4:
-        return "released";
+        return "Released";
     }
   }
 
@@ -49,6 +49,7 @@ export default function Freelancer({
 
   const [freelancerContract, setFreelancerContract] = useState("");
   const [freelancerAddress, setFreelancerAddress] = useState("");
+  const [clientAddress, setClientAddress] = useState("");
   const [projectState, setProjectState] = useState();
   const [schedules, setSchedules] = useState();
 
@@ -66,6 +67,7 @@ export default function Freelancer({
 
   async function loadContractData(fcontract){
     setFreelancerAddress(await fcontract.freelancerAddress());
+    setClientAddress(await fcontract.clientAddress());
     setProjectState(await fcontract.projectState());
     setFreelancerContractAddress(contractAddressInputRef.current.value);
 
@@ -170,9 +172,9 @@ export default function Freelancer({
           <div className="row">
             <div className="col-6">
               <ul className="list-group">
-                  <li className="list-group-item"><span className="fw-bold">Address: </span><span id="lbl-contract-address"></span></li>
+                  <li className="list-group-item"><span className="fw-bold">Address: {freelancerContract.address}</span><span id="lbl-contract-address"></span></li>
                   <li className="list-group-item"><span className="fw-bold">Freelancer's Wallet: {freelancerAddress}</span><span id="lbl-freelancer-address"></span></li>
-                  <li className="list-group-item"><span className="fw-bold">Client's Wallet: </span><span id="lbl-client-address"></span></li>
+                  <li className="list-group-item"><span className="fw-bold">Client's Wallet: {clientAddress}</span><span id="lbl-client-address"></span></li>
                   <li className="list-group-item"><span className="fw-bold">Project State: {parseProjectState(projectState)}</span><span className="badge" id="lbl-project-status"></span></li>
               </ul>
             </div>
@@ -198,9 +200,7 @@ export default function Freelancer({
 
         <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#scheduleModal" id="btn-Add-Schedule" onClick={handleShow}>Add Schedule</button>
         <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
-        onClick={() => {
-                  endProject();
-                }}>End Project</button>
+        onClick={() => {endProject();}}>End Project</button>
         <button className="btn btn-success btn-lg" type="button" id="btn-Refresh" onclick="App.btnRefresh('freelancer')">Refresh</button>
         <div className="spinner-border spinner-border-sm d-none" role="status" id="spn-contract-action"></div>
         </div>

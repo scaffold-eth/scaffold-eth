@@ -377,7 +377,13 @@ function App(props) {
             />
           </Route>
           <Route path="/client">
-            <Client />
+            <Client 
+            address={address}
+            readContracts={readContracts}
+            localProvider={localProvider}
+            userProvider={userProvider}
+            tx={tx}
+            />
           </Route>
           <Route exact path="/">
             {/*
