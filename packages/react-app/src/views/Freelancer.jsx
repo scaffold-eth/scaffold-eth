@@ -75,7 +75,7 @@ export default function Freelancer({
     
       for (let scheduleIndex = 0; scheduleIndex < scheduleCount; scheduleIndex++) {
         try {
-          const scheduleItem = await fcontract.ScheduleRegister(scheduleIndex);
+          const scheduleItem = await fcontract.scheduleRegister(scheduleIndex);
           scheduleUpdate.push({ id:scheduleIndex, shortCode:scheduleItem.shortCode, description:scheduleItem.description, state:scheduleItem.scheduleState, ethValue:scheduleItem.value });
         } catch (e) {
           console.log(e);
@@ -125,7 +125,7 @@ export default function Freelancer({
 
   for(let i in schedules){
     scheduleList.push(
-      <tr>
+      <tr key={schedules[i].id}>
         <td>{schedules[i].shortCode}</td>
         <td>{schedules[i].description}</td>
         <td>{"Ξ " + formatEther(schedules[i].ethValue)}</td>
