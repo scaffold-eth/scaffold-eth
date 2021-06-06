@@ -9,6 +9,22 @@
  
 pragma solidity ^0.8.4;
 
+/**
+ * How to use:
+ * 1- Client accepts contract (via acceptProject())
+ * 2- Freelancer adds 1 or more schedule items (via addSchedule())
+ * 3- Client funds a schedule item (via fundTask())
+ * 4- Freelancer starts a schedule item (via startTask())
+ * 5- Client approves a finished task (via approveTask())
+ * 6- Freelancer gets the eth for the completed schedule item (via releaseFunds())
+ * 7- Either the Freelancer or Client end the project (via endProject())
+ */
+
+/**
+ * TODO: Contract is maybe missing a way for the client to claim eth back if a task is not finished or is removed
+ * TODO: Contract is maybe missing some flexibility to add further tasks. As it stands new tasks/schedules can't be added mid project
+*/
+
 contract Freelancer {
     
     enum ScheduleState { Planned, Funded, Started, Approved, Released }
