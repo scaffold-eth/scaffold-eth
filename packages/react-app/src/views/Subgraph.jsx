@@ -95,7 +95,7 @@ function Subgraph(props) {
         <span style={{ marginRight: 8 }}>🚮</span>
         Clean up previous data:
         <span className="highlight" style={highlight}>
-          rm -rf docker/graph-node/data/
+          yarn graph-clean
         </span>
       </div>
 

@@ -86,7 +86,7 @@ export default function ExampleUI({
         <Divider />
         Your Contract Address:
         <Address
-          address={readContracts ? readContracts.YourContract.address : readContracts}
+          address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
           ensProvider={mainnetProvider}
           fontSize={16}
         />

@@ -1,7 +1,8 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import { Contract } from "@ethersproject/contracts";
 import { useEffect, useState } from "react";
+
+const { ethers } = require("ethers");
 
 /*
   ~ What it does? ~
@@ -25,21 +26,7 @@ import { useEffect, useState } from "react";
     tx( writeContracts.YourContract.setPurpose(newPurpose) )
 */
 
-const loadContract = (contractName, signer) => {
-  const newContract = new Contract(
-    require(`../contracts/${contractName}.address.js`),
-    require(`../contracts/${contractName}.abi.js`),
-    signer,
-  );
-  try {
-    newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
-  } catch (e) {
-    console.log(e);
-  }
-  return newContract;
-};
-
-export default function useContractLoader(providerOrSigner) {
+export default function useContractLoader(providerOrSigner, chainId, customAddresses = {}) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
     async function loadContracts() {
@@ -47,21 +34,63 @@ export default function useContractLoader(providerOrSigner) {
         try {
           // we need to check to see if this providerOrSigner has a signer or not
           let signer;
+          let provider;
           let accounts;
+
           if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
             accounts = await providerOrSigner.listAccounts();
           }
 
-          if (accounts && accounts.length > 0) {
+          if (ethers.Signer.isSigner(providerOrSigner)) {
+            signer = providerOrSigner;
+            provider = signer.provider;
+          } else if (accounts && accounts.length > 0) {
             signer = providerOrSigner.getSigner();
+            provider = providerOrSigner;
           } else {
             signer = providerOrSigner;
+            provider = providerOrSigner;
           }
 
-          const contractList = require("../contracts/contracts.js");
+          const network = await provider.getNetwork();
 
-          const newContracts = contractList.reduce((accumulator, contractName) => {
-            accumulator[contractName] = loadContract(contractName, signer);
+          const _chainId = chainId || network.chainId;
+
+          let contractList = {};
+          let externalContractList = {};
+          try {
+            contractList = require("../contracts/contracts.json");
+          } catch (e) {
+            console.log(e);
+          }
+          try {
+            externalContractList = require("../contracts/external_contracts.json");
+          } catch (e) {
+            console.log(e);
+          }
+
+          let combinedContracts = {};
+
+          if (contractList[_chainId]) {
+            for (const hardhatNetwork in contractList[_chainId]) {
+              if (Object.prototype.hasOwnProperty.call(contractList[_chainId], hardhatNetwork)) {
+                combinedContracts = {
+                  ...combinedContracts,
+                  ...contractList[_chainId][hardhatNetwork].contracts,
+                };
+              }
+            }
+          }
+
+          if (externalContractList[_chainId]) {
+            combinedContracts = { ...combinedContracts, ...externalContractList[_chainId].contracts };
+          }
+
+          const newContracts = Object.keys(combinedContracts).reduce((accumulator, contractName) => {
+            const _address = Object.keys(customAddresses).includes(contractName)
+              ? customAddresses[contractName]
+              : combinedContracts[contractName].address;
+            accumulator[contractName] = new ethers.Contract(_address, combinedContracts[contractName].abi, signer);
             return accumulator;
           }, {});
           setContracts(newContracts);

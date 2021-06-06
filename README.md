@@ -1,9 +1,8 @@
 # 🏗 scaffold-eth
 
-> is everything you need to get started building decentralized applications on Ethereum! 🚀 
+> is everything you need to get started building decentralized applications on Ethereum! 🚀
 
 ---
-
 
 #### [ 🏃‍♀️ Quick Start ](https://github.com/austintgriffith/scaffold-eth#%EF%B8%8F-quick-start)
 
@@ -12,22 +11,26 @@
 #### [ 📡 Deploy ](https://github.com/austintgriffith/scaffold-eth#-deploy)
 
 #### [ 📺 Frontend](https://github.com/austintgriffith/scaffold-eth#-frontend)
+
 - [ 🛰 Providers ](https://github.com/austintgriffith/scaffold-eth#-providers)
 - [ 🖇 Hooks ](https://github.com/austintgriffith/scaffold-eth#-hooks)
 - [ 📦 Components ](https://github.com/austintgriffith/scaffold-eth#-components)
 - [ 🖲 UI Library ](https://github.com/austintgriffith/scaffold-eth#-ui-library)
 - [ ⛑ Helpers ](https://github.com/austintgriffith/scaffold-eth#-helpers)
 - [ 🎚 Extras ](https://github.com/austintgriffith/scaffold-eth#-extras)
--  <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
+- <B> [ 🛳 Ship it! ](https://github.com/austintgriffith/scaffold-eth#-ship-it) </B>
 
 #### [ 🚩 Challenges ](https://github.com/austintgriffith/scaffold-eth#-challenges)
+
 - [ 🥩 Staking App](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
 - [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
 #### [ 👩‍💻 Examples & Tutorials ](https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials)
+
 - [ 🎟 Simple NFT ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
 
 #### [ Built with 🏗 scaffold-eth ](https://github.com/austintgriffith/scaffold-eth#-built-with--scaffold-eth)
+
 - [ 🎨 Nifty.ink ](https://nifty.ink) ([code](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev))
 - [ 🧑‍🎤PunkWallet.io ](https://punkwallet.io/) ([code](https://github.com/austintgriffith/scaffold-eth/tree/punk-wallet))
 
@@ -37,26 +40,25 @@
 - [ 🔬 Tenderly ](https://github.com/austintgriffith/scaffold-eth#-using-tenderly)
 - [ 🌐 Etherscan ](https://github.com/austintgriffith/scaffold-eth#-etherscan)
 - [ 🔶 Infura ](https://github.com/austintgriffith/scaffold-eth#-using-infura)
--  🟪 [ Blocknative ](https://github.com/austintgriffith/scaffold-eth#-blocknative)
+- 🟪 [ Blocknative ](https://github.com/austintgriffith/scaffold-eth#-blocknative)
 
-|-   <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> - | - <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B> -|
+|- <B> [ 📠 Legacy Content ](https://github.com/austintgriffith/scaffold-eth#-legacy-content) </B> - | - <B> [ 💬 Support Chat ](https://github.com/austintgriffith/scaffold-eth#-support-chat) </B> -|
 
 [![Gitpod ready-to-code](https://img.shields.io/badge/Gitpod-ready--to--code-blue?logo=gitpod)](https://gitpod.io/#https://github.com/austintgriffith/scaffold-eth)
-
 
 ---
 
 [![ethdenvervideo](https://user-images.githubusercontent.com/2653167/109873369-e2c58c00-7c2a-11eb-8adf-0ec4b8dcae1e.png)](https://youtu.be/33gnKe7ttCc?t=477)
 
+---
 
 ---
----
+
 ---
 
 # 🏃‍♀️ Quick Start
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
@@ -93,36 +95,25 @@ yarn deploy
 
 🧪 It is a free standing dapp so you can learn by making small changes.
 
-
-> *After installing*, your dev environment should look like this:
+> _After installing_, your dev environment should look like this:
 
 ![image](https://user-images.githubusercontent.com/2653167/109870279-24ecce80-7c27-11eb-91f3-b2c4febac118.png)
-
 
 > React dev server, HardHat blockchain, deploy terminal, code IDE, and frontend browser.
 
 ✏️ Make small changes to `YourContract.sol` and watch your app auto update!
 
-
 🔁 You can `yarn deploy` any time and get a fresh new contract in the frontend:
-
 
 ![deploy](https://user-images.githubusercontent.com/2653167/93149199-f8fa8280-f6b2-11ea-9da7-3b26413ec8ab.gif)
 
-
-💵 Each browser has an account in the top right and you can use the faucet (bottom left) to get ⛽️  testnet eth for gas:
-
+💵 Each browser has an account in the top right and you can use the faucet (bottom left) to get ⛽️ testnet eth for gas:
 
 ![faucet](https://user-images.githubusercontent.com/2653167/93150077-6c04f880-f6b5-11ea-9ee8-5c646b5b7afc.gif)
 
-
-
-
 🔨Once you have funds, you can call `setPurpose` on your contract and "write" to the `purpose` storage:
 
-
 ![setp](https://user-images.githubusercontent.com/2653167/93229761-2d625300-f734-11ea-9036-44a75429ef0c.gif)
-
 
 Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn chain` terminal:
 
@@ -135,6 +126,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
 # 🔭 Learning Solidity
@@ -160,8 +152,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 ![image](https://user-images.githubusercontent.com/2653167/93150263-dae25180-f6b5-11ea-94e1-b24ab2a63fa5.png)
 
-
-🔬  What happens when you subtract 1 from 0? Try it out in the app to see what happens!
+🔬 What happens when you subtract 1 from 0? Try it out in the app to see what happens!
 
 ![underflow](https://user-images.githubusercontent.com/2653167/93688066-46466d80-fa80-11ea-85df-81fbafa46575.gif)
 
@@ -203,7 +194,7 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 
 🗳 Maybe an make an array `YourStructName[] public proposals;` that could call be voted on with `function vote() public {}`
 
-🔭 Your dev environment is perfect for *testing assumptions* and learning by prototyping.
+🔭 Your dev environment is perfect for _testing assumptions_ and learning by prototyping.
 
 📝 Next learn about the [fallback function](https://solidity-by-example.org/0.6/fallback/)
 
@@ -216,11 +207,10 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
-
 # 📡 Deploy
-
 
 🛰 Ready to deploy to a testnet? Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
@@ -238,9 +228,10 @@ yarn deploy
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
+---
 
 ---
----
+
 # 📺 Frontend
 
 > Edit your frontend `App.jsx` in `packages/react-app/src`
@@ -249,11 +240,9 @@ yarn deploy
 
 ![image](https://user-images.githubusercontent.com/2653167/110500412-68778a80-80b6-11eb-91bd-194d47d62771.png)
 
-
 🤡 Adjust your debugging settings as needed:
 
 ![image](https://user-images.githubusercontent.com/2653167/110499550-95776d80-80b5-11eb-8024-287878b180d5.png)
-
 
 ---
 
@@ -271,16 +260,13 @@ The frontend has three different providers that provide different levels of acce
 
 ![image](https://user-images.githubusercontent.com/2653167/110499705-bc35a400-80b5-11eb-826d-44815b89296c.png)
 
-
 ---
 
 ## 🖇 Hooks:
 
 ![image](https://user-images.githubusercontent.com/2653167/110499834-dcfdf980-80b5-11eb-9d2d-de7046bf5c2b.png)
 
-
 Commonly used Ethereum hooks located in `packages/react-app/src/`:
-
 
 `usePoller(fn, delay)`: runs a function on app load and then on a custom interval
 
@@ -324,11 +310,13 @@ const price = useExchangePrice(mainnetProvider);
 
 <br/>
 
-`useContractLoader(provider)`: loads your smart contract interface
+`useContractLoader(provider)`: loads your smart contract interface, for contracts on the provider's chain. This will use contracts deployed from `packages/hardhat` (sourced from `src/contracts/contracts.json`), as well as external contract information, which can be added to `src/contracts/external_contracts.json`
 
 ```js
 const readContracts = useContractLoader(localProvider);
 const writeContracts = useContractLoader(injectedProvider);
+const writeContracts = useContractLoader(injectedProvider, chainId); // fix the chainId (even if the provider is on a different chain)
+const writeContracts = useContractLoader(injectedProvider, , {"EXAMPLE": "0xADDRESS"}); // over-ride the address
 ```
 
 <br/>
@@ -359,7 +347,6 @@ const ownerUpdates = useEventListener(
 ## 📦 Components:
 
 ![image](https://user-images.githubusercontent.com/2653167/110500019-04ed5d00-80b6-11eb-97a4-74068fa90846.png)
-
 
 Your commonly used React Ethereum components located in `packages/react-app/src/`:
 
@@ -509,30 +496,30 @@ yarn ipfs
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
 ## 🚩 Challenges
 
 1. [ 🥩 Decentralized Staking App ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
 
-2. [  🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
+2. [ 🏵 Token Vendor ](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
 
 ---
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
 ## 📡 Examples and Tutorials
 
 (todo: insert all the cool active branches)
 
-
-| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly) |
-| --- |
+| <M> [ tenderly ](https://github.com/austintgriffith/scaffold-eth/tree/tenderly)                 |
+| ----------------------------------------------------------------------------------------------- |
 | [ simple-nft-example ](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example) |
-
 
 ^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
 
@@ -541,6 +528,7 @@ yarn ipfs
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
 # 🔨 Built with 🏗 scaffold-eth:
@@ -553,14 +541,11 @@ Paintings come to life as you "ink" new creations and trade them on Ethereum. A 
 
 [💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/nifty-ink-dev)
 
-
 [<H3>🧙‍♂️ Instant Wallet</H3>](https://instantwallet.io)
 
 An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
 
-
 [💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/instantwallet-dev-session)
-
 
 [<H3>🗳 Personal Token Voting</H3>](https://medium.com/@austin_48503/personal-token-voting-73b44a598d8e)
 
@@ -570,13 +555,14 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 [💾 Source Code ](https://github.com/austintgriffith/scaffold-eth/tree/emoji-vote-dev)
 
-
 ^^^ ⛏ PLEASE <b>PR</b> your 🏗 scaffold-eth project in above!!! 🙏🙏🙏 ^^^
 
 ---
+
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
 ---
 
 # 📟 Infrastructure
@@ -590,58 +576,68 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 
 [ 🎥 here is another Graph speed run tutorial video ](https://youtu.be/T5ylzOTkn-Q)
 
-
 ---
 
 ## 🔬 Using Tenderly
+
 [Tenderly](https://tenderly.co) is a platform for monitoring, alerting and trouble-shooting smart contracts. They also have a hardhat plugin and CLI tool that can be helpful for local development!
 
 Hardhat Tenderly [announcement blog](https://blog.tenderly.co/level-up-your-smart-contract-productivity-using-hardhat-and-tenderly/) for reference.
 
-
 ### Verifying contracts on Tenderly
+
 scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the following networks:
+
 ```
 ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
 ```
+
 You can verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function, which takes your contract name and its deployed address:
+
 ```
 await tenderlyVerify(
   {contractName: "YourContract",
    contractAddress: yourContract.address
 })
 ```
+
 Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
+
 ```
 yarn deploy --network NETWORK_OF_CHOICE
 ```
+
 Once verified, they will then be available to view on Tenderly!
-
-
 
 [![TenderlyRun](https://user-images.githubusercontent.com/2653167/110502199-38c98200-80b8-11eb-8d79-a98bb1f39617.png)](https://www.youtube.com/watch?v=c04rrld1IiE&t=47s)
 
-
 #### Exporting local Transactions
+
 One of Tenderly's best features for builders is the ability to [upload local transactions](https://dashboard.tenderly.co/tx/main/0xb8f28a9cace2bdf6d10809b477c9c83e81ce1a1b2f75f35ddd19690bbc6612aa/local-transactions) so that you can use all of Tenderly's tools for analysis and debugging. You will need to create a [tenderly account](https://tenderly.co/) if you haven't already.
 
 Exporting local transactions can be done using the [Tenderly CLI](https://github.com/tenderly/tenderly-cli). Installing the Tenderly CLI:
+
 ```
 brew tap tenderly/tenderly
 brew install tenderly
 ```
+
 _See alternative installation steps [here](https://github.com/tenderly/tenderly-cli#installation)_
 
 You need to log in and configure for your local chain (including any forking information) - this can be done from any directory, but it probably makes sense to do under `/packages/hardhat` to ensure that local contracts are also uploaded with the local transaction (see more below!)
+
 ```
 cd packages/hardhat
 tenderly login
 tenderly export init
 ```
+
 You can then take transaction hashes from your local chain and run the following from the `packages/hardhat` directory:
+
 ```
 tenderly export <transactionHash>
 ```
+
 Which will upload them to tenderly.co/dashboard!
 
 Tenderly also allows users to debug smart contracts deployed to a local fork of some network (see `yarn fork`). To let Tenderly know that we are dealing with a fork, run the following command:
@@ -661,6 +657,7 @@ Note that `tenderly.yaml` file stores information about all networks that you in
 **A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We have added a call to `tenderly.persistArtifacts()` as part of the scaffold-eth deploy() script, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
 
 Another pitfall when dealing with a local network (fork or not) is that you will not see the transaction hash if it fails. This happens because the hardhat detects an error while `eth_estimateGas` is executed. To prevent such behaviour, you can skip this estimation by passing a `gasLimit` override when making a call - an example of this is demonstrated in the `FunctionForm.jsx` file of the Contract component:
+
 ```
 let overrides = {}
 // Uncomment the next line if you want to skip the gas estimation for each transaction
@@ -669,6 +666,7 @@ const returned = await tx(contractFunction(...args, overrides));
 ```
 
 **One gotcha** - Tenderly does not (currently) support yarn workspaces, so any imported solidity contracts need to be local to `packages/hardhat` for your contracts to be exported. You can achieve this by using [`nohoist`](https://classic.yarnpkg.com/blog/2018/02/15/nohoist/) - this has been done for `hardhat` so that we can export `console.sol` - see the top-level `package.json` to see how!
+
 ```
 "workspaces": {
   "packages": [
@@ -681,15 +679,18 @@ const returned = await tx(contractFunction(...args, overrides));
 }
 ```
 
-
 ---
 
 ## 🌐 Etherscan
+
 Hardhat has a truly wonderful [`hardhat-etherscan` plugin](https://www.npmjs.com/package/@nomiclabs/hardhat-etherscan) that takes care of contract verification after deployment. You need to add the following to your `hardhat.config.js` imports:
+
 ```
 require("@nomiclabs/hardhat-etherscan");
 ```
+
 Then add your etherscan API key to the module.exports:
+
 ```
 etherscan: {
   // Your API key for Etherscan
@@ -697,13 +698,16 @@ etherscan: {
   apiKey: "YOUR-API-KEY-HERE"
 }
 ```
+
 Verifying is simple, assuming you are verifying a contract that you have just deployed from your hardhat setup - you just need to run the verify script, passing constructor arguments as an array if necessary (there is an example commented out in the `deploy.js`):
+
 ```
 await run("verify:verify", {
   address: yourContract.address,
   // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
 })
 ```
+
 You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!
 
 ---
@@ -719,17 +723,16 @@ You will need to update the `constants.js` in `packages/react-app/src` with [you
 > update the `BLOCKNATIVE_DAPPID` in `packages/react-app/src/constants.js` with [your own Blocknative DappID](https://docs.blocknative.com/notify)
 
 ---
+
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
----
 
+---
 
 ## 📠 Legacy Content
 
-
-[<h5>🧫 Building on Ethereum in 2020 (research for this repo)</h5>  ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
-
+[<h5>🧫 Building on Ethereum in 2020 (research for this repo)</h5> ](https://medium.com/@austin_48503/building-on-ethereum-in-2020-dca52eda5f00)
 
 [![splash](https://user-images.githubusercontent.com/2653167/88085723-7ab2b180-cb43-11ea-832d-8db6efcbdc02.png)](https://www.youtube.com/watch?v=ShJZf5lsXiM&feature=youtu.be&t=19)
 
@@ -752,38 +755,49 @@ Learn about tokens. [coming soon] What is a token? Why is it cool? How can I dep
 
 Learn the basics of Automated Market Makers like 🦄 Uniswap. Learn how 💰Reserves affect the 📉 price, ⚖️ trading, and 💦 slippage from low liquidity.
 
-[🏃‍♀️ SpeedRun  📹](https://youtu.be/eP5w6Ger1EQ)
+[🏃‍♀️ SpeedRun 📹](https://youtu.be/eP5w6Ger1EQ)
 
 ---
 
 [<H6>Tutorial 4: 🚀 Connecting ETH to IPFS</H6>](https://medium.com/@austin_48503/tl-dr-scaffold-eth-ipfs-20fa35b11c35)
 
 Build a simple IPFS application in 🏗 <b>scaffold-eth</b> to learn more about distributed file storage and content addressing.
-  [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=342)
+[🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=342)
 
 ---
 
 <H6>Tutorial 5: ⛽️GSN and Meta Transactions</H6>
 
-Learn about to provide your users with better UX by abstracting away gas fees and blockchain mechanics.  (todo)
-
+Learn about to provide your users with better UX by abstracting away gas fees and blockchain mechanics. (todo)
 
 ---
-
 
 [<H6>Tutorial 6: 🛰 Decentralized Deployment</H6>](https://medium.com/@austin_48503/decentralized-deployment-7d975c9d5016)
 
-Learn how to deploy your smart contract to a production blockchain. Then deploy your applicaton to Surge, S3, and IPFS. Finally, register an ENS and point it at the decentralized content!  [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=1350)
+Learn how to deploy your smart contract to a production blockchain. Then deploy your applicaton to Surge, S3, and IPFS. Finally, register an ENS and point it at the decentralized content! [🎥 Live Tutorial](https://youtu.be/vqrLr5eOjLo?t=1350)
 
 ---
 
-
 ## 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
+Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
 
 ---
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
+
+## Notes
+
+Initiate arbitrum submodule...
+git submodule init
+git submodule update
+cd packages/arbitrum
+
+- Had to remove "arbos-contracts": "^1.0.0", from arb-bridge-peripherals dependencies
+  yarn install
+  git submodule init
+  git submodule update
+  yarn docker:build:geth
+  yarn docker:geth

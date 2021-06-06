@@ -1,4 +1,3 @@
-import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Menu, Row } from "antd";
@@ -9,7 +8,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -17,13 +16,14 @@ import {
   useContractReader,
   useEventListener,
   useExchangePrice,
-  useExternalContractLoader,
   useGasPrice,
   useOnBlock,
   useUserProvider,
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+
+const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -56,8 +56,8 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
+const scaffoldEthProvider = new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
+const mainnetInfura = new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -65,7 +65,7 @@ const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
+const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -133,7 +133,7 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
+  const mainnetContracts = useContractLoader(mainnetProvider);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -141,7 +141,7 @@ function App(props) {
   });
 
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader({ DAI: mainnetDAIContract }, "DAI", "balanceOf", [
+  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
@@ -169,7 +169,7 @@ function App(props) {
       yourMainnetBalance &&
       readContracts &&
       writeContracts &&
-      mainnetDAIContract
+      mainnetContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -179,7 +179,8 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
+      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
+      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -190,7 +191,7 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-    mainnetDAIContract,
+    mainnetContracts,
   ]);
 
   let networkDisplay = "";
@@ -241,7 +242,7 @@ function App(props) {
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
-    setInjectedProvider(new Web3Provider(provider));
+    setInjectedProvider(new ethers.providers.Web3Provider(provider));
   }, [setInjectedProvider]);
 
   useEffect(() => {
@@ -407,7 +408,7 @@ function App(props) {
           <Route path="/mainnetdai">
             <Contract
               name="DAI"
-              customContract={mainnetDAIContract}
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
               signer={userProvider.getSigner()}
               provider={mainnetProvider}
               address={address}

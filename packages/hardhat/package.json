@@ -11,7 +11,8 @@
     "eslint-plugin-prettier": "^3.1.4"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.0",
+    "@eth-optimism/hardhat-ovm": "^0.2.2",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-etherscan": "^2.1.1",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^3.2.0",
@@ -19,19 +20,19 @@
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
-    "ethers": "^5.0.17",
+    "ethers": "^5.3.0",
     "hardhat": "^2.0.11",
+    "hardhat-deploy": "^0.7.10",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
   },
   "scripts": {
-    "chain": "hardhat node",
+    "chain": "hardhat node --network hardhat",
     "fork": "hardhat node --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",
     "test": "hardhat test --network hardhat",
     "compile": "hardhat compile",
-    "deploy": "hardhat run scripts/deploy.js",
-    "postdeploy": "hardhat run scripts/publish.js",
+    "deploy": "hardhat deploy --export-all ../react-app/src/contracts/contracts.json",
     "watch": "node scripts/watch.js",
     "accounts": "hardhat accounts",
     "balance": "hardhat balance",

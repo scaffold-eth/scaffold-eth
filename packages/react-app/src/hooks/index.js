@@ -2,7 +2,6 @@ export { default as useBalance } from "./Balance";
 export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
 export { default as useContractLoader } from "./ContractLoader";
 export { default as useContractReader } from "./ContractReader";
-export { default as useCustomContractLoader } from "./CustomContractLoader";
 export { default as useDebounce } from "./Debounce";
 export { default as useEventListener } from "./EventListener";
 export { default as useExchangePrice } from "./ExchangePrice";
