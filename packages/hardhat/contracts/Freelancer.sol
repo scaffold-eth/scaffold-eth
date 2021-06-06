@@ -24,6 +24,7 @@ pragma solidity ^0.8.4;
  * TODO: Contract is maybe missing a way for the client to claim eth back if a task is not finished or is removed
  * TODO: Contract is maybe missing some flexibility to add further tasks. As it stands new tasks/schedules can't be added mid project
  * TODO: Possibly, the freelancer should specify the client's adddress on creation, otherwise any 3rd party can accept the contract, forcing the freelancer to have to deploy it again.
+ * TODO: Review events for missing params and indexing
 */
 
 contract Freelancer {

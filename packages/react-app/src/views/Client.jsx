@@ -16,6 +16,8 @@ export default function Client({
   tx
 }) 
 {
+  //TODO: Lots of repeated code between both views. Look into how to refactor into components
+
   function parseProjectState(enumIndex){
     switch (enumIndex) {
       case 0:
