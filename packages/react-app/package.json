@@ -1,19 +1,18 @@
 {
   "name": "@scaffold-eth/react-app",
-  "version": "0.2.0",
+  "version": "1.0.0",
   "homepage": ".",
-  "scripts": {
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
-    "start": "react-scripts start",
-    "test": "react-scripts test",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
-    "ipfs": "node ./scripts/ipfs.js",
-    "surge": "surge ./build",
-    "s3": "node ./scripts/s3.js",
-    "ship": "yarn surge",
-    "theme": "npx gulp less",
-    "watch": "node ./scripts/watch.js"
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",
@@ -39,16 +38,12 @@
     "axios": "^0.20.0",
     "bnc-notify": "^1.5.0",
     "burner-provider": "^1.0.38",
-    "deepcopy": "^2.1.0",
-    "dot-prop-immutable": "^2.1.0",
     "dotenv": "^8.2.0",
     "eth-hooks": "^1.1.2",
     "ethers": "^5.0.31",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
-    "is-mobile": "^3.0.0",
     "isomorphic-fetch": "^3.0.0",
-    "jquery": "^3.6.0",
     "node-watch": "^0.7.1",
     "postcss": "^8.2.6",
     "qrcode.react": "^1.0.0",
@@ -56,17 +51,9 @@
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^16.14.0",
-    "react-modal-resizable-draggable": "^0.1.4",
     "react-qr-reader": "^2.2.1",
-    "react-redux": "^7.2.3",
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
-    "react-syntax-highlighter": "^15.4.3",
-    "react-typist": "^2.0.5",
-    "redux": "^4.0.5",
-    "redux-logger": "^3.0.6",
-    "shortid": "^2.2.16",
-    "typewriter-effect": "^2.17.0",
     "web3modal": "^1.9.1"
   },
   "devDependencies": {
@@ -97,16 +84,17 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
+  "scripts": {
+    "build": "react-scripts build",
+    "eject": "react-scripts eject",
+    "start": "react-scripts start",
+    "test": "react-scripts test",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
+    "ipfs": "node ./scripts/ipfs.js",
+    "surge": "cp build/index.html build/200.html && surge ./build",
+    "s3": "node ./scripts/s3.js",
+    "ship": "yarn surge",
+    "theme": "npx gulp less",
+    "watch": "node ./scripts/watch.js"
   }
 }

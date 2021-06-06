@@ -1,6 +1,6 @@
-import { useCallback, useState } from 'react'
-import useOnBlock from './OnBlock'
-import usePoller from './Poller'
+import { useCallback, useState } from "react";
+import useOnBlock from "./OnBlock";
+import usePoller from "./Poller";
 
 /*
   ~ What it does? ~
@@ -18,41 +18,41 @@ import usePoller from './Poller'
   - If no pollTime is passed, the balance will update on every new block
 */
 
-const DEBUG = false
+const DEBUG = false;
 
 export default function useBalance(provider, address, pollTime = 0) {
-  const [balance, setBalance] = useState()
+  const [balance, setBalance] = useState();
 
   const pollBalance = useCallback(
     async (provider, address) => {
       if (provider && address) {
-        const newBalance = await provider.getBalance(address)
+        const newBalance = await provider.getBalance(address);
         if (newBalance !== balance) {
-          setBalance(newBalance)
+          setBalance(newBalance);
         }
       }
     },
-    [provider, address]
-  )
+    [provider, address],
+  );
 
   // Only pass a provider to watch on a block if there is no pollTime
   useOnBlock(pollTime === 0 && provider, () => {
     if (provider && address && pollTime === 0) {
-      pollBalance(provider, address)
+      pollBalance(provider, address);
     }
-  })
+  });
 
   // Use a poller if a pollTime is provided
   usePoller(
     async () => {
       if (provider && address && pollTime > 0) {
-        if (DEBUG) console.log('polling!', address)
-        pollBalance()
+        if (DEBUG) console.log("polling!", address);
+        pollBalance();
       }
     },
     pollTime,
-    provider && address
-  )
+    provider && address,
+  );
 
-  return balance
+  return balance;
 }

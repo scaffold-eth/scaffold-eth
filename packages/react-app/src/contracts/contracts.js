@@ -1,1 +1,1 @@
-module.exports = ["EthereumCityERC20TokenMinter"];
+module.exports = ["YourContract"];

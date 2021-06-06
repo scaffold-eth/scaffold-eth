@@ -1,13 +1,13 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
-import { Contract } from '@ethersproject/contracts'
-import { useState, useEffect } from 'react'
+import { Contract } from "@ethersproject/contracts";
+import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~
 
   Loads your local contracts and gives options to read values from contracts
-                                              or write transactions into them
+  or write transactions into them
 
   ~ How can I use? ~
 
@@ -30,47 +30,47 @@ const loadContract = (contractName, signer) => {
     require(`../contracts/${contractName}.address.js`),
     require(`../contracts/${contractName}.abi.js`),
     signer,
-  )
+  );
   try {
-    newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`)
+    newContract.bytecode = require(`../contracts/${contractName}.bytecode.js`);
   } catch (e) {
-    console.log(e)
+    console.log(e);
   }
-  return newContract
-}
+  return newContract;
+};
 
 export default function useContractLoader(providerOrSigner) {
-  const [contracts, setContracts] = useState()
+  const [contracts, setContracts] = useState();
   useEffect(() => {
     async function loadContracts() {
-      if (typeof providerOrSigner !== 'undefined') {
+      if (typeof providerOrSigner !== "undefined") {
         try {
           // we need to check to see if this providerOrSigner has a signer or not
-          let signer
-          let accounts
-          if (providerOrSigner && typeof providerOrSigner.listAccounts === 'function') {
-            accounts = await providerOrSigner.listAccounts()
+          let signer;
+          let accounts;
+          if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
+            accounts = await providerOrSigner.listAccounts();
           }
 
           if (accounts && accounts.length > 0) {
-            signer = providerOrSigner.getSigner()
+            signer = providerOrSigner.getSigner();
           } else {
-            signer = providerOrSigner
+            signer = providerOrSigner;
           }
 
-          const contractList = require('../contracts/contracts.js')
+          const contractList = require("../contracts/contracts.js");
 
           const newContracts = contractList.reduce((accumulator, contractName) => {
-            accumulator[contractName] = loadContract(contractName, signer)
-            return accumulator
-          }, {})
-          setContracts(newContracts)
+            accumulator[contractName] = loadContract(contractName, signer);
+            return accumulator;
+          }, {});
+          setContracts(newContracts);
         } catch (e) {
-          console.log('ERROR LOADING CONTRACTS!!', e)
+          console.log("ERROR LOADING CONTRACTS!!", e);
         }
       }
     }
-    loadContracts()
-  }, [providerOrSigner])
-  return contracts
+    loadContracts();
+  }, [providerOrSigner]);
+  return contracts;
 }

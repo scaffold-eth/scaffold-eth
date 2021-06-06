@@ -1,5 +1,4 @@
-/* eslint-disable no-underscore-dangle */
-import { useState, useEffect } from 'react'
+import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~
@@ -17,34 +16,34 @@ import { useState, useEffect } from 'react'
 */
 
 const useTokenList = (tokenListUri, chainId) => {
-  const [tokenList, setTokenList] = useState([])
+  const [tokenList, setTokenList] = useState([]);
 
-  const _tokenListUri = tokenListUri || 'https://gateway.ipfs.io/ipns/tokens.uniswap.org'
+  const _tokenListUri = tokenListUri || "https://gateway.ipfs.io/ipns/tokens.uniswap.org";
 
   useEffect(() => {
     const getTokenList = async () => {
       try {
-        const tokenList = await fetch(_tokenListUri)
-        const tokenListJson = await tokenList.json()
-        let _tokenList
+        const tokenList = await fetch(_tokenListUri);
+        const tokenListJson = await tokenList.json();
+        let _tokenList;
 
         if (chainId) {
-          _tokenList = tokenListJson.tokens.filter(t => {
-            return t.chainId === chainId
-          })
+          _tokenList = tokenListJson.tokens.filter(function (t) {
+            return t.chainId === chainId;
+          });
         } else {
-          _tokenList = tokenListJson
+          _tokenList = tokenListJson;
         }
 
-        setTokenList(_tokenList.tokens)
+        setTokenList(_tokenList.tokens);
       } catch (e) {
-        console.log(e)
+        console.log(e);
       }
-    }
-    getTokenList()
-  }, [tokenListUri])
+    };
+    getTokenList();
+  }, [tokenListUri]);
 
-  return tokenList
-}
+  return tokenList;
+};
 
-export default useTokenList
+export default useTokenList;

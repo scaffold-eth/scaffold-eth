@@ -1,0 +1,1 @@
+module.exports = ["EthereumCityERC20TokenMinter"];
