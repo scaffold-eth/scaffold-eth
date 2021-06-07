@@ -8,6 +8,7 @@ import { Address, AddressInput } from "../components";
 import { useTokenList } from "../hooks";
 import 'react-bootstrap';
 import { Modal, Popover, Button, Form } from 'react-bootstrap';
+import { notification } from "antd";
 
 export default function Client({
   address,
@@ -42,6 +43,15 @@ export default function Client({
       case 4:
         return "Released";
     }
+  }
+
+  function showNotification(tx){
+    notification.info({
+            message: "Transaction Sent",
+            description: tx.hash,
+            placement: "bottomRight",
+            duration:10,
+          });
   }
 
   const contractAddressInputRef = useRef(null);
@@ -99,51 +109,31 @@ export default function Client({
   }
 
   async function endProject(){
-    try{
-      const result = tx(freelancerContract.endProject(), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.endProject();
+    showNotification(tx);
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   async function acceptProject(){
-    try{
-      const result = tx(freelancerContract.acceptProject(), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.acceptProject();
+    showNotification(tx);
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   async function fundTask(_id, _value){
-    try{
-      const result = tx(freelancerContract.fundTask(_id,{value:_value}), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.fundTask(_id,{value:_value});
+    showNotification(tx);
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   async function approveTask(_id){
-    try{
-      const result = tx(freelancerContract.approveTask(_id), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.approveTask(_id);
+    showNotification(tx);
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   let scheduleList = []

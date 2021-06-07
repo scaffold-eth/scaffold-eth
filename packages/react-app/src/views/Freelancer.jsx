@@ -8,6 +8,7 @@ import { Address, AddressInput } from "../components";
 import { useContractReader, useExternalContractLoader } from "../hooks";
 import 'react-bootstrap';
 import { Modal, Popover, Button, Form } from 'react-bootstrap';
+import { notification } from "antd";
 
 export default function Freelancer({
   address,
@@ -42,6 +43,15 @@ export default function Freelancer({
       case 4:
         return "Released";
     }
+  }
+
+  function showNotification(tx){
+    notification.info({
+            message: "Transaction Sent",
+            description: tx.hash,
+            placement: "bottomRight",
+            duration:10,
+          });
   }
 
   const contractAddressInputRef = useRef(null);
@@ -79,6 +89,8 @@ export default function Freelancer({
     try{
       const factory = new ContractFactory(ABI, BYTECODE,  userProvider.getSigner());
       const fcontract = await factory.deploy();
+      showNotification(fcontract)
+      await fcontract.deployed();
       setFreelancerContract(fcontract);
       loadContractData(fcontract);
     }catch (e) {
@@ -116,15 +128,10 @@ export default function Freelancer({
   }
 
   async function endProject(){
-    try{
-      const result = tx(freelancerContract.endProject(), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.endProject();
+    showNotification(tx);
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   const [show, setShow] = useState(false);
@@ -139,41 +146,26 @@ export default function Freelancer({
     })
   }
 
-  function addSchedule(){
-    try{
-      const result = tx(freelancerContract.addSchedule(form["shortCode"],form["description"],parseEther((form["value"]).toString())), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+  async function addSchedule(){
+    const tx = await freelancerContract.addSchedule(form["shortCode"],form["description"],parseEther((form["value"]).toString()))
+    showNotification(tx)
     handleClose();
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   async function startTask(_id){
-    try{
-      const result = tx(freelancerContract.startTask(_id), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.startTask(_id);
+    showNotification(tx)
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   async function releaseFunds(_id){
-    try{
-      const result = tx(freelancerContract.releaseFunds(_id), update => {
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          loadContractData(freelancerContract);
-        }
-      });
-    }catch (e) {
-      console.log(e);
-    }
+    const tx = await freelancerContract.releaseFunds(_id);
+    showNotification(tx)
+    await tx.wait();
+    loadContractData(freelancerContract);
   }
 
   let scheduleList = []
