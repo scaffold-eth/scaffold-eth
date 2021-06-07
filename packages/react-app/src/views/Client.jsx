@@ -54,6 +54,8 @@ export default function Client({
   const [clientAddress, setClientAddress] = useState("");
   const [projectState, setProjectState] = useState();
   const [schedules, setSchedules] = useState();
+  const [totalFundsBalance, SetTotalFundsBalance] = useState("0");
+  const [totalFundsDisbursed, SetTotalFundsDisbursed] = useState("0");
 
   async function loadFreelanceContract(){
     console.log(freelancerContract);
@@ -71,6 +73,8 @@ export default function Client({
     setFreelancerAddress(await fcontract.freelancerAddress());
     setClientAddress(await fcontract.clientAddress());
     setProjectState(await fcontract.projectState());
+    SetTotalFundsBalance(await fcontract.getBalance());
+    SetTotalFundsDisbursed(await fcontract.totalFundsDisbursed());
     setFreelancerContractAddress(contractAddressInputRef.current.value);
 
     const scheduleCount = await fcontract.totalSchedules();
@@ -80,12 +84,30 @@ export default function Client({
       for (let scheduleIndex = 0; scheduleIndex < scheduleCount; scheduleIndex++) {
         try {
           const scheduleItem = await fcontract.scheduleRegister(scheduleIndex);
-          scheduleUpdate.push({ id:scheduleIndex, shortCode:scheduleItem.shortCode, description:scheduleItem.description, state:scheduleItem.scheduleState, ethValue:scheduleItem.value });
+          scheduleUpdate.push({
+            id:scheduleIndex, 
+            shortCode:scheduleItem.shortCode, 
+            description:scheduleItem.description, 
+            state:scheduleItem.scheduleState, 
+            ethValue:scheduleItem.value 
+          });
         } catch (e) {
           console.log(e);
         }
       }
       setSchedules(scheduleUpdate);
+  }
+
+  async function endProject(){
+    try{
+      const result = tx(freelancerContract.endProject(), update => {
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          loadContractData(freelancerContract);
+        }
+      });
+    }catch (e) {
+      console.log(e);
+    }
   }
 
   async function acceptProject(){
@@ -129,10 +151,12 @@ export default function Client({
   for(let i in schedules){
 
     let btn;
-    if(schedules[i].state == 1)
+    if(projectState == 1 && schedules[i].state == 0)
       btn = <Button onClick={() => {fundTask(schedules[i].id, schedules[i].ethValue);}}>Fund task</Button>
     else if(schedules[i].state == 2)
       btn = <Button onClick={() => {approveTask(schedules[i].id)}}>Approve task</Button>
+    else
+      btn = <p>Awaiting freelancer action</p>
 
     scheduleList.push(
       <tr key={schedules[i].id}>
@@ -189,7 +213,7 @@ export default function Client({
                     <div className="card">
                         <div className="card-header fw-bold text-center">Total Value (ETH)</div>
                         <div className="card-body">
-                        <p className="card-text text-center"><span className="fs-1" id="lbl-total-eth"></span></p>
+                        <p className="card-text text-center"><span className="fs-1" id="lbl-total-eth">{formatEther(totalFundsBalance)}</span></p>
                         </div>
                     </div>
                     </div>
@@ -197,14 +221,21 @@ export default function Client({
                     <div className="card">
                         <div className="card-header fw-bold text-center">Disbursed (ETH)</div>
                         <div className="card-body">
-                        <p className="card-text text-center"><span className="fs-1" id="lbl-disbursed-eth"></span></p>
+                        <p className="card-text text-center"><span className="fs-1" id="lbl-disbursed-eth">{formatEther(totalFundsDisbursed)}</span></p>
                     </div>
                     </div>
                     </div>
                 </div>
 
                 <br />
-                <button className="btn btn-primary btn-lg" type="button" id="btn-Accept-Project" onClick={() => {acceptProject();}}>Accept Project</button>
+                {
+                  projectState == 0 && scheduleList.length > 0 && (<button className="btn btn-primary btn-lg" type="button" id="btn-Accept-Project" onClick={() => {acceptProject();}}>Accept Project</button>
+                )}
+                {
+                  freelancerContract && projectState !=2 && totalFundsBalance == 0 && ( 
+                  <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
+                  onClick={() => {endProject();}}>End Project</button>
+                )}
                 <div className="spinner-border spinner-border-sm d-none" role="status" id="spn-contract-action"></div>
             </div>
 

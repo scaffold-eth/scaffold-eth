@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
-import { Contract } from "@ethersproject/contracts";
+import { Contract, ContractFactory } from "@ethersproject/contracts";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { Select } from "antd";
 import React, { useState, useEffect, useRef } from "react";
@@ -47,6 +47,7 @@ export default function Freelancer({
   const contractAddressInputRef = useRef(null);
 
   const ABI = require("../contracts/Freelancer.abi");
+  const BYTECODE = require("../contracts/Freelancer.bytecode");
   const [freelancerContractAddress, setFreelancerContractAddress] = useState(""); // 0x5FbDB2315678afecb367f032d93F642f64180aa3
 
   const [freelancerContract, setFreelancerContract] = useState("");
@@ -54,16 +55,34 @@ export default function Freelancer({
   const [clientAddress, setClientAddress] = useState("");
   const [projectState, setProjectState] = useState();
   const [schedules, setSchedules] = useState();
+  const [totalFundsBalance, SetTotalFundsBalance] = useState("0");
+  const [totalFundsDisbursed, SetTotalFundsDisbursed] = useState("0");
 
   async function loadFreelanceContract(){
-    console.log(freelancerContract);
     try{
-      const fcontract = new Contract(contractAddressInputRef.current.value, ABI, userProvider.getSigner());
+      if(contractAddressInputRef.current.value == ""){
+        deployNewContract();
+      }else{
+        const fcontract = new Contract(contractAddressInputRef.current.value, ABI, userProvider.getSigner());
+        setFreelancerContract(fcontract);
+        loadContractData(fcontract);
+      }
+
+     
+    }catch (e) {
+      console.log(e);
+      alert("Invalid contract address");
+    }
+  }
+
+  async function deployNewContract(){
+    try{
+      const factory = new ContractFactory(ABI, BYTECODE,  userProvider.getSigner());
+      const fcontract = await factory.deploy();
       setFreelancerContract(fcontract);
       loadContractData(fcontract);
     }catch (e) {
       console.log(e);
-      alert("Invalid contract address");
     }
   }
 
@@ -71,6 +90,8 @@ export default function Freelancer({
     setFreelancerAddress(await fcontract.freelancerAddress());
     setClientAddress(await fcontract.clientAddress());
     setProjectState(await fcontract.projectState());
+    SetTotalFundsBalance(await fcontract.getBalance());
+    SetTotalFundsDisbursed(await fcontract.totalFundsDisbursed());
     setFreelancerContractAddress(contractAddressInputRef.current.value);
 
     const scheduleCount = await fcontract.totalSchedules();
@@ -80,7 +101,13 @@ export default function Freelancer({
       for (let scheduleIndex = 0; scheduleIndex < scheduleCount; scheduleIndex++) {
         try {
           const scheduleItem = await fcontract.scheduleRegister(scheduleIndex);
-          scheduleUpdate.push({ id:scheduleIndex, shortCode:scheduleItem.shortCode, description:scheduleItem.description, state:scheduleItem.scheduleState, ethValue:scheduleItem.value });
+          scheduleUpdate.push({ 
+            id:scheduleIndex, 
+            shortCode:scheduleItem.shortCode, 
+            description:scheduleItem.description, 
+            state:scheduleItem.scheduleState, 
+            ethValue:scheduleItem.value
+          });
         } catch (e) {
           console.log(e);
         }
@@ -154,10 +181,12 @@ export default function Freelancer({
   for(let i in schedules){
 
     let btn;
-    if(schedules[i].state == 0)
+    if(schedules[i].state == 1)
       btn = <Button onClick={() => {startTask(schedules[i].id);}}>Start Task</Button>
     else if(schedules[i].state == 3)
       btn = <Button onClick={() => {releaseFunds(schedules[i].id);}}>Release Funds</Button>
+    else
+      btn = <p>Awaiting client action</p>
 
     scheduleList.push(
       <tr key={schedules[i].id}>
@@ -215,7 +244,7 @@ export default function Freelancer({
               <div className="card">
                   <div className="card-header fw-bold text-center">Total Value (ETH)</div>
                   <div className="card-body">
-                  <p className="card-text text-center"><span className="fs-1" id="lbl-total-eth"></span></p>
+                  <p className="card-text text-center"><span className="fs-1" id="lbl-total-eth">{formatEther(totalFundsBalance)}</span></p>
                   </div>
               </div>
             </div>
@@ -223,17 +252,22 @@ export default function Freelancer({
               <div className="card">
                   <div className="card-header fw-bold text-center">Disbursed (ETH)</div>
                   <div className="card-body">
-                  <p className="card-text text-center"><span className="fs-1" id="lbl-disbursed-eth"></span></p>
+                  <p className="card-text text-center"><span className="fs-1" id="lbl-disbursed-eth">{formatEther(totalFundsDisbursed)}</span></p>
               </div>
             </div>
           </div>
         </div>
 
         <br />
-
-        <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#scheduleModal" id="btn-Add-Schedule" onClick={handleShow}>Add Schedule</button>
-        <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
-        onClick={() => {endProject();}}>End Project</button>
+        {
+          projectState == 0 && (
+          <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#scheduleModal" id="btn-Add-Schedule" onClick={handleShow}>Add Schedule</button>
+        )}
+        {
+          freelancerContract && projectState !=2 && totalFundsBalance == 0 && ( 
+          <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
+          onClick={() => {endProject();}}>End Project</button>
+        )}
         <div className="spinner-border spinner-border-sm d-none" role="status" id="spn-contract-action"></div>
         </div>
 

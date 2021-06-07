@@ -27,6 +27,7 @@ pragma solidity ^0.8.4;
  * TODO: Review events for missing params and indexing
  * TODO: Requires major refctoring but it would be leaner on gas spending to have a single contract that keeps tracks of projects and their schedules instead of having to deploy one contract per project.
  * TODO: Add revert error information and/or console.logs for easier debugging
+ * TODO: Currently, the project can be ended even if not all tasks are complete (as long as there 0 balance in the contract), not sure if that's by design or not.
 */
 
 contract Freelancer {
@@ -41,12 +42,16 @@ contract Freelancer {
         ScheduleState scheduleState;
     }  
 
-    int256 public totalSchedules = 0;
+    uint256 public totalSchedules = 0;
     address payable public freelancerAddress;
     address public clientAddress;
     ProjectState public projectState;
+    uint256 public totalFundsReceived;
+    uint256 public totalFundsDisbursed;
+
+
     
-    mapping(int256 => Schedule) public scheduleRegister;
+    mapping(uint256 => Schedule) public scheduleRegister;
     
         modifier condition(bool _condition) {
             require(_condition);
@@ -73,12 +78,12 @@ contract Freelancer {
             _;
         }
 
-        modifier inScheduleState(int256 _scheduleId, ScheduleState _state){
+        modifier inScheduleState(uint256 _scheduleId, ScheduleState _state){
             require((_scheduleId <= totalSchedules - 1) && scheduleRegister[_scheduleId].scheduleState == _state);
             _;
         }
 
-        modifier ampleFunding(int256 _ScheduleId, uint256 _funding){
+        modifier ampleFunding(uint256 _ScheduleId, uint256 _funding){
             require(scheduleRegister[_ScheduleId].value == _funding);
             _;
         }
@@ -90,10 +95,10 @@ contract Freelancer {
 
         event ScheduleAdded(string shortCode);
         event ProjectAccepted(address clientAddress);
-        event TaskFunded(int256 ScheduleId);
-        event TaskStarted(int256 ScheduleId);
-        event TaskApproved(int256 ScheduleId);
-        event FundsReleased(int256 ScheduleId, uint256 valueReleased);
+        event TaskFunded(uint256 scheduleId);
+        event TaskStarted(uint256 scheduleId);
+        event TaskApproved(uint256 scheduleId);
+        event FundsReleased(uint256 scheduleId, uint256 valueReleased);
         event ProjectEnded();
         
         constructor()
@@ -111,7 +116,7 @@ contract Freelancer {
         /// @param _description a larger description of the schedule
         /// @param _value how much Eth shouldd be paid by client
         function addSchedule(string memory _shortCode, string memory _description, uint256 _value)
-            public
+            external
             inProjectState(ProjectState.Initiated)
             onlyFreelancer
         {
@@ -125,8 +130,8 @@ contract Freelancer {
             emit ScheduleAdded(_shortCode);
         }
         
-        function startTask(int256 _scheduleId)
-            public
+        function startTask(uint256 _scheduleId)
+            external
             inProjectState(ProjectState.Accepted)
             inScheduleState(_scheduleId, ScheduleState.Funded)
             onlyFreelancer
@@ -135,13 +140,14 @@ contract Freelancer {
             emit TaskStarted(_scheduleId);
         }
 
-        function releaseFunds(int256 _scheduleId)
-            public
+        function releaseFunds(uint256 _scheduleId)
+            external
             payable
             inProjectState(ProjectState.Accepted)
             inScheduleState(_scheduleId, ScheduleState.Approved)
             onlyFreelancer
         {
+            totalFundsDisbursed += scheduleRegister[_scheduleId].value;
             freelancerAddress.transfer(scheduleRegister[_scheduleId].value);
             scheduleRegister[_scheduleId].scheduleState = ScheduleState.Released;
             emit FundsReleased(_scheduleId, scheduleRegister[_scheduleId].value);
@@ -151,27 +157,29 @@ contract Freelancer {
         // Client functions
         ///////////////////////
         
-        function acceptProject() public inProjectState(ProjectState.Initiated)
+        function acceptProject() external inProjectState(ProjectState.Initiated)
         {
+            require(totalSchedules > 0, "ERROR: Project must have at least 1 task");
             clientAddress = msg.sender;
             projectState = ProjectState.Accepted;
             emit ProjectAccepted(msg.sender);
         }
         
-        function fundTask(int256 _scheduleId)
-            public
+        function fundTask(uint256 _scheduleId)
+            external
             payable
             inProjectState(ProjectState.Accepted)
             inScheduleState(_scheduleId, ScheduleState.Planned)
             ampleFunding(_scheduleId, msg.value)
             onlyClient
         {
+            totalFundsReceived += msg.value;
             scheduleRegister[_scheduleId].scheduleState = ScheduleState.Funded;
             emit TaskFunded(_scheduleId);
         }
 
-        function approveTask(int256 _scheduleId)
-            public
+        function approveTask(uint256 _scheduleId)
+            external
             inProjectState(ProjectState.Accepted)
             inScheduleState(_scheduleId, ScheduleState.Started)
             onlyClient
@@ -186,7 +194,7 @@ contract Freelancer {
         
         // End the project
         function endProject()
-            public
+            external
             bothClientFreelancer
             noMoreFunds
         {
@@ -197,6 +205,6 @@ contract Freelancer {
         // Get the Freelancer balance
         function getBalance() public view returns (uint256 balance)
         {
-            return address(this).balance;
+            return totalFundsReceived - totalFundsDisbursed;
         }
 } 
