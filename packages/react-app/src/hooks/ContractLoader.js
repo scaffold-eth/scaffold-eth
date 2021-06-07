@@ -64,7 +64,7 @@ export default function useContractLoader(providerOrSigner, chainId, customAddre
             console.log(e);
           }
           try {
-            externalContractList = require("../contracts/external_contracts.json");
+            externalContractList = require("../contracts/external_contracts.js");
           } catch (e) {
             console.log(e);
           }
