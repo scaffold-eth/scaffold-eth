@@ -164,7 +164,7 @@ export default function ExampleUI({
           renderItem={item => {
             return (
               <List.Item key={item.blockNumber + "_" + item.sender + "_" + item.purpose}>
-                <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt
+                <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} />
                 {item[1]}
               </List.Item>
             );
