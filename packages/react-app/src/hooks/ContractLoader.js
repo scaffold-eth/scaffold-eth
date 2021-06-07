@@ -26,7 +26,7 @@ const { ethers } = require("ethers");
     tx( writeContracts.YourContract.setPurpose(newPurpose) )
 */
 
-export default function useContractLoader(providerOrSigner, chainId, customAddresses = {}) {
+export default function useContractLoader(providerOrSigner, network = {}, customAddresses = {}) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
     async function loadContracts() {
@@ -52,9 +52,9 @@ export default function useContractLoader(providerOrSigner, chainId, customAddre
             provider = providerOrSigner;
           }
 
-          const network = await provider.getNetwork();
+          const providerNetwork = await provider.getNetwork();
 
-          const _chainId = chainId || network.chainId;
+          const _chainId = network.chainId || providerNetwork.chainId;
 
           let contractList = {};
           let externalContractList = {};
@@ -74,10 +74,12 @@ export default function useContractLoader(providerOrSigner, chainId, customAddre
           if (contractList[_chainId]) {
             for (const hardhatNetwork in contractList[_chainId]) {
               if (Object.prototype.hasOwnProperty.call(contractList[_chainId], hardhatNetwork)) {
-                combinedContracts = {
-                  ...combinedContracts,
-                  ...contractList[_chainId][hardhatNetwork].contracts,
-                };
+                if (!network.name || hardhatNetwork === network.name) {
+                  combinedContracts = {
+                    ...combinedContracts,
+                    ...contractList[_chainId][hardhatNetwork].contracts,
+                  };
+                }
               }
             }
           }

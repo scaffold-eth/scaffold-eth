@@ -315,7 +315,8 @@ const price = useExchangePrice(mainnetProvider);
 ```js
 const readContracts = useContractLoader(localProvider);
 const writeContracts = useContractLoader(injectedProvider);
-const writeContracts = useContractLoader(injectedProvider, chainId); // fix the chainId (even if the provider is on a different chain)
+const writeContracts = useContractLoader(injectedProvider, {chainId: 1}); // fix the chainId (even if the provider is on a different chain)
+const writeContracts = useContractLoader(injectedProvider, {name: 'localhost'}); // fix the hardhat network name (even if the provider is on a different chain)
 const writeContracts = useContractLoader(injectedProvider, , {"EXAMPLE": "0xADDRESS"}); // over-ride the address
 ```
 
