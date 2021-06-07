@@ -25,6 +25,8 @@ pragma solidity ^0.8.4;
  * TODO: Contract is maybe missing some flexibility to add further tasks. As it stands new tasks/schedules can't be added mid project
  * TODO: Possibly, the freelancer should specify the client's adddress on creation, otherwise any 3rd party can accept the contract, forcing the freelancer to have to deploy it again.
  * TODO: Review events for missing params and indexing
+ * TODO: Requires major refctoring but it would be leaner on gas spending to have a single contract that keeps tracks of projects and their schedules instead of having to deploy one contract per project.
+ * TODO: Add revert error information and/or console.logs for easier debugging
 */
 
 contract Freelancer {

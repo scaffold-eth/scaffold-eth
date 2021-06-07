@@ -125,16 +125,47 @@ export default function Freelancer({
     handleClose();
   }
 
+  async function startTask(_id){
+    try{
+      const result = tx(freelancerContract.startTask(_id), update => {
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          loadContractData(freelancerContract);
+        }
+      });
+    }catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function releaseFunds(_id){
+    try{
+      const result = tx(freelancerContract.releaseFunds(_id), update => {
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          loadContractData(freelancerContract);
+        }
+      });
+    }catch (e) {
+      console.log(e);
+    }
+  }
+
   let scheduleList = []
 
   for(let i in schedules){
+
+    let btn;
+    if(schedules[i].state == 0)
+      btn = <Button onClick={() => {startTask(schedules[i].id);}}>Start Task</Button>
+    else if(schedules[i].state == 3)
+      btn = <Button onClick={() => {releaseFunds(schedules[i].id);}}>Release Funds</Button>
+
     scheduleList.push(
       <tr key={schedules[i].id}>
         <td>{schedules[i].shortCode}</td>
         <td>{schedules[i].description}</td>
         <td>{"Ξ " + formatEther(schedules[i].ethValue)}</td>
         <td>{parseScheduleState(schedules[i].state)}</td>
-        <td><Button>Buttons here</Button></td>
+        <td>{btn}</td>
       </tr>
     )
   }
@@ -152,7 +183,7 @@ export default function Freelancer({
                   </div>
               </div>
               <div className="col-4">
-                  <a tabindex="0"  className="btn btn-primary btn-lg" 
+                  <a tabIndex="0"  className="btn btn-primary btn-lg" 
                   onClick={() => {
                     loadFreelanceContract();
                   }}
@@ -203,7 +234,6 @@ export default function Freelancer({
         <button type="button" className="btn btn-primary btn-lg" data-toggle="modal" data-target="#scheduleModal" id="btn-Add-Schedule" onClick={handleShow}>Add Schedule</button>
         <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
         onClick={() => {endProject();}}>End Project</button>
-        <button className="btn btn-success btn-lg" type="button" id="btn-Refresh" onclick="App.btnRefresh('freelancer')">Refresh</button>
         <div className="spinner-border spinner-border-sm d-none" role="status" id="spn-contract-action"></div>
         </div>
 

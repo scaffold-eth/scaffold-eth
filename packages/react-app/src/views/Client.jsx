@@ -100,16 +100,47 @@ export default function Client({
     }
   }
 
+  async function fundTask(_id, _value){
+    try{
+      const result = tx(freelancerContract.fundTask(_id,{value:_value}), update => {
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          loadContractData(freelancerContract);
+        }
+      });
+    }catch (e) {
+      console.log(e);
+    }
+  }
+
+  async function approveTask(_id){
+    try{
+      const result = tx(freelancerContract.approveTask(_id), update => {
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          loadContractData(freelancerContract);
+        }
+      });
+    }catch (e) {
+      console.log(e);
+    }
+  }
+
   let scheduleList = []
 
   for(let i in schedules){
+
+    let btn;
+    if(schedules[i].state == 1)
+      btn = <Button onClick={() => {fundTask(schedules[i].id, schedules[i].ethValue);}}>Fund task</Button>
+    else if(schedules[i].state == 2)
+      btn = <Button onClick={() => {approveTask(schedules[i].id)}}>Approve task</Button>
+
     scheduleList.push(
       <tr key={schedules[i].id}>
         <td>{schedules[i].shortCode}</td>
         <td>{schedules[i].description}</td>
         <td>{"Ξ " + formatEther(schedules[i].ethValue)}</td>
         <td>{parseScheduleState(schedules[i].state)}</td>
-        <td><Button>Buttons here</Button></td>
+        <td>{btn}</td>
       </tr>
     )
   }
@@ -174,7 +205,6 @@ export default function Client({
 
                 <br />
                 <button className="btn btn-primary btn-lg" type="button" id="btn-Accept-Project" onClick={() => {acceptProject();}}>Accept Project</button>
-                <button className="btn btn-success btn-lg" type="button" id="btn-Refresh" onclick="App.btnRefresh('client')">Refresh</button>
                 <div className="spinner-border spinner-border-sm d-none" role="status" id="spn-contract-action"></div>
             </div>
 
