@@ -115,6 +115,13 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    localArbitrumL1: {
+      url: "http://localhost:7545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     kovanOptimism: {
       url: "https://kovan.optimism.io",
       gasPrice: 0,

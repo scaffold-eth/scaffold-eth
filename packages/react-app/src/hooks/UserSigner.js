@@ -1,7 +1,5 @@
-import { Web3Provider } from "@ethersproject/providers";
-import BurnerProvider from "burner-provider";
 import { useMemo } from "react";
-import { INFURA_ID } from "../constants";
+import useBurnerSigner from "./BurnerSigner";
 
 /*
   ~ What it does? ~
@@ -17,19 +15,18 @@ import { INFURA_ID } from "../constants";
   - Specify the injected provider from Metamask
   - Specify the local provider
   - Usage examples:
-    const address = useUserAddress(userProvider);
-    const tx = Transactor(userProvider, gasPrice)
+    const tx = Transactor(userSigner, gasPrice)
 */
 
-const useUserProvider = (injectedProvider, localProvider) =>
-  useMemo(() => {
+const useUserSigner = (injectedProvider, localProvider) => {
+  const burnerSigner = useBurnerSigner(localProvider);
+
+  const userSigner = useMemo(() => {
     if (injectedProvider) {
       console.log("🦊 Using injected provider");
-      return injectedProvider;
+      return injectedProvider._isProvider ? injectedProvider.getSigner() : injectedProvider;
     }
     if (!localProvider) return undefined;
-
-    const burnerConfig = {};
 
     if (window.location.pathname) {
       if (window.location.pathname.indexOf("/pk") >= 0) {
@@ -38,7 +35,6 @@ const useUserProvider = (injectedProvider, localProvider) =>
         if (incomingPK.length === 64 || incomingPK.length === 66) {
           console.log("🔑 Incoming Private Key...");
           rawPK = incomingPK;
-          burnerConfig.privateKey = rawPK;
           window.history.pushState({}, "", "/");
           const currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
           if (currentPrivateKey && currentPrivateKey !== rawPK) {
@@ -49,15 +45,11 @@ const useUserProvider = (injectedProvider, localProvider) =>
       }
     }
 
-    console.log("🔥 Using burner provider", burnerConfig);
-    if (localProvider.connection && localProvider.connection.url) {
-      burnerConfig.rpcUrl = localProvider.connection.url;
-      return new Web3Provider(new BurnerProvider(burnerConfig));
-    }
-    // eslint-disable-next-line no-underscore-dangle
-    const networkName = localProvider._network && localProvider._network.name;
-    burnerConfig.rpcUrl = `https://${networkName || "mainnet"}.infura.io/v3/${INFURA_ID}`;
-    return new Web3Provider(new BurnerProvider(burnerConfig));
-  }, [injectedProvider, localProvider]);
+    console.log("🔥 Using burner signer", burnerSigner);
+    return burnerSigner;
+  }, [injectedProvider, localProvider, burnerSigner]);
 
-export default useUserProvider;
+  return userSigner;
+};
+
+export default useUserSigner;

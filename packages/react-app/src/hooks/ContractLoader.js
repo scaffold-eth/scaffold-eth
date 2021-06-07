@@ -102,6 +102,7 @@ export default function useContractLoader(providerOrSigner, network = {}, custom
       }
     }
     loadContracts();
-  }, [providerOrSigner]);
+  }, [providerOrSigner, network.chainId, network.name]);
+
   return contracts;
 }

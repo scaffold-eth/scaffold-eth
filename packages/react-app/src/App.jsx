@@ -1,8 +1,6 @@
-import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { useUserAddress } from "eth-hooks";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
@@ -18,7 +16,7 @@ import {
   useExchangePrice,
   useGasPrice,
   useOnBlock,
-  useUserProvider,
+  useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
@@ -44,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localArbitrum; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -97,23 +95,34 @@ function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
+  const [address, setAddress] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
-  const address = useUserAddress(userProvider);
+  const userSigner = useUserSigner(injectedProvider, localProvider);
+
+  useEffect(() => {
+    async function getAddress() {
+      if (userSigner) {
+        const newAddress = await userSigner.getAddress();
+        setAddress(newAddress);
+      }
+    }
+    getAddress();
+  }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
+  const selectedChainId =
+    userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice);
+  const tx = Transactor(userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
@@ -127,8 +136,8 @@ function App(props) {
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
 
-  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider);
+  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
+  const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -176,8 +185,8 @@ function App(props) {
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
+      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
+      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
@@ -257,7 +266,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name === "localhost";
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
@@ -266,7 +275,7 @@ function App(props) {
     localProvider._network &&
     localProvider._network.chainId === 31337 &&
     yourLocalBalance &&
-    formatEther(yourLocalBalance) <= 0
+    ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
     faucetHint = (
       <div style={{ padding: 16 }}>
@@ -275,7 +284,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: parseEther("0.01"),
+              value: ethers.utils.parseEther("0.01"),
             });
             setFaucetClicked(true);
           }}
@@ -355,7 +364,7 @@ function App(props) {
 
             <Contract
               name="YourContract"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
@@ -364,7 +373,7 @@ function App(props) {
             {/* uncomment for a second contract:
             <Contract
               name="SecondContract"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
@@ -375,7 +384,7 @@ function App(props) {
             <Contract
               name="DAI"
               customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={mainnetProvider}
               address={address}
               blockExplorer={blockExplorer}
@@ -393,7 +402,7 @@ function App(props) {
           <Route path="/exampleui">
             <ExampleUI
               address={address}
-              userProvider={userProvider}
+              userSigner={userSigner}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}
@@ -409,7 +418,7 @@ function App(props) {
             <Contract
               name="DAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
@@ -433,7 +442,7 @@ function App(props) {
         <Account
           address={address}
           localProvider={localProvider}
-          userProvider={userProvider}
+          userSigner={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
           web3Modal={web3Modal}

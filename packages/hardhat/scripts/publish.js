@@ -5,7 +5,12 @@ const graphDir = "../subgraph";
 const deploymentsDir = "./deployments";
 
 function publishContract(contractName, networkName) {
-  console.log(" 💽 Publishing", chalk.cyan(contractName));
+  console.log(
+    " 💽 Publishing",
+    chalk.cyan(contractName),
+    "on",
+    chalk.cyan(networkName)
+  );
   try {
     let contract = fs
       .readFileSync(`${deploymentsDir}/${networkName}/${contractName}.json`)

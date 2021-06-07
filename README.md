@@ -792,13 +792,25 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 ## Notes
 
 Initiate arbitrum submodule...
+
 git submodule init
+
 git submodule update
+
 cd packages/arbitrum
 
 - Had to remove "arbos-contracts": "^1.0.0", from arb-bridge-peripherals dependencies
-  yarn install
-  git submodule init
-  git submodule update
-  yarn docker:build:geth
-  yarn docker:geth
+
+yarn install
+
+git submodule init
+
+git submodule update
+
+yarn docker:build:geth
+
+yarn docker:geth
+
+yarn demo:initialize // [--validatorcount N=1]
+
+yarn demo:deploy
