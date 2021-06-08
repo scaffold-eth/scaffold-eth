@@ -1,6 +1,6 @@
 packages/subgraph/subgraph.yaml
 packages/subgraph/generated
-packages/subgraph/abis
+packages/subgraph/abis/*
 packages/hardhat/*.txt
 **/aws.json
 
