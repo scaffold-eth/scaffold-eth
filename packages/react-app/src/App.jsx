@@ -361,40 +361,6 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            {/*
-                testing arbitrium bridging in debug mode
-            */}
-            <Contract
-              name="Inbox"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="ArbSys"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="EthERC20Bridge"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="StandardArbErc20"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
 
             <Contract
               name="YourContract"
