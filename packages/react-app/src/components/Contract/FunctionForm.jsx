@@ -202,6 +202,9 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 if (txValue) {
                   overrides.value = txValue; // ethers.utils.parseEther()
                 }
+                if (gasPrice) {
+                  overrides.gasPrice = gasPrice;
+                }
                 // Uncomment this if you want to skip the gas estimation for each transaction
                 // overrides.gasLimit = hexlify(1200000);
 

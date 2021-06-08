@@ -1,6 +1,6 @@
-[submodule "packages/arbitrum"]
-	path = packages/arbitrum
+[submodule "packages/services/arbitrum"]
+	path = packages/services/arbitrum
 	url = https://github.com/OffchainLabs/arbitrum
-[submodule "packages/optimism"]
-	path = packages/optimism
+[submodule "packages/services/optimism"]
+	path = packages/services/optimism
 	url = https://github.com/ethereum-optimism/optimism

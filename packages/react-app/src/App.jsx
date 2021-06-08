@@ -361,7 +361,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-             {/*
+            {/*
                 testing arbitrium bridging in debug mode
             */}
             <Contract
@@ -387,7 +387,7 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
- 
+
             <Contract
               name="StandardArbErc20"
               signer={userSigner}
@@ -402,6 +402,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              gasPrice={gasPrice}
             />
 
             {/* uncomment for a second contract:
