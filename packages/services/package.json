@@ -11,8 +11,8 @@
     "arbitrum-run-l2": "cd arbitrum && yarn demo:deploy",
     "run-optimism": "cd optimism/ops && make up",
     "stop-optimism": "cd optimism/ops && make down",
-    "run-graph-node": "cd packages/graph-node && docker-compose up",
-    "remove-graph-node": "cd packages/graph-node && docker-compose down",
-    "clean-graph-node": "rm -rf packages/graph-node/data/"
+    "run-graph-node": "cd graph-node && docker-compose up",
+    "remove-graph-node": "cd graph-node && docker-compose down",
+    "clean-graph-node": "rm -rf graph-node/data/"
   }
 }
