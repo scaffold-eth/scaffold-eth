@@ -3,6 +3,7 @@ const chalk = require("chalk");
 
 const graphDir = "../subgraph";
 const deploymentsDir = "./deployments";
+const publishDir = "../react-app/src/contracts";
 
 function publishContract(contractName, networkName) {
   console.log(
@@ -44,6 +45,12 @@ function publishContract(contractName, networkName) {
 
     console.log(
       " 📠 Published " + chalk.green(contractName) + " to the subgraph."
+    );
+    
+    //Write the contracts bytecodes in case the front-end needs them
+    fs.writeFileSync(
+      `${publishDir}/${contractName}.bytecode.js`,
+      `module.exports = "${contract.bytecode}";`
     );
 
     return true;
