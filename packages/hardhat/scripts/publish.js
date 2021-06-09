@@ -47,11 +47,21 @@ function publishContract(contractName, networkName) {
       " 📠 Published " + chalk.green(contractName) + " to the subgraph."
     );
     
-    //Write the contracts bytecodes in case the front-end needs them
-    fs.writeFileSync(
-      `${publishDir}/${contractName}.bytecode.js`,
-      `module.exports = "${contract.bytecode}";`
-    );
+    //Hardhat Deploy writes a file with all ABIs in react-app/src/contracts/contracts.json
+    //If you need the bytecodes and/or you want one file per ABIs, un-comment the following block. 
+    //Write the contracts ABI, address and bytecodes in case the front-end needs them
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.address.js`,
+    //   `module.exports = "${contract.address}";`
+    // );
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.abi.js`,
+    //   `module.exports = ${JSON.stringify(contract.abi, null, 2)};`
+    // );
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.bytecode.js`,
+    //   `module.exports = "${contract.bytecode}";`
+    // );
 
     return true;
   } catch (e) {
