@@ -59,7 +59,7 @@ export default function useContractLoader(providerOrSigner, network = {}, custom
           let contractList = {};
           let externalContractList = {};
           try {
-            contractList = require("../contracts/contracts.json");
+            contractList = require("../contracts/hardhat_contracts.json");
           } catch (e) {
             console.log(e);
           }
