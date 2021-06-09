@@ -108,7 +108,7 @@ export const NETWORKS = {
   localOptimismL1: {
     name: "localOptimismL1",
     color: "#f01a37",
-    chainId: 1,
+    chainId: 31337,
     blockExplorer: "",
     rpcUrl: "http://" + window.location.hostname + ":9545",
   },

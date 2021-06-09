@@ -396,14 +396,31 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
 
+
             <Contract
+              name="OVM_L1ETHGateway"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            <Contract
+              name="OVM_ETH"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+
+            {/* <Contract
               name="YourContract"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
               gasPrice={gasPrice}
-            />
+            /> */}
 
             {/* uncomment for a second contract:
             <Contract
