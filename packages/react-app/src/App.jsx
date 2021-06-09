@@ -19,7 +19,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, L2ArbitrumBridge } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localArbitrumL1; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -309,7 +309,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              L2 Arbitrum Bridge
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/l2contracts">
+            <Link
+              onClick={() => {
+                setRoute("/l2contracts");
+              }}
+              to="/l2contracts"
+            >
+              Contracts
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -356,6 +366,21 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
+            <L2ArbitrumBridge
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
+            />
+          </Route>
+          <Route path="/l2contracts">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -412,36 +437,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
-            {/* <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              gasPrice={gasPrice}
-            /> */}
-
-            {/* uncomment for a second contract:
-            <Contract
-              name="SecondContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
-
-            {/* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
           </Route>
           <Route path="/hints">
             <Hints
