@@ -311,6 +311,13 @@ export const DAI_ABI = [
       image: "simplenft.png"
     },
     {
+      name: "📈 Bonding Curve",
+      desc: "Learn about bonding curves and play around with the 😃 bonding curve token",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/bonding-curve",
+      readMore: "",
+      image: "bondingcurve.png"
+    },
+    {
       name: "🏷 ✍️ NFT Signature Based Auction",
       desc: "Discover how you can build your own NFT auction where the bids go off-chain!",
       branch: "https://github.com/austintgriffith/scaffold-eth/tree/signature-nft-auction",
