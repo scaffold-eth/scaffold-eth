@@ -44,7 +44,7 @@ yarn deploy
 
 ![image](https://user-images.githubusercontent.com/2653167/99156785-fd2a2880-2680-11eb-8665-f8415cc77d5d.png)
 
-> Once you run the above steps you can then interact with the contract after clcicking on "Example UI" and do all kinds of operations with SMILE Bonding Curve Contract.
+> Once you run the above steps you can then interact with the contract after clicking on "Example UI" and do all kinds of operations with SMILE Bonding Curve Contract.
 
 <img width="341" alt="Screenshot 2021-01-04 at 8 13 23 AM" src="https://user-images.githubusercontent.com/26670962/103496962-191e9f00-4e66-11eb-9c0e-bd5f4bb04478.png">
 
