@@ -19,7 +19,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, L2ArbitrumBridge, L2OptimismBridge } from "./views";
+import { ExampleUI, Hints, Subgraph, L2Bridge } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -45,7 +45,7 @@ const { ethers } = require("ethers");
 let targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -119,12 +119,8 @@ function App(props) {
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
-  let myTargetNetwork = NETWORKS.kovan;
-  if(selectedChainId == 42)
-    myTargetNetwork = NETWORKS.kovan;
-  else if(selectedChainId == 4)
-    myTargetNetwork = NETWORKS.rinkeby;
-
+  let myTargetNetwork =
+    selectedChainId && NETWORKS[Object.keys(NETWORKS).find(element => NETWORKS[element].chainId === selectedChainId)];
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -139,7 +135,6 @@ function App(props) {
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
-  console.log(yourMainnetBalance);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
@@ -165,7 +160,6 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -214,11 +208,11 @@ function App(props) {
     mainnetContracts,
   ]);
 
-  let networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: myTargetNetwork.color }}>
-        {myTargetNetwork.name}
-      </div>
-    );
+  let networkDisplay = myTargetNetwork && (
+    <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: myTargetNetwork.color }}>
+      {myTargetNetwork.name}
+    </div>
+  );
 
   // let networkDisplay = "";
   // if (localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -326,17 +320,7 @@ function App(props) {
               }}
               to="/"
             >
-              L2 Arbitrum Bridge
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/optimism">
-            <Link
-              onClick={() => {
-                setRoute("/optimism");
-              }}
-              to="/optimism"
-            >
-              L2 Optimism Bridge
+              L2 Bridge
             </Link>
           </Menu.Item>
           <Menu.Item key="/l2contracts">
@@ -393,35 +377,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <L2ArbitrumBridge
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              userSigner={userSigner}
-              injectedProvider={injectedProvider}
-
-            />
-          </Route>
-          <Route path="/optimism">
-            <L2OptimismBridge
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              userSigner={userSigner}
-              injectedProvider={injectedProvider}
-            />
+            <L2Bridge address={address} userSigner={userSigner} />
           </Route>
           <Route path="/l2contracts">
             {/*
@@ -463,7 +419,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-
 
             <Contract
               name="OVM_L1ETHGateway"
