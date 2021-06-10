@@ -116,7 +116,7 @@ export default function L2ArbitrumBridge({
     async function onFinish(values){
       console.log(contracts.Inbox);
       console.log(values.amount.toString());
-      const tx = await contracts.Inbox.depositEth(1,{value: utils.parseEther(values.amount.toString())});
+      const tx = await contracts.Inbox.depositEth(address,{value: utils.parseEther(values.amount.toString())});
       //showNotification(tx);
       await tx.wait();
       //loadContractData(freelancerContract);
