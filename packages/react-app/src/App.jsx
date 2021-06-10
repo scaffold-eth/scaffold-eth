@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+let targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -67,11 +67,6 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
-
-const L1RPC = NETWORKS.rinkeby;
-const L2RPC = NETWORKS.rinkebyArbitrum;
-const L1Provider = new ethers.providers.StaticJsonRpcProvider(L1RPC.rpcUrl);
-const L2Provider = new ethers.providers.StaticJsonRpcProvider(L2RPC.rpcUrl);
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -124,6 +119,13 @@ function App(props) {
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
+  let myTargetNetwork = NETWORKS.kovan;
+  if(selectedChainId == 42)
+    myTargetNetwork = NETWORKS.kovan;
+  else if(selectedChainId == 4)
+    myTargetNetwork = NETWORKS.rinkeby;
+
+
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
@@ -133,7 +135,7 @@ function App(props) {
   const faucetTx = Transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  const yourLocalBalance = useBalance(injectedProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
@@ -151,8 +153,9 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider);
 
   // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+  useOnBlock(injectedProvider, () => {
+    console.log(`⛓ A new block is here: ${injectedProvider._lastBlockNumber}`);
+    console.log(injectedProvider._network);
   });
 
   // Then read your DAI balance like:
@@ -199,6 +202,7 @@ function App(props) {
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
+      console.log("MY TARGET", myTargetNetwork);
     }
   }, [
     mainnetProvider,
@@ -212,8 +216,8 @@ function App(props) {
   ]);
 
   let networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
+      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: myTargetNetwork.color }}>
+        {myTargetNetwork.name}
       </div>
     );
 
@@ -528,7 +532,7 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
-          localProvider={localProvider}
+          localProvider={injectedProvider}
           userSigner={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
