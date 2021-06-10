@@ -2493,6 +2493,195 @@ module.exports = {
       },
     },
   },
+  42: {
+    contracts: {
+      OVM_L1ETHGateway: {
+        address: "0xb191d67f69e823445cd59e5a88953a82be73b9c6",
+        abi: [
+          {
+            inputs: [],
+            stateMutability: "nonpayable",
+            type: "constructor"
+          },
+          {
+            anonymous: false,
+            inputs: [
+              {
+                indexed: true,
+                internalType: "address",
+                name: "_from",
+                type: "address"
+              },
+              {
+                indexed: false,
+                internalType: "address",
+                name: "_to",
+                type: "address"
+              },
+              {
+                indexed: false,
+                internalType: "uint256",
+                name: "_amount",
+                type: "uint256"
+              }
+            ],
+            name: "DepositInitiated",
+            type: "event"
+          },
+          {
+            anonymous: false,
+            inputs: [
+              {
+                indexed: true,
+                internalType: "address",
+                name: "_to",
+                type: "address"
+              },
+              {
+                indexed: false,
+                internalType: "uint256",
+                name: "_amount",
+                type: "uint256"
+              }
+            ],
+            name: "WithdrawalFinalized",
+            type: "event"
+          },
+          {
+            inputs: [],
+            name: "deposit",
+            outputs: [],
+            stateMutability: "payable",
+            type: "function"
+          },
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_to",
+                type: "address"
+              }
+            ],
+            name: "depositTo",
+            outputs: [],
+            stateMutability: "payable",
+            type: "function"
+          },
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_to",
+                type: "address"
+              },
+              {
+                internalType: "uint256",
+                name: "_amount",
+                type: "uint256"
+              }
+            ],
+            name: "finalizeWithdrawal",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function"
+          },
+          {
+            inputs: [],
+            name: "getFinalizeDepositL2Gas",
+            outputs: [
+              {
+                internalType: "uint32",
+                name: "",
+                type: "uint32"
+              }
+            ],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            inputs: [
+              {
+                internalType: "address",
+                name: "_libAddressManager",
+                type: "address"
+              },
+              {
+                internalType: "address",
+                name: "_ovmEth",
+                type: "address"
+              }
+            ],
+            name: "initialize",
+            outputs: [],
+            stateMutability: "nonpayable",
+            type: "function"
+          },
+          {
+            inputs: [],
+            name: "libAddressManager",
+            outputs: [
+              {
+                internalType: "contract Lib_AddressManager",
+                name: "",
+                type: "address"
+              }
+            ],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            inputs: [],
+            name: "messenger",
+            outputs: [
+              {
+                internalType: "address",
+                name: "",
+                type: "address"
+              }
+            ],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            inputs: [],
+            name: "ovmEth",
+            outputs: [
+              {
+                internalType: "address",
+                name: "",
+                type: "address"
+              }
+            ],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            inputs: [
+              {
+                internalType: "string",
+                name: "_name",
+                type: "string"
+              }
+            ],
+            name: "resolve",
+            outputs: [
+              {
+                internalType: "address",
+                name: "",
+                type: "address"
+              }
+            ],
+            stateMutability: "view",
+            type: "function"
+          },
+          {
+            stateMutability: "payable",
+            type: "receive"
+          }
+        ],
+      },
+    },
+  },
   420: {
     contracts: {
       OVM_ETH: {

@@ -12,7 +12,7 @@ import {
 } from "../hooks";
 import { NETWORKS } from "../constants";
 
-export default function L2ArbitrumBridge({
+export default function L2OptimismBridge({
   purpose,
   setPurposeEvents,
   address,
@@ -25,7 +25,7 @@ export default function L2ArbitrumBridge({
   userSigner,
   contracts
 }) {
- 
+
 const [L1EthBalance, setL1EthBalance] = useState("...");
 const [L2EthBalance, setL2EthBalance] = useState("...");
 const [L1Provider, setL1Provider] = useState("");
@@ -33,8 +33,8 @@ const [L2Provider, setL2Provider] = useState("");
 
  useEffect(() => {
     async function setProviders() {
-      const L1RPC = NETWORKS.rinkeby;
-      const L2RPC = NETWORKS.rinkebyArbitrum;
+      const L1RPC = NETWORKS.kovan;
+      const L2RPC = NETWORKS.kovanOptimism;
       setL1Provider(new ethers.providers.StaticJsonRpcProvider(L1RPC.rpcUrl));
       setL2Provider(new ethers.providers.StaticJsonRpcProvider(L2RPC.rpcUrl));
     }
@@ -48,7 +48,6 @@ const [L2Provider, setL2Provider] = useState("");
     const yourL2Balance = await L2Provider.getBalance(address);
     setL2EthBalance(yourL2Balance ? ethers.utils.formatEther(yourL2Balance) : "...");
   });
-
 
   const [newPurpose, setNewPurpose] = useState("loading...");
   const { Option } = Select;
@@ -89,7 +88,7 @@ const [L2Provider, setL2Provider] = useState("");
       align: 'center',
     },
     {
-      title: 'Arbitrum Balance',
+      title: 'Optimism Balance',
       dataIndex: 'l2',
       key: 'l2',
       align: 'center',
@@ -122,9 +121,9 @@ const [L2Provider, setL2Provider] = useState("");
     };
 
     async function onFinish(values){
-      console.log(contracts.Inbox);
+      console.log(contracts.OVM_L1ETHGateway);
       console.log(values.amount.toString());
-      const tx = await contracts.Inbox.depositEth(address,{value: utils.parseEther(values.amount.toString())});
+      const tx = await contracts.OVM_L1ETHGateway.deposit({value: utils.parseEther(values.amount.toString())});
       //showNotification(tx);
       await tx.wait();
       //loadContractData(freelancerContract);
@@ -137,7 +136,7 @@ const [L2Provider, setL2Provider] = useState("");
   return (
     <div style={{ padding: 16, width: 800, margin: "auto", marginBottom: 128 }}>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginBottom: 128 }}>
-        <h2>Welcome to the L2 Arbitrum Bridge!</h2>
+        <h2>Welcome to the L2 Optimism Bridge!</h2>
 
         <Table columns={columns} dataSource={data} pagination={false}
           style={{marginBottom:20}}

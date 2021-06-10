@@ -19,7 +19,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, L2ArbitrumBridge } from "./views";
+import { ExampleUI, Hints, Subgraph, L2ArbitrumBridge, L2OptimismBridge } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -67,6 +67,11 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
+
+const L1RPC = NETWORKS.rinkeby;
+const L2RPC = NETWORKS.rinkebyArbitrum;
+const L1Provider = new ethers.providers.StaticJsonRpcProvider(L1RPC.rpcUrl);
+const L2Provider = new ethers.providers.StaticJsonRpcProvider(L2RPC.rpcUrl);
 
 /*
   Web3 modal helps us "connect" external wallets:
@@ -132,6 +137,7 @@ function App(props) {
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
+  console.log(yourMainnetBalance);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
@@ -157,9 +163,11 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
+
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
+  const contracts = useContractLoader(userSigner);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -203,51 +211,57 @@ function App(props) {
     mainnetContracts,
   ]);
 
-  let networkDisplay = "";
-  if (localChainId && selectedChainId && localChainId !== selectedChainId) {
-    const networkSelected = NETWORK(selectedChainId);
-    const networkLocal = NETWORK(localChainId);
-    if (selectedChainId === 1337 && localChainId === 31337) {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network ID"
-            description={
-              <div>
-                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
-                HardHat.
-                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    } else {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network"
-            description={
-              <div>
-                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <b>{networkLocal && networkLocal.name}</b>.
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    }
-  } else {
-    networkDisplay = (
+  let networkDisplay = (
       <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
         {targetNetwork.name}
       </div>
     );
-  }
+
+  // let networkDisplay = "";
+  // if (localChainId && selectedChainId && localChainId !== selectedChainId) {
+  //   const networkSelected = NETWORK(selectedChainId);
+  //   const networkLocal = NETWORK(localChainId);
+  //   if (selectedChainId === 1337 && localChainId === 31337) {
+  //     networkDisplay = (
+  //       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+  //         <Alert
+  //           message="⚠️ Wrong Network ID"
+  //           description={
+  //             <div>
+  //               You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
+  //               HardHat.
+  //               <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
+  //             </div>
+  //           }
+  //           type="error"
+  //           closable={false}
+  //         />
+  //       </div>
+  //     );
+  //   } else {
+  //     networkDisplay = (
+  //       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+  //         <Alert
+  //           message="⚠️ Wrong Network"
+  //           description={
+  //             <div>
+  //               You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+  //               <b>{networkLocal && networkLocal.name}</b>.
+  //             </div>
+  //           }
+  //           type="error"
+  //           closable={false}
+  //         />
+  //       </div>
+  //     );
+  //   }
+  // } else {
+  //   networkDisplay = (
+  //     <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
+  //       {targetNetwork.name}
+  //     </div>
+  //   );
+  // }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -310,6 +324,16 @@ function App(props) {
               to="/"
             >
               L2 Arbitrum Bridge
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/optimism">
+            <Link
+              onClick={() => {
+                setRoute("/optimism");
+              }}
+              to="/optimism"
+            >
+              L2 Optimism Bridge
             </Link>
           </Menu.Item>
           <Menu.Item key="/l2contracts">
@@ -377,6 +401,23 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               userSigner={userSigner}
+              contracts={contracts}
+
+            />
+          </Route>
+          <Route path="/optimism">
+            <L2OptimismBridge
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              userSigner={userSigner}
+              contracts={contracts}
             />
           </Route>
           <Route path="/l2contracts">
