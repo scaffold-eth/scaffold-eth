@@ -1,10 +1,15 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import { SyncOutlined } from "@ant-design/icons";
-import { utils } from "ethers";
+import { utils, ethers } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Form, Select, Option, InputNumber, Table, Tag, Space } from "antd";
 import React, { useState } from "react";
 import { Address, Balance } from "../components";
+import {
+  useBalance,
+  useContractLoader,
+} from "../hooks";
+import { NETWORKS } from "../constants";
 
 export default function L2ArbitrumBridge({
   purpose,
@@ -12,12 +17,31 @@ export default function L2ArbitrumBridge({
   address,
   mainnetProvider,
   localProvider,
-  yourLocalBalance,
   price,
   tx,
   readContracts,
   writeContracts,
+  userSigner,
 }) {
+  const L1RPC = NETWORKS.rinkeby;
+  const L2RPC = NETWORKS.rinkebyArbitrum;
+
+  const L1Provider = new ethers.providers.StaticJsonRpcProvider(L1RPC.rpcUrl);
+  const L2Provider = new ethers.providers.StaticJsonRpcProvider(L2RPC.rpcUrl);
+  const yourL1Balance = useBalance(L1Provider, address);
+  const yourL2Balance = useBalance(L2Provider, address);
+  const L1ethBalance = yourL1Balance ? utils.formatEther(yourL1Balance) : "...";
+  const L2ethBalance = yourL2Balance ? utils.formatEther(yourL2Balance) : "...";
+
+  const contracts = useContractLoader(userSigner);
+  
+
+  // Then read your DAI balance like:
+  // const ArbitrumInbox = useContractReader(contracts, "DAI", "balanceOf", [
+  //   "0x34aA3F359A9D614239015126635CE7732c18fDF3",
+  // ]);
+
+
   const [newPurpose, setNewPurpose] = useState("loading...");
   const { Option } = Select;
   const formItemLayout = {
@@ -45,15 +69,21 @@ export default function L2ArbitrumBridge({
 
   const columns = [
     {
-      title: 'L1 Eth Balance',
-      dataIndex: 'l1Eth',
-      key: 'l1Eth',
+      title: '',
+      dataIndex: 'token',
+      key: 'token',
       align: 'center',
     },
     {
-      title: 'Arbitrum Eth Balance',
-      dataIndex: 'l2Eth',
-      key: 'l2Eth',
+      title: 'L1 Balance',
+      dataIndex: 'l1',
+      key: 'l1',
+      align: 'center',
+    },
+    {
+      title: 'Arbitrum Balance',
+      dataIndex: 'l2',
+      key: 'l2',
       align: 'center',
     },
   ]
@@ -61,9 +91,16 @@ export default function L2ArbitrumBridge({
   const data = [
     {
       key: '1',
-      l1Eth: 'Ξ 33',
-      l2Eth: 'Ξ 22',
-    }
+      token: 'ETH',
+      l1: 'Ξ' + L1ethBalance,
+      l2: 'Ξ' + L2ethBalance,
+    },
+    // {
+    //   key: '2',
+    //   token: 'A TOKEN',
+    //   l1: 'TOK 33',
+    //   l2: 'TOK 22',
+    // }
   ]
 
   const [form] = Form.useForm();
@@ -76,8 +113,13 @@ export default function L2ArbitrumBridge({
       console.log(value)
     };
 
-    const onFinish = (values) => {
-      console.log(values);
+    async function onFinish(values){
+      console.log(contracts.Inbox);
+      console.log(values.amount.toString());
+      const tx = await contracts.Inbox.depositEth(1,{value: utils.parseEther(values.amount.toString())});
+      //showNotification(tx);
+      await tx.wait();
+      //loadContractData(freelancerContract);
     };
 
     const onReset = () => {
@@ -113,7 +155,7 @@ export default function L2ArbitrumBridge({
             </Select>
           </Form.Item>
           <Form.Item name="address" label="Address">
-            <Input placeholder={address} />
+            <Input disabled placeholder={address} />
           </Form.Item>
           <Form.Item
             name="amount"
