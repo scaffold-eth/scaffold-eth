@@ -4,6 +4,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { utils, ethers } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Form, Select, Option, InputNumber, Table, Tag, Space } from "antd";
 import React, { useState, useEffect } from "react";
+import contractConfig from '../contracts/external_contracts';
 import { Address, Balance } from "../components";
 import {
   useBalance,
@@ -45,7 +46,9 @@ const [L2Provider, setL2Provider] = useState("");
     console.log(`⛓ A new mainnet block is here: ${L1Provider._lastBlockNumber}`);
     const yourL1Balance = await L1Provider.getBalance(address);
     setL1EthBalance(yourL1Balance ? ethers.utils.formatEther(yourL1Balance) : "...");
-    const yourL2Balance = await L2Provider.getBalance(address);
+    // optimism eth is erc20 token
+    const l2Instance = new ethers.Contract(contractConfig[NETWORKS.kovanOptimism.chainId].contracts.OVM_ETH.address,  contractConfig[NETWORKS.kovanOptimism.chainId].contracts.OVM_ETH.abi, L2Provider);
+    const yourL2Balance = await l2Instance.balanceOf(address);
     setL2EthBalance(yourL2Balance ? ethers.utils.formatEther(yourL2Balance) : "...");
   });
 
