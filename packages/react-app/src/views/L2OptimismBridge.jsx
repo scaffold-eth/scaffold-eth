@@ -24,13 +24,14 @@ export default function L2OptimismBridge({
   readContracts,
   writeContracts,
   userSigner,
-  contracts
+  injectedProvider
 }) {
 
 const [L1EthBalance, setL1EthBalance] = useState("...");
 const [L2EthBalance, setL2EthBalance] = useState("...");
 const [L1Provider, setL1Provider] = useState("");
 const [L2Provider, setL2Provider] = useState("");
+const [contracts, setContracts] = useState();
 
  useEffect(() => {
     async function setProviders() {
@@ -41,6 +42,18 @@ const [L2Provider, setL2Provider] = useState("");
     }
     setProviders();
   }, []);
+
+   useEffect(() => {
+    async function setInjected() {
+      if(userSigner){
+        const contract = await new ethers.Contract(contractConfig[NETWORKS.kovan.chainId].contracts.OVM_L1ETHGateway.address,  contractConfig[NETWORKS.kovan.chainId].contracts.OVM_L1ETHGateway.abi, userSigner);
+        console.log("QQQ",userSigner);
+        setContracts(contract);
+      }
+      
+    }
+    setInjected();
+  }, [userSigner]);
 
   useOnBlock(L1Provider, async () => {
     console.log(`⛓ A new mainnet block is here: ${L1Provider._lastBlockNumber}`);
@@ -124,9 +137,9 @@ const [L2Provider, setL2Provider] = useState("");
     };
 
     async function onFinish(values){
-      console.log(contracts.OVM_L1ETHGateway);
+      console.log(contracts);
       console.log(values.amount.toString());
-      const tx = await contracts.OVM_L1ETHGateway.deposit({value: utils.parseEther(values.amount.toString())});
+      const tx = await contracts.deposit({value: utils.parseEther(values.amount.toString())});
       //showNotification(tx);
       await tx.wait();
       //loadContractData(freelancerContract);

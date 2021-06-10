@@ -4,6 +4,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { utils, ethers } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Form, Select, Option, InputNumber, Table, Tag, Space } from "antd";
 import React, { useState, useEffect } from "react";
+import contractConfig from '../contracts/external_contracts';
 import { Address, Balance } from "../components";
 import {
   useBalance,
@@ -22,14 +23,14 @@ export default function L2ArbitrumBridge({
   tx,
   readContracts,
   writeContracts,
-  userSigner,
-  contracts
+  userSigner
 }) {
  
 const [L1EthBalance, setL1EthBalance] = useState("...");
 const [L2EthBalance, setL2EthBalance] = useState("...");
 const [L1Provider, setL1Provider] = useState("");
 const [L2Provider, setL2Provider] = useState("");
+const [contracts, setContracts] = useState();
 
  useEffect(() => {
     async function setProviders() {
@@ -40,6 +41,18 @@ const [L2Provider, setL2Provider] = useState("");
     }
     setProviders();
   }, []);
+
+  useEffect(() => {
+    async function setInjected() {
+      if(userSigner){
+        const contract = await new ethers.Contract(contractConfig[NETWORKS.rinkeby.chainId].contracts.Inbox.address,  contractConfig[NETWORKS.rinkeby.chainId].contracts.Inbox.abi, userSigner);
+        console.log("QQQ",userSigner);
+        setContracts(contract);
+      }
+      
+    }
+    setInjected();
+  }, [userSigner]);
 
   useOnBlock(L1Provider, async () => {
     console.log(`⛓ A new mainnet block is here: ${L1Provider._lastBlockNumber}`);
@@ -122,9 +135,9 @@ const [L2Provider, setL2Provider] = useState("");
     };
 
     async function onFinish(values){
-      console.log(contracts.Inbox);
+      console.log(contracts);
       console.log(values.amount.toString());
-      const tx = await contracts.Inbox.depositEth(address,{value: utils.parseEther(values.amount.toString())});
+      const tx = await contracts.depositEth(address,{value: utils.parseEther(values.amount.toString())});
       //showNotification(tx);
       await tx.wait();
       //loadContractData(freelancerContract);

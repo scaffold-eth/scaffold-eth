@@ -170,7 +170,6 @@ function App(props) {
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
-  const contracts = useContractLoader(userSigner);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -405,7 +404,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               userSigner={userSigner}
-              contracts={contracts}
+              injectedProvider={injectedProvider}
 
             />
           </Route>
@@ -421,7 +420,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               userSigner={userSigner}
-              contracts={contracts}
+              injectedProvider={injectedProvider}
             />
           </Route>
           <Route path="/l2contracts">
