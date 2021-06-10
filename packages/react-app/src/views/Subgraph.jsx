@@ -1,6 +1,6 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 import { gql, useQuery } from "@apollo/client";
-import { Button, Input, Table, Typography, Radio, Space, Card } from "antd";
+import { Button, Input, Table, Typography } from "antd";
 import "antd/dist/antd.css";
 import GraphiQL from "graphiql";
 import "graphiql/graphiql.min.css";
@@ -69,149 +69,6 @@ function Subgraph(props) {
   const deployWarning = (
     <div style={{ marginTop: 8, padding: 8 }}>Warning: 🤔 Have you deployed your subgraph yet?</div>
   );
-
-
-  const dexQLFetcher = (_ql) => {
-    return fetch(uri, {
-      method: "post",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(_ql),
-    }).then(response => response.json());
-  }
-
-  const uriArr = [
-    {
-      "name":"uniswap-v2",
-      "uri":"https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
-      "ql": `{
-            swaps(first: 10, orderBy: timestamp, orderDirection: desc) {
-              pair {
-                token0 {
-                  symbol
-                  totalSupply
-                  totalLiquidity
-                }
-                token1 {
-                  symbol
-                  totalSupply
-                  totalLiquidity
-                }
-                totalSupply
-                token0Price
-                token1Price
-              }
-              amount0In,
-              amount1In,
-              amount0Out,
-              amount1Out
-              amountUSD,
-              transaction {
-              blockNumber
-            }
-            }
-          }`
-    },{
-      "name":"compound-v2",
-      "uri":"https://api.thegraph.com/subgraphs/name/graphprotocol/compound-v2",
-      "ql": `{
-            markets(first: 7, orderBy: totalSupply) {
-              symbol
-              totalSupply
-            }
-          }`
-    },{
-      "name":"synthetix",
-      "uri":"https://api.thegraph.com/subgraphs/name/synthetixio-team/synthetix",
-      "ql": `{
-          synthetixes(first: 5) {
-            id
-            issuers
-            snxHolders
-          }
-          transfers(first: 5) {
-            id
-            from
-            to
-            value
-          }
-        }`
-    },{
-      "name":"balancer-v2",
-      "uri":"https://api.thegraph.com/subgraphs/name/balancer-labs/balancer-v2",
-      "ql": `{
-          pools(first: 10, orderBy: totalLiquidity) {
-            address
-          }
-        }`
-    },{
-      "name":"aave-v2",
-      "uri":"https://api.thegraph.com/subgraphs/name/aave/protocol-v2",
-      "ql": `{
-            protocols(first: 5) {
-              id
-              pools {
-                id
-              }
-            }
-          }`
-    },{
-      "name":"dydx",
-      "uri":"https://api.thegraph.com/subgraphs/name/graphitetools/dydx",
-      "ql": `{
-            markets(first: 5) {
-              id
-              token {
-                id
-              }
-              supplyIndex
-              borrowIndex
-            }
-          }`
-    },{
-      "name":"kyber",
-      "uri":"https://api.thegraph.com/subgraphs/name/protofire/kyber",
-      "ql": `{
-          fullTrades(first: 5) {
-            src {
-              symbol
-            }
-            dest {
-              symbol
-            }
-          }
-        }`
-    },{
-      "name":"curve",
-      "uri":"https://api.thegraph.com/subgraphs/name/protofire/curve",
-      "ql": `{
-          pools(first: 5, orderBy: addedAt) {
-            coins {
-              token {
-                symbol
-              }
-              balance
-            }
-            underlyingCoins {
-              token {
-                symbol
-              }
-            }
-          }
-        }`
-    }
-  ];
-
-  const [index, setIndex] = useState(0);
-  const [uri, setUri] = useState(uriArr[0].uri);
-  const [ql, setQl] = useState(uriArr[0].ql);
-
-  const onChangeUri = e => {
-    const i = e.target.value;
-    console.log('radio checked', e.target.value);
-    setIndex(i);
-    setUri(uriArr[i].uri);
-    setQl(uriArr[i].ql);
-  };
 
   return (
     <>
@@ -324,26 +181,6 @@ function Subgraph(props) {
         <div style={{ margin: 32, height: 400, border: "1px solid #888888", textAlign: "left" }}>
           <GraphiQL fetcher={graphQLFetcher} docExplorerOpen query={EXAMPLE_GRAPHQL} />
         </div>
-
-        <Card title="choose and play some top dex subgraph:" style={{ margin: "auto", marginTop: 10, paddingBottom: 10 }}>
-        <h3>current dex url: {uri} </h3>      
-        <Radio.Group onChange={onChangeUri} value={index} >
-          <Space direction="vertical">
-            { uriArr && 
-              uriArr.map ( (u,i) => {
-                return (
-                  <Radio key={i} value={i}>{u.name}</Radio>
-                )
-              })
-            }
-          </Space>
-        </Radio.Group>
-
-
-        <div style={{ margin: 20, height: 500, border: "1px solid #888888", textAlign: "left" }}>
-          <GraphiQL fetcher={dexQLFetcher} docExplorerOpen query={ql} />
-        </div>
-        </Card>
       </div>
 
       <div style={{ padding: 64 }}>...</div>

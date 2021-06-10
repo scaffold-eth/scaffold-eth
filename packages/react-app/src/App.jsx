@@ -23,7 +23,7 @@ import {
   useUserProvider,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, DexSubgraphExplorer } from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -421,6 +421,7 @@ function App(props) {
               writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
             />
+            <DexSubgraphExplorer />
           </Route>
         </Switch>
       </BrowserRouter>
