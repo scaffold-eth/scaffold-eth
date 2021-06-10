@@ -105,6 +105,10 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
           }
         }
 
+        if (typeof result.wait === "function") {
+          await result.wait();
+        }
+
         return result;
       } catch (e) {
         console.log(e);
