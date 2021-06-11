@@ -45,7 +45,7 @@ import { ExampleUI, Hints, Subgraph, Freelancer, Client } from "./views";
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -372,6 +372,7 @@ function App(props) {
             readContracts={readContracts}
             localProvider={localProvider}
             userProvider={userProvider}
+            localProvider={localProvider}
             tx={tx}
 
             />
@@ -382,6 +383,7 @@ function App(props) {
             readContracts={readContracts}
             localProvider={localProvider}
             userProvider={userProvider}
+            localProvider={localProvider}
             tx={tx}
             />
           </Route>

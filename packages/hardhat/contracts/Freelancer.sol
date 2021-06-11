@@ -195,6 +195,7 @@ contract Freelancer {
         // End the project
         function endProject()
             external
+            inProjectState(ProjectState.Accepted)
             bothClientFreelancer
             noMoreFunds
         {

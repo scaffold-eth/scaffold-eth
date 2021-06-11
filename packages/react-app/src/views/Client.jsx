@@ -5,7 +5,7 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Select } from "antd";
 import React, { useState, useEffect, useRef } from "react";
 import { Address, AddressInput } from "../components";
-import { useTokenList } from "../hooks";
+import { useTokenList, useOnBlock } from "../hooks";
 import 'react-bootstrap';
 import { Modal, Popover, Button, Form } from 'react-bootstrap';
 import { notification } from "antd";
@@ -14,10 +14,18 @@ export default function Client({
   address,
   readContracts,
   userProvider,
+  localProvider,
   tx
 }) 
 {
   //TODO: Lots of repeated code between both views. Look into how to refactor into components
+
+  useOnBlock(localProvider, () => {
+    console.log(`⛓ A new block is here: ${localProvider._lastBlockNumber}`);
+    if(freelancerContract){
+      loadContractData(freelancerContract);
+    }
+  });
 
   function parseProjectState(enumIndex){
     switch (enumIndex) {
@@ -222,7 +230,7 @@ export default function Client({
                   projectState == 0 && scheduleList.length > 0 && (<button className="btn btn-primary btn-lg" type="button" id="btn-Accept-Project" onClick={() => {acceptProject();}}>Accept Project</button>
                 )}
                 {
-                  freelancerContract && projectState !=2 && totalFundsBalance == 0 && ( 
+                  freelancerContract && projectState ==1 && totalFundsBalance == 0 && ( 
                   <button className="btn btn-primary btn-lg" type="button" id="btn-End-Project" 
                   onClick={() => {endProject();}}>End Project</button>
                 )}
