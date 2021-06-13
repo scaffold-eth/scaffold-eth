@@ -1,4 +1,4 @@
-import { useLayoutEffect, useRef} from "react";
+import { useLayoutEffect, useRef } from "react";
 
 /*
   ~ What it does? ~
@@ -10,13 +10,13 @@ import { useLayoutEffect, useRef} from "react";
   on every render.
 */
 
-const useLatestRef = (value) => {
-  const ref = useRef(value)
+const useLatestRef = value => {
+  const ref = useRef(value);
 
   useLayoutEffect(() => {
-    ref.current = value
+    ref.current = value;
   }, [value]);
-  
+
   return ref;
 };
 

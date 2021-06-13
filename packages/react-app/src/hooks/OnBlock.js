@@ -1,5 +1,5 @@
-import { useEffect, useRef } from "react";
-import { useLatestRef } from 'eth-hooks';
+import { useEffect } from "react";
+import { useLatestRef } from "eth-hooks";
 
 // helper hook to call a function regularly in time intervals
 const DEBUG = false;
