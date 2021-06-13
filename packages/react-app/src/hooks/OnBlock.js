@@ -9,6 +9,7 @@ export default function useOnBlock(provider, fn, args) {
   const savedCallback = useLatestRef(fn);
 
   // Turn on the listener if we have a function & a provider
+  // eslint-disable-next-line consistent-return
   useEffect(() => {
     if (fn && provider) {
       const listener = blockNumber => {
