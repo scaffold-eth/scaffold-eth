@@ -1,14 +1,12 @@
 import { useEffect, useRef } from "react";
+import { useLatestRef } from 'eth-hooks';
 
 // helper hook to call a function regularly in time intervals
 const DEBUG = false;
 
 export default function useOnBlock(provider, fn, args) {
-  const savedCallback = useRef();
   // Remember the latest fn.
-  useEffect(() => {
-    savedCallback.current = fn;
-  }, [fn]);
+  const savedCallback = useLatestRef(fn);
 
   // Turn on the listener if we have a function & a provider
   useEffect(() => {
@@ -29,5 +27,5 @@ export default function useOnBlock(provider, fn, args) {
         provider.off("block", listener);
       };
     }
-  }, [provider]);
+  }, [provider, savedCallback]);
 }

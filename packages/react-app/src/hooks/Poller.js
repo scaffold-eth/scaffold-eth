@@ -1,13 +1,10 @@
 import { useEffect, useRef } from "react";
+import { useLatestRef } from 'eth-hooks';
 
 // helper hook to call a function regularly in time intervals
 
 export default function usePoller(fn, delay, extraWatch) {
-  const savedCallback = useRef();
-  // Remember the latest fn.
-  useEffect(() => {
-    savedCallback.current = fn;
-  }, [fn]);
+  const savedCallback = useLatestRef();
   // Set up the interval.
   // eslint-disable-next-line consistent-return
   useEffect(() => {
@@ -18,7 +15,7 @@ export default function usePoller(fn, delay, extraWatch) {
       const id = setInterval(tick, delay);
       return () => clearInterval(id);
     }
-  }, [delay]);
+  }, [delay, savedCallback]);
   // run at start too
   useEffect(() => {
     fn();
