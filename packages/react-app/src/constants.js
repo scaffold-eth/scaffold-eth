@@ -311,6 +311,13 @@ export const DAI_ABI = [
       image: "simplenft.png"
     },
     {
+      name: "🧾 Minimum Viable Payment Channel",
+      desc: "Make micro payments in ETH with signatures over a open session",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/payment-channel",
+      readMore: "",
+      image: "paymentchannel.png"
+    },
+    {
       name: "📈 Bonding Curve",
       desc: "Learn about bonding curves and play around with the 😃 bonding curve token",
       branch: "https://github.com/austintgriffith/scaffold-eth/tree/bonding-curve",
@@ -547,7 +554,7 @@ export const BUILDERS = [
     role: "React + Solidity",
     address: "0x1e2ce012b27d0c0d3e717e943ef6e62717cec4ea",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
-    builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft"],
+    builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft", "paymentchannel"],
     streamAddress: "0xDbcD66b510191cD0539F7FAe8cD981B82Ee2006f",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     streamUrl: "https://ironsoul.buidlguidl.com"
   },
@@ -556,7 +563,7 @@ export const BUILDERS = [
     role: "Solidity + React",
     address: "0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=viraj124",
-    builds: [ "xnft", "proxy", "diamond", "highestbid", "merklenft"],
+    builds: [ "xnft", "proxy", "diamond", "highestbid", "merklenft", "paymentchannel", "bondingcurve"],
     streamAddress: "0x974a061A8cE5a2b07cB3f1D356Bb01Daaa9eC31d",//"0x21e18260357D33d2e18482584a8F39D532fb71cC",
     streamUrl: "http://viraz.buidlguidl.com"
   },
@@ -565,7 +572,7 @@ export const BUILDERS = [
     role: "Solidity + React",
     address: "0x7b945ffe9725d8e05343bec36c0eced294097f78",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
-    builds: [ "xnft", "rokens", "highestbid", "merklenft"],
+    builds: [ "xnft", "rokens", "highestbid", "merklenft", "paymentchannel"],
     streamAddress: "0x1eB6Da6F03B6D3C0d8da0B127388Add4d78Eb652",//"0xd116179A26F7b36Ed7B3334679aD0B2ec8c5ec22",
     streamUrl: "http://sadda11asm.buidlguidl.com"
   },
