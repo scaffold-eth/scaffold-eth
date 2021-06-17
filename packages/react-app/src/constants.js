@@ -528,6 +528,13 @@ export const DAI_ABI = [
       readMore: "",
       image: "push.png"
     },
+    {
+      name: "🖼 Rarible Protocol Starter App",
+      desc: "Mint, Lazy Mint, Buy, and Sell NFTs using the Rarible Protocol and Marketplace",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/rarible-starter-app",
+      readMore: "https://docs.rarible.com/starter-app",
+      image: "rarible.png"
+    },
 
     /*
     {
