@@ -550,6 +550,15 @@ export const DAI_ABI = [
 
 export const BUILDERS = [
   {
+    name: "isaacpatka.eth",
+    role: "React + Solidity",
+    address: "0x775af9b7c214fe8792ab5f5da61a8708591d517e",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ipatka",
+    builds: [ ],
+    streamAddress: "0x21BD856523f62Dd2A6eDBa750E97bD106204D5f2",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://isaacpatka.buidlguidl.com"
+  },
+  {
     name: "pabloruiz.eth",
     role: "React + Solidity",
     address: "0xfd4c0f5848642fc2041c003cb684fc66b16217bc",
