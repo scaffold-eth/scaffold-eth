@@ -543,13 +543,31 @@ export const DAI_ABI = [
 
 export const BUILDERS = [
   {
+    name: "pabloruiz.eth",
+    role: "React + Solidity",
+    address: "0xfd4c0f5848642fc2041c003cb684fc66b16217bc",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=pabloruiz55",
+    builds: [ ],
+    streamAddress: "0xB3A51b63B7f1Bcb8600FF67E4a69C7B690994a89",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://pabloruiz.buidlguidl.com"
+  },
+  {
+    name: "togzhan.eth",
+    role: "React + Solidity",
+    address: "0x50eccad809d553335a8eb7bfec2cee5a6f2cde43",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=btogzhan2000",
+    builds: [ ],
+    streamAddress: "0x3B60b34Aa5dEAFF586D3841AD62b4aa730e11ceC",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://togzhan.buidlguidl.com"
+  },
+  {
     name: "ironsoul.eth",
     role: "React + Solidity",
     address: "0x1e2ce012b27d0c0d3e717e943ef6e62717cec4ea",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft"],
     streamAddress: "0xDbcD66b510191cD0539F7FAe8cD981B82Ee2006f",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-    streamUrl: "https://ironsoul.buidlguidl.com"
+    streamUrl: "http://ironsoul.buidlguidl.com"
   },
   {
     name: "viraz.eth",
