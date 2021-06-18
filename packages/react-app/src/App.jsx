@@ -42,10 +42,11 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-let targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = false;
+const DEBUG = true;
+const NETWORKCHECK = false;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -119,7 +120,7 @@ function App(props) {
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
-  let myTargetNetwork =
+  const myTargetNetwork =
     selectedChainId && NETWORKS[Object.keys(NETWORKS).find(element => NETWORKS[element].chainId === selectedChainId)];
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
@@ -131,7 +132,7 @@ function App(props) {
   const faucetTx = Transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(injectedProvider, address);
+  const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
@@ -148,9 +149,8 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider);
 
   // If you want to call a function on a new block
-  useOnBlock(injectedProvider, () => {
-    console.log(`⛓ A new block is here: ${injectedProvider._lastBlockNumber}`);
-    console.log(injectedProvider._network);
+  useOnBlock(localProvider, () => {
+    console.log(`⛓ A new block is here: ${localProvider._lastBlockNumber}`);
   });
 
   // Then read your DAI balance like:
@@ -195,7 +195,6 @@ function App(props) {
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
-      console.log("MY TARGET", myTargetNetwork);
     }
   }, [
     mainnetProvider,
@@ -208,61 +207,71 @@ function App(props) {
     mainnetContracts,
   ]);
 
-  let networkDisplay = myTargetNetwork && (
-    <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: myTargetNetwork.color }}>
-      {myTargetNetwork.name}
-    </div>
-  );
-
-  // let networkDisplay = "";
-  // if (localChainId && selectedChainId && localChainId !== selectedChainId) {
-  //   const networkSelected = NETWORK(selectedChainId);
-  //   const networkLocal = NETWORK(localChainId);
-  //   if (selectedChainId === 1337 && localChainId === 31337) {
-  //     networkDisplay = (
-  //       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-  //         <Alert
-  //           message="⚠️ Wrong Network ID"
-  //           description={
-  //             <div>
-  //               You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
-  //               HardHat.
-  //               <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
-  //             </div>
-  //           }
-  //           type="error"
-  //           closable={false}
-  //         />
-  //       </div>
-  //     );
-  //   } else {
-  //     networkDisplay = (
-  //       <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-  //         <Alert
-  //           message="⚠️ Wrong Network"
-  //           description={
-  //             <div>
-  //               You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-  //               <b>{networkLocal && networkLocal.name}</b>.
-  //             </div>
-  //           }
-  //           type="error"
-  //           closable={false}
-  //         />
-  //       </div>
-  //     );
-  //   }
-  // } else {
-  //   networkDisplay = (
-  //     <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-  //       {targetNetwork.name}
-  //     </div>
-  //   );
-  // }
+  let networkDisplay = "";
+  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
+    const networkSelected = NETWORK(selectedChainId);
+    const networkLocal = NETWORK(localChainId);
+    if (selectedChainId === 1337 && localChainId === 31337) {
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network ID"
+            description={
+              <div>
+                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
+                HardHat.
+                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    } else {
+      networkDisplay = (
+        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+          <Alert
+            message="⚠️ Wrong Network"
+            description={
+              <div>
+                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+                <b>{networkLocal && networkLocal.name}</b>.
+              </div>
+            }
+            type="error"
+            closable={false}
+          />
+        </div>
+      );
+    }
+  } else {
+    networkDisplay = (
+      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
+        {targetNetwork.name}
+      </div>
+    );
+  }
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+    provider.on("chainChanged", chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    provider.on("accountsChanged", () => {
+      console.log(`account changed!`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    // Subscribe to session disconnection
+    provider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
   }, [setInjectedProvider]);
 
   useEffect(() => {
@@ -323,12 +332,12 @@ function App(props) {
               L2 Bridge
             </Link>
           </Menu.Item>
-          <Menu.Item key="/l2contracts">
+          <Menu.Item key="/contracts">
             <Link
               onClick={() => {
-                setRoute("/l2contracts");
+                setRoute("/contracts");
               }}
-              to="/l2contracts"
+              to="/contracts"
             >
               Contracts
             </Link>
@@ -379,7 +388,7 @@ function App(props) {
           <Route exact path="/">
             <L2Bridge address={address} userSigner={userSigner} />
           </Route>
-          <Route path="/l2contracts">
+          <Route path="/contracts">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -388,48 +397,9 @@ function App(props) {
             {/*
                 testing arbitrium bridging in debug mode
             */}
-            <Contract
-              name="Inbox"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
 
             <Contract
-              name="ArbSys"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="EthERC20Bridge"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="StandardArbErc20"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="OVM_L1ETHGateway"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-
-            <Contract
-              name="OVM_ETH"
+              name="YourContract"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -468,6 +438,16 @@ function App(props) {
               address={address}
               blockExplorer="https://etherscan.io/"
             />
+            {/*
+            <Contract
+              name="UNI"
+              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
+              signer={userSigner}
+              provider={mainnetProvider}
+              address={address}
+              blockExplorer="https://etherscan.io/"
+            />
+            */}
           </Route>
           <Route path="/subgraph">
             <Subgraph
@@ -486,7 +466,7 @@ function App(props) {
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
-          localProvider={injectedProvider}
+          localProvider={localProvider}
           userSigner={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
@@ -540,23 +520,5 @@ function App(props) {
     </div>
   );
 }
-
-/* eslint-disable */
-window.ethereum &&
-  window.ethereum.on("chainChanged", chainId => {
-    web3Modal.cachedProvider &&
-      setTimeout(() => {
-        window.location.reload();
-      }, 1);
-  });
-
-window.ethereum &&
-  window.ethereum.on("accountsChanged", accounts => {
-    web3Modal.cachedProvider &&
-      setTimeout(() => {
-        window.location.reload();
-      }, 1);
-  });
-/* eslint-enable */
 
 export default App;

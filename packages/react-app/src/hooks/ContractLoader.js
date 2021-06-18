@@ -24,13 +24,23 @@ const { ethers } = require("ethers");
     const purpose = useContractReader(readContracts,"YourContract", "purpose")
   - Example of using setPurpose function from our contract and writing transactions by Transactor.js helper:
     tx( writeContracts.YourContract.setPurpose(newPurpose) )
+
+  config can include:
+  - chainId - to hardcode the chainId, irrespective of the providerOrSigner chainId
+  - hardhatNetworkName - to hardcode the hardhat network of interest
+  - customAddresses: { contractName: 0xCustomAddress } to hardcode the address for a given named contract
+  - hardhatContracts: JSON following the hardhat deploy export format (Json with chainIds as keys, which have hardhat network names as keys, which contain arrays of contracts for each)
+  - externalContracts: JSON with chainIds as keys, with an array of contracts for each
 */
 
-export default function useContractLoader(providerOrSigner, network = {}, customAddresses = {}) {
+export default function useContractLoader(providerOrSigner, config = {}) {
   const [contracts, setContracts] = useState();
   useEffect(() => {
+    let active = true;
+
     async function loadContracts() {
       if (typeof providerOrSigner !== "undefined") {
+        console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
           let signer;
@@ -54,17 +64,17 @@ export default function useContractLoader(providerOrSigner, network = {}, custom
 
           const providerNetwork = await provider.getNetwork();
 
-          const _chainId = network.chainId || providerNetwork.chainId;
+          const _chainId = config.chainId || providerNetwork.chainId;
 
           let contractList = {};
           let externalContractList = {};
           try {
-            contractList = require("../contracts/contracts.json");
+            contractList = config.hardhatContracts || require("../contracts/hardhat_contracts.json");
           } catch (e) {
             console.log(e);
           }
           try {
-            externalContractList = require("../contracts/external_contracts.js");
+            externalContractList = config.externalContracts || require("../contracts/external_contracts.js");
           } catch (e) {
             console.log(e);
           }
@@ -74,7 +84,7 @@ export default function useContractLoader(providerOrSigner, network = {}, custom
           if (contractList[_chainId]) {
             for (const hardhatNetwork in contractList[_chainId]) {
               if (Object.prototype.hasOwnProperty.call(contractList[_chainId], hardhatNetwork)) {
-                if (!network.name || hardhatNetwork === network.name) {
+                if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
                   combinedContracts = {
                     ...combinedContracts,
                     ...contractList[_chainId][hardhatNetwork].contracts,
@@ -89,20 +99,25 @@ export default function useContractLoader(providerOrSigner, network = {}, custom
           }
 
           const newContracts = Object.keys(combinedContracts).reduce((accumulator, contractName) => {
-            const _address = Object.keys(customAddresses).includes(contractName)
-              ? customAddresses[contractName]
-              : combinedContracts[contractName].address;
+            const _address =
+              config.customAddresses && Object.keys(config.customAddresses).includes(contractName)
+                ? config.customAddresses[contractName]
+                : combinedContracts[contractName].address;
             accumulator[contractName] = new ethers.Contract(_address, combinedContracts[contractName].abi, signer);
             return accumulator;
           }, {});
-          setContracts(newContracts);
+          if (active) setContracts(newContracts);
         } catch (e) {
           console.log("ERROR LOADING CONTRACTS!!", e);
         }
       }
     }
     loadContracts();
-  }, [providerOrSigner, network.chainId, network.name]);
+
+    return () => {
+      active = false;
+    };
+  }, [providerOrSigner, config.chainId, config.hardhatNetworkName]);
 
   return contracts;
 }

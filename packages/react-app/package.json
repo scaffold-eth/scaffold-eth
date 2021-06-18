@@ -80,7 +80,7 @@
   "scripts": {
     "build": "react-scripts build",
     "eject": "react-scripts eject",
-    "prestart": "test -f src/contracts/contracts.json || touch src/contracts/contracts.json",
+    "prestart": "node ./scripts/create_contracts.js",
     "start": "react-scripts start",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
