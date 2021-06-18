@@ -535,6 +535,13 @@ export const DAI_ABI = [
       readMore: "https://docs.rarible.com/starter-app",
       image: "rarible.png"
     },
+    {
+      name: "🏭 Proxy Factory - EIP-1167 w/ OpenZeppelin",
+      desc: "Use the EIP-1667 w/ OpenZeppelin Proxy Factory pattern to deploy low-gas contract instances",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/proxy-factory",
+      readMore: "https://eips.ethereum.org/EIPS/eip-1167",
+      image: "proxy.png"
+    },
 
     /*
     {
