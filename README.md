@@ -15,11 +15,11 @@
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
+git clone https://github.com/austintgriffith/scaffold-eth.git ghosted-token
 
-cd simple-nft-example
+cd ghosted-token
 
-git checkout simple-nft-example
+git checkout ghosted-token
 ```
 
 ```bash
@@ -37,7 +37,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd simple-nft-example
+cd ghosted-token
 yarn chain
 
 ```
@@ -45,7 +45,7 @@ yarn chain
 > in a third terminal window:
 
 ```bash
-cd simple-nft-example
+cd ghosted-token
 yarn deploy
 
 ```
