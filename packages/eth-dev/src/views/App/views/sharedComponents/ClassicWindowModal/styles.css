@@ -1,0 +1,45 @@
+/* https://www.npmjs.com/package/react-modal-resizable-draggable */
+
+.react-modal-custom-class {
+
+}
+
+.flexible-modal {
+  position: absolute;
+  z-index: 1;
+
+  background: none;
+  overflow: hidden;
+  /*overflow-y: scroll;*/
+  /*padding: 15px;*/
+}
+.flexible-modal-mask {
+  display: none;
+  /*
+  position: fixed;
+  height: 100%;
+  background: rgba(55, 55, 55, 0.6);
+  top:0;
+  left:0;
+  right:0;
+  bottom:0;
+  */
+}
+.flexible-modal-resizer {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  cursor: se-resize;
+  margin: 5px;
+  border-bottom: solid 2px #fff;
+  border-right: solid 2px #fff;
+}
+.flexible-modal-drag-area {
+  position: absolute;
+  right: 0;
+  top: 0;
+  /*background: #fff;*/
+  height: 30px;
+  /*border-bottom: solid 4px #000;*/
+  cursor: move;
+}
