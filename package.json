@@ -10,6 +10,10 @@
   ],
   "private": true,
   "scripts": {
+    "eth-dev:build": "yarn workspace @scaffold-eth/eth-dev build --max-old-space-size=12288",
+    "eth-dev:eject": "yarn workspace @scaffold-eth/eth-dev eject",
+    "eth-dev:start": "yarn workspace @scaffold-eth/eth-dev start",
+    "eth-dev:test": "yarn workspace @scaffold-eth/eth-dev test",
     "react-app:build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
     "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
     "react-app:start": "yarn workspace @scaffold-eth/react-app start",
