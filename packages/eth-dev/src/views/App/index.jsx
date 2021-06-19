@@ -8,6 +8,9 @@ import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
 import { formatEther } from '@ethersproject/units'
+
+import NewLevel from './NewLevel'
+
 import {
   usePoller,
   useExchangePrice,
@@ -46,6 +49,25 @@ import './index.css'
 const { ethers } = require('ethers')
 
 const store = configureStore()
+
+/*
+  add global Window wrapper
+    - with showWindow(id), hideWindow(id)
+
+  add the following actions:
+
+  setCurrentLevel(id)
+
+  setBackground('path/to/background.jpg)
+  showWallet()
+  hideWallet()
+  showTerminal()
+  hideTerminal()
+
+  setDialog()
+  advanceDialog()
+  jumpToDialogPart(part)
+ */
 
 /*
 // 📡 What chain are your contracts deployed to?
@@ -173,15 +195,12 @@ const App = props => {
   }
   console.log('startingAddress', startingAddress)
 
-  const [amount, setAmount] = useState()
-  const [toAddress, setToAddress] = useState(startingAddress)
-
-  const [loading, setLoading] = useState(false)
-
   return (
     <ReduxProvider store={store} key='reduxProvider'>
       <div id='app'>
         <LevelContainer>
+          <NewLevel />
+
           <Background />
 
           <Terminal />
