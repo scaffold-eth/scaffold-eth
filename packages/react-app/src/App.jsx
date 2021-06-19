@@ -120,9 +120,6 @@ function App(props) {
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
-  const myTargetNetwork =
-    selectedChainId && NETWORKS[Object.keys(NETWORKS).find(element => NETWORKS[element].chainId === selectedChainId)];
-
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
@@ -149,8 +146,8 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider);
 
   // If you want to call a function on a new block
-  useOnBlock(localProvider, () => {
-    console.log(`⛓ A new block is here: ${localProvider._lastBlockNumber}`);
+  useOnBlock(mainnetProvider, () => {
+    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
   // Then read your DAI balance like:
