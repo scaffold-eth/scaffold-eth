@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🔛 Ghosted Token 👻
+# 🏗 scaffold-eth - 🔔 🔕 Ghosted Token
 
 > A token that dynamic switches the tokenURI when toggled in the smart contract
 
