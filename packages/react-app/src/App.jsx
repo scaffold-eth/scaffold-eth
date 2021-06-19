@@ -132,6 +132,8 @@ const logoutOfWeb3Modal = async () => {
 };
 
 function App(props) {
+  const [forceLookup, setForceLookup] = useState(0);
+
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
@@ -214,9 +216,9 @@ function App(props) {
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+              console.log("jsonManifest", jsonManifest);
+              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -227,7 +229,7 @@ function App(props) {
       setYourCollectibles(collectibleUpdate);
     };
     updateYourCollectibles();
-  }, [address, yourBalance]);
+  }, [address, yourBalance, forceLookup]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -487,7 +489,21 @@ function App(props) {
                         >
                           Transfer
                         </Button>
+                        <div style={{marginTop:32}}>
+                          <Button
+                            onClick={async() => {
+                              console.log("writeContracts", writeContracts);
+                              await tx(writeContracts.YourCollectible.toggle(id));
+                              setTimeout(()=>{
+                                setForceLookup(forceLookup+1)
+                              },500)
+                            }}
+                          >
+                            TOGGLE
+                          </Button>
+                        </div>
                       </div>
+
                     </List.Item>
                   );
                 }}
