@@ -85,7 +85,7 @@ yarn deploy
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
-💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
+💼 Edit and add your deployment scripts in `packages/hardhat/deploy` - we are using [hardhat-deploy](https://www.npmjs.com/package/hardhat-deploy)
 
 📱 Open http://localhost:3000 to see the app
 
@@ -593,7 +593,7 @@ scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the 
 ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
 ```
 
-You can verify contracts as part of the `deploy.js` script. We have created a `tenderlyVerify()` helper function, which takes your contract name and its deployed address:
+You can verify contracts as part of a deployment script. We have created a `tenderlyVerify()` helper function (example in `scripts/deploy.js`), which takes your contract name and its deployed address:
 
 ```
 await tenderlyVerify(
@@ -791,26 +791,4 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 
 ## Notes
 
-Initiate arbitrum submodule...
-
-git submodule init
-
-git submodule update
-
-cd packages/arbitrum
-
 - Had to remove "arbos-contracts": "^1.0.0", from arb-bridge-peripherals dependencies
-
-yarn install
-
-git submodule init
-
-git submodule update
-
-yarn docker:build:geth
-
-yarn docker:geth
-
-yarn demo:initialize // [--validatorcount N=1]
-
-yarn demo:deploy
