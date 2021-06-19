@@ -156,7 +156,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
   return (
     <div style={{ padding: 16, width: 800, margin: "auto", marginBottom: 128 }}>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginBottom: 128 }}>
-        <h2>Welcome to the L2 Bridge!</h2>
+        <h2>Welcome to the L2 Deposit Bridge!</h2>
         <Radio.Group
           value={rollup}
           onChange={e => {

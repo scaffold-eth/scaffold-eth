@@ -29,8 +29,8 @@ const { ethers } = require("ethers");
   - chainId - to hardcode the chainId, irrespective of the providerOrSigner chainId
   - hardhatNetworkName - to hardcode the hardhat network of interest
   - customAddresses: { contractName: 0xCustomAddress } to hardcode the address for a given named contract
-  - hardhatContracts: JSON following the hardhat deploy export format (Json with chainIds as keys, which have hardhat network names as keys, which contain arrays of contracts for each)
-  - externalContracts: JSON with chainIds as keys, with an array of contracts for each
+  - hardhatContracts: object following the hardhat deploy export format (Json with chainIds as keys, which have hardhat network names as keys, which contain arrays of contracts for each)
+  - externalContracts: object with chainIds as keys, with an array of contracts for each
 */
 
 export default function useContractLoader(providerOrSigner, config = {}) {

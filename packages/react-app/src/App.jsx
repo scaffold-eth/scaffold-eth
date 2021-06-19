@@ -19,7 +19,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, L2Bridge } from "./views";
+import { ExampleUI, Hints, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -329,17 +329,7 @@ function App(props) {
               }}
               to="/"
             >
-              L2 Bridge
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/contracts">
-            <Link
-              onClick={() => {
-                setRoute("/contracts");
-              }}
-              to="/contracts"
-            >
-              Contracts
+              YourContract
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -386,16 +376,10 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <L2Bridge address={address} userSigner={userSigner} />
-          </Route>
-          <Route path="/contracts">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
-            */}
-            {/*
-                testing arbitrium bridging in debug mode
             */}
 
             <Contract
