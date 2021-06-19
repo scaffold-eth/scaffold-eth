@@ -202,6 +202,7 @@ export default function Holdings(props) {
     try {
       const newAddress = ethers.utils.getAddress(values["address"]);
       setData();
+      setHoldings()
       history.push("/holdings/"+newAddress);
     } catch (e) {
       console.log("not an address");
