@@ -87,3 +87,8 @@ Your coin will eventually display as the "ghosted" version:
 ![image](https://user-images.githubusercontent.com/2653167/122654182-d3e5e500-d106-11eb-8598-fc793f5ae11a.png)
 
 ![image](https://user-images.githubusercontent.com/2653167/122654043-ead80780-d105-11eb-8c5b-405205f7aa8c.png)
+
+> The trick is to swap the tokenURI in `YourCollectible.sol` in `packages/hardhat/contracts`
+
+![image](https://user-images.githubusercontent.com/2653167/122654515-43f56a80-d109-11eb-8309-20cbebedb895.png)
+
