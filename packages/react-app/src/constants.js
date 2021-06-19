@@ -105,10 +105,17 @@ export const NETWORKS = {
     blockExplorer: "https://explorer5.arbitrum.io/#/",
     rpcUrl: `https://kovan5.arbitrum.io/rpc`,
   },
+  rinkebyArbitrum: {
+    name: "Arbitrum Testnet",
+    color: "#50a0ea",
+    chainId: 421611,
+    blockExplorer: "https://rinkeby-explorer.arbitrum.io/#/",
+    rpcUrl: `https://rinkeby.arbitrum.io/rpc`,
+  },
   localOptimismL1: {
     name: "localOptimismL1",
     color: "#f01a37",
-    chainId: 1,
+    chainId: 31337,
     blockExplorer: "",
     rpcUrl: "http://" + window.location.hostname + ":9545",
   },

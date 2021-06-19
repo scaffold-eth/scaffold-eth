@@ -101,8 +101,8 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    kovanArbitrum: {
-      url: "https://kovan5.arbitrum.io/rpc",
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
