@@ -107,6 +107,9 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
+      companionNetworks: {
+        l1: "rinkeby",
+      },
     },
     localArbitrum: {
       url: "http://localhost:8547",
@@ -114,12 +117,18 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
+      companionNetworks: {
+        l1: "localArbitrumL1",
+      },
     },
     localArbitrumL1: {
       url: "http://localhost:7545",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localArbitrum",
       },
     },
     kovanOptimism: {
@@ -129,6 +138,9 @@ module.exports = {
         mnemonic: mnemonic(),
       },
       ovm: true,
+      companionNetworks: {
+        l1: "kovan",
+      },
     },
     localOptimism: {
       url: "http://localhost:8545",
@@ -137,12 +149,18 @@ module.exports = {
         mnemonic: mnemonic(),
       },
       ovm: true,
+      companionNetworks: {
+        l1: "localOptimismL1",
+      },
     },
     localOptimismL1: {
       url: "http://localhost:9545",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localOptimism",
       },
     },
   },

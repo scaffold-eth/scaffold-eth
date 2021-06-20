@@ -224,6 +224,16 @@ Look for the [HardHat](https://hardhat.org) console.log() output in the `yarn ch
 yarn deploy
 ```
 
+## hardhat-deploy
+
+scaffold-eth now uses [hardhat-deploy](https://www.npmjs.com/package/hardhat-deploy), a hardhat plugin by [wighawag](https://twitter.com/wighawag?lang=en) that gives your hardhat deployments super-powers!
+
+When you run `yarn deploy`, the scripts in `/packages/hardhat/deploy` are run in alphabetical order (by default - more fine-grained controls in the hardhat-deploy docs). You can deploy contracts, interact with contracts & send ETH - whatever you want!
+
+Deployment metadata is stored in the `/deployments` folder, and automatically copied to `/packages/react-app/src/contracts/hardhat_contracts.json` via the `--export-all` flag in the `yarn deploy` command (see `/packages/hardhat/packagen.json`).
+
+Crucially, this information is stored by network, so if you redeploy contracts on a new network (e.g. on testnet, after running locally), your local deployments are still tracked.
+
 ---
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
@@ -246,9 +256,11 @@ yarn deploy
 
 ---
 
-## 🔏 Providers:
+## 🔏 Providers & Signers:
 
-Providers are your connections to different blockchains.
+### Providers
+
+Providers are your connections to different blockchains. scaffold-eth uses [ethers.js providers](https://docs.ethers.io/v5/api/providers/).
 
 The frontend has three different providers that provide different levels of access to different chains:
 
@@ -256,9 +268,22 @@ The frontend has three different providers that provide different levels of acce
 
 `localProvider`: local [HardHat](https://hardhat.org) accounts, used to read from _your_ contracts (`.env` file points you at testnet or mainnet)
 
-`injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), or other injected wallet (generates [burner-provider](https://www.npmjs.com/package/burner-provider) on page load)
+We use `ethers.providers.StaticJsonRpcProvider` when instantiating providers from RPCs where we are confident that the chainId won't change to save on network calls :)
+
+`injectedProvider`: your personal [MetaMask](https://metamask.io/download.html), [WalletConnect](https://walletconnect.org/apps) via [Argent](https://www.argent.xyz/), connected using [web3modal](https://github.com/Web3Modal/web3modal).
 
 ![image](https://user-images.githubusercontent.com/2653167/110499705-bc35a400-80b5-11eb-826d-44815b89296c.png)
+
+### Signers
+
+From the [ethers.js docs...](https://docs.ethers.io/v5/api/signer/)
+A Signer in ethers is an abstraction of an Ethereum Account, which can be used to sign messages and transactions and send signed transactions to the Ethereum Network to execute state changing operations.
+
+scaffold-eth now uses signers for user operations, either using injectedProvider.getSigner(), or using a Burner Signer created and stored in localStorage (all handled by the `useUserSigner` hook!)
+
+### When should I use a provider and when should I use a signer?
+
+If you are only reading data, use a provider. If you need to make transactions, or sign things, use a Signer.
 
 ---
 
@@ -274,6 +299,22 @@ Commonly used Ethereum hooks located in `packages/react-app/src/`:
 usePoller(() => {
   //do something cool at start and then every three seconds
 }, 3000);
+```
+
+`useOnBlock(provider, fn, args)`: runs a function on app load and then on every new block for a provider
+
+```jsx
+useOnBlock(mainnetProvider, () => {
+  console.log(`⛓ A new mainnet block is here!`);
+});
+```
+
+<br/>
+
+`useUserSigner(injectedProviderOrSigner, localProvider)`: returns the signer associated with an injected web3 provider; if injectedProvider is null, generates a burner signer (stored in local storage)
+
+```js
+const userSigner = useUserSigner(injectedProvider, localProvider);
 ```
 
 <br/>
@@ -310,14 +351,47 @@ const price = useExchangePrice(mainnetProvider);
 
 <br/>
 
-`useContractLoader(provider)`: loads your smart contract interface, for contracts on the provider's chain. This will use contracts deployed from `packages/hardhat` (sourced from `src/contracts/contracts.json`), as well as external contract information, which can be added to `src/contracts/external_contracts.json`
+`useContractLoader(provider)`: loads your smart contract interface, for contracts on the provider's chain.
+
+This will use contracts deployed from `packages/hardhat` (which are exported to `src/contracts/hardhat_contracts.json`), as well as external contract information, which can be added to `src/contracts/external_contracts.js`. Note that you can override both of these by passing `hardhatContracts` or `externalContracts` to the second config parameter of `useContractLoader` (see those files for the required format).
 
 ```js
 const readContracts = useContractLoader(localProvider);
 const writeContracts = useContractLoader(injectedProvider);
-const writeContracts = useContractLoader(injectedProvider, {chainId: 1}); // fix the chainId (even if the provider is on a different chain)
-const writeContracts = useContractLoader(injectedProvider, {name: 'localhost'}); // fix the hardhat network name (even if the provider is on a different chain)
-const writeContracts = useContractLoader(injectedProvider, , {"EXAMPLE": "0xADDRESS"}); // over-ride the address
+const writeContracts = useContractLoader(injectedProvider, { chainId: 1 }); // fix the chainId (even if the provider is on a different chain)
+const writeContracts = useContractLoader(injectedProvider, {
+  networkName: "localhost",
+}); // fix the hardhat network name (even if the provider is on a different chain)
+const writeContracts = useContractLoader(injectedProvider, {
+  customAddresses: { EXAMPLE: "0xADDRESS" },
+}); // over-ride the address
+
+// Pass custom contracts
+const ERC20ABI = [
+  "function balanceOf(address owner) view returns (uint256)",
+  "function decimals() view returns (uint8)",
+  "function symbol() view returns (string)",
+  "function transfer(address to, uint amount) returns (boolean)",
+  "event Transfer(address indexed from, address indexed to, uint amount)",
+];
+const ERC20ContractMetadata = {
+  1: {
+    contracts: {
+      DAI: {
+        address: "0x6B175474E89094C44Da98b954EedeAC495271d0F",
+        abi: ERC20ABI,
+      },
+      UNI: {
+        address: "0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984",
+        abi: ERC20ABI,
+      },
+    },
+  },
+};
+
+const writeContracts = useContractLoader(injectedProvider, { chainId: 1
+  externalContracts: ERC20ContractMetadata,
+});
 ```
 
 <br/>
@@ -463,7 +537,7 @@ tx(writeContracts["SmartContractWallet"].updateOwner(newOwner));
 
 ⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
 
-⬇️ Installing a new package to your backend? You need to `cd packages/harthat` and then `yarn add PACKAGE`
+⬇️ Installing a new package to your backend? You need to `cd packages/hardhat` and then `yarn add PACKAGE`
 
 ---
 
@@ -525,6 +599,131 @@ yarn ipfs
 ^^^ ⛏ <b>PR</b> your 🏗 scaffold-eth branch!!! 🙏🙏🙏 ^^^
 
 ---
+
+# Subgraph
+
+[The Graph](https://thegraph.com/docs/introduction) lets you process on-chain events to create a Subgraph, an easy to query graphQL endpoint!
+
+scaffold-eth comes with a built in demo subgraph, as well as a local docker setup to run a graph-node locally.
+
+[![Speed run!](https://user-images.githubusercontent.com/9612972/122678866-7756f880-d1e0-11eb-8cd0-84d2f18691b4.png)](https://www.youtube.com/watch?v=T5ylzOTkn-Q)
+
+** [Requires Docker](https://www.docker.com/products/docker-desktop) **
+
+🚮 Clean up previous data:
+
+```
+yarn clean-graph-node
+```
+
+📡 Spin up a local graph node by running
+
+```
+yarn run-graph-node
+```
+
+📝 Create your local subgraph by running
+
+```
+yarn graph-create-local
+```
+
+This is only required once!
+
+🚢 Deploy your local subgraph by running
+
+```
+yarn graph-ship-local
+```
+
+🖍️ Edit your local subgraph in `packages/subgraph/src`
+
+Learn more about subgraph definition [here](https://thegraph.com/docs/define-a-subgraph)
+
+🤩Deploy your contracts and your subgraph in one go by running:
+
+```
+yarn deploy-and-graph
+```
+
+# Services 🤖
+
+`/services` is a new (!) scaffold-eth package that pulls in backend services that you might need for local development, or even for production deployment.
+
+## Graph node
+
+graph-node lets you [run a node locally](https://thegraph.com/docs/quick-start#local-development).
+
+```
+run-graph-node // runs the graph node
+remove-graph-node // stops the graph node
+clean-graph-node // clears the local data
+```
+
+## Submodules
+
+scaffold-eth uses [submodules](https://git-scm.com/book/en/v2/Git-Tools-Submodules) to pull in other repositories. These first need to be initiated.
+
+```
+yarn workspace @scaffold-eth/services submodule-init
+```
+
+## Optimism
+
+[optimism.io](https://optimism.io) is an Optimistic Rollup. This submodule (of the [Optimism monorepo](https://github.com/ethereum-optimism/optimism)) runs a local chain, with an optimistic rollup.
+
+To run the local setup...
+
+** [Requires Docker](https://www.docker.com/products/docker-desktop) **
+
+```
+yarn workspace @scaffold-eth/services run-optimism
+```
+
+> The first time may take a while as the services build!
+
+The underlying services are run in the background, so you won't see anything in the terminal, but you can use Docker Desktop to inspect them.
+
+You can stop local optimism at any time by running:
+
+```
+yarn workspace @scaffold-eth/services stop-optimism
+```
+
+The local L1 and the Rollup are configured in both `/hardhat` and `/react-app` as `localOptimism` and `localOptimismL1`, so you can deploy and build out of the box!
+
+Learn more about building on Optimism [here](https://community.optimism.io/docs/).
+
+## Arbitrum
+
+[Arbitrum](https://developer.offchainlabs.com/docs/developer_quickstart) is an Optimistic Rollup. This submodule (of the [Arbitrum monorepo](https://github.com/OffchainLabs/arbitrum)) runs a local chain, with an optimistic rollup.
+
+To run the local setup...
+
+** [Requires Docker](https://www.docker.com/products/docker-desktop) **
+
+In one terminal:
+
+```
+yarn workspace @scaffold-eth/services arbitrum-init
+yarn workspace @scaffold-eth/services arbitrum-build-l1
+yarn workspace @scaffold-eth/services arbitrum-run-l1
+```
+
+In a second terminal:
+
+```
+yarn workspace @scaffold-eth/services arbitrum-init-l2
+yarn workspace @scaffold-eth/services arbitrum-run-l2
+```
+
+> The first time may take a while as the services build!
+
+To stop the processes, you can just run CTRL-C
+
+The local L1 and the Rollup are configured in both `/hardhat` and `/react-app` as `localArbitrum` and `localArbitrumL1`, so you can deploy and build out of the box!
+
+Learn more about building on Arbitrum [here](https://developer.offchainlabs.com/docs/developer_quickstart).
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
@@ -593,19 +792,14 @@ scaffold-eth includes the hardhat-tenderly plugin. When deploying to any of the 
 ["kovan","goerli","mainnet","rinkeby","ropsten","matic","mumbai","xDai","POA"]
 ```
 
-You can verify contracts as part of a deployment script. We have created a `tenderlyVerify()` helper function (example in `scripts/deploy.js`), which takes your contract name and its deployed address:
+You can verify contracts as part of a deployment script.
 
 ```
-await tenderlyVerify(
-  {contractName: "YourContract",
-   contractAddress: yourContract.address
-})
-```
-
-Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
-
-```
-yarn deploy --network NETWORK_OF_CHOICE
+let verification = await tenderly.verify({
+  name: contractName,
+  address: contractAddress,
+  network: targetNetwork,
+});
 ```
 
 Once verified, they will then be available to view on Tenderly!
@@ -655,7 +849,7 @@ tenderly export <transactionHash> --export-network <networkName>
 
 Note that `tenderly.yaml` file stores information about all networks that you initialized for exporting transactions. There can be multiple of them in a single file. You only need the `--export-network` if you have more than one network in your tenderly.yaml config!
 
-**A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We have added a call to `tenderly.persistArtifacts()` as part of the scaffold-eth deploy() script, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
+**A quick note on local contracts:** if your local contracts are persisted in a place that Tenderly can find them, then they will also be uploaded as part of the local transaction `export`, which is one of the freshest features! We are using hardhat-deploy, which stores the contracts & meta-information in a `deployments` folder, so this should work out of the box.
 
 Another pitfall when dealing with a local network (fork or not) is that you will not see the transaction hash if it fails. This happens because the hardhat detects an error while `eth_estimateGas` is executed. To prevent such behaviour, you can skip this estimation by passing a `gasLimit` override when making a call - an example of this is demonstrated in the `FunctionForm.jsx` file of the Contract component:
 
@@ -684,32 +878,13 @@ const returned = await tx(contractFunction(...args, overrides));
 
 ## 🌐 Etherscan
 
-Hardhat has a truly wonderful [`hardhat-etherscan` plugin](https://www.npmjs.com/package/@nomiclabs/hardhat-etherscan) that takes care of contract verification after deployment. You need to add the following to your `hardhat.config.js` imports:
+hardhat-deploy lets you easily verify contracts on Etherscan, and we have added a helper script to `/packages/hardhat` to let you do that. Simply run:
 
 ```
-require("@nomiclabs/hardhat-etherscan");
+yarn etherscan-verify --network <network_of_choice>
 ```
 
-Then add your etherscan API key to the module.exports:
-
-```
-etherscan: {
-  // Your API key for Etherscan
-  // Obtain one at https://etherscan.io/
-  apiKey: "YOUR-API-KEY-HERE"
-}
-```
-
-Verifying is simple, assuming you are verifying a contract that you have just deployed from your hardhat setup - you just need to run the verify script, passing constructor arguments as an array if necessary (there is an example commented out in the `deploy.js`):
-
-```
-await run("verify:verify", {
-  address: yourContract.address,
-  // constructorArguments: args // If your contract has constructor arguments, you can pass them as an array
-})
-```
-
-You only have to pass the contract because the plugin figures out which of the locally compiled contracts is the right one to verify. Pretty cool stuff!
+And all hardhat's deployed contracts with matching ABIs for that network will be automatically verified. Neat!
 
 ---
 
@@ -788,7 +963,3 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
 
 ---
-
-## Notes
-
-- Had to remove "arbos-contracts": "^1.0.0", from arb-bridge-peripherals dependencies

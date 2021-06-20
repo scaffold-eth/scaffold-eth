@@ -98,19 +98,19 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: `http://localhost:7545`,
   },
-  kovanArbitrum: {
-    name: "kovanArbitrum",
-    color: "#50a0ea",
-    chainId: 144545313136048,
-    blockExplorer: "https://explorer5.arbitrum.io/#/",
-    rpcUrl: `https://kovan5.arbitrum.io/rpc`,
-  },
   rinkebyArbitrum: {
     name: "Arbitrum Testnet",
     color: "#50a0ea",
     chainId: 421611,
     blockExplorer: "https://rinkeby-explorer.arbitrum.io/#/",
     rpcUrl: `https://rinkeby.arbitrum.io/rpc`,
+  },
+  arbitrum: {
+    name: "Arbitrum",
+    color: "#50a0ea",
+    chainId: 42161,
+    blockExplorer: "https://explorer.arbitrum.io/#/",
+    rpcUrl: `https://arb1.arbitrum.io/rpc`,
   },
   localOptimismL1: {
     name: "localOptimismL1",
