@@ -607,7 +607,10 @@ yarn ipfs
 
 scaffold-eth comes with a built in demo subgraph, as well as a local docker setup to run a graph-node locally.
 
-[![Speed run!](https://user-images.githubusercontent.com/9612972/122678866-7756f880-d1e0-11eb-8cd0-84d2f18691b4.png)](https://www.youtube.com/watch?v=T5ylzOTkn-Q)
+[![thegraphplayvideo](https://user-images.githubusercontent.com/2653167/101052782-4664ee00-3544-11eb-8805-887ad4d1406e.png)
+](https://youtu.be/T5ylzOTkn-Q)
+
+[ 🎥 here is another Graph speed run tutorial video ](https://youtu.be/T5ylzOTkn-Q)
 
 ** [Requires Docker](https://www.docker.com/products/docker-desktop) **
 
@@ -769,15 +772,6 @@ Poll your holders! Build an example emoji voting system with 🏗 <b>scaffold-et
 ---
 
 # 📟 Infrastructure
-
----
-
-## 🛰 Using The Graph
-
-[![thegraphplayvideo](https://user-images.githubusercontent.com/2653167/101052782-4664ee00-3544-11eb-8805-887ad4d1406e.png)
-](https://youtu.be/T5ylzOTkn-Q)
-
-[ 🎥 here is another Graph speed run tutorial video ](https://youtu.be/T5ylzOTkn-Q)
 
 ---
 

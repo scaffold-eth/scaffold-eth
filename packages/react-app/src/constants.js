@@ -111,6 +111,7 @@ export const NETWORKS = {
     chainId: 42161,
     blockExplorer: "https://explorer.arbitrum.io/#/",
     rpcUrl: `https://arb1.arbitrum.io/rpc`,
+    gasPrice: 0,
   },
   localOptimismL1: {
     name: "localOptimismL1",
@@ -125,6 +126,7 @@ export const NETWORKS = {
     chainId: 420,
     blockExplorer: "",
     rpcUrl: "http://" + window.location.hostname + ":8545",
+    gasPrice: 0,
   },
   kovanOptimism: {
     name: "kovanOptimism",
@@ -132,6 +134,7 @@ export const NETWORKS = {
     chainId: 69,
     blockExplorer: "https://kovan-optimistic.etherscan.io/",
     rpcUrl: `https://kovan.optimism.io`,
+    gasPrice: 0,
   },
   optimism: {
     name: "optimism",

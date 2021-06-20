@@ -10,6 +10,15 @@ import { Transactor } from "../helpers";
 /*
 This is a component for bridging between L1 & L2
 Currently it supports Testnet deposits for Arbitrum & Optimism
+
+ __          _______ _____
+ \ \        / /_   _|  __ \
+  \ \  /\  / /  | | | |__) |
+   \ \/  \/ /   | | |  ___/
+    \  /\  /   _| |_| |
+     \/  \/   |_____|_|
+
+
 */
 
 export default function L2ArbitrumBridge({ address, userSigner }) {
@@ -24,8 +33,12 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
     arbitrum: {
       test: { L1: NETWORKS.rinkeby, L2: NETWORKS.rinkebyArbitrum },
       main: { L1: NETWORKS.mainnet, L2: NETWORKS.arbitrum },
+      local: { L1: NETWORKS.localArbitrumL1, L2: NETWORKS.localArbitrum },
     },
-    optimism: { test: { L1: NETWORKS.kovan, L2: NETWORKS.kovanOptimism } },
+    optimism: {
+      test: { L1: NETWORKS.kovan, L2: NETWORKS.kovanOptimism },
+      local: { L1: NETWORKS.localOptimismL1, L2: NETWORKS.localOptimism },
+    },
   };
 
   const activeConfig = rollupConfig[rollup][environment];
@@ -48,8 +61,6 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
   }, [rollup]);
 
   const contracts = useContractLoader(userSigner, { externalContracts: L1BridgeMetadata, hardhatContracts: {} });
-
-  console.log(contracts);
 
   useOnBlock(L1Provider, async () => {
     console.log(`⛓ A new mainnet block is here: ${L1Provider._lastBlockNumber}`);
