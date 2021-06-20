@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from 'antd'
 import shortid from 'shortid'
-import { WindowModal } from '../views/sharedComponents'
-import { connectController as wrapGlobalGameActions } from './globalGameActions'
+import WindowModal from '../gameItems/views/WindowModal'
+import { connectController as wrapGlobalGameData } from '../gameItems'
 
 const NewLevel = props => {
   console.log('NewLevel:')
@@ -25,8 +25,32 @@ const NewLevel = props => {
       >
         <div style={{ color: 'white' }}>
           <p>Lorem Ipsum</p>
+          <Button block onClick={() => console.log('set dialog')}>
+            Set Dialog
+          </Button>
           <Button block onClick={() => actions.dialog.continueDialog()}>
             Advance Dialog
+          </Button>
+          <Button block onClick={() => actions.wallet.showWallet()}>
+            Show Wallet
+          </Button>
+          <Button block onClick={() => actions.wallet.hideWallet()}>
+            Hide Wallet
+          </Button>
+          <Button block onClick={() => actions.wallet.toggleWalletVisibility()}>
+            Toggle Wallet
+          </Button>
+          <Button block onClick={() => actions.terminal.showTerminal()}>
+            Show Terminal
+          </Button>
+          <Button block onClick={() => actions.terminal.hideTerminal()}>
+            Hide Terminal
+          </Button>
+          <Button block onClick={() => actions.terminal.toggleTerminalVisibility()}>
+            Toggle Terminal
+          </Button>
+          <Button block onClick={() => console.log('set background')}>
+            Set Background
           </Button>
         </div>
       </WindowModal>
@@ -34,4 +58,4 @@ const NewLevel = props => {
   )
 }
 
-export default wrapGlobalGameActions(NewLevel)
+export default wrapGlobalGameData(NewLevel)

@@ -23,15 +23,6 @@ import {
   useExternalContractLoader,
   useOnBlock
 } from '../../hooks'
-import {
-  AddressInput,
-  EtherInput,
-  Header,
-  Ramp,
-  ThemeSwitch,
-  NetworkSelectWarning,
-  NetworkSelectDropdown
-} from './views/sharedComponents'
 import { Subgraph } from '..'
 import configureStore from '../../redux/configureStore'
 import {
@@ -42,32 +33,26 @@ import {
   checkBalancesAndSwitchNetwork
 } from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
-import LevelContainer from './containers/level'
-import { Background, Terminal, Wallet as WalletView, Toolbelt, Dish } from './views'
+import LevelContainer from './gameItems/containers/level'
+import {
+  Background,
+  Terminal,
+  Wallet as WalletView,
+  Toolbelt,
+  Dish,
+  AddressInput,
+  EtherInput,
+  Header,
+  Ramp,
+  ThemeSwitch,
+  NetworkSelectWarning,
+  NetworkSelectDropdown
+} from './gameItems/views'
 import './index.css'
 
 const { ethers } = require('ethers')
 
 const store = configureStore()
-
-/*
-  add global Window wrapper
-    - with showWindow(id), hideWindow(id)
-
-  add the following actions:
-
-  setCurrentLevel(id)
-
-  setBackground('path/to/background.jpg)
-  showWallet()
-  hideWallet()
-  showTerminal()
-  hideTerminal()
-
-  setDialog()
-  advanceDialog()
-  jumpToDialogPart(part)
- */
 
 /*
 // 📡 What chain are your contracts deployed to?

@@ -1,42 +1,23 @@
 import { combineReducers } from 'redux'
 
-import { reducer as levelContainer } from '../views/App/containers/level/controller'
-import { reducer as background } from '../views/App/views/Background/controller'
-import { reducer as dialogs } from '../views/App/containers/dialogs/controller'
+import { reducer as levelContainer } from '../views/App/gameItems/containers/level/controller'
+import { reducer as background } from '../views/App/gameItems/views/Background/controller'
+import { reducer as dialog } from '../views/App/gameItems/containers/dialog'
 
-import { reducer as terminal } from '../views/App/views/Terminal/controller'
-import { reducer as wallet } from '../views/App/views/Wallet/controller'
-import { reducer as toolbelt } from '../views/App/views/Toolbelt/controller'
-import { reducer as dish } from '../views/App/views/Dish/controller'
-
-import levels from '../views/App/views/levels'
-
-const levelReducers = {}
-
-// eslint-disable-next-line guard-for-in
-for (const level in levels) {
-  levelReducers[level] = levels[level].reducer
-}
-
-const levelsReducer = combineReducers({
-  ...levelReducers
-})
-
-console.log('here')
-console.log({ levels })
-console.log({ levelsReducer })
+import { reducer as terminal } from '../views/App/gameItems/views/Terminal/controller'
+import { reducer as wallet } from '../views/App/gameItems/views/Wallet/controller'
+import { reducer as toolbelt } from '../views/App/gameItems/views/Toolbelt/controller'
+import { reducer as dish } from '../views/App/gameItems/views/Dish/controller'
 
 const rootReducer = combineReducers({
   levelContainer,
   background,
-  dialogs,
+  dialog,
 
   terminal,
   wallet,
   toolbelt,
-  dish,
-
-  levels: levelsReducer
+  dish
 })
 
 export default rootReducer
