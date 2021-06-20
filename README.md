@@ -649,7 +649,7 @@ yarn deploy-and-graph
 
 ---
 
-# Services 🤖
+# Services:
 
 `/services` is a new (!) scaffold-eth package that pulls in backend services that you might need for local development, or even for production deployment.
 
