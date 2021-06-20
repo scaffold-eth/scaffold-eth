@@ -277,6 +277,7 @@ We use `ethers.providers.StaticJsonRpcProvider` when instantiating providers fro
 ### Signers
 
 From the [ethers.js docs...](https://docs.ethers.io/v5/api/signer/)
+
 A Signer in ethers is an abstraction of an Ethereum Account, which can be used to sign messages and transactions and send signed transactions to the Ethereum Network to execute state changing operations.
 
 scaffold-eth now uses signers for user operations, either using injectedProvider.getSigner(), or using a Burner Signer created and stored in localStorage (all handled by the `useUserSigner` hook!)
@@ -645,6 +646,8 @@ Learn more about subgraph definition [here](https://thegraph.com/docs/define-a-s
 ```
 yarn deploy-and-graph
 ```
+
+---
 
 # Services 🤖
 
