@@ -1,6 +1,6 @@
 import Background from './Background'
 import Terminal from './Terminal'
-import Wallet from './Wallet'
+import Wallet from './Wallet/index'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
 
