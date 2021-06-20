@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { Button } from 'antd'
 import shortid from 'shortid'
-import WindowModal from '../gameItems/views/WindowModal'
+import WindowModal from '../gameItems/components/WindowModal'
 import { connectController as wrapGlobalGameData } from '../gameItems'
 
 const NewLevel = props => {

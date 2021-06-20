@@ -37,7 +37,7 @@ import {
   Address,
   Balance,
   FaucetHint
-} from './views'
+} from './components'
 import { connectController } from './controller'
 import './styles.css'
 

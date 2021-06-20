@@ -1,8 +1,9 @@
 import { mapDispatchToProps as _level } from './containers/level/controller/redux'
 import { mapDispatchToProps as _dialog } from './containers/dialog/redux'
-import { mapDispatchToProps as _background } from './views/Background/controller/redux'
-import { mapDispatchToProps as _wallet } from './views/Wallet/controller/redux'
-import { mapDispatchToProps as _terminal } from './views/Terminal/controller/redux'
+
+import { mapDispatchToProps as _background } from './components/Background/controller/redux'
+import { mapDispatchToProps as _wallet } from './components/Wallet/controller/redux'
+import { mapDispatchToProps as _terminal } from './components/Terminal/controller/redux'
 
 /*
     add global Window wrapper

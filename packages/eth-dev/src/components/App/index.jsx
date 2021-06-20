@@ -47,7 +47,7 @@ import {
   ThemeSwitch,
   NetworkSelectWarning,
   NetworkSelectDropdown
-} from './gameItems/views'
+} from './gameItems/components'
 import './index.css'
 
 const { ethers } = require('ethers')

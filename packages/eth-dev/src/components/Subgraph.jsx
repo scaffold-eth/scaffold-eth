@@ -7,7 +7,7 @@ import { useQuery, gql } from '@apollo/client'
 import fetch from 'isomorphic-fetch'
 import GraphiQL from 'graphiql'
 // TODO: remove this
-import { Address } from './App/gameItems/views/Wallet/views'
+import { Address } from './App/gameItems/components/Wallet/components'
 import 'graphiql/graphiql.min.css'
 
 const highlight = {
