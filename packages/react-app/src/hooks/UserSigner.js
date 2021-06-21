@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import useBurnerSigner from "./BurnerSigner";
 
 /*
@@ -19,17 +19,17 @@ import useBurnerSigner from "./BurnerSigner";
 */
 
 const useUserSigner = (injectedProvider, localProvider) => {
+  const [signer, setSigner] = useState();
   const burnerSigner = useBurnerSigner(localProvider);
 
-  const userSigner = useMemo(() => {
+  useMemo(() => {
     if (injectedProvider) {
       console.log("🦊 Using injected provider");
-      return injectedProvider._isProvider ? injectedProvider.getSigner() : injectedProvider;
-    }
-    if (!localProvider) return undefined;
-
-    if (window.location.pathname) {
-      if (window.location.pathname.indexOf("/pk") >= 0) {
+      const injectedSigner = injectedProvider._isProvider ? injectedProvider.getSigner() : injectedProvider;
+      setSigner(injectedSigner);
+    } else if (!localProvider) setSigner();
+    else {
+      if (window.location.pathname && window.location.pathname.indexOf("/pk") >= 0) {
         const incomingPK = window.location.hash.replace("#", "");
         let rawPK;
         if (incomingPK.length === 64 || incomingPK.length === 66) {
@@ -43,13 +43,13 @@ const useUserSigner = (injectedProvider, localProvider) => {
           window.localStorage.setItem("metaPrivateKey", rawPK);
         }
       }
-    }
 
-    console.log("🔥 Using burner signer", burnerSigner);
-    return burnerSigner;
+      console.log("🔥 Using burner signer", burnerSigner);
+      setSigner(burnerSigner);
+    }
   }, [injectedProvider, localProvider, burnerSigner]);
 
-  return userSigner;
+  return signer;
 };
 
 export default useUserSigner;

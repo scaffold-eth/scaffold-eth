@@ -5,8 +5,6 @@ const chalk = require("chalk");
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
 
-require("@nomiclabs/hardhat-etherscan");
-
 require("hardhat-deploy");
 
 require("@eth-optimism/hardhat-ovm");
@@ -101,11 +99,14 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    kovanArbitrum: {
-      url: "https://kovan5.arbitrum.io/rpc",
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "rinkeby",
       },
     },
     localArbitrum: {
@@ -114,12 +115,18 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
+      companionNetworks: {
+        l1: "localArbitrumL1",
+      },
     },
     localArbitrumL1: {
       url: "http://localhost:7545",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localArbitrum",
       },
     },
     kovanOptimism: {
@@ -129,6 +136,9 @@ module.exports = {
         mnemonic: mnemonic(),
       },
       ovm: true,
+      companionNetworks: {
+        l1: "kovan",
+      },
     },
     localOptimism: {
       url: "http://localhost:8545",
@@ -137,12 +147,18 @@ module.exports = {
         mnemonic: mnemonic(),
       },
       ovm: true,
+      companionNetworks: {
+        l1: "localOptimismL1",
+      },
     },
     localOptimismL1: {
       url: "http://localhost:9545",
       gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localOptimism",
       },
     },
   },
@@ -170,11 +186,6 @@ module.exports = {
   },
   ovm: {
     solcVersion: "0.7.6",
-  },
-  etherscan: {
-    // Your API key for Etherscan
-    // Obtain one at https://etherscan.io/
-    apiKey: "PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8",
   },
   namedAccounts: {
     deployer: {
