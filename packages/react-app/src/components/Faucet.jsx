@@ -1,11 +1,12 @@
 import { SendOutlined } from "@ant-design/icons";
-import { parseEther } from "@ethersproject/units";
 import { Button, Input, Tooltip } from "antd";
 import { useLookupAddress } from "eth-hooks";
 import React, { useCallback, useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../helpers";
 import Wallet from "./Wallet";
+
+const { utils } = require("ethers");
 
 // improved a bit by converting address to ens if it exists
 // added option to directly input ens name
@@ -86,7 +87,7 @@ export default function Faucet(props) {
               onClick={() => {
                 tx({
                   to: address,
-                  value: parseEther("0.01"),
+                  value: utils.parseEther("0.01"),
                 });
                 setAddress("");
               }}

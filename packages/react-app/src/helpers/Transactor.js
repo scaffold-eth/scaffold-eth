@@ -1,22 +1,33 @@
-import { hexlify } from "@ethersproject/bytes";
-import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
 import Notify from "bnc-notify";
 import { BLOCKNATIVE_DAPPID } from "../constants";
+
+const { ethers } = require("ethers");
 
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 const callbacks = {};
 
-const DEBUG = true
+const DEBUG = true;
 
-export default function Transactor(provider, gasPrice, etherscan) {
-  if (typeof provider !== "undefined") {
+export default function Transactor(providerOrSigner, gasPrice, etherscan) {
+  if (typeof providerOrSigner !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async (tx, callback) => {
-      const signer = provider.getSigner();
-      const network = await provider.getNetwork();
+      let signer;
+      let network;
+      let provider;
+      if (ethers.Signer.isSigner(providerOrSigner) === true) {
+        provider = providerOrSigner.provider;
+        signer = providerOrSigner;
+        network = providerOrSigner.provider && (await providerOrSigner.provider.getNetwork());
+      } else if (providerOrSigner._isProvider) {
+        provider = providerOrSigner;
+        signer = providerOrSigner.getSigner();
+        network = await providerOrSigner.getNetwork();
+      }
+
       console.log("network", network);
       const options = {
         dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
@@ -24,7 +35,7 @@ export default function Transactor(provider, gasPrice, etherscan) {
         networkId: network.chainId,
         // darkMode: Boolean, // (default: false)
         transactionHandler: txInformation => {
-          if(DEBUG) console.log("HANDLE TX", txInformation);
+          if (DEBUG) console.log("HANDLE TX", txInformation);
           const possibleFunction = callbacks[txInformation.transaction.hash];
           if (typeof possibleFunction === "function") {
             possibleFunction(txInformation.transaction);
@@ -46,19 +57,19 @@ export default function Transactor(provider, gasPrice, etherscan) {
       try {
         let result;
         if (tx instanceof Promise) {
-          if(DEBUG) console.log("AWAITING TX", tx);
+          if (DEBUG) console.log("AWAITING TX", tx);
           result = await tx;
         } else {
           if (!tx.gasPrice) {
-            tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
+            tx.gasPrice = gasPrice || ethers.utils.parseUnits("4.1", "gwei");
           }
           if (!tx.gasLimit) {
-            tx.gasLimit = hexlify(120000);
+            tx.gasLimit = ethers.utils.hexlify(120000);
           }
-          if(DEBUG) console.log("RUNNING TX", tx);
+          if (DEBUG) console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
         }
-        if(DEBUG) console.log("RESULT:", result);
+        if (DEBUG) console.log("RESULT:", result);
         // console.log("Notify", notify);
 
         if (callback) {
@@ -92,6 +103,10 @@ export default function Transactor(provider, gasPrice, etherscan) {
               }
             }, 500);
           }
+        }
+
+        if (typeof result.wait === "function") {
+          await result.wait();
         }
 
         return result;

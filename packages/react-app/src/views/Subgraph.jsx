@@ -95,7 +95,7 @@ function Subgraph(props) {
         <span style={{ marginRight: 8 }}>🚮</span>
         Clean up previous data:
         <span className="highlight" style={highlight}>
-          rm -rf docker/graph-node/data/
+          yarn clean-graph-node
         </span>
       </div>
 
@@ -103,7 +103,7 @@ function Subgraph(props) {
         <span style={{ marginRight: 8 }}>📡</span>
         Spin up a local graph node by running
         <span className="highlight" style={highlight}>
-          yarn graph-run-node
+          yarn run-graph-node
         </span>
         <span style={{ marginLeft: 4 }}>
           {" "}

@@ -1,14 +1,13 @@
 /* eslint-disable jsx-a11y/click-events-have-key-events */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/accessible-emoji */
-import { BigNumber } from "@ethersproject/bignumber";
 import { Button, Col, Divider, Input, Row, Tooltip } from "antd";
 import React, { useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
 
-const { utils } = require("ethers");
+const { utils, BigNumber } = require("ethers");
 
 export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh }) {
   const [form, setForm] = useState({});
@@ -202,6 +201,9 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 const overrides = {};
                 if (txValue) {
                   overrides.value = txValue; // ethers.utils.parseEther()
+                }
+                if (gasPrice) {
+                  overrides.gasPrice = gasPrice;
                 }
                 // Uncomment this if you want to skip the gas estimation for each transaction
                 // overrides.gasLimit = hexlify(1200000);

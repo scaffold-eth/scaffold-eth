@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import { SyncOutlined } from "@ant-design/icons";
-import { formatEther, parseEther } from "@ethersproject/units";
+import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
 import { Address, Balance } from "../components";
@@ -73,20 +73,20 @@ export default function ExampleUI({
           fontSize={16}
         />
         <Divider />
-        {/* use formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? formatEther(yourLocalBalance) : "..."}</h2>
+        {/* use utils.formatEther to display a BigNumber: */}
+        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
         <div>OR</div>
         <Balance address={address} provider={localProvider} price={price} />
         <Divider />
         <div>🐳 Example Whale Balance:</div>
-        <Balance balance={parseEther("1000")} provider={localProvider} price={price} />
+        <Balance balance={utils.parseEther("1000")} provider={localProvider} price={price} />
         <Divider />
-        {/* use formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? formatEther(yourLocalBalance) : "..."}</h2>
+        {/* use utils.formatEther to display a BigNumber: */}
+        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
         <Divider />
         Your Contract Address:
         <Address
-          address={readContracts ? readContracts.YourContract.address : readContracts}
+          address={readContracts && readContracts.YourContract ? readContracts.YourContract.address : null}
           ensProvider={mainnetProvider}
           fontSize={16}
         />
@@ -110,7 +110,7 @@ export default function ExampleUI({
             */
               tx({
                 to: writeContracts.YourContract.address,
-                value: parseEther("0.001"),
+                value: utils.parseEther("0.001"),
               });
               /* this should throw an error about "no fallback nor receive function" until you add it */
             }}
@@ -124,7 +124,7 @@ export default function ExampleUI({
               /* look how we call setPurpose AND send some value along */
               tx(
                 writeContracts.YourContract.setPurpose("💵 Paying for this one!", {
-                  value: parseEther("0.001"),
+                  value: utils.parseEther("0.001"),
                 }),
               );
               /* this will fail until you make the setPurpose function payable */
@@ -139,7 +139,7 @@ export default function ExampleUI({
               /* you can also just craft a transaction and send it to the tx() transactor */
               tx({
                 to: writeContracts.YourContract.address,
-                value: parseEther("0.001"),
+                value: utils.parseEther("0.001"),
                 data: writeContracts.YourContract.interface.encodeFunctionData("setPurpose(string)", [
                   "🤓 Whoa so 1337!",
                 ]),
@@ -164,7 +164,7 @@ export default function ExampleUI({
           renderItem={item => {
             return (
               <List.Item key={item.blockNumber + "_" + item.sender + "_" + item.purpose}>
-                <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt
+                <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} />
                 {item[1]}
               </List.Item>
             );
