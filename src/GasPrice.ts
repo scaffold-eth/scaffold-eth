@@ -10,7 +10,7 @@ export default function useGasPrice(
   const [gasPrice, setGasPrice] = useState<number>();
 
   const loadGasPrice = async () => {
-    if(targetNetwork.gasPrice){
+    if(targetNetwork.hasOwnProperty("gasPrice")){
       setGasPrice(targetNetwork.gasPrice);
     }else{
       axios
