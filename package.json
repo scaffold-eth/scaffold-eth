@@ -1,0 +1,69 @@
+{
+  "name": "eth-hooks",
+  "version": "2.0.0",
+  "description": "A set of hooks to turbocharge buidling",
+  "author": "Austin Griffith <austin@ethereum.org>",
+  "repository": "https://github.com/austintgriffith/eth-hooks.git",
+  "main": "lib/index.js",
+  "types": "lib/index.d.ts",
+  "engines": {
+    "node": ">=8",
+    "npm": ">=5"
+  },
+  "contributors": [
+    {
+      "name": "Austin Griffith",
+      "url": "https://github.com/austintgriffith"
+    },
+    {
+      "name": "Tom French",
+      "url": "https://github.com/tomafrench"
+    }
+  ],
+  "dependencies": {
+    "axios": "^0.21.1",
+    "burner-provider": "^1.0.15",
+    "ethers": "^5.3.1"
+  },
+  "peerDependencies": {
+    "@uniswap/sdk": "^3.0.3",
+    "react": ">=16.9.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@types/react": "^16.9.41",
+    "@uniswap/sdk": "^3.0.3",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "eslint": "6.x",
+    "eslint-config-airbnb-typescript-prettier": "^3.1.0",
+    "husky": "^4.2.5",
+    "lint-staged": "^10.2.7",
+    "prettier": "1.x",
+    "react": "^16.9.0",
+    "shx": "^0.3.2",
+    "typescript": "^3.9.5",
+    "watch": "^1.0.2"
+  },
+  "keywords": [
+    "blockchain",
+    "ethereum",
+    "react",
+    "create-eth-app",
+    "typescript"
+  ],
+  "license": "MIT",
+  "scripts": {
+    "commit": "git-cz",
+    "build": "tsc",
+    "watch": "watch 'yarn build' ./src",
+    "clean": "shx rm -rf ./lib",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
+  },
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
+}
