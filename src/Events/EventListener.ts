@@ -2,6 +2,23 @@ import { useState, useEffect, useCallback } from "react";
 import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 
+/*
+  ~ What it does? ~
+
+  Enables you to keep track of events
+
+  ~ How can I use? ~
+
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+
+  ~ Features ~
+
+  - Provide readContracts by loading contracts (see more on ContractLoader.js)
+  - Specify the name of the contract, in this case it is "YourContract"
+  - Specify the name of the event in the contract, in this case we keep track of "SetPurpose" event
+  - Specify the provider
+*/
+
 export default function useEventListener(
   contracts: {[index: string]: Contract},
   contractName: string,
