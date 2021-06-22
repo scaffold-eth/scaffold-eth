@@ -3,7 +3,8 @@ import { Web3Provider } from "@ethersproject/providers";
 import { Contract } from "@ethersproject/contracts";
 
 export default function useEventListener(
-  contract: Contract,
+  contracts: {[index: string]: Contract},
+  contractName: string,
   eventName: string,
   provider: Web3Provider,
   startBlock: number,
@@ -24,17 +25,17 @@ export default function useEventListener(
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
       provider.resetEventsBlock(startBlock);
     }
-    if (contract) {
+    if (contracts && contractName && contracts[contractName]) {
       try {
-        contract.on(eventName, addNewEvent);
+        contracts[contractName].on(eventName, addNewEvent);
         return () => {
-          contract.off(eventName, addNewEvent);
+          contracts[contractName].off(eventName, addNewEvent);
         };
       } catch (e) {
         console.log(e);
       }
     }
-  }, [provider, startBlock, contract, eventName, addNewEvent]);
+  }, [provider, startBlock, contracts, contractName, eventName]);
 
   return updates;
 }
