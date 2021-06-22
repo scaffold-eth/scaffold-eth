@@ -22,7 +22,7 @@ const useTokenList = (tokenListUri, chainId) => {
 
   useEffect(() => {
     const getTokenList = async () => {
-      if(navigator.onLine === 'online'){
+      if(navigator.onLine){
         try {
           const tokenList = await fetch(_tokenListUri);
           const tokenListJson = await tokenList.json();

@@ -32,7 +32,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       
       var options = null;
       var notify = null;
-      if(navigator.onLine === 'online'){
+      if(navigator.onLine){
         options = {
           dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
           system: "ethereum",
