@@ -2,7 +2,20 @@
 
 Commonly used Ethereum hooks:
 
-`usePoller(fn, delay)`: runs a function on app load and then on a custom interval
+`useOnBlock(provider, fn)`
+
+```js
+useOnBlock(
+  provider,
+  () => {
+  //do something cool on each new block
+  }
+);
+```
+
+<br/>
+
+`usePoller(fn, delay, extraWatch)`: runs a function on app load and then on a custom interval
 
 ```js
 usePoller(() => {
@@ -20,7 +33,7 @@ const localBalance = useBalance(localProvider, address);
 
 <br/>
 
-`useBlockNumber(provider,[pollTime])`: get current block number from a provider
+`useBlockNumber(provider, [pollTime])`: get current block number from a provider
 
 ```js
 const blockNumber = useBlockNumber(props.provider);
@@ -28,28 +41,32 @@ const blockNumber = useBlockNumber(props.provider);
 
 <br/>
 
-`useContractReader(contract, variableName, [pollTime])`: reads a variable from your contract and keeps it in the state
+`useContractLoader(providerOrSigner, config)`: loads contracts provided in config arg.
 
 ```js
-const title = useContractReader(contract, "title");
-const owner = useContractReader(contract, "owner");
+const contractsConfig = {
+  hardhatContracts: hardhatContractsList,
+  externalContracts: externalContractsList
+}
+
+const contracts = useContractLoader(provider, contractsConfig);
+```
+
+<br/?
+
+`useContractReader(contracts, contractName, functionName, [args], [pollTime])`: reads a variable from your contract and keeps it in the state
+
+```js
+const balance = useContractReader(contracts, "MyToken", "balanceOf", ["0xde769Dcc704c7Ec4BC2Dd996dfbb997e89995c5a"]);
+const owner = useContractReader(contracts, "MyContract", "owner");
 ```
 
 <br/>
 
-`useEventListener(contract, filter)`: reads all past events from a smart contract matching a filter and keeps them in the state
+`useEventListener(contracts, contractName, eventName, provider, startBlock)`: reads all past events from a smart contract and keeps them in the state
 
 ```js
-const filter = contract.filters.UpdateOwner(null, null))
-const ownerUpdates = useEventReader(contract, filter);
-```
-
-<br/>
-
-`useEventReader(contract, eventName, [provider], [startBlock])`: listens for events from a smart contract and keeps them in the state
-
-```js
-const ownerUpdates = useEventListener(contract, "UpdateOwner", props.localProvider, 1);
+const eventLog = useEventListener(contract, "MyContract", "Event", provider, 0);
 ```
 
 <br/>
