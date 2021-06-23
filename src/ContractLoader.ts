@@ -1,7 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import { Contract } from "@ethersproject/contracts";
-import { Web3Provider } from "@ethersproject/providers";
+import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { useEffect, useState } from "react";
 
 const { ethers } = require("ethers");
@@ -38,13 +38,13 @@ const { ethers } = require("ethers");
 type Config = {
   chainId?: number,
   hardhatNetworkName?: string,
-  customAddresses?: {[index: string]: any},
-  hardhatContracts: {[index: string]: Contract},
-  externalContracts: {[index: string]: Contract}
+  customAddresses?: Record<string, string>,
+  hardhatContracts: Record<string, Contract>,
+  externalContracts: Record<string, Contract>
 }
 
 export default function useContractLoader(
-  providerOrSigner: Web3Provider,
+  providerOrSigner: JsonRpcProvider | Web3Provider,
   config: any
 ) {
   const [contracts, setContracts] = useState<{[index: string]: Contract}>();
