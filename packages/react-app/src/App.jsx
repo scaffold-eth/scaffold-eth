@@ -440,6 +440,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              contractsConfig={contractsConfig}
             />
             {/*
             <Contract
