@@ -65,7 +65,7 @@ export default function HardhatEVM(props) {
               Hardhat
         </Button>
         <Drawer
-          title="Create a new account"
+          title="Hardhat Network Manager"
           width={720}
           onClose={() => {onClose();}}
           visible={visible}
