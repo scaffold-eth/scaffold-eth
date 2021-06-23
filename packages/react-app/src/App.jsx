@@ -5,7 +5,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, HardhatEVM } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -462,14 +462,14 @@ function App(props) {
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
+          <Col >
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
 
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+          <Col style={{ textAlign: "center", opacity: 0.8 }}>
             <GasGauge gasPrice={gasPrice} />
           </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+          <Col style={{ textAlign: "center", opacity: 1 }}>
             <Button
               onClick={() => {
                 window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
@@ -483,6 +483,11 @@ function App(props) {
               Support
             </Button>
           </Col>
+          {localProvider._network && localProvider._network.chainId == 31337 && (
+            <Col  style={{ textAlign: "center", opacity: 1 }}>
+              <HardhatEVM localProvider={localProvider}/>
+            </Col>
+          )}
         </Row>
 
         <Row align="middle" gutter={[4, 4]}>
