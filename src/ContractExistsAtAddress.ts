@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { Provider } from "@ethersproject/providers";
-import { isAddress } from "@ethersproject/address";
+import { utils } from "ethers";
 
 /*
   ~ What it does? ~
@@ -29,7 +29,7 @@ const useContractExistsAtAddress = (
   useEffect(() => {
     // eslint-disable-next-line consistent-return
     const checkDeployment = async () => {
-      if (!isAddress(contractAddress)) {
+      if (!utils.isAddress(contractAddress)) {
         return false;
       }
       const bytecode = await provider.getCode(contractAddress);

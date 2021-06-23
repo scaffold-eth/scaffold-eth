@@ -22,29 +22,16 @@
   ],
   "dependencies": {
     "axios": "^0.21.1",
-    "burner-provider": "^1.0.15"
+    "burner-provider": "^1.0.15",
+    "ethers": "^5.3.1"
   },
   "peerDependencies": {
-    "@ethersproject/address": "^5.0.1",
-    "@ethersproject/bignumber": "^5.0.1",
-    "@ethersproject/constants": "^5.0.1",
-    "@ethersproject/contracts": "^5.0.1",
-    "@ethersproject/providers": "^5.0.2",
-    "@ethersproject/solidity": "^5.1.0",
-    "@ethersproject/units": "^5.0.1",
     "@uniswap/sdk": "^3.0.3",
-    "react": "^16.9.0"
+    "react": ">=16.9.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@ethersproject/address": "^5.0.1",
-    "@ethersproject/bignumber": "^5.0.1",
-    "@ethersproject/constants": "^5.0.1",
-    "@ethersproject/contracts": "^5.0.1",
-    "@ethersproject/providers": "^5.0.2",
-    "@ethersproject/solidity": "^5.1.0",
-    "@ethersproject/units": "^5.0.1",
     "@types/react": "^16.9.41",
     "@uniswap/sdk": "^3.0.3",
     "commitizen": "^4.1.2",
