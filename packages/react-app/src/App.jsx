@@ -9,16 +9,6 @@ import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
-  // useBalance,
-  // useContractLoader,
-  // useContractReader,
-  // useEventListener,
-  // useExchangePrice,
-  // useGasPrice,
-  // useOnBlock,
-  // useUserSigner,
-} from "./hooks";
-import {
   useBalance,
   useUserSigner,
   useContractLoader,
