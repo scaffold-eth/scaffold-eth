@@ -1,5 +1,5 @@
 import { SendOutlined } from "@ant-design/icons";
-import { Button, Input, Tooltip, Drawer, Form, Row, Col, Select, DatePicker } from "antd";
+import { Button, Input, Tooltip, Drawer, Form, Row, Col, Select, DatePicker, Divider } from "antd";
 import { useLookupAddress } from "eth-hooks";
 import React, { useCallback, useState } from "react";
 import Blockies from "react-blockies";
@@ -50,10 +50,24 @@ export default function HardhatEVM(props) {
     setVisible(true);
   }
 
-  async function increaseTime(increase){
-    await localProvider.send("evm_increaseTime", [(3600 * 24)]);
+  async function increaseTime(){
+    await localProvider.send("evm_increaseTime", [parseInt(form["increaseTimeSeconds"])]);
     await localProvider.send("evm_mine");
     updateTime();
+  }
+
+   async function setNextBlockTimestamp(){
+    await localProvider.send("evm_setNextBlockTimestamp", [parseInt(form["nextBlockTimestamp"])]);
+    await localProvider.send("evm_mine");
+    updateTime();
+  }
+
+  const [ form, setForm ] = useState({})
+  const setField = (field, value) => {
+    setForm({
+      ...form,
+      [field]: value
+    })
   }
 
   return (
@@ -82,18 +96,44 @@ export default function HardhatEVM(props) {
             </div>
           }
         >
+          <h2>Increase Time (evm_increaseTime)</h2>
+          <p>Increases the blockchain time by a given amount (in seconds)</p>
           <Row gutter={8}>
-            <Col span={12}>
+            <Col span={8}>
+              <Input placeholder="Increase time by seconds" onChange={e => setField('increaseTimeSeconds', e.target.value)}/>
+            </Col>
+            <Col span={8}>
                 <Button
-                onClick={() => {increaseTime(3600 * 24)}}
+                onClick={() => {increaseTime()}}
               >
-                Increase Time (1 day)
+                Increase Time
               </Button>
             </Col>
-            <Col span={12}>
-                <h2>{chainTimestamp}</h2>
+            <Col span={8}>
+                <h3>{chainTimestamp}</h3>
             </Col>
           </Row>
+
+          <Divider /> 
+
+          <h2>Set Next Block Timestamp (evm_setNextBlockTimestamp)</h2>
+          <p>Sets the next block timestamp to a given number</p>
+          <Row gutter={8}>
+            <Col span={8}>
+              <Input placeholder="Desired timestamp Unix timestamp" onChange={e => setField('nextBlockTimestamp', e.target.value)}/>
+            </Col>
+            <Col span={8}>
+                <Button
+                onClick={() => {setNextBlockTimestamp()}}
+              >
+                Increase Time
+              </Button>
+            </Col>
+            <Col span={8}>
+                <h3>{chainTimestamp}</h3>
+            </Col>
+          </Row>
+          <Divider /> 
         </Drawer>
       </>
     );
