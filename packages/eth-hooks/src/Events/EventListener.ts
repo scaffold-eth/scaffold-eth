@@ -20,7 +20,7 @@ import { Contract } from "@ethersproject/contracts";
 */
 
 export default function useEventListener(
-  contracts: {[index: string]: Contract},
+  contracts: Record<string, Contract>,
   contractName: string,
   eventName: string,
   provider: Web3Provider,

@@ -4,12 +4,11 @@ import { Contract } from "@ethersproject/contracts";
 import { Provider } from "@ethersproject/providers";
 import usePoller from "./Poller";
 import useOnBlock from "./OnBlock";
-import { BLOCK_TIME } from "./constants";
 
 const DEBUG = false;
 
 export default function useContractReader(
-  contracts: {[index: string]: Contract},
+  contracts: Record<string, Contract>,
   contractName: string,
   functionName: string,
   args?: any[],
