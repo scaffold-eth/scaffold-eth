@@ -45,7 +45,7 @@ type Config = {
 
 export default function useContractLoader(
   providerOrSigner: JsonRpcProvider | Web3Provider,
-  config: any
+  config: Config
 ) {
   const [contracts, setContracts] = useState<{[index: string]: Contract}>();
   useEffect(() => {
