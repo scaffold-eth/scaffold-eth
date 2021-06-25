@@ -406,7 +406,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-              contractsConfig={contractsConfig}
+              config={contractsConfig}
             />
           </Route>
           <Route path="/hints">
@@ -440,7 +440,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
-              contractsConfig={contractsConfig}
+              config={contractsConfig}
             />
             {/*
             <Contract
@@ -450,6 +450,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             */}
           </Route>
