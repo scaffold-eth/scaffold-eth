@@ -1,0 +1,34 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "node", "ethers"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "typeRoots": ["node_modules/@types", "src/helpers/definitions"] /* List of folders to include type definitions from. */,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "paths": {
+      "~~/*": ["./src/*"],
+      "scripts/*": ["./scripts/*"],
+      "helpers/*": ["./helpers/*"],
+      "contracts/*": ["./contracts/*"],
+      "tests/*": ["./tests/*"],
+      "typechain/*": ["./typechain/*"]
+    }
+  },
+  "include": ["types", "./scripts", "test", "helpers", "./hardhat.config.ts", "./deploy"],
+  "exclude": ["**/node_modules", ".husky", "./src/styles/css", "./tailwind.config.js"],
+  "files": ["./hardhat.config.ts", "helpers/types/__global.ts"]
+}
