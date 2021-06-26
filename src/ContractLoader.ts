@@ -45,14 +45,14 @@ type Config = {
 
 export default function useContractLoader(
   providerOrSigner: JsonRpcProvider | Web3Provider,
-  config: any
+  config: Config
 ) {
   const [contracts, setContracts] = useState<{[index: string]: Contract}>();
   useEffect(() => {
     let active = true;
 
     async function loadContracts() {
-      if (typeof providerOrSigner !== "undefined") {
+      if (providerOrSigner && typeof providerOrSigner !== "undefined") {
         console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
