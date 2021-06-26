@@ -18,6 +18,10 @@ export default function WindowModal({
   contentContainerStyle,
   children
 }) {
+  useEffect(() => {
+    $('.flexible-modal-drag-area').css('height', `${dragAreaHeightPercent}%`)
+  }, [dragAreaHeightPercent])
+
   return (
     <ReactModal
       className={uniqueWindowId}
@@ -36,18 +40,6 @@ export default function WindowModal({
           overflowY: 'scroll',
           background: `url(${backgroundPath})`,
           backgroundSize: '100% 100%'
-        }}
-      />
-
-      <div
-        className='flexible-modal-drag-area'
-        style={{
-          position: 'absolute',
-          right: 0,
-          top: 0,
-          height: dragAreaHeightPercent ? `${dragAreaHeightPercent}%` : '5%',
-          width: '100%',
-          cursor: 'move'
         }}
       />
 
