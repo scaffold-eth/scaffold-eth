@@ -1,16 +1,23 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Button } from 'antd'
 import shortid from 'shortid'
+import { Terminal, Wallet as WalletView } from '../gameItems/components'
 import WindowModal from '../gameItems/components/WindowModal'
 import { connectController as wrapGlobalGameData } from '../gameItems'
+import Dialog from './Dialog'
 
 const NewLevel = props => {
   console.log('NewLevel:')
   console.log({ props })
-  const { actions } = props
+  const { dialog, actions } = props
+  console.log({ currentDialogIndex: dialog.currentDialogIndex })
 
   return (
     <div id='newLevel'>
+      <Terminal>
+        <Dialog dialog={dialog} actions={actions} />
+      </Terminal>
+
       <WindowModal
         uniqueWindowId={shortid()}
         initWidth={400}
@@ -25,9 +32,6 @@ const NewLevel = props => {
       >
         <div style={{ color: 'white' }}>
           <p>Lorem Ipsum</p>
-          <Button block onClick={() => console.log('set dialog')}>
-            Set Dialog
-          </Button>
           <Button block onClick={() => actions.dialog.continueDialog()}>
             Advance Dialog
           </Button>

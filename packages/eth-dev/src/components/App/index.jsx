@@ -188,7 +188,7 @@ const App = props => {
 
           <Background />
 
-          <Terminal />
+          {/* <Terminal /> */}
 
           <WalletView
             web3Modal={web3Modal}

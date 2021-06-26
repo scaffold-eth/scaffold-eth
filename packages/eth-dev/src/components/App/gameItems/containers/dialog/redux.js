@@ -4,12 +4,13 @@ import { prepareDialog } from './helpers'
 
 const stateContainerId = 'dialog'
 
-export const SET_DIALOG = `${stateContainerId}/SET_DIALOG`
+export const INIT_DIALOG = `${stateContainerId}/INIT_DIALOG`
 export const JUMP_TO_DIALOG_PART = `${stateContainerId}/JUMP_TO_DIALOG_PART`
 export const CONTINUE_DIALOG = `${stateContainerId}/CONTINUE_DIALOG`
+export const RESET_DIALOG = `${stateContainerId}/RESET_DIALOG`
 
 const initialState = {
-  currentDialog: null,
+  dialogLength: 0,
   currentDialogIndex: 0,
   selectedDialogParts: []
 }
@@ -23,38 +24,29 @@ const reducer = (state = initialState, action) => {
   if (action.type.includes(stateContainerId)) {
     const { payload } = action
 
-    if (action.type === SET_DIALOG) {
-      state = dotProp.set(state, 'currentDialogIndex', 0)
-      const dialogToBeSet = {} // TODO
-      const enrichedDialog = prepareDialog(dialogToBeSet)
-      return dotProp.set(state, 'currentDialog', enrichedDialog)
+    if (action.type === INIT_DIALOG) {
+      return dotProp.set(state, 'dialogLength', payload.dialogLength)
     }
 
     if (action.type === JUMP_TO_DIALOG_PART) {
-      console.log('JUMP_TO_DIALOG_PART')
-      const { currentDialog, currentDialogIndex } = state
-      let dialogPartIdIndex = currentDialogIndex
-      currentDialog.map((dialogPart, index) => {
-        console.log(dialogPart.dialogPartId, payload.dialogPartId)
-        if (dialogPart.dialogPartId === payload.dialogPartId) {
-          dialogPartIdIndex = index
-        }
-      })
+      // TODO:
       // add dialogPartId to selectedDialogParts
       state.selectedDialogParts.push(payload.dialogPartId)
-      console.log({ selectedDialogParts: state.selectedDialogParts })
       // mark dialog with dialogPartId as visible
-      state.currentDialog[dialogPartIdIndex].visibleToUser = true
-      return dotProp.set(state, 'currentDialogIndex', dialogPartIdIndex)
+      // state.currentDialog[dialogPartIdIndex].visibleToUser = true
+      // return dotProp.set(state, 'currentDialogIndex', dialogPartIdIndex)
     }
 
     if (action.type === CONTINUE_DIALOG) {
-      if (state.currentDialogIndex < state.currentDialog.length - 1) {
+      if (state.currentDialogIndex < state.dialogLength - 1) {
         const newDialogIndex = state.currentDialogIndex + 1
-        state.currentDialog[newDialogIndex].visibleToUser = true
         return dotProp.set(state, 'currentDialogIndex', newDialogIndex)
       }
       return state
+    }
+
+    if (action.type === RESET_DIALOG) {
+      return dotProp.set(state, 'currentDialogIndex', 0)
     }
 
     return state
@@ -63,8 +55,8 @@ const reducer = (state = initialState, action) => {
 }
 
 const actionCreators = {
-  setCurrentDialog: payload => ({
-    type: SET_DIALOG,
+  initDialog: payload => ({
+    type: INIT_DIALOG,
     payload
   }),
   jumpToDialogPart: payload => ({
@@ -73,31 +65,41 @@ const actionCreators = {
   }),
   continueDialog: () => ({
     type: CONTINUE_DIALOG
+  }),
+  resetCurrentDialog: payload => ({
+    type: RESET_DIALOG,
+    payload
   })
 }
 
 const dispatchers = {
-  setCurrentDialog: payload => {
-    return actionCreators.setCurrentDialog(payload)
+  initDialog: payload => {
+    return actionCreators.initDialog(payload)
   },
   jumpToDialogPart: payload => {
     return actionCreators.jumpToDialogPart(payload)
   },
   continueDialog: () => {
     return actionCreators.continueDialog()
+  },
+  resetCurrentDialog: payload => {
+    return actionCreators.resetCurrentDialog(payload)
   }
 }
 
 const mapDispatchToProps = dispatch => ({
   actions: {
-    setCurrentDialog(payload) {
-      dispatch(actionCreators.setCurrentDialog(payload))
+    initDialog(payload) {
+      dispatch(actionCreators.initDialog(payload))
     },
     jumpToDialogPart(payload) {
       dispatch(actionCreators.jumpToDialogPart(payload))
     },
     continueDialog() {
       dispatch(actionCreators.continueDialog())
+    },
+    resetCurrentDialog(payload) {
+      dispatch(actionCreators.resetCurrentDialog(payload))
     }
   }
 })
