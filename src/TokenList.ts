@@ -26,26 +26,28 @@ const useTokenList = (
   useEffect(() => {
 
     const getTokenList = async () => {
-      try {
-      let tokenList = await fetch(_tokenListUri)
-      let tokenListJson = await tokenList.json()
-      let _tokenList
+      if(navigator.onLine) {
+        try {
+        const tokenList = await fetch(_tokenListUri);
+        const tokenListJson = await tokenList.json();
+        let _tokenList;
 
-      if(chainId) {
-        _tokenList = tokenListJson.tokens.filter(function (t: any) {
-          return t.chainId === chainId
-        })
-      } else {
-        _tokenList = tokenListJson
+        if (chainId) {
+          _tokenList = tokenListJson.tokens.filter(function (t: any) {
+            return t.chainId === chainId;
+          });
+        } else {
+          _tokenList = tokenListJson;
+        }
+
+        setTokenList(_tokenList.tokens)
+
+        } catch (e) {
+          console.log(e);
+        }
       }
-
-      setTokenList(_tokenList.tokens)
-
-    } catch (e) {
-      console.log(e)
     }
-    }
-    getTokenList()
+    getTokenList();
   },[tokenListUri])
 
   return tokenList;
