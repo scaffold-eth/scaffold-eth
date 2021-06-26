@@ -29,20 +29,27 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       }
 
       console.log("network", network);
-      const options = {
-        dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
-        system: "ethereum",
-        networkId: network.chainId,
-        // darkMode: Boolean, // (default: false)
-        transactionHandler: txInformation => {
-          if (DEBUG) console.log("HANDLE TX", txInformation);
-          const possibleFunction = callbacks[txInformation.transaction.hash];
-          if (typeof possibleFunction === "function") {
-            possibleFunction(txInformation.transaction);
-          }
-        },
-      };
-      const notify = Notify(options);
+      
+      var options = null;
+      var notify = null;
+      if(navigator.onLine){
+        options = {
+          dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
+          system: "ethereum",
+          networkId: network.chainId,
+          // darkMode: Boolean, // (default: false)
+          transactionHandler: txInformation => {
+            if (DEBUG) console.log("HANDLE TX", txInformation);
+            const possibleFunction = callbacks[txInformation.transaction.hash];
+            if (typeof possibleFunction === "function") {
+              possibleFunction(txInformation.transaction);
+            }
+          },
+        };  
+
+        notify = Notify(options);
+      }
+       
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
@@ -77,7 +84,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
         }
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
-        if ([1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
+        if (notify && [1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
           const { emitter } = notify.hash(result.hash);
           emitter.on("all", transaction => {
             return {
