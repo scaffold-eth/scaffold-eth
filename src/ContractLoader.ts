@@ -52,7 +52,7 @@ export default function useContractLoader(
     let active = true;
 
     async function loadContracts() {
-      if (typeof providerOrSigner !== "undefined") {
+      if (providerOrSigner && typeof providerOrSigner !== "undefined") {
         console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
