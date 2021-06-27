@@ -5,7 +5,7 @@ import shortid from 'shortid'
 import { Background, Terminal } from '../gameItems/components'
 import WindowModal from '../gameItems/components/WindowModal'
 import { connectController as wrapGlobalGameData } from '../gameItems'
-import { Intro, City, CityOutskirts, Workstation } from '../backgrounds'
+import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../backgrounds'
 
 import Dialog from './Dialog'
 
@@ -13,7 +13,13 @@ const NewLevel = ({ dialog, actions }) => {
   // ----------------------------------------
   const [background, setBackground] = useState('intro')
 
-  const backgroundStrings = ['intro', 'city', 'cityOutskirts', 'workstation']
+  const backgroundStrings = [
+    'intro',
+    'city',
+    'cityOutskirts',
+    'citySkylineInsideNight',
+    'workstation'
+  ]
 
   let backgroundComp
   if (background === 'intro') {
@@ -22,6 +28,8 @@ const NewLevel = ({ dialog, actions }) => {
     backgroundComp = <City />
   } else if (background === 'cityOutskirts') {
     backgroundComp = <CityOutskirts />
+  } else if (background === 'citySkylineInsideNight') {
+    backgroundComp = <CitySkylineInsideNight />
   } else if (background === 'workstation') {
     backgroundComp = <Workstation />
   }
