@@ -1,4 +1,4 @@
-import { getAddress, isAddress } from "@ethersproject/address";
+import { utils } from "ethers";
 import { useEffect, useState } from "react";
 
 // resolved if(name){} to not save "" into cache
@@ -18,7 +18,7 @@ import { useEffect, useState } from "react";
 */
 
 const lookupAddress = async (provider, address) => {
-  if (isAddress(address)) {
+  if (address && utils.isAddress(address)) {
     // console.log(`looking up ${address}`)
     try {
       // Accuracy of reverse resolution is not enforced.
@@ -27,12 +27,12 @@ const lookupAddress = async (provider, address) => {
 
       const resolvedAddress = await provider.resolveName(reportedName);
 
-      if (getAddress(address) === getAddress(resolvedAddress)) {
+      if (address && utils.getAddress(address) === utils.getAddress(resolvedAddress)) {
         return reportedName;
       }
-      return getAddress(address);
+      return utils.getAddress(address);
     } catch (e) {
-      return getAddress(address);
+      return utils.getAddress(address);
     }
   }
   return 0;

@@ -1,37 +1,55 @@
-import { hexlify } from "@ethersproject/bytes";
-import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
 import Notify from "bnc-notify";
 import { BLOCKNATIVE_DAPPID } from "../constants";
+
+const { ethers } = require("ethers");
 
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 const callbacks = {};
 
-const DEBUG = true
+const DEBUG = true;
 
-export default function Transactor(provider, gasPrice, etherscan) {
-  if (typeof provider !== "undefined") {
+export default function Transactor(providerOrSigner, gasPrice, etherscan) {
+  if (typeof providerOrSigner !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async (tx, callback) => {
-      const signer = provider.getSigner();
-      const network = await provider.getNetwork();
+      let signer;
+      let network;
+      let provider;
+      if (ethers.Signer.isSigner(providerOrSigner) === true) {
+        provider = providerOrSigner.provider;
+        signer = providerOrSigner;
+        network = providerOrSigner.provider && (await providerOrSigner.provider.getNetwork());
+      } else if (providerOrSigner._isProvider) {
+        provider = providerOrSigner;
+        signer = providerOrSigner.getSigner();
+        network = await providerOrSigner.getNetwork();
+      }
+
       console.log("network", network);
-      const options = {
-        dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
-        system: "ethereum",
-        networkId: network.chainId,
-        // darkMode: Boolean, // (default: false)
-        transactionHandler: txInformation => {
-          if(DEBUG) console.log("HANDLE TX", txInformation);
-          const possibleFunction = callbacks[txInformation.transaction.hash];
-          if (typeof possibleFunction === "function") {
-            possibleFunction(txInformation.transaction);
-          }
-        },
-      };
-      const notify = Notify(options);
+      
+      var options = null;
+      var notify = null;
+      if(navigator.onLine){
+        options = {
+          dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
+          system: "ethereum",
+          networkId: network.chainId,
+          // darkMode: Boolean, // (default: false)
+          transactionHandler: txInformation => {
+            if (DEBUG) console.log("HANDLE TX", txInformation);
+            const possibleFunction = callbacks[txInformation.transaction.hash];
+            if (typeof possibleFunction === "function") {
+              possibleFunction(txInformation.transaction);
+            }
+          },
+        };  
+
+        notify = Notify(options);
+      }
+       
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
@@ -46,19 +64,19 @@ export default function Transactor(provider, gasPrice, etherscan) {
       try {
         let result;
         if (tx instanceof Promise) {
-          if(DEBUG) console.log("AWAITING TX", tx);
+          if (DEBUG) console.log("AWAITING TX", tx);
           result = await tx;
         } else {
           if (!tx.gasPrice) {
-            tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
+            tx.gasPrice = gasPrice || ethers.utils.parseUnits("4.1", "gwei");
           }
           if (!tx.gasLimit) {
-            tx.gasLimit = hexlify(120000);
+            tx.gasLimit = ethers.utils.hexlify(120000);
           }
-          if(DEBUG) console.log("RUNNING TX", tx);
+          if (DEBUG) console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
         }
-        if(DEBUG) console.log("RESULT:", result);
+        if (DEBUG) console.log("RESULT:", result);
         // console.log("Notify", notify);
 
         if (callback) {
@@ -66,7 +84,7 @@ export default function Transactor(provider, gasPrice, etherscan) {
         }
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
-        if ([1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
+        if (notify && [1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
           const { emitter } = notify.hash(result.hash);
           emitter.on("all", transaction => {
             return {
@@ -94,13 +112,17 @@ export default function Transactor(provider, gasPrice, etherscan) {
           }
         }
 
+        if (typeof result.wait === "function") {
+          await result.wait();
+        }
+
         return result;
       } catch (e) {
         console.log(e);
         console.log("Transaction Error:", e.message);
         notification.error({
           message: "Transaction Error",
-          description: e.message,
+          description: e.data ? e.data.message : e.reason ? e.reason : e.message,
         });
         if (callback && typeof callback === "function") {
           callback(e);
