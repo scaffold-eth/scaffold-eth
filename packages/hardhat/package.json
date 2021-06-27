@@ -20,7 +20,7 @@
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
     "ethers": "^5.3.0",
-    "hardhat": "^2.0.11",
+    "hardhat": "2.4.0",
     "hardhat-deploy": "^0.8.6",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
