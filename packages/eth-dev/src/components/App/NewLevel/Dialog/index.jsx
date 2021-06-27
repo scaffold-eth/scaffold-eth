@@ -1,40 +1,8 @@
 /* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react'
-import { SpeakerLeft, SpeakerRight } from './components'
+import dialog from './dialogArray'
 
 const DIALOG_PART_ID = 'intro/start'
-
-const __dialog = [
-  {
-    avatar: 'punk5950.png',
-    alignment: 'left',
-    text: 'Welcome!'
-  },
-  {
-    avatar: 'punk5950.png',
-    alignment: 'left',
-    text:
-      'You are about to embark on a journey into the development world of the Ethereum blockchain.'
-  },
-  {
-    avatar: 'punk5950.png',
-    alignment: 'left',
-    text:
-      'This game is targeted towards more experienced developer (developer in general, not Ethereum specific).',
-    choices: [
-      {
-        id: 'experienced-dev-select',
-        jumpToDialogPartId: 'experiencedDev',
-        buttonText: `I'm an experienced developer`
-      },
-      {
-        id: 'beginner-dev-select',
-        jumpToDialogPartId: 'beginnerDev',
-        buttonText: `I'm more of a beginner`
-      }
-    ]
-  }
-]
 
 const enrichDialog = _dialog => {
   return _dialog.map(dialogStep => {
@@ -54,25 +22,6 @@ const styles = {
 }
 
 const Dialog = ({ actions, dialog: { currentDialogIndex } }) => {
-  const dialog = [
-    {
-      component: (
-        <SpeakerLeft
-          text='This game is targeted towards more experienced developer (developer in general, not
-            Ethereum specific.'
-        />
-      )
-    },
-    {
-      component: (
-        <SpeakerRight
-          text='This game is targeted towards more experienced developer (developer in general, not
-            Ethereum specific.'
-        />
-      )
-    }
-  ]
-
   useEffect(() => {
     actions.dialog.initDialog({ dialogLength: dialog.length })
   }, [])
