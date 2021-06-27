@@ -21,9 +21,15 @@ const styles = {
   }
 }
 
-const Dialog = ({ actions, dialog: { currentDialogIndex } }) => {
+const Dialog = ({
+  actions,
+  dialog: { dialogLength, currentDialogIndex, dialogPathsVisibleToUser }
+}) => {
   useEffect(() => {
-    actions.dialog.initDialog({ dialogLength: dialog.length })
+    actions.dialog.initDialog({
+      initialDialogPartId: 'intro/start',
+      dialogLength: dialog.length
+    })
   }, [])
 
   return (
@@ -36,15 +42,24 @@ const Dialog = ({ actions, dialog: { currentDialogIndex } }) => {
         }}
       >
         {dialog.map((dialogPart, index) => {
+          const isVisibleToUser =
+            index <= currentDialogIndex &&
+            dialogPathsVisibleToUser.includes(dialogPart.dialogPathId)
           const isLastVisibleDialog = index === currentDialogIndex
           const isFinalDialog = index === dialog.length - 1
 
-          if (index <= currentDialogIndex) {
+          console.log({
+            dialogPathsVisibleToUser,
+            dialogPathId: dialogPart.dialogPathId,
+            isVisibleToUser
+          })
+
+          if (isVisibleToUser) {
             return (
               <>
-                {dialogPart.component}
+                {dialogPart.component({ actions })}
 
-                {isLastVisibleDialog && !isFinalDialog && (
+                {isLastVisibleDialog && !isFinalDialog && !dialogPart.hasChoices && (
                   <button
                     type='button'
                     className='nes-btn'

@@ -11,7 +11,7 @@ import Dialog from './Dialog'
 
 const NewLevel = ({ dialog, actions }) => {
   // ----------------------------------------
-  const [background, setBackground] = useState('intro')
+  const [background, setBackground] = useState('citySkylineInsideNight')
 
   const backgroundStrings = [
     'intro',
@@ -49,10 +49,10 @@ const NewLevel = ({ dialog, actions }) => {
 
       <WindowModal
         uniqueWindowId={shortid()}
-        initWidth={400}
-        initHeight={600}
+        initWidth={312}
+        initHeight={400}
         initTop={100}
-        initLeft={100}
+        initLeft={400}
         backgroundPath='./assets/trimmed/window_trimmed.png'
         dragAreaHeightPercent={20}
         onRequestClose={() => console.log('onRequestClose')}
@@ -60,7 +60,7 @@ const NewLevel = ({ dialog, actions }) => {
         contentContainerStyle={{ marginTop: '20%', paddingLeft: 20, paddingRight: 20 }}
       >
         <div style={{ color: 'white' }}>
-          <p>Lorem Ipsum</p>
+          <p>Actions</p>
           <Button block onClick={() => actions.dialog.continueDialog()}>
             Advance Dialog
           </Button>
@@ -83,7 +83,7 @@ const NewLevel = ({ dialog, actions }) => {
             Toggle Terminal
           </Button>
           <Button block onClick={() => setBackground(getRandomBackground())}>
-            Set Background
+            Change Background
           </Button>
         </div>
       </WindowModal>
