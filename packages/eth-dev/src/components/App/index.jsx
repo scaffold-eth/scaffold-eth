@@ -186,8 +186,6 @@ const App = props => {
         <LevelContainer>
           <NewLevel />
 
-          <Background />
-
           {/* <Terminal /> */}
 
           <WalletView

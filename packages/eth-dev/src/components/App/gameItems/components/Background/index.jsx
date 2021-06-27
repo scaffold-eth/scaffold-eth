@@ -1,7 +1,6 @@
 import React from 'react'
-import { connectController } from './controller'
 
-const Background = ({ pathToCurrentBackground, children }) => {
+const Background = ({ children }) => {
   return (
     <div
       className='background-image'
@@ -13,7 +12,7 @@ const Background = ({ pathToCurrentBackground, children }) => {
         width: '100%',
         pointerEvents: 'none',
         backgroundColor: '#221F34',
-        background: `url(${pathToCurrentBackground}) no-repeat center center fixed`,
+        // background: `url(${pathToCurrentBackground}) no-repeat center center fixed`,
         backgroundSize: 'cover'
       }}
     >
@@ -22,4 +21,4 @@ const Background = ({ pathToCurrentBackground, children }) => {
   )
 }
 
-export default connectController(Background)
+export default Background

@@ -10,9 +10,8 @@ const styles = {
     pointerEvents: 'none'
   },
   background: {
-    background: 'url(./assets/layers/city_outskirts.png) no-repeat center center fixed',
+    background: 'url(./assets/city_outskirts.png) no-repeat center center fixed',
     backgroundSize: 'cover'
-    // zIndex: -10
   }
 }
 
