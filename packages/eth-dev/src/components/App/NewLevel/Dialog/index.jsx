@@ -53,14 +53,7 @@ const styles = {
   }
 }
 
-const Dialog = props => {
-  console.log('dialog:')
-  console.log({ props })
-  const {
-    actions,
-    dialog: { currentDialogIndex }
-  } = props
-
+const Dialog = ({ actions, dialog: { currentDialogIndex } }) => {
   const dialog = [
     {
       component: (
@@ -97,20 +90,27 @@ const Dialog = props => {
           const isLastVisibleDialog = index === currentDialogIndex
           const isFinalDialog = index === dialog.length - 1
 
-          console.log({ currentDialogIndex })
           if (index <= currentDialogIndex) {
-            return dialogPart.component
+            return (
+              <>
+                {dialogPart.component}
+
+                {isLastVisibleDialog && !isFinalDialog && (
+                  <button
+                    type='button'
+                    className='nes-btn'
+                    id='continue'
+                    onClick={() => actions.dialog.continueDialog()}
+                    style={{ ...styles.button }}
+                  >
+                    Continue
+                  </button>
+                )}
+              </>
+            )
           }
+          return <></>
         })}
-        <button
-          type='button'
-          className='nes-btn'
-          id='continue'
-          onClick={() => actions.dialog.continueDialog()}
-          style={{ ...styles.button }}
-        >
-          Continue
-        </button>
       </div>
     </div>
   )
