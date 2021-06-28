@@ -53,7 +53,7 @@ import {
   ThemeSwitcher,
 } from '~~/components/common';
 import { GenericContract } from '~~/components/generic-contract';
-import { Transactor } from '~~/helpers';
+import { transactor } from '~~/helpers';
 import { formatEther, parseEther } from '@ethersproject/units';
 //import Hints from "./Hints";
 import { Checkout, Hints, Subgraph } from '~~/components/views';
@@ -151,10 +151,10 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice);
+  const tx = transactor(userProvider, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = Transactor(localProvider, gasPrice);
+  const faucetTx = transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);

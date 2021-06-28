@@ -5,7 +5,7 @@ import { Button, Input, Tooltip } from 'antd';
 import { useLookupAddress } from 'eth-hooks';
 import React, { FC, useCallback, useState } from 'react';
 import Blockies from 'react-blockies';
-import { Transactor } from '~~/helpers';
+import { transactor } from '~~/helpers';
 import { Wallet } from '.';
 
 // improved a bit by converting address to ens if it exists
@@ -66,7 +66,7 @@ export const Faucet: FC<IFaucetProps> = (props) => {
     [props.ensProvider, props.onChange]
   );
 
-  const tx = Transactor(props.localProvider);
+  const tx = transactor(props.localProvider);
 
   return (
     <span>

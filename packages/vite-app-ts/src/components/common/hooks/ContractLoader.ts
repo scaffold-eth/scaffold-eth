@@ -6,6 +6,7 @@ import { Contract } from '@ethersproject/contracts';
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
+import { parseProviderOrSigner } from '~~/components/common/functions/providerOrSigner';
 
 const filelocation = '../../../generated/contracts';
 
@@ -84,23 +85,7 @@ export const useContractLoader = (
           // we need to check to see if this providerOrSigner has a signer or not
           if (typeof providerOrSigner !== 'undefined') {
             // we need to check to see if this providerOrSigner has a signer or not
-            let signer: Signer | undefined = undefined;
-            let accounts: string[];
-            let provider: ethers.providers.Provider | undefined;
-            if (providerOrSigner && providerOrSigner instanceof JsonRpcProvider) {
-              accounts = await providerOrSigner.listAccounts();
-              if (accounts && accounts.length > 0) {
-                signer = providerOrSigner.getSigner();
-              }
-              provider = providerOrSigner;
-            }
-
-            if (!signer && providerOrSigner instanceof Signer) {
-              signer = providerOrSigner as Signer;
-              provider = signer.provider;
-            }
-
-            const providerNetwork = await provider?.getNetwork();
+            const { signer, provider, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
             const chainId = config.chainId ?? providerNetwork?.chainId ?? 0;
 

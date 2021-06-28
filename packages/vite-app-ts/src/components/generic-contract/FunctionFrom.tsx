@@ -9,7 +9,7 @@ import { FunctionFragment } from 'ethers/lib/utils';
 import React, { Dispatch, ReactElement, SetStateAction, useState } from 'react';
 import { FC } from 'react';
 import Blockies from 'react-blockies';
-import { Transactor } from '../../helpers';
+import { transactor } from '~~/helpers';
 import { tryToDisplay } from './displayUtils';
 
 import { utils } from 'ethers';
@@ -27,7 +27,7 @@ export const FunctionForm: FC<IFunctionForm> = (props) => {
   const [txValue, setTxValue] = useState<string>('');
   const [returnValue, setReturnValue] = useState<string>('');
 
-  const tx = Transactor(props.provider, props.gasPrice);
+  const tx = transactor(props.provider, props.gasPrice);
 
   let inputIndex = 0;
   const inputs = props.functionInfo.inputs.map((input) => {

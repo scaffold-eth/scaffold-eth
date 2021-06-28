@@ -4,7 +4,7 @@ import { Button, Modal, Spin, Tooltip, Typography } from 'antd';
 import { BytesLike, ethers } from 'ethers';
 import QR from 'qrcode.react';
 import React, { FC, useState } from 'react';
-import { Transactor } from '~~/helpers';
+import { transactor } from '~~/helpers';
 import { Address, AddressInput, Balance, EtherInput } from '.';
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { providers } from 'web3modal';
@@ -302,7 +302,7 @@ export const Wallet: FC<IWalletProps> = (props) => {
             disabled={disableSend}
             loading={false}
             onClick={() => {
-              const tx = Transactor(props.provider);
+              const tx = transactor(props.provider);
 
               let value;
               try {

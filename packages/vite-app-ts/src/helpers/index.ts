@@ -1,1 +1,1 @@
-export * from './transactors';
+export * from './transactor';
