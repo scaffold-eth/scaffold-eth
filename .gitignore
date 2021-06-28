@@ -38,3 +38,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+# Local Netlify folder
+.netlify
