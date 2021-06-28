@@ -73,13 +73,16 @@ const blockExplorer = targetNetwork.blockExplorer;
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
+  // network: "mainnet", // Optional. If using WalletConnect on xDai chain, change network to "xdai" here and add RPC info below for xDai chain.
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
         infuraId: INFURA_ID,
+        //rpc: {
+          //100:"https://dai.poa.network", // For apps deployed on xDai chain, with WalletConnect.
+        //},
       },
     },
   },
