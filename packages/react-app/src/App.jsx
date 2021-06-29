@@ -325,10 +325,10 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Grapg Explorer
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          {/*<Menu.Item key="/hints">
             <Link
               onClick={() => {
                 setRoute("/hints");
@@ -357,7 +357,7 @@ function App(props) {
             >
               Mainnet DAI
             </Link>
-          </Menu.Item>
+          </Menu.Item>*/}
           <Menu.Item key="/subgraph">
             <Link
               onClick={() => {
@@ -378,24 +378,25 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <Contract
+            {/*<Contract
               name="YourContract"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-            />
+            />*/}
+            <DexSubgraphExplorer />
           </Route>
           <Route path="/hints">
-            <Hints
+            {/*<Hints
               address={address}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
-            />
+            />*/}
           </Route>
           <Route path="/exampleui">
-            <ExampleUI
+            {/*<ExampleUI
               address={address}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
@@ -407,17 +408,17 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-            />
+            />*/}
           </Route>
           <Route path="/mainnetdai">
-            <Contract
+            {/*<Contract
               name="DAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
               signer={userSigner}
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
-            />
+            />*/}
             {/*
             <Contract
               name="UNI"
@@ -436,7 +437,7 @@ function App(props) {
               writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
             />
-            <DexSubgraphExplorer />
+            
           </Route>
         </Switch>
       </BrowserRouter>

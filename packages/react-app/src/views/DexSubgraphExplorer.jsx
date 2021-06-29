@@ -8,6 +8,8 @@ import "graphiql/graphiql.min.css";
 import fetch from "isomorphic-fetch";
 import React, { useState } from "react";
 
+const { Search } = Input;
+
 function DexSubgraphExplorer() {
 
   const dexQLFetcher = (_ql) => {
@@ -20,8 +22,45 @@ function DexSubgraphExplorer() {
 
   const uriArr = [
     {
+      "name": "uniswap-v3",
+      "uri": "https://api.thegraph.com/subgraphs/name/drcyph3r/uniswap-v3",
+      "ql": `{
+        pools(first: 10, orderBy: txCount, orderDirection: desc) {
+          id
+          token0 {
+            symbol
+          }
+          token1 {
+            symbol
+          }
+          token0Price
+          token1Price
+          volumeUSD
+          volumeToken0
+          volumeToken1
+        }
+      }`
+    },{
       "name":"uniswap-v2",
       "uri":"https://api.thegraph.com/subgraphs/name/uniswap/uniswap-v2",
+      "ql": `{
+        pairs(first: 10, orderBy: volumeUSD, orderDirection: desc) {
+          token0 {
+            symbol
+          }
+          token1 {
+            symbol
+          }
+          volumeUSD
+          reserveUSD
+          reserveETH
+          volumeToken0
+          volumeToken1
+        }
+      }`
+    },{
+      "name":"sushiswap",
+      "uri":"https://api.thegraph.com/subgraphs/name/sushiswap/exchange",
       "ql": `{
         pairs(first: 10, orderBy: volumeUSD, orderDirection: desc) {
           token0 {
@@ -163,30 +202,44 @@ function DexSubgraphExplorer() {
 
   const onChangeUri = e => {
     const i = e.target.value;
-    console.log('radio checked', e.target.value);
+    console.log('radio checked', i);
     setIndex(i);
     setUri(uriArr[i].uri);
     setQl(uriArr[i].ql);
+  };
+  const onSetUri = e => {
+    console.log('set url', e);
+    setUri(e);
+    setQl("");
   };
 
   return (
     <>
       <div style={{ margin: "auto", marginTop: 30 }}>
 
-        <Card title="choose and play some top dex subgraph:" style={{ margin: "auto", marginTop: 10, paddingBottom: 10 }}>
+        <Card title="choose and play some top Dex Subgraphs:" style={{ margin: "auto", marginTop: 10, paddingBottom: 10 }}>
         <h3>current dex url: {uri} </h3>      
-        <Radio.Group onChange={onChangeUri} value={index} >
-          <Space direction="vertical">
+        <Radio.Group onChange={onChangeUri} value={index} buttonStyle="solid" >
             { uriArr && 
               uriArr.map ( (u,i) => {
                 return (
-                  <Radio key={i} value={i}>{u.name}</Radio>
+                  <Radio.Button key={i} value={i} style={{margin:10}}>{u.name}</Radio.Button>
                 )
               })
             }
-          </Space>
         </Radio.Group>
-
+        
+        <h3>
+          reference site:
+          <a href="https://thegraph.com/explorer/" target="_blank" rel="noopener noreferrer">https://thegraph.com/explorer/</a>
+        </h3>  
+        <Search
+          placeholder="input subgraph url"
+          allowClear
+          enterButton="set url"
+          onSearch={onSetUri}
+        />
+        
         <div style={{ margin: "auto", margin: 20, height: 500, border: "1px solid #888888", textAlign: "left" }}>
           <GraphiQL fetcher={dexQLFetcher} docExplorerOpen query={ql} />
         </div>

@@ -21,6 +21,7 @@ Scaffold-eth is not a product itself but more of a combination or stack of other
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
 cd scaffold-eth
+git checkout defi-subgraphs
 yarn install
 yarn chain
 ```
@@ -40,6 +41,9 @@ yarn deploy
 ```
 
 If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
+
+# Preview
+![preview](https://user-images.githubusercontent.com/35558569/123731168-36d73900-d8ca-11eb-9f83-d8076f894eb0.png)
 
 # Documentation
 
