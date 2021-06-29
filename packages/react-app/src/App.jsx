@@ -616,7 +616,7 @@ function App(props) {
           <Route path="/debugcontracts">
             <Contract
               name="YourCollectible"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
