@@ -325,7 +325,7 @@ function App(props) {
               }}
               to="/"
             >
-              Grapg Explorer
+              GrapH Explorer
             </Link>
           </Menu.Item>
           {/*<Menu.Item key="/hints">
