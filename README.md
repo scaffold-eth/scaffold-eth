@@ -1,3 +1,11 @@
+# Simple NFT
+
+This sample shows how to build a simple NFT (ERC-721) project. 
+
+Full tutorial here: https://docs.scaffoldeth.io/scaffold-eth/examples-and-tutorials/simple-nft
+
+---------------
+
 # Welcome to Scaffold-eth
 Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
 
