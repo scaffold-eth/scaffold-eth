@@ -1,16 +1,21 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef } from 'react';
 
-const usePoller = (fn: () => void, delay: number, extraWatch?: any): void => {
+/**
+ * helper hook to call a function regularly in time intervals
+ * @param fn
+ * @param delay
+ * @param extraWatch
+ */
+export const usePoller = (fn: () => void, delay: number, extraWatch: boolean): void => {
   const savedCallback = useRef<() => void>();
 
   // Remember the latest fn.
-  useEffect((): void => {
+  useEffect(() => {
     savedCallback.current = fn;
   }, [fn]);
 
   // Set up the interval.
-  // eslint-disable-next-line consistent-return
-  useEffect((): void | (() => void) => {
+  useEffect(() => {
     function tick() {
       if (savedCallback.current) savedCallback.current();
     }
@@ -24,8 +29,5 @@ const usePoller = (fn: () => void, delay: number, extraWatch?: any): void => {
   // run at start too
   useEffect(() => {
     fn();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [extraWatch]);
+  }, [extraWatch, fn]);
 };
-
-export default usePoller;

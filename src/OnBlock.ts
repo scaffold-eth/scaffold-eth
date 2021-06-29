@@ -1,17 +1,20 @@
-import { useEffect, useRef } from "react";
-import { Provider } from "@ethersproject/providers";
+import { JsonRpcProvider, Provider, Web3Provider } from '@ethersproject/providers';
+import { useEffect, useRef } from 'react';
 
-
-// helper hook to call a function regularly in time intervals
-let DEBUG = false
-
-export default function useOnBlock(
-  provider: Provider,
-  fn: (...args: any[]) => void,
-  args?: any
-): void {
-  const savedCallback = useRef<(...args: any[]) => void>();
-  // Remember the latest fn.
+const DEBUG = false;
+/**
+ * helper hook to call a function regularly at time intervals
+ * @param provider ethers/web3 provider
+ * @param fn any function
+ * @param args function parameters
+ */
+export const useOnBlock = (
+  provider: JsonRpcProvider | Web3Provider | Provider | undefined,
+  fn: (...args: []) => void,
+  ...args: []
+): void => {
+  // save the input function provided
+  const savedCallback = useRef<(...args: []) => void>();
   useEffect(() => {
     savedCallback.current = fn;
   }, [fn]);
@@ -19,23 +22,23 @@ export default function useOnBlock(
   // Turn on the listener if we have a function & a provider
   useEffect(() => {
     if (fn && provider) {
-
       const listener = (blockNumber: number) => {
-        if (DEBUG) console.log(blockNumber, fn, args, provider.listeners())
+        if (DEBUG) console.log(blockNumber, fn, args, provider.listeners());
 
-        if (args && args.length > 0) {
-          if (savedCallback.current) savedCallback.current(...args);
-        } else {
-          if (savedCallback.current) savedCallback.current();
+        if (savedCallback.current) {
+          if (args && args.length > 0) {
+            savedCallback.current(...args);
+          } else {
+            savedCallback.current();
+          }
         }
+      };
 
-      }
-
-      provider.on("block", listener)
+      provider.on('block', listener);
 
       return () => {
-          provider.off("block", listener)
-      }
+        provider.off('block', listener);
+      };
     }
-  }, [provider])
-}
+  }, [args, fn, provider]);
+};

@@ -1,44 +1,62 @@
-import { useState, useEffect, useCallback } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
-import { Web3Provider, Provider } from "@ethersproject/providers";
-import usePoller from "./Poller";
-import useOnBlock from "./OnBlock";
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { BigNumber } from 'ethers';
+import { useState, useCallback } from 'react';
 
-let DEBUG = false
+import { usePoller, useOnBlock } from '.';
 
-const useBalance = (
-  provider: Provider,
+const DEBUG = false;
+
+/**
+ * Gets your balance in ETH from given address and provider
+ *   
+ * ~ Features ~
+  - Provide address and get balance corresponding to given address
+  - Change provider to access balance on different chains (ex. mainnetProvider)
+  - If no pollTime is passed, the balance will update on every new block
+ * @param provider 
+ * @param address 
+ * @param pollTime 
+ * @returns 
+ */
+export const useBalance = (
+  provider: JsonRpcProvider | Web3Provider | undefined,
   address: string,
   pollTime: number = 0
 ): BigNumber => {
-
   const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
 
-  const pollBalance = useCallback(async (provider, address) => {
-    if (provider && address) {
-      const newBalance = await provider.getBalance(address);
-      if (newBalance !== balance) {
-        setBalance(newBalance);
+  const pollBalance = useCallback(
+    async (provider?: JsonRpcProvider | Web3Provider | undefined, address?: string): Promise<void> => {
+      if (provider && address) {
+        const newBalance = await provider.getBalance(address);
+        if (newBalance !== balance) {
+          setBalance(newBalance);
+        }
       }
-    }
-  }, [provider, address]);
+    },
+    [balance]
+  );
 
   // Only pass a provider to watch on a block if there is no pollTime
-  useOnBlock(provider, () => {
+  useOnBlock(pollTime === 0 ? provider : undefined, () => {
     if (provider && address && pollTime === 0) {
-      pollBalance(provider, address);
+      void pollBalance(provider, address);
     }
-  })
+  });
 
   // Use a poller if a pollTime is provided
-  usePoller(async () => {
-    if (provider && address && pollTime > 0) {
-      if (DEBUG) console.log('polling!', address);
-      pollBalance(provider, address);
-    }
-  }, pollTime, provider && address)
+  usePoller(
+    (): void => {
+      if (provider != undefined && address != undefined && pollTime > 0) {
+        if (DEBUG) {
+          console.log('polling!', address);
+        }
+        void pollBalance(provider, address);
+      }
+    },
+    pollTime,
+    provider != undefined && address != undefined
+  );
 
   return balance;
-  };
-
-export default useBalance;
+};
