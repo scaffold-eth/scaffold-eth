@@ -32,6 +32,7 @@ export default function useBalance(provider, address, pollTime = 0) {
         }
       }
     },
+    // eslint-disable-next-line
     [provider, address],
   );
 

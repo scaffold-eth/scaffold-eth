@@ -11,6 +11,7 @@ export default function useDebounce(value, delay) {
     return () => {
       clearTimeout(handler);
     };
+  // eslint-disable-next-line
   }, [value]);
 
   return debouncedValue;

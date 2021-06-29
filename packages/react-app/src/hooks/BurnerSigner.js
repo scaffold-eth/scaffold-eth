@@ -31,6 +31,7 @@ export default function useBurnerSigner(provider) {
 
   useEffect(() => {
     if (storedValue && provider) {
+      // eslint-disable-next-line
       wallet = new ethers.Wallet(storedValue);
       const _signer = wallet.connect(provider);
       setSigner(_signer);

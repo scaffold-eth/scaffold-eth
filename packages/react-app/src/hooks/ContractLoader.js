@@ -117,6 +117,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
     return () => {
       active = false;
     };
+    // eslint-disable-next-line
   }, [providerOrSigner, config.chainId, config.hardhatNetworkName]);
 
   return contracts;

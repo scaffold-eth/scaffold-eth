@@ -120,6 +120,7 @@ function Swap({ selectedProvider, tokenListURI }) {
       }
     };
     getTokenList();
+  // eslint-disable-next-line
   }, [tokenListURI]);
 
   const getTrades = async () => {
@@ -181,16 +182,20 @@ function Swap({ selectedProvider, tokenListURI }) {
 
   useEffect(() => {
     getTrades();
+    // eslint-disable-next-line
   }, [tokenIn, tokenOut, debouncedAmountIn, debouncedAmountOut, slippageTolerance, selectedProvider]);
 
   useEffect(() => {
     if (trades && trades[0]) {
+      // eslint-disable-next-line
       if (exact === "in") {
         setAmountOutMin(trades[0].minimumAmountOut(slippageTolerance));
+      // eslint-disable-next-line
       } else if (exact === "out") {
         setAmountInMax(trades[0].maximumAmountIn(slippageTolerance));
       }
     }
+    // eslint-disable-next-line
   }, [slippageTolerance, amountIn, amountOut, trades]);
 
   const getBalance = async (_token, _account, _contract) => {

@@ -43,6 +43,7 @@ const useTokenList = (tokenListUri, chainId) => {
       }
     };
     getTokenList();
+  // eslint-disable-next-line
   }, [tokenListUri]);
 
   return tokenList;

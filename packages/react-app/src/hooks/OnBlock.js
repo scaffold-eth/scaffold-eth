@@ -29,5 +29,6 @@ export default function useOnBlock(provider, fn, args) {
         provider.off("block", listener);
       };
     }
+  // eslint-disable-next-line
   }, [provider]);
 }

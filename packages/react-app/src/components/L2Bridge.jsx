@@ -27,6 +27,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
   const [L1Provider, setL1Provider] = useState("");
   const [L2Provider, setL2Provider] = useState("");
   const [rollup, setRollup] = useState("arbitrum");
+  // eslint-disable-next-line
   const [environment, setEnvironment] = useState("test");
 
   const rollupConfig = {
@@ -57,7 +58,9 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
       setL1EthBalance("...");
       setL2EthBalance("...");
     }
+    // eslint-disable-next-line
     setProviders();
+    // eslint-disable-next-line
   }, [rollup]);
 
   const contracts = useContractLoader(userSigner, { externalContracts: L1BridgeMetadata, hardhatContracts: {} });
@@ -157,7 +160,8 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
       console.log("something went wrong!");
     }
   }
-
+  
+  // eslint-disable-next-line
   const onReset = () => {
     form.resetFields();
   };

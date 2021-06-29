@@ -64,6 +64,7 @@ export default function Faucet(props) {
         setAddress(address);
       }
     },
+    // eslint-disable-next-line
     [props.ensProvider, props.onChange],
   );
 
