@@ -3,6 +3,7 @@ import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
+import { TProviderOrSigner } from '~~/models/providerTypes';
 
 // const loadContract = async (contractName: string, signer: Signer) => {
 //   // @ts-ignore
