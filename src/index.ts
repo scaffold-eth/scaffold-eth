@@ -1,5 +1,4 @@
 export { default as useBlockNumber } from './BlockNumber';
-export { default as useContractReader } from './ContractReader';
 export { useLookupAddress, useResolveEnsName } from './ENS';
 export { useEventListener, useEventReader } from './events';
 export { default as useNonce } from './Nonce';
@@ -19,7 +18,7 @@ export { default as useBurnerSigner } from './BurnerSigner';
 export * from './useBalance';
 // export * from "./ContractExistsAtAddress";
 // export * from "./ContractLoader";
-// export * from "./ContractReader";
+export * from './useContractReader';
 // export * from "./CustomContractLoader";
 // export * from "./Debounce";
 // export * from "./EventListener";

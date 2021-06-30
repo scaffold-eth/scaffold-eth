@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 
-import { TEthHooksProvider } from '~~/models/TEthProvider';
+import { TEthHooksProvider } from '~~/models/TEthHooksProvider';
 
 const DEBUG = false;
 /**
