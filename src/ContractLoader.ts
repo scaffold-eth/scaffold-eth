@@ -1,23 +1,51 @@
-/* eslint-disable import/no-dynamic-require */
-/* eslint-disable global-require */
-import { Contract } from "@ethersproject/contracts";
-import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
-import { useEffect, useState } from "react";
+import { Contract } from '@ethersproject/contracts';
+import { ethers } from 'ethers';
+import { useEffect, useState } from 'react';
 
-const { ethers } = require("ethers");
+import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
 
-/*
-  ~ What it does? ~
+// const loadContract = async (contractName: string, signer: Signer) => {
+//   // @ts-ignore
+//   const addressJs = (await import(`./${filelocation}/${contractName}.address.js`)).default;
+//   const contract = (await import(`./${filelocation}/${contractName}.abi.js`)).default;
 
-  Loads your local contracts and gives options to read values from contracts
+//   const newContract = new Contract(addressJs, contract, signer);
+//   try {
+//     // @ts-ignore
+//     const bytecodeJs = (await import(`./${filelocation}/${contractName}.bytecode.js`)).default;
+//     // @ts-ignore
+//     newContract.bytecode = bytecodeJs;
+//   } catch (e) {
+//     console.log(e);
+//   }
+//   return newContract;
+// };
+
+// const loadContractList = async (contractList: string[], signer: Signer | undefined) => {
+//   const contracts: Record<string, Contract> = {};
+
+//   if (signer) {
+//     await contractList.forEach(async (c) => {
+//       contracts[c] = await loadContract(c, signer);
+//     });
+//   }
+//   return contracts;
+// };
+
+interface IContractConfig {
+  chainId?: number;
+  contractFileLocation: string;
+  hardhatNetworkName?: string;
+  customAddresses?: Record<string, string>;
+  hardhatContracts: Record<string, Contract>;
+  externalContracts: Record<string, Contract>;
+}
+
+/**
+ * Loads your local contracts and gives options to read values from contracts
   or write transactions into them
 
-  ~ How can I use? ~
-
-  const readContracts = useContractLoader(localProvider) // or
-  const writeContracts = useContractLoader(userProvider)
-
-  ~ Features ~
+   ~ Features ~
 
   - localProvider enables reading values from contracts
   - userProvider enables writing transactions into contracts
@@ -33,104 +61,108 @@ const { ethers } = require("ethers");
   - customAddresses: { contractName: 0xCustomAddress } to hardcode the address for a given named contract
   - hardhatContracts: object following the hardhat deploy export format (Json with chainIds as keys, which have hardhat network names as keys, which contain arrays of contracts for each)
   - externalContracts: object with chainIds as keys, with an array of contracts for each
-*/
-
-type Config = {
-  chainId?: number,
-  hardhatNetworkName?: string,
-  customAddresses?: Record<string, string>,
-  hardhatContracts: Record<string, Contract>,
-  externalContracts: Record<string, Contract>
-}
-
-export default function useContractLoader(
-  providerOrSigner: JsonRpcProvider | Web3Provider,
-  config: Config
-) {
-  const [contracts, setContracts] = useState<{[index: string]: Contract}>();
+ * @param providerOrSigner 
+ * @param config 
+ * @returns 
+ */
+export const useContractLoader = (
+  providerOrSigner: TProviderOrSigner,
+  config: IContractConfig = {
+    contractFileLocation: '../../../generated/contracts',
+    hardhatContracts: {},
+    externalContracts: {},
+  }
+): Record<string, Contract> => {
+  const [contracts, setContracts] = useState<Record<string, Contract>>({});
   useEffect(() => {
     let active = true;
 
-    async function loadContracts() {
-      if (providerOrSigner && typeof providerOrSigner !== "undefined") {
+    const loadContracts = async () => {
+      if (providerOrSigner && typeof providerOrSigner !== 'undefined') {
         console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
-          let signer: any;
-          let provider: any;
-          let accounts;
+          if (typeof providerOrSigner !== 'undefined') {
+            // we need to check to see if this providerOrSigner has a signer or not
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
-          if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
-            accounts = await providerOrSigner.listAccounts();
-          }
+            const chainId: number = config.chainId ?? providerNetwork?.chainId ?? 0;
 
-          if (ethers.Signer.isSigner(providerOrSigner)) {
-            signer = providerOrSigner;
-            provider = signer.provider;
-          } else if (accounts && accounts.length > 0) {
-            signer = providerOrSigner.getSigner();
-            provider = providerOrSigner;
-          } else {
-            signer = providerOrSigner;
-            provider = providerOrSigner;
-          }
+            // type definition
+            //  Record<string, Record<string, Contract>>
+            //  { chainId: { contractName: Contract } }
+            let contractList: Record<string, Record<string, Contract>> = {};
+            let externalContractList: Record<string, Record<string, Contract>> = {};
 
-          const providerNetwork = await provider.getNetwork();
+            let combinedContracts: Record<string, Contract> = {};
+            try {
+              contractList =
+                config.hardhatContracts ??
+                ((await import(`./${config.contractFileLocation}/hardhat_contracts.json`)) as Record<string, Contract>)
+                  .default;
+            } catch (e) {
+              console.log(e);
+            }
 
-          const _chainId: string = config.chainId || providerNetwork.chainId;
-
-          let contractList: {[index: string]: any} = {};
-          let externalContractList: {[index: string]: any} = {};
-          try {
-            contractList = config.hardhatContracts;
-          } catch (e) {
-            console.log(e);
-          }
-          try {
-            externalContractList = config.externalContracts;
-          } catch (e) {
-            console.log(e);
-          }
-
-          let combinedContracts: {[index: string]: any} = {};
-
-          if (contractList[_chainId]) {
-            for (const hardhatNetwork in contractList[_chainId]) {
-              if (Object.prototype.hasOwnProperty.call(contractList[_chainId], hardhatNetwork)) {
-                if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
-                  combinedContracts = {
-                    ...combinedContracts,
-                    ...contractList[_chainId][hardhatNetwork].contracts,
-                  };
+            try {
+              externalContractList =
+                config.externalContracts ??
+                ((await import(`./${config.contractFileLocation}/external_contracts.js`)) as Record<string, Contract>)
+                  .default;
+            } catch (e) {
+              console.log(e);
+            }
+            if (contractList[chainId]) {
+              for (const hardhatNetwork in contractList[chainId]) {
+                if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
+                  if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
+                    combinedContracts = {
+                      ...combinedContracts,
+                      ...contractList[chainId][hardhatNetwork].contracts,
+                    };
+                  }
                 }
               }
             }
-          }
 
-          if (externalContractList[_chainId]) {
-            combinedContracts = { ...combinedContracts, ...externalContractList[_chainId].contracts };
-          }
+            if (externalContractList[chainId]) {
+              combinedContracts = { ...combinedContracts, ...externalContractList[chainId].contracts };
+            }
 
-          const newContracts = Object.keys(combinedContracts).reduce((accumulator: {[index: string]: Contract}, contractName: string) => {
-            const _address =
-              config.customAddresses && Object.keys(config.customAddresses).includes(contractName)
-                ? config.customAddresses[contractName]
-                : combinedContracts[contractName].address;
-            accumulator[contractName] = new ethers.Contract(_address, combinedContracts[contractName].abi, signer);
-            return accumulator;
-          }, {});
-          if (active) setContracts(newContracts);
+            const newContracts = Object.keys(combinedContracts).reduce(
+              (accumulator: Record<string, any>, contractName: string) => {
+                const address: string =
+                  config.customAddresses && Object.keys(config.customAddresses).includes(contractName)
+                    ? config.customAddresses[contractName]
+                    : combinedContracts[contractName].address;
+                accumulator[contractName] = new ethers.Contract(address, combinedContracts[contractName].abi, signer);
+                return accumulator;
+              },
+              {}
+            );
+            if (active) setContracts(newContracts);
+          }
         } catch (e) {
-          console.log("ERROR LOADING CONTRACTS!!", e);
+          console.log('ERROR LOADING CONTRACTS!!', e);
         }
       }
-    }
-    loadContracts();
+    };
+
+    void loadContracts();
 
     return () => {
       active = false;
     };
-  }, [providerOrSigner, config.chainId, config.hardhatNetworkName]);
+  }, [
+    providerOrSigner,
+    config.chainId,
+    config.hardhatNetworkName,
+    config.hardhatContracts,
+    config.contractFileLocation,
+    config.externalContracts,
+    config.customAddresses,
+  ]);
 
   return contracts;
-}
+};

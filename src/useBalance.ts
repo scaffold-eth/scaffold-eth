@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 
 import { usePoller, useOnBlock } from '.';
 
-import { TEthHooksProvider } from '~~/models/TEthHooksProvider';
+import { TEthHooksProvider } from '~~/models/providerTypes';
 
 const DEBUG = false;
 

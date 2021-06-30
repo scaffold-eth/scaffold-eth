@@ -6,7 +6,6 @@ export { default as useTimestamp } from './Timestamp';
 export { default as useTokenBalance } from './TokenBalance';
 export { default as useUserAddress } from './UserAddress';
 export { default as useUserSigner } from './UserSigner';
-export { default as useContractLoader } from './ContractLoader';
 export { default as useLocalStorage } from './LocalStorage';
 export { default as useContractExistsAtAddress } from './ContractExistsAtAddress';
 export { default as useExchangePrice } from './ExchangePrice';
@@ -17,7 +16,7 @@ export { default as useBurnerSigner } from './BurnerSigner';
 
 export * from './useBalance';
 // export * from "./ContractExistsAtAddress";
-// export * from "./ContractLoader";
+export * from './ContractLoader';
 export * from './useContractReader';
 // export * from "./CustomContractLoader";
 // export * from "./Debounce";
