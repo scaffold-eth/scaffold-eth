@@ -193,51 +193,42 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-  console.log("🤗 balance:", balance);
-
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
-  console.log("📟 Transfer events:", transferEvents);
+  const transferEvents = useEventListener(readContracts, "YourCollectible", "TransferSingle", localProvider, 1);
 
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
-  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  let collectiblesCount = useContractReader(readContracts, "YourCollectible", "getCurrentTokenID");
+  const numberCollectiblesCount = collectiblesCount && collectiblesCount.toNumber && collectiblesCount.toNumber();
   const [yourCollectibles, setYourCollectibles] = useState();
 
   useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+    const updateCollectibles = async () => {
+      const collectiblesUpdate = [];
+    
+      for (let collectibleIndex = 0; collectibleIndex < numberCollectiblesCount; collectibleIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
+          let tokenSupply = await readContracts.YourCollectible.tokenSupply(collectibleIndex);
+          let owned = await readContracts.YourCollectible.balanceOf(address, collectibleIndex);
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
+          let uri = await readContracts.YourCollectible.uri(0); //All tokens have the same base uri
+          uri = uri.replace(/{(.*?)}/, collectibleIndex);
+          const ipfsHash = uri.replace("https://ipfs.io/ipfs/", "");
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            const jsonManifest =JSON.parse(jsonManifestBuffer.toString());
+            collectiblesUpdate.push({ id: collectibleIndex, supply:tokenSupply, owned:owned, name: jsonManifest.name, description: jsonManifest.description, image:jsonManifest.image });
           } catch (e) {
             console.log(e);
           }
+
         } catch (e) {
           console.log(e);
         }
       }
-      setYourCollectibles(collectibleUpdate);
+      setYourCollectibles(collectiblesUpdate);
     };
-    updateYourCollectibles();
-  }, [address, yourBalance]);
+    updateCollectibles();
+  }, [numberCollectiblesCount, yourLocalBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -471,7 +462,7 @@ function App(props) {
                 bordered
                 dataSource={yourCollectibles}
                 renderItem={item => {
-                  const id = item.id.toNumber();
+                  const id = item.id;
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -488,13 +479,7 @@ function App(props) {
                       </Card>
 
                       <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
+                        owned: {item.owned.toNumber()} of {item.supply.toNumber()}
                         <AddressInput
                           ensProvider={mainnetProvider}
                           placeholder="transfer to address"
@@ -508,7 +493,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.YourCollectible.safeTransferFrom(address, transferToAddresses[id], id, 1, []));
                           }}
                         >
                           Transfer
@@ -528,10 +513,11 @@ function App(props) {
                 dataSource={transferEvents}
                 renderItem={item => {
                   return (
-                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item[2].toNumber()}>
-                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item[2].toNumber()}</span>
-                      <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
-                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} />
+                    <List.Item key={item[1] + "_" + item[2] + "_" + item.blockNumber + "_" + item[3].toNumber()}>
+                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item[3].toNumber()}</span>
+                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
+                      <Address address={item[2]} ensProvider={mainnetProvider} fontSize={16} />
+                      <span style={{ fontSize: 16, marginRight: 8 }}>Amount: {item[4].toNumber()}</span>
                     </List.Item>
                   );
                 }}
