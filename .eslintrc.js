@@ -24,6 +24,12 @@ module.exports = {
   ],
   plugins: ['prettier', 'react', 'react-hooks', 'testing-library'],
   rules: {
+    'prettier/prettier': [
+      'warn',
+      {
+        endOfLine: 'auto',
+      },
+    ],
     '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',

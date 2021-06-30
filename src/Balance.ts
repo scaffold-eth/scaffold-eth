@@ -4,6 +4,8 @@ import { useState, useCallback } from 'react';
 
 import { usePoller, useOnBlock } from '.';
 
+import { TEthHooksProvider } from '~~/models/TEthProvider';
+
 const DEBUG = false;
 
 /**
@@ -19,7 +21,7 @@ const DEBUG = false;
  * @returns 
  */
 export const useBalance = (
-  provider: JsonRpcProvider | Web3Provider | undefined,
+  provider: TEthHooksProvider | undefined,
   address: string,
   pollTime: number = 0
 ): BigNumber => {

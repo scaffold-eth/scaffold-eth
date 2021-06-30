@@ -1,5 +1,6 @@
-import { JsonRpcProvider, Provider, Web3Provider } from '@ethersproject/providers';
 import { useEffect, useRef } from 'react';
+
+import { TEthHooksProvider } from '~~/models/TEthProvider';
 
 const DEBUG = false;
 /**
@@ -8,11 +9,7 @@ const DEBUG = false;
  * @param fn any function
  * @param args function parameters
  */
-export const useOnBlock = (
-  provider: JsonRpcProvider | Web3Provider | Provider | undefined,
-  fn: (...args: []) => void,
-  ...args: []
-): void => {
+export const useOnBlock = (provider: TEthHooksProvider | undefined, fn: (...args: []) => void, ...args: []): void => {
   // save the input function provided
   const savedCallback = useRef<(...args: []) => void>();
   useEffect(() => {
