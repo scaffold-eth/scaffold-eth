@@ -25,6 +25,8 @@ export default function useContractReader(
   }
 
   const [value, setValue] = useState();
+  const [tried, setTried] = useState(false);
+
   useEffect(() => {
     if (typeof onChange === "function") {
       setTimeout(onChange.bind(this, value), 1);
@@ -37,6 +39,7 @@ export default function useContractReader(
       if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
       if (args && args.length > 0) {
         newValue = await contracts[contractName][functionName](...args);
+        setTried(true);
         if (DEBUG)
           console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
       } else {
@@ -70,6 +73,10 @@ export default function useContractReader(
       updateValue()
     }
   }, adjustPollTime, contracts && contracts[contractName])
+
+  if (tried === false && contracts && contracts[contractName]) {
+    updateValue();
+  }
 
   return value;
 }
