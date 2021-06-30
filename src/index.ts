@@ -13,7 +13,7 @@ export { default as useTokenList } from './TokenList';
 export { default as useBurnerSigner } from './BurnerSigner';
 
 export * from './useBalance';
-export * from './ContractExistsAtAddress';
+export * from './useContractExistsAtAddress';
 export * from './useContractLoader';
 export * from './useContractReader';
 // export * from "./CustomContractLoader";
@@ -27,8 +27,9 @@ export * from './useContractReader';
 // export * from "./Nonce";
 export * from './useOnBlock';
 export * from './usePoller';
-export { useDebounce, useDebouncedCallback, useThrottledCallback } from 'use-debounce';
 // export * from "./ResolveName";
 // export * from "./TokenList";
 // export * from "./UserProvider";
 // export * from "./UserAddress";
+
+export { useDebounce, useDebouncedCallback, useThrottledCallback } from 'use-debounce';

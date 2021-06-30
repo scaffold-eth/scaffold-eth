@@ -18,6 +18,10 @@
     {
       "name": "Tom French",
       "url": "https://github.com/tomafrench"
+    },
+    {
+      "name": "Shravan Sunder",
+      "url": "https://github.com/ShravanSunder"
     }
   ],
   "dependencies": {
@@ -32,8 +36,7 @@
     "burner-provider": "^1.0.38",
     "ethers": "^5.4.0",
     "observable-hooks": "^4.0.5",
-    "rxjs": "^7.1.0",
-    "use-debounce": "^7.0.0"
+    "rxjs": "^7.1.0"
   },
   "peerDependencies": {
     "@uniswap/sdk": "^3.0.3",
