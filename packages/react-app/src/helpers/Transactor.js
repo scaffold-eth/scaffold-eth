@@ -118,16 +118,10 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
 
         return result;
       } catch (e) {
-        let message;
-        if(network.chainId == 31337)
-        {
-          if(e.data) // Metamask signer returns data 
-            message = e.data.message;
-          else // Ethers js needs parsing the error
-            message = JSON.parse(JSON.parse(JSON.stringify(e.error)).body).error.message;
-        }else{
-          message = e.data ? e.data : JSON.stringify(e);
-        }
+        if (DEBUG) console.log(e);
+        // Accounts for Metamask and default signer on all networks
+        let message = e.data && e.data.message ? e.data.message : e.error && JSON.parse(JSON.stringify(e.error)).body ? JSON.parse(JSON.parse(JSON.stringify(e.error)).body).error.message : e.data ? e.data : JSON.stringify(e);
+
         console.log("Transaction Error:", message);
         notification.error({
           message: "Transaction Error",
