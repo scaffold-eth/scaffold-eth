@@ -16,7 +16,7 @@ Getting your web3 dev stack up and running is difficult and prone to mistakes, t
 
 # 🏄‍♂️ Quick Start
 
-⚠️ First, make sure you have: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
