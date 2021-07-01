@@ -53,7 +53,7 @@ You should now have a local blockchain, with `YourContract.sol` deployed, and yo
 
 For a more in-depth explanation, documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
 
-# 🧑‍🚀 Buidl
+# 🛠 Buidl
 
 Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
 
