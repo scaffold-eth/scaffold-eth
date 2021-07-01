@@ -111,7 +111,6 @@ function App(props) {
       <Layout>
         <Header
           style={{ padding: 5, position: "fixed", zIndex: 1, width: "100%", height: "auto", top: 0 }}
-          className=""
         >
           <HeaderSt />
           <Space></Space>
