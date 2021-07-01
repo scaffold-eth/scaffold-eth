@@ -1,7 +1,7 @@
 # 🏗 Scaffold-eth
 > is everything you need to build decentralized applications on Ethereum! 🚀
 
-At the heart of 🏗 Scaffold-eth is the ability to quickly iterate on Solidity and experiment with YourContract from React:
+At the heart of it is the ability to quickly iterate on Solidity and experiment with your contract from React:
 
 ![scaffold](https://user-images.githubusercontent.com/2653167/124141516-b722a900-da46-11eb-83a7-79244b316d8b.png)
 
