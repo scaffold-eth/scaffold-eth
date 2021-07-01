@@ -6,7 +6,7 @@
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
-🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need:
+🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need already working together:
 
 - Hardhat for your local blockchain, deploying, and testing smart contracts.
 - React for building a frontend, using many useful pre-made components and hooks.
