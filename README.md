@@ -1,11 +1,12 @@
-# 🏗 Scaffold-eth
-> is everything you need to build decentralized applications on Ethereum! 🚀
+# 🏗 Scaffold-ETH
 
-It gives you the ability to quickly iterate on Solidity and experiment with your smart contract from React:
+> everything you need to build apps on Ethereum! 🚀
+> 
+🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
 ![scaffold](https://user-images.githubusercontent.com/2653167/124141516-b722a900-da46-11eb-83a7-79244b316d8b.png)
 
-Getting your web3 dev stack up and running is difficult and prone to mistakes, that's why 🏗 Scaffold-eth comes with everything you need:
+🎛 Getting your web3 dev stack up and running is difficult and prone to mistakes, that's why 🏗 Scaffold-ETH comes with everything you need:
 
 - Hardhat for your local blockchain, deploying, and testing smart contracts.
 - React for building a frontend, using many useful pre-made components and hooks.
@@ -39,11 +40,11 @@ cd scaffold-eth
 yarn deploy
 ```
 
-You should now have a local blockchain, with `YourContract.sol` deployed, and the React app running on https://localhost:3000.
+You should now have a local blockchain, with `YourContract.sol` deployed, and your app running on https://localhost:3000.
 
 # 📚 Documentation
 
-For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+For a more in-depth explanation, documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
 
 # 💬 Support Chat
 
