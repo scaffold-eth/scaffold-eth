@@ -1,20 +1,20 @@
-# Welcome to Scaffold-eth
-Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
+# 🏗 Scaffold-eth
+> is everything you need to build decentralized applications on Ethereum! 🚀
 
-# About Scaffold-eth
-Scaffold-eth provides an out-of-the-shelf stack for rapid prototyping on Ethereum, giving developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based dApp. 
+At the heart of 🏗 Scaffold-eth is the ability to quickly iterate on Solidity and experiment with YourContract from React:
 
-# The Scaffold-eth stack
-Scaffold-eth is not a product itself but more of a combination or stack of other great products. It allows you to quickly build and iterate over your smart contracts and frontends. It leverages:
+![scaffold](https://user-images.githubusercontent.com/2653167/124141516-b722a900-da46-11eb-83a7-79244b316d8b.png)
 
-- Hardhat for running local networks, deploying and testing smart contracts.
+Getting your web3 dev stack up and running is difficult and prone to mistakes, that's why 🏗 Scaffold-eth comes with everything you need:
+
+- Hardhat for your local blockchain, deploying, and testing smart contracts.
 - React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. But can be easily changed to Bootstrap or some other library you prefer.
-- Surge for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative and more!
+- Ant for your UI. (You can easily changed to another library you prefer)
+- Surge / S3 / IPFS for publishing your app.
+- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
 - Support for L2 / Sidechains like Optimism and Arbitrum.
 
-# Installation and setup
+# 🏄‍♂️ Quick Start
 
 ⚠️ First, make sure you have: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
@@ -41,7 +41,7 @@ yarn deploy
 
 If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
 
-# Documentation
+# 📚 Documentation
 
 For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
 
