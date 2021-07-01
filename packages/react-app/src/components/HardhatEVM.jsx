@@ -94,7 +94,7 @@ export default function HardhatEVM(props) {
               Hardhat
         </Button>
         <Drawer
-          title="Hardhat Network Manager"
+          title="👷 Hardhat Network Manager"
           width={720}
           onClose={() => {onClose();}}
           visible={visible}
@@ -111,7 +111,7 @@ export default function HardhatEVM(props) {
             </div>
           }
         >
-          <h2>Increase Time (evm_increaseTime)</h2>
+          <h2>⏰ Increase Time (evm_increaseTime)</h2>
           <p>Increases the blockchain time by a given amount (in seconds)</p>
           <Row gutter={8}>
             <Col span={8}>
@@ -131,7 +131,7 @@ export default function HardhatEVM(props) {
 
           <Divider /> 
 
-          <h2>Set Next Block Timestamp (evm_setNextBlockTimestamp)</h2>
+          <h2>📅 Set Next Block Timestamp (evm_setNextBlockTimestamp)</h2>
           <p>Sets the next block timestamp to a given number</p>
           <Row gutter={8}>
             <Col span={8}>
@@ -150,7 +150,7 @@ export default function HardhatEVM(props) {
           </Row>
           <Divider /> 
 
-          <h2>Hardhat Set Balance (hardhat_setBalance)</h2>
+          <h2>💸 Hardhat Set Balance (hardhat_setBalance)</h2>
           <p>Sets the balance of an account</p>
           <Row gutter={8}>
             <Col span={8}>
