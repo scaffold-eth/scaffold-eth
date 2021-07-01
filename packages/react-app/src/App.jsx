@@ -11,14 +11,14 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
+  useUserSigner,
   useContractLoader,
   useContractReader,
   useEventListener,
   useExchangePrice,
   useGasPrice,
   useOnBlock,
-  useUserSigner,
-} from "./hooks";
+} from "eth-hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
@@ -121,6 +121,14 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
+const contractList = require("./contracts/hardhat_contracts.json");
+const externalContractList = require("./contracts/external_contracts.js");
+
+const contractsConfig = {
+  hardhatContracts: contractList,
+  externalContracts: externalContractList
+}
+
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -164,15 +172,28 @@ function App(props) {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider);
+  const readContracts = useContractLoader(
+    localProvider,
+    contractsConfig
+  );
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
+  const writeContracts = useContractLoader(
+    userSigner,
+    {
+      chainId: localChainId,
+      hardhatContracts: contractsConfig.hardhatContracts,
+      externalContracts: contractsConfig.externalContracts
+    }
+);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider);
+  const mainnetContracts = useContractLoader(
+    mainnetProvider,
+    contractsConfig
+  );
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -414,6 +435,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              config={contractsConfig}
             />
           </Route>
           <Route path="/hints">
@@ -447,6 +469,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             {/*
             <Contract
@@ -456,6 +479,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             */}
           </Route>

@@ -1,5 +1,6 @@
+import { useState, useEffect } from "react";
+import { Provider } from "@ethersproject/providers";
 import { constants } from "ethers";
-import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~
@@ -16,16 +17,16 @@ import { useEffect, useState } from "react";
   - Provide ENS name and get address corresponding to given ENS name
 */
 
-const useResolveName = (provider, ensName) => {
-  const [address, setAddress] = useState(constants.AddressZero);
+const useResolveEnsName = (provider: Provider, ensName: string): string => {
+  const [address, setAddress] = useState<string>(constants.AddressZero);
 
   useEffect(() => {
     if (provider) {
-      provider.resolveName(ensName).then(resolvedAddress => setAddress(resolvedAddress));
+      provider.resolveName(ensName).then((resolvedAddress: string) => setAddress(resolvedAddress));
     }
   }, [provider, ensName]);
 
   return address;
 };
 
-export default useResolveName;
+export default useResolveEnsName;

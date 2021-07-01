@@ -1,14 +1,15 @@
 import { useState, useEffect } from "react";
+import { Web3Provider } from "@ethersproject/providers";
 
 const { ethers } = require("ethers");
 
-export default function useBurnerSigner(provider) {
+export default function useBurnerSigner(provider: Web3Provider) {
   const key = "metaPrivateKey";
   let wallet;
   const [signer, setSigner] = useState();
   const [storedValue, setStoredValue] = useState();
 
-  const setValue = value => {
+  const setValue = (value: any) => {
     try {
       setStoredValue(value);
       window.localStorage.setItem(key, value);
