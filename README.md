@@ -39,7 +39,7 @@ cd scaffold-eth
 yarn deploy
 ```
 
-If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
+You should now have a local blockchain, with `YourContract.sol` deployed, and the React app running on https://localhost:3000.
 
 # 📚 Documentation
 
