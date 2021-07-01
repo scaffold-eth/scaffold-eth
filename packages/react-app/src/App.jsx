@@ -514,7 +514,10 @@ function App(props) {
           </Col>
           {localProvider._network && localProvider._network.chainId == 31337 && (
             <Col  style={{ textAlign: "center", opacity: 1 }}>
-              <HardhatEVM localProvider={localProvider}/>
+              <HardhatEVM 
+                localProvider={localProvider}
+                address={address}
+              />
             </Col>
           )}
         </Row>
