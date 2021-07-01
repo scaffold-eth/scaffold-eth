@@ -1,3 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Overpass+Mono&family=Special+Elite&display=swap');
+
+body{ 
+  font-family: 'Overpass Mono', sans-serif,'Special Elite', cursive !important;
+}
+
 .App {
   text-align: center;
+}
+
+.ant-layout-header {
+    background: #dfe9f3 !important;
+}
+.ant-layout-content {
+    background: #fff !important;
+}
+.ant-layout-footer {
+    background: #dfe9f3 !important;
+}
+.ant-card {
+  background: #dfe9f3 !important;;
+}
+
+.grad_deeprelief{
+    background-image: linear-gradient(-225deg, #7085B6 0%, #87A7D9 50%, #DEF3F8 100%);
 }

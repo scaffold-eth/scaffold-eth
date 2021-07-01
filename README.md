@@ -21,15 +21,16 @@ Scaffold-eth is not a product itself but more of a combination or stack of other
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
 cd scaffold-eth
+git checkout -b gas-calculator
 yarn install
-yarn chain
+yarn start
 ```
 
 > in a second terminal window:
 
 ```bash
 cd scaffold-eth
-yarn start
+yarn chain
 ```
 
 > in a third terminal window:
@@ -40,6 +41,10 @@ yarn deploy
 ```
 
 If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
+
+# Preview 
+🎛 http://eth-gas-burn-calc.surge.sh/
+![preview](https://user-images.githubusercontent.com/35558569/123924519-a0d00b00-d9bc-11eb-9779-3e275a1b68b6.png)
 
 # Documentation
 

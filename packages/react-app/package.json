@@ -89,6 +89,7 @@
     "s3": "node ./scripts/s3.js",
     "ship": "yarn surge",
     "theme": "npx gulp less",
-    "watch": "node ./scripts/watch.js"
+    "watch": "node ./scripts/watch.js",
+    "prettier": "prettier --write \"src/**/*.{js,jsx}\""
   }
 }
