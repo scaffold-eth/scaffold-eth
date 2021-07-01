@@ -87,7 +87,7 @@ export default function HardhatEVM(props) {
 
   return (
       <>
-        <Button type="primary" onClick={() => {showDrawer();}}>
+        <Button size="large" shape="round" onClick={() => {showDrawer();}}>
           <span style={{ marginRight: 8 }} role="img" aria-label="support">
                 👷‍♂️
               </span>
