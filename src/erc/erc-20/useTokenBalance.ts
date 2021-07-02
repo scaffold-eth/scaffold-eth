@@ -2,7 +2,7 @@ import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
 import { useState } from 'react';
 
-import { useOnBlock, usePoller } from '.';
+import { useOnBlock, usePoller } from '../..';
 
 /**
  * Get the balance of an ERC20 token in an address
@@ -16,7 +16,7 @@ import { useOnBlock, usePoller } from '.';
  * @param pollTime
  * @returns
  */
-const useTokenBalance = (contract: Contract, address: string, pollTime: number = 0): BigNumber => {
+export const useTokenBalance = (contract: Contract, address: string, pollTime: number = 0): BigNumber => {
   const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
 
   const pollBalance = async (): Promise<void> => {
@@ -47,5 +47,3 @@ const useTokenBalance = (contract: Contract, address: string, pollTime: number =
 
   return balance;
 };
-
-export default useTokenBalance;
