@@ -5,7 +5,7 @@ export { default as useTimestamp } from './Timestamp';
 export { default as useTokenBalance } from './TokenBalance';
 export { default as useUserAddress } from './UserAddress';
 export { default as useUserSigner } from './UserSigner';
-export { default as useGasPrice } from './GasPrice';
+export { default as useGasPrice } from './useGasPrice';
 export { default as useTokenList } from './TokenList';
 
 export * from './useBlockNumber';
@@ -19,7 +19,6 @@ export * from './useContractReader';
 // export * from "./EventListener";
 // export * from "./ExternalContractLoader";
 // export * from "./GasPrice";
-export * from './LocalStorage';
 // export * from "./LookupAddress";
 // export * from "./Nonce";
 export * from './useOnBlock';
