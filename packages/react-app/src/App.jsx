@@ -51,6 +51,8 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 /// 📡 What chain are your contracts deployed to?
 const targetNetwork = NETWORKS.rinkeby // rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
+const opensea = "https://testnets.opensea.io/assets/"
+
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 
@@ -451,7 +453,9 @@ function App(props) {
                           </div>
                         }
                       >
-                        <div>
+                        <div style={{cursor:"pointer"}} onClick={()=>{
+                          window.open(opensea+readContracts.ButterflyClaims.address+"/"+item.id)
+                        }}>
                           <img src={item.image} style={{ maxWidth: 150 }} />
                         </div>
                         {/*<div>{item.description}</div>*/}
