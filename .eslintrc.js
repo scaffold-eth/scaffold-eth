@@ -30,7 +30,7 @@ module.exports = {
         endOfLine: 'auto',
       },
     ],
-    '@typescript-eslint/no-inferrable-types': 'off',
+    'no-unused-vars': 'off',
     '@typescript-eslint/no-unused-vars': [
       'error',
       {
@@ -38,6 +38,7 @@ module.exports = {
         varsIgnorePattern: '_',
       },
     ],
+    '@typescript-eslint/no-inferrable-types': 'off',
     '@typescript-eslint/no-unsafe-assignment': 'off',
     '@typescript-eslint/no-explicit-any': 'off',
     '@typescript-eslint/no-unsafe-call': 'warn',
