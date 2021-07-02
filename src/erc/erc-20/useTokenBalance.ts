@@ -22,7 +22,7 @@ export const useTokenBalance = (contract: Contract, address: string, pollTime: n
   const pollBalance = async (): Promise<void> => {
     if (contract != undefined) {
       try {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        // eslint-disable-next-line
         const newBalance = await contract.balanceOf(address);
         if (newBalance !== balance) {
           setBalance(newBalance);

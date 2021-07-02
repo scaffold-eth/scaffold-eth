@@ -37,7 +37,7 @@ const useGasPrice = (
         axios
           .get('https://ethgasstation.info/json/ethgasAPI.json')
           .then((response: AxiosResponse<any>) => {
-            const result: Record<string, any> = response.data ?? {};
+            const result: Record<string, any> = (response.data as Record<string, any>) ?? {};
             let newGasPrice: number | undefined = result[speed] * multiplier;
             if (!newGasPrice) newGasPrice = result['fast'] * multiplier;
             if (newGasPrice !== gasPrice) {

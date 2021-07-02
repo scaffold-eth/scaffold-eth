@@ -1,4 +1,4 @@
-import { Contract } from '@ethersproject/contracts';
+import { Contract, Event } from '@ethersproject/contracts';
 import { useState, useEffect, useCallback } from 'react';
 
 import { TEthHooksProvider } from '~~/models';
@@ -26,12 +26,13 @@ export const useEventListener = (
   provider: TEthHooksProvider,
   startBlock: number
 ): any[] => {
-  const [updates, setUpdates] = useState<any[]>([]);
+  const [updates, setUpdates] = useState<Event[]>([]);
 
-  const addNewEvent = useCallback((...args: any[]) => {
-    const blockNumber = args?.[args.length - 1]?.blockNumber;
-    // eslint-disable-next-line
-    setUpdates((messages) => [{ blockNumber, ...args.pop().args }, ...messages]);
+  const addNewEvent = useCallback((...events: Event[]) => {
+    if (events != undefined && events.length > 0) {
+      const last = events[events.length - 1];
+      setUpdates((updates) => [last, ...updates]);
+    }
   }, []);
 
   useEffect(() => {
