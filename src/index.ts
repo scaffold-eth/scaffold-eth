@@ -1,6 +1,6 @@
 export { useLookupAddress, useResolveEnsName } from './dapps/ens';
 export { useEventListener, useEventReader } from './events';
-export { default as useTimestamp } from './Timestamp';
+
 export { default as useTokenBalance } from './useTokenBalance';
 export { default as useUserAddress } from './UserAddress';
 export { default as useUserSigner } from './UserSigner';
@@ -24,6 +24,7 @@ export * from './useOnBlock';
 export * from './usePoller';
 // export * from "./ResolveName";
 // export * from "./TokenList";
+export * from './useTimestamp';
 // export * from "./UserProvider";
 // export * from "./UserAddress";
 
