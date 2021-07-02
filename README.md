@@ -1,50 +1,65 @@
-# Welcome to Scaffold-eth
-Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
+# 🏗 Scaffold-ETH
 
-# About Scaffold-eth
-Scaffold-eth provides an out-of-the-shelf stack for rapid prototyping on Ethereum, giving developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based dApp. 
+> everything you need to build on Ethereum! 🚀
 
-# The Scaffold-eth stack
-Scaffold-eth is not a product itself but more of a combination or stack of other great products. It allows you to quickly build and iterate over your smart contracts and frontends. It leverages:
+🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
-- Hardhat for running local networks, deploying and testing smart contracts.
+![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+
+🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
+
+- Hardhat for your local blockchain, deploying, and testing smart contracts.
 - React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. But can be easily changed to Bootstrap or some other library you prefer.
-- Surge for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative and more!
+- Ant for your UI. (You can easily changed to another library you prefer)
+- Surge / S3 / IPFS for publishing your app.
+- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
 - Support for L2 / Sidechains like Optimism and Arbitrum.
 
-# Installation and setup
+# 🏄‍♂️ Quick Start
 
-⚠️ First, make sure you have: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
+> clone/fork 🏗 scaffold-eth:
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git
+```
+
+> install and start your 👷‍ Hardhat chain: 
+
+```bash
 cd scaffold-eth
 yarn install
 yarn chain
 ```
 
-> in a second terminal window:
+> in a second terminal window, start your 📱 frontend:
 
 ```bash
 cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window:
+> in a third terminal window, 🛰 deploy your contract:
 
 ```bash
 cd scaffold-eth
 yarn deploy
 ```
 
-If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
+You should now have a local blockchain, with `YourContract.sol` deployed, and your app running on https://localhost:3000.
 
-# Documentation
+# 📚 Documentation
 
-For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+For a more in-depth explanation, documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+
+# 🛠 Buidl
+
+Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+
 
 # 💬 Support Chat
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+
+🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
