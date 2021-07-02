@@ -90,7 +90,7 @@ export const useContractReader = <T>(
 
   // Use a poller if a pollTime is provided
   usePoller(
-    () => {
+    async () => {
       if (contracts && contracts[contractName] && adjustPollTime > 0) {
         if (DEBUG) console.log('polling!', contractName, functionName);
         void updateValue();
