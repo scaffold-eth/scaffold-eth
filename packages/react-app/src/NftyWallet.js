@@ -20,13 +20,14 @@ const Web3HttpProvider = require("web3-providers-http");
 const ipfsConfigInfura = {
   host: "ipfs.infura.io",
   port: "5001",
-  protocol: "https"
+  protocol: "https",
+  timeout: 250000
 };
 const ipfsConfig = {
   host: "ipfs.nifty.ink",
   port: "3001",
   protocol: "https",
-  timeout: 2500
+  timeout: 250000
 };
 
 const supabaseUrl = process.env.REACT_APP_SUPABASE_URL

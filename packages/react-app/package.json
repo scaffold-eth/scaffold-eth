@@ -65,6 +65,7 @@
   },
   "scripts": {
     "build": "react-scripts --max-old-space-size=16384 build",
+    "postbuild": "cp ./build/index.html ./functions/web/index.html",
     "eject": "react-scripts eject",
     "start": "react-scripts start",
     "test": "react-scripts test"

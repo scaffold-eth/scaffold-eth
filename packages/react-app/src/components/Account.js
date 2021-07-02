@@ -91,7 +91,7 @@ export default function Account(props) {
   */
 
   gsnConfig = {
-    paymasterAddress: process.env.REACT_APP_NETWORK_NAME === 'xdai' ? "0x4734356359c48ba2Cb50BA048B1404A78678e5C2" : require('.././gsn/Paymaster.json').address,
+    paymasterAddress: process.env.REACT_APP_PAYMASTER_ADDRESS,  //process.env.REACT_APP_NETWORK_NAME === 'xdai' ? "0x4734356359c48ba2Cb50BA048B1404A78678e5C2" : require('.././gsn/Paymaster.json').address,
     verbose: true,
     relayLookupWindowBlocks: 1e18,
     minGasPrice: 20000000000,

@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Input } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined, PlaySquareOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
@@ -212,6 +212,26 @@ export default function ViewInk(props) {
     props.setTab('inks')
   }
 
+const [copyWord, setCopyWord] = useState()
+
+const clickAndSave = (
+  <Popover trigger="click"
+      content={
+        <div>
+        <Input value={copyWord} onChange={(e)=>{
+          setCopyWord(e.target.value)
+        }}/>
+        {(copyWord===process.env.REACT_APP_COPY_WORD)&&<Button onClick={()=>{
+          let _savedData = LZ.compress(drawing)
+          props.setDrawing(_savedData)
+          console.log('saved')
+        }}><StarTwoTone/>
+        </Button>}
+        </div>
+      }>
+                <QuestionCircleOutlined />
+                </Popover>
+)
 
   useEffect(()=>{
     setCanvasKey(Date.now());
@@ -244,22 +264,11 @@ export default function ViewInk(props) {
 
   }, [hash])
 
-    if (!inkJson || !inkJson.name || !data) {
-      inkChainInfoDisplay = (
-        <div style={{marginTop:32}}>
+    if (!inkJson || !inkJson.name || !data ) {
+      inkChainInfoDisplay =   <div style={{marginTop:32}}>
           <Spin/>
-          {(drawing)&&<Popover
-            content={
-              <Button onClick={()=>{
-                let _savedData = LZ.compress(drawing)
-                props.setDrawing(_savedData)
-                console.log('saved',props.drawing)
-              }}>Set Drawing</Button>
-            }>
-                      <QuestionCircleOutlined />
-                      </Popover>}
+          {(drawing)&&clickAndSave}
         </div>
-      )
     } else {
       const sendInkButton = (tokenOwnerAddress, tokenId) => {
         if (props.address && tokenOwnerAddress.toLowerCase() === props.address.toLowerCase()) {
@@ -349,7 +358,7 @@ export default function ViewInk(props) {
             <Descriptions>
               <Descriptions.Item label="Name">{inkJson.name}</Descriptions.Item>
               <Descriptions.Item label="Artist">{data.ink.artist.id}</Descriptions.Item>
-              <Descriptions.Item label="drawingHash">{hash}</Descriptions.Item>
+              <Descriptions.Item label="drawingHash">{hash} {clickAndSave}</Descriptions.Item>
               <Descriptions.Item label="id">{data.ink.inkNumber}</Descriptions.Item>
               <Descriptions.Item label="jsonUrl">{data.ink.jsonUrl}</Descriptions.Item>
               <Descriptions.Item label="Image">{<a href={inkJson.image} target="_blank">{inkJson.image}</a>}</Descriptions.Item>
@@ -455,6 +464,7 @@ export default function ViewInk(props) {
     <div style={{textAlign:"center"}}>
     {top}
     <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+    {(!drawing)&&<span>Loading...</span>}
     <CanvasDraw
     key={canvasKey}
     ref={drawingCanvas}

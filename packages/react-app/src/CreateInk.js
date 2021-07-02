@@ -2,8 +2,8 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification } from 'antd';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined, SaveOutlined } from '@ant-design/icons';
+import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification, Popconfirm, Tooltip } from 'antd';
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
@@ -27,13 +27,27 @@ export default function CreateInk(props) {
   const [sending, setSending] = useState()
   const [drawingSize, setDrawingSize] = useState(0)
 
+  const [fullDrawing, setFullDrawing] = useState()
+  const [loaded, setLoaded] = useState(false)
+  const [loadedLines, setLoadedLines] = useState()
+
+  const [drawingSaved, setDrawingSaved] = useState(true)
+
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
 
-  const saveDrawing = (newDrawing) => {
-    let savedData = LZ.compress(newDrawing.getSaveData())
-    props.setDrawing(savedData)
+  const saveDrawing = (newDrawing, saveOverride) => {
+        if(!loadedLines || newDrawing.lines.length >= loadedLines) {
+          if(saveOverride || newDrawing.lines.length < 100 || newDrawing.lines.length % 10 === 0) {
+            console.log('saving')
+            let savedData = LZ.compress(newDrawing.getSaveData())
+            props.setDrawing(savedData)
+            setDrawingSaved(true)
+          } else {
+            setDrawingSaved(false)
+          }
+        }
   }
 
   const updateColor = value => {
@@ -46,6 +60,7 @@ export default function CreateInk(props) {
     const loadPage = async () => {
       console.log('loadpage')
         if (props.drawing && props.drawing !== "") {
+          console.log('Loading ink')
           try {
             let decompressed = LZ.decompress(props.drawing)
             let points = 0
@@ -53,14 +68,18 @@ export default function CreateInk(props) {
               points = points + line.points.length
             }
 
-            //console.log('Drawing points', points)
+            console.log('Drawing points', JSON.parse(decompressed)['lines'].length, points)
             setDrawingSize(points)
+            setLoadedLines(JSON.parse(decompressed)['lines'].length)
+
             //console.log(decompressed)
-            drawingCanvas.current.loadSaveData(decompressed, false)
+            //drawingCanvas.current.loadSaveData(decompressed, true)
+            setFullDrawing(decompressed)
           } catch (e) {
             console.log(e)
           }
         }
+        setLoaded(true)
     }
     window.drawingCanvas = drawingCanvas
     loadPage()
@@ -98,14 +117,17 @@ export default function CreateInk(props) {
   }
 
   const createInk = async values => {
-    console.log('Success:', values);
+    console.log('Inking:', values);
 
     setSending(true)
 
     let imageData = drawingCanvas.current.canvas.drawing.toDataURL("image/png");
 
-    let decompressed = LZ.decompress(props.drawing)
-    let compressedArray = LZ.compressToUint8Array(decompressed)
+    saveDrawing(drawingCanvas.current, true)
+
+    //let decompressed = LZ.decompress(props.drawing)
+    //let compressedArray = LZ.compressToUint8Array(decompressed)
+    let compressedArray = LZ.compressToUint8Array(drawingCanvas.current.getSaveData())
 
     let drawingBuffer = Buffer.from(compressedArray)
     let imageBuffer = Buffer.from(imageData.split(",")[1], 'base64')
@@ -149,6 +171,7 @@ export default function CreateInk(props) {
     let inkResultInfura
 
     try {
+
       const drawingResult = addToIPFS(drawingBuffer, props.ipfsConfig)
       const imageResult = addToIPFS(imageBuffer, props.ipfsConfig)
       const inkResult = addToIPFS(inkBuffer, props.ipfsConfig)
@@ -161,6 +184,7 @@ export default function CreateInk(props) {
         console.log("FINISHED UPLOADING TO PINNER",values);
         message.destroy()
       });
+
     } catch (e) {
       console.log(e)
       setSending(false)
@@ -169,6 +193,9 @@ export default function CreateInk(props) {
         description:
         `Please wait a moment and try again ${e.message}`,
       });
+
+      return;
+
     }
 
     try {
@@ -180,17 +207,18 @@ export default function CreateInk(props) {
 
     if(mintResult) {
 
-    Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
-      console.log("INFURA FINISHED UPLOADING!",values);
-    });
+      Promise.all([drawingResultInfura, imageResultInfura, inkResultInfura]).then((values) => {
+        console.log("INFURA FINISHED UPLOADING!",values);
+      });
 
-    setSending(false)
-    props.setViewDrawing(LZ.decompress(props.drawing))
-    setDrawingSize(10000)
-    props.setDrawing("")
-    history.push('/ink/' + drawingHash)
+      setSending(false)
+      props.setViewDrawing(drawingCanvas.current.getSaveData())//LZ.decompress(props.drawing))
+      setDrawingSize(10000)
+      props.setDrawing("")
+      history.push('/ink/' + drawingHash)
 
-}
+    }
+
 };
 
 
@@ -205,7 +233,9 @@ const triggerOnChange = (lines) => {
     height: drawingCanvas.current.props.canvasHeight
   });
 
-  drawingCanvas.current.loadSaveData(saved, true);
+  //drawingCanvas.current.loadSaveData(saved, true);
+  setLoadedLines(lines.length)
+  setFullDrawing(saved)
   drawingCanvas.current.lines = lines;
 };
 
@@ -332,13 +362,24 @@ if (props.mode === "edit") {
     </Form>
 
       <div style={{marginTop: 16}}>
+        <Tooltip title="save to local storage">
+          <Button onClick={() => saveDrawing(drawingCanvas.current, true)}><SaveOutlined /> {`${!drawingSaved?'SAVE *':'SAVED'}`}</Button>
+        </Tooltip>
         <Button onClick={() => undo()}><UndoOutlined /> UNDO</Button>
+        <Popconfirm
+          title="Are you sure?"
+          onConfirm={() => {
+            drawingCanvas.current.clear()
+            setLoadedLines()
+            props.setDrawing()
+          }}
+          okText="Yes"
+          cancelText="No"
+        >
+        <Button><ClearOutlined /> CLEAR</Button>
+        </Popconfirm>
         <Button onClick={() => {
-          drawingCanvas.current.clear()
-          props.setDrawing()
-        }}><ClearOutlined /> CLEAR</Button>
-        <Button onClick={() => {
-          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
+          drawingCanvas.current.loadSaveData(drawingCanvas.current.getSaveData(),false)//LZ.decompress(props.drawing), false)
         }}><PlaySquareOutlined /> PLAY</Button>
       </div>
     </div>
@@ -411,6 +452,7 @@ return (
   }*/>
   {top}
   <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+  {(!loaded)&&<span>Loading...</span>}
   <CanvasDraw
   key={props.mode+""+props.canvasKey}
   ref={drawingCanvas}
@@ -423,7 +465,8 @@ return (
 //  hideGrid={props.mode !== "edit"}
 //  hideInterface={props.mode !== "edit"}
   onChange={saveDrawing}
-  immediateLoading={drawingSize >= 10000}
+  saveData={fullDrawing}
+  immediateLoading={true}//drawingSize >= 10000}
   loadTimeOffset={3}
   />
   </div>
