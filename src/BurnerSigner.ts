@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import { Web3Provider } from "@ethersproject/providers";
+import { BytesLike, ethers, Signer } from 'ethers';
+import { SigningKey } from 'ethers/lib/utils';
+import { useState, useEffect } from 'react';
 
-const { ethers } = require("ethers");
-
-export default function useBurnerSigner(provider: Web3Provider) {
-  const key = "metaPrivateKey";
-  let wallet;
-  const [signer, setSigner] = useState();
-  const [storedValue, setStoredValue] = useState();
+import { TEthHooksProvider } from '~~/models/providerTypes';
+export const useBurnerSigner = (provider: TEthHooksProvider): Signer | undefined => {
+  const key = 'metaPrivateKey';
+  const [signer, setSigner] = useState<Signer>();
+  const [privateKeyValue, setPrivateKeyValue] = useState<BytesLike | SigningKey>();
 
   const setValue = (value: any) => {
     try {
-      setStoredValue(value);
+      setPrivateKeyValue(value);
       window.localStorage.setItem(key, value);
     } catch (error) {
       console.log(error);
@@ -21,7 +20,7 @@ export default function useBurnerSigner(provider: Web3Provider) {
   useEffect(() => {
     const storedKey = window.localStorage.getItem(key);
     if (!storedKey) {
-      console.log("generating a new key");
+      console.log('generating a new key');
       const _newWallet = ethers.Wallet.createRandom();
       const _newKey = _newWallet.privateKey;
       setValue(_newKey);
@@ -31,12 +30,12 @@ export default function useBurnerSigner(provider: Web3Provider) {
   }, []);
 
   useEffect(() => {
-    if (storedValue && provider) {
-      wallet = new ethers.Wallet(storedValue);
+    if (privateKeyValue && provider) {
+      const wallet = new ethers.Wallet(privateKeyValue);
       const _signer = wallet.connect(provider);
       setSigner(_signer);
     }
-  }, [storedValue, provider]);
+  }, [privateKeyValue, provider]);
 
   return signer;
-}
+};
