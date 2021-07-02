@@ -1,19 +1,18 @@
-import { useState, useEffect } from "react";
-import { Web3Provider } from "@ethersproject/providers";
+import { useState, useEffect } from 'react';
 
-const useUserAddress = (provider: Web3Provider): string => {
-  const [userAddress, setUserAddress] = useState<string>("");
+import { TEthHooksProvider } from '~~/models';
+
+export const useUserAddress = (provider: TEthHooksProvider): string => {
+  const [userAddress, setUserAddress] = useState<string>('');
 
   useEffect(() => {
-    const getUserAddress = async (injectedProvider: Web3Provider) => {
+    const getUserAddress = async (injectedProvider: TEthHooksProvider) => {
       const signer = injectedProvider.getSigner();
       if (signer) setUserAddress(await signer.getAddress());
     };
 
-    if (provider) getUserAddress(provider);
+    if (provider) void getUserAddress(provider);
   }, [provider]);
 
   return userAddress;
 };
-
-export default useUserAddress;

@@ -24,10 +24,9 @@ const syncBurnerKeyFromStorage = () => {
 };
 
 /**
- * Gets user provider
+ * Gets user provider or Signer
  * 
   ~ Features ~
-
   - Specify the injected provider from Metamask
   - Specify the local provider
   - Usage examples:
