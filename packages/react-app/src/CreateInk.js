@@ -193,7 +193,9 @@ export default function CreateInk(props) {
         description:
         `Please wait a moment and try again ${e.message}`,
       });
+
       return;
+
     }
 
     try {
