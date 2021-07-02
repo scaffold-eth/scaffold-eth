@@ -1,4 +1,4 @@
-export { useLookupAddress, useResolveEnsName } from './ens1';
+export { useLookupAddress, useResolveEnsName } from './ens';
 export { useEventListener, useEventReader } from './events';
 export { default as useNonce } from './Nonce';
 export { default as useTimestamp } from './Timestamp';
