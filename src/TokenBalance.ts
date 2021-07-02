@@ -1,40 +1,42 @@
-import { useState } from "react";
-import { BigNumber } from "@ethersproject/bignumber";
-import { Contract } from "@ethersproject/contracts";
-import usePoller from "./Poller";
-import useOnBlock from "./OnBlock";
+import { BigNumber } from '@ethersproject/bignumber';
+import { Contract } from '@ethersproject/contracts';
+import { useState } from 'react';
 
-const useTokenBalance = (
-  contract: Contract,
-  address: string,
-  pollTime: number = 0
-): BigNumber => {
+import { useOnBlock, usePoller } from '.';
+
+/**
+ * Get the balance of an ERC20 token in an address
+ * @param contract contract object for the ERC20 token
+ * @param address
+ * @param pollTime
+ * @returns
+ */
+const useTokenBalance = (contract: Contract, address: string, pollTime: number = 0): BigNumber => {
   const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
 
   const pollBalance = async (): Promise<void> => {
-    try {
-      const newBalance = await contract.balanceOf(address);
-      if (newBalance !== balance) {
-        setBalance(newBalance);
+    if (contract != undefined) {
+      try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call
+        const newBalance = await contract.balanceOf(address);
+        if (newBalance !== balance) {
+          setBalance(newBalance);
+        }
+      } catch (e) {
+        console.log('⚠ Could not get token balance', e);
       }
-    } catch (e) {
-      // eslint-disable-next-line no-console
-      console.log(e);
     }
   };
 
-  useOnBlock(
-    contract && contract.provider,
-    (): void => {
-      if (address && contract && pollTime === 0) {
-        pollBalance();
-      }
+  useOnBlock(contract && contract.provider, (): void => {
+    if (address && pollTime === 0) {
+      void pollBalance();
     }
-  );
+  });
 
   usePoller((): void => {
-    if (address && contract && pollTime > 0) {
-      pollBalance();
+    if (address && pollTime > 0) {
+      void pollBalance();
     }
   }, pollTime);
 

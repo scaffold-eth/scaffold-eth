@@ -19,7 +19,7 @@ export * from './useContractReader';
 // export * from "./ExternalContractLoader";
 export * from './useGasPrice';
 // export * from "./LookupAddress";
-export * from './Nonce';
+export * from './useNonce';
 export * from './useOnBlock';
 export * from './usePoller';
 // export * from "./ResolveName";
