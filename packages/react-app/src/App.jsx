@@ -124,6 +124,8 @@ const logoutOfWeb3Modal = async () => {
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
+  const isHardHatNetwork = localProvider._network && localProvider._network.chainId == 31337;
+
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
@@ -318,8 +320,7 @@ function App(props) {
   if (
     !faucetClicked &&
     localProvider &&
-    localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    isHardHatNetwork &&
     yourLocalBalance &&
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
@@ -512,7 +513,7 @@ function App(props) {
               Support
             </Button>
           </Col>
-          {localProvider._network && localProvider._network.chainId == 31337 && (
+          {isHardHatNetwork && (
             <Col  style={{ textAlign: "center", opacity: 1 }}>
               <HardhatEVM 
                 localProvider={localProvider}

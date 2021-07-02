@@ -14,27 +14,23 @@ import { parse } from "graphql";
 const { Option } = Select;
 const { utils, BigNumber } = require("ethers");
 
-/*
-  ~ What it does? ~
-
-  
-
-  ~ How can I use? ~
-
-  <HardhatEVM
-    localProvider={localProvider}
-  />
-
+/**
+ * Allows user to open a Hardhat console with some handy Hardhat/EVM utilities like
+ * increasing time, jumping to a particular timestamp or setting an account's balance.
+ * 
   ~ Features ~
-*/
+  - If on Hardhat/local, displays a button to open the console
+  - Allows user to execute evm_increaseTime, evm_setNextBlockTimestamp and hardhat_setBalance
+ * @param props.localProvider - The localProvider for subscribing to new blocks
+ * @param props.address - The address of the current user to prefill data
+ */
 
 export default function HardhatEVM(props) {
-  const [address, setAddress] = useState();
   const [visible, setVisible] = useState(false);
   const [chainTimestamp, setChainTimestamp] = useState();
   const [accountBalance, setAccountBalance] = useState();
 
-  const localProvider = props.localProvider;
+  const {localProvider, address} = props;
 
   useOnBlock(localProvider, () => {
     updateTime();
@@ -50,8 +46,8 @@ export default function HardhatEVM(props) {
   }
 
   async function showDrawer(){  
-    setField('hardhat_setBalance_address', props.address);
-    const newBalance = await localProvider.getBalance(props.address);
+    setField('hardhat_setBalance_address', address);
+    const newBalance = await localProvider.getBalance(address);
     setAccountBalance(formatEther(newBalance));
     setVisible(true);
   }
