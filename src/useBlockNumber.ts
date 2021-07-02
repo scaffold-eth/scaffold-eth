@@ -4,6 +4,12 @@ import { usePoller, useOnBlock } from '.';
 
 import { TEthHooksProvider } from '~~/models';
 
+/**
+ * Get the current block number
+ * @param provider
+ * @param pollTime if greater than 0, update the blocknumber on an interval
+ * @returns
+ */
 export const useBlockNumber = (provider: TEthHooksProvider, pollTime: number = 0): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 

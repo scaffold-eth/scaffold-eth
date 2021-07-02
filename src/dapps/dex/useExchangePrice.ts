@@ -1,7 +1,7 @@
 import { Token, WETH, Fetcher, Route } from '@uniswap/sdk';
 import { useState } from 'react';
 
-import { useOnBlock, usePoller } from '..';
+import { useOnBlock, usePoller } from '../..';
 
 import { TNetwork } from '~~/models';
 import { TEthHooksProvider } from '~~/models/providerTypes';

@@ -47,7 +47,6 @@ interface IContractConfig {
   or write transactions into them
 
    ~ Features ~
-
   - localProvider enables reading values from contracts
   - userProvider enables writing transactions into contracts
   - Example of keeping track of "purpose" variable by loading contracts into readContracts

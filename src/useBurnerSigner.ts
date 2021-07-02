@@ -3,6 +3,12 @@ import { SigningKey } from 'ethers/lib/utils';
 import { useState, useEffect } from 'react';
 
 import { TEthHooksProvider } from '~~/models/providerTypes';
+
+/**
+ * A hook that creates a buner address and returns a Signer
+ * @param provider
+ * @returns
+ */
 export const useBurnerSigner = (provider: TEthHooksProvider): Signer | undefined => {
   const key = 'metaPrivateKey';
   const [signer, setSigner] = useState<Signer>();
