@@ -1,12 +1,9 @@
-import { useState } from "react";
-import { Web3Provider } from "@ethersproject/providers";
-import usePoller from "./Poller";
-import useOnBlock from "./OnBlock";
+import { Web3Provider } from '@ethersproject/providers';
+import { useState } from 'react';
 
-const useBlockNumber = (
-  provider: Web3Provider,
-  pollTime: number = 0
-): number => {
+import { usePoller, useOnBlock } from '.';
+
+const useBlockNumber = (provider: Web3Provider, pollTime: number = 0): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 
   const getBlockNumber = async (): Promise<void> => {
@@ -16,18 +13,15 @@ const useBlockNumber = (
     }
   };
 
-  useOnBlock(
-    provider,
-    (): void => {
-      if (typeof provider !== "undefined" && pollTime === 0) {
-        getBlockNumber();
-      }
+  useOnBlock(provider, (): void => {
+    if (typeof provider !== 'undefined' && pollTime === 0) {
+      void getBlockNumber();
     }
-  );
+  });
 
   usePoller((): void => {
-    if (typeof provider !== "undefined" && pollTime > 0) {
-      getBlockNumber();
+    if (typeof provider !== 'undefined' && pollTime > 0) {
+      void getBlockNumber();
     }
   }, pollTime);
 

@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react';
  * @param delay
  * @param extraWatch
  */
-export const usePoller = (fn: () => void, delay: number, extraWatch: boolean): void => {
+export const usePoller = (fn: () => void, delay: number, extraWatch: boolean = false): void => {
   const savedCallback = useRef<() => void>();
 
   // Remember the latest fn.
