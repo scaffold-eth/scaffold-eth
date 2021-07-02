@@ -3,7 +3,7 @@ import { useState } from 'react';
 
 import { usePoller, useOnBlock } from '.';
 
-const useBlockNumber = (provider: Web3Provider, pollTime: number = 0): number => {
+export const useBlockNumber = (provider: Web3Provider, pollTime: number = 0): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 
   const getBlockNumber = async (): Promise<void> => {
@@ -27,5 +27,3 @@ const useBlockNumber = (provider: Web3Provider, pollTime: number = 0): number =>
 
   return blockNumber;
 };
-
-export default useBlockNumber;
