@@ -1,6 +1,3 @@
-export { useLookupAddress, useResolveEnsName } from './dapps/ens';
-export { useEventListener, useEventReader } from './events';
-
 export * from './useBlockNumber';
 export * from './useBalance';
 export * from './useBurnerSigner';
