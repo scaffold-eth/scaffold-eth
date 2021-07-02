@@ -7,8 +7,12 @@ import { TNetwork } from '~~/models';
 
 /**
  * Preset speeds for Eth Gas Station
+    fast: Recommended fast(expected to be mined in < 2 minutes) gas price in x10 Gwei(divite by 10 to convert it to gwei)
+    fastest: Recommended fastest(expected to be mined in < 30 seconds) gas price in x10 Gwei(divite by 10 to convert it to gwei)
+    safeLow: Recommended safe(expected to be mined in < 30 minutes) gas price in x10 Gwei(divite by 10 to convert it to gwei)
+    average: Recommended average(expected to be mined in < 5 minutes) gas price in x10 Gwei(divite by 10 to convert it to gwei)
  */
-export type TGasStationSpeed = 'slow' | 'fast' | 'fastest' | 'average';
+export type TGasStationSpeed = 'fast' | 'fastest' | 'safeLow' | 'average';
 
 /**
  * Gets the gas price from Eth Gas Station

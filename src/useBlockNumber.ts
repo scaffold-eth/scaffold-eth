@@ -21,15 +21,11 @@ export const useBlockNumber = (provider: TEthHooksProvider, pollTime: number = 0
   };
 
   useOnBlock(provider, (): void => {
-    if (typeof provider !== 'undefined' && pollTime === 0) {
-      void getBlockNumber();
-    }
+    if (pollTime === 0) void getBlockNumber();
   });
 
   usePoller((): void => {
-    if (typeof provider !== 'undefined' && pollTime > 0) {
-      void getBlockNumber();
-    }
+    if (pollTime > 0) void getBlockNumber();
   }, pollTime);
 
   return blockNumber;

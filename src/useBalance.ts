@@ -6,8 +6,6 @@ import { usePoller, useOnBlock } from '.';
 
 import { TEthHooksProvider } from '~~/models/providerTypes';
 
-const DEBUG = false;
-
 /**
  * Gets your balance in ETH from given address and provider
  *   
@@ -41,20 +39,13 @@ export const useBalance = (
 
   // Only pass a provider to watch on a block if there is no pollTime
   useOnBlock(pollTime === 0 ? provider : undefined, () => {
-    if (provider && address && pollTime === 0) {
-      void pollBalance(provider, address);
-    }
+    if (address != undefined && pollTime === 0) void pollBalance(provider, address);
   });
 
   // Use a poller if a pollTime is provided
   usePoller(
     (): void => {
-      if (provider != undefined && address != undefined && pollTime > 0) {
-        if (DEBUG) {
-          console.log('polling!', address);
-        }
-        void pollBalance(provider, address);
-      }
+      if (address != undefined && pollTime > 0) void pollBalance(provider, address);
     },
     pollTime,
     provider != undefined && address != undefined

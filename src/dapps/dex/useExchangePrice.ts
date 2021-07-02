@@ -33,15 +33,11 @@ export const useExchangePrice = (
   };
 
   useOnBlock(mainnetProvider, (): void => {
-    if (mainnetProvider && pollTime === 0) {
-      pollPrice();
-    }
+    if (pollTime === 0) pollPrice();
   });
 
   usePoller((): void => {
-    if (mainnetProvider && pollTime > 0) {
-      pollPrice();
-    }
+    if (pollTime > 0) pollPrice();
   }, pollTime);
 
   return price;

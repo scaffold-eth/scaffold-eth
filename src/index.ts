@@ -1,6 +1,5 @@
 export { useLookupAddress, useResolveEnsName } from './dapps/ens';
 export { useEventListener, useEventReader } from './events';
-export { default as useNonce } from './Nonce';
 export { default as useTimestamp } from './Timestamp';
 export { default as useTokenBalance } from './TokenBalance';
 export { default as useUserAddress } from './UserAddress';
@@ -18,9 +17,9 @@ export * from './useContractReader';
 // export * from "./Debounce";
 // export * from "./EventListener";
 // export * from "./ExternalContractLoader";
-// export * from "./GasPrice";
+export * from './useGasPrice';
 // export * from "./LookupAddress";
-// export * from "./Nonce";
+export * from './Nonce';
 export * from './useOnBlock';
 export * from './usePoller';
 // export * from "./ResolveName";
