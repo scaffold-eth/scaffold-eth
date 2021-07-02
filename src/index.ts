@@ -1,4 +1,4 @@
-export { useLookupAddress, useResolveEnsName } from './ENS';
+export { useLookupAddress, useResolveEnsName } from './ens1';
 export { useEventListener, useEventReader } from './events';
 export { default as useNonce } from './Nonce';
 export { default as useTimestamp } from './Timestamp';
@@ -18,7 +18,7 @@ export * from './useContractReader';
 // export * from "./CustomContractLoader";
 // export * from "./Debounce";
 // export * from "./EventListener";
-export * from './ExchangePrice';
+export * from './dex/useExchangePrice';
 // export * from "./ExternalContractLoader";
 // export * from "./GasPrice";
 // export * from "./LocalStorage";
