@@ -49,7 +49,7 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost // rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby // rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -186,11 +186,11 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "ButterflyClaims", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "ButterflyClaims", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -205,9 +205,9 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.ButterflyClaims.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.ButterflyClaims.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -219,6 +219,8 @@ function App(props) {
               const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
               console.log("jsonManifest", jsonManifest);
               collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              //if(tokenIndex>=balance||tokenIndex%9){
+              //}
           } catch (e) {
             console.log(e);
           }
@@ -389,7 +391,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              Your Butterflies
             </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
@@ -402,26 +404,6 @@ function App(props) {
               Transfers
             </Link>
           </Menu.Item>
-          <Menu.Item key="/ipfsup">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsup");
-              }}
-              to="/ipfsup"
-            >
-              IPFS Upload
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsdown">
-            <Link
-              onClick={() => {
-                setRoute("/ipfsdown");
-              }}
-              to="/ipfsdown"
-            >
-              IPFS Download
-            </Link>
-          </Menu.Item>
           <Menu.Item key="/debugcontracts">
             <Link
               onClick={() => {
@@ -429,7 +411,7 @@ function App(props) {
               }}
               to="/debugcontracts"
             >
-              Debug Contracts
+              Smart Contract
             </Link>
           </Menu.Item>
         </Menu>
@@ -443,6 +425,18 @@ function App(props) {
             */}
 
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+
+              <div style={{padding:32}}>
+                <Button
+                  onClick={()=>{
+                    tx( writeContracts.ButterflyClaims.claim() )
+                  }}
+                  type={"primary"}
+                >
+                 Claim
+                </Button>
+              </div>
+
               <List
                 bordered
                 dataSource={yourCollectibles}
@@ -460,7 +454,7 @@ function App(props) {
                         <div>
                           <img src={item.image} style={{ maxWidth: 150 }} />
                         </div>
-                        <div>{item.description}</div>
+                        {/*<div>{item.description}</div>*/}
                       </Card>
 
                       <div>
@@ -484,24 +478,11 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.ButterflyClaims.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
                         </Button>
-                        <div style={{marginTop:32}}>
-                          <Button
-                            onClick={async() => {
-                              console.log("writeContracts", writeContracts);
-                              await tx(writeContracts.YourCollectible.toggle(id));
-                              setTimeout(()=>{
-                                setForceLookup(forceLookup+1)
-                              },500)
-                            }}
-                          >
-                            TOGGLE
-                          </Button>
-                        </div>
                       </div>
 
                     </List.Item>
@@ -605,7 +586,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="ButterflyClaims"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
