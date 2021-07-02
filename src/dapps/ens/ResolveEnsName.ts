@@ -9,7 +9,7 @@ import { TEthHooksProvider } from '~~/models';
  * @param ensName
  * @returns
  */
-const useResolveEnsName = (provider: TEthHooksProvider, ensName: string): string => {
+export const useResolveEnsName = (provider: TEthHooksProvider, ensName: string): string => {
   const [address, setAddress] = useState<string>(constants.AddressZero);
 
   useEffect(() => {
@@ -20,5 +20,3 @@ const useResolveEnsName = (provider: TEthHooksProvider, ensName: string): string
 
   return address;
 };
-
-export default useResolveEnsName;

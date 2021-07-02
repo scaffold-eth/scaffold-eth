@@ -4,7 +4,7 @@ import { useState, useEffect } from 'react';
 
 import { TEthHooksProvider } from '~~/models';
 
-const lookupAddress = async (provider: Provider, address: string) => {
+const lookupAddress = async (provider: TEthHooksProvider, address: string) => {
   if (utils.isAddress(address)) {
     try {
       // Accuracy of reverse resolution is not enforced.

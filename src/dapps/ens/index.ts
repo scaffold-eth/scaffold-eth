@@ -1,2 +1,2 @@
-export { default as useLookupAddress } from './LookupAddress';
-export { default as useResolveEnsName } from './ResolveEnsName';
+export * from './LookupAddress';
+export * from './ResolveEnsName';
