@@ -1,4 +1,4 @@
-import { BigInt, Address, ipfs, json, JSONValueKind, log } from "@graphprotocol/graph-ts"
+import { BigInt, Address, ipfs, json, JSONValueKind, log, TypedMap } from "@graphprotocol/graph-ts"
 import {
   NiftyInk,
   newInk,
@@ -19,7 +19,10 @@ import {
   newPrice,
   tokenSentViaBridge
 } from "../generated/NiftyMediator/NiftyMediator"
-import { Ink, Artist, Token, TokenTransfer, Sale, RelayPrice, Total, MetaData } from "../generated/schema"
+import {
+  liked
+} from "../generated/Liker/Liker";
+import { Ink, Artist, Token, TokenTransfer, Sale, RelayPrice, Total, MetaData, InkLookup, Like } from "../generated/schema"
 
 
  function updateMetaData(metric: String, value: String): void {
@@ -65,6 +68,41 @@ import { Ink, Artist, Token, TokenTransfer, Sale, RelayPrice, Total, MetaData } 
     stats.save()
   }
 
+function checkBestPrice(ink: Ink | null): Ink | null {
+
+  if(ink !== null) {
+    if(ink.mintPrice.isZero()) {
+      ink.bestPrice = BigInt.fromI32(0)
+      ink.bestPriceSource = null
+      ink.bestPriceSetAt = null
+    } else {
+      ink.bestPrice = ink.mintPrice
+      ink.bestPriceSource = 'ink'
+      ink.bestPriceSetAt = ink.mintPriceSetAt
+    }
+
+    for (let i = 0, len=ink.tokens.length; i < len; i++) {
+        let tokens = ink.tokens
+        let id = tokens[i]
+        let token = Token.load(id)
+
+        if(token.price > BigInt.fromI32(0)) {
+          if(ink.bestPrice.isZero()) {
+            ink.bestPrice = token.price
+            ink.bestPriceSource = id
+            ink.bestPriceSetAt = token.priceSetAt
+          } else if (token.price < ink.bestPrice) {
+            ink.bestPrice = token.price as BigInt
+            ink.bestPriceSource = id
+            ink.bestPriceSetAt = token.priceSetAt
+          }
+      }
+    }
+  }
+
+  return ink
+}
+
 export function handlenewInk(event: newInk): void {
 
   let artist = Artist.load(event.params.artist.toHexString())
@@ -73,6 +111,7 @@ export function handlenewInk(event: newInk): void {
     artist = new Artist(event.params.artist.toHexString())
     artist.address = event.params.artist
     artist.inkCount = BigInt.fromI32(1)
+    artist.earnings = BigInt.fromI32(0)
     incrementTotal('artists',event.block.timestamp)
   }
   else {
@@ -106,9 +145,17 @@ export function handlenewInk(event: newInk): void {
   ink.limit = event.params.limit
   ink.jsonUrl = event.params.jsonUrl
   ink.createdAt = event.block.timestamp
+  ink.tokens = []
+  ink.mintPrice = BigInt.fromI32(0)
+  ink.bestPrice = BigInt.fromI32(0)
+  ink.likeCount = BigInt.fromI32(0)
 
   ink.save()
   artist.save()
+
+  let inkLookup = new InkLookup(ink.inkNumber.toString())
+  inkLookup.inkId = ink.id
+  inkLookup.save()
 
   incrementTotal('inks',event.block.timestamp)
   updateMetaData('blockNumber',event.block.number.toString())
@@ -118,9 +165,24 @@ function _handleSetPrice(inkUrl: String, price: BigInt, timestamp: BigInt): void
 
   let ink = Ink.load(inkUrl)
 
+  ink.mintPriceNonce = ink.mintPriceNonce + BigInt.fromI32(1)
   ink.mintPrice = price
   ink.mintPriceSetAt = timestamp
-  ink.mintPriceNonce = ink.mintPriceNonce + BigInt.fromI32(1)
+
+  if(price > BigInt.fromI32(0)) {
+
+    if(ink.bestPrice.isZero()) {
+      ink.bestPrice = price
+      ink.bestPriceSource = 'ink'
+      ink.bestPriceSetAt = timestamp
+    } else if (price <= ink.bestPrice) {
+      ink.bestPrice = price
+      ink.bestPriceSource = 'ink'
+      ink.bestPriceSetAt = timestamp
+    }
+  } else {
+    ink = checkBestPrice(ink)
+  }
 
   ink.save()
 }
@@ -136,48 +198,83 @@ export function handleSetPrice(call: SetPriceCall): void {
 }
 
 export function handleNewInkPrice(event: newInkPrice): void {
-
-  let ink = Ink.load(event.params.inkUrl)
-
-  ink.mintPrice = event.params.price
-  ink.mintPriceSetAt = event.block.timestamp
-  ink.mintPriceNonce = ink.mintPriceNonce + BigInt.fromI32(1)
-
-  ink.save()
+  _handleSetPrice(event.params.inkUrl, event.params.price, event.block.timestamp)
   updateMetaData('blockNumber',event.block.number.toString())
 }
 
 export function handleNewTokenPrice(event: newTokenPrice): void {
 
   let token = Token.load(event.params.id.toString())
-
+  let ink = Ink.load(token.ink)
   token.price = event.params.price
   token.priceSetAt = event.block.timestamp
 
   token.save()
+
+  if(token.price > BigInt.fromI32(0)) {
+    if(ink.bestPrice.isZero()) {
+      ink.bestPrice = token.price
+      ink.bestPriceSource = token.id
+      ink.bestPriceSetAt = token.priceSetAt
+    } else if (token.price < ink.bestPrice) {
+      ink.bestPrice = token.price
+      ink.bestPriceSource = token.id
+      ink.bestPriceSetAt = token.priceSetAt
+    }
+  } else if(ink.bestPrice > BigInt.fromI32(0)) {
+      ink = checkBestPrice(ink)
+  }
+
+  ink.save()
   updateMetaData('blockNumber',event.block.number.toString())
 }
 
 export function handleSetTokenPrice(call: SetTokenPriceCall): void {
 
   let token = Token.load(call.inputs._tokenId.toString())
-
+  let ink = Ink.load(token.ink)
   token.price = call.inputs._price
   token.priceSetAt = call.block.timestamp
-
   token.save()
+
+  if(token.price > BigInt.fromI32(0)) {
+    if(ink.bestPrice.isZero()) {
+      ink.bestPrice = token.price
+      ink.bestPriceSource = token.id
+      ink.bestPriceSetAt = token.priceSetAt
+    } else if (token.price < ink.bestPrice) {
+      ink.bestPrice = token.price
+      ink.bestPriceSource = token.id
+      ink.bestPriceSetAt = token.priceSetAt
+    }
+  } else if(ink.bestPrice > BigInt.fromI32(0)) {
+      ink = checkBestPrice(ink)
+  }
+
+  ink.save()
   updateMetaData('blockNumber',call.block.number.toString())
+
 }
 
 export function handleMintedInk(event: mintedInk): void {
 
   let ink = Ink.load(event.params.inkUrl)
 
-  if (ink == null) {
-    ink = new Ink(event.params.inkUrl)
+  ink.count = ink.count.plus(BigInt.fromI32(1))
+
+  if (ink.count == ink.limit && ink.limit != BigInt.fromI32(1)) {
+
+    ink.mintPrice = BigInt.fromI32(0)
+    ink.mintPriceSetAt = event.block.timestamp
+
+    if(ink.bestPrice > BigInt.fromI32(0)) {
+      ink = checkBestPrice(ink)
+    }
   }
 
-  ink.count = ink.count.plus(BigInt.fromI32(1))
+  let tokenArray = ink.tokens
+  tokenArray.push(event.params.id.toString())
+  ink.tokens = tokenArray
 
   let token = new Token(event.params.id.toString())
 
@@ -185,6 +282,7 @@ export function handleMintedInk(event: mintedInk): void {
   token.owner = event.params.to
   token.createdAt = event.block.timestamp
   token.network = "xdai"
+  token.price = BigInt.fromI32(0)
 
   ink.save()
   token.save()
@@ -201,9 +299,20 @@ export function handleTransfer(event: Transfer): void {
 
   if (token !== null) {
     token.owner = event.params.to
-    token.price = null
-    token.priceSetAt = null
-    token.save()
+
+    if(token.price > BigInt.fromI32(0)) {
+      token.price = BigInt.fromI32(0)
+      token.priceSetAt = event.block.timestamp
+      token.save()
+
+      let ink = Ink.load(token.ink)
+      ink = checkBestPrice(ink)
+      ink.save()
+
+    } else {
+      token.save()
+    }
+
     updateMetaData('blockNumber',event.block.number.toString())
   }
 
@@ -219,8 +328,6 @@ export function handleTransfer(event: Transfer): void {
   }
   if(event.address == Address.fromString("0xc02697c417DdAcfbe5EdbF23eDad956BC883F4fb")) {
     transfer.network = 'mainnet'
-  } else {
-    transfer.network = 'local'
   }
 
   transfer.save()
@@ -246,16 +353,13 @@ export function handleBoughtInk(event: boughtInk): void {
       sale.saleType = "primary"
       sale.artistTake = event.transaction.value
       sale.seller = artist.address
+      artist.earnings = artist.earnings + event.transaction.value
     } else {
       sale.saleType = "secondary"
       sale.artistTake = (((event.transaction.value).times(BigInt.fromI32(1))) / BigInt.fromI32(100))
       sale.seller = transfer.from
+      artist.earnings = artist.earnings + sale.artistTake
     }
-  }
-
-  if (token !== null) {
-    token.price = BigInt.fromI32(0)
-    token.save()
   }
 
   sale.token = tokenId
@@ -267,6 +371,7 @@ export function handleBoughtInk(event: boughtInk): void {
   sale.transfer = event.transaction.hash.toHex()
 
   sale.save()
+  artist.save()
 
   incrementTotal('sales',event.block.timestamp)
   updateMetaData('blockNumber',event.block.number.toString())
@@ -310,4 +415,19 @@ export function handleNewRelayPrice (event: newPrice): void {
   updatedPrice.createdAt = event.block.timestamp
   updatedPrice.save()
   updateMetaData('blockNumber',event.block.number.toString())
+}
+
+export function handleLikedInk (event: liked): void {
+
+  let inkLookup = InkLookup.load(event.params.target.toString())
+  let ink = Ink.load(inkLookup.inkId)
+  ink.likeCount = ink.likeCount + BigInt.fromI32(1)
+  ink.save()
+
+  let newLike = new Like(event.transaction.hash.toHex() + "-" + event.logIndex.toString())
+  newLike.liker = event.params.liker
+  newLike.ink = inkLookup.inkId
+  newLike.createdAt = event.block.timestamp
+  newLike.save()
+
 }
