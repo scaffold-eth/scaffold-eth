@@ -8,7 +8,7 @@ const getPastEvents = async (contract: Contract, filter: Filter) => {
   return eventLogs.map((log) => contract.interface.parseLog(log).args);
 };
 
-export default function useEventReader(contract: Contract, filter?: Filter): any[] {
+export const useEventReader = (contract: Contract, filter?: Filter): any[] => {
   const [updates, setUpdates] = useState<any[]>([]);
 
   useEffect(() => {
@@ -31,4 +31,4 @@ export default function useEventReader(contract: Contract, filter?: Filter): any
   }, [contract, filter]);
 
   return updates;
-}
+};

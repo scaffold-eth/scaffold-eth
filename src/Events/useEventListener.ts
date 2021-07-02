@@ -1,5 +1,4 @@
 import { Contract } from '@ethersproject/contracts';
-import { Web3Provider } from '@ethersproject/providers';
 import { useState, useEffect, useCallback } from 'react';
 
 import { TEthHooksProvider } from '~~/models';
@@ -20,13 +19,13 @@ import { TEthHooksProvider } from '~~/models';
  * @param args 
  * @returns 
  */
-export default function useEventListener(
+export const useEventListener = (
   contracts: Record<string, Contract>,
   contractName: string,
   eventName: string,
   provider: TEthHooksProvider,
   startBlock: number
-): any[] {
+): any[] => {
   const [updates, setUpdates] = useState<any[]>([]);
 
   const addNewEvent = useCallback((...args: any[]) => {
@@ -53,4 +52,4 @@ export default function useEventListener(
   }, [provider, startBlock, contracts, contractName, eventName, addNewEvent]);
 
   return updates;
-}
+};
