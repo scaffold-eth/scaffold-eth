@@ -1,0 +1,31 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "types": ["vite/client", "@emotion/react", "node", "ethers"],
+    "allowJs": false,
+    "skipLibCheck": false,
+    "esModuleInterop": false,
+    "allowSyntheticDefaultImports": true,
+    "strict": true,
+    "typeRoots": ["node_modules/@types", "helpers/definitions"] /* List of folders to include type definitions from. */,
+    "forceConsistentCasingInFileNames": true,
+    "module": "commonjs",
+    "moduleResolution": "Node",
+    "incremental": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "noEmit": true,
+    "rootDir": ".",
+    "baseUrl": ".",
+    "outDir": "dist",
+    "jsx": "react-jsxdev",
+    "jsxImportSource": "@emotion/react",
+    "paths": {
+      "~~/*": ["./src/*"]
+    }
+  },
+  "include": ["./src", "types"],
+  "exclude": ["**/node_modules", ".husky", "./src/styles/css", "./tailwind.config.js"],
+  "files": ["src/helpers/types/__global.ts"]
+}

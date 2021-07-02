@@ -13,6 +13,16 @@ packages/react-app/src/contracts/*
 packages/hardhat/cache*
 
 packages/**/data
+!packages/react-app/src/contracts/contracts.js
+
+# ts
+packages/hardhat/cache
+packages/hardhat-ts/artifacts
+packages/hardhat-ts/deployments
+packages/vite-app-ts/src/contracts
+packages/hardhat-ts/cache
+packages/vite-app-ts/src/generated
+packages/hardhat-ts/generated
 
 packages/subgraph/config/config.json
 tenderly.yaml
@@ -27,6 +37,22 @@ coverage
 
 # production
 build
+# yarn / eslint
+.yarn/cache
+.yarn/install-state.gz
+.yarn/build-state.yml
+.eslintcache
+# secrets
+.secret
+# testing
+coverage
+
+# production
+build
+
+#Hardhat files
+cache
+artifacts
 
 # misc
 .DS_Store

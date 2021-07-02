@@ -1,4 +1,5 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletLink from "walletlink";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
@@ -69,17 +70,45 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
+// Coinbase walletLink init
+const walletLink = new WalletLink({
+  appName: 'coinbase',
+});
+
+// WalletLink provider
+const walletLinkProvider = walletLink.makeWeb3Provider(
+    `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    1,
+);
+
 /*
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
+  network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
+  theme:"light", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
         infuraId: INFURA_ID,
+        rpc: {
+          1:'https://mainnet.infura.io/v3/${INFURA_ID}', // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          100:"https://dai.poa.network", // xDai
+        },
+      },
+    },
+    'custom-walletlink': {
+      display: {
+        logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
+        name: 'Coinbase',
+        description: 'Connect to Coinbase Wallet (not Coinbase App)',
+      },
+      package: walletLinkProvider,
+      connector: async (provider, options) => {
+        await provider.enable();
+        return provider;
       },
     },
   },
