@@ -4,6 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "devDependencies": {
+    "@nomiclabs/buidler": "^1.4.8",
     "bip39": "^3.0.2",
     "ethereumjs-util": "^7.0.3",
     "ethereumjs-wallet": "^1.0.0",

@@ -14,7 +14,7 @@ yarn install
 
 We need a Web3 Provider Engine patch for WalletConnect to work:
 - https://github.com/MetaMask/web3-provider-engine/blob/c8d9a8e46703ab417aeeeba583694057f38cfdf7/index.js#L30
-Set true -> false on Line 30 in `packages/react-app/node_modules/web3-provider-engine/index.js`
+Set true -> false on Line 30 in `./node_modules/web3-provider-engine/index.js`
 
 ### Running nifty.ink on xDai / Mainnet
 _This will run the nifty.ink frontend on the production smart contracts on xDai / Mainnet._
@@ -64,13 +64,13 @@ yarn run sidechain
 cd nifty-ink
 yarn run generate
 ```
-Take the address generated, and send it some funds using the faucet in the react-app (this is necessary to deploy the contracts). If you lose this terminal, you can find the address (and the mnemonic!) in `/packages/buidler`
+Take the address generated, and send it some funds using the faucet (at the bottom of the "Help" tab) in the react-app (this is necessary to deploy the contracts). If you lose this terminal, you can find the address (and the mnemonic!) in `/packages/buidler`
 Then deploy the contracts:
 ```
 yarn run sidechaindeploy
 ```
 You will need the contract deployment addresses to update the subgraph configuration:
-Go to `packages/niftygraph/subgraph.yaml` and update the addresses for the three datasources to match the addresses from your deployment
+Go to `packages/niftygraph/subgraph.yaml` and update the addresses for the four datasources to match the addresses from your deployment (NiftyInk, NiftyToken, NiftyMediator, Liker)
 
 
 *Terminal D:* Run a local graph node <- Requires docker

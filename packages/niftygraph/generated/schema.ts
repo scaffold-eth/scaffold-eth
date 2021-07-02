@@ -95,21 +95,13 @@ export class Ink extends Entity {
     }
   }
 
-  get tokens(): Array<string> | null {
+  get tokens(): Array<string> {
     let value = this.get("tokens");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toStringArray();
-    }
+    return value.toStringArray();
   }
 
-  set tokens(value: Array<string> | null) {
-    if (value === null) {
-      this.unset("tokens");
-    } else {
-      this.set("tokens", Value.fromStringArray(value as Array<string>));
-    }
+  set tokens(value: Array<string>) {
+    this.set("tokens", Value.fromStringArray(value));
   }
 
   get sales(): Array<string> | null {
@@ -126,6 +118,23 @@ export class Ink extends Entity {
       this.unset("sales");
     } else {
       this.set("sales", Value.fromStringArray(value as Array<string>));
+    }
+  }
+
+  get likes(): Array<string> | null {
+    let value = this.get("likes");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toStringArray();
+    }
+  }
+
+  set likes(value: Array<string> | null) {
+    if (value === null) {
+      this.unset("likes");
+    } else {
+      this.set("likes", Value.fromStringArray(value as Array<string>));
     }
   }
 
@@ -146,21 +155,13 @@ export class Ink extends Entity {
     }
   }
 
-  get mintPrice(): BigInt | null {
+  get mintPrice(): BigInt {
     let value = this.get("mintPrice");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set mintPrice(value: BigInt | null) {
-    if (value === null) {
-      this.unset("mintPrice");
-    } else {
-      this.set("mintPrice", Value.fromBigInt(value as BigInt));
-    }
+  set mintPrice(value: BigInt) {
+    this.set("mintPrice", Value.fromBigInt(value));
   }
 
   get mintPriceSetAt(): BigInt | null {
@@ -194,6 +195,66 @@ export class Ink extends Entity {
       this.unset("mintPriceNonce");
     } else {
       this.set("mintPriceNonce", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get bestPrice(): BigInt {
+    let value = this.get("bestPrice");
+    return value.toBigInt();
+  }
+
+  set bestPrice(value: BigInt) {
+    this.set("bestPrice", Value.fromBigInt(value));
+  }
+
+  get bestPriceSource(): string | null {
+    let value = this.get("bestPriceSource");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
+  }
+
+  set bestPriceSource(value: string | null) {
+    if (value === null) {
+      this.unset("bestPriceSource");
+    } else {
+      this.set("bestPriceSource", Value.fromString(value as string));
+    }
+  }
+
+  get bestPriceSetAt(): BigInt | null {
+    let value = this.get("bestPriceSetAt");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set bestPriceSetAt(value: BigInt | null) {
+    if (value === null) {
+      this.unset("bestPriceSetAt");
+    } else {
+      this.set("bestPriceSetAt", Value.fromBigInt(value as BigInt));
+    }
+  }
+
+  get likeCount(): BigInt | null {
+    let value = this.get("likeCount");
+    if (value === null) {
+      return null;
+    } else {
+      return value.toBigInt();
+    }
+  }
+
+  set likeCount(value: BigInt | null) {
+    if (value === null) {
+      this.unset("likeCount");
+    } else {
+      this.set("likeCount", Value.fromBigInt(value as BigInt));
     }
   }
 }
@@ -264,21 +325,13 @@ export class Token extends Entity {
     this.set("network", Value.fromString(value));
   }
 
-  get price(): BigInt | null {
+  get price(): BigInt {
     let value = this.get("price");
-    if (value === null) {
-      return null;
-    } else {
-      return value.toBigInt();
-    }
+    return value.toBigInt();
   }
 
-  set price(value: BigInt | null) {
-    if (value === null) {
-      this.unset("price");
-    } else {
-      this.set("price", Value.fromBigInt(value as BigInt));
-    }
+  set price(value: BigInt) {
+    this.set("price", Value.fromBigInt(value));
   }
 
   get priceSetAt(): BigInt | null {
@@ -645,13 +698,21 @@ export class TokenTransfer extends Entity {
     this.set("createdAt", Value.fromBigInt(value));
   }
 
-  get network(): string {
+  get network(): string | null {
     let value = this.get("network");
-    return value.toString();
+    if (value === null) {
+      return null;
+    } else {
+      return value.toString();
+    }
   }
 
-  set network(value: string) {
-    this.set("network", Value.fromString(value));
+  set network(value: string | null) {
+    if (value === null) {
+      this.unset("network");
+    } else {
+      this.set("network", Value.fromString(value as string));
+    }
   }
 }
 
@@ -874,5 +935,103 @@ export class Total extends Entity {
     } else {
       this.set("artists", Value.fromBigInt(value as BigInt));
     }
+  }
+}
+
+export class InkLookup extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save InkLookup entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save InkLookup entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("InkLookup", id.toString(), this);
+  }
+
+  static load(id: string): InkLookup | null {
+    return store.get("InkLookup", id) as InkLookup | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get inkId(): string {
+    let value = this.get("inkId");
+    return value.toString();
+  }
+
+  set inkId(value: string) {
+    this.set("inkId", Value.fromString(value));
+  }
+}
+
+export class Like extends Entity {
+  constructor(id: string) {
+    super();
+    this.set("id", Value.fromString(id));
+  }
+
+  save(): void {
+    let id = this.get("id");
+    assert(id !== null, "Cannot save Like entity without an ID");
+    assert(
+      id.kind == ValueKind.STRING,
+      "Cannot save Like entity with non-string ID. " +
+        'Considering using .toHex() to convert the "id" to a string.'
+    );
+    store.set("Like", id.toString(), this);
+  }
+
+  static load(id: string): Like | null {
+    return store.get("Like", id) as Like | null;
+  }
+
+  get id(): string {
+    let value = this.get("id");
+    return value.toString();
+  }
+
+  set id(value: string) {
+    this.set("id", Value.fromString(value));
+  }
+
+  get ink(): string {
+    let value = this.get("ink");
+    return value.toString();
+  }
+
+  set ink(value: string) {
+    this.set("ink", Value.fromString(value));
+  }
+
+  get liker(): Bytes {
+    let value = this.get("liker");
+    return value.toBytes();
+  }
+
+  set liker(value: Bytes) {
+    this.set("liker", Value.fromBytes(value));
+  }
+
+  get createdAt(): BigInt {
+    let value = this.get("createdAt");
+    return value.toBigInt();
+  }
+
+  set createdAt(value: BigInt) {
+    this.set("createdAt", Value.fromBigInt(value));
   }
 }

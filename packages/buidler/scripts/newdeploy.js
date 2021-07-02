@@ -60,7 +60,7 @@ async function main() {
     await Liker.setTrustedForwarder(trustedForwarder)
 
     console.log("setting gas limit")
-    await NiftyMediator.setRequestGasLimit("1500000")
+    if(!(bre.network.name.indexOf("sidechain")>=0)) await NiftyMediator.setRequestGasLimit("1500000")
 
     if(bre.network.name.indexOf("kovan")>=0){
       /*await NiftyMediator.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
