@@ -1,7 +1,7 @@
 export { useLookupAddress, useResolveEnsName } from './dapps/ens';
 export { useEventListener, useEventReader } from './events';
 export { default as useTimestamp } from './Timestamp';
-export { default as useTokenBalance } from './TokenBalance';
+export { default as useTokenBalance } from './useTokenBalance';
 export { default as useUserAddress } from './UserAddress';
 export { default as useUserSigner } from './UserSigner';
 export { default as useGasPrice } from './useGasPrice';

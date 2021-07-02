@@ -5,7 +5,7 @@ import { TEthHooksProvider } from '~~/models/providerTypes';
 
 const DEBUG = false;
 /**
- * helper hook to call a function regularly at time intervals
+ * helper hook to call a function regularly at time intervals when the block changes
  * @param provider ethers/web3 provider
  * @param fn any function
  * @param args function parameters

@@ -1,27 +1,30 @@
-import { useState, useEffect } from "react";
-import { Web3Provider } from "@ethersproject/providers";
-import useBlockNumber from "./BlockNumber";
+import { useState, useEffect } from 'react';
 
-const useTimestamp = (provider: Web3Provider, pollTime?: number): number => {
+import { useBlockNumber } from '.';
+
+import { TEthHooksProvider } from '~~/models';
+
+/**
+ * Get the current timestamp from the latest block
+ * @param provider
+ * @param pollTime
+ * @returns date in
+ */
+export const useTimestamp = (provider: TEthHooksProvider, pollTime?: number): number => {
   const blockNumber = useBlockNumber(provider, pollTime);
-
   const [timestamp, setTimestamp] = useState<number>(0);
 
   useEffect((): void => {
     const getTimestamp = async (): Promise<void> => {
       const nextBlock = await provider.getBlock(blockNumber);
-      if (typeof nextBlock !== "undefined" && nextBlock && nextBlock.timestamp) {
+      if (nextBlock?.timestamp != undefined) {
         const nextTimestamp = nextBlock.timestamp;
-        if (nextTimestamp !== timestamp) {
-          setTimestamp(nextTimestamp);
-        }
+        setTimestamp(nextTimestamp);
       }
     };
 
-    if (typeof provider !== "undefined") getTimestamp();
-  }, [blockNumber, provider, timestamp]);
+    void getTimestamp();
+  }, [blockNumber, provider]);
 
   return timestamp;
 };
-
-export default useTimestamp;

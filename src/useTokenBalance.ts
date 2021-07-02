@@ -6,6 +6,11 @@ import { useOnBlock, usePoller } from '.';
 
 /**
  * Get the balance of an ERC20 token in an address
+ * 
+ * ~ Features ~
+  - Provide address and get balance corresponding to given address
+  - Change provider to access balance on different chains (ex. mainnetProvider)
+  - If no pollTime is passed, the balance will update on every new block
  * @param contract contract object for the ERC20 token
  * @param address
  * @param pollTime
