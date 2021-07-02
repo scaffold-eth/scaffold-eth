@@ -9,10 +9,10 @@ export { default as useLocalStorage } from './LocalStorage';
 export { default as useExchangePrice } from './ExchangePrice';
 export { default as useGasPrice } from './GasPrice';
 export { default as useTokenList } from './TokenList';
-export { default as useBurnerSigner } from './BurnerSigner';
 
 export * from './useBlockNumber';
 export * from './useBalance';
+export * from './useBurnerSigner';
 export * from './useContractExistsAtAddress';
 export * from './useContractLoader';
 export * from './useContractReader';
