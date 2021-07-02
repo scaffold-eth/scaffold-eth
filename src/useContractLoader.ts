@@ -5,42 +5,14 @@ import { useEffect, useState } from 'react';
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
 import { TProviderOrSigner } from '~~/models/providerTypes';
 
-// const loadContract = async (contractName: string, signer: Signer) => {
-//   // @ts-ignore
-//   const addressJs = (await import(`./${filelocation}/${contractName}.address.js`)).default;
-//   const contract = (await import(`./${filelocation}/${contractName}.abi.js`)).default;
-
-//   const newContract = new Contract(addressJs, contract, signer);
-//   try {
-//     // @ts-ignore
-//     const bytecodeJs = (await import(`./${filelocation}/${contractName}.bytecode.js`)).default;
-//     // @ts-ignore
-//     newContract.bytecode = bytecodeJs;
-//   } catch (e) {
-//     console.log(e);
-//   }
-//   return newContract;
-// };
-
-// const loadContractList = async (contractList: string[], signer: Signer | undefined) => {
-//   const contracts: Record<string, Contract> = {};
-
-//   if (signer) {
-//     await contractList.forEach(async (c) => {
-//       contracts[c] = await loadContract(c, signer);
-//     });
-//   }
-//   return contracts;
-// };
-
-interface IContractConfig {
+export type TContractConfig = {
   chainId?: number;
   contractFileLocation: string;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
   hardhatContracts: Record<string, Contract>;
   externalContracts: Record<string, Contract>;
-}
+};
 
 /**
  * Loads your local contracts and gives options to read values from contracts
@@ -67,7 +39,7 @@ interface IContractConfig {
  */
 export const useContractLoader = (
   providerOrSigner: TProviderOrSigner,
-  config: IContractConfig = {
+  config: TContractConfig = {
     contractFileLocation: '../../../generated/contracts',
     hardhatContracts: {},
     externalContracts: {},
@@ -154,15 +126,7 @@ export const useContractLoader = (
     return () => {
       active = false;
     };
-  }, [
-    providerOrSigner,
-    config.chainId,
-    config.hardhatNetworkName,
-    config.hardhatContracts,
-    config.contractFileLocation,
-    config.externalContracts,
-    config.customAddresses,
-  ]);
+  }, [providerOrSigner, config]);
 
   return contracts;
 };

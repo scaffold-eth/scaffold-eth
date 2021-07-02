@@ -7,7 +7,6 @@ import { TEthHooksProvider } from '~~/models/providerTypes';
  * Checks whether a contract exists on the blockchain, returns true if it exists, otherwise false
  * 
   ~ Features ~
-
   - Provide contractAddress to check if the contract is deployed
   - Change provider to check contract address on different chains (ex. mainnetProvider)
  * @param provider 
