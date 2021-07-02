@@ -6,7 +6,6 @@ export { default as useTokenBalance } from './TokenBalance';
 export { default as useUserAddress } from './UserAddress';
 export { default as useUserSigner } from './UserSigner';
 export { default as useLocalStorage } from './LocalStorage';
-export { default as useExchangePrice } from './ExchangePrice';
 export { default as useGasPrice } from './GasPrice';
 export { default as useTokenList } from './TokenList';
 
@@ -19,7 +18,7 @@ export * from './useContractReader';
 // export * from "./CustomContractLoader";
 // export * from "./Debounce";
 // export * from "./EventListener";
-// export * from "./ExchangePrice";
+export * from './ExchangePrice';
 // export * from "./ExternalContractLoader";
 // export * from "./GasPrice";
 // export * from "./LocalStorage";

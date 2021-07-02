@@ -1,9 +1,10 @@
-import { Web3Provider } from '@ethersproject/providers';
 import { useState } from 'react';
 
 import { usePoller, useOnBlock } from '.';
 
-export const useBlockNumber = (provider: Web3Provider, pollTime: number = 0): number => {
+import { TEthHooksProvider } from '~~/models';
+
+export const useBlockNumber = (provider: TEthHooksProvider, pollTime: number = 0): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 
   const getBlockNumber = async (): Promise<void> => {
