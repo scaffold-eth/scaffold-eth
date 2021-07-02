@@ -1,4 +1,3 @@
-import { Provider } from '@ethersproject/providers';
 import { utils } from 'ethers';
 import { useState, useEffect } from 'react';
 

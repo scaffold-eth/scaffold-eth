@@ -1,2 +1,2 @@
-export * from './LookupAddress';
-export * from './ResolveEnsName';
+export * from './useLookupAddress';
+export * from './useResolveEnsName';
