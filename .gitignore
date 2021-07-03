@@ -39,5 +39,8 @@ yarn-error.log*
 
 .idea
 
+# Local Netlify folder
+.netlify
+
 # docker
 /docker
