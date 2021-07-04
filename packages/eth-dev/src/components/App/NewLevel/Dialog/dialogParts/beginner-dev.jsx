@@ -38,8 +38,6 @@ const dialog = [
   }
 ]
 
-const alternativeDialogBranches = ['intro/experienced-dev']
-
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, alternativeDialogBranches)
+const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

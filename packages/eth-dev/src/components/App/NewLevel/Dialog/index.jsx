@@ -1,14 +1,7 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useEffect } from 'react'
 import dialog from './dialogArray'
 
 const DIALOG_PART_ID = 'intro/start'
-
-const enrichDialog = _dialog => {
-  return _dialog.map(dialogStep => {
-    return { dialogPartId: DIALOG_PART_ID, ...dialogStep }
-  })
-}
 
 const styles = {
   button: {
@@ -21,16 +14,22 @@ const styles = {
   }
 }
 
-const Dialog = ({
-  actions,
-  dialog: { dialogLength, currentDialogIndex, dialogPathsVisibleToUser }
-}) => {
+const Dialog = ({ actions, dialog: dialogProps }) => {
+  const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps
+
   useEffect(() => {
     actions.dialog.initDialog({
-      initialDialogPartId: 'intro/start',
+      initialDialogPathId: DIALOG_PART_ID,
       dialogLength: dialog.length
     })
   }, [])
+
+  // remove all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
+  const filteredDialog = dialog.filter((dialogPart, index) => {
+    const reachedIndex = index <= currentDialogIndex
+    const pathIsVisibleToUser = dialogPathsVisibleToUser.includes(dialogPart.dialogPathId)
+    return reachedIndex && pathIsVisibleToUser
+  })
 
   return (
     <div id='newLevelDialog'>
@@ -41,39 +40,27 @@ const Dialog = ({
           marginTop: '15px'
         }}
       >
-        {dialog.map((dialogPart, index) => {
-          const isVisibleToUser =
-            index <= currentDialogIndex &&
-            dialogPathsVisibleToUser.includes(dialogPart.dialogPathId)
+        {filteredDialog.map((dialogPart, index) => {
           const isLastVisibleDialog = index === currentDialogIndex
           const isFinalDialog = index === dialog.length - 1
 
-          console.log({
-            dialogPathsVisibleToUser,
-            dialogPathId: dialogPart.dialogPathId,
-            isVisibleToUser
-          })
+          return (
+            <>
+              {dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
 
-          if (isVisibleToUser) {
-            return (
-              <>
-                {dialogPart.component({ actions })}
-
-                {isLastVisibleDialog && !isFinalDialog && !dialogPart.hasChoices && (
-                  <button
-                    type='button'
-                    className='nes-btn'
-                    id='continue'
-                    onClick={() => actions.dialog.continueDialog()}
-                    style={{ ...styles.button }}
-                  >
-                    Continue
-                  </button>
-                )}
-              </>
-            )
-          }
-          return <></>
+              {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
+                <button
+                  type='button'
+                  className='nes-btn'
+                  id='continue'
+                  onClick={() => actions.dialog.continueDialog()}
+                  style={{ ...styles.button }}
+                >
+                  Continue
+                </button>
+              )}
+            </>
+          )
         })}
       </div>
     </div>

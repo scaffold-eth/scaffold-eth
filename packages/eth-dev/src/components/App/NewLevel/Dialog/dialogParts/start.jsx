@@ -28,46 +28,50 @@ const dialog = [
     )
   },
   {
-    component: ({ actions }) => (
-      <SpeakerLeft
-        text='This game is targeted towards more experienced developer (developer in general, not
-            Ethereum specific.'
-      />
-    )
-  },
-  {
     hasChoices: true,
-    component: ({ actions }) => (
+    component: ({ currentDialog, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerRight
           text='This game is targeted towards more experienced developer (developer in general, not
               Ethereum specific.'
         />
-        <button
-          type='button'
-          className='nes-btn'
-          id='continue'
-          onClick={() =>
-            actions.dialog.jumpToDialogPath({ dialogPartId: EXPERIENCED_DIALOG_PATH_ID })
-          }
-          style={{ ...styles.button }}
-        >
-          I'm an experienced developer
-        </button>
-        <button
-          type='button'
-          className='nes-btn'
-          id='continue'
-          onClick={() => actions.dialog.jumpToDialogPath({ dialogPartId: BEGINNER_DIALOG_PATH_ID })}
-          style={{ ...styles.button }}
-        >
-          I'm more of a beginner
-        </button>
+        {isLastVisibleDialog && (
+          <>
+            <button
+              type='button'
+              className='nes-btn'
+              id='continue'
+              onClick={() =>
+                actions.dialog.jumpToDialogPath({
+                  currentDialog,
+                  dialogPathId: EXPERIENCED_DIALOG_PATH_ID
+                })
+              }
+              style={{ ...styles.button }}
+            >
+              I'm an experienced developer
+            </button>
+            <button
+              type='button'
+              className='nes-btn'
+              id='continue'
+              onClick={() =>
+                actions.dialog.jumpToDialogPath({
+                  currentDialog,
+                  dialogPathId: BEGINNER_DIALOG_PATH_ID
+                })
+              }
+              style={{ ...styles.button }}
+            >
+              I'm more of a beginner
+            </button>
+          </>
+        )}
       </>
     )
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, [])
 
 export default enrichedDialog
