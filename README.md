@@ -39,7 +39,7 @@ cd scaffold-eth
 yarn deploy
 ```
 
-You should now have a local blockchain, with `YourContract.sol` deployed, and your app running on https://localhost:3000.
+You should now have a local blockchain, with `ClaimToken.sol` deployed, and your app running on https://localhost:3000.
 
 ---
 
@@ -52,9 +52,9 @@ You should now have a local blockchain, with `YourContract.sol` deployed, and yo
 - Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
 - Support for L2 / Sidechains like Optimism and Arbitrum.
 
-# 📚 Documentation
+# 📚 Reasearch
 
-For a more in-depth explanation, documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+Tokenized real estate claims.
 
 # 🛠 Buidl
 
