@@ -27,5 +27,5 @@
   },
   "include": ["./src", "types"],
   "exclude": ["**/node_modules", ".husky", "./src/styles/css", "./tailwind.config.js"],
-  "files": ["src/helpers/types/__global.ts"]
+  "files": ["src/helpers/types/__global.ts", "src/components/common/hooks/contractConstants.ts"]
 }

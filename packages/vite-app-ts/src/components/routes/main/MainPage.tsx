@@ -63,17 +63,16 @@ import {
   INFURA_ID,
   DAI_ADDRESS,
   DAI_ABI,
-  NETWORK,
-  NETWORKS,
   SIMPLE_STREAM_ABI,
   BUILDERS,
   BUILDS,
   mainStreamReader_ADDRESS,
   mainStreamReader_ABI,
 } from '~~/models/constants/constants';
+import { NETWORK, NETWORKS } from '~~/models/constants/networks';
 import pretty from 'pretty-time';
 import { Contract, ethers } from 'ethers';
-import { NetworkTypes } from '~~/models/NetworkTypes';
+import { TNetwork } from '~~/models/networkTypes';
 import { ExampleUI } from '~~/components/views/ExampleUI';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 
@@ -103,7 +102,7 @@ const translateAddressesForLocal = (addy: string) => {
 };
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork: NetworkTypes = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork: TNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;

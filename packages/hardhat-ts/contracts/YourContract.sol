@@ -10,22 +10,22 @@ contract YourContract {
 
   string public purpose = "Building Unstoppable Apps";
 
-  error EmptyPurposeError(uint code, string message);
+  //error EmptyPurposeError(uint code, string message);
 
   constructor() {
     // what should we do on deploy?
   }
 
-  function setPurpose(string memory newPurpose) public {
-      if(bytes(newPurpose).length == 0){
-          revert EmptyPurposeError({
-              code: 1,
-              message: "Purpose can not be empty"
-          });
-      }
+//   function setPurpose(string memory newPurpose) public {
+//       if(bytes(newPurpose).length == 0){
+//           revert EmptyPurposeError({
+//               code: 1,
+//               message: "Purpose can not be empty"
+//           });
+//       }
 
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
-  }
+//       purpose = newPurpose;
+//       console.log(msg.sender,"set purpose to",purpose);
+//       emit SetPurpose(msg.sender, purpose);
+//   }
 }

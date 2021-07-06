@@ -7,18 +7,17 @@ import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@etherspro
 import { ethers } from 'ethers';
 import { useEffect, useState } from 'react';
 import { parseProviderOrSigner } from '~~/components/common/functions/providerOrSigner';
-
-const filelocation = '../../../generated/contracts';
+import { contractDirectory } from './contractConstants';
 
 const loadContract = async (contractName: string, signer: Signer) => {
   // @ts-ignore
-  const addressJs = (await import(`./${filelocation}/${contractName}.address.js`)).default;
-  const contract = (await import(`./${filelocation}/${contractName}.abi.js`)).default;
+  const addressJs = (await import(`./${contractDirectory}/${contractName}.address.js`)).default;
+  const contract = (await import(`./${contractDirectory}/${contractName}.abi.js`)).default;
 
   const newContract = new Contract(addressJs, contract, signer);
   try {
     // @ts-ignore
-    const bytecodeJs = (await import(`./${filelocation}/${contractName}.bytecode.js`)).default;
+    const bytecodeJs = (await import(`./${contractDirectory}/${contractName}.bytecode.js`)).default;
     // @ts-ignore
     newContract.bytecode = bytecodeJs;
   } catch (e) {
@@ -93,13 +92,13 @@ export const useContractLoader = (
             let externalContractList: Record<string, any> = {};
             try {
               contractList =
-                config.hardhatContracts || (await import(`./${filelocation}/hardhat_contracts.json`)).default;
+                config.hardhatContracts || (await import(`./${contractDirectory}/hardhat_contracts.json`)).default;
             } catch (e) {
               console.log(e);
             }
             try {
               externalContractList =
-                config.externalContracts || (await import(`./${filelocation}/external_contracts.js`)).default;
+                config.externalContracts || (await import(`./${contractDirectory}/external_contracts.js`)).default;
             } catch (e) {
               console.log(e);
             }
