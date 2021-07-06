@@ -7,7 +7,7 @@
       "jsx": true // Allows for the parsing of JSX
     },
     "tsconfigRootDir": ".",
-    "project": ["./tsconfig.json"],
+      "project": ["./tsconfig.json"],
     "projectFolderIgnoreList": ["**/node_modules/**", "dist/**", "build/**", ".yarn", "build-utils"]
   },
   "env": {
@@ -22,6 +22,7 @@
     "plugin:import/warnings",
     "plugin:import/typescript",
     "plugin:jest/recommended",
+      "plugin:react-hooks/recommended",
     "plugin:prettier/recommended",
     "plugin:@typescript-eslint/eslint-recommended",
     "plugin:@typescript-eslint/recommended",
