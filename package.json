@@ -1,10 +1,10 @@
 {
   "name": "eth-hooks",
-  "version": "2.1.0",
+  "version": "2.1.1",
   "description": "A set of hooks to turbocharge buidling",
   "author": "Austin Griffith <austin@ethereum.org>",
   "repository": "https://github.com/austintgriffith/eth-hooks.git",
-  "main": "lib/index.js",
+  "main": "lib/index.ts",
   "types": "lib/index.d.ts",
   "engines": {
     "node": ">=8",
@@ -28,11 +28,11 @@
     "@ethersproject/address": "^5.4.0",
     "@ethersproject/bignumber": "^5.4.0",
     "@ethersproject/bytes": "^5.4.0",
-    "@ethersproject/contracts": "^5.3.0",
+    "@ethersproject/contracts": "^5.4.0",
     "@ethersproject/networks": "^5.4.1",
     "@ethersproject/providers": "^5.4.1",
-    "@ethersproject/solidity": "^5.3.0",
-    "@ethersproject/units": "^5.3.0",
+    "@ethersproject/solidity": "^5.4.0",
+    "@ethersproject/units": "^5.4.0",
     "@uniswap/token-lists": "^1.0.0-beta.24",
     "axios": "^0.21.1",
     "burner-provider": "^1.0.38",
@@ -42,7 +42,8 @@
   },
   "peerDependencies": {
     "@uniswap/sdk": "^3.0.3",
-    "react": ">=16.9.0"
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
@@ -75,9 +76,10 @@
     "prettier": "^2.3.1",
     "prettier-eslint": "^12.0.0",
     "react": "^17.0.2",
+    "react-dom": "^17.0.2",
     "rxjs": "^7.2.0",
     "shx": "^0.3.3",
-    "typescript": "^4.3.5",
+    "typescript": "^4.3.4",
     "watch": "^1.0.2"
   },
   "keywords": [
@@ -90,7 +92,8 @@
   "license": "MIT",
   "scripts": {
     "commit": "git-cz",
-    "build": "tsc",
+    "build": "shx cp package.json lib && tsc",
+    "publish": "cd lib && npm publish && shx rm ./lib/package.json",
     "watch": "watch 'yarn build' ./src",
     "clean": "shx rm -rf ./lib",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
@@ -99,5 +102,8 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
+  },
+  "exports": {
+    "./*": "./lib/*"
   }
 }
