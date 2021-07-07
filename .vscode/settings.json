@@ -1,0 +1,4 @@
+{
+   "solidity.packageDefaultDependenciesDirectory": "packages/hardhat-ts/node_modules",
+   "solidity-va.test.defaultUnittestTemplate": "hardhat",
+}

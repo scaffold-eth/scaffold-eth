@@ -4,12 +4,12 @@ import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 import { Button, Divider, Modal } from 'antd';
 import React, { useState } from 'react';
 import { FC } from 'react';
-import { NetworkTypes } from '~~/models/NetworkTypes';
+import { TNetwork } from '~~/models/networkTypes';
 
 interface IRampProps {
   price: number;
   address: string;
-  networks: Record<string, NetworkTypes>;
+  networks: Record<string, TNetwork>;
   color?: string;
 }
 

@@ -2,10 +2,10 @@ import { JsonRpcProvider, Network, StaticJsonRpcProvider, Web3Provider } from '@
 import { Fetcher, Route, Token, WETH } from '@uniswap/sdk';
 import { usePoller } from 'eth-hooks';
 import { useState } from 'react';
-import { NetworkTypes } from '~~/models/NetworkTypes';
+import { TNetwork } from '~~/models/networkTypes';
 
 export const useExchangePrice = (
-  targetNetwork: NetworkTypes,
+  targetNetwork: TNetwork,
   mainnetProvider: JsonRpcProvider | Web3Provider,
   pollTime?: number
 ) => {

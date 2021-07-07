@@ -29,6 +29,7 @@ const mnemonic = () => {
   try {
     return fs.readFileSync('./mnemonic.secret').toString().trim();
   } catch (e) {
+    // @ts-ignore
     if (defaultNetwork !== 'localhost') {
       console.log('☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`.');
     }
@@ -52,9 +53,12 @@ const config: HardhatUserConfig = {
     localhost: {
       url: 'http://localhost:8545',
       /*
-        notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
+        if there is no mnemonic, it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
       */
+      accounts: {
+        mnemonic: mnemonic(),
+      },
     },
     rinkeby: {
       url: 'https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad', //<---- YOUR INFURA ID! (or it won't work)
@@ -104,7 +108,7 @@ const config: HardhatUserConfig = {
   solidity: {
     compilers: [
       {
-        version: '0.8.3',
+        version: '0.8.6',
         settings: {
           optimizer: {
             enabled: true,

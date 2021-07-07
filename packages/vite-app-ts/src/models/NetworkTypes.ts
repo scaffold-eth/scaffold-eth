@@ -1,4 +1,4 @@
-export type NetworkTypes = {
+export type TNetwork = {
   name: string;
   color: string;
   chainId: number;

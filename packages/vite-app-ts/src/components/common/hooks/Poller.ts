@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 
 // helper hook to call a function regularly in time intervals
 
-export const usePoller = (fn: () => void, delay: number, extraWatch: boolean) => {
+export const usePoller = (fn: () => void, delay: number, extraWatch: boolean = false) => {
   const savedCallback = useRef<() => void>();
   // Remember the latest fn.
   useEffect(() => {

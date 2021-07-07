@@ -1,54 +1,46 @@
-import { useEffect, useState } from 'react';
-import { TokenList, TokenInfo } from '@uniswap/token-lists';
-
-/*
-  ~ What it does? ~
-
-  
-
-
-*/
+import { TokenInfo, TokenList } from '@uniswap/token-lists';
+import axios from 'axios';
+import { useState, useEffect } from 'react';
 
 /**
  * Gets a tokenlist (see more at https://tokenlists.org/), returning the .tokens only
  * 
-  ~ How can I use? ~
+ * ~ How can I use? ~
   const tokenList = useTokenList(); <- default returns the Unsiwap tokens
   const tokenList = useTokenList("https://gateway.ipfs.io/ipns/tokens.uniswap.org");
-
-  ~ Features ~
-  - Optional - specify chainId to filter by chainId
  * @param tokenListUri 
  * @param chainId 
  * @returns 
  */
-export const useTokenList = (tokenListUri: string, chainId?: string) => {
+export const useTokenList = (
+  tokenListUri: string = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org',
+  chainId?: number
+): TokenInfo[] => {
   const [tokenList, setTokenList] = useState<TokenInfo[]>([]);
-
-  const _tokenListUri = tokenListUri || 'https://gateway.ipfs.io/ipns/tokens.uniswap.org';
 
   useEffect(() => {
     const getTokenList = async () => {
       try {
-        const tokenListResponse = await fetch(_tokenListUri);
-        const tokenList: TokenList = await tokenListResponse.json();
-        let tokenInfo: TokenInfo[] = [];
+        const tokenList: TokenList = (await axios(tokenListUri)).data;
+        if (tokenList != undefined) {
+          let tokenInfo: TokenInfo[] = [];
 
-        if (chainId) {
-          tokenInfo = tokenList.tokens.filter(function (t: any) {
-            return t.chainId === chainId;
-          });
-        } else {
-          tokenInfo = tokenList.tokens;
+          if (chainId) {
+            tokenInfo = tokenList.tokens.filter(function (t: TokenInfo) {
+              return t.chainId === chainId;
+            });
+          } else {
+            tokenInfo = tokenList.tokens;
+          }
+
+          setTokenList(tokenInfo);
         }
-
-        setTokenList(tokenInfo);
       } catch (e) {
         console.log(e);
       }
     };
-    getTokenList();
-  }, [tokenListUri]);
+    void getTokenList();
+  }, [chainId, tokenListUri]);
 
   return tokenList;
 };
