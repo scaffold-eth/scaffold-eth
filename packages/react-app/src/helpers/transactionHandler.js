@@ -1,10 +1,25 @@
 import React from 'react'
 import { ethers } from "ethers";
-import { Modal, notification } from 'antd';
+import { Modal, notification, Button, Space, Typography } from 'antd';
 import { getSignature } from "./getSignature";
 import { default as Transactor } from "./Transactor";
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
+import { DepositXDai } from '../components'
+const { Text } = Typography;
 
 export async function transactionHandler(c) {
+
+    console.log(c)
+
+    const showRampModal = () => {
+      new RampInstantSDK({
+        hostAppName: 'nifty.ink',
+        hostLogoUrl: 'https://nifty.ink/logo512.png',
+        //swapAmount: '50000000000000000000', // 50 DAI
+        swapAsset: 'XDAI',
+        userAddress: c['address'],
+      }).on('*', event => console.log(event)).show();
+    }
 
     try {
 
@@ -19,8 +34,12 @@ export async function transactionHandler(c) {
       Modal.info({
         title: 'You need some xDai to make this transaction!',
         content: (
-          <span> Nifty.ink runs on xDAI. <a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).  <a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a>
-          </span>
+          <Space direction="vertical">
+          <Text><a target="_blank" href={"https://xdai.io"}>Take it to the bridge</a> (to transfer DAI from mainnet).</Text>
+          {ethers.Signer.isSigner(c['injectedProvider']) ? null : <Button onClick={showRampModal}>Buy xDai with Ramp</Button>}
+          {/*<DepositXDai selectedProvider={c['injectedProvider']} address={c['address']}/>*/}
+          <Text><a target="_blank" href={"https://www.xdaichain.com/for-users/get-xdai-tokens"}>Learn more about using xDai</a></Text>
+          </Space>
         ),
         onOk() {},
       });
@@ -31,15 +50,25 @@ export async function transactionHandler(c) {
 
       let balance = await c['localProvider'].getBalance(c['address'])
       console.log('artist balance', balance)
-      let injectedNetwork = await c['injectedProvider'].getNetwork()
+      let injectedNetwork
+      if(ethers.Signer.isSigner(c['injectedProvider'])) {
+       injectedNetwork = await c['injectedProvider'].provider.getNetwork()
+     } else {
+       injectedNetwork = await c['injectedProvider'].getNetwork()
+     }
+
       let localNetwork = await c['localProvider'].getNetwork()
       console.log('networkcomparison',injectedNetwork,localNetwork)
+
+      let overrideOptions = {
+          gasPrice: 1,
+      }
 
       if (c['payment'] && parseFloat(ethers.utils.formatEther(balance)) < parseFloat(ethers.utils.formatEther(c['payment']))) {
         showXDaiModal()
         let m = 'You need more than ' + ethers.utils.formatEther(c['payment']) + ' xDai to make this transaction'
         console.log(m)
-        throw m
+        throw {message: m}
       }
 
       if (parseFloat(ethers.utils.formatEther(balance))>0.001){
@@ -49,7 +78,7 @@ export async function transactionHandler(c) {
             let contract = new ethers.Contract(
                 contractAddress,
                 contractAbi,
-                c['injectedProvider'].getSigner(),
+                (ethers.Signer.isSigner(c['injectedProvider']) ? c['injectedProvider'] : c['injectedProvider'].getSigner()),
               );
 
             let metaData = {}
@@ -57,20 +86,51 @@ export async function transactionHandler(c) {
               metaData['value'] = c['payment']
             }
 
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+            let result
+            if(c['injectedProvider'].provider && c['injectedProvider'].provider.wc) {
+              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'])
+              if(c['payment']) {
+                populatedTransaction['value'] = c['payment']
+              }
+              console.log(populatedTransaction)
+              result = await c['injectedProvider'].send('eth_sendTransaction', [populatedTransaction])
+            } else {
+              result = await contract[c['regularFunction']](...c['regularFunctionArgs'], metaData)
+            }
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {
           chainWarning()
-          throw 'Got xDai, but Metamask is on the wrong network'
+          throw {message: 'Got xDai, but Metamask is on the wrong network'}
         }
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
 
-        if (c['signatureFunction'] &&
+        if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c && c['injectedGsnSigner']) {
+          console.log('Got a signer on the right network and GSN is go!')
+          let contract = new ethers.Contract(
+              contractAddress,
+              contractAbi,
+              c['injectedGsnSigner'],
+            );
+
+            //let result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
+            let result
+            if(c['injectedProvider'].provider && c['injectedProvider'].provider.wc) {
+              let populatedTransaction = await contract.populateTransaction[c['regularFunction']](...c['regularFunctionArgs'])
+              console.log(populatedTransaction)
+              result = await c['injectedGsnSigner'].send('eth_sendTransaction', [populatedTransaction])
+            } else {
+              result = await contract[c['regularFunction']](...c['regularFunctionArgs'], overrideOptions)
+            }
+
+          console.log("Regular GSN RESULT!!!!!!",result)
+        return result
+      } else if (c['signatureFunction'] &&
           c['signatureFunctionArgs'] &&
           c['getSignatureTypes'] &&
-          c['getSignatureArgs']) {
+          c['getSignatureArgs'] &&
+          c['metaSigner']) {
           console.log('Doing it the chain-agnostic signature way!')
           let signature = await getSignature(
             c['injectedProvider'],
@@ -79,6 +139,7 @@ export async function transactionHandler(c) {
             c['getSignatureArgs'])
 
           console.log("Got signature: ",signature)
+          console.log(c['metaSigner'])
 
           let contract = new ethers.Contract(
               contractAddress,
@@ -86,42 +147,41 @@ export async function transactionHandler(c) {
               c['metaSigner'],
             );
 
-          let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature])
+          let result = await contract[c['signatureFunction']](...[...c['signatureFunctionArgs'],signature], overrideOptions)
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
-        }
-        else if (injectedNetwork.chainId === localNetwork.chainId && ['injectedGsnSigner'] in c) {
-          console.log('Got a signer on the right network and GSN is go!')
-          let contract = new ethers.Contract(
-              contractAddress,
-              contractAbi,
-              c['injectedGsnSigner'],
-            );
-            let result = await contract[c['regularFunction']](...c['regularFunctionArgs'])
-          console.log("Regular GSN RESULT!!!!!!",result)
-        return result
         } else if (injectedNetwork.chainId !== localNetwork.chainId) {
           chainWarning()
-          throw 'Metamask is on the wrong network'
-        }
+          throw {message: 'Metamask is on the wrong network'}
+        } else {
+            showXDaiModal()
+            throw {message: 'Need XDai'}
+          }
       }
       else {
         showXDaiModal()
-        throw 'Need XDai'
+        throw {message: 'Need XDai'}
       }
 
     } catch(e) {
+      console.log(e)
       if(e.message.indexOf("Relay not ready")>=0){
         notification.open({
-          message: '📛 Sorry! Transaction limit reached. 😅',
+          message: '📛 Sorry! Relay not ready. 😅',
           description:
-          "⏳ Please try again in a few seconds. 📡",
+          "⏳ Please wait a moment and try again. If you continue seeing this error please get in touch via chat! 📡",
         });
       }else if(e.message.indexOf("Ping errors")>=0){
         notification.open({
           message: '📛 Sorry! 📡 Relay Error. 😅',
           description:
           "⏳ Please try again in a few seconds. 📡",
+        });
+      }else if(e.message.indexOf("no registered relayers")>=0){
+        notification.open({
+          message: '📛 Sorry! 📡 Relay Error. 😅',
+          description:
+          "⏳ Please wait a moment and try again. 📡",
         });
       }else{
         notification.open({

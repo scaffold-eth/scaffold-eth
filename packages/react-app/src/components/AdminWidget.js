@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Row, Button } from 'antd';
 import { CloseCircleOutlined, QuestionCircleOutlined } from '@ant-design/icons';
-import { Provider, Faucet, Ramp } from "."
+import { Provider, Faucet } from "."
 
 export default function AdminWidget(props) {
 
@@ -26,12 +26,6 @@ export default function AdminWidget(props) {
           <Row align="middle" gutter={4}>
             <Provider name={"injected"} provider={props.injectedProvider} />
         </Row>
-          <Row align="middle" gutter={4}>
-              <Ramp
-                price={props.price}
-                address={props.address}
-              />
-          </Row>
           <Row align="middle" gutter={4}>
               <Faucet
                 localProvider={props.localProvider}

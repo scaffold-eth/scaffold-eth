@@ -10,9 +10,6 @@ export default function NiftyShop(props) {
   const [buying, setBuying] = useState(false)
   const [priceForm] = Form.useForm();
 
-  const writeContracts = useContractLoader(props.injectedProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.injectedProvider);
-
   let shopButton
   let [newPrice, setNewPrice] = useState(0)
 
@@ -27,17 +24,16 @@ export default function NiftyShop(props) {
 
     if(props.type === 'ink') {
 
-
     let contractName = "NiftyInk"
     let regularFunction = "setPrice"
     let regularFunctionArgs = [props.itemForSale, multipliedPrice]
     let signatureFunction = "setPriceFromSignature"
     let signatureFunctionArgs = [props.itemForSale, multipliedPrice]
     let getSignatureTypes = ['bytes','bytes','address','string','uint256','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyInk"].address,props.itemForSale,multipliedPrice,props.priceNonce]
+    let getSignatureArgs = ['0x19','0x00',require('./contracts/NiftyInk.address.js'),props.itemForSale,multipliedPrice,props.priceNonce]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -65,7 +61,7 @@ export default function NiftyShop(props) {
     let regularFunctionArgs = [props.itemForSale, multipliedPrice]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs
@@ -99,7 +95,7 @@ export default function NiftyShop(props) {
   const buyInk = async (values) => {
     console.log("values", values)
     setBuying(true)
-    let bigNumber = ethers.utils.bigNumberify(props.price)
+    let bigNumber = ethers.BigNumber.from(props.price)
     let hex = bigNumber.toHexString()
 
     let result
@@ -116,7 +112,7 @@ export default function NiftyShop(props) {
   }
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -139,13 +135,16 @@ export default function NiftyShop(props) {
   }
 } catch(e) {
   setBuying(false)
-
+  console.log(e)
 }
   }
 
   const onFinishFailed = errorInfo => {
     console.log('Failed:', errorInfo);
   };
+
+  let buttonSize
+  if(props.buttonSize) {buttonSize = props.buttonSize}
 
   if(props.visible === false) {
     shopButton = (<></>)
@@ -184,14 +183,14 @@ export default function NiftyShop(props) {
     shopButton = (
       <Popover content={setPriceForm}
       title={"Set price:"}>
-        <Button type="secondary" style={{ marginBottom: 12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
+        <Button type="secondary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><ShopOutlined />{newPrice>0?'$'+newPrice:(props.price>0?'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2):'Sell')}</Button>
       </Popover>
     )
   } else if (props.type === 'ink' && (props.price > 0 || newPrice > 0)) {
     shopButton = (
     <Popover content={setPriceForm}
     title={"Set price:"}>
-      <Button type="secondary"><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+      <Button type="secondary" size={buttonSize}><ShopOutlined />{newPrice>0?'$'+newPrice:'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
     </Popover>
   )
   } else if (props.type === 'ink') {
@@ -207,7 +206,7 @@ export default function NiftyShop(props) {
         cancelText="Cancel"
         icon=<ShoppingCartOutlined/>
       >
-      <Button type="primary" style={{ marginBottom: 12 }}><ShoppingCartOutlined />{'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
+      <Button type="primary" size={buttonSize} style={{ margin:4, marginBottom:12 }}><ShoppingCartOutlined />{'$'+parseFloat(ethers.utils.formatEther(props.price)).toFixed(2)}</Button>
       </Popconfirm>
     )
   } else {

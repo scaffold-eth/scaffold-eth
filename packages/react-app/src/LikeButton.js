@@ -8,41 +8,16 @@ export default function LikeButton(props) {
 
   const [minting, setMinting] = useState(false)
 
-  //const writeContracts = useContractLoader(props.signingProvider);
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.localProvider:props.metaProvider);
-  const readContracts = useContractLoader(props.localProvider);
-
-  const [likes, setLikes] = useState()
-  const [hasLiked, setHasLiked] = useState()
+  const readContracts = useContractLoader(props.metaProvider);
 
   let likeButton
 
-  let displayLikes
-  if(likes) {
-    displayLikes = likes.toString()
-  }
-
-  usePoller(() => {
-    const getLikeInfo = async () => {
-      if(readContracts){
-        try {
-        const newInkLikes = await readContracts['Liker']['getLikesByTarget'](props.contractAddress, props.targetId)
-        setLikes(newInkLikes)
-        const newHasLiked = await readContracts['Liker']['checkLike'](props.contractAddress, props.targetId, props.likerAddress)
-        setHasLiked(newHasLiked)
-      } catch(e){ console.log(e)}
-      }
-    }
-    getLikeInfo()
-  }, 2987
-)
-
 
     likeButton = (<>
-      <Badge style={{ backgroundColor: '#2db7f5' }} count={displayLikes}>
+      <Badge style={{ backgroundColor: '#2db7f5' }} count={props.likeCount&&props.likeCount.toString()}>
       <Button onClick={async (e)=>{
         e.preventDefault();
-        if(!hasLiked&&!minting){
+        if(!props.hasLiked&&!minting){
           setMinting(true)
           try {
             let contractAddress = props.contractAddress
@@ -55,10 +30,10 @@ export default function LikeButton(props) {
             let signatureFunction = "likeWithSignature"
             let signatureFunctionArgs = [contractAddress, target, liker]
             let getSignatureTypes = ['bytes','bytes','address','address','uint256','address']
-            let getSignatureArgs = ['0x19','0x0',metaWriteContracts["Liker"].address,contractAddress,target,liker]
+            let getSignatureArgs = ['0x19','0x00',readContracts["Liker"].address,contractAddress,target,liker]
 
             let likeConfig = {
-              ...props.transactionConfig,
+              ...props.transactionConfig.current,
               contractName,
               regularFunction,
               regularFunctionArgs,
@@ -89,8 +64,8 @@ export default function LikeButton(props) {
           }
         }
         return false;
-      }} loading={minting} shape={"circle"} type={hasLiked||minting?"primary":"secondary"} style={{ zIndex:99, cursor:"pointer", marginBottom: 12, boxShadow: "2px 2px 3px #d0d0d0" }}>
-        {minting?"":hasLiked?<LikeOutlined />:<LikeTwoTone />}
+      }} loading={minting} shape={"circle"} type={props.hasLiked||minting?"primary":"secondary"} style={{ zIndex:99, cursor:"pointer", marginBottom: props.marginBottom || 12, boxShadow: "2px 2px 3px #d0d0d0" }}>
+        {minting?"":props.hasLiked?<LikeOutlined />:<LikeTwoTone />}
       </Button>
       </Badge>
       </>

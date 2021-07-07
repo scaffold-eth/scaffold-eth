@@ -15,6 +15,16 @@ export default function Artist(props) {
   const [searchArtist] = Form.useForm();
   const history = useHistory();
 
+  const [ens, setEns] = useState()
+
+  useEffect(()=> {
+    const getEns = async () => {
+    let _ens = await props.mainnetProvider.lookupAddress(address)
+    setEns(_ens)
+  }
+    getEns()
+  },[address])
+
   const { loading, error, data } = useQuery(ARTISTS_QUERY, {
     variables: { address: address }
   });
@@ -75,10 +85,20 @@ export default function Artist(props) {
       return data;
     };
 
-    const getInks = (data) => {
+    const getInks = async (data) => {
       setInks([]);
+      let blocklist
+      if(props.supabase) {
+      let { data: supabaseBlocklist } = await props.supabase
+        .from('blocklist')
+        .select('jsonUrl')
+        blocklist = supabaseBlocklist
+      }
       data.forEach(async (ink) => {
         if (isBlocklisted(ink.jsonUrl)) return;
+        if (blocklist && blocklist.find(el => el.jsonUrl === ink.jsonUrl)) {
+          return;
+        }
         let _ink = ink;
         _ink.metadata = await getMetadata(ink.jsonUrl);
         setInks((inks) => [...inks, _ink]);
@@ -98,10 +118,10 @@ export default function Artist(props) {
           <Col span={12} offset={6}>
             <Blockies
               seed={address.toLowerCase()}
-              size={25}
+              size={12} scale={6}
               className="artist_blockie"
             />
-            <h2 style={{ margin: 10 }}>{address.slice(0, 12)}</h2>
+            <h2 style={{ margin: 10 }}>{ens ? ens : address.slice(0, 6)}</h2>
             <Row>
               <Col span={12}>
                 <p style={{ margin: 0 }}>
@@ -112,12 +132,7 @@ export default function Artist(props) {
               <Col span={12}>
                 <p style={{ margin: 0 }}>
                   <b>Total sales:</b> $
-                  {inks
-                    .filter((ink) => ink.sales.length)
-                    .map((ink) => ink.sales)
-                    .map((e) => e.flatMap((e) => Number.parseInt(e.price, 0)))
-                    .flatMap((e) => e)
-                    .reduce((a, b) => a + b, 0) / 1e18}
+                  {data.artists.length ? ethers.utils.formatEther(data.artists[0].earnings) : 0}
                 </p>
               </Col>
             </Row>
@@ -169,14 +184,14 @@ export default function Artist(props) {
                       align="middle"
                       style={{ textAlign: "center", justifyContent: "center" }}
                     >
-                      {(ink.mintPrice > 0 && (ink.limit === 0 || ink.count < ink.limit))
+                      {(ink.bestPrice > 0)
                         ? (<><p
                         style={{
                           color: "#5e5e5e",
                           margin: "0"
                         }}
                       >
-                        <b>{ink.mintPrice / 1e18} </b>
+                        <b>{ethers.utils.formatEther(ink.bestPrice)} </b>
                       </p>
 
                       <img

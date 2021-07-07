@@ -1,7 +1,7 @@
 version: '3'
 services:
   graph-node:
-    image: graphprotocol/graph-node
+    image: graphprotocol/graph-node:v0.21.0
     ports:
       - '8000:8000'
       - '8001:8001'
@@ -12,7 +12,7 @@ services:
       - ipfs
       - postgres
     environment:
-      postgres_host: postgres:5432
+      postgres_host: postgres
       postgres_user: graph-node
       postgres_pass: let-me-in
       postgres_db: graph-node

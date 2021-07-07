@@ -7,7 +7,8 @@ import { Row, Col, Button, Spin } from "antd";
 import { ethers } from "ethers";
 import "./App.css";
 import { useContractLoader } from "./hooks";
-import { Ramp, Faucet } from "./components";
+import { Faucet } from "./components";
+import { INFURA_ID } from "./constants"
 
 import NftyWallet from "./NftyWallet.js";
 
@@ -31,8 +32,8 @@ const INKS_QUERY = gql`
 `
 
 const mainnetProvider = new ethers.providers.InfuraProvider(
-  "mainnet",
-  "9ea7e149b122423991f56257b882261c"
+  "homestead",
+  INFURA_ID
 );
 let kovanProvider;
 
@@ -43,7 +44,7 @@ if (process.env.REACT_APP_NETWORK_NAME) {
     console.log("🎉 XDAINETWORK + 🚀 Mainnet Ethereum");
     localProvider = mainnetProvider;
     kovanProvider = new ethers.providers.JsonRpcProvider(
-      "https://dai.poa.network"
+      "https://rpc.xdaichain.com/"//"https://dai.poa.network"
     );
   } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
     console.log("THIS.IS.SOKOL");
@@ -52,16 +53,16 @@ if (process.env.REACT_APP_NETWORK_NAME) {
     );
     kovanProvider = new ethers.providers.InfuraProvider(
       "kovan",
-      "9ea7e149b122423991f56257b882261c"
+      INFURA_ID
     );
   } else {
     localProvider = new ethers.providers.InfuraProvider(
       process.env.REACT_APP_NETWORK_NAME,
-      "9ea7e149b122423991f56257b882261c"
+      INFURA_ID
     );
     kovanProvider = new ethers.providers.InfuraProvider(
       "kovan",
-      "9ea7e149b122423991f56257b882261c"
+      INFURA_ID
     );
   }
 } else {
@@ -140,9 +141,6 @@ function App() {
                   ""
                 ) : (
                   <>
-                    <Col>
-                      <Ramp price={price} address={address} />
-                    </Col>
                     <Col>
                       <Button
                         onClick={() => {

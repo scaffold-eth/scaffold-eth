@@ -14,11 +14,11 @@ export default function SendInkForm(props) {
     console.log('Success:', props.address, values, props.tokenId);
 
     let contractName = "NiftyToken"
-    let regularFunction = "safeTransferFrom"
+    let regularFunction = "safeTransferFrom(address,address,uint256)"
     let regularFunctionArgs = [props.address, values['to'], props.tokenId]
 
     let txConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs
@@ -29,7 +29,7 @@ export default function SendInkForm(props) {
     let result
     try {
 
-      const mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
+      let mainnetBytecode //= await props.mainnetProvider.getCode(values['to']);
       if (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00") {
         result = await transactionHandler(txConfig)
         notification.open({
@@ -50,7 +50,7 @@ export default function SendInkForm(props) {
     form.resetFields();
     setSending(false)
   } catch (e) {
-    console.log(result)
+    console.log(e, result)
     form.resetFields();
     setSending(false)
   }

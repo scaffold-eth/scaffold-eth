@@ -12,10 +12,14 @@ export async function getSignature(provider, signingAddress, types, values) {
 
   console.log("hashToSign",hashToSign)
 
-  let signature = await provider.send("personal_sign", [hashToSign, signingAddress]);
-
-  let signerSignedMessage = await verifySignature(signingAddress, signature, hashToSign, provider)
+  let signature
+  if(ethers.Signer.isSigner(provider)) {
+    signature = await provider.signMessage(ethers.utils.arrayify(hashToSign));
+  } else {
+    signature = await provider.send("personal_sign", [hashToSign, signingAddress]);
+  }
   console.log('signature', signature)
+  let signerSignedMessage = await verifySignature(signingAddress, signature, hashToSign, provider)
 
   if(signerSignedMessage) {
     return signature

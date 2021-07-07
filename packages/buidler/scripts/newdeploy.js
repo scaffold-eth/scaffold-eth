@@ -27,7 +27,6 @@ async function main() {
     //const NiftyToken = await ethers.getContractAt("NiftyToken","0xCF964c89f509a8c0Ac36391c5460dF94B91daba5")
     //const NiftyMediator = await ethers.getContractAt("NiftyMediator","0x73cA9C4e72fF109259cf7374F038faf950949C51")
 
-
     await NiftyRegistry.setInkAddress(NiftyInk.address)
     await NiftyRegistry.setTokenAddress(NiftyToken.address)
     console.log("setBridgeMediatorAddress",NiftyMediator.address)
@@ -36,6 +35,33 @@ async function main() {
     await NiftyToken.setNiftyRegistry(NiftyRegistry.address)
     await NiftyMediator.setNiftyRegistry(NiftyRegistry.address)
     await Liker.addContract(NiftyInk.address)
+
+    let trustedForwarder = "0x3619DbE27d7c1e7E91aA738697Ae7Bc5FC3eACA5"
+
+    const SimplePaymaster = await deploy("SimplePaymaster")
+
+    console.log("setting relay hub")
+    await SimplePaymaster.setRelayHub("0x038B86d9d8FAFdd0a02ebd1A476432877b0107C8")
+
+    console.log("setting target addresses")
+    await SimplePaymaster.setTarget(NiftyInk.address, true)
+    await SimplePaymaster.setTarget(NiftyToken.address, true)
+    await SimplePaymaster.setTarget(Liker.address, true)
+
+    console.log("setting trusted forwarder")
+    await SimplePaymaster.setTrustedForwarder(trustedForwarder)
+    console.log("setting trusted forwarder")
+    await NiftyInk.setTrustedForwarder(trustedForwarder)
+    console.log("setting trusted forwarder")
+    await NiftyToken.setTrustedForwarder(trustedForwarder)
+    console.log("setting trusted forwarder")
+    await NiftyMediator.setTrustedForwarder(trustedForwarder)
+    console.log("setting trusted forwarder")
+    await Liker.setTrustedForwarder(trustedForwarder)
+
+    console.log("setting gas limit")
+    if(!(bre.network.name.indexOf("sidechain")>=0)) await NiftyMediator.setRequestGasLimit("1500000")
+
     if(bre.network.name.indexOf("kovan")>=0){
       /*await NiftyMediator.setBridgeContract("0xFe446bEF1DbF7AFE24E81e05BC8B271C1BA9a560")
       await NiftyInk.setTrustedForwarder("0x77777e800704Fb61b0c10aa7b93985F835EC23fA")

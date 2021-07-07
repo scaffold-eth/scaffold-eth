@@ -1,16 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
-import { Account } from "./components";
+import { Account, Faucet } from "./components";
+import { createClient } from '@supabase/supabase-js'
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
 import CreateInk from "./CreateInk.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
+import Explore from "./Explore.js";
 const { TabPane } = Tabs;
 
 const Web3HttpProvider = require("web3-providers-http");
@@ -18,14 +20,19 @@ const Web3HttpProvider = require("web3-providers-http");
 const ipfsConfigInfura = {
   host: "ipfs.infura.io",
   port: "5001",
-  protocol: "https"
+  protocol: "https",
+  timeout: 250000
 };
 const ipfsConfig = {
   host: "ipfs.nifty.ink",
   port: "3001",
   protocol: "https",
-  timeout: 2500
+  timeout: 250000
 };
+
+const supabaseUrl = process.env.REACT_APP_SUPABASE_URL
+const supabaseKey = process.env.REACT_APP_SUPABASE_KEY
+let supabase
 
 export default function NftyWallet(props) {
   const calculatedVmin = Math.min(
@@ -47,35 +54,46 @@ export default function NftyWallet(props) {
   const [injectedGsnSigner, setInjectedGsnSigner] = useState();
 
   const [artist, setArtist] = useState();
-  const [drawerVisibility, setDrawerVisibility] = useState(false);
+  const [drawerVisibility, setDrawerVisibility] = useState(false)
 
-  let transactionConfig = {
-    address: props.address,
-    localProvider: props.kovanProvider,
-    injectedProvider: props.injectedProvider,
-    injectedGsnSigner: injectedGsnSigner,
-    metaSigner: props.metaProvider
-  };
+  const transactionConfig = useRef({})
+
+  if(process.env.REACT_APP_SUPABASE_KEY) {
+    supabase = createClient(supabaseUrl, supabaseKey)
+  }
+
+  useEffect(()=> {
+    transactionConfig.current = {
+      address: props.address,
+      localProvider: props.kovanProvider,
+      injectedProvider: props.injectedProvider,
+      injectedGsnSigner: injectedGsnSigner,
+      metaSigner: props.metaProvider
+    }
+  },[props.address, props.kovanProvider, props.injectedProvider, injectedGsnSigner, props.metaProvider])
+
 
   let nftyBalance = useContractReader(
     props.readKovanContracts,
     "NiftyToken",
     "balanceOf",
     [props.address],
-    4000
+    7123
   );
+
   let nftyMainBalance = useContractReader(
     props.readContracts,
     "NiftyMain",
     "balanceOf",
     [props.address],
-    4000
+    10011
   );
+
   let upgradePrice = useContractReader(
     props.readKovanContracts,
     "NiftyMediator",
     "relayPrice",
-    29999
+    19999
   );
 
   let displayBalance;
@@ -109,6 +127,7 @@ export default function NftyWallet(props) {
       price={props.price}
       minimized={props.minimized}
       setMetaProvider={props.setMetaProvider}
+      metaProvider={props.metaProvider}
     />
   );
 
@@ -232,11 +251,11 @@ export default function NftyWallet(props) {
         }}
         style={{ marginTop: 0, padding: 8, textAlign: "center" }}
         tabBarExtraContent={""}
-        defaultActiveKey="create"
+        defaultActiveKey="1"
       >
 
         <TabPane tab={
-          <NavLink to="/allinks">
+          <NavLink to="/explore">
           <>
             <span
               style={{ fontSize: 24, padding: 8 }}
@@ -272,7 +291,7 @@ export default function NftyWallet(props) {
         <TabPane
           disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
           tab={
-            <NavLink to="/holdings">
+            <NavLink to={"/holdings/"+props.address}>
             <>
               <span>
                 <span style={{ padding: 8 }} role="img" aria-label="Purse">
@@ -295,9 +314,7 @@ export default function NftyWallet(props) {
               style={{ marginBottom: 8 }}
               shape="round"
               size="large"
-              type={
-                tab === "create" && mode === "edit" ? "secondary" : "primary"
-              }
+              type={"primary"}
             >
               <PlusOutlined /> Create
             </Button>
@@ -313,8 +330,28 @@ export default function NftyWallet(props) {
       {accountWithCreateButton}
 
       <Switch>
-        <Route path="/allinks">
-          <AllInks />
+
+        <Route path="/explore">
+          <Explore
+            metaProvider={props.metaProvider}
+            metaSigner={props.metaSigner}
+            injectedGsnSigner={injectedGsnSigner}
+            signingProvider={props.injectedProvider}
+            localProvider={props.kovanProvider}
+            contractAddress={props.readKovanContracts?props.readKovanContracts['NiftyInk']['address']:''}
+            address={props.address}
+            transactionConfig={transactionConfig}
+            supabase={supabase}
+            ipfsConfig={ipfsConfig}
+          />
+        </Route>
+
+        <Route path="/holdings/:address">
+            <Holdings {...props}
+              address={props.address}
+              transactionConfig={transactionConfig}
+              upgradePrice={upgradePrice}
+            />
         </Route>
 
         <Route path="/holdings">
@@ -326,7 +363,7 @@ export default function NftyWallet(props) {
         </Route>
 
         <Route path="/artist/:address">
-          <Artist {...props} />
+          <Artist {...props} supabase={supabase} />
         </Route>
 
         <Route path="/create">
@@ -400,7 +437,12 @@ export default function NftyWallet(props) {
         />
 
         <Route path="/">
-              <Redirect to="/create" />
+              <Redirect to="/explore" />
+        </Route>
+
+        <Route path="/allinks">
+              <Redirect to="/explore" />
+              {/*<AllInks />*/}
         </Route>
 
       </Switch>
@@ -423,6 +465,19 @@ export default function NftyWallet(props) {
         }
       >
       <Help/>
+      {process.env.REACT_APP_NETWORK_NAME ? (
+        ""
+      ) : (
+        <>
+          <Col>
+            <Faucet
+              localProvider={props.kovanProvider}
+              placeholder={"sidechain faucet"}
+              price={props.price}
+            />
+          </Col>
+        </>
+      )}
       </Drawer>
     </div>
   );

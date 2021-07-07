@@ -6,9 +6,6 @@ enum SaleType {
 enum Network {
   xdai
   mainnet
-  local
-  kovan
-  sokol
 }
 
 type Ink @entity {
@@ -18,12 +15,17 @@ type Ink @entity {
   artist: Artist!
   limit: BigInt!
   count: BigInt
-  tokens: [Token!] @derivedFrom(field: "ink")
+  tokens: [Token!]!
   sales: [Sale!] @derivedFrom(field: "ink")
+  likes: [Like!] @derivedFrom(field: "ink")
   createdAt: BigInt
-  mintPrice: BigInt
+  mintPrice: BigInt!
   mintPriceSetAt: BigInt
   mintPriceNonce: BigInt
+  bestPrice: BigInt!
+  bestPriceSource: String
+  bestPriceSetAt: BigInt
+  likeCount: BigInt
 }
 
 type Token @entity {
@@ -32,7 +34,7 @@ type Token @entity {
   owner: Bytes!
   createdAt: BigInt!
   network: Network!
-  price: BigInt
+  price: BigInt!
   priceSetAt: BigInt
   transfers: [TokenTransfer!] @derivedFrom(field: "token")
   sales: [Sale!] @derivedFrom(field: "token")
@@ -68,7 +70,7 @@ type TokenTransfer @entity {
   from: Bytes!
   to: Bytes!
   createdAt: BigInt!
-  network: Network!
+  network: Network
 }
 
 type RelayPrice @entity {
@@ -90,4 +92,16 @@ type Total @entity {
   sales: BigInt
   upgrades: BigInt
   artists: BigInt
+}
+
+type InkLookup @entity {
+  id: ID!
+  inkId: String!
+}
+
+type Like @entity {
+  id: ID!
+  ink: Ink!
+  liker: Bytes!
+  createdAt: BigInt!
 }

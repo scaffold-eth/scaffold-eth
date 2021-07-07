@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Input } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined, PlaySquareOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
@@ -40,8 +40,6 @@ export default function ViewInk(props) {
   const [buyButton, setBuyButton] = useState()
   const [mintFlow, setMintFlow] = useState()
 
-  const metaWriteContracts = useContractLoader(props.metaProvider?props.metaProvider:props.kovanProvider);
-
 //  const [inkChainInfo, setInkChainInfo] = useState()
   const [targetId, setTargetId] = useState()
 //  const [inkPrice, setInkPrice] = useState(0)
@@ -61,7 +59,7 @@ export default function ViewInk(props) {
   });
 
   const { loading, error, data: dataRaw } = useQuery(INK_QUERY, {
-    variables: { inkUrl: hash },
+    variables: { inkUrl: hash, liker: props.address ? props.address.toLowerCase() : '' },
     pollInterval: 2500
   });
 
@@ -69,7 +67,7 @@ export default function ViewInk(props) {
 
     const getInk = async (_data) => {
       let _blockNumber = parseInt(_data.metaData.value)
-      console.log(blockNumber, _blockNumber)
+      //console.log(blockNumber, _blockNumber)
       if(_blockNumber >= blockNumber) {
       let tIpfsConfig = {...props.ipfsConfig}
       tIpfsConfig['timeout'] = 10000
@@ -118,7 +116,7 @@ export default function ViewInk(props) {
           setMintFlow(
             <Popover content={mintInkForm}
             title="Mint">
-            <Button type="secondary"><SendOutlined/> Mint</Button>
+            <Button type="secondary" loading={minting}><SendOutlined/> Mint</Button>
             </Popover>
           )
         }
@@ -140,7 +138,6 @@ export default function ViewInk(props) {
   }, [data, props.address, inkJson]);
 
   useEffect(() => {
-    console.log('running dataMain', dataMain)
     if(dataMain) {
       let tempMainnetTokens = {}
       for (let i of dataMain.tokens) {
@@ -159,7 +156,7 @@ export default function ViewInk(props) {
   let detailsDisplay
   let nextHolders
 
-  const mint = async (values) => {
+  let mint = async (values) => {
     setMinting(true)
 
     let contractName = "NiftyToken"
@@ -168,10 +165,10 @@ export default function ViewInk(props) {
     let signatureFunction = "mintFromSignature"
     let signatureFunctionArgs = [values['to'], hash]
     let getSignatureTypes = ['bytes','bytes','address','address','string','uint256']
-    let getSignatureArgs = ['0x19','0x0',metaWriteContracts["NiftyToken"].address,values['to'],hash,parseInt(data.ink.count)]
+    let getSignatureArgs = ['0x19','0x00',require('./contracts/NiftyToken.address.js'),values['to'],hash,parseInt(data.ink.count)]
 
     let mintInkConfig = {
-      ...props.transactionConfig,
+      ...props.transactionConfig.current,
       contractName,
       regularFunction,
       regularFunctionArgs,
@@ -183,7 +180,7 @@ export default function ViewInk(props) {
 
     console.log(mintInkConfig)
 
-    const bytecode = await props.transactionConfig.localProvider.getCode(values['to']);
+    const bytecode = await props.transactionConfig.current.localProvider.getCode(values['to']);
     const mainnetBytecode = await props.mainnetProvider.getCode(values['to']);
     let result
     if ((!bytecode || bytecode === "0x" || bytecode === "0x0" || bytecode === "0x00") && (!mainnetBytecode || mainnetBytecode === "0x" || mainnetBytecode === "0x0" || mainnetBytecode === "0x00")) {
@@ -215,6 +212,26 @@ export default function ViewInk(props) {
     props.setTab('inks')
   }
 
+const [copyWord, setCopyWord] = useState()
+
+const clickAndSave = (
+  <Popover trigger="click"
+      content={
+        <div>
+        <Input value={copyWord} onChange={(e)=>{
+          setCopyWord(e.target.value)
+        }}/>
+        {(copyWord===process.env.REACT_APP_COPY_WORD)&&<Button onClick={()=>{
+          let _savedData = LZ.compress(drawing)
+          props.setDrawing(_savedData)
+          console.log('saved')
+        }}><StarTwoTone/>
+        </Button>}
+        </div>
+      }>
+                <QuestionCircleOutlined />
+                </Popover>
+)
 
   useEffect(()=>{
     setCanvasKey(Date.now());
@@ -229,7 +246,7 @@ export default function ViewInk(props) {
       try{
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
         let decompressed = LZ.decompressFromUint8Array(arrays)
-        console.log(decompressed)
+        //console.log(decompressed)
 
         let points = 0
         for (const line of JSON.parse(decompressed)['lines']){
@@ -247,12 +264,11 @@ export default function ViewInk(props) {
 
   }, [hash])
 
-    if (!inkJson || !inkJson.name || !data) {
-      inkChainInfoDisplay = (
-        <div style={{marginTop:32}}>
+    if (!inkJson || !inkJson.name || !data ) {
+      inkChainInfoDisplay =   <div style={{marginTop:32}}>
           <Spin/>
+          {(drawing)&&clickAndSave}
         </div>
-      )
     } else {
       const sendInkButton = (tokenOwnerAddress, tokenId) => {
         if (props.address && tokenOwnerAddress.toLowerCase() === props.address.toLowerCase()) {
@@ -309,8 +325,10 @@ export default function ViewInk(props) {
 
           return (
             <List.Item>
-              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider}/>
-              <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item[1]} target="_blank"><LinkOutlined /></a>
+              <Link to={`/holdings/${mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner}`}>
+              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+              </Link>
+              <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item.id} target="_blank"><LinkOutlined /></a>
               {mainnetTokens[item.id]?openseaButton:(item.network === 'mainnet'?(<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>)}
               {sendInkButton(item.owner, item.id)}
               {relayTokenButton(item.network === 'mainnet', item.owner, item.id)}
@@ -340,10 +358,10 @@ export default function ViewInk(props) {
             <Descriptions>
               <Descriptions.Item label="Name">{inkJson.name}</Descriptions.Item>
               <Descriptions.Item label="Artist">{data.ink.artist.id}</Descriptions.Item>
-              <Descriptions.Item label="drawingHash">{hash}</Descriptions.Item>
+              <Descriptions.Item label="drawingHash">{hash} {clickAndSave}</Descriptions.Item>
               <Descriptions.Item label="id">{data.ink.inkNumber}</Descriptions.Item>
               <Descriptions.Item label="jsonUrl">{data.ink.jsonUrl}</Descriptions.Item>
-              <Descriptions.Item label="Image">{inkJson.image}</Descriptions.Item>
+              <Descriptions.Item label="Image">{<a href={inkJson.image} target="_blank">{inkJson.image}</a>}</Descriptions.Item>
               <Descriptions.Item label="Count">{data.ink.count?data.ink.count:'0'}</Descriptions.Item>
               <Descriptions.Item label="Limit">{data.ink.limit}</Descriptions.Item>
               <Descriptions.Item label="Description">{inkJson.description}</Descriptions.Item>
@@ -363,6 +381,8 @@ export default function ViewInk(props) {
               targetId={data.ink.inkNumber}
               likerAddress={props.address}
               transactionConfig={props.transactionConfig}
+              likeCount={data.ink.likeCount}
+              hasLiked={data.ink&&data.ink.likes.length>0}
             />
           </div>
 
@@ -387,9 +407,13 @@ export default function ViewInk(props) {
             {" artist: "}
             </span>
             </Typography>
-            <Address value={data.ink.artist.id} ensProvider={props.mainnetProvider} clickable={false}/>
+            <Address value={data.ink.artist.id} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+            <Typography>
+            <span style={{verticalAlign:"middle",fontSize:16}}>
+            {data.ink.createdAt&&(new Date(parseInt(data.ink.createdAt) * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}
+            </span>
+            </Typography>
             </Link>
-
             </Space>
 
             </Row>
@@ -440,6 +464,7 @@ export default function ViewInk(props) {
     <div style={{textAlign:"center"}}>
     {top}
     <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+    {(!drawing)&&<span>Loading...</span>}
     <CanvasDraw
     key={canvasKey}
     ref={drawingCanvas}

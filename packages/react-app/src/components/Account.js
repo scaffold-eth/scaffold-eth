@@ -1,26 +1,34 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useCallback, useState } from 'react'
 import { ethers } from "ethers";
-import BurnerProvider from 'burner-provider';
 import Web3Modal from "web3modal";
 import { Balance, Address, Wallet } from "."
-import { usePoller } from "../hooks"
+import { useBurnerSigner } from "../hooks"
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Button } from 'antd';
 import { RelayProvider } from '@opengsn/gsn';
+import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
+import Blockies from 'react-blockies';
+import { BankOutlined, SwapOutlined } from  '@ant-design/icons';
+//import { ConnextModal } from '@connext/vector-modal';
 //import Fortmatic from "fortmatic";
 //import Portis from "@portis/web3";
 const Web3HttpProvider = require("web3-providers-http");
 
 const INFURA_ID = "9ea7e149b122423991f56257b882261c"  // MY INFURA_ID, SWAP IN YOURS!
+const XDAI_RPC = "https://rpc.xdaichain.com/"
 
 const web3Modal = new Web3Modal({
-  network: "mainnet", // optional
+  network: "xdai", // optional
   cacheProvider: true, // optional
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
-        infuraId: INFURA_ID
+        infuraId: INFURA_ID,
+        rpc: {
+          100: XDAI_RPC,
+          // ...
+        },
       }
     },
     /*fortmatic: {
@@ -41,8 +49,25 @@ const web3Modal = new Web3Modal({
 
 export default function Account(props) {
 
+  const showRampModal = () => {
+    new RampInstantSDK({
+      hostAppName: 'nifty.ink',
+      hostLogoUrl: 'https://nifty.ink/logo512.png',
+      //swapAmount: '50000000000000000000', // 50 DAI
+      swapAsset: 'XDAI',
+      userAddress: props.address,
+    }).on('*', event => console.log(event)).show();
+  }
+
+  //const [showConnext, setShowConnext] = useState(false)
+
+  let httpProvider = new Web3HttpProvider(process.env.REACT_APP_NETWORK_NAME === 'xdai'?XDAI_RPC:"http://localhost:8546");
+  const burner = useBurnerSigner(props.localProvider)
+
   let gsnConfig
+
   if(process.env.REACT_APP_USE_GSN === 'true') {
+    /*
     let relayHubAddress
     let stakeManagerAddress
     let paymasterAddress
@@ -61,100 +86,122 @@ export default function Account(props) {
     relayHubAddress = require('.././gsn/RelayHub.json').address
     stakeManagerAddress = require('.././gsn/StakeManager.json').address
     paymasterAddress = require('.././gsn/Paymaster.json').address
-    //console.log("local GSN addresses",relayHubAddress,stakeManagerAddress,paymasterAddress)
   }
+  //gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
+  */
 
-  gsnConfig = { relayHubAddress, stakeManagerAddress, paymasterAddress, chainId }
-
-  gsnConfig.relayLookupWindowBlocks= 1e5
-  gsnConfig.verbose = true
+  gsnConfig = {
+    paymasterAddress: process.env.REACT_APP_PAYMASTER_ADDRESS,  //process.env.REACT_APP_NETWORK_NAME === 'xdai' ? "0x4734356359c48ba2Cb50BA048B1404A78678e5C2" : require('.././gsn/Paymaster.json').address,
+    verbose: true,
+    relayLookupWindowBlocks: 1e18,
+    minGasPrice: 20000000000,
+    maxRelayNonceGap: 100
+  }
 
 }
-  //gsnConfig.preferredRelays = ["https://relay.tokenizationofeverything.com"]
-
-  /*
-  function warning(network, chainId) {
-      Modal.warning({
-        title: 'MetaMask Network Mismatch',
-        content: <>Please connect to <b>https://dai.poa.network</b></>,
-      });
-    }
-    */
-
-  const createBurnerIfNoAddress = async () => {
-    if (!props.injectedProvider &&
-        props.localProvider &&
-        typeof props.setInjectedGsnSigner == "function" &&
-        typeof props.setInjectedProvider == "function" &&
-        !web3Modal.cachedProvider){
-      let burner
-      if(process.env.REACT_APP_NETWORK_NAME === 'xdai') {
-      burner = new BurnerProvider("https://dai.poa.network")
-    } else if (process.env.REACT_APP_NETWORK_NAME === 'sokol') {
-      burner = new BurnerProvider("https://kovan.infura.io/v3/9ea7e149b122423991f56257b882261c")//new ethers.providers.InfuraProvider("kovan", "9ea7e149b122423991f56257b882261c")
-    } else {
-      burner = new BurnerProvider("http://localhost:8546")//
-    }
-      console.log("🔥📡 burner",burner)
-      updateProviders(burner)
-
-    }else{
-      pollInjectedProvider()
-    }
-  }
-    useEffect(() => {
-      createBurnerIfNoAddress()
-    }, [props.injectedProvider]);
 
   const updateProviders =  async (provider) => {
-    console.log("UPDATE provider:",provider)
-    let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
-    props.setInjectedProvider(newWeb3Provider)
 
-  if(process.env.REACT_APP_USE_GSN === 'true') {
-    if (provider._metamask) {
-      //console.log('using metamask')
-    gsnConfig = {...gsnConfig, gasPriceFactorPercent:70, methodSuffix: '_v4', jsonStringifyRequest: true/*, chainId: provider.networkVersion*/}
-    }
+    if(provider && ethers.Signer.isSigner(provider)) {
+      let burnerAddress = await burner.getAddress()
+      props.setAddress(burnerAddress)
+      props.setInjectedProvider(provider)
+    } else if (provider) {
 
-    const gsnProvider = new RelayProvider(provider, gsnConfig);
-    const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
-    //console.log("GOT GSN PROVIDER",gsnProvider)
-    const gsnSigner = gsnWeb3Provider.getSigner(props.address)
-    props.setInjectedGsnSigner(gsnSigner)
-  }
+      // Set provider
+      let newWeb3Provider = await new ethers.providers.Web3Provider(provider)
+      props.setInjectedProvider(newWeb3Provider)
 
-  }
+      let accounts = await newWeb3Provider.listAccounts()
 
-  const pollInjectedProvider = async ()=>{
-    if(props.injectedProvider){
-      let accounts = await props.injectedProvider.listAccounts()
       if(accounts && accounts[0] && accounts[0] !== props.account){
-        //console.log("ADDRESS: ",accounts[0])
-        if(typeof props.setAddress == "function") props.setAddress(accounts[0])
+        props.setAddress(accounts[0])
       }
-    }
-  }
-  usePoller(()=>{
-    pollInjectedProvider()
-  },props.pollTime?props.pollTime:1999)
 
-  const loadWeb3Modal = async ()=>{
-    const provider = await web3Modal.connect();
-    if(typeof props.setInjectedProvider == "function"){
-      updateProviders(provider)
+      let injectedNetwork = await newWeb3Provider.getNetwork()
+      let localNetwork = await props.localProvider.getNetwork()
+
+      if(injectedNetwork.chainId === localNetwork.chainId && !provider.wc) {
+         // If the injected provider is on the right network, create an injected GSN signer
+         const gsnProvider = await RelayProvider.newProvider({provider, config: gsnConfig}).init();
+         const gsnWeb3Provider = new ethers.providers.Web3Provider(gsnProvider);
+         const gsnSigner = gsnWeb3Provider.getSigner(accounts[0])
+         props.setInjectedGsnSigner(gsnSigner)
+       } else {
+          props.setInjectedGsnSigner()
+       }
     }
-    pollInjectedProvider()
+
+    if(burner) {
+      let burnerAddress = await burner.getAddress()
+
+      // Adding a burner meta provider
+      const burnerGsnProvider = await RelayProvider.newProvider({provider: httpProvider, config: gsnConfig}).init();
+      burnerGsnProvider.addAccount(burner.privateKey);
+      const burnerGsnWeb3Provider = new ethers.providers.Web3Provider(burnerGsnProvider);
+      const burnerGsnSigner = burnerGsnWeb3Provider.getSigner(burnerAddress);
+
+      props.setMetaProvider(burnerGsnSigner);
+
+    if(provider && ethers.Signer.isSigner(provider)) {
+
+      props.setInjectedGsnSigner(burnerGsnSigner)
+    }
   }
+
+  }
+
+
+  const loadWeb3Modal = useCallback(async () => {
+
+      const provider = await web3Modal.connect();
+
+      if(typeof props.setInjectedProvider == "function"){
+        updateProviders(provider)
+
+        provider.on("chainChanged", (chainId) => {
+            console.log(`chain changed to ${chainId}! updating providers`)
+            updateProviders(provider)
+        });
+
+        provider.on("accountsChanged", (accounts: string[]) => {
+            console.log(`account changed!`)
+            updateProviders(provider)
+        });
+
+        // Subscribe to session disconnection
+        provider.on("disconnect", (code, reason) => {
+          console.log(code, reason);
+          logoutOfWeb3Modal()
+        });
+      }
+
+    }, [props.setInjectedProvider, burner]);
 
   const logoutOfWeb3Modal = async ()=>{
     await web3Modal.clearCachedProvider();
     window.localStorage.removeItem('walletconnect');
-    //console.log("Cleared cache provider!?!",clear)
     setTimeout(()=>{
       window.location.reload()
     },1)
   }
+
+  useEffect(() => {
+  const checkForProvider =  async () => {
+    if (web3Modal.cachedProvider) {
+      console.log('using cached provider')
+        loadWeb3Modal()
+    } else {
+      console.log("🔥📡 burner")
+      updateProviders(burner)
+    }
+  }
+
+  checkForProvider()
+
+
+}, [burner]);
+
 
   let modalButtons = []
   if(typeof props.setInjectedProvider == "function"){
@@ -169,66 +216,6 @@ export default function Account(props) {
     }
   }
 
-
-  React.useEffect(() => {
-
-    const checkForProvider =  async () => {
-    if (web3Modal.cachedProvider) {
-      try {
-      if (web3Modal.cachedProvider === "injected") {
-        const accounts = await window.ethereum.request({ method: "eth_accounts" });
-        console.log('injected accounts', accounts)
-        if (!accounts.length) {
-          await web3Modal.clearCachedProvider();
-          window.localStorage.removeItem('walletconnect');
-          createBurnerIfNoAddress()
-          throw new Error("Injected provider is not accessible");
-        } else {
-        loadWeb3Modal()
-      }
-      } else {
-      console.log(web3Modal.cachedProvider)
-      loadWeb3Modal()
-    }
-
-    } catch (e) {
-      console.log("Could not get a wallet connection", e);
-      return;
-    }
-    }
-  }
-  checkForProvider()
-
-  if(process.env.REACT_APP_USE_GSN === 'true') {
-  const createBurnerMetaSigner = async () => {
-    let origProvider;
-    if (process.env.REACT_APP_NETWORK_NAME === "xdai") {
-      origProvider = new Web3HttpProvider("https://dai.poa.network");
-    } else if (process.env.REACT_APP_NETWORK_NAME === "sokol") {
-      origProvider = new ethers.providers.InfuraProvider(
-        "kovan",
-        "9ea7e149b122423991f56257b882261c"
-      );
-    } else {
-      origProvider = new ethers.providers.JsonRpcProvider(
-        "http://localhost:8546"
-      );
-    }
-    const gsnProvider = new RelayProvider(origProvider, gsnConfig);
-
-    const account = await gsnProvider.newAccount();
-    let from = account.address;
-
-    const provider = new ethers.providers.Web3Provider(gsnProvider);
-    const signer = provider.getSigner(from);
-
-    props.setMetaProvider(signer);
-  }
-  createBurnerMetaSigner()
-}
-
-  }, []);
-
   let display=""
   display = (
     <span>
@@ -237,6 +224,24 @@ export default function Account(props) {
       ):"Connecting..."}
       <Balance address={props.address} provider={props.localProvider} dollarMultiplier={props.price}/>
       <Wallet address={props.address} provider={props.injectedProvider} ensProvider={props.mainnetProvider} price={props.price} />
+      {(web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc)&&<BankOutlined onClick={showRampModal} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
+{
+//      web3Modal.cachedProvider&&props.injectedProvider&&!props.injectedProvider.provider.wc&&<SwapOutlined onClick={() => {setShowConnext(true)}} style={{padding:7,color:props.color?props.color:"#1890ff",cursor:"pointer",fontSize:28,verticalAlign:"middle"}}/>}
+//      <ConnextModal
+//        showModal={showConnext}
+//        onClose={() => setShowConnext(false)}
+//        onReady={params => console.log('MODAL IS READY =======>', params)}
+//        withdrawalAddress={props.address}
+//        routerPublicIdentifier="vector892GMZ3CuUkpyW8eeXfW2bt5W73TWEXtgV71nphXUXAmpncnj8"
+//        //depositAssetId={'0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063'}
+//        //depositChainProvider={`https://rpc-mainnet.maticvigil.com/`}
+//        depositAssetId={'0x6b175474e89094c44da98b954eedeac495271d0f'}
+//        depositChainProvider={`https://mainnet.infura.io/v3/${INFURA_ID}`}
+//        withdrawAssetId={'0x0000000000000000000000000000000000000000'}
+//        withdrawChainProvider="https://rpc.xdaichain.com/"
+//      />
+}
+
     </span>)
 
   return (
