@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH Typescript
 
 > everything you need to build on Ethereum! 🚀
 
@@ -15,9 +15,18 @@
 - Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
 - Support for L2 / Sidechains like Optimism and Arbitrum.
 
+## Typescript
+This is the typescript branch of scaffold.eth.  The directories that you'll use are:
+```
+/vite-app-ts/
+/hardhat-ts/
+```
+All the typescript yarn commands have a postfix of `-ts`
+
 # 🏄‍♂️ Quick Start
 
 Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
 
 > clone/fork 🏗 scaffold-eth:
 
@@ -30,21 +39,21 @@ git clone https://github.com/austintgriffith/scaffold-eth.git
 ```bash
 cd scaffold-eth
 yarn install
-yarn chain
+yarn chain-ts
 ```
 
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
 cd scaffold-eth
-yarn start
+yarn start-ts
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
 cd scaffold-eth
-yarn deploy
+yarn deploy-ts
 ```
 
 You should now have a local blockchain, with `YourContract.sol` deployed, and your app running on https://localhost:3000.
