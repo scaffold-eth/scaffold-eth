@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
-import { ARTISTS_QUERY, TOP_ARTISTS_QUERY } from "./apollo/queries";
+import { TOP_ARTISTS_QUERY } from "./apollo/queries";
 import { Row, Form, Select } from "antd";
 import { Loader, Address } from "./components";
 const dayjs = require('dayjs');
