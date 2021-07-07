@@ -1,2 +1,2 @@
-export * from './NetworkTypes';
+export * from './networkTypes';
 export * from './providerTypes';
