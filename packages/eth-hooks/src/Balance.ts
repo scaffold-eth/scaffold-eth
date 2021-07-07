@@ -28,7 +28,12 @@ const useBalance = (
     if (provider && address && pollTime === 0) {
       pollBalance(provider, address);
     }
-  })
+  });
+
+  // Update balance when the address or provider changes
+  useEffect(() => {
+    if (address && provider) pollBalance(provider, address);
+  }, [address, provider, pollBalance]);
 
   // Use a poller if a pollTime is provided
   usePoller(async () => {

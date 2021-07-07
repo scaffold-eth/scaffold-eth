@@ -6,14 +6,6 @@
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
-🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
-
-- Hardhat for your local blockchain, deploying, and testing smart contracts.
-- React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. (You can easily changed to another library you prefer)
-- Surge / S3 / IPFS for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
-- Support for L2 / Sidechains like Optimism and Arbitrum.
 
 # 🏄‍♂️ Quick Start
 
@@ -47,7 +39,24 @@ cd scaffold-eth
 yarn deploy
 ```
 
-You should now have a local blockchain, with `YourContract.sol` deployed, and your app running on https://localhost:3000.
+🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+
+📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+💼 Edit your deployment scripts in `packages/hardhat/deploy`
+
+📱 Open http://localhost:3000 to see the app
+
+---
+
+🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
+
+- Hardhat for your local blockchain, deploying, and testing smart contracts.
+- React for building a frontend, using many useful pre-made components and hooks.
+- Ant for your UI. (You can easily changed to another library you prefer)
+- Surge / S3 / IPFS for publishing your app.
+- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
+- Support for L2 / Sidechains like Optimism and Arbitrum.
 
 # 📚 Documentation
 
@@ -61,5 +70,7 @@ Check out all the [active branches](https://github.com/austintgriffith/scaffold-
 # 💬 Support Chat
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+
+---
 
 🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
