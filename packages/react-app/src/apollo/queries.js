@@ -23,6 +23,27 @@ export const ARTISTS_QUERY = gql`
   }
 `;
 
+export const TOP_ARTISTS_QUERY = gql`
+  query artists($first: Int, $skip: Int, $orderBy: String, $orderDirection: String, $createdAt: Int, $filters: Artist_filter) {
+    artists(first: $first, skip: $skip where: $filters, orderBy: $orderBy, orderDirection: $orderDirection, createdAt: $createdAt) {
+      inkCount
+      earnings
+      address
+      likeCount
+      likes (where: {createdAt_gt: $createdAt}){
+        createdAt
+      }
+      inks (where: {createdAt_gt: $createdAt}){
+        createdAt
+      }
+      sales (where: {createdAt_gt: $createdAt}){
+        createdAt
+        price
+      }
+    }
+  }
+`;
+
 export const INKS_QUERY = gql`
   query inks($first: Int, $skip: Int) {
     inks(first: $first, skip: $skip, orderBy: createdAt, orderDirection: desc) {
