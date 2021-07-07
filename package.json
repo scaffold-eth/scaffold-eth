@@ -4,11 +4,13 @@
   "description": "A set of hooks to turbocharge buidling",
   "author": "Austin Griffith <austin@ethereum.org>",
   "repository": "https://github.com/austintgriffith/eth-hooks.git",
-  "main": "lib/index.ts",
-  "types": "lib/index.d.ts",
+  "main": "index.js",
+  "browser": "index.js",
+  "module": "index.js",
+  "types": "index.d.ts",
   "engines": {
-    "node": ">=8",
-    "npm": ">=5"
+    "node": ">=12",
+    "npm": ">=6"
   },
   "contributors": [
     {
@@ -102,8 +104,5 @@
     "commitizen": {
       "path": "./node_modules/cz-conventional-changelog"
     }
-  },
-  "exports": {
-    "./*": "./lib/*"
   }
 }

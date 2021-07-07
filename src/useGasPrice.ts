@@ -21,7 +21,7 @@ export type TGasStationSpeed = 'fast' | 'fastest' | 'safeLow' | 'average';
  * @param pollTime
  * @returns
  */
-const useGasPrice = (
+export const useGasPrice = (
   targetNetwork: TNetwork,
   speed: TGasStationSpeed,
   pollTime: number = 39999
@@ -55,5 +55,3 @@ const useGasPrice = (
   usePoller(loadGasPrice, pollTime);
   return gasPrice;
 };
-
-export default useGasPrice;

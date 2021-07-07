@@ -7,11 +7,11 @@ import { TProviderOrSigner } from '~~/models/providerTypes';
 
 export type TContractConfig = {
   chainId?: number;
-  contractFileLocation: string;
+  contractFileLocation?: string;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
-  hardhatContracts: Record<string, Contract>;
-  externalContracts: Record<string, Contract>;
+  hardhatContracts?: Record<string, Contract>;
+  externalContracts?: Record<string, Contract>;
 };
 
 /**
@@ -34,17 +34,20 @@ export type TContractConfig = {
   - hardhatContracts: object following the hardhat deploy export format (Json with chainIds as keys, which have hardhat network names as keys, which contain arrays of contracts for each)
   - externalContracts: object with chainIds as keys, with an array of contracts for each
  * @param providerOrSigner 
- * @param config 
+ * @param safeConfig 
  * @returns 
  */
 export const useContractLoader = (
   providerOrSigner: TProviderOrSigner,
-  config: TContractConfig = {
+  config: TContractConfig = {}
+): Record<string, Contract> => {
+  const safeConfig: TContractConfig = {
     contractFileLocation: '../../../generated/contracts',
     hardhatContracts: {},
     externalContracts: {},
-  }
-): Record<string, Contract> => {
+    ...config,
+  };
+
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   useEffect(() => {
     let active = true;
@@ -59,7 +62,7 @@ export const useContractLoader = (
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
-            const chainId: number = config.chainId ?? providerNetwork?.chainId ?? 0;
+            const chainId: number = safeConfig.chainId ?? providerNetwork?.chainId ?? 0;
 
             // type definition
             //  Record<string, Record<string, Contract>>
@@ -70,25 +73,33 @@ export const useContractLoader = (
             let combinedContracts: Record<string, Contract> = {};
             try {
               contractList =
-                config.hardhatContracts ??
-                ((await import(`./${config.contractFileLocation}/hardhat_contracts.json`)) as Record<string, Contract>)
-                  .default;
+                safeConfig.hardhatContracts ??
+                (
+                  (await import(`./${safeConfig.contractFileLocation!}/hardhat_contracts.json`)) as Record<
+                    string,
+                    Contract
+                  >
+                ).default;
             } catch (e) {
               console.log(e);
             }
 
             try {
               externalContractList =
-                config.externalContracts ??
-                ((await import(`./${config.contractFileLocation}/external_contracts.js`)) as Record<string, Contract>)
-                  .default;
+                safeConfig.externalContracts ??
+                (
+                  (await import(`./${safeConfig.contractFileLocation!}/external_contracts.js`)) as Record<
+                    string,
+                    Contract
+                  >
+                ).default;
             } catch (e) {
               console.log(e);
             }
             if (contractList[chainId]) {
               for (const hardhatNetwork in contractList[chainId]) {
                 if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
-                  if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
+                  if (!safeConfig.hardhatNetworkName || hardhatNetwork === safeConfig.hardhatNetworkName) {
                     combinedContracts = {
                       ...combinedContracts,
                       ...contractList[chainId][hardhatNetwork].contracts,
@@ -105,8 +116,8 @@ export const useContractLoader = (
             const newContracts = Object.keys(combinedContracts).reduce(
               (accumulator: Record<string, any>, contractName: string) => {
                 const address: string =
-                  config.customAddresses && Object.keys(config.customAddresses).includes(contractName)
-                    ? config.customAddresses[contractName]
+                  safeConfig.customAddresses && Object.keys(safeConfig.customAddresses).includes(contractName)
+                    ? safeConfig.customAddresses[contractName]
                     : combinedContracts[contractName].address;
                 accumulator[contractName] = new ethers.Contract(address, combinedContracts[contractName].abi, signer);
                 return accumulator;
@@ -126,7 +137,15 @@ export const useContractLoader = (
     return () => {
       active = false;
     };
-  }, [providerOrSigner, config]);
+  }, [
+    providerOrSigner,
+    safeConfig.chainId,
+    safeConfig.contractFileLocation,
+    safeConfig.customAddresses,
+    safeConfig.externalContracts,
+    safeConfig.hardhatContracts,
+    safeConfig.hardhatNetworkName,
+  ]);
 
   return contracts;
 };

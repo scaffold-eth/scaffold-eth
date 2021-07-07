@@ -1,6 +1,6 @@
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Signer } from 'ethers';
 
-export type TEthHooksProvider = JsonRpcProvider | Web3Provider;
+export type TEthHooksProvider = JsonRpcProvider | Web3Provider | StaticJsonRpcProvider;
 
-export type TProviderOrSigner = TEthHooksProvider | Signer;
+export type TProviderOrSigner = JsonRpcProvider | Web3Provider | StaticJsonRpcProvider | Signer;
