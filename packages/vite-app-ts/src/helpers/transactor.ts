@@ -1,13 +1,14 @@
 import { hexlify } from '@ethersproject/bytes';
-import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { JsonRpcProvider, StaticJsonRpcProvider } from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers/src.ts/web3-provider';
 import { parseUnits } from '@ethersproject/units';
 import { notification } from 'antd';
 import notify, { API } from 'bnc-notify';
 import Notify, { InitOptions } from 'bnc-notify';
-import { ethers } from 'ethers';
-import { parseProviderOrSigner, TProviderOrSigner } from '~~/components/common/functions/providerOrSigner';
+import { ethers, Signer } from 'ethers';
 import { BLOCKNATIVE_DAPPID } from '~~/models/constants/constants';
+import { parseProviderOrSigner } from 'eth-hooks/functions/providerOrSigner';
+import { TProviderOrSigner } from 'eth-hooks/models/providerTypes';
 
 const callbacks: Record<string, any> = {};
 const DEBUG = true;
@@ -20,7 +21,7 @@ const DEBUG = true;
  * @param etherscan
  * @returns
  */
-export const transactor = (providerOrSigner: TProviderOrSigner, gasPrice?: number, etherscan?: string) => {
+export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasPrice?: number, etherscan?: string) => {
   if (typeof providerOrSigner !== 'undefined') {
     // eslint-disable-next-line consistent-return
     return async (tx: any, callback: (param: any) => void) => {

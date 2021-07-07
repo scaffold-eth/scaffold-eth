@@ -27,18 +27,9 @@ import {
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import 'antd/dist/antd.css';
 import { useUserAddress } from 'eth-hooks';
-import {
-  useLocalStorage,
-  useExchangePrice,
-  useGasPrice,
-  useUserProvider,
-  useContractLoader,
-  useContractReader,
-  useEventListener,
-  useBalance,
-  useExternalContractLoader,
-  useOnBlock,
-} from '~~/components/common/hooks';
+import { useGasPrice, useContractLoader, useContractReader, useBalance, useOnBlock, useUserSigner } from 'eth-hooks';
+
+import { useExchangePrice } from 'eth-hooks/dapps/dex';
 import {
   Header,
   Account,
@@ -71,10 +62,12 @@ import {
 } from '~~/models/constants/constants';
 import { NETWORK, NETWORKS } from '~~/models/constants/networks';
 import pretty from 'pretty-time';
-import { Contract, ethers } from 'ethers';
+import { Contract, ethers, Signer } from 'ethers';
 import { TNetwork } from '~~/models/networkTypes';
 import { ExampleUI } from '~~/components/views/ExampleUI';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
+import { useLocalStorage } from '~~/components/common/hooks';
+import { TEthHooksProvider } from '../../../eth-hooks/lib/models/providerTypes';
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -123,7 +116,7 @@ const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log('🏠 Connecting to provider:', localProviderUrlFromEnv);
-const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
+const localProvider: TEthHooksProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -138,19 +131,20 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, 'fast');
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
+  const userSigner = useUserSigner(injectedProvider, localProvider);
 
   //@ts-ignore
-  const address = useUserAddress(userProvider);
+  const address = useUserAddress(userSigner);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
+  const selectedChainId: number | undefined = undefined;
+  userSigner?.getChainId().then((chaindId) => selectedChainId == chaindId);
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = transactor(userProvider, gasPrice);
+  const tx = transactor(userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = transactor(localProvider, gasPrice);
@@ -165,12 +159,12 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const readContracts = useContractLoader(localProvider, { chainId: localChainId });
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider);
+  const writeContracts = useContractLoader(userSigner);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
+  const mainnetDAIContract = useContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -430,11 +424,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                 and give you a form to interact with it locally
             */}
 
-            {userProvider?.getSigner() != null && (
+            {userSigner?.getSigner() != null && (
               <>
                 <GenericContract
                   name="YourContract"
-                  signer={userProvider?.getSigner()}
+                  signer={userSigner?.getSigner()}
                   provider={localProvider}
                   address={address}
                   blockExplorer={blockExplorer}
@@ -474,7 +468,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
           <Route path="/exampleui">
             <ExampleUI
               address={address}
-              userProvider={userProvider}
+              userProvider={userSigner}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}
@@ -487,11 +481,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
             />
           </Route>
           <Route path="/mainnetdai">
-            {userProvider?.getSigner() != null && (
+            {userSigner?.getSigner() != null && (
               <GenericContract
                 name="DAI"
                 customContract={mainnetDAIContract}
-                signer={userProvider.getSigner()}
+                signer={userSigner.getSigner()}
                 provider={mainnetProvider}
                 address={address}
                 blockExplorer="https://etherscan.io/"
@@ -516,7 +510,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
         <Account
           address={address}
           localProvider={localProvider}
-          userProvider={userProvider}
+          userProvider={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
           web3Modal={web3ModalProvider}
