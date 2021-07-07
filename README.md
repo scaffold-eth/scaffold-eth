@@ -1,4 +1,13 @@
 # 🏗 Scaffold-ETH Typescript
+## Typescript
+This is the typescript branch of scaffold.eth.  The directories that you'll use are:
+```
+packages/vite-app-ts/
+packages/hardhat-ts/
+```
+All the typescript yarn commands have a postfix of `-ts` See the quick start section for more details
+
+## Overview
 
 > everything you need to build on Ethereum! 🚀
 
@@ -15,13 +24,6 @@
 - Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
 - Support for L2 / Sidechains like Optimism and Arbitrum.
 
-## Typescript
-This is the typescript branch of scaffold.eth.  The directories that you'll use are:
-```
-/vite-app-ts/
-/hardhat-ts/
-```
-All the typescript yarn commands have a postfix of `-ts`
 
 # 🏄‍♂️ Quick Start
 
