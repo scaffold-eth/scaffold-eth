@@ -14,17 +14,19 @@
     "allowSyntheticDefaultImports": true,
     "downlevelIteration": true,
     "esModuleInterop": true,
-    "isolatedModules": true,
+    "isolatedModules": false,
     "noImplicitAny": true,
     "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
     "strict": true,
     "types": [],
+    "rootDir": "./src/",
     "baseUrl": ".",
     "typeRoots": ["node_modules/@types", "helpers/types"],
     "paths": {
       "~~/*": ["./src/*"]
     }
   },
-  "include": ["./src/**/*.ts"],
-  "exclude": ["build", "dist", "lib", "node_modules", "./node_modules", "./node_modules/*"]
+  "include": ["src/**/*"],
+  "exclude": ["lib", "node_modules", "*/node_modules/*"]
 }

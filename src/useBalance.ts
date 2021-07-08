@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 
 import { usePoller, useOnBlock } from '.';
 
-import { TEthHooksProvider } from '~~/models/providerTypes';
+import { TEthHooksProvider } from '~~/models';
 
 /**
  * Gets your balance in ETH from given address and provider
