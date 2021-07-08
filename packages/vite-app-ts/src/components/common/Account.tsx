@@ -3,14 +3,16 @@ import React, { FC } from 'react';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import Web3Modal from 'web3modal';
-import { Address } from './Address';
+import { Address } from '.';
 import { Balance, Wallet } from '.';
+import { Signer } from '@ethersproject/abstract-signer';
+import { TEthHooksProvider } from 'eth-hooks/lib/models';
 
 export interface IAccountProps {
   address: string;
-  userProvider: JsonRpcProvider | Web3Provider | undefined;
-  localProvider: JsonRpcProvider | Web3Provider | undefined;
-  mainnetProvider: JsonRpcProvider | Web3Provider;
+  userSigner: Signer | undefined;
+  localProvider: TEthHooksProvider | undefined;
+  mainnetProvider: TEthHooksProvider;
   price: number;
   minimized?: string;
   web3Modal: Web3Modal;
@@ -40,7 +42,7 @@ export interface IAccountProps {
 export const Account: FC<IAccountProps> = (props: IAccountProps) => {
   const {
     address,
-    userProvider,
+    userSigner,
     localProvider,
     mainnetProvider,
     price,
@@ -93,7 +95,7 @@ export const Account: FC<IAccountProps> = (props: IAccountProps) => {
       <Balance address={address} provider={localProvider} price={price} />
       <Wallet
         address={address}
-        provider={userProvider}
+        signer={userSigner}
         ensProvider={mainnetProvider}
         price={price}
         color={currentTheme === 'light' ? '#1890ff' : '#2caad9'}

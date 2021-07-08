@@ -12,7 +12,7 @@ import notify, { API } from 'bnc-notify';
 import Notify, { InitOptions } from 'bnc-notify';
 import { BigNumber, ethers, Signer } from 'ethers';
 import { BLOCKNATIVE_DAPPID } from '~~/models/constants/constants';
-import { parseProviderOrSigner } from 'eth-hooks/lib/functions/providerOrSigner';
+import { parseProviderOrSigner } from 'eth-hooks/lib/functions';
 import { TProviderOrSigner } from 'eth-hooks/lib/models';
 import { Deferrable } from 'ethers/lib/utils';
 

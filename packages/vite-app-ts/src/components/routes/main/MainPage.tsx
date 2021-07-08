@@ -34,7 +34,7 @@ import {
   useContractReader,
   useBalance,
   useOnBlock,
-  useUserSigner,
+  useUserProviderAndSigner,
 } from 'eth-hooks';
 import { useExchangePrice } from 'eth-hooks/lib/dapps/dex';
 
@@ -77,6 +77,8 @@ import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3M
 import { useLocalStorage } from '~~/components/common/hooks';
 import { TEthHooksProvider } from 'eth-hooks/lib/models';
 import { useEventListener } from 'eth-hooks/lib/events';
+import { TProviderAndSigner } from 'eth-hooks/lib/functions';
+import { getChainId } from 'web3modal';
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -140,22 +142,21 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, 'fast');
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userSigner = useUserSigner(injectedProvider, localProvider);
+  const userProviderAndSigner: TProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
 
-  //@ts-ignore
-  const address = useUserAddress(userSigner);
+  const address = useUserAddress(userProviderAndSigner);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId: number = localProvider && localProvider._network && localProvider._network.chainId;
   let selectedChainId: number | undefined = undefined;
-  if (userSigner) {
-    userSigner.getChainId().then((chaindId) => (selectedChainId = chaindId));
+  if (userProviderAndSigner) {
+    userProviderAndSigner.signer?.getChainId().then((chaindId: number) => (selectedChainId = chaindId));
   }
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = transactor(userSigner, gasPrice);
+  const tx = transactor(userProviderAndSigner.signer, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = transactor(localProvider, gasPrice);
@@ -170,7 +171,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const readContracts = useContractLoader(localProvider, { chainId: localChainId });
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userSigner);
+  const writeContracts = useContractLoader(userProviderAndSigner);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -430,11 +431,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                 and give you a form to interact with it locally
             */}
 
-            {userSigner?.getSigner() != null && (
+            {userProviderAndSigner != null && (
               <>
                 <GenericContract
                   name="YourContract"
-                  signer={userSigner?.getSigner()}
+                  signer={userProviderAndSigner}
                   provider={localProvider}
                   address={address}
                   blockExplorer={blockExplorer}
@@ -474,7 +475,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
           <Route path="/exampleui">
             <ExampleUI
               address={address}
-              userProvider={userSigner}
+              userSigner={userProviderAndSigner}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}
@@ -487,11 +488,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
             />
           </Route>
           <Route path="/mainnetdai">
-            {userSigner?.getSigner() != null && (
+            {userProviderAndSigner != null && (
               <GenericContract
                 name="DAI"
-                customContract={mainnetDAIContract}
-                signer={userSigner.getSigner()}
+                customContract={mainnetContracts?.contracts?.DAI}
+                signer={userProviderAndSigner}
                 provider={mainnetProvider}
                 address={address}
                 blockExplorer="https://etherscan.io/"
@@ -516,7 +517,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
         <Account
           address={address}
           localProvider={localProvider}
-          userProvider={userSigner}
+          userSigner={userProviderAndSigner}
           mainnetProvider={mainnetProvider}
           price={price}
           web3Modal={web3ModalProvider}
