@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import Blockies from 'react-blockies';
 import { PunkBlockie } from '.';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
-import { useLookupAddress } from './hooks';
+import { useLookupAddress } from 'eth-hooks/lib/dapps/ens';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 
 // changed value={address} to address={address}

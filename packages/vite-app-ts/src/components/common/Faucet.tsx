@@ -2,7 +2,7 @@ import { SendOutlined } from '@ant-design/icons';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
 import { Button, Input, Tooltip } from 'antd';
-import { useLookupAddress } from './hooks';
+import { useLookupAddress } from 'eth-hooks/lib/dapps/ens';
 import React, { FC, useCallback, useState } from 'react';
 import Blockies from 'react-blockies';
 import { transactor } from '~~/helpers';
@@ -97,7 +97,7 @@ export const Faucet: FC<IFaucetProps> = (props) => {
             />
             <Wallet
               color="#888888"
-              provider={props.localProvider}
+              signer={props.localProvider}
               ensProvider={props.ensProvider}
               price={props.price}
               address={address ?? ''}

@@ -26,10 +26,18 @@ import {
 } from 'antd';
 import WalletConnectProvider from '@walletconnect/web3-provider';
 import 'antd/dist/antd.css';
-import { useUserAddress } from 'eth-hooks';
-import { useGasPrice, useContractLoader, useContractReader, useBalance, useOnBlock, useUserSigner } from 'eth-hooks';
 
-import { useExchangePrice } from 'eth-hooks/dapps/dex';
+import {
+  useUserAddress,
+  useGasPrice,
+  useContractLoader,
+  useContractReader,
+  useBalance,
+  useOnBlock,
+  useUserSigner,
+} from 'eth-hooks';
+import { useExchangePrice } from 'eth-hooks/lib/dapps/dex';
+
 import {
   Header,
   Account,
@@ -60,14 +68,15 @@ import {
   mainStreamReader_ADDRESS,
   mainStreamReader_ABI,
 } from '~~/models/constants/constants';
-import { NETWORK, NETWORKS } from '~~/models/constants/networks';
+import { getNetwork, NETWORKS } from '~~/models/constants/networks';
 import pretty from 'pretty-time';
 import { Contract, ethers, Signer } from 'ethers';
 import { TNetwork } from '~~/models/networkTypes';
 import { ExampleUI } from '~~/components/views/ExampleUI';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { useLocalStorage } from '~~/components/common/hooks';
-import { TEthHooksProvider } from '../../../eth-hooks/lib/models/providerTypes';
+import { TEthHooksProvider } from 'eth-hooks/lib/models';
+import { useEventListener } from 'eth-hooks/lib/events';
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -137,9 +146,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const address = useUserAddress(userSigner);
 
   // You can warn the user if you would like them to be on a specific network
-  const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  const selectedChainId: number | undefined = undefined;
-  userSigner?.getChainId().then((chaindId) => selectedChainId == chaindId);
+  const localChainId: number = localProvider && localProvider._network && localProvider._network.chainId;
+  let selectedChainId: number | undefined = undefined;
+  if (userSigner) {
+    userSigner.getChainId().then((chaindId) => (selectedChainId = chaindId));
+  }
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
@@ -164,25 +175,20 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
+  const mainnetContracts = useContractLoader(mainnetProvider);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
-  const contracts: Record<string, Contract> = {};
-  if (mainnetDAIContract) {
-    contracts['DAI'] = mainnetDAIContract;
-  }
-
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(contracts, 'DAI', 'balanceOf', [
+  const myMainnetDAIBalance = useContractReader(mainnetContracts, 'DAI', 'balanceOf', [
     '0x34aA3F359A9D614239015126635CE7732c18fDF3',
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, 'YourContract', 'purpose');
+  const purpose = useContractReader<string>(readContracts, 'YourContract', 'purpose');
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, 'YourContract', 'SetPurpose', localProvider, 1);
@@ -218,15 +224,15 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   }, [mainnetProvider, address, selectedChainId]);
 
   let networkDisplay: ReactElement | undefined = undefined;
-  if (localChainId && selectedChainId && localChainId != selectedChainId) {
+  if (localChainId != undefined && selectedChainId && localChainId != selectedChainId) {
     networkDisplay = (
       <div style={{ zIndex: 2, position: 'absolute', right: 0, top: 60, padding: 16 }}>
         <Alert
           message={'⚠️ Wrong Network'}
           description={
             <div>
-              You have <b>{NETWORK(selectedChainId)?.name}</b> selected and you need to be on{' '}
-              <b>{NETWORK(localChainId).name}</b>.
+              You have <b>{getNetwork(selectedChainId)?.name}</b> selected and you need to be on{' '}
+              <b>{getNetwork(localChainId)?.name ?? 'UNKNOWN'}</b>.
             </div>
           }
           type="error"

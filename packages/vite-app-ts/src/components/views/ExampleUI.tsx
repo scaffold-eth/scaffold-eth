@@ -1,7 +1,7 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import { SyncOutlined } from '@ant-design/icons';
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { Signer } from 'ethers';
 import { formatEther, parseEther } from '@ethersproject/units';
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from 'antd';
 import { Contract } from 'ethers';
@@ -10,7 +10,7 @@ import { FC } from 'react';
 import { Address, Balance } from '~~/components/common';
 
 interface IExampleUIProps {
-  userProvider: JsonRpcProvider | Web3Provider | undefined;
+  userSigner: Signer | undefined;
   purpose: string;
   setPurposeEvents: any;
   address: string;

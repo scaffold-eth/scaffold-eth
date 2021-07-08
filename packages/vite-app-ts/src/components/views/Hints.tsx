@@ -1,18 +1,16 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { formatEther } from '@ethersproject/units';
 import { Select } from 'antd';
 import { BigNumber } from 'ethers';
 import React, { FC, useState } from 'react';
 import { Address, AddressInput } from '~~/components/common';
-import { useTokenList } from '~~/components/common/hooks';
+import { useTokenList } from 'eth-hooks/lib/dapps/dex';
+import { TEthHooksProvider } from 'eth-hooks/lib/models';
 
 const { Option } = Select;
 
 interface IHintsProps {
   yourLocalBalance: BigNumber | undefined;
-  mainnetProvider: JsonRpcProvider | Web3Provider;
+  mainnetProvider: TEthHooksProvider;
   price: number;
   address: string;
 }

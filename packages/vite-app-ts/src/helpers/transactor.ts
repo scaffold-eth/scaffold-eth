@@ -1,14 +1,20 @@
 import { hexlify } from '@ethersproject/bytes';
-import { JsonRpcProvider, StaticJsonRpcProvider } from '@ethersproject/providers';
+import {
+  JsonRpcProvider,
+  StaticJsonRpcProvider,
+  TransactionRequest,
+  TransactionResponse,
+} from '@ethersproject/providers';
 import { Web3Provider } from '@ethersproject/providers/src.ts/web3-provider';
 import { parseUnits } from '@ethersproject/units';
 import { notification } from 'antd';
 import notify, { API } from 'bnc-notify';
 import Notify, { InitOptions } from 'bnc-notify';
-import { ethers, Signer } from 'ethers';
+import { BigNumber, ethers, Signer } from 'ethers';
 import { BLOCKNATIVE_DAPPID } from '~~/models/constants/constants';
-import { parseProviderOrSigner } from 'eth-hooks/functions/providerOrSigner';
-import { TProviderOrSigner } from 'eth-hooks/models/providerTypes';
+import { parseProviderOrSigner } from 'eth-hooks/lib/functions/providerOrSigner';
+import { TProviderOrSigner } from 'eth-hooks/lib/models';
+import { Deferrable } from 'ethers/lib/utils';
 
 const callbacks: Record<string, any> = {};
 const DEBUG = true;
@@ -24,7 +30,10 @@ const DEBUG = true;
 export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasPrice?: number, etherscan?: string) => {
   if (typeof providerOrSigner !== 'undefined') {
     // eslint-disable-next-line consistent-return
-    return async (tx: any, callback: (param: any) => void) => {
+    return async (
+      tx: Deferrable<TransactionRequest> | Promise<TransactionResponse>,
+      callback?: (param: any) => void
+    ) => {
       const { signer, provider, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
       let options: InitOptions | undefined = undefined;
@@ -57,7 +66,7 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
       }
 
       try {
-        let result;
+        let result: TransactionResponse | Record<string, any> | undefined = undefined;
         if (tx instanceof Promise) {
           if (DEBUG) console.log('AWAITING TX', tx);
           result = await tx;
@@ -66,7 +75,7 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
             tx.gasPrice = gasPrice || ethers.utils.parseUnits('4.1', 'gwei');
           }
           if (!tx.gasLimit) {
-            tx.gasLimit = ethers.utils.hexlify(120000);
+            tx.gasLimit = BigNumber.from(ethers.utils.hexlify(120000));
           }
           if (DEBUG) console.log('RUNNING TX', tx);
           result = await signer?.sendTransaction(tx);
@@ -74,12 +83,17 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
         if (DEBUG) console.log('RESULT:', result);
         // console.log("Notify", notify);
 
-        if (callback) {
+        if (callback && result) {
           callbacks[result.hash] = callback;
         }
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
-        if (providerNetwork != null && [1, 3, 4, 5, 42, 100].indexOf(providerNetwork.chainId) >= 0 && notify != null) {
+        if (
+          result &&
+          providerNetwork != null &&
+          [1, 3, 4, 5, 42, 100].indexOf(providerNetwork.chainId) >= 0 &&
+          notify != null
+        ) {
           const { emitter } = notify.hash(result.hash);
           emitter.on('all', (transaction) => {
             return {
@@ -89,25 +103,24 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
         } else {
           notification.info({
             message: 'Local Transaction Sent',
-            description: result.hash,
+            description: result?.hash,
             placement: 'bottomRight',
           });
           // on most networks BlockNative will update a transaction handler,
           // but locally we will set an interval to listen...
-          if (callback) {
-            const txResult = await tx;
+          if (callback != undefined && result != undefined) {
             const listeningInterval = setInterval(async () => {
-              console.log('CHECK IN ON THE TX', txResult, provider);
-              const currentTransactionReceipt = await provider?.getTransactionReceipt(txResult.hash);
+              console.log('CHECK IN ON THE TX', result, provider);
+              const currentTransactionReceipt = await provider?.getTransactionReceipt(result?.hash);
               if (currentTransactionReceipt && currentTransactionReceipt.confirmations) {
-                callback({ ...txResult, ...currentTransactionReceipt });
+                callback({ ...result, ...currentTransactionReceipt });
                 clearInterval(listeningInterval);
               }
             }, 500);
           }
         }
 
-        if (typeof result.wait === 'function') {
+        if (typeof result?.wait === 'function') {
           await result.wait();
         }
 
