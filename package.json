@@ -1,91 +1,105 @@
 {
-  "name": "@scaffold-eth/monorepo",
-  "version": "1.0.0",
+  "name": "eth-hooks",
+  "version": "2.1.1",
+  "description": "A set of hooks to turbocharge buidling",
+  "author": "Austin Griffith <austin@ethereum.org>",
+  "repository": "https://github.com/austintgriffith/eth-hooks.git",
+  "main": "lib/index.js",
+  "engines": {
+    "node": ">=12",
+    "npm": ">=6"
+  },
+  "contributors": [
+    {
+      "name": "Austin Griffith",
+      "url": "https://github.com/austintgriffith"
+    },
+    {
+      "name": "Tom French",
+      "url": "https://github.com/tomafrench"
+    },
+    {
+      "name": "Shravan Sunder",
+      "url": "https://github.com/ShravanSunder"
+    }
+  ],
+  "dependencies": {
+    "@ethersproject/address": "^5.4.0",
+    "@ethersproject/bignumber": "^5.4.0",
+    "@ethersproject/bytes": "^5.4.0",
+    "@ethersproject/contracts": "^5.4.0",
+    "@ethersproject/networks": "^5.4.1",
+    "@ethersproject/providers": "^5.4.1",
+    "@ethersproject/solidity": "^5.4.0",
+    "@ethersproject/units": "^5.4.0",
+    "@uniswap/token-lists": "^1.0.0-beta.24",
+    "axios": "^0.21.1",
+    "burner-provider": "^1.0.38",
+    "ethers": "^5.4.1",
+    "observable-hooks": "^4.0.5",
+    "use-debounce": "^7.0.0"
+  },
+  "peerDependencies": {
+    "@uniswap/sdk": "^3.0.3",
+    "react": ">=16.9.0",
+    "react-dom": ">=16.9.0"
+  },
+  "devDependencies": {
+    "@commitlint/cli": "^8.3.5",
+    "@commitlint/config-conventional": "^8.3.4",
+    "@testing-library/dom": "^8.1.0",
+    "@testing-library/jest-dom": "^5.11.4",
+    "@testing-library/react": "^12.0.0",
+    "@testing-library/react-hooks": "^7.0.1",
+    "@testing-library/user-event": "^13.1.9",
+    "@types/jest": "^26.0.24",
+    "@types/node": "^16.0.0",
+    "@types/pretty-time": "^1.1.0",
+    "@types/qrcode.react": "^1.0.1",
+    "@types/react": "^17.0.13",
+    "@types/react-blockies": "^1.4.0",
+    "@types/react-dom": "^17.0.8",
+    "@uniswap/sdk": "^3.0.3",
+    "commitizen": "^4.1.2",
+    "cz-conventional-changelog": "^3.2.0",
+    "eslint": "^7.30.0",
+    "eslint-config-airbnb-typescript-prettier": "^4.2.0",
+    "eslint-plugin-import": "^2.23.4",
+    "eslint-plugin-jest": "^24.3.6",
+    "eslint-plugin-react": "^7.24.0",
+    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-testing-library": "^4.9.0",
+    "husky": "^4.2.5",
+    "jest": "^27.0.6",
+    "lint-staged": "^10.2.7",
+    "prettier": "^2.3.1",
+    "prettier-eslint": "^12.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "rxjs": "^7.2.0",
+    "shx": "^0.3.3",
+    "typescript": "^4.3.4",
+    "watch": "^1.0.2"
+  },
   "keywords": [
+    "blockchain",
     "ethereum",
     "react",
-    "uniswap",
-    "workspaces",
-    "yarn"
+    "create-eth-app",
+    "typescript"
   ],
-  "private": true,
+  "license": "MIT",
   "scripts": {
-    "react-app:build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
-    "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
-    "react-app:start": "yarn workspace @scaffold-eth/react-app start",
-    "react-app:test": "yarn workspace @scaffold-eth/react-app test",
-    "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
-    "chain": "yarn workspace @scaffold-eth/hardhat chain",
-    "fork": "yarn workspace @scaffold-eth/hardhat fork",
-    "node": "yarn workspace @scaffold-eth/hardhat chain",
-    "test": "yarn workspace @scaffold-eth/hardhat test",
-    "start": "yarn workspace @scaffold-eth/react-app start",
-    "compile": "yarn workspace @scaffold-eth/hardhat compile",
-    "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
-    "watch": "yarn workspace @scaffold-eth/hardhat watch",
-    "accounts": "yarn workspace @scaffold-eth/hardhat accounts",
-    "balance": "yarn workspace @scaffold-eth/hardhat balance",
-    "send": "yarn workspace @scaffold-eth/hardhat send",
-    "ipfs": "yarn workspace @scaffold-eth/react-app ipfs",
-    "surge": "yarn workspace @scaffold-eth/react-app surge",
-    "s3": "yarn workspace @scaffold-eth/react-app s3",
-    "ship": "yarn workspace @scaffold-eth/react-app ship",
-    "generate": "yarn workspace @scaffold-eth/hardhat generate",
-    "account": "yarn workspace @scaffold-eth/hardhat account",
-    "mineContractAddress": "cd packages/hardhat && npx hardhat mineContractAddress",
-    "wallet": "cd packages/hardhat && npx hardhat wallet",
-    "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
-    "flatten": "cd packages/hardhat && npx hardhat flatten",
-    "clean": "cd packages/hardhat && npx hardhat clean",
-      "build-ts": "yarn workspace @scaffold-eth/vite-app-ts build --max-old-space-size=12288",
-      "chain-ts": "yarn workspace @scaffold-eth/hardhat-ts chain",
-      "fork-ts": "yarn workspace @scaffold-eth/hardhat-ts fork",
-      "node-ts": "yarn workspace @scaffold-eth/hardhat-ts chain",
-      "test-ts": "yarn workspace @scaffold-eth/hardhat-ts test",
-      "start-ts": "yarn workspace @scaffold-eth/vite-app-ts start",
-      "compile-ts": "yarn workspace @scaffold-eth/hardhat-ts compile",
-      "deploy-ts": "yarn workspace @scaffold-eth/hardhat-ts deploy",
-      "watch-ts": "yarn workspace @scaffold-eth/hardhat-ts watch",
-      "accounts-ts": "yarn workspace @scaffold-eth/hardhat-ts accounts",
-      "balance-ts": "yarn workspace @scaffold-eth/hardhat-ts balance",
-      "send-ts": "yarn workspace @scaffold-eth/hardhat-ts send",
-      "ipfs-ts": "yarn workspace @scaffold-eth/vite-app-ts ipfs",
-      "surge-ts": "yarn workspace @scaffold-eth/vite-app-ts surge",
-      "s3-ts": "yarn workspace @scaffold-eth/vite-app-ts s3",
-      "ship-ts": "yarn workspace @scaffold-eth/vite-app-ts ship",
-      "generate-ts": "yarn workspace @scaffold-eth/hardhat-ts generate",
-      "account-ts": "yarn workspace @scaffold-eth/hardhat-ts account",
-      "mine-ts": "cd packages/hardhat-ts && npx hardhat mine",
-      "wallet-ts": "cd packages/hardhat-ts && npx hardhat wallet",
-      "fundedwallet-ts": "cd packages/hardhat-ts && npx hardhat fundedwallet",
-      "flatten-ts": "cd packages/hardhat-ts && npx hardhat flatten",
-      "clean-ts": "cd packages/hardhat-ts && npx hardhat clean",
-    "run-graph-node": "yarn workspace @scaffold-eth/services run-graph-node",
-    "remove-graph-node": "yarn workspace @scaffold-eth/services remove-graph-node",
-    "clean-graph-node": "yarn workspace @scaffold-eth/services clean-graph-node",
-    "graph-prepare": "mustache packages/subgraph/config/config.json packages/subgraph/src/subgraph.template.yaml > packages/subgraph/subgraph.yaml",
-    "graph-codegen": "yarn workspace @scaffold-eth/subgraph graph codegen",
-    "graph-build": "yarn workspace @scaffold-eth/subgraph graph build",
-    "graph-create-local": "yarn workspace @scaffold-eth/subgraph graph create --node http://localhost:8020/ scaffold-eth/your-contract",
-    "graph-remove-local": "yarn workspace @scaffold-eth/subgraph graph remove --node http://localhost:8020/ scaffold-eth/your-contract",
-    "graph-deploy-local": "yarn workspace @scaffold-eth/subgraph graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 scaffold-eth/your-contract",
-    "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
-    "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
-    "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
+    "commit": "git-cz",
+    "build": "tsc --strict false -p tsconfig.json",
+    "publish": "cd lib && npm publish && shx rm ./lib/package.json",
+    "watch": "watch 'yarn build' ./src",
+    "clean": "shx rm -rf ./lib",
+    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
   },
-  "workspaces": {
-    "packages": [
-      "packages/*"
-    ],
-    "nohoist": [
-      "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**",
-      "**/hardhat",
-         "**/hardhat/**",
-         "**/hardhat-ts",
-         "**/hardhat-ts/**"
-    ]
-  },
-  "dependencies": {}
+  "config": {
+    "commitizen": {
+      "path": "./node_modules/cz-conventional-changelog"
+    }
+  }
 }
