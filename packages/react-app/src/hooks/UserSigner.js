@@ -1,5 +1,4 @@
 import { useMemo, useState } from "react";
-import { Web3Provider } from "@ethersproject/providers";
 import useBurnerSigner from "./BurnerSigner";
 
 /*
@@ -19,11 +18,8 @@ import useBurnerSigner from "./BurnerSigner";
     const tx = Transactor(userSigner, gasPrice)
 */
 
-const useUserSigner = (
-  injectedProvider: Web3Provider,
-  localProvider: Web3Provider
-) => {
-  const [signer, setSigner] = useState<any>();
+const useUserSigner = (injectedProvider, localProvider) => {
+  const [signer, setSigner] = useState();
   const burnerSigner = useBurnerSigner(localProvider);
 
   useMemo(() => {
@@ -31,7 +27,7 @@ const useUserSigner = (
       console.log("🦊 Using injected provider");
       const injectedSigner = injectedProvider._isProvider ? injectedProvider.getSigner() : injectedProvider;
       setSigner(injectedSigner);
-    } else if (!localProvider) setSigner(undefined);
+    } else if (!localProvider) setSigner();
     else {
       if (window.location.pathname && window.location.pathname.indexOf("/pk") >= 0) {
         const incomingPK = window.location.hash.replace("#", "");

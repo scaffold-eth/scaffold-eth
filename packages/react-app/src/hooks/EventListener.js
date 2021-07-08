@@ -1,6 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
-import { Web3Provider } from "@ethersproject/providers";
-import { Contract } from "@ethersproject/contracts";
+import { useEffect, useState } from "react";
 
 /*
   ~ What it does? ~
@@ -19,34 +17,22 @@ import { Contract } from "@ethersproject/contracts";
   - Specify the provider
 */
 
-export default function useEventListener(
-  contracts: Record<string, Contract>,
-  contractName: string,
-  eventName: string,
-  provider: Web3Provider,
-  startBlock: number,
-  args?: any[]
-): any[] {
-  const [updates, setUpdates] = useState<any[]>([]);
-
-  const addNewEvent = useCallback(
-    (...args: any) => {
-      const blockNumber = args[args.length - 1].blockNumber;
-      setUpdates(messages => [{ blockNumber, ...args.pop().args }, ...messages]);
-    },
-    []
-  );
+export default function useEventListener(contracts, contractName, eventName, provider, startBlock, args) {
+  const [updates, setUpdates] = useState([]);
 
   useEffect(() => {
-    if (typeof provider !== "undefined") {
+    if (typeof provider !== "undefined" && typeof startBlock !== "undefined") {
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
       provider.resetEventsBlock(startBlock);
     }
     if (contracts && contractName && contracts[contractName]) {
       try {
-        contracts[contractName].on(eventName, addNewEvent);
+        contracts[contractName].on(eventName, (...args) => {
+          const blockNumber = args[args.length - 1].blockNumber;
+          setUpdates(messages => [{ blockNumber, ...args.pop().args }, ...messages]);
+        });
         return () => {
-          contracts[contractName].off(eventName, addNewEvent);
+          contracts[contractName].removeListener(eventName);
         };
       } catch (e) {
         console.log(e);

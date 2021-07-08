@@ -1,6 +1,6 @@
 import { Card } from "antd";
 import React, { useMemo, useState } from "react";
-import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
+import { useContractExistsAtAddress, useContractLoader } from "../../hooks";
 import Account from "../Account";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
@@ -54,9 +54,8 @@ export default function Contract({
   price,
   blockExplorer,
   chainId,
-  config,
 }) {
-  const contracts = useContractLoader(provider, config);
+  const contracts = useContractLoader(provider, { chainId });
   let contract;
   if (!customContract) {
     contract = contracts ? contracts[name] : "";
