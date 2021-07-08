@@ -21,7 +21,7 @@ export default function Leaderboard(props) {
     let [artists, setArtists] = useState([]);
   
     let [orderBy, setOrderBy] = useState(searchParams.get("orderBy") || 'earnings');
-    let [period, setPeriod] = useState(searchParams.get("period") || 'alltime');
+    let [period, setPeriod] = useState(searchParams.get("period") || 'lastmonth');
     let [createdAt, setCreatedAt] = useState(1596240000);
     let [lastFilterAt, setLastFilterAt] = useState({lastSaleAt_gt: 1596240000})
 
