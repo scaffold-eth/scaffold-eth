@@ -1,18 +1,23 @@
 import { useState, useEffect } from 'react';
 
-import { TEthHooksProvider } from '~~/models';
+import { parseProviderOrSigner, TProviderAndSigner } from '~~/functions';
+import { TProviderOrSigner } from '~~/models';
 
-export const useUserAddress = (provider: TEthHooksProvider): string => {
+export const useUserAddress = (providerOrSigner: TProviderOrSigner): string => {
   const [userAddress, setUserAddress] = useState<string>('');
+  // sdfasdfklsdjafjdskfjsd
 
   useEffect(() => {
-    const getUserAddress = async (injectedProvider: TEthHooksProvider) => {
-      const signer = injectedProvider.getSigner();
-      if (signer) setUserAddress(await signer.getAddress());
+    const getUserAddress = async (injectedProvider: TProviderOrSigner) => {
+      const result: TProviderAndSigner = await parseProviderOrSigner(injectedProvider);
+      if (result.signer) {
+        const address = await result.signer?.getAddress();
+        setUserAddress(address);
+      }
     };
 
-    if (provider) void getUserAddress(provider);
-  }, [provider]);
+    if (providerOrSigner) void getUserAddress(providerOrSigner);
+  }, [providerOrSigner]);
 
   return userAddress;
 };

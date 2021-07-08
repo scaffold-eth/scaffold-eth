@@ -1,9 +1,10 @@
-import { Signer } from 'ethers';
+import { Provider } from '@ethersproject/providers';
+import { ethers, Signer } from 'ethers';
 import { useMemo, useState } from 'react';
 
 import { useBurnerSigner } from '.';
 
-import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
+import { parseProviderOrSigner, TProviderAndSigner } from '~~/functions/providerOrSigner';
 import { TEthHooksProvider, TProviderOrSigner } from '~~/models';
 
 const syncBurnerKeyFromStorage = () => {
@@ -35,11 +36,13 @@ const syncBurnerKeyFromStorage = () => {
  * @param localProvider 
  * @returns 
  */
-export const useUserSigner = (
+export const useUserProviderAndSigner = (
   injectedProviderOrSigner: TProviderOrSigner,
   localProvider: TEthHooksProvider
-): Signer | undefined => {
+): TProviderAndSigner | undefined => {
   const [signer, setSigner] = useState<Signer>();
+  const [provider, setProvider] = useState<Provider>();
+  const [providerNetwork, setProviderNetwork] = useState<ethers.providers.Network>();
   const burnerSigner = useBurnerSigner(localProvider);
 
   useMemo(() => {
@@ -57,5 +60,15 @@ export const useUserSigner = (
     }
   }, [injectedProviderOrSigner, localProvider, burnerSigner]);
 
-  return signer;
+  useMemo(() => {
+    if (signer) {
+      const result = parseProviderOrSigner(signer);
+      void result.then((r) => {
+        setProvider(r.provider);
+        setProviderNetwork(r.providerNetwork);
+      });
+    }
+  }, [signer]);
+
+  return { signer, provider, providerNetwork };
 };

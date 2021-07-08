@@ -5,14 +5,14 @@ import { Signer } from 'ethers/lib/ethers';
 
 import { TProviderOrSigner } from '~~/models/providerTypes';
 
-interface IParseProviderOrSigner {
+export type TProviderAndSigner = {
   signer: Signer | undefined;
   provider: ethers.providers.Provider | undefined;
   providerNetwork: ethers.providers.Network | undefined;
-}
+};
 export const parseProviderOrSigner = async (
   providerOrSigner: TProviderOrSigner | undefined
-): Promise<IParseProviderOrSigner> => {
+): Promise<TProviderAndSigner> => {
   let signer: Signer | undefined = undefined;
   let accounts: string[];
   let provider: ethers.providers.Provider | undefined;
@@ -32,5 +32,5 @@ export const parseProviderOrSigner = async (
     provider = signer.provider;
     providerNetwork = provider && (await provider.getNetwork());
   }
-  return { signer, provider, providerNetwork };
+  return { signer, provider, providerNetwork } as TProviderAndSigner;
 };

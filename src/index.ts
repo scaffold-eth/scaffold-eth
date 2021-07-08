@@ -9,5 +9,5 @@ export * from './useNonce';
 export * from './useOnBlock';
 export * from './usePoller';
 export * from './useTimestamp';
-export * from './useUserSigner';
+export * from './useUserProviderAndSigner';
 export * from './useUserAddress';
