@@ -11,14 +11,14 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
+  useUserSigner,
   useContractLoader,
   useContractReader,
   useEventListener,
   useExchangePrice,
   useGasPrice,
   useOnBlock,
-  useUserSigner,
-} from "./hooks";
+} from "eth-hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
@@ -47,7 +47,7 @@ const targetNetwork = NETWORKS.localhost; // <------- select your target fronten
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
-const NETWORKCHECK = false;
+const NETWORKCHECK = true;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -58,7 +58,7 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
 const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -121,6 +121,14 @@ const logoutOfWeb3Modal = async () => {
   }, 1);
 };
 
+const contractList = require("./contracts/hardhat_contracts.json");
+const externalContractList = require("./contracts/external_contracts.js");
+
+const contractsConfig = {
+  hardhatContracts: contractList,
+  externalContracts: externalContractList
+}
+
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -164,15 +172,28 @@ function App(props) {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider);
+  const readContracts = useContractLoader(
+    localProvider,
+    contractsConfig
+  );
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
+  const writeContracts = useContractLoader(
+    userSigner,
+    {
+      chainId: localChainId,
+      hardhatContracts: contractsConfig.hardhatContracts,
+      externalContracts: contractsConfig.externalContracts
+    }
+);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider);
+  const mainnetContracts = useContractLoader(
+    mainnetProvider,
+    contractsConfig
+  );
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -262,7 +283,28 @@ function App(props) {
             description={
               <div>
                 You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <b>{networkLocal && networkLocal.name}</b>.
+                <Button
+                  onClick={async () => {
+                    const ethereum = window.ethereum;
+                    const data = [
+                      {
+                        chainId: "0x" + targetNetwork.chainId.toString(16),
+                        chainName: targetNetwork.name,
+                        nativeCurrency: targetNetwork.nativeCurrency,
+                        rpcUrls: [targetNetwork.rpcUrl],
+                        blockExplorerUrls: [targetNetwork.blockExplorer],
+                      },
+                    ];
+                    console.log("data", data);
+                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
+                    if (tx) {
+                      console.log(tx);
+                    }
+                  }}
+                >
+                  <b>{networkLocal && networkLocal.name}</b>
+                </Button>
+                .
               </div>
             }
             type="error"
@@ -414,6 +456,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              config={contractsConfig}
             />
           </Route>
           <Route path="/hints">
@@ -447,6 +490,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             {/*
             <Contract
@@ -456,6 +500,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             */}
           </Route>

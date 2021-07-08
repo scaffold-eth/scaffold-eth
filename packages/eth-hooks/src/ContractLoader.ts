@@ -1,5 +1,7 @@
 /* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
+import { Contract } from "@ethersproject/contracts";
+import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
 import { useEffect, useState } from "react";
 
 const { ethers } = require("ethers");
@@ -33,8 +35,19 @@ const { ethers } = require("ethers");
   - externalContracts: object with chainIds as keys, with an array of contracts for each
 */
 
-export default function useContractLoader(providerOrSigner, config = {}) {
-  const [contracts, setContracts] = useState();
+type Config = {
+  chainId?: number,
+  hardhatNetworkName?: string,
+  customAddresses?: Record<string, string>,
+  hardhatContracts: Record<string, Contract>,
+  externalContracts: Record<string, Contract>
+}
+
+export default function useContractLoader(
+  providerOrSigner: JsonRpcProvider | Web3Provider,
+  config: Config
+) {
+  const [contracts, setContracts] = useState<{[index: string]: Contract}>();
   useEffect(() => {
     let active = true;
 
@@ -43,8 +56,8 @@ export default function useContractLoader(providerOrSigner, config = {}) {
         console.log(`loading contracts`);
         try {
           // we need to check to see if this providerOrSigner has a signer or not
-          let signer;
-          let provider;
+          let signer: any;
+          let provider: any;
           let accounts;
 
           if (providerOrSigner && typeof providerOrSigner.listAccounts === "function") {
@@ -64,22 +77,22 @@ export default function useContractLoader(providerOrSigner, config = {}) {
 
           const providerNetwork = await provider.getNetwork();
 
-          const _chainId = config.chainId || providerNetwork.chainId;
+          const _chainId: string = config.chainId || providerNetwork.chainId;
 
-          let contractList = {};
-          let externalContractList = {};
+          let contractList: {[index: string]: any} = {};
+          let externalContractList: {[index: string]: any} = {};
           try {
-            contractList = config.hardhatContracts || require("../contracts/hardhat_contracts.json");
+            contractList = config.hardhatContracts;
           } catch (e) {
             console.log(e);
           }
           try {
-            externalContractList = config.externalContracts || require("../contracts/external_contracts.js");
+            externalContractList = config.externalContracts;
           } catch (e) {
             console.log(e);
           }
 
-          let combinedContracts = {};
+          let combinedContracts: {[index: string]: any} = {};
 
           if (contractList[_chainId]) {
             for (const hardhatNetwork in contractList[_chainId]) {
@@ -98,7 +111,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
             combinedContracts = { ...combinedContracts, ...externalContractList[_chainId].contracts };
           }
 
-          const newContracts = Object.keys(combinedContracts).reduce((accumulator, contractName) => {
+          const newContracts = Object.keys(combinedContracts).reduce((accumulator: {[index: string]: Contract}, contractName: string) => {
             const _address =
               config.customAddresses && Object.keys(config.customAddresses).includes(contractName)
                 ? config.customAddresses[contractName]

@@ -1,11 +1,16 @@
-import axios from "axios";
-import { usePoller } from "eth-hooks";
 import { useState } from "react";
+import axios from "axios";
+import usePoller from "./Poller";
 
-export default function useGasPrice(targetNetwork, speed) {
-  const [gasPrice, setGasPrice] = useState();
+export default function useGasPrice(
+  targetNetwork: any,
+  speed: string,
+  pollTime: number = 39999
+) {
+  const [gasPrice, setGasPrice] = useState<number>();
+
   const loadGasPrice = async () => {
-    if (targetNetwork.hasOwnProperty("gasPrice")) {
+    if(targetNetwork.hasOwnProperty("gasPrice")){
       setGasPrice(targetNetwork.gasPrice);
     } else {
       if(navigator.onLine){
@@ -22,6 +27,6 @@ export default function useGasPrice(targetNetwork, speed) {
     }
   };
 
-  usePoller(loadGasPrice, 39999);
+  usePoller(loadGasPrice, pollTime);
   return gasPrice;
 }
