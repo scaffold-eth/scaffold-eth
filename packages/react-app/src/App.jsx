@@ -280,8 +280,11 @@ function App(props) {
     );
   }
 
-  const loadWeb3Modal = useCallback(async () => {
-    let provider = await web3Modal.connect();
+  async function initGsn(provider) {
+    const chainId = parseInt(await provider.request({method:'eth_chainId', params:[]}))
+
+    if ( chainId != 31337 ) 
+      throw new Error("'scaffold-eth GSN support' is currently limited to local hardhat (31337), not "+chainId)
 
     const paymasterAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
     console.log("⛽ Using GSN provider");
@@ -293,17 +296,22 @@ function App(props) {
       }
     })
     await gsnProvider.init()
+    return gsnProvider
+  }
 
-    setInjectedProvider(new ethers.providers.Web3Provider(gsnProvider));
+  const loadWeb3Modal = useCallback(async () => {
+    const provider = await web3Modal.connect();
 
-    provider.on("chainChanged", chainId => {
+    setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
+
+    provider.on("chainChanged", async chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
     });
 
-    provider.on("accountsChanged", () => {
+    provider.on("accountsChanged", async () => {
       console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
     });
 
     // Subscribe to session disconnection
