@@ -4,11 +4,13 @@
     "module": "esNext",
     "outDir": "lib",
     "lib": ["dom", "ESNext"],
-    "sourceMap": false,
+    "composite": true,
+    "sourceMap": true,
     "allowJs": false,
-    "jsx": "preserve",
     "declaration": true,
     "declarationDir": "lib",
+    "declarationMap": true,
+    "resolveJsonModule": true,
     "moduleResolution": "node",
     "forceConsistentCasingInFileNames": true,
     "allowSyntheticDefaultImports": true,
@@ -27,6 +29,6 @@
       "~~/*": ["./src/*"]
     }
   },
-  "include": ["src/**/*"],
-  "exclude": ["lib", "node_modules", "*/node_modules/*"]
+  "include": ["src", "src/**/*.json"],
+  "exclude": ["lib", "node_modules", "**/node_modules", "**/node_modules/**", "../../node_modules/**/*"]
 }

@@ -1,5 +1,5 @@
+import { SigningKey } from '@ethersproject/signing-key';
 import { BytesLike, ethers, Signer } from 'ethers';
-import { SigningKey } from 'ethers/lib/utils';
 import { useState, useEffect } from 'react';
 
 import { TEthHooksProvider } from '~~/models/providerTypes';
@@ -14,7 +14,7 @@ export const useBurnerSigner = (provider: TEthHooksProvider): Signer | undefined
   const [signer, setSigner] = useState<Signer>();
   const [privateKeyValue, setPrivateKeyValue] = useState<BytesLike | SigningKey>();
 
-  const setValue = (value: any) => {
+  const setValue = (value: any): void => {
     try {
       setPrivateKeyValue(value);
       window.localStorage.setItem(key, value);

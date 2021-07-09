@@ -1,15 +1,8 @@
-import { JsonRpcProvider } from '@ethersproject/providers';
-import { Web3Provider } from '@ethersproject/providers/src.ts/web3-provider';
-import { ethers } from 'ethers';
-import { Signer } from 'ethers/lib/ethers';
+import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { ethers, Signer } from 'ethers';
 
-import { TProviderOrSigner } from '~~/models/providerTypes';
+import { TProviderAndSigner, TProviderOrSigner } from '~~/models';
 
-export type TProviderAndSigner = {
-  signer: Signer | undefined;
-  provider: ethers.providers.Provider | undefined;
-  providerNetwork: ethers.providers.Network | undefined;
-};
 export const parseProviderOrSigner = async (
   providerOrSigner: TProviderOrSigner | undefined
 ): Promise<TProviderAndSigner> => {

@@ -1,7 +1,6 @@
 import { useState, useEffect } from 'react';
 
-import { useBlockNumber } from '.';
-
+import { useBlockNumber } from '~~/index';
 import { TEthHooksProvider } from '~~/models';
 
 /**

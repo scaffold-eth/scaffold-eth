@@ -23,9 +23,9 @@ export const useContractExistsAtAddress = (provider: TEthHooksProvider, contract
      * If we find nothing (0x0) then there is no contract deployed to that address
      * @returns
      */
-    const checkDeployment = async () => {
+    const checkDeployment = async (): Promise<void> => {
       if (!utils.isAddress(contractAddress)) {
-        return false;
+        return;
       }
       const bytecode = await provider.getCode(contractAddress);
       setContractIsDeployed(bytecode !== '0x');

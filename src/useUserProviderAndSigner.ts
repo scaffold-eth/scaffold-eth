@@ -2,13 +2,12 @@ import { Provider } from '@ethersproject/providers';
 import { ethers, Signer } from 'ethers';
 import { useMemo, useState } from 'react';
 
-import { useBurnerSigner } from '.';
+import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
+import { useBurnerSigner } from '~~/index';
+import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from '~~/models';
 
-import { parseProviderOrSigner, TProviderAndSigner } from '~~/functions/providerOrSigner';
-import { TEthHooksProvider, TProviderOrSigner } from '~~/models';
-
-const syncBurnerKeyFromStorage = () => {
-  if (window.location.pathname && window.location.pathname.indexOf('/pk') >= 0) {
+const syncBurnerKeyFromStorage = (): void => {
+  if (window.location.pathname && window.location.pathname.includes('/pk')) {
     const incomingPK = window.location.hash.replace('#', '');
     let rawPK;
     if (incomingPK.length === 64 || incomingPK.length === 66) {
