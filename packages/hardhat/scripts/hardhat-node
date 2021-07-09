@@ -1,0 +1,4 @@
+yarn run chain-without-gsn \
+	| egrep --line-buffered -v 'eth_getBlockByNumber|eth_blockNumber' \
+	| tee /dev/tty \
+	| sed -le 's/Started HTTP/Listening on Http/'

@@ -3,8 +3,12 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "@openzeppelin/contracts/metatx/ERC2771Context.sol";
 
-contract YourContract {
+//NOTE: if you need to inherit other OpenZeppelin contracts, you need to add these overrides:
+// https://docs.opengsn.org/faq/troubleshooting.html#my-contract-is-using-openzeppelin-how-do-i-add-gsn-support
+
+contract YourContract is ERC2771Context {
 
   event SetPurpose(address sender, string purpose);
 
@@ -12,7 +16,7 @@ contract YourContract {
 
   error EmptyPurposeError(uint code, string message);
 
-  constructor() {
+  constructor(address forwarder) ERC2771Context(forwarder) {
     // what should we do on deploy?
   }
 
@@ -25,7 +29,7 @@ contract YourContract {
       }
 
       purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+      console.log(_msgSender(),"set purpose to",purpose);
+      emit SetPurpose(_msgSender(), purpose);
   }
 }

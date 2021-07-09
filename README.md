@@ -1,6 +1,20 @@
 # 🏗 Scaffold-ETH
 
-> everything you need to build on Ethereum! 🚀
+> everything you need to build on Ethereum! 🚀 - using GSN for gasless experience ⛽
+
+> This branch adds gasless transactions to your contract.
+>
+> Now the end user doesn't need to have ETH (so the faucet is no longer required!)
+>
+> Modifications to the standard "scaffold-eth":
+> - added GSN support to the contract and its deployment.
+> - add GSN support when loading the injected provider
+> - `yarn chain` start the `hardhat node` along with GSN
+> - you no longer need to use the faucet - your account can make transactions without gas (only sign the transactions)
+> 
+> Limitations:
+> - currently, only Metamask is supported (need to add support to any WalletConnect provider)
+
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
@@ -40,6 +54,7 @@ yarn deploy
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+quick note: when you need the address of the caller, make sure to use the helper method `_msgSender()` instead of `msg.sender`. That's the only change you need to make it "GSN-enabled"
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 

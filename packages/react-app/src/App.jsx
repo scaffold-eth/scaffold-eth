@@ -21,6 +21,7 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import { RelayProvider } from '@opengsn/provider'
 
 const { ethers } = require("ethers");
 /*
@@ -280,8 +281,20 @@ function App(props) {
   }
 
   const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    let provider = await web3Modal.connect();
+
+    const paymasterAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
+    console.log("⛽ Using GSN provider");
+    const gsnProvider = RelayProvider.newProvider({
+      provider,
+      config: {
+        paymasterAddress,
+        loggerConfiguration: {logLevel: 'debug'}            
+      }
+    })
+    await gsnProvider.init()
+
+    setInjectedProvider(new ethers.providers.Web3Provider(gsnProvider));
 
     provider.on("chainChanged", chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
@@ -335,7 +348,7 @@ function App(props) {
             setFaucetClicked(true);
           }}
         >
-          💰 Grab funds from the faucet ⛽️
+          💰 (No need for faucet money if using GSN!) ⛽️
         </Button>
       </div>
     );
