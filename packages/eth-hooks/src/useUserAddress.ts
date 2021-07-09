@@ -1,14 +1,13 @@
 import { useState, useEffect } from 'react';
 
-import { parseProviderOrSigner, TProviderAndSigner } from '~~/functions';
-import { TProviderOrSigner } from '~~/models';
+import { parseProviderOrSigner } from '~~/functions';
+import { TProviderAndSigner, TProviderOrSigner } from '~~/models';
 
 export const useUserAddress = (providerOrSigner: TProviderOrSigner): string => {
   const [userAddress, setUserAddress] = useState<string>('');
-  // sdfasdfklsdjafjdskfjsd
 
   useEffect(() => {
-    const getUserAddress = async (injectedProvider: TProviderOrSigner) => {
+    const getUserAddress = async (injectedProvider: TProviderOrSigner): Promise<void> => {
       const result: TProviderAndSigner = await parseProviderOrSigner(injectedProvider);
       if (result.signer) {
         const address = await result.signer?.getAddress();

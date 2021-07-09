@@ -8,11 +8,9 @@
     },
     "project": ["./tsconfig.json"],
     "tsconfigRootDir": ".",
-    "projectFolderIgnoreList": ["**/node_modules/**", "dist/**", "lib/**", "build/**", ".yarn", "build-utils"]
+    "projectFolderIgnoreList": ["node_modules", "dist", "lib", "build", ".yarn", "build-utils"]
   },
   "extends": [
-    "airbnb-typescript",
-    "airbnb/hooks",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:react-hooks/recommended",
@@ -50,12 +48,15 @@
         "endOfLine": "auto"
       }
     ],
-    "@typescript-eslint/ban-ts-comment": {
-      "ts-expect-error": "allow-with-description",
-      "ts-ignore": "allow-with-description",
-      "ts-nocheck": "allow-with-description",
-      "ts-check": "allow-with-description"
-    },
+    "@typescript-eslint/ban-ts-comment": [
+      "warn",
+      {
+        "ts-expect-error": false,
+        "ts-ignore": true, // "allow-with-description",
+        "ts-nocheck": true, //"allow-with-description",
+        "ts-check": true //"allow-with-description"
+      }
+    ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -70,6 +71,7 @@
     "@typescript-eslint/no-unsafe-assignment": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/explicit-function-return-type": "error",
     "@typescript-eslint/unbound-method": 0,
     "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/restrict-template-expressions": ["error", { "allowBoolean": true, "allowNumber": true }],

@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 
 import { TEthHooksProvider } from '~~/models';
 
-const lookupAddress = async (provider: TEthHooksProvider, address: string) => {
+const lookupAddress = async (provider: TEthHooksProvider, address: string): Promise<string> => {
   if (utils.isAddress(address)) {
     try {
       // Accuracy of reverse resolution is not enforced.
@@ -21,7 +21,7 @@ const lookupAddress = async (provider: TEthHooksProvider, address: string) => {
       return utils.getAddress(address);
     }
   }
-  return 0;
+  return '';
 };
 
 /**
@@ -34,8 +34,8 @@ export const useLookupAddress = (provider: TEthHooksProvider, address: string): 
   const [ensName, setEnsName] = useState(address);
 
   useEffect(() => {
-    let cache: any = window.localStorage.getItem('ensCache_' + address);
-    cache = cache && JSON.parse(cache);
+    const storedData: any = window.localStorage.getItem('ensCache_' + address);
+    const cache = JSON.parse(storedData ?? {}) as Record<string, any>;
 
     if (cache && cache?.name && cache?.timestamp > Date.now()) {
       setEnsName(cache?.name);
