@@ -21,7 +21,7 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": true,
-    "types": [],
+    "types": ["node", "ethers"],
     "rootDir": "./src/",
     "baseUrl": ".",
     "typeRoots": ["node_modules/@types", "helpers/types"],
