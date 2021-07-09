@@ -45,7 +45,7 @@ export const useContractLoader = (
   useEffect(() => {
     let active = true;
 
-    const loadContracts = async () => {
+    const loadContracts = async (): Promise<void> => {
       if (providerOrSigner && typeof providerOrSigner !== 'undefined') {
         console.log(`loading contracts`);
         console.log(providerOrSigner, config);
@@ -120,7 +120,7 @@ export const useContractLoader = (
 
     void loadContracts();
 
-    return () => {
+    return (): void => {
       active = false;
     };
   }, [
@@ -131,6 +131,7 @@ export const useContractLoader = (
     config.hardhatContracts,
     config.hardhatNetworkName,
     contractFileLocation,
+    config,
   ]);
 
   return contracts;

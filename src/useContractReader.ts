@@ -2,7 +2,7 @@ import { Provider } from '@ethersproject/providers';
 import { Contract, ContractFunction } from 'ethers';
 import { useEffect, useState } from 'react';
 
-import { useOnBlock, usePoller } from '.';
+import { useOnBlock, usePoller } from '~~/index';
 
 const DEBUG = false;
 
@@ -30,8 +30,8 @@ export const useContractReader = <T>(
   functionName: string,
   functionArgs: any[] = [],
   pollTime?: number,
-  formatter?: (value: T) => T,
-  onChange?: (value?: T) => void
+  formatter?: (_value: T) => T,
+  onChange?: (_value?: T) => void
 ): T | undefined => {
   let adjustPollTime = 0;
   if (pollTime) {
@@ -48,7 +48,7 @@ export const useContractReader = <T>(
     }
   }, [value, onChange]);
 
-  const updateValue = async () => {
+  const updateValue = async (): Promise<void> => {
     try {
       let newValue: T;
       if (DEBUG) console.log('CALLING ', contractName, functionName, 'with args', functionArgs);

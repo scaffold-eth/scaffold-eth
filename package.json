@@ -30,6 +30,7 @@
     "@ethersproject/contracts": "^5.4.0",
     "@ethersproject/networks": "^5.4.1",
     "@ethersproject/providers": "^5.4.1",
+    "@ethersproject/signing-key": "^5.4.0",
     "@ethersproject/solidity": "^5.4.0",
     "@ethersproject/units": "^5.4.0",
     "@uniswap/token-lists": "^1.0.0-beta.24",
@@ -63,7 +64,6 @@
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
     "eslint": "^7.30.0",
-    "eslint-config-airbnb-typescript-prettier": "^4.2.0",
     "eslint-plugin-import": "^2.23.4",
     "eslint-plugin-jest": "^24.3.6",
     "eslint-plugin-react": "^7.24.0",
@@ -95,7 +95,7 @@
     "publish": "cd lib && npm publish && shx rm ./lib/package.json",
     "watch": "watch 'yarn build' ./src",
     "clean": "shx rm -rf ./lib",
-    "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*"
+    "lint": "eslint --config ./.eslintrc --ignore-path ./.eslintignore ./src/**/*"
   },
   "config": {
     "commitizen": {

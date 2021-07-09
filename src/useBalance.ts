@@ -2,8 +2,7 @@ import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
 import { useState, useCallback } from 'react';
 
-import { usePoller, useOnBlock } from '.';
-
+import { usePoller, useOnBlock } from '~~/index';
 import { TEthHooksProvider } from '~~/models';
 
 /**

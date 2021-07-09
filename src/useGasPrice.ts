@@ -1,8 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { useState } from 'react';
 
-import { usePoller } from '.';
-
+import { usePoller } from '~~/index';
 import { TNetwork } from '~~/models';
 
 /**
@@ -29,7 +28,7 @@ export const useGasPrice = (
   const multiplier = 100000000;
   const [gasPrice, setGasPrice] = useState<number | undefined>();
 
-  const loadGasPrice = () => {
+  const loadGasPrice = (): void => {
     if (targetNetwork?.gasPrice) {
       setGasPrice(targetNetwork.gasPrice);
     } else {

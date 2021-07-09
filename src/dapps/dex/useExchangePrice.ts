@@ -1,8 +1,7 @@
 import { Token, WETH, Fetcher, Route } from '@uniswap/sdk';
 import { useState } from 'react';
 
-import { useOnBlock, usePoller } from '../..';
-
+import { useOnBlock, usePoller } from '~~/index';
 import { TNetwork } from '~~/models';
 import { TEthHooksProvider } from '~~/models/providerTypes';
 
@@ -13,10 +12,10 @@ export const useExchangePrice = (
 ): number => {
   const [price, setPrice] = useState(0);
 
-  const pollPrice = () => {
-    const getPrice = async () => {
+  const pollPrice = (): void => {
+    const getPrice = async (): Promise<void> => {
       if (!mainnetProvider) {
-        return 0;
+        return;
       } else if (targetNetwork.price) {
         setPrice(targetNetwork.price);
       } else {

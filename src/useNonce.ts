@@ -1,8 +1,6 @@
 import { useState } from 'react';
 
-import { useOnBlock } from './useOnBlock';
-import { usePoller } from './usePoller';
-
+import { useOnBlock, usePoller } from '~~/index';
 import { TEthHooksProvider } from '~~/models';
 
 /**

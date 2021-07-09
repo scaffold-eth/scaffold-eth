@@ -43,7 +43,7 @@ export const useEventListener = (
     if (contracts?.[contractName] != undefined) {
       try {
         contracts[contractName].on(eventName, addNewEvent);
-        return () => {
+        return (): void => {
           contracts[contractName].off(eventName, addNewEvent);
         };
       } catch (e) {

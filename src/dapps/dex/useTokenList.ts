@@ -19,9 +19,9 @@ export const useTokenList = (
   const [tokenList, setTokenList] = useState<TokenInfo[]>([]);
 
   useEffect(() => {
-    const getTokenList = async () => {
+    const getTokenList = async (): Promise<void> => {
       try {
-        const tokenList: TokenList = (await axios(tokenListUri)).data;
+        const tokenList: TokenList = (await axios(tokenListUri)).data as TokenList;
         if (tokenList != undefined) {
           let tokenInfo: TokenInfo[] = [];
 
