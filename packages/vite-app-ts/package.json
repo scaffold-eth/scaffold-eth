@@ -37,7 +37,7 @@
     "burner-provider": "^1.0.38",
     "contract-types": "file:../hardhat-ts/generated/contract-types/",
     "eslint-plugin-tailwind": "^0.2.1",
-    "eth-hooks": "file:../eth-hooks",
+    "eth-hooks": "2.1.1",
     "ethereum-cryptography": "^0.1.3",
     "ethers": "^5.4.1",
     "history": "^5.0.0",
