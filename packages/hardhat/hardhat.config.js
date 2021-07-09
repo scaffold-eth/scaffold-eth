@@ -1,11 +1,17 @@
 const { utils } = require("ethers");
+const path = require("path");
 const fs = require("fs");
 const chalk = require("chalk");
+
+const resolve = require("resolve");
+const { TASK_CIRCOM_TEMPLATE } = require("hardhat-circom");
+const { subtask } = require("hardhat/config");
 
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
 
 require("hardhat-deploy");
+require("hardhat-circom");
 
 require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
@@ -37,6 +43,31 @@ function mnemonic() {
     }
   }
   return "";
+}
+
+function circuits() {
+  try {
+    const circuitNames = fs.readdirSync("./circuits/", { withFileTypes: true })
+      .filter(dirent => dirent.isDirectory())
+      .map(dirent => dirent.name);
+
+    let circuits = [];
+
+    circuitNames.forEach((name, index) => {
+      circuits[index] = {
+        name: name,
+        circuit: `${name}/circuit.circom`,
+        input: `${name}/input.json`,
+        wasm: `${name}.wasm`,
+        zkey: `${name}.zkey`,
+      }
+    })
+
+    return circuits;
+
+  } catch(error) {
+    console.log(error);
+  }
 }
 
 module.exports = {
@@ -192,6 +223,12 @@ module.exports = {
       default: 0, // here this will by default take the first account as deployer
     },
   },
+  circom: {
+    inputBasePath: "./circuits/",
+    outputBasePath: "./client/",
+    ptau: "powersOfTau28_hez_final_15.ptau",
+    circuits: circuits(),
+  },
 };
 
 const DEBUG = false;
@@ -201,6 +238,18 @@ function debug(text) {
     console.log(text);
   }
 }
+
+async function circomTemplate({ zkeys }, hre) {
+  const snarkjsTemplate = resolve.sync("snarkjs/templates/verifier_groth16.sol");
+
+  for (const zkey of zkeys) {
+    const verifierSol = await hre.snarkjs.zKey.exportSolidityVerifier(zkey, snarkjsTemplate);
+    const verifierPath = path.join(hre.config.paths.sources, `Verifier_${zkey.name}.sol`);
+    fs.writeFileSync(verifierPath, verifierSol);
+  }
+}
+
+subtask(TASK_CIRCOM_TEMPLATE, "generate Verifier template shipped by SnarkjS").setAction(circomTemplate);
 
 task("wallet", "Create a wallet (pk) link", async (_, { ethers }) => {
   const randomWallet = ethers.Wallet.createRandom();
