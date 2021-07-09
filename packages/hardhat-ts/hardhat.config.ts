@@ -1,25 +1,35 @@
 // This adds support for typescript paths mappings
 import 'tsconfig-paths/register';
 import { ethers, Signer, utils } from 'ethers';
+import { HardhatUserConfig, task } from 'hardhat/config';
 
-import '@nomiclabs/hardhat-waffle';
 import '@typechain/hardhat';
+import '@nomiclabs/hardhat-waffle';
 import '@nomiclabs/hardhat-ethers';
+import '@tenderly/hardhat-tenderly';
+
 import 'hardhat-deploy';
 import 'hardhat-deploy-ethers';
-import '@tenderly/hardhat-tenderly';
-import 'solidity-coverage';
+
+//import 'solidity-coverage';
 
 import * as fs from 'fs';
 import * as path from 'path';
 import * as chalk from 'chalk';
+
 import { TransactionRequest } from '@ethersproject/providers';
 import { HttpNetworkUserConfig } from 'hardhat/types';
-import { HardhatUserConfig, task } from 'hardhat/config';
-import { EthersT } from 'helpers/types/hardhat-type-extensions';
+import { TEthers } from 'helpers/types/hardhat-type-extensions';
+
+declare module 'hardhat/types/runtime' {
+  // This is an example of an extension to the Hardhat Runtime Environment.
+  // This new field will be available in tasks' actions, scripts, and tests.
+  export interface HardhatRuntimeEnvironment {
+    ethers: TEthers;
+  }
+}
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
-
 //
 // Select the network you want to deploy to here:
 //
@@ -311,7 +321,7 @@ task('account', 'Get balance informations for the deployment account.', async (_
   }
 });
 
-const findFirstAddr = async (ethers: EthersT, addr: string) => {
+const findFirstAddr = async (ethers: TEthers, addr: string) => {
   if (isAddress(addr)) {
     return getAddress(addr);
   }

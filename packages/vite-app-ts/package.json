@@ -10,8 +10,7 @@
     "ipfs-ts": "node ./scripts/ipfs.js",
     "surge-ts": "surge ./build",
     "s3-ts": "node ./scripts/s3.js",
-    "ship-ts": "yarn surge",
-    "dev-reinstall-hooks": "yarn add \"file:../eth-hooks\""
+    "ship-ts": "yarn surge"
   },
   "dependencies": {
     "@ant-design/icons": "^4.2.2",

@@ -20,7 +20,7 @@ export type { HardhatRuntimeEnvironment as HardhatRuntimeEnvironmentT };
 
 export type { Deployment as DeploymentT } from 'hardhat-deploy/types';
 
-export type EthersT = typeof ethers & HardhatRuntimeEnvironment['ethers'];
+export type TEthers = typeof ethers & HardhatEthersHelpers;
 
 // export const castEthersT = (e: (typeof ethers & HardhatEthersHelpers) | any): EthersT => {
 //   return e as EthersT;
