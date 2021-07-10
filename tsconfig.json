@@ -21,14 +21,21 @@
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "strict": true,
-    "types": ["node", "ethers"],
-    "rootDir": "./src/",
+    "rootDir": "./src",
     "baseUrl": ".",
     "typeRoots": ["node_modules/@types", "helpers/types"],
     "paths": {
+      "~~": ["./src/"],
       "~~/*": ["./src/*"]
     }
   },
-  "include": ["src", "src/**/*.json"],
-  "exclude": ["lib", "node_modules", "**/node_modules", "**/node_modules/**", "../../node_modules/**/*"]
+  "include": ["src", "src/**/*.json", "lib"],
+  "exclude": [
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "node_modules",
+    "**/node_modules",
+    "**/node_modules/**",
+    "../../node_modules/**/*"
+  ]
 }
