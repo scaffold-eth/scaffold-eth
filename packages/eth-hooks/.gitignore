@@ -1,7 +1,0 @@
-# folders
-lib/
-node_modules/
-
-*.log
-*.tgz
-*.tsbuildinfo
