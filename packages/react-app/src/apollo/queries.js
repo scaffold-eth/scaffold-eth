@@ -187,3 +187,28 @@ export const HOLDINGS_MAIN_INKS_QUERY = gql`
     }
   }
 `;
+
+export const INK_TRANSFERS_QUERY = gql`
+  query inks($id: String) {
+    inks (where: {id: $id}) {
+      tokens {
+        id
+        ink {
+          artist {
+            id
+          }
+        }
+        sales {
+          price
+          createdAt
+        }
+        transfers (orderBy: createdAt, orderDirection: asc){
+          id
+          createdAt
+          from
+          to
+        }
+      }
+    }
+  }
+`;
