@@ -9,10 +9,10 @@ import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from '~~/mod
 const syncBurnerKeyFromStorage = (): void => {
   if (window.location.pathname && window.location.pathname.includes('/pk')) {
     const incomingPK = window.location.hash.replace('#', '');
-    let rawPK;
+
     if (incomingPK.length === 64 || incomingPK.length === 66) {
       console.log('🔑 Incoming Private Key...');
-      rawPK = incomingPK;
+      const rawPK = incomingPK;
       window.history.pushState({}, '', '/');
       const currentPrivateKey = window.localStorage.getItem('metaPrivateKey');
       if (currentPrivateKey && currentPrivateKey !== rawPK) {

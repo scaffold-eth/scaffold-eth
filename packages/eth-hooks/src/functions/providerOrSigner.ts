@@ -7,12 +7,12 @@ export const parseProviderOrSigner = async (
   providerOrSigner: TProviderOrSigner | undefined
 ): Promise<TProviderAndSigner> => {
   let signer: Signer | undefined = undefined;
-  let accounts: string[];
+
   let provider: ethers.providers.Provider | undefined;
   let providerNetwork: ethers.providers.Network | undefined;
 
   if (providerOrSigner && (providerOrSigner instanceof JsonRpcProvider || providerOrSigner instanceof Web3Provider)) {
-    accounts = await providerOrSigner.listAccounts();
+    const accounts = await providerOrSigner.listAccounts();
     if (accounts && accounts.length > 0) {
       signer = providerOrSigner.getSigner();
     }
