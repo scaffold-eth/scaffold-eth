@@ -1,4 +1,4 @@
 import ExampleGameActionsWindow from './ExampleGameActionsWindow'
-import InitialInstructionsWindow from './InitialInstructionsWindow'
+import InitChainInstructionsWindow from './InitChainInstructionsWindow'
 
-export { ExampleGameActionsWindow, InitialInstructionsWindow }
+export { ExampleGameActionsWindow, InitChainInstructionsWindow }

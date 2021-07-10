@@ -18,7 +18,7 @@ const dialog = [
             <Button
               id='continue'
               onClick={() => {
-                actions.setInitialInstructionsWindowVisibility(true)
+                actions.setInitChainInstructionsWindowVisibility(true)
               }}
             >
               Show instructions

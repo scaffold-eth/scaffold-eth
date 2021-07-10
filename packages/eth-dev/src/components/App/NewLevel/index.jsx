@@ -3,13 +3,16 @@ import { Background, Terminal } from '../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../gameItems'
 import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../backgrounds'
 
-import { InitialInstructionsWindow, ExampleGameActionsWindow } from './components'
+import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
 import Dialog from './Dialog'
 
 const NewLevel = ({ dialog, actions }) => {
   // ----------------------------------------
   const [background, setBackground] = useState('citySkylineInsideNight')
-  const [initialInstructionsWindowVisible, setInitialInstructionsWindowVisibility] = useState(false)
+  const [
+    initialInstructionsWindowVisible,
+    setInitChainInstructionsWindowVisibility
+  ] = useState(false)
 
   const backgroundStrings = [
     'intro',
@@ -42,10 +45,13 @@ const NewLevel = ({ dialog, actions }) => {
       <Background>{backgroundComp}</Background>
 
       <Terminal>
-        <Dialog dialog={dialog} actions={{ ...actions, setInitialInstructionsWindowVisibility }} />
+        <Dialog
+          dialog={dialog}
+          actions={{ ...actions, setInitChainInstructionsWindowVisibility }}
+        />
       </Terminal>
 
-      <InitialInstructionsWindow isOpen={initialInstructionsWindowVisible} />
+      <InitChainInstructionsWindow isOpen={initialInstructionsWindowVisible} />
 
       <ExampleGameActionsWindow
         setBackground={setBackground}

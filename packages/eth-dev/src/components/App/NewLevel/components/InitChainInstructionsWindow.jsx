@@ -3,7 +3,7 @@ import React from 'react'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { CodeContainer, WindowModal } from '../../gameItems/components'
 
-const InitialInstructionsWindow = ({ dialog, actions, isOpen }) => {
+const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
   return (
     <WindowModal
       initTop={60}
@@ -32,4 +32,4 @@ $ yarn deploy`}
   )
 }
 
-export default wrapGlobalGameData(InitialInstructionsWindow)
+export default wrapGlobalGameData(InitChainInstructionsWindow)
