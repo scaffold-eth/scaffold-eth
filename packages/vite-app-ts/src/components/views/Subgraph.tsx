@@ -8,6 +8,7 @@ import GraphiQL from 'graphiql';
 import 'graphiql/graphiql.min.css';
 import fetch from 'isomorphic-fetch';
 import React, { FC, useState } from 'react';
+
 import { Address } from '~~/components/common';
 
 const highlight: React.CSSProperties = {

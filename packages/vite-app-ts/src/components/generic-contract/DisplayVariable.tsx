@@ -3,8 +3,8 @@
 import { Col, Divider, Row } from 'antd';
 import { ContractFunction } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
-import React, { FC, SetStateAction, useCallback, useEffect, useState } from 'react';
-import { Dispatch } from 'react';
+import React, { FC, SetStateAction, useCallback, useEffect, useState, Dispatch } from 'react';
+
 import { tryToDisplay } from './displayUtils';
 
 interface IDisplayVariableProps {

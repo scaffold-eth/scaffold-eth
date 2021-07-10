@@ -1,8 +1,8 @@
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { formatEther } from '@ethersproject/units';
+import { useBalance } from 'eth-hooks';
 import { BigNumber } from 'ethers';
 import React, { FC, useState } from 'react';
-import { useBalance } from 'eth-hooks';
 
 /*
   ~ What it does? ~

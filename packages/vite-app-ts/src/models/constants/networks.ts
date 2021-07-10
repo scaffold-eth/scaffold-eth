@@ -1,7 +1,8 @@
-import { TNetwork } from '~~/models/networkTypes';
 import { INFURA_ID } from './constants';
 
-export const getNetwork = (chainId: number) => {
+import { TNetwork } from '~~/models/networkTypes';
+
+export const getNetwork = (chainId: number): TNetwork | undefined => {
   for (const n in NETWORKS) {
     if (NETWORKS[n].chainId === chainId) {
       return NETWORKS[n];

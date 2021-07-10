@@ -37,12 +37,13 @@
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
     "clean": "cd packages/hardhat && npx hardhat clean",
-    "build-ts": "yarn workspace @scaffold-eth/vite-app-ts build --max-old-space-size=12288",
+    "build-hooks": "yarn workspace eth-hooks build",
+    "build-ts": "yarn workspace @scaffold-eth/vite-app-ts build-ts --max-old-space-size=12288",
+    "start-ts": "yarn workspace eth-hooks build && yarn workspace @scaffold-eth/vite-app-ts start-ts", 
     "chain-ts": "yarn workspace @scaffold-eth/hardhat-ts chain-ts",
     "fork-ts": "yarn workspace @scaffold-eth/hardhat-ts fork-ts",
     "node-ts": "yarn workspace @scaffold-eth/hardhat-ts chain-ts",
     "test-ts": "yarn workspace @scaffold-eth/hardhat-ts test-ts",
-    "start-ts": "yarn workspace eth-hooks build && yarn workspace @scaffold-eth/vite-app-ts start-ts", 
     "compile-ts": "yarn workspace @scaffold-eth/hardhat-ts compile-ts",
     "deploy-ts": "yarn workspace @scaffold-eth/hardhat-ts deploy-ts",
     "watch-ts": "yarn workspace @scaffold-eth/hardhat-ts watch-ts",
@@ -72,8 +73,7 @@
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "build-hooks": "yarn workspace eth-hooks build"
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
   },
   "workspaces": {
     "packages": [

@@ -1,14 +1,14 @@
 {
   "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
+  // "ignorePatterns": ["**/*.pcss", "**/*.css", "**/*.less"],
   "parserOptions": {
-    "ecmaVersion": "latest", // Allows for the parsing of modern ECMAScript features
+    "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
     "sourceType": "module", // Allows for the use of imports,
     "ecmaFeatures": {
-      "jsx": true // Allows for the parsing of JSX
+      "jsx": true // Allows for the parsing of JSX,
     },
-    "project": ["./tsconfig.json"],
     "tsconfigRootDir": ".",
-    "projectFolderIgnoreList": ["**/node_modules/**", "dist/**", "lib/**", "build/**", ".yarn", "build-utils"]
+    "projectFolderIgnoreList": ["**/node_modules/**", "dist/**", "build/**", ".yarn", "build-utils"]
   },
   "env": {
     "browser": true,
@@ -62,12 +62,15 @@
         "endOfLine": "auto"
       }
     ],
-    "@typescript-eslint/ban-ts-comment": {
-      "ts-expect-error": "allow-with-description",
-      "ts-ignore": "allow-with-description",
-      "ts-nocheck": "allow-with-description",
-      "ts-check": "allow-with-description"
-    },
+    "@typescript-eslint/ban-ts-comment": [
+      "warn",
+      {
+        "ts-expect-error": false,
+        "ts-ignore": true,
+        "ts-nocheck": false,
+        "ts-check": false
+      }
+    ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
     "@typescript-eslint/no-unused-vars": [
@@ -82,6 +85,7 @@
     "@typescript-eslint/no-unsafe-assignment": "warn",
     "@typescript-eslint/no-explicit-any": "off",
     "@typescript-eslint/no-unsafe-call": "warn",
+    "@typescript-eslint/explicit-function-return-type": "warn",
     "@typescript-eslint/unbound-method": "off",
     "@typescript-eslint/no-unsafe-member-access": "warn",
     "@typescript-eslint/restrict-template-expressions": ["error", { "allowBoolean": true, "allowNumber": true }],
@@ -100,6 +104,10 @@
     ],
     "no-param-reassign": "error",
     "no-duplicate-imports": "warn",
+    "import/named": "off",
+    "import/namespace": "off",
+    "import/default": "off",
+    "import/no-named-as-default-member": "error",
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",

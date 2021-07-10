@@ -25,7 +25,7 @@
       "~~/*": ["./src/*"]
     }
   },
-  "include": ["./src", "types"],
+  "include": ["src"],
   "exclude": ["**/node_modules", ".husky", "./src/styles/css", "./tailwind.config.js"],
   "files": ["src/helpers/types/__global.ts"]
 }

@@ -25,8 +25,6 @@ import {
   notification,
 } from 'antd';
 import WalletConnectProvider from '@walletconnect/web3-provider';
-import 'antd/dist/antd.css';
-
 import {
   useUserAddress,
   useGasPrice,
@@ -37,6 +35,7 @@ import {
   useUserProviderAndSigner,
 } from 'eth-hooks';
 import { useExchangePrice } from 'eth-hooks/lib/dapps/dex';
+import { getChainId } from 'web3modal';
 
 import {
   Header,
@@ -51,13 +50,18 @@ import {
   Address,
   ThemeSwitcher,
 } from '~~/components/common';
+import { useLocalStorage } from '~~/components/common/hooks';
 import { GenericContract } from '~~/components/generic-contract';
-import { transactor } from '~~/helpers';
-import { formatEther, parseEther } from '@ethersproject/units';
-//import Hints from "./Hints";
+import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { Checkout, Hints, Subgraph } from '~~/components/views';
+import { ExampleUI } from '~~/components/views/ExampleUI';
+import { transactor } from '~~/helpers';
+
+import { formatEther, parseEther } from '@ethersproject/units';
+// import Hints from "./Hints";
 
 import { useThemeSwitcher, ThemeSwitcherProvider } from 'react-css-theme-switcher';
+
 import {
   INFURA_ID,
   DAI_ADDRESS,
@@ -69,16 +73,14 @@ import {
   mainStreamReader_ABI,
 } from '~~/models/constants/constants';
 import { getNetwork, NETWORKS } from '~~/models/constants/networks';
+
 import pretty from 'pretty-time';
 import { Contract, ethers, Signer } from 'ethers';
+
 import { TNetwork } from '~~/models/networkTypes';
-import { ExampleUI } from '~~/components/views/ExampleUI';
-import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
-import { useLocalStorage } from '~~/components/common/hooks';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+
+import { TEthHooksProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
 import { useEventListener } from 'eth-hooks/lib/events';
-import { TProviderAndSigner } from 'eth-hooks/lib/functions';
-import { getChainId } from 'web3modal';
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -93,15 +95,14 @@ import { getChainId } from 'web3modal';
     You should get your own Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
 
-
     🌏 EXTERNAL CONTRACTS:
     You can also bring in contract artifacts in `constants.js`
     (and then use the `useExternalContractLoader()` hook!)
 */
 
 const translateAddressesForLocal = (addy: string) => {
-  //if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
-  //if(addy=="0x21e18260357D33d2e18482584a8F39D532fb71cC") return "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
+  // if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
+  // if(addy=="0x21e18260357D33d2e18482584a8F39D532fb71cC") return "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
   return addy;
 };
 
@@ -148,7 +149,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId: number = localProvider && localProvider._network && localProvider._network.chainId;
-  let selectedChainId: number | undefined = undefined;
+  let selectedChainId: number | undefined;
   if (userProviderAndSigner) {
     userProviderAndSigner.signer?.getChainId().then((chaindId: number) => (selectedChainId = chaindId));
   }
@@ -199,7 +200,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
 
-  //search filter for front page
+  // search filter for front page
   const [filter, setFilter] = useState(() => {
     const { search } = (window as any).location;
     return new URLSearchParams(search).get('s');
@@ -216,20 +217,20 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
       console.log('🏠 localChainId', localChainId);
       console.log('👩‍💼 selected address:', address);
       console.log('🕵🏻‍♂️ selectedChainId:', selectedChainId);
-      /*console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
+      /* console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
       console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
       console.log("📝 readContracts",readContracts)
       console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
-      console.log("🔐 writeContracts",writeContracts)*/
+      console.log("🔐 writeContracts",writeContracts) */
     }
   }, [mainnetProvider, address, selectedChainId]);
 
-  let networkDisplay: ReactElement | undefined = undefined;
+  let networkDisplay: ReactElement | undefined;
   if (localChainId != undefined && selectedChainId && localChainId != selectedChainId) {
     networkDisplay = (
       <div style={{ zIndex: 2, position: 'absolute', right: 0, top: 60, padding: 16 }}>
         <Alert
-          message={'⚠️ Wrong Network'}
+          message="⚠️ Wrong Network"
           description={
             <div>
               You have <b>{getNetwork(selectedChainId)?.name}</b> selected and you need to be on{' '}
@@ -301,13 +302,13 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
     setRandomizedBuilds(shuffle(BUILDS));
   }, [BUILDS]);
 
-  const [cart, setCart] = useLocalStorage('buidlguidlcart', [], 12000000); //12000000 ms timeout? idk
-  //console.log("cart",cart)
-  //console.log("route",route)
+  const [cart, setCart] = useLocalStorage('buidlguidlcart', [], 12000000); // 12000000 ms timeout? idk
+  // console.log("cart",cart)
+  // console.log("route",route)
 
-  let displayCart = [];
+  const displayCart = [];
   if (cart && cart.length > 0) {
-    for (let c in cart) {
+    for (const c in cart) {
       console.log('CART ITEM', c, cart[c]);
       if (!cart[c].streamAddress) {
         displayCart.push(
@@ -318,8 +319,8 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                   // borderless={true}
                   onClick={() => {
                     console.log('REMOVE ', c, cart[c]);
-                    let update = [];
-                    for (let x in cart) {
+                    const update = [];
+                    for (const x in cart) {
                       if (cart[c].id != cart[x].id) {
                         update.push(cart[x]);
                       }
@@ -342,8 +343,8 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                 <Button
                   onClick={() => {
                     console.log('REMOVE ', c, cart[c]);
-                    let update = [];
-                    for (let x in cart) {
+                    const update = [];
+                    for (const x in cart) {
                       if (cart[c].id != cart[x].id) {
                         update.push(cart[x]);
                       }
@@ -355,8 +356,8 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                 </Button>
               </div>
               <Address
-                hideCopy={true}
-                punkBlockie={true}
+                hideCopy
+                punkBlockie
                 fontSize={18}
                 address={cart[c].address}
                 ensProvider={mainnetProvider}
@@ -571,12 +572,12 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
 };
 
 function shuffle(array: any[]) {
-  var currentIndex = array.length,
-    temporaryValue,
-    randomIndex;
+  let currentIndex = array.length;
+  let temporaryValue;
+  let randomIndex;
 
   // While there remain elements to shuffle...
-  while (0 !== currentIndex) {
+  while (currentIndex !== 0) {
     // Pick a remaining element...
     randomIndex = Math.floor(Math.random() * currentIndex);
     currentIndex -= 1;

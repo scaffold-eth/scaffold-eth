@@ -9,7 +9,7 @@ import React from 'react';
 
   ReactDOM.render(
     <React.StrictMode>
-      <Suspense fallback={<div></div>}>
+      <Suspense fallback={<div />}>
         <App />
       </Suspense>
     </React.StrictMode>,

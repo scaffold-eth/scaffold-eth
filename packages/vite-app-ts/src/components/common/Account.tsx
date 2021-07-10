@@ -1,12 +1,12 @@
+import { Signer } from '@ethersproject/abstract-signer';
+import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Button } from 'antd';
+import { TEthHooksProvider } from 'eth-hooks/lib/models';
 import React, { FC } from 'react';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
-import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import Web3Modal from 'web3modal';
-import { Address } from '.';
-import { Balance, Wallet } from '.';
-import { Signer } from '@ethersproject/abstract-signer';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+
+import { Address, Balance, Wallet } from '.';
 
 export interface IAccountProps {
   address: string;
@@ -88,7 +88,7 @@ export const Account: FC<IAccountProps> = (props: IAccountProps) => {
   ) : (
     <span>
       {address ? (
-        <Address punkBlockie={true} address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+        <Address punkBlockie address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
       ) : (
         'Connecting...'
       )}

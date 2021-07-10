@@ -1,14 +1,16 @@
 import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from '@ant-design/icons';
+import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { parseEther } from '@ethersproject/units';
 import { Button, Modal, Spin, Tooltip, Typography } from 'antd';
+import { useUserAddress } from 'eth-hooks';
 import { BytesLike, ethers, Signer } from 'ethers';
 import QR from 'qrcode.react';
 import React, { FC, useState } from 'react';
-import { transactor } from '~~/helpers';
-import { Address, AddressInput, Balance, EtherInput } from '.';
-import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { providers } from 'web3modal';
-import { useUserAddress } from 'eth-hooks';
+
+import { Address, AddressInput, Balance, EtherInput } from '.';
+
+import { transactor } from '~~/helpers';
 
 const { Text, Paragraph } = Typography;
 

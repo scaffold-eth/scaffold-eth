@@ -4,15 +4,14 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Button, Col, Divider, Input, Row, Tooltip } from 'antd';
-import { Contract, ContractFunction } from 'ethers';
+import { Contract, ContractFunction, utils } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
-import React, { Dispatch, ReactElement, SetStateAction, useState } from 'react';
-import { FC } from 'react';
+import React, { Dispatch, ReactElement, SetStateAction, useState, FC } from 'react';
 import Blockies from 'react-blockies';
-import { transactor } from '~~/helpers';
+
 import { tryToDisplay } from './displayUtils';
 
-import { utils } from 'ethers';
+import { transactor } from '~~/helpers';
 
 interface IFunctionForm {
   contractFunction: ContractFunction;
@@ -133,7 +132,7 @@ export const FunctionForm: FC<IFunctionForm> = (props) => {
               <Col span={16}>
                 <Tooltip placement="right" title=" * 10^18 ">
                   <div
-                    //type="dashed"
+                    // type="dashed"
                     style={{ cursor: 'pointer' }}
                     onClick={async () => {
                       const floatValue = parseFloat(txValue);
@@ -146,7 +145,7 @@ export const FunctionForm: FC<IFunctionForm> = (props) => {
               <Col span={16}>
                 <Tooltip placement="right" title="number to hex">
                   <div
-                    //type="dashed"
+                    // type="dashed"
                     style={{ cursor: 'pointer' }}
                     onClick={async () => {
                       setTxValue(BigNumber.from(txValue).toHexString());
@@ -184,7 +183,7 @@ export const FunctionForm: FC<IFunctionForm> = (props) => {
         suffix={
           <div
             style={{ width: 50, height: 30, margin: 0 }}
-            //type="default"
+            // type="default"
             onClick={async () => {
               let innerIndex = 0;
               const args = props.functionInfo.inputs.map((input) => {

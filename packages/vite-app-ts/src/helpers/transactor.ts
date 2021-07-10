@@ -10,11 +10,12 @@ import { parseUnits } from '@ethersproject/units';
 import { notification } from 'antd';
 import notify, { API } from 'bnc-notify';
 import Notify, { InitOptions } from 'bnc-notify';
-import { BigNumber, ethers, Signer } from 'ethers';
-import { BLOCKNATIVE_DAPPID } from '~~/models/constants/constants';
 import { parseProviderOrSigner } from 'eth-hooks/lib/functions';
 import { TProviderOrSigner } from 'eth-hooks/lib/models';
+import { BigNumber, ethers, Signer } from 'ethers';
 import { Deferrable } from 'ethers/lib/utils';
+
+import { BLOCKNATIVE_DAPPID } from '~~/models/constants/constants';
 
 const callbacks: Record<string, any> = {};
 const DEBUG = true;
@@ -36,8 +37,8 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
     ) => {
       const { signer, provider, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
-      let options: InitOptions | undefined = undefined;
-      let notify: API | undefined = undefined;
+      let options: InitOptions | undefined;
+      let notify: API | undefined;
       if (navigator.onLine) {
         options = {
           dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
@@ -66,7 +67,7 @@ export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasP
       }
 
       try {
-        let result: TransactionResponse | Record<string, any> | undefined = undefined;
+        let result: TransactionResponse | Record<string, any> | undefined;
         if (tx instanceof Promise) {
           if (DEBUG) console.log('AWAITING TX', tx);
           result = await tx;

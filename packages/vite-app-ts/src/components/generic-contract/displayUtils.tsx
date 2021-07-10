@@ -1,6 +1,7 @@
 import { formatUnits } from '@ethersproject/units';
 import { BigNumber } from 'ethers';
 import React from 'react';
+
 import { Address } from '../common/Address';
 
 export const tryToDisplay = (thing: any) => {

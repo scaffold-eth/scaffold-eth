@@ -4,6 +4,7 @@ import { Badge, Input } from 'antd';
 import { useLookupAddress } from 'eth-hooks/lib/dapps/ens';
 import React, { Dispatch, FC, SetStateAction, useCallback, useState } from 'react';
 import QrReader from 'react-qr-reader';
+
 import { Blockie } from '.';
 
 interface IAddressInputProps {
