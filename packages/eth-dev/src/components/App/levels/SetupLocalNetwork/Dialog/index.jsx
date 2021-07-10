@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import { Button } from '../../../gameItems/components'
 import dialog from './dialogArray'
 
-const DIALOG_PART_ID = 'intro/start'
+const DIALOG_PART_ID = 'setup-local-network/start'
 
 const Dialog = ({ actions, dialog: dialogProps }) => {
   const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps

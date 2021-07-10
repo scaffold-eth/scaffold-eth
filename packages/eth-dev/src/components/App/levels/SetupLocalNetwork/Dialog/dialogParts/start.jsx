@@ -6,7 +6,7 @@ import { enrichDialog } from '../helpers'
 import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
 import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
-export const DIALOG_PATH_ID = 'intro/start'
+export const DIALOG_PATH_ID = 'setup-local-network/start'
 
 const dialog = [
   {

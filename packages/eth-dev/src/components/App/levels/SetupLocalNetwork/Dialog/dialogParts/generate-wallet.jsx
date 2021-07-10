@@ -3,7 +3,7 @@ import { Button } from '../../../../gameItems/components'
 import { SpeakerLeft } from '../components'
 import { enrichDialog } from '../helpers'
 
-export const DIALOG_PATH_ID = 'intro/generate-wallet'
+export const DIALOG_PATH_ID = 'setup-local-network/generate-wallet'
 
 const dialog = [
   {
