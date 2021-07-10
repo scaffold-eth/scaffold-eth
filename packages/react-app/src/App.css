@@ -27,3 +27,47 @@
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1), 0 3px 3px rgba(0, 0, 0, 0.1);
   transition: box-shadow 0.3s ease-in-out;
 }
+
+.artists-leaderboard {
+  padding: 15px 10px;
+}
+
+.artists-leaderboard ul {
+  list-style-type: none;
+  padding: 0;
+  width: 100%;
+}
+
+.artists-leadboard-entry {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgb(229, 229, 230);
+  border-radius: 10px;
+  margin-bottom: 5px;
+}
+
+.artists-leadboard-entry-rank {
+  width: 65px;
+  padding: 12px;
+  margin: 0 10px;
+}
+
+.artists-leadboard-entry-rank h3 {
+  font-weight: bold;
+}
+
+
+.artists-leadboard-entry-address {
+  width: 475px;
+  /* flex-grow: 1; */
+  zoom: 0.6;
+}
+
+.artists-leadboard-entry-stats {
+  padding: 5px 20px;
+}
+
+.artists-leadboard-entry-stats p {
+  margin: 0;
+  font-size: 0.7rem;
+}

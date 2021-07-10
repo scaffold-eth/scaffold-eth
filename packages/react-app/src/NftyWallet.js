@@ -9,6 +9,7 @@ import { createClient } from '@supabase/supabase-js'
 import Holdings from "./Holdings.js";
 import AllInks from "./AllInks.js";
 import Artist from "./Artist.js";
+import Leaderboard from "./Leaderboard.js";
 import CreateInk from "./CreateInk.js";
 import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
@@ -309,6 +310,23 @@ export default function NftyWallet(props) {
 
         <TabPane
           tab={
+            <NavLink to={"/leaderboard"}>
+            <>
+              <span>
+                <span style={{ padding: 8 }} role="img" aria-label="Trophy">
+                🏆
+                </span>
+                leaderboard
+              </span>
+            </>
+          </NavLink>
+          }
+          key="leaderboard"
+        >
+        </TabPane>
+
+        <TabPane
+          tab={
              <NavLink to="/create">
             <Button
               style={{ marginBottom: 8 }}
@@ -364,6 +382,10 @@ export default function NftyWallet(props) {
 
         <Route path="/artist/:address">
           <Artist {...props} supabase={supabase} />
+        </Route>
+
+        <Route path="/leaderboard">
+          <Leaderboard {...props} supabase={supabase} />
         </Route>
 
         <Route path="/create">
