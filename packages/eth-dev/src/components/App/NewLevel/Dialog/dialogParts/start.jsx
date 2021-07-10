@@ -32,7 +32,7 @@ const dialog = [
     component: ({ currentDialog, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerRight
-          text='This game is targeted towards more experienced developer (developer in general, not
+          text='This game is targeted towards more experienced developers (developers in general, not
               Ethereum specific.'
         />
         {isLastVisibleDialog && (
