@@ -2,7 +2,7 @@ import { Provider } from '@ethersproject/providers';
 import { Contract, ContractFunction } from 'ethers';
 import { useEffect, useState } from 'react';
 
-import { useOnBlock, usePoller } from '~~/index';
+import { useOnBlock, usePoller } from '~~';
 
 const DEBUG = false;
 

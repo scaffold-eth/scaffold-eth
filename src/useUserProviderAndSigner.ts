@@ -2,8 +2,8 @@ import { Provider } from '@ethersproject/providers';
 import { ethers, Signer } from 'ethers';
 import { useMemo, useState } from 'react';
 
+import { useBurnerSigner } from '~~';
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
-import { useBurnerSigner } from '~~/index';
 import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from '~~/models';
 
 const syncBurnerKeyFromStorage = (): void => {

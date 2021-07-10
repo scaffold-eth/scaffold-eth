@@ -1,7 +1,7 @@
 import axios, { AxiosResponse } from 'axios';
 import { useState } from 'react';
 
-import { usePoller } from '~~/index';
+import { usePoller } from '~~';
 import { TNetwork } from '~~/models';
 
 /**
