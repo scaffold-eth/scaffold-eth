@@ -25,11 +25,11 @@ const DialogContainer = ({ terminalVisible, currentLevel, dialog, children }) =>
       {terminalVisible && (
         <ReactModal
           className={uniqueWindowId}
-          initWidth={359}
-          initHeight={709}
-          isOpen
           top={100}
           left={30}
+          initHeight={709}
+          initWidth={359}
+          isOpen
         >
           <>
             <div

@@ -5,10 +5,10 @@ import './styles.css'
 
 export default function WindowModalClassic({
   uniqueWindowId,
-  initWidth,
-  initHeight,
   initTop,
   initLeft,
+  initHeight,
+  initWidth,
   onFocus,
   onRequestClose,
   isOpen,

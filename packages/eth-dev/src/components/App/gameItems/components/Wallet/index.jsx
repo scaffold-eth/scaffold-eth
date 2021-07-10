@@ -153,11 +153,11 @@ const Wallet = ({
     <div id='wallet'>
       <ReactModal
         className={uniqueWindowId}
-        initWidth={290}
-        initHeight={500}
-        isOpen={walletVisible}
         top={160}
         left={430}
+        initHeight={500}
+        initWidth={290}
+        isOpen={walletVisible}
       >
         <div
           className='background-image'

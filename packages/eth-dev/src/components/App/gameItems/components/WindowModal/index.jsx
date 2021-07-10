@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react'
 import ReactModal from 'react-modal-resizable-draggable'
+import shortid from 'shortid'
 import $ from 'jquery'
 import './styles.css'
 
 export default function WindowModal({
-  uniqueWindowId,
+  uniqueWindowId = shortid(),
   backgroundPath,
-  initWidth,
-  initHeight,
   initTop,
   initLeft,
+  initWidth,
+  initHeight,
   dragAreaHeightPercent,
   onFocus,
   onRequestClose,
@@ -25,13 +26,13 @@ export default function WindowModal({
   return (
     <ReactModal
       className={uniqueWindowId}
-      initWidth={initWidth}
+      top={initTop}
+      left={initLeft}
       initHeight={initHeight}
+      initWidth={initWidth}
       onFocus={onFocus}
       onRequestClose={onRequestClose}
       isOpen={isOpen}
-      top={initTop}
-      left={initLeft}
     >
       <div
         className='background-image'

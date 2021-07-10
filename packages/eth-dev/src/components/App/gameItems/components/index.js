@@ -4,6 +4,9 @@ import Wallet from './Wallet/index'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
 
+import WindowModal from './WindowModal'
+import WindowModalClassic from './WindowModalClassic'
+
 import Address from './Address'
 import AddressInput from './AddressInput'
 import Balance from './Balance'
@@ -26,6 +29,9 @@ export {
   Wallet,
   Toolbelt,
   Dish,
+
+  WindowModal,
+  WindowModalClassic,
 
   Address,
   AddressInput,
