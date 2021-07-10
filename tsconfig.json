@@ -1,0 +1,41 @@
+{
+  "compilerOptions": {
+    "target": "esNext",
+    "module": "esNext",
+    "outDir": "lib",
+    "lib": ["dom", "ESNext"],
+    "composite": true,
+    "sourceMap": true,
+    "allowJs": false,
+    "declaration": true,
+    "declarationDir": "lib",
+    "declarationMap": true,
+    "resolveJsonModule": true,
+    "moduleResolution": "node",
+    "forceConsistentCasingInFileNames": true,
+    "allowSyntheticDefaultImports": true,
+    "downlevelIteration": true,
+    "esModuleInterop": true,
+    "isolatedModules": false,
+    "noImplicitAny": true,
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "strict": true,
+    "rootDir": "./src",
+    "baseUrl": ".",
+    "typeRoots": ["node_modules/@types", "helpers/types"],
+    "paths": {
+      "~~": ["./src/"],
+      "~~/*": ["./src/*"]
+    }
+  },
+  "include": ["src", "src/**/*.json", "lib"],
+  "exclude": [
+    "lib/**/*.ts",
+    "lib/**/*.tsx",
+    "node_modules",
+    "**/node_modules",
+    "**/node_modules/**",
+    "../../node_modules/**/*"
+  ]
+}
