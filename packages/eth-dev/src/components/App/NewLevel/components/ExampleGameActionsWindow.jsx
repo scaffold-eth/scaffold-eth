@@ -17,7 +17,7 @@ const ExampleGameActionsWindow = ({ actions, setBackground, getRandomBackground 
       contentContainerStyle={{ marginTop: '20%', paddingLeft: 20, paddingRight: 20 }}
     >
       <div style={{ color: 'white' }}>
-        <p>Actions</p>
+        <p style={{ fontSize: 11, textAlign: 'center' }}>Available Game Actions</p>
         <Button block onClick={() => actions.dialog.continueDialog()}>
           Advance Dialog
         </Button>
