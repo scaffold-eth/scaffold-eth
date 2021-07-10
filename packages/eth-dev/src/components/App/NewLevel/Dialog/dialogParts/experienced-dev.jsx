@@ -9,7 +9,6 @@ export const DIALOG_PATH_ID = 'intro/experienced-dev'
 const dialog = [
   {
     component: ({ currentDialog, isLastVisibleDialog, actions }) => {
-      console.log({ isLastVisibleDialog, currentDialog })
       return (
         <>
           <SpeakerLeft
