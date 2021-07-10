@@ -9,6 +9,7 @@ import WindowModalClassic from './WindowModalClassic'
 
 import Address from './Address'
 import AddressInput from './AddressInput'
+import Button from './Button'
 import Balance from './Balance'
 import Blockie from './Blockie'
 import BytesStringInput from './BytesStringInput'
@@ -35,6 +36,7 @@ export {
 
   Address,
   AddressInput,
+  Button,
   Balance,
   Blockie,
   BytesStringInput,

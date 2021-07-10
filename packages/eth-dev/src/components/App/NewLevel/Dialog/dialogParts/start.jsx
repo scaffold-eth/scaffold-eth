@@ -1,4 +1,5 @@
 import React from 'react'
+import { Button } from '../../../gameItems/components'
 import { SpeakerLeft, SpeakerRight } from '../components'
 import { enrichDialog } from '../helpers'
 
@@ -6,17 +7,6 @@ import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
 import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
 export const DIALOG_PATH_ID = 'intro/start'
-
-const styles = {
-  button: {
-    float: 'left',
-    width: '96%',
-    marginTop: '30px',
-    marginLeft: '2%',
-    marginRight: '5%',
-    fontSize: '8px'
-  }
-}
 
 const dialog = [
   {
@@ -37,9 +27,7 @@ const dialog = [
         />
         {isLastVisibleDialog && (
           <>
-            <button
-              type='button'
-              className='nes-btn'
+            <Button
               id='continue'
               onClick={() =>
                 actions.dialog.jumpToDialogPath({
@@ -47,13 +35,10 @@ const dialog = [
                   dialogPathId: EXPERIENCED_DIALOG_PATH_ID
                 })
               }
-              style={{ ...styles.button }}
             >
               I'm an experienced developer
-            </button>
-            <button
-              type='button'
-              className='nes-btn'
+            </Button>
+            <Button
               id='continue'
               onClick={() =>
                 actions.dialog.jumpToDialogPath({
@@ -61,10 +46,9 @@ const dialog = [
                   dialogPathId: BEGINNER_DIALOG_PATH_ID
                 })
               }
-              style={{ ...styles.button }}
             >
               I'm more of a beginner
-            </button>
+            </Button>
           </>
         )}
       </>
