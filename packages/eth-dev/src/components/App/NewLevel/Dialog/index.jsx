@@ -41,6 +41,8 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
         }}
       >
         {filteredDialog.map((dialogPart, index) => {
+          console.log({ index })
+          console.log({ currentDialogIndex })
           const isLastVisibleDialog = index === currentDialogIndex
           const isFinalDialog = index === dialog.length - 1
 

@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
-import { Button } from 'antd'
-import shortid from 'shortid'
-
-import { Background, Terminal } from '../gameItems/components'
-import WindowModal from '../gameItems/components/WindowModal'
+import { Button, Background, Terminal, WindowModal } from '../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../gameItems'
 import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../backgrounds'
 
+import { InitialInstructionsWindow } from './components'
 import Dialog from './Dialog'
 
 const NewLevel = ({ dialog, actions }) => {
   // ----------------------------------------
   const [background, setBackground] = useState('citySkylineInsideNight')
+  const [initialInstructionsWindowVisible, setInitialInstructionsWindowVisibility] = useState(false)
 
   const backgroundStrings = [
     'intro',
@@ -44,15 +42,16 @@ const NewLevel = ({ dialog, actions }) => {
       <Background>{backgroundComp}</Background>
 
       <Terminal>
-        <Dialog dialog={dialog} actions={actions} />
+        <Dialog dialog={dialog} actions={{ ...actions, setInitialInstructionsWindowVisibility }} />
       </Terminal>
 
+      <InitialInstructionsWindow isOpen={initialInstructionsWindowVisible} />
+
       <WindowModal
-        uniqueWindowId={shortid()}
-        initWidth={312}
-        initHeight={400}
-        initTop={100}
+        initTop={320}
         initLeft={400}
+        initHeight={450}
+        initWidth={312}
         backgroundPath='./assets/trimmed/window_trimmed.png'
         dragAreaHeightPercent={20}
         onRequestClose={() => console.log('onRequestClose')}
