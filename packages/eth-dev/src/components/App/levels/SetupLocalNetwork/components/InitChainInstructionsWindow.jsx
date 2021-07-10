@@ -1,7 +1,7 @@
 import React from 'react'
 
-import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { CodeContainer, WindowModal } from '../../gameItems/components'
+import { connectController as wrapGlobalGameData } from '../../../gameItems'
+import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
   return (

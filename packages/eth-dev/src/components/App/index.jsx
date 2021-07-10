@@ -9,7 +9,7 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
 import { formatEther } from '@ethersproject/units'
 
-import NewLevel from './NewLevel'
+import { SetupLocalNetwork, CreateWallet } from './levels'
 
 import {
   usePoller,
@@ -184,7 +184,7 @@ const App = props => {
     <ReduxProvider store={store} key='reduxProvider'>
       <div id='app'>
         <LevelContainer>
-          <NewLevel />
+          <SetupLocalNetwork />
 
           {/* <Terminal /> */}
 

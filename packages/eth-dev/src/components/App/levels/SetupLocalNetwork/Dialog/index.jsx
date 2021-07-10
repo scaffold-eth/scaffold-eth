@@ -1,18 +1,8 @@
 import React, { useEffect } from 'react'
+import { Button } from '../../../gameItems/components'
 import dialog from './dialogArray'
 
 const DIALOG_PART_ID = 'intro/start'
-
-const styles = {
-  button: {
-    float: 'left',
-    width: '96%',
-    marginTop: '30px',
-    marginLeft: '2%',
-    marginRight: '5%',
-    fontSize: '8px'
-  }
-}
 
 const Dialog = ({ actions, dialog: dialogProps }) => {
   const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps
@@ -32,7 +22,7 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
   })
 
   return (
-    <div id='newLevelDialog'>
+    <div id='setupLocalNetworkLevelDialog'>
       <div
         style={{
           float: 'left',
@@ -49,15 +39,9 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
               {dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
 
               {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
-                <button
-                  type='button'
-                  className='nes-btn'
-                  id='continue'
-                  onClick={() => actions.dialog.continueDialog()}
-                  style={{ ...styles.button }}
-                >
+                <Button id='continue' onClick={() => actions.dialog.continueDialog()}>
                   Continue
-                </button>
+                </Button>
               )}
             </>
           )

@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button } from '../../../gameItems/components'
+import { Button } from '../../../../gameItems/components'
 import { SpeakerLeft } from '../components'
 import { enrichDialog } from '../helpers'
 

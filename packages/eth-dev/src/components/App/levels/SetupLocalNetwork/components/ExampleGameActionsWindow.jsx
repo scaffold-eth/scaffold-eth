@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 
-import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { Button, WindowModal } from '../../gameItems/components'
+import { connectController as wrapGlobalGameData } from '../../../gameItems'
+import { Button, WindowModal } from '../../../gameItems/components'
 
 const ExampleGameActionsWindow = ({ actions, setBackground, getRandomBackground }) => {
   return (

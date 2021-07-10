@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
-import { Background, Terminal } from '../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../gameItems'
-import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../backgrounds'
+import { Background, Terminal } from '../../gameItems/components'
+import { connectController as wrapGlobalGameData } from '../../gameItems'
+import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../../backgrounds'
 
 import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
 import Dialog from './Dialog'
 
-const NewLevel = ({ dialog, actions }) => {
+const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   // ----------------------------------------
   const [background, setBackground] = useState('citySkylineInsideNight')
   const [
@@ -41,7 +41,7 @@ const NewLevel = ({ dialog, actions }) => {
   // ----------------------------------------
 
   return (
-    <div id='newLevel'>
+    <div id='setupLocalNetworkLevel'>
       <Background>{backgroundComp}</Background>
 
       <Terminal>
@@ -61,4 +61,4 @@ const NewLevel = ({ dialog, actions }) => {
   )
 }
 
-export default wrapGlobalGameData(NewLevel)
+export default wrapGlobalGameData(SetupLocalNetworkLevel)
