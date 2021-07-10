@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
-import { Button, Badge, Tabs, Row, Col, Drawer } from "antd";
+import { Button, Badge, Tabs, Row, Col, Drawer, Layout, Menu } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
@@ -15,6 +15,8 @@ import ViewInk from "./ViewInk.js";
 import Help from "./Help.js";
 import Explore from "./Explore.js";
 const { TabPane } = Tabs;
+
+const { Header, Content } = Layout;
 
 const Web3HttpProvider = require("web3-providers-http");
 
@@ -41,7 +43,7 @@ export default function NftyWallet(props) {
     window.document.body.clientWidth
   );
 
-  const [tab, setTab] = useState("create");
+  const [tab, setTab] = useState("explore");
 
   const [mode, setMode] = useState("edit");
 
@@ -147,43 +149,76 @@ export default function NftyWallet(props) {
     >
       <Row gutter={16} align={"middle"}>
         <Col>{accountDisplay}</Col>
-
-        <Col>
-        <NavLink to="create">
-          <Button
-            style={{ marginRight: 8, marginTop: 8 }}
-            shape="round"
-            size="large"
-            type="primary"
-          >
-            <span style={{ marginRight: 12 }}>🖌</span>
-          </Button>
-        </NavLink>
-        </Col>
       </Row>
     </div>
   );
 
-  let supportButton = (
-    <div
-      style={{
-        zIndex: 99,
-        position: "fixed",
-        textAlign: "left",
-        left: 0,
-        bottom: 20,
-        padding: 10,
-        backgroundColor: "#FFFFFF",
-        borderRadius: 16
-      }}
-    >
-      <Row gutter={4} align={"middle"}>
-        <Col>
+  return (
+    <Layout style={{background: "#fff"}}>
+    <Header className="header" style={{background: "#fff", textAlign:'center'}}>
+      <Menu mode="horizontal" defaultSelectedKeys={[tab]} style={{fontSize: 16}}
+        onClick={({key}) => {
+                console.log(key)
+                setTab(key);
+              }}>
+        <Menu.Item key="explore">
+          <NavLink to="/explore">
+            <span
+              style={{ fontSize: 24, padding: 8 }}
+              role="img"
+              aria-label="Artist Palette"
+            >
+              🎨 Nifty Ink
+            </span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="create">
+          <NavLink to="/create">
+           <Button
+             style={{ marginBottom: 8 }}
+             size="large"
+             shape="round"
+             type={"primary"}
+           >
+             <span style={{ marginRight: 12 }}>🖌</span> Create
+           </Button>
+         </NavLink>
+        </Menu.Item>
+        <Menu.Item key="artist" disabled={!props.address}>
+          <NavLink to={"/artist/"+props.address}>
+            <span>
+              <span style={{ padding: 8 }} role="img" aria-label="Painting">
+                🖼
+              </span>{" "}
+              inks
+            </span>{" "}
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="holdings">
+          <NavLink to={"/holdings/"+props.address}>
+            <span>
+              <span style={{ padding: 8 }} role="img" aria-label="Purse">
+                👛
+              </span>{" "}
+              holdings
+            </span>{" "}
+            <Badge style={badgeStyle} count={displayBalance} showZero />
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="leaderboard">
+          <NavLink to={"/leaderboard"}>
+            <span>
+              <span style={{ padding: 8 }} role="img" aria-label="Trophy">
+              🏆
+              </span>
+              leaderboard
+            </span>
+          </NavLink>
+        </Menu.Item>
+        <Menu.Item key="chat">
           <Button
-            style={{ marginRight: 8, marginTop: 8 }}
-            shape="round"
+            type="link"
             size="large"
-            type="secondary"
             onClick={() => {
               window.open("https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg");
             }}
@@ -197,14 +232,28 @@ export default function NftyWallet(props) {
             </span>
             Chat
           </Button>
-        </Col>
-
-        <Col>
+        </Menu.Item>
+        <Menu.Item key="help">
           <Button
-            style={{ marginRight: 8, marginTop: 8 }}
-            shape="round"
+            style={{ marginRight: 8}}
+            type="link"
             size="large"
-            type="secondary"
+            onClick={showDrawer}
+          >
+            <span
+              style={{ marginRight: 12 }}
+              role="img"
+              aria-label="Light Bulb"
+            >
+              💡
+            </span>
+            Help
+          </Button>
+        </Menu.Item>
+        <Menu.Item key="about">
+          <Button
+            type="link"
+            size="large"
             onClick={() => {
               window.open(
                 "https://medium.com/@austin_48503/nifty-ink-an-ethereum-tutorial-c860a4904cb2"
@@ -220,131 +269,12 @@ export default function NftyWallet(props) {
             </span>
             About
           </Button>
-        </Col>
-        <Col>
-          <Button
-            style={{ marginRight: 8, marginTop: 8 }}
-            shape="round"
-            size="large"
-            type="secondary"
-            onClick={showDrawer}
-          >
-            <span
-              style={{ marginRight: 12 }}
-              role="img"
-              aria-label="Light Bulb"
-            >
-              💡
-            </span>
-            Help
-          </Button>
-        </Col>
-      </Row>
-    </div>
-  );
-
-  return (
+        </Menu.Item>
+      </Menu>
+    </Header>
+    <Content style={{background: "#fff", padding: 20}}>
     <div>
-      <Tabs
-        activeKey={tab}
-        onChange={(t) => {
-          setTab(t);
-        }}
-        style={{ marginTop: 0, padding: 8, textAlign: "center" }}
-        tabBarExtraContent={""}
-        defaultActiveKey="1"
-      >
 
-        <TabPane tab={
-          <NavLink to="/explore">
-          <>
-            <span
-              style={{ fontSize: 24, padding: 8 }}
-              role="img"
-              aria-label="Artist Palette"
-            >
-              🎨 Nifty Ink
-            </span>
-          </>
-          </NavLink>
-          }
-          key="1">
-        </TabPane>
-
-        <TabPane
-          disabled={!props.address}
-          tab={
-            <NavLink to={"/artist/"+props.address}>
-            <>
-              <span>
-                <span style={{ padding: 8 }} role="img" aria-label="Painting">
-                  🖼
-                </span>{" "}
-                inks
-              </span>{" "}
-            </>
-          </NavLink>
-          }
-          key="inks"
-        >
-        </TabPane>
-
-        <TabPane
-          disabled={!(nftyBalance && nftyBalance.toString && nftyMainBalance && nftyMainBalance.toString)}
-          tab={
-            <NavLink to={"/holdings/"+props.address}>
-            <>
-              <span>
-                <span style={{ padding: 8 }} role="img" aria-label="Purse">
-                  👛
-                </span>{" "}
-                holdings
-              </span>{" "}
-              <Badge style={badgeStyle} count={displayBalance} showZero />
-            </>
-          </NavLink>
-          }
-          key="holdings"
-        >
-        </TabPane>
-
-        <TabPane
-          tab={
-            <NavLink to={"/leaderboard"}>
-            <>
-              <span>
-                <span style={{ padding: 8 }} role="img" aria-label="Trophy">
-                🏆
-                </span>
-                leaderboard
-              </span>
-            </>
-          </NavLink>
-          }
-          key="leaderboard"
-        >
-        </TabPane>
-
-        <TabPane
-          tab={
-             <NavLink to="/create">
-            <Button
-              style={{ marginBottom: 8 }}
-              shape="round"
-              size="large"
-              type={"primary"}
-            >
-              <PlusOutlined /> Create
-            </Button>
-            </NavLink>
-          }
-          key="4"
-        >
-        </TabPane>
-
-      </Tabs>
-
-      {supportButton}
       {accountWithCreateButton}
 
       <Switch>
@@ -502,5 +432,7 @@ export default function NftyWallet(props) {
       )}
       </Drawer>
     </div>
+    </Content>
+    </Layout>
   );
 }

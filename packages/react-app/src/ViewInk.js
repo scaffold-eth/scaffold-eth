@@ -12,7 +12,7 @@ import NiftyShop from "./NiftyShop.js"
 import UpgradeInkButton from "./UpgradeInkButton.js"
 import axios from 'axios';
 import { useQuery } from "react-apollo";
-import { INK_QUERY, INK_MAIN_QUERY, INK_TRANSFERS_QUERY } from "./apollo/queries"
+import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries"
 import CanvasDraw from "react-canvas-draw";
 import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from 'apollo-boost'
@@ -51,6 +51,7 @@ export default function ViewInk(props) {
   const [blockNumber, setBlockNumber] = useState(0)
   const [data, setData] = useState()
   const [tokenTxs, setTokenTxs] = useState([]);
+  const [inkTokenTransfers, setInkTokenTransfers] = useState([]);
 
   const [drawing, setDrawing] = useState()
 
@@ -64,41 +65,6 @@ export default function ViewInk(props) {
     variables: { inkUrl: hash, liker: props.address ? props.address.toLowerCase() : '' },
     pollInterval: 2500
   });
-
-  const {loading: loadingTransfers, error: errorTransfers, data: dataTranfers} = useQuery(INK_TRANSFERS_QUERY, {
-    variables: { id: data ? data.ink.id : null }
-  })
-
-  const createTokensTxsArray = arr => {
-    let addr0 = "0x0000000000000000000000000000000000000000";
-    let artist = arr[0].ink.artist.id;
-    let tokens = [];
-  
-    arr.map((token) => {
-      let txsPlaceholder = [];
-      token.transfers.map((transfer) => {
-        txsPlaceholder.push({
-          tx: transfer.id,
-          date: transfer.createdAt,
-          from: transfer.from,
-          to: transfer.to,
-          price: token.sales.find((sale) => sale.createdAt === transfer.createdAt)
-            ? token.sales.find((sale) => sale.createdAt === transfer.createdAt)
-                .price
-            : "0",
-          type:
-            transfer.from === addr0 && transfer.to === artist
-              ? "Mint"
-              : token.sales.find((sale) => sale.createdAt === transfer.createdAt)
-              ? "Purchase"
-              : "Transfer",
-        });
-      });
-      tokens.push({ id: token.id, txs: txsPlaceholder });
-    });
-  
-    return tokens;
-  }
 
   useEffect(() => {
 
@@ -117,11 +83,8 @@ export default function ViewInk(props) {
     };
 
     (dataRaw && dataRaw.ink) ? getInk(dataRaw) : console.log("loading");
+    (dataRaw && dataRaw.ink) ? setInkTokenTransfers(dataRaw.ink.tokenTransfers) : console.log()
   }, [dataRaw, props.address]);
-
-  useEffect(() => {
-    dataTranfers && dataTranfers.inks.length > 0 ? setTokenTxs(createTokensTxsArray(dataTranfers.inks[0].tokens)) : console.log()
-  },[dataTranfers])
 
   useEffect(() => {
     if((props.address && data && data.ink && props.address.toLowerCase() === data.ink.artist.id) && (parseInt(data.ink.count) < parseInt(data.ink.limit) || data.ink.limit === "0")) {
@@ -463,7 +426,7 @@ const clickAndSave = (
         )
 
         tokenTransfers = (
-          tokenTxs && tokenTxs.length > 0 ? 
+          inkTokenTransfers && inkTokenTransfers.length > 0 ?
             <div style={{maxWidth: "700px", margin: "0 auto", textAlign: "left"}}>
                    <ul style={{listStyle: "none", padding: "5px", margin: "0"}}>
                       <li style={{padding: "2px 6px", display: "flex", justifyContent: "space-between", fontWeight: "bold", background: "#f5f5f5"}}>
@@ -475,20 +438,23 @@ const clickAndSave = (
                         <span style={{flexBasis: "12%", flexGrow: "1", fontWeight: "bold"}}>Date</span>
                     </li>
                   </ul>
-
-              {tokenTxs.map((token,i) => 
-                <ul key={token.id} style={{listStyle: "none", padding: "5px", margin: "0", borderBottom: "1px solid #e5e5e6"}}>
-                  {token.txs.map((transfer, transferIndex) => 
-                    <li key={transfer.tx} style={{padding: "2px 6px", display: "flex", justifyContent: "space-between"}}>
-                      <span style={{flexBasis: "10%", flexGrow: "1", fontWeight: "bold"}}>{transferIndex === 0 ? i+1 : null}</span>
+                  {inkTokenTransfers.map((transfer, transferIndex) =>
+                    <li key={transfer.id} style={{padding: "2px 6px", display: "flex", justifyContent: "space-between"}}>
+                      <span style={{flexBasis: "10%", flexGrow: "1", fontWeight: "bold"}}>{transfer.token.edition}</span>
                       <span style={{flexBasis: "10%", flexGrow: "1"}}>
-                        <Link to={{ pathname: `https://blockscout.com/xdai/mainnet/tx/${transfer.tx}` }} target="_blank" rel="noopener noreferrer">
-                          {transfer.type}
+                        <Link to={{ pathname: `https://blockscout.com/xdai/mainnet/tx/${transfer.transactionHash}` }} target="_blank" rel="noopener noreferrer">
+                          { (transfer.sale && transfer.sale.id)
+                            ? "Purchase"
+                            : (transfer.from === "0x0000000000000000000000000000000000000000")
+                            ? "Mint"
+                            : (transfer.to === "0x0000000000000000000000000000000000000000" || transfer.to === "0x000000000000000000000000000000000000dead")
+                            ? "Burn"
+                            : "Transfer"}
                         </Link>
                         </span>
                       <span style={{zoom: "0.5", flexBasis: "25%", flexGrow: "1"}}>
                           {transfer.from === "0x0000000000000000000000000000000000000000" ?
-                            <Address value={transfer.from} ensProvider={props.mainnetProvider} clickable={true} notCopyable={true}/>
+                            null
                           :
                             <Link to={`/artist/${transfer.from}`}>
                               <Address value={transfer.from} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
@@ -504,14 +470,12 @@ const clickAndSave = (
                             </Link>
                           }
                       </span>
-                      <span style={{flexBasis: "8%", flexGrow: "1"}}>{transfer.price === "0" ? "-" : "$"+(parseInt(transfer.price) / 1e18).toFixed(2)}</span>
-                      <span style={{flexBasis: "12%", flexGrow: "1"}}>{transfer.date&&(new Date(parseInt(transfer.date) * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                      <span style={{flexBasis: "8%", flexGrow: "1"}}>{transfer.sale&&transfer.sale.price ? "$"+(parseInt(transfer.sale.price) / 1e18).toFixed(2) : "-"}</span>
+                      <span style={{flexBasis: "12%", flexGrow: "1"}}>{transfer.createdAt&&(new Date(parseInt(transfer.createdAt) * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
                     </li>
                   )}
-                </ul>    
-              )}
             </div> : null
-        ) 
+        )
     }
   }
 
