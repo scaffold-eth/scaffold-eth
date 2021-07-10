@@ -2656,6 +2656,7 @@
     fastq "^1.6.0"
 
 "@nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers", hardhat-deploy-ethers@^0.3.0-beta.10:
+  name "@nomiclabs/hardhat-ethers"
   version "0.3.0-beta.10"
   resolved "https://registry.yarnpkg.com/hardhat-deploy-ethers/-/hardhat-deploy-ethers-0.3.0-beta.10.tgz#bccfcf635d380bbab3638960f6739fe4d396fc5f"
   integrity sha512-TeyriUshRZ7XVHOjMsDtTozIrdwLf3Bw+oZRYNhXdG/eut5HeDhjUFPfRlG7TI1lSLvkcB5dt7OxOtPYKDOxTg==
@@ -23465,7 +23466,7 @@ ts-invariant@^0.8.0:
   dependencies:
     tslib "^2.1.0"
 
-ts-node@^10.0.0:
+ts-node@^10.0.0, ts-node@^10.1.0:
   version "10.1.0"
   resolved "https://registry.yarnpkg.com/ts-node/-/ts-node-10.1.0.tgz#e656d8ad3b61106938a867f69c39a8ba6efc966e"
   integrity sha512-6szn3+J9WyG2hE+5W8e0ruZrzyk1uFLYye6IGMBadnOzDh8aP7t8CbFpsfCiEx2+wMixAhjFt7lOZC4+l+WbEA==
@@ -23480,6 +23481,17 @@ ts-node@^10.0.0:
     make-error "^1.1.1"
     source-map-support "^0.5.17"
     yn "3.1.1"
+
+ts-patch@^1.3.4:
+  version "1.3.4"
+  resolved "https://registry.yarnpkg.com/ts-patch/-/ts-patch-1.3.4.tgz#8efc3c5acd50d74c7a118a4e5abf027727119d7a"
+  integrity sha512-aRvbAH1N0NtCpCvS99btOvamr5IeWfsfAs0YrHWIYfSAhe5XDqngQldT10Ps3eqMyPcojUIfA11WrMxrxrCH7g==
+  dependencies:
+    chalk "^4.1.0"
+    global-prefix "^3.0.0"
+    minimist "^1.2.5"
+    shelljs "^0.8.4"
+    strip-ansi "^6.0.0"
 
 ts-pnp@1.1.6:
   version "1.1.6"
@@ -23682,6 +23694,13 @@ typedarray@^0.0.6:
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/typedarray/-/typedarray-0.0.6.tgz#867ac74e3864187b1d3d47d996a78ec5c8830777"
   integrity sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c=
+
+typescript-transform-paths@^3.0.2:
+  version "3.0.2"
+  resolved "https://registry.yarnpkg.com/typescript-transform-paths/-/typescript-transform-paths-3.0.2.tgz#2a8bc2cd21241982043199e98ed6dd21b2e2cd14"
+  integrity sha512-rl20tb9uDLWIj0faJY8IjPCldVgnKMElhXxkkAl+RCg+B+TLGxO+kRWB6mZw2Zufh5Ske2sQ9NbuIx8GqDspgg==
+  dependencies:
+    minimatch "^3.0.4"
 
 typescript@^3.9.3:
   version "3.9.10"

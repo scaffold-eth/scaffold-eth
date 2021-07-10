@@ -94,7 +94,7 @@
   "license": "MIT",
   "scripts": {
     "commit": "git-cz",
-    "build": "tsc -p tsconfig.json",
+    "build": "ts-patch i && tsc -p tsconfig.json",
     "publish": "cd lib && npm publish && shx rm ./lib/package.json",
     "watch": "watch 'yarn build' ./src",
     "clean": "shx rm -rf ./lib",
