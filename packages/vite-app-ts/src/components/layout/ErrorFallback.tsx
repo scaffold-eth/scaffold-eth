@@ -16,6 +16,7 @@ const componentMessages = (error: Error) => {
 
 const consoleLog = (error: any, componentStack: string | undefined) => {
   console.log('--------------------');
+  console.log('ErrorBoundary');
   console.log(error.stack);
   console.log(componentStack);
   console.log('--------------------');

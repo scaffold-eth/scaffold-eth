@@ -3,9 +3,9 @@ import { Row, Col, Button } from 'antd';
 import { Faucet, Ramp, GasGauge } from '~~/components/common';
 import { NETWORKS } from '~~/models/constants/networks';
 import { TEthHooksProvider } from 'eth-hooks/lib/models';
-import { localProvider } from '../MainPage';
 
 interface IMainPageExtraUi {
+  localProvider: TEthHooksProvider;
   mainnetProvider: TEthHooksProvider;
   price: number;
   gasPrice: number | undefined;
@@ -70,7 +70,7 @@ export const MainPageExtraUi: FC<IMainPageExtraUi> = (props) => (
         {
           /*  if the local provider has a signer, let's show the faucet:  */
           props.faucetAvailable ? (
-            <Faucet localProvider={localProvider} price={props.price} ensProvider={props.mainnetProvider} />
+            <Faucet localProvider={props.localProvider} price={props.price} ensProvider={props.mainnetProvider} />
           ) : (
             ''
           )

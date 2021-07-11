@@ -10,39 +10,7 @@ import { Account } from '../common';
 
 import { DisplayVariable } from './DisplayVariable';
 import { FunctionForm } from './FunctionFrom';
-
-const noContractDisplay = (
-  <div>
-    Loading...{' '}
-    <div style={{ padding: 32 }}>
-      You need to run{' '}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: 'bolder' }}>
-        yarn run chain
-      </span>{' '}
-      and{' '}
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: 'bolder' }}>
-        yarn run deploy
-      </span>{' '}
-      to see your contract here.
-    </div>
-    <div style={{ padding: 32 }}>
-      <span style={{ marginRight: 4 }} role="img" aria-label="warning">
-        ☢️
-      </span>
-      Warning: You might need to run
-      <span
-        className="highlight"
-        style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: 'bolder' }}>
-        yarn run deploy
-      </span>{' '}
-      <i>again</i> after the frontend comes up!
-    </div>
-  </div>
-);
+import { NoContractDisplay } from './NoContractDisplay';
 
 const isQueryable = (fn: FunctionFragment) =>
   (fn.stateMutability === 'view' || fn.stateMutability === 'pure') && fn.inputs.length === 0;
@@ -51,11 +19,11 @@ interface IGenericContract {
   customContract?: Contract;
   account?: ReactElement;
   gasPrice?: number;
-  signer?: Signer;
-  provider: TEthHooksProvider | undefined;
-  name: string;
-  show?: string;
-  price?: number;
+  signer: Signer;
+  provider: TEthHooksProvider;
+  contractName: string;
+  show?: string[];
+  tokenPrice?: number;
   blockExplorer: string;
   address: string;
 }
@@ -64,7 +32,7 @@ export const GenericContract: FC<IGenericContract> = (props) => {
   const contracts = useContractLoader(props.provider);
   let contract: Contract | undefined = props.customContract;
   if (!props.customContract) {
-    contract = contracts ? contracts[props.name] : undefined;
+    contract = contracts ? contracts[props.contractName] : undefined;
   }
   const address = contract ? contract.address : '';
   const contractIsDeployed = useContractExistsAtAddress(props.provider, address);
@@ -104,7 +72,7 @@ export const GenericContract: FC<IGenericContract> = (props) => {
         }
         functionInfo={fn}
         provider={props.provider}
-        gasPrice={props.gasPrice}
+        gasPrice={props.gasPrice ?? 0}
         setTriggerRefresh={setTriggerRefresh}
       />
     );
@@ -115,14 +83,13 @@ export const GenericContract: FC<IGenericContract> = (props) => {
       <Card
         title={
           <div>
-            {name}
+            {props.contractName}
             <div style={{ float: 'right' }}>
               <Account
                 address={address}
                 localProvider={props.provider}
-                injectedProvider={props.provider}
                 mainnetProvider={props.provider}
-                price={props.price}
+                price={props.tokenPrice ?? 0}
                 blockExplorer={props.blockExplorer}
               />
               {props.account}
@@ -132,7 +99,7 @@ export const GenericContract: FC<IGenericContract> = (props) => {
         size="default"
         style={{ marginTop: 25, width: '100%' }}
         loading={contractDisplay && contractDisplay.length <= 0}>
-        {contractIsDeployed ? contractDisplay : noContractDisplay}
+        {contractIsDeployed ? contractDisplay : NoContractDisplay}
       </Card>
     </div>
   );

@@ -9,7 +9,8 @@ import '@nomiclabs/hardhat-ethers';
 import '@tenderly/hardhat-tenderly';
 
 import 'hardhat-deploy';
-import 'hardhat-deploy-ethers';
+// not required as we are using @nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers
+// import 'hardhat-deploy-ethers';
 
 //import 'solidity-coverage';
 
@@ -327,7 +328,7 @@ const findFirstAddr = async (ethers: TEthers, addr: string) => {
   }
   const accounts = await ethers.provider.listAccounts();
   if (accounts !== undefined) {
-    const temp = accounts.find((f) => f === addr);
+    const temp = accounts.find((f: string) => f === addr);
     if (temp?.length) return temp[0];
   }
   throw `Could not normalize address: ${addr}`;
@@ -335,7 +336,7 @@ const findFirstAddr = async (ethers: TEthers, addr: string) => {
 
 task('accounts', 'Prints the list of accounts', async (_, { ethers }) => {
   const accounts = await ethers.provider.listAccounts();
-  accounts.forEach((account) => console.log(account));
+  accounts.forEach((account: any) => console.log(account));
 });
 
 task('blockNumber', 'Prints the block number', async (_, { ethers }) => {

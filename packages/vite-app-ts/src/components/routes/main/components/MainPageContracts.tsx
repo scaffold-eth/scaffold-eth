@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { GenericContract } from '~~/components/generic-contract';
 import { Contract } from 'ethers';
 import { TEthHooksProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
-import { localProvider, blockExplorer } from '../MainPage';
 
 interface IMainPageContracts {
   mainnetProvider: TEthHooksProvider;
@@ -28,25 +27,27 @@ export const MainPageContracts: FC<IMainPageContracts> = (props) => {
         this <Contract/> component will automatically parse your ABI
         and give you a form to interact with it locally
       */}
-      <>
-        <GenericContract
-          name="YourContract"
-          signer={props.userProviderAndSigner.signer}
-          provider={localProvider}
-          address={props.userAddress}
-          blockExplorer={blockExplorer}
-        />
+      {props.userProviderAndSigner?.signer != null && (
+        <>
+          <GenericContract
+            contractName="YourContract"
+            signer={props.userProviderAndSigner.signer}
+            provider={props.localProvider}
+            address={props.userAddress}
+            blockExplorer={props.blockExplorerUrl}
+          />
 
-        {/* uncomment for a second contract: */}
+          {/* uncomment for a second contract: 
         <GenericContract
           name="SecondContract"
           signer={props.userProviderAndSigner.signer}
-          provider={localProvider}
+          provider={props.localProvider}
           address={props.userAddress}
-          blockExplorer={blockExplorer}
+          blockExplorer={props.blockExplorerUrl}
         />
+        */}
 
-        {/* Uncomment to display and interact with an external contract (DAI on mainnet): */}
+          {/* Uncomment to display and interact with an external contract (DAI on mainnet): 
         <GenericContract
           name="DAI"
           customContract={props.mainnetContracts?.['DAI']}
@@ -55,7 +56,9 @@ export const MainPageContracts: FC<IMainPageContracts> = (props) => {
           address={props.userAddress}
           blockExplorer={props.blockExplorerUrl}
         />
-      </>
+        */}
+        </>
+      )}
     </>
   );
 };

@@ -10,14 +10,14 @@ import { Address, Balance, Wallet } from '.';
 
 export interface IAccountProps {
   address: string;
-  userSigner: Signer | undefined;
+  userSigner?: Signer;
   localProvider: TEthHooksProvider | undefined;
   mainnetProvider: TEthHooksProvider;
   price: number;
   minimized?: string;
-  web3Modal: Web3Modal;
-  loadWeb3Modal: () => Promise<void>;
-  logoutOfWeb3Modal: () => void;
+  web3Modal?: Web3Modal;
+  loadWeb3Modal?: () => Promise<void>;
+  logoutOfWeb3Modal?: () => void;
   blockExplorer: string;
 }
 
@@ -54,7 +54,7 @@ export const Account: FC<IAccountProps> = (props: IAccountProps) => {
   } = props;
 
   const modalButtons = [];
-  if (web3Modal) {
+  if (web3Modal && loadWeb3Modal && logoutOfWeb3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
         <Button

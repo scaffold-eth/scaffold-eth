@@ -28,12 +28,6 @@
   ],
   "plugins": ["prettier", "formatjs", "react", "react-hooks"],
   "rules": {
-    "formatjs/no-offset": "error",
-    "formatjs/enforce-description": "off",
-    "formatjs/enforce-default-message": "off",
-    "formatjs/enforce-placeholders": "error",
-    "formatjs/no-multiple-whitespaces": "off",
-    "formatjs/no-multiple-plurals": "error",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "prettier/prettier": 0,

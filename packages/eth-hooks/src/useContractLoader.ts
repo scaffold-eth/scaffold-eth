@@ -43,10 +43,11 @@ export enum DefaultContractLocation {
  */
 export const useContractLoader = (
   providerOrSigner: TProviderOrSigner | undefined,
-  config: TContractConfig,
+  config: TContractConfig = {},
   contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
+
   useEffect(() => {
     let active = true;
 
@@ -129,16 +130,7 @@ export const useContractLoader = (
     return (): void => {
       active = false;
     };
-  }, [
-    config,
-    config.chainId,
-    config.customAddresses,
-    config.externalContracts,
-    config.hardhatContracts,
-    config.hardhatNetworkName,
-    contractFileLocation,
-    providerOrSigner,
-  ]);
+  }, [contractFileLocation, providerOrSigner, JSON.stringify(config)]);
 
   return contracts;
 };

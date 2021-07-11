@@ -33,15 +33,10 @@
   ],
   "plugins": ["prettier", "formatjs", "react", "react-hooks"],
   "rules": {
-    "formatjs/no-offset": "error",
-    "formatjs/enforce-description": "off",
-    "formatjs/enforce-default-message": "off",
-    "formatjs/enforce-placeholders": "error",
-    "formatjs/no-multiple-whitespaces": "off",
-    "formatjs/no-multiple-plurals": "error",
+    "eqeqeq": ["error", "smart", { "null": "ignore", "undefined": "ignore" }],
+    "react/jsx-wrap-multilines": "warn",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": "off",
     "react/require-default-props": "off",
@@ -122,8 +117,10 @@
         "peerDependencies": false
       }
     ],
+    "no-underscore-dangle": ["warn", { "allow": ["_network"] }],
     "sort-keys": "off",
     "comma-dangle": "off",
+    "@typescript-eslint/comma-dangle": ["off"],
     "no-use-before-define": "off",
     "spaced-comment": "warn",
     "max-len": "off",
@@ -134,7 +131,8 @@
     "no-restricted-globals": "off",
     "eslint linebreak-style": "off",
     "object-curly-newline": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "no-void": ["error", { "allowAsStatement": true }]
   },
   "settings": {
     "react": {

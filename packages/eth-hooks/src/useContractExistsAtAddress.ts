@@ -13,7 +13,10 @@ import { TEthHooksProvider } from '~~/models/providerTypes';
  * @param contractAddress 
  * @returns 
  */
-export const useContractExistsAtAddress = (provider: TEthHooksProvider, contractAddress: string): boolean => {
+export const useContractExistsAtAddress = (
+  provider: TEthHooksProvider | undefined,
+  contractAddress: string
+): boolean => {
   const [contractIsDeployed, setContractIsDeployed] = useState(false);
 
   useEffect(() => {
@@ -27,12 +30,13 @@ export const useContractExistsAtAddress = (provider: TEthHooksProvider, contract
       if (!utils.isAddress(contractAddress)) {
         return;
       }
-      const bytecode = await provider.getCode(contractAddress);
-      setContractIsDeployed(bytecode !== '0x');
+      if (provider) {
+        const bytecode = await provider.getCode(contractAddress);
+        setContractIsDeployed(bytecode !== '0x');
+      }
     };
-    if (provider) {
-      void checkDeployment();
-    }
+
+    void checkDeployment();
   }, [provider, contractAddress]);
 
   return contractIsDeployed;

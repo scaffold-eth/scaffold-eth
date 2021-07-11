@@ -18,7 +18,8 @@
       "**/node_modules/": true,
       "**/obj": true,
       "yarn-error.log": true,
-      "**/yarn-error.log": true
+      "**/yarn-error.log": true,
+      "packages\\eth-hooks/lib": true
    },
    "explorerExclude.backup": null,
    "eslint.workingDirectories": [
