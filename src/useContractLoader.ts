@@ -14,8 +14,8 @@ export type TContractConfig = {
 };
 
 export enum DefaultContractLocation {
-  reactAppContracts = '../../react-app/src/generated/contracts',
-  viteAppContracts = '../../vite-app-ts/src/generated/contracts',
+  ReactAppContracts = '../../react-app/src/contracts',
+  ViteAppContracts = '../../vite-app-ts/src/generated/contracts',
 }
 
 /**
@@ -44,7 +44,7 @@ export enum DefaultContractLocation {
 export const useContractLoader = (
   providerOrSigner: TProviderOrSigner | undefined,
   config: TContractConfig = {},
-  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
+  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
 
