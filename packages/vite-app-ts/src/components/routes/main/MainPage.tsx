@@ -1,30 +1,10 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
-import { BrowserRouter, Route, Link, Switch } from 'react-router-dom';
+import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import { StaticJsonRpcProvider, JsonRpcProvider, Web3Provider, ExternalProvider } from '@ethersproject/providers';
+import { StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+
 import '~~/styles/main-page.css';
-import {
-  ExportOutlined,
-  ForkOutlined,
-  ExperimentOutlined,
-  ReconciliationOutlined,
-  ShoppingCartOutlined,
-} from '@ant-design/icons';
-import {
-  message,
-  Input,
-  Image,
-  List,
-  Row,
-  Col,
-  Button,
-  Menu,
-  Alert,
-  Switch as SwitchD,
-  Progress,
-  notification,
-} from 'antd';
-import WalletConnectProvider from '@walletconnect/web3-provider';
+import { Button, Alert } from 'antd';
 import {
   useUserAddress,
   useGasPrice,
@@ -35,30 +15,17 @@ import {
   useUserProviderAndSigner,
 } from 'eth-hooks';
 import { useExchangePrice } from 'eth-hooks/lib/dapps/dex';
-import { getChainId } from 'web3modal';
 
-import {
-  Header,
-  Account,
-  Faucet,
-  Ramp,
-  GasGauge,
-  PunkBlockie,
-  EtherInput,
-  AddressInput,
-  Balance,
-  Address,
-  ThemeSwitcher,
-} from '~~/components/common';
+import { Header, Account, Address, ThemeSwitcher } from '~~/components/common';
+
 import { useLocalStorage } from '~~/components/common/hooks';
 import { GenericContract } from '~~/components/generic-contract';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
-import { Checkout, Hints, Subgraph } from '~~/components/views';
+import { Hints, Subgraph } from '~~/components/views';
 import { ExampleUI } from '~~/components/views/ExampleUI';
 import { transactor } from '~~/helpers';
 
-import { formatEther, parseEther } from '@ethersproject/units';
-// import Hints from "./Hints";
+import { parseEther } from '@ethersproject/units';
 
 import { useThemeSwitcher, ThemeSwitcherProvider } from 'react-css-theme-switcher';
 
@@ -68,19 +35,22 @@ import {
   DAI_ABI,
   SIMPLE_STREAM_ABI,
   BUILDERS,
-  BUILDS,
   mainStreamReader_ADDRESS,
   mainStreamReader_ABI,
+  BUILDS,
 } from '~~/models/constants/constants';
 import { getNetwork, NETWORKS } from '~~/models/constants/networks';
 
 import pretty from 'pretty-time';
-import { Contract, ethers, Signer } from 'ethers';
+import { ethers, Signer } from 'ethers';
 
 import { TNetwork } from '~~/models/networkTypes';
 
-import { TEthHooksProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
+import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from 'eth-hooks/lib/models';
 import { useEventListener } from 'eth-hooks/lib/events';
+import { MainPageMenu } from './components/MainPageMenu';
+import { MainPageContracts } from './components/MainPageContracts';
+import { MainPageExtraUi } from './components/MainPageExtraUi';
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -128,10 +98,10 @@ const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log('🏠 Connecting to provider:', localProviderUrlFromEnv);
-const localProvider: TEthHooksProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
+export const localProvider: TEthHooksProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
-const blockExplorer = targetNetwork.blockExplorer;
+export const blockExplorer = targetNetwork.blockExplorer;
 
 export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
@@ -143,9 +113,12 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, 'fast');
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner: TProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
+  const userProviderAndSigner: TProviderAndSigner | undefined = useUserProviderAndSigner(
+    injectedProvider,
+    localProvider
+  );
 
-  const address = useUserAddress(userProviderAndSigner);
+  const userAddress = useUserAddress(userProviderAndSigner?.signer);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId: number = localProvider && localProvider._network && localProvider._network.chainId;
@@ -157,22 +130,22 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = transactor(userProviderAndSigner.signer, gasPrice);
+  const tx = transactor(userProviderAndSigner?.signer, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = transactor(localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
+  const yourLocalBalance = useBalance(localProvider, userAddress);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
+  const yourMainnetBalance = useBalance(mainnetProvider, userAddress);
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, { chainId: localChainId });
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProviderAndSigner);
+  const writeContracts = useContractLoader(userProviderAndSigner?.signer);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -211,11 +184,11 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   // 🧫 DEBUG 👨🏻‍🔬
   //
   useEffect(() => {
-    if (DEBUG && mainnetProvider && address && selectedChainId) {
+    if (DEBUG && mainnetProvider && userAddress && selectedChainId) {
       console.log('_____________________________________ 🏗 scaffold-eth _____________________________________');
       console.log('🌎 mainnetProvider', mainnetProvider);
       console.log('🏠 localChainId', localChainId);
-      console.log('👩‍💼 selected address:', address);
+      console.log('👩‍💼 selected address:', userAddress);
       console.log('🕵🏻‍♂️ selectedChainId:', selectedChainId);
       /* console.log("💵 yourLocalBalance",yourLocalBalance?formatEther(yourLocalBalance):"...")
       console.log("💵 yourMainnetBalance",yourMainnetBalance?formatEther(yourMainnetBalance):"...")
@@ -223,7 +196,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
       console.log("🌍 DAI contract on mainnet:",mainnetDAIContract)
       console.log("🔐 writeContracts",writeContracts) */
     }
-  }, [mainnetProvider, address, selectedChainId]);
+  }, [mainnetProvider, userAddress, selectedChainId]);
 
   let networkDisplay: ReactElement | undefined;
   if (localChainId != undefined && selectedChainId && localChainId != selectedChainId) {
@@ -285,7 +258,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
           onClick={() => {
             if (faucetTx) {
               faucetTx({
-                to: address,
+                to: userAddress,
                 value: parseEther('0.01'),
               });
             }
@@ -297,177 +270,36 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
     );
   }
 
-  const [randomizedBuilds, setRandomizedBuilds] = useState<any[]>();
-  useEffect(() => {
-    setRandomizedBuilds(shuffle(BUILDS));
-  }, [BUILDS]);
-
-  const [cart, setCart] = useLocalStorage('buidlguidlcart', [], 12000000); // 12000000 ms timeout? idk
-  // console.log("cart",cart)
-  // console.log("route",route)
-
-  const displayCart = [];
-  if (cart && cart.length > 0) {
-    for (const c in cart) {
-      console.log('CART ITEM', c, cart[c]);
-      if (!cart[c].streamAddress) {
-        displayCart.push(
-          <div key={c} style={{ padding: 22, border: '1px solid #dddddd', borderRadius: 8 }}>
-            <div style={{ marginLeft: 32 }}>
-              <div style={{ float: 'right', zIndex: 2 }}>
-                <Button
-                  // borderless={true}
-                  onClick={() => {
-                    console.log('REMOVE ', c, cart[c]);
-                    const update = [];
-                    for (const x in cart) {
-                      if (cart[c].id != cart[x].id) {
-                        update.push(cart[x]);
-                      }
-                    }
-                    console.log('update', update);
-                    setCart(update);
-                  }}>
-                  x
-                </Button>
-              </div>
-              <div style={{ fontSize: 18, marginLeft: -54 }}>{cart[c].name}</div>
-            </div>
-          </div>
-        );
-      } else {
-        displayCart.push(
-          <div key={c} style={{ padding: 16, border: '1px solid #dddddd', borderRadius: 8 }}>
-            <div style={{ marginLeft: 32 }}>
-              <div style={{ float: 'right', zIndex: 2 }}>
-                <Button
-                  onClick={() => {
-                    console.log('REMOVE ', c, cart[c]);
-                    const update = [];
-                    for (const x in cart) {
-                      if (cart[c].id != cart[x].id) {
-                        update.push(cart[x]);
-                      }
-                    }
-                    console.log('update', update);
-                    setCart(update);
-                  }}>
-                  x
-                </Button>
-              </div>
-              <Address
-                hideCopy
-                punkBlockie
-                fontSize={18}
-                address={cart[c].address}
-                ensProvider={mainnetProvider}
-                blockExplorer={blockExplorer}
-              />
-            </div>
-          </div>
-        );
-      }
-    }
-  }
-
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: 'center' }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute('/');
-              }}
-              to="/">
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute('/hints');
-              }}
-              to="/hints">
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute('/exampleui');
-              }}
-              to="/exampleui">
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute('/mainnetdai');
-              }}
-              to="/mainnetdai">
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute('/subgraph');
-              }}
-              to="/subgraph">
-              Subgraph
-            </Link>
-          </Menu.Item>
-        </Menu>
+        <MainPageMenu route={route} setRoute={setRoute}></MainPageMenu>
 
         <Switch>
           <Route exact path="/">
-            {/*
+            {userProviderAndSigner != null && (
+              <>
+                {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
-            */}
-
-            {userProviderAndSigner != null && (
-              <>
-                <GenericContract
-                  name="YourContract"
-                  signer={userProviderAndSigner}
-                  provider={localProvider}
-                  address={address}
-                  blockExplorer={blockExplorer}
-                />
-
-                {/* uncomment for a second contract:
-            <Contract
-              name="SecondContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
-
-                {/* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
+              */}
+                <MainPageContracts
+                  mainnetContracts={mainnetContracts}
+                  mainnetProvider={mainnetProvider}
+                  userProviderAndSigner={userProviderAndSigner}
+                  localProvider={localProvider}
+                  blockExplorerUrl={blockExplorer}
+                  userAddress={userAddress}></MainPageContracts>
               </>
             )}
           </Route>
           <Route path="/hints">
             <Hints
-              address={address}
+              address={userAddress}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
@@ -475,8 +307,8 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
           </Route>
           <Route path="/exampleui">
             <ExampleUI
-              address={address}
-              userSigner={userProviderAndSigner}
+              address={userAddress}
+              userSigner={userProviderAndSigner?.signer}
               mainnetProvider={mainnetProvider}
               localProvider={localProvider}
               yourLocalBalance={yourLocalBalance}
@@ -493,9 +325,9 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
               <GenericContract
                 name="DAI"
                 customContract={mainnetContracts?.contracts?.DAI}
-                signer={userProviderAndSigner}
+                signer={userProviderAndSigner.signer}
                 provider={mainnetProvider}
-                address={address}
+                address={userAddress}
                 blockExplorer="https://etherscan.io/"
               />
             )}
@@ -516,9 +348,9 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: 'fixed', textAlign: 'right', right: 0, top: 0, padding: 10 }}>
         <Account
-          address={address}
+          address={userAddress}
           localProvider={localProvider}
-          userSigner={userProviderAndSigner}
+          userSigner={userProviderAndSigner?.signer}
           mainnetProvider={mainnetProvider}
           price={price}
           web3Modal={web3ModalProvider}
@@ -530,63 +362,12 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: 'fixed', textAlign: 'left', left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: 'center', opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice?.toString() ?? ''} />
-          </Col>
-          <Col span={8} style={{ textAlign: 'center', opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open('https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA');
-              }}
-              size="large"
-              shape="round">
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ''
-              )
-            }
-          </Col>
-        </Row>
-      </div>
+      <MainPageExtraUi
+        mainnetProvider={mainnetProvider}
+        price={price}
+        gasPrice={gasPrice}
+        userAddress={userAddress}
+        faucetAvailable={faucetAvailable}></MainPageExtraUi>
     </div>
   );
 };
-
-function shuffle(array: any[]) {
-  let currentIndex = array.length;
-  let temporaryValue;
-  let randomIndex;
-
-  // While there remain elements to shuffle...
-  while (currentIndex !== 0) {
-    // Pick a remaining element...
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex -= 1;
-
-    // And swap it with the current element.
-    temporaryValue = array[currentIndex];
-    array[currentIndex] = array[randomIndex];
-    array[randomIndex] = temporaryValue;
-  }
-
-  return array;
-}
