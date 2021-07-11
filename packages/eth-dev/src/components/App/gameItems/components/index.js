@@ -3,6 +3,7 @@ import Terminal from './Terminal'
 import Wallet from './Wallet/index'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
+import SpeechBubble from './SpeechBubble'
 
 import WindowModal from './WindowModal'
 import WindowModalClassic from './WindowModalClassic'
@@ -30,6 +31,7 @@ export {
   Wallet,
   Toolbelt,
   Dish,
+  SpeechBubble,
 
   WindowModal,
   WindowModalClassic,
