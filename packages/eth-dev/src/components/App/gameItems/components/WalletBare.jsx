@@ -18,7 +18,7 @@ const { Text } = Typography
 
   ~ How can I use? ~
 
-  <Wallet
+  <WalletBare
     provider={userProvider}
     address={address}
     ensProvider={mainnetProvider}
@@ -37,7 +37,7 @@ const { Text } = Typography
   - Provide color to specify the color of wallet icon
 */
 
-export default function Wallet(props) {
+export default function WalletBare(props) {
   const signerAddress = useUserAddress(props.provider)
   const selectedAddress = props.address || signerAddress
 
@@ -328,7 +328,7 @@ export default function Wallet(props) {
   */
 
   return (
-    <div style={{ verticalAlign: 'middle', paddingLeft: 16, fontSize: 32 }}>
+    <div style={{ verticalAlign: 'middle', paddingLeft: 16, fontSize: 22 }}>
       {selectedAddress ? (
         <Address address={selectedAddress} ensProvider={props.ensProvider} />
       ) : (

@@ -1,6 +1,7 @@
 import Background from './Background'
 import Terminal from './Terminal'
 import Wallet from './Wallet/index'
+import WalletBare from './WalletBare'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
 import SpeechBubble from './SpeechBubble'
@@ -29,6 +30,7 @@ export {
   Background,
   Terminal,
   Wallet,
+  WalletBare,
   Toolbelt,
   Dish,
   SpeechBubble,

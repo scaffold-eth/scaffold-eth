@@ -1,4 +1,3 @@
-import ExampleGameActionsWindow from './ExampleGameActionsWindow'
-import InitChainInstructionsWindow from './InitChainInstructionsWindow'
+import CreateWalletWindow from './CreateWalletWindow'
 
-export { ExampleGameActionsWindow, InitChainInstructionsWindow }
+export { CreateWalletWindow }
