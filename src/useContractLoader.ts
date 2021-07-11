@@ -43,8 +43,8 @@ export enum DefaultContractLocation {
  */
 export const useContractLoader = (
   providerOrSigner: TProviderOrSigner | undefined,
-  config: TContractConfig = {},
-  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
+  config: TContractConfig,
+  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
 
@@ -131,6 +131,8 @@ export const useContractLoader = (
       active = false;
     };
   }, [contractFileLocation, providerOrSigner, JSON.stringify(config)]);
+    providerOrSigner,
+    config,
 
   return contracts;
 };
