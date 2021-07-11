@@ -9482,6 +9482,13 @@ eslint-plugin-testing-library@^4.9.0:
   dependencies:
     "@typescript-eslint/experimental-utils" "^4.24.0"
 
+eslint-plugin-unused-imports@^1.1.2:
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-unused-imports/-/eslint-plugin-unused-imports-1.1.2.tgz#de94bbf744183c0deb4a20aa5a358cd85ce28832"
+  integrity sha512-dfiCZiv/lSkOp6/JIjP+ASIs1vxLgiN1NISM+oxcO799+FEZQXy0Se1CaAHQt4BCInBOJ9LK0ILCe1lMMI+YGA==
+  dependencies:
+    eslint-rule-composer "^0.3.0"
+
 eslint-rule-composer@^0.3.0:
   version "0.3.0"
   resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"

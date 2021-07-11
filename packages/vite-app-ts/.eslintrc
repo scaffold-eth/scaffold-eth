@@ -7,6 +7,7 @@
     "ecmaFeatures": {
       "jsx": true // Allows for the parsing of JSX,
     },
+    "project": "tsconfig.json",
     "tsconfigRootDir": ".",
     "projectFolderIgnoreList": ["node_modules", "dist", "build", ".yarn", "build-utils"]
   },
@@ -20,8 +21,8 @@
     "airbnb/hooks",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:react-hooks/recommended",
     "plugin:import/typescript",
+    "plugin:react-hooks/recommended",
     "plugin:jest/recommended",
     "plugin:react/recommended",
     "plugin:tailwind/recommended",
@@ -72,14 +73,6 @@
       }
     ],
     "@typescript-eslint/no-empty-function": "warn",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
-    ],
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-unsafe-assignment": "warn",
@@ -92,8 +85,18 @@
     "prefer-destructuring": "off",
     "prefer-template": "off",
     "react/destructuring-assignment": "off",
-    "import/order": [
+    "no-param-reassign": "error",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
       "warn",
+      {
+        "argsIgnorePattern": "_",
+        "varsIgnorePattern": "_"
+      }
+    ],
+    "no-duplicate-imports": "warn",
+    "import/order": [
+      "off",
       {
         "alphabetize": {
           "order": "asc" /* sort in ascending order. Options: ['ignore', 'asc', 'desc'] */,
@@ -102,8 +105,6 @@
         "newlines-between": "always"
       }
     ],
-    "no-param-reassign": "error",
-    "no-duplicate-imports": "warn",
     "import/named": "off",
     "import/namespace": "off",
     "import/default": "off",
@@ -111,6 +112,8 @@
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
+    "import/no-unused-modules": ["off"],
+    "import/no-unassigned-import": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {

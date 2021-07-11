@@ -98,6 +98,7 @@
     "eslint-plugin-prettier": "^3.4.0",
     "eslint-plugin-react": "^7.24.0",
     "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-unused-imports": "^1.1.2",
     "postcss": "^8.3.5",
     "prettier": "^2.3.1",
     "rollup-plugin-polyfill-node": "^0.6.2",

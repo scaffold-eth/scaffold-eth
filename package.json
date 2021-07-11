@@ -83,9 +83,9 @@
       "**/@graphprotocol/graph-ts",
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
-         "**/hardhat/**",
-         "**/hardhat-ts",
-         "**/hardhat-ts/**"
+      "**/hardhat/**",
+      "**/hardhat-ts",
+      "**/hardhat-ts/**"
     ]
   },
   "dependencies": {}
