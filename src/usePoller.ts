@@ -2,17 +2,17 @@ import { useEffect, useRef } from 'react';
 
 /**
  * helper hook to call a function regularly in time intervals
- * @param fn
+ * @param callbackFn
  * @param delay
  * @param extraWatch
  */
-export const usePoller = (fn: () => void, delay: number, extraWatch: boolean = false): void => {
+export const usePoller = (callbackFn: () => void, delay: number, extraWatch: boolean = false): void => {
   const savedCallback = useRef<() => void>();
 
   // Remember the latest fn.
   useEffect(() => {
-    savedCallback.current = fn;
-  }, [fn]);
+    savedCallback.current = callbackFn;
+  }, [callbackFn]);
 
   // Set up the interval.
   useEffect(() => {
@@ -20,7 +20,7 @@ export const usePoller = (fn: () => void, delay: number, extraWatch: boolean = f
       if (savedCallback.current) savedCallback.current();
     };
 
-    if (delay !== null) {
+    if (delay !== null && delay > 0) {
       const id = setInterval(tick, delay);
       return (): void => clearInterval(id);
     }
@@ -28,6 +28,6 @@ export const usePoller = (fn: () => void, delay: number, extraWatch: boolean = f
 
   // run at start too
   useEffect(() => {
-    fn();
-  }, [extraWatch, fn]);
+    if (savedCallback.current && delay > 0) savedCallback.current();
+  }, [extraWatch]);
 };

@@ -29,9 +29,9 @@
   ],
   "plugins": ["prettier", "react", "react-hooks", "testing-library"],
   "rules": {
+    "eqeqeq": ["error", "smart", { "null": "ignore", "undefined": "ignore" }],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
-
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": "off",
     "react/require-default-props": "off",

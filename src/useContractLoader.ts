@@ -14,8 +14,8 @@ export type TContractConfig = {
 };
 
 export enum DefaultContractLocation {
-  reactAppContracts = '../../react-app/src/generated/contracts',
-  viteAppContracts = '../../vite-app-ts/src/generated/contracts',
+  ReactAppContracts = '../../react-app/src/contracts',
+  ViteAppContracts = '../../vite-app-ts/src/generated/contracts',
 }
 
 /**
@@ -47,6 +47,7 @@ export const useContractLoader = (
   contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
+
   useEffect(() => {
     let active = true;
 
@@ -129,16 +130,9 @@ export const useContractLoader = (
     return (): void => {
       active = false;
     };
-  }, [
-    config,
-    config.chainId,
-    config.customAddresses,
-    config.externalContracts,
-    config.hardhatContracts,
-    config.hardhatNetworkName,
-    contractFileLocation,
+  }, [contractFileLocation, providerOrSigner, JSON.stringify(config)]);
     providerOrSigner,
-  ]);
+    config,
 
   return contracts;
 };
