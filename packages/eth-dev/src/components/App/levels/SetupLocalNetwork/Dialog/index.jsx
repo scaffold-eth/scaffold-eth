@@ -22,29 +22,27 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
   })
 
   return (
-    <div id='setupLocalNetworkLevelDialog'>
-      <div
-        style={{
-          float: 'left',
-          width: '100%',
-          marginTop: '15px'
-        }}
-      >
-        {filteredDialog.map((dialogPart, index) => {
-          const isLastVisibleDialog = index === currentDialogIndex
-          const isFinalDialog = index === dialog.length - 1
+    <div
+      style={{
+        float: 'left',
+        width: '100%',
+        marginTop: '15px'
+      }}
+    >
+      {filteredDialog.map((dialogPart, index) => {
+        const isLastVisibleDialog = index === currentDialogIndex
+        const isFinalDialog = index === dialog.length - 1
 
-          return (
-            <>
-              {dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
+        return (
+          <>
+            {dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
 
-              {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
-                <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
-              )}
-            </>
-          )
-        })}
-      </div>
+            {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
+              <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
+            )}
+          </>
+        )
+      })}
     </div>
   )
 }
