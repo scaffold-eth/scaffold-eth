@@ -4,8 +4,7 @@
     "module": "esNext",
     "outDir": "lib",
     "lib": ["dom", "ESNext"],
-    "composite": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",
@@ -27,7 +26,13 @@
     "paths": {
       "~~": ["./src/"],
       "~~/*": ["./src/*"]
-    }
+    },
+    "plugins": [
+      // Transform paths in output .js files
+      { "transform": "typescript-transform-paths" },
+      // Transform paths in output .d.ts files (Include this line if you output declarations files)
+      { "transform": "typescript-transform-paths", "afterDeclarations": true }
+    ]
   },
   "include": ["src", "src/**/*.json", "lib"],
   "exclude": [

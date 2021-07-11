@@ -35,7 +35,7 @@ export const useLookupAddress = (provider: TEthHooksProvider, address: string): 
 
   useEffect(() => {
     const storedData: any = window.localStorage.getItem('ensCache_' + address);
-    const cache = JSON.parse(storedData ?? {}) as Record<string, any>;
+    const cache = JSON.parse(storedData ?? '{}') as Record<string, any>;
 
     if (cache && cache?.name && cache?.timestamp > Date.now()) {
       setEnsName(cache?.name);
@@ -53,7 +53,7 @@ export const useLookupAddress = (provider: TEthHooksProvider, address: string): 
         }
       });
     }
-  }, [provider, address, setEnsName]);
+  }, [address, setEnsName]);
 
   return ensName;
 };
