@@ -14,11 +14,15 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
     })
   }, [])
 
-  // remove all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
-  const filteredDialog = dialog.filter((dialogPart, index) => {
+  // add isVisibleToUser flag to all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
+  const filteredDialog = dialog.map((dialogPart, index) => {
     const reachedIndex = index <= currentDialogIndex
-    const pathIsVisibleToUser = dialogPathsVisibleToUser.includes(dialogPart.dialogPathId)
-    return reachedIndex && pathIsVisibleToUser
+    const isVisibleToUser =
+      dialogPathsVisibleToUser.includes(dialogPart.dialogPathId) && reachedIndex
+    return {
+      ...dialogPart,
+      isVisibleToUser
+    }
   })
 
   return (
@@ -35,7 +39,8 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
 
         return (
           <>
-            {dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
+            {dialogPart.isVisibleToUser &&
+              dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
               <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>

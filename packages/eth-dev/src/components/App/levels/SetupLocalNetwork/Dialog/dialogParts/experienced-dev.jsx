@@ -15,14 +15,16 @@ const dialog = [
           <SpeakerLeft
             text={`Cool! For the game to run smoothly you'll need to do the following...`}
           />
-          <Button
-            onClick={() => {
-              actions.setInitChainInstructionsWindowVisibility(true)
-              actions.dialog.continueDialog()
-            }}
-          >
-            Show instructions
-          </Button>
+          {isLastVisibleDialog && (
+            <Button
+              onClick={() => {
+                actions.setInitChainInstructionsWindowVisibility(true)
+                actions.dialog.continueDialog()
+              }}
+            >
+              Show instructions
+            </Button>
+          )}
         </>
       )
     }
@@ -32,13 +34,15 @@ const dialog = [
       return (
         <>
           <SpeakerLeft text={`Greate! Now let's get you a wallet.`} />
-          <Button
-            onClick={() => {
-              actions.level.setCurrentLevel({ levelId: 'create-wallet' })
-            }}
-          >
-            Jump to create-wallet level
-          </Button>
+          {isLastVisibleDialog && (
+            <Button
+              onClick={() => {
+                actions.level.setCurrentLevel({ levelId: 'create-wallet' })
+              }}
+            >
+              Jump to create-wallet level
+            </Button>
+          )}
         </>
       )
     }

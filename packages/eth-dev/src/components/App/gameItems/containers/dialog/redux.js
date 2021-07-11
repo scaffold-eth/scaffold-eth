@@ -31,7 +31,8 @@ const reducer = (state = initialState, action) => {
         dialogIndexMap[i] = { visibleToUser: i === 0 }
       }
       state = dotProp.set(state, 'dialogIndexMap', dialogIndexMap)
-      return dotProp.set(state, 'dialogLength', dialogLength)
+      state = dotProp.set(state, 'dialogLength', dialogLength)
+      return dotProp.set(state, 'currentDialogIndex', 0)
     }
 
     if (action.type === CONTINUE_DIALOG) {
@@ -46,19 +47,26 @@ const reducer = (state = initialState, action) => {
     }
 
     if (action.type === JUMP_TO_DIALOG_PATH) {
-      const { currentDialogIndex } = state
+      const { currentDialogIndex, dialogIndexMap } = state
 
-      let newCurrentDialogIndex = currentDialogIndex
+      // determine new currentDialogIndex
+      let newCurrentDialogIndex
       payload.currentDialog.map((dialogPart, index) => {
-        if (dialogPart.dialogPathId === payload.dialogPathId) {
+        if (!newCurrentDialogIndex && dialogPart.dialogPathId === payload.dialogPathId) {
           newCurrentDialogIndex = index
         }
       })
+
+      if (!newCurrentDialogIndex) newCurrentDialogIndex = currentDialogIndex
+
       // add dialogPathId to dialogParts that are visible to the user
       state = dotProp.set(state, 'dialogPathsVisibleToUser', [
         ...state.dialogPathsVisibleToUser,
         payload.dialogPathId
       ])
+      // update dialogIndexMap
+      dialogIndexMap[newCurrentDialogIndex].visibleToUser = true
+      state = dotProp.set(state, 'dialogIndexMap', dialogIndexMap)
       // update currentDialogIndex
       return dotProp.set(state, 'currentDialogIndex', newCurrentDialogIndex)
     }
