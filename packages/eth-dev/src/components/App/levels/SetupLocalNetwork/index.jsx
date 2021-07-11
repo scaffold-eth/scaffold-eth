@@ -6,11 +6,11 @@ import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './compone
 import Dialog from './Dialog'
 
 const SetupLocalNetworkLevel = ({ dialog, actions }) => {
-  const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(false)
-
   useEffect(() => {
     actions.background.setCurrentBackground({ background: 'city' })
   }, [])
+
+  const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(false)
 
   return (
     <div id='setupLocalNetworkLevel'>

@@ -7,10 +7,21 @@ export const DIALOG_PATH_ID = 'create-wallet/knows-wallets'
 
 const dialog = [
   {
+    hasChoices: true,
     component: ({ currentDialog, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft text={`Great! Let's generate one for you.`} />
+          {isLastVisibleDialog && (
+            <Button
+              onClick={() => {
+                actions.setCreateWalletWindowVisibility(true)
+                actions.dialog.continueDialog()
+              }}
+            >
+              Setup Wallet
+            </Button>
+          )}
         </>
       )
     }

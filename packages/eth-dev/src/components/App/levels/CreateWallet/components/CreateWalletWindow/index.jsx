@@ -59,7 +59,7 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={10}
       onRequestClose={() => console.log('onRequestClose')}
-      isOpen
+      isOpen={isOpen}
       contentContainerStyle={{ marginTop: 0, paddingLeft: 20, paddingRight: 20 }}
     >
       <div
