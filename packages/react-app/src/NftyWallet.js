@@ -155,7 +155,7 @@ export default function NftyWallet(props) {
 
   return (
     <Layout style={{background: "#fff"}}>
-    <Header className="header" style={{background: "#fff", textAlign:'center'}}>
+    <Header className="header" style={{background: "#fff", textAlign:'center', padding:0}}>
       <Menu mode="horizontal" defaultSelectedKeys={[tab]} style={{fontSize: 16}}
         onClick={({key}) => {
                 console.log(key)
@@ -217,7 +217,7 @@ export default function NftyWallet(props) {
         </Menu.Item>
         <Menu.Item key="chat">
           <Button
-            type="link"
+            style={{border:"0px"}}
             size="large"
             onClick={() => {
               window.open("https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg");
@@ -235,8 +235,7 @@ export default function NftyWallet(props) {
         </Menu.Item>
         <Menu.Item key="help">
           <Button
-            style={{ marginRight: 8}}
-            type="link"
+            style={{border:"0px"}}
             size="large"
             onClick={showDrawer}
           >
@@ -252,7 +251,7 @@ export default function NftyWallet(props) {
         </Menu.Item>
         <Menu.Item key="about">
           <Button
-            type="link"
+            style={{border:"0px"}}
             size="large"
             onClick={() => {
               window.open(

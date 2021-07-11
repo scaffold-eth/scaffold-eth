@@ -141,7 +141,7 @@ query ink($inkUrl: String!, $liker: String) {
     likes(where: {liker: $liker}) {
       id
     }
-    tokens(first: 999) {
+    tokens(first: 999, orderBy: createdAt, orderDirection: asc) {
       id
       owner
       network

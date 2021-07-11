@@ -16,6 +16,7 @@ import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries"
 import CanvasDraw from "react-canvas-draw";
 import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from 'apollo-boost'
+import { useHistory } from "react-router-dom";
 
 const { TabPane } = Tabs;
 
@@ -25,6 +26,8 @@ const mainClient = new ApolloClient({
 })
 
 export default function ViewInk(props) {
+
+  let history = useHistory();
 
   let { hash } = useParams();
 
@@ -518,6 +521,16 @@ const clickAndSave = (
             setDrawingSize(0)
             drawingCanvas.current.loadSaveData(drawing, false)
           }}><PlaySquareOutlined /> PLAY</Button>
+
+          {(data&&data.ink&&props.address.toLowerCase()==data.ink.artist.id)&&<Button style={{marginTop:4,marginLeft:4}} onClick={() => {
+            let _savedData = LZ.compress(drawing)
+            props.setDrawing(_savedData)
+            history.push('/create')
+          }}><span
+            style={{ marginRight: 12 }}
+            role="img"
+            aria-label="Fork"
+          >🍴</span> FORK</Button>}
 
         </Row>
       </div>
