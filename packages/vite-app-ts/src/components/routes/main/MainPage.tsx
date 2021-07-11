@@ -154,16 +154,16 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const readContracts = useContractLoader(
     localProvider,
     { chainId: localChainId },
-    DefaultContractLocation.viteAppContracts
+    DefaultContractLocation.ViteAppContracts
   );
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProviderAndSigner?.signer, {}, DefaultContractLocation.viteAppContracts);
+  const writeContracts = useContractLoader(userProviderAndSigner?.signer, {}, DefaultContractLocation.ViteAppContracts);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, {}, DefaultContractLocation.viteAppContracts);
+  const mainnetContracts = useContractLoader(mainnetProvider, {}, DefaultContractLocation.ViteAppContracts);
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -333,7 +333,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
             />
           </Route>
           <Route path="/mainnetdai">
-            {userProviderAndSigner != null && (
+            {userProviderAndSigner?.signer != null && (
               <GenericContract
                 contractName="DAI"
                 customContract={mainnetContracts?.contracts?.DAI}
