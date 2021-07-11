@@ -9,8 +9,6 @@ import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
 import { formatEther } from '@ethersproject/units'
 
-import { SetupLocalNetwork, CreateWallet } from './levels'
-
 import {
   usePoller,
   useExchangePrice,
@@ -33,9 +31,10 @@ import {
   checkBalancesAndSwitchNetwork
 } from '../../helpers'
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from '../../constants'
+
 import LevelContainer from './gameItems/containers/level'
+import Levels from './levels'
 import {
-  Background,
   Terminal,
   Wallet as WalletView,
   Toolbelt,
@@ -48,6 +47,7 @@ import {
   NetworkSelectWarning,
   NetworkSelectDropdown
 } from './gameItems/components'
+
 import './index.css'
 
 const { ethers } = require('ethers')
@@ -184,7 +184,7 @@ const App = props => {
     <ReduxProvider store={store} key='reduxProvider'>
       <div id='app'>
         <LevelContainer>
-          <SetupLocalNetwork />
+          <Levels />
 
           {/* <Terminal /> */}
 

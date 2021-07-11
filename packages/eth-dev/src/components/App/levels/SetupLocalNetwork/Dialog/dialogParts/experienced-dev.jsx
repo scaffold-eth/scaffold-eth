@@ -8,22 +8,37 @@ export const DIALOG_PATH_ID = 'setup-local-network/experienced-dev'
 
 const dialog = [
   {
+    hasChoices: true,
     component: ({ currentDialog, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft
             text={`Cool! For the game to run smoothly you'll need to do the following...`}
           />
-          {isLastVisibleDialog && (
-            <Button
-              id='continue'
-              onClick={() => {
-                actions.setInitChainInstructionsWindowVisibility(true)
-              }}
-            >
-              Show instructions
-            </Button>
-          )}
+          <Button
+            onClick={() => {
+              actions.setInitChainInstructionsWindowVisibility(true)
+              actions.dialog.continueDialog()
+            }}
+          >
+            Show instructions
+          </Button>
+        </>
+      )
+    }
+  },
+  {
+    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+      return (
+        <>
+          <SpeakerLeft text={`Greate! Now let's get you a wallet.`} />
+          <Button
+            onClick={() => {
+              actions.level.setCurrentLevel({ levelId: 'create-wallet' })
+            }}
+          >
+            Jump to create-wallet level
+          </Button>
         </>
       )
     }

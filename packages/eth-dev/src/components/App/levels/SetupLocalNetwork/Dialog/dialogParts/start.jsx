@@ -28,7 +28,6 @@ const dialog = [
         {isLastVisibleDialog && (
           <>
             <Button
-              id='continue'
               onClick={() =>
                 actions.dialog.jumpToDialogPath({
                   currentDialog,
@@ -39,7 +38,6 @@ const dialog = [
               I'm an experienced developer
             </Button>
             <Button
-              id='continue'
               onClick={() =>
                 actions.dialog.jumpToDialogPath({
                   currentDialog,

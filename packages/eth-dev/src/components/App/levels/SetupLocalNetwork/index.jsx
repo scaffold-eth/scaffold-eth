@@ -1,49 +1,19 @@
-import React, { useState } from 'react'
-import { Background, Terminal } from '../../gameItems/components'
+import React, { useState, useEffect } from 'react'
+import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation } from '../../backgrounds'
 
 import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
 import Dialog from './Dialog'
 
 const SetupLocalNetworkLevel = ({ dialog, actions }) => {
-  // ----------------------------------------
-  const [background, setBackground] = useState('citySkylineInsideNight')
-  const [
-    initialInstructionsWindowVisible,
-    setInitChainInstructionsWindowVisibility
-  ] = useState(false)
+  const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(false)
 
-  const backgroundStrings = [
-    'intro',
-    'city',
-    'cityOutskirts',
-    'citySkylineInsideNight',
-    'workstation'
-  ]
-
-  let backgroundComp
-  if (background === 'intro') {
-    backgroundComp = <Intro />
-  } else if (background === 'city') {
-    backgroundComp = <City />
-  } else if (background === 'cityOutskirts') {
-    backgroundComp = <CityOutskirts />
-  } else if (background === 'citySkylineInsideNight') {
-    backgroundComp = <CitySkylineInsideNight />
-  } else if (background === 'workstation') {
-    backgroundComp = <Workstation />
-  }
-
-  const getRandomBackground = () => {
-    return backgroundStrings[Math.floor(Math.random() * backgroundStrings.length)]
-  }
-  // ----------------------------------------
+  useEffect(() => {
+    actions.background.setCurrentBackground({ background: 'city' })
+  }, [])
 
   return (
     <div id='setupLocalNetworkLevel'>
-      <Background>{backgroundComp}</Background>
-
       <Terminal>
         <Dialog
           dialog={dialog}
@@ -53,10 +23,7 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
 
       <InitChainInstructionsWindow isOpen={initialInstructionsWindowVisible} />
 
-      <ExampleGameActionsWindow
-        setBackground={setBackground}
-        getRandomBackground={getRandomBackground}
-      />
+      <ExampleGameActionsWindow />
     </div>
   )
 }
