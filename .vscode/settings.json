@@ -27,5 +27,9 @@
       { "directory": "packages/eth-hooks", "changeProcessCWD": true },
       { "directory": "packages/hardhat-ts", "changeProcessCWD": true },
       { "directory": "packages/vite-app-ts", "changeProcessCWD": true },
-   ]
+   ],
+   "search.exclude": {
+      "**/yarn-error.log": true,
+      "**/yarn.lock": true
+   }
 }
