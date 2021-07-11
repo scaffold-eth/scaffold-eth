@@ -455,7 +455,7 @@ const clickAndSave = (
                             : "Transfer"}
                         </Link>
                         </span>
-                      <span style={{zoom: "0.5", flexBasis: "25%", flexGrow: "1"}}>
+                      <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
                           {transfer.from === "0x0000000000000000000000000000000000000000" ?
                             null
                           :
@@ -464,7 +464,7 @@ const clickAndSave = (
                             </Link>
                           }
                         </span>
-                      <span style={{zoom: "0.5", flexBasis: "25%", flexGrow: "1"}}>
+                      <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
                           {transfer.to === "0x0000000000000000000000000000000000000000" ?
                             <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={true} notCopyable={true}/>
                           :
