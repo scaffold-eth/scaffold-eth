@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react';
 import { parseProviderOrSigner } from '~~/functions';
 import { TProviderAndSigner, TProviderOrSigner } from '~~/models';
 
-export const useUserAddress = (providerOrSigner: TProviderOrSigner): string => {
+export const useUserAddress = (providerOrSigner: TProviderOrSigner | undefined): string => {
   const [userAddress, setUserAddress] = useState<string>('');
 
   useEffect(() => {

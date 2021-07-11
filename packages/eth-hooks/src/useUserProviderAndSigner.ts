@@ -36,7 +36,7 @@ const syncBurnerKeyFromStorage = (): void => {
  * @returns 
  */
 export const useUserProviderAndSigner = (
-  injectedProviderOrSigner: TProviderOrSigner,
+  injectedProviderOrSigner: TProviderOrSigner | undefined,
   localProvider: TEthHooksProvider
 ): TProviderAndSigner | undefined => {
   const [signer, setSigner] = useState<Signer>();

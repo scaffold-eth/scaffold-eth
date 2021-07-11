@@ -4,7 +4,7 @@
     "module": "esNext",
     "outDir": "lib",
     "lib": ["dom", "ESNext"],
-    "sourceMap": true,
+    "sourceMap": false,
     "allowJs": false,
     "declaration": true,
     "declarationDir": "lib",

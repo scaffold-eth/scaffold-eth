@@ -13,6 +13,11 @@ export type TContractConfig = {
   externalContracts?: Record<string, Contract>;
 };
 
+export enum DefaultContractLocation {
+  reactAppContracts = '../../react-app/src/generated/contracts',
+  viteAppContracts = '../../vite-app-ts/src/generated/contracts',
+}
+
 /**
  * Loads your local contracts and gives options to read values from contracts
   or write transactions into them
@@ -34,12 +39,12 @@ export type TContractConfig = {
   - externalContracts: object with chainIds as keys, with an array of contracts for each
  * @param providerOrSigner 
  * @param safeConfig 
- * @returns 
+ * @returns Hash: contractName: Contract
  */
 export const useContractLoader = (
-  providerOrSigner: TProviderOrSigner,
-  config: TContractConfig = {},
-  contractFileLocation: string = '../../../generated/contracts'
+  providerOrSigner: TProviderOrSigner | undefined,
+  config: TContractConfig,
+  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   useEffect(() => {
@@ -81,7 +86,8 @@ export const useContractLoader = (
             } catch (e) {
               console.log(e);
             }
-            if (contractList[chainId]) {
+
+            if (contractList?.[chainId] != undefined) {
               for (const hardhatNetwork in contractList[chainId]) {
                 if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
                   if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
@@ -95,7 +101,7 @@ export const useContractLoader = (
               }
             }
 
-            if (externalContractList[chainId]) {
+            if (externalContractList?.[chainId] != undefined) {
               combinedContracts = { ...combinedContracts, ...externalContractList[chainId].contracts };
             }
 
@@ -124,14 +130,14 @@ export const useContractLoader = (
       active = false;
     };
   }, [
-    providerOrSigner,
+    config,
     config.chainId,
     config.customAddresses,
     config.externalContracts,
     config.hardhatContracts,
     config.hardhatNetworkName,
     contractFileLocation,
-    config,
+    providerOrSigner,
   ]);
 
   return contracts;
