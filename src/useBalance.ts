@@ -1,9 +1,10 @@
-import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
+import { JsonRpcProvider, Provider, Web3Provider } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useEffect } from 'react';
 
-import { usePoller, useOnBlock } from '~~';
-import { TEthHooksProvider } from '~~/models';
+import { useOnRepeat } from '~~/useOnRepeat';
+
+const zero = BigNumber.from(0);
 
 /**
  * Gets your balance in ETH from given address and provider
@@ -17,38 +18,24 @@ import { TEthHooksProvider } from '~~/models';
  * @param pollTime 
  * @returns 
  */
-export const useBalance = (
-  provider: TEthHooksProvider | undefined,
-  address: string,
-  pollTime: number = 0
-): BigNumber => {
-  const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
+export const useBalance = (provider: Provider | undefined, address: string, pollTime: number = 0): BigNumber => {
+  const [balance, setBalance] = useState<BigNumber>();
 
-  const pollBalance = useCallback(
-    async (provider?: JsonRpcProvider | Web3Provider | undefined, address?: string): Promise<void> => {
-      if (provider && address) {
-        const newBalance = await provider.getBalance(address);
-        if (newBalance !== balance) {
-          setBalance(newBalance);
-        }
+  const pollBalance = useCallback(async (provider?: Provider, address?: string): Promise<void> => {
+    if (provider && address) {
+      const newBalance = await provider.getBalance(address);
+      if (!newBalance.eq(balance ?? zero)) {
+        setBalance(newBalance);
+        console.log(address, newBalance.toString(), balance);
       }
-    },
-    [balance]
+    }
+  }, []);
+
+  useOnRepeat(
+    pollBalance,
+    { pollTime, provider, leadTrigger: address != null && address != '' && provider != null },
+    provider,
+    address
   );
-
-  // Only pass a provider to watch on a block if there is no pollTime
-  useOnBlock(pollTime === 0 ? provider : undefined, () => {
-    if (address != undefined && pollTime === 0) void pollBalance(provider, address);
-  });
-
-  // Use a poller if a pollTime is provided
-  usePoller(
-    (): void => {
-      if (address != undefined && pollTime > 0) void pollBalance(provider, address);
-    },
-    pollTime,
-    provider != undefined && address != undefined
-  );
-
-  return balance;
+  return balance ?? zero;
 };
