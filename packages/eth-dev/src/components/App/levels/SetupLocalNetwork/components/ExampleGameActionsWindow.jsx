@@ -1,9 +1,12 @@
-import React, { useState } from 'react'
+import React from 'react'
 
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, WindowModal } from '../../../gameItems/components'
 
-const ExampleGameActionsWindow = ({ actions, setBackground, getRandomBackground }) => {
+const ExampleGameActionsWindow = ({ actions }) => {
+
+  const backgrounds = ['intro', 'city', 'cityOutskirts', 'citySkylineInsideNight', 'workstation']
+
   return (
     <WindowModal
       initTop={320}
@@ -39,7 +42,14 @@ const ExampleGameActionsWindow = ({ actions, setBackground, getRandomBackground 
         <Button block onClick={() => actions.terminal.toggleTerminalVisibility()}>
           Toggle Terminal
         </Button>
-        <Button block onClick={() => setBackground(getRandomBackground())}>
+        <Button
+          block
+          onClick={() =>
+            actions.background.setCurrentBackground({
+              background: backgrounds[Math.floor(Math.random() * backgrounds.length)]
+            })
+          }
+        >
           Change Background
         </Button>
       </div>
