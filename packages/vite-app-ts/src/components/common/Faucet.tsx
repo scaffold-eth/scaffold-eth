@@ -99,7 +99,7 @@ export const Faucet: FC<IFaucetProps> = (props) => {
             />
             <Wallet
               color="#888888"
-              signer={props.localProvider}
+              signer={props.localProvider.getSigner()}
               ensProvider={props.ensProvider}
               price={props.price}
               address={address ?? ''}

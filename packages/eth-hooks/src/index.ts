@@ -8,6 +8,7 @@ export * from './useGasPrice';
 export * from './useNonce';
 export * from './useOnBlock';
 export * from './usePoller';
+export * from './useOnRepeat';
 export * from './useTimestamp';
 export * from './useUserProviderAndSigner';
 export * from './useUserAddress';
