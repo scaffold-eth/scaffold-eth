@@ -3,13 +3,13 @@ import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
 import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined, SaveOutlined } from '@ant-design/icons';
-import { Row, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification, Popconfirm, Tooltip } from 'antd';
+import { Row, Column, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification, Popconfirm, Tooltip } from 'antd';
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
-import { useHotkeys } from 'react-hotkeys-hook';
+import "./App.css"
 
 const Hash = require('ipfs-only-hash')
 const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
@@ -34,39 +34,15 @@ export default function CreateInk(props) {
 
   const [drawingSaved, setDrawingSaved] = useState(true)
 
-  //Keyboard shortcuts
-  useHotkeys('ctrl+z', () => undo());
-  useHotkeys(']', () => updateBrushRadius(brushRadius => brushRadius + 1));
-  useHotkeys('shift+]', () => updateBrushRadius(brushRadius => brushRadius + 10));
-  useHotkeys('[', () => updateBrushRadius(brushRadius => brushRadius - 1));
-  useHotkeys('shift+[', () => updateBrushRadius(brushRadius => brushRadius - 10));
-  useHotkeys('.', () => updateOpacity(0.01));
-  useHotkeys('shift+.', () => updateOpacity(0.1));
-  useHotkeys(',', () => updateOpacity(-0.01));
-  useHotkeys('shift+,', () => updateOpacity(-0.1));
-  
+  // const clientHeight = window.document.body.clientHeight;
+  // const clientWidth = window.document.body.clientWidth;
+
+  const isPortrait = window.document.body.clientHeight > window.document.body.clientWidth;
+
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
-  
-  const updateColor = value => {
-    console.log(value)
-    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-  }
 
-  const updateOpacity =  value => {
-    let colorPlaceholder = drawingCanvas.current.props.brushColor.substring(5).replace(")","").split(",").map(e=>parseFloat(e));
-
-    if (colorPlaceholder[3] <= 0.01 && value < 0 || colorPlaceholder[3] <= 0.10 && value < -0.01) {
-      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${0})`)
-    } else if (colorPlaceholder[3] >= 0.99 && value > 0 || colorPlaceholder[3] >= 0.90 && value > 0.01) {
-      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${1})`)
-    } else {
-      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${(colorPlaceholder[3]+value).toFixed(2)})`)
-    }
-  }
-  
   const saveDrawing = (newDrawing, saveOverride) => {
         if(!loadedLines || newDrawing.lines.length >= loadedLines) {
           if(saveOverride || newDrawing.lines.length < 100 || newDrawing.lines.length % 10 === 0) {
@@ -80,14 +56,12 @@ export default function CreateInk(props) {
         }
   }
 
-  useEffect(() => {
-    if (brushRadius <= 1) {
-      setBrushRadius(1);
-    } else if (brushRadius >= 100) {
-      setBrushRadius(100);
-    }
-  }, [updateBrushRadius, updateOpacity]);
-  
+  const updateColor = value => {
+    console.log(value)
+    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+  }
+
   useEffect(() => {
     const loadPage = async () => {
       console.log('loadpage')
@@ -346,11 +320,11 @@ const drawFrame = (color, radius) => {
   triggerOnChange(lines);
 };
 
-let top, bottom
+let top, bottom, canvas
 if (props.mode === "edit") {
 
   top = (
-    <div style={{ width: "90vmin", margin: "0 auto", marginBottom: 16}}>
+    <div style={{ margin: "0 auto", marginBottom: 16}}>
 
 
 
@@ -419,8 +393,8 @@ if (props.mode === "edit") {
   )
 
   bottom = (
-    <div style={{ marginTop: 16 }}>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
+    <div className="bottom-block">
+    <Row style={{ margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
     <Space>
     <PickerDisplay
     color={color}
@@ -431,13 +405,13 @@ if (props.mode === "edit") {
     }}><HighlightOutlined /></Button>
     </Space>
     </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent: 'center', alignItems: 'center'}}>
+    <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent: 'center', alignItems: 'center'}}>
     <Col span={12}>
     <AlphaPicker onChangeComplete={updateColor}
         color={color}/>
     </Col>
     </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
     <Col span={12}>
           <Slider
             min={1}
@@ -456,7 +430,7 @@ if (props.mode === "edit") {
           />
         </Col>
     </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
+    <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
         <Space>
         <Col span={4}>
           <Button
@@ -472,37 +446,59 @@ if (props.mode === "edit") {
     </Row>
     </div>
   )
+
+  canvas = (
+    <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+          {(!loaded)&&<span>Loading...</span>}
+          <CanvasDraw
+          key={props.mode+""+props.canvasKey}
+          ref={drawingCanvas}
+          canvasWidth={size[0]}
+          canvasHeight={size[1]}
+          brushColor={color}
+          lazyRadius={3}
+          brushRadius={brushRadius}
+        //  disabled={props.mode !== "edit"}
+        //  hideGrid={props.mode !== "edit"}
+        //  hideInterface={props.mode !== "edit"}
+          onChange={saveDrawing}
+          saveData={fullDrawing}
+          immediateLoading={true}//drawingSize >= 10000}
+          loadTimeOffset={3}
+          />
+    </div>
+  )
 }
 
 return (
-  <div style={{textAlign:"center"}}  /*onClick={
+  <div className="create-ink-container"  /*onClick={
     () => {
       if(props.mode=="mint"){
          drawingCanvas.current.loadSaveData(LZ.decompress(props.drawing), false)
       }
     }
   }*/>
-  {top}
-  <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
-  {(!loaded)&&<span>Loading...</span>}
-  <CanvasDraw
-  key={props.mode+""+props.canvasKey}
-  ref={drawingCanvas}
-  canvasWidth={size[0]}
-  canvasHeight={size[1]}
-  brushColor={color}
-  lazyRadius={3}
-  brushRadius={brushRadius}
-//  disabled={props.mode !== "edit"}
-//  hideGrid={props.mode !== "edit"}
-//  hideInterface={props.mode !== "edit"}
-  onChange={saveDrawing}
-  saveData={fullDrawing}
-  immediateLoading={true}//drawingSize >= 10000}
-  loadTimeOffset={3}
-  />
-  </div>
-  {bottom}
+    {
+      isPortrait 
+      ?
+      <>
+        {top}
+        <div className="canvas">
+          {canvas}
+        </div>
+        {bottom}
+      </>
+      :
+      <>
+        <div className="canvas">
+          {canvas}
+        </div>
+        <div className="edit-tools">
+          {top}{bottom}
+        </div>
+      </>
+    }
+ 
   </div>
 );
 }
