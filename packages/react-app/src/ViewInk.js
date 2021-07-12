@@ -452,6 +452,8 @@ const clickAndSave = (
                             ? "Mint"
                             : (transfer.to === "0x0000000000000000000000000000000000000000" || transfer.to === "0x000000000000000000000000000000000000dead")
                             ? "Burn"
+                            : (transfer.to === "0x73ca9c4e72ff109259cf7374f038faf950949c51")
+                            ? "Upgrade"
                             : "Transfer"}
                         </Link>
                         </span>
@@ -459,7 +461,7 @@ const clickAndSave = (
                           {transfer.from === "0x0000000000000000000000000000000000000000" ?
                             null
                           :
-                            <Link to={`/artist/${transfer.from}`}>
+                            <Link to={`/holdings/${transfer.from}`}>
                               <Address value={transfer.from} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
                             </Link>
                           }
@@ -468,7 +470,7 @@ const clickAndSave = (
                           {transfer.to === "0x0000000000000000000000000000000000000000" ?
                             <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={true} notCopyable={true}/>
                           :
-                            <Link to={`/artist/${transfer.to}`}>
+                            <Link to={`/holdings/${transfer.to}`}>
                               <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
                             </Link>
                           }
@@ -496,7 +498,7 @@ const clickAndSave = (
         </div>
 
         <div style={{marginTop:20}}>
-        <Tabs defaultActiveKey="1" size="large">
+        <Tabs defaultActiveKey="1" size="large" type="card">
           <TabPane tab="Details" key="1">
             {nextHolders}
           </TabPane>
