@@ -9,6 +9,7 @@ import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
+import { useHotkeys } from 'react-hotkeys-hook';
 
 const Hash = require('ipfs-only-hash')
 const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
@@ -33,10 +34,39 @@ export default function CreateInk(props) {
 
   const [drawingSaved, setDrawingSaved] = useState(true)
 
+  //Keyboard shortcuts
+  useHotkeys('ctrl+z', () => undo());
+  useHotkeys(']', () => updateBrushRadius(brushRadius => brushRadius + 1));
+  useHotkeys('shift+]', () => updateBrushRadius(brushRadius => brushRadius + 10));
+  useHotkeys('[', () => updateBrushRadius(brushRadius => brushRadius - 1));
+  useHotkeys('shift+[', () => updateBrushRadius(brushRadius => brushRadius - 10));
+  useHotkeys('.', () => updateOpacity(0.01));
+  useHotkeys('shift+.', () => updateOpacity(0.1));
+  useHotkeys(',', () => updateOpacity(-0.01));
+  useHotkeys('shift+,', () => updateOpacity(-0.1));
+  
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
+  
+  const updateColor = value => {
+    console.log(value)
+    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+  }
 
+  const updateOpacity =  value => {
+    let colorPlaceholder = drawingCanvas.current.props.brushColor.substring(5).replace(")","").split(",").map(e=>parseFloat(e));
+
+    if (colorPlaceholder[3] <= 0.01 && value < 0 || colorPlaceholder[3] <= 0.10 && value < -0.01) {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${0})`)
+    } else if (colorPlaceholder[3] >= 0.99 && value > 0 || colorPlaceholder[3] >= 0.90 && value > 0.01) {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${1})`)
+    } else {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${(colorPlaceholder[3]+value).toFixed(2)})`)
+    }
+  }
+  
   const saveDrawing = (newDrawing, saveOverride) => {
         if(!loadedLines || newDrawing.lines.length >= loadedLines) {
           if(saveOverride || newDrawing.lines.length < 100 || newDrawing.lines.length % 10 === 0) {
@@ -50,12 +80,14 @@ export default function CreateInk(props) {
         }
   }
 
-  const updateColor = value => {
-    console.log(value)
-    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-  }
-
+  useEffect(() => {
+    if (brushRadius <= 1) {
+      setBrushRadius(1);
+    } else if (brushRadius >= 100) {
+      setBrushRadius(100);
+    }
+  }, [updateBrushRadius, updateOpacity]);
+  
   useEffect(() => {
     const loadPage = async () => {
       console.log('loadpage')
