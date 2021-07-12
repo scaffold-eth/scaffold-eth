@@ -2,13 +2,14 @@ import React, { useState, useRef, useEffect } from 'react'
 import { useHistory } from "react-router-dom";
 import 'antd/dist/antd.css';
 import "./App.css";
-import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined, SaveOutlined } from '@ant-design/icons';
-import { Row, Column, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification, Popconfirm, Tooltip } from 'antd';
+import { UndoOutlined, ClearOutlined, PlaySquareOutlined, HighlightOutlined, BgColorsOutlined, BorderOutlined, SaveOutlined, InfoCircleOutlined } from '@ant-design/icons';
+import { Row, Column, Button, Input, InputNumber, Form, message, Col, Slider, Space, notification, Popconfirm, Tooltip, Popover, Table } from 'antd';
 import { useLocalStorage } from "./hooks"
 import { addToIPFS, transactionHandler } from "./helpers"
 import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
+import { useHotkeys } from 'react-hotkeys-hook';
 import "./App.css"
 
 const Hash = require('ipfs-only-hash')
@@ -38,9 +39,38 @@ export default function CreateInk(props) {
   // const clientWidth = window.document.body.clientWidth;
 
   const isPortrait = window.document.body.clientHeight > window.document.body.clientWidth;
+  
+  //Keyboard shortcuts
+  useHotkeys('ctrl+z', () => undo());
+  useHotkeys(']', () => updateBrushRadius(brushRadius => brushRadius + 1));
+  useHotkeys('shift+]', () => updateBrushRadius(brushRadius => brushRadius + 10));
+  useHotkeys('[', () => updateBrushRadius(brushRadius => brushRadius - 1));
+  useHotkeys('shift+[', () => updateBrushRadius(brushRadius => brushRadius - 10));
+  useHotkeys('.', () => updateOpacity(0.01));
+  useHotkeys('shift+.', () => updateOpacity(0.1));
+  useHotkeys(',', () => updateOpacity(-0.01));
+  useHotkeys('shift+,', () => updateOpacity(-0.1));
 
   const updateBrushRadius = value => {
     setBrushRadius(value)
+  }
+  
+  const updateColor = value => {
+    console.log(value)
+    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
+  }
+
+  const updateOpacity =  value => {
+    let colorPlaceholder = drawingCanvas.current.props.brushColor.substring(5).replace(")","").split(",").map(e=>parseFloat(e));
+
+    if (colorPlaceholder[3] <= 0.01 && value < 0 || colorPlaceholder[3] <= 0.10 && value < -0.01) {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${0})`)
+    } else if (colorPlaceholder[3] >= 0.99 && value > 0 || colorPlaceholder[3] >= 0.90 && value > 0.01) {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${1})`)
+    } else {
+      setColor(`rgba(${colorPlaceholder[0]},${colorPlaceholder[1]},${colorPlaceholder[2]},${(colorPlaceholder[3]+value).toFixed(2)})`)
+    }
   }
 
   const saveDrawing = (newDrawing, saveOverride) => {
@@ -55,12 +85,14 @@ export default function CreateInk(props) {
           }
         }
   }
-
-  const updateColor = value => {
-    console.log(value)
-    setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-    console.log(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
-  }
+  
+  useEffect(() => {
+    if (brushRadius <= 1) {
+      setBrushRadius(1);
+    } else if (brushRadius >= 100) {
+      setBrushRadius(100);
+    }
+  }, [updateBrushRadius, updateOpacity]);
 
   useEffect(() => {
     const loadPage = async () => {
@@ -239,9 +271,9 @@ const triggerOnChange = (lines) => {
     height: drawingCanvas.current.props.canvasHeight
   });
 
-  //drawingCanvas.current.loadSaveData(saved, true);
-  setLoadedLines(lines.length)
-  setFullDrawing(saved)
+  drawingCanvas.current.loadSaveData(saved, true);
+  //setLoadedLines(lines.length)
+  //setFullDrawing(saved)
   drawingCanvas.current.lines = lines;
 };
 
@@ -320,7 +352,7 @@ const drawFrame = (color, radius) => {
   triggerOnChange(lines);
 };
 
-let top, bottom, canvas
+let top, bottom, canvas, shortcutsPopover
 if (props.mode === "edit") {
 
   top = (
@@ -391,6 +423,28 @@ if (props.mode === "edit") {
     </div>
 
   )
+  
+  shortcutsPopover = (
+    <Table 
+      columns={[
+        {title: 'Hotkey', dataIndex: 'shortcut'},
+        {title: 'Action', dataIndex: 'action'}
+      ]} 
+      dataSource={[
+        {key: '1', shortcut: 'Ctrl+z', action: "Undo"},
+        {key: '2', shortcut: ']', action: "Increase brush size by 1"},
+        {key: '3', shortcut: 'Shift+]', action: "Increase brush size by 10"},
+        {key: '4', shortcut: '[', action: "Decrease brush size by 1"},
+        {key: '5', shortcut: 'Shift+[', action: "Decrease brush size by 10"},
+        {key: '6', shortcut: '> ', action: "Increase current color opacity by 1%"},
+        {key: '7', shortcut: 'Shift+> ', action: "Increase current color opacity by 10%"},
+        {key: '8', shortcut: '<', action: "Decrease current color opacity by 1%"},
+        {key: '9', shortcut: 'Shift+< ', action: "Decrease current color opacity by 10%"}
+      ]} 
+      size="small" 
+      pagination={false}
+    />
+  )
 
   bottom = (
     <div className="bottom-block">
@@ -441,6 +495,15 @@ if (props.mode === "edit") {
           <Button
           onClick={() => drawFrame(color, brushRadius)}
           ><BorderOutlined />Frame</Button>
+        </Col>
+        </Space>
+    </Row>
+    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"1vh", justifyContent:'center'}}>
+        <Space>
+        <Col span={4}>
+          <Popover content={shortcutsPopover} title="Keyboard shortcuts" trigger="click">
+            <Button><InfoCircleOutlined />Shortcuts</Button>
+          </Popover>
         </Col>
         </Space>
     </Row>
