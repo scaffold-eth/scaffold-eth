@@ -71,3 +71,17 @@
   margin: 0;
   font-size: 0.7rem;
 }
+
+.token-transfer-table-address span:nth-of-type(2) {
+  font-size: 14px !important;
+  vertical-align: top !important;
+}
+
+.token-transfer-table-address canvas.identicon {
+  width: 16px !important;
+  height: 16px !important;
+}
+
+.ant-menu-vertical .ant-menu-item {
+  font-size: 24px
+}

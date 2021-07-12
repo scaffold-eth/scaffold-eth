@@ -141,11 +141,20 @@ query ink($inkUrl: String!, $liker: String) {
     likes(where: {liker: $liker}) {
       id
     }
-    tokens(first: 999) {
+    tokens(first: 999, orderBy: createdAt, orderDirection: asc) {
       id
       owner
       network
       price
+    }
+    tokenTransfers(orderBy: createdAt, orderDirection: desc) {
+      id
+      createdAt
+      token { id edition }
+      from
+      to
+      sale { id price }
+      transactionHash
     }
   }
 }
@@ -162,7 +171,7 @@ query token($inkUrl: String!) {
 
 export const HOLDINGS_MAIN_QUERY = gql`
   query tokens($owner: Bytes!) {
-    tokens(first: 999, where: { owner: $owner }) {
+    tokens(first: 999, where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
       id
     	owner
      	network

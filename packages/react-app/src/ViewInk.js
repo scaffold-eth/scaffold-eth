@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers"
-import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Input } from 'antd';
+import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Input, Tabs } from 'antd';
 import { AddressInput, Address } from "./components"
 import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined, PlaySquareOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
@@ -16,7 +16,9 @@ import { INK_QUERY, INK_MAIN_QUERY } from "./apollo/queries"
 import CanvasDraw from "react-canvas-draw";
 import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from 'apollo-boost'
+import { useHistory } from "react-router-dom";
 
+const { TabPane } = Tabs;
 
 const mainClient = new ApolloClient({
   uri: process.env.REACT_APP_GRAPHQL_ENDPOINT_MAINNET,
@@ -24,6 +26,8 @@ const mainClient = new ApolloClient({
 })
 
 export default function ViewInk(props) {
+
+  let history = useHistory();
 
   let { hash } = useParams();
 
@@ -49,6 +53,8 @@ export default function ViewInk(props) {
   const [mainnetTokens, setMainnetTokens] = useState({})
   const [blockNumber, setBlockNumber] = useState(0)
   const [data, setData] = useState()
+  const [tokenTxs, setTokenTxs] = useState([]);
+  const [inkTokenTransfers, setInkTokenTransfers] = useState([]);
 
   const [drawing, setDrawing] = useState()
 
@@ -80,6 +86,7 @@ export default function ViewInk(props) {
     };
 
     (dataRaw && dataRaw.ink) ? getInk(dataRaw) : console.log("loading");
+    (dataRaw && dataRaw.ink) ? setInkTokenTransfers(dataRaw.ink.tokenTransfers) : console.log()
   }, [dataRaw, props.address]);
 
   useEffect(() => {
@@ -155,6 +162,7 @@ export default function ViewInk(props) {
   let likeButtonDisplay
   let detailsDisplay
   let nextHolders
+  let tokenTransfers
 
   let mint = async (values) => {
     setMinting(true)
@@ -419,6 +427,60 @@ const clickAndSave = (
             </Row>
           </>
         )
+
+        tokenTransfers = (
+          inkTokenTransfers && inkTokenTransfers.length > 0 ?
+            <div style={{maxWidth: "700px", margin: "0 auto", textAlign: "left"}}>
+                   <ul style={{listStyle: "none", padding: "5px", margin: "0"}}>
+                      <li style={{padding: "2px 6px", display: "flex", justifyContent: "space-between", fontWeight: "bold", background: "#f5f5f5"}}>
+                        <span style={{flexBasis: "10%", flexGrow: "1", fontWeight: "bold"}}>Edition</span>
+                        <span style={{flexBasis: "10%", flexGrow: "1", fontWeight: "bold"}}>Action</span>
+                        <span style={{flexBasis: "25%", flexGrow: "1", fontWeight: "bold"}}>From</span>
+                        <span style={{flexBasis: "25%", flexGrow: "1", fontWeight: "bold"}}>To</span>
+                        <span style={{flexBasis: "8%", flexGrow: "1", fontWeight: "bold"}}>Price</span>
+                        <span style={{flexBasis: "12%", flexGrow: "1", fontWeight: "bold"}}>Date</span>
+                    </li>
+                  </ul>
+                  {inkTokenTransfers.map((transfer, transferIndex) =>
+                    <li key={transfer.id} style={{padding: "2px 6px", display: "flex", justifyContent: "space-between"}}>
+                      <span style={{flexBasis: "10%", flexGrow: "1", fontWeight: "bold"}}>{transfer.token.edition}</span>
+                      <span style={{flexBasis: "10%", flexGrow: "1"}}>
+                        <Link to={{ pathname: `https://blockscout.com/xdai/mainnet/tx/${transfer.transactionHash}` }} target="_blank" rel="noopener noreferrer">
+                          { (transfer.sale && transfer.sale.id)
+                            ? "Purchase"
+                            : (transfer.from === "0x0000000000000000000000000000000000000000")
+                            ? "Mint"
+                            : (transfer.to === "0x0000000000000000000000000000000000000000" || transfer.to === "0x000000000000000000000000000000000000dead")
+                            ? "Burn"
+                            : (transfer.to === "0x73ca9c4e72ff109259cf7374f038faf950949c51")
+                            ? "Upgrade"
+                            : "Transfer"}
+                        </Link>
+                        </span>
+                      <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
+                          {transfer.from === "0x0000000000000000000000000000000000000000" ?
+                            null
+                          :
+                            <Link to={`/holdings/${transfer.from}`}>
+                              <Address value={transfer.from} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+                            </Link>
+                          }
+                        </span>
+                      <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
+                          {transfer.to === "0x0000000000000000000000000000000000000000" ?
+                            <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={true} notCopyable={true}/>
+                          :
+                            <Link to={`/holdings/${transfer.to}`}>
+                              <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+                            </Link>
+                          }
+                      </span>
+                      <span style={{flexBasis: "8%", flexGrow: "1"}}>{transfer.sale&&transfer.sale.price ? "$"+(parseInt(transfer.sale.price) / 1e18).toFixed(2) : "-"}</span>
+                      <span style={{flexBasis: "12%", flexGrow: "1"}}>{transfer.createdAt&&(new Date(parseInt(transfer.createdAt) * 1000)).toLocaleString('en-US', { year: 'numeric', month: 'long', day: 'numeric' })}</span>
+                    </li>
+                  )}
+            </div> : null
+        )
     }
   }
 
@@ -436,7 +498,14 @@ const clickAndSave = (
         </div>
 
         <div style={{marginTop:20}}>
-          {nextHolders}
+        <Tabs defaultActiveKey="1" size="large" type="card">
+          <TabPane tab="Details" key="1">
+            {nextHolders}
+          </TabPane>
+          <TabPane tab="History" key="2">
+            {tokenTransfers}
+          </TabPane>
+        </Tabs>
         </div>
         {imageFromIpfsToHelpWithNetworking}
       </div>
@@ -454,6 +523,16 @@ const clickAndSave = (
             setDrawingSize(0)
             drawingCanvas.current.loadSaveData(drawing, false)
           }}><PlaySquareOutlined /> PLAY</Button>
+
+          {(data&&data.ink&&props.address.toLowerCase()==data.ink.artist.id)&&<Button style={{marginTop:4,marginLeft:4}} onClick={() => {
+            let _savedData = LZ.compress(drawing)
+            props.setDrawing(_savedData)
+            history.push('/create')
+          }}><span
+            style={{ marginRight: 12 }}
+            role="img"
+            aria-label="Fork"
+          >🍴</span> FORK</Button>}
 
         </Row>
       </div>
