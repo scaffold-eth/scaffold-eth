@@ -44,6 +44,7 @@
     "react-canvas-draw": "^1.1.1",
     "react-color": "^2.18.1",
     "react-dom": "16.12.0",
+    "react-hotkeys-hook": "^3.3.2",
     "react-lazy-load-image-component": "^1.5.1",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
