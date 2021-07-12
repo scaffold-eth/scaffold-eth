@@ -85,3 +85,48 @@
 .ant-menu-vertical .ant-menu-item {
   font-size: 24px
 }
+.ant-slider .ant-slider-rail{
+  height: 8px;
+}
+.ant-slider .ant-slider-track{
+  height: 8px;
+}
+.ant-slider .ant-slider-step{
+  height: 8px;
+}
+.ant-slider .ant-slider-handle{
+  width: 19px;
+  height: 19px;
+}
+
+.create-ink-container {
+  display: flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.canvas {
+  display: block;
+  flex: 0 0 50%;
+  /* margin-left: 10%; */
+}
+.edit-tools {
+  display: block;
+  flex: 0 0 50%;
+  margin-top: auto;
+  margin-bottom: auto;
+}
+
+.bottom-block {
+  margin-top: 50px;
+}
+
+@media (orientation: portrait) {
+  .create-ink-container {
+    display: block;
+    text-align: center;
+  }
+  .bottom-block {
+    margin-top: 5px;
+  }
+}
