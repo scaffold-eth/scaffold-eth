@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Switch, Route, NavLink, Redirect } from "react-router-dom";
 import { Button, Badge, Tabs, Row, Col, Drawer, Layout, Menu } from "antd";
+import { MenuOutlined } from '@ant-design/icons';
 import { PlusOutlined } from "@ant-design/icons";
 import { useContractReader, useLocalStorage } from "./hooks";
 import { RelayProvider } from "@opengsn/gsn";
@@ -153,10 +154,13 @@ export default function NftyWallet(props) {
     </div>
   );
 
+  let menuFontSize = 24
+  let menuButtonStyle = {border:"0px", fontSize: menuFontSize}
+
   return (
     <Layout style={{background: "#fff"}}>
     <Header className="header" style={{background: "#fff", textAlign:'center', padding:0}}>
-      <Menu mode="horizontal" defaultSelectedKeys={[tab]} style={{fontSize: 16}}
+      <Menu mode="horizontal" overflowedIndicator={<MenuOutlined style={{fontSize:menuFontSize}} />} defaultSelectedKeys={[tab]} style={{fontSize: menuFontSize}}
         onClick={({key}) => {
                 console.log(key)
                 setTab(key);
@@ -174,14 +178,7 @@ export default function NftyWallet(props) {
         </Menu.Item>
         <Menu.Item key="create">
           <NavLink to="/create">
-           <Button
-             style={{ marginBottom: 8 }}
-             size="large"
-             shape="round"
-             type={"primary"}
-           >
-             <span style={{ marginRight: 12 }}>🖌</span> Create
-           </Button>
+             <span style={{ marginRight: 12 }}>🖌</span> create
          </NavLink>
         </Menu.Item>
         <Menu.Item key="artist" disabled={!props.address}>
@@ -215,9 +212,25 @@ export default function NftyWallet(props) {
             </span>
           </NavLink>
         </Menu.Item>
+        <Menu.Item key="help">
+          <Button
+            style={menuButtonStyle}
+            size="large"
+            onClick={showDrawer}
+          >
+            <span
+              style={{ marginRight: 12 }}
+              role="img"
+              aria-label="Light Bulb"
+            >
+              💡
+            </span>
+            Help
+          </Button>
+        </Menu.Item>
         <Menu.Item key="chat">
           <Button
-            style={{border:"0px"}}
+            style={menuButtonStyle}
             size="large"
             onClick={() => {
               window.open("https://t.me/joinchat/KByvmRpuA2XzQVYXWICiSg");
@@ -233,25 +246,9 @@ export default function NftyWallet(props) {
             Chat
           </Button>
         </Menu.Item>
-        <Menu.Item key="help">
-          <Button
-            style={{border:"0px"}}
-            size="large"
-            onClick={showDrawer}
-          >
-            <span
-              style={{ marginRight: 12 }}
-              role="img"
-              aria-label="Light Bulb"
-            >
-              💡
-            </span>
-            Help
-          </Button>
-        </Menu.Item>
         <Menu.Item key="about">
           <Button
-            style={{border:"0px"}}
+            style={menuButtonStyle}
             size="large"
             onClick={() => {
               window.open(

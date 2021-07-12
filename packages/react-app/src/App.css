@@ -81,3 +81,7 @@
   width: 16px !important;
   height: 16px !important;
 }
+
+.ant-menu-vertical .ant-menu-item {
+  font-size: 24px
+}

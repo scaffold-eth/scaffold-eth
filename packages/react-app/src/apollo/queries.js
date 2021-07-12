@@ -171,7 +171,7 @@ query token($inkUrl: String!) {
 
 export const HOLDINGS_MAIN_QUERY = gql`
   query tokens($owner: Bytes!) {
-    tokens(first: 999, where: { owner: $owner }) {
+    tokens(first: 999, where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
       id
     	owner
      	network
