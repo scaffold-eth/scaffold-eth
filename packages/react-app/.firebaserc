@@ -1,5 +1,7 @@
 {
   "projects": {
-    "default": "nifty-ink"
+    "default": "nifty-ink",
+    "dev": "vatwise-4f342",
+    "prod": "nifty-ink"
   }
 }
