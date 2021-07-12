@@ -39,6 +39,7 @@ exports.preRender = functions.https.onRequest((request, response) => {
       userAgent.includes('slackbot-linkexpanding') ||
       userAgent.includes('twitterbot') ||
       userAgent.includes('whatsapp') ||
+      userAgent.includes('discord') ||
       userAgent.includes('developers\.google\.com') ? true : false;
 
     console.log(userAgent, isBot, request.path, path)

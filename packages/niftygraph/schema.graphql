@@ -18,6 +18,7 @@ type Ink @entity {
   tokens: [Token!]!
   sales: [Sale!] @derivedFrom(field: "ink")
   likes: [Like!] @derivedFrom(field: "ink")
+  tokenTransfers: [TokenTransfer!] @derivedFrom(field: "ink")
   createdAt: BigInt
   mintPrice: BigInt!
   mintPriceSetAt: BigInt
@@ -26,6 +27,8 @@ type Ink @entity {
   bestPriceSource: String
   bestPriceSetAt: BigInt
   likeCount: BigInt
+  burnedCount: BigInt
+  burned: Boolean
 }
 
 type Token @entity {
@@ -36,9 +39,12 @@ type Token @entity {
   network: Network!
   price: BigInt!
   priceSetAt: BigInt
+  transferCount: BigInt
   transfers: [TokenTransfer!] @derivedFrom(field: "token")
   sales: [Sale!] @derivedFrom(field: "token")
   upgradeTransfer: TokenTransfer
+  burned: Boolean
+  artist: Artist
 }
 
 type Artist @entity {
@@ -48,6 +54,15 @@ type Artist @entity {
   inkCount: BigInt!
   earnings: BigInt
   sales: [Sale!] @derivedFrom(field: "artist")
+  likes: [Like!] @derivedFrom(field: "artist")
+  tokenTransfers: [TokenTransfer!] @derivedFrom(field: "artist")
+  tokens: [Token!] @derivedFrom(field: "artist")
+  likeCount: BigInt
+  saleCount: BigInt
+  createdAt: BigInt!
+  lastInkAt: BigInt
+  lastLikeAt: BigInt
+  lastSaleAt: BigInt
 }
 
 type Sale @entity {
@@ -62,6 +77,7 @@ type Sale @entity {
   artistTake: BigInt!
   saleType: SaleType
   transfer: TokenTransfer!
+  transactionHash: String
 }
 
 type TokenTransfer @entity {
@@ -71,6 +87,10 @@ type TokenTransfer @entity {
   to: Bytes!
   createdAt: BigInt!
   network: Network
+  ink: Ink
+  artist: Artist
+  transactionHash: String!
+  sale: Sale
 }
 
 type RelayPrice @entity {
@@ -102,6 +122,7 @@ type InkLookup @entity {
 type Like @entity {
   id: ID!
   ink: Ink!
+  artist: Artist!
   liker: Bytes!
   createdAt: BigInt!
 }
