@@ -72,7 +72,7 @@ export default function Help() {
     <Divider />
     <Row>
       <h2 style={{fontWeight: "bold"}}>Keyboard shortcuts</h2>
-      <p>The following keyboard shortcuts are availble while drawing on canvas:</p>
+      <p>The following keyboard shortcuts are available while drawing on canvas:</p>
       <Table 
         columns={[
           {title: 'Hotkey', dataIndex: 'shortcut'},
