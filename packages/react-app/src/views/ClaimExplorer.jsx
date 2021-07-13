@@ -154,11 +154,11 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
                             const id = item.id.toNumber()
                             return (
                                 <List.Item key={id+"_"+item.propertiesHash+"_"+item.address}>
-                                    <Card >
+                                    <Card style={{background:"#8ED1FC"}}>
                                         <div style={{fontWeight:"bold"}}>{' '}{item[1]}</div>
                                         <div style={{fontWeight:"light"}}>Token: {parseInt(item[0])}</div>
                                         <div >  
-                                        <a href={"https://ipfs.io/ipfs/"+item.propertiesHash} target="blank"><Button type="primary">Claim</Button> </a>
+                                        <a href={"https://ipfs.io/ipfs/"+item.propertiesHash} target="blank"><Button type="primary" style={{background:"#0693e3",borderColor: "#bae7ff"}}>Claim</Button> </a>
                                         </div>
                                         <Divider ></Divider>
                                         <AddressInput

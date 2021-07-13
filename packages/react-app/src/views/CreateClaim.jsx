@@ -96,7 +96,7 @@ export default function CreateClaim({
       <Row gutter={[32,32]} justify='center'>
         <Col span="14">
           <div style={{textAlign: "left", margin:'15px'}}>
-            <h1 style={{ textAlign: "left", color:"#455A64"}}>
+            <h1 style={{ textAlign: "center", color:"#455A64"}}>
             Property Claim
             </h1>
             <Card>
