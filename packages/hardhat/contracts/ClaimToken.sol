@@ -1,7 +1,6 @@
 pragma solidity >=0.6.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
-import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
@@ -128,14 +127,9 @@ contract ClaimToken is ERC721, ERC721URIStorage, ERC721Enumerable,  Ownable  {
         string memory claimPropHash = claimByLocation[location];
         if ( keccak256(abi.encodePacked((claimPropHash))) == keccak256(abi.encodePacked((propertiesHash))) ){
             uint256 claimId = _mintClaim(msg.sender, location, propertiesHash);
-            console.log(claimPropHash);
             return claimId;
         }
         else{
-            console.log("failed");
-            console.log(claimPropHash);
-            console.log(propertiesHash);
-            console.log(location);
             return(0);
         }
     }
@@ -143,40 +137,6 @@ contract ClaimToken is ERC721, ERC721URIStorage, ERC721Enumerable,  Ownable  {
     function createAndMintClaim(string memory location, string memory propertiesHash, uint256 benePay, address[] memory beneAddresses) public returns (uint256) {
         createClaim(location, propertiesHash, benePay, beneAddresses);
         mintClaim(location, propertiesHash);
-    }
-
-    // Landlords can add beneficiaries addresses. 
-    // Address are add to the object itself as well as the nested mapping (mapping(uint256=>mapping(uint256=>address))).
-    function addBeneficiary(uint256 tokenId, address beneAddress) public payable {
-        Claim storage cm = claimById[tokenId];                       // Add beneficiary to specific asset
-        require(msg.sender == cm.landlord, "you are not the claim creator!");                           // Require only the owner of the claim can add beneficiaries
-        cm.Beneficiaries.add(beneAddress);                               // Add beneficiary to asset object
-
-        string memory tag = 'CUSTOM';                                     // Human Readable tags for event returned
-        if (beneAddress == NGO) {
-            tag = 'NGO';
-        }
-        if (beneAddress == LocalExporterA) {
-            tag = 'Local Exporter A';
-        }
-        if (beneAddress == LocalExporterB) {
-            tag = 'Local Exporter B';
-        }
-        if (beneAddress == CoopA) {
-            tag = 'Co-op A';
-        }
-        if (beneAddress == CoopB) {
-            tag = 'Co-op B';
-        }
-
-        emit addedBeneficiary(beneAddress, msg.sender, tokenId, cm.location, tag, cm.beneficiaryPay);
-    }
-    
-    // Return total Beneficiaries for a specific tokenId.
-    function getTotalBeneficiariesFromAssetId(uint256 _assetId) public view returns(uint256) {
-        Claim storage cm = claimById[_assetId];
-        uint256 length = cm.Beneficiaries.length();
-        return length;
     }
     
 }

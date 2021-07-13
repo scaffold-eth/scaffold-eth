@@ -378,16 +378,6 @@ function App(props) {
           >Example Claim
           </Link>
         </Menu.Item>
-        <Menu.Item key="/market">
-          <Link
-            onClick={() => {
-              setRoute("/market");
-            }}
-            to="/market"
-          >
-            Claim Explorer
-          </Link>
-        </Menu.Item>
         <Menu.Item key="/">
           <Link
             onClick={() => {
@@ -395,13 +385,23 @@ function App(props) {
             }}
             to="/"
           >
+            Claim Explorer
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="/sandbox">
+          <Link
+            onClick={() => {
+              setRoute("/sandbox");
+            }}
+            to="/sandbox"
+          >
             Sandbox
           </Link>
         </Menu.Item>
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/sandbox">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -427,7 +427,7 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/market">
+          <Route path="/">
             <ClaimExplorer
               tx = {tx}
               readContracts={readContracts}

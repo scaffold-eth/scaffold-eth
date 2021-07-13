@@ -5,13 +5,14 @@ Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https:/
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/austintgriffith/scaffold-eth.git ipfs-claim-token
 ```
 
 > install and start your 👷‍ Hardhat chain: 
 
 ```bash
-cd scaffold-eth
+cd ipfs-claim-token
+git checkout
 yarn install
 yarn chain
 ```
@@ -19,14 +20,14 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd ipfs-claim-token
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd ipfs-claim-token
 yarn deploy
 ```
 
@@ -36,7 +37,7 @@ You should now have a local blockchain, with `ClaimToken.sol` deployed, and your
 
 # 📚 Reasearch
 
-Tokenized real estate claims.
+Tokenized real estate claims. Inspiration from RealT.co and IPFS/NFT demo branches.
 
 # 🛠 Buidl
 

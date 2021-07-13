@@ -99,7 +99,7 @@ export default function CreateClaim({
             <h1 style={{ textAlign: "center", color:"#455A64"}}>
             Property Claim
             </h1>
-            <Card>
+            <Card style={{background:"#e4e4e4"}}>
             <h3>Location</h3>
             <Input type="text" onChange={(e)=>{
               setLocation(e.target.value)

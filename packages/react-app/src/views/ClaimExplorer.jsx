@@ -49,7 +49,7 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
             <div style={{  margin:'30px'}}>
                 <Row justify='center'>
                     
-                        <Card style={{margin:'24px'}}>
+                        <Card style={{margin:'24px', background:"#d9e3f0"}}>
                             <h2 style={{color:"#455A64"}}>Token Details</h2>
                             <Input type="text" 
                             placeholder="Enter Token ID"
@@ -74,7 +74,7 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
                             <div style={{fontSize:'14px', color:"#434343", margin:'15px'}}>Link: <a href={URI} target='blank'>{URI}...</a></div>
                         </Card>
                     
-                        <Card style={{margin:'24px'}}>
+                        <Card style={{margin:'24px', background:"#d9e3f0"}}>
                             <h2 style={{color:"#455A64"}}>Token Owner</h2>
                             <AddressInput
                                 ensProvider={mainnetProvider} 
@@ -109,7 +109,7 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
                             </div>
                         </Card>
                     
-                        <Card style={{margin:'24px'}}>
+                        <Card style={{margin:'24px', background:"#d9e3f0"}}>
                             <h2 style={{color:"#455A64"}}>Token Balance </h2>
                             <AddressInput
                                 ensProvider={mainnetProvider} 
@@ -143,7 +143,7 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
             <Row justify='center'>
             <Col span={21}>
             <div className="your-claims-header">
-                <Space >All Claims{""}</Space><Space><Switch  defaultChecked onChange={onChange}/>{""}</Space>Your Claims
+                <Space >All Claims{""}</Space><Space><Switch defaultChecked onChange={onChange}/>{""}</Space>Your Claims
                 <h1 >{" "}</h1>
                     <List
                         bordered
