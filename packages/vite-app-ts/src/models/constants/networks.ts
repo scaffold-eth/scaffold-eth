@@ -2,14 +2,6 @@ import { INFURA_ID } from './constants';
 
 import { TNetwork } from '~~/models/networkTypes';
 
-export const getNetwork = (chainId: number): TNetwork | undefined => {
-  for (const n in NETWORKS) {
-    if (NETWORKS[n].chainId === chainId) {
-      return NETWORKS[n];
-    }
-  }
-};
-
 export const NETWORKS: Record<string, TNetwork> = {
   localhost: {
     name: 'localhost',

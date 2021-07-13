@@ -1,15 +1,11 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
-import { SyncOutlined } from '@ant-design/icons';
 import { StaticJsonRpcProvider } from '@ethersproject/providers';
-import { formatEther, parseEther } from '@ethersproject/units';
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, notification } from 'antd';
-import { ethers } from 'ethers';
+import { parseEther } from '@ethersproject/units';
+import { Button, Input, Spin, notification } from 'antd';
 import React, { FC, ReactElement, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import StackGrid from 'react-stack-grid';
 
-import { Address, Balance, AddressInput, EtherInput } from '~~/components/common';
+import { AddressInput, EtherInput } from '~~/components/common';
 
 interface ICheckoutProps {
   setRoute: any;
@@ -32,7 +28,7 @@ export const Checkout: FC<ICheckoutProps> = (props) => {
   const [reason, setReason] = useState<string>();
   const [toAddress, setToAddress] = useState('0x97843608a00e2bbc75ab0C1911387E002565DEDE');
   let extra = '';
-  if (toAddress == '0x97843608a00e2bbc75ab0C1911387E002565DEDE') {
+  if (toAddress === '0x97843608a00e2bbc75ab0C1911387E002565DEDE') {
     extra = '(buidlguidl.eth)';
   }
 
