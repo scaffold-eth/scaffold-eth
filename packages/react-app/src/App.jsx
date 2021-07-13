@@ -20,7 +20,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { CreateClaim, ClaimExplorer } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -184,11 +184,32 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  // Event Listeners
+  const mintedAssets = useEventListener(readContracts, "ClaimToken", "newClaimMinted", localProvider, 1);
+  if(DEBUG) console.log("📟 Claims Minted:",mintedAssets)
 
-  // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const yourClaimBalance = useContractReader(readContracts,"ClaimToken", "balanceOf", [ address ])
+  if(DEBUG) console.log("🤗 Your GC balance:",parseInt(yourClaimBalance))
+
+  const [ yourClaims, setYourClaims ] = useState([])
+
+  const updateYourClaims = () => {
+      let claimUpdate = [];
+      let entry;
+      let index;
+      for(let index = 0; index < yourClaimBalance; index++) {
+        entry = mintedAssets[index];
+        console.log(entry);
+        if (address.toLowerCase() == mintedAssets[index].landlord.toLowerCase()){
+          const tokenId = mintedAssets[index].id;
+          const location = mintedAssets[index].location
+          const tokenURI = mintedAssets[index].propertiesHash
+          claimUpdate.push({ 0:tokenId, 1:location, 2:tokenURI, 3:address, location:location, id:tokenId, propertiesHash:tokenURI, landlord:address})
+        }
+      setYourClaims(claimUpdate)
+    }
+  }
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -369,60 +390,39 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
-            </Link>
-          </Menu.Item>
+        <Menu.Item key="/createclaim">
+          <Link
+            onClick={() => {
+              setRoute("/createclaim");
+            }}
+            to="/createclaim"
+          >Example Claim
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="/">
+          <Link
+            onClick={() => {
+              setRoute("/");
+            }}
+            to="/"
+          >
+            Claim Explorer
+          </Link>
+        </Menu.Item>
+        <Menu.Item key="/sandbox">
+          <Link
+            onClick={() => {
+              setRoute("/sandbox");
+            }}
+            to="/sandbox"
+          >
+            Sandbox
+          </Link>
+        </Menu.Item>
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/sandbox">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -430,62 +430,37 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="ClaimToken"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
+          <Route path="/createclaim">
+            <CreateClaim
+              tx = {tx}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
               writeContracts={writeContracts}
+              address={address}
+              yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
+              price={price}
+            />
+          </Route>
+          <Route path="/">
+            <ClaimExplorer
+              tx = {tx}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              address={address}
+              yourLocalBalance={yourLocalBalance}
+              mainnetProvider={mainnetProvider}
+              mintedAssets={mintedAssets}
+              yourClaims={yourClaims}
+              updateYourClaims={updateYourClaims}
+              fontSize={"20px"}
+              blockExplorer={blockExplorer}
             />
           </Route>
         </Switch>
@@ -509,7 +484,7 @@ function App(props) {
         {faucetHint}
       </div>
 
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
+      {/* 🗺 Extra UI */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
