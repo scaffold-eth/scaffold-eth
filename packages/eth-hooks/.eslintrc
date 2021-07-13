@@ -6,9 +6,9 @@
     "ecmaFeatures": {
       "jsx": true // Allows for the parsing of JSX
     },
-    "tsconfigRootDir": ".",
     "project": "tsconfig.json",
-    "projectFolderIgnoreList": ["node_modules/*", "dist", "lib", "build", ".yarn", "build-utils", "node_modules"]
+    "tsconfigRootDir": ".",
+    "projectFolderIgnoreList": ["node_modules/*", "node_modules", "dist", "lib", "build", ".yarn", "build-utils"]
   },
   "env": {
     "browser": true,
@@ -16,10 +16,12 @@
     "node": true
   },
   "extends": [
+    "airbnb-typescript",
+    "airbnb/hooks",
     "plugin:import/errors",
     "plugin:import/warnings",
-    "plugin:react-hooks/recommended",
     "plugin:import/typescript",
+    "plugin:react-hooks/recommended",
     // 'plugin:jest/recommended',
     "plugin:react/recommended",
     "plugin:prettier/recommended",
@@ -30,6 +32,7 @@
   "plugins": ["prettier", "react", "react-hooks", "testing-library"],
   "rules": {
     "eqeqeq": ["error", "smart"],
+    "react/jsx-wrap-multilines": "warn",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": "off",
@@ -83,6 +86,7 @@
     "prefer-destructuring": "off",
     "prefer-template": "off",
     "react/destructuring-assignment": "off",
+    "no-param-reassign": "error",
     "import/order": [
       "warn",
       {
@@ -102,6 +106,8 @@
     "import/extensions": "off",
     "import/no-unresolved": "off",
     "import/prefer-default-export": "off",
+    "import/no-unused-modules": ["off"],
+    "import/no-unassigned-import": "off",
     "import/no-extraneous-dependencies": [
       "error",
       {
@@ -110,8 +116,10 @@
         "peerDependencies": false
       }
     ],
+    "no-underscore-dangle": ["warn", { "allow": ["_network", "_lastBlockNumber"] }],
     "sort-keys": "off",
     "comma-dangle": "off",
+    "@typescript-eslint/comma-dangle": ["off"],
     "no-use-before-define": "off",
     "spaced-comment": "warn",
     "max-len": "off",
@@ -122,7 +130,8 @@
     "no-restricted-globals": "off",
     "eslint linebreak-style": "off",
     "object-curly-newline": "off",
-    "no-shadow": "off"
+    "no-shadow": "off",
+    "no-void": ["error", { "allowAsStatement": true }]
   },
   "settings": {
     "react": {
