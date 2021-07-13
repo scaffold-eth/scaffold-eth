@@ -65,13 +65,12 @@
     ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
+    "unused-imports/no-unused-imports-ts": "warn",
+    "unused-imports/no-unused-vars-ts": [
       "warn",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
     ],
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-unsafe-assignment": "warn",
