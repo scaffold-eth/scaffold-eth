@@ -22,7 +22,7 @@ export const useTokenList = (
     const getTokenList = async (): Promise<void> => {
       try {
         const tokenList: TokenList = (await axios(tokenListUri)).data as TokenList;
-        if (tokenList != undefined) {
+        if (tokenList != null) {
           let tokenInfo: TokenInfo[] = [];
 
           if (chainId) {

@@ -1,10 +1,10 @@
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { ethers, Signer } from 'ethers';
 
-import { TProviderAndSigner, TProviderOrSigner } from '~~/models';
+import { TProviderAndSigner, TEthersProviderOrSigner } from '~~/models';
 
 export const parseProviderOrSigner = async (
-  providerOrSigner: TProviderOrSigner | undefined
+  providerOrSigner: TEthersProviderOrSigner | undefined
 ): Promise<TProviderAndSigner> => {
   let signer: Signer | undefined = undefined;
 

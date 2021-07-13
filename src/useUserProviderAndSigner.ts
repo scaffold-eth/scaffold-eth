@@ -4,7 +4,7 @@ import { useMemo, useState } from 'react';
 
 import { useBurnerSigner } from '~~';
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
-import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from '~~/models';
+import { TEthersProvider, TProviderAndSigner, TEthersProviderOrSigner } from '~~/models';
 
 const syncBurnerKeyFromStorage = (): void => {
   if (window.location.pathname && window.location.pathname.includes('/pk')) {
@@ -36,8 +36,8 @@ const syncBurnerKeyFromStorage = (): void => {
  * @returns 
  */
 export const useUserProviderAndSigner = (
-  injectedProviderOrSigner: TProviderOrSigner | undefined,
-  localProvider: TEthHooksProvider
+  injectedProviderOrSigner: TEthersProviderOrSigner | undefined,
+  localProvider: TEthersProvider
 ): TProviderAndSigner | undefined => {
   const [signer, setSigner] = useState<Signer>();
   const [provider, setProvider] = useState<Provider>();
@@ -48,7 +48,7 @@ export const useUserProviderAndSigner = (
     if (injectedProviderOrSigner) {
       console.log('🦊 Using injected provider');
       void parseProviderOrSigner(injectedProviderOrSigner).then((result) => {
-        if (result != undefined) setSigner(result.signer);
+        if (result != null) setSigner(result.signer);
       });
     } else if (!localProvider) {
       setSigner(undefined);

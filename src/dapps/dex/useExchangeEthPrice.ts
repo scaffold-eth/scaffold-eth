@@ -1,18 +1,25 @@
 import { Token, WETH, Fetcher, Route } from '@uniswap/sdk';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { useOnBlock, usePoller } from '~~';
+import { useOnRepetition } from '~~';
 import { TNetwork } from '~~/models';
-import { TEthHooksProvider } from '~~/models/providerTypes';
+import { TEthersProvider } from '~~/models/providerTypes';
 
-export const useExchangePrice = (
+/**
+ * Get the Exchange price of ETH/USD (extrapolated from WETH/DAI)
+ * @param targetNetwork
+ * @param mainnetProvider
+ * @param pollTime
+ * @returns
+ */
+export const useExchangeEthPrice = (
   targetNetwork: TNetwork,
-  mainnetProvider: TEthHooksProvider,
+  mainnetProvider: TEthersProvider,
   pollTime: number = 0
 ): number => {
   const [price, setPrice] = useState(0);
 
-  const pollPrice = (): void => {
+  const pollPrice = useCallback(() => {
     const getPrice = async (): Promise<void> => {
       if (!mainnetProvider) {
         return;
@@ -29,15 +36,9 @@ export const useExchangePrice = (
     };
 
     void getPrice();
-  };
+  }, [targetNetwork.price, mainnetProvider]);
 
-  useOnBlock(mainnetProvider, (): void => {
-    if (pollTime === 0) pollPrice();
-  });
-
-  usePoller((): void => {
-    if (pollTime > 0) pollPrice();
-  }, pollTime);
+  useOnRepetition(pollPrice, { pollTime, provider: mainnetProvider });
 
   return price;
 };
