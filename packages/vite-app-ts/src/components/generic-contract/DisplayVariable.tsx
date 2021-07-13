@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-/* eslint-disable jsx-a11y/anchor-is-valid */
 import { Col, Divider, Row } from 'antd';
 import { ContractFunction } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
@@ -20,17 +18,16 @@ export const DisplayVariable: FC<IDisplayVariableProps> = (props) => {
   const refresh = useCallback(async () => {
     try {
       if (props.contractFunction) {
-        const funcResponse = await props.contractFunction();
-        setVariable(funcResponse);
+        setVariable(await props.contractFunction());
         props.setTriggerRefresh(false);
       }
     } catch (e) {
       console.log(e);
     }
-  }, [setVariable, props.contractFunction, props.setTriggerRefresh]);
+  }, [props]);
 
   useEffect(() => {
-    refresh();
+    void refresh();
   }, [refresh, props.refreshRequired, props.contractFunction]);
 
   return (
