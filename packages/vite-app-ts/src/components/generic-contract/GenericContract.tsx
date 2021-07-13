@@ -1,7 +1,7 @@
 import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { Card } from 'antd';
 import { useContractExistsAtAddress, useContractLoader } from 'eth-hooks';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+import { TEthersProvider } from 'eth-hooks/lib/models';
 import { Contract, Signer } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
 import React, { FC, ReactElement, useMemo, useState } from 'react';
@@ -20,7 +20,7 @@ interface IGenericContract {
   account?: ReactElement;
   gasPrice?: number;
   signer: Signer;
-  provider: TEthHooksProvider;
+  provider: TEthersProvider;
   contractName: string;
   show?: string[];
   tokenPrice?: number;

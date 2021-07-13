@@ -1,7 +1,7 @@
 import { utils } from 'ethers';
 import { useEffect, useState } from 'react';
 
-import { TEthHooksProvider } from '~~/models/providerTypes';
+import { TEthersProvider } from '~~/models/providerTypes';
 
 /**
  * Checks whether a contract exists on the blockchain, returns true if it exists, otherwise false
@@ -13,10 +13,7 @@ import { TEthHooksProvider } from '~~/models/providerTypes';
  * @param contractAddress 
  * @returns 
  */
-export const useContractExistsAtAddress = (
-  provider: TEthHooksProvider | undefined,
-  contractAddress: string
-): boolean => {
+export const useContractExistsAtAddress = (provider: TEthersProvider | undefined, contractAddress: string): boolean => {
   const [contractIsDeployed, setContractIsDeployed] = useState(false);
 
   useEffect(() => {

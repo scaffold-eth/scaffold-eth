@@ -1,9 +1,8 @@
 import { Provider } from '@ethersproject/providers';
 import { useCallback, useEffect } from 'react';
 
-import { TEthHooksProvider, TProviderOrSigner } from '~~/models/providerTypes';
-
 const DEBUG = false;
+
 /**
  * A combination of useOnBlock and usePoller
  * helper hook to call a function regularly at time intervals when the block changes
@@ -20,8 +19,8 @@ const DEBUG = false;
  * @param options pollTime?: number; provider?: Provider | undefined; leadTrigger?: boolean;
  * @param args varargs callback function arguments
  */
-export const useOnRepeat = (
-  callback: (..._args: any[]) => void,
+export const useOnRepetition = (
+  callback: (..._args: any[]) => void | Promise<void>,
   options: {
     pollTime?: number;
     provider?: Provider | undefined;
@@ -40,21 +39,21 @@ export const useOnRepeat = (
         callback();
       }
     }
-  }, [callback, ...args]);
+  }, [callback, args]);
 
   // Turn on the listener if we have a function & a provider
   const listener = useCallback(
     (_blockNumber: number): void => {
-      console.log('listen block event', _blockNumber, ...args);
+      if (DEBUG) console.log('listen block event', _blockNumber, ...args);
       if (options.provider) callFunctionWithArgs();
     },
-    [callFunctionWithArgs, options.provider, ...args]
+    [callFunctionWithArgs, options.provider, args]
   );
 
   // connect a listener for block changes
   useEffect(() => {
     if (options.provider && !polling) {
-      console.log('register block event', ...args);
+      if (DEBUG) console.log('register block event', ...args);
       options.provider.addListener('block', listener);
       return (): void => {
         options?.provider?.removeListener('block', listener);
@@ -62,11 +61,12 @@ export const useOnRepeat = (
     } else {
       return (): void => {};
     }
-  }, [options.provider, polling, listener]);
+  }, [options.provider, polling, listener, args]);
 
   // Set up the interval if poller
   useEffect(() => {
     const tick = (): void => {
+      if (DEBUG) console.log('polling: call function');
       callFunctionWithArgs();
     };
 

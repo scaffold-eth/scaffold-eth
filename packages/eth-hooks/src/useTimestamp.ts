@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 
 import { useBlockNumber } from '~~';
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
 
 /**
  * Get the current timestamp from the latest block
@@ -9,14 +9,14 @@ import { TEthHooksProvider } from '~~/models';
  * @param pollTime
  * @returns date in
  */
-export const useTimestamp = (provider: TEthHooksProvider, pollTime?: number): number => {
+export const useTimestamp = (provider: TEthersProvider, pollTime?: number): number => {
   const blockNumber = useBlockNumber(provider, pollTime);
   const [timestamp, setTimestamp] = useState<number>(0);
 
   useEffect((): void => {
     const getTimestamp = async (): Promise<void> => {
       const nextBlock = await provider.getBlock(blockNumber);
-      if (nextBlock?.timestamp != undefined) {
+      if (nextBlock?.timestamp != null) {
         const nextTimestamp = nextBlock.timestamp;
         setTimestamp(nextTimestamp);
       }

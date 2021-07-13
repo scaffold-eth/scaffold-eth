@@ -17,15 +17,15 @@ import {
   useContractLoader,
   useContractReader,
   useBalance,
-  useOnBlock,
+  useOnRepetition,
   useUserProviderAndSigner,
   DefaultContractLocation,
 } from 'eth-hooks';
-import { useExchangePrice } from 'eth-hooks/lib/dapps/dex';
+import { useExchangeEthPrice } from 'eth-hooks/lib/dapps/dex';
 
 import { Header, Account, ThemeSwitcher } from '~~/components/common';
 
-import { useLocalStorage } from '~~/components/common/hooks';
+// import { useLocalStorage } from '~~/components/common/hooks';
 import { GenericContract } from '~~/components/generic-contract';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { Hints, Subgraph } from '~~/components/views';
@@ -42,16 +42,15 @@ import {
   // BUILDERS,
   // mainStreamReader_ADDRESS,
   // mainStreamReader_ABI,
-  BUILDS,
+  // BUILDS,
 } from '~~/models/constants/constants';
 import { getNetwork, NETWORKS } from '~~/models/constants/networks';
 
-import pretty from 'pretty-time';
-import { ethers, Signer } from 'ethers';
+import { ethers } from 'ethers';
 
 import { TNetwork } from '~~/models/networkTypes';
 
-import { TEthHooksProvider, TProviderAndSigner, TProviderOrSigner } from 'eth-hooks/lib/models';
+import { TEthersProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
 import { useEventListener } from 'eth-hooks/lib/events';
 import { MainPageMenu } from './components/MainPageMenu';
 import { MainPageContracts } from './components/MainPageContracts';
@@ -75,7 +74,7 @@ import { MainPageExtraUi } from './components/MainPageExtraUi';
     (and then use the `useExternalContractLoader()` hook!)
 */
 
-const translateAddressesForLocal = (addy: string) => {
+const translateAddressesForLocal = (addy: string): string => {
   // if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
   // if(addy=="0x21e18260357D33d2e18482584a8F39D532fb71cC") return "0x3Aa5ebB10DC797CAC828524e59A333d0A371443c"
   return addy;
@@ -105,7 +104,7 @@ const localProviderUrl = targetNetwork.rpcUrl;
 //   localProviderUrl;
 
 if (DEBUG) console.log('🏠 Connecting to provider:', localProviderUrl);
-export const localProvider: TEthHooksProvider = new StaticJsonRpcProvider(localProviderUrl);
+export const localProvider: TEthersProvider = new StaticJsonRpcProvider(localProviderUrl);
 
 // 🔭 block explorer URL
 export const blockExplorer = targetNetwork.blockExplorer;
@@ -115,7 +114,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
 
   const [injectedProvider, setInjectedProvider] = useState<Web3Provider>();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, 'fast');
@@ -166,8 +165,8 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const mainnetContracts = useContractLoader(mainnetProvider, {}, DefaultContractLocation.ViteAppContracts);
 
   // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+  useOnRepetition((): void => console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`), {
+    provider: mainnetProvider,
   });
 
   // Then read your DAI balance like:
@@ -185,14 +184,6 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
   */
-
-  // search filter for front page
-  const [filter, setFilter] = useState(() => {
-    const { search } = (window as any).location;
-    return new URLSearchParams(search).get('s');
-  });
-  const [filterExplanation, setFilterExplanation] = useState();
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -336,7 +327,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
             {userProviderAndSigner?.signer != null && (
               <GenericContract
                 contractName="DAI"
-                customContract={mainnetContracts?.contracts?.DAI}
+                customContract={mainnetContracts?.contracts?.DAI as ethers.Contract | undefined}
                 signer={userProviderAndSigner.signer}
                 provider={mainnetProvider}
                 address={userAddress}

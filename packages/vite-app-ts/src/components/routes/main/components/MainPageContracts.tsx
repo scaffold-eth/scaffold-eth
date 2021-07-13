@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import { GenericContract } from '~~/components/generic-contract';
 import { Contract } from 'ethers';
-import { TEthHooksProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
+import { TEthersProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
 
 interface IMainPageContracts {
-  mainnetProvider: TEthHooksProvider;
+  mainnetProvider: TEthersProvider;
   mainnetContracts: Record<string, Contract>;
   userProviderAndSigner: TProviderAndSigner;
-  localProvider: TEthHooksProvider;
+  localProvider: TEthersProvider;
   userAddress: string;
   blockExplorerUrl: string;
 }

@@ -2,14 +2,14 @@ import { SigningKey } from '@ethersproject/signing-key';
 import { BytesLike, ethers, Signer } from 'ethers';
 import { useState, useEffect } from 'react';
 
-import { TEthHooksProvider } from '~~/models/providerTypes';
+import { TEthersProvider } from '~~/models/providerTypes';
 
 /**
  * A hook that creates a buner address and returns a Signer
  * @param provider
  * @returns
  */
-export const useBurnerSigner = (provider: TEthHooksProvider): Signer | undefined => {
+export const useBurnerSigner = (provider: TEthersProvider): Signer | undefined => {
   const key = 'metaPrivateKey';
   const [signer, setSigner] = useState<Signer>();
   const [privateKeyValue, setPrivateKeyValue] = useState<BytesLike | SigningKey>();
