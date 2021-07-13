@@ -27,7 +27,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "react", "react-hooks", "testing-library"],
+  "plugins": ["prettier", "react", "react-hooks", "unused-imports", "testing-library"],
   "rules": {
     "eqeqeq": ["error", "smart"],
     "react/jsx-wrap-multilines": "warn",
@@ -65,12 +65,11 @@
     ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports-ts": "warn",
+    "unused-imports/no-unused-vars-ts": [
       "warn",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",
