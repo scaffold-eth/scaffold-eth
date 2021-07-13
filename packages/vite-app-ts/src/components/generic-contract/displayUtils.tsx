@@ -7,7 +7,7 @@ import { Address } from '../common/Address';
 
 export const tryToDisplay = (
   thing: string | BigNumber | Record<string, any> | TransactionResponse | undefined
-): string | ReactElement | number | undefined => {
+): string | ReactElement | number => {
   if (thing == null) return '';
   if (thing && thing instanceof BigNumber) {
     try {
