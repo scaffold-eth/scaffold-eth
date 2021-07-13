@@ -22,6 +22,7 @@ import {
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import { RelayProvider } from '@opengsn/provider'
+import axios from 'axios'
 
 const { ethers } = require("ethers");
 /*
@@ -280,18 +281,35 @@ function App(props) {
     );
   }
 
+  async function getGsnNetwork(chainId) {
+    if ( chainId == 31337 ) {
+      return  {
+        Paymaster: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707'
+      }
+    }
+    const gsnNetworks = await axios.get('https://opengsn.github.io/gsn-networks/gsn-networks.json')
+    console.log( '==networks=', gsnNetworks)
+    if ( !gsnNetworks.data ) {
+      throw new Error( 'unable to fetch GSN networks '+(gsnNetworks.error || gsnNetworks))
+    }
+    const gsnNetwork = gsnNetworks.data.networks[chainId]
+    if ( !gsnNetwork ){
+      throw new Error( 'GSN is not deployed on network '+chainId)
+    }
+    console.log( '==chain',chainId, 'ret=', gsnNetwork)
+    return gsnNetwork
+  }
+  
   async function initGsn(provider) {
     const chainId = parseInt(await provider.request({method:'eth_chainId', params:[]}))
 
-    if ( chainId != 31337 ) 
-      throw new Error("'scaffold-eth GSN support' is currently limited to local hardhat (31337), not "+chainId)
+    const gsnNetwork = await getGsnNetwork(chainId)
 
-    const paymasterAddress = '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707';
     console.log("⛽ Using GSN provider");
     const gsnProvider = RelayProvider.newProvider({
       provider,
       config: {
-        paymasterAddress,
+        paymasterAddress: gsnNetwork.Paymaster,
         loggerConfiguration: {logLevel: 'debug'}            
       }
     })
