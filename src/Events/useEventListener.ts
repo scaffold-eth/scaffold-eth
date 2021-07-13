@@ -5,19 +5,19 @@ import { TEthersProvider } from '~~/models';
 
 /**
  * Enables you to keep track of events
- * 
+ *
  * ~ Features ~
   - Provide readContracts by loading contracts (see more on ContractLoader.js)
   - Specify the name of the contract, in this case it is "YourContract"
   - Specify the name of the event in the contract, in this case we keep track of "SetPurpose" event
   - Specify the provider
- * @param contracts 
- * @param contractName 
- * @param eventName 
- * @param provider 
- * @param startBlock 
- * @param args 
- * @returns 
+ * @param contracts
+ * @param contractName
+ * @param eventName
+ * @param provider
+ * @param startBlock
+ * @param args
+ * @returns
  */
 export const useEventListener = (
   contracts: Record<string, Contract>,
@@ -31,7 +31,7 @@ export const useEventListener = (
   const addNewEvent = useCallback((...events: Event[]) => {
     if (events != null && events.length > 0) {
       const last = events[events.length - 1];
-      setUpdates((updates) => [last, ...updates]);
+      setUpdates((value) => [last, ...value]);
     }
   }, []);
 
