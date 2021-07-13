@@ -27,10 +27,11 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "react", "react-hooks", "testing-library"],
+  "plugins": ["prettier", "react", "react-hooks", "unused-imports", "testing-library"],
   "rules": {
     "eqeqeq": ["error", "smart"],
-    "react/jsx-uses-react": "off",
+    "react/jsx-uses-react": "warn",
+    "react/jsx-uses-vars": "warn",
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": "off",
     "react/jsx-indent": "off",
@@ -64,13 +65,12 @@
     ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "off",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
+    "unused-imports/no-unused-imports-ts": "warn",
+    "unused-imports/no-unused-vars-ts": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
     ],
+    "@typescript-eslint/no-unused-vars": "off",
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-unsafe-assignment": "warn",
