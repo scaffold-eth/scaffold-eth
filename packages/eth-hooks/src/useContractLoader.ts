@@ -43,7 +43,7 @@ export enum DefaultContractLocation {
  */
 export const useContractLoader = (
   providerOrSigner: TEthersProviderOrSigner | undefined,
-  config: TContractConfig,
+  config: TContractConfig = {},
   contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
