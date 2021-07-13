@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
-  // "ignorePatterns": ["**/*.pcss", "**/*.css", "**/*.less"],
+  "ignorePatterns": ["**/*.pcss", "**/*.css", "**/*.less"],
   "parserOptions": {
     "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
     "sourceType": "module", // Allows for the use of imports,
@@ -9,7 +9,7 @@
     },
     "project": "tsconfig.json",
     "tsconfigRootDir": ".",
-    "projectFolderIgnoreList": ["node_modules", "dist", "build", ".yarn", "build-utils"]
+    "projectFolderIgnoreList": ["node_modules/*","node_modules", "dist", "build", ".yarn", "build-utils", "./src/styles"]
   },
   "env": {
     "browser": true,
@@ -68,6 +68,14 @@
       }
     ],
     "@typescript-eslint/no-empty-function": "warn",
+    "no-unused-vars": "off",
+    "@typescript-eslint/no-unused-vars": [
+      "error",
+      {
+        "argsIgnorePattern": "_",
+        "varsIgnorePattern": "_"
+      }
+    ],
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",
     "@typescript-eslint/no-unsafe-assignment": "warn",
@@ -81,15 +89,6 @@
     "prefer-template": "off",
     "react/destructuring-assignment": "off",
     "no-param-reassign": "error",
-    "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "warn",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
-    ],
-    "no-duplicate-imports": "warn",
     "import/order": [
       "off",
       {
@@ -100,6 +99,8 @@
         "newlines-between": "always"
       }
     ],
+    "no-param-reassign": "error",
+    "no-duplicate-imports": "warn",
     "import/named": "off",
     "import/namespace": "off",
     "import/default": "off",
