@@ -39,7 +39,7 @@ export const useOnRepetition = (
         callback();
       }
     }
-  }, [callback, args, ...args]);
+  }, [callback, args]);
 
   // Turn on the listener if we have a function & a provider
   const listener = useCallback(
@@ -47,7 +47,7 @@ export const useOnRepetition = (
       if (DEBUG) console.log('listen block event', _blockNumber, ...args);
       if (options.provider) callFunctionWithArgs();
     },
-    [callFunctionWithArgs, options.provider, args, ...args]
+    [callFunctionWithArgs, options.provider, args]
   );
 
   // connect a listener for block changes
@@ -61,7 +61,7 @@ export const useOnRepetition = (
     } else {
       return (): void => {};
     }
-  }, [options.provider, polling, listener, args, ...args]);
+  }, [options.provider, polling, listener, args]);
 
   // Set up the interval if poller
   useEffect(() => {
