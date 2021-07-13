@@ -1,8 +1,8 @@
-import { JsonRpcProvider, Provider, Web3Provider } from '@ethersproject/providers';
+import { Provider } from '@ethersproject/providers';
 import { BigNumber } from 'ethers';
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback } from 'react';
 
-import { useOnRepeat } from '~~/useOnRepeat';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 const zero = BigNumber.from(0);
 
@@ -21,19 +21,22 @@ const zero = BigNumber.from(0);
 export const useBalance = (provider: Provider | undefined, address: string, pollTime: number = 0): BigNumber => {
   const [balance, setBalance] = useState<BigNumber>();
 
-  const pollBalance = useCallback(async (provider?: Provider, address?: string): Promise<void> => {
-    if (provider && address) {
-      const newBalance = await provider.getBalance(address);
-      if (!newBalance.eq(balance ?? zero)) {
-        setBalance(newBalance);
-        console.log(address, newBalance.toString(), balance);
+  const pollBalance = useCallback(
+    async (provider?: Provider, address?: string): Promise<void> => {
+      if (provider && address) {
+        const newBalance = await provider.getBalance(address);
+        if (!newBalance.eq(balance ?? zero)) {
+          setBalance(newBalance);
+          console.log(address, newBalance.toString(), balance);
+        }
       }
-    }
-  }, []);
+    },
+    [balance]
+  );
 
-  useOnRepeat(
+  useOnRepetition(
     pollBalance,
-    { pollTime, provider, leadTrigger: address != null && address != '' && provider != null },
+    { pollTime, provider, leadTrigger: address != null && address !== '' && provider != null },
     provider,
     address
   );

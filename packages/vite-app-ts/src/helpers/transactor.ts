@@ -11,7 +11,7 @@ import { notification } from 'antd';
 import notify, { API } from 'bnc-notify';
 import Notify, { InitOptions } from 'bnc-notify';
 import { parseProviderOrSigner } from 'eth-hooks/lib/functions';
-import { TProviderOrSigner } from 'eth-hooks/lib/models';
+import { TEthersProviderOrSigner } from 'eth-hooks/lib/models';
 import { BigNumber, ethers, Signer } from 'ethers';
 import { Deferrable } from 'ethers/lib/utils';
 
@@ -28,7 +28,11 @@ const DEBUG = true;
  * @param etherscan
  * @returns
  */
-export const transactor = (providerOrSigner: TProviderOrSigner | undefined, gasPrice?: number, etherscan?: string) => {
+export const transactor = (
+  providerOrSigner: TEthersProviderOrSigner | undefined,
+  gasPrice?: number,
+  etherscan?: string
+) => {
   if (typeof providerOrSigner !== 'undefined') {
     // eslint-disable-next-line consistent-return
     return async (

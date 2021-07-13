@@ -1,7 +1,7 @@
 import { Contract, Event } from '@ethersproject/contracts';
 import { useState, useEffect, useCallback } from 'react';
 
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
 
 /**
  * Enables you to keep track of events
@@ -23,13 +23,13 @@ export const useEventListener = (
   contracts: Record<string, Contract>,
   contractName: string,
   eventName: string,
-  provider: TEthHooksProvider,
+  provider: TEthersProvider,
   startBlock: number
 ): any[] => {
   const [updates, setUpdates] = useState<Event[]>([]);
 
   const addNewEvent = useCallback((...events: Event[]) => {
-    if (events != undefined && events.length > 0) {
+    if (events != null && events.length > 0) {
       const last = events[events.length - 1];
       setUpdates((updates) => [last, ...updates]);
     }
@@ -40,7 +40,7 @@ export const useEventListener = (
       // if you want to read _all_ events from your contracts, set this to the block number it is deployed
       provider.resetEventsBlock(startBlock);
     }
-    if (contracts?.[contractName] != undefined) {
+    if (contracts?.[contractName] != null) {
       try {
         contracts[contractName].on(eventName, addNewEvent);
         return (): void => {

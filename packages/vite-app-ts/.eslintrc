@@ -31,9 +31,9 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "formatjs", "react", "react-hooks"],
+  "plugins": ["prettier", "react", "react-hooks", "testing-library"],
   "rules": {
-    "eqeqeq": ["error", "smart", { "null": "ignore", "undefined": "ignore" }],
+    "eqeqeq": ["error", "smart"],
     "react/jsx-wrap-multilines": "warn",
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
@@ -117,7 +117,7 @@
         "peerDependencies": false
       }
     ],
-    "no-underscore-dangle": ["warn", { "allow": ["_network"] }],
+    "no-underscore-dangle": ["warn", { "allow": ["_network", "_lastBlockNumber"] }],
     "sort-keys": "off",
     "comma-dangle": "off",
     "@typescript-eslint/comma-dangle": ["off"],

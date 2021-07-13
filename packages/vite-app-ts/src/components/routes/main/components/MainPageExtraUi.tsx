@@ -2,11 +2,11 @@ import React, { FC } from 'react';
 import { Row, Col, Button } from 'antd';
 import { Faucet, Ramp, GasGauge } from '~~/components/common';
 import { NETWORKS } from '~~/models/constants/networks';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+import { TEthersProvider } from 'eth-hooks/lib/models';
 
 interface IMainPageExtraUi {
-  localProvider: TEthHooksProvider;
-  mainnetProvider: TEthHooksProvider;
+  localProvider: TEthersProvider;
+  mainnetProvider: TEthersProvider;
   price: number;
   gasPrice: number | undefined;
   userAddress: string;

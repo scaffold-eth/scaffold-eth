@@ -1,7 +1,7 @@
 import { formatEther } from '@ethersproject/units';
 import { Select } from 'antd';
 import { useTokenList } from 'eth-hooks/lib/dapps/dex';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+import { TEthersProvider } from 'eth-hooks/lib/models';
 import { BigNumber } from 'ethers';
 import React, { FC, useState } from 'react';
 
@@ -11,7 +11,7 @@ const { Option } = Select;
 
 interface IHintsProps {
   yourLocalBalance: BigNumber | undefined;
-  mainnetProvider: TEthHooksProvider;
+  mainnetProvider: TEthersProvider;
   price: number;
   address: string;
 }

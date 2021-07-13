@@ -1,7 +1,7 @@
 import { Signer } from '@ethersproject/abstract-signer';
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 import { Button } from 'antd';
-import { TEthHooksProvider } from 'eth-hooks/lib/models';
+import { TEthersProvider } from 'eth-hooks/lib/models';
 import React, { FC } from 'react';
 import { useThemeSwitcher } from 'react-css-theme-switcher';
 import Web3Modal from 'web3modal';
@@ -11,8 +11,8 @@ import { Address, Balance, Wallet } from '.';
 export interface IAccountProps {
   address: string;
   userSigner?: Signer;
-  localProvider: TEthHooksProvider | undefined;
-  mainnetProvider: TEthHooksProvider;
+  localProvider: TEthersProvider | undefined;
+  mainnetProvider: TEthersProvider;
   price: number;
   minimized?: string;
   web3Modal?: Web3Modal;

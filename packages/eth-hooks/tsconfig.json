@@ -34,13 +34,15 @@
       { "transform": "typescript-transform-paths", "afterDeclarations": true }
     ]
   },
-  "include": ["src", "src/**/*.json", "lib"],
+  "include": ["src", "src/**/*.json", "src/**/*.ts"],
   "exclude": [
     "lib/**/*.ts",
     "lib/**/*.tsx",
     "node_modules",
     "**/node_modules",
     "**/node_modules/**",
-    "../../node_modules/**/*"
+    "../../node_modules/**/*",
+    "useOnBlock.ts",
+    "usePoller.ts"
   ]
 }

@@ -8,7 +8,7 @@
     },
     "tsconfigRootDir": ".",
     "project": "tsconfig.json",
-    "projectFolderIgnoreList": ["node_modules/*", "dist", "build", ".yarn", "build-utils"]
+    "projectFolderIgnoreList": ["node_modules/*", "dist", "lib", "build", ".yarn", "build-utils", "node_modules"]
   },
   "env": {
     "browser": true,
@@ -29,7 +29,7 @@
   ],
   "plugins": ["prettier", "react", "react-hooks", "testing-library"],
   "rules": {
-    "eqeqeq": ["error", "smart", { "null": "ignore", "undefined": "ignore" }],
+    "eqeqeq": ["error", "smart"],
     "react/jsx-uses-react": "off",
     "react/react-in-jsx-scope": "off",
     "react/jsx-filename-extension": "off",
@@ -135,5 +135,6 @@
       // default to latest and warns if missing
       // It will default to "detect" in the future
     }
-  }
+  },
+  "reportUnusedDisableDirectives": true
 }
