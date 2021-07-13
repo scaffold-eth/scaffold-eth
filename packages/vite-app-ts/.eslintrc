@@ -1,6 +1,6 @@
 {
   "parser": "@typescript-eslint/parser", // Specifies the ESLint parser
-  "ignorePatterns": ["**/*.pcss", "**/*.css", "**/*.less"],
+  "ignorePatterns": ["**/*.pcss", "**/*.css", "**/*.less", "**/*.json"],
   "parserOptions": {
     "ecmaVersion": 2020, // Allows for the parsing of modern ECMAScript features
     "sourceType": "module", // Allows for the use of imports,
@@ -37,7 +37,7 @@
     "plugin:@typescript-eslint/recommended",
     "plugin:@typescript-eslint/recommended-requiring-type-checking"
   ],
-  "plugins": ["prettier", "react", "react-hooks", "testing-library"],
+  "plugins": ["prettier", "react", "react-hooks", "unused-imports", "testing-library"],
   "rules": {
     "eqeqeq": ["error", "smart"],
     "react/jsx-wrap-multilines": "warn",
@@ -52,6 +52,7 @@
     "react/jsx-closing-bracket-location": "off",
     "react/prop-types": "off",
     "react-hooks/rules-of-hooks": "error",
+    "react/display-name": "off",
     "react-hooks/exhaustive-deps": [
       "warn",
       {
@@ -75,12 +76,11 @@
     ],
     "@typescript-eslint/no-empty-function": "warn",
     "no-unused-vars": "off",
-    "@typescript-eslint/no-unused-vars": [
-      "error",
-      {
-        "argsIgnorePattern": "_",
-        "varsIgnorePattern": "_"
-      }
+    "@typescript-eslint/no-unused-vars": "off",
+    "unused-imports/no-unused-imports-ts": "warn",
+    "unused-imports/no-unused-vars-ts": [
+      "warn",
+      { "vars": "all", "varsIgnorePattern": "^_", "args": "after-used", "argsIgnorePattern": "^_" }
     ],
     "@typescript-eslint/no-use-before-define": ["error"],
     "@typescript-eslint/no-inferrable-types": "off",

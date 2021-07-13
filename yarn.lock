@@ -36,7 +36,7 @@
     lodash "^4.17.21"
     resize-observer-polyfill "^1.5.0"
 
-"@apollo/client@latest":
+"@apollo/client@^3.3.21", "@apollo/client@latest":
   version "3.3.21"
   resolved "https://registry.yarnpkg.com/@apollo/client/-/client-3.3.21.tgz#2862baa4e1ced8c5e89ebe6fc52877fc64a726aa"
   integrity sha512-RAmZReFuKCKx0Rs5C0nVJwKomAHUHn+gGP/YvbEsXQWu0sXoncEUZa71UqlfCPVXa/0MkYOIbCXSQdOcuRrHgw==
@@ -3554,6 +3554,13 @@
   integrity sha512-8d7nR/fNSqlTFGHti0R3F9WwIertOaaA1UEB8/jr5l5mDMOs4CidEgvvYMw4ivqrBK+vtVLxyTj2P+Pr/dtgzg==
   dependencies:
     "@types/history" "*"
+    "@types/react" "*"
+
+"@types/react-stack-grid@^0.7.2":
+  version "0.7.2"
+  resolved "https://registry.yarnpkg.com/@types/react-stack-grid/-/react-stack-grid-0.7.2.tgz#b49bcd48b6a25947343814ebb024d57806d16362"
+  integrity sha512-R83KWygRjsFwygf0o2e31hbVXsxJ2Yqtt4mYA7nq0GAjWohW0WvmkgsmJrDd8YEN5lNTSmBLjIaJo8HXemW0hQ==
+  dependencies:
     "@types/react" "*"
 
 "@types/react-test-renderer@>=16.9.0":
@@ -11945,7 +11952,7 @@ graceful-fs@^4.0.0, graceful-fs@^4.1.11, graceful-fs@^4.1.15, graceful-fs@^4.1.2
   resolved "https://registry.yarnpkg.com/graceful-fs/-/graceful-fs-4.2.6.tgz#ff040b2b0853b23c3d31027523706f1885d76bee"
   integrity sha512-nTnJ528pbqxYanhpDYsi4Rd8MAeaBA67+RZ10CM1m3bTAVFEDcd5AuA4a6W5YkGZ1iNXHzZz8T6TBKLeBuNriQ==
 
-graphiql@^1.0.5:
+graphiql@^1.0.5, graphiql@^1.4.2:
   version "1.4.2"
   resolved "https://registry.yarnpkg.com/graphiql/-/graphiql-1.4.2.tgz#a1dc1a4d8d35f60c90d6d8a9eb62a99756e9fd9b"
   integrity sha512-TQDuuU/ZqTWV1yQDpVEiKskg0IYA+Wck37DYrrFzLlpgZWRbWiyab1PyHKiRep7J540CgScBg6C/gGCymKyO3g==
