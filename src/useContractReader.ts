@@ -70,7 +70,7 @@ export const useContractReader = <T>(
     } catch (e) {
       console.log(e);
     }
-  }, [contractName, contracts, formatter, functionName, functionArgs]);
+  }, [contractName, formatter, functionName, functionArgs]);
 
   useOnRepetition(
     updateValue,

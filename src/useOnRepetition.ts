@@ -34,9 +34,9 @@ export const useOnRepetition = (
   const callFunctionWithArgs = useCallback(() => {
     if (callback) {
       if (args && args.length > 0) {
-        callback(...args);
+        void callback(...args);
       } else {
-        callback();
+        void callback();
       }
     }
   }, [callback, args]);
@@ -59,7 +59,9 @@ export const useOnRepetition = (
         options?.provider?.removeListener('block', listener);
       };
     } else {
-      return (): void => {};
+      return (): void => {
+        /* do nothing */
+      };
     }
   }, [options.provider, polling, listener, args]);
 

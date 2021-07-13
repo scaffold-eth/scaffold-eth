@@ -3,7 +3,7 @@ import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
-import { TEthersProviderOrSigner, TProviderOrSigner } from '~~/models/providerTypes';
+import { TEthersProviderOrSigner } from '~~/models/providerTypes';
 
 export type TContractConfig = {
   chainId?: number;
