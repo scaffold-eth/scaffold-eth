@@ -1,10 +1,8 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import React, { useEffect, useState } from "react";
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
 import { Button, Card, Spin, Divider, Input, Row, Col, Checkbox, Typography } from "antd";
-import { AddressInput,  DynamicFieldSetMinesite,  DynamicFieldSetAncestors } from "../components";
+import { AddressInput,  DynamicFieldSetMinesite,  DynamicFieldSet } from "../components";
 
 const { BufferList } = require('bl')
 var QRCode = require('qrcode.react');
@@ -72,101 +70,128 @@ export default function CreateClaim({
     }
   }
 
-  const [ newAssetBarcode, setNewAssetBarcode ] = useState();
+  const [ location, setLocation ] = useState("");
   const [ qrShow, setQRShow ] = useState('none');
-  const [ mass, setMass ] = useState();
-  const [ purity, setPurity ] = useState();
-  const [ refinerGPS, setRefinerGPS ] = useState();
-  const [ minesiteGPS, setMinesiteGPS ] = useState();
-  const [ ancestors, setAncestors ] = useState();
-  const [ unixDate, setUnixDate ] = useState();
+  const [ yearBuilt, setYearBuilt ] = useState(0);
+  const [ bedrooms, setBedrooms ] = useState(0);
+  const [ bathrooms, setBathrooms ] = useState(0);
+  const [ unixDate, setUnixDate ] = useState(0);
 
-  const BeneOptions = ['DevSol', 'MUMA', 'NGO'];
-  const defaultCheckedList = ['DevSol', 'MUMA', 'NGO']
-  const [ checkedList, setCheckedList ] = useState(defaultCheckedList);
-  const onChange = item => {
-    setCheckedList(item)
-    console.log(checkedList)
+  const defaultPropertyOptions = ["Homeowners Inspection Passed", "Rental Inspection Passed", "Lead Paint Inspection Passed"];
+  const [ checkedListInspections, setCheckedListInspections ] = useState(defaultPropertyOptions);
+  const onChangeInspections = item => {
+    setCheckedListInspections(item)
+    console.log(checkedListInspections)
+  }
+
+  const defaultPropertyFeatures = ["Garage", "Basement", "Front Yard", "Back Yard", "Pool", "Driveway", "Solar Panels", "Washer/Dryer"];
+  const [ checkedListFeatures, setCheckedListFeatures ] = useState(defaultPropertyFeatures);
+  const onChangeFeatures = item => {
+    setCheckedListFeatures(item)
   }
 
   return (
     <div >
       <h1 >{""}</h1>
       <Row gutter={[32,32]} justify='center'>
-        <Col span="8">
+        <Col span="14">
           <div style={{textAlign: "left", margin:'15px'}}>
-            <h1 style={{ textAlign: "left", color:"#455A64"}}>Create Claim</h1>
+            <h1 style={{ textAlign: "left", color:"#455A64"}}>
+            Property Claim
+            </h1>
             <Card>
-            <h3>Product Identifier</h3>
-            <AddressInput onChange={(newValue)=>{
-              setNewAssetBarcode(newValue)
-              }}
-              value={newAssetBarcode}
-              ensProvider={mainnetProvider}
-              placeholder="Scan Product Identifier or Enter Here"
-            />
-            <h1></h1>
-
-            <h3>Material Properties</h3>
-            Mass:
-            <Input onChange={(e)=>{
-              setMass(e.target.value)
-              }}
-              style={{width:'125px', margin:'12px'}}
-              placeholder="Enter mass"
-            />grams
-            <p ></p>
-            Purity:
-            <Input onChange={(e)=>{
-              setPurity(e.target.value)
-              }}
-              style={{width:'125px', margin:'12px'}}
-              placeholder="Enter percent"
-            />%
-            <h1></h1>
-
             <h3>Location</h3>
-            
-            <p >Refiner GPS Coordinates:</p>
-            <Input onChange={(e)=>{
-              setRefinerGPS(e.target.value)
+            <Input type="text" onChange={(e)=>{
+              setLocation(e.target.value)
               }}
-              style={{width:'125px', margin:"0px"}}
-              placeholder="xx.xxxx, xx.xxxx"
+              value={location}
+              ensProvider={mainnetProvider}
+              placeholder="565 Brook Road, Boston, MA 02215"
             />
-            <p >{""}</p>
-            <p >Minesite GPS Coordinates :</p>
-            <DynamicFieldSetMinesite 
-            setMinesiteGPS={setMinesiteGPS}>
-            </DynamicFieldSetMinesite>
+            <h1></h1>
 
-            <h3 >Inheritance</h3>
-            <p >Ancestor Token ID's</p>
-            <DynamicFieldSetAncestors 
-            setAncestors={setAncestors}>
-            </DynamicFieldSetAncestors>
+            <p ></p>
+            Bedrooms:
+            <Input onChange={(e)=>{
+              setBedrooms(e.target.value)
+              }}
+              style={{width:'125px', margin:'12px'}}
+              placeholder="2"
+            />
+            Bathrooms:
+            <Input onChange={(e)=>{
+              setBathrooms(e.target.value)
+              }}
+              style={{width:'125px', margin:'12px'}}
+              placeholder="1"
+            />
+            <h1></h1>
 
-            <h3 >Time</h3>
+            <h3 >Property Features</h3>
+            <Checkbox.Group style={{ width: '100%' }} onChange={onChangeFeatures}>
+              <Row>
+                <Col span={6}>
+                  <Checkbox value="Garage">Garage</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Basement">Basement</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Front Yard">Front Yard</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Back Yard">Back Yard</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Pool">Pool</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Driveway">Driveway</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Solar Panels">Solar Panels</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="Washer/Dryer">Washer/Dryer</Checkbox>
+                </Col>
+              </Row>
+            </Checkbox.Group>
+            <h1></h1>
+
+            <h3>Year Built</h3>
+            <Input onChange={(e)=>{
+              setYearBuilt(e.target.value)
+              }}
+              style={{width:'100px'}}
+              placeholder="1975"
+            />
+
+            <h3 >Timestamp</h3>
             <Input onChange={(e)=>{
             setUnixDate(Date.now());
             }}
             value={unixDate}
-            style={{width:"150px"}}/>
-            <Button onClick={(e)=>{setUnixDate(Date.now)}}>
+            style={{width:"175px"}}/>
+            <Button onClick={(e)=>{
+              var timestamp = new Date(Date.now())
+              setUnixDate(timestamp)}}>
             now</Button>
             <h1 ></h1 >
 
-            <h3 >Beneficiaries</h3>
-            <Checkbox.Group style={{ width: '100%' }} onChange={onChange}>
+            <h3 >Inspections/ Certifications Contracts</h3>
+            <Checkbox.Group style={{ width: '100%' }} onChange={onChangeInspections}>
               <Row>
-                <Col span={8}>
-                  <Checkbox value="0x93eb95075A8c49ef1BF3edb56D0E0fac7E3c72ac">DevSol</Checkbox>
+                <Col span={6}>
+                  <Checkbox value="0x9E67029403675Ee18777Ed38F9C1C5c75F7B34f2">Residential Inspection Passed</Checkbox>
                 </Col>
-                <Col span={8}>
-                  <Checkbox value="0xF08E19B6f75686f48189601Ac138032EBBd997f2">MUMA</Checkbox>
+                <Col span={6}>
+                  <Checkbox value="0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d">Gas Appliance Inspection Passed</Checkbox>
                 </Col>
-                <Col span={8}>
-                  <Checkbox value="0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d">NGO</Checkbox>
+                <Col span={6}>
+                  <Checkbox value="0xF08E19B6f75686f48189601Ac138032EBBd997f2">Rental Property Cert. of Compliance</Checkbox>
+                </Col>
+                <Col span={6}>
+                  <Checkbox value="0x68C1766Fdf7fFae8ea8F10b26078bA47658BC5Bc">LEED Green Building Cert.</Checkbox>
                 </Col>
               </Row>
             </Checkbox.Group>
@@ -176,7 +201,7 @@ export default function CreateClaim({
 
             <div style={{textAlign: "center", margin:'15px'}}>
             <Button
-            disabled={!newAssetBarcode || !mass || !purity || !refinerGPS || !minesiteGPS || !ancestors || !unixDate}
+            disabled={!location || !bedrooms || !bathrooms|| !yearBuilt || !unixDate}
             style={{margin:16}} 
             loading={sending} 
             size="large" 
@@ -189,14 +214,13 @@ export default function CreateClaim({
               setIpfsContents()
               
               const result = await addToIPFS(
-                "{\n"+"      "+"Product ID: "+newAssetBarcode+
-                "\n"+"      "+"Mass (grams): "+mass+
-                "\n"+"      "+"Purity (%): "+purity+
-                "\n"+"      "+"Refiner GPS Coordinates: "+refinerGPS+
-                "\n"+"      "+"Minesite GPS Coordinates: "+minesiteGPS+
-                "\n"+"      "+"Ancestor IDs: "+ancestors+
-                "\n"+"      "+"Unix Timestamp: "+unixDate+
-                "\n"+"      "+"Beneficiary Addresses: "+checkedList+
+                "{\n"+"      "+"Address: "+location+
+                "\n"+"      "+"Year Built: "+yearBuilt+
+                "\n"+"      "+"Bedrooms: "+bedrooms+
+                "\n"+"      "+"Bathrooms: "+bathrooms+
+                "\n"+"      "+"Property Features: "+checkedListFeatures+
+                "\n"+"      "+"Timestamp: "+unixDate+
+                "\n"+"      "+"Inspections/ Certifications Contracts: "+checkedListInspections+
                 "\n}"
               )
               if(result && result.path) {
@@ -223,13 +247,16 @@ export default function CreateClaim({
           <Button
             onClick={ async ()=>{
             setQRShow("block")
-            console.log(mass)
-            console.log(purity)
-            let benePay = Math.round(mass*(purity/100)*60*0.10);
+            console.log(bedrooms)
+            console.log(bathrooms)
+            let benePay = Math.round(bedrooms*(bathrooms/100)*60*0.10);
             console.log(benePay)
-            const result = await tx( writeContracts.AdaptiveTokenVendor.mintAndCreateClaim(newAssetBarcode, ipfsHash, benePay, checkedList) )
+            console.log(location)
+            console.log(ipfsHash)
+            console.log(address)
+            const result = await tx( writeContracts.ClaimToken.createAndMintClaim(location, ipfsHash, benePay, checkedListInspections) )
             }}
-            disabled={!ipfsHash || !newAssetBarcode || !mass || !purity}
+            disabled={!ipfsHash || !location || !bedrooms || !bathrooms|| !unixDate|| !yearBuilt}
             size="large" 
             shape="round" 
             type="primary"
@@ -240,12 +267,12 @@ export default function CreateClaim({
         </Col>
       </Row >
       
-      <Row >
+      <Row justify="center">
         <Col >
           <div style={{margin:'15px', display:qrShow}}>
               <Card >
                 <h3 >Claim QR Code </h3>
-                <h3 >Product ID: {newAssetBarcode}</h3>
+                <h3 >Location: {location}</h3>
                 <QRCode value={"http://ipfs.io/ipfs/"+ipfsHash} />
               </Card>
           </div>

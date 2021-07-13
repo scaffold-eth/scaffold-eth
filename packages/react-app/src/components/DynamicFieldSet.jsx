@@ -2,7 +2,7 @@ import React from "react";
 import { Button, Form, Input } from "antd";
 import { MinusCircleOutlined, PlusOutlined } from '@ant-design/icons';
 
-export default function DynamicFieldSetAncestors({ setAncestors }) {
+export default function DynamicFieldSet({ features, setFeatures }) {
 
     const formItemLayout = {
         labelCol: {
@@ -41,9 +41,9 @@ export default function DynamicFieldSetAncestors({ setAncestors }) {
                       noStyle
                     >
                       <Input 
-                        placeholder=""
-                        style={{ width: '30%' }} 
-                        onChange={(e) => setAncestors(e.target.value)}/>
+                        placeholder="Attached Garage, large yard..."
+                        style={{ width: '90%' }} 
+                        onChange={(e) => setFeatures(features.concat({fields : e.target.value}))}/>
                     </Form.Item>
                     {fields.length > 1 ? (
                       <MinusCircleOutlined
@@ -56,11 +56,11 @@ export default function DynamicFieldSetAncestors({ setAncestors }) {
                 <Form.Item>
                   <Button
                     type="dashed"
-                    onClick={() => add()}
+                    onClick={() => {add(); setFeatures(features.concat("\n"))}}
                     style={{ width: '60%' }}
                     icon={<PlusOutlined />}
                   >
-                    Add Ancestor Token ID's
+                    Add
                   </Button>
               
                 </Form.Item>

@@ -18,5 +18,4 @@ export { default as TokenBalance } from "./TokenBalance";
 export { default as Wallet } from "./Wallet";
 export { default as L2Bridge } from "./L2Bridge";
 export { default as DynamicFieldSetMinesite } from "./DynamicFieldSetMinesite";
-export { default as DynamicFieldSetAncestors } from "./DynamicFieldSetAncestors";
-
+export { default as DynamicFieldSet } from "./DynamicFieldSet";

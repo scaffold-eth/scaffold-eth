@@ -72,8 +72,8 @@ contract ClaimToken is ERC721, ERC721URIStorage, ERC721Enumerable,  Ownable  {
   
     mapping (string => uint256) public claimIdByLocation;              // Input asset barcodeId to access ID of that specific asset.   
     mapping (uint256 => Claim) claimById;                              // Input asset ID provided from the mapping above to access asset struct.
-    mapping (uint256 => string) public locationByTokenId;       // Input asset ID to get barcodeId of that asset.
-    mapping (string => string) public claimByLocation;               // Input asset barcode to get claim properties hash. 
+    mapping (uint256 => string) public locationByTokenId;              // Input asset ID to get barcodeId of that asset.
+    mapping (string => string) public claimByLocation;                 // Input asset barcode to get claim properties hash. 
 
     //Create a struct for a specific asset. Private Function.
     //Emit the tokenId for the event created. tokenId to be the totalAssets.incremented.
@@ -140,7 +140,7 @@ contract ClaimToken is ERC721, ERC721URIStorage, ERC721Enumerable,  Ownable  {
         }
     }
 
-    function mintAndCreateClaim(string memory location, string memory propertiesHash, uint256 benePay, address[] memory beneAddresses) public returns (uint256) {
+    function createAndMintClaim(string memory location, string memory propertiesHash, uint256 benePay, address[] memory beneAddresses) public returns (uint256) {
         createClaim(location, propertiesHash, benePay, beneAddresses);
         mintClaim(location, propertiesHash);
     }
