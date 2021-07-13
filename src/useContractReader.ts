@@ -1,8 +1,7 @@
-import { Provider } from '@ethersproject/providers';
 import { Contract, ContractFunction } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
-import { useOnBlock, usePoller } from '~~';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 const DEBUG = false;
 
@@ -33,14 +32,6 @@ export const useContractReader = <T>(
   formatter?: (_value: T) => T,
   onChange?: (_value?: T) => void
 ): T | undefined => {
-  let adjustPollTime = 0;
-  if (pollTime) {
-    adjustPollTime = pollTime;
-  } else if (!pollTime && typeof functionArgs === 'number') {
-    // it's okay to pass poll time as last argument without args for the call
-    adjustPollTime = functionArgs;
-  }
-
   const [value, setValue] = useState<T>();
   useEffect(() => {
     if (typeof onChange === 'function') {
@@ -48,56 +39,47 @@ export const useContractReader = <T>(
     }
   }, [value, onChange]);
 
-  const updateValue = async (): Promise<void> => {
+  const updateValue = useCallback(async (): Promise<void> => {
     try {
+      const contractFunction = contracts?.[contractName]?.[functionName] as ContractFunction<T>;
       let newValue: T;
       if (DEBUG) console.log('CALLING ', contractName, functionName, 'with args', functionArgs);
-      if (functionArgs && functionArgs.length > 0) {
-        newValue = await (contracts[contractName][functionName] as ContractFunction<T>)(...functionArgs);
-        if (DEBUG)
-          console.log(
-            'contractName',
-            contractName,
-            'functionName',
-            functionName,
-            'args',
-            functionArgs,
-            'RESULT:',
-            newValue
-          );
-      } else {
-        newValue = await (contracts[contractName][functionName] as ContractFunction<T>)();
-      }
-      if (formatter && typeof formatter === 'function') {
-        newValue = formatter(newValue);
-      }
-      if (newValue !== value) {
+
+      if (contractFunction && contracts?.[contractName]?.provider?._isProvider != null) {
+        if (functionArgs && functionArgs.length > 0) {
+          newValue = await contractFunction(...functionArgs);
+          if (DEBUG)
+            console.log(
+              'contractName',
+              contractName,
+              'functionName',
+              functionName,
+              'functionArgs',
+              functionArgs,
+              'RESULT:',
+              newValue
+            );
+        } else {
+          newValue = await contractFunction();
+        }
+        if (formatter && typeof formatter === 'function') {
+          newValue = formatter(newValue);
+        }
         setValue(newValue);
       }
     } catch (e) {
       console.log(e);
     }
-  };
+  }, [contractName, contracts, formatter, functionName, functionArgs]);
 
-  // Only pass a provider to watch on a block if we have a contract and no PollTime
-  const provider: Provider | undefined =
-    contracts && contracts[contractName] && adjustPollTime === 0 ? contracts[contractName].provider : undefined;
-  useOnBlock(provider, () => {
-    if (contracts && contracts[contractName] && adjustPollTime === 0) {
-      void updateValue();
-    }
-  });
-
-  // Use a poller if a pollTime is provided
-  usePoller(
-    () => {
-      if (contracts && contracts[contractName] && adjustPollTime > 0) {
-        if (DEBUG) console.log('polling!', contractName, functionName);
-        void updateValue();
-      }
+  useOnRepetition(
+    updateValue,
+    {
+      pollTime,
+      leadTrigger: contracts?.[contractName] != null,
+      provider: contracts?.[contractName]?.provider,
     },
-    adjustPollTime,
-    contracts && contracts[contractName] ? true : false
+    functionArgs
   );
 
   return value;

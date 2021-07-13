@@ -1,2 +1,2 @@
-export * from './useExchangePrice';
+export * from './useExchangeEthPrice';
 export * from './useTokenList';

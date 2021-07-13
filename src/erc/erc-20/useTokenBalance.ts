@@ -1,8 +1,8 @@
 import { BigNumber } from '@ethersproject/bignumber';
 import { Contract } from '@ethersproject/contracts';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { useOnBlock, usePoller } from '../..';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 /**
  * Get the balance of an ERC20 token in an address
@@ -19,8 +19,8 @@ import { useOnBlock, usePoller } from '../..';
 export const useTokenBalance = (contract: Contract, address: string, pollTime: number = 0): BigNumber => {
   const [balance, setBalance] = useState<BigNumber>(BigNumber.from(0));
 
-  const pollBalance = async (): Promise<void> => {
-    if (contract != undefined) {
+  const pollBalance = useCallback(async (): Promise<void> => {
+    if (contract != null) {
       try {
         // eslint-disable-next-line
         const newBalance = await contract.balanceOf(address);
@@ -31,19 +31,9 @@ export const useTokenBalance = (contract: Contract, address: string, pollTime: n
         console.log('⚠ Could not get token balance', e);
       }
     }
-  };
+  }, [address, balance, contract]);
 
-  useOnBlock(contract && contract.provider, (): void => {
-    if (address && pollTime === 0) {
-      void pollBalance();
-    }
-  });
-
-  usePoller((): void => {
-    if (address && pollTime > 0) {
-      void pollBalance();
-    }
-  }, pollTime);
+  useOnRepetition(pollBalance, { pollTime, leadTrigger: contract?.provider != null });
 
   return balance;
 };

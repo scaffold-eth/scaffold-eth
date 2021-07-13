@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { usePoller, useOnBlock } from '~~';
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 /**
  * Get the current block number
@@ -9,23 +9,17 @@ import { TEthHooksProvider } from '~~/models';
  * @param pollTime if greater than 0, update the blocknumber on an interval
  * @returns
  */
-export const useBlockNumber = (provider: TEthHooksProvider, pollTime: number = 0): number => {
+export const useBlockNumber = (provider: TEthersProvider, pollTime: number = 0): number => {
   const [blockNumber, setBlockNumber] = useState<number>(0);
 
-  const getBlockNumber = async (): Promise<void> => {
+  const getBlockNumber = useCallback(async (): Promise<void> => {
     const nextBlockNumber = await provider.getBlockNumber();
     if (nextBlockNumber !== blockNumber) {
       setBlockNumber(nextBlockNumber);
     }
-  };
+  }, [blockNumber, provider]);
 
-  useOnBlock(provider, (): void => {
-    if (pollTime === 0) void getBlockNumber();
-  });
-
-  usePoller((): void => {
-    if (pollTime > 0) void getBlockNumber();
-  }, pollTime);
+  useOnRepetition(getBlockNumber, { provider, pollTime });
 
   return blockNumber;
 };

@@ -1,9 +1,9 @@
 import { utils } from 'ethers';
 import { useState, useEffect } from 'react';
 
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
 
-const lookupAddress = async (provider: TEthHooksProvider, address: string): Promise<string> => {
+const lookupAddress = async (provider: TEthersProvider, address: string): Promise<string> => {
   if (utils.isAddress(address)) {
     try {
       // Accuracy of reverse resolution is not enforced.
@@ -30,7 +30,7 @@ const lookupAddress = async (provider: TEthHooksProvider, address: string): Prom
  * @param address
  * @returns
  */
-export const useLookupAddress = (provider: TEthHooksProvider, address: string): string => {
+export const useLookupAddress = (provider: TEthersProvider, address: string): string => {
   const [ensName, setEnsName] = useState(address);
 
   useEffect(() => {
@@ -53,7 +53,7 @@ export const useLookupAddress = (provider: TEthHooksProvider, address: string): 
         }
       });
     }
-  }, [address, setEnsName]);
+  }, [address, provider, setEnsName]);
 
   return ensName;
 };

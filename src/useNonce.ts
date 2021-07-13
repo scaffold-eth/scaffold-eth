@@ -1,7 +1,7 @@
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { useOnBlock, usePoller } from '~~';
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 /**
  * Get the current nonce of the address provided
@@ -10,23 +10,17 @@ import { TEthHooksProvider } from '~~/models';
  * @param pollTime
  * @returns
  */
-export const useNonce = (provider: TEthHooksProvider, address: string, pollTime: number = 0): number => {
+export const useNonce = (provider: TEthersProvider, address: string, pollTime: number = 0): number => {
   const [nonce, setNonce] = useState<number>(0);
 
-  const getTransactionCount = async (): Promise<void> => {
+  const getTransactionCount = useCallback(async (): Promise<void> => {
     const nextNonce = await provider?.getTransactionCount(address);
     if (nextNonce !== nonce && nextNonce >= 0) {
       setNonce(nextNonce);
     }
-  };
+  }, [address, nonce, provider]);
 
-  useOnBlock(provider, (): void => {
-    if (pollTime === 0) void getTransactionCount();
-  });
-
-  usePoller((): void => {
-    if (pollTime > 0) void getTransactionCount();
-  }, pollTime);
+  useOnRepetition(getTransactionCount, { pollTime });
 
   return nonce;
 };

@@ -1,9 +1,9 @@
 import { Contract } from '@ethersproject/contracts';
 import { ethers } from 'ethers';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
-import { TProviderOrSigner } from '~~/models/providerTypes';
+import { TEthersProviderOrSigner, TProviderOrSigner } from '~~/models/providerTypes';
 
 export type TContractConfig = {
   chainId?: number;
@@ -42,11 +42,12 @@ export enum DefaultContractLocation {
  * @returns Hash: contractName: Contract
  */
 export const useContractLoader = (
-  providerOrSigner: TProviderOrSigner | undefined,
+  providerOrSigner: TEthersProviderOrSigner | undefined,
   config: TContractConfig,
-  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.viteAppContracts
+  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
+  const configDep: string = useMemo(() => JSON.stringify(config ?? {}), [config]);
 
   useEffect(() => {
     let active = true;
@@ -59,36 +60,38 @@ export const useContractLoader = (
           // we need to check to see if this providerOrSigner has a signer or not
           if (typeof providerOrSigner !== 'undefined') {
             // we need to check to see if this providerOrSigner has a signer or not
-            // eslint-disable-next-line @typescript-eslint/no-unused-vars
-            const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
 
+            const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
             const chainId: number = config.chainId ?? providerNetwork?.chainId ?? 0;
 
-            // type definition
+            // Type definition
             //  Record<string, Record<string, Contract>>
             //  { chainId: { contractName: Contract } }
             let contractList: Record<string, Record<string, Contract>> = {};
             let externalContractList: Record<string, Record<string, Contract>> = {};
-
             let combinedContracts: Record<string, Contract> = {};
+
+            // get hardhat contracts form hardhat-deploy json created on compile
             try {
               contractList =
                 config.hardhatContracts ??
                 ((await import(`./${contractFileLocation}/hardhat_contracts.json`)) as Record<string, Contract>)
                   .default;
             } catch (e) {
-              console.log(e);
+              console.warn(e);
             }
 
+            // get external contracts from js file
             try {
               externalContractList =
                 config.externalContracts ??
                 ((await import(`./${contractFileLocation}/external_contracts.js`)) as Record<string, Contract>).default;
             } catch (e) {
-              console.log(e);
+              console.warn(e);
             }
 
-            if (contractList?.[chainId] != undefined) {
+            // combine partitioned contracts based on all the available and chain id.
+            if (contractList?.[chainId] != null) {
               for (const hardhatNetwork in contractList[chainId]) {
                 if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
                   if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
@@ -102,7 +105,7 @@ export const useContractLoader = (
               }
             }
 
-            if (externalContractList?.[chainId] != undefined) {
+            if (externalContractList?.[chainId] != null) {
               combinedContracts = { ...combinedContracts, ...externalContractList[chainId].contracts };
             }
 
@@ -130,9 +133,9 @@ export const useContractLoader = (
     return (): void => {
       active = false;
     };
-  }, [contractFileLocation, providerOrSigner, JSON.stringify(config)]);
-    providerOrSigner,
-    config,
+    // disable as configDep is used for dep instead of config
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [contractFileLocation, providerOrSigner, configDep]);
 
   return contracts;
 };

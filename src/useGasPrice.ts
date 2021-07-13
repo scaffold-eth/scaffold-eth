@@ -1,8 +1,8 @@
 import axios, { AxiosResponse } from 'axios';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
-import { usePoller } from '~~';
 import { TNetwork } from '~~/models';
+import { useOnRepetition } from '~~/useOnRepetition';
 
 /**
  * Preset speeds for Eth Gas Station
@@ -28,7 +28,7 @@ export const useGasPrice = (
   const multiplier = 100000000;
   const [gasPrice, setGasPrice] = useState<number | undefined>();
 
-  const loadGasPrice = (): void => {
+  const loadGasPrice = useCallback((): void => {
     if (targetNetwork?.gasPrice) {
       setGasPrice(targetNetwork.gasPrice);
     } else {
@@ -49,8 +49,8 @@ export const useGasPrice = (
           });
       }
     }
-  };
+  }, [gasPrice, speed, targetNetwork.gasPrice]);
 
-  usePoller(loadGasPrice, pollTime);
+  useOnRepetition(loadGasPrice, { pollTime, leadTrigger: targetNetwork?.gasPrice != null });
   return gasPrice;
 };

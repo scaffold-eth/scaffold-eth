@@ -1,7 +1,7 @@
 import { constants } from 'ethers';
 import { useState, useEffect } from 'react';
 
-import { TEthHooksProvider } from '~~/models';
+import { TEthersProvider } from '~~/models';
 
 /**
  * Gets address from given ENS name and provider
@@ -9,7 +9,7 @@ import { TEthHooksProvider } from '~~/models';
  * @param ensName
  * @returns
  */
-export const useResolveEnsName = (provider: TEthHooksProvider, ensName: string): string => {
+export const useResolveEnsName = (provider: TEthersProvider, ensName: string): string => {
   const [address, setAddress] = useState<string>(constants.AddressZero);
 
   useEffect(() => {
