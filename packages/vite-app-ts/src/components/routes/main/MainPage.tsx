@@ -44,7 +44,8 @@ import {
   // mainStreamReader_ABI,
   // BUILDS,
 } from '~~/models/constants/constants';
-import { getNetwork, NETWORKS } from '~~/models/constants/networks';
+import { NETWORKS } from '~~/models/constants/networks';
+import { getNetwork } from '~~/helpers/getNetwork';
 
 import { ethers } from 'ethers';
 

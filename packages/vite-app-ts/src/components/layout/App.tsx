@@ -1,13 +1,10 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client';
-import WalletConnectProvider from '@walletconnect/web3-provider';
-import React, { Suspense, useState } from 'react';
+import React, { FC, Suspense } from 'react';
 import { ThemeSwitcherProvider } from 'react-css-theme-switcher';
 import { RecoilRoot } from 'recoil';
-import Web3Modal from 'web3modal';
 
 import { ErrorBoundary, ErrorFallback } from '~~/components/layout/ErrorFallback';
 import { MainPage } from '~~/components/routes/main/MainPage';
-import { INFURA_ID } from '~~/models/constants/constants';
 import '~~/styles/css/tailwind-base.pcss';
 import '~~/styles/css/tailwind-components.pcss';
 import '~~/styles/css/tailwind-utilities.pcss';
@@ -27,7 +24,7 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
-const App = () => {
+const App: FC = () => {
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback}>
       <RecoilRoot>
