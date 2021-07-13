@@ -9,7 +9,15 @@
     },
     "project": "tsconfig.json",
     "tsconfigRootDir": ".",
-    "projectFolderIgnoreList": ["node_modules/*","node_modules", "dist", "build", ".yarn", "build-utils", "./src/styles"]
+    "projectFolderIgnoreList": [
+      "node_modules/*",
+      "node_modules",
+      "dist",
+      "build",
+      ".yarn",
+      "build-utils",
+      "./src/styles"
+    ]
   },
   "env": {
     "browser": true,
@@ -17,8 +25,6 @@
     "node": true
   },
   "extends": [
-    "airbnb-typescript",
-    "airbnb/hooks",
     "plugin:import/errors",
     "plugin:import/warnings",
     "plugin:import/typescript",
@@ -99,7 +105,6 @@
         "newlines-between": "always"
       }
     ],
-    "no-param-reassign": "error",
     "no-duplicate-imports": "warn",
     "import/named": "off",
     "import/namespace": "off",
