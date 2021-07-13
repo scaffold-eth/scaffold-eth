@@ -16,6 +16,8 @@ Modifications to the standard "scaffold-eth":
 - you no longer need to use the faucet - any account can make transactions without gas (only sign the transactions). - Transactions are paid by the paymaster
 
 
-Limitations:
-- Currently, only Metamask is supported (need to add support to any WalletConnect provider)
 
+
+#### Below is an actual screenshot after hitting the "Send" button - No eth required by the calling user
+
+![image](https://user-images.githubusercontent.com/40341007/125443998-eaaf6abe-76ff-480d-a902-61eff267d14d.png)
