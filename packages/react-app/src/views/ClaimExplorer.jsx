@@ -141,30 +141,31 @@ export default function ClaimExplorer({ mainnetProvider, fontSize, blockExplorer
 
             <Divider></Divider>
             <Row justify='center'>
-            <Col span={12}>
+            <Col span={21}>
             <div className="your-claims-header">
                 <Space >All Claims{""}</Space><Space><Switch  defaultChecked onChange={onChange}/>{""}</Space>Your Claims
                 <h1 >{" "}</h1>
                     <List
                         bordered
-                        itemLayout="vertical"
+                        grid ={{gutter:"12px", column:4}}
                         size="large"
                         dataSource={newDataSource}
                         renderItem={(item) =>  {
                             const id = item.id.toNumber()
                             return (
-                                <List.Item key={id+"_"+item.propertiesHash+"_"+item[3]}>
+                                <List.Item key={id+"_"+item.propertiesHash+"_"+item.address}>
                                     <Card >
                                         <div style={{fontWeight:"bold"}}>{' '}{item[1]}</div>
-                                        <div >
-                                            
-                                        <a href={"https://ipfs.io/ipfs/"+item.propertiesHash} target="blank">{"https://ipfs.io/ipfs/"+item.propertiesHash}</a>
+                                        <div style={{fontWeight:"light"}}>Token: {parseInt(item[0])}</div>
+                                        <div >  
+                                        <a href={"https://ipfs.io/ipfs/"+item.propertiesHash} target="blank"><Button type="primary">Claim</Button> </a>
                                         </div>
                                         <Divider ></Divider>
                                         <AddressInput
                                         ensProvider={mainnetProvider}
                                         placeholder="transfer to address"
                                         value={transferToAddress[id]}
+                                        autofocus
                                         onChange={(newValue)=>{
                                             let update = {}
                                             update[id] = newValue
