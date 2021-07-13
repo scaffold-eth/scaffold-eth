@@ -25,15 +25,15 @@ const syncBurnerKeyFromStorage = (): void => {
 
 /**
  * Gets user provider or Signer
- * 
+ *
   ~ Features ~
   - Specify the injected provider from Metamask
   - Specify the local provider
   - Usage examples:
     const tx = Transactor(userSigner, gasPrice)
- * @param injectedProviderOrSigner 
- * @param localProvider 
- * @returns 
+ * @param injectedProviderOrSigner
+ * @param localProvider
+ * @returns
  */
 export const useUserProviderAndSigner = (
   injectedProviderOrSigner: TEthersProviderOrSigner | undefined,

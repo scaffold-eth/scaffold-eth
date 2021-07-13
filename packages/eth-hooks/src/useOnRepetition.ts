@@ -28,7 +28,7 @@ export const useOnRepetition = (
   },
   ...args: any[]
 ): void => {
-  const polling = options?.pollTime ?? 0 > 0;
+  const polling = options?.pollTime && options.pollTime > 0;
 
   // save the input function provided
   const callFunctionWithArgs = useCallback(() => {

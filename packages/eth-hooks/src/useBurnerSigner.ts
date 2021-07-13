@@ -27,9 +27,9 @@ export const useBurnerSigner = (provider: TEthersProvider): Signer | undefined =
     const storedKey = window.localStorage.getItem(key);
     if (!storedKey) {
       console.log('generating a new key');
-      const _newWallet = ethers.Wallet.createRandom();
-      const _newKey = _newWallet.privateKey;
-      setValue(_newKey);
+      const newWallet = ethers.Wallet.createRandom();
+      const newKey = newWallet.privateKey;
+      setValue(newKey);
     } else {
       setValue(storedKey);
     }
@@ -38,8 +38,8 @@ export const useBurnerSigner = (provider: TEthersProvider): Signer | undefined =
   useEffect(() => {
     if (privateKeyValue && provider) {
       const wallet = new ethers.Wallet(privateKeyValue);
-      const _signer = wallet.connect(provider);
-      setSigner(_signer);
+      const newSigner = wallet.connect(provider);
+      setSigner(newSigner);
     }
   }, [privateKeyValue, provider]);
 

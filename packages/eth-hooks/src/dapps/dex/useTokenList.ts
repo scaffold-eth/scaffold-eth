@@ -4,13 +4,13 @@ import { useState, useEffect } from 'react';
 
 /**
  * Gets a tokenlist (see more at https://tokenlists.org/), returning the .tokens only
- * 
+ *
  * ~ How can I use? ~
   const tokenList = useTokenList(); <- default returns the Unsiwap tokens
   const tokenList = useTokenList("https://gateway.ipfs.io/ipns/tokens.uniswap.org");
- * @param tokenListUri 
- * @param chainId 
- * @returns 
+ * @param tokenListUri
+ * @param chainId
+ * @returns
  */
 export const useTokenList = (
   tokenListUri: string = 'https://gateway.ipfs.io/ipns/tokens.uniswap.org',
@@ -21,16 +21,16 @@ export const useTokenList = (
   useEffect(() => {
     const getTokenList = async (): Promise<void> => {
       try {
-        const tokenList: TokenList = (await axios(tokenListUri)).data as TokenList;
-        if (tokenList != null) {
+        const tokenListResp: TokenList = (await axios(tokenListUri)).data as TokenList;
+        if (tokenListResp != null) {
           let tokenInfo: TokenInfo[] = [];
 
           if (chainId) {
-            tokenInfo = tokenList.tokens.filter(function (t: TokenInfo) {
+            tokenInfo = tokenListResp.tokens.filter((t: TokenInfo) => {
               return t.chainId === chainId;
             });
           } else {
-            tokenInfo = tokenList.tokens;
+            tokenInfo = tokenListResp.tokens;
           }
 
           setTokenList(tokenInfo);
