@@ -1,22 +1,18 @@
-pragma solidity >=0.8.0 <0.9.0;
-//SPDX-License-Identifier: MIT
+//SPDX-License-Identifier: Unlicense
+pragma solidity ^0.8.3;
 
-//import "hardhat/console.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "hardhat/console.sol";
 
 contract YourContract {
+    string public greeting;
 
-  //event SetPurpose(address sender, string purpose);
+    constructor(string memory _greeting) {
+        console.log("Deploying YourContract with greeting:", _greeting);
+        greeting = _greeting;
+    }
 
-  string public purpose = "Building Unstoppable Apps";
-
-  constructor() {
-    // what should we do on deploy?
-  }
-
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      //console.log(msg.sender,"set purpose to",purpose);
-      //emit SetPurpose(msg.sender, purpose);
-  }
+    function setGreeting(string memory _greeting) public {
+        console.log("Changing greeting from '%s' to '%s'", greeting, _greeting);
+        greeting = _greeting;
+    }
 }

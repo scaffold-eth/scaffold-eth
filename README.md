@@ -1,93 +1,48 @@
-# 🏗 Scaffold-ETH
+# nextjs-ethereum-starter
 
-> everything you need to build on Ethereum! 🚀
+This is a work in progress!
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+My iteration of [Austin Griffith's scaffold-eth](https://github.com/austintgriffith/scaffold-eth).
+Also inspired by [Nader Dabit's blog post](https://dev.to/dabit3/the-complete-guide-to-full-stack-ethereum-development-3j13)
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+- [Typescript](https://www.typescriptlang.org/)
+- [Hardhat](https://hardhat.org/)
+- [Ethers.js](https://docs.ethers.io/v5/)
+- [useDApp](https://usedapp.io/)
+- [Chakra UI](https://chakra-ui.com/)
+- Linting with [ESLint](https://eslint.org/)
+- Formatting with [Prettier](https://prettier.io/)
+- Linting, typechecking and formatting on by default using [`husky`](https://github.com/typicode/husky) for commit hooks
+- Testing with [Jest](https://jestjs.io/) and [`react-testing-library`](https://testing-library.com/docs/react-testing-library/intro)
 
+👀 [View the Live Demo](https://nextjs-ethereum-starter.vercel.app/)
 
-# 🏄‍♂️ Quick Start
+## Getting Started
 
-Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
-> clone/fork 🏗 scaffold-eth:
+This project uses Yarn Workspaces, so you'll need [Yarn](https://classic.yarnpkg.com/en/docs/install)
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-```
+git clone https://github.com/ChangoMan/nextjs-ethereum-starter.git
+cd nextjs-ethereum-starter
 
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
 yarn install
+
+# Start up the Hardhat Network
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+Here we just install the npm project's dependencies, and by running `yarn chain` we spin up an instance of Hardhat Network that you can connect to using MetaMask. In a different terminal in the same directory, run:
 
 ```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+This will deploy the contract to Hardhat Network. After this completes run:
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+```bash
+yarn dev
+```
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+This will start up the Next.js development server and your site will be available at http://localhost:3000/
 
-📱 Open http://localhost:3000 to see the app
-
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
-
-
-# 💬 Support Chat
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
-
-- Hardhat for your local blockchain, deploying, and testing smart contracts.
-- React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. (You can easily changed to another library you prefer)
-- Surge / S3 / IPFS for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
-- Support for L2 / Sidechains like Optimism and Arbitrum.
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
+To interact with the local contract, be sure to switch your MetaMask Network to `Localhost 8545`
