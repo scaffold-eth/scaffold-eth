@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Divider } from "antd";
+import { Row, Divider, Table } from "antd";
 
 export default function Help() {
   return(
@@ -73,11 +73,11 @@ export default function Help() {
     <Row>
       <h2 style={{fontWeight: "bold"}}>Keyboard shortcuts</h2>
       <p>The following keyboard shortcuts are available while drawing on canvas:</p>
-      <Table 
+      <Table
         columns={[
           {title: 'Hotkey', dataIndex: 'shortcut'},
           {title: 'Action', dataIndex: 'action'}
-        ]} 
+        ]}
         dataSource={[
           {key: '1', shortcut: 'Ctrl+z', action: "Undo"},
           {key: '2', shortcut: ']', action: "Increase brush size by 1"},
@@ -88,8 +88,8 @@ export default function Help() {
           {key: '7', shortcut: 'Shift+> ', action: "Increase current color opacity by 10%"},
           {key: '8', shortcut: '<', action: "Decrease current color opacity by 1%"},
           {key: '9', shortcut: 'Shift+< ', action: "Decrease current color opacity by 10%"}
-        ]} 
-        size="small" 
+        ]}
+        size="small"
         pagination={false}
         style={{flexGrow: "1"}}
       />

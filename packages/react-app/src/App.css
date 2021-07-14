@@ -103,21 +103,32 @@
   display: flex;
   justify-content: center;
   text-align: center;
+  flex-wrap: wrap
 }
 
 .canvas {
   display: block;
-  flex: 0 0 50%;
+  flex: 1 0 auto;
   /* margin-left: 10%; */
+}
+
+.title-top {
+  display: block;
+  flex: 1 0 100%;
 }
 .edit-tools {
   display: block;
-  flex: 0 0 50%;
+  flex: 1 3 35%;
   margin-top: auto;
   margin-bottom: auto;
 }
 
-.bottom-block {
+.edit-tools-bottom {
+  margin-top: 10px;
+  flex: 1 0 100%;
+}
+
+.edit-tools-side {
   margin-top: 50px;
 }
 

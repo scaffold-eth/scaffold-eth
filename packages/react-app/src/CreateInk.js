@@ -35,11 +35,41 @@ export default function CreateInk(props) {
 
   const [drawingSaved, setDrawingSaved] = useState(true)
 
+  const portraitRatio = 1.7
+  const portraitCalc = (window.document.body.clientWidth / size[0])<portraitRatio
+
+  const [portrait, setPortrait] = useState(portraitCalc)
+
   // const clientHeight = window.document.body.clientHeight;
   // const clientWidth = window.document.body.clientWidth;
 
+  function debounce(fn, ms) {
+  let timer
+  return _ => {
+    clearTimeout(timer)
+    timer = setTimeout(_ => {
+      timer = null
+      fn.apply(this, arguments)
+    }, ms)
+  };
+}
+
+useEffect(() => {
+    const debouncedHandleResize = debounce(function handleResize() {
+      let _portraitCalc = (window.document.body.clientWidth / size[0])<portraitRatio
+      //console.log(_portraitCalc?"portrait mode":"landscape mode")
+      setPortrait(_portraitCalc)
+    }, 500)
+
+    window.addEventListener('resize', debouncedHandleResize)
+
+    return _ => {
+      window.removeEventListener('resize', debouncedHandleResize)
+    }
+      })
+
   const isPortrait = window.document.body.clientHeight > window.document.body.clientWidth;
-  
+
   //Keyboard shortcuts
   useHotkeys('ctrl+z', () => undo());
   useHotkeys(']', () => updateBrushRadius(brushRadius => brushRadius + 1));
@@ -54,7 +84,7 @@ export default function CreateInk(props) {
   const updateBrushRadius = value => {
     setBrushRadius(value)
   }
-  
+
   const updateColor = value => {
     console.log(value)
     setColor(`rgba(${value.rgb.r},${value.rgb.g},${value.rgb.b},${value.rgb.a})`)
@@ -85,7 +115,7 @@ export default function CreateInk(props) {
           }
         }
   }
-  
+
   useEffect(() => {
     if (brushRadius <= 1) {
       setBrushRadius(1);
@@ -423,13 +453,13 @@ if (props.mode === "edit") {
     </div>
 
   )
-  
+
   shortcutsPopover = (
-    <Table 
+    <Table
       columns={[
         {title: 'Hotkey', dataIndex: 'shortcut'},
         {title: 'Action', dataIndex: 'action'}
-      ]} 
+      ]}
       dataSource={[
         {key: '1', shortcut: 'Ctrl+z', action: "Undo"},
         {key: '2', shortcut: ']', action: "Increase brush size by 1"},
@@ -440,15 +470,15 @@ if (props.mode === "edit") {
         {key: '7', shortcut: 'Shift+> ', action: "Increase current color opacity by 10%"},
         {key: '8', shortcut: '<', action: "Decrease current color opacity by 1%"},
         {key: '9', shortcut: 'Shift+< ', action: "Decrease current color opacity by 10%"}
-      ]} 
-      size="small" 
+      ]}
+      size="small"
       pagination={false}
     />
   )
 
   bottom = (
-    <div className="bottom-block">
-    <Row style={{ margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'center'}}>
+    <>
+    <Row style={{ margin: "0 auto", marginTop:"4vh", display: 'inline-flex', justifyContent: 'center', alignItems: 'middle'}}>
     <Space>
     <PickerDisplay
     color={color}
@@ -459,11 +489,9 @@ if (props.mode === "edit") {
     }}><HighlightOutlined /></Button>
     </Space>
     </Row>
-    <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent: 'center', alignItems: 'center'}}>
-    <Col span={12}>
+    <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent: 'center', alignItems: 'middle'}}>
     <AlphaPicker onChangeComplete={updateColor}
         color={color}/>
-    </Col>
     </Row>
     <Row style={{ margin: "0 auto", marginTop:"4vh", justifyContent:'center'}}>
     <Col span={12}>
@@ -498,7 +526,7 @@ if (props.mode === "edit") {
         </Col>
         </Space>
     </Row>
-    <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"1vh", justifyContent:'center'}}>
+    <Row style={{ width: "40vmin", margin: "0 auto", marginTop:"1vh", justifyContent:'center'}}>
         <Space>
         <Col span={4}>
           <Popover content={shortcutsPopover} title="Keyboard shortcuts" trigger="click">
@@ -507,11 +535,11 @@ if (props.mode === "edit") {
         </Col>
         </Space>
     </Row>
-    </div>
+    </>
   )
 
   canvas = (
-    <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+    <div style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
           {(!loaded)&&<span>Loading...</span>}
           <CanvasDraw
           key={props.mode+""+props.canvasKey}
@@ -542,14 +570,18 @@ return (
     }
   }*/>
     {
-      isPortrait 
+      portrait
       ?
       <>
-        {top}
+        <div className="title-top">
+          {top}
+        </div>
         <div className="canvas">
           {canvas}
         </div>
+        <div className="edit-tools-bottom">
         {bottom}
+        </div>
       </>
       :
       <>
@@ -557,11 +589,14 @@ return (
           {canvas}
         </div>
         <div className="edit-tools">
-          {top}{bottom}
+          {top}
+          <div className="edit-tools-side">
+            {bottom}
+          </div>
         </div>
       </>
     }
- 
+
   </div>
 );
 }
