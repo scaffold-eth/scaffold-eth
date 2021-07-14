@@ -6,7 +6,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, EnableGsn, initGsn, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -21,8 +21,6 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
-import { RelayProvider } from '@opengsn/provider'
-import axios from 'axios'
 
 const { ethers } = require("ethers");
 /*
@@ -281,55 +279,21 @@ function App(props) {
     );
   }
 
-  async function getGsnNetwork(chainId) {
-    if ( chainId == 31337 ) {
-      return  {
-        Paymaster: '0x5FC8d32690cc91D4c39d9d3abcBD16989F875707'
-      }
-    }
-    const gsnNetworks = await axios.get('https://opengsn.github.io/gsn-networks/gsn-networks.json')
-    console.log( '==networks=', gsnNetworks)
-    if ( !gsnNetworks.data ) {
-      throw new Error( 'unable to fetch GSN networks '+(gsnNetworks.error || gsnNetworks))
-    }
-    const gsnNetwork = gsnNetworks.data.networks[chainId]
-    if ( !gsnNetwork ){
-      throw new Error( 'GSN is not deployed on network '+chainId)
-    }
-    console.log( '==chain',chainId, 'ret=', gsnNetwork)
-    return gsnNetwork
-  }
-  
-  async function initGsn(provider) {
-    const chainId = parseInt(await provider.request({method:'eth_chainId', params:[]}))
-
-    const gsnNetwork = await getGsnNetwork(chainId)
-
-    console.log("⛽ Using GSN provider");
-    const gsnProvider = RelayProvider.newProvider({
-      provider,
-      config: {
-        paymasterAddress: gsnNetwork.Paymaster,
-        loggerConfiguration: {logLevel: 'debug'}            
-      }
-    })
-    await gsnProvider.init()
-    return gsnProvider
-  }
+  const [usingGsn, setUsingGsn] = useState(false);
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
 
-    setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
+    setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(usingGsn, provider)));
 
     provider.on("chainChanged", async chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
-      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
+      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(usingGsn, provider)));
     });
 
     provider.on("accountsChanged", async () => {
       console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(provider)));
+      setInjectedProvider(new ethers.providers.Web3Provider(await initGsn(usingGsn, provider)));
     });
 
     // Subscribe to session disconnection
@@ -337,7 +301,7 @@ function App(props) {
       console.log(code, reason);
       logoutOfWeb3Modal();
     });
-  }, [setInjectedProvider]);
+  }, [setInjectedProvider, usingGsn]);
 
   useEffect(() => {
     if (web3Modal.cachedProvider) {
@@ -346,6 +310,7 @@ function App(props) {
   }, [loadWeb3Modal]);
 
   const [route, setRoute] = useState();
+
   useEffect(() => {
     setRoute(window.location.pathname);
   }, [setRoute]);
@@ -446,7 +411,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
+            <EnableGsn usingGsn={usingGsn} setUsingGsn={setUsingGsn}></EnableGsn>
             <Contract
               name="YourContract"
               signer={userSigner}

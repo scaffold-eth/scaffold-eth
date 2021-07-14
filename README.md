@@ -19,5 +19,4 @@ Modifications to the standard "scaffold-eth":
 
 
 #### Below is an actual screenshot after hitting the "Send" button - No eth required by the calling user
-
-![image](https://user-images.githubusercontent.com/40341007/125443998-eaaf6abe-76ff-480d-a902-61eff267d14d.png)
+![image](https://user-images.githubusercontent.com/40341007/125701114-8dc6ba4d-14f3-4bda-8ed6-21821ea13986.png)

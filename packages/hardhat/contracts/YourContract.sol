@@ -13,6 +13,7 @@ contract YourContract is ERC2771Context {
   event SetPurpose(address sender, string purpose);
 
   string public purpose = "Building Unstoppable Apps";
+  address public purposeSetter;
 
   error EmptyPurposeError(uint code, string message);
 
@@ -30,6 +31,7 @@ contract YourContract is ERC2771Context {
 
       purpose = newPurpose;
       console.log(_msgSender(),"set purpose to",purpose);
+      purposeSetter = _msgSender();
       emit SetPurpose(_msgSender(), purpose);
   }
 }
