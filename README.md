@@ -5,7 +5,7 @@ Commonly used Ethereum hooks.
 ## Install
 
 ```sh
-npm install eth-hooks
+yarn add eth-hooks
 ```
 
 ## API
