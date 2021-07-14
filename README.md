@@ -1,50 +1,110 @@
-# Welcome to Scaffold-eth
-Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
+# Minimum Viable NFT
 
-# About Scaffold-eth
-Scaffold-eth provides an out-of-the-shelf stack for rapid prototyping on Ethereum, giving developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based dApp. 
+## 📀 A simple and stripped back minimal 1/1 NFT contract
 
-# The Scaffold-eth stack
-Scaffold-eth is not a product itself but more of a combination or stack of other great products. It allows you to quickly build and iterate over your smart contracts and frontends. It leverages:
+Designed to be as simple and straightforward as possible, especially for the average joe viewing the token on etherscan!
 
-- Hardhat for running local networks, deploying and testing smart contracts.
-- React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. But can be easily changed to Bootstrap or some other library you prefer.
-- Surge for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative and more!
-- Support for L2 / Sidechains like Optimism and Arbitrum.
+This example of the NFT stores a simple string at the top of the contract and contains a single tokenId (the example lists it as one but it could be whatever). 
 
-# Installation and setup
+## 🤔 But why is this cool?
 
-⚠️ First, make sure you have: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+It reduces the amount of functions for the NFT to only provide what is neccessary for it to comply with the standard, leading to an easier to read contract and a better understanding of what is going on behind the scenes.
+
+# 🏄‍♂️ Quick Start
+
+Prerequisites: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
+> clone/fork 🏗 this scaffold-eth repo:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-cd scaffold-eth
+git clone https://github.com/MercuricChloride/MvpNft.git 
+```
+
+> install and start your 👷‍ Hardhat chain:
+
+```bash
+cd MvpNft 
 yarn install
 yarn chain
 ```
 
-> in a second terminal window:
+> in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd MvpNft 
 yarn start
 ```
 
-> in a third terminal window:
+> in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd MvpNft 
 yarn deploy
 ```
 
-If everything goes smoothly you should now have a local network running, with the starter contracts deployed and the frontend React app running on https://localhost:3000.
+🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
-# Documentation
+Change what string is stored on the contract!
 
-For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+Check out how easy it is to see whats going on behind the scenes in the etherscan contract!
+
+📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+
+💼 Edit your deployment scripts in `packages/hardhat/deploy`
+
+📱 Open http://localhost:3000 to see the app
+
+# 🏗 Scaffold-ETH
+
+> everything you need to build on Ethereum! 🚀
+
+🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+
+![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+
+
+
+# 📚 Documentation
+
+Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
+
+# 🔭 Learning Solidity
+
+📕 Read the docs: https://docs.soliditylang.org
+
+📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+
+- [Primitive Data Types](https://solidity-by-example.org/primitives/)
+- [Mappings](https://solidity-by-example.org/mapping/)
+- [Structs](https://solidity-by-example.org/structs/)
+- [Modifiers](https://solidity-by-example.org/function-modifier/)
+- [Events](https://solidity-by-example.org/events/)
+- [Inheritance](https://solidity-by-example.org/inheritance/)
+- [Payable](https://solidity-by-example.org/payable/)
+- [Fallback](https://solidity-by-example.org/fallback/)
+
+📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
+
+# 🛠 Buidl
+
+Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+
 
 # 💬 Support Chat
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+
+---
+
+🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
+
+- Hardhat for your local blockchain, deploying, and testing smart contracts.
+- React for building a frontend, using many useful pre-made components and hooks.
+- Ant for your UI. (You can easily changed to another library you prefer)
+- Surge / S3 / IPFS for publishing your app.
+- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
+- Support for L2 / Sidechains like Optimism and Arbitrum.
+
+---
+
+🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
