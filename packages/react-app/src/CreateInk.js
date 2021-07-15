@@ -570,33 +570,26 @@ return (
     }
   }*/>
     {
-      portrait
-      ?
       <>
-        <div className="title-top">
+        {portrait&&<div className="title-top">
           {top}
-        </div>
+        </div>}
         <div className="canvas">
           {canvas}
         </div>
-        <div className="edit-tools-bottom">
-        {bottom}
-        </div>
-      </>
-      :
-      <>
-        <div className="canvas">
-          {canvas}
-        </div>
-        <div className="edit-tools">
-          {top}
-          <div className="edit-tools-side">
+        {portrait
+        ? <div className="edit-tools-bottom">
             {bottom}
+            </div>
+        : <div className="edit-tools">
+            {top}
+            <div className="edit-tools-side">
+              {bottom}
+            </div>
           </div>
-        </div>
+        }
       </>
     }
-
   </div>
 );
 }
