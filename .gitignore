@@ -34,6 +34,8 @@ packages/hardhat/deployments
 ## Frontend Files ##
 # testing
 packages/frontend/coverage
+packages/react-app
+packages/subgraph
 # next.js
 packages/frontend/.next/
 packages/frontend/out/
