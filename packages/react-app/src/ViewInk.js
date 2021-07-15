@@ -448,30 +448,28 @@ const clickAndSave = (
                         <Link to={{ pathname: `https://blockscout.com/xdai/mainnet/tx/${transfer.transactionHash}` }} target="_blank" rel="noopener noreferrer">
                           { (transfer.sale && transfer.sale.id)
                             ? "Purchase"
-                            : (transfer.from === "0x0000000000000000000000000000000000000000")
-                            ? "Mint"
-                            : (transfer.to === "0x0000000000000000000000000000000000000000" || transfer.to === "0x000000000000000000000000000000000000dead")
+                            : (transfer.to.id=== "0x0000000000000000000000000000000000000000" || transfer.to.id=== "0x000000000000000000000000000000000000dead")
                             ? "Burn"
-                            : (transfer.to === "0x73ca9c4e72ff109259cf7374f038faf950949c51")
+                            : (transfer.from.id=== "0x0000000000000000000000000000000000000000")
+                            ? "Mint"
+                            : (transfer.to.id=== "0x73ca9c4e72ff109259cf7374f038faf950949c51")
                             ? "Upgrade"
                             : "Transfer"}
                         </Link>
                         </span>
                       <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
-                          {transfer.from === "0x0000000000000000000000000000000000000000" ?
+                          {transfer.from.id=== "0x0000000000000000000000000000000000000000" ?
                             null
                           :
-                            <Link to={`/holdings/${transfer.from}`}>
-                              <Address value={transfer.from} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+                            <Link to={`/holdings/${transfer.from.id}`}>
+                              <Address value={transfer.from.id} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
                             </Link>
                           }
                         </span>
                       <span style={{flexBasis: "25%", flexGrow: "1"}} className="token-transfer-table-address">
-                          {transfer.to === "0x0000000000000000000000000000000000000000" ?
-                            <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={true} notCopyable={true}/>
-                          :
-                            <Link to={`/holdings/${transfer.to}`}>
-                              <Address value={transfer.to} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+                          {
+                            <Link to={`/holdings/${transfer.to.id}`}>
+                              <Address value={transfer.to.id} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
                             </Link>
                           }
                       </span>
@@ -515,9 +513,19 @@ const clickAndSave = (
       <div>
         <Row style={{ width: "90vmin", margin: "0 auto", marginTop:"1vh", justifyContent:'center'}}>
 
-          <Typography.Text style={{color:"#222222"}} copyable={{ text: inkJson?inkJson.external_url:''}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
-          <a href={'/' + hash} style={{color:"#222222"}}>{inkJson?inkJson.name:<Spin/>}</a>
+          {(data&&data.ink.burned)?<Typography.Text style={{color:"#222222"}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+            <span
+              role="img"
+              aria-label="Fire"
+            >
+              🔥🔥This ink has been burned🔥🔥
+            </span>
           </Typography.Text>
+          :
+          <Typography.Text style={{color:"#222222"}} copyable={{ text: inkJson?inkJson.external_url:''}} style={{verticalAlign:"middle",paddingLeft:5,fontSize:28}}>
+            <a href={'/' + hash} style={{color:"#222222"}}>{inkJson?inkJson.name:<Spin/>}</a>
+          </Typography.Text>
+        }
 
           <Button style={{marginTop:4,marginLeft:4}} onClick={() => {
             setDrawingSize(0)
