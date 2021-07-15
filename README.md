@@ -6,11 +6,10 @@
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
 
 ```
-git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
+git clone --branch simple-nft-example git@github.com:bertux/scaffold-eth.git simple-nft-example
 ```
 ```
 cd simple-nft-example
-git checkout simple-nft-example
 yarn install
 yarn start
 ```
