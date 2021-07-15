@@ -51,12 +51,14 @@ export default function ForSale(props) {
   let [inkFilters, setInkFilters] = useState({
     createdAt_gt: startDate.unix(),
     createdAt_lt: endDate.unix(),
+    burned: false
   })
 
   useEffect(() => {
     let _newFilters = {
       createdAt_gt: startDate.unix(),
       createdAt_lt: endDate.unix(),
+      burned: false
     }
     if(forSale=="for-sale") {
       _newFilters.bestPrice_gt =  "0"

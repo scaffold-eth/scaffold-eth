@@ -53,7 +53,7 @@ export default function Holdings(props) {
   const [mainInksQuery, { loading: loadingMainInks, error: errorMainInks, data: dataMainInks }] = useLazyQuery(HOLDINGS_MAIN_INKS_QUERY)
 
   const { loading, error, data: dataRaw } = useQuery(HOLDINGS_QUERY, {
-    variables: { owner: address },
+    variables: { owner: address.toLowerCase() },
     pollInterval: 4000
   });
 

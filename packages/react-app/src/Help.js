@@ -1,5 +1,5 @@
 import React from "react";
-import { Row, Divider } from "antd";
+import { Row, Divider, Table } from "antd";
 
 export default function Help() {
   return(
@@ -69,6 +69,31 @@ export default function Help() {
     <p>You can upgrade your inks from xDai to the Ethereum mainnet via the <a href="https://docs.tokenbridge.net/amb-bridge/about-amb-bridge">Tokenbridge</a>. It will then be available to hold in your mainnet wallet or trade on mainnet NFT marketplaces.</p>
     <p>The cost to do this is based on the gas fee associated with minting your Nifty NFT on mainnet</p>
     <p><b>Note that this is a one-way door - it is not possible to bring your NFT back to xDai once it has been upgraded</b></p>
+    <Divider />
+    <Row>
+      <h2 style={{fontWeight: "bold"}}>Keyboard shortcuts</h2>
+      <p>The following keyboard shortcuts are available while drawing on canvas:</p>
+      <Table
+        columns={[
+          {title: 'Hotkey', dataIndex: 'shortcut'},
+          {title: 'Action', dataIndex: 'action'}
+        ]}
+        dataSource={[
+          {key: '1', shortcut: 'Ctrl+z', action: "Undo"},
+          {key: '2', shortcut: ']', action: "Increase brush size by 1"},
+          {key: '3', shortcut: 'Shift+]', action: "Increase brush size by 10"},
+          {key: '4', shortcut: '[', action: "Decrease brush size by 1"},
+          {key: '5', shortcut: 'Shift+[', action: "Decrease brush size by 10"},
+          {key: '6', shortcut: '> ', action: "Increase current color opacity by 1%"},
+          {key: '7', shortcut: 'Shift+> ', action: "Increase current color opacity by 10%"},
+          {key: '8', shortcut: '<', action: "Decrease current color opacity by 1%"},
+          {key: '9', shortcut: 'Shift+< ', action: "Decrease current color opacity by 10%"}
+        ]}
+        size="small"
+        pagination={false}
+        style={{flexGrow: "1"}}
+      />
+    </Row>
     </div>
   )
 }
