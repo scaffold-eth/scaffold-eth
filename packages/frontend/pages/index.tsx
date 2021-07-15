@@ -28,15 +28,15 @@ type StateType = {
 type ActionType =
   | {
       type: 'SET_GREETING'
-      greeting: string
+      greeting: StateType['greeting']
     }
   | {
       type: 'SET_INPUT_VALUE'
-      inputValue: string
+      inputValue: StateType['inputValue']
     }
   | {
       type: 'SET_LOADING'
-      isLoading: boolean
+      isLoading: StateType['isLoading']
     }
 
 /**

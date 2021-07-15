@@ -5,6 +5,7 @@
 - [Next.js](https://nextjs.org)
 - [Typescript](https://www.typescriptlang.org/)
 - [Hardhat](https://hardhat.org/)
+- [TypeChain](https://github.com/ethereum-ts/TypeChain)
 - [Ethers.js](https://docs.ethers.io/v5/)
 - [useDApp](https://usedapp.io/)
 - [Chakra UI](https://chakra-ui.com/)
