@@ -20,6 +20,19 @@ export const ARTISTS_QUERY = gql`
         }
       }
     }
+    users(where:{address: $address}){
+      lastLikeAt
+      lastPurchaseAt
+      lastInkAt
+      createdAt
+      transfersFrom  (first: 1, orderBy: createdAt, orderDirection: desc, where: {sale: null}){
+        createdAt
+        sale {price}
+      }
+      likeCount
+      purchaseCount
+      saleCount
+    }    
   }
 `;
 
@@ -196,4 +209,32 @@ export const HOLDINGS_MAIN_INKS_QUERY = gql`
       }
     }
   }
+`;
+
+export const ARTIST_RECENT_ACTIVITY_QUERY = gql`
+query users($createdAt: Int, $address: String, $skipLikes: Int, $skipPurchases: Int, $skipInks: Int, $skipTransfers: Int,) {
+  users(where:{address: $address}){
+    lastLikeAt
+    lastPurchaseAt
+    lastTransferAt
+    lastInkAt
+    createdAt
+    purchases (skip: $skipPurchases, orderBy: createdAt, orderDirection: desc, where: {createdAt_gt: $createdAt}){
+      ink {id, jsonUrl}
+      createdAt
+    }
+    likes (skip: $skipLikes, orderBy: createdAt, orderDirection: desc, where: {createdAt_gt: $createdAt}) {
+      ink {id, jsonUrl}
+      createdAt
+    }
+    transfersFrom (skip: $skipTransfers, orderBy: createdAt, orderDirection: desc, where: {createdAt_gt: $createdAt, sale: null}) {
+      ink {id, jsonUrl}
+      to {address}
+      createdAt
+    }
+    artist {
+      inks (skip: $skipInks, orderBy: createdAt, orderDirection: desc, where: {createdAt_gt: $createdAt}) {id, jsonUrl, createdAt}
+    }
+  }
+}
 `;
