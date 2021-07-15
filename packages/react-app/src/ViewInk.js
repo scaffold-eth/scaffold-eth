@@ -333,13 +333,13 @@ const clickAndSave = (
 
           return (
             <List.Item>
-              <Link to={`/holdings/${mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner}`}>
-              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
+              <Link to={`/holdings/${mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner.id}`}>
+              <Address value={mainnetTokens[item.id]?mainnetTokens[item.id]:item.owner.id} ensProvider={props.mainnetProvider} clickable={false} notCopyable={true}/>
               </Link>
               <a style={{padding:8,fontSize:32}} href={"https://blockscout.com/poa/xdai/tokens/0xCF964c89f509a8c0Ac36391c5460dF94B91daba5/instance/"+item.id} target="_blank"><LinkOutlined /></a>
               {mainnetTokens[item.id]?openseaButton:(item.network === 'mainnet'?(<Typography.Title level={4} style={{marginLeft:16}}>Upgrading to Ethereum <SyncOutlined spin /></Typography.Title>):<></>)}
-              {sendInkButton(item.owner, item.id)}
-              {relayTokenButton(item.network === 'mainnet', item.owner, item.id)}
+              {sendInkButton(item.owner.id, item.id)}
+              {relayTokenButton(item.network === 'mainnet', item.owner.id, item.id)}
               <div style={{marginLeft:4,marginTop:4}}>
               <NiftyShop
               injectedProvider={props.injectedProvider}
@@ -349,7 +349,7 @@ const clickAndSave = (
               itemForSale={item.id}
               gasPrice={props.gasPrice}
               address={props.address?props.address.toLowerCase():null}
-              ownerAddress={item.owner}
+              ownerAddress={item.owner.id}
               price={item.price}
               visible={!(item.network === 'mainnet')}
               transactionConfig={props.transactionConfig}

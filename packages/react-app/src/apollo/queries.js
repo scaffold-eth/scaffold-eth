@@ -102,7 +102,7 @@ export const HOLDINGS_QUERY = gql`
       value
     }
     tokens(first: 999, where: { owner: $owner }, orderBy: createdAt, orderDirection: desc) {
-      owner
+      owner { id }
       id
       price
       ink {
@@ -143,7 +143,7 @@ query ink($inkUrl: String!, $liker: String) {
     }
     tokens(first: 999, orderBy: createdAt, orderDirection: asc) {
       id
-      owner
+      owner { id }
       network
       price
     }

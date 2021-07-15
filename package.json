@@ -54,7 +54,6 @@
     "deploy-paymaster": "cd packages/buidler && npx buidler run scripts/deploy-paymaster.js --network xdai"
   },
   "devDependencies": {
-    "@babel/helper-skip-transparent-expression-wrappers": "^7.14.5",
     "@nomiclabs/buidler": "^1.3.3",
     "@nomiclabs/buidler-ethers": "2.0.0",
     "@nomiclabs/buidler-truffle5": "^1.3.3",
