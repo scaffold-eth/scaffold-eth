@@ -16,6 +16,24 @@ constructor(address _ogNFT) {
   ogNFT = _ogNFT;
 }
 */
+
+function hasMintedNFT(uint _tokenId) public view returns(bool){
+  return hasMinted[_tokenId];
+}
+
+function mintNFT(uint _tokenId) public {
+require(ERC721(ogNFT).ownerOf(_tokenId) == msg.sender, "Msg.sender not owner of NFT!");
+require(ERC721(ogNFT).ownerOf(_tokenId) != address(0), "Invalid tokenId");
+require(hasMinted[_tokenId] == false, "NFT already minted for this ID!");
+emit Transfer(address(0), msg.sender, _tokenId);
+owner[_tokenId] = msg.sender;
+balances[msg.sender]++;
+hasMinted[_tokenId] = true;
+}
+
+function tokenURI(uint _tokenId) public pure returns(string memory) {
+return string(abi.encodePacked("https://samplehostingservice/ConditonalNFT/"));
+}
 function isContract(address addr) public view returns(bool) {
 uint size;
 assembly { size := extcodesize(addr) }
@@ -36,6 +54,8 @@ require(_from == owner[_tokenId] && _from != address(0));
 if(isContract(_to)) {
   if(ERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, data) == 0x150b7a02) {
     emit Transfer(_from, _to, _tokenId);
+    balances[_from]--;
+    balances[_to]++;
     approved[_tokenId] = address(0);
     owner[_tokenId] = _to;
   } else {
@@ -43,6 +63,8 @@ if(isContract(_to)) {
   }
 } else {
     emit Transfer(_from, _to, _tokenId);
+    balances[_from]--;
+    balances[_to]++;
     approved[_tokenId] = address(0);
     owner[_tokenId] = _to;
 }
@@ -54,6 +76,8 @@ require(_from == owner[_tokenId] && _from != address(0));
 if(isContract(_to)) {
   if(ERC721TokenReceiver(_to).onERC721Received(msg.sender, _from, _tokenId, "") == 0x150b7a02) {
     emit Transfer(_from, _to, _tokenId);
+    balances[_from]--;
+    balances[_to]++;
     approved[_tokenId] = address(0);
     owner[_tokenId] = _to;
   } else {
@@ -61,6 +85,8 @@ if(isContract(_to)) {
   }
 } else {
     emit Transfer(_from, _to, _tokenId);
+    balances[_from]--;
+    balances[_to]++;
     approved[_tokenId] = address(0);
     owner[_tokenId] = _to;
 }
@@ -70,6 +96,8 @@ function transferFrom(address _from, address _to, uint256 _tokenId) external ove
 require(msg.sender == owner[_tokenId] || approved[_tokenId] == msg.sender || operatorList[owner[_tokenId]][msg.sender] ==  true, "Msg.sender not allowed to transfer this NFT!");
 require(_from == owner[_tokenId] && _from != address(0));
 emit Transfer(_from, _to, _tokenId);
+balances[_from]--;
+balances[_to]++;
 approved[_tokenId] = address(0);
 owner[_tokenId] = _to;
 }
