@@ -412,7 +412,7 @@ export default function NftyWallet(props) {
           </div>
         }
       >
-      <Help/>
+      <Help injectedProvider={props.injectedProvider} />
       {process.env.REACT_APP_NETWORK_NAME ? (
         ""
       ) : (
