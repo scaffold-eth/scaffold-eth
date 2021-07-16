@@ -1,16 +1,17 @@
-pragma solidity >=0.8.0 <0.9.0;
+pragma solidity >=0.6.11 < 0.9.0;
 //SPDX-License-Identifier: MIT
 
 //import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./Verifier_init.sol";
 
-contract YourContract {
+contract YourContract is Verifier {
 
   //event SetPurpose(address sender, string purpose);
 
   string public purpose = "Building Unstoppable Apps";
 
-  constructor() {
+  constructor() public {
     // what should we do on deploy?
   }
 
