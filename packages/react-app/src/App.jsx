@@ -407,6 +407,7 @@ function App(props) {
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
+              localProvider={localProvider}
             />
           </Route>
         </Switch>
