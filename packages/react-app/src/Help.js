@@ -16,7 +16,7 @@ const addXDAItoMetamask = async (props) => {
           "symbol": "xDAI",
           "decimals": 18
         },
-        blockExplorerUrls: ["https://blockscout.com/poa/xdai/"]
+        blockExplorerUrls: ["https://blockscout.com/xdai/mainnet"]
       }],
     });
     } catch (error) {
