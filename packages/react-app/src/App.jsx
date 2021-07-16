@@ -394,7 +394,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="ConditionalNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}

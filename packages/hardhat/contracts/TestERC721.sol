@@ -10,6 +10,11 @@ contract TestERC721 is ERC165, ERC721 {
     mapping(address => uint256) public balances;
     mapping(uint256 => bool) hasMinted;
 
+    constructor() {
+        owner[69] = 0xC9FFEe9e34723d882CB97a6c056100661d00Bfe1;
+        owner[420] = 0xC9FFEe9e34723d882CB97a6c056100661d00Bfe1;
+    }
+
     function isContract(address addr) public view returns (bool) {
         uint256 size;
         assembly {

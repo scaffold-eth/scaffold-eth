@@ -11,11 +11,11 @@ contract ConditionalNFT is ERC165, ERC721 {
     mapping(address => uint256) public balances;
     mapping(uint256 => bool) hasMinted;
 
-    /*
+
     constructor(address _ogNFT) {
       ogNFT = _ogNFT;
     }
-    */
+ 
 
     function uint2str(uint256 _i) internal pure returns (string memory str) {
         if (_i == 0) {
