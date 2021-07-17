@@ -1,13 +1,14 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
+import buffer from "buffer";
 import React, { useCallback, useEffect, useState } from "react";
-import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
+import ReactJson from "react-json-view";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import {INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -23,7 +24,9 @@ import {
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
-const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+
+// const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+const ipfs = ipfsAPI({ host: "localhost", port: "5001" });
 
 const { ethers } = require("ethers");
 
@@ -93,8 +96,12 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -226,7 +233,8 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            const i = collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            console.log("i", i);
           } catch (e) {
             console.log(e);
           }
@@ -392,13 +400,17 @@ function App(props) {
 
   const [yourJSON, setYourJSON] = useState(STARTING_JSON);
   const [sending, setSending] = useState();
+  const [minting, setMinting] = useState();
   const [ipfsHash, setIpfsHash] = useState();
+  const [ipfsUrl, setIpfsUrl] = useState();
   const [ipfsDownHash, setIpfsDownHash] = useState();
 
   const [downloading, setDownloading] = useState();
   const [ipfsContent, setIpfsContent] = useState();
 
   const [transferToAddresses, setTransferToAddresses] = useState({});
+
+  const [selectedFile, setSelectedFile] = useState(null); // state for image uploader
 
   return (
     <div className="App">
@@ -425,6 +437,16 @@ function App(props) {
               to="/transfers"
             >
               Transfers
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/mint">
+            <Link
+              onClick={() => {
+                setRoute("/mint");
+              }}
+              to="/mint"
+            >
+              Mint
             </Link>
           </Menu.Item>
           <Menu.Item key="/ipfsup">
@@ -539,24 +561,121 @@ function App(props) {
             </div>
           </Route>
 
+          <Route path="/mint">
+            <div style={{ width: 1024, margin: "auto", marginTop: 32, paddingBottom: 32, display: "flex" }}>
+              <div style={{ paddingTop: 32, width: 240, flexShrink: 1, margin: "auto", textAlign: "left" }}>
+                <img
+                  src={ipfsUrl || "https://austingriffith.com/images/paintings/buffalo.jpg"}
+                  alt=""
+                  style={{ width: "100%" }}
+                />
+              </div>
+              <div style={{ flex: "1 0 " }}>
+                <Input
+                  type="file"
+                  onChange={e => {
+                    setSelectedFile(e.target.files[0]);
+                  }}
+                />
+
+                <Button
+                  style={{ margin: 8 }}
+                  loading={sending}
+                  size="large"
+                  shape="round"
+                  type="primary"
+                  onClick={async () => {
+                    console.log("UPLOADING...", selectedFile);
+                    setSending(true);
+                    setIpfsHash();
+                    setIpfsUrl();
+
+                    // const buf = buffer.Buffer(selectedFile); // Convert data into buffer
+                    try {
+                      const result = await ipfs.add([selectedFile], {
+                        progress: prog => console.log(`received: ${prog}`),
+                      });
+
+                      console.log("source", result);
+                      const path = result.path;
+                      const hash = path;
+                      const url = `https://ipfs.io/ipfs/${hash}`;
+                      console.log(`Url --> ${url}`);
+                      setIpfsHash(hash);
+                      setIpfsUrl(url);
+
+                      setYourJSON(json => ({ ...json, image: url }));
+
+                      setSending(false);
+
+                      console.log("RESULT:", result);
+                    } catch (e) {
+                      console.log("ERROR", e);
+                    }
+                  }}
+                >
+                  Upload to IPFS
+                </Button>
+
+                <div style={{ paddingTop: 32, width: "80%", overflow: "scroll", margin: "auto", textAlign: "left" }}>
+                  <ReactJson
+                    style={{ padding: 8 }}
+                    src={yourJSON}
+                    theme="pop"
+                    enableClipboard={false}
+                    onEdit={(edit, a) => {
+                      setYourJSON(edit.updated_src);
+                    }}
+                    onAdd={(add, a) => {
+                      setYourJSON(add.updated_src);
+                    }}
+                    onDelete={(del, a) => {
+                      setYourJSON(del.updated_src);
+                    }}
+                  />
+                </div>
+                <Button
+                  style={{ margin: 8 }}
+                  disabled={!ipfsHash}
+                  loading={minting}
+                  size="large"
+                  shape="round"
+                  type="primary"
+                  onClick={async () => {
+                    console.log("UPLOADING...", yourJSON);
+                    setMinting(true);
+
+                    const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
+
+                    if (result && result.path) {
+                      console.log("RESULT:", result);
+                      console.log("writeContracts", writeContracts);
+                      tx(writeContracts.YourCollectible.mintItem(address, result.path, { gasLimit: 400000 }));
+                    }
+                    setMinting(false);
+                  }}
+                >
+                  Mint NFT
+                </Button>
+              </div>
+            </div>
+          </Route>
+
           <Route path="/ipfsup">
             <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
-              <ReactJson
-                style={{ padding: 8 }}
-                src={yourJSON}
-                theme="pop"
-                enableClipboard={false}
-                onEdit={(edit, a) => {
-                  setYourJSON(edit.updated_src);
-                }}
-                onAdd={(add, a) => {
-                  setYourJSON(add.updated_src);
-                }}
-                onDelete={(del, a) => {
-                  setYourJSON(del.updated_src);
-                }}
+              <img
+                src={ipfsUrl || "https://austingriffith.com/images/paintings/buffalo.jpg"}
+                alt=""
+                style={{ width: "100%" }}
               />
             </div>
+
+            <Input
+              type="file"
+              onChange={e => {
+                setSelectedFile(e.target.files[0]);
+              }}
+            />
 
             <Button
               style={{ margin: 8 }}
@@ -565,15 +684,31 @@ function App(props) {
               shape="round"
               type="primary"
               onClick={async () => {
-                console.log("UPLOADING...", yourJSON);
+                console.log("UPLOADING...", selectedFile);
                 setSending(true);
                 setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.path) {
-                  setIpfsHash(result.path);
+                setIpfsUrl();
+
+                // const buf = buffer.Buffer(selectedFile); // Convert data into buffer
+                try {
+                  const result = await ipfs.add([selectedFile], {
+                    progress: prog => console.log(`received: ${prog}`),
+                  });
+
+                  console.log("source", result);
+                  const path = result.path;
+                  const hash = path;
+                  const url = `https://ipfs.io/ipfs/${hash}`;
+                  console.log(`Url --> ${url}`);
+                  setIpfsHash(hash);
+                  setIpfsUrl(url);
+
+                  setSending(false);
+
+                  console.log("RESULT:", result);
+                } catch (e) {
+                  console.log("ERROR", e);
                 }
-                setSending(false);
-                console.log("RESULT:", result);
               }}
             >
               Upload to IPFS
