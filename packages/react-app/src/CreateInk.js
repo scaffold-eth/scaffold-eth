@@ -31,7 +31,7 @@ export default function CreateInk(props) {
 
   const [fullDrawing, setFullDrawing] = useState()
   const [loaded, setLoaded] = useState(false)
-  const [loadedLines, setLoadedLines] = useState()
+  //const [loadedLines, setLoadedLines] = useState()
 
   const [drawingSaved, setDrawingSaved] = useState(true)
 
@@ -104,7 +104,7 @@ useEffect(() => {
   }
 
   const saveDrawing = (newDrawing, saveOverride) => {
-        if(!loadedLines || newDrawing.lines.length >= loadedLines) {
+        //if(!loadedLines || newDrawing.lines.length >= loadedLines) {
           if(saveOverride || newDrawing.lines.length < 100 || newDrawing.lines.length % 10 === 0) {
             console.log('saving')
             let savedData = LZ.compress(newDrawing.getSaveData())
@@ -113,7 +113,7 @@ useEffect(() => {
           } else {
             setDrawingSaved(false)
           }
-        }
+        //}
   }
 
   useEffect(() => {
@@ -138,7 +138,7 @@ useEffect(() => {
 
             console.log('Drawing points', JSON.parse(decompressed)['lines'].length, points)
             setDrawingSize(points)
-            setLoadedLines(JSON.parse(decompressed)['lines'].length)
+            //setLoadedLines(JSON.parse(decompressed)['lines'].length)
 
             //console.log(decompressed)
             //drawingCanvas.current.loadSaveData(decompressed, true)
@@ -439,7 +439,7 @@ if (props.mode === "edit") {
           title="Are you sure?"
           onConfirm={() => {
             drawingCanvas.current.clear()
-            setLoadedLines()
+            //setLoadedLines()
             props.setDrawing()
           }}
           okText="Yes"
@@ -540,9 +540,9 @@ if (props.mode === "edit") {
   )
 
   canvas = (
-    <div 
-      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }} 
-      onClick={() => saveDrawing(drawingCanvas.current, true)}
+    <div
+      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}
+      onClick={() => saveDrawing(drawingCanvas.current, false)}
     >
           {(!loaded)&&<span>Loading...</span>}
           <CanvasDraw
