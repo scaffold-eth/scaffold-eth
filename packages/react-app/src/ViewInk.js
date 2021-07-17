@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from 'react'
 import { Link, useParams } from "react-router-dom";
 import { ethers } from "ethers"
 import { Row, Popover, Button, List, Form, Typography, Spin, Space, Descriptions, notification, message, Badge, Skeleton, InputNumber, Input, Tabs } from 'antd';
-import { AddressInput, Address } from "./components"
+import { AddressInput, Address, Loader } from "./components"
 import { SendOutlined, QuestionCircleOutlined, RocketOutlined, StarTwoTone, LikeTwoTone, ShoppingCartOutlined, ShopOutlined, SyncOutlined, LinkOutlined, PlaySquareOutlined } from '@ant-design/icons';
 import { useContractLoader, usePoller } from "./hooks"
 import { Transactor, getFromIPFS, getSignature, transactionHandler } from "./helpers"
@@ -34,7 +34,10 @@ export default function ViewInk(props) {
   const drawingCanvas = useRef(null);
   const [canvasKey, setCanvasKey] = useState(Date.now());
   const [size, setSize] = useState([0.8 * props.calculatedVmin, 0.8 * props.calculatedVmin])//["70vmin", "70vmin"]) //["50vmin", "50vmin"][750, 500]
-  const [drawingSize, setDrawingSize] = useState(0)
+  const [drawingSize, setDrawingSize] = useState(10000)
+  const drawnLines = useRef([])
+  const totalLines = useRef([])
+  const [canvasState, setCanvasState] = useState('downloading')
 
   const [holders, setHolders] = useState(<Spin/>)
   const [minting, setMinting] = useState(false)
@@ -246,24 +249,40 @@ const clickAndSave = (
     const showDrawing = async () => {
     if (hash) {
       let tIpfsConfig = {...props.ipfsConfig}
-      tIpfsConfig['timeout'] = 10000
+      tIpfsConfig['timeout'] = 100000
       let drawingContent
       try {
+        console.log(`fetching from ipfs ${new Date().toISOString()}`)
         drawingContent = await getFromIPFS(hash, tIpfsConfig)
+        console.log(`received from ipfs ${new Date().toISOString()}`)
       } catch (e) { console.log("Loading error:",e)}
       try{
+        setCanvasState('decompressing')
+        console.log(`stitching ${new Date().toISOString()}`)
         const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
+        console.log(`decompressing ${new Date().toISOString()}`)
         let decompressed = LZ.decompressFromUint8Array(arrays)
         //console.log(decompressed)
 
+        console.log(`finding length ${new Date().toISOString()}`)
         let points = 0
         for (const line of JSON.parse(decompressed)['lines']){
           points = points + line.points.length
         }
 
-        console.log('Drawing points', points)
+        console.log(`saving ${new Date().toISOString()}`)
+        setCanvasState('ready')
         setDrawingSize(points)
-        setDrawing(decompressed)
+        totalLines.current = JSON.parse(decompressed)['lines'].length
+        if(points < 10000) {
+          console.log('trying to load save data')
+          drawingCanvas.current.loadSaveData(decompressed, false)
+          setDrawing(decompressed)
+        } else {
+          console.log('just saving the drawing')
+          setDrawing(decompressed)
+        }
+        console.log(`done ${new Date().toISOString()}`)
 
       }catch(e){console.log("Drawing Error:",e)}
     }
@@ -378,7 +397,7 @@ const clickAndSave = (
           )
 
         likeButtonDisplay = (
-          <div style={{marginRight:-props.calculatedVmin*0.8,marginTop:-20}}>
+          <div style={{marginLeft:props.calculatedVmin*0.8,marginTop:-20}}>
             <LikeButton
               metaProvider={props.metaProvider}
               metaSigner={props.metaSigner}
@@ -527,10 +546,11 @@ const clickAndSave = (
           </Typography.Text>
         }
 
-          <Button style={{marginTop:4,marginLeft:4}} onClick={() => {
+          <Button loading={canvasState!=='ready'} disabled={canvasState!=='ready'} style={{marginTop:4,marginLeft:4}} onClick={() => {
             setDrawingSize(0)
             drawingCanvas.current.loadSaveData(drawing, false)
-          }}><PlaySquareOutlined /> PLAY</Button>
+            setCanvasState('drawing')
+          }}><PlaySquareOutlined /> {canvasState==='ready'?'PLAY':canvasState}</Button>
 
           {(data&&data.ink&&props.address.toLowerCase()==data.ink.artist.id)&&<Button style={{marginTop:4,marginLeft:4}} onClick={() => {
             let _savedData = LZ.compress(drawing)
@@ -547,26 +567,39 @@ const clickAndSave = (
 
     )
 
-  return (
-    <div style={{textAlign:"center"}}>
-    {top}
-    <div style={{ backgroundColor: "#666666", width: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
-    {(!drawing)&&<span>Loading...</span>}
-    <CanvasDraw
-    key={canvasKey}
-    ref={drawingCanvas}
-    canvasWidth={size[0]}
-    canvasHeight={size[1]}
-    lazyRadius={4}
-    disabled={true}
-    hideGrid={true}
-    hideInterface={true}
-    saveData={drawing}
-    immediateLoading={drawingSize >= 10000}
-    loadTimeOffset={3}
-    />
-    </div>
-    {bottom}
-    </div>
-  )
+    return (
+      <div style={{textAlign:"center"}}>
+      {top}
+      <div style={{ backgroundColor: "#666666", width: size[0], height: size[0], margin: "0 auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+      <div style={{position: "relative"}}>
+      {(drawingSize >= 10000)&&<div style={{width:"100%", position: "absolute", zIndex: 90, margin: 'auto' }}>
+        {inkJson.image?<img width="100%" height="100%" src={inkJson.image} />:<Loader/>}
+      </div>}
+      <div style={{ width: "100%", height:"100%", position: "absolute" }}>
+      {<CanvasDraw
+        key={canvasKey}
+        ref={drawingCanvas}
+        canvasWidth={size[0]}
+        canvasHeight={size[1]}
+        lazyRadius={4}
+        disabled={true}
+        hideGrid={true}
+        hideInterface={true}
+        //saveData={drawing}
+        immediateLoading={drawingSize >= 10000}
+        loadTimeOffset={3}
+        onChange={()=>{
+          drawnLines.current = drawingCanvas.current.lines.length
+          if (drawnLines.current>=totalLines.current && canvasState!=='ready') {
+            console.log('enabling it!')
+            setCanvasState('ready')
+          }
+        }}
+        />}
+      </div>
+      </div>
+      </div>
+      {bottom}
+      </div>
+    )
   }
