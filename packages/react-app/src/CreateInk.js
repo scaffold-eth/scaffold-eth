@@ -10,7 +10,6 @@ import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
 import { useHotkeys } from 'react-hotkeys-hook';
-import "./App.css"
 
 const Hash = require('ipfs-only-hash')
 const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
@@ -435,12 +434,24 @@ if (props.mode === "edit") {
 
       <div style={{marginTop: 16}}>
         <Tooltip title="save to local storage">
-          <Button onClick={() => saveDrawing(drawingCanvas.current, true)}><SaveOutlined /> {`${!drawingSaved?'SAVE *':'SAVED'}`}</Button>
+          <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+          onClick={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
+            saveDrawing(drawingCanvas.current, true)
+          }}><SaveOutlined /> {`${!drawingSaved?'SAVE *':'SAVED'}`}</Button>
         </Tooltip>
-        <Button onClick={() => undo()}><UndoOutlined /> UNDO</Button>
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+          onClick={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
+          undo()
+        }}><UndoOutlined /> UNDO</Button>
         <Popconfirm
           title="Are you sure?"
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
           onConfirm={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
             drawingCanvas.current.clear()
             //setLoadedLines()
             props.setDrawing()
@@ -448,12 +459,17 @@ if (props.mode === "edit") {
           okText="Yes"
           cancelText="No"
         >
-        <Button><ClearOutlined /> CLEAR</Button>
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+        ><ClearOutlined /> CLEAR</Button>
         </Popconfirm>
-        <Button onClick={() => {
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length} 
+          onClick={() => {
+          if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
           drawingCanvas.current.loadSaveData(drawingCanvas.current.getSaveData(),false)//LZ.decompress(props.drawing), false)
           setCanvasDisabled(true)
-        }}><PlaySquareOutlined /> PLAY</Button>
+          }}><PlaySquareOutlined /> PLAY</Button>
       </div>
     </div>
 
