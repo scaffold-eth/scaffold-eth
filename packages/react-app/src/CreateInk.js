@@ -305,6 +305,7 @@ const triggerOnChange = (lines) => {
   //setLoadedLines(lines.length)
   //setFullDrawing(saved)
   drawingCanvas.current.lines = lines;
+  saveDrawing(drawingCanvas.current, true);
 };
 
 const undo = () => {
@@ -539,7 +540,10 @@ if (props.mode === "edit") {
   )
 
   canvas = (
-    <div style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+    <div 
+      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }} 
+      onClick={() => saveDrawing(drawingCanvas.current, true)}
+    >
           {(!loaded)&&<span>Loading...</span>}
           <CanvasDraw
           key={props.mode+""+props.canvasKey}
@@ -552,7 +556,7 @@ if (props.mode === "edit") {
         //  disabled={props.mode !== "edit"}
         //  hideGrid={props.mode !== "edit"}
         //  hideInterface={props.mode !== "edit"}
-          onChange={saveDrawing}
+        //  onChange={saveDrawing}
           saveData={fullDrawing}
           immediateLoading={true}//drawingSize >= 10000}
           loadTimeOffset={3}
