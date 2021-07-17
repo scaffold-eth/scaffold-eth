@@ -561,7 +561,7 @@ if (props.mode === "edit") {
           canvasWidth={size[0]}
           canvasHeight={size[1]}
           brushColor={color}
-          lazyRadius={3}
+          lazyRadius={1}
           brushRadius={brushRadius}
           disabled={canvasDisabled}
         //  hideGrid={props.mode !== "edit"}
