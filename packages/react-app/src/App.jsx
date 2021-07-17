@@ -169,6 +169,8 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
+  const transferEvent = useEventListener(readContracts, "ConditionalNFT", "Transfer", localProvider, 1);
+
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
@@ -408,6 +410,8 @@ function App(props) {
               mainnetProvider={mainnetProvider}
               price={price}
               localProvider={localProvider}
+              writeContracts={writeContracts}
+              tx={tx}
             />
           </Route>
         </Switch>

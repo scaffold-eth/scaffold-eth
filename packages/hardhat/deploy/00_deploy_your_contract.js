@@ -6,7 +6,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("ConditionalNFT", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: ['0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9'],
+    args: ['0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512'],
     log: true,
   });
   await deploy("TestERC721", {

@@ -1,14 +1,14 @@
 /* eslint-disable jsx-a11y/accessible-emoji */
 
 import { utils } from "ethers";
-import { Card, Row, Col, Select } from "antd";
+import { Button, Input, Card, Row, Col, Select, Form } from "antd";
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
 import { useTokenList, useContractLoader, useContractReader } from "../hooks";
 
 const { Option } = Select;
 
-export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address }) {
+export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts }) {
   // Get a list of tokens from a tokenlist -> see tokenlists.org!
   const [selectedToken, setSelectedToken] = useState("Pick a token!");
   const listOfTokens = useTokenList(
@@ -16,6 +16,12 @@ export default function Hints({ localProvider, yourLocalBalance, mainnetProvider
   );
   const readContracts = useContractLoader(localProvider);
   const ogNFT = useContractReader(readContracts,"ConditionalNFT", "ogNFT")
+  const [tokenId, setTokenId] = useState("...");
+
+  
+  function onFinish() {
+    tx(writeContracts.ConditionalNFT.mintNFT(tokenId));
+  }
 
   return (
     <div>
@@ -32,12 +38,24 @@ export default function Hints({ localProvider, yourLocalBalance, mainnetProvider
               </Col>
               <Col span="8">
                 <Card title="NFT to be minted">
-
+                  <Form
+                  title="tokenId"
+                  onFinish={onFinish}>
+                    <Form.Item
+                    label="TokenId"
+                    title="TokenId">
+                      <Input onChange={(e) => setTokenId(e.target.value)} />
+                    </Form.Item>
+                    <Form.Item>
+                      <Button type="primary" htmlType="submit">
+                        Mint!
+                      </Button>
+                    </Form.Item>
+                  </Form>
                 </Card>
               </Col>
               <Col span="8">
                 <Card title="NFT MINTED">
-
                 </Card>
               </Col>
             </Row>

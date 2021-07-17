@@ -1,11 +1,8 @@
-# 🏗 Scaffold-ETH
+# 🤖 Conditional Mint NFT
 
-> everything you need to build on Ethereum! 🚀
+An ERC721 contract that allows users to mint an NFT once and only once for an existing NFT they own. (IE allow a meebit owner to claim an NFT for their meebit)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
-
+>Built with scaffold-eth!
 
 # 🏄‍♂️ Quick Start
 
@@ -33,13 +30,16 @@ yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
+> It's important that before deployment you change the deploy script args to point toward an existing NFT contract on a network, or the example NFT supplied in this branch.
 
 ```bash
 cd scaffold-eth
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+✅ Try minting yourself a new NFT with the UI! What happens if you try to mint another one for the same tokenId?
+
+⛎ Try to mint an NFT with a tokenId that isn't yours, does it still mint? 
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
