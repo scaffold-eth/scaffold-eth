@@ -5,6 +5,7 @@ import { getSignature } from "./getSignature";
 import { default as Transactor } from "./Transactor";
 import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 import { DepositXDai } from '../components'
+import { addXDAItoMetamask } from './addToMetamask.js'
 const { Text } = Typography;
 
 export async function transactionHandler(c) {
@@ -20,8 +21,6 @@ export async function transactionHandler(c) {
         userAddress: c['address'],
       }).on('*', event => console.log(event)).show();
     }
-
-    try {
 
     function chainWarning(network, chainId) {
         Modal.warning({
@@ -44,6 +43,8 @@ export async function transactionHandler(c) {
         onOk() {},
       });
     }
+
+    try {
 
       let contractAddress = require("../contracts/"+c['contractName']+".address.js")
       let contractAbi = require("../contracts/"+c['contractName']+".abi.js")
@@ -100,8 +101,14 @@ export async function transactionHandler(c) {
             console.log("Regular RESULT!!!!!!",result)
           return result
         } else {
-          chainWarning()
-          throw {message: 'Got xDai, but Metamask is on the wrong network'}
+            if(c['injectedProvider'].connection && c['injectedProvider'].connection.url === "metamask") {
+                await addXDAItoMetamask({
+                  injectedProvider: c['injectedProvider']
+                })
+                throw { message: 'Switched networks' }
+            } else {
+              throw {message: 'Wrong network'}
+            }
         }
       }
       else if (process.env.REACT_APP_USE_GSN === 'true') {
@@ -151,8 +158,15 @@ export async function transactionHandler(c) {
           console.log("Fancy signature RESULT!!!!!!",result)
           return result
         } else if (injectedNetwork.chainId !== localNetwork.chainId) {
-          chainWarning()
-          throw {message: 'Metamask is on the wrong network'}
+
+          if(c['injectedProvider'].connection && c['injectedProvider'].connection.url === "metamask") {
+              await addXDAItoMetamask({
+                injectedProvider: c['injectedProvider']
+              })
+              throw { message: 'Switched networks' }
+          } else {
+            throw {message: 'Wrong network'}
+          }
         } else {
             showXDaiModal()
             throw {message: 'Need XDai'}
@@ -165,7 +179,17 @@ export async function transactionHandler(c) {
 
     } catch(e) {
       console.log(e)
-      if(e.message.indexOf("Relay not ready")>=0){
+      if(e.message.indexOf("Wrong network")>=0) {
+        chainWarning()
+      }
+      else if(e.message.indexOf("Switched networks")>=0) {
+        notification.open({
+          message: 'Please try again. 😅',
+          description:
+          "⏳ Nifty Ink is built on xDai: we tried to change your Metamask network, so please try again! Or click Help for more information.",
+        });
+      }
+      else if(e.message.indexOf("Relay not ready")>=0){
         notification.open({
           message: '📛 Sorry! Relay not ready. 😅',
           description:

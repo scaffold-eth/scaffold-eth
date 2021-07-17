@@ -10,7 +10,6 @@ import CanvasDraw from "react-canvas-draw";
 import { SketchPicker, CirclePicker, TwitterPicker, AlphaPicker } from 'react-color';
 import LZ from "lz-string";
 import { useHotkeys } from 'react-hotkeys-hook';
-import "./App.css"
 
 const Hash = require('ipfs-only-hash')
 const pickers = [CirclePicker, TwitterPicker, SketchPicker ]
@@ -29,9 +28,12 @@ export default function CreateInk(props) {
   const [sending, setSending] = useState()
   const [drawingSize, setDrawingSize] = useState(0)
 
-  const [fullDrawing, setFullDrawing] = useState()
+  const [initialDrawing, setInitialDrawing] = useState()
+  const currentLines = useRef([])
+  const drawnLines = useRef([])
+  const [canvasDisabled, setCanvasDisabled] = useState(false)
   const [loaded, setLoaded] = useState(false)
-  const [loadedLines, setLoadedLines] = useState()
+  //const [loadedLines, setLoadedLines] = useState()
 
   const [drawingSaved, setDrawingSaved] = useState(true)
 
@@ -39,9 +41,6 @@ export default function CreateInk(props) {
   const portraitCalc = (window.document.body.clientWidth / size[0])<portraitRatio
 
   const [portrait, setPortrait] = useState(portraitCalc)
-
-  // const clientHeight = window.document.body.clientHeight;
-  // const clientWidth = window.document.body.clientWidth;
 
   function debounce(fn, ms) {
   let timer
@@ -104,7 +103,8 @@ useEffect(() => {
   }
 
   const saveDrawing = (newDrawing, saveOverride) => {
-        if(!loadedLines || newDrawing.lines.length >= loadedLines) {
+          currentLines.current = newDrawing.lines
+        //if(!loadedLines || newDrawing.lines.length >= loadedLines) {
           if(saveOverride || newDrawing.lines.length < 100 || newDrawing.lines.length % 10 === 0) {
             console.log('saving')
             let savedData = LZ.compress(newDrawing.getSaveData())
@@ -113,7 +113,7 @@ useEffect(() => {
           } else {
             setDrawingSaved(false)
           }
-        }
+        //}
   }
 
   useEffect(() => {
@@ -131,18 +131,20 @@ useEffect(() => {
           console.log('Loading ink')
           try {
             let decompressed = LZ.decompress(props.drawing)
+            currentLines.current = JSON.parse(decompressed)['lines']
+
             let points = 0
-            for (const line of JSON.parse(decompressed)['lines']){
+            for (const line of currentLines.current){
               points = points + line.points.length
             }
 
-            console.log('Drawing points', JSON.parse(decompressed)['lines'].length, points)
+            console.log('Drawing points', currentLines.current.length, points)
             setDrawingSize(points)
-            setLoadedLines(JSON.parse(decompressed)['lines'].length)
+            //setLoadedLines(JSON.parse(decompressed)['lines'].length)
 
             //console.log(decompressed)
             //drawingCanvas.current.loadSaveData(decompressed, true)
-            setFullDrawing(decompressed)
+            setInitialDrawing(decompressed)
           } catch (e) {
             console.log(e)
           }
@@ -303,8 +305,9 @@ const triggerOnChange = (lines) => {
 
   drawingCanvas.current.loadSaveData(saved, true);
   //setLoadedLines(lines.length)
-  //setFullDrawing(saved)
+  //setInitialDrawing(saved)
   drawingCanvas.current.lines = lines;
+  saveDrawing(drawingCanvas.current, true);
 };
 
 const undo = () => {
@@ -431,24 +434,42 @@ if (props.mode === "edit") {
 
       <div style={{marginTop: 16}}>
         <Tooltip title="save to local storage">
-          <Button onClick={() => saveDrawing(drawingCanvas.current, true)}><SaveOutlined /> {`${!drawingSaved?'SAVE *':'SAVED'}`}</Button>
+          <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+          onClick={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
+            saveDrawing(drawingCanvas.current, true)
+          }}><SaveOutlined /> {`${!drawingSaved?'SAVE *':'SAVED'}`}</Button>
         </Tooltip>
-        <Button onClick={() => undo()}><UndoOutlined /> UNDO</Button>
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+          onClick={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
+          undo()
+        }}><UndoOutlined /> UNDO</Button>
         <Popconfirm
           title="Are you sure?"
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
           onConfirm={() => {
+            if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
             drawingCanvas.current.clear()
-            setLoadedLines()
+            //setLoadedLines()
             props.setDrawing()
           }}
           okText="Yes"
           cancelText="No"
         >
-        <Button><ClearOutlined /> CLEAR</Button>
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length}
+        ><ClearOutlined /> CLEAR</Button>
         </Popconfirm>
-        <Button onClick={() => {
+        <Button 
+          disabled={canvasDisabled||drawingCanvas.current&&!drawingCanvas.current.lines.length} 
+          onClick={() => {
+          if (canvasDisabled || drawingCanvas.current&&!drawingCanvas.current.lines) return;
           drawingCanvas.current.loadSaveData(drawingCanvas.current.getSaveData(),false)//LZ.decompress(props.drawing), false)
-        }}><PlaySquareOutlined /> PLAY</Button>
+          setCanvasDisabled(true)
+          }}><PlaySquareOutlined /> PLAY</Button>
       </div>
     </div>
 
@@ -538,8 +559,20 @@ if (props.mode === "edit") {
     </>
   )
 
+  const saveCanvas = () => {
+    if(canvasDisabled){
+      console.log("Canvas disabled")
+    } else {
+      saveDrawing(drawingCanvas.current, false)
+    }
+  }
+
   canvas = (
-    <div style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}>
+    <div
+      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA", cursor:'pointer' }}
+      onMouseUp={saveCanvas}
+      onTouchEnd={saveCanvas}
+    >
           {(!loaded)&&<span>Loading...</span>}
           <CanvasDraw
           key={props.mode+""+props.canvasKey}
@@ -547,13 +580,19 @@ if (props.mode === "edit") {
           canvasWidth={size[0]}
           canvasHeight={size[1]}
           brushColor={color}
-          lazyRadius={3}
+          lazyRadius={1}
           brushRadius={brushRadius}
-        //  disabled={props.mode !== "edit"}
+          disabled={canvasDisabled}
         //  hideGrid={props.mode !== "edit"}
         //  hideInterface={props.mode !== "edit"}
-          onChange={saveDrawing}
-          saveData={fullDrawing}
+          onChange={()=>{
+            drawnLines.current = drawingCanvas.current.lines
+            if (drawnLines.current.length>=currentLines.current.length && canvasDisabled) {
+              console.log('enabling it!')
+              setCanvasDisabled(false)
+            }
+          }}
+          saveData={initialDrawing}
           immediateLoading={true}//drawingSize >= 10000}
           loadTimeOffset={3}
           />

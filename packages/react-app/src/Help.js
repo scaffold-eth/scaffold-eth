@@ -1,47 +1,58 @@
 import React from "react";
-import { Row, Divider, Table } from "antd";
+import { Row, Divider, Table, Button, message } from "antd";
 
-export default function Help() {
+const addXDAItoMetamask = async (props) => {
+  if (props.injectedProvider.connection && props.injectedProvider.connection.url === "metamask") {
+    try {
+      await window.ethereum.request({
+        method: 'wallet_addEthereumChain',
+        params: [{ 
+        chainId: '0x64',
+        chainName: 'xDAI Chain',
+        rpcUrls: ["https://rpc.xdaichain.com"],
+        iconUrls:["https://gblobscdn.gitbook.com/spaces%2F-Lpi9AHj62wscNlQjI-l%2Favatar.png"],
+        nativeCurrency: {
+          "name": "xDAI",
+          "symbol": "xDAI",
+          "decimals": 18
+        },
+        blockExplorerUrls: ["https://blockscout.com/xdai/mainnet"]
+      }],
+    });
+    } catch (error) {
+      throw error
+    }
+  } else {
+    message.error("MetaMask was not detected. Make sure MetaMask is installed and connected!")
+  }
+} 
+
+export default function Help(props) {
   return(
     <div>
     <h2 style={{fontWeight: "bold"}}>Connect with MetaMask</h2>
-    <ul style={{ padding: 0 }}>
-      <p>
-        1- Open MetaMask, and select "Custom RPC" from the Network Dropdown.
-      </p>
-      <Row justify="center">
-        <div style={{marginBottom: 20}}>
-          <img
-            width="300"
-            src="https://gateway.pinata.cloud/ipfs/QmRnTpJuVDq1cTvWcfzEttpgysnnsbhCmmmR7QxXxBtyfz"
-            alt="metamask"
-          />
-        </div>
-      </Row>
-      <p>
-        2- In the "Custom RPC" Settings, add in the xDai network details and
-        click Save:
-      </p>
-      <ul>
-        <li>Network Name: <b>xDAI</b></li>
-        <li>New RPC URL: <b>https://dai.poa.network</b></li>
-        <li>ChainID (Optional): <b>100</b></li>
-        <li>Symbol: <b>xDAI</b></li>
-        <li>Block Explorer URL: <b>https://blockscout.com/poa/xdai</b></li>
-      </ul>
-      <Row justify="center">
-        <div style={{margin: "20px 0"}}>
-          <img
-            width="300"
-            src="https://gateway.pinata.cloud/ipfs/QmU8mstL7PzoPnCzJgwrJcn6C2UVgcgsFt1bTuM2aqZ5z3"
-            alt="metamask-2"
-          />
-        </div>
-      </Row>
-    </ul>
+    <div style={{display: "flex", justifyContent: "center", flexFlow: "column"}}>
+      <p>If you prefer to use <a href="https://metamask.io">MetaMask</a> instead of burner wallet, simply click on the button below to add xDAI chain as custom network in MetaMask.</p>
+      <p>To add xDAI chain manually to MetaMask instead, please follow <a href="https://www.xdaichain.com/for-users/wallets/metamask/metamask-setup">manual instuctions</a> on xDAI chain official website.</p>
+      <p><b>Note: </b>Make sure MetaMask is installed and connected first.</p>
+      <Button 
+        type="primary" 
+        size="large"
+        style={{backgroundColor: "#48A9A6", fontWeight: "bold", borderRadius: "5px", borderColor: "#43a5a1", alignSelf: "center", width:"250px", marginTop: "5px"}} 
+        onClick={() => addXDAItoMetamask(props)}
+      >
+        <img 
+          src="https://ipfs.io/ipfs/Qmd293VDX7ak7krTfsMphvJzjfRfKBwUxYuF1fT7d639Mc" 
+          alt="xdai" 
+          width="25px" 
+          style={{marginRight: "8px", verticalAlign: "bottom"}}
+        />
+        Add xDAI to MetaMask
+      </Button>
+    </div>
     <Divider />
-    <h2 style={{fontWeight: "bold"}}>Export burning wallet private key</h2>
-    <p>If you are not using MetaMask, you can export your burning wallet private key: </p>
+    <h2 style={{fontWeight: "bold"}}>Export burner wallet private key</h2>
+    <p>If you are not using MetaMask, you can export your burner wallet private key: </p>
     <ul>
       <li>Click on "Wallet" button</li>
       <Row justify="center">
