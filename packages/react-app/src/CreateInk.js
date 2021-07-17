@@ -543,16 +543,19 @@ if (props.mode === "edit") {
     </>
   )
 
+  const saveCanvas = () => {
+    if(canvasDisabled){
+      console.log("Canvas disabled")
+    } else {
+      saveDrawing(drawingCanvas.current, false)
+    }
+  }
+
   canvas = (
     <div
-      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA" }}
-      onClick={() => {
-        if(canvasDisabled){
-          console.log("Canvas disabled")
-        } else {
-          saveDrawing(drawingCanvas.current, false)
-        }
-      }}
+      style={{ backgroundColor: "#666666", width: size[0], margin: "auto", border: "1px solid #999999", boxShadow: "2px 2px 8px #AAAAAA", cursor:'pointer' }}
+      onMouseUp={saveCanvas}
+      onTouchEnd={saveCanvas}
     >
           {(!loaded)&&<span>Loading...</span>}
           <CanvasDraw
