@@ -1,8 +1,16 @@
 # 🖇 Hooks
 
-Commonly used Ethereum hooks:
+Commonly used Ethereum hooks.
 
-`useOnBlock(provider, fn)`
+## Install
+
+```sh
+yarn add eth-hooks
+```
+
+## API
+
+### `useOnBlock(provider, fn)`
 
 ```js
 useOnBlock(
@@ -13,9 +21,9 @@ useOnBlock(
 );
 ```
 
-<br/>
+### `usePoller(fn, delay, extraWatch)`
 
-`usePoller(fn, delay, extraWatch)`: runs a function on app load and then on a custom interval
+Runs a function on app load and then on a custom interval.
 
 ```js
 usePoller(() => {
@@ -23,25 +31,25 @@ usePoller(() => {
 }, 3000);
 ```
 
-<br/>
+### `useBalance(provider, address, [pollTime])`
 
-`useBalance(provider, address, [pollTime])`: poll for the balance of an address from a provider
+Poll for the balance of an address from a provider.
 
 ```js
 const localBalance = useBalance(localProvider, address);
 ```
 
-<br/>
+### `useBlockNumber(provider, [pollTime])`
 
-`useBlockNumber(provider, [pollTime])`: get current block number from a provider
+Get current block number from a provider.
 
 ```js
 const blockNumber = useBlockNumber(props.provider);
 ```
 
-<br/>
+### `useContractLoader(providerOrSigner, config)`
 
-`useContractLoader(providerOrSigner, config)`: loads contracts provided in config arg.
+Loads contracts provided in config arg.
 
 ```js
 const contractsConfig = {
@@ -52,42 +60,42 @@ const contractsConfig = {
 const contracts = useContractLoader(provider, contractsConfig);
 ```
 
-<br/?
+### `useContractReader(contracts, contractName, functionName, [args], [pollTime])`
 
-`useContractReader(contracts, contractName, functionName, [args], [pollTime])`: reads a variable from your contract and keeps it in the state
+Reads a variable from your contract and keeps it in the state.
 
 ```js
 const balance = useContractReader(contracts, "MyToken", "balanceOf", ["0xde769Dcc704c7Ec4BC2Dd996dfbb997e89995c5a"]);
 const owner = useContractReader(contracts, "MyContract", "owner");
 ```
 
-<br/>
+### `useEventListener(contracts, contractName, eventName, provider, startBlock)`
 
-`useEventListener(contracts, contractName, eventName, provider, startBlock)`: reads all past events from a smart contract and keeps them in the state
+Reads all past events from a smart contract and keeps them in the state.
 
 ```js
 const eventLog = useEventListener(contract, "MyContract", "Event", provider, 0);
 ```
 
-<br/>
+### `useNonce(provider, address)`
 
-`useNonce(provider, address)`: Reads the current nonce of an account
+Reads the current nonce of an account
 
 ```js
 const nonce = useNonce(props.localprovider, address);
 ```
 
-<br/>
+### `useTimestamp(provider)`
 
-`useTimestamp(provider)`: Reads the timestamp of the most recent block
+Reads the timestamp of the most recent block
 
 ```js
 const timestamp = useTimestamp(props.localprovider);
 ```
 
-<br/>
+### `useTokenBalance(contract, address)`
 
-`useTokenBalance(contract, address)`: Reads the ERC20 token balance of an account
+Reads the ERC20 token balance of an account
 
 ```js
 const tokenBalance = useTokenBalance(contract, addess);
