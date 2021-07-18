@@ -107,7 +107,7 @@ const web3Modal = new Web3Modal({
         description: "Connect to Coinbase Wallet (not Coinbase App)",
       },
       package: walletLinkProvider,
-      connector: async (provider, options) => {
+      connector: async (provider, _options) => {
         await provider.enable();
         return provider;
       },

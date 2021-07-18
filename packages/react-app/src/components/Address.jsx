@@ -3,6 +3,7 @@ import React from "react";
 import Blockies from "react-blockies";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { useLookupAddress } from "../hooks";
+import { useLookupAddress } from "eth-hooks/lib/";
 
 // changed value={address} to address={address}
 
