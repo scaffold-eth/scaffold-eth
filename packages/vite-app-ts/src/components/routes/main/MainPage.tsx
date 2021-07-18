@@ -1,13 +1,7 @@
 import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import 'antd/dist/antd.css';
-import {
-  ExternalProvider,
-  JsonRpcFetchFunc,
-  Provider,
-  StaticJsonRpcProvider,
-  Web3Provider,
-} from '@ethersproject/providers';
+import { ExternalProvider, JsonRpcFetchFunc, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
 
 import '~~/styles/main-page.css';
 import { Button, Alert } from 'antd';
@@ -25,7 +19,6 @@ import { useExchangeEthPrice } from 'eth-hooks/lib/dapps/dex';
 
 import { Header, Account, ThemeSwitcher } from '~~/components/common';
 
-// import { useLocalStorage } from '~~/components/common/hooks';
 import { GenericContract } from '~~/components/generic-contract';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { Hints, Subgraph } from '~~/components/views';
@@ -81,7 +74,7 @@ const translateAddressesForLocal = (addy: string): string => {
   return addy;
 };
 
-/// 📡 What chain are your contracts deployed to?
+// / 📡 What chain are your contracts deployed to?
 const targetNetwork: TNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging

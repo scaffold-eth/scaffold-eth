@@ -13,12 +13,16 @@ import {
   useBalance,
   useContractLoader,
   useContractReader,
-  useEventListener,
-  useExchangePrice,
   useGasPrice,
   useOnBlock,
   useUserSigner,
-} from "./hooks";
+} from "eth-hooks";
+import {
+  useEventListener,
+} from "eth-hooks/lib/events";
+import {
+  useExchangeEthPrice,
+} from "eth-hooks/lib/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
@@ -128,7 +132,7 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
