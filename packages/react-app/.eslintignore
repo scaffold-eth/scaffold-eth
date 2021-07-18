@@ -1,3 +1,7 @@
 # folders
 build/
 node_modules/
+**/*.less
+**/*.css
+**/*.scss
+**/*.json

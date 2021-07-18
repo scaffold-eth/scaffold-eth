@@ -24,7 +24,7 @@
     "@ethersproject/providers": "^5.4.1",
     "@ethersproject/solidity": "^5.4.0",
     "@ethersproject/units": "^5.4.0",
-    "@maticnetwork/maticjs": "^2.0.43",
+    "@maticnetwork/maticjs": "^2.0.44",
     "@uniswap/token-lists": "^1.0.0-beta.24",
     "@walletconnect/web3-provider": "^1.4.1",
     "antd": "^4.7.0",

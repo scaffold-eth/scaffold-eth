@@ -1636,7 +1636,7 @@
     patch-package "^6.2.2"
     postinstall-postinstall "^2.1.0"
 
-"@ethereumjs/block@^3.3.0", "@ethereumjs/block@^3.4.0":
+"@ethereumjs/block@^3.4.0":
   version "3.4.0"
   resolved "https://registry.yarnpkg.com/@ethereumjs/block/-/block-3.4.0.tgz#4747b0c06220ee10cbdfe1cbde8cbb0677b1b074"
   integrity sha512-umKAoTX32yXzErpIksPHodFc/5y8bmZMnOl6hWy5Vd8xId4+HKFUOyEiN16Y97zMwFRysRpcrR6wBejfqc6Bmg==
@@ -1646,7 +1646,7 @@
     ethereumjs-util "^7.1.0"
     merkle-patricia-tree "^4.2.0"
 
-"@ethereumjs/blockchain@^5.3.0", "@ethereumjs/blockchain@^5.4.0":
+"@ethereumjs/blockchain@^5.4.0":
   version "5.4.0"
   resolved "https://registry.yarnpkg.com/@ethereumjs/blockchain/-/blockchain-5.4.0.tgz#28d712627d3442b2bb1f50dd5acba7cde1021993"
   integrity sha512-wAuKLaew6PL52kH8YPXO7PbjjKV12jivRSyHQehkESw4slSLLfYA6Jv7n5YxyT2ajD7KNMPVh7oyF/MU6HcOvg==
@@ -1661,7 +1661,7 @@
     rlp "^2.2.4"
     semaphore-async-await "^1.5.1"
 
-"@ethereumjs/common@^2.3.0", "@ethereumjs/common@^2.3.1", "@ethereumjs/common@^2.4.0":
+"@ethereumjs/common@^2.3.0", "@ethereumjs/common@^2.4.0":
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/@ethereumjs/common/-/common-2.4.0.tgz#2d67f6e6ba22246c5c89104e6b9a119fb3039766"
   integrity sha512-UdkhFWzWcJCZVsj1O/H8/oqj/0RVYjLc1OhPjBrQdALAkQHpCp8xXI4WLnuGTADqTdJZww0NtgwG+TRPkXt27w==
@@ -1687,7 +1687,7 @@
     "@ethereumjs/common" "^2.4.0"
     ethereumjs-util "^7.1.0"
 
-"@ethereumjs/vm@^5.3.2", "@ethereumjs/vm@^5.4.1", "@ethereumjs/vm@^5.5.0":
+"@ethereumjs/vm@^5.4.1", "@ethereumjs/vm@^5.5.0":
   version "5.5.0"
   resolved "https://registry.yarnpkg.com/@ethereumjs/vm/-/vm-5.5.0.tgz#d389c5792320ef28c51366a643b8ab9d64e10a31"
   integrity sha512-h6Kr6WqKUP8nVuEzCWPWEPrC63v7HFwt3gRuK7CJiyg9S0iWSBKUA/YVD4YgaSVACuxUfWaOBbwV5uGVupm5PQ==
@@ -2589,10 +2589,10 @@
     mkdirp "^0.5.1"
     rimraf "^2.5.2"
 
-"@maticnetwork/maticjs@^2.0.43":
-  version "2.0.43"
-  resolved "https://registry.yarnpkg.com/@maticnetwork/maticjs/-/maticjs-2.0.43.tgz#4a0825204517d211ec5a04b2bf69b2909dac604e"
-  integrity sha512-HCWMBNaj9Ac/+AAYMDIXRy3af6SH/9fqSeSjrixCMb9+w0NTXHM8iunq006juW8R00/Do+rtSHflcRRL/btPbw==
+"@maticnetwork/maticjs@^2.0.44":
+  version "2.0.44"
+  resolved "https://registry.yarnpkg.com/@maticnetwork/maticjs/-/maticjs-2.0.44.tgz#8f913b9205e5d0cd14a965667e9a566192f0ca0c"
+  integrity sha512-+7atlYrI7eRtfjxrKc/MVE3ydHtA/PobgplXCZxTZC9uISZvyrlPrt6qGwOnGGPo54gyjGFTaVrpoemKXDba0w==
   dependencies:
     "@maticnetwork/meta" "^2.4.13"
     axios "^0.21.1"
@@ -2655,8 +2655,7 @@
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
 
-"@nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers", hardhat-deploy-ethers@^0.3.0-beta.10:
-  name "@nomiclabs/hardhat-ethers"
+"@nomiclabs/hardhat-ethers@npm:hardhat-deploy-ethers":
   version "0.3.0-beta.10"
   resolved "https://registry.yarnpkg.com/hardhat-deploy-ethers/-/hardhat-deploy-ethers-0.3.0-beta.10.tgz#bccfcf635d380bbab3638960f6739fe4d396fc5f"
   integrity sha512-TeyriUshRZ7XVHOjMsDtTozIrdwLf3Bw+oZRYNhXdG/eut5HeDhjUFPfRlG7TI1lSLvkcB5dt7OxOtPYKDOxTg==
@@ -12198,60 +12197,7 @@ hardhat-deploy@^0.8.6, hardhat-deploy@^0.8.9:
     murmur-128 "^0.2.1"
     qs "^6.9.4"
 
-hardhat@2.4.0:
-  version "2.4.0"
-  resolved "https://registry.yarnpkg.com/hardhat/-/hardhat-2.4.0.tgz#b0db7a6e07fa72414665634ced149bbb10252499"
-  integrity sha512-IMh7Ws/7fIO5RRkm4nhqS2JWEct0690K35BcFVuIOoIRMcDLKc/7+JSxhey3RkXc5M4qUvdxfQI0LRQx4aqBZw==
-  dependencies:
-    "@ethereumjs/block" "^3.3.0"
-    "@ethereumjs/blockchain" "^5.3.0"
-    "@ethereumjs/common" "^2.3.1"
-    "@ethereumjs/tx" "^3.2.1"
-    "@ethereumjs/vm" "^5.3.2"
-    "@ethersproject/abi" "^5.1.2"
-    "@sentry/node" "^5.18.1"
-    "@solidity-parser/parser" "^0.11.0"
-    "@types/bn.js" "^5.1.0"
-    "@types/lru-cache" "^5.1.0"
-    abort-controller "^3.0.0"
-    adm-zip "^0.4.16"
-    ansi-escapes "^4.3.0"
-    chalk "^2.4.2"
-    chokidar "^3.4.0"
-    ci-info "^2.0.0"
-    debug "^4.1.1"
-    enquirer "^2.3.0"
-    env-paths "^2.2.0"
-    eth-sig-util "^2.5.2"
-    ethereum-cryptography "^0.1.2"
-    ethereumjs-abi "^0.6.8"
-    ethereumjs-util "^7.0.10"
-    find-up "^2.1.0"
-    fp-ts "1.19.3"
-    fs-extra "^7.0.1"
-    glob "^7.1.3"
-    https-proxy-agent "^5.0.0"
-    immutable "^4.0.0-rc.12"
-    io-ts "1.10.4"
-    lodash "^4.17.11"
-    merkle-patricia-tree "^4.2.0"
-    mnemonist "^0.38.0"
-    mocha "^7.1.2"
-    node-fetch "^2.6.0"
-    qs "^6.7.0"
-    raw-body "^2.4.1"
-    resolve "1.17.0"
-    semver "^6.3.0"
-    slash "^3.0.0"
-    solc "0.7.3"
-    source-map-support "^0.5.13"
-    stacktrace-parser "^0.1.10"
-    "true-case-path" "^2.2.1"
-    tsort "0.0.1"
-    uuid "^3.3.2"
-    ws "^7.4.6"
-
-hardhat@^2.4.0:
+hardhat@2.4.3, hardhat@^2.4.0:
   version "2.4.3"
   resolved "https://registry.yarnpkg.com/hardhat/-/hardhat-2.4.3.tgz#093373b383eacec0d3e7fb223353b2f0cb9f2802"
   integrity sha512-xgbnhEnmaKau8xT6wPJlzoyMLAZyxQoElACQQCyEeAY1DURpZbYwjIQUywmL/ZNv3QEl38Yqu/n8mPOc2HXyGA==
