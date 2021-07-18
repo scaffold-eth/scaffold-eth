@@ -1,9 +1,9 @@
 {
   "compilerOptions": {
-    "target": "esNext",
+    "target": "es2017",
     "module": "esNext",
     "outDir": "lib",
-    "lib": ["dom", "ESNext"],
+    "lib": ["dom", "ESNext", "ES2017"],
     "sourceMap": false,
     "allowJs": false,
     "declaration": true,
