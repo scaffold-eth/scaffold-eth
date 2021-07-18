@@ -9,14 +9,9 @@ export type TContractConfig = {
   chainId?: number;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
-  hardhatContracts?: Record<string, Contract>;
-  externalContracts?: Record<string, Contract>;
+  hardhatContracts?: Record<string, Record<string, Contract>>;
+  externalContracts?: Record<string, Record<string, Contract>>;
 };
-
-export enum DefaultContractLocation {
-  ReactAppContracts = '../../react-app/src/contracts',
-  ViteAppContracts = '../../vite-app-ts/src/generated/contracts',
-}
 
 /**
  * Loads your local contracts and gives options to read values from contracts
@@ -43,8 +38,7 @@ export enum DefaultContractLocation {
  */
 export const useContractLoader = (
   providerOrSigner: TEthersProviderOrSigner | undefined,
-  config: TContractConfig = {},
-  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
+  config: TContractConfig = {}
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   const configDep: string = useMemo(() => JSON.stringify(config ?? {}), [config]);
@@ -67,28 +61,11 @@ export const useContractLoader = (
             // Type definition
             //  Record<string, Record<string, Contract>>
             //  { chainId: { contractName: Contract } }
-            let contractList: Record<string, Record<string, Contract>> = {};
-            let externalContractList: Record<string, Record<string, Contract>> = {};
+            const contractList: Record<string, Record<string, Contract>> = { ...(config.hardhatContracts ?? {}) };
+            const externalContractList: Record<string, Record<string, Contract>> = {
+              ...(config.externalContracts ?? {}),
+            };
             let combinedContracts: Record<string, Contract> = {};
-
-            // get hardhat contracts form hardhat-deploy json created on compile
-            try {
-              contractList =
-                config.hardhatContracts ??
-                ((await import(`./${contractFileLocation}/hardhat_contracts.json`)) as Record<string, Contract>)
-                  .default;
-            } catch (e) {
-              console.warn(e);
-            }
-
-            // get external contracts from js file
-            try {
-              externalContractList =
-                config.externalContracts ??
-                ((await import(`./${contractFileLocation}/external_contracts.js`)) as Record<string, Contract>).default;
-            } catch (e) {
-              console.warn(e);
-            }
 
             // combine partitioned contracts based on all the available and chain id.
             if (contractList?.[chainId] != null) {
@@ -135,7 +112,7 @@ export const useContractLoader = (
     };
     // disable as configDep is used for dep instead of config
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contractFileLocation, providerOrSigner, configDep]);
+  }, [providerOrSigner, configDep]);
 
   return contracts;
 };
