@@ -18,6 +18,7 @@ import LZ from "lz-string";
 import ApolloClient, { InMemoryCache } from 'apollo-boost'
 import { useHistory } from "react-router-dom";
 
+const uint8arrays = require('uint8arrays')
 const { TabPane } = Tabs;
 
 const mainClient = new ApolloClient({
@@ -84,7 +85,7 @@ export default function ViewInk(props) {
 
       setData(_data)
       setBlockNumber(_blockNumber)
-      setInkJson(JSON.parse(newInkJson))
+      setInkJson(JSON.parse(uint8arrays.toString(newInkJson)))
     }
     };
 
@@ -258,10 +259,8 @@ const clickAndSave = (
       } catch (e) { console.log("Loading error:",e)}
       try{
         setCanvasState('decompressing')
-        console.log(`stitching ${new Date().toISOString()}`)
-        const arrays = new Uint8Array(drawingContent._bufs.reduce((acc, curr) => [...acc, ...curr], []));
         console.log(`decompressing ${new Date().toISOString()}`)
-        let decompressed = LZ.decompressFromUint8Array(arrays)
+        let decompressed = LZ.decompressFromUint8Array(drawingContent)
         //console.log(decompressed)
 
         console.log(`finding length ${new Date().toISOString()}`)
@@ -271,15 +270,15 @@ const clickAndSave = (
         }
 
         console.log(`saving ${new Date().toISOString()}`)
-        setCanvasState('ready')
+
         setDrawingSize(points)
         totalLines.current = JSON.parse(decompressed)['lines'].length
         if(points < 10000) {
-          console.log('trying to load save data')
+          setCanvasState('drawing')
           drawingCanvas.current.loadSaveData(decompressed, false)
           setDrawing(decompressed)
         } else {
-          console.log('just saving the drawing')
+          setCanvasState('ready')
           setDrawing(decompressed)
         }
         console.log(`done ${new Date().toISOString()}`)
@@ -552,7 +551,7 @@ const clickAndSave = (
             setCanvasState('drawing')
           }}><PlaySquareOutlined /> {canvasState==='ready'?'PLAY':canvasState}</Button>
 
-          {(data&&data.ink&&props.address.toLowerCase()==data.ink.artist.id)&&<Button style={{marginTop:4,marginLeft:4}} onClick={() => {
+          {(data&&data.ink&&props.address&&props.address.toLowerCase()==data.ink.artist.id)&&<Button style={{marginTop:4,marginLeft:4}} onClick={() => {
             let _savedData = LZ.compress(drawing)
             props.setDrawing(_savedData)
             history.push('/create')
@@ -589,10 +588,13 @@ const clickAndSave = (
         immediateLoading={drawingSize >= 10000}
         loadTimeOffset={3}
         onChange={()=>{
+          try {
           drawnLines.current = drawingCanvas.current.lines.length
           if (drawnLines.current>=totalLines.current && canvasState!=='ready') {
             console.log('enabling it!')
             setCanvasState('ready')
+          }} catch (e){
+            console.log(e)
           }
         }}
         />}
