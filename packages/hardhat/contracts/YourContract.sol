@@ -16,13 +16,6 @@ contract YourContract is Verifier {
   }
 
   function setPurpose(string memory newPurpose) public {
-      if(bytes(newPurpose).length == 0){
-          revert EmptyPurposeError({
-              code: 1,
-              message: "Purpose can not be empty"
-          });
-      }
-
       purpose = newPurpose;
       console.log(msg.sender,"set purpose to",purpose);
       emit SetPurpose(msg.sender, purpose);
