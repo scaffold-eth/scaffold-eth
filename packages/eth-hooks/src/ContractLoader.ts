@@ -1,4 +1,3 @@
-/* eslint-disable import/no-dynamic-require */
 /* eslint-disable global-require */
 import { Contract } from "@ethersproject/contracts";
 import { Web3Provider, JsonRpcProvider } from "@ethersproject/providers";
