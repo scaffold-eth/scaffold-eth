@@ -96,7 +96,7 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:'https://mainnet.infura.io/v3/${INFURA_ID}', // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           100:"https://dai.poa.network", // xDai
         },
       },
