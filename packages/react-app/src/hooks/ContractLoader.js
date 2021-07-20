@@ -35,6 +35,10 @@ const { ethers } = require("ethers");
 
 export default function useContractLoader(providerOrSigner, config = {}) {
   const [contracts, setContracts] = useState();
+
+  const customAddressKeys = config.customAddresses && Object.keys(config.customAddresses).join();
+  const customAddressValues = config.customAddresses && Object.values(config.customAddresses).join();
+
   useEffect(() => {
     let active = true;
 
@@ -117,7 +121,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
     return () => {
       active = false;
     };
-  }, [providerOrSigner, config.chainId, config.hardhatNetworkName]);
+  }, [providerOrSigner, config.chainId, config.hardhatNetworkName, customAddressKeys, customAddressValues]);
 
   return contracts;
 }
