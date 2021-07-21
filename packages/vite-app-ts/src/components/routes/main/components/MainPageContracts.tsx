@@ -2,6 +2,7 @@ import React, { FC } from 'react';
 import { GenericContract } from '~~/components/generic-contract';
 import { Contract } from 'ethers';
 import { TEthersProvider, TProviderAndSigner } from 'eth-hooks/lib/models';
+import { TContractConfig } from 'eth-hooks/lib';
 
 interface IMainPageContracts {
   mainnetProvider: TEthersProvider;
@@ -10,6 +11,7 @@ interface IMainPageContracts {
   localProvider: TEthersProvider;
   userAddress: string;
   blockExplorerUrl: string;
+  contractConfig: TContractConfig;
 }
 
 /**
@@ -35,6 +37,7 @@ export const MainPageContracts: FC<IMainPageContracts> = (props) => {
             provider={props.localProvider}
             address={props.userAddress}
             blockExplorer={props.blockExplorerUrl}
+            contractConfig={props.contractConfig}
           />
 
           {/* uncomment for a second contract: 
@@ -44,6 +47,7 @@ export const MainPageContracts: FC<IMainPageContracts> = (props) => {
           provider={props.localProvider}
           address={props.userAddress}
           blockExplorer={props.blockExplorerUrl}
+          config={props.config}
         />
         */}
 
@@ -55,6 +59,8 @@ export const MainPageContracts: FC<IMainPageContracts> = (props) => {
           provider={props.mainnetProvider}
           address={props.userAddress}
           blockExplorer={props.blockExplorerUrl}
+          config={props.config}
+          chainId={props.mainnetProvider.chainId}
         />
         */}
         </>

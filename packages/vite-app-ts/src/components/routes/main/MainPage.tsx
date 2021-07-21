@@ -13,7 +13,6 @@ import {
   useBalance,
   useOnRepetition,
   useUserProviderAndSigner,
-  DefaultContractLocation,
 } from 'eth-hooks';
 import { useExchangeEthPrice } from 'eth-hooks/lib/dapps/dex';
 
@@ -49,24 +48,7 @@ import { useEventListener } from 'eth-hooks/lib/events';
 import { MainPageMenu } from './components/MainPageMenu';
 import { MainPageContracts } from './components/MainPageContracts';
 import { MainPageExtraUi } from './components/MainPageExtraUi';
-
-/*
-    Welcome to 🏗 scaffold-eth !
-
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
-
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-
-    🌏 EXTERNAL CONTRACTS:
-    You can also bring in contract artifacts in `constants.js`
-    (and then use the `useExternalContractLoader()` hook!)
-*/
+import { useContractConfig } from '~~/components/routes/main/hooks/useContractConfig';
 
 const translateAddressesForLocal = (addy: string): string => {
   // if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
@@ -143,20 +125,18 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, userAddress);
 
+  const contractsConfig = useContractConfig();
+
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(
-    localProvider,
-    { chainId: localChainId },
-    DefaultContractLocation.ViteAppContracts
-  );
+  const readContracts = useContractLoader(localProvider, contractsConfig, localChainId);
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProviderAndSigner?.signer, {}, DefaultContractLocation.ViteAppContracts);
+  const writeContracts = useContractLoader(userProviderAndSigner?.signer, contractsConfig);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, {}, DefaultContractLocation.ViteAppContracts);
+  const mainnetContracts = useContractLoader(mainnetProvider, contractsConfig, mainnetProvider?._network?.chainId);
 
   // If you want to call a function on a new block
   useOnRepetition((): void => console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`), {
@@ -290,6 +270,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                   localProvider={localProvider}
                   blockExplorerUrl={blockExplorer}
                   userAddress={userAddress}
+                  contractConfig={contractsConfig}
                 />
               </>
             )}
@@ -326,6 +307,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
                 provider={mainnetProvider}
                 address={userAddress}
                 blockExplorer="https://etherscan.io/"
+                contractConfig={contractsConfig}
               />
             )}
           </Route>

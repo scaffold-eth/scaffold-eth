@@ -3,20 +3,14 @@ import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
-import { TEthersProviderOrSigner } from '~~/models/providerTypes';
+import { TDeployedContracts, TExternalContracts, TEthersProviderOrSigner } from '~~/models';
 
 export type TContractConfig = {
-  chainId?: number;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
-  hardhatContracts?: Record<string, Contract>;
-  externalContracts?: Record<string, Contract>;
+  deployedContracts?: TDeployedContracts;
+  externalContracts?: TExternalContracts;
 };
-
-export enum DefaultContractLocation {
-  ReactAppContracts = '../../react-app/src/contracts',
-  ViteAppContracts = '../../vite-app-ts/src/generated/contracts',
-}
 
 /**
  * Loads your local contracts and gives options to read values from contracts
@@ -44,7 +38,7 @@ export enum DefaultContractLocation {
 export const useContractLoader = (
   providerOrSigner: TEthersProviderOrSigner | undefined,
   config: TContractConfig = {},
-  contractFileLocation: DefaultContractLocation | string = DefaultContractLocation.ViteAppContracts
+  chainId?: number
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   const configDep: string = useMemo(() => JSON.stringify(config ?? {}), [config]);
@@ -62,51 +56,36 @@ export const useContractLoader = (
             // we need to check to see if this providerOrSigner has a signer or not
 
             const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
-            const chainId: number = config.chainId ?? providerNetwork?.chainId ?? 0;
+            // find the current chainId based on this order:
+            //  - chainId passed in or a fallback of provider chainId
+            const currentChainId: number = chainId ?? providerNetwork?.chainId ?? 0;
 
             // Type definition
             //  Record<string, Record<string, Contract>>
             //  { chainId: { contractName: Contract } }
-            let contractList: Record<string, Record<string, Contract>> = {};
-            let externalContractList: Record<string, Record<string, Contract>> = {};
+            const contractList: TDeployedContracts = { ...(config.deployedContracts ?? {}) };
+            const externalContractList: TExternalContracts = {
+              ...(config.externalContracts ?? {}),
+            };
             let combinedContracts: Record<string, Contract> = {};
 
-            // get hardhat contracts form hardhat-deploy json created on compile
-            try {
-              contractList =
-                config.hardhatContracts ??
-                ((await import(`./${contractFileLocation}/hardhat_contracts.json`)) as Record<string, Contract>)
-                  .default;
-            } catch (e) {
-              console.warn(e);
-            }
-
-            // get external contracts from js file
-            try {
-              externalContractList =
-                config.externalContracts ??
-                ((await import(`./${contractFileLocation}/external_contracts.js`)) as Record<string, Contract>).default;
-            } catch (e) {
-              console.warn(e);
-            }
-
             // combine partitioned contracts based on all the available and chain id.
-            if (contractList?.[chainId] != null) {
-              for (const hardhatNetwork in contractList[chainId]) {
-                if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
+            if (contractList?.[currentChainId] != null) {
+              for (const hardhatNetwork in contractList[currentChainId]) {
+                if (Object.prototype.hasOwnProperty.call(contractList[currentChainId], hardhatNetwork)) {
                   if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     combinedContracts = {
                       ...combinedContracts,
-                      ...contractList[chainId][hardhatNetwork].contracts,
+                      ...contractList?.[currentChainId]?.[hardhatNetwork]?.contracts,
                     };
                   }
                 }
               }
             }
 
-            if (externalContractList?.[chainId] != null) {
-              combinedContracts = { ...combinedContracts, ...externalContractList[chainId].contracts };
+            if (externalContractList?.[currentChainId] != null) {
+              combinedContracts = { ...combinedContracts, ...externalContractList[currentChainId].contracts };
             }
 
             const newContracts = Object.keys(combinedContracts).reduce(
@@ -135,7 +114,7 @@ export const useContractLoader = (
     };
     // disable as configDep is used for dep instead of config
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [contractFileLocation, providerOrSigner, configDep]);
+  }, [providerOrSigner, configDep]);
 
   return contracts;
 };
