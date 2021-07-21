@@ -1,6 +1,5 @@
-import { JsonRpcProvider, JsonRpcSigner, Web3Provider } from '@ethersproject/providers';
 import { Card } from 'antd';
-import { useContractExistsAtAddress, useContractLoader } from 'eth-hooks';
+import { TContractConfig, useContractExistsAtAddress, useContractLoader } from 'eth-hooks';
 import { TEthersProvider } from 'eth-hooks/lib/models';
 import { Contract, Signer } from 'ethers';
 import { FunctionFragment } from 'ethers/lib/utils';
@@ -26,10 +25,12 @@ interface IGenericContract {
   tokenPrice?: number;
   blockExplorer: string;
   address: string;
+  chainId?: number;
+  contractConfig: TContractConfig;
 }
 
 export const GenericContract: FC<IGenericContract> = (props) => {
-  const contracts = useContractLoader(props.provider);
+  const contracts = useContractLoader(props.provider, props.contractConfig, props.chainId);
   let contract: Contract | undefined = props.customContract;
   if (!props.customContract) {
     contract = contracts ? contracts[props.contractName] : undefined;
