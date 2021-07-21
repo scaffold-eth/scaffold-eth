@@ -27,12 +27,12 @@
   },
   "peerDependencies": {
     "@uniswap/sdk": "^3.0.3",
-    "react": ">=16.9.0"
+    "react": "^17.0.2"
   },
   "devDependencies": {
     "@commitlint/cli": "^8.3.5",
     "@commitlint/config-conventional": "^8.3.4",
-    "@types/react": "^16.9.41",
+    "@types/react": "^17.0.14",
     "@uniswap/sdk": "^3.0.3",
     "commitizen": "^4.1.2",
     "cz-conventional-changelog": "^3.2.0",
@@ -41,7 +41,7 @@
     "husky": "^4.2.5",
     "lint-staged": "^10.2.7",
     "prettier": "1.x",
-    "react": "^16.9.0",
+    "react": "^17.0.2",
     "shx": "^0.3.2",
     "typescript": "^3.9.5",
     "watch": "^1.0.2"

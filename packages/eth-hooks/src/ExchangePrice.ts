@@ -23,6 +23,7 @@ export default function useExchangePrice(
           "0x6B175474E89094C44Da98b954EedeAC495271d0F",
           18,
         );
+        // @ts-ignore
         const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider);
         const route = new Route([pair], WETH[DAI.chainId]);
         setPrice(parseFloat(route.midPrice.toSignificant(6)));
