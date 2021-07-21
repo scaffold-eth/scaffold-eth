@@ -47,6 +47,7 @@
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
+    "snarkjs": "^0.4.6",
     "walletlink": "^2.1.5",
     "web3modal": "^1.9.1"
   },

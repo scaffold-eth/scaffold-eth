@@ -5972,6 +5972,13 @@ blake2b-wasm@^1.1.0:
   dependencies:
     nanoassert "^1.0.0"
 
+"blake2b-wasm@git+https://github.com/jbaylina/blake2b-wasm.git":
+  version "2.1.0"
+  uid "0d5f024b212429c7f50a7f533aa3a2406b5b42b3"
+  resolved "git+https://github.com/jbaylina/blake2b-wasm.git#0d5f024b212429c7f50a7f533aa3a2406b5b42b3"
+  dependencies:
+    nanoassert "^1.0.0"
+
 "blake2b-wasm@https://github.com/jbaylina/blake2b-wasm.git":
   version "2.1.0"
   resolved "https://github.com/jbaylina/blake2b-wasm.git#0d5f024b212429c7f50a7f533aa3a2406b5b42b3"
@@ -8562,7 +8569,7 @@ ejs@^2.6.1:
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-2.7.4.tgz#48661287573dcc53e366c7a1ae52c3a120eec9ba"
   integrity sha512-7vmuyh5+kuUyJKePhQfRQBhXV5Ce+RnaeeQArKu1EAMpL3WbgMt5WG6uQZpEVvYSSsxMXRKOewtDk9RaTKXRlA==
 
-ejs@^3.0.1:
+ejs@^3.0.1, ejs@^3.1.6:
   version "3.1.6"
   resolved "https://registry.yarnpkg.com/ejs/-/ejs-3.1.6.tgz#5bfd0a0689743bb5268b3550cceeebbc1702822a"
   integrity sha512-9lt9Zse4hPucPkoP7FHDF0LQAlGyF9JVpnClFLFH3aSSbxmyoqINRpp/9wePWJTUl4KOQwRL72Iw3InHPDkoGw==
@@ -10309,6 +10316,15 @@ ffjavascript@0.2.35:
     wasmcurves "0.0.14"
     web-worker "^1.0.0"
 
+ffjavascript@0.2.37, ffjavascript@^0.2.30:
+  version "0.2.37"
+  resolved "https://registry.yarnpkg.com/ffjavascript/-/ffjavascript-0.2.37.tgz#13b93c0104013f99d8959e159430d6aa76bd9a6c"
+  integrity sha512-wWOkQB07d6eKFRMMtryTVsWrMsR4ImdikhEuu6ZcFYaxufJaBKUiQHYxsPzZEScPa+okkHzf1/2YVPU7xUIHMQ==
+  dependencies:
+    big-integer "^1.6.48"
+    wasmcurves "0.0.14"
+    web-worker "^1.0.0"
+
 ffjavascript@0.2.4:
   version "0.2.4"
   resolved "https://registry.yarnpkg.com/ffjavascript/-/ffjavascript-0.2.4.tgz#97675a592517aefc1d418d491fcb3ac9447597c7"
@@ -10317,15 +10333,6 @@ ffjavascript@0.2.4:
     big-integer "^1.6.48"
     wasmcurves "0.0.4"
     worker-threads "^1.0.0"
-
-ffjavascript@^0.2.30:
-  version "0.2.37"
-  resolved "https://registry.yarnpkg.com/ffjavascript/-/ffjavascript-0.2.37.tgz#13b93c0104013f99d8959e159430d6aa76bd9a6c"
-  integrity sha512-wWOkQB07d6eKFRMMtryTVsWrMsR4ImdikhEuu6ZcFYaxufJaBKUiQHYxsPzZEScPa+okkHzf1/2YVPU7xUIHMQ==
-  dependencies:
-    big-integer "^1.6.48"
-    wasmcurves "0.0.14"
-    web-worker "^1.0.0"
 
 ffwasm@0.0.7:
   version "0.0.7"
@@ -20244,6 +20251,22 @@ snarkjs@^0.3.60:
     circom_runtime "0.1.13"
     fastfile "0.0.19"
     ffjavascript "0.2.35"
+    logplease "^1.2.15"
+    r1csfile "0.0.32"
+    readline "^1.3.0"
+
+snarkjs@^0.4.6:
+  version "0.4.6"
+  resolved "https://registry.yarnpkg.com/snarkjs/-/snarkjs-0.4.6.tgz#763a557a36765ca3b4b8715fa5e1a7fce7127016"
+  integrity sha512-DioPEaDKD/MrYX4kKAtlFRkCIkkiELi89N1DvosoHLeX1MuA9LQVAoOTAbJgwkTMHgCZPio5bOwk6JjZl6Z/Pw==
+  dependencies:
+    "@iden3/binfileutils" "0.0.8"
+    blake2b-wasm "https://github.com/jbaylina/blake2b-wasm.git"
+    circom_runtime "0.1.13"
+    ejs "^3.1.6"
+    fastfile "0.0.19"
+    ffjavascript "0.2.37"
+    js-sha3 "^0.8.0"
     logplease "^1.2.15"
     r1csfile "0.0.32"
     readline "^1.3.0"
