@@ -6,10 +6,9 @@ import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
 import { TDeployedContracts, TExternalContracts, TEthersProviderOrSigner } from '~~/models';
 
 export type TContractConfig = {
-  chainId?: number;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
-  hardhatContracts?: TDeployedContracts;
+  deployedContracts?: TDeployedContracts;
   externalContracts?: TExternalContracts;
 };
 
@@ -38,7 +37,8 @@ export type TContractConfig = {
  */
 export const useContractLoader = (
   providerOrSigner: TEthersProviderOrSigner | undefined,
-  config: TContractConfig = {}
+  config: TContractConfig = {},
+  chainId?: number
 ): Record<string, Contract> => {
   const [contracts, setContracts] = useState<Record<string, Contract>>({});
   const configDep: string = useMemo(() => JSON.stringify(config ?? {}), [config]);
@@ -56,34 +56,36 @@ export const useContractLoader = (
             // we need to check to see if this providerOrSigner has a signer or not
 
             const { signer, providerNetwork } = await parseProviderOrSigner(providerOrSigner);
-            const chainId: number = config.chainId ?? providerNetwork?.chainId ?? 0;
+            // find the current chainId based on this order:
+            //  - chainId passed in or a fallback of provider chainId
+            const currentChainId: number = chainId ?? providerNetwork?.chainId ?? 0;
 
             // Type definition
             //  Record<string, Record<string, Contract>>
             //  { chainId: { contractName: Contract } }
-            const contractList: TDeployedContracts = { ...(config.hardhatContracts ?? {}) };
+            const contractList: TDeployedContracts = { ...(config.deployedContracts ?? {}) };
             const externalContractList: TExternalContracts = {
               ...(config.externalContracts ?? {}),
             };
             let combinedContracts: Record<string, Contract> = {};
 
             // combine partitioned contracts based on all the available and chain id.
-            if (contractList?.[chainId] != null) {
-              for (const hardhatNetwork in contractList[chainId]) {
-                if (Object.prototype.hasOwnProperty.call(contractList[chainId], hardhatNetwork)) {
+            if (contractList?.[currentChainId] != null) {
+              for (const hardhatNetwork in contractList[currentChainId]) {
+                if (Object.prototype.hasOwnProperty.call(contractList[currentChainId], hardhatNetwork)) {
                   if (!config.hardhatNetworkName || hardhatNetwork === config.hardhatNetworkName) {
                     // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                     combinedContracts = {
                       ...combinedContracts,
-                      ...contractList[chainId][hardhatNetwork].contracts,
+                      ...contractList?.[currentChainId]?.[hardhatNetwork]?.contracts,
                     };
                   }
                 }
               }
             }
 
-            if (externalContractList?.[chainId] != null) {
-              combinedContracts = { ...combinedContracts, ...externalContractList[chainId].contracts };
+            if (externalContractList?.[currentChainId] != null) {
+              combinedContracts = { ...combinedContracts, ...externalContractList[currentChainId].contracts };
             }
 
             const newContracts = Object.keys(combinedContracts).reduce(
