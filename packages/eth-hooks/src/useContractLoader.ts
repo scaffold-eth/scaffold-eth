@@ -3,14 +3,15 @@ import { ethers } from 'ethers';
 import { useEffect, useMemo, useState } from 'react';
 
 import { parseProviderOrSigner } from '~~/functions/providerOrSigner';
+import { TDeployedContracts, TExternalContracts } from '~~/models/contractTypes';
 import { TEthersProviderOrSigner } from '~~/models/providerTypes';
 
 export type TContractConfig = {
   chainId?: number;
   hardhatNetworkName?: string;
   customAddresses?: Record<string, string>;
-  hardhatContracts?: Record<string, Record<string, Contract>>;
-  externalContracts?: Record<string, Record<string, Contract>>;
+  hardhatContracts?: TDeployedContracts;
+  externalContracts?: TExternalContracts;
 };
 
 /**
@@ -61,8 +62,8 @@ export const useContractLoader = (
             // Type definition
             //  Record<string, Record<string, Contract>>
             //  { chainId: { contractName: Contract } }
-            const contractList: Record<string, Record<string, Contract>> = { ...(config.hardhatContracts ?? {}) };
-            const externalContractList: Record<string, Record<string, Contract>> = {
+            const contractList: TDeployedContracts = { ...(config.hardhatContracts ?? {}) };
+            const externalContractList: TExternalContracts = {
               ...(config.externalContracts ?? {}),
             };
             let combinedContracts: Record<string, Contract> = {};
