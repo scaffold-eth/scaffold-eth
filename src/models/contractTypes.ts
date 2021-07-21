@@ -1,8 +1,9 @@
 import { Contract } from 'ethers';
 
+type Index = string | number;
 export type TDeployedContracts = {
-  [key in number]: {
-    [key in string]: {
+  [key: string]: {
+    [key: string]: {
       name: string;
       chainId: string;
       contracts: Record<string, Contract>;
@@ -11,9 +12,9 @@ export type TDeployedContracts = {
 };
 
 export type TExternalContracts = {
-  [key in number]: {
+  [key: number]: {
     name?: string;
     chainId?: string;
-    contracts: Record<string, Contract>;
+    contracts?: Record<string, Contract>;
   };
 };
