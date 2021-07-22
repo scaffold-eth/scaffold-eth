@@ -4,10 +4,11 @@ import { useParams, Link, useHistory } from "react-router-dom";
 import { useQuery } from "react-apollo";
 import { ARTISTS_QUERY } from "./apollo/queries"
 import { isBlocklisted } from "./helpers";
-import { Row, Col, Divider, Button, Popover, Form, notification } from "antd";
+import { Typography, Row, Col, Divider, Button, Popover, Form, notification } from "antd";
 import { SearchOutlined } from "@ant-design/icons";
 import Blockies from "react-blockies";
 import { AddressInput, Loader } from "./components"
+const { Text } = Typography;
 
 export default function Artist(props) {
   const { address } = useParams();
@@ -121,7 +122,7 @@ export default function Artist(props) {
               size={12} scale={6}
               className="artist_blockie"
             />
-            <h2 style={{ margin: 10 }}>{ens ? ens : address.slice(0, 6)}</h2>
+            <h2 style={{ margin: 10 }}><Text copyable={{text: ens ? ens : address}}>{ens ? ens : address.slice(0, 6)}</Text></h2>
             <Row>
               <Col span={12}>
                 <p style={{ margin: 0 }}>
