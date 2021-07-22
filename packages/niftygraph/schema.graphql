@@ -14,7 +14,7 @@ type Ink @entity {
   jsonUrl: String!
   artist: Artist!
   limit: BigInt!
-  count: BigInt
+  count: BigInt!
   tokens: [Token!]!
   sales: [Sale!] @derivedFrom(field: "ink")
   likes: [Like!] @derivedFrom(field: "ink")
@@ -34,7 +34,7 @@ type Ink @entity {
 type Token @entity {
   id: ID!
   ink: Ink!
-  owner: Bytes!
+  owner: User!
   createdAt: BigInt!
   network: Network!
   price: BigInt!
@@ -45,6 +45,8 @@ type Token @entity {
   upgradeTransfer: TokenTransfer
   burned: Boolean
   artist: Artist
+  edition: BigInt
+  lastTransferAt: BigInt
 }
 
 type Artist @entity {
@@ -65,10 +67,37 @@ type Artist @entity {
   lastSaleAt: BigInt
 }
 
+type User @entity {
+  id: ID!
+  artist: Artist
+  address: Bytes!
+  tokens: [Token!] @derivedFrom(field: "owner")
+  sales: [Sale!] @derivedFrom(field: "seller")
+  purchases: [Sale!] @derivedFrom(field: "buyer")
+  likes: [Like!] @derivedFrom(field: "liker")
+  transfersFrom: [TokenTransfer!] @derivedFrom(field: "from")
+  transfersTo: [TokenTransfer!] @derivedFrom(field: "to")
+  tokenCount: BigInt
+  fromCount: BigInt
+  toCount: BigInt
+  likeCount: BigInt
+  purchaseCount: BigInt
+  purchaseValue: BigInt
+  saleCount: BigInt
+  saleValue: BigInt
+  lastLikeAt: BigInt
+  lastPurchaseAt: BigInt
+  lastSaleAt: BigInt
+  lastTransferAt: BigInt
+  createdAt: BigInt
+  lastInkAt: BigInt
+  inkCount: BigInt
+}
+
 type Sale @entity {
   id: ID!
-  buyer: Bytes!
-  seller: Bytes
+  buyer: User!
+  seller: User
   price: BigInt!
   token: Token!
   ink: Ink!
@@ -83,8 +112,8 @@ type Sale @entity {
 type TokenTransfer @entity {
   id: ID!
   token: Token!
-  from: Bytes!
-  to: Bytes!
+  from: User!
+  to: User!
   createdAt: BigInt!
   network: Network
   ink: Ink
@@ -112,6 +141,20 @@ type Total @entity {
   sales: BigInt
   upgrades: BigInt
   artists: BigInt
+  saleValue: BigInt
+  users: BigInt
+}
+
+type DailyTotal @entity {
+  id: ID!
+  day: BigInt
+  inks: BigInt
+  tokens: BigInt
+  sales: BigInt
+  upgrades: BigInt
+  artists: BigInt
+  saleValue: BigInt
+  users: BigInt
 }
 
 type InkLookup @entity {
@@ -123,6 +166,6 @@ type Like @entity {
   id: ID!
   ink: Ink!
   artist: Artist!
-  liker: Bytes!
+  liker: User!
   createdAt: BigInt!
 }
