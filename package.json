@@ -22,7 +22,6 @@
     "start": "yarn workspace eth-hooks build && yarn workspace @scaffold-eth/react-app start",
     "compile": "yarn workspace @scaffold-eth/hardhat compile",
     "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
-    "verify": "yarn workspace @scaffold-eth/hardhat etherscan-verify", 
     "watch": "yarn workspace @scaffold-eth/hardhat watch",
     "accounts": "yarn workspace @scaffold-eth/hardhat accounts",
     "balance": "yarn workspace @scaffold-eth/hardhat balance",
@@ -38,6 +37,30 @@
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
     "clean": "cd packages/hardhat && npx hardhat clean",
+    "build-hooks": "yarn workspace eth-hooks build",
+    "build-ts": "yarn workspace @scaffold-eth/vite-app-ts build-ts --max-old-space-size=12288",
+    "start-ts": "yarn workspace eth-hooks build && yarn workspace @scaffold-eth/vite-app-ts start-ts", 
+    "chain-ts": "yarn workspace @scaffold-eth/hardhat-ts chain-ts",
+    "fork-ts": "yarn workspace @scaffold-eth/hardhat-ts fork-ts",
+    "node-ts": "yarn workspace @scaffold-eth/hardhat-ts chain-ts",
+    "test-ts": "yarn workspace @scaffold-eth/hardhat-ts test-ts",
+    "compile-ts": "yarn workspace @scaffold-eth/hardhat-ts compile-ts",
+    "deploy-ts": "yarn workspace @scaffold-eth/hardhat-ts deploy-ts",
+    "watch-ts": "yarn workspace @scaffold-eth/hardhat-ts watch-ts",
+    "accounts-ts": "yarn workspace @scaffold-eth/hardhat-ts accounts-ts",
+    "balance-ts": "yarn workspace @scaffold-eth/hardhat-ts balance-ts",
+    "send-ts": "yarn workspace @scaffold-eth/hardhat-ts send-ts",
+    "ipfs-ts": "yarn workspace @scaffold-eth/vite-app-ts ipfs-ts",
+    "surge-ts": "yarn workspace @scaffold-eth/vite-app-ts surge-ts",
+    "s3-ts": "yarn workspace @scaffold-eth/vite-app-ts s3-ts",
+    "ship-ts": "yarn workspace @scaffold-eth/vite-app-ts ship-ts",
+    "generate-ts": "yarn workspace @scaffold-eth/hardhat-ts generate-ts",
+    "account-ts": "yarn workspace @scaffold-eth/hardhat-ts account-ts",
+    "mine-ts": "cd packages/hardhat-ts && npx hardhat mine-ts",
+    "wallet-ts": "cd packages/hardhat-ts && npx hardhat wallet-ts",
+    "fundedwallet-ts": "cd packages/hardhat-ts && npx hardhat fundedwalletv",
+    "flatten-ts": "cd packages/hardhat-ts && npx hardhat flatten-ts",
+    "clean-ts": "cd packages/hardhat-ts && npx hardhat clean-ts",
     "run-graph-node": "yarn workspace @scaffold-eth/services run-graph-node",
     "remove-graph-node": "yarn workspace @scaffold-eth/services remove-graph-node",
     "clean-graph-node": "yarn workspace @scaffold-eth/services clean-graph-node",
@@ -50,8 +73,7 @@
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
-    "build-hooks": "yarn workspace eth-hooks build"
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
   },
   "workspaces": {
     "packages": [
@@ -61,7 +83,9 @@
       "**/@graphprotocol/graph-ts",
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
-      "**/hardhat/**"
+      "**/hardhat/**",
+      "**/hardhat-ts",
+      "**/hardhat-ts/**"
     ]
   },
   "dependencies": {}

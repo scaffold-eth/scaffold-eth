@@ -1,1 +1,1 @@
-declare module "burner-provider";
+declare module 'burner-provider';
