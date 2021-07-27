@@ -100,12 +100,6 @@ const web3Modal = new Web3Modal({
   },
 });
 
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
 
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
@@ -113,6 +107,16 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
+
+  const logoutOfWeb3Modal = async () => {
+    await web3Modal.clearCachedProvider();
+    if(injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function"){
+      await injectedProvider.provider.disconnect();
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 1);
+  };
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");

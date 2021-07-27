@@ -564,8 +564,53 @@ export const DAI_ABI = [
 
 export const BUILDERS = [
   {
+    name: "blindnabler.eth",
+    role: "fullstack",
+    address: "0x807a1752402D21400D555e1CD7f175566088b955",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=MercuricChloride",
+    builds: [ ],
+    streamAddress: "0x619ACcbE6E5C4E5Cc71a29a05eE7228867c9733c",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://blindnabler.buidlguidl.com"
+  },
+  {
+    name: "0xsama.eth",
+    role: "fullstack",
+    address: "0x411381D227AF243E9383fDbB77313352E622D72f",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ososco",
+    builds: [ ],
+    streamAddress: "0x538d822559Eb7A2D594E7D68dCdf29b3296830D3",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://0xsama.buidlguidl.com"
+  },
+  {
+    name: "xiangan.eth",
+    role: "support",
+    address: "0x26ad3416e70bd055dbc5e34c91d17d72adbe1478",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=shravansunder",
+    builds: [ ],
+    streamAddress: "0xb32270518664C77a09E44f6DA59aD2dd3470299C",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://xiangan.buidlguidl.com"
+  },
+  {
+    name: "shravansunder.eth",
+    role: "fullstack",
+    address: "0xbe13ca20b7ff5fef2d04f67abf2a2a07feafa102",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=shravansunder",
+    builds: [ ],
+    streamAddress: "0x1FE0e66952b7eeB16dDb62B33CA62813c1c4FaA7",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://shravansunder.buidlguidl.com"
+  },
+  {
+    name: "powvt.eth",
+    role: "fullstack",
+    address: "0x9E67029403675Ee18777Ed38F9C1C5c75F7B34f2",
+    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=powvt",
+    builds: [ ],
+    streamAddress: "0xc80bfd26B102991E2D96CE583B5eFA2E4Db0733d",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://powvt.buidlguidl.com"
+  },
+  {
     name: "isaacpatka.eth",
-    role: "React + Solidity",
+    role: "fullstack",
     address: "0x775af9b7c214fe8792ab5f5da61a8708591d517e",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ipatka",
     builds: [ ],
@@ -574,7 +619,7 @@ export const BUILDERS = [
   },
   {
     name: "pabloruiz.eth",
-    role: "React + Solidity",
+    role: "fullstack + community + github",
     address: "0xfd4c0f5848642fc2041c003cb684fc66b16217bc",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=pabloruiz55",
     builds: [ ],
@@ -583,7 +628,7 @@ export const BUILDERS = [
   },
   {
     name: "togzhan.eth",
-    role: "React + Solidity",
+    role: "fullstack",
     address: "0x50eccad809d553335a8eb7bfec2cee5a6f2cde43",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=btogzhan2000",
     builds: [ ],
@@ -592,7 +637,7 @@ export const BUILDERS = [
   },
   {
     name: "ironsoul.eth",
-    role: "React + Solidity",
+    role: "react focus + fullstack",
     address: "0x1e2ce012b27d0c0d3e717e943ef6e62717cec4ea",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "honeypot", "dos", "flash", "highestbid", "merklenft", "paymentchannel"],
@@ -601,7 +646,7 @@ export const BUILDERS = [
   },
   {
     name: "viraz.eth",
-    role: "Solidity + React",
+    role: "fullstack",
     address: "0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=viraj124",
     builds: [ "xnft", "proxy", "diamond", "highestbid", "merklenft", "paymentchannel", "bondingcurve"],
@@ -610,7 +655,7 @@ export const BUILDERS = [
   },
   {
     name: "sadda11asm.eth",
-    role: "Solidity + React",
+    role: "fullstack",
     address: "0x7b945ffe9725d8e05343bec36c0eced294097f78",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=ironsoul0",
     builds: [ "xnft", "rokens", "highestbid", "merklenft", "paymentchannel"],
@@ -619,7 +664,7 @@ export const BUILDERS = [
   },
   {
     name: "amogh.eth",
-    role: "Solidity + React",
+    role: "fullstack",
     address: "0x1245e96fe32B43dDEc930D662B5d20239282b876",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=amogh-jrules",
     builds: ["smms", "push", "metamultisig"],
@@ -628,7 +673,7 @@ export const BUILDERS = [
   },
   {
     name: "calvinquin.argent.xyz",
-    role: "Solidity + React",
+    role: "fullstack",
     address: "0x614ae4c6eb91cec9e6e178549c0745a827212b24",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=calvbore",
     builds: [],
@@ -667,7 +712,7 @@ export const BUILDERS = [
   },
   {
     name: "pileofscraps.eth",
-    role: " Solidity + React ",
+    role: "fullstack",
     address: "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=pileofscraps",
     builds: [  ],
