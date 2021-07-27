@@ -12,3 +12,10 @@ export * from './useOnRepetition';
 export * from './useTimestamp';
 export * from './useUserProviderAndSigner';
 export * from './useUserAddress';
+export {
+  useExchangeEthPrice,
+  useTokenList,
+  useLookupAddress,
+  useResolveEnsName
+} from "./dapps";
+export { useEventListener } from "./Events";
