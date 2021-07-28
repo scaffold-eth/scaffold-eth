@@ -84,6 +84,15 @@ export const NETWORKS = {
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://mumbai-explorer.matic.today/",
   },
+  fuse: {
+    name: "fuse",
+    color: "#05283e",
+    chainId: 122,
+    price: 1,
+    gasPrice: 1000000000,
+    rpcUrl: `https://rpc.fuse.io`,
+    blockExplorer: "https://explorer.fuse.io/",
+  },
   localArbitrum: {
     name: "localArbitrum",
     color: "#50a0ea",

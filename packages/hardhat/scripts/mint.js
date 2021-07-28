@@ -7,198 +7,259 @@ const R = require("ramda");
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
 
-const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
+const delayMS = 8000 //sometimes Fuse needs a 8000ms break lol 😅
 
 const main = async () => {
 
   // ADDRESS TO MINT TO:
-  const toAddress = "0x8760Db2223686B352D4993DEb77A47982C502992"
+  const toAddress = "0x6Da074C23543144D865061EFC6Fd1bc72afCE82d"
 
   console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
 
   const { deployer } = await getNamedAccounts();
   const yourCollectible = await ethers.getContract("YourCollectible", deployer);
 
-  const buffalo = {
-    "description": "It's actually a bison?",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/buffalo.jpg",
-    "name": "Buffalo",
-    "attributes": [
-       {
-         "trait_type": "BackgroundColor",
-         "value": "green"
-       },
-       {
-         "trait_type": "Eyes",
-         "value": "googly"
-       },
-       {
-         "trait_type": "Stamina",
-         "value": 42
-       }
-    ]
-  }
-  console.log("Uploading buffalo...")
-  const uploaded = await ipfs.add(JSON.stringify(buffalo))
-
-  console.log("Minting buffalo with IPFS hash ("+uploaded.path+")")
-  await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
-
-
-  await sleep(delayMS)
-
-
-  const zebra = {
-    "description": "What is it so worried about?",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/zebra.jpg",
-    "name": "Zebra",
-    "attributes": [
-       {
-         "trait_type": "BackgroundColor",
-         "value": "blue"
-       },
-       {
-         "trait_type": "Eyes",
-         "value": "googly"
-       },
-       {
-         "trait_type": "Stamina",
-         "value": 38
-       }
-    ]
-  }
-  console.log("Uploading zebra...")
-  const uploadedzebra = await ipfs.add(JSON.stringify(zebra))
-
-  console.log("Minting zebra with IPFS hash ("+uploadedzebra.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedzebra.path,{gasLimit:400000})
-
-
-
-  await sleep(delayMS)
-
-
-  const rhino = {
-    "description": "What a horn!",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/rhino.jpg",
-    "name": "Rhino",
-    "attributes": [
-       {
-         "trait_type": "BackgroundColor",
-         "value": "pink"
-       },
-       {
-         "trait_type": "Eyes",
-         "value": "googly"
-       },
-       {
-         "trait_type": "Stamina",
-         "value": 22
-       }
-    ]
-  }
-  console.log("Uploading rhino...")
-  const uploadedrhino = await ipfs.add(JSON.stringify(rhino))
-
-  console.log("Minting rhino with IPFS hash ("+uploadedrhino.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedrhino.path,{gasLimit:400000})
-
-
-
-  await sleep(delayMS)
-
-
-  const fish = {
-    "description": "Is that an underbyte?",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/fish.jpg",
-    "name": "Fish",
-    "attributes": [
-       {
-         "trait_type": "BackgroundColor",
-         "value": "blue"
-       },
-       {
-         "trait_type": "Eyes",
-         "value": "googly"
-       },
-       {
-         "trait_type": "Stamina",
-         "value": 15
-       }
-    ]
-  }
-  console.log("Uploading fish...")
-  const uploadedfish = await ipfs.add(JSON.stringify(fish))
-
-  console.log("Minting fish with IPFS hash ("+uploadedfish.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedfish.path,{gasLimit:400000})
-
-
-
-  await sleep(delayMS)
-
-
-  const flamingo = {
-    "description": "So delicate.",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/flamingo.jpg",
-    "name": "Flamingo",
+  const mobile = {
+    "description": "Mobile money",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/mobile_money.png",
+    "name": "Mobile",
     "attributes": [
        {
          "trait_type": "BackgroundColor",
          "value": "black"
        },
        {
-         "trait_type": "Eyes",
-         "value": "googly"
-       },
-       {
-         "trait_type": "Stamina",
-         "value": 6
-       }
+         "trait_type": "Shape",
+         "value": "circle"
+        },
+        {
+          "trait_type": "Generation",
+          "value": 0
+        }
     ]
   }
-  console.log("Uploading flamingo...")
-  const uploadedflamingo = await ipfs.add(JSON.stringify(flamingo))
+  console.log("Uploading mobile...")
+  const uploaded = await ipfs.add(JSON.stringify(mobile))
 
-  console.log("Minting flamingo with IPFS hash ("+uploadedflamingo.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedflamingo.path,{gasLimit:400000})
-
-
+  console.log("Minting mobile with IPFS hash ("+uploaded.path+")")
+  await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
 
 
+  await sleep(delayMS)
 
-  const godzilla = {
-    "description": "Raaaar!",
-    "external_url": "https://austingriffith.com/portfolio/paintings/",// <-- this can link to a page for the specific file too
-    "image": "https://austingriffith.com/images/paintings/godzilla.jpg",
-    "name": "Godzilla",
+
+  const business = {
+    "description": "Plug and Play",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/business_tools.png",
+    "name": "Business",
     "attributes": [
        {
          "trait_type": "BackgroundColor",
-         "value": "orange"
+         "value": "black"
        },
        {
-         "trait_type": "Eyes",
-         "value": "googly"
+         "trait_type": "Shape",
+         "value": "circle"
+        },
+        {
+          "trait_type": "Generation",
+          "value": 0
+        }
+    ]
+  }
+  console.log("Uploading business...")
+  const uploadedbusiness = await ipfs.add(JSON.stringify(business))
+
+  console.log("Minting business with IPFS hash ("+uploadedbusiness.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedbusiness.path,{gasLimit:400000})
+
+
+
+  await sleep(delayMS)
+
+
+  const scale = {
+    "description": "Built for Scale",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/paymets_network.png",
+    "name": "Scale",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "black"
        },
        {
-         "trait_type": "Stamina",
-         "value": 99
+         "trait_type": "Shape",
+         "value": "circle"
+        },
+        {
+          "trait_type": "Generation",
+          "value": 0
+        }
+    ]
+  }
+  console.log("Uploading scale...")
+  const uploadedscale = await ipfs.add(JSON.stringify(scale))
+
+  console.log("Minting scale with IPFS hash ("+uploadedscale.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedscale.path,{gasLimit:400000})
+
+
+
+  await sleep(delayMS)
+
+
+  const studio = {
+    "description": "Fuse Studio",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/fuse_studio.svg",
+    "name": "Studio",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "black"
+       },
+       {
+         "trait_type": "Shape",
+         "value": "square"
+       },
+       {
+         "trait_type": "Generation",
+         "value": 0
        }
     ]
   }
-  console.log("Uploading godzilla...")
-  const uploadedgodzilla = await ipfs.add(JSON.stringify(godzilla))
+  console.log("Uploading studio...")
+  const uploadedstudio = await ipfs.add(JSON.stringify(studio))
 
-  console.log("Minting godzilla with IPFS hash ("+uploadedgodzilla.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedgodzilla.path,{gasLimit:400000})
+  console.log("Minting studio with IPFS hash ("+uploadedstudio.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedstudio.path,{gasLimit:400000})
 
 
+
+  await sleep(delayMS)
+
+
+  const fwallet = {
+    "description": "Fuse Wallet",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/fuse_wallet.png",
+    "name": "Wallet",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "black"
+       },
+       {
+         "trait_type": "Shape",
+         "value": "square"
+       },
+       {
+         "trait_type": "Generation",
+         "value": 0
+       }
+    ]
+  }
+  console.log("Uploading fwallet...")
+  const uploadedfwallet = await ipfs.add(JSON.stringify(fwallet))
+
+  console.log("Minting fwallet with IPFS hash ("+uploadedfwallet.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedfwallet.path,{gasLimit:400000})
+
+
+
+  await sleep(delayMS)
+
+
+  const fswap = {
+    "description": "Fuse Swap",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/fuse_swap.png",
+    "name": "Swap",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "green"
+       },
+       {
+         "trait_type": "Shape",
+         "value": "square"
+       },
+       {
+         "trait_type": "Generation",
+         "value": 0
+       }
+    ]
+  }
+  console.log("Uploading fswap...")
+  const uploadedfswap = await ipfs.add(JSON.stringify(fswap))
+
+  console.log("Minting fswap with IPFS hash ("+uploadedfswap.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedfswap.path,{gasLimit:400000})
+
+
+
+  await sleep(delayMS)
+
+
+  const fuse = {
+    "description": "Fuse Infrastructure",
+    "external_url": "https://fuse.io/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/fuse.png",
+    "name": "Fuse",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "black"
+       },
+       {
+         "trait_type": "Shape",
+         "value": "square"
+       },
+       {
+         "trait_type": "Generation",
+         "value": 0
+       }
+    ]
+  }
+  console.log("Uploading fuse...")
+  const uploadedfuse = await ipfs.add(JSON.stringify(fuse))
+
+  console.log("Minting fuse with IPFS hash ("+uploadedfuse.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedfuse.path,{gasLimit:400000})
+
+
+
+  await sleep(delayMS)
+
+
+  const gooddollar = {
+    "description": "Good Dollar",
+    "external_url": "https://www.gooddollar.org/",// <-- this can link to a page for the specific file too
+    "image": "https://ipfs.io/ipfs/Qma9ktzT3n9DFsV4vVdh7RDDrjNPxphajiyo2sgeJsWHKW/Fuse/gooddollar.png",
+    "name": "GoodDollar",
+    "attributes": [
+       {
+         "trait_type": "BackgroundColor",
+         "value": "blue"
+       },
+       {
+         "trait_type": "Shape",
+         "value": "circle"
+       },
+       {
+         "trait_type": "Generation",
+         "value": 0
+       }
+    ]
+  }
+  console.log("Uploading gooddollar...")
+  const uploadedgooddollar = await ipfs.add(JSON.stringify(gooddollar))
+
+  console.log("Minting gooddollar with IPFS hash ("+uploadedgooddollar.path+")")
+  await yourCollectible.mintItem(toAddress,uploadedgooddollar.path,{gasLimit:400000})
 
 
   await sleep(delayMS)
@@ -212,8 +273,8 @@ const main = async () => {
   /*
 
 
-  console.log("Minting zebra...")
-  await yourCollectible.mintItem("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1","zebra.jpg")
+  console.log("Minting business...")
+  await yourCollectible.mintItem("0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1","business.jpg")
 
   */
 
