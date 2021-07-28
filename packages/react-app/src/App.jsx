@@ -21,7 +21,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, DefiSmileDashboard } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -188,6 +188,10 @@ function App(props) {
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+    console.log("contract balance: ", parseInt(contractBalance)*10**-18);
+    console.log("UNICEF balance: ", parseInt(unicefAvailable)*10**-18);
+    console.log("MUMA balance: ", parseInt(mumaAvailable)*10**-18)
+    console.log("USAID balance: ", parseInt(usaidAvailable)*10**-18)
   });
 
   // Then read your DAI balance like:
@@ -195,6 +199,18 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
+  // Defi Dashboard props
+  // Beneficiary Addresses
+  const unicefAddress = "0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d";
+  const mumaAddress = "0xF08E19B6f75686f48189601Ac138032EBBd997f2";
+  const usaidAddress = "0x93eb95075A8c49ef1BF3edb56D0E0fac7E3c72ac";
+
+  const unicefAvailable = useContractReader(readContracts, 'DefiSmile', 'payout', [unicefAddress])
+  const mumaAvailable = useContractReader(readContracts, 'DefiSmile', 'payout', [mumaAddress])
+  const usaidAvailable = useContractReader(readContracts, 'DefiSmile', 'payout', [usaidAddress])
+
+  const contractBalance = useContractReader(readContracts, "DefiSmile", "contractBalance")
+  
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
@@ -388,17 +404,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Defi Smile Contract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/defismiledashboard">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/defismiledashboard");
               }}
-              to="/hints"
+              to="/defismiledashboard"
             >
-              Hints
+              Defi Smile Dashboard
             </Link>
           </Menu.Item>
           <Menu.Item key="/exampleui">
@@ -442,19 +458,28 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="DefiSmile"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
+          <Route path="/defismiledashboard">
+            <DefiSmileDashboard
               address={address}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              tx={tx}
+              unicefAvailable={unicefAvailable}
+              mumaAvailable={mumaAvailable}
+              usaidAvailable={usaidAvailable}
+              unicefAddress={unicefAddress}
+              mumaAddress={mumaAddress}
+              usaidAddress={usaidAddress}
             />
           </Route>
           <Route path="/exampleui">
