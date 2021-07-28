@@ -192,6 +192,7 @@ function App(props) {
     console.log("UNICEF balance: ", parseInt(unicefAvailable)*10**-18);
     console.log("MUMA balance: ", parseInt(mumaAvailable)*10**-18)
     console.log("USAID balance: ", parseInt(usaidAvailable)*10**-18)
+    console.log("Total Amount Distributed: ", parseInt(contractBalance)*10**-18)
   });
 
   // Then read your DAI balance like:
