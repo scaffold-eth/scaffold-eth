@@ -19,3 +19,4 @@ export {
   useResolveEnsName
 } from "./dapps";
 export { useEventListener } from "./Events";
+export { useTokenBalance } from "./erc";
