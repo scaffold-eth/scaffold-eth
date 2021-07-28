@@ -50,8 +50,8 @@ const { ethers } = require("ethers");
 const targetNetwork = NETWORKS.fuse; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
-const NETWORKCHECK = false;
+const DEBUG = false;
+const NETWORKCHECK = true;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
