@@ -5,7 +5,7 @@ import { Address, AddressInput, Balance, EtherInput } from "../components";
 
 const { ethers } = require("ethers");
 
-export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress, usaidAddress, mainnetProvider, price, writeContracts, readContracts, tx, unicefAvailable, mumaAvailable, usaidAvailable }) {
+export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress, usaidAddress, totalDistributed, mainnetProvider, price, writeContracts, readContracts, tx, unicefAvailable, mumaAvailable, usaidAvailable }) {
 
   const [ amount, setAmount ] = useState(0);
   const [ toAddress, setToAddress ] = useState();
@@ -82,6 +82,7 @@ export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress
           </Card>
           <Button
           onClick={ async ()=>{
+            // Bit of error handling based on the addresses in the contract
             if (address== unicefAddress || address== mumaAddress || address== usaidAddress) {
               const result = await tx( writeContracts.DefiSmile.getPayout() );
               console.log(parseInt(result))
@@ -96,6 +97,7 @@ export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress
           <h4 >I am a beneficiary, Get Payout</h4>
           </Button>
           <Row justify="center"><h3 >{errorMessage}</h3></Row>
+          <Row ><h3>{totalDistributed}</h3></Row>
         </Col>
       </Row>
 

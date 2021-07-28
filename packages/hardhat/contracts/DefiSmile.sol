@@ -1,8 +1,10 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.2;
 
-// This contract processes a transaction and allows the reciever to contribute a percentage of the transaction to a charity. 
+// This contract processes a transaction with a percentage of the transaction going to charity. 
 // The charity will be represented by a wallet address predefined by this contract.
+// This example shows three separate wallets which addresses and percentages can be configured in the constructor. 
+// Your can add and remove beneficiaries in the constructor. Just be sure to add a mapping and update sendFundz function.
 
 contract DefiSmile {
 
@@ -14,8 +16,8 @@ contract DefiSmile {
 
     constructor() {
         // Set Beneficiary wallet address and payout percentage for each here:
-        // ex. ( UNICEF (1%), MUMA (5%), USAID (10%) ) 
-        approvedBeneficiaries = [ 0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d, 0xF08E19B6f75686f48189601Ac138032EBBd997f2, 0x93eb95075A8c49ef1BF3edb56D0E0fac7E3c72ac];
+        // ex. ( UNICEF (1%), MUMA (5%), USAID (10%) )
+        approvedBeneficiaries = [0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d, 0xF08E19B6f75686f48189601Ac138032EBBd997f2, 0x93eb95075A8c49ef1BF3edb56D0E0fac7E3c72ac];
         benePayoutPercent1 = 1;
         benePayoutPercent2 = 5;
         benePayoutPercent3 = 10;
@@ -68,9 +70,9 @@ contract DefiSmile {
    // Remaining percentage goes to the 'seller' in the transaction.
 
     function sendFundz(address payable recipient) public payable {
-        address sender = msg.sender;
-        uint256 amount = msg.value;
-        deposit();    // This is to be specified in the frontend based on price of item.
+
+        deposit();    // This integer can be specified in the frontend based on the transaction type. 
+
         for (uint256 i=0; i < approvedBeneficiaries.length; i++) {
 
             // UNICEF 1% of total
@@ -99,13 +101,13 @@ contract DefiSmile {
     }
 
     // Balance of funds in this contract.
-    function contractBalance() public view returns(uint256){
+    function contractBalance() public view returns(uint256) {
         uint256 balance = address(this).balance;
         return balance;
     }
 
     // Beneficiary calls function to receive their total allowance.
-    function getPayout() public returns (string memory, uint256) {
+    function getPayout() public returns (bool) {
         address sender = msg.sender;
         for (uint256 i=0; i < approvedBeneficiaries.length; i++) {
             if (approvedBeneficiaries[i] == msg.sender) {
@@ -115,10 +117,10 @@ contract DefiSmile {
                     decreasePayout(msg.sender, allowanceAvailable);
                     totalDistributed = totalDistributed + allowanceAvailable;
                     emit Withdraw(msg.sender, allowanceAvailable);
-                    return("Success: ", allowanceAvailable);
+                    return(true);
                 }
                 else{
-                    return("Address does not have an available payout: ", allowanceAvailable);
+                    return(false);
                 }
             }
         } 

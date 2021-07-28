@@ -200,7 +200,7 @@ function App(props) {
   ]);
 
   // Defi Dashboard props
-  // Beneficiary Addresses
+  // Beneficiary Addresses set in contract constructor
   const unicefAddress = "0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d";
   const mumaAddress = "0xF08E19B6f75686f48189601Ac138032EBBd997f2";
   const usaidAddress = "0x93eb95075A8c49ef1BF3edb56D0E0fac7E3c72ac";
@@ -210,6 +210,7 @@ function App(props) {
   const usaidAvailable = useContractReader(readContracts, 'DefiSmile', 'payout', [usaidAddress])
 
   const contractBalance = useContractReader(readContracts, "DefiSmile", "contractBalance")
+  const totalDistributed = useContractReader(readContracts, "DefiSmile", "totalDistributed")
   
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
@@ -480,6 +481,7 @@ function App(props) {
               unicefAddress={unicefAddress}
               mumaAddress={mumaAddress}
               usaidAddress={usaidAddress}
+              totalDistributed={totalDistributed}
             />
           </Route>
           <Route path="/exampleui">
