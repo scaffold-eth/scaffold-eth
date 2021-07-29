@@ -60,6 +60,6 @@ To make a test transaction open an incognito window and go to https://localhost:
 
 From here you can grab the burner account address and make a transaction from your main window to the burner account. Or vise versa.
 
-After a successfull transaction try to log in a one of the charity accounts to recieve their funds. 
+After a successful transaction try to log in a one of the charity accounts to recieve their funds. 
 
 To do this, be sure to change the hardcoded addesses in the smart contract as well as App.jsx file. 
