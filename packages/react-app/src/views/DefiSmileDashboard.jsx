@@ -62,7 +62,7 @@ export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress
       <Divider ></Divider>
       <Row justify="center">
         <Col span={6}>
-          <h2 style={{margin:"6px"}}>Donations</h2>
+          <h2 style={{margin:"6px"}}>Donations 💸<h6>(net : {parseInt(totalDistributed)*10**-18} ETH )</h6></h2>
           <Card >
           <Row justify="center">
             <Tooltip title="0x7Fd8898fBf22Ba18A50c0Cb2F8394a15A182a07d">
@@ -97,7 +97,6 @@ export default function DefiSmileDashboard({ address, unicefAddress, mumaAddress
           <h4 >I am a beneficiary, Get Payout</h4>
           </Button>
           <Row justify="center"><h3 >{errorMessage}</h3></Row>
-          <Row ><h3>{totalDistributed}</h3></Row>
         </Col>
       </Row>
 

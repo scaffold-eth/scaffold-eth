@@ -106,6 +106,10 @@ contract DefiSmile {
         return balance;
     }
 
+    function totalToCharity() public view returns(uint256) {
+        return(totalDistributed);
+    }
+
     // Beneficiary calls function to receive their total allowance.
     function getPayout() public returns (bool) {
         address sender = msg.sender;
