@@ -1,8 +1,10 @@
 ## Important Notes:
 
-> This contract processes a transaction with a percentage of the transaction going to charity. The charity will be represented by a wallet address predefined by this contract. This example shows three separate wallets which addresses and percentages can be configured in the constructor. Your can add and remove beneficiaries in the constructor. Just be sure to add a mapping and update sendFundz function.
+> This smart contract protocol processes a transaction with a percentage of the transaction going to a charity of your choice. The charity will be represented by a wallet address predefined by the DefiSmile.sol smart contract. This example contract shows three separate wallets which addresses and percentages can be configured in the constructor. You can add and remove beneficiaries in the constructor. Just be sure to add a mapping and update sendFundz function.
 
-> Why did I use allowances as opposed to directly sending to the beneficiary? I wanted the contract to be flexible as possible with the potential to add multiple charities/ beneficiaries as well as customize the percentages. Depending on the size of the tranaction if the resulting payout to a beneficiary is very small it may be the case that is costs more gas to get the funds than the amount you actually recieve. Using allowances allows the funds to accumulate before being transfered to the beneficiary. The only downside is the beneficiary pays gas to get the payout. 
+> Why did I use allowances as opposed to directly sending to the beneficiary? I wanted the contract to be flexible as possible with the potential to add multiple charities/ beneficiaries and be able to customize the percentages. Depending on the size of the tranaction if the resulting payout to a beneficiary is very small it may be the case that it costs more gas to get the funds than the amount you actually recieve. Using allowances allows the funds to accumulate before being transfered to the beneficiary. The only downside is the beneficiary pays gas to get the payout. 
+
+If you were to optimize this contract for fast payments in small amounts I would recommend the xDai stable chain. This way the tx fees are pennies and you can transfer very small amounts at a time to the beneficiaries.
 
 
 # 🏄‍♂️ Quick Start
