@@ -6,7 +6,8 @@
   "scripts": {
     "chain": "npx hardhat node",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts --network localhost"
+    "deploy": "npx hardhat run scripts/deploy.ts --network localhost",
+    "test": "hardhat test --network hardhat"
   },
   "devDependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.2",
@@ -23,5 +24,8 @@
     "ts-node": "^10.0.0",
     "typechain": "^5.0.0",
     "typescript": "^4.3.2"
+  },
+  "dependencies": {
+    "@openzeppelin/contracts": "^4.2.0"
   }
 }

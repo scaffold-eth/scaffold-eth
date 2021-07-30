@@ -1,4 +1,5 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity >=0.6.0 <0.8.4;
+//SPDX-License-Identifier: MIT
 
 /// @title Factory for IpNft
 /// @author elocremarc

@@ -1,4 +1,4 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity >=0.6.0 <0.8.4;
 //SPDX-License-Identifier: MIT
 
 /// @title NFT contract for licensening IP
@@ -20,13 +20,17 @@ contract IpNft is ERC721, Ownable {
 
   constructor(string memory IpName, string memory IpSymbol, string memory IpURI )
   
+
+    }
     public ERC721(IpName, IpSymbol) {
-    _setBaseURI("ipfs://");
     IP.push(IpURI);
 
 
   }
-  
+  //@dev Override base uri
+  function _baseURI() internal pure override returns (string memory) {
+        return "ifps://";
+
   ///@dev Mint Licensee a License
   function licenseIP()
       public payable
