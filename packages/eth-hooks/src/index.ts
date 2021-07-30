@@ -1,20 +1,23 @@
-export { default as useBalance } from "./Balance";
-export { default as useBlockNumber } from "./BlockNumber";
-export { default as useContractReader } from "./ContractReader";
-export { useLookupAddress, useResolveEnsName } from "./ENS";
+
+export * from './useBlockNumber';
+export * from './useBalance';
+export * from './useBurnerSigner';
+export * from './useContractExistsAtAddress';
+export * from './useContractLoader';
+export * from './useContractReader';
+export * from './useGasPrice';
+export * from './useNonce';
+export * from './useOnBlock';
+export * from './usePoller';
+export * from './useOnRepetition';
+export * from './useTimestamp';
+export * from './useUserProviderAndSigner';
+export * from './useUserAddress';
+export {
+  useExchangeEthPrice,
+  useTokenList,
+  useLookupAddress,
+  useResolveEnsName
+} from "./dapps";
 export { useEventListener } from "./Events";
-export { default as useNonce } from "./Nonce";
-export { default as usePoller } from "./Poller";
-export { default as useTimestamp } from "./Timestamp";
-export { default as useTokenBalance } from "./TokenBalance";
-export { default as useUserAddress } from "./UserAddress";
-export { default as useUserSigner } from "./UserSigner";
-export { default as useContractLoader } from "./ContractLoader";
-export { default as useLocalStorage } from "./LocalStorage";
-export { default as useOnBlock } from "./OnBlock";
-export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
-export { default as useExchangePrice } from "./ExchangePrice";
-export { default as useGasPrice } from "./GasPrice";
-export { default as useDebounce } from "./Debounce";
-export { default as useTokenList } from "./TokenList";
-export { default as useBurnerSigner } from "./BurnerSigner";
+export { useTokenBalance } from "./erc";

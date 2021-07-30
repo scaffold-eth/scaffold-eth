@@ -4,3 +4,4 @@ node_modules/
 
 *.log
 *.tgz
+*.tsbuildinfo

@@ -12,11 +12,11 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
-  useUserSigner,
+  useUserProviderAndSigner,
   useContractLoader,
   useContractReader,
   useEventListener,
-  useExchangePrice,
+  useExchangeEthPrice,
   useGasPrice,
   useOnBlock,
 } from "eth-hooks";
@@ -96,7 +96,7 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:'https://mainnet.infura.io/v3/${INFURA_ID}', // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           100:"https://dai.poa.network", // xDai
         },
       },
@@ -125,7 +125,7 @@ const contractList = require("./contracts/hardhat_contracts.json");
 const externalContractList = require("./contracts/external_contracts.js");
 
 const contractsConfig = {
-  hardhatContracts: contractList,
+  deployedContracts: contractList,
   externalContracts: externalContractList
 }
 
@@ -146,12 +146,13 @@ function App(props) {
   };
 
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userSigner = useUserSigner(injectedProvider, localProvider);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
+  const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
     async function getAddress() {
@@ -191,11 +192,8 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(
     userSigner,
-    {
-      chainId: localChainId,
-      hardhatContracts: contractsConfig.hardhatContracts,
-      externalContracts: contractsConfig.externalContracts
-    }
+    contractsConfig,
+    localChainId
 );
 
   // EXTERNAL CONTRACT EXAMPLE:

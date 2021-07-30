@@ -19,7 +19,7 @@ import {
 import { useBlockNumber, usePoller } from "eth-hooks";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
-import { useDebounce } from "eth-hooks";
+import { useDebounce } from "../hooks";
 
 const { Option } = Select;
 const { Text } = Typography;
