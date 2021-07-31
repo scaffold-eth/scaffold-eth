@@ -4,6 +4,8 @@ const chalk = require("chalk");
 const graphDir = "../subgraph";
 const deploymentsDir = "./deployments";
 const publishDir = "../react-app/src/contracts";
+const circuitsDir = "./client";
+const publishCircuitsDir = "../react-app/src/circuits";
 
 function publishContract(contractName, networkName) {
   try {
@@ -63,6 +65,25 @@ function publishContract(contractName, networkName) {
   }
 }
 
+function publishCircuits() {
+  try {
+    const circuitOutputs = fs.readdirSync(circuitsDir);
+    if (!fs.existsSync(publishCircuitsDir)) {
+      fs.mkdirSync(publishCircuitsDir);
+    }
+    circuitOutputs.forEach((fileName) => {
+      fs.copyFileSync(
+        `${circuitsDir}/${fileName}`,
+        `${publishCircuitsDir}/${fileName}`
+      );
+    });
+    console.log("Published circuit files to react-app package.")
+  } catch (e) {
+    console.log(e);
+    return false;
+  }
+}
+
 async function main() {
   const directories = fs.readdirSync(deploymentsDir);
   directories.forEach(function (directory) {
@@ -75,6 +96,10 @@ async function main() {
     });
   });
   console.log("✅  Published contracts to the subgraph package.");
+
+  if (fs.existsSync(circuitsDir)) {
+    publishCircuits();
+  }
 }
 main()
   .then(() => process.exit(0))

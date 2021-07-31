@@ -12,14 +12,14 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
+  useUserProviderAndSigner,
   useContractLoader,
   useContractReader,
   useEventListener,
-  useExchangePrice,
+  useExchangeEthPrice,
   useGasPrice,
   useOnBlock,
-  useUserSigner,
-} from "./hooks";
+} from "eth-hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
@@ -121,6 +121,14 @@ const web3Modal = new Web3Modal({
 
 
 
+const contractList = require("./contracts/hardhat_contracts.json");
+const externalContractList = require("./contracts/external_contracts.js");
+
+const contractsConfig = {
+  deployedContracts: contractList,
+  externalContracts: externalContractList
+}
+
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -138,12 +146,13 @@ function App(props) {
   };
 
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userSigner = useUserSigner(injectedProvider, localProvider);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
+  const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
     async function getAddress() {
@@ -175,15 +184,25 @@ function App(props) {
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider);
+  const readContracts = useContractLoader(
+    localProvider,
+    contractsConfig
+  );
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
-  const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
+  const writeContracts = useContractLoader(
+    userSigner,
+    contractsConfig,
+    localChainId
+);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider);
+  const mainnetContracts = useContractLoader(
+    mainnetProvider,
+    contractsConfig
+  );
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -447,6 +466,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              config={contractsConfig}
             />
           </Route>
           <Route path="/hints">
@@ -480,6 +500,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             {/*
             <Contract
@@ -489,6 +510,7 @@ function App(props) {
               provider={mainnetProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
+              config={contractsConfig}
             />
             */}
           </Route>
