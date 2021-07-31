@@ -21,24 +21,21 @@ contract IpNft is ERC721,ERC721URIStorage, Ownable {
   Counters.Counter private _tokenIds;
 
   constructor(string memory IpBrandName, string memory IpBrandSymbol, string memory IpURI )
-  
-
     
     public ERC721(IpBrandName, IpBrandSymbol) {
       _baseURI();
     IP.push(IpURI);
   }
-  s
-  //@dev Override base uri
- function _baseURI() internal pure override returns (string memory) {
-        return "ifps://";
+  
+    function _baseURI() internal pure override returns (string memory) {
+        return "ipfs://";
     }
 
-  /**
-  * @dev Override tokenUri
-  * @param _tokenIds TokenId
-  **/
-  function tokenURI(uint256 tokenId)
+    function _burn(uint256 tokenId) internal override(ERC721, ERC721URIStorage) {
+        super._burn(tokenId);
+    }
+
+    function tokenURI(uint256 tokenId)
         public
         view
         override(ERC721, ERC721URIStorage)

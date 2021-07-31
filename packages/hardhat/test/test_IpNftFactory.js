@@ -53,9 +53,6 @@ describe("Royalty Free NFT", function () {
       it("Should have proper symbol", async function () {
         expect(await childContract1.symbol()).to.equal("Test");
       });
-      it("Should have proper base URI", async function () {
-        expect(await childContract1.baseURI()).to.equal("ipfs://");
-      });
       describe("Should mint NFT as a license", async function () {
         it("Should mint a licnese for correct price", async function () {
           await childContract1.connect(licensee).licenseIP({
