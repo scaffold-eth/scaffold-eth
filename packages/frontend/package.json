@@ -38,14 +38,14 @@
     "graphql": "^15.3.0",
     "lodash": "4.17.20",
     "next": "^11.0.1",
-    "react": "^17.0.1",
-    "react-dom": "^17.0.1"
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
   },
   "devDependencies": {
     "@testing-library/react": "^11.2.5",
     "@types/jest": "^26.0.20",
     "@types/node": "^14.14.25",
-    "@types/react": "^17.0.1",
+    "@types/react": "^17.0.15",
     "@typescript-eslint/eslint-plugin": "^4.14.2",
     "@typescript-eslint/parser": "^4.14.2",
     "babel-jest": "^26.6.3",
