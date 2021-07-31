@@ -1,14 +1,4 @@
-import {
-  Box,
-  Button,
-  Divider,
-  Input,
-  Flex,
-  Grid,
-  GridItem,
-  Text,
-  SimpleGrid,
-} from '@chakra-ui/react'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import Layout from '../components/layout/Layout'
 
