@@ -21,7 +21,7 @@ import {
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { GnosisStarterView, Hints, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -408,7 +408,7 @@ function App(props) {
               }}
               to="/exampleui"
             >
-              ExampleUI
+              Gnosis Safe Overview
             </Link>
           </Menu.Item>
           <Menu.Item key="/mainnetdai">
@@ -458,7 +458,7 @@ function App(props) {
             />
           </Route>
           <Route path="/exampleui">
-            <ExampleUI
+            <GnosisStarterView
               address={address}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}

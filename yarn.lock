@@ -1833,6 +1833,19 @@
     "@ethersproject/properties" "^5.4.0"
     "@ethersproject/strings" "^5.4.0"
 
+"@gnosis.pm/safe-core-sdk-types@^0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk-types/-/safe-core-sdk-types-0.1.1.tgz#908c394cb4660493b4e9c8e01b5a7aa36efafd30"
+  integrity sha512-PghXGDaI5Foq37nZGmI90U2OKMeGtxh5KqkDqou9aFHwGVa/nf9HRQPxG9/XUzcyfe9OlKttDlJnR3XnC3dSDw==
+
+"@gnosis.pm/safe-core-sdk@^0.3.1":
+  version "0.3.1"
+  resolved "https://registry.yarnpkg.com/@gnosis.pm/safe-core-sdk/-/safe-core-sdk-0.3.1.tgz#15171657490a90ac3773b6965c2af4b873af136f"
+  integrity sha512-L0na+KSAnicO4B9MtzPu90kwThZ2PHd11CHSRzhJ7l4oIOGB4a/KyPohcOzXTO9Vz3yDIELPlbcW5IEasUk6ag==
+  dependencies:
+    "@gnosis.pm/safe-core-sdk-types" "^0.1.1"
+    ethereumjs-util "^7.0.10"
+
 "@graphiql/toolkit@^0.2.0":
   version "0.2.2"
   resolved "https://registry.yarnpkg.com/@graphiql/toolkit/-/toolkit-0.2.2.tgz#193d570afcf686c9ee61c92054c1782b9f3c1255"
