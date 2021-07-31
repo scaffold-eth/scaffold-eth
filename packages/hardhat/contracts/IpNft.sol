@@ -8,8 +8,10 @@ pragma solidity >=0.6.0 <0.8.4;
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 
-contract IpNft is ERC721, Ownable {
+
+contract IpNft is ERC721,ERC721URIStorage, Ownable {
 
   address licensor = owner();
   uint256 licenseCost = 10000000000000000;
@@ -18,18 +20,32 @@ contract IpNft is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor(string memory IpName, string memory IpSymbol, string memory IpURI )
+  constructor(string memory IpBrandName, string memory IpBrandSymbol, string memory IpURI )
   
 
-    }
-    public ERC721(IpName, IpSymbol) {
+    
+    public ERC721(IpBrandName, IpBrandSymbol) {
+      _baseURI();
     IP.push(IpURI);
-
-
   }
+  s
   //@dev Override base uri
-  function _baseURI() internal pure override returns (string memory) {
+ function _baseURI() internal pure override returns (string memory) {
         return "ifps://";
+    }
+
+  /**
+  * @dev Override tokenUri
+  * @param _tokenIds TokenId
+  **/
+  function tokenURI(uint256 tokenId)
+        public
+        view
+        override(ERC721, ERC721URIStorage)
+        returns (string memory)
+    {
+        return super.tokenURI(tokenId);
+    }
 
   ///@dev Mint Licensee a License
   function licenseIP()

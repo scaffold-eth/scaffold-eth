@@ -14,20 +14,20 @@ contract IpNftFactory is Ownable{
 
     mapping(address => bool) public IpNftContracts;
     address [] IpNftContractList;
-    event NewIpNft(address IpNftContractAddress , address licensee, string IpName, string IpSymbol );
+    event NewIpNft(address IpNftContractAddress , address licensee, string IpBrandName, string IpBrandSymbol );
     
     /**
      * @dev Manufacture IpNft
-     * @param IpName Name of IP
-     * @param IpSymbol Symbol of IP
+     * @param IpBrandName Name of branding for licensor
+     * @param IpBrandSymbol Symbol of IP
      * @param IpURI URI of licensed data
      **/
-    function newIpNft(string memory IpName, string memory IpSymbol, string memory IpURI) public returns (address[] memory){
-        IpNft _newIpNft = new IpNft( IpName, IpSymbol,IpURI);
+    function newIpNft(string memory IpBrandName, string memory IpBrandSymbol, string memory IpURI) public returns (address[] memory){
+        IpNft _newIpNft = new IpNft( IpBrandName, IpBrandSymbol,IpURI);
         IpNftContracts[address(_newIpNft)] = true;
         IpNftContractList.push(address(_newIpNft));
         IIpNft(address(_newIpNft)).changeLicensor(msg.sender);
-        emit NewIpNft( address(_newIpNft),  msg.sender, IpName, IpSymbol);
+        emit NewIpNft( address(_newIpNft),  msg.sender, IpBrandName, IpBrandSymbol);
         return IpNftContractList;
     }
 
