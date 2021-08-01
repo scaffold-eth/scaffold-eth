@@ -6,7 +6,7 @@
   "scripts": {
     "chain": "npx hardhat node",
     "compile": "npx hardhat compile",
-    "deploy": "npx hardhat run scripts/deploy.ts --network localhost",
+    "deploy": "hardhat deploy --export-all ../frontend/contracts/hardhat_contracts.json",
     "test": "hardhat test --network hardhat"
   },
   "devDependencies": {
@@ -23,10 +23,11 @@
     "hardhat": "^2.3.0",
     "ts-node": "^10.0.0",
     "typechain": "^5.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "chai-as-promised": "^7.1.1",
+    "hardhat-deploy": "^0.8.11"
   },
   "dependencies": {
-    "@openzeppelin/contracts": "^4.2.0",
-    "chai-as-promised": "^7.1.1"
+    "@openzeppelin/contracts": "^4.2.0"
   }
 }
