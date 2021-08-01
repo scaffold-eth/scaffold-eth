@@ -6,7 +6,7 @@
   "scripts": {
     "chain": "npx hardhat node",
     "compile": "npx hardhat compile",
-    "deploy": "hardhat deploy --export-all ../frontend/contracts/hardhat_contracts.json",
+    "deploy": "npx hardhat run scripts/deploy.ts --network localhost",
     "test": "hardhat test --network hardhat"
   },
   "devDependencies": {
