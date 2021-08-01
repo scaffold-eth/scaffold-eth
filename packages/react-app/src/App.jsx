@@ -208,7 +208,7 @@ function App(props) {
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
-  //
+
   useEffect(() => {
     if (
       DEBUG &&
@@ -381,7 +381,7 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
+          {/* <Menu.Item key="/">
             <Link
               onClick={() => {
                 setRoute("/");
@@ -390,7 +390,7 @@ function App(props) {
             >
               YourContract
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
           <Menu.Item key="/hints">
             <Link
               onClick={() => {
@@ -401,17 +401,17 @@ function App(props) {
               Hints
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          <Menu.Item key="/gnosis-starter-kit">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/gnosis-starter-kit");
               }}
-              to="/exampleui"
+              to="/gnosis-starter-kit"
             >
-              Gnosis Safe Overview
+              Gnosis Safe
             </Link>
           </Menu.Item>
-          <Menu.Item key="/mainnetdai">
+          {/* <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
                 setRoute("/mainnetdai");
@@ -430,7 +430,7 @@ function App(props) {
             >
               Subgraph
             </Link>
-          </Menu.Item>
+          </Menu.Item> */}
         </Menu>
 
         <Switch>
@@ -457,7 +457,7 @@ function App(props) {
               price={price}
             />
           </Route>
-          <Route path="/exampleui">
+          <Route path="/gnosis-starter-kit">
             <GnosisStarterView
               address={address}
               userSigner={userSigner}
@@ -471,7 +471,7 @@ function App(props) {
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
             />
-          </Route>
+          {/* </Route>
           <Route path="/mainnetdai">
             <Contract
               name="DAI"
@@ -492,14 +492,14 @@ function App(props) {
             />
             */}
           </Route>
-          <Route path="/subgraph">
+          {/* <Route path="/subgraph">
             <Subgraph
               subgraphUri={props.subgraphUri}
               tx={tx}
               writeContracts={writeContracts}
               mainnetProvider={mainnetProvider}
             />
-          </Route>
+          </Route>  */}
         </Switch>
       </BrowserRouter>
 
