@@ -24,7 +24,6 @@ import React from 'react'
 import NavLink from '../NavLink'
 import ConnectWallet from '../ConnectWallet'
 import Head, { MetaProps } from './Head'
-// import "./Layout.module.scss"
 
 // Extends `window` to add `ethereum`.
 declare global {

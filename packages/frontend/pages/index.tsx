@@ -1,6 +1,7 @@
-import { Box, Flex, Text } from '@chakra-ui/react'
+import { Box, Button, Flex } from '@chakra-ui/react'
 import React, { useEffect, useState } from 'react'
 import Layout from '../components/layout/Layout'
+import LandingSidebar from '../components/LandingSidebar'
 
 function HomeIndex(): JSX.Element {
   const images = dummyImages
@@ -15,8 +16,20 @@ function HomeIndex(): JSX.Element {
   return (
     <Layout>
       <Flex py={[4, null, null, 0]} grow={1}>
-        {/* Images */}
         <Box flex="1">
+          {/* Category buttons */}
+          <Box mb="4">
+            <Button variant="black-selected">Images</Button>
+            <Button variant="white">Audio</Button>
+            <Button variant="white">Video</Button>
+          </Box>
+          <Box mb="5">
+            <Button variant="gray-selected">Curated</Button>
+            <Button variant="white">Popular</Button>
+            <Button variant="white">New</Button>
+          </Box>
+
+          {/* Images */}
           <div className="image-grid">
             {isFetching
               ? ''
@@ -27,9 +40,7 @@ function HomeIndex(): JSX.Element {
         </Box>
 
         {/* Sidebar */}
-        <Box borderRadius=".6rem" bg="gray.100" p={5} ml="2rem">
-            <Text>You simply earn more with Royalty Free NFT</Text>
-        </Box>
+        <LandingSidebar />
       </Flex>
     </Layout>
   )

@@ -1,6 +1,7 @@
 import {
   Box,
   Button,
+  Grid,
   Image,
   Modal,
   ModalBody,
@@ -25,20 +26,22 @@ function ConnectWallet(): JSX.Element {
         order={[-1, null, null, 2]}
         textAlign={['left', null, null, 'right']}
       >
-        <Button colorScheme="teal" variant="outline" onClick={onOpen}>
+        <Button colorScheme="black" variant="outline" onClick={onOpen}>
           Connect to a wallet
         </Button>
       </Box>
       <Modal isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
-        <ModalContent>
+        <ModalContent py="5">
           <ModalHeader>Connect to a wallet</ModalHeader>
           <ModalCloseButton />
           <ModalBody>
+          <Grid templateColumns="repeat(2, 1fr)" gap={6}>
             <Button
               justifyContent="space-between"
               width="100%"
-              mb="4"
+              minHeight="5rem"
+              mr="4"
               size="lg"
               variant="outline"
               rightIcon={
@@ -57,7 +60,7 @@ function ConnectWallet(): JSX.Element {
             <Button
               justifyContent="space-between"
               width="100%"
-              mb="4"
+              minHeight="5rem"
               size="lg"
               variant="outline"
               rightIcon={
@@ -73,6 +76,7 @@ function ConnectWallet(): JSX.Element {
             >
               WalletConnect
             </Button>
+            </Grid>
           </ModalBody>
         </ModalContent>
       </Modal>
