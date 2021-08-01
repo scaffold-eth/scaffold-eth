@@ -18,6 +18,13 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
+    address licensor = owner();
+    uint256 licenseCost = 10000000000000000;
+    string[] IP;
+
+    using Counters for Counters.Counter;
+    Counters.Counter private _tokenIds;
+
     constructor(
         string memory IpBrandName,
         string memory IpBrandSymbol,
@@ -27,19 +34,17 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
         IP.push(IpURI);
     }
 
-    /**
-     * @dev Override _baseURI() in ERC721
-     * Base URI for computing {tokenURI}. If set, the resulting URI for each
-     * token will be the concatenation of the `baseURI` and the `tokenId`.
-     */
     function _baseURI() internal pure override returns (string memory) {
-        return "ifps://";
+        return "ipfs://";
     }
 
-    /**
-     * @dev Override tokenUri() in ERC721
-     * @param tokenId Token Id
-     **/
+    function _burn(uint256 tokenId)
+        internal
+        override(ERC721, ERC721URIStorage)
+    {
+        super._burn(tokenId);
+    }
+
     function tokenURI(uint256 tokenId)
         public
         view

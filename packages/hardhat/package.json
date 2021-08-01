@@ -23,7 +23,9 @@
     "hardhat": "^2.3.0",
     "ts-node": "^10.0.0",
     "typechain": "^5.0.0",
-    "typescript": "^4.3.2"
+    "typescript": "^4.3.2",
+    "chai-as-promised": "^7.1.1",
+    "hardhat-deploy": "^0.8.11"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.2.0"
