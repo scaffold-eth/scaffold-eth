@@ -1,6 +1,6 @@
 # 🏗 Scaffold-ETH - 🟣 Polygon NFT Example
 
-> Build, mint, and send around your own ERC721 on Mumbai (testnet) and then on Polygon/Matic mainnet!
+> Build, mint, and send around your own ERC721 (NFT) on Mumbai (testnet) and then on Polygon/Matic mainnet!
 
 # 🏃‍♀️ Quick Start
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
