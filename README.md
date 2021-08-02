@@ -15,27 +15,17 @@ It is very important that you checkout the `matic-nft-tutorial` branch of 🏗 s
 ```
 git checkout matic-nft-tutorial
 ```
+
 ```
 yarn install
-yarn start
-```
-
-> in a second terminal window:
-
-```
-cd matic-nft-tutorial
-yarn chain
 ```
 
 First, be sure to check that you're deploying on `mumbai` by changing the `defaultNetwork` in `packages/hardhat/hardhat.config.js`:
 
 ![image1](https://user-images.githubusercontent.com/76530366/127908961-ba120324-02d9-4c5b-92fc-2daa053691b5.png)
 
-To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/src/App.jsx`:
-
-![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
  
-🔐 In a third terminal window, run this to get your account address:
+🔐 We will need to generate a **deployer** account:
 
 ```
 yarn generate
@@ -51,6 +41,16 @@ Confirm that your account has the funds needed for the rest of the tutorial (che
 ```
 cd matic-nft-tutorial
 yarn deploy
+```
+
+To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/src/App.jsx`:
+
+![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
+
+Start the frontend with:
+
+```
+yarn start
 ```
 
 📱 Open http://localhost:3000 to see the app
