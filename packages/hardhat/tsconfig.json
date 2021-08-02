@@ -7,7 +7,13 @@
     "outDir": "dist",
     "resolveJsonModule": true
   },
-  "include": ["./hardhat.config.ts", "./scripts", "./deploy", "./test"],
+  "include": [
+    "./hardhat.config.ts",
+    "./scripts",
+    "./deploy",
+    "./test",
+    "typechain/**/*"
+  ],
 
   "files": ["./hardhat.config.ts"]
 }

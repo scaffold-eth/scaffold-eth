@@ -33,6 +33,7 @@ async function main() {
 
 // https://github.com/nomiclabs/hardhat-hackathon-boilerplate/blob/master/scripts/deploy.js
 function saveFrontendFiles(contract: Contract, contractName: string) {
+  console.log('save frontend files', `${config.paths.artifacts}/contracts/contractAddress.ts`, config)
   fs.appendFileSync(
     `${config.paths.artifacts}/contracts/contractAddress.ts`,
     `export const ${contractName} = '${contract.address}'\n`

@@ -22,6 +22,11 @@ task("accounts", "Prints the list of accounts", async (_args, hre) => {
  * @type import('hardhat/config').HardhatUserConfig
  */
 const config: HardhatUserConfig = {
+  namedAccounts: {
+    deployer: {
+      default: 0, // here this will by default take the first account as deployer
+    },
+  },
   solidity: {
     compilers: [
       {
