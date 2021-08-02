@@ -22,7 +22,22 @@ cd simple-nft-example
 yarn chain
 ```
 
-> in a third terminal window:
+First, be sure to check that you're deploying on `mumbai` by changing the `defaultNetwork` in `packages/hardhat/hardhat.config.js` and `targetNetwork` in `packages/src/App.jsx`.
+
+![instruction1](https://ibb.co/Chq2311)
+
+![instruction2](https://ibb.co/0hY8QY7)
+ 
+🔐 In a third terminal window, run this to get your account address:
+
+```
+yarn generate
+yarn account
+```
+
+Go to https://faucet.matic.network to get some Mumbai-MATIC.
+
+> Once you've confirmed that your account has the gas needed for the rest of the tutorial (feel free to check on https://mumbai.polygonscan.com), run this in that terminal window:
 
 ```
 cd simple-nft-example
@@ -31,7 +46,9 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
-> ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the toAddress to your frontend address (wallet address in the top right or localhost:3000).
+> ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
+
+![instruction3](https://ibb.co/8cpWD95)
 
 ![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
 
@@ -41,7 +58,7 @@ yarn mint
 ```
 ![nft2](https://user-images.githubusercontent.com/526558/124386972-3d432780-dcb3-11eb-933e-dad7dfd313b2.png)
 
-👀 You should see your collectibles show up if you minted to the correct address:
+👀 You should see your collectibles show up on the frontend if you minted to the correct address:
 
 ![nft3](https://user-images.githubusercontent.com/526558/124386983-48965300-dcb3-11eb-88a7-e88ad6307976.png)
 
@@ -63,72 +80,49 @@ yarn mint
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
-🔑 Create wallet links to your app with `yarn wallet` and `yarn fundedwallet`
-
 ⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
 
 # 📡 Deploy NFT smart contract!
 
-🛰 Ready to deploy to a testnet?
-> Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
+🛰 Ready to deploy to MATIC mainnet?
+> Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js` to `matic`
 
-![nft6](https://user-images.githubusercontent.com/526558/124387061-7a0f1e80-dcb3-11eb-9f4c-19229f43adec.png)
+![instruction3](https://ibb.co/b3Ftpx8)
 
-🔐 Generate a deploy account with `yarn generate`
+Make sure you have some MATIC (mainnet) tokens for this. You can exchange for MATIC tokens via. a bridge like UniSwap or SushiSwap.
 
-![nft7](https://user-images.githubusercontent.com/526558/124387064-7d0a0f00-dcb3-11eb-9d0c-195f93547fb9.png)
-
-👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an instant wallet to fund your account via QR code)
+👛 View your deployer address using `yarn account` to ensure you have some MATIC.
 
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
 👨‍🎤 Deploy your NFT smart contract:
 ```
-yarn deploy
+yarn deploy --network matic
 ```
-> ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
+> ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to MATIC:
 
-![nft9](https://user-images.githubusercontent.com/526558/124387095-9743ed00-dcb3-11eb-8ea5-afc25d7fef80.png)
+![instruction4](https://ibb.co/9sPNTy4)
 
 You should see the correct network in the frontend:
 
-![nft10](https://user-images.githubusercontent.com/526558/124387099-9a3edd80-dcb3-11eb-9a57-54a7d370589a.png)
+![nft10](https://ibb.co/8cpWD95)
 
-An instant wallet running on xDAI insired by xdai.io.
-🎫 Ready to mint a batch of NFTs for reals?
+🎫 Ready to mint a batch of L2 NFTs for reals?
 ```
 yarn mint
-
-await tenderlyVerify(
-  {contractName: "YourContract",
-   contractAddress: yourContract.address
-})
 ```
-Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
-```
-yarn deploy --network NETWORK_OF_CHOICE
-```
-Once verified, they will then be available to view on Tenderly!
+Once deployed, you should be able to see them on your Frontend. Check OpenSea for the smart contract and your minted NFTs too!
 
 ![nft11](https://user-images.githubusercontent.com/526558/124387132-b04c9e00-dcb3-11eb-95d1-03b8c272e52f.png)
 
 # ⚔️ Side Quests
 ## 🐟 Open Sea
-> Add your contract to OpenSea ( create -> submit NFTs -> "or add an existing contract" )
+> Check out your contract on OpenSea's MATIC viewer (Under "My Collections")
 
-(It can take a while before they show up, but here is an example:)
-https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
-## 🔍 Etherscan Contract Verification
-> run yarn flatten > flat.txt (You will need to clean up extra junk at the top and bottom of flat.txt. Sorry, rookie stuff here.)
+![instruction5](https://ibb.co/rt0PwJS)
 
-> copy the contents of flat.txt to the block explorer and select compiler v0.6.7 and Yes to Optimization (200 runs if anyone asks)
-
-![nft12](https://user-images.githubusercontent.com/526558/124387153-c8bcb880-dcb3-11eb-8191-e53f87129b88.png)
-
-## 🔶 Infura
-> You will need to get a key from infura.io and paste it into constants.js in packages/react-app/src:
-
-![nft13](https://user-images.githubusercontent.com/526558/124387174-d83c0180-dcb3-11eb-989e-d58ba15d26db.png)
+## 🔍 Maticscan Contract
+> Feel free to also check your contract address on Polygonscan (extractible from the terminal where you deployed the contract).
 
 # 🛳 Ship the app!
 > ⚙️ build and upload your frontend and share the url with your friends...
@@ -153,6 +147,16 @@ yarn ipfs
 ![nft15](https://user-images.githubusercontent.com/526558/124387205-00c3fb80-dcb4-11eb-9e2f-29585e323037.gif)
 
 ------------
+
+# FAQs
+
+What happens if I run into a chainID error?
+		Under `packages/hardhat/deployments`, make sure that your chainID for your desired chain to deploy to is correct. The chainID file is located under their respective chain folders. For Matic, the correct chainID is 134. For Mumbai, the correct chainID is 80001.
+
+What happens if I run into a gas error?
+		This can be caused by many things. First check if you do have enough gas to deploy on your various networks. Then, try to raise the `gasPrice` as shown below under `packages/hardhat/hardhat.config.js`.
+
+![instruction6](https://ibb.co/NyGCcRp)
 
 # Documentation
 

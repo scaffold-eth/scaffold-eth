@@ -12,7 +12,7 @@ const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
 const main = async () => {
 
   // ADDRESS TO MINT TO:
-  const toAddress = "0x8760Db2223686B352D4993DEb77A47982C502992"
+  const toAddress = "0xb2ac59ae04d0f7310dc3519573bf70387b3b6e3a"
 
   console.log("\n\n 🎫 Minting to "+toAddress+"...\n");
 
@@ -43,7 +43,7 @@ const main = async () => {
   const uploaded = await ipfs.add(JSON.stringify(buffalo))
 
   console.log("Minting buffalo with IPFS hash ("+uploaded.path+")")
-  await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploaded.path,{gasLimit:10000000})
 
 
   await sleep(delayMS)
@@ -73,7 +73,7 @@ const main = async () => {
   const uploadedzebra = await ipfs.add(JSON.stringify(zebra))
 
   console.log("Minting zebra with IPFS hash ("+uploadedzebra.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedzebra.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploadedzebra.path,{gasLimit:10000000})
 
 
 
@@ -104,7 +104,7 @@ const main = async () => {
   const uploadedrhino = await ipfs.add(JSON.stringify(rhino))
 
   console.log("Minting rhino with IPFS hash ("+uploadedrhino.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedrhino.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploadedrhino.path,{gasLimit:10000000})
 
 
 
@@ -135,7 +135,7 @@ const main = async () => {
   const uploadedfish = await ipfs.add(JSON.stringify(fish))
 
   console.log("Minting fish with IPFS hash ("+uploadedfish.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedfish.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploadedfish.path,{gasLimit:10000000})
 
 
 
@@ -166,7 +166,7 @@ const main = async () => {
   const uploadedflamingo = await ipfs.add(JSON.stringify(flamingo))
 
   console.log("Minting flamingo with IPFS hash ("+uploadedflamingo.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedflamingo.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploadedflamingo.path,{gasLimit:10000000})
 
 
 
@@ -196,18 +196,18 @@ const main = async () => {
   const uploadedgodzilla = await ipfs.add(JSON.stringify(godzilla))
 
   console.log("Minting godzilla with IPFS hash ("+uploadedgodzilla.path+")")
-  await yourCollectible.mintItem(toAddress,uploadedgodzilla.path,{gasLimit:400000})
+  await yourCollectible.mintItem(toAddress,uploadedgodzilla.path,{gasLimit:10000000})
 
 
 
 
   await sleep(delayMS)
 
-  console.log("Transferring Ownership of YourCollectible to "+toAddress+"...")
+  // console.log("Transferring Ownership of YourCollectible to "+toAddress+"...")
 
-  await yourCollectible.transferOwnership(toAddress)
+  // await yourCollectible.transferOwnership(toAddress)
 
-  await sleep(delayMS)
+  // await sleep(delayMS)
 
   /*
 
