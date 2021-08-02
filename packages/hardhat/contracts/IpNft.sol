@@ -27,6 +27,12 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
         IP.push(IpURI);
     }
 
+    // @dev push a new IP to the contract
+    function _pushIP(string memory IpURI) public {
+        IP.push(IpURI);
+    }
+
+
     function _baseURI() internal pure override returns (string memory) {
         return "ipfs://";
     }
@@ -36,6 +42,15 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
         override(ERC721, ERC721URIStorage)
     {
         super._burn(tokenId);
+    }
+  
+    /** @dev disable Transfer of NFT to ensure no secondary market can function */ 
+    function transferFrom(address from, address to, uint256 tokenId) public override {
+        revert("Transfer Disabled Buy new License");
+    }
+    /** @dev disable Transfer of NFT to ensure no secondary market can function */ 
+    function safeTransferFrom(address from, address to,uint256 tokenId) public override {
+        revert("Transfer Disabled Buy new License");
     }
 
     function tokenURI(uint256 tokenId)
