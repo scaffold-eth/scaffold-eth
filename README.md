@@ -29,14 +29,19 @@ First, be sure to check that you're deploying on `mumbai` by changing the `defau
 
 ```
 yarn generate
+```
+
+🙎 This will create a new mnemonic and you can get this **deployer** address using the command:
+
+```
 yarn account
 ```
 
 Go to https://faucet.matic.network to get some Mumbai-MATIC (testnet currency).
 
-Confirm that your account has the funds needed for the rest of the tutorial (check on https://mumbai.polygonscan.com).
+Confirm that your account has the funds needed for the rest of the tutorial: (check on https://mumbai.polygonscan.com)
 
-> Deploy your contract:
+> Compile and deploy your NFT contract:
 
 ```
 cd matic-nft-tutorial
