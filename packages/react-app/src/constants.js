@@ -542,6 +542,13 @@ export const DAI_ABI = [
       readMore: "https://eips.ethereum.org/EIPS/eip-1167",
       image: "proxy.png"
     },
+    {
+      name: "🔓 Sign in with Ethereum - Serverless JWT Authentication",
+      desc: "Authenticate your serverless back end with Ethereum based login and JWT tokens",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/serverless-auth/packages/react-app",
+      readMore: "",
+      image: "serverlessauth.png"
+    },
 
     /*
     {
