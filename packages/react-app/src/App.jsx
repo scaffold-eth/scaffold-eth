@@ -51,7 +51,7 @@ const targetNetwork = NETWORKS.localhost; // <------- select your target fronten
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
-const NETWORKCHECK = false;
+const NETWORKCHECK = true;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
@@ -311,7 +311,27 @@ function App(props) {
             description={
               <div>
                 You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <b>{networkLocal && networkLocal.name}</b>.
+                <Button
+                  onClick={async () => {
+                    const ethereum = window.ethereum;
+                    const data = [
+                      {
+                        chainId: "0x" + targetNetwork.chainId.toString(16),
+                        chainName: targetNetwork.name,
+                        nativeCurrency: targetNetwork.nativeCurrency,
+                        rpcUrls: [targetNetwork.rpcUrl],
+                        blockExplorerUrls: [targetNetwork.blockExplorer],
+                      },
+                    ];
+                    console.log("data", data);
+                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
+                    if (tx) {
+                      console.log(tx);
+                    }
+                  }}
+                >
+                  <b>{networkLocal && networkLocal.name}</b>
+                </Button>.
               </div>
             }
             type="error"
