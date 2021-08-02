@@ -59,6 +59,10 @@ yarn start
 
 📱 Open http://localhost:3000 to see the app
 
+---
+
+### Minting:
+
 > ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
 
 ![image3](https://user-images.githubusercontent.com/76530366/127909043-29c73552-441e-4e6b-a88f-81fe7f6ba9f5.png)
