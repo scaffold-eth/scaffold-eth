@@ -4,11 +4,11 @@ import {
   ChainId,
   Config,
   DAppProvider,
-  MULTICALL_ADDRESSES,
+  // MULTICALL_ADDRESSES,
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import React from 'react'
-import { MulticallContract } from '../artifacts/contracts/contractAddress'
+// import { MulticallContract } from '../artifacts/contracts/contractAddress'
 import { useApollo } from '../lib/apolloClient'
 import "./_app.scss"
 
@@ -31,11 +31,11 @@ const config: Config = {
     ChainId.Localhost,
     ChainId.Hardhat,
   ],
-  multicallAddresses: {
-    ...MULTICALL_ADDRESSES,
-    [ChainId.Hardhat]: MulticallContract,
-    [ChainId.Localhost]: MulticallContract,
-  },
+  // multicallAddresses: {
+  //   ...MULTICALL_ADDRESSES,
+  //   [ChainId.Hardhat]: MulticallContract,
+  //   [ChainId.Localhost]: MulticallContract,
+  // },
 }
 
 const theme = extendTheme({
