@@ -24,9 +24,9 @@ yarn chain
 
 First, be sure to check that you're deploying on `mumbai` by changing the `defaultNetwork` in `packages/hardhat/hardhat.config.js` and `targetNetwork` in `packages/src/App.jsx`.
 
-![instruction1](https://ibb.co/Chq2311)
+![image1](https://user-images.githubusercontent.com/76530366/127908961-ba120324-02d9-4c5b-92fc-2daa053691b5.png)
 
-![instruction2](https://ibb.co/0hY8QY7)
+![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
  
 🔐 In a third terminal window, run this to get your account address:
 
@@ -48,7 +48,7 @@ yarn deploy
 
 > ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
 
-![instruction3](https://ibb.co/8cpWD95)
+![image3](https://user-images.githubusercontent.com/76530366/127909043-29c73552-441e-4e6b-a88f-81fe7f6ba9f5.png)
 
 ![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
 
@@ -87,7 +87,7 @@ yarn mint
 🛰 Ready to deploy to MATIC mainnet?
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js` to `matic`
 
-![instruction3](https://ibb.co/b3Ftpx8)
+![image4](https://user-images.githubusercontent.com/76530366/127909096-82f262ee-9052-4b80-9298-6a14dd3d5b2e.png)
 
 Make sure you have some MATIC (mainnet) tokens for this. You can exchange for MATIC tokens via. a bridge like UniSwap or SushiSwap.
 
@@ -101,11 +101,11 @@ yarn deploy --network matic
 ```
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to MATIC:
 
-![instruction4](https://ibb.co/9sPNTy4)
+![image5](https://user-images.githubusercontent.com/76530366/127909153-c14713f7-c225-4016-9c69-430ced009f3a.png)
 
 You should see the correct network in the frontend:
 
-![nft10](https://ibb.co/8cpWD95)
+![image8](https://user-images.githubusercontent.com/76530366/127909563-a695d94b-5a87-4d76-84ac-9c819f36a3f7.png)
 
 🎫 Ready to mint a batch of L2 NFTs for reals?
 ```
@@ -119,7 +119,7 @@ Once deployed, you should be able to see them on your Frontend. Check OpenSea fo
 ## 🐟 Open Sea
 > Check out your contract on OpenSea's MATIC viewer (Under "My Collections")
 
-![instruction5](https://ibb.co/rt0PwJS)
+![image6](https://user-images.githubusercontent.com/76530366/127909246-dc3ae4a5-70b7-4867-aabd-c5bc28d94588.png)
 
 ## 🔍 Maticscan Contract
 > Feel free to also check your contract address on Polygonscan (extractible from the terminal where you deployed the contract).
@@ -156,7 +156,7 @@ What happens if I run into a chainID error?
 What happens if I run into a gas error?
 		This can be caused by many things. First check if you do have enough gas to deploy on your various networks. Then, try to raise the `gasPrice` as shown below under `packages/hardhat/hardhat.config.js`.
 
-![instruction6](https://ibb.co/NyGCcRp)
+![image7](https://user-images.githubusercontent.com/76530366/127909315-623f2f7b-c8f0-4b30-b406-29821b716895.png)
 
 # Documentation
 
