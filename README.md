@@ -44,7 +44,6 @@ Confirm that your account has the funds needed for the rest of the tutorial: (ch
 > Compile and deploy your NFT contract:
 
 ```
-cd matic-nft-tutorial
 yarn deploy
 ```
 
