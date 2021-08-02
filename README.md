@@ -65,8 +65,6 @@ yarn start
 
 > ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the `toAddress` to your frontend address (wallet address in the top right or localhost:3000).
 
-![image3](https://user-images.githubusercontent.com/76530366/127909043-29c73552-441e-4e6b-a88f-81fe7f6ba9f5.png)
-
 ![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
 
 > in a terminal window run the mint script:
