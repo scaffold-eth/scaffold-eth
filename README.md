@@ -27,9 +27,11 @@ cd matic-nft-tutorial
 yarn chain
 ```
 
-First, be sure to check that you're deploying on `mumbai` by changing the `defaultNetwork` in `packages/hardhat/hardhat.config.js` and `targetNetwork` in `packages/src/App.jsx`.
+First, be sure to check that you're deploying on `mumbai` by changing the `defaultNetwork` in `packages/hardhat/hardhat.config.js`:
 
 ![image1](https://user-images.githubusercontent.com/76530366/127908961-ba120324-02d9-4c5b-92fc-2daa053691b5.png)
+
+To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/src/App.jsx`:
 
 ![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
  
