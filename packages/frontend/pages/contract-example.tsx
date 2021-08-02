@@ -1,7 +1,7 @@
 // import { Box, Button, Divider, Heading, Input, Text } from '@chakra-ui/react'
 // import { ChainId, useEthers, useSendTransaction } from '@usedapp/core'
 // import { ethers, providers, utils } from 'ethers'
-// import React, { useReducer } from 'react'
+import React from 'react'
 // import { YourContract as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 // import YourContract from '../artifacts/contracts/YourContract.sol/YourContract.json'
 // import Layout from '../components/layout/Layout'
@@ -71,7 +71,7 @@
 //   }
 // }
 
-// function ContractExample(): JSX.Element {
+function ContractExample(): JSX.Element {
 //   const [state, dispatch] = useReducer(reducer, initialState)
 //   const { account, chainId, library } = useEthers()
 
@@ -200,5 +200,9 @@
 //     </Layout>
 //   )
 // }
+return (
+<div></div>
+)
 
-// export default ContractExample
+}
+export default ContractExample
