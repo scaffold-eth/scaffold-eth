@@ -10,7 +10,7 @@
     "test": "hardhat test --network hardhat"
   },
   "devDependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.2",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.1",
     "@typechain/ethers-v5": "^7.0.1",
     "@typechain/hardhat": "^2.0.2",
@@ -18,14 +18,14 @@
     "@types/mocha": "^8.2.2",
     "@types/node": "^15.12.2",
     "chai": "^4.3.4",
+    "chai-as-promised": "^7.1.1",
     "ethereum-waffle": "^3.3.0",
-    "ethers": "^5.2.0",
+    "ethers": "^5.4.3",
     "hardhat": "^2.3.0",
+    "hardhat-deploy": "^0.8.11",
     "ts-node": "^10.0.0",
     "typechain": "^5.0.0",
-    "typescript": "^4.3.2",
-    "chai-as-promised": "^7.1.1",
-    "hardhat-deploy": "^0.8.11"
+    "typescript": "^4.3.2"
   },
   "dependencies": {
     "@openzeppelin/contracts": "^4.2.0"
