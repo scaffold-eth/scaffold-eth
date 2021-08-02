@@ -46,10 +46,9 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
     {
         return super.tokenURI(tokenId);
     }
-
     /**
      * @dev Mint Licensee a License
-     * returns token id of license
+     * @return token id of license
      **/
     function licenseIP() public payable returns (uint256) {
         require(msg.value == licenseCost);
@@ -57,7 +56,6 @@ contract IpNft is ERC721, ERC721URIStorage, Ownable {
         uint256 id = _tokenIds.current();
         _mint(msg.sender, id);
         _setTokenURI(id, IP[0]);
-
         return id;
     }
 
