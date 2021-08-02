@@ -23,7 +23,7 @@ yarn start
 > in a second terminal window:
 
 ```
-cd simple-nft-example
+cd matic-nft-tutorial
 yarn chain
 ```
 
