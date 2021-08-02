@@ -1,6 +1,7 @@
 const { ethers } = require("hardhat");
 const { use, expect } = require("chai");
 const { solidity } = require("ethereum-waffle");
+const { it } = require("mocha");
 
 require("chai").use(require("chai-as-promised")).should();
 
@@ -13,9 +14,10 @@ describe("Royalty Free NFT", function () {
   let owner;
   let licensor;
   let licensee;
+  let nonLicensee;
 
   beforeEach(async function () {
-    [owner, licensor, licensee] = await ethers.getSigners();
+    [owner, licensor, licensee, nonLicensee] = await ethers.getSigners();
   });
 
   describe("Factory to deploy IpNft contracts", function () {
@@ -77,6 +79,22 @@ describe("Royalty Free NFT", function () {
         });
         it("Should have license owned by licensee address", async function () {
           expect(await childContract1.ownerOf("1")).to.equal(licensee.address);
+        });
+
+        it("Should have Transfer function disabled", async function () {
+          await childContract1.connect(licensee).transferFrom({
+            from: licensee.address,
+            to: nonLicensee.address,
+            tokenId: 1,
+          }).should.be.rejected;
+        });
+
+        it.skip("Should have safeTransfer function disabled", async function () {
+          await childContract1.connect(licensee).safeTransferFrom({
+            from: licensee.address,
+            to: nonLicensee.address,
+            tokenId: 1,
+          }).should.be.rejected;
         });
       });
     });
