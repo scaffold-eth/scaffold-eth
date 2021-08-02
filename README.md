@@ -1,16 +1,16 @@
-# 🏗 Scaffold-ETH - 🎟 Simple NFT Example
+# 🏗 Scaffold-ETH - 🟣 Polygon NFT Example
 
-> Build, mint, and send around your own ERC721!
+> Build, mint, and send around your own ERC721 locally and then on Polygon!
 
 # 🏃‍♀️ Quick Start
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
 
 ```
-git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
+git clone https://github.com/austintgriffith/scaffold-eth.git matic-nft-tutorial
 ```
 ```
-cd simple-nft-example
-git checkout simple-nft-example
+cd matic-nft-tutorial
+git checkout matic-nft-tutorial
 yarn install
 yarn start
 ```
