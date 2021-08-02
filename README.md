@@ -1,6 +1,6 @@
 # 🏗 Scaffold-ETH - 🟣 Polygon NFT Example
 
-> Build, mint, and send around your own ERC721 locally and then on Polygon!
+> Build, mint, and send around your own ERC721 on Mumbai (testnet) and then on Polygon/Matic mainnet!
 
 # 🏃‍♀️ Quick Start
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
@@ -40,12 +40,14 @@ yarn generate
 yarn account
 ```
 
-Go to https://faucet.matic.network to get some Mumbai-MATIC.
+Go to https://faucet.matic.network to get some Mumbai-MATIC (testnet currency).
 
-> Once you've confirmed that your account has the gas needed for the rest of the tutorial (feel free to check on https://mumbai.polygonscan.com), run this in that terminal window:
+Confirm that your account has the funds needed for the rest of the tutorial (check on https://mumbai.polygonscan.com).
+
+> Deploy your contract:
 
 ```
-cd simple-nft-example
+cd matic-nft-tutorial
 yarn deploy
 ```
 
