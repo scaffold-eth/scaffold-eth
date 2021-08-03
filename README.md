@@ -64,6 +64,6 @@ After a successful transaction try to log in as one of the charity accounts to r
 
 To do this, be sure to change the hardcoded addesses in the smart contract as well as App.jsx file. 
 
-### Continuing Development
+# Continuing Development
 
 - Create an alternate contract package that can be deployed which utilizes a delegate call structure to withdraw payments.
