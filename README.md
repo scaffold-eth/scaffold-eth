@@ -1,4 +1,4 @@
-## Important Notes 🙂:
+## Important Notes 🙂
 
 > This smart contract protocol processes a transaction with a percentage of the transaction going to a charity of your choice. The charity will be represented by a wallet address predefined by the DefiSmile.sol smart contract. This example contract shows three separate wallets which addresses and percentages can be configured in the constructor. You can add and remove beneficiaries in the constructor. Just be sure to add a mapping and update sendFundz function.
 
