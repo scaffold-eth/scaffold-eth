@@ -34,7 +34,7 @@ describe("Royalty Free NFT", function () {
         const newIpNftArgs = [
           "Test",
           "Test",
-          "QmTwx4sLHk432eDqe54CX3Jij2isStJDpe6ey8eBRTYFZq",
+          "QmTwx4sLHk432eDqe54CX3Jij2isStJDpe6ey8eBRTYFZq"
         ];
         await IpNftFactory.connect(licensor).newIpNft(...newIpNftArgs);
         childContractAddress1 = await IpNftFactory.getChildren();
@@ -58,18 +58,18 @@ describe("Royalty Free NFT", function () {
       describe("Should mint NFT as a license", async function () {
         it("Should mint a licnese for correct price", async function () {
           await childContract1.connect(licensee).licenseIP({
-            value: BigInt(ethers.utils.parseEther("0.01")),
+            value: BigInt(ethers.utils.parseEther("0.01"))
           }).should.be.fulfilled;
         });
 
         it("Should reject a licnese for to low of price", async function () {
           await childContract1.connect(licensee).licenseIP({
-            value: BigInt(ethers.utils.parseEther("0.09")),
+            value: BigInt(ethers.utils.parseEther("0.09"))
           }).should.be.rejected;
         });
         it("Should reject a licnese for to high of price", async function () {
           await childContract1.connect(licensee).licenseIP({
-            value: BigInt(ethers.utils.parseEther("0.011")),
+            value: BigInt(ethers.utils.parseEther("0.011"))
           }).should.be.rejected;
         });
         it("Should have proper token URI", async function () {
@@ -85,15 +85,15 @@ describe("Royalty Free NFT", function () {
           await childContract1.connect(licensee).transferFrom({
             from: licensee.address,
             to: nonLicensee.address,
-            tokenId: 1,
+            tokenId: 1
           }).should.be.rejected;
         });
 
-        it.skip("Should have safeTransfer function disabled", async function () {
-          await childContract1.connect(licensee).safeTransferFrom({
+        it("Should have safeTransfer function disabled", async function () {
+          await childContract1.connect(licensee).transferOwnership({
             from: licensee.address,
             to: nonLicensee.address,
-            tokenId: 1,
+            tokenId: 1
           }).should.be.rejected;
         });
       });
