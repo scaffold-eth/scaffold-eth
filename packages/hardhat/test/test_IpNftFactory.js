@@ -62,12 +62,12 @@ describe("Royalty Free NFT", function () {
           }).should.be.fulfilled;
         });
 
-        it("Should reject a licnese for to low of price", async function () {
+        it("Should reject a license for to low of price", async function () {
           await childContract1.connect(licensee).licenseIP({
             value: BigInt(ethers.utils.parseEther("0.09"))
           }).should.be.rejected;
         });
-        it("Should reject a licnese for to high of price", async function () {
+        it("Should reject a license for to high of price", async function () {
           await childContract1.connect(licensee).licenseIP({
             value: BigInt(ethers.utils.parseEther("0.011"))
           }).should.be.rejected;
