@@ -159,13 +159,15 @@
           ]
         }
       }
-    },
-    "hardhat": {
-      "name": "hardhat",
-      "chainId": "1337",
+    }
+  },
+  "80001": {
+    "mumbai": {
+      "name": "mumbai",
+      "chainId": "80001",
       "contracts": {
         "IpNftFactory": {
-          "address": "0x5FbDB2315678afecb367f032d93F642f64180aa3",
+          "address": "0xB0928EB0b60F8eC74Ec89e27578EB9baC25437E3",
           "abi": [
             {
               "inputs": [],
