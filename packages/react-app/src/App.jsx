@@ -387,12 +387,13 @@ function App(props) {
       for (const a in assets) {
         try {
           const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
+          const price = await readContracts.YourCollectible.getPrice(a);
           let owner;
           if (!forSale) {
             const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
             owner = await readContracts.YourCollectible.ownerOf(tokenId);
           }
-          assetUpdate.push({ id: a, ...assets[a], forSale, owner });
+          assetUpdate.push({ id: a, ...assets[a], forSale, price, owner });
         } catch (e) {
           console.log(e);
         }
@@ -404,19 +405,24 @@ function App(props) {
 
   const galleryList = [];
   for (const a in loadedAssets) {
-    console.log("loadedAssets", a, loadedAssets[a]);
+    // console.log("loadedAssets", a, loadedAssets[a]);
 
     const cardActions = [];
     if (loadedAssets[a].forSale) {
+
       cardActions.push(
         <div>
           <Button
             onClick={() => {
               console.log("gasPrice,", gasPrice);
-              tx(writeContracts.YourCollectible.mintItem(loadedAssets[a].id, { gasPrice }));
+              
+              // console.log("price", loadedAssets[a].price);
+              tx(writeContracts.YourCollectible.mintItem(loadedAssets[a].id, { gasPrice, value: loadedAssets[a].price }));
             }}
           >
-            Mint
+            Mint {loadedAssets[a].price &&
+              "Ξ " + formatEther(loadedAssets[a].price)
+            }
           </Button>
         </div>,
       );
