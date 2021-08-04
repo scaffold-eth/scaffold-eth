@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
+# 🏗 scaffold-eth - 🎫 Simple NFT Marketplace
 
 > (Counterfactual NFT minting example...)
 
@@ -59,7 +59,7 @@ yarn deploy
 
 ---
 
-Your artwork from `artwork.json` (if uploaded and deployed correctly) should show a gallery of possible NFTS to mint:
+Your artwork from `artwork.json` (if uploaded and deployed correctly) should show a gallery of possible NFTS to mint (with the default price of 0.08 ETH):
 
 ![image](https://user-images.githubusercontent.com/2653167/110538535-5fe87980-80e1-11eb-83aa-fe2b53f9c277.png)
 
@@ -70,6 +70,7 @@ Your artwork from `artwork.json` (if uploaded and deployed correctly) should sho
 
 ![image](https://user-images.githubusercontent.com/2653167/110538992-ec933780-80e1-11eb-9d15-aaa7efea698d.png)
 
+🤯 Go to the Debug Contracts and try to set a default price or set a specific price for a NFT using their ipfs link. (Make sure you using the deployer account since only the owner can change prices)
 
 👛 Open an *incognito* window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
@@ -152,7 +153,6 @@ An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
 https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
 
 ---
-
 
 #### 🔍 Etherscan Contract Verification
 
