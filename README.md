@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🎫 Buyer Mints NFT
+# 🏗 scaffold-eth - 🎫 Simple NFT Marketplace
 
 > (Counterfactual NFT minting example...)
 
