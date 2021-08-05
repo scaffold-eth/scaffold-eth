@@ -76,7 +76,7 @@ uint256 public constant tokensPerEth = 100;
 
 > 📟 Emit **event** `BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens)` when tokens are purchased.
 
-Edit `deploy.js` to deploy the `Vendor`, but also to send all the tokens to the `vendor.address`:
+Edit `deploy.js` to deploy the `Vendor` (uncomment Vendor deploy line), but also to send all the tokens to the `vendor.address`:
 
 ```js
 const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
