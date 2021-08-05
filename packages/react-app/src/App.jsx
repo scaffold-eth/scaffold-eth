@@ -111,7 +111,7 @@ function App(props) {
   //
 
 
-  const vendorAddress = readContracts && readContracts.Vendor.address
+  const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address
 
   const vendorETHBalance = useBalance(localProvider, vendorAddress);
   if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance ? formatEther(vendorETHBalance) : '...')
