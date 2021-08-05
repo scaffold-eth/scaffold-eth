@@ -194,11 +194,21 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
+  let purpose;
+
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
+  const token1 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
+  const token2 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["2"]);
+  const token3 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["3"]);
+  const token4 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["4"]);
+  const token5 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["5"]);
 
   const STARTS_WITH = "data:application/json;base64,";
-  let tokenImage = purpose && JSON.parse(atob(purpose.slice(STARTS_WITH.length)));
+  let token1Image = token1 && JSON.parse(atob(token1.slice(STARTS_WITH.length)));
+  let token2Image = token2 && JSON.parse(atob(token2.slice(STARTS_WITH.length)));
+  let token3Image = token3 && JSON.parse(atob(token3.slice(STARTS_WITH.length)));
+  let token4Image = token4 && JSON.parse(atob(token4.slice(STARTS_WITH.length)));
+  let token5Image = token5 && JSON.parse(atob(token5.slice(STARTS_WITH.length)));
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -449,7 +459,13 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-            <img src={tokenImage && tokenImage.image} height="300" alt="" />
+            <Row justify="center">
+              <img src={token1Image && token1Image.image} height="300" alt="" />
+              <img src={token2Image && token2Image.image} height="300" alt="" />
+              <img src={token3Image && token3Image.image} height="300" alt="" />
+              <img src={token4Image && token4Image.image} height="300" alt="" />
+              <img src={token5Image && token5Image.image} height="300" alt="" />
+            </Row>
           </Route>
           <Route path="/hints">
             <Hints
