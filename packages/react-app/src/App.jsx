@@ -198,9 +198,7 @@ function App(props) {
   const purpose = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
 
   const STARTS_WITH = "data:application/json;base64,";
-  console.log(purpose && JSON.parse(atob(purpose.slice(STARTS_WITH.length))));
   let tokenImage = purpose && JSON.parse(atob(purpose.slice(STARTS_WITH.length)));
-  console.log(tokenImage && tokenImage.image);
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -451,7 +449,7 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-            <img src={tokenImage && tokenImage.image} alt="" />
+            <img src={tokenImage && tokenImage.image} height="300" alt="" />
           </Route>
           <Route path="/hints">
             <Hints

@@ -1,6 +1,6 @@
 // deploy/00_deploy_your_contract.js
 
-//const { utils } = require("ethers");
+const { utils } = require("ethers");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
@@ -8,7 +8,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("BurnNFT", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", utils.parseEther("1.5") ],
+    args: [
+      3,
+      utils.parseEther("0.01"),
+      "0xE09750abE36beA8B2236E48C84BB9da7Ef5aA07c",
+    ],
     log: true,
   });
 
