@@ -18,7 +18,7 @@ const DialogContainer = ({ terminalVisible, currentLevel, dialog, children }) =>
 
   useEffect(() => {
     scrollToBottom()
-  }, [dialog.currentDialog, dialog.currentDialogIndex])
+  }, [dialog.currentDialogIndex])
 
   return (
     <span id='terminalDialogContainer'>
