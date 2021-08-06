@@ -123,13 +123,13 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
               {/* <NavLink to="/buy" px="2" py="1" style={{ textDecoration: 'none' }}>
                 <Button colorScheme="gray">Buy</Button>
               </NavLink>
-              <NavLink to="/sell" px="2" py="1" style={{ textDecoration: 'none' }}>
+              <NavLink to="/sell" px="2" py="1" mr="4" style={{ textDecoration: 'none' }}>
                 <Button colorScheme="gray">Sell</Button>
               </NavLink> */}
 
               {account ? (
                 <Menu placement="bottom-end">
-                  <MenuButton as={Button} ml="4" pl="1">
+                  <MenuButton as={Button} pl="1">
                     <Flex alignItems="center">
                       <Image
                         style={{ display: 'inline-block' }}
