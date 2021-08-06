@@ -22,6 +22,7 @@ import { TypedEventFilter, TypedEvent, TypedListener } from "./commons";
 
 interface IpNftInterface extends ethers.utils.Interface {
   functions: {
+    "_pushIP(string)": FunctionFragment;
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
     "changeLicenseCost(uint256)": FunctionFragment;
@@ -42,6 +43,7 @@ interface IpNftInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
   };
 
+  encodeFunctionData(functionFragment: "_pushIP", values: [string]): string;
   encodeFunctionData(
     functionFragment: "approve",
     values: [string, BigNumberish]
@@ -100,6 +102,7 @@ interface IpNftInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
 
+  decodeFunctionResult(functionFragment: "_pushIP", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
   decodeFunctionResult(
@@ -206,6 +209,11 @@ export class IpNft extends BaseContract {
   interface: IpNftInterface;
 
   functions: {
+    _pushIP(
+      IpURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -298,6 +306,11 @@ export class IpNft extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
+  _pushIP(
+    IpURI: string,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   approve(
     to: string,
     tokenId: BigNumberish,
@@ -384,6 +397,8 @@ export class IpNft extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    _pushIP(IpURI: string, overrides?: CallOverrides): Promise<void>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -504,6 +519,11 @@ export class IpNft extends BaseContract {
   };
 
   estimateGas: {
+    _pushIP(
+      IpURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     approve(
       to: string,
       tokenId: BigNumberish,
@@ -597,6 +617,11 @@ export class IpNft extends BaseContract {
   };
 
   populateTransaction: {
+    _pushIP(
+      IpURI: string,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     approve(
       to: string,
       tokenId: BigNumberish,

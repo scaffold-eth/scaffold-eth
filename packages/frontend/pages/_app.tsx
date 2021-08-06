@@ -7,17 +7,13 @@ import {
 } from '@usedapp/core'
 import type { AppProps } from 'next/app'
 import { useRouter } from 'next/router'
-import { useContextualRouting } from 'next-use-contextual-routing'
 import {
-  Button,
   ChakraProvider,
   extendTheme,
   Modal,
   ModalOverlay,
   ModalContent,
-  ModalFooter,
   ModalBody,
-  ModalCloseButton,
 } from '@chakra-ui/react'
 import Sell from '../components/Sell'
 
