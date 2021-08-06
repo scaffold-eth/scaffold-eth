@@ -26,6 +26,8 @@ import ThemeSwitch from './ThemeSwitch'
 import Timeline from './Timeline'
 import TokenBalance from './TokenBalance'
 
+import QRPunkBlockie from './QRPunkBlockie'
+
 export {
   Background,
   Terminal,
@@ -53,5 +55,6 @@ export {
   Swap,
   ThemeSwitch,
   Timeline,
-  TokenBalance
+  TokenBalance,
+  QRPunkBlockie
 }

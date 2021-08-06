@@ -1,13 +1,16 @@
 import React from 'react'
 import { SpeechBubble } from '../../../../gameItems/components'
+import ReactMarkdown from 'react-markdown'
 
 const SpeakerRight = ({ text, pathToAvatar }) => {
   return (
     <div
       style={{
-        float: 'left',
+        float: 'right',
         width: '100%',
-        marginTop: '15px'
+        marginTop: '15px',
+        paddingRight: '40px',
+        position: "relative",
       }}
     >
       <img
@@ -15,12 +18,15 @@ const SpeakerRight = ({ text, pathToAvatar }) => {
         alt='avatar'
         className='background-image'
         style={{
-          minWidth: '40px',
-          transform: 'scaleX(1)'
+          position:"absolute",
+          right:0,
+          top:-18,
+          minWidth: '80px',
+          transform: 'scaleX(-1)'
         }}
       />
-      <SpeechBubble direction='left'>
-        <p>{text}</p>
+      <SpeechBubble direction='right'>
+        <ReactMarkdown>{text}</ReactMarkdown>
       </SpeechBubble>
     </div>
   )

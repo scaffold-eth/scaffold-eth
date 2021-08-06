@@ -56,6 +56,7 @@
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^16.14.0",
+    "react-markdown": "^6.0.2",
     "react-modal-resizable-draggable": "0.1.4",
     "react-qr-reader": "^2.2.1",
     "react-redux": "^7.2.3",

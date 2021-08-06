@@ -1,7 +1,7 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { Button } from '../../../../gameItems/components'
-import { SpeakerLeft, SpeakerRight } from '../components'
+import { SpeakerLeft, SpeakerRight, Speech } from '../components'
 
 import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
 import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
@@ -10,20 +10,52 @@ export const DIALOG_PATH_ID = 'setup-local-network/start'
 
 const dialog = [
   {
-    component: ({ actions }) => <SpeakerLeft text='Welcome!' />
+    component: ({ actions }) => <SpeakerLeft
+      text="Welcome to eth.dev, a game for developers learning Ethereum."
+      pathToAvatar='./assets/punk5950.png'
+    />
   },
   {
     component: ({ actions }) => (
-      <SpeakerLeft text='You are about to embark on a journey into the development world of the Ethereum blockchain.' />
+      <SpeakerLeft
+        text="I'm *Punk#5950* and I'm in charge of **onbaoarding** around here..."
+        pathToAvatar='./assets/punk5950.png'
+      />
     )
   },
+  {
+    hasChoices: true,
+    component: ({ actions }) => (
+      <>
+        <SpeakerLeft
+          text="To begin the game, please use the **wallet generator** to create an identity:"
+          pathToAvatar='./assets/punk5950.png'
+        />
+        <Button
+          onClick={() =>{
+            actions.setWalletGeneratorVisibility(true)
+          }}
+        >
+          Open Wallet Generator
+        </Button>
+      </>
+    )
+  },
+  {
+    component: ({ actions }) => (
+      <SpeakerLeft
+        text="NICE"
+        pathToAvatar='./assets/punk5950.png'
+      />
+    )
+  },
+  /*
   {
     hasChoices: true,
     component: ({ currentDialog, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerRight
-          text='This game is targeted towards more experienced developers (developers in general, not
-              Ethereum specific.'
+          text=''
         />
         {isLastVisibleDialog && (
           <>
@@ -51,7 +83,7 @@ const dialog = [
         )}
       </>
     )
-  }
+  }*/
 ]
 
 const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, [])

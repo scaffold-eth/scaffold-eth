@@ -5,7 +5,7 @@ const styles = {
   width: '96%',
   marginLeft: '2%',
   marginRight: '5%',
-  fontSize: '8px'
+  fontSize: '12px'
 }
 
 export default function Button({ className, id, onClick, styles: _styles, children }) {

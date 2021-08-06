@@ -3,20 +3,22 @@ import React from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, WindowModal } from '../../../gameItems/components'
 
-const ExampleGameActionsWindow = ({ actions }) => {
+const ExampleGameActionsWindow = ({ actions, isOpen }) => {
 
   const backgrounds = ['intro', 'city', 'cityOutskirts', 'citySkylineInsideNight', 'workstation']
 
   return (
     <WindowModal
-      initTop={320}
-      initLeft={400}
+      initTop={
+        "90%"
+      }
+      initLeft={0}
       initHeight={450}
       initWidth={312}
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={20}
       onRequestClose={() => console.log('onRequestClose')}
-      isOpen
+      isOpen={isOpen}
       contentContainerStyle={{ marginTop: '20%', paddingLeft: 20, paddingRight: 20 }}
     >
       <div style={{ color: 'white' }}>
