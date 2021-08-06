@@ -28,9 +28,7 @@ app.post('/', function(request, response) {
       firstTxInfo[request.body.safeAddress] = [];
       transactions.push(firstTxInfo);
   }
-  const transactionInfo = {}
-  transactionInfo[request.body.signature] = request.body.data;
-  transactions[0][request.body.safeAddress].push(transactionInfo)
+  transactions[0][request.body.safeAddress].push(request.body.data)
   response.send(transactions);    // echo the result back
 });
 
