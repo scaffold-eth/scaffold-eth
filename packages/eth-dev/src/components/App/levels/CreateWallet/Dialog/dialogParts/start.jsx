@@ -28,17 +28,14 @@ const dialog = [
                 I know what a wallet is
               </Button>
               <Button
-                onClick={() =>{
-
-                  console.log("currentDialog",currentDialog)
+                onClick={() => {
+                  console.log('currentDialog', currentDialog)
 
                   actions.dialog.jumpToDialogPath({
                     currentDialog,
                     dialogPathId: DOES_NOT_KNOW_WALLETS_PATH_ID
                   })
-                }
-
-                }
+                }}
               >
                 What is a wallet?
               </Button>

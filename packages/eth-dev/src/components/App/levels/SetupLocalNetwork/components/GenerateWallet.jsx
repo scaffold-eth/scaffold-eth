@@ -1,6 +1,7 @@
-import  React,{ useState } from 'react'
-import { Button } from '../../../gameItems/components'
+import React, { useState } from 'react'
 import { useUserAddress } from 'eth-hooks'
+import { ethers } from 'ethers'
+import { Button, WindowModal, WalletBare, QRPunkBlockie } from '../../../gameItems/components'
 import {
   usePoller,
   useExchangePrice,
@@ -18,15 +19,13 @@ import {
   getTargetNetwork,
   Transactor
 } from '../../../../../helpers'
-import { WindowModal, WalletBare, QRPunkBlockie } from '../../../gameItems/components'
-import { ethers } from "ethers";
 
 const localProvider = getLocalProvider()
 const targetNetwork = getTargetNetwork()
 
 const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
-
-  console.log("GENWAL currentDialog",currentDialog)
+  console.log('GENWAL currentDialog', currentDialog)
+  console.log('GENWAL currentDialog', dialog)
 
   const injectedProvider = null // TODO:
   const userProvider = useUserProvider(injectedProvider, localProvider)
@@ -42,9 +41,9 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
   const gasPrice = useGasPrice(targetNetwork, 'fast')
   const transactor = Transactor(userProvider, gasPrice)
 
-  const [ generatedWallet, setGeneratedWallet ] = useState()
-  const [ generatedMnemonic, setGeneratedMnemonic ] = useState()
-  const [ generatedAddress, setGeneratedAddress ] = useState()
+  const [generatedWallet, setGeneratedWallet] = useState()
+  const [generatedMnemonic, setGeneratedMnemonic] = useState()
+  const [generatedAddress, setGeneratedAddress] = useState()
 
   const styles = {
     button: {
@@ -59,30 +58,27 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
 
   let walletDisplay
 
-  if(generatedWallet){
+  if (generatedWallet) {
     walletDisplay = (
       <div>
-
-        <div style={{margin:"auto",position:"relative"}}>
-          <div style={{position:"absolute",top:-340,left:-80}}>
+        <div style={{ margin: 'auto', position: 'relative' }}>
+          <div style={{ position: 'absolute', top: -340, left: -80 }}>
             <QRPunkBlockie withQr={false} address={generatedAddress} scale={1.5} />
           </div>
         </div>
 
-        <div style={{padding:32,marginTop:150}}>
+        <div style={{ padding: 32, marginTop: 150 }}>
           <b>Address</b>
           <div>{generatedAddress}</div>
         </div>
 
-        <div style={{padding:32,float:"left"}}>
+        <div style={{ padding: 32, float: 'left' }}>
           <b>Seed Phrase</b>
           <div>{generatedMnemonic}</div>
         </div>
-
       </div>
     )
   }
-
 
   return (
     <WindowModal
@@ -124,19 +120,19 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
         <div
           style={{
             padding: '20px',
-            color: '#16DC8C',
-            //backgroundColor: 'rgb(16, 59, 51, 0.6)'
+            color: '#16DC8C'
+            // backgroundColor: 'rgb(16, 59, 51, 0.6)'
           }}
         >
-          { walletDisplay?walletDisplay:"Generate an indentity:"}
-          <div style={{position:"absolute",width:"90%",bottom:generatedAddress?50:100}}>
-
+          {walletDisplay || 'Generate an indentity:'}
+          <div style={{ position: 'absolute', width: '90%', bottom: generatedAddress ? 50 : 100 }}>
             <Button
               block
               style={{ ...styles.button }}
               onClick={() => {
                 const newWallet = ethers.Wallet.createRandom()
                 setGeneratedWallet(newWallet)
+                // eslint-disable-next-line no-underscore-dangle
                 setGeneratedMnemonic(newWallet._mnemonic().phrase)
                 setGeneratedAddress(newWallet.address)
               }}
@@ -144,29 +140,33 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
               Generate
             </Button>
 
-            {generatedAddress?<Button
-              type="primary"
-              onClick={() => {
-                console.log("actions",actions)
-                console.log("dialog",dialog)
+            {generatedAddress ? (
+              <Button
+                type='primary'
+                onClick={() => {
+                  console.log('actions', actions)
+                  console.log('dialog', dialog)
 
-                actions.setWalletGeneratorVisibility(false)
+                  actions.setWalletGeneratorVisibility(false)
 
-                /*actions.dialog.jumpToDialogPath({
-                  currentDialog: HOW DO I GET currentDialog?,
-                  dialogPathId: 'setup-local-network/beginner-dev'
-                })*/
+                  /*
+                  actions.dialog.jumpToDialogPath({
+                    currentDialog: HOW DO I GET currentDialog?,
+                    dialogPathId: 'setup-local-network/beginner-dev'
+                  })
+                  */
 
-                //dialog.dialogPathsVisibleToUser
-                //actions.level.setCurrentLevel({ levelId: 'create-wallet' })
-                //actions.dialog.continueDialog()
-              }}
-            >
-              Save & Continue
-            </Button>:""}
-
+                  // dialog.dialogPathsVisibleToUser
+                  // actions.level.setCurrentLevel({ levelId: 'create-wallet' })
+                  // actions.dialog.continueDialog()
+                }}
+              >
+                Save & Continue
+              </Button>
+            ) : (
+              ''
+            )}
           </div>
-
         </div>
       </div>
     </WindowModal>

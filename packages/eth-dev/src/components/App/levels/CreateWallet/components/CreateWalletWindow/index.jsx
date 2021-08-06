@@ -90,8 +90,8 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
         <div
           style={{
             padding: '20px',
-            color: '#16DC8C',
-            //backgroundColor: 'rgb(16, 59, 51, 0.6)'
+            color: '#16DC8C'
+            // backgroundColor: 'rgb(16, 59, 51, 0.6)'
           }}
         >
           <WalletBare

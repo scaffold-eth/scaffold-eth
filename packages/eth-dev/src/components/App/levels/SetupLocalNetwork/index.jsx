@@ -1,3 +1,4 @@
+/* eslint-disable prettier/prettier */
 import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
@@ -14,7 +15,7 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   const [walletGeneratorVisibility, setWalletGeneratorVisibility] = useState(false)
   const [sessionKey, setSessionKey] = useState(true)
 
-  const allActions ={
+  const allActions = {
     ...actions,
     setSessionKey,
     setInitChainInstructionsWindowVisibility,
