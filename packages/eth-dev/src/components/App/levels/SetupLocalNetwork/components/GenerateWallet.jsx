@@ -153,7 +153,7 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
                 actions.setWalletGeneratorVisibility(false)
 
                 /*actions.dialog.jumpToDialogPath({
-                  currentDialog: dialog.dialogPathsVisibleToUser,
+                  currentDialog: HOW DO I GET currentDialog?,
                   dialogPathId: 'setup-local-network/beginner-dev'
                 })*/
 
