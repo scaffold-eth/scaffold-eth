@@ -14,7 +14,7 @@ export default function SpeechBubble({ children, direction }) {
         width: 'calc(100% - 60px)',
         padding: '6px',
         fontSize: '12px',
-        lineHeight: '18px'
+        lineHeight: '25px'
       }}
     >
       {children}
