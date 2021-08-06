@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="42" height="42" viewBox="0 0 42 42">
+  <g id="Group_1" data-name="Group 1" transform="translate(-39 -30)">
+    <rect id="Rectangle_1" data-name="Rectangle 1" width="42" height="42" rx="8" transform="translate(39 30)"/>
+    <g id="Ellipse_1" data-name="Ellipse 1" transform="translate(46 37)" fill="none" stroke="#fff" stroke-width="3">
+      <circle cx="14.5" cy="14.5" r="14.5" stroke="none"/>
+      <circle cx="14.5" cy="14.5" r="13" fill="none"/>
+    </g>
+    <circle id="Ellipse_2" data-name="Ellipse 2" cx="4" cy="4" r="4" transform="translate(43 47)" fill="#fff"/>
+  </g>
+</svg>

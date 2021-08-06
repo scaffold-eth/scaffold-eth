@@ -1,0 +1,24 @@
+.container {
+    flex: 0 0 24em;
+    width: 24em;
+}
+.progress-bar-container {
+    display: flex;
+    height: 0.5rem;
+    font-size: 75%;
+    background-color: #e9ecef;
+    border-radius: 0.2rem;
+    flex: 0 0 5rem;
+    width: 5rem;
+}
+.progress-bar {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    color: #fff;
+    text-align: center;
+    white-space: nowrap;
+    background-color: #000;
+    transition: width 0.6s ease;
+    border-radius: 0.2rem;
+  }

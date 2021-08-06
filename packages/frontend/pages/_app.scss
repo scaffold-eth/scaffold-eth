@@ -1,0 +1,69 @@
+:root {
+    --colour-highlight: #19DB53;
+}
+html {
+    min-height: 100vh;
+
+    #__next {
+        min-height: 100vh;
+        
+        & > div {
+            min-height: 100vh;
+        }
+    }
+}
+
+#__next > div {
+    min-height: 100vh;
+    display: flex;
+    flex-flow: column nowrap;
+
+    main {
+        flex: 1;
+    }
+}
+
+.image-grid {
+    display: grid;
+    grid-gap: .6rem;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    grid-template-rows: repeat(auto-fit, 200px);
+    grid-auto-flow: dense;
+
+    img {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+}
+
+.btn-white {
+    background: #fff;
+    color: #000;
+}
+.btn-black {
+    background: #000;
+    color: #fff;
+}
+
+.form-control {
+    width: 100%;
+    min-width: 0px;
+    outline: 2px solid transparent;
+    outline-offset: 2px;
+    position: relative;
+    appearance: none;
+    -webkit-transition: all 0.2s;
+    transition: all 0.2s;
+    font-size: var(--chakra-fontSizes-md);
+    padding: var(--chakra-space-4);
+    border-radius: var(--chakra-radii-md);
+    overflow: visible;
+    line-height: 1.15;
+    border: 1px solid var(--colour-highlight);
+
+    &.big {
+        font-size: var(--chakra-fontSizes-3xl);
+    }
+}
