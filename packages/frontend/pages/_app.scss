@@ -13,6 +13,25 @@ html {
     }
 }
 
+* {
+    scrollbar-width: thin;
+    scrollbar-color: var(--chakra-colors-gray-600) #FFF;
+
+    &::-webkit-scrollbar {
+        width: 8px;
+    }
+
+    &::-webkit-scrollbar-track {
+        background: #FFF;
+        border-radius: 10px;
+    }
+
+    &::-webkit-scrollbar-thumb {
+        background-color: var(--chakra-colors-gray-600);
+        border-radius: 6px;
+    }
+}
+
 #__next > div {
     min-height: 100vh;
     display: flex;

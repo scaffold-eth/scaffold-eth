@@ -11,7 +11,7 @@ interface NavLinkProps {
 
 function NavLink({ to, children, as, ...props }: NavLinkProps): JSX.Element {
   const router = useRouter()
-  const isActive = router.pathname === to
+  const isActive = router.pathname === to || router.asPath === to
 
   return (
     <Link href={to} as={as}>

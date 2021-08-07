@@ -29,6 +29,7 @@
     "@chakra-ui/react": "^1.6.3",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@fontsource/open-sans": "^4.5.0",
     "@usedapp/core": "^0.4.1",
     "@web3-react/walletconnect-connector": "^6.2.0",
     "blockies-ts": "^1.0.0",

@@ -1,6 +1,13 @@
 import { extendTheme } from '@chakra-ui/react'
+import "@fontsource/open-sans/400.css"
+import "@fontsource/open-sans/600.css"
+import "@fontsource/open-sans/700.css"
 
 export const theme = extendTheme({
+  fonts: {
+    heading: "Open Sans",
+    body: "Open Sans",
+  },
   components: {
     Button: {
       baseStyle: {
@@ -12,7 +19,7 @@ export const theme = extendTheme({
           color: '#000',
           background: '#FFF',
           _hover: {
-            background: '#f8f8f8',
+            background: 'var(--chakra-colors-gray-100)',
           },
         },
         'white-selected': {

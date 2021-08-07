@@ -9,7 +9,7 @@ import { theme } from '../components/extendedTheme'
 import React from 'react'
 // import { MulticallContract } from '../artifacts/contracts/contractAddress'
 import { useApollo } from '../lib/apolloClient'
-import SellModal from '../components/Sell/SellModal'
+import SellModal from '../components/SellModal'
 import './_app.scss'
 
 // scaffold-eth's INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum

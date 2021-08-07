@@ -2,7 +2,6 @@ import {
   Box,
   Button,
   Checkbox,
-  CheckboxGroup,
   Divider,
   FormControl,
   FormLabel,
@@ -16,7 +15,7 @@ import {
   ListItem,
 } from '@chakra-ui/react'
 import { Formik, Field, Form } from 'formik'
-import styles from './InitializeAccount.module.scss'
+import styled from 'styled-components'
 import NFTLicense from './NFTLicense'
 
 function InitializeAccount(): JSX.Element {
@@ -64,7 +63,7 @@ function InitializeAccount(): JSX.Element {
             <Grid mt="2rem" fontSize="sm" templateColumns="repeat(3, 1fr)" gap="8">
               <GridItem colSpan="1" mr="2rem" >
                 <Box mb="1rem">
-                  <div className={styles.numbering}>1</div>
+                  <Numbering>1</Numbering>
                 </Box>
                 <Text fontWeight="bold" mb="2">
                   Choose your brand name and symbol
@@ -109,7 +108,7 @@ function InitializeAccount(): JSX.Element {
               </GridItem>
               <GridItem colSpan="2">
                 <Box mb="1rem">
-                  <div className={styles.numbering}>2</div>
+                  <Numbering>2</Numbering>
                 </Box>
                 <Text fontWeight="bold" mb="2">
                   Review and accept the licensing contract
@@ -186,4 +185,15 @@ function InitializeAccount(): JSX.Element {
   )
 }
 
+const Numbering = styled.div`
+  display: inline-block;
+    border-radius: 50%;
+    color: #fff;
+    background: #000;
+    padding: .2rem;
+    width: 1.8rem;
+    height: 1.8rem;
+    text-align: center;
+    font-weight: bold;
+`
 export default InitializeAccount
