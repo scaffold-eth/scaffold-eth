@@ -79,7 +79,8 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
             columns={[1, 1, 2, 2, 2]}
             alignItems="center"
             justifyContent="space-between"
-            py="8"
+            pt="5"
+            pb="12"
           >
             <Flex py={[4, null, null, 0]} grow={1} alignItems="center">
               <Link href="/">

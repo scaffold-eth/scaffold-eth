@@ -15,12 +15,6 @@ import MusicVideoAudioSVG from './MusicVideoAudioSVG'
 function ListedOnPlatform(): JSX.Element {
   return (
     <>
-      <Stack direction="row">
-        <Button variant="white">New uploads</Button>
-        <Button variant="white">Review <Numbering>2</Numbering></Button>
-        <Button variant="black-selected">Listed on Platform <Numbering>7</Numbering></Button>
-      </Stack>
-
       <Grid mt="2rem" fontSize="sm" templateColumns="repeat(3, 1fr)" gap="8">
         <GridItem colSpan="1" mr="2rem">
           <Heading as="h1" mb="1.5rem" fontSize="1.5rem">
