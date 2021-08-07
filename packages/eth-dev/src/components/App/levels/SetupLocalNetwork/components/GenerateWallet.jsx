@@ -23,10 +23,7 @@ import {
 const localProvider = getLocalProvider()
 const targetNetwork = getTargetNetwork()
 
-const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
-  console.log('GENWAL currentDialog', currentDialog)
-  console.log('GENWAL currentDialog', dialog)
-
+const GenerateWallet = ({ dialog, actions, isOpen }) => {
   const injectedProvider = null // TODO:
   const userProvider = useUserProvider(injectedProvider, localProvider)
   const mainnetProvider = getMainnetProvider()
@@ -144,17 +141,13 @@ const GenerateWallet = ({ currentDialog, dialog, actions, isOpen }) => {
               <Button
                 type='primary'
                 onClick={() => {
-                  console.log('actions', actions)
-                  console.log('dialog', dialog)
-
                   actions.setWalletGeneratorVisibility(false)
 
-                  /*
                   actions.dialog.jumpToDialogPath({
-                    currentDialog: HOW DO I GET currentDialog?,
+                    currentDialog: dialog.currentDialog,
                     dialogPathId: 'setup-local-network/beginner-dev'
                   })
-                  */
+
 
                   // dialog.dialogPathsVisibleToUser
                   // actions.level.setCurrentLevel({ levelId: 'create-wallet' })

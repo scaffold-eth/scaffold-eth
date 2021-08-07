@@ -1,3 +1,5 @@
+/* eslint-disable no-plusplus */
+/* eslint-disable no-param-reassign */
 import dotProp from 'dot-prop-immutable'
 
 const stateContainerId = 'dialog'
@@ -9,7 +11,7 @@ export const RESET_DIALOG = `${stateContainerId}/RESET_DIALOG`
 
 const initialState = {
   dialogIndexMap: {},
-  dialogLength: 0,
+  currentDialog: null,
   currentDialogIndex: 0,
   dialogPathsVisibleToUser: []
 }
@@ -24,19 +26,19 @@ const reducer = (state = initialState, action) => {
     const { payload } = action
 
     if (action.type === INIT_DIALOG) {
-      const { initialDialogPathId, dialogLength } = payload
+      const { initialDialogPathId, currentDialog } = payload
       state = dotProp.set(state, 'dialogPathsVisibleToUser', [initialDialogPathId])
       const dialogIndexMap = {}
-      for (let i = 0; i < dialogLength; i++) {
+      for (let i = 0; i < currentDialog.length; i++) {
         dialogIndexMap[i] = { visibleToUser: i === 0 }
       }
       state = dotProp.set(state, 'dialogIndexMap', dialogIndexMap)
-      state = dotProp.set(state, 'dialogLength', dialogLength)
+      state = dotProp.set(state, 'currentDialog', currentDialog)
       return dotProp.set(state, 'currentDialogIndex', 0)
     }
 
     if (action.type === CONTINUE_DIALOG) {
-      if (state.currentDialogIndex < state.dialogLength - 1) {
+      if (state.currentDialogIndex < state.currentDialog.length - 1) {
         const newDialogIndex = state.currentDialogIndex + 1
         const { dialogIndexMap } = state
         dialogIndexMap[newDialogIndex].visibleToUser = true

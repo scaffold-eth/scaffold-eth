@@ -1,19 +1,19 @@
 import React, { useEffect } from 'react'
 import { Button } from '../../../gameItems/components'
-import dialog from './dialogArray'
+import dialogArray from './dialogArray'
 
-const Dialog = ({ actions, dialog: dialogProps }) => {
-  const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps
+const Dialog = ({ actions, dialog }) => {
+  const { currentDialogIndex, dialogPathsVisibleToUser } = dialog
 
   useEffect(() => {
     actions.dialog.initDialog({
       initialDialogPathId: 'template-level/start',
-      dialogLength: dialog.length
+      currentDialog: dialogArray
     })
   }, [])
 
   // add isVisibleToUser flag to all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
-  const filteredDialog = dialog.map((dialogPart, index) => {
+  const filteredDialog = dialogArray.map((dialogPart, index) => {
     const reachedIndex = index <= currentDialogIndex
     const isVisibleToUser =
       dialogPathsVisibleToUser.includes(dialogPart.dialogPathId) && reachedIndex
@@ -33,12 +33,12 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
     >
       {filteredDialog.map((dialogPart, index) => {
         const isLastVisibleDialog = index === currentDialogIndex
-        const isFinalDialog = index === dialog.length - 1
+        const isFinalDialog = index === dialogArray.length - 1
 
         return (
           <>
             {dialogPart.isVisibleToUser &&
-              dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
+              dialogPart.component({ dialog, isLastVisibleDialog, actions })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
               <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>

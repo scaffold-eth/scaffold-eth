@@ -1,19 +1,21 @@
 import React, { useEffect } from 'react'
 import { Button } from '../../../gameItems/components'
-import dialog from './dialogArray'
+import dialogArray from './dialogArray'
 
-const Dialog = ({ actions, dialog: dialogProps }) => {
-  const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps
+const DIALOG_PART_ID = 'create-wallet/start'
+
+const Dialog = ({ actions, dialog }) => {
+  const { currentDialogIndex, dialogPathsVisibleToUser } = dialog
 
   useEffect(() => {
     actions.dialog.initDialog({
-      initialDialogPathId: 'create-wallet/start',
-      dialogLength: dialog.length
+      initialDialogPathId: DIALOG_PART_ID,
+      currentDialog: dialogArray
     })
   }, [])
 
   // add isVisibleToUser flag to all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
-  const filteredDialog = dialog.map((dialogPart, index) => {
+  const filteredDialog = dialogArray.map((dialogPart, index) => {
     const reachedIndex = index <= currentDialogIndex
     const isVisibleToUser =
       dialogPathsVisibleToUser.includes(dialogPart.dialogPathId) && reachedIndex
@@ -38,7 +40,7 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
         return (
           <>
             {dialogPart.isVisibleToUser &&
-              dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
+              dialogPart.component({ dialog, isLastVisibleDialog, actions })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
               <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>

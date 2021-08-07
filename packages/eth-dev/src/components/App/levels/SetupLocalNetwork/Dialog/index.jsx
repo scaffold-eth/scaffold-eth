@@ -1,21 +1,21 @@
 import React, { useEffect } from 'react'
 import { Button } from '../../../gameItems/components'
-import dialog from './dialogArray'
+import dialogArray from './dialogArray'
 
 const DIALOG_PART_ID = 'setup-local-network/start'
 
-const Dialog = ({ actions, dialog: dialogProps }) => {
-  const { dialogLength, currentDialogIndex, dialogPathsVisibleToUser } = dialogProps
+const Dialog = ({ actions, dialog }) => {
+  const { currentDialogIndex, dialogPathsVisibleToUser } = dialog
 
   useEffect(() => {
     actions.dialog.initDialog({
       initialDialogPathId: DIALOG_PART_ID,
-      dialogLength: dialog.length
+      currentDialog: dialogArray
     })
   }, [])
 
   // add isVisibleToUser flag to all dialog parts where 'dialogPathId' is not included in dialogPathsVisibleToUser[]
-  const filteredDialog = dialog.map((dialogPart, index) => {
+  const filteredDialog = dialogArray.map((dialogPart, index) => {
     const reachedIndex = index <= currentDialogIndex
     const isVisibleToUser =
       dialogPathsVisibleToUser.includes(dialogPart.dialogPathId) && reachedIndex
@@ -35,15 +35,18 @@ const Dialog = ({ actions, dialog: dialogProps }) => {
     >
       {filteredDialog.map((dialogPart, index) => {
         const isLastVisibleDialog = index === currentDialogIndex
-        const isFinalDialog = index === dialog.length - 1
+        const isFinalDialog = index === dialogArray.length - 1
+
+        console.log('HERE:')
+        console.log({ currentDialog: dialogArray })
 
         return (
           <>
             {dialogPart.isVisibleToUser &&
-              dialogPart.component({ currentDialog: dialog, isLastVisibleDialog, actions })}
+              dialogPart.component({ dialog, isLastVisibleDialog, actions })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
-              <div style={{padding:32,marginTop:96}}>
+              <div style={{ padding: 32, marginTop: 96 }}>
                 <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
               </div>
             )}
