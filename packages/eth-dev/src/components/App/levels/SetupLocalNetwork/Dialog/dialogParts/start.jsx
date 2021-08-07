@@ -27,19 +27,21 @@ const dialog = [
   },
   {
     hasChoices: true,
-    component: ({ actions }) => (
+    component: ({ isLastVisibleDialog, actions }) => (
       <>
         <SpeakerLeft
           text='To begin the game, please use the **wallet generator** to create an identity:'
           pathToAvatar='./assets/punk5950.png'
         />
-        <Button
-          onClick={() => {
-            actions.setWalletGeneratorVisibility(true)
-          }}
-        >
-          Open Wallet Generator
-        </Button>
+        {isLastVisibleDialog && (
+          <Button
+            onClick={() => {
+              actions.setWalletGeneratorVisibility(true)
+            }}
+          >
+            Open Wallet Generator
+          </Button>
+        )}
       </>
     )
   },
