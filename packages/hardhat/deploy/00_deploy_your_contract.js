@@ -12,6 +12,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  await deploy("QuadraticDiplomacyContract", {
+    from: deployer,
+    log: true,
+  });
+
   /*
     // Getting a previously deployed contract
     const YourContract = await ethers.getContract("YourContract", deployer);
@@ -44,4 +49,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["YourContract", "QuadraticDiplomacyContract"];

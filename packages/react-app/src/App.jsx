@@ -22,6 +22,7 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import QuadraticDiplomacyUI from "./views/QuadraticDiplomacyUI"
 
 const { ethers } = require("ethers");
 /*
@@ -197,6 +198,7 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const contributorCount = useContractReader(readContracts, "QuadraticDiplomacyContract", "getContributorCount");
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -388,7 +390,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Contract
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -431,6 +433,16 @@ function App(props) {
               Subgraph
             </Link>
           </Menu.Item>
+          <Menu.Item key="/quadratic-diplomacy">
+            <Link
+              onClick={() => {
+                setRoute("/quadratic-diplomacy");
+              }}
+              to="/quadratic-diplomacy"
+            >
+              Quadratic Diplomacy UI
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -442,7 +454,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="QuadraticDiplomacyContract"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -470,6 +482,12 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+            />
+          </Route>
+          <Route path="/quadratic-diplomacy">
+            <QuadraticDiplomacyUI
+              readContracts={readContracts}
+              contributorCount={contributorCount}
             />
           </Route>
           <Route path="/mainnetdai">
