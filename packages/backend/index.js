@@ -32,6 +32,7 @@ app.post('/', function(request, response) {
       transactions.push(firstTxInfo);
   }
   transactions[0][request.body.safeAddress].push(request.body.data)
+  console.log(request.body.data)
   response.send(transactions);    // echo the result back
 });
 

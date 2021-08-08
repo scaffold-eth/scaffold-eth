@@ -30,6 +30,7 @@ export default function GnosisStarterView({
   const loadGnosis = async () => {
     const contract = await ethAdapter.getSafeContract(safeAddress)
     const owners = await contract.getOwners();
+    console.log(owners)
     const thresold = await contract.getThreshold();
     setOwners(owners)
     setthresold(thresold)
@@ -106,8 +107,6 @@ export default function GnosisStarterView({
                 }
               }
               const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
-              setSdk(safeSdk)
-
               const partialTx = {
                 to,
                 data,
@@ -122,6 +121,8 @@ export default function GnosisStarterView({
               safeTransaction.data.signer = [];
               safeTransaction.data.signer.push(signer)
               setsafeTx(safeTransaction)
+              console.log(safeTransaction)
+              safeTransaction.signatures = Object.fromEntries(safeTransaction.signatures);
               payload.data = safeTransaction;
 
               await fetch('http://localhost:8001/', {
@@ -186,7 +187,15 @@ export default function GnosisStarterView({
                     }
                   }
                   const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
-                  await safeSdk.signTransaction(safeTx)
+                  transaction.signatures = new Map(Object.entries(transaction.signatures));
+                  // const partialTx = {};
+                  // partialTx.to = transaction.data.to;
+                  // partialTx.data = transaction.data.data;
+                  // partialTx.value = transaction.data.value;
+                  // const safeTransaction = await safeSdk.createTransaction(partialTx)
+                  // await safeSdk.signTransaction(safeTransaction)
+                  // console.log(safeTransaction)
+                  await safeSdk.signTransaction(transaction)
                 }}
               >
                 Sign TX</Button>}
