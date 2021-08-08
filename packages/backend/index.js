@@ -14,12 +14,15 @@ app.get("/transactions", function(req, res) {
   res.status(200).send(transactions);
 });
 
-// app.post('/clearTx', function(request, response){
-//   console.log("CLEARING!!!!",request.body);      // your JSON
-//   response.send(request.body);    // echo the result back
-//   transactions[request.body.address] = {}
-//   console.log("transactions",transactions)
-// });
+app.post('/:id', function(request, response){
+  transactions[0][request.body.safeAddress].splice(request.params.id, 1);
+  console.log("transactions",transactions)
+});
+
+app.post('/addSignature/:id', function(request, response){
+  transactions[0][request.body.safeAddress][request.params.id].data.signature.push(req.body.signature)
+});
+
 
 
 app.post('/', function(request, response) {
