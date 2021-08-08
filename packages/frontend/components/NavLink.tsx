@@ -4,20 +4,22 @@ import React from 'react'
 import styled from 'styled-components'
 
 interface NavLinkProps {
-  children?: string | React.ReactNode
-  to: string
-  as?: string
+  children?: string | React.ReactNode,
+  to: string,
+  as?: string,
+  style?: any,
 }
 
-function NavLink({ to, children, as, ...props }: NavLinkProps): JSX.Element {
+function NavLink({ to, children, as, style, ...props }: NavLinkProps): JSX.Element {
   const router = useRouter()
-  const isActive = router.pathname === to || router.asPath === to
+  const isActive = router.pathname.includes(to) || router.asPath === to
 
   return (
     <Link href={to} as={as}>
       <Button
         type="button"
         className={`btn ${isActive ? 'btn-black is-active' : 'btn-white'}`}
+        style={style}
         {...props}
       >
         {children}

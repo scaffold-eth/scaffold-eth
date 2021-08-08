@@ -8,6 +8,9 @@ import {
   Container,
   Flex,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Link,
   Menu,
   MenuButton,
@@ -16,6 +19,7 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
+import { IconSearch } from '@tabler/icons'
 import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
@@ -75,8 +79,7 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
       <Head customMeta={customMeta} />
       <header>
         <Container maxWidth="container.xl">
-          <SimpleGrid
-            columns={[1, 1, 2, 2, 2]}
+          <Flex
             alignItems="center"
             justifyContent="space-between"
             pt="5"
@@ -92,26 +95,23 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                 />
               </Link>
 
-              <Box padding=".15rem" border="1px solid #000" borderRadius=".4rem">
-                <NavLink to="/buy">Buy</NavLink>
-                <NavLink to={`${router.route}?sell=true`}>Sell</NavLink>
-                <NavLink to="/dao">DAO</NavLink>
+              <Box padding=".15rem" border="1px solid #000" borderRadius=".4rem" mr="1.5rem">
+                <NavLink to="/buy" style={{ padding: '.3rem var(--chakra-space-4)'}}>Buy</NavLink>
+                <NavLink to={`${router.route}?sell=true`} style={{ padding: '.3rem var(--chakra-space-4)'}}>Sell</NavLink>
+                <NavLink to="/dao" style={{ padding: '.3rem var(--chakra-space-4)'}}>DAO</NavLink>
               </Box>
-              {/* <NextLink href="/" passHref>
-                <Link px="4" py="1">
-                  Home
-                </Link>
-              </NextLink>
-              <NextLink href="/graph-example" passHref>
-                <Link px="4" py="1">
-                Graph Example
-                </Link>
-              </NextLink>
-              <NextLink href="/signature-example" passHref>
-                <Link px="4" py="1">
-                Signature Example
-                </Link>
-              </NextLink> */}
+
+              <InputGroup width="21rem">
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="gray.300"
+                  fontSize="1.2em">
+                  <IconSearch />
+                </InputLeftElement>
+                <Input placeholder="Search by licensors or content name" borderColor="gray.400" />
+              </InputGroup>
+
+
             </Flex>
 
             <Flex
@@ -119,15 +119,6 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
               alignItems={'center'}
               justifyContent={['flex-start', null, null, 'flex-end']}
             >
-              {/* <Balance /> */}
-
-              {/* <NavLink to="/buy" px="2" py="1" style={{ textDecoration: 'none' }}>
-                <Button colorScheme="gray">Buy</Button>
-              </NavLink>
-              <NavLink to="/sell" px="2" py="1" mr="4" style={{ textDecoration: 'none' }}>
-                <Button colorScheme="gray">Sell</Button>
-              </NavLink> */}
-
               {account ? (
                 <Menu placement="bottom-end">
                   <MenuButton as={Button} pl="1">
@@ -158,7 +149,7 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                 <ConnectWallet />
               )}
             </Flex>
-          </SimpleGrid>
+          </Flex>
         </Container>
       </header>
       <main>

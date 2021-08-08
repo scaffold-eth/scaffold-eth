@@ -27,7 +27,7 @@ function SellModal({ initialized = true }): JSX.Element {
       <ModalContent px="3rem" py="2.5rem" mx=".6rem">
         {/* <ModalCloseButton /> */}
         <div style={{ textAlign: 'right' }}>
-          <ModalCloseButton />
+          <ModalCloseButton onClick={() => router.push(router.route)}/>
         </div>
         <ModalBody>
           {!initialized && <InitializeAccount />}

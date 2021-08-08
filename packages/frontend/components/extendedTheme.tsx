@@ -15,6 +15,12 @@ export const theme = extendTheme({
         _focus: { boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.2)' },
       },
       variants: {
+        outline: {
+          _hover: {
+            background: 'var(--chakra-colors-gray-100)',
+            boxShadow: '0 0 0 1px rgba(0, 0, 0, 1)'
+          },
+        },
         white: {
           color: '#000',
           background: '#FFF',
@@ -95,5 +101,26 @@ export const theme = extendTheme({
         },
       },
     },
+    CloseButton: {
+      variants: {
+        bordered: {
+          border: '.15rem solid #000',
+          _focus: {
+            boxShadow: '0 0 0 3px rgba(0, 0, 0, 0.2)'
+          }
+        }
+      }
+    },
+    Tooltip: {
+      baseStyle: {
+        px: '16px',
+        py: '10px'
+      },
+      variants: {
+        black: {
+          bg: "#000",
+        }
+      }
+    }
   },
 })

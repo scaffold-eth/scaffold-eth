@@ -1,11 +1,10 @@
 import styled from 'styled-components'
 import { useRouter } from 'next/router'
 
-function ModalCloseButton(): JSX.Element {
-  const router = useRouter()
+function ModalCloseButton({ onClick } : { onClick: any}): JSX.Element {
 
   return (
-    <Button type="button" onClick={() => router.push(router.route)}>
+    <Button type="button" onClick={onClick}>
       <svg
         id="Group_38"
         data-name="Group 38"

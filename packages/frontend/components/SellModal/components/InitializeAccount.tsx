@@ -61,7 +61,7 @@ function InitializeAccount(): JSX.Element {
             </Heading>
 
             <Grid mt="2rem" fontSize="sm" templateColumns="repeat(3, 1fr)" gap="8">
-              <GridItem colSpan="1" mr="2rem" >
+              <GridItem colSpan={1} mr="2rem" >
                 <Box mb="1rem">
                   <Numbering>1</Numbering>
                 </Box>
@@ -106,7 +106,7 @@ function InitializeAccount(): JSX.Element {
                 </Field>
                 </Box>
               </GridItem>
-              <GridItem colSpan="2">
+              <GridItem colSpan={2}>
                 <Box mb="1rem">
                   <Numbering>2</Numbering>
                 </Box>

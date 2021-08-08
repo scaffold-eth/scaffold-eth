@@ -14,22 +14,26 @@ html {
 }
 
 * {
-    scrollbar-width: thin;
-    scrollbar-color: var(--chakra-colors-gray-600) #FFF;
 
     &::-webkit-scrollbar {
         width: 8px;
     }
 
     &::-webkit-scrollbar-track {
-        background: #FFF;
+        background: var(--chakra-colors-gray-100);
         border-radius: 10px;
     }
 
     &::-webkit-scrollbar-thumb {
-        background-color: var(--chakra-colors-gray-600);
+        background-color: var(--chakra-colors-black);
         border-radius: 6px;
+
+        &:hover {
+            background-color: var(--chakra-colors-gray-700);
+        }
     }
+
+    
 }
 
 #__next > div {
