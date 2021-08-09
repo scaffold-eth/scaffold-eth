@@ -1,14 +1,13 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { Box, Flex, Link, Text } from '@chakra-ui/react'
 import styled from 'styled-components'
 
 function ProfitDistributionModel(): JSX.Element {
-  const [data, setData] = useState({})
-  const { licensorPercentage = 0.5 } = data || {}
+  // const [data, setData] = useState({})
 
   useEffect(() => {
     // TODO Fetch current distribution model
-    setData(dummyData)
+    // setData(dummyData)
   }, [])
 
   return (
@@ -86,8 +85,8 @@ display: inline-block;
     margin-right: .3rem;
 `
 
-const dummyData = {
-  licensorPercentage: 0.95,
-}
+// const dummyData = {
+//   licensorPercentage: 0.95,
+// }
 
 export default ProfitDistributionModel
