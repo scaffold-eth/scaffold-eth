@@ -18,8 +18,9 @@ import {
   MenuList,
   SimpleGrid,
   Text,
+  Tooltip,
 } from '@chakra-ui/react'
-import { IconSearch } from '@tabler/icons'
+import { IconSearch, IconCaretDown, IconBolt, IconFlare } from '@tabler/icons'
 import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
@@ -114,6 +115,10 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
 
             </Flex>
 
+            <Tooltip label="Your voting power (out of 100%) is dependent on rolling monthly sales of your content" aria-label="A tooltip">
+              <Button px=".9rem" mr=".6rem"><IconFlare stroke={1} style={{ marginRight: '.2rem'}} />4</Button>
+            </Tooltip>
+
             <Flex
               order={[-1, null, null, 2]}
               alignItems={'center'}
@@ -122,6 +127,7 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
               {account ? (
                 <Menu placement="bottom-end">
                   <MenuButton as={Button} pl="1">
+                    
                     <Flex alignItems="center">
                       <Image
                         style={{ display: 'inline-block' }}
@@ -133,7 +139,9 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                       <span style={{ display: 'inline-block' }}>
                         {truncateHash(account)}
                     </span>
+                    <IconCaretDown color="var(--chakra-colors-gray-500)" size={20} stroke={1} />
                     </Flex>
+                    
                   </MenuButton>
                   <MenuList>
                     <MenuItem
