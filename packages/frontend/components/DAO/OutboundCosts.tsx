@@ -38,7 +38,7 @@ function OutboundCosts(): JSX.Element {
             New Proposal
           </Link>
         </Flex>
-        {data.upcoming && data.upcoming.length > 0 && (
+        {data['upcoming'] && data['upcoming'].length > 0 && (
             <Table fontSize="90%">
             <Thead>
                 <Tr>
@@ -50,7 +50,7 @@ function OutboundCosts(): JSX.Element {
                 </Tr>
             </Thead>
             <Tbody>
-                {data.upcoming.map((item, i) => (
+                {data['upcoming'].map((item, i) => (
                     <Tr key={i}>
                         <Td>{item.date}</Td>
                         <Td>{item.amount} <Text fontSize="85%" color="gray.500" d="inline-block">{item.currency}</Text></Td>
@@ -67,7 +67,7 @@ function OutboundCosts(): JSX.Element {
             </Tbody>
             </Table>
         )}
-        {data.past && data.past.length > 0 && data.past.map( (pastItem, i) => (
+        {data['past'] && data['past'].length > 0 && data['past'].map( (pastItem, i) => (
             <Box key={`past-item-${i}`} my="10">
                 <Text fontWeight="bold" mb="4">{pastItem.date}</Text>
                 <Table fontSize="90%">

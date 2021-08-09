@@ -1,4 +1,4 @@
-import { Heading, Stack, Text, Flex, Button, Box, Image, Tooltip } from '@chakra-ui/react'
+import { Heading, Stack, Text, Flex, Button, Box, Image } from '@chakra-ui/react'
 import { IconPhoto, IconMovie, IconMusic } from '@tabler/icons'
 import { useState, useEffect } from 'react'
 
