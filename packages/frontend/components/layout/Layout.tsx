@@ -8,6 +8,9 @@ import {
   Container,
   Flex,
   Image,
+  Input,
+  InputGroup,
+  InputLeftElement,
   Link,
   Menu,
   MenuButton,
@@ -16,10 +19,12 @@ import {
   SimpleGrid,
   Text,
 } from '@chakra-ui/react'
+import { IconSearch } from '@tabler/icons'
 import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
 import React from 'react'
+import { useRouter } from 'next/router'
 // import Balance from '../Balance'
 import NavLink from '../NavLink'
 import ConnectWallet from '../ConnectWallet'
@@ -59,8 +64,10 @@ interface LayoutProps {
  * Component
  */
 const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
+
   const { account, deactivate } = useEthers()
   const { notifications } = useNotifications()
+  const router = useRouter()
 
   let blockieImageSrc
   if (typeof window !== 'undefined') {
@@ -72,36 +79,39 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
       <Head customMeta={customMeta} />
       <header>
         <Container maxWidth="container.xl">
-          <SimpleGrid
-            columns={[1, 1, 2, 2, 2]}
+          <Flex
             alignItems="center"
             justifyContent="space-between"
-            py="8"
+            pt="5"
+            pb="12"
           >
-            <Flex py={[4, null, null, 0]} grow={1}>
+            <Flex py={[4, null, null, 0]} grow={1} alignItems="center">
               <Link href="/">
                 <Image
                   height="35px"
                   src="/images/logo-with-wordmark.svg"
                   alt="Royalty Free NFT"
-                  pr={5}
+                  mr={7}
                 />
               </Link>
-              <NextLink href="/" passHref>
-                <Link px="4" py="1">
-                  Home
-                </Link>
-              </NextLink>
-              <NextLink href="/graph-example" passHref>
-                <Link px="4" py="1">
-                Graph Example
-                </Link>
-              </NextLink>
-              <NextLink href="/signature-example" passHref>
-                <Link px="4" py="1">
-                Signature Example
-                </Link>
-              </NextLink>
+
+              <Box padding=".15rem" border="1px solid #000" borderRadius=".4rem" mr="1.5rem">
+                <NavLink to="/buy" style={{ padding: '.3rem var(--chakra-space-4)'}}>Buy</NavLink>
+                <NavLink to={`${router.route}?sell=true`} style={{ padding: '.3rem var(--chakra-space-4)'}}>Sell</NavLink>
+                <NavLink to="/dao" style={{ padding: '.3rem var(--chakra-space-4)'}}>DAO</NavLink>
+              </Box>
+
+              <InputGroup width="21rem">
+                <InputLeftElement
+                  pointerEvents="none"
+                  color="gray.300"
+                  fontSize="1.2em">
+                  <IconSearch />
+                </InputLeftElement>
+                <Input placeholder="Search by licensors or content name" borderColor="gray.400" />
+              </InputGroup>
+
+
             </Flex>
 
             <Flex
@@ -109,18 +119,9 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
               alignItems={'center'}
               justifyContent={['flex-start', null, null, 'flex-end']}
             >
-              {/* <Balance /> */}
-
-              <NavLink to="/buy" px="2" py="1" style={{ textDecoration: 'none' }}>
-                <Button colorScheme="gray">Buy</Button>
-              </NavLink>
-              <NavLink to="/sell" px="2" py="1" style={{ textDecoration: 'none' }}>
-                <Button colorScheme="gray">Sell</Button>
-              </NavLink>
-
               {account ? (
                 <Menu placement="bottom-end">
-                  <MenuButton as={Button} ml="4" pl="1">
+                  <MenuButton as={Button} pl="1">
                     <Flex alignItems="center">
                       <Image
                         style={{ display: 'inline-block' }}
@@ -148,7 +149,7 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                 <ConnectWallet />
               )}
             </Flex>
-          </SimpleGrid>
+          </Flex>
         </Container>
       </header>
       <main>

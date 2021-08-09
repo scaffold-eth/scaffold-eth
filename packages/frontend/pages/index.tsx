@@ -18,16 +18,18 @@ function HomeIndex(): JSX.Element {
       <Flex py={[4, null, null, 0]} grow={1}>
         <Box flex="1">
           {/* Category buttons */}
-          <Box mb="4">
-            <Button variant="black-selected">Images</Button>
-            <Button variant="white">Audio</Button>
-            <Button variant="white">Video</Button>
-          </Box>
-          <Box mb="5">
-            <Button variant="gray-selected">Curated</Button>
-            <Button variant="white">Popular</Button>
-            <Button variant="white">New</Button>
-          </Box>
+          <Flex justifyContent="space-between">
+            <Box mb="4">
+              <Button variant="black-selected">Images</Button>
+              <Button variant="white">Audio</Button>
+              <Button variant="white">Video</Button>
+            </Box>
+            <Box mb="5">
+              <Button variant="gray-selected">Curated</Button>
+              <Button variant="white">Popular</Button>
+              <Button variant="white">New</Button>
+            </Box>
+          </Flex>
 
           {/* Images */}
           <div className="image-grid">
