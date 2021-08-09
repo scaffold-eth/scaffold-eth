@@ -1,5 +1,6 @@
 import { Box, Heading, Text } from '@chakra-ui/react'
 import CurrentBalance from '../components/DAO/CurrentBalance'
+import PastMonthRevenue from '../components/DAO/PastMonthRevenue'
 import Layout from '../components/layout/Layout'
 
 function DAO(): JSX.Element {
@@ -15,6 +16,7 @@ function DAO(): JSX.Element {
         DAO Treasury
       </Heading>
       <CurrentBalance />
+      <PastMonthRevenue />
     </Layout>
   )
 }

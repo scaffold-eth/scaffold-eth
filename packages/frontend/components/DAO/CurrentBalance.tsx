@@ -6,6 +6,7 @@ import {
   YAxis,
   Tooltip,
 } from 'recharts'
+import moment from 'moment'
 import React, { useState, useEffect } from 'react'
 import { Box, Text } from '@chakra-ui/react'
 import { numberWithCommas } from '../../utils/numberWithCommas'
@@ -23,13 +24,13 @@ function CurrentBalance(): JSX.Element {
         position="relative"
         border="1px solid var(--chakra-colors-gray-200)" 
         borderRadius="lg" 
-        width={500} 
-        height={300}
+        width={300} 
+        height={200}
         >
-        <Box position="absolute" top="1.5rem" left="1.5rem">
+        <Box position="absolute" top="1.5rem" left="1.5rem" zIndex="1">
             <Text>Current Balance</Text>
             <Box>
-                $
+                <Text d="inline-block" mr=".3rem">$</Text>
                 <Text 
                     fontSize="200%" 
                     fontWeight="bold"
@@ -56,39 +57,18 @@ function CurrentBalance(): JSX.Element {
   )
 }
 
-const dummyData = [
-  {
-    date: '01 Aug 2021',
-    balance: 298778,
-  },
-  {
-    date: '02 Aug 2021',
-    balance: 299252,
-  },
-  {
-    date: '03 Aug 2021',
-    balance: 299500,
-  },
-  {
-    date: '04 Aug 2021',
-    balance: 299811,
-  },
-  {
-    date: '05 Aug 2021',
-    balance: 304029,
-  },
-  {
-    date: '06 Aug 2021',
-    balance: 310092,
-  },
-  {
-    date: '07 Aug 2021',
-    balance: 312065,
-  },
-  {
-    date: '08 Aug 2021',
-    balance: 315920,
-  },
-]
+// Generate dummy data
+const dummyData = [], N = 30
+let currBalance = 95930
+for (let i=N; i>=0; i--) {
+    const toAdd = Math.random() * (30000 - 200) + 200;
+    let result = moment()
+    result = result.subtract(i, "days")
+    dummyData.push({
+        date: result.format('DD MMM YY'),
+        balance: parseFloat((currBalance + toAdd).toFixed(2))
+    })
+    currBalance += toAdd
+}
 
 export default CurrentBalance
