@@ -29,7 +29,7 @@ function createApolloClient() : ApolloClient<NormalizedCacheObject> {
   })
 }
 
-export function initializeApollo(initialState = null) : void {
+export function initializeApollo(initialState = null): ApolloClient<NormalizedCacheObject> {
   const _apolloClient = apolloClient ?? createApolloClient()
 
   // If your page has Next.js data fetching methods that use Apollo Client, the initial state
