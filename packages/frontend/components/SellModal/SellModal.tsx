@@ -10,8 +10,11 @@ import ModalCloseButton from '../ModalCloseButton'
 import NavLink from '../NavLink'
 
 
-function SellModal({ initialized = true } : { initialized:boolean}): JSX.Element {
+function SellModal(): JSX.Element {
 
+  // TODO Check on blockchain whether this wallet has initialized his wallet
+  // If not, help user create Seller account
+  const initialized = true 
   const router = useRouter()
   const { sell } = router.query
 
