@@ -72,7 +72,9 @@ uint256 public deadline = now + 30 seconds;
 
 > 👩‍💻 Write your `execute()` function and test it with the `Debug Contracts` tab
 
-Hint: If the `address(this).balance` of the contract is over the `threshold` by the `deadline`, you will want to call: ```exampleExternalContract.complete{value: address(this).balance}()```
+If the `address(this).balance` of the contract is over the `threshold` by the `deadline`, you will want to call: ```exampleExternalContract.complete{value: address(this).balance}()```
+
+If the balance is less than the `threshold`, you want to set a `openForWithdraw` bool to `true` and allow users to `withdraw(address payable)` their funds.
 
 (You'll have 30 seconds after deploying until the deadline is reached)
 
