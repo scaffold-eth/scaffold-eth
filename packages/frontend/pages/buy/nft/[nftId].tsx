@@ -105,7 +105,7 @@ function Licensor() {
 }
 
 const LicenseItem = ({ item }) => {
-    const { id, name, price, currency, fileType, filePreview, licensees } = item || {}
+    const { id, name, price, currency, filePreview, licensees } = item || {}
 
     return (
         <Link href={`/buy/nft/${id}`}>
@@ -127,8 +127,8 @@ const LicenseItem = ({ item }) => {
                 <Text>{name}</Text>
                 <Flex justifyContent="space-between" alignItems="flex-end">
                     <Box>
-                        <Text d="inline-block" fontSize="90%">$</Text>
                         <Text d="inline-block" fontSize="120%">{price}</Text>
+                        <Text d="inline-block" fontSize="90%" pl=".3rem">{currency.toUpperCase()}</Text>
                     </Box>
                     {licensees < 10 && (
                         <Tooltip 

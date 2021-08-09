@@ -7,7 +7,7 @@ import Layout from '../../../components/layout/Layout'
 import { truncateAddressString } from '../../../utils/truncateAddressString'
 import BuyNFTModal from '../../../components/BuyNFTModal'
 
-function Licensor() {
+function Licensor() : JSX.Element {
 
     const router = useRouter()
     const { licensorId } = router.query

@@ -1,5 +1,5 @@
 import { useRouter } from 'next/router'
-import { Button, Modal, ModalOverlay, ModalContent, ModalBody, Stack } from '@chakra-ui/react'
+import { Modal, ModalOverlay, ModalContent, ModalBody, Stack } from '@chakra-ui/react'
 import styled from 'styled-components'
 
 import InitializeAccount from "./components/InitializeAccount"
@@ -10,7 +10,7 @@ import ModalCloseButton from '../ModalCloseButton'
 import NavLink from '../NavLink'
 
 
-function SellModal({ initialized = true }): JSX.Element {
+function SellModal({ initialized = true } : { initialized:boolean}): JSX.Element {
 
   const router = useRouter()
   const { sell } = router.query

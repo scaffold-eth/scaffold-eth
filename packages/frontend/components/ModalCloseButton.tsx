@@ -1,5 +1,4 @@
 import styled from 'styled-components'
-import { useRouter } from 'next/router'
 
 function ModalCloseButton({ onClick } : { onClick: any}): JSX.Element {
 

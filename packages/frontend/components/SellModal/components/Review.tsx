@@ -22,7 +22,7 @@ function Review(): JSX.Element {
   return (
     <>
       <Grid mt="2rem" fontSize="sm" templateColumns="repeat(3, 1fr)" gap="8">
-        <GridItem colSpan="1" mr="2rem" pr="1rem" borderRight="1px solid var(--chakra-colors-gray-200)">
+        <GridItem colSpan={1} mr="2rem" pr="1rem" borderRight="1px solid var(--chakra-colors-gray-200)">
           <Heading as="h1" mb="1.5rem" fontSize="1.5rem">
             Review your files
           </Heading>
@@ -37,7 +37,7 @@ function Review(): JSX.Element {
             </Link>
           </Stack>
         </GridItem>
-        <GridItem colSpan="2">
+        <GridItem colSpan={2}>
           {reviewItems && reviewItems.map((item, i) => (
             <ReviewItem item={item} key={i} />
           ))}

@@ -29,7 +29,7 @@ function BuyNFTModal({
   isModalOpen: boolean
   setIsModalOpen: any
 }): JSX.Element {
-  const { id, name, price, currency, fileType, filePreview, licensees } =
+  const { id, name, price, currency, filePreview, licensees } =
     item || {}
   const [isLoading, setIsLoading] = useState(false)
 

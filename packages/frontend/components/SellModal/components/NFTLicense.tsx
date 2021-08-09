@@ -73,7 +73,7 @@ export default function NFTLicense(): JSX.Element {
       </Text>
 
       <Text mb="3">
-        "NFT" means any blockchain-tracked, non-fungible token, such as those
+        &quot;NFT&quot; means any blockchain-tracked, non-fungible token, such as those
         conforming to the ERC-721 standard.
       </Text>
 
