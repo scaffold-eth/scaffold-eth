@@ -27,7 +27,7 @@ contract QuadraticDiplomacyContract {
         owner = _newOwner;
     }
 
-ExchangePrice.js    function addContibutor(address _contributorAddress, string memory _name) public onlyOwner {
+    function addContibutor(address _contributorAddress, string memory _name) public onlyOwner {
         Contributor memory newContributor;
         newContributor.contributorAddress = _contributorAddress;
         newContributor.name = _name;
