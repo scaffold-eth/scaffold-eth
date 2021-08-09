@@ -43,7 +43,7 @@ function Review(): JSX.Element {
 
   const listOnPlatform = () => {
     // TODO Use selectedItems to create NFTs using smart contract
-    console.log(selectedItems)
+    // console.log(selectedItems)
   }
 
   return (
