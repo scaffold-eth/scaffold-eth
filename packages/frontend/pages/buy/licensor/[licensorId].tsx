@@ -16,7 +16,7 @@ function Licensor() : JSX.Element {
     const [selectedNFT, setSelectedNFT] = useState<NFTItemType>()
 
     useEffect(() => {
-        // Pull data from subgraph based on Licensor ID
+        // TODO Fetch listings of this licensor (based on Licensor ID)
     }, [licensorId])
 
     const licensorInfo = sampleLicensor

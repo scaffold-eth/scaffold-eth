@@ -15,7 +15,7 @@ function NewUploads(): JSX.Element {
   return (
     <>
       <Grid mt="2rem" fontSize="sm" templateColumns="repeat(3, 1fr)" gap="8">
-        <GridItem colSpan={1} mr="2rem">
+        <GridItem colSpan={1} mr="2rem" position="sticky" top="0" alignSelf="flex-start">
           <Heading as="h1" mb="1.5rem" fontSize="1.5rem">
             Upload your content to start selling
           </Heading>

@@ -1,12 +1,12 @@
 import { useRouter } from 'next/router'
-import { Modal, ModalOverlay, ModalContent, ModalBody, Stack } from '@chakra-ui/react'
+import { Button, Box, Flex, Modal, ModalOverlay, ModalContent, ModalBody, Stack, ModalHeader } from '@chakra-ui/react'
 import styled from 'styled-components'
 
 import InitializeAccount from "./components/InitializeAccount"
 import Review from "./components/Review"
 import ListedOnPlatform from "./components/ListedOnPlatform"
 import NewUploads from "./components/NewUploads"
-import ModalCloseButton from '../ModalCloseButton'
+import { IconX } from '@tabler/icons'
 import NavLink from '../NavLink'
 
 
@@ -28,22 +28,51 @@ function SellModal(): JSX.Element {
     >
       <ModalOverlay />
       <ModalContent px="3rem" py="2.5rem" mx=".6rem">
-        {/* <ModalCloseButton /> */}
-        <div style={{ textAlign: 'right' }}>
-          <ModalCloseButton onClick={() => router.push(router.route)}/>
-        </div>
+        <ModalHeader>
+        {initialized && (
+            <Flex justifyContent="space-between">
+              <Stack direction="row">
+                {/* <Button variant="black-selected">New uploads</Button>
+                <Button variant="white">Review <Numbering>2</Numbering></Button>
+                <Button variant="white">Listed on Platform <Numbering>7</Numbering></Button> */}
+                <NavLink to={`${router.route}?sell=true`}>New uploads</NavLink>
+                <NavLink to={`${router.route}?sell=review`}>Review <Numbering>2</Numbering></NavLink>
+                <NavLink to={`${router.route}?sell=listed`}>Listed on Platform <Numbering>7</Numbering></NavLink>
+              </Stack>
+              <Box>
+                <NavLink to={`/buy/licensor/xx`}>View my seller page</NavLink>
+                <Button
+                  border=".1rem solid #000"
+                  variant="outline"
+                  size="md"
+                  colorScheme="black"
+                  px=".5rem"
+                  ml="1rem"
+                  onClick={() => router.push(router.route)}
+                >
+                  <IconX />
+                </Button>
+              </Box>
+            </Flex>
+          )}
+          {!initialized && (
+            <Box textAlign="right">
+              <Button
+                border=".1rem solid #000"
+                variant="outline"
+                size="md"
+                colorScheme="black"
+                px=".5rem"
+                onClick={() => router.push(router.route)}
+              >
+                <IconX />
+              </Button>
+            </Box>
+          )}
+        </ModalHeader>
+
         <ModalBody>
           {!initialized && <InitializeAccount />}
-          {initialized && (
-            <Stack direction="row">
-              {/* <Button variant="black-selected">New uploads</Button>
-              <Button variant="white">Review <Numbering>2</Numbering></Button>
-              <Button variant="white">Listed on Platform <Numbering>7</Numbering></Button> */}
-              <NavLink to={`${router.route}?sell=true`}>New uploads</NavLink>
-              <NavLink to={`${router.route}?sell=review`}>Review <Numbering>2</Numbering></NavLink>
-              <NavLink to={`${router.route}?sell=listed`}>Listed on Platform <Numbering>7</Numbering></NavLink>
-            </Stack>
-          )}
           {initialized && sell === "true" && <NewUploads />}
           {initialized && sell === "review" && <Review />}
           {initialized && sell === "listed" && <ListedOnPlatform />}

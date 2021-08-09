@@ -20,7 +20,7 @@ import {
   Text,
   Tooltip,
 } from '@chakra-ui/react'
-import { IconSearch, IconCaretDown, IconBolt, IconFlare } from '@tabler/icons'
+import { IconSearch, IconCaretDown, IconFlare } from '@tabler/icons'
 import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
@@ -97,9 +97,9 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
               </Link>
 
               <Box padding=".15rem" border="1px solid #000" borderRadius=".4rem" mr="1.5rem">
-                <NavLink to="/buy" style={{ padding: '.3rem var(--chakra-space-4)'}}>Buy</NavLink>
-                <NavLink to={`${router.route}?sell=true`} style={{ padding: '.3rem var(--chakra-space-4)'}}>Sell</NavLink>
-                <NavLink to="/dao" style={{ padding: '.3rem var(--chakra-space-4)'}}>DAO</NavLink>
+                <NavLink to="/buy" style={{ padding: '.45rem var(--chakra-space-4)', height: 'auto'}}>Buy</NavLink>
+                <NavLink to={`${router.route}?sell=true`} style={{ padding: '.45rem var(--chakra-space-4)', height: 'auto'}}>Sell</NavLink>
+                <NavLink to="/dao" style={{ padding: '.45rem var(--chakra-space-4)', height: 'auto'}}>DAO</NavLink>
               </Box>
 
               <InputGroup width="21rem">
@@ -144,6 +144,13 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
                     
                   </MenuButton>
                   <MenuList>
+                  <MenuItem
+                      onClick={() => {
+                        router.push('/buy/licensor/xx')
+                      }}
+                    >
+                      View seller profile
+                    </MenuItem>
                     <MenuItem
                       onClick={() => {
                         deactivate()
