@@ -86,7 +86,7 @@ function ListedOnPlatform(): JSX.Element {
 }
 
 const LicenseItem = ({ item }) => {
-  const { name, price, currency, filePreview, licensees, profit } = item || {}
+  const { name, currency, filePreview, licensees, profit } = item || {}
 
   return (
       <Box 
