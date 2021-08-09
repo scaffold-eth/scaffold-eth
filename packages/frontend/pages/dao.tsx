@@ -1,4 +1,4 @@
-import { Box, Divider, Flex, Heading, Text } from '@chakra-ui/react'
+import { Box, Divider, Flex, Heading } from '@chakra-ui/react'
 import CurrentBalance from '../components/DAO/CurrentBalance'
 import PastMonthRevenue from '../components/DAO/PastMonthRevenue'
 import ProfitDistributionModel from '../components/DAO/ProfitDistributionModel'
