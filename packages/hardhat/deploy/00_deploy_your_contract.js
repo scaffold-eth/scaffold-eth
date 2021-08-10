@@ -1,8 +1,10 @@
 // deploy/00_deploy_your_contract.js
 
-//const { utils } = require("ethers");
+const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
+  const TO_ADDRESS = "YOUR_FRONTEND_ACCOUNT";
+
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   await deploy("YourContract", {
@@ -16,6 +18,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     log: true,
   });
+
+  const QuadraticDiplomacyContract = await ethers.getContract(
+    "QuadraticDiplomacyContract",
+    deployer
+  );
+
+  await QuadraticDiplomacyContract.transferOwnership(TO_ADDRESS);
 
   /*
     // Getting a previously deployed contract
