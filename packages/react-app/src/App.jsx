@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -25,7 +25,7 @@ import { ExampleUI, Hints, Subgraph } from "./views";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
-
+const axios = require('axios');
 const { ethers } = require("ethers");
 /*
     Welcome to 🏗 scaffold-eth !
@@ -47,7 +47,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -106,7 +106,7 @@ const web3Modal = new Web3Modal({
           100:"https://dai.poa.network", // xDai
         },
       },
-      
+
     },
     portis: {
       display: {
@@ -411,6 +411,9 @@ function App(props) {
     );
   }
 
+  const [message,setMessage] = useState()
+  const [addresses,setAddresses] = useState()
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -477,14 +480,57 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+            <div style={{width:500, margin: "auto", padding:64}}>
 
-            <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
+              <Input value={message} onChange={(e)=>{
+                setMessage(e.target.value.toLowerCase())
+              }}/>
+
+              <Button onClick={async ()=>{
+
+                let sig = await userSigner.signMessage(message)
+
+                const res = await axios.post("http://localhost:45622", {
+                  address: address,
+                  message: message,
+                  signature: sig,
+                })
+
+                //setMessage("")
+
+              }}>
+                Sign In
+              </Button>
+
+              <Button onClick={async ()=>{
+
+
+
+                const res = await axios.get("http://localhost:45622/"+message,)
+                console.log("res",res)
+                //setMessage("")
+
+                setAddresses(res.data)
+
+              }}>
+                Payout
+              </Button>
+
+
+              <List
+                bordered
+                dataSource={addresses}
+                renderItem={item => {
+
+                  return (
+                    <List.Item >
+                      <Address address={item} ensProvider={mainnetProvider} fontSize={16} />
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+
           </Route>
           <Route path="/hints">
             <Hints
