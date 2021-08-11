@@ -103,6 +103,8 @@ await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 - [ ] What if you minted **2000** and only sent **1000** to the `Vendor`?
 
 
+---
+
 
 ### Checkpoint 4: 🤔 Vendor Buyback 🤯
 
@@ -115,6 +117,12 @@ First, the user has to call `approve()` on the `YourToken` contract, approving t
 Then, the user makes a second transaction to the `Vendor` contract to `sellTokens()`.
 
 The `Vendor` should call `transferFrom(msg.sender, address(this), theAmount)` and if the user has appoved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
+
+
+
+---
+
+
 
 
 ### Checkpoint 5: 💾 Deploy it! 🛰
