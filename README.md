@@ -104,7 +104,20 @@ await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 
 
 
-### Checkpoint 4: 💾 Deploy it! 🛰
+### Checkpoint 4: 🤔 Vendor Buyback 🤯
+
+The hardest part of this challenge is to build your `Vendor` to buy the tokens back.
+
+The reason why this is hard is the `approve()` pattern in ERC20s.
+
+First, the user has to call `approve()` on the `YourToken` contract, approving the `Vendor` contract address to take some amount of tokens.
+
+Then, the user makes a second transaction to the `Vendor` contract to `sellTokens()`.
+
+The `Vendor` should call `transferFrom(msg.sender, address(this), theAmount)` and if the user has appoved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
+
+
+### Checkpoint 5: 💾 Deploy it! 🛰
 
 📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
 
