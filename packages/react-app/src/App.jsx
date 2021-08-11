@@ -198,10 +198,13 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
-  const contributorCount = useContractReader(readContracts, "QuadraticDiplomacyContract", "getContributorCount");
+  const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
+  console.log('CREDIT', voteCredits);
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const contributorEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "AddEntry", localProvider, 1);
+  console.log('VOTES', contributorEntries);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -486,8 +489,10 @@ function App(props) {
           </Route>
           <Route path="/quadratic-diplomacy">
             <QuadraticDiplomacyUI
-              readContracts={readContracts}
-              contributorCount={contributorCount}
+              voteCredits={voteCredits}
+              contributorEntries={contributorEntries}
+              tx={tx}
+              writeContracts={writeContracts}
             />
           </Route>
           <Route path="/mainnetdai">

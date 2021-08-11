@@ -1,26 +1,40 @@
-pragma solidity >=0.6.7;
+pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+contract QuadraticDiplomacyContract {
 
-contract QuadraticDiplomacyContract is Ownable {
-    struct Contributor {
-        address contributorAddress;
-        string name;
+    event Vote(address votingAddress, string name, address wallet, uint256 amount);
+    event AddEntry(address admin, string name, address wallet);
+
+    mapping (address => uint256) public votes;
+    mapping (address => bool) public isAdmin;
+
+    constructor(address startingAdmin) {
+        isAdmin[startingAdmin] = true;
     }
 
-    Contributor[] public contributors;
-
-    function addContibutor(address _contributorAddress, string memory _name) public onlyOwner {
-        Contributor memory newContributor;
-        newContributor.contributorAddress = _contributorAddress;
-        newContributor.name = _name;
-        contributors.push(newContributor);
+    modifier onlyAdmin() {
+        require( isAdmin[msg.sender], "NOT ADMIN");
+        _;
     }
 
-    function getContributorCount() public view returns(uint) {
-        return contributors.length;
+    // Question: Can we pass an array of on memory structs with name / wallet / address tuples?
+    // so we only need to make 1 tx?
+    function vote(string memory name, address wallet, uint256 amount) public {
+        require(votes[msg.sender] >= amount, "Not enough votes left");
+        votes[msg.sender] -= amount;
+        emit Vote(msg.sender, name, wallet, amount);
+    }
+
+    function admin(address wallet, bool value) public onlyAdmin {
+        isAdmin[wallet] = value;
+    }
+
+    function giveVotes(address wallet, uint256 amount) public onlyAdmin {
+        votes[wallet] += amount;
+    }
+
+    function addEntry(string memory name, address wallet) public onlyAdmin {
+        emit AddEntry(msg.sender, name, wallet);
     }
 }

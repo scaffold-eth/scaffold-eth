@@ -2,26 +2,28 @@ import { Button, Checkbox, Divider, Space } from "antd";
 import React, {useEffect, useState} from "react"
 
 export default function QuadraticDiplomacyUI({
-  readContracts,
-  contributorCount,
+  voteCredits,
+  contributorEntries,
+  tx,
+  writeContracts,
 }) {
-  const VOTE_CREDITS = 5;
-
   const [contributors, setContributors] = useState({});
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  // This will come from config.
-  const [availableVoteTokens, setAvailableVoteTokens] = useState(VOTE_CREDITS);
+  const [availableVoteTokens, setAvailableVoteTokens] = useState(voteCredits.toNumber());
 
   useEffect(async () => {
-    let loadedContributors = {};
-    for(let i = 0; i < contributorCount; i++) {
-      let contributor = await readContracts["QuadraticDiplomacyContract"].contributors(i);
-      loadedContributors[contributor.contributorAddress] = contributor.name;
-    }
+    const initialContributors = contributorEntries.reduce((entries, current) => {
+      entries[current.wallet] = {
+        name: current.name,
+        voteTokens: 0,
+      }
 
-    setContributors(loadedContributors);
-  }, [contributorCount]);
+      return entries;
+    }, {})
+
+    setContributors(initialContributors);
+  }, [contributorEntries]);
 
   const handleContributorSelection = (e) => {
     const clickedContributorAddress = e.target.getAttribute("data-address");
@@ -34,10 +36,7 @@ export default function QuadraticDiplomacyUI({
       } else {
         return {
           ...prevSelectedContributors,
-          [clickedContributorAddress]: {
-            name: contributors[clickedContributorAddress],
-            voteTokens: 0
-          }
+          [clickedContributorAddress]: contributors[clickedContributorAddress]
         }
       }
     })
@@ -63,6 +62,35 @@ export default function QuadraticDiplomacyUI({
     })
   }
 
+  const handleSubmitVote = () => {
+    // Question: Do we need to send separate transactions for each vote?
+    // If so, how do we avoid the nonce error?
+    Object.keys(selectedContributors).forEach(async (contributorAddress) => {
+       await tx(writeContracts.QuadraticDiplomacyContract.vote(
+        selectedContributors[contributorAddress].name,
+        contributorAddress,
+        selectedContributors[contributorAddress].voteTokens,
+      ), update => {
+        console.log("📡 Transaction Update:", update);
+        if (update && (update.status === "confirmed" || update.status === 1)) {
+          console.log(" 🍾 Transaction " + update.hash + " finished!");
+          console.log(
+            " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+          );
+        }
+      });
+
+    });
+
+    setCurrentPage(3);
+  }
+
   return (
     <>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
@@ -80,7 +108,7 @@ export default function QuadraticDiplomacyUI({
                     data-address={contributorAddress}
                     checked={selectedContributors[contributorAddress]}
                   >
-                    {contributors[contributorAddress]}
+                    {contributors[contributorAddress].name}
                   </Checkbox>
                 </li>
               ))}
@@ -106,7 +134,7 @@ export default function QuadraticDiplomacyUI({
                 <li key={contributorAddress}>
                   <Space direction="vertical">
                     <Space>
-                      <strong>{contributors[contributorAddress]}</strong>
+                      <strong>{contributors[contributorAddress].name}</strong>
                       <span>(votes: {selectedContributors[contributorAddress].voteTokens})</span>
                     </Space>
                     <Space>
@@ -135,7 +163,7 @@ export default function QuadraticDiplomacyUI({
               </Button>
               <Button
                 type='primary'
-                onClick={() => setCurrentPage(3)}
+                onClick={handleSubmitVote}
               >
                 Commit votes
               </Button>

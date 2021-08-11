@@ -17,14 +17,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("QuadraticDiplomacyContract", {
     from: deployer,
     log: true,
+    args: [TO_ADDRESS],
   });
-
-  const QuadraticDiplomacyContract = await ethers.getContract(
-    "QuadraticDiplomacyContract",
-    deployer
-  );
-
-  await QuadraticDiplomacyContract.transferOwnership(TO_ADDRESS);
 
   /*
     // Getting a previously deployed contract
