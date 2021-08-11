@@ -143,6 +143,30 @@ export const NETWORKS = {
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
   },
+  localAvalanche: {
+    name: "localAvalanche",
+    color: "#666666",
+    chainId: 43112,
+    blockExplorer: "",
+    rpcUrl: `http://localhost:9650/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
+  fujiAvalanche: {
+    name: "fujiAvalanche",
+    color: "#666666",
+    chainId: 43113,
+    blockExplorer: "https://cchain.explorer.avax-test.network/",
+    rpcUrl: `https://api.avax-test.network/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
+  mainnetAvalanche: {
+    name: "mainnetAvalanche",
+    color: "#666666",
+    chainId: 43114,
+    blockExplorer: "https://cchain.explorer.avax.network/",
+    rpcUrl: `https://api.avax.network/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
 };
 
 export const NETWORK = chainId => {
