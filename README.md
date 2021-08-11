@@ -114,7 +114,7 @@ The reason why this is hard is the `approve()` pattern in ERC20s.
 
 First, the user has to call `approve()` on the `YourToken` contract, approving the `Vendor` contract address to take some amount of tokens.
 
-Then, the user makes a second transaction to the `Vendor` contract to `sellTokens()`.
+Then, the user makes a *second transaction* to the `Vendor` contract to `sellTokens()`.
 
 The `Vendor` should call `transferFrom(msg.sender, address(this), theAmount)` and if the user has appoved the `Vendor` correctly, tokens should transfer to the `Vendor` and ETH should be sent to the user.
 
