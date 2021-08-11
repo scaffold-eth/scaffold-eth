@@ -1,0 +1,5 @@
+{
+    "solidity.compileUsingRemoteVersion": "v0.8.6+commit.11564f7e",
+    "solidity.packageDefaultDependenciesContractsDirectory": "",
+    "solidity.packageDefaultDependenciesDirectory": "packages/hardhat/node_modules"
+}

@@ -23,10 +23,9 @@ import {
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
-const ipfsAPI = require("ipfs-http-client");
+const { create: ipfsAPI } = require("ipfs-http-client");
 
-// const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
-const ipfs = ipfsAPI({ host: "localhost", port: "5001" });
+const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 const { ethers } = require("ethers");
 
@@ -77,15 +76,26 @@ const STARTING_JSON = {
 // helper function to "Get" from IPFS
 // you usually go content.toString() after this...
 const getFromIPFS = async hashToGet => {
-  for await (const file of ipfs.get(hashToGet)) {
-    console.log(file.path);
-    if (!file.content) continue;
-    const content = new BufferList();
-    for await (const chunk of file.content) {
-      content.append(chunk);
+  const files = await ipfs.get(hashToGet);
+  try {
+    console.log("found file");
+    for await (const file of files) {
+      console.log("path", file.path);
+
+      const content = new BufferList();
+      for await (const chunk of file.content) {
+        content.append(chunk);
+      }
+      console.log(content);
+      return content;
     }
-    console.log(content);
-    return content;
+  } catch (e) {
+    console.log("falling back to ipfs.io");
+    const val = await fetch(`https://ipfs.io/ipfs/${hashToGet}`);
+    console.log(val);
+   
+
+    return val.text();
   }
 };
 
@@ -212,37 +222,41 @@ function App(props) {
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
-  const [yourCollectibles, setYourCollectibles] = useState();
+  const [yourCollectibles, setYourCollectibles] = useState([]);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
+      const promises = new Array(yourBalance).fill(1).map((_, tokenIndex) => {
+        return (async () => {
           try {
+            console.log(tokenIndex * 1111111, "GEtting token index", tokenIndex);
+            const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+            console.log(tokenIndex * 1111111, "tokenId", tokenId);
+            const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+            console.log(tokenIndex * 1111111, "tokenURI", tokenURI);
+
+            const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+            console.log(tokenIndex * 1111111, "ipfsHash", ipfsHash);
+
+            const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+            console.log(jsonManifestBuffer.toString());
             const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-            console.log("jsonManifest", jsonManifest);
-            const i = collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-            console.log("i", i);
+            console.log(tokenIndex * 1111111, "jsonManifest", jsonManifest);
+            const i = { id: tokenId, uri: tokenURI, owner: address, ...jsonManifest };
+            console.log(tokenIndex * 1111111, "i", i);
+            return i;
           } catch (e) {
             console.log(e);
           }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectibleUpdate);
+          return null;
+        })();
+      });
+
+      const collectibleUpdate = await Promise.all(promises);
+
+      console.log({ collectibleUpdate });
+
+      setYourCollectibles(collectibleUpdate.filter(val => val != null));
     };
     updateYourCollectibles();
   }, [address, yourBalance]);

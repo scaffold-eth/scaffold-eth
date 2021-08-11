@@ -38,7 +38,7 @@
     "ethers": "^5.3.0",
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
-    "ipfs-http-client": "^50.1.2",
+    "ipfs-http-client": "^51.0.2-rc.10",
     "isomorphic-fetch": "^3.0.0",
     "node-watch": "^0.7.1",
     "postcss": "^8.2.6",

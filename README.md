@@ -1,6 +1,6 @@
-# 🏗 Scaffold-ETH - 🎟 Simple NFT Example
+# 🏗 Scaffold-ETH - 🎟 Simple NFT Uploader
 
-> Build, mint, and send around your own ERC721!
+> Upload to IPFS, mint, and send around your own ERC721!
 
 # 🏃‍♀️ Quick Start
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
