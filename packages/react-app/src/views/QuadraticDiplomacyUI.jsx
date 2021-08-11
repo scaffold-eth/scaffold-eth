@@ -62,11 +62,10 @@ export default function QuadraticDiplomacyUI({
     })
   }
 
-  const handleSubmitVote = () => {
+  const handleSubmitVote = async() => {
     // Question: Do we need to send separate transactions for each vote?
-    // If so, how do we avoid the nonce error?
-    Object.keys(selectedContributors).forEach(async (contributorAddress) => {
-       await tx(writeContracts.QuadraticDiplomacyContract.vote(
+    for (const contributorAddress of Object.keys(selectedContributors)) {
+      await tx(writeContracts.QuadraticDiplomacyContract.vote(
         selectedContributors[contributorAddress].name,
         contributorAddress,
         selectedContributors[contributorAddress].voteTokens,
@@ -85,8 +84,7 @@ export default function QuadraticDiplomacyUI({
           );
         }
       });
-
-    });
+    }
 
     setCurrentPage(3);
   }

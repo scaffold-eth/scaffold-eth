@@ -23,6 +23,7 @@ import {
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import QuadraticDiplomacyUI from "./views/QuadraticDiplomacyUI"
+import QuadraticDiplomacyVotes from "./views/QuadraticDiplomacyVotes"
 
 const { ethers } = require("ethers");
 /*
@@ -199,12 +200,11 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
   const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
-  console.log('CREDIT', voteCredits);
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
   const contributorEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "AddEntry", localProvider, 1);
-  console.log('VOTES', contributorEntries);
+  const votesEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "Vote", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -446,6 +446,16 @@ function App(props) {
               Quadratic Diplomacy UI
             </Link>
           </Menu.Item>
+          <Menu.Item key="/quadratic-diplomacy-votes">
+            <Link
+              onClick={() => {
+                setRoute("/quadratic-diplomacy-votes");
+              }}
+              to="/quadratic-diplomacy-votes"
+            >
+              Quadratic Diplomacy Votes
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -493,6 +503,11 @@ function App(props) {
               contributorEntries={contributorEntries}
               tx={tx}
               writeContracts={writeContracts}
+            />
+          </Route>
+          <Route path="/quadratic-diplomacy-votes">
+            <QuadraticDiplomacyVotes
+              votesEntries={votesEntries}
             />
           </Route>
           <Route path="/mainnetdai">
