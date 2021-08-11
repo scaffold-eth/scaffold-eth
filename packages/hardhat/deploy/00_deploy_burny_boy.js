@@ -9,9 +9,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: [
-      5,
+      1559,
       utils.parseEther("0.01"),
       "0xE09750abE36beA8B2236E48C84BB9da7Ef5aA07c",
+      1,
     ],
     log: true,
   });

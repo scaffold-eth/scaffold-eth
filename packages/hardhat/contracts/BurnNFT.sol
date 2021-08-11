@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.7;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -16,14 +16,15 @@ contract BurnNFT is ERC721URIStorage {
     uint public limit;
     uint256 public price;
     address public beneficiary;
+    uint256 public maxBaseFeePerGas;
 
     mapping(uint256 => uint256) public tokenBaseFee;
-    mapping(uint256 => uint) public tokenBlock;
 
-    constructor(uint _limit, uint256 _price, address _beneficiary) ERC721("BurnyBoy", "BURN") {
+    constructor(uint _limit, uint256 _price, address _beneficiary, uint256 _maxBaseFeePerGas) ERC721("BurnyBoy", "BURN") {
       limit = _limit;
       price = _price;
       beneficiary = _beneficiary;
+      maxBaseFeePerGas = _maxBaseFeePerGas;
     }
 
     function claimToken() public payable returns (uint256) {
@@ -36,16 +37,19 @@ contract BurnNFT is ERC721URIStorage {
 
         _mint(msg.sender, newItemId);
 
-        uint256 baseFee = tx.gasprice;
+        uint256 baseFee = block.basefee;
         tokenBaseFee[newItemId] = baseFee;
-        tokenBlock[newItemId] = block.number;
+
+        if(baseFee > maxBaseFeePerGas) {
+          maxBaseFeePerGas = baseFee;
+        }
 
         emit NewToken(msg.sender, newItemId, baseFee);
 
         return newItemId;
     }
 
-    function withdrawFunds() public returns (uint256) {
+    function withdrawFunds() public {
       require(msg.sender == beneficiary, 'only beneficiary can withdraw');
       // get the amount of Ether stored in this contract
       uint amount = address(this).balance;
@@ -63,7 +67,7 @@ contract BurnNFT is ERC721URIStorage {
     function generateSVGofTokenById(uint256 _tokenId) public virtual view returns (string memory) {
 
         uint height = 323;
-        uint fireHeight = height*(uint(100)-(uint(100)*_tokenId/limit)) / uint(100);
+        uint fireHeight = height*(uint(100)-(uint(100)*tokenBaseFee[_tokenId]/maxBaseFeePerGas)) / uint(100);
 
         string memory svg = string(abi.encodePacked(
           '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 200 323.6"><defs><style><![CDATA[#Fire_to_move {transform: translate(0px,',
@@ -79,15 +83,13 @@ contract BurnNFT is ERC721URIStorage {
         require(_exists(id), "ERC721: token does not exist");
 
         string memory name = string(abi.encodePacked('Burny boy ',Strings.toString(id)));
-        string memory description = 'An NFT to burnt ETH';
+        string memory description = string(abi.encodePacked('From when the basefee was ',Strings.toString(tokenBaseFee[id]/uint(1000000000))));
         string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
         return
             string(
                 abi.encodePacked(
-                    'data:application/json;base64,',
-                    Base64.encode(
-                        bytes(
+                    'data:application/json,',
                             abi.encodePacked(
                                 '{"name":"',
                                 name,
@@ -98,8 +100,6 @@ contract BurnNFT is ERC721URIStorage {
                                 image,
                                 '"}'
                             )
-                        )
-                    )
                 )
             );
     }

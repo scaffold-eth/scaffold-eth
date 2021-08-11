@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, List, Card } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address, AddressInput } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -20,8 +20,6 @@ import {
   useOnBlock,
   useUserSigner,
 } from "./hooks";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -44,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -58,7 +56,7 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 const scaffoldEthProvider = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
@@ -184,77 +182,37 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
-
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  let purpose;
-
   // keep track of a variable from the contract in the local React state:
-  const token1 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
-  const token2 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["2"]);
-  const token3 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["3"]);
-  const token4 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["4"]);
-  const token5 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["5"]);
+  // const token1 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
 
-  const STARTS_WITH = "data:application/json;base64,";
-  let token1Image = token1 && JSON.parse(atob(token1.slice(STARTS_WITH.length)));
-  let token2Image = token2 && JSON.parse(atob(token2.slice(STARTS_WITH.length)));
-  let token3Image = token3 && JSON.parse(atob(token3.slice(STARTS_WITH.length)));
-  let token4Image = token4 && JSON.parse(atob(token4.slice(STARTS_WITH.length)));
-  let token5Image = token5 && JSON.parse(atob(token5.slice(STARTS_WITH.length)));
+  const totalSupply = useContractReader(readContracts, "BurnNFT", "totalSupply");
 
-  // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const STARTS_WITH = "data:application/json,";
+  //let token1Image = token1 && JSON.parse(token1.slice(STARTS_WITH.length));
 
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
+  const [burnyBoys, setBurnyBoys] = useState();
+  const [transferToAddresses, setTransferToAddresses] = useState({});
 
-  //
-  // 🧫 DEBUG 👨🏻‍🔬
-  //
   useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-  ]);
+    const updateBurnyBoys = async () => {
+      const tokenUpdate = [];
+      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
+          const STARTS_WITH = "data:application/json,";
+          let tokenURIJSON = JSON.parse(tokenURI.slice(STARTS_WITH.length));
+          const owner = await readContracts.BurnNFT.ownerOf(tokenIndex);
+          console.log("tokenURI", tokenURI);
+          tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON, owner: owner });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setBurnyBoys(tokenUpdate);
+    };
+    updateBurnyBoys();
+  }, [totalSupply]);
 
   let networkDisplay = "";
   if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -399,47 +357,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Contract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/tokens">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/tokens");
               }}
-              to="/hints"
+              to="/tokens"
             >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              Tokens
             </Link>
           </Menu.Item>
         </Menu>
@@ -459,64 +387,61 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-            <Row justify="center">
-              <img src={token1Image && token1Image.image} height="300" alt="" />
-              <img src={token2Image && token2Image.image} height="300" alt="" />
-              <img src={token3Image && token3Image.image} height="300" alt="" />
-              <img src={token4Image && token4Image.image} height="300" alt="" />
-              <img src={token5Image && token5Image.image} height="300" alt="" />
-            </Row>
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
-            />
+          <Route path="/tokens">
+            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <List
+                bordered
+                dataSource={burnyBoys}
+                renderItem={item => {
+                  const id = item.id;
+                  return (
+                    <List.Item key={id}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 16, marginRight: 8 }}>#{item.uri.name}</span>
+                          </div>
+                        }
+                      >
+                        <div>
+                          <img src={item.uri && item.uri.image} height="300" alt="" />
+                        </div>
+                        <div>{item.uri.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.BurnNFT.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           </Route>
         </Switch>
       </BrowserRouter>
