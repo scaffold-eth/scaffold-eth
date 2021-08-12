@@ -80,10 +80,6 @@ yarn mint
 
 👛 Open an **incognito** window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
-⛽️ Grab some gas for each account using the faucet:
-
-![nft4](https://user-images.githubusercontent.com/526558/124387005-55b34200-dcb3-11eb-8565-1ee40b5634ad.png)
-
 🎟 Send an NFT to the incognito window address:
 
 ![nft5](https://user-images.githubusercontent.com/526558/124387008-58ae3280-dcb3-11eb-920d-07b6118f1ab2.png)
@@ -106,7 +102,7 @@ yarn mint
 
 ![image4](https://user-images.githubusercontent.com/76530366/127909096-82f262ee-9052-4b80-9298-6a14dd3d5b2e.png) 
 
-👛 View your deployer address using `yarn account` to ensure you have some Matic. (You can exchange for Matic tokens on UniSwap then use the bridge: https://wallet.matic.network/bridge).
+👛 View your deployer address using `yarn account` to ensure you have some Matic. (You can exchange for Matic tokens on UniSwap using the bridge: https://wallet.matic.network/bridge).
 
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
