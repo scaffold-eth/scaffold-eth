@@ -1,16 +1,39 @@
 // deploy/00_deploy_your_contract.js
 
-//const { utils } = require("ethers");
+const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
+  const TO_ADDRESS = "YOUR_FRONTEND_ADDRESS";
+
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("YourContract", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+
+  await deploy("QuadraticDiplomacyContract", {
     from: deployer,
-    // args: [ "Hello", utils.parseEther("1.5") ],
     log: true,
+    args: [TO_ADDRESS],
   });
+
+  const QuadraticDiplomacyContract = await ethers.getContract(
+    "QuadraticDiplomacyContract",
+    deployer
+  );
+
+  const names = ["Carlos", "Austin", "Ryan"];
+  const wallets = [
+    "0x70997970C51812dc3A010C7d01b50e0d17dc79C8",
+    "0xa0Ee7A142d267C1f36714E4a8F75612F20a79720",
+    "0x2546BcD3c84621e976D8185a91A922aE77ECEc30",
+  ];
+  const amounts = [90, 9, 1];
+
+  await QuadraticDiplomacyContract.addMember(names[0], wallets[0]);
+  await QuadraticDiplomacyContract.addMember(names[1], wallets[1]);
+  await QuadraticDiplomacyContract.addMember(names[2], wallets[2]);
+
+  await QuadraticDiplomacyContract.giveVotes(TO_ADDRESS, 100);
+  await QuadraticDiplomacyContract.giveVotes(deployer, 100);
+  await QuadraticDiplomacyContract.voteMultiple(names, wallets, amounts);
 
   /*
     // Getting a previously deployed contract
@@ -44,4 +67,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["QuadraticDiplomacyContract"];

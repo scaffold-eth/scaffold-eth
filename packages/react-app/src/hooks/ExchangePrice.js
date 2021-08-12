@@ -22,7 +22,7 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
         setPrice(parseFloat(route.midPrice.toSignificant(6)));
       }
     }
-    getPrice();
+    // getPrice();
   };
   usePoller(pollPrice, pollTime || 9777);
 

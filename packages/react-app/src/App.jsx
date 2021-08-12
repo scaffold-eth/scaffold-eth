@@ -1,5 +1,4 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
@@ -20,8 +19,8 @@ import {
   useOnBlock,
   useUserSigner,
 } from "./hooks";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import QuadraticDiplomacyVote from "./views/QuadraticDiplomacyVote"
+import QuadraticDiplomacyReward from "./views/QuadraticDiplomacyReward"
 
 const { ethers } = require("ethers");
 /*
@@ -119,8 +118,6 @@ const web3Modal = new Web3Modal({
   },
 });
 
-
-
 function App(props) {
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -196,15 +193,11 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
 
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
+  const contributorEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "AddMember", localProvider, 1);
+  const votesEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "Vote", localProvider, 1);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -388,116 +381,53 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Contract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/quadratic-diplomacy-vote">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/quadratic-diplomacy-vote");
               }}
-              to="/hints"
+              to="/quadratic-diplomacy-vote"
             >
-              Hints
+              Vote
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          <Menu.Item key="/quadratic-diplomacy-reward">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/quadratic-diplomacy-reward");
               }}
-              to="/exampleui"
+              to="/quadratic-diplomacy-reward"
             >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              Reward
             </Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
             <Contract
-              name="YourContract"
+              name="QuadraticDiplomacyContract"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
+          <Route path="/quadratic-diplomacy-vote">
+            <QuadraticDiplomacyVote
+              voteCredits={voteCredits}
+              contributorEntries={contributorEntries}
+              tx={tx}
+              writeContracts={writeContracts}
             />
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
+          <Route path="/quadratic-diplomacy-reward">
+            <QuadraticDiplomacyReward
               userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
+              votesEntries={votesEntries}
             />
           </Route>
         </Switch>
