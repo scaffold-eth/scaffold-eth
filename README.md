@@ -31,15 +31,11 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
-> ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the toAddress to your frontend address (wallet address in the top right or localhost:3000).
+> Set up your IPFS configuration in react-app/App.jsx
 
-![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
+> Set you address as the deploy arg in hardhat/deploy
 
-> in a terminal window run the mint script:
-```
-yarn mint
-```
-![nft2](https://user-images.githubusercontent.com/526558/124386972-3d432780-dcb3-11eb-933e-dad7dfd313b2.png)
+> Go to `localhost:3000/mint` to upload and mint your NFT to your own address
 
 👀 You should see your collectibles show up if you minted to the correct address:
 

@@ -25,6 +25,7 @@ const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const { create: ipfsAPI } = require("ipfs-http-client");
 
+// TODO: You may need to set up IPFS provider
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 const { ethers } = require("ethers");
