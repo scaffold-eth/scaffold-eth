@@ -10,7 +10,7 @@ export default function QuadraticDiplomacyUI({
   const [contributors, setContributors] = useState({});
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentPage, setCurrentPage] = useState(1);
-  const [availableVoteTokens, setAvailableVoteTokens] = useState(voteCredits.toNumber());
+  const [availableVoteTokens, setAvailableVoteTokens] = useState(0);
 
   useEffect(async () => {
     const initialContributors = contributorEntries.reduce((entries, current) => {
@@ -24,6 +24,12 @@ export default function QuadraticDiplomacyUI({
 
     setContributors(initialContributors);
   }, [contributorEntries]);
+
+  useEffect(async () => {
+    if (voteCredits) {
+      setAvailableVoteTokens(voteCredits.toNumber());
+    }
+  }, [voteCredits]);
 
   const handleContributorSelection = (e) => {
     const clickedContributorAddress = e.target.getAttribute("data-address");
@@ -63,28 +69,35 @@ export default function QuadraticDiplomacyUI({
   }
 
   const handleSubmitVote = async() => {
-    // Question: Do we need to send separate transactions for each vote?
-    for (const contributorAddress of Object.keys(selectedContributors)) {
-      await tx(writeContracts.QuadraticDiplomacyContract.vote(
-        selectedContributors[contributorAddress].name,
-        contributorAddress,
-        selectedContributors[contributorAddress].voteTokens,
-      ), update => {
-        console.log("📡 Transaction Update:", update);
-        if (update && (update.status === "confirmed" || update.status === 1)) {
-          console.log(" 🍾 Transaction " + update.hash + " finished!");
-          console.log(
-            " ⛽️ " +
-            update.gasUsed +
-            "/" +
-            (update.gasLimit || update.gas) +
-            " @ " +
-            parseFloat(update.gasPrice) / 1000000000 +
-            " gwei",
-          );
-        }
-      });
-    }
+    const names = [];
+    const wallets = [];
+    const amounts = [];
+
+    Object.keys(selectedContributors).map((contributorAddress) => {
+      names.push(selectedContributors[contributorAddress].name);
+      wallets.push(contributorAddress);
+      amounts.push(selectedContributors[contributorAddress].voteTokens);
+    });
+
+    await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(
+      names,
+      wallets,
+      amounts,
+    ), update => {
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    });
 
     setCurrentPage(3);
   }

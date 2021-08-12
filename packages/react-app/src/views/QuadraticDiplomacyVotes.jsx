@@ -8,22 +8,22 @@ export default function QuadraticDiplomacyVotes({
   console.log('ENTRIEES', votesEntries);
 
   useEffect(async() => {
-    const sumVotes = {}
+    const sumVotes = {};
+    let totalSqrts = 0;
     for (const entry of votesEntries) {
-      if (sumVotes[entry.wallet]) {
-        sumVotes[entry.wallet].amount = sumVotes[entry.wallet].amount + entry.amount.toNumber();
-      } else {
-        sumVotes[entry.wallet] = {
-          name: entry.name,
-          wallet: entry.wallet,
-          amount: entry.amount.toNumber()
-        }
+      const sqrtVote = Math.sqrt(entry.amount.toNumber());
+      console.log(entry.name, sqrtVote);
+      if (!sumVotes[entry.wallet]) {
+        sumVotes[entry.wallet] = 0;
       }
+      sumVotes[entry.wallet] += sqrtVote;
+      totalSqrts += sqrtVote;
     }
 
-    console.log('VOTES', sumVotes);
+    console.log('sumVotes', sumVotes);
+    console.log('totalSqrts', totalSqrts);
 
-    setVotes(sumVotes);
+    // setVotes(sumVotes);
   }, [votesEntries]);
 
   return (

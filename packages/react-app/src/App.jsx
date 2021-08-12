@@ -203,7 +203,7 @@ function App(props) {
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-  const contributorEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "AddEntry", localProvider, 1);
+  const contributorEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "AddMember", localProvider, 1);
   const votesEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "Vote", localProvider, 1);
 
   /*
