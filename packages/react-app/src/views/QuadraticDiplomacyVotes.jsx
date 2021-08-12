@@ -5,7 +5,6 @@ export default function QuadraticDiplomacyVotes({
   votesEntries,
 }) {
   const [votes, setVotes] = useState({});
-  console.log('ENTRIEES', votesEntries);
 
   useEffect(async() => {
     const sumVotes = {};
