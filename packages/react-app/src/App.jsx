@@ -19,8 +19,8 @@ import {
   useOnBlock,
   useUserSigner,
 } from "./hooks";
-import QuadraticDiplomacyUI from "./views/QuadraticDiplomacyUI"
-import QuadraticDiplomacyVotes from "./views/QuadraticDiplomacyVotes"
+import QuadraticDiplomacyVote from "./views/QuadraticDiplomacyVote"
+import QuadraticDiplomacyReward from "./views/QuadraticDiplomacyReward"
 
 const { ethers } = require("ethers");
 /*
@@ -384,24 +384,24 @@ function App(props) {
               Contract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/quadratic-diplomacy">
+          <Menu.Item key="/quadratic-diplomacy-vote">
             <Link
               onClick={() => {
-                setRoute("/quadratic-diplomacy");
+                setRoute("/quadratic-diplomacy-vote");
               }}
-              to="/quadratic-diplomacy"
+              to="/quadratic-diplomacy-vote"
             >
-              Quadratic Diplomacy UI
+              Vote
             </Link>
           </Menu.Item>
-          <Menu.Item key="/quadratic-diplomacy-votes">
+          <Menu.Item key="/quadratic-diplomacy-reward">
             <Link
               onClick={() => {
-                setRoute("/quadratic-diplomacy-votes");
+                setRoute("/quadratic-diplomacy-reward");
               }}
-              to="/quadratic-diplomacy-votes"
+              to="/quadratic-diplomacy-reward"
             >
-              Quadratic Diplomacy Votes
+              Reward
             </Link>
           </Menu.Item>
         </Menu>
@@ -416,16 +416,16 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/quadratic-diplomacy">
-            <QuadraticDiplomacyUI
+          <Route path="/quadratic-diplomacy-vote">
+            <QuadraticDiplomacyVote
               voteCredits={voteCredits}
               contributorEntries={contributorEntries}
               tx={tx}
               writeContracts={writeContracts}
             />
           </Route>
-          <Route path="/quadratic-diplomacy-votes">
-            <QuadraticDiplomacyVotes
+          <Route path="/quadratic-diplomacy-reward">
+            <QuadraticDiplomacyReward
               userSigner={userSigner}
               votesEntries={votesEntries}
             />
