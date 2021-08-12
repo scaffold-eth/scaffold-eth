@@ -507,6 +507,7 @@ function App(props) {
           </Route>
           <Route path="/quadratic-diplomacy-votes">
             <QuadraticDiplomacyVotes
+              userSigner={userSigner}
               votesEntries={votesEntries}
             />
           </Route>
