@@ -172,16 +172,6 @@ export default function GnosisStarterView({
                   const executeTxResponse = await safeSdk2.executeTransaction(transaction)
                   const receipt = executeTxResponse.transactionResponse && (await executeTxResponse.transactionResponse.wait())
                   console.log(receipt);
-                  await fetch(`http://localhost:8001/${index}`, {
-                    method: 'POST',
-                    mode: "cors",
-                    headers: {
-                      'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                      safeAddress
-                    })
-                  });
                 }}>Execute TX</Button>}
               {owners.includes(address) && !transaction.signers.includes(address) && currentThresold[index] < thresold && <Button
                 style={{ marginTop: 8 }}
