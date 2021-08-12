@@ -3,17 +3,17 @@
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("YourContract", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    // args: ["Hello"],
-    log: true,
-  });
+  // await deploy("YourContract", {
+  //   // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+  //   from: deployer,
+  //   // args: ["Hello"],
+  //   log: true,
+  // });
 
   await deploy("GnosisSafe", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [['0x3e35Ba3AD1921fA9a16ccc73fa980CD5fc764730', '0x2e9f4109398686ED9f024F032296821aeD5562a3'], 2, '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', 0, '0x0000000000000000000000000000000000000000'],
+    args: [['0xf88b0247e611eE5af8Cf98f5303769Cba8e7177C', '0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51'], 2, '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', 0, '0x0000000000000000000000000000000000000000'],
     log: true,
   });
 
