@@ -50,7 +50,7 @@ export default function QuadraticDiplomacyReward({
   }, [votesEntries]);
 
   const handlePayment = async(address, amount) => {
-    if (rewardStatus[address] === REWARD_STATUS.COMPLETED) {
+    if (rewardStatus[address] === REWARD_STATUS.COMPLETED || !amount) {
       return;
     }
 
@@ -112,7 +112,7 @@ export default function QuadraticDiplomacyReward({
               extra={(
                 <Button
                   onClick={() => handlePayment(address, contributorReward)}
-                  disabled={rewardStatus[address] && rewardStatus[address] !== REWARD_STATUS.FAILED}
+                  disabled={rewardStatus[address] && rewardStatus[address] !== REWARD_STATUS.FAILED || !contributorReward}
                 >
                   Pay 💸
                 </Button>
