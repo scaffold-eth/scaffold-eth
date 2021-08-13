@@ -7,9 +7,8 @@ export default function Header() {
   return (
     <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
       <PageHeader
-        title="Burny banners 🔥"
-        subTitle="basefee NFTs built with scaffold-eth"
-        style={{ cursor: "pointer" }}
+        title="Ropsten Burny banners 🔥"
+        style={{ cursor: "pointer", paddingTop: 80, justifyContent: "middle" }}
       />
     </a>
   );

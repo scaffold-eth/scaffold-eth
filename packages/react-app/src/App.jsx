@@ -1,7 +1,8 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, List, Card } from "antd";
+import { Alert, Button, Col, Menu, Row, List, Card, Typography, Collapse, Space, Breadcrumb } from "antd";
+import { GithubOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -199,7 +200,7 @@ function App(props) {
   useEffect(() => {
     const updateBurnyBoys = async () => {
       const tokenUpdate = [];
-      for (let tokenIndex = 1; tokenIndex <= totalSupply; tokenIndex++) {
+      for (let tokenIndex = totalSupply; tokenIndex > totalSupply - 5; tokenIndex--) {
         try {
           console.log("GEtting token index", tokenIndex);
           const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
@@ -278,7 +279,7 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: 0, position: "absolute", right: 20, top: 35, padding: 16, color: targetNetwork.color }}>
+      <div style={{ zIndex: 0, position: "absolute", right: 15, top: 35, padding: 16, color: "white" }}>
         {targetNetwork.name}
       </div>
     );
@@ -321,16 +322,51 @@ function App(props) {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
       {networkDisplay}
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <h1 style={{ margin: 8 }}>{`Burny banners`}</h1>
-            <h2 style={{ margin: 8 }}>{`${totalSupply} out of ${tokenLimit} claimed`}</h2>
+            <Typography.Title style={{ marginBottom: 8, paddingTop: 60 }}>{`🔥 Burny banners 🔥`}</Typography.Title>
+            <div style={{ width: 380, margin: "auto" }}>
+              <Collapse ghost>
+                <Collapse.Panel header={`Dynamic Basefee NFTs built with scaffold-eth`} key="1">
+                  <p>
+                    <a
+                      href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
+                      target="_blank"
+                    >
+                      {"Smart contract"}
+                    </a>
+                    <span>{" / "}</span>
+                    <a href="" target="_blank">
+                      {"OpenSea"}
+                    </a>
+                    <span>{" / "}</span>
+                    <span>{"Art by "}</span>
+                    <a href="https://twitter.com/tomosaito" target="_blank">
+                      {"@tomosaito"}
+                    </a>
+                  </p>
+                  <Space>
+                    <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
+                      <GithubOutlined />
+                    </a>
+                    <span>Built with 💙</span>
+                    <a href="https://buidlguidl.com/" target="_blank">
+                      🏰 BuidlGuidl{" "}
+                    </a>
+                  </Space>
+                </Collapse.Panel>
+              </Collapse>
+            </div>
+            <Typography.Title
+              level={2}
+              style={{ margin: 8 }}
+            >{`${totalSupply} out of ${tokenLimit} minted`}</Typography.Title>
             <Button
               style={{ marginTop: 8 }}
               type="primary"
+              size="large"
               loading={minting}
               disabled={!address || price > yourLocalBalance}
               onClick={async () => {
@@ -359,7 +395,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id;
                   return (
-                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="300" alt="" />}>
+                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="100" alt="" />}>
                       <List.Item.Meta
                         title={
                           <div>
@@ -383,18 +419,17 @@ function App(props) {
                 }}
               />
             </Card>
+            {/*
             <Contract
               name="BurnNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-            />
+            />*/}
           </Route>
         </Switch>
       </BrowserRouter>
-
-      <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
