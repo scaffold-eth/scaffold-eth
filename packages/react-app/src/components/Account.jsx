@@ -106,7 +106,7 @@ export default function Account({
 
   return (
     <div>
-      {display}
+      {address && display}
       {modalButtons}
     </div>
   );

@@ -38,13 +38,13 @@ Overview:
 - Fully on-chain metadata generation, including SVG
 - Each token has a "baseFee" associated, which impacts the SVG
 - Simple beneficiary config (beneficiary can withdraw funds)
+- Simple frontend
 
 Contract configuration:
 
 - limit
 - cost to mint
 - beneficiary address
-- set the initial "max" baseFee, which impacts the SVG
 
 TODO:
 

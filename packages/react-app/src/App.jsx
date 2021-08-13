@@ -17,7 +17,6 @@ import {
   useEventListener,
   useExchangePrice,
   useGasPrice,
-  useOnBlock,
   useUserSigner,
 } from "./hooks";
 
@@ -42,7 +41,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -186,6 +185,10 @@ function App(props) {
   // const token1 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
 
   const totalSupply = useContractReader(readContracts, "BurnNFT", "totalSupply");
+  const tokenPrice = useContractReader(readContracts, "BurnNFT", "price");
+  const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit");
+
+  const [minting, setMinting] = useState(false);
 
   const STARTS_WITH = "data:application/json,";
   //let token1Image = token1 && JSON.parse(token1.slice(STARTS_WITH.length));
@@ -275,7 +278,7 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
+      <div style={{ zIndex: 0, position: "absolute", right: 20, top: 35, padding: 16, color: targetNetwork.color }}>
         {targetNetwork.name}
       </div>
     );
@@ -313,35 +316,7 @@ function App(props) {
     setRoute(window.location.pathname);
   }, [setRoute]);
 
-  let faucetHint = "";
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
-
-  const [faucetClicked, setFaucetClicked] = useState(false);
-  if (
-    !faucetClicked &&
-    localProvider &&
-    localProvider._network &&
-    localProvider._network.chainId === 31337 &&
-    yourLocalBalance &&
-    ethers.utils.formatEther(yourLocalBalance) <= 0
-  ) {
-    faucetHint = (
-      <div style={{ padding: 16 }}>
-        <Button
-          type="primary"
-          onClick={() => {
-            faucetTx({
-              to: address,
-              value: ethers.utils.parseEther("0.01"),
-            });
-            setFaucetClicked(true);
-          }}
-        >
-          💰 Grab funds from the faucet ⛽️
-        </Button>
-      </div>
-    );
-  }
 
   return (
     <div className="App">
@@ -349,37 +324,65 @@ function App(props) {
       <Header />
       {networkDisplay}
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Contract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/tokens">
-            <Link
-              onClick={() => {
-                setRoute("/tokens");
-              }}
-              to="/tokens"
-            >
-              Tokens
-            </Link>
-          </Menu.Item>
-        </Menu>
-
         <Switch>
           <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
+            <h1 style={{ margin: 8 }}>{`Burny banners`}</h1>
+            <h2 style={{ margin: 8 }}>{`${totalSupply} out of ${tokenLimit} claimed`}</h2>
+            <Button
+              style={{ marginTop: 8 }}
+              type="primary"
+              loading={minting}
+              disabled={!address || price > yourLocalBalance}
+              onClick={async () => {
+                try {
+                  setMinting(true);
+                  const result = tx(
+                    writeContracts.BurnNFT.mint({
+                      value: tokenPrice,
+                    }),
+                  );
+                  console.log("awaiting metamask/web3 confirm result...", result);
+                  console.log(await result);
+                  setMinting(false);
+                } catch (e) {
+                  console.log(e);
+                  setMinting(false);
+                }
+              }}
+            >
+              {`Mint for Ξ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."}`}
+            </Button>
+            <Card style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <List
+                bordered
+                dataSource={burnyBoys}
+                renderItem={item => {
+                  const id = item.id;
+                  return (
+                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="300" alt="" />}>
+                      <List.Item.Meta
+                        title={
+                          <div>
+                            <span style={{ fontSize: 16, marginRight: 8 }}>#{item.uri.name}</span>
+                          </div>
+                        }
+                        description={
+                          <div>
+                            <p>{item.uri.description}</p>
+                            <Address
+                              address={item.owner}
+                              ensProvider={mainnetProvider}
+                              blockExplorer={blockExplorer}
+                              fontSize={16}
+                            />
+                          </div>
+                        }
+                      />
+                    </List.Item>
+                  );
+                }}
+              />
+            </Card>
             <Contract
               name="BurnNFT"
               signer={userSigner}
@@ -387,61 +390,6 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
-          </Route>
-          <Route path="/tokens">
-            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <List
-                bordered
-                dataSource={burnyBoys}
-                renderItem={item => {
-                  const id = item.id;
-                  return (
-                    <List.Item key={id}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{item.uri.name}</span>
-                          </div>
-                        }
-                      >
-                        <div>
-                          <img src={item.uri && item.uri.image} height="300" alt="" />
-                        </div>
-                        <div>{item.uri.description}</div>
-                      </Card>
-
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.BurnNFT.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
           </Route>
         </Switch>
       </BrowserRouter>
@@ -461,7 +409,6 @@ function App(props) {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
         />
-        {faucetHint}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
