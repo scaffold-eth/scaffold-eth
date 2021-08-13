@@ -9,17 +9,17 @@ var app = express();
 let cache = {}
 let currentMessage = "I am **ADDRESS** and I would like to sign in to YourDapp, plz!"
 
-/*
-  Uncomment this if you want to create a wallet to send ETH or something...
-const INFURA = JSON.parse(fs.readFileSync("./infura.txt").toString().trim())
-const PK = fs.readFileSync("./pk.txt").toString().trim()
-let wallet = new ethers.Wallet(PK,new ethers.providers.InfuraProvider("goerli",INFURA))
-console.log(wallet.address)
-const checkWalletBalance = async ()=>{
-  console.log("BALANCE:",ethers.utils.formatEther(await wallet.provider.getBalance(wallet.address)))
-}
-checkWalletBalance()
-*/
+
+  //Uncomment this if you want to create a wallet to send ETH or something...
+// const INFURA = JSON.parse(fs.readFileSync("./infura.txt").toString().trim())
+// const PK = fs.readFileSync("./pk.txt").toString().trim()
+// let wallet = new ethers.Wallet(PK,new ethers.providers.InfuraProvider("goerli",INFURA))
+// console.log(wallet.address)
+// const checkWalletBalance = async ()=>{
+//   console.log("BALANCE:",ethers.utils.formatEther(await wallet.provider.getBalance(wallet.address)))
+// }
+// checkWalletBalance();
+
 
 app.use(cors())
 
@@ -51,12 +51,33 @@ app.post('/', async function(request, response){
       if(!cache[request.body.message]){
         cache[request.body.message] = []
       }
-      cache[request.body.message].push(recovered)
-      console.log(cache)
+      if(cache[request.body.message].includes(recovered)){
+        console.log("includes address already!");
+        response.send(" Already included!");
+      }
+      else{
+        cache[request.body.message].push(recovered)
+        console.log(cache)
+        response.send("Successfully submitted");
+      }
     }
 
-    response.send(" thanks!");
+    
 });
+// app.post('/send', async function(request, response){
+//   let sendResult = await wallet.sendTransaction({
+//     to: request.body.address,
+//     value: ethers.utils.parseEther("0.01")
+//   })
+
+// });
+  app.post('/delete', async function(request, response){
+    cache[request.body.message].splice(request.body.index,1);
+    response.send("Successfully deleted!");
+
+  });
+
+
 
 /*
   maybe you want to send them some tokens or ETH?

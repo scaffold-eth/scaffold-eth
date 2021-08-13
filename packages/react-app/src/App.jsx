@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List} from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -27,6 +27,10 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 const axios = require('axios');
 const { ethers } = require("ethers");
+
+
+
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -47,7 +51,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -413,6 +417,7 @@ function App(props) {
 
   const [message,setMessage] = useState()
   const [addresses,setAddresses] = useState()
+  const [res,setRes] = useState("");
 
   return (
     <div className="App">
@@ -495,6 +500,7 @@ function App(props) {
                   message: message,
                   signature: sig,
                 })
+                setRes(res.data);
 
                 //setMessage("")
 
@@ -511,6 +517,7 @@ function App(props) {
                 //setMessage("")
 
                 setAddresses(res.data)
+                setRes("")
 
               }}>
                 Payout
@@ -520,15 +527,61 @@ function App(props) {
               <List
                 bordered
                 dataSource={addresses}
-                renderItem={item => {
+                renderItem={(item,index) => {
 
                   return (
                     <List.Item >
-                      <Address address={item} ensProvider={mainnetProvider} fontSize={16} />
+                      <div>
+                      <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
+                      <Button onClick = {async () =>{
+                        addresses.splice(index,1)
+                        setAddresses(addresses)
+
+                        const res = await axios.post("http://localhost:45622/delete", {
+                          index: index,
+                          message: message,
+                        });
+                        setRes(res.data);
+
+                      }} size="medium" style={{marginLeft : "200px"}}>
+                        X
+                      </Button>
+                      </div>
+
                     </List.Item>
                   );
                 }}
               />
+              <Button
+              
+              >
+                {
+// onClick={async () => {
+//   /* look how you call setPurpose on your contract: */
+//   /* notice how you pass a call back for tx updates too */
+//   const result = tx(writeContracts.TokenDistributor.splitTokenFromUser(address,addresses, ), update => {
+//     console.log("📡 Transaction Update:", update);
+//     if (update && (update.status === "confirmed" || update.status === 1)) {
+//       console.log(" 🍾 Transaction " + update.hash + " finished!");
+//       console.log(
+//         " ⛽️ " +
+//         update.gasUsed +
+//         "/" +
+//         (update.gasLimit || update.gas) +
+//         " @ " +
+//         parseFloat(update.gasPrice) / 1000000000 +
+//         " gwei",
+//       );
+//     }
+//   });
+//   console.log("awaiting metamask/web3 confirm result...", result);
+//   console.log(await result);
+// }}
+                }
+                Send 💸
+              </Button>
+              <br />
+              {res}
             </div>
 
           </Route>
