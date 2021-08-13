@@ -19,6 +19,7 @@ import {
   useOnBlock,
   useUserSigner,
 } from "./hooks";
+import { Biconomy } from "@biconomy/mexa";
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -52,6 +53,7 @@ const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend n
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
+const BICONOMY_API_KEY = "q1ckUY5sG.61824ace-355d-4660-9f35-dd88c8a07f97"; // <------- make sure to use the correct API Key as per the network
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
@@ -135,6 +137,8 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [biconomy, setBiconomy] = useState();
+
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
 
@@ -348,23 +352,44 @@ function App(props) {
     );
   }
 
+  const getBiconomy = (provider, apiKey) => {
+    return new Biconomy(new ethers.providers.Web3Provider(provider), {
+      apiKey: apiKey,
+      debug: true
+    });
+  }
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+    let _biconomy = getBiconomy(window.ethereum, BICONOMY_API_KEY);
+    _biconomy.onEvent(_biconomy.READY, ()=>{
+      console.log(_biconomy.status);
+      console.log("Biconomy is READY");
+    }).onEvent(_biconomy.ERROR, (error, message) => {
+      console.log("Error while using Biconomy", error);
+      console.log(message);
+    });
+
+    setBiconomy(_biconomy);
+
+    setInjectedProvider(new ethers.providers.Web3Provider(_biconomy));
 
     provider.on("chainChanged", chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      let _biconomy = getBiconomy(provider, BICONOMY_API_KEY);
+      setBiconomy(_biconomy);
+      setInjectedProvider(new ethers.providers.Web3Provider(_biconomy));
     });
 
     provider.on("accountsChanged", () => {
       console.log(`account changed!`);
-      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+      setInjectedProvider(new ethers.providers.Web3Provider(_biconomy));
     });
 
     // Subscribe to session disconnection
     provider.on("disconnect", (code, reason) => {
       console.log(code, reason);
+      setBiconomy();
       logoutOfWeb3Modal();
     });
   }, [setInjectedProvider]);
