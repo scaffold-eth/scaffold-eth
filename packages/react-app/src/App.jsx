@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List} from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -25,11 +25,8 @@ import { ExampleUI, Hints, Subgraph } from "./views";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
-const axios = require('axios');
+const axios = require("axios");
 const { ethers } = require("ethers");
-
-
-
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -64,9 +61,17 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -81,14 +86,11 @@ const blockExplorer = targetNetwork.blockExplorer;
 
 // Coinbase walletLink init
 const walletLink = new WalletLink({
-  appName: 'coinbase',
+  appName: "coinbase",
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(
-    `https://mainnet.infura.io/v3/${INFURA_ID}`,
-    1,
-);
+const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*
@@ -97,7 +99,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
-  theme:"light", // optional. Change to "dark" for a dark theme.
+  theme: "light", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -105,12 +107,11 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           42: `https://kovan.infura.io/v3/${INFURA_ID}`,
-          100:"https://dai.poa.network", // xDai
+          100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -142,11 +143,11 @@ const web3Modal = new Web3Modal({
     //     },
     //   },
     // },
-    'custom-walletlink': {
+    "custom-walletlink": {
       display: {
-        logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
-        name: 'Coinbase',
-        description: 'Connect to Coinbase Wallet (not Coinbase App)',
+        logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
+        name: "Coinbase",
+        description: "Connect to Coinbase Wallet (not Coinbase App)",
       },
       package: walletLinkProvider,
       connector: async (provider, options) => {
@@ -156,21 +157,30 @@ const web3Modal = new Web3Modal({
     },
     authereum: {
       package: Authereum, // required
-    }
+    },
   },
 });
 
-
-
 function App(props) {
-  const mainnetProvider = poktMainnetProvider && poktMainnetProvider._isProvider ? poktMainnetProvider : scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider =
+    poktMainnetProvider && poktMainnetProvider._isProvider
+      ? poktMainnetProvider
+      : scaffoldEthProvider && scaffoldEthProvider._network
+      ? scaffoldEthProvider
+      : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
 
+  const [message, setMessage] = useState();
+  const [addresses, setAddresses] = useState();
+  const [amount, setAmount] = useState(0);
+  const [tokenAddress, setTokenAddress] = useState("");
+  const [approved, setApproved] = useState(false);
+
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
-    if(injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function"){
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
       await injectedProvider.provider.disconnect();
     }
     setTimeout(() => {
@@ -274,6 +284,10 @@ function App(props) {
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
+
+    if (readContracts) {
+      setTokenAddress(readContracts?.DummyToken.address);
+    }
   }, [
     mainnetProvider,
     address,
@@ -352,7 +366,6 @@ function App(props) {
     );
   }
 
-
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
@@ -415,9 +428,9 @@ function App(props) {
     );
   }
 
-  const [message,setMessage] = useState()
-  const [addresses,setAddresses] = useState()
-  const [res,setRes] = useState("");
+  // const [message,setMessage] = useState()
+  // const [addresses,setAddresses] = useState()
+  const [res, setRes] = useState("");
 
   return (
     <div className="App">
@@ -434,6 +447,16 @@ function App(props) {
               to="/"
             >
               YourContract
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/app">
+            <Link
+              onClick={() => {
+                setRoute("/app");
+              }}
+              to="/app"
+            >
+              App
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -480,110 +503,165 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
+            <Contract
+              name="TokenDistributor"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            <Contract
+              name="DummyToken"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+          </Route>
+          <Route exact path="/app">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <div style={{width:500, margin: "auto", padding:64}}>
 
-              <Input value={message} onChange={(e)=>{
-                setMessage(e.target.value.toLowerCase())
-              }}/>
+            <div style={{ margin: "auto", width: 500, padding: 64 }}>
+              <Input
+                style={{ marginTop: "10px", marginBottom: "10px" }}
+                value={message}
+                placeholder="Message"
+                onChange={e => setMessage(e.target.value)}
+              />
+              <div style={{ marginBottom: "10px" }}>
+                <Button
+                  onClick={async () => {
+                    let sig = await userSigner.signMessage(message);
 
-              <Button onClick={async ()=>{
+                    const res = await axios.post("http://localhost:45622", {
+                      address: address,
+                      message: message,
+                      signature: sig,
+                    });
+                    setRes("");
+                  }}
+                >
+                  Sign In
+                </Button>
 
-                let sig = await userSigner.signMessage(message)
+                <Button
+                  style={{ marginLeft: "10px" }}
+                  onClick={async () => {
+                    const res = await axios.get("http://localhost:45622/" + message);
+                    console.log("res", res);
+                    //setMessage("")
 
-                const res = await axios.post("http://localhost:45622", {
-                  address: address,
-                  message: message,
-                  signature: sig,
-                })
-                setRes(res.data);
-
-                //setMessage("")
-
-              }}>
-                Sign In
-              </Button>
-
-              <Button onClick={async ()=>{
-
-
-
-                const res = await axios.get("http://localhost:45622/"+message,)
-                console.log("res",res)
-                //setMessage("")
-
-                setAddresses(res.data)
-                setRes("")
-
-              }}>
-                Payout
-              </Button>
-
+                    setAddresses(res.data);
+                  }}
+                >
+                  Fetch Logged Accounts
+                </Button>
+              </div>
 
               <List
                 bordered
                 dataSource={addresses}
-                renderItem={(item,index) => {
-
-                  return (
-                    <List.Item >
-                      <div>
+                renderItem={(item, index) => (
+                  <List.Item>
+                    <div>
                       <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
-                      <Button onClick = {async () =>{
-                        addresses.splice(index,1)
-                        setAddresses(addresses)
-
-                        const res = await axios.post("http://localhost:45622/delete", {
-                          index: index,
-                          message: message,
-                        });
-                        setRes(res.data);
-
-                      }} size="medium" style={{marginLeft : "200px"}}>
+                      <Button
+                        onClick={async () => {
+                          const updatedAddresses = [...addresses];
+                          updatedAddresses.splice(index, 1);
+                          setAddresses(updatedAddresses);
+                        }}
+                        size="medium"
+                        style={{ marginLeft: "200px" }}
+                      >
                         X
                       </Button>
-                      </div>
-
-                    </List.Item>
-                  );
-                }}
+                    </div>
+                  </List.Item>
+                )}
               />
-              <Button
-              
-              >
-                {
-// onClick={async () => {
-//   /* look how you call setPurpose on your contract: */
-//   /* notice how you pass a call back for tx updates too */
-//   const result = tx(writeContracts.TokenDistributor.splitTokenFromUser(address,addresses, ), update => {
-//     console.log("📡 Transaction Update:", update);
-//     if (update && (update.status === "confirmed" || update.status === 1)) {
-//       console.log(" 🍾 Transaction " + update.hash + " finished!");
-//       console.log(
-//         " ⛽️ " +
-//         update.gasUsed +
-//         "/" +
-//         (update.gasLimit || update.gas) +
-//         " @ " +
-//         parseFloat(update.gasPrice) / 1000000000 +
-//         " gwei",
-//       );
-//     }
-//   });
-//   console.log("awaiting metamask/web3 confirm result...", result);
-//   console.log(await result);
-// }}
-                }
-                Send 💸
-              </Button>
-              <br />
-              {res}
-            </div>
 
+              <Input
+                style={{ marginTop: "10px" }}
+                value={tokenAddress}
+                onChange={e => setTokenAddress(e.target.value)}
+              />
+              <Input
+                value={amount}
+                style={{ marginTop: "10px" }}
+                onChange={e => setAmount(e.target.value.toLowerCase())}
+              />
+
+              {addresses && (
+                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                  <Button
+                    onClick={async () => {
+                      /* look how you call setPurpose on your contract: */
+                      /* notice how you pass a call back for tx updates too */
+                      const result = tx(
+                        writeContracts.DummyToken.approve(readContracts?.TokenDistributor.address, amount),
+                        update => {
+                          console.log("📡 Transaction Update:", update);
+                          if (update && (update.status === "confirmed" || update.status === 1)) {
+                            console.log(" 🍾 Transaction " + update.hash + " finished!");
+                            console.log(
+                              " ⛽️ " +
+                                update.gasUsed +
+                                "/" +
+                                (update.gasLimit || update.gas) +
+                                " @ " +
+                                parseFloat(update.gasPrice) / 1000000000 +
+                                " gwei",
+                            );
+                          }
+                        },
+                      );
+                      console.log("awaiting metamask/web3 confirm result...", result);
+                      console.log(await result);
+                      setApproved(true);
+                    }}
+                  >
+                    Approve Token
+                  </Button>
+
+                  <Button
+                    disabled={!approved}
+                    style={{ marginLeft: "10px" }}
+                    onClick={async () => {
+                      /* look how you call setPurpose on your contract: */
+                      /* notice how you pass a call back for tx updates too */
+                      const result = tx(
+                        writeContracts.TokenDistributor.splitTokenFromUser(address, addresses, amount, tokenAddress),
+                        update => {
+                          console.log("📡 Transaction Update:", update);
+                          if (update && (update.status === "confirmed" || update.status === 1)) {
+                            console.log(" 🍾 Transaction " + update.hash + " finished!");
+                            console.log(
+                              " ⛽️ " +
+                                update.gasUsed +
+                                "/" +
+                                (update.gasLimit || update.gas) +
+                                " @ " +
+                                parseFloat(update.gasPrice) / 1000000000 +
+                                " gwei",
+                            );
+                          }
+                        },
+                      );
+                      console.log("awaiting metamask/web3 confirm result...", result);
+                      console.log(await result);
+                      setApproved(true);
+                    }}
+                  >
+                    Payout
+                  </Button>
+                </div>
+              )}
+            </div>
           </Route>
           <Route path="/hints">
             <Hints
