@@ -30,6 +30,7 @@ function App(props) {
 
   const [blockNum, setBlockNum] = useState(0);
   const [BlockBaseGas, setBlockBaseGas] = useState(0);
+  const [BlockBaseGasEth, setBlockBaseGasEth] = useState(0);
   const [BlockGasUsed, setBlockGasUsed] = useState(0);
   const [BlockGasLimit, setBlockGasLimit] = useState(0);
   const [BlockGasPrices, setBlockGasPrices] = useState({});
@@ -147,12 +148,17 @@ function App(props) {
     // console.log(mainnetProvider)
     const bn = await mainnetProvider._lastBlockNumber;
     const blockWithTrxs = await mainnetProvider.getBlockWithTransactions( bn );
-    const bf = blockWithTrxs.baseFeePerGas.toString();
+    let bf = blockWithTrxs.baseFeePerGas.toString();
     const gu = blockWithTrxs.gasUsed.toString();
     const gl = blockWithTrxs.gasLimit.toString();
 
+    bf = parseFloat(toGWei(fromWei(bf))).toFixed(6);
+    // let bfe = fromWei(bf * gl);
+    // bfe = parseFloat(bf * ethPrice).toFixed(6);
+    
     setBlockNum(bn);
     setBlockBaseGas(bf);
+    // setBlockBaseGasEth(bfe);
     setBlockGasUsed(gu);
     setBlockGasLimit(gl);
     setBlockTotalTrxs(blockWithTrxs.transactions.length);
@@ -368,7 +374,8 @@ function App(props) {
           >
             <h3> ⚓ latest block num: {blockNum}</h3>
             <h3> ⚓ total trxs: {BlocktotalTrxs}</h3>
-            <h3> ⚓ base fee: {BlockBaseGas}</h3>
+            <h3> ⚓ base fee: {BlockBaseGas} gwei</h3>
+            {/*<h3> ⚓ base fee cost (eth): {BlockBaseGasEth}</h3>*/}
             <h3> ⚓ gas used: {BlockGasUsed}</h3>
             <h3> ⚓ gas limit: {BlockGasLimit}</h3>
             <Divider />
