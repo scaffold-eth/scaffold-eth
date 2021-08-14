@@ -152,7 +152,11 @@ function App(props) {
     const gu = blockWithTrxs.gasUsed.toString();
     const gl = blockWithTrxs.gasLimit.toString();
 
-    bf = parseFloat(toGWei(fromWei(bf))).toFixed(6);
+    try{
+      bf = parseFloat(toGWei(fromWei(bf))).toFixed(6);
+    } catch (e) {
+      // console.log(e);
+    }
     // let bfe = fromWei(bf * gl);
     // bfe = parseFloat(bf * ethPrice).toFixed(6);
     
