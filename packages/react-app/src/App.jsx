@@ -521,23 +521,23 @@ function App(props) {
             </div>
             <Divider/>
             <div style={{ textAlign: "left" }}>
-              Base Fee: The base fee is calculated by a formula that compares the size of the previous block (the amount of gas used for all the transactions) with the target size. 
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Base Fee</span>: The base fee is calculated by a formula that compares the size of the previous block (the amount of gas used for all the transactions) with the target size. 
             </div>
             <div style={{ textAlign: "left" }}>
-              Priority Fee (Tips): With the new base fee getting burned, the London Upgrade introduced a priority fee (tip) to incentivize miners to include a transaction in the block.
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Priority Fee (Tips)</span>: With the new base fee getting burned, the London Upgrade introduced a priority fee (tip) to incentivize miners to include a transaction in the block.
               </div>
             <div style={{ textAlign: "left" }}>
-              Max Fee: To execute a transaction on the network users are able to specify a maximum limit they are willing to pay for their transaction to be executed. difference between the max fee and the actual fee is refunded, i.e. refund = max fee - (base fee + priority fee)
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Max Fee</span>: To execute a transaction on the network users are able to specify a maximum limit they are willing to pay for their transaction to be executed. difference between the max fee and the actual fee is refunded, i.e. refund = max fee - (base fee + priority fee)
             </div>
             <div style={{ textAlign: "left" }}>
-              Gas: Gas refers to the unit that measures the amount of computational effort required to execute specific
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Gas</span>: Gas refers to the unit that measures the amount of computational effort required to execute specific
               operations on the Ethereum network.
             </div>
             <div style={{ textAlign: "left" }}>
-              Gas Limit: Gas limit refers to the maximum amount of gas you are willing to consume on a transaction. A standard ETH transfer requires a gas limit of 21,000 units of gas.
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Gas Limit</span>: Gas limit refers to the maximum amount of gas you are willing to consume on a transaction. A standard ETH transfer requires a gas limit of 21,000 units of gas.
             </div>
             <div style={{ textAlign: "left" }}>
-              Gas Price: Gas price refers to the amount of ether you are willing to pay for every unit of gas, and this is usually measured in 'gwei'.
+              <span style={{ backgroundColor: "#98b5de", padding:2 }}>Gas Price</span>: Gas price refers to the amount of ether you are willing to pay for every unit of gas, and this is usually measured in 'gwei'.
             </div>
             <div style={{ textAlign: "left" }}>
               reference:{" "}
