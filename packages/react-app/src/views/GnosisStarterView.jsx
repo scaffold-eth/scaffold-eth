@@ -1,7 +1,7 @@
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import Safe, { EthersAdapter, SafeFactory, SafeTransaction } from '@gnosis.pm/safe-core-sdk'
+import Safe, { EthersAdapter, SafeFactory, SafeTransaction, EthSignSignature } from '@gnosis.pm/safe-core-sdk'
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
 import { Address, Balance, EtherInput } from "../components";
 export default function GnosisStarterView({
@@ -36,7 +36,6 @@ export default function GnosisStarterView({
     // const safe = await safeFactory.deploySafe(safeAccountConfig)
     // safeAddress = await safe.getAddress();
     // const safeinstance = await serviceClient.getSafeInfo(safeAddress);
-    // console.log(safeinstance)
     const contract = await ethAdapter.getSafeContract(safeAddress)
     const owners = await contract.getOwners();
     const thresold = await contract.getThreshold();
@@ -59,6 +58,7 @@ export default function GnosisStarterView({
       }
       transactions.results[i].signers = signers;
     }
+    
     setcurrentThresold(currentThresold)
     setTransactions(transactions.results)
   });
@@ -169,7 +169,29 @@ export default function GnosisStarterView({
                   }
                   const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
                   const safeSdk2 = await safeSdk.connect({ ethAdapter, safeAddress })
-                  const executeTxResponse = await safeSdk2.executeTransaction(transaction)
+                  console.log(transaction)
+
+                  const safeTransactionData = {
+                    to: transaction.to,
+                    value: transaction.value,
+                    data: transaction.data || '0x',
+                    operation: transaction.operation,
+                    safeTxGas: transaction.safeTxGas,
+                    baseGas: transaction.baseGas,
+                    gasPrice: Number(transaction.gasPrice),
+                    gasToken: transaction.gasToken,
+                    refundReceiver: transaction.refundReceiver,
+                    nonce: transaction.nonce
+                  }
+                  const safeTransaction = await safeSdk.createTransaction(safeTransactionData)
+                  if (transaction.confirmations) {
+                    for(let i = 0; i < transaction.confirmations?.length; i++) {
+                      const confirmation = transaction.confirmations[i]
+                      const signature = new EthSignSignature(confirmation.owner, confirmation.signature)
+                      await safeTransaction.addSignature(signature)
+                    }
+                  }
+                  const executeTxResponse = await safeSdk2.executeTransaction(safeTransaction)
                   const receipt = executeTxResponse.transactionResponse && (await executeTxResponse.transactionResponse.wait())
                   console.log(receipt);
                 }}>Execute TX</Button>}

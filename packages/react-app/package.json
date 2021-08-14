@@ -18,7 +18,7 @@
     "@ant-design/icons": "^4.2.2",
     "@apollo/react-hooks": "^4.0.0",
     "@gnosis.pm/safe-core-sdk": "^0.3.1",
-    "@gnosis.pm/safe-service-client": "^0.1.0-alpha.0",
+    "@gnosis.pm/safe-service-client": "^0.1.0",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
