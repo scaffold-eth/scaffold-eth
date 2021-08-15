@@ -29,8 +29,10 @@
     "@chakra-ui/react": "^1.6.3",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@ethersproject/contracts": "^5.4.1",
     "@fontsource/open-sans": "^4.5.0",
     "@tabler/icons": "^1.41.2",
+    "@textile/hub": "^6.2.0",
     "@usedapp/core": "^0.4.1",
     "@web3-react/walletconnect-connector": "^6.2.0",
     "blockies-ts": "^1.0.0",
@@ -44,6 +46,7 @@
     "next": "^11.0.1",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "react-dropzone": "^11.3.4",
     "recharts": "^2.0.10",
     "sass": "^1.37.0",
     "styled-components": "^5.3.0"

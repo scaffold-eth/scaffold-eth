@@ -167,7 +167,7 @@
       "chainId": "80001",
       "contracts": {
         "IpNftFactory": {
-          "address": "0xB0928EB0b60F8eC74Ec89e27578EB9baC25437E3",
+          "address": "0x7a1C2CE4e083ACA62845Af35FeECabf2C319a8Fa",
           "abi": [
             {
               "inputs": [],

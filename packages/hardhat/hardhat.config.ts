@@ -31,7 +31,7 @@ task("accounts", "Prints the list of accounts", async (_args, hre) => {
 const config: HardhatUserConfig = {
   namedAccounts: {
     deployer: {
-      default: "mumbai",
+      default: 0,
       mumbai: "0xCC78280A93267D7E646e03207194510e0f09CF06"
     }
   },
@@ -84,7 +84,7 @@ const config: HardhatUserConfig = {
       }
     ]
   },
-  defaultNetwork: "hardhat",
+  defaultNetwork: "mumbai",
   networks: {
     hardhat: {
       chainId: 1337
