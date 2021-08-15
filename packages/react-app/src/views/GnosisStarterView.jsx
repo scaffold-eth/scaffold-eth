@@ -1,9 +1,10 @@
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
-import Safe, { EthersAdapter, SafeFactory, SafeTransaction, EthSignSignature } from '@gnosis.pm/safe-core-sdk'
+import Safe, { EthersAdapter, SafeFactory, SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk'
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
 import { Address, Balance, EtherInput } from "../components";
+import {EthSignSignature}  from './EthSignSignature'
 export default function GnosisStarterView({
   purpose,
   userSigner,
