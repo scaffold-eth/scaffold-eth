@@ -10,13 +10,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   //   log: true,
   // });
 
-  await deploy("GnosisSafe", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    args: [['0xf88b0247e611eE5af8Cf98f5303769Cba8e7177C', '0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51'], 2, '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', '0x0000000000000000000000000000000000000000', 0, '0x0000000000000000000000000000000000000000'],
-    log: true,
-  });
-
   /*
     // Getting a previously deployed contract
     const YourContract = await ethers.getContract("YourContract", deployer);
@@ -25,7 +18,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */
 };
-module.exports.tags = ["YourContract", "GnosisSafe"];
+module.exports.tags = ["YourContract"];
 
 /*
 Tenderly verification
