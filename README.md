@@ -2,6 +2,11 @@
 
 > Build, mint, and send around your own ERC721 (NFT) on Mumbai (testnet) and then on Polygon/Matic mainnet!
 
+
+> [🎥 Watch the speed run video!](https://youtu.be/zgj8ZT4-9lk)
+
+
+
 # 🏃‍♀️ Quick Start
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
 
