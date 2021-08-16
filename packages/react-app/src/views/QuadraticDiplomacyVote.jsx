@@ -1,176 +1,219 @@
-import { Button, Checkbox, Divider, Space } from "antd";
-import React, {useEffect, useState} from "react"
+import React, { useEffect, useState, useMemo } from "react";
+import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge } from "antd";
+import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
+import { Address } from "../components";
+const { Title } = Typography;
 
-export default function QuadraticDiplomacyVote({
-  voteCredits,
-  contributorEntries,
-  tx,
-  writeContracts,
-}) {
-  const [contributors, setContributors] = useState({});
+export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts }) {
   const [selectedContributors, setSelectedContributors] = useState({});
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentStep, setCurrentStep] = useState(1);
   const [availableVoteTokens, setAvailableVoteTokens] = useState(0);
 
-  useEffect(async () => {
-    const initialContributors = contributorEntries.reduce((entries, current) => {
-      entries[current.wallet] = {
-        name: current.name,
-        voteTokens: 0,
-      }
+  const contributors = useMemo(
+    () =>
+      contributorEntries.reduce((entries, current) => {
+        entries[current.wallet] = {
+          name: current.name,
+          voteTokens: 0,
+        };
+        return entries;
+      }, {}),
+    [contributorEntries],
+  );
+  const allContributorsSelected = Object.keys(contributors).length === Object.keys(selectedContributors).length;
 
-      return entries;
-    }, {})
-
-    setContributors(initialContributors);
-  }, [contributorEntries]);
-
-  useEffect(async () => {
+  useEffect(() => {
     if (voteCredits) {
       setAvailableVoteTokens(voteCredits.toNumber());
     }
   }, [voteCredits]);
 
+  const handleSelectAllContributors = () =>
+    allContributorsSelected ? setSelectedContributors({}) : setSelectedContributors(contributors);
   const handleContributorSelection = (e, contributorAddress) => {
-    setSelectedContributors((prevSelectedContributors) => {
-      if (selectedContributors[contributorAddress]) {
+    setSelectedContributors(prevSelectedContributors => {
+      if (prevSelectedContributors[contributorAddress]) {
         const state = { ...prevSelectedContributors };
         delete state[contributorAddress];
         return state;
       } else {
         return {
           ...prevSelectedContributors,
-          [contributorAddress]: contributors[contributorAddress]
-        }
+          [contributorAddress]: contributors[contributorAddress],
+        };
       }
-    })
-  }
-
+    });
+  };
   const handleContributorVote = (e, op, clickedContributorAddress) => {
-    setAvailableVoteTokens((prevVotes) => {
-      return op === 'add' ? prevVotes - 1 : prevVotes + 1;
-    })
+    // adjust available vote tokens
+    setAvailableVoteTokens(op === "add" ? availableVoteTokens - 1 : availableVoteTokens + 1);
+    // update contributor vote tokens
+    setSelectedContributors(prevSelectedContributors => ({
+      ...prevSelectedContributors,
+      [clickedContributorAddress]: {
+        ...prevSelectedContributors[clickedContributorAddress],
+        voteTokens:
+          op === "add"
+            ? Math.min(prevSelectedContributors[clickedContributorAddress].voteTokens + 1, voteCredits.toNumber())
+            : Math.max(prevSelectedContributors[clickedContributorAddress].voteTokens - 1, 0),
+      },
+    }));
+  };
+  const handleSubmitVotes = async () => {
+    const names = [],
+      wallets = [],
+      amounts = [];
 
-    const newContributorVote = op === 'add'
-      ? selectedContributors[clickedContributorAddress].voteTokens + 1
-      : selectedContributors[clickedContributorAddress].voteTokens - 1;
-
-    setSelectedContributors((prevSelectedContributors) => {
-      return {
-        ...prevSelectedContributors,
-        [clickedContributorAddress]: {
-          ...prevSelectedContributors[clickedContributorAddress],
-          voteTokens: newContributorVote
-        }
-      }
-    })
-  }
-
-  const handleSubmitVotes = async() => {
-    const names = [];
-    const wallets = [];
-    const amounts = [];
-
-    Object.entries(selectedContributors).map(([contributorAddress, contributor]) => {
-      names.push(contributor.name);
+    Object.entries(selectedContributors).forEach(([contributorAddress, { name, voteTokens }]) => {
+      names.push(name);
       wallets.push(contributorAddress);
-      amounts.push(contributor.voteTokens);
+      amounts.push(voteTokens);
     });
 
-    await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(
-      names,
-      wallets,
-      amounts,
-    ), update => {
+    await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(names, wallets, amounts), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
-        setCurrentPage(3);
+        setCurrentStep(3);
       }
     });
-  }
+  };
 
   return (
-    <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
-      {currentPage === 1 ? (
-        <>
-          <h4><strong>1. Who've you been working with?</strong></h4>
-          <Divider />
-          <ul style={{ listStyle: 'none' }}>
-            {Object.entries(contributors).map(([contributorAddress, contributor]) => (
-              <li
-                key={contributorAddress}
-              >
-                <Checkbox
-                  onClick={(e) => handleContributorSelection(e, contributorAddress)}
-                  checked={selectedContributors[contributorAddress]}
-                >
-                  {contributor.name}
-                </Checkbox>
-              </li>
-            ))}
-          </ul>
-          <Divider />
-          <div style={{ margin: 8 }}>
+    <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+      <Steps initial={1} current={currentStep} labelPlacement="vertical">
+        <Steps.Step
+          title="Select Contributors"
+          subTitle={`${contributorEntries.length} contributors`}
+          icon={<SmileTwoTone />}
+        />
+        <Steps.Step
+          title="Allocate Votes"
+          subTitle={`${availableVoteTokens} votes left`}
+          icon={<LikeTwoTone twoToneColor="#eb2f96" />}
+        />
+        <Steps.Step title="Done" subTitle="Thank you!" icon={<CheckCircleTwoTone twoToneColor="#52c41a" />} />
+      </Steps>
+      <Divider />
+      {currentStep === 1 ? (
+        <List
+          size="small"
+          itemLayout="horizontal"
+          header={<Title level={4}>1. Who've you been working with?</Title>}
+          footer={
             <Button
-              type='primary'
-              onClick={() => setCurrentPage(2)}
+              type="primary"
+              onClick={() => setCurrentStep(2)}
               disabled={!Object.keys(selectedContributors).length}
             >
               Next
             </Button>
-          </div>
-          <Divider />
-        </>
-      ) : currentPage === 2 ? (
-        <>
-          <h4><strong>2. Vote Contributors</strong></h4>
-          <Divider />
-          <p><strong>Remaining vote tokens: </strong> {availableVoteTokens}</p>
-          <Divider />
-          <ul style={{ listStyle: 'none' }}>
-            {Object.entries(selectedContributors).map(([contributorAddress, contributor]) => (
-              <li key={contributorAddress}>
-                <Space direction="vertical">
-                  <Space>
-                    <strong>{contributor.name}</strong>
-                    <span>(votes: {contributor.voteTokens})</span>
-                  </Space>
-                  <Space>
+          }
+          dataSource={Object.entries(contributors)}
+          renderItem={([contributorAddress, contributor], index) => (
+            <>
+              {index === 0 && (
+                <List.Item>
+                  <Checkbox
+                    indeterminate={!allContributorsSelected && Object.keys(selectedContributors).length}
+                    checked={allContributorsSelected}
+                    onChange={handleSelectAllContributors}
+                  >
+                    Select All
+                  </Checkbox>
+                </List.Item>
+              )}
+              <List.Item key={contributorAddress}>
+                <Checkbox
+                  size="large"
+                  onClick={e => handleContributorSelection(e, contributorAddress)}
+                  checked={selectedContributors[contributorAddress]}
+                >
+                  {contributor.name}
+                </Checkbox>
+                <Address address={contributorAddress} fontSize={16} size="short" />
+              </List.Item>
+            </>
+          )}
+        />
+      ) : currentStep === 2 ? (
+        <List
+          size="large"
+          itemLayout="horizontal"
+          header={
+            <Space direction="vertical">
+              <Title level={4}>2. Allocate votes</Title>
+              <Title level={5}>
+                Remaining vote tokens:&nbsp;&nbsp;
+                <Badge
+                  showZero
+                  overflowCount={1000}
+                  count={availableVoteTokens}
+                  style={{ backgroundColor: "#52c41a" }}
+                />
+              </Title>
+            </Space>
+          }
+          footer={
+            <Space split>
+              <Button onClick={() => setCurrentStep(1)}>Go back</Button>
+              <Button type="primary" onClick={handleSubmitVotes}>
+                Commit votes
+              </Button>
+            </Space>
+          }
+          dataSource={Object.entries(selectedContributors)}
+          renderItem={([contributorAddress, contributor]) => (
+            <>
+              <Badge.Ribbon
+                showZero
+                overflowCount={1000}
+                text={<Title level={5}>{contributor.voteTokens} </Title>}
+                style={{
+                  backgroundColor: contributor.voteTokens ? "#eb2f96" : "grey",
+                  height: 24,
+                  width: 30,
+                  marginRight: -5,
+                }}
+              />
+              <List.Item
+                key={contributorAddress}
+                extra={
+                  <Button.Group>
                     <Button
-                      onClick={(e) => handleContributorVote(e, 'remove', contributorAddress)}
+                      danger
+                      ghost
+                      onClick={e => handleContributorVote(e, "remove", contributorAddress)}
                       disabled={!contributor.voteTokens}
                     >
-                      <span>-</span>
+                      <MinusOutlined />
                     </Button>
                     <Button
-                      onClick={(e) => handleContributorVote(e, 'add', contributorAddress)}
+                      type="primary"
+                      ghost
+                      onClick={e => handleContributorVote(e, "add", contributorAddress)}
                       disabled={!availableVoteTokens}
                     >
-                      <span>+</span>
+                      <PlusOutlined />
                     </Button>
-                  </Space>
-                </Space>
-              </li>
-            ))}
-          </ul>
-          <Space>
-            <Button
-              onClick={() => setCurrentPage(1)}
-            >
-              Go back
-            </Button>
-            <Button
-              type='primary'
-              onClick={handleSubmitVotes}
-            >
-              Commit votes
-            </Button>
-          </Space>
-        </>
-      ) : currentPage === 3 && (
-        <>
-          <h4><strong>Thank you for voting.</strong></h4>
-          <p>The allocation to this workstream will be informed by your votes. See you next month!</p>
-        </>
+                  </Button.Group>
+                }
+              >
+                <List.Item.Meta
+                  avatar={<Address address={contributorAddress} fontSize={14} size="short" />}
+                  title={<strong>{contributor.name}</strong>}
+                />
+              </List.Item>
+            </>
+          )}
+        />
+      ) : (
+        currentStep === 3 && (
+          <>
+            <h4>
+              <strong>Thank you for voting.</strong>
+            </h4>
+            <p>The allocation to this workstream will be informed by your votes. See you next month!</p>
+          </>
+        )
       )}
     </div>
   );
