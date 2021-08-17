@@ -192,6 +192,30 @@ module.exports = {
         l2: "localOptimism",
       },
     },
+    localAvalanche: {
+      url: "http://localhost:9650/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43112,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    fujiAvalanche: {
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43113,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetAvalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43114,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
