@@ -33,6 +33,8 @@ export default function GnosisStarterView({
   const loadGnosis = async () => {
 
     // const safeFactory = await SafeFactory.create({ ethAdapter })
+    // ownerspayload = [owner addresses]
+    // thresholdVal = 2 (for example)
     // const safeAccountConfig = { owners: ownerspayload, threshold: thresholdVal }
     // const safe = await safeFactory.deploySafe(safeAccountConfig)
     // safeAddress = await safe.getAddress();
