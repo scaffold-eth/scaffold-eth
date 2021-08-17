@@ -8,7 +8,7 @@ module.exports = {
   parser: "babel-eslint",
   rules: {
     "prettier/prettier": [
-      "error",
+      "warn",
       {
         endOfLine: "auto",
       },
