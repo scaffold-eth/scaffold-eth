@@ -1,93 +1,81 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - Gnosis Safe Starter Kit
 
-> everything you need to build on Ethereum! 🚀
+> Discover how you can get started with [Gnosis Safe](https://gnosis-safe.io/)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a>About The Branch</a>
+    </li>
+    <li>
+      <a>Getting Started</a>
+      <ul>
+        <li><a>Installation</a></li>
+        <li><a>Deployment</a></li>
+      </ul>
+    </li>
+    <li><a>Branch UI Walkthrough</a></li>
+    <li><a>Contact</a></li>
+  </ol>
+</details>
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+## About The Project
+
+This branch is entitled to showcase how you can get started integrating/using [Gnosis Safe](https://gnosis-safe.io/) which makes use of the [Gnosis Safe SDK](https://github.com/gnosis/safe-core-sdk) to create and interact with the safe to execute multi-sig transactions.
 
 
-# 🏄‍♂️ Quick Start
+## Getting Started
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+### Installation
 
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+Let's start our environment for tinkering and exploring how NFT auction would work.
+
+1. Clone the repo first
+```sh
+git clone -b gnosis-starter-kit https://github.com/austintgriffith/scaffold-eth.git gnosis
+cd gnosis
 ```
 
-> install and start your 👷‍ Hardhat chain:
-
+2. Install dependencies
 ```bash
-cd scaffold-eth
 yarn install
-yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
-
+3. Start your React frontend and make sure you are connect your rinkeby wallet
 ```bash
-cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
+## Deployment
 
-```bash
-cd scaffold-eth
-yarn deploy
-```
+This branch has no dependency on any smart contract the safe deployment is taken care by the SDK so in order to deploy un-comment the code [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L35-L39) and make sure you set the thresold and owner params on line 36.
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+### Note
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+- The Branch currently is tested on the Rinkeby network so make sure to connect your rinkeby wallet
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
-
-📱 Open http://localhost:3000 to see the app
-
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+- Make sure after deployment you fund your safe with eth.
 
 
-# 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
 
----
+## Branch UI Walkthrough
 
-🎛 Any web3 dev environment is complex, that's why 🏗 Scaffold-ETH comes with everything you need, already working together:
+<img width="1344" alt="initiate" src="https://user-images.githubusercontent.com/26670962/129724607-c9499f60-5833-474c-9ba0-855837ff00d1.png">
 
-- Hardhat for your local blockchain, deploying, and testing smart contracts.
-- React for building a frontend, using many useful pre-made components and hooks.
-- Ant for your UI. (You can easily changed to another library you prefer)
-- Surge / S3 / IPFS for publishing your app.
-- Tenderly / The Graph / Etherscan / Infura / Blocknative for infrastructure.
-- Support for L2 / Sidechains like Optimism and Arbitrum.
+Initiate and propose the transaction
 
----
+<img width="1344" alt="sign" src="https://user-images.githubusercontent.com/26670962/129724745-ecb0989d-ba9f-41ee-b4bc-734feabbc580.png">
 
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
+The second owner signs the proposed transaction
+
+<img width="1344" alt="execute" src="https://user-images.githubusercontent.com/26670962/129724819-a14ae80c-9fa8-437c-a2db-0401e5c33bbf.png">
+
+The transaction now can be executed with the thresold being reached
+
+
+## Contact
+
+Join the [telegram support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
