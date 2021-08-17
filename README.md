@@ -50,7 +50,7 @@ yarn start
 
 ## Deployment
 
-This branch has no dependency on any smart contract the safe deployment is taken care by the SDK so in order to deploy un-comment the code [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L35-L39) and make sure you set the thresold and owner params on line 38.
+This branch has no dependency on any smart contract the safe deployment is taken care by the SDK so in order to deploy un-comment the code [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L35-L39) and make sure you set the thresold and owner params on line 38 and make sure you update the safe address [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L29) after deployment
 
 ### Note
 
