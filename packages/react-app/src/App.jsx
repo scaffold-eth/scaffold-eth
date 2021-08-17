@@ -551,8 +551,9 @@ function App(props) {
                 <Button
                   style={{ marginLeft: "10px" }}
                   onClick={async () => {
+
                     const res = await axios.get("http://localhost:45622/" + message);
-                    console.log("res", res);
+                    //console.log("res", res);
                     //setMessage("")
 
                     setAddresses(res.data);
@@ -587,16 +588,18 @@ function App(props) {
 
               <Input
                 style={{ marginTop: "10px" }}
+                addonBefore = "Token Address"
                 value={tokenAddress}
                 onChange={e => setTokenAddress(e.target.value)}
               />
               <Input
                 value={amount}
+                addonBefore = "Amount"
                 style={{ marginTop: "10px" }}
                 onChange={e => setAmount(e.target.value.toLowerCase())}
               />
 
-              {addresses && (
+              {addresses && addresses.length>0 && (
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                   <Button
                     onClick={async () => {

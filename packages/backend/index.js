@@ -33,7 +33,7 @@ app.get("/", function (req, res) {
 app.get("/:message", function (req, res) {
   console.log("/message", req.params);
   const message = req.params.message.toLowerCase();
-  res.status(200).send(Array.from(cache[message]) || []);
+  res.status(200).send(cache[message] || []);
 });
 
 app.post("/", async function (request, response) {
