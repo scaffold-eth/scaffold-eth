@@ -30,6 +30,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
 
   const handleSelectAllContributors = () =>
     allContributorsSelected ? setSelectedContributors({}) : setSelectedContributors(contributors);
+  
   const handleContributorSelection = (e, contributorAddress) => {
     setSelectedContributors(prevSelectedContributors => {
       if (prevSelectedContributors[contributorAddress]) {
@@ -44,6 +45,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       }
     });
   };
+  
   const handleContributorVote = (e, op, clickedContributorAddress) => {
     // adjust available vote tokens
     setAvailableVoteTokens(op === "add" ? availableVoteTokens - 1 : availableVoteTokens + 1);
@@ -59,6 +61,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       },
     }));
   };
+  
   const handleSubmitVotes = async () => {
     const names = [],
       wallets = [],
