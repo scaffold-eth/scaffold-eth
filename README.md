@@ -22,7 +22,7 @@
 
 ## About The Project
 
-This branch is entitled to showcase how you can get started integrating/using [Gnosis Safe](https://gnosis-safe.io/) which makes use of the [Gnosis Safe SDK](https://github.com/gnosis/safe-core-sdk) to create and interact with the safe to execute multi-sig transactions.
+This branch showcases how to get started integrating/using [Gnosis Safe](https://gnosis-safe.io/) which makes use of the [Gnosis Safe SDK](https://github.com/gnosis/safe-core-sdk) to create and interact with the safe to execute multi-sig transactions.
 
 
 ## Getting Started
@@ -30,12 +30,10 @@ This branch is entitled to showcase how you can get started integrating/using [G
 
 ### Installation
 
-Let's start our environment for tinkering and exploring how NFT auction would work.
-
-1. Clone the repo first
+1. Clone the repo
 ```sh
-git clone -b gnosis-starter-kit https://github.com/austintgriffith/scaffold-eth.git gnosis
-cd gnosis
+git clone -b gnosis-starter-kit https://github.com/austintgriffith/scaffold-eth.git gnosis-starter-kit
+cd gnosis-starter-kit
 ```
 
 2. Install dependencies
@@ -50,15 +48,13 @@ yarn start
 
 ## Deployment
 
-This branch has no dependency on any smart contract the safe deployment is taken care by the SDK so in order to deploy un-comment the code [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L35-L39) and make sure you set the thresold and owner params on line 38 and make sure you update the safe address [here](https://github.com/austintgriffith/scaffold-eth/blob/gnosis-starter-kit/packages/react-app/src/views/GnosisStarterView.jsx#L29) after deployment
+This branch has no dependency on any smart contract the safe deployment is taken care by the SDK.
 
-### Note
+> deploy a safe using the frontend or enter an existing safe address:
 
-- The Branch currently is tested on the Rinkeby network so make sure to connect your rinkeby wallet
+![image](https://user-images.githubusercontent.com/2653167/129985013-b3562b2c-88b5-4180-9bbe-379808eb4267.png)
 
-- Make sure after deployment you fund your safe with eth.
-
-
+Edit `GnosisStarterView.jsx` in `packages/react-app/src/views` to change the deploy parameters.
 
 
 ## Branch UI Walkthrough
