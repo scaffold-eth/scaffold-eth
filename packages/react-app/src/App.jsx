@@ -195,6 +195,10 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
+  const voterRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "VOTER_ROLE");
+  const adminRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "DEFAULT_ADMIN_ROLE");
+  const isAdmin = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [adminRole, address]);
+  const isVoter = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [voterRole, address]);
 
   // 📟 Listen for broadcast events
   const contributorEntries = useEventListener(
@@ -428,6 +432,7 @@ function App(props) {
               contributorEntries={contributorEntries}
               tx={tx}
               writeContracts={writeContracts}
+              isVoter={isVoter}
             />
           </Route>
           <Route path="/quadratic-diplomacy-reward">
@@ -450,6 +455,8 @@ function App(props) {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
+          isAdmin={isAdmin}
+          isVoter={isVoter}
         />
         {faucetHint}
       </div>

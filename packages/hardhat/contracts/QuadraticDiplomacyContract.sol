@@ -14,9 +14,7 @@ contract QuadraticDiplomacyContract is AccessControl {
 
     constructor(address startingAdmin) public {
         _setupRole(DEFAULT_ADMIN_ROLE, startingAdmin);
-        _setupRole(VOTER_ROLE, startingAdmin);
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
-        _setupRole(VOTER_ROLE, msg.sender);
     }
 
     modifier onlyAdmin() {
@@ -60,6 +58,7 @@ contract QuadraticDiplomacyContract is AccessControl {
     }
 
     function addMember(string memory name, address wallet) public onlyAdmin {
+        grantRole(VOTER_ROLE, wallet);
         emit AddMember(msg.sender, name, wallet);
     }
 }

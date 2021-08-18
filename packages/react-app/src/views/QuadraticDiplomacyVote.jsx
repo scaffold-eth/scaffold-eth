@@ -4,10 +4,19 @@ import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutli
 import { Address } from "../components";
 const { Title } = Typography;
 
-export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts }) {
+export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts, isVoter }) {
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [availableVoteTokens, setAvailableVoteTokens] = useState(0);
+
+  if (!isVoter) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>Access denied</Title>
+        <p>You are not part of the members of this election.</p>
+      </div>
+    )
+  }
 
   const contributors = useMemo(
     () =>
@@ -30,7 +39,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
 
   const handleSelectAllContributors = () =>
     allContributorsSelected ? setSelectedContributors({}) : setSelectedContributors(contributors);
-  
+
   const handleContributorSelection = (e, contributorAddress) => {
     setSelectedContributors(prevSelectedContributors => {
       if (prevSelectedContributors[contributorAddress]) {
@@ -45,7 +54,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       }
     });
   };
-  
+
   const handleContributorVote = (e, op, clickedContributorAddress) => {
     // adjust available vote tokens
     setAvailableVoteTokens(op === "add" ? availableVoteTokens - 1 : availableVoteTokens + 1);
@@ -61,7 +70,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       },
     }));
   };
-  
+
   const handleSubmitVotes = async () => {
     const names = [],
       wallets = [],
