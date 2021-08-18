@@ -3,7 +3,8 @@ import React, { useState, useEffect } from "react";
 import { ethers } from "ethers";
 import Safe, { EthersAdapter, SafeFactory, SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk'
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
-import { Address, Balance, EtherInput } from "../components";
+import { Address, Balance, EtherInput, AddressInput } from "../components";
+import { usePoller, useLocalStorage, useBalance } from "../hooks";
 import {EthSignSignature}  from './EthSignSignature'
 export default function GnosisStarterView({
   purpose,
@@ -16,6 +17,7 @@ export default function GnosisStarterView({
   tx,
   readContracts,
   writeContracts,
+  blockExplorer,
 }) {
   const [to, setTo] = useState('')
   const [currentThresold, setcurrentThresold] = useState([])
@@ -26,51 +28,136 @@ export default function GnosisStarterView({
   const [selector, setSelector] = useState('')
   const [params, setParams] = useState([])
   const [data, setData] = useState('0x0000000000000000000000000000000000000000')
-  let safeAddress = '0x1bC345644D51b3E28F801c5523238C3C133FbDbe';
-  const ethAdapter = new EthersAdapter({ ethers, signer: userSigner })
+
+  const OWNERS = ["0x34aA3F359A9D614239015126635CE7732c18fDF3", "0xa81a6a910FeD20374361B35C451a4a44F86CeD46"]
+
+  const THRESHOLD = 2
+
+  const [safeAddress, setSafeAddress] = useLocalStorage("deployedSafe")
+
   const serviceClient = new SafeServiceClient('https://safe-transaction.rinkeby.gnosis.io/')
 
-  const loadGnosis = async () => {
+  const [ deploying, setDeploying ] = useState()
 
-    // const safeFactory = await SafeFactory.create({ ethAdapter })
-    // ownerspayload = [owner addresses]
-    // thresholdVal = 2 (for example)
-    // const safeAccountConfig = { owners: ownerspayload, threshold: thresholdVal }
-    // const safe = await safeFactory.deploySafe(safeAccountConfig)
-    // safeAddress = await safe.getAddress();
-    // const safeinstance = await serviceClient.getSafeInfo(safeAddress);
-    const contract = await ethAdapter.getSafeContract(safeAddress)
-    const owners = await contract.getOwners();
-    const thresold = await contract.getThreshold();
-    setOwners(owners)
-    setthresold(thresold)
-  }
+  const safeBalance = useBalance(localProvider, safeAddress);
 
+  const [ ethAdapter, setEthAdapter ] = useState()
   useEffect(async () => {
-    await loadGnosis()
-  }, []);
-
-  useEffect(async () => {
-    const transactions = await serviceClient.getPendingTransactions(safeAddress)
-    const currentThresold = [];
-    for (let i = 0; i < transactions.results.length; i++) {
-      const signers = [];
-      currentThresold.push(transactions.results[i].confirmations.length)
-      for (let j = 0; j < transactions.results[i].confirmations.length; j ++) {
-        signers.push(transactions.results[i].confirmations[j].owner)
-      }
-      transactions.results[i].signers = signers;
+    if(userSigner){
+      setEthAdapter(new EthersAdapter({ ethers, signer: userSigner }))
     }
-    
-    setcurrentThresold(currentThresold)
-    setTransactions(transactions.results)
-  });
+  },[ userSigner ]);
+
+  usePoller(async () => {
+    if(safeAddress){
+
+      try{
+        if(ethAdapter){
+          const contract = await ethAdapter.getSafeContract(safeAddress)
+          const owners = await contract.getOwners();
+          const thresold = await contract.getThreshold();
+          setOwners(owners)
+          setthresold(thresold)
+          console.log("owners",owners,"thresold",thresold)
+        }
+
+
+        console.log("CHECKING TRANSACTIONS....",safeAddress)
+        const transactions = await serviceClient.getPendingTransactions(safeAddress)
+        //console.log("transactions",transactions)
+        const currentThresold = [];
+        for (let i = 0; i < transactions.results.length; i++) {
+          const signers = [];
+          currentThresold.push(transactions.results[i].confirmations.length)
+          for (let j = 0; j < transactions.results[i].confirmations.length; j ++) {
+            signers.push(transactions.results[i].confirmations[j].owner)
+          }
+          transactions.results[i].signers = signers;
+        }
+
+        setcurrentThresold(currentThresold)
+        setTransactions(transactions.results)
+      }catch(e){
+        console.log("ERROR POLLING FROM SAFE:",e)
+      }
+    }
+  },15000);
+
+
+
+  let safeInfo
+  if(safeAddress){
+    safeInfo = (
+      <div>
+        <Address value={safeAddress} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+        <Balance value={safeBalance} price={price} />
+
+        <div style={{padding:8}}>
+        {owners?(
+          <>
+            <b>Signers:</b>
+            <List
+              bordered
+              dataSource={owners}
+              renderItem={item => {
+                return (
+                  <List.Item key={item + "_ownerEntry"}>
+                    <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
+                  </List.Item>
+                );
+              }}
+            />
+          </>
+        ):<Spin/>}
+
+        </div>
+      </div>
+    )
+  }else{
+    safeInfo = (
+      <div style={{padding:32}}>
+        <Button loading={deploying} onClick={async ()=>{
+
+          setDeploying(true)
+
+          const safeFactory = await SafeFactory.create({ ethAdapter })
+          const safeAccountConfig = { owners: OWNERS, threshold: THRESHOLD }
+          const safe = await safeFactory.deploySafe(safeAccountConfig)
+
+          setSafeAddress(safe.getAddress())
+          setDeploying(false)
+
+          console.log("SAFE",safe,safe.getAddress())
+
+        }} type={"primary"} >
+          DEPLOY SAFE
+        </Button>
+        <div> or enter existing address: </div>
+        <AddressInput ensProvider={mainnetProvider} onChange={(addr)=>{
+          if(ethers.utils.isAddress(addr)){
+            console.log("addr!",addr)
+
+            setSafeAddress(addr)
+          }
+        }}/>
+      </div>
+    )
+  }
 
 
 
   return (
     <div>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+        {safeAddress?<div style={{float:"right", padding:4, cursor:"pointer", fontSize:28}} onClick={()=>{
+          setSafeAddress("")
+        }}>
+          x
+        </div>:""}
+
+        <div style={{padding:64}}>
+          {safeInfo}
+        </div>
         <h2>Gnosis Transaction Initiation</h2>
         <h5>Enter Selector and Params only if the to address is a contract address</h5>
         <Divider />
@@ -129,7 +216,7 @@ export default function GnosisStarterView({
                   safeProxyFactoryAddress: safeAddress
                 }
               }
-           
+
               const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
               const nonce = await safeSdk.getNonce()
               const partialTx = {
@@ -140,8 +227,8 @@ export default function GnosisStarterView({
 
               const safeTransaction = await safeSdk.createTransaction(partialTx)
               await safeSdk.signTransaction(safeTransaction)
-              
-              
+
+
               const hash = await safeSdk.getTransactionHash(safeTransaction)
               await serviceClient.proposeTransaction(safeAddress, safeTransaction.data,  hash, safeTransaction.signatures.get(address.toLowerCase()))
             }}
@@ -220,6 +307,7 @@ export default function GnosisStarterView({
           ))
         }
       </div>
+      <div style={{padding:64,margin:64}}><a href="https://github.com/austintgriffith/scaffold-eth/tree/gnosis-starter-kit" target="_blank">🏗</a></div>
     </div>
   );
 }

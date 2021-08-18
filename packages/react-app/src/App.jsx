@@ -9,6 +9,7 @@ import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { useOnBlock } from "./hooks";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -17,7 +18,7 @@ import {
   useEventListener,
   useExchangePrice,
   useGasPrice,
-  useOnBlock,
+  useOn,
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
@@ -381,36 +382,17 @@ function App(props) {
       {networkDisplay}
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          {/* <Menu.Item key="/">
+          <Menu.Item key="/">
             <Link
               onClick={() => {
                 setRoute("/");
               }}
               to="/"
             >
-              YourContract
-            </Link>
-          </Menu.Item> */}
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
+              Your Safe
             </Link>
           </Menu.Item>
-          <Menu.Item key="/gnosis-starter-kit">
-            <Link
-              onClick={() => {
-                setRoute("/gnosis-starter-kit");
-              }}
-              to="/gnosis-starter-kit"
-            >
-              Gnosis Safe
-            </Link>
-          </Menu.Item>
+
           {/* <Menu.Item key="/mainnetdai">
             <Link
               onClick={() => {
@@ -440,24 +422,6 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/gnosis-starter-kit">
             <GnosisStarterView
               address={address}
               userSigner={userSigner}
@@ -470,6 +434,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
+              blockExplorer={blockExplorer}
             />
           {/* </Route>
           <Route path="/mainnetdai">
