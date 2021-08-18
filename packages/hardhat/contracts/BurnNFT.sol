@@ -20,7 +20,7 @@ contract BurnNFT is ERC721URIStorage {
 
     mapping(uint256 => uint256) public tokenBaseFee;
 
-    constructor(uint _limit, uint256 _price, address _beneficiary) ERC721("BurnyBanner", "BURN") {
+    constructor(uint _limit, uint256 _price, address _beneficiary) ERC721("BurnyBoy", "BURN") {
       limit = _limit;
       price = _price;
       beneficiary = _beneficiary;

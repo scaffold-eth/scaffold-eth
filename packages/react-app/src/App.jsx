@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -208,8 +208,7 @@ function App(props) {
             const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
             const STARTS_WITH = "data:application/json;base64,";
             let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
-            const owner = await readContracts.BurnNFT.ownerOf(tokenIndex);
-            tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON, owner: owner });
+            tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON });
           }
         } catch (e) {
           console.log(e);
@@ -331,13 +330,16 @@ function App(props) {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Typography.Title style={{ marginBottom: 8, paddingTop: 60 }}>{`🔥 Burny banners 🔥`}</Typography.Title>
-            <div style={{ width: 380, margin: "auto" }}>
-              <Typography.Text>{`Dynamic basefee NFTs built with scaffold-eth`}</Typography.Text>
+            <Typography.Title style={{ marginBottom: 8, paddingTop: 60 }}>{`🔥 Burny Boys 🔥`}</Typography.Title>
+            <div style={{ width: 450, margin: "auto" }}>
+              <Typography.Text>{`🦇🔊 Dynamic basefee NFTs 🦇🔊`}</Typography.Text>
             </div>
             <Typography.Title level={2} style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
               tokenLimit || "..."
             } minted`}</Typography.Title>
+            <div>
+              <Typography.Text>{`Get 'em while they're hot!`}</Typography.Text>
+            </div>
             {address ? (
               <Button
                 style={{ margin: 8 }}
@@ -426,7 +428,7 @@ function App(props) {
                                 }/${id}`}
                                 target="_blank"
                               >
-                                #{item.uri.name}
+                                {item.uri.name}
                               </a>
                             </span>
                           </div>
@@ -435,7 +437,7 @@ function App(props) {
                           <div>
                             <p>{item.uri.description}</p>
                             <Address
-                              address={item.owner}
+                              address={item.uri.owner}
                               ensProvider={mainnetProvider}
                               blockExplorer={blockExplorer}
                               fontSize={16}
