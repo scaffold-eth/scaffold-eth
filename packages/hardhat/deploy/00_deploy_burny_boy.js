@@ -10,7 +10,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     from: deployer,
     args: [
       1559,
-      utils.parseEther("0.01"),
+      utils.parseEther("0.01559"),
       "0x60Ca282757BA67f3aDbF21F3ba2eBe4Ab3eb01fc",
     ],
     log: true,

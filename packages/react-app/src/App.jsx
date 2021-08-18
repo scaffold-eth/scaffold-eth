@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -198,22 +198,27 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   useEffect(() => {
+    let active = true;
     const updateBurnyBoys = async () => {
       const tokenUpdate = [];
-      for (let tokenIndex = totalSupply; tokenIndex > totalSupply - 5; tokenIndex--) {
+      for (let tokenIndex = totalSupply; tokenIndex > 0 && tokenIndex > totalSupply - 5; tokenIndex--) {
         try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
-          const STARTS_WITH = "data:application/json,";
-          let tokenURIJSON = JSON.parse(tokenURI.slice(STARTS_WITH.length));
-          const owner = await readContracts.BurnNFT.ownerOf(tokenIndex);
-          console.log("tokenURI", tokenURI);
-          tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON, owner: owner });
+          if (active) {
+            console.log("Getting token index", tokenIndex);
+            const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
+            const STARTS_WITH = "data:application/json;base64,";
+            let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
+            const owner = await readContracts.BurnNFT.ownerOf(tokenIndex);
+            tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON, owner: owner });
+          }
         } catch (e) {
           console.log(e);
         }
       }
       setBurnyBoys(tokenUpdate);
+      return () => {
+        active = false;
+      };
     };
     updateBurnyBoys();
   }, [totalSupply]);
@@ -279,7 +284,7 @@ function App(props) {
     }
   } else {
     networkDisplay = (
-      <div style={{ zIndex: 0, position: "absolute", right: 15, top: 35, padding: 16, color: "white" }}>
+      <div style={{ zIndex: 0, position: "absolute", right: 15, top: 40, padding: 16, color: "white" }}>
         {targetNetwork.name}
       </div>
     );
@@ -328,78 +333,102 @@ function App(props) {
           <Route exact path="/">
             <Typography.Title style={{ marginBottom: 8, paddingTop: 60 }}>{`🔥 Burny banners 🔥`}</Typography.Title>
             <div style={{ width: 380, margin: "auto" }}>
-              <Collapse ghost>
-                <Collapse.Panel header={`Dynamic Basefee NFTs built with scaffold-eth`} key="1">
-                  <p>
-                    <a
-                      href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
-                      target="_blank"
-                    >
-                      {"Smart contract"}
-                    </a>
-                    <span>{" / "}</span>
-                    <a href="" target="_blank">
-                      {"OpenSea"}
-                    </a>
-                    <span>{" / "}</span>
-                    <span>{"Art by "}</span>
-                    <a href="https://twitter.com/tomosaito" target="_blank">
-                      {"@tomosaito"}
-                    </a>
-                  </p>
-                  <Space>
-                    <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
-                      <GithubOutlined />
-                    </a>
-                    <span>Built with 💙</span>
-                    <a href="https://buidlguidl.com/" target="_blank">
-                      🏰 BuidlGuidl{" "}
-                    </a>
-                  </Space>
-                </Collapse.Panel>
-              </Collapse>
+              <Typography.Text>{`Dynamic basefee NFTs built with scaffold-eth`}</Typography.Text>
             </div>
-            <Typography.Title
-              level={2}
-              style={{ margin: 8 }}
-            >{`${totalSupply} out of ${tokenLimit} minted`}</Typography.Title>
-            <Button
-              style={{ marginTop: 8 }}
-              type="primary"
-              size="large"
-              loading={minting}
-              disabled={!address || price > yourLocalBalance}
-              onClick={async () => {
-                try {
-                  setMinting(true);
-                  const result = tx(
-                    writeContracts.BurnNFT.mint({
-                      value: tokenPrice,
-                    }),
-                  );
-                  console.log("awaiting metamask/web3 confirm result...", result);
-                  console.log(await result);
-                  setMinting(false);
-                } catch (e) {
-                  console.log(e);
-                  setMinting(false);
-                }
-              }}
-            >
-              {`Mint for Ξ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."}`}
-            </Button>
-            <Card style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <Typography.Title level={2} style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
+              tokenLimit || "..."
+            } minted`}</Typography.Title>
+            {address ? (
+              <Button
+                style={{ margin: 8 }}
+                type="primary"
+                size="large"
+                loading={minting}
+                disabled={!address || price > yourLocalBalance}
+                onClick={async () => {
+                  try {
+                    setMinting(true);
+                    const result = tx(
+                      writeContracts.BurnNFT.mint({
+                        value: tokenPrice,
+                      }),
+                    );
+                    console.log("awaiting metamask/web3 confirm result...", result);
+                    console.log(await result);
+                    setMinting(false);
+                  } catch (e) {
+                    console.log(e);
+                    setMinting(false);
+                  }
+                }}
+              >
+                {`Mint for Ξ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."}`}
+              </Button>
+            ) : (
+              <Button
+                key="loginbutton"
+                type="primary"
+                style={{ verticalAlign: "top", margin: 8 }}
+                shape="round"
+                size="large"
+                /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
+                onClick={loadWeb3Modal}
+              >
+                connect to mint
+              </Button>
+            )}
+            <p>
+              <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
+                <GithubOutlined />
+              </a>
+              <span>{" / "}</span>
+              <a
+                href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
+                target="_blank"
+              >
+                {"Smart contract"}
+              </a>
+              <span>{" / "}</span>
+              <a
+                href={`https://${
+                  targetNetwork.name == "rinkeby" ? `testnets.` : ""
+                }opensea.io/collection/burnybanner-v3`}
+                target="_blank"
+              >
+                {"OpenSea"}
+              </a>
+            </p>
+            <p>
+              <a href="https://buidlguidl.com/" target="_blank">
+                🏰 BuidlGuidl
+              </a>
+              <span>{" with art by "}</span>
+              <a href="https://twitter.com/tomosaito" target="_blank">
+                {"@tomosaito"}
+              </a>
+            </p>
+            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest">
               <List
                 bordered
                 dataSource={burnyBoys}
                 renderItem={item => {
                   const id = item.id;
                   return (
-                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="100" alt="" />}>
+                    <List.Item key={id} extra={<img src={item.uri && item.uri.image_data} height="200" alt="" />}>
                       <List.Item.Meta
                         title={
                           <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{item.uri.name}</span>
+                            <span style={{ fontSize: 16, marginRight: 8 }}>
+                              {" "}
+                              <a
+                                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
+                                  readContracts.BurnNFT.address
+                                }/${id}`}
+                                target="_blank"
+                              >
+                                #{item.uri.name}
+                              </a>
+                            </span>
                           </div>
                         }
                         description={
