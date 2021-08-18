@@ -9,15 +9,6 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
   const [currentStep, setCurrentStep] = useState(1);
   const [availableVoteTokens, setAvailableVoteTokens] = useState(0);
 
-  if (!isVoter) {
-    return (
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
-        <Title level={4}>Access denied</Title>
-        <p>You are not part of the members of this election.</p>
-      </div>
-    )
-  }
-
   const contributors = useMemo(
     () =>
       contributorEntries.reduce((entries, current) => {
@@ -36,6 +27,15 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       setAvailableVoteTokens(voteCredits.toNumber());
     }
   }, [voteCredits]);
+
+  if (!isVoter) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>Access denied</Title>
+        <p>You are not part of the members of this election.</p>
+      </div>
+    );
+  }
 
   const handleSelectAllContributors = () =>
     allContributorsSelected ? setSelectedContributors({}) : setSelectedContributors(contributors);

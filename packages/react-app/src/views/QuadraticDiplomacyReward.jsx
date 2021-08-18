@@ -10,7 +10,7 @@ const REWARD_STATUS = {
   FAILED: "reward_status.failed",
 };
 
-export default function QuadraticDiplomacyReward({ userSigner, votesEntries, price }) {
+export default function QuadraticDiplomacyReward({ userSigner, votesEntries, price, isAdmin }) {
   const [rewardAmount, setRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState({});
 
@@ -30,6 +30,15 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
     });
     return [votes, sqrts];
   }, [votesEntries]);
+
+  if (!isAdmin) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>Access denied</Title>
+        <p>Only admins can send rewards.</p>
+      </div>
+    );
+  }
 
   const handlePayment = async (address, amount) => {
     if (rewardStatus[address] === REWARD_STATUS.COMPLETED || !amount) {

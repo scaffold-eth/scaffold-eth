@@ -436,7 +436,12 @@ function App(props) {
             />
           </Route>
           <Route path="/quadratic-diplomacy-reward">
-            <QuadraticDiplomacyReward userSigner={userSigner} votesEntries={votesEntries} price={price} />
+            <QuadraticDiplomacyReward
+              userSigner={userSigner}
+              votesEntries={votesEntries}
+              price={price}
+              isAdmin={isAdmin}
+            />
           </Route>
         </Switch>
       </BrowserRouter>
