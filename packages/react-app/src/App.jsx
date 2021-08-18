@@ -9,7 +9,6 @@ import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
-import { useOnBlock } from "./hooks";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -18,7 +17,7 @@ import {
   useEventListener,
   useExchangePrice,
   useGasPrice,
-  useOn,
+  useOnBlock,
   useUserSigner,
 } from "./hooks";
 // import Hints from "./Hints";
