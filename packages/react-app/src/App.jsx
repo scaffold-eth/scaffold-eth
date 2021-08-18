@@ -15,11 +15,13 @@ import {
   useUserProviderAndSigner,
   useContractLoader,
   useContractReader,
-  useEventListener,
-  useExchangeEthPrice,
   useGasPrice,
   useOnBlock,
 } from "eth-hooks";
+
+import { useEventListener } from "eth-hooks/lib/events"
+import { useExchangeEthPrice } from "eth-hooks/lib/dapps/dex"
+
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 import Portis from "@portis/web3";
@@ -82,8 +84,8 @@ const walletLink = new WalletLink({
 
 // WalletLink provider
 const walletLinkProvider = walletLink.makeWeb3Provider(
-    `https://mainnet.infura.io/v3/${INFURA_ID}`,
-    1,
+  `https://mainnet.infura.io/v3/${INFURA_ID}`,
+  1,
 );
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
@@ -93,7 +95,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
-  theme:"light", // optional. Change to "dark" for a dark theme.
+  theme: "light", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -101,12 +103,12 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           42: `https://kovan.infura.io/v3/${INFURA_ID}`,
-          100:"https://dai.poa.network", // xDai
+          100: "https://dai.poa.network", // xDai
         },
       },
-      
+
     },
     portis: {
       display: {
@@ -174,7 +176,7 @@ function App(props) {
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
-    if(injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function"){
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
       await injectedProvider.provider.disconnect();
     }
     setTimeout(() => {
@@ -231,7 +233,7 @@ function App(props) {
     userSigner,
     contractsConfig,
     localChainId
-);
+  );
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
