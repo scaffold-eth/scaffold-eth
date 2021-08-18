@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -209,6 +209,7 @@ function App(props) {
             const STARTS_WITH = "data:application/json;base64,";
             let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
             tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON });
+            console.log(tokenURIJSON);
           }
         } catch (e) {
           console.log(e);
@@ -392,9 +393,7 @@ function App(props) {
               </a>
               <span>{" / "}</span>
               <a
-                href={`https://${
-                  targetNetwork.name == "rinkeby" ? `testnets.` : ""
-                }opensea.io/collection/burnybanner-v3`}
+                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy-v3`}
                 target="_blank"
               >
                 {"OpenSea"}
@@ -409,7 +408,7 @@ function App(props) {
                 {"@tomosaito"}
               </a>
             </p>
-            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest">
+            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest burny boys">
               <List
                 bordered
                 dataSource={burnyBoys}

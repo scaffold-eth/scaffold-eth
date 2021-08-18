@@ -44,7 +44,7 @@ library MetaDataGenerator {
       string memory ownerOrBurniest = '';
 
       if(_maxBaseFee == _tokenBaseFee) {
-        ownerOrBurniest = unicode'🔥 I am the Burniest Boy 🔥';
+        ownerOrBurniest = unicode'🔥🔥🔥🔥🔥🔥🔥🔥🔥 Burniest Boy 🔥';
       } else {
         ownerOrBurniest = (uint160(_owner)).toHexString(20);
       }
@@ -86,10 +86,9 @@ library MetaDataGenerator {
                               name,
                               '", "description":"',
                               description,
-                              '", "attributes": [{"trait_type": "Base fee per gas (wei)", "value": "',
+                              '", "attributes": [{"trait_type": "Base fee per gas (wei)", "value": ',
                               _tokenBaseFee.toString(),
-                              '"}',
-                              '", "owner":"',
+                              '}], "owner":"',
                               (uint160(_owner)).toHexString(20),
                               '", "image_data": "',
                               'data:image/svg+xml;base64,',
