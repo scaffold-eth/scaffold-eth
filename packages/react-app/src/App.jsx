@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List, notification } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -249,6 +249,12 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
+  const owner = useContractReader(readContracts, "TokenDistributor", "owner");
+
+  const isOwner = address == owner;
+  
+  const title = isOwner ? "Pay your contributors" : "Sign in with your message"
+
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
@@ -283,10 +289,13 @@ function App(props) {
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
+      console.log("owner: ", owner)
     }
 
     if (readContracts) {
       setTokenAddress(readContracts?.DummyToken.address);
+      //setOwnerAddress(readContracts?.TokenDistributor.owner());
+      //console.log(ownerAddress);
     }
   }, [
     mainnetProvider,
@@ -525,15 +534,17 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <div style={{ margin: "auto", width: 500, padding: 64 }}>
+            <div style={{ margin: "20px auto", width: 500, padding: 60, border: "3px solid"}}>
+              <h2>{title}</h2>
               <Input
                 style={{ marginTop: "10px", marginBottom: "10px" }}
+                addonBefore="Message"
                 value={message}
                 placeholder="Message"
                 onChange={e => setMessage(e.target.value)}
               />
               <div style={{ marginBottom: "10px" }}>
-                <Button
+                {!isOwner &&<Button
                   onClick={async () => {
                     let sig = await userSigner.signMessage(message);
 
@@ -542,13 +553,28 @@ function App(props) {
                       message: message,
                       signature: sig,
                     });
+  
+                    if(res.data){
+                    notification.success({
+                      message: "Signed in successfully",
+                      placement: "bottomRight",
+                    });
+                    }
+                    else{
+                      notification.error({
+                        message: "Failed to sign in!",
+                        description: "You have already signed in",
+                        placement: "bottomRight",
+                      });
+                    }
                     setRes("");
                   }}
+                  
                 >
                   Sign In
-                </Button>
+                </Button>}
 
-                <Button
+                {isOwner &&<Button
                   style={{ marginLeft: "10px" }}
                   onClick={async () => {
 
@@ -560,10 +586,10 @@ function App(props) {
                   }}
                 >
                   Fetch Logged Accounts
-                </Button>
+                </Button>}
               </div>
 
-              <List
+              {isOwner &&<List
                 bordered
                 dataSource={addresses}
                 renderItem={(item, index) => (
@@ -584,8 +610,8 @@ function App(props) {
                     </div>
                   </List.Item>
                 )}
-              />
-
+              /> }
+              {isOwner && (<div>
               <Input
                 style={{ marginTop: "10px" }}
                 addonBefore = "Token Address"
@@ -597,7 +623,8 @@ function App(props) {
                 addonBefore = "Amount"
                 style={{ marginTop: "10px" }}
                 onChange={e => setAmount(e.target.value.toLowerCase())}
-              />
+              /> 
+              </div>)}
 
               {addresses && addresses.length>0 && (
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -638,7 +665,7 @@ function App(props) {
                       /* look how you call setPurpose on your contract: */
                       /* notice how you pass a call back for tx updates too */
                       const result = tx(
-                        writeContracts.TokenDistributor.splitTokenFromUser(address, addresses, amount, tokenAddress),
+                        writeContracts.TokenDistributor.splitTokenFromUser(addresses, amount, tokenAddress),
                         update => {
                           console.log("📡 Transaction Update:", update);
                           if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -657,7 +684,7 @@ function App(props) {
                       );
                       console.log("awaiting metamask/web3 confirm result...", result);
                       console.log(await result);
-                      setApproved(true);
+                      setApproved(false);
                     }}
                   >
                     Payout

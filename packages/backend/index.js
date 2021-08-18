@@ -55,14 +55,14 @@ app.post("/", async function (request, response) {
       cache[request.body.message] = [];
     }
 
-    let message = "Already included!";
+    let signedIn = false;
 
     if (!cache[request.body.message].includes(recovered)) {
       cache[request.body.message].push(recovered);
-      message = "Successfully submitted";
+      signedIn = true;
     }
     console.log(cache);
-    response.send(message);
+    response.send(signedIn);
   }
 });
 // app.post('/send', async function(request, response){
