@@ -16,7 +16,7 @@ contract TokenDistributor is Ownable, AccessControl {
     modifier isPermittedDistributor() {
         require(
             hasRole(DISTRIBUTOR_ROLE, msg.sender) || owner() == msg.sender,
-            "Not an approved user"
+            "Not an approved distributor"
         );
         _;
     }
@@ -57,7 +57,7 @@ contract TokenDistributor is Ownable, AccessControl {
             users,
             amount,
             address(this),
-            "0x"
+            address(0),
             false
         );
 
@@ -75,7 +75,13 @@ contract TokenDistributor is Ownable, AccessControl {
         hasValidUsers(users)
         hasEnoughBalance(token.balanceOf(address(this)), amount)
     {
-        uint256 share = _handleDistribution(users, amount, address(this), token, true);
+        uint256 share = _handleDistribution(
+            users,
+            amount,
+            address(this),
+            address(token),
+            true
+        );
 
         emit tokenShareCompleted(amount, share, address(token));
     }
@@ -90,7 +96,13 @@ contract TokenDistributor is Ownable, AccessControl {
         hasValidUsers(users)
         hasEnoughBalance(token.balanceOf(msg.sender), amount)
     {
-        uint256 share = _handleDistribution(users, amount, msg.sender, token, true);
+        uint256 share = _handleDistribution(
+            users,
+            amount,
+            msg.sender,
+            address(token),
+            true
+        );
 
         emit tokenShareCompleted(amount, share, msg.sender);
     }
@@ -99,8 +111,8 @@ contract TokenDistributor is Ownable, AccessControl {
         address[] memory users,
         uint256 amount,
         address from,
-        address token
-        bool isToken,
+        address token,
+        bool isToken
     ) private returns (uint256 share) {
         uint256 totalMembers = users.length;
         share = amount.div(totalMembers);
