@@ -13,7 +13,6 @@ contract ConditionalNFT is ERC165, ERC721 {
 
     event Minted(uint tokenID, address owner);
 
-
     constructor(address _ogNFT) {
       ogNFT = _ogNFT;
     }
