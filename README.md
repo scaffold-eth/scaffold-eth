@@ -1,77 +1,69 @@
-# 🏗 scaffold-eth - Gnosis Safe Starter Kit
+# 🏗 scaffold-eth - 🦉 Gnosis Safe Starter Kit
 
-> Discover how you can get started with [Gnosis Safe](https://gnosis-safe.io/)
-
-<details open="open">
-  <summary>Table of Contents</summary>
-  <ol>
-    <li>
-      <a>About The Branch</a>
-    </li>
-    <li>
-      <a>Getting Started</a>
-      <ul>
-        <li><a>Installation</a></li>
-        <li><a>Deployment</a></li>
-      </ul>
-    </li>
-    <li><a>Branch UI Walkthrough</a></li>
-    <li><a>Contact</a></li>
-  </ol>
-</details>
-
-## About The Project
-
-This branch showcases how to get started integrating/using [Gnosis Safe](https://gnosis-safe.io/) which makes use of the [Gnosis Safe SDK](https://github.com/gnosis/safe-core-sdk) to create and interact with the safe to execute multi-sig transactions.
-
-
-## Getting Started
+> 🧫 Prototype frontend experiences that settle to a [Gnosis Safe](https://gnosis-safe.io/)
 
 
 ### Installation
 
-1. Clone the repo
 ```sh
 git clone -b gnosis-starter-kit https://github.com/austintgriffith/scaffold-eth.git gnosis-starter-kit
+
 cd gnosis-starter-kit
-```
 
-2. Install dependencies
-```bash
 yarn install
-```
 
-3. Start your React frontend and make sure you are connect your rinkeby wallet
-```bash
 yarn start
 ```
 
+> 👉 Visit your frontend at http://localhost:3000
+
+
+
+
 ## Deployment
 
-This branch has no dependency on any smart contract the safe deployment is taken care by the SDK.
+> 📡 deploy a safe using the frontend or enter an existing safe address:
 
-> deploy a safe using the frontend or enter an existing safe address:
+> ( ⛽️ Grab **Rinkeby** from the [faucet](https://faucet.rinkeby.io/) )
 
 ![image](https://user-images.githubusercontent.com/2653167/129985013-b3562b2c-88b5-4180-9bbe-379808eb4267.png)
 
-Edit `GnosisStarterView.jsx` in `packages/react-app/src/views` to change the deploy parameters.
+---
+
+> 📝 Edit `GnosisStarterView.jsx` in `packages/react-app/src/views` to change the deploy parameters.
+
+(Setup *two* browsers with different addresses and add them both as `OWNERS` with a `THRESHOLD` of **2**.)
+
+---
+
+> Deploy the safe in one browser and paste it into the second browser:
+
+![image](https://user-images.githubusercontent.com/2653167/130154685-80aea63b-8e42-40f2-865d-dd8836062345.png)
+
+---
+
+> Send some Rinkeby to your Safe by copying the address and using the 'wallet icon' in the top right:
+
+![image](https://user-images.githubusercontent.com/2653167/130154779-4cac727c-b415-476a-a261-0b4bcbcea443.png)
+
+---
+
+> Grab a random third address (incognito window?) and propose a transaction that sends funds to it:
+
+![image](https://user-images.githubusercontent.com/2653167/130154928-12234200-6520-48f4-9600-c199761c2001.png)
 
 
-## Branch UI Walkthrough
-
-<img width="1344" alt="initiate" src="https://user-images.githubusercontent.com/26670962/129724607-c9499f60-5833-474c-9ba0-855837ff00d1.png">
-
-Initiate and propose the transaction
-
-<img width="1344" alt="sign" src="https://user-images.githubusercontent.com/26670962/129724745-ecb0989d-ba9f-41ee-b4bc-734feabbc580.png">
-
-The second owner signs the proposed transaction
-
-<img width="1344" alt="execute" src="https://user-images.githubusercontent.com/26670962/129724819-a14ae80c-9fa8-437c-a2db-0401e5c33bbf.png">
-
-The transaction now can be executed with the thresold being reached
 
 
-## Contact
+
+---
+
+🤮 I am unable to continue because the Gnosis Safe SDK just returns a garbage error every time I try to propose any transaction. We should not rely on thier backend. 🤮
+
+---
+
+
+
+## Support
 
 Join the [telegram support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
