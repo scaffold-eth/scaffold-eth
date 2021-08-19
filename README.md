@@ -46,6 +46,11 @@ Go to https://faucet.matic.network to get some Mumbai-MATIC (testnet currency).
 
 Confirm that your account has the funds needed for the rest of the tutorial: (check on https://mumbai.polygonscan.com)
 
+Check the trustedForwarder address in `packages/hardhat/deploy/00_deploy_your_contract.js` as per the network where you are deploying.
+
+Check address for different networks here https://docs.biconomy.io/misc/contract-addresses#eip-2771-contracts
+
+
 > Compile and deploy your NFT contract:
 
 ```
@@ -55,6 +60,16 @@ yarn deploy
 To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/src/App.jsx`:
 
 ![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
+
+To add Biconomy meta transaction support, 
+
+1. Signup at https://dashboard.biconomy.io
+2. Register a DApp by following steps at https://docs.biconomy.io/guides/biconomy-dashboard#register-a-dapp and get the API Key.
+3. Upload your Smart Contract (Address and ABI), Select MetaTransaction type as "TrustedForwarder"
+4. Select "transferFrom" method under "Manage API" section on dashboard. Click +Save.
+
+Add the API Key to `BICONOMY_API_KEY` field in `packages/src/App.jsx`
+
 
 Start the frontend with:
 
