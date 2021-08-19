@@ -62,14 +62,14 @@ library MetaDataGenerator {
       string memory name = string(abi.encodePacked('Burny Boy #',_tokenId.toString()));
       string memory readableBaseFee = '';
 
-      if(_tokenBaseFee < uint(10000000)) {
+      if(_tokenBaseFee < uint(10_000_000)) {
         readableBaseFee = string(abi.encodePacked(_tokenBaseFee.toString(), ' wei'));
-        } else if(_tokenBaseFee < uint(100000000)) {
-          readableBaseFee = string(abi.encodePacked('0.0',Strings.toString(_tokenBaseFee/uint(10000000)), ' Gwei'));
-        } else if(_tokenBaseFee < uint(10000000000)) {
-          readableBaseFee = string(abi.encodePacked(Strings.toString(_tokenBaseFee/uint(1000000000)),'.',Strings.toString((_tokenBaseFee/uint(10000000)) % uint(100)), ' Gwei'));
+        } else if(_tokenBaseFee < uint(100_000_000)) {
+          readableBaseFee = string(abi.encodePacked('0.0',Strings.toString(_tokenBaseFee/uint(10_000_000)), ' Gwei'));
+        } else if(_tokenBaseFee < uint(10_000_000_000)) {
+          readableBaseFee = string(abi.encodePacked(Strings.toString(_tokenBaseFee/uint(1_000_000_000)),'.',Strings.toString((_tokenBaseFee/uint(10_000_000)) % uint(100)), ' Gwei'));
         } else {
-          readableBaseFee = string(abi.encodePacked(Strings.toString(_tokenBaseFee/uint(1000000000)), ' Gwei'));
+          readableBaseFee = string(abi.encodePacked(Strings.toString(_tokenBaseFee/uint(1_000_000_000)), ' Gwei'));
         }
 
       string memory description = string(abi.encodePacked('When this burny boy was minted, the basefee was ',readableBaseFee));
@@ -86,8 +86,8 @@ library MetaDataGenerator {
                               name,
                               '", "description":"',
                               description,
-                              '", "attributes": [{"trait_type": "Base fee per gas (wei)", "value": ',
-                              _tokenBaseFee.toString(),
+                              '", "attributes": [{"trait_type": "Base fee per gas (Gwei)", "value": ',
+                              Strings.toString(_tokenBaseFee/uint(1_000_000_000)),
                               '}], "owner":"',
                               (uint160(_owner)).toHexString(20),
                               '", "image_data": "',

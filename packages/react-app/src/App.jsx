@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -408,7 +408,7 @@ function App(props) {
                 {"@tomosaito"}
               </a>
             </p>
-            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest burny boys">
+            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest Burny Boys">
               <List
                 bordered
                 dataSource={burnyBoys}
