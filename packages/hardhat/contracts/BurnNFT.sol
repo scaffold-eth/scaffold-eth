@@ -1,11 +1,23 @@
 // SPDX-License-Identifier: MIT
+
+/*
+   (                          (
+ ( )\   (  (         (      ( )\      (
+ )((_) ))\ )(   (    )\ )   )((_)  (  )\ ) (
+((_)_ /((_|()\  )\ )(()/(  ((_)_   )\(()/( )\
+ | _ |_))( ((_)_(_/( )(_))  | _ ) ((_))(_)|(_)
+ | _ \ || | '_| ' \)) || |  | _ \/ _ \ || (_-<
+ |___/\_,_|_| |_||_| \_, |  |___/\___/\_, /__/
+                     |__/             |__/
+*/
+
 pragma solidity ^0.8.7;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/ERC721URIStorage.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./MetaDataGenerator.sol";
 
-contract BurnNFT is ERC721URIStorage {
+contract BurnNFT is ERC721 {
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
@@ -67,7 +79,18 @@ contract BurnNFT is ERC721URIStorage {
 
         require(_exists(id), "not exist");
 
-        return MetaDataGenerator.tokenURI(id, tokenBaseFee[id], ownerOf(id), minBaseFee, maxBaseFee);
+        return MetaDataGenerator.tokenURI(
+          MetaDataGenerator.MetaDataParams({
+            tokenId: id,
+            tokenBaseFee:
+            tokenBaseFee[id],
+            owner: ownerOf(id),
+            minBaseFee: minBaseFee,
+            maxBaseFee: maxBaseFee,
+            fireHeight: 0,
+            readableBaseFee: '',
+            ownerOrBurniest: ''
+            }));
 
     }
 }

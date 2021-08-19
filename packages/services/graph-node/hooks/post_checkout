@@ -1,8 +1,0 @@
-#!/bin/bash
-
-set -e
-set -x
-
-echo "Setting SOURCE_BRANCH to ${SOURCE_BRANCH}"
-
-sed -i "s@^ENV SOURCE_BRANCH \"master\"@ENV SOURCE_BRANCH \"${SOURCE_BRANCH}\"@g" Dockerfile

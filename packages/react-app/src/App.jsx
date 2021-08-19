@@ -42,7 +42,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -168,22 +168,11 @@ function App(props) {
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
 
-  // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
-
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
-
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider);
-
-  // keep track of a variable from the contract in the local React state:
-  // const token1 = useContractReader(readContracts, "BurnNFT", "tokenURI", ["1"]);
 
   const totalSupply = useContractReader(readContracts, "BurnNFT", "totalSupply");
   const tokenPrice = useContractReader(readContracts, "BurnNFT", "price");
@@ -365,7 +354,7 @@ function App(props) {
                   }
                 }}
               >
-                {`Mint for Ξ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."}`}
+                {`Mint for ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."} ETH`}
               </Button>
             ) : (
               <Button
@@ -381,6 +370,10 @@ function App(props) {
               </Button>
             )}
             <p>
+              <a href={"https://medium.com/@azfuller20/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
+                {"About"}
+              </a>
+              <span>{" / "}</span>
               <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
                 <GithubOutlined />
               </a>
@@ -393,7 +386,7 @@ function App(props) {
               </a>
               <span>{" / "}</span>
               <a
-                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy-v3`}
+                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy-v4`}
                 target="_blank"
               >
                 {"OpenSea"}
@@ -433,7 +426,7 @@ function App(props) {
                           </div>
                         }
                         description={
-                          <div>
+                          <div style={{ padding: 4 }}>
                             <p>{item.uri.description}</p>
                             <Address
                               address={item.uri.owner}
