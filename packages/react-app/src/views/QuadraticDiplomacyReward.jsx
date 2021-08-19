@@ -13,6 +13,7 @@ const REWARD_STATUS = {
 export default function QuadraticDiplomacyReward({ userSigner, votesEntries, price, isAdmin }) {
   const [rewardAmount, setRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState({});
+  const [totalSquare, setTotalSquare] = useState(0);
 
   const [voteResults, totalSqrtVotes] = useMemo(() => {
     const votes = {};
@@ -28,6 +29,14 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
       votes[entry.wallet].sqrtVote += sqrtVote;
       sqrts += sqrtVote;
     });
+
+    let total = 0;
+    Object.entries(votes).forEach(([wallet, { name, sqrtVote }]) => {
+      total += Math.pow(sqrtVote, 2);
+    });
+
+    setTotalSquare(total);
+
     return [votes, sqrts];
   }, [votesEntries]);
 
@@ -93,7 +102,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
       <Divider />
       <Space direction="vertical" style={{ width: "100%" }}>
         {Object.entries(voteResults).map(([address, contributor]) => {
-          const contributorShare = contributor.sqrtVote / totalSqrtVotes;
+          const contributorShare = Math.pow(contributor.sqrtVote, 2) / totalSquare;
           const contributorReward = contributorShare * rewardAmount;
 
           return (
