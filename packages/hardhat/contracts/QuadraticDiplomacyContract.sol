@@ -61,4 +61,13 @@ contract QuadraticDiplomacyContract is AccessControl {
         grantRole(VOTER_ROLE, wallet);
         emit AddMember(msg.sender, name, wallet);
     }
+
+    function addMembersWithVotes(string[] memory names, address[] memory wallets, uint256 voteAllocation) public onlyAdmin {
+        require(wallets.length == names.length, "Wrong size");
+
+        for (uint256 i = 0; i < wallets.length; i++) {
+            addMember(names[i], wallets[i]);
+            giveVotes(wallets[i], voteAllocation);
+        }
+    }
 }

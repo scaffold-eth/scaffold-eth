@@ -21,6 +21,7 @@ import {
 } from "./hooks";
 import QuadraticDiplomacyVote from "./views/QuadraticDiplomacyVote";
 import QuadraticDiplomacyReward from "./views/QuadraticDiplomacyReward";
+import QuadraticDiplomacyCreate from "./views/QuadraticDiplomacyCreate";
 
 const { ethers } = require("ethers");
 /*
@@ -391,7 +392,7 @@ function App(props) {
               }}
               to="/"
             >
-              Contract
+              Create
             </Link>
           </Menu.Item>
           <Menu.Item key="/quadratic-diplomacy-vote">
@@ -414,16 +415,23 @@ function App(props) {
               Reward
             </Link>
           </Menu.Item>
+          <Menu.Item key="/contract">
+            <Link
+              onClick={() => {
+                setRoute("/contract");
+              }}
+              to="/contract"
+            >
+              Contract
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-            <Contract
-              name="QuadraticDiplomacyContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
+            <QuadraticDiplomacyCreate
+              writeContracts={writeContracts}
+              tx={tx}
             />
           </Route>
           <Route path="/quadratic-diplomacy-vote">
@@ -441,6 +449,15 @@ function App(props) {
               votesEntries={votesEntries}
               price={price}
               isAdmin={isAdmin}
+            />
+          </Route>
+          <Route exact path="/contract">
+            <Contract
+              name="QuadraticDiplomacyContract"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
             />
           </Route>
         </Switch>
