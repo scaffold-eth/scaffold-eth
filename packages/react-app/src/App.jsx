@@ -377,11 +377,11 @@ function App(props) {
             class="grad_deeprelief"
           >
             <h3> ⚓ latest block num: {blockNum}</h3>
-            <h3> ⚓ total trxs: {BlocktotalTrxs}</h3>
             <h3> ⚓ base fee: {BlockBaseGas} gwei</h3>
             {/*<h3> ⚓ base fee cost (eth): {BlockBaseGasEth}</h3>*/}
-            <h3> ⚓ gas used: {BlockGasUsed}</h3>
-            <h3> ⚓ gas limit: {BlockGasLimit}</h3>
+            <h4> ⚓ gas used: {BlockGasUsed} | gas limit: {BlockGasLimit}</h4>
+            {/*<h3> ⚓ gas limit: {BlockGasLimit}</h3>*/}
+            {/*<h4> ⚓ total trxs: {BlocktotalTrxs}</h4>*/}
             <Divider />
             <h3> ⛽️ select gas price speed (based on block num: {blockNum}):</h3>
             <Radio.Group onChange={onChangeGas} value={gas} buttonStyle="solid">
@@ -406,7 +406,7 @@ function App(props) {
                 style={{
                   margin: 5,
                   padding: "15px 5px",
-                  backgroundColor: "#0237CC",
+                  backgroundColor: "#456cda",
                   borderRadius: 4,
                   width: "210px",
                   height: "100%",
@@ -422,7 +422,7 @@ function App(props) {
                 style={{
                   margin: 5,
                   padding: "15px 5px",
-                  backgroundColor: "#FF558F",
+                  backgroundColor: "#dc658d",
                   borderRadius: 4,
                   width: "210px",
                   height: "100%",
@@ -456,7 +456,7 @@ function App(props) {
                 style={{
                   margin: 10,
                   padding: 15,
-                  backgroundColor: "#0237CC",
+                  backgroundColor: "#456cda", //0237CC
                   borderRadius: 4,
                   width: "100px",
                   height: "100px",
@@ -470,7 +470,7 @@ function App(props) {
                 style={{
                   margin: 10,
                   padding: 15,
-                  backgroundColor: "#FF558F",
+                  backgroundColor: "#dc658d", //FF558F
                   borderRadius: 4,
                   width: "100px",
                   height: "100px",
