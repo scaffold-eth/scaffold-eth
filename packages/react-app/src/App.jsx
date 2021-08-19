@@ -252,8 +252,8 @@ function App(props) {
   const owner = useContractReader(readContracts, "TokenDistributor", "owner");
 
   const isOwner = address == owner;
-  
-  const title = isOwner ? "Pay your contributors" : "Sign in with your message"
+
+  const title = isOwner ? "Pay your contributors" : "Sign in with your message";
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
@@ -289,7 +289,7 @@ function App(props) {
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
-      console.log("owner: ", owner)
+      console.log("owner: ", owner);
     }
 
     if (readContracts) {
@@ -455,86 +455,30 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/app">
-            <Link
-              onClick={() => {
-                setRoute("/app");
-              }}
-              to="/app"
-            >
               App
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/contracts">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/contracts");
               }}
-              to="/hints"
+              to="/contracts"
             >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              Contracts
             </Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
-            <Contract
-              name="TokenDistributor"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="DummyToken"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
-          <Route exact path="/app">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
 
-            <div style={{ margin: "20px auto", width: 500, padding: 60, border: "3px solid"}}>
+            <div style={{ margin: "20px auto", width: 500, padding: 60, border: "3px solid" }}>
               <h2>{title}</h2>
               <Input
                 style={{ marginTop: "10px", marginBottom: "10px" }}
@@ -544,86 +488,67 @@ function App(props) {
                 onChange={e => setMessage(e.target.value)}
               />
               <div style={{ marginBottom: "10px" }}>
-                {!isOwner &&<Button
-                  onClick={async () => {
-                    let sig = await userSigner.signMessage(message);
+                {!isOwner && (
+                  <Button
+                    onClick={async () => {
+                      let sig = await userSigner.signMessage(message);
 
-                    const res = await axios.post("http://localhost:45622", {
-                      address: address,
-                      message: message,
-                      signature: sig,
-                    });
-  
-                    if(res.data){
-                    notification.success({
-                      message: "Signed in successfully",
-                      placement: "bottomRight",
-                    });
-                    }
-                    else{
-                      notification.error({
-                        message: "Failed to sign in!",
-                        description: "You have already signed in",
-                        placement: "bottomRight",
+                      const res = await axios.post("http://localhost:45622", {
+                        address: address,
+                        message: message,
+                        signature: sig,
                       });
-                    }
-                    setRes("");
-                  }}
-                  
-                >
-                  Sign In
-                </Button>}
 
-                {isOwner &&<Button
-                  style={{ marginLeft: "10px" }}
-                  onClick={async () => {
-                    const res = await axios.get("http://localhost:45622/" + message);
-                    //console.log("res", res);
-                    //setMessage("")
-
-                    setAddresses(res.data);
-                  }}
-                >
-                  Fetch Logged Accounts
-                </Button>}
-              </div>
-
-              {isOwner &&<List
-                bordered
-                dataSource={addresses}
-                renderItem={(item, index) => (
-                  <List.Item>
-                    <div>
-                      <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
-                      <Button
-                        onClick={async () => {
-                          const updatedAddresses = [...addresses];
-                          updatedAddresses.splice(index, 1);
-                          setAddresses(updatedAddresses);
-                        }}
-                        size="medium"
-                        style={{ marginLeft: "200px" }}
-                      >
-                        X
-                      </Button>
-                    </div>
-                  </List.Item>
+                      if (res.data) {
+                        notification.success({
+                          message: "Signed in successfully",
+                          placement: "bottomRight",
+                        });
+                      } else {
+                        notification.error({
+                          message: "Failed to sign in!",
+                          description: "You have already signed in",
+                          placement: "bottomRight",
+                        });
+                      }
+                      setRes("");
+                    }}
+                  >
+                    Sign In
+                  </Button>
                 )}
-              /> }
-              {isOwner && (<div>
-              <Input
-                style={{ marginTop: "10px" }}
-                addonBefore="Token Address"
-                value={tokenAddress}
-                onChange={e => setTokenAddress(e.target.value)}
-              />
-              <Input
-                value={amount}
-                addonBefore="Total Amount to Distribute"
-                style={{ marginTop: "10px" }}
-                onChange={e => setAmount(e.target.value.toLowerCase())}
-              /> 
-              </div>)}
+
+                {isOwner && (
+                  <Button
+                    style={{ marginLeft: "10px" }}
+                    onClick={async () => {
+                      const res = await axios.get("http://localhost:45622/" + message);
+                      //console.log("res", res);
+                      //setMessage("")
+
+                      setAddresses(res.data);
+                    }}
+                  >
+                    Fetch Logged Accounts
+                  </Button>
+                )}
+              </div>
+              {isOwner && (
+                <div>
+                  <Input
+                    style={{ marginTop: "10px" }}
+                    addonBefore="Token Address"
+                    value={tokenAddress}
+                    onChange={e => setTokenAddress(e.target.value)}
+                  />
+                  <Input
+                    value={amount}
+                    addonBefore="Total Amount to Distribute"
+                    style={{ marginTop: "10px" }}
+                    onChange={e => setAmount(e.target.value.toLowerCase())}
+                  />
+                </div>
+              )}
 
               {addresses && addresses.length > 0 && (
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
@@ -692,55 +617,20 @@ function App(props) {
               )}
             </div>
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
+          <Route exact path="/contracts">
             <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
+              name="TokenDistributor"
               signer={userSigner}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
-              blockExplorer="https://etherscan.io/"
+              blockExplorer={blockExplorer}
             />
-            {/*
             <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
+              name="DummyToken"
               signer={userSigner}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
             />
           </Route>
         </Switch>
@@ -749,7 +639,7 @@ function App(props) {
       <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+      {/* <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
           localProvider={localProvider}
@@ -762,10 +652,10 @@ function App(props) {
           blockExplorer={blockExplorer}
         />
         {faucetHint}
-      </div>
+      </div> */}
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+      {/* <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
             <Ramp price={price} address={address} networks={NETWORKS} />
@@ -793,7 +683,6 @@ function App(props) {
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {
-              /*  if the local provider has a signer, let's show the faucet:  */
               faucetAvailable ? (
                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
               ) : (
@@ -802,7 +691,7 @@ function App(props) {
             }
           </Col>
         </Row>
-      </div>
+      </div> */}
     </div>
   );
 }
