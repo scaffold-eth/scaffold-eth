@@ -8,7 +8,7 @@ import { useTokenList, useContractLoader, useContractReader } from "../hooks";
 
 const { Option } = Select;
 
-export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts }) {
+export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener }) {
   // Get a list of tokens from a tokenlist -> see tokenlists.org!
   const [selectedToken, setSelectedToken] = useState("Pick a token!");
   const listOfTokens = useTokenList(
@@ -17,6 +17,7 @@ export default function Hints({ localProvider, yourLocalBalance, mainnetProvider
   const readContracts = useContractLoader(localProvider);
   const ogNFT = useContractReader(readContracts,"ConditionalNFT", "ogNFT")
   const [tokenId, setTokenId] = useState("...");
+  const mintedEvents = useEventListener(readContracts, "ConditionalNFT", "Minted", localProvider, 1);
 
   
   function onFinish() {

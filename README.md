@@ -30,7 +30,8 @@ yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
-> It's important that before deployment you change the deploy script args to point toward an existing NFT contract on a network, or the example NFT supplied in this branch.
+# HEADS UP! 
+It's important that before deployment you change the deploy script args to point toward an existing NFT contract on a network, or the example NFT supplied in this branch.
 
 ```bash
 cd scaffold-eth

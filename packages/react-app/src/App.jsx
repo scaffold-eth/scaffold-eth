@@ -412,6 +412,7 @@ function App(props) {
               localProvider={localProvider}
               writeContracts={writeContracts}
               tx={tx}
+              useEventListener={useEventListener}
             />
           </Route>
         </Switch>

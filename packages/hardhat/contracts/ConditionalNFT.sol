@@ -11,6 +11,8 @@ contract ConditionalNFT is ERC165, ERC721 {
     mapping(address => uint256) public balances;
     mapping(uint256 => bool) hasMinted;
 
+    event Minted(uint tokenID, address owner);
+
 
     constructor(address _ogNFT) {
       ogNFT = _ogNFT;
@@ -55,6 +57,7 @@ contract ConditionalNFT is ERC165, ERC721 {
             "NFT already minted for this ID!"
         );
         emit Transfer(address(0), msg.sender, _tokenId);
+        emit Minted(_tokenId, msg.sender);
         owner[_tokenId] = msg.sender;
         balances[msg.sender]++;
         hasMinted[_tokenId] = true;
