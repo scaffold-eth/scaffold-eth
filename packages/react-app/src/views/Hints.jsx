@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import { utils } from "ethers";
 import { Button, Input, Card, Row, Col, Select, Form } from "antd";
 import React, { useState } from "react";
