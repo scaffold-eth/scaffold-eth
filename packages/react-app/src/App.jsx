@@ -619,7 +619,7 @@ function App(props) {
               />
               <Input
                 value={amount}
-                addonBefore="Amount"
+                addonBefore="Total Amount to Distribute"
                 style={{ marginTop: "10px" }}
                 onChange={e => setAmount(e.target.value.toLowerCase())}
               /> 
