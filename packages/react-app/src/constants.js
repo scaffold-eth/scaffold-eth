@@ -167,6 +167,22 @@ export const NETWORKS = {
     rpcUrl: `https://api.avax.network/ext/bc/C/rpc`,
     gasPrice: 225000000000,
   },
+  testnetHarmony: {
+    name: "Harmony Testnet",
+    color: "#00b0ef",
+    chainId: 1666700000,
+    blockExplorer: "https://explorer.pops.one/",
+    rpcUrl: `https://api.s0.b.hmny.io`,
+    gasPrice: 1000000000,
+  },
+  mainnetHarmony: {
+    name: "Harmony Mainnet",
+    color: "#00b0ef",
+    chainId: 1666600000,
+    blockExplorer: "https://explorer.harmony.one/",
+    rpcUrl: `https://api.harmony.one`,
+    gasPrice: 1000000000,
+  },
 };
 
 export const NETWORK = chainId => {
