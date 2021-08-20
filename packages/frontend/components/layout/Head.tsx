@@ -20,7 +20,11 @@ export interface MetaProps {
 /**
  * Component
  */
-const Head = ({ customMeta }: { customMeta?: MetaProps }): JSX.Element => {
+export const Head = ({
+  customMeta,
+}: {
+  customMeta?: MetaProps
+}): JSX.Element => {
   const router = useRouter()
   const meta: MetaProps = {
     title: 'Next.js Ethereum Starter',
@@ -49,5 +53,3 @@ const Head = ({ customMeta }: { customMeta?: MetaProps }): JSX.Element => {
     </NextHead>
   )
 }
-
-export default Head

@@ -21,9 +21,9 @@ import blockies from 'blockies-ts'
 import NextLink from 'next/link'
 import React from 'react'
 import { getErrorMessage } from '../../lib/utils'
-import Balance from '../Balance'
-import ConnectWallet from '../ConnectWallet'
-import Head, { MetaProps } from './Head'
+import { Balance } from '../Balance'
+import { ConnectWallet } from '../ConnectWallet'
+import { Head, MetaProps } from './Head'
 
 // Extends `window` to add `ethereum`.
 declare global {
@@ -58,7 +58,7 @@ interface LayoutProps {
 /**
  * Component
  */
-const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
+export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
   const { account, deactivate, error } = useEthers()
   const { notifications } = useNotifications()
 
@@ -173,5 +173,3 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
     </>
   )
 }
-
-export default Layout
