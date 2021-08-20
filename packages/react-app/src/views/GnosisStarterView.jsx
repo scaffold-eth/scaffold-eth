@@ -50,7 +50,7 @@ export default function GnosisStarterView({
 
   usePoller(async () => {
     if(safeAddress){
-
+      setSafeAddress(ethers.utils.getAddress(safeAddress))
       try{
         if(ethAdapter){
           const contract = await ethAdapter.getSafeContract(safeAddress)
@@ -122,7 +122,7 @@ export default function GnosisStarterView({
           const safeAccountConfig = { owners: OWNERS, threshold: THRESHOLD }
           const safe = await safeFactory.deploySafe(safeAccountConfig)
 
-          setSafeAddress(safe.getAddress())
+          setSafeAddress(ethers.utils.getAddress(safe.getAddress()))
           setDeploying(false)
 
           console.log("SAFE",safe,safe.getAddress())
@@ -135,7 +135,7 @@ export default function GnosisStarterView({
           if(ethers.utils.isAddress(addr)){
             console.log("addr!",addr)
 
-            setSafeAddress(addr)
+            setSafeAddress(ethers.utils.getAddress(addr))
           }
         }}/>
       </div>
