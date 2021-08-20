@@ -93,7 +93,7 @@ export default function Contract({
     // If there are inputs, display a form to allow users to provide these
     return (
       <FunctionForm
-        key={"FF" + fn.name}
+        key={"FF" + fn.name + fn.inputs.length}
         contractFunction={
           fn.stateMutability === "view" || fn.stateMutability === "pure"
             ? contract[fn.name]

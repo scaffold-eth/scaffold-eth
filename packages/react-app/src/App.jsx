@@ -5,11 +5,11 @@ import { Alert, Button, Col, Menu, Row, List, Card, Typography, Collapse, Space,
 import { GithubOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import { BrowserRouter, Link, Route, Switch, useParams } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address, AddressInput } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS, generateSVG } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -19,12 +19,14 @@ import {
   useExchangePrice,
   useGasPrice,
   useOnBlock,
+  usePoller,
   useUserSigner,
 } from "./hooks";
+import { ViewBurnyBoy } from "./views";
 
 const { ethers } = require("ethers");
 
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 const DEBUG = true;
 const NETWORKCHECK = true;
@@ -153,14 +155,15 @@ function App(props) {
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
   const totalSupply = useContractReader(readContracts, "BurnNFT", "totalSupply");
-  const tokenPrice = useContractReader(readContracts, "BurnNFT", "price");
-  const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit");
+  const tokenPrice = useContractReader(readContracts, "BurnNFT", "price", 10000);
+  const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit", 10000);
+  const beneficiary = useContractReader(readContracts, "BurnNFT", "beneficiary", 10000);
 
   const [latestBlock, setLatestBlock] = useState();
-  useOnBlock(localProvider, async () => {
+  usePoller(async () => {
     const newBlock = await localProvider.getBlock("latest");
     setLatestBlock(newBlock);
-  });
+  }, 10000);
 
   const [minting, setMinting] = useState(false);
 
@@ -177,6 +180,7 @@ function App(props) {
       for (let tokenIndex = totalSupply; tokenIndex > 0 && tokenIndex > totalSupply - 5; tokenIndex--) {
         try {
           if (active) {
+            console.log("getting", tokenIndex);
             const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
             const STARTS_WITH = "data:application/json;base64,";
             let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
@@ -192,7 +196,7 @@ function App(props) {
       };
     };
     updateBurnyBoys();
-  }, [totalSupply]);
+  }, [totalSupply && totalSupply.toString()]);
 
   let networkDisplay = "";
   if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -295,6 +299,42 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const header = (
+    <>
+      <Typography.Title style={{ marginBottom: 8, paddingTop: 100 }}>
+        <Link
+          onClick={() => {
+            setRoute("/");
+          }}
+          to="/"
+        >{`🔥 Burny Boys 🔥`}</Link>
+      </Typography.Title>
+      <p>
+        <a href={"https://medium.com/@azfuller20/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
+          {"About"}
+        </a>
+        <span>{" / "}</span>
+        <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
+          <GithubOutlined />
+        </a>
+        <span>{" / "}</span>
+        <a
+          href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
+          target="_blank"
+        >
+          {"Smart contract"}
+        </a>
+        <span>{" / "}</span>
+        <a
+          href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy`}
+          target="_blank"
+        >
+          {"OpenSea"}
+        </a>
+      </p>
+    </>
+  );
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -302,45 +342,23 @@ function App(props) {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Typography.Title style={{ marginBottom: 8, paddingTop: 80 }}>{`🔥 Burny Boys 🔥`}</Typography.Title>
-            <p>
-              <a href={"https://medium.com/@azfuller20/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
-                {"About"}
-              </a>
-              <span>{" / "}</span>
-              <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
-                <GithubOutlined />
-              </a>
-              <span>{" / "}</span>
-              <a
-                href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
-                target="_blank"
-              >
-                {"Smart contract"}
-              </a>
-              <span>{" / "}</span>
-              <a
-                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy-v4`}
-                target="_blank"
-              >
-                {"OpenSea"}
-              </a>
-            </p>
-            <Typography.Title level={2} style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
-              tokenLimit || "..."
-            } minted`}</Typography.Title>
-            <div>
-              <Typography.Text>{`Latest baseFee: ${
-                latestBlock ? Number(ethers.utils.formatUnits(latestBlock.baseFeePerGas, 9)).toFixed(3) : "..."
-              } Gwei`}</Typography.Text>
-            </div>
+            {header}
+
+            <Typography.Title level={2}>{`Latest baseFee: ${
+              latestBlock ? Number(ethers.utils.formatUnits(latestBlock.baseFeePerGas, 9)).toFixed(3) : "..."
+            } Gwei`}</Typography.Title>
+
             {address ? (
               <Button
                 style={{ margin: 8, fontSize: 24, height: 50 }}
                 type="primary"
                 size="large"
                 loading={minting}
-                disabled={!address || price > yourLocalBalance || tokenLimit.toString() == totalSupply.toString()}
+                disabled={
+                  !address ||
+                  price > yourLocalBalance ||
+                  (tokenLimit && totalSupply && tokenLimit.toString() == totalSupply.toString())
+                }
                 onClick={async () => {
                   try {
                     setMinting(true);
@@ -374,6 +392,11 @@ function App(props) {
               </Button>
             )}
             <p>
+              <Typography.Text style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
+                tokenLimit || "..."
+              } minted`}</Typography.Text>
+            </p>
+            <p>
               <a href="https://buidlguidl.com/" target="_blank">
                 🏰 BuidlGuidl
               </a>
@@ -388,22 +411,26 @@ function App(props) {
                 dataSource={burnyBoys}
                 renderItem={item => {
                   const id = item.id;
-                  console.log(item);
+                  /*
+                  const generatedSvg = generateSVG({
+                    tokenId: id,
+                    fireHeight: 270,
+                    rotation: (parseInt(item.uri.attributes[0]["value"]) + parseInt(id) * 30) % 360,
+                    address: address,
+                    baseFee: item.uri.attributes[0]["value"],
+                  });
+                  let blob = new Blob([generatedSvg], { type: "image/svg+xml" });
+                  let url = URL.createObjectURL(blob);
+                  console.log(url);
+                  */
                   return (
-                    <List.Item key={id} extra={<img src={item.uri && item.uri.image_data} height="200" alt="" />}>
+                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="200" alt="" />}>
                       <List.Item.Meta
                         title={
                           <div>
                             <span style={{ fontSize: 16, marginRight: 8 }}>
                               {" "}
-                              <a
-                                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
-                                  readContracts.BurnNFT.address
-                                }/${id}`}
-                                target="_blank"
-                              >
-                                {item.uri.name}
-                              </a>
+                              <Link to={`/token/${id}`}>{item.uri.name}</Link>
                             </span>
                           </div>
                         }
@@ -416,7 +443,25 @@ function App(props) {
                               blockExplorer={blockExplorer}
                               fontSize={16}
                             />
-                            <p>{item.uri.attributes[0]["value"]}</p>
+                            <p>
+                              <a
+                                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
+                                  readContracts.BurnNFT.address
+                                }/${id}`}
+                                target="_blank"
+                              >
+                                OpenSea
+                              </a>
+                              <span>{` / `}</span>
+                              <a
+                                href={`${blockExplorer}/token/${readContracts.BurnNFT.address}?a=${id}`}
+                                target="_blank"
+                              >
+                                Etherscan
+                              </a>
+                            </p>
+                            {/*<p>{item.uri.attributes[0]["value"]}</p>*/}
+                            {/*<img src={url} height="200" alt="" />*/}
                           </div>
                         }
                       />
@@ -425,14 +470,25 @@ function App(props) {
                 }}
               />
             </Card>
-            {/*
-            <Contract
-              name="BurnNFT"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
+            {address && beneficiary && address == beneficiary && (
+              <Contract
+                name="BurnNFT"
+                signer={userSigner}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+            )}
+          </Route>
+          <Route path="/token/:id">
+            {header}
+            <ViewBurnyBoy
+              readContracts={readContracts}
               blockExplorer={blockExplorer}
-            />*/}
+              mainnetProvider={mainnetProvider}
+              targetNetwork={targetNetwork}
+              totalSupply={totalSupply}
+            />
           </Route>
         </Switch>
       </BrowserRouter>

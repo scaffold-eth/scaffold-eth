@@ -32,7 +32,7 @@ library MetaDataGenerator {
       params.readableBaseFee = '&lt;0.01 Gwei';
     }
 
-    return string(abi.encodePacked(Strings.toString((params.tokenBaseFee + params.tokenId) % 360),
+    return string(abi.encodePacked(Strings.toString((params.tokenBaseFee + (params.tokenId * 30)) % 360),
     'deg)}#Fire_to_move{transform:translate(0px,',
     params.fireHeight.toString(),
     'px)}</style></defs><text dy="0"><textPath xlink:href="#textcircle"> / EIP-1559 / #',
@@ -67,7 +67,7 @@ library MetaDataGenerator {
 
   function generateSVGofTokenById(MetaDataParams memory params) internal pure returns (string memory) {
 
-      uint height = 250;
+      uint height = 270;
 
       if(params.minBaseFee == params.maxBaseFee) {
         params.fireHeight = 0;
@@ -125,13 +125,13 @@ library MetaDataGenerator {
                               name,
                               '", "description":"',
                               description,
-                              '", "attributes": [{"trait_type": "Base fee per gas (Gwei)", "value": ',
-                              Strings.toString(params.tokenBaseFee/uint(1_000_000_000)),
-                              '},{"trait_type": "Base fee per gas (wei)", "value": ',
+                              '", "external_url":"https://burnyboys.com/token/',
+                              params.tokenId.toString(),
+                              '", "attributes": [{"trait_type": "Base fee per gas (wei)", "value": ',
                               Strings.toString(params.tokenBaseFee),
                               '}], "owner":"',
                               (uint160(params.owner)).toHexString(20),
-                              '", "image_data": "',
+                              '", "image": "',
                               'data:image/svg+xml;base64,',
                               image,
                               '"}'

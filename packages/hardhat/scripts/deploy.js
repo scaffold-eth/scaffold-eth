@@ -26,7 +26,19 @@ And learn more here: https://www.npmjs.com/package/hardhat-deploy
 const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourContract = await deploy("YourContract"); // <-- add in constructor args like line 19 vvvv
+  const burnyBoy = await deploy(
+    "BurnNFT",
+    [
+      1559,
+      utils.parseEther("0.01559"),
+      "0x97843608a00e2bbc75ab0C1911387E002565DEDE",
+    ],
+    {
+      nonce: 1,
+      gasPrice: 104000000000,
+    }
+  ); // <-- add in constructor args like line 19 vvvv
+
   // use for local token bridging
   // const mockToken = await deploy("MockERC20") // <-- add in constructor args like line 19 vvvv
 
@@ -37,13 +49,15 @@ const main = async () => {
   // const examplePriceOracle = await deploy("ExamplePriceOracle")
   // const smartContractWallet = await deploy("SmartContractWallet",[exampleToken.address,examplePriceOracle.address])
 
-  /*
   //If you want to send value to an address from the deployer
-  const deployerWallet = ethers.provider.getSigner()
+  /*
+  const deployerWallet = ethers.provider.getSigner();
   await deployerWallet.sendTransaction({
     to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
+    value: ethers.utils.parseEther("0.00001"),
+    nonce: 0,
+    gasPrice: 80000000000,
+  });
   */
 
   /*
