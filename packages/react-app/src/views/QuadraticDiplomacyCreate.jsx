@@ -28,10 +28,6 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
       wallets.push(address);
     });
 
-    console.log('V', voters);
-    console.log('names', names);
-    console.log('address', wallets);
-
     await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(names, wallets, voteAllocation), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         setVoters([{}]);
