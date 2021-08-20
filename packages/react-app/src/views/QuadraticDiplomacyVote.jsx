@@ -7,7 +7,10 @@ const { Title } = Typography;
 export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts, isVoter }) {
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
-  const [availableVoteTokens, setAvailableVoteTokens] = useState(0);
+  const [spentVoteTokens, setSpentVoteTokens] = useState(0);
+
+  const availableVoteTokens = voteCredits?.toNumber() ?? 0;
+  const remainingVoteTokens = availableVoteTokens - spentVoteTokens;
 
   const contributors = useMemo(
     () =>
@@ -21,12 +24,6 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
     [contributorEntries],
   );
   const allContributorsSelected = Object.keys(contributors).length === Object.keys(selectedContributors).length;
-
-  useEffect(() => {
-    if (voteCredits) {
-      setAvailableVoteTokens(voteCredits.toNumber());
-    }
-  }, [voteCredits]);
 
   if (!isVoter) {
     return (
@@ -57,7 +54,8 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
 
   const handleContributorVote = (e, op, clickedContributorAddress) => {
     // adjust available vote tokens
-    setAvailableVoteTokens(op === "add" ? availableVoteTokens - 1 : availableVoteTokens + 1);
+    setSpentVoteTokens(prevSpentVoteTokens => (op === "add" ? prevSpentVoteTokens + 1 : prevSpentVoteTokens - 1));
+
     // update contributor vote tokens
     setSelectedContributors(prevSelectedContributors => ({
       ...prevSelectedContributors,
@@ -65,7 +63,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
         ...prevSelectedContributors[clickedContributorAddress],
         voteTokens:
           op === "add"
-            ? Math.min(prevSelectedContributors[clickedContributorAddress].voteTokens + 1, voteCredits.toNumber())
+            ? Math.min(prevSelectedContributors[clickedContributorAddress].voteTokens + 1, availableVoteTokens)
             : Math.max(prevSelectedContributors[clickedContributorAddress].voteTokens - 1, 0),
       },
     }));
@@ -85,6 +83,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
     await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(names, wallets, amounts), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         setCurrentStep(3);
+        setSpentVoteTokens(0);
       }
     });
   };
@@ -99,7 +98,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
         />
         <Steps.Step
           title="Allocate Votes"
-          subTitle={`${availableVoteTokens} votes left`}
+          subTitle={`${remainingVoteTokens} votes left`}
           icon={<LikeTwoTone twoToneColor="#eb2f96" />}
         />
         <Steps.Step title="Done" subTitle="Thank you!" icon={<CheckCircleTwoTone twoToneColor="#52c41a" />} />
@@ -158,7 +157,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
                 <Badge
                   showZero
                   overflowCount={1000}
-                  count={availableVoteTokens}
+                  count={remainingVoteTokens}
                   style={{ backgroundColor: "#52c41a" }}
                 />
               </Title>
@@ -202,7 +201,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
                       type="primary"
                       ghost
                       onClick={e => handleContributorVote(e, "add", contributorAddress)}
-                      disabled={!availableVoteTokens}
+                      disabled={!remainingVoteTokens}
                     >
                       <PlusOutlined />
                     </Button>

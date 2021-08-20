@@ -23,10 +23,13 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
       if (!votes[entry.wallet]) {
         votes[entry.wallet] = {
           name: entry.name,
+          // Sum of the square root of the votes for each member.
           sqrtVote: 0,
         };
       }
       votes[entry.wallet].sqrtVote += sqrtVote;
+
+      // Total sum of the sum of the square roots of the votes for all members.
       sqrts += sqrtVote;
     });
 
@@ -129,7 +132,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
               </p>
               <p>
                 <strong>Reward amount: </strong>
-                {contributorReward.toFixed(2)} ETH
+                {contributorReward.toFixed(6)} ETH
               </p>
             </Card>
           );
