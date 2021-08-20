@@ -173,10 +173,11 @@ function App(props) {
   const [address, setAddress] = useState();
 
   const [message, setMessage] = useState();
-  const [addresses, setAddresses] = useState();
+  const [addresses, setAddresses] = useState([]);
   const [amount, setAmount] = useState(0);
   const [tokenAddress, setTokenAddress] = useState("");
   const [approved, setApproved] = useState(false);
+  const [owner, setOwner] = useState("");
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -246,17 +247,16 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  const owner = useContractReader(readContracts, "TokenDistributor", "owner");
-
-  const isOwner = address == owner;
+  const isOwner = (address || "").toLowerCase() === owner.toLowerCase();
 
   const title = isOwner ? "Pay your contributors" : "Sign in with your message";
 
-  // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const appServer = process.env.REACT_APP_SERVER;
+
+  const updateOwner = async () => {
+    const o = await readContracts?.TokenDistributor?.owner();
+    setOwner(o);
+  };
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -293,7 +293,8 @@ function App(props) {
     }
 
     if (readContracts) {
-      setTokenAddress(readContracts?.DummyToken.address);
+      setTokenAddress(readContracts?.DummyToken?.address);
+      updateOwner();
       //setOwnerAddress(readContracts?.TokenDistributor.owner());
       //console.log(ownerAddress);
     }
@@ -493,7 +494,7 @@ function App(props) {
                     onClick={async () => {
                       let sig = await userSigner.signMessage(message);
 
-                      const res = await axios.post("http://localhost:45622", {
+                      const res = await axios.post(appServer, {
                         address: address,
                         message: message,
                         signature: sig,
@@ -522,8 +523,8 @@ function App(props) {
                   <Button
                     style={{ marginLeft: "10px" }}
                     onClick={async () => {
-                      const res = await axios.get("http://localhost:45622/" + message);
-                      //console.log("res", res);
+                      const res = await axios.get(appServer + message);
+                      console.log("res", res);
                       //setMessage("")
 
                       setAddresses(res.data);
@@ -535,6 +536,28 @@ function App(props) {
               </div>
               {isOwner && (
                 <div>
+                  <List
+                    bordered
+                    dataSource={addresses}
+                    renderItem={(item, index) => (
+                      <List.Item>
+                        <div>
+                          <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
+                          <Button
+                            onClick={async () => {
+                              const updatedAddresses = [...addresses];
+                              updatedAddresses.splice(index, 1);
+                              setAddresses(updatedAddresses);
+                            }}
+                            size="medium"
+                            style={{ marginLeft: "200px" }}
+                          >
+                            X
+                          </Button>
+                        </div>
+                      </List.Item>
+                    )}
+                  />
                   <Input
                     style={{ marginTop: "10px" }}
                     addonBefore="Token Address"
@@ -639,7 +662,7 @@ function App(props) {
       <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      {/* <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
+      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <Account
           address={address}
           localProvider={localProvider}
@@ -652,7 +675,7 @@ function App(props) {
           blockExplorer={blockExplorer}
         />
         {faucetHint}
-      </div> */}
+      </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       {/* <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
