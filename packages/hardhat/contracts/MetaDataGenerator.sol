@@ -127,6 +127,8 @@ library MetaDataGenerator {
                               description,
                               '", "attributes": [{"trait_type": "Base fee per gas (Gwei)", "value": ',
                               Strings.toString(params.tokenBaseFee/uint(1_000_000_000)),
+                              '},{"trait_type": "Base fee per gas (wei)", "value": ',
+                              Strings.toString(params.tokenBaseFee),
                               '}], "owner":"',
                               (uint160(params.owner)).toHexString(20),
                               '", "image_data": "',

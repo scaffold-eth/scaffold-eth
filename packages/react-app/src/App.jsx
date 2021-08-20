@@ -18,33 +18,14 @@ import {
   useEventListener,
   useExchangePrice,
   useGasPrice,
+  useOnBlock,
   useUserSigner,
 } from "./hooks";
 
 const { ethers } = require("ethers");
-/*
-    Welcome to 🏗 scaffold-eth !
 
-    Code:
-    https://github.com/austintgriffith/scaffold-eth
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
-    Support:
-    https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
-    or DM @austingriffith on twitter or telegram
-
-    You should get your own Infura.io ID and put it in `constants.js`
-    (this is your connection to the main Ethereum network for ENS etc.)
-
-
-    🌏 EXTERNAL CONTRACTS:
-    You can also bring in contract artifacts in `constants.js`
-    (and then use the `useExternalContractLoader()` hook!)
-*/
-
-/// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-
-// 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
 
@@ -100,9 +81,6 @@ const web3Modal = new Web3Modal({
         },
       },
     },
-    /*torus: {
-      package: Torus,
-    },*/
     "custom-walletlink": {
       display: {
         logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
@@ -178,6 +156,15 @@ function App(props) {
   const tokenPrice = useContractReader(readContracts, "BurnNFT", "price");
   const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit");
 
+  console.log(totalSupply.toString(), tokenLimit.toString(), tokenLimit == totalSupply);
+
+  const [latestBlock, setLatestBlock] = useState();
+  useOnBlock(localProvider, async () => {
+    const newBlock = await localProvider.getBlock("latest");
+    setLatestBlock(newBlock);
+    console.log(newBlock && ethers.utils.formatUnits(newBlock.baseFeePerGas, 9));
+  });
+
   const [minting, setMinting] = useState(false);
 
   const STARTS_WITH = "data:application/json,";
@@ -193,12 +180,10 @@ function App(props) {
       for (let tokenIndex = totalSupply; tokenIndex > 0 && tokenIndex > totalSupply - 5; tokenIndex--) {
         try {
           if (active) {
-            console.log("Getting token index", tokenIndex);
             const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
             const STARTS_WITH = "data:application/json;base64,";
             let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
             tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON });
-            console.log(tokenURIJSON);
           }
         } catch (e) {
           console.log(e);
@@ -320,55 +305,7 @@ function App(props) {
       <BrowserRouter>
         <Switch>
           <Route exact path="/">
-            <Typography.Title style={{ marginBottom: 8, paddingTop: 60 }}>{`🔥 Burny Boys 🔥`}</Typography.Title>
-            <div style={{ width: 450, margin: "auto" }}>
-              <Typography.Text>{`🦇🔊 Dynamic basefee NFTs 🦇🔊`}</Typography.Text>
-            </div>
-            <Typography.Title level={2} style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
-              tokenLimit || "..."
-            } minted`}</Typography.Title>
-            <div>
-              <Typography.Text>{`Get 'em while they're hot!`}</Typography.Text>
-            </div>
-            {address ? (
-              <Button
-                style={{ margin: 8 }}
-                type="primary"
-                size="large"
-                loading={minting}
-                disabled={!address || price > yourLocalBalance}
-                onClick={async () => {
-                  try {
-                    setMinting(true);
-                    const result = tx(
-                      writeContracts.BurnNFT.mint({
-                        value: tokenPrice,
-                      }),
-                    );
-                    console.log("awaiting metamask/web3 confirm result...", result);
-                    console.log(await result);
-                    setMinting(false);
-                  } catch (e) {
-                    console.log(e);
-                    setMinting(false);
-                  }
-                }}
-              >
-                {`Mint for ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."} ETH`}
-              </Button>
-            ) : (
-              <Button
-                key="loginbutton"
-                type="primary"
-                style={{ verticalAlign: "top", margin: 8 }}
-                shape="round"
-                size="large"
-                /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
-                onClick={loadWeb3Modal}
-              >
-                connect to mint
-              </Button>
-            )}
+            <Typography.Title style={{ marginBottom: 8, paddingTop: 80 }}>{`🔥 Burny Boys 🔥`}</Typography.Title>
             <p>
               <a href={"https://medium.com/@azfuller20/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
                 {"About"}
@@ -392,6 +329,53 @@ function App(props) {
                 {"OpenSea"}
               </a>
             </p>
+            <Typography.Title level={2} style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
+              tokenLimit || "..."
+            } minted`}</Typography.Title>
+            <div>
+              <Typography.Text>{`Latest baseFee: ${
+                latestBlock ? Number(ethers.utils.formatUnits(latestBlock.baseFeePerGas, 9)).toFixed(3) : "..."
+              } Gwei`}</Typography.Text>
+            </div>
+            {address ? (
+              <Button
+                style={{ margin: 8, fontSize: 24, height: 50 }}
+                type="primary"
+                size="large"
+                loading={minting}
+                disabled={!address || price > yourLocalBalance || tokenLimit.toString() == totalSupply.toString()}
+                onClick={async () => {
+                  try {
+                    setMinting(true);
+                    const result = tx(
+                      writeContracts.BurnNFT.mint({
+                        value: tokenPrice,
+                      }),
+                    );
+                    console.log("awaiting metamask/web3 confirm result...", result);
+                    console.log(await result);
+                    setMinting(false);
+                  } catch (e) {
+                    console.log(e);
+                    setMinting(false);
+                  }
+                }}
+              >
+                {`Mint for ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."} ETH`}
+              </Button>
+            ) : (
+              <Button
+                key="loginbutton"
+                type="primary"
+                style={{ verticalAlign: "top", margin: 8, fontSize: 24, height: 50 }}
+                shape="round"
+                size="large"
+                /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
+                onClick={loadWeb3Modal}
+              >
+                connect to mint
+              </Button>
+            )}
             <p>
               <a href="https://buidlguidl.com/" target="_blank">
                 🏰 BuidlGuidl
@@ -407,6 +391,7 @@ function App(props) {
                 dataSource={burnyBoys}
                 renderItem={item => {
                   const id = item.id;
+                  console.log(item);
                   return (
                     <List.Item key={id} extra={<img src={item.uri && item.uri.image_data} height="200" alt="" />}>
                       <List.Item.Meta
@@ -434,6 +419,7 @@ function App(props) {
                               blockExplorer={blockExplorer}
                               fontSize={16}
                             />
+                            <p>{item.uri.attributes[0]["value"]}</p>
                           </div>
                         }
                       />
@@ -472,14 +458,10 @@ function App(props) {
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
+          <Col>
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+          <Col style={{ textAlign: "center", opacity: 1 }}>
             <Button
               onClick={() => {
                 window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
