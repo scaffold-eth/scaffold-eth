@@ -156,13 +156,10 @@ function App(props) {
   const tokenPrice = useContractReader(readContracts, "BurnNFT", "price");
   const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit");
 
-  console.log(totalSupply.toString(), tokenLimit.toString(), tokenLimit == totalSupply);
-
   const [latestBlock, setLatestBlock] = useState();
   useOnBlock(localProvider, async () => {
     const newBlock = await localProvider.getBlock("latest");
     setLatestBlock(newBlock);
-    console.log(newBlock && ethers.utils.formatUnits(newBlock.baseFeePerGas, 9));
   });
 
   const [minting, setMinting] = useState(false);
