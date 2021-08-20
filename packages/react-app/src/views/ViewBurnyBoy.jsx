@@ -65,7 +65,9 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
     <span>loading...</span>
   );
 
-  return <div>{id && totalSupply && id > totalSupply.toString() ? <Redirect to="/" /> : tokenView}</div>;
+  return (
+    <div>{id && totalSupply && parseInt(id) > parseInt(totalSupply.toString()) ? <Redirect to="/" /> : tokenView}</div>
+  );
 }
 
 export default ViewBurnyBoy;

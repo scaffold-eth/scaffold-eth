@@ -310,7 +310,7 @@ function App(props) {
         >{`🔥 Burny Boys 🔥`}</Link>
       </Typography.Title>
       <p>
-        <a href={"https://medium.com/@azfuller20/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
+        <a href={"https://azfuller20.medium.com/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
           {"About"}
         </a>
         <span>{" / "}</span>
