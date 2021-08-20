@@ -20,9 +20,10 @@ import { useEthers, useNotifications } from '@usedapp/core'
 import blockies from 'blockies-ts'
 import NextLink from 'next/link'
 import React from 'react'
-import Balance from '../Balance'
-import ConnectWallet from '../ConnectWallet'
-import Head, { MetaProps } from './Head'
+import { getErrorMessage } from '../../lib/utils'
+import { Balance } from '../Balance'
+import { ConnectWallet } from '../ConnectWallet'
+import { Head, MetaProps } from './Head'
 
 // Extends `window` to add `ethereum`.
 declare global {
@@ -57,8 +58,8 @@ interface LayoutProps {
 /**
  * Component
  */
-const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
-  const { account, deactivate } = useEthers()
+export const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
+  const { account, deactivate, error } = useEthers()
   const { notifications } = useNotifications()
 
   let blockieImageSrc
@@ -125,6 +126,13 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
       </header>
       <main>
         <Container maxWidth="container.xl">
+          {error && (
+            <Alert status="error" mb="8">
+              <AlertIcon />
+              <AlertTitle mr={2}>Error:</AlertTitle>
+              <AlertDescription>{getErrorMessage(error)}</AlertDescription>
+            </Alert>
+          )}
           {children}
           {notifications.map((notification) => {
             if (notification.type === 'walletConnected') {
@@ -165,5 +173,3 @@ const Layout = ({ children, customMeta }: LayoutProps): JSX.Element => {
     </>
   )
 }
-
-export default Layout

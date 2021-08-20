@@ -4,7 +4,7 @@ import { ethers, providers, utils } from 'ethers'
 import React, { useReducer } from 'react'
 import { YourContract as LOCAL_CONTRACT_ADDRESS } from '../artifacts/contracts/contractAddress'
 import YourContract from '../artifacts/contracts/YourContract.sol/YourContract.json'
-import Layout from '../components/layout/Layout'
+import { Layout } from '../components/layout/Layout'
 import { YourContract as YourContractType } from '../types/typechain'
 
 /**
@@ -147,7 +147,7 @@ function HomeIndex(): JSX.Element {
         size="lg"
         colorScheme="teal"
         variant="outline"
-        href="https://github.com/ChangoMan/nextjs-ethereum-starter"
+        href="https://github.com/austintgriffith/scaffold-eth/tree/nextjs-typescript"
         target="_blank"
         rel="noopener noreferrer"
       >

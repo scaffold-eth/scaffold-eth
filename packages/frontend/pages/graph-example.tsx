@@ -1,6 +1,6 @@
 import { gql, useQuery } from '@apollo/client'
 import { Alert, AlertIcon, Box, Heading, Text } from '@chakra-ui/react'
-import Layout from '../components/layout/Layout'
+import { Layout } from '../components/layout/Layout'
 
 const COMPOUND_MARKETS = gql`
   query GetAllMarkets {
