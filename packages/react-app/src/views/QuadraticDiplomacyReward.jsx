@@ -10,7 +10,7 @@ const REWARD_STATUS = {
   FAILED: "reward_status.failed",
 };
 
-export default function QuadraticDiplomacyReward({ userSigner, votesEntries, price, isAdmin }) {
+export default function QuadraticDiplomacyReward({ userSigner, votesEntries, contributorEntries, price, isAdmin }) {
   const [rewardAmount, setRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState({});
   const [totalSquare, setTotalSquare] = useState(0);
@@ -25,9 +25,14 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
           name: entry.name,
           // Sum of the square root of the votes for each member.
           sqrtVote: 0,
+          hasVoted: false,
         };
       }
       votes[entry.wallet].sqrtVote += sqrtVote;
+
+      if (!votes[entry.wallet].hasVoted) {
+        votes[entry.wallet].hasVoted = entry.votingAddress === entry.wallet;
+      }
 
       // Total sum of the sum of the square roots of the votes for all members.
       sqrts += sqrtVote;
@@ -42,6 +47,8 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
 
     return [votes, sqrts];
   }, [votesEntries]);
+
+  const missingVotingMembers = contributorEntries.filter(entry => !voteResults[entry.wallet]?.hasVoted);
 
   if (!isAdmin) {
     return (
@@ -103,6 +110,17 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
       <Divider />
       <EtherInput autofocus placeholder="Reward amount" value={rewardAmount} onChange={setRewardAmount} price={price} />
       <Divider />
+      {missingVotingMembers?.length > 0 && (
+        <>
+          <Title level={5}>Pending votes from</Title>
+          {missingVotingMembers.map(entry => (
+            <p key={entry.wallet}>
+              <Address address={entry.wallet} fontSize={16} size="short" />{" "}
+              (<Text type="danger">{entry.name}</Text>)
+            </p>
+          ))}
+        </>
+      )}
       <Space direction="vertical" style={{ width: "100%" }}>
         {Object.entries(voteResults).map(([address, contributor]) => {
           const contributorShare = Math.pow(contributor.sqrtVote, 2) / totalSquare;
@@ -134,6 +152,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, pri
                 <strong>Reward amount: </strong>
                 {contributorReward.toFixed(6)} ETH
               </p>
+              {!contributor.hasVoted && <Text mark>This member hasn't voted yet</Text>}
             </Card>
           );
         })}

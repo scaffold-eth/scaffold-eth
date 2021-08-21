@@ -223,7 +223,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
             <p>The allocation to this workstream will be informed by your votes. See you next month!</p>
             <Title level={4}>Your votes:</Title>
             {Object.entries(selectedContributors).map(([contributorAddress, { name, voteTokens }]) => (
-              <p>
+              <p key={contributorAddress}>
                 <Address address={contributorAddress} fontSize={16} size="short" />{" "}
                 <Text strong>{name}</Text>: <Text>{voteTokens}</Text>
               </p>
