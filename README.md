@@ -1,38 +1,10 @@
-# zk-poker (most simplified version)
+# zk-poker (most simplified version:smile:)
 
-## game rules
-step 1: player draws a random card and keeps it secret
+## :game_die: game rules
+step 1: player draws a random card
 
-step 2: player zkproves whether or not the secret number is greater than or less than the block hash of the previous block
+step 2: player determines how much to commit
 
-## 🏄‍♂️ Quick Start
+step 3: player get the double of the bet if his card is larger, lose the bet if his card is smaller, get refund if tie
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-```
-
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
-
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
+step 4: player zkproves whether or not the secret number is indeed greater than or less than the block hash of the previous block
