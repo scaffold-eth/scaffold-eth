@@ -14,7 +14,6 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
       "0x97843608a00e2bbc75ab0C1911387E002565DEDE",
     ],
     log: true,
-    gasPrice: utils.parseUnits("41.0", "gwei"),
   });
 
   /*

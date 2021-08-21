@@ -365,6 +365,7 @@ function App(props) {
                     const result = tx(
                       writeContracts.BurnNFT.mint({
                         value: tokenPrice,
+                        gasLimit: "140000",
                       }),
                     );
                     console.log("awaiting metamask/web3 confirm result...", result);
