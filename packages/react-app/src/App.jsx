@@ -8,7 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, HashCircuitInput } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -277,6 +277,18 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+
+            /*
+
+            { /*
+            <HashCircuitInput
+              x="10"
+              threshold="9"
+            /> */
+            }
+
+            
+
 
 
             { /* uncomment for a second contract:

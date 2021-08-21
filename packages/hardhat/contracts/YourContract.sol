@@ -10,25 +10,24 @@ contract YourContract is Verifier {
   event SetPurpose(address sender, string purpose);
 
   string public purpose = "Testing ZK Proofs!!";
-
-  uint256 public verifiedHash;
-
-  uint256 playerCommit = 0;
-  uint256 threshold;
+  uint256 public playerBet;
+  
+  uint256 public playerCommit;
+  uint256 public threshold;
 
   constructor() public {
     // what should we do on deploy?
   }
   
-   function drawCard() public {
-        require(playerCommit == 0, "You have already played.");
-        uint user_block_hash = uint(
-            keccak256(abi.encodePacked(blockhash(block.number - 2), block.timestamp))
-        );
-        playerCommit = user_block_hash % 13 + 1;
-        console.log(playerCommit);
+  function placeBet(uint bet) public {
+      require(playerCommit == 0, "You have already played.");
+      uint user_block_hash = uint(
+          keccak256(abi.encodePacked(blockhash(block.number - 2), block.timestamp))
+      );
+      playerCommit = user_block_hash % 13 + 1;
+      playerBet = bet;
   }
-  function setThreshold() public {
+  function dealCards() public {
         uint threshold_block_hash = uint(
             keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
         );
