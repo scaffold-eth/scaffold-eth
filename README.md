@@ -52,7 +52,7 @@ Confirm that your account has the funds needed for the rest of the tutorial: (ch
 yarn deploy
 ```
 
-To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/src/App.jsx`:
+To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `packages/react-app/src/App.jsx`:
 
 ![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
 
