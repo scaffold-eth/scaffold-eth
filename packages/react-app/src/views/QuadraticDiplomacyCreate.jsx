@@ -1,17 +1,7 @@
-import React, { useEffect, useState, useMemo, useRef } from "react";
-import {
-  Form,
-  Input,
-  Divider,
-  Button,
-  List,
-  Steps,
-  Typography,
-  Badge,
-  notification,
-} from "antd";
-import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
-import { Address } from "../components";
+import React, { useState } from "react";
+import { Form, Input, Divider, Button, Typography } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
+import { DeleteOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
@@ -20,6 +10,7 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
+    // ToDo. Do some validation (non-empty elements, etc.)
     const names = [];
     const wallets = [];
 
@@ -66,7 +57,8 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
           </Button>
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
-          <Button type="primary" htmlType="submit" block>
+          {/*ToDo Disable if empty members */}
+          <Button type="primary" htmlType="submit" block disabled={!voteAllocation}>
             Submit
           </Button>
         </Form.Item>
@@ -91,7 +83,7 @@ const VoterInput = ({ index, setVoters }) => {
           }
         />
       </Form.Item>
-      <Form.Item label="Address" name={`address[${index}]`}>
+      <Form.Item label="Address" name={`address[${index}]`} style={{ marginBottom: "5px" }}>
         <Input
           placeholder="Voter address"
           onChange={event =>
@@ -103,6 +95,17 @@ const VoterInput = ({ index, setVoters }) => {
           }
         />
       </Form.Item>
+      <div style={{ marginBottom: "20px" }}>
+        <DeleteOutlined
+          style={{ cursor: "pointer" }}
+          onClick={event => {
+            setVoters(prevVoters => {
+              const nextVoters = [...prevVoters];
+              return nextVoters.filter((_, i) => i !== index);
+            });
+          }}
+        />
+      </div>
     </>
   );
 };
