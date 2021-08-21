@@ -39,12 +39,32 @@
   {
     "inputs": [
       {
+        "internalType": "bool",
+        "name": "play",
+        "type": "bool"
+      }
+    ],
+    "name": "setCommitment",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
         "internalType": "string",
         "name": "newPurpose",
         "type": "string"
       }
     ],
     "name": "setPurpose",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
+    "name": "setThreshold",
     "outputs": [],
     "stateMutability": "nonpayable",
     "type": "function"
