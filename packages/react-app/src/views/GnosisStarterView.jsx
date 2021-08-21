@@ -29,7 +29,7 @@ export default function GnosisStarterView({
   const [params, setParams] = useState([])
   const [data, setData] = useState('0x00')
 
-  const OWNERS = ["0x34aA3F359A9D614239015126635CE7732c18fDF3", "0xa81a6a910FeD20374361B35C451a4a44F86CeD46"]
+  const OWNERS = ["0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51", "0xf88b0247e611eE5af8Cf98f5303769Cba8e7177C"]
 
   const THRESHOLD = 2
 
@@ -224,16 +224,20 @@ export default function GnosisStarterView({
 
               const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
               const nonce = await safeSdk.getNonce()
+              const checksumForm = ethers.utils.getAddress(to)
               const partialTx = {
-                to,
+                to: checksumForm,
                 data,
-                value: ethers.utils.parseEther(value.toString())
+                value: ethers.utils.parseEther(value.toString()).toString()
               }
               console.log("BUTTON CLICKED PROPOSING:",partialTx)
               try{
                 const safeTransaction = await safeSdk.createTransaction(partialTx)
                 await safeSdk.signTransaction(safeTransaction)
                 const hash = await safeSdk.getTransactionHash(safeTransaction)
+                console.log('HASH', hash)
+                console.log('SAFE TX', safeTransaction)
+
                 await serviceClient.proposeTransaction(safeAddress, safeTransaction.data,  hash, safeTransaction.signatures.get(address.toLowerCase()))
               }catch(e){
                 console.log("🛑 Error Proposing Transaction",e)
