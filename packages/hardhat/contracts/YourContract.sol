@@ -19,23 +19,7 @@ contract YourContract is Verifier {
   constructor() public {
     // what should we do on deploy?
   }
-
-  //function setPurpose(string memory newPurpose) public {
-  //  purpose = newPurpose;
-  //  console.log(msg.sender,"set purpose to",purpose);
-  //  emit SetPurpose(msg.sender, purpose);
-  //}
-
-  function testVerifyProof(
-          uint[2] memory a,
-          uint[2][2] memory b,
-          uint[2] memory c,
-          uint[2] memory input
-      ) public {
-      require(verifyProof(a, b, c, input), "Invalid Proof");
-      verifiedHash = input[0];
-  }
-
+  
    function drawCard() public {
         require(playerCommit == 0, "You have already played.");
         uint user_block_hash = uint(
