@@ -25,6 +25,13 @@
   },
   {
     "inputs": [],
+    "name": "drawCard",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "inputs": [],
     "name": "purpose",
     "outputs": [
       {
@@ -34,32 +41,6 @@
       }
     ],
     "stateMutability": "view",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "bool",
-        "name": "play",
-        "type": "bool"
-      }
-    ],
-    "name": "setCommitment",
-    "outputs": [],
-    "stateMutability": "nonpayable",
-    "type": "function"
-  },
-  {
-    "inputs": [
-      {
-        "internalType": "string",
-        "name": "newPurpose",
-        "type": "string"
-      }
-    ],
-    "name": "setPurpose",
-    "outputs": [],
-    "stateMutability": "nonpayable",
     "type": "function"
   },
   {

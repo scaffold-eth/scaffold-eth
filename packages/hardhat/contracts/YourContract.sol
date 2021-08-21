@@ -20,11 +20,11 @@ contract YourContract is Verifier {
     // what should we do on deploy?
   }
 
-  function setPurpose(string memory newPurpose) public {
-    purpose = newPurpose;
-    console.log(msg.sender,"set purpose to",purpose);
-    emit SetPurpose(msg.sender, purpose);
-  }
+  //function setPurpose(string memory newPurpose) public {
+  //  purpose = newPurpose;
+  //  console.log(msg.sender,"set purpose to",purpose);
+  //  emit SetPurpose(msg.sender, purpose);
+  //}
 
   function testVerifyProof(
           uint[2] memory a,
@@ -36,15 +36,13 @@ contract YourContract is Verifier {
       verifiedHash = input[0];
   }
 
-   function setCommitment(bool play) public {
+   function drawCard() public {
         require(playerCommit == 0, "You have already played.");
-        if (play){
         uint user_block_hash = uint(
             keccak256(abi.encodePacked(blockhash(block.number - 2), block.timestamp))
         );
         playerCommit = user_block_hash % 13 + 1;
         console.log(playerCommit);
-        }
   }
   function setThreshold() public {
         uint threshold_block_hash = uint(

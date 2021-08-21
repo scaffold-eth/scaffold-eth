@@ -13,15 +13,6 @@ template Main() {
 
   out <== greater.out;
   out === 0;
-
-  /*
-  component mimc = MiMCSponge(1, 220, 1);
-  mimc.ins[0] <== x;
-  mimc.k <== 0;
-
-  out <== mimc.outs[0];
-
-  out === hash; */
 }
 
 component main = Main();
