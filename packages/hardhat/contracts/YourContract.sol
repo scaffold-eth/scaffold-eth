@@ -9,7 +9,7 @@ contract YourContract is Verifier {
 
   event SetPurpose(address sender, string purpose);
 
-  string public purpose = "Building Unstoppable Apps";
+  string public purpose = "Testing ZK Proofs!!";
 
   uint256 public verifiedHash;
 
