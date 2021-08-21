@@ -2,7 +2,7 @@ import React, { useEffect, useState, useMemo } from "react";
 import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge } from "antd";
 import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Address } from "../components";
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts, isVoter }) {
   const [selectedContributors, setSelectedContributors] = useState({});
@@ -219,10 +219,15 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
       ) : (
         currentStep === 3 && (
           <>
-            <h4>
-              <strong>Thank you for voting.</strong>
-            </h4>
+            <Title level={3}>Thank you for voting.</Title>
             <p>The allocation to this workstream will be informed by your votes. See you next month!</p>
+            <Title level={4}>Your votes:</Title>
+            {Object.entries(selectedContributors).map(([contributorAddress, { name, voteTokens }]) => (
+              <p>
+                <Address address={contributorAddress} fontSize={16} size="short" />{" "}
+                <Text strong>{name}</Text>: <Text>{voteTokens}</Text>
+              </p>
+            ))}
           </>
         )
       )}
