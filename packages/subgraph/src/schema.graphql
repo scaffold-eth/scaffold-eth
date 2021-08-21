@@ -1,15 +1,33 @@
-type Purpose @entity {
+type BurnyBoy @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
+  baseFee: BigInt!
+  owner: Bytes!
+  minter: Minter!
   createdAt: BigInt!
-  transactionHash: String!
+  block: Block!
 }
 
-type Sender @entity {
+type Minter @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
-  createdAt: BigInt!
-  purposeCount: BigInt!
+  burnyBoys: [BurnyBoy!] @derivedFrom(field: "minter")
+  burnyBoyCount: BigInt!
+  minBaseFee: BigInt!
+  maxBaseFee: BigInt!
+  minBaseFeeBurnyBoy: BurnyBoy!
+  maxBaseFeeBurnyBoy: BurnyBoy!
+}
+
+type Block @entity {
+  id: ID!
+  number: BigInt!
+  baseFee: BigInt!
+  timestamp: BigInt!
+  burnyBoys: [BurnyBoy!] @derivedFrom(field: "block")
+  burnyBoyCount: BigInt!
+  burnyBoyTotal: BigInt!
+  minterTotal: BigInt!
+  minBaseFee: BigInt!
+  minBaseFeeBurnyBoy: BurnyBoy!
+  maxBaseFeeBurnyBoy: BurnyBoy!
+  maxBaseFee: BigInt!
 }

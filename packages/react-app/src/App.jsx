@@ -22,7 +22,8 @@ import {
   usePoller,
   useUserSigner,
 } from "./hooks";
-import { ViewBurnyBoy } from "./views";
+import { ViewBurnyBoy, BurnyStats } from "./views";
+import { gql, useQuery } from "@apollo/client";
 
 const { ethers } = require("ethers");
 
@@ -173,11 +174,13 @@ function App(props) {
   const [burnyBoys, setBurnyBoys] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
+  /*
   useEffect(() => {
     let active = true;
     const updateBurnyBoys = async () => {
       const tokenUpdate = [];
-      for (let tokenIndex = totalSupply; tokenIndex > 0 && tokenIndex > totalSupply - 5; tokenIndex--) {
+      let starter = 5;
+      for (let tokenIndex = starter; tokenIndex > 0 && tokenIndex > starter - 5; tokenIndex--) {
         try {
           if (active) {
             console.log("getting", tokenIndex);
@@ -197,6 +200,44 @@ function App(props) {
     };
     updateBurnyBoys();
   }, [totalSupply && totalSupply.toString()]);
+  */
+
+  const BURNY_STATS = `
+  {
+  block(id: "latest") {
+    id
+    number
+    baseFee
+    timestamp
+    burnyBoyCount
+    burnyBoyTotal
+    minterTotal
+    minBaseFee
+    maxBaseFee
+    minBaseFeeBurnyBoy {
+      id
+      minter {
+        id
+      }
+    }
+    maxBaseFeeBurnyBoy {
+      id
+      minter {
+        id
+      }
+    }
+  }
+  burnyBoys(first: 10, orderBy: createdAt, orderDirection: desc) {
+    id
+    baseFee
+    createdAt
+    minter { id }
+    owner
+  }
+}
+  `;
+  const BURNY_STATS_GQL = gql(BURNY_STATS);
+  const { loading, data } = useQuery(BURNY_STATS_GQL, { pollInterval: 5000 });
 
   let networkDisplay = "";
   if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -322,7 +363,7 @@ function App(props) {
           href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
           target="_blank"
         >
-          {"Smart contract"}
+          {"Contract"}
         </a>
         <span>{" / "}</span>
         <a
@@ -343,11 +384,9 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             {header}
-
             <Typography.Title level={2}>{`Latest baseFee: ${
               latestBlock ? Number(ethers.utils.formatUnits(latestBlock.baseFeePerGas, 9)).toFixed(3) : "..."
             } Gwei`}</Typography.Title>
-
             {address ? (
               <Button
                 style={{ margin: 8, fontSize: 24, height: 50 }}
@@ -406,40 +445,111 @@ function App(props) {
                 {"@tomosaito"}
               </a>
             </p>
-            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest Burny Boys">
-              <List
-                bordered
-                dataSource={burnyBoys}
-                renderItem={item => {
+            <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
+              {data &&
+                data.burnyBoys.map(item => {
                   const id = item.id;
-                  /*
+                  let height = BigInt(270);
+                  let fireHeight =
+                    (height *
+                      (BigInt(100) -
+                        (BigInt(100) * (BigInt(item.baseFee) - BigInt(data.block.minBaseFee))) /
+                          (BigInt(data.block.maxBaseFee) - BigInt(data.block.minBaseFee)))) /
+                    BigInt(100);
+
+                  let readableBaseFee = Math.floor(Number(ethers.utils.formatUnits(item.baseFee, "gwei")));
+
+                  let addressOrEmojis;
+                  if (item.baseFee == data.block.maxBaseFee) {
+                    addressOrEmojis =
+                      "Burniest Boy 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
+                  } else if (item.baseFee == data.block.minBaseFee) {
+                    addressOrEmojis =
+                      "Ice cold 🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊";
+                  } else if (readableBaseFee == 69) {
+                    addressOrEmojis = "Nice. ♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋";
+                  } else if (readableBaseFee == 420) {
+                    addressOrEmojis = "Nice. 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲";
+                  } else {
+                    addressOrEmojis = item.owner.toLowerCase() + "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
+                  }
+
                   const generatedSvg = generateSVG({
                     tokenId: id,
-                    fireHeight: 270,
-                    rotation: (parseInt(item.uri.attributes[0]["value"]) + parseInt(id) * 30) % 360,
-                    address: address,
-                    baseFee: item.uri.attributes[0]["value"],
+                    fireHeight: fireHeight,
+                    rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,
+                    address: addressOrEmojis,
+                    baseFee: readableBaseFee,
                   });
                   let blob = new Blob([generatedSvg], { type: "image/svg+xml" });
                   let url = URL.createObjectURL(blob);
                   console.log(url);
-                  */
                   return (
-                    <List.Item key={id} extra={<img src={item.uri && item.uri.image} height="200" alt="" />}>
+                    <Link to={`/token/${id}`}>
+                      <img src={url} height="120" alt="" />
+                    </Link>
+                  );
+                })}
+            </ul>
+            {/*
+            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest Burny Boys">
+              <List
+                bordered
+                dataSource={data && data.burnyBoys}
+                renderItem={item => {
+                  const id = item.id;
+                  let height = BigInt(270);
+                  let fireHeight =
+                    (height *
+                      (BigInt(100) -
+                        (BigInt(100) * (BigInt(item.baseFee) - BigInt(data.block.minBaseFee))) /
+                          (BigInt(data.block.maxBaseFee) - BigInt(data.block.minBaseFee)))) /
+                    BigInt(100);
+
+                  let readableBaseFee = Math.floor(Number(ethers.utils.formatUnits(item.baseFee, "gwei")));
+
+                  let addressOrEmojis;
+                  if (item.baseFee == data.block.maxBaseFee) {
+                    addressOrEmojis =
+                      "Burniest Boy 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
+                  } else if (item.baseFee == data.block.minBaseFee) {
+                    addressOrEmojis =
+                      "Ice cold 🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊";
+                  } else if (readableBaseFee == 69) {
+                    addressOrEmojis = "Nice. ♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋";
+                  } else if (readableBaseFee == 420) {
+                    addressOrEmojis = "Nice. 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲";
+                  } else {
+                    addressOrEmojis = item.owner.toLowerCase() + "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
+                  }
+
+                  const generatedSvg = generateSVG({
+                    tokenId: id,
+                    fireHeight: fireHeight,
+                    rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,
+                    address: addressOrEmojis,
+                    baseFee: readableBaseFee,
+                  });
+                  let blob = new Blob([generatedSvg], { type: "image/svg+xml" });
+                  let url = URL.createObjectURL(blob);
+                  console.log(url);
+
+                  return (
+                    <List.Item key={id} extra={<img src={url} height="200" alt="" />}>
                       <List.Item.Meta
                         title={
                           <div>
                             <span style={{ fontSize: 16, marginRight: 8 }}>
                               {" "}
-                              <Link to={`/token/${id}`}>{item.uri.name}</Link>
+                              <Link to={`/token/${id}`}>{`Burny Boy #${id}`}</Link>
                             </span>
                           </div>
                         }
                         description={
                           <div style={{ padding: 4 }}>
-                            <p>{item.uri.description}</p>
+                            <p>{`When this burny boy was minted, the basefee was ${readableBaseFee} Gwei`}</p>
                             <Address
-                              address={item.uri.owner}
+                              address={item.owner}
                               ensProvider={mainnetProvider}
                               blockExplorer={blockExplorer}
                               fontSize={16}
@@ -447,7 +557,7 @@ function App(props) {
                             <p>
                               <a
                                 href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
-                                  readContracts.BurnNFT.address
+                                  readContracts && readContracts.BurnNFT.address
                                 }/${id}`}
                                 target="_blank"
                               >
@@ -455,14 +565,14 @@ function App(props) {
                               </a>
                               <span>{` / `}</span>
                               <a
-                                href={`${blockExplorer}/token/${readContracts.BurnNFT.address}?a=${id}`}
+                                href={`${blockExplorer}/token/${
+                                  readContracts && readContracts.BurnNFT.address
+                                }?a=${id}`}
                                 target="_blank"
                               >
                                 Etherscan
                               </a>
                             </p>
-                            {/*<p>{item.uri.attributes[0]["value"]}</p>*/}
-                            {/*<img src={url} height="200" alt="" />*/}
                           </div>
                         }
                       />
@@ -471,6 +581,7 @@ function App(props) {
                 }}
               />
             </Card>
+            */}
             {address && beneficiary && address == beneficiary && (
               <Contract
                 name="BurnNFT"
@@ -490,6 +601,10 @@ function App(props) {
               targetNetwork={targetNetwork}
               totalSupply={totalSupply}
             />
+          </Route>
+          <Route path="/stats">
+            {header}
+            <BurnyStats data={data} loading={loading} />
           </Route>
         </Switch>
       </BrowserRouter>
