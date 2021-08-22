@@ -29,7 +29,10 @@ export default function GnosisStarterView({
   const [params, setParams] = useState([])
   const [data, setData] = useState('0x00')
 
-  const OWNERS = ["0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51", "0xf88b0247e611eE5af8Cf98f5303769Cba8e7177C"]
+  const OWNERS = [
+    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
+    "0xa81a6a910FeD20374361B35C451a4a44F86CeD46"
+  ]
 
   const THRESHOLD = 2
 
@@ -272,6 +275,7 @@ export default function GnosisStarterView({
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
         {safeAddress?<div style={{float:"right", padding:4, cursor:"pointer", fontSize:28}} onClick={()=>{
           setSafeAddress("")
+          setTransactions([])
         }}>
           x
         </div>:""}

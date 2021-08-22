@@ -401,17 +401,17 @@ function App(props) {
             >
               Mainnet DAI
             </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
+          </Menu.Item>*/}
+          <Menu.Item key="/contract">
             <Link
               onClick={() => {
-                setRoute("/subgraph");
+                setRoute("/contract");
               }}
-              to="/subgraph"
+              to="/contract"
             >
-              Subgraph
+              Contract
             </Link>
-          </Menu.Item> */}
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -456,14 +456,15 @@ function App(props) {
             />
             */}
           </Route>
-          {/* <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
-            />
-          </Route>  */}
+          <Route path="/contract">
+              <Contract
+               name="YourContract"
+               signer={userSigner}
+               provider={localProvider}
+               address={address}
+               blockExplorer={blockExplorer}
+             />
+          </Route>
         </Switch>
       </BrowserRouter>
 
