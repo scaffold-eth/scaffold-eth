@@ -26,14 +26,15 @@ template Main() {
 
   /*
     Verify that player card is larger than threshold
+    outValid = 1 if x less than threshold;
+    outValid = 1 if x >= threshold
   */
 
   component greater = LessThan(11);
   greater.in[0] <== x;
   greater.in[1] <== threshold;
 
-  outValid <== greater.out;
-  outValid === 0;
+  outValid <== greater.out; 
 }
 
 component main = Main();

@@ -15,6 +15,8 @@ import { formatEther, parseEther } from "@ethersproject/units";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
+import { ProfileOutlined } from "@ant-design/icons";
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -64,7 +66,9 @@ const localProvider = new JsonRpcProvider(localProviderUrlFromEnv);
 const blockExplorer = targetNetwork.blockExplorer;
 
 
+
 function App(props) {
+  
 
   const mainnetProvider = (scaffoldEthProvider && scaffoldEthProvider._network) ? scaffoldEthProvider : mainnetInfura
 
@@ -144,6 +148,34 @@ function App(props) {
 
   // For Master Branch Example
   const [oldPurposeEvents, setOldPurposeEvents] = useState([])
+
+  // For zk poker
+  async function CircuitCalldata(circuitName, x, hash, threshold) {
+    const { proof, publicSignals } =
+      await window.snarkjs.groth16.fullProve({ x: x, hash: hash.toString(), threshold:threshold },
+      `./circuits/${circuitName}_circuit.wasm`,
+      `./circuits/${circuitName}_circuit_final.zkey`);
+    console.log("Finished computing proof")
+  
+      const vKey = await fetch(`./circuits/${circuitName}_verification_key.json`).then(function(res) {
+        return res.json();
+      });
+  
+    const res = await window.snarkjs.groth16.verify(vKey, publicSignals, proof);
+    return res;
+  }
+  const [seedCommit, setSeedCommit] = useState(0);
+  const [cardCommit, setCardCommit] = useState("0");
+  const [isValid, setIsValid] = useState(null);
+  const [hash, setHash] = useState("15893827533473716138720882070731822975159228540693753428689375377280130954696");
+  const [threshold, setThreshold] = useState("1");
+
+  const handleIsValid = async () => {
+    const res = await CircuitCalldata("hash", cardCommit, hash, threshold);
+    setIsValid(res.toString());
+    console.log("is valid", isValid);
+  };
+  
 
   // For Buyer-Lazy-Mint Branch Example
   // const [oldTransferEvents, setOldTransferEvents] = useState([])
@@ -270,6 +302,11 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
+            <Button onClick={handleIsValid}>
+              Zk proof
+            </Button>
+
+
             <Contract
               name="YourContract"
               signer={userProvider.getSigner()}
@@ -278,16 +315,26 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
 
-            /*
+            {/*
+            <div style={{padding:16}}>
+              <Button type={"primary"} onClick={()=>{
+                calculateProof({
+                  to: address,
+                  value: parseEther("0.01"),
+                });
+                setFaucetClicked(true)
+              }}
+                size="large"
+                shape="round"
+              >
+                GenerateProof
+              </Button>
+            </div>
 
-            { /*
-            <HashCircuitInput
-              x="10"
-              threshold="9"
-            /> */
-            }
-
-            
+            const { proof, publicSignals } = await snarkjs.groth16.fullProve({x="1764",
+              hash="15893827533473716138720882070731822975159228540693753428689375377280130954696",
+              threshold="1000"}, "circuit.wasm", "circuit_final.zkey");
+            */}
 
 
 

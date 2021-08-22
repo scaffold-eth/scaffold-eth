@@ -1,8 +1,7 @@
 import { useEffect, useState } from "react";
-const fs = require("fs");
-const snarkjs = require("snarkjs");
 const ffjavascript = require('ffjavascript');
 const {stringifyBigInts: stringifyBigInts$3, unstringifyBigInts: unstringifyBigInts$1} = ffjavascript.utils;
+
 
 
 // copy pasta p256 from snarkjs cli.cjs line 6726
@@ -18,6 +17,8 @@ async function genSolidityCalldata(publicName, proofName) {
 
     const pub = unstringifyBigInts$1(publicName);
     const proof = unstringifyBigInts$1(proofName);
+    console.log(publicName)
+    console.log(proofName)
 
     let inputs = "";
     for (let i=0; i<pub.length; i++) {
@@ -72,7 +73,7 @@ export default async function useCircuitCalldata(circuitName, signalNames, signa
   }, [circuitName, signalNames, signalValues]);
 
   async function genProve(inputSigs) {
-    const { proof, pubSigs } = await snarkjs.groth16.fullProve(
+    const { proof, pubSigs } = await (window || global).snarkjs.groth16.fullProve(
       inputSigs,
       `../circuits/${circuitName}_circuit.wasm`,
       `../circuits/${circuitName}_circuit_final.zkey`
@@ -87,8 +88,12 @@ export default async function useCircuitCalldata(circuitName, signalNames, signa
   }, [signalInputs]);
 
   async function verify(pub, pru) {
-    const vKey = JSON.parse(fs.readFileSync(`../circuits/${circuitName}_verification_key.json`));
-    const res = await snarkjs.groth16.verify(vKey, pub, pru);
+    const vKey = await fetch("../circuits/${circuitName}_verification_key.json").then(function(res) {
+      return res.json();
+    });
+    //const vKey = JSON.parse(fs.readFileSync(`../circuits/${circuitName}_verification_key.json`).toString('utf-8'));
+    const res = await window.snarkjs.groth16.verify(vKey, pub, pru);
+    console.log(res)
     return res;
   }
 
