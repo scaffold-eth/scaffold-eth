@@ -12,7 +12,7 @@ import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useC
 import { Header, Account, Faucet, Ramp, Contract, GasGauge, Address, AddressInput, ThemeSwitch } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
-import { utils } from "ethers";
+import { utils, ethers } from "ethers";
 //import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views"
 import { useThemeSwitcher } from "react-css-theme-switcher";
@@ -168,11 +168,15 @@ function App(props) {
 
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts,"YourCollectible", "balanceOf", [ address ])
+  const balance = useContractReader(readContracts,"MoonshotBot", "balanceOf", [ address ])
   console.log("🤗 balance:",balance)
 
+  const priceToMint = useContractReader(readContracts,"MoonshotBot", "price")
+  console.log("🤗 priceToMint:",priceToMint)
+
+
   //📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:",transferEvents)
 
 
@@ -189,12 +193,12 @@ function App(props) {
       for(let tokenIndex=0;tokenIndex<balance;tokenIndex++){
         try{
           console.log("GEtting token index",tokenIndex)
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex)
+          const tokenId = await readContracts.MoonshotBot.tokenOfOwnerByIndex(address, tokenIndex)
           console.log("tokenId",tokenId)
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId)
+          const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId)
           console.log("tokenURI",tokenURI)
 
-          const ipfsHash =  tokenURI.replace("https://ipfs.io/ipfs/","")
+          const ipfsHash =  tokenURI.replace("https://gateway.pinata.cloud/ipfs/","")
           console.log("ipfsHash",ipfsHash)
 
           const jsonManifestBuffer = await getFromIPFS(ipfsHash)
@@ -319,9 +323,12 @@ function App(props) {
         <div>
           <Button onClick={()=>{
             console.log("gasPrice,",gasPrice)
-            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{gasPrice:gasPrice}) )
+            tx( writeContracts.YourCollectible.mintItem(loadedAssets[a].id,{
+              value: parseEther("1"),
+              gasPrice:gasPrice
+            }) )
           }}>
-            Mint
+             BUY (1 ETH)
           </Button>
         </div>
       )
@@ -364,26 +371,6 @@ function App(props) {
 
       <BrowserRouter>
 
-        <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Gallery</Link>
-          </Menu.Item>
-          <Menu.Item key="/yourcollectibles">
-            <Link onClick={()=>{setRoute("/yourcollectibles")}} to="/yourcollectibles">YourCollectibles</Link>
-          </Menu.Item>
-          <Menu.Item key="/transfers">
-            <Link onClick={()=>{setRoute("/transfers")}} to="/transfers">Transfers</Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsup">
-            <Link onClick={()=>{setRoute("/ipfsup")}} to="/ipfsup">IPFS Upload</Link>
-          </Menu.Item>
-          <Menu.Item key="/ipfsdown">
-            <Link onClick={()=>{setRoute("/ipfsdown")}} to="/ipfsdown">IPFS Download</Link>
-          </Menu.Item>
-          <Menu.Item key="/debugcontracts">
-            <Link onClick={()=>{setRoute("/debugcontracts")}} to="/debugcontracts">Debug Contracts</Link>
-          </Menu.Item>
-        </Menu>
 
         <Switch>
           <Route exact path="/">
@@ -391,7 +378,6 @@ function App(props) {
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
-            */}
 
             <div style={{ maxWidth:820, margin: "auto", marginTop:32, paddingBottom:256 }}>
               <StackGrid
@@ -402,57 +388,258 @@ function App(props) {
                 {galleryList}
               </StackGrid>
             </div>
+            */}
 
-          </Route>
 
-          <Route path="/yourcollectibles">
-            <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-              <List
-                bordered
-                dataSource={yourCollectibles}
-                renderItem={(item) => {
-                  const id = item.id.toNumber()
-                  return (
-                    <List.Item key={id+"_"+item.uri+"_"+item.owner}>
-                      <Card title={(
-                        <div>
-                          <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
-                        </div>
-                      )}>
-                        <div><img src={item.image} style={{maxWidth:150}} /></div>
-                        <div>{item.description}</div>
-                      </Card>
+            <img src="moon.svg"/>
 
-                      <div>
-                        owner: <Address
-                            address={item.owner}
-                            ensProvider={mainnetProvider}
-                            blockExplorer={blockExplorer}
-                            fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={(newValue)=>{
-                            let update = {}
-                            update[id] = newValue
-                            setTransferToAddresses({ ...transferToAddresses, ...update})
-                          }}
-                        />
-                        <Button onClick={()=>{
-                          console.log("writeContracts",writeContracts)
-                          tx( writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id) )
-                        }}>
-                          Transfer
-                        </Button>
-                      </div>
-                    </List.Item>
-                  )
-                }}
-              />
+            <h1><img src="logo.png" />Moonshot Bots</h1>
+            <h2>An Ultra-Rare PFP (175 supply) by <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
+            <h3>Seeded with &lt;3 for early BUIDLers in the <a href="https://moonshotcollective.space">Moonshot Collective</a></h3>
+
+
+            <div style={{padding:32}}>
+              <Button type={"primary"} onClick={async ()=>{
+                let price = await readContracts.MoonshotBot.price()
+                tx( writeContracts.MoonshotBot.requestMint(address,{value: price}) )
+              }}>MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}</Button>
             </div>
+
+            {yourCollectibles && yourCollectibles.length>0 ?
+              <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
+                <h2>Your MoonshotBots</h2>
+                <List
+                  bordered
+                  dataSource={yourCollectibles}
+                  renderItem={(item) => {
+                    const id = item.id.toNumber()
+                    return (
+                      <List.Item>
+                        <Card title={(
+                          <div>
+                            <span style={{fontSize:16, marginRight:8}}>#{id}</span> {item.name}
+                          </div>
+                        )}>
+                          <div><img src={item.image} style={{maxWidth:150}} /></div>
+                          <div>{item.description}</div>
+                        </Card>
+
+                        <div>
+                          owner: <Address
+                              address={item.owner}
+                              ensProvider={mainnetProvider}
+                              blockExplorer={blockExplorer}
+                              fontSize={16}
+                          />
+                          <AddressInput
+                            ensProvider={mainnetProvider}
+                            placeholder="transfer to address"
+                            value={transferToAddresses[id]}
+                            onChange={(newValue)=>{
+                              let update = {}
+                              update[id] = newValue
+                              setTransferToAddresses({ ...transferToAddresses, ...update})
+                            }}
+                          />
+                          <Button onClick={()=>{
+                            console.log("writeContracts",writeContracts)
+                            tx( writeContracts.MoonshotBot.transferFrom(address, transferToAddresses[id], id) )
+                          }}>
+                            Transfer
+                          </Button>
+                        </div>
+                      </List.Item>
+                    )
+                  }}
+                />
+              </div>:
+
+            <div id="preview">
+            <img src='nfts/Adelyn.png'/>
+            <img src='nfts/Cairo.png'/>
+            <img src='nfts/Dominic.png'/>
+            <img src='nfts/Harlow.png'/>
+            <img src='nfts/Khaleesi.png'/>
+            <img src='nfts/Meredith.png'/>
+            <img src='nfts/Ryan.png'/>
+            <img src='nfts/Adler.png'/>
+            <img src='nfts/Cal.png'/>
+            <img src='nfts/Donald.png'/>
+            <img src='nfts/Harmony.png'/>
+            <img src='nfts/Killian.png'/>
+            <img src='nfts/Michael.png'/>
+            <img src='nfts/Ryann.png'/>
+            <img src='nfts/Ahmir.png'/>
+            <img src='nfts/Callan.png'/>
+            <img src='nfts/Dorian.png'/>
+            <img src='nfts/Hope.png'/>
+            <img src='nfts/Kolton.png'/>
+            <img src='nfts/Milana.png'/>
+            <img src='nfts/Saoirse.png'/>
+            <img src='nfts/Alaya.png'/>
+            <img src='nfts/Cameron.png'/>
+            <img src='nfts/Dream.png'/>
+            <img src='nfts/Ian.png'/>
+            <img src='nfts/Kora.png'/>
+            <img src='nfts/Mohammad.png'/>
+            <img src='nfts/Sincere.png'/>
+            <img src='nfts/Albert.png'/>
+            <img src='nfts/Cannon.png'/>
+            <img src='nfts/Edwin.png'/>
+            <img src='nfts/Ibrahim.png'/>
+            <img src='nfts/Lainey.png'/>
+            <img src='nfts/Molly.png'/>
+            <img src='nfts/Skye.png'/>
+            <img src='nfts/Alden.png'/>
+            <img src='nfts/Carlos.png'/>
+            <img src='nfts/Elaine.png'/>
+            <img src='nfts/Indie.png'/>
+            <img src='nfts/Laurel.png'/>
+            <img src='nfts/Myles.png'/>
+            <img src='nfts/Solomon.png'/>
+            <img src='nfts/Alessandro.png'/>
+            <img src='nfts/Carly.png'/>
+            <img src='nfts/Eliana.png'/>
+            <img src='nfts/Israel.png'/>
+            <img src='nfts/Layton.png'/>
+            <img src='nfts/Nathanael.png'/>
+            <img src='nfts/Steven.png'/>
+            <img src='nfts/Alex.png'/>
+            <img src='nfts/Case.png'/>
+            <img src='nfts/Elianna.png'/>
+            <img src='nfts/Izaiah.png'/>
+            <img src='nfts/Leandro.png'/>
+            <img src='nfts/Nellie.png'/>
+            <img src='nfts/Talon.png'/>
+            <img src='nfts/Alexis.png'/>
+            <img src='nfts/Casen.png'/>
+            <img src='nfts/Elizabeth.png'/>
+            <img src='nfts/Jake.png'/>
+            <img src='nfts/Leonard.png'/>
+            <img src='nfts/Nicholas.png'/>
+            <img src='nfts/Taylor.png'/>
+            <img src='nfts/Alia.png'/>
+            <img src='nfts/Cayson.png'/>
+            <img src='nfts/Elliana.png'/>
+            <img src='nfts/Jalen.png'/>
+            <img src='nfts/Lexie.png'/>
+            <img src='nfts/Niko.png'/>
+            <img src='nfts/Tessa.png'/>
+            <img src='nfts/Alyssa.png'/>
+            <img src='nfts/Cesar.png'/>
+            <img src='nfts/Ellianna.png'/>
+            <img src='nfts/Jase.png'/>
+            <img src='nfts/Liana.png'/>
+            <img src='nfts/Oaklyn.png'/>
+            <img src='nfts/Theo.png'/>
+            <img src='nfts/Amora.png'/>
+            <img src='nfts/Charlie.png'/>
+            <img src='nfts/Elyse.png'/>
+            <img src='nfts/Jaxtyn.png'/>
+            <img src='nfts/Liliana.png'/>
+            <img src='nfts/Oaklynn.png'/>
+            <img src='nfts/Tomas.png'/>
+            <img src='nfts/Anakin.png'/>
+            <img src='nfts/Claire.png'/>
+            <img src='nfts/Evan.png'/>
+            <img src='nfts/Jay.png'/>
+            <img src='nfts/Linda.png'/>
+            <img src='nfts/Paisley.png'/>
+            <img src='nfts/Ty.png'/>
+            <img src='nfts/Angelina.png'/>
+            <img src='nfts/Clark.png'/>
+            <img src='nfts/Evangeline.png'/>
+            <img src='nfts/Jeffrey.png'/>
+            <img src='nfts/Liv.png'/>
+            <img src='nfts/Parker.png'/>
+            <img src='nfts/Tyler.png'/>
+            <img src='nfts/Annabella.png'/>
+            <img src='nfts/Clementine.png'/>
+            <img src='nfts/Eve.png'/>
+            <img src='nfts/Jianna.png'/>
+            <img src='nfts/Lucca.png'/>
+            <img src='nfts/Paul.png'/>
+            <img src='nfts/Van.png'/>
+            <img src='nfts/Ariel.png'/>
+            <img src='nfts/Coen.png'/>
+            <img src='nfts/Everett.png'/>
+            <img src='nfts/Jude.png'/>
+            <img src='nfts/Luciana.png'/>
+            <img src='nfts/Penelope.png'/>
+            <img src='nfts/Walter.png'/>
+            <img src='nfts/Ariyah.png'/>
+            <img src='nfts/Corey.png'/>
+            <img src='nfts/Evie.png'/>
+            <img src='nfts/Judith.png'/>
+            <img src='nfts/Madisyn.png'/>
+            <img src='nfts/Peter.png'/>
+            <img src='nfts/Watson.png'/>
+            <img src='nfts/Arthur.png'/>
+            <img src='nfts/Dakari.png'/>
+            <img src='nfts/Fallon.png'/>
+            <img src='nfts/Julian.png'/>
+            <img src='nfts/Makenna.png'/>
+            <img src='nfts/Presley.png'/>
+            <img src='nfts/Westin.png'/>
+            <img src='nfts/Axl.png'/>
+            <img src='nfts/Dallas.png'/>
+            <img src='nfts/Finley.png'/>
+            <img src='nfts/Julio.png'/>
+            <img src='nfts/Malaya.png'/>
+            <img src='nfts/Quinn.png'/>
+            <img src='nfts/Ximena.png'/>
+            <img src='nfts/Axton.png'/>
+            <img src='nfts/Daniel.png'/>
+            <img src='nfts/Gary.png'/>
+            <img src='nfts/Kade.png'/>
+            <img src='nfts/Marcos.png'/>
+            <img src='nfts/Quinton.png'/>
+            <img src='nfts/Yousef.png'/>
+            <img src='nfts/Belen.png'/>
+            <img src='nfts/Danielle.png'/>
+            <img src='nfts/Georgia.png'/>
+            <img src='nfts/Kairi.png'/>
+            <img src='nfts/Marianna.png'/>
+            <img src='nfts/Raven.png'/>
+            <img src='nfts/Zainab.png'/>
+            <img src='nfts/Braden.png'/>
+            <img src='nfts/Danny.png'/>
+            <img src='nfts/Grace.png'/>
+            <img src='nfts/Kamari.png'/>
+            <img src='nfts/Marleigh.png'/>
+            <img src='nfts/Rhea.png'/>
+            <img src='nfts/Zelda.png'/>
+            <img src='nfts/Bradley.png'/>
+            <img src='nfts/Darwin.png'/>
+            <img src='nfts/Halo.png'/>
+            <img src='nfts/Kareem.png'/>
+            <img src='nfts/Mateo.png'/>
+            <img src='nfts/Rhett.png'/>
+            <img src='nfts/Zola.png'/>
+            <img src='nfts/Brecken.png'/>
+            <img src='nfts/Davis.png'/>
+            <img src='nfts/Hana.png'/>
+            <img src='nfts/Kash.png'/>
+            <img src='nfts/Maxwell.png'/>
+            <img src='nfts/Rhys.png'/>
+            <img src='nfts/Brinley.png'/>
+            <img src='nfts/Daxton.png'/>
+            <img src='nfts/Hanna.png'/>
+            <img src='nfts/Kashton.png'/>
+            <img src='nfts/Mckinley.png'/>
+            <img src='nfts/Rosemary.png'/>
+            <img src='nfts/Brynlee.png'/>
+            <img src='nfts/Della.png'/>
+            <img src='nfts/Hannah.png'/>
+            <img src='nfts/Kayson.png'/>
+            <img src='nfts/Melissa.png'/>
+            <img src='nfts/Royal.png'/>
+            </div>}
+
+
+
           </Route>
+
 
           <Route path="/transfers">
             <div style={{ width:600, margin: "auto", marginTop:32, paddingBottom:32 }}>
@@ -543,7 +730,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
               <Contract
-                name="YourCollectible"
+                name="MoonshotBot"
                 signer={userProvider.getSigner()}
                 provider={localProvider}
                 address={address}
@@ -553,7 +740,7 @@ function App(props) {
         </Switch>
       </BrowserRouter>
 
-      <ThemeSwitch />
+      {/*}<ThemeSwitch />*/}
 
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
