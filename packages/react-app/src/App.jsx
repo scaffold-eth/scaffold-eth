@@ -49,7 +49,7 @@ console.log("📦 Assets: ",assets)
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true
@@ -403,7 +403,14 @@ function App(props) {
                 let price = await readContracts.MoonshotBot.price()
                 tx( writeContracts.MoonshotBot.requestMint(address,{value: price}) )
               }}>MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}</Button>
+
+              <div style={{paddingTop:8}}>
+                ( All funds will go to fund public goods on Gitcoin. )
+              </div>
             </div>
+
+
+
 
             {yourCollectibles && yourCollectibles.length>0 ?
               <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
@@ -636,6 +643,18 @@ function App(props) {
             <img src='nfts/Royal.png'/>
             </div>}
 
+
+
+            <footer style={{padding:64}}>
+              <a style={{padding:8}} href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve">Github</a>
+               |
+              <a style={{padding:8}} href="https://opensea.io/collection/moonshotbots">OpenSea</a>
+              |
+              <a style={{padding:8}} href="https://etherscan.io/address/0x87EB118B004579fd82ddEd7F8e9d261A03172Ef1#writeContract">EtherScan</a>
+              |
+              <a style={{padding:8}} href="https://moonshotcollective.space">Moonshot Collective</a>
+
+              </footer>
 
 
           </Route>
