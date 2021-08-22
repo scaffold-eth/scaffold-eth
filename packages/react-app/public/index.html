@@ -37,16 +37,33 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
         font-variant-east-asian: normal;
           }
       #preview img{
+        margin: 5px;
         height: 70px;
         width:  70px;
         text-align: center;
-        filter: grayscale(0.90);
+        border-radius: 35px;
+        filter: grayscale(0.25);
+        border:  2px solid white;
+      }
+      #preview img:nth-child(2n){
+        border:  2px solid #6c50ab;
+      }
+      #preview img:nth-child(2n+1){
+        border:  2px solid #8ac6ac;
       }
       #preview img:hover{
         filter: grayscale(0);
+        border-width: 5px;
       }
-      h1, a{
+      h1, h3, a{
         color: #fc0;
+      }
+      a:hover{
+        color: #fc0;
+        font-weight: bold;
+      }
+      h2{
+        color: #eee;
       }
       h3{ color: white; }
       h1 img{
