@@ -1,8 +1,12 @@
 .App {
   text-align: center;
-  background-image: radial-gradient(yellow, red);
+  background-image: radial-gradient(orange, red);
   height: 100%;
   min-height: 100vh;
   font-size: 18px;
+  font-family: 'Rampart One', cursive;
+}
+
+.ant-statistic-content-value-int {
   font-family: 'Rampart One', cursive;
 }

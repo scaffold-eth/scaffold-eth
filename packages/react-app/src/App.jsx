@@ -9,8 +9,9 @@ import { BrowserRouter, Link, Route, Switch, useParams } from "react-router-dom"
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address, AddressInput } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS, generateSVG } from "./constants";
-import { Transactor } from "./helpers";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { Transactor, generateSVG } from "./helpers";
+import { LazyLoadImage } from "react-lazy-load-image-component";
 import {
   useBalance,
   useContractLoader,
@@ -22,7 +23,7 @@ import {
   usePoller,
   useUserSigner,
 } from "./hooks";
-import { ViewBurnyBoy, BurnyStats } from "./views";
+import { ViewBurnyBoy, BurnyStats, BurnyBoyList } from "./views";
 import { gql, useQuery } from "@apollo/client";
 
 const { ethers } = require("ethers");
@@ -171,7 +172,7 @@ function App(props) {
   const STARTS_WITH = "data:application/json,";
   //let token1Image = token1 && JSON.parse(token1.slice(STARTS_WITH.length));
 
-  const [burnyBoys, setBurnyBoys] = useState();
+  const [burnyBoyFilters, setBurnyBoyFilters] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   /*
@@ -202,42 +203,52 @@ function App(props) {
   }, [totalSupply && totalSupply.toString()]);
   */
 
-  const BURNY_STATS = `
-  {
-  block(id: "latest") {
-    id
-    number
-    baseFee
-    timestamp
-    burnyBoyCount
-    burnyBoyTotal
-    minterTotal
-    minBaseFee
-    maxBaseFee
-    minBaseFeeBurnyBoy {
-      id
-      minter {
+  const BURNY_STATS_GQL = gql`
+    query ($filters: BurnyBoy_filter, $boyCount: Int!) {
+      block(id: "latest") {
         id
+        number
+        baseFee
+        timestamp
+        burnyBoyCount
+        burnyBoyTotal
+        minterTotal
+        minBaseFee
+        maxBaseFee
+        minBaseFeeBurnyBoy {
+          id
+          baseFee
+          createdAt
+          minter {
+            id
+          }
+          owner
+        }
+        maxBaseFeeBurnyBoy {
+          id
+          baseFee
+          createdAt
+          minter {
+            id
+          }
+          owner
+        }
+      }
+      burnyBoys(first: $boyCount, orderBy: createdAt, orderDirection: desc, where: $filters) {
+        id
+        baseFee
+        createdAt
+        minter {
+          id
+        }
+        owner
       }
     }
-    maxBaseFeeBurnyBoy {
-      id
-      minter {
-        id
-      }
-    }
-  }
-  burnyBoys(first: 10, orderBy: createdAt, orderDirection: desc) {
-    id
-    baseFee
-    createdAt
-    minter { id }
-    owner
-  }
-}
   `;
-  const BURNY_STATS_GQL = gql(BURNY_STATS);
-  const { loading, data } = useQuery(BURNY_STATS_GQL, { pollInterval: 5000 });
+  const { loading, data } = useQuery(BURNY_STATS_GQL, {
+    pollInterval: 5000,
+    variables: { boyCount: 12, filters: burnyBoyFilters },
+  });
 
   let networkDisplay = "";
   if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -372,6 +383,10 @@ function App(props) {
         >
           {"OpenSea"}
         </a>
+        <span>{" / "}</span>
+        <Link to={`/holdings/${address}`}>{"My Burnys"}</Link>
+        <span>{" / "}</span>
+        <Link to={`/stats`}>{"Stats"}</Link>
       </p>
     </>
   );
@@ -449,139 +464,25 @@ function App(props) {
               {data &&
                 data.burnyBoys.map(item => {
                   const id = item.id;
-                  let height = BigInt(270);
-                  let fireHeight =
-                    (height *
-                      (BigInt(100) -
-                        (BigInt(100) * (BigInt(item.baseFee) - BigInt(data.block.minBaseFee))) /
-                          (BigInt(data.block.maxBaseFee) - BigInt(data.block.minBaseFee)))) /
-                    BigInt(100);
 
-                  let readableBaseFee = Math.floor(Number(ethers.utils.formatUnits(item.baseFee, "gwei")));
-
-                  let addressOrEmojis;
-                  if (item.baseFee == data.block.maxBaseFee) {
-                    addressOrEmojis =
-                      "Burniest Boy 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
-                  } else if (item.baseFee == data.block.minBaseFee) {
-                    addressOrEmojis =
-                      "Ice cold 🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊";
-                  } else if (readableBaseFee == 69) {
-                    addressOrEmojis = "Nice. ♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋";
-                  } else if (readableBaseFee == 420) {
-                    addressOrEmojis = "Nice. 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲";
-                  } else {
-                    addressOrEmojis = item.owner.toLowerCase() + "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
-                  }
-
-                  const generatedSvg = generateSVG({
+                  const url = generateSVG({
                     tokenId: id,
-                    fireHeight: fireHeight,
                     rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,
-                    address: addressOrEmojis,
-                    baseFee: readableBaseFee,
+                    baseFee: item.baseFee,
+                    maxBaseFee: data.block.maxBaseFee,
+                    minBaseFee: data.block.minBaseFee,
+                    owner: item.owner,
                   });
-                  let blob = new Blob([generatedSvg], { type: "image/svg+xml" });
-                  let url = URL.createObjectURL(blob);
-                  console.log(url);
                   return (
                     <Link to={`/token/${id}`}>
-                      <img src={url} height="120" alt="" />
+                      <LazyLoadImage
+                        height={"180"}
+                        src={url} // use normal <img> attributes as props
+                      />
                     </Link>
                   );
                 })}
             </ul>
-            {/*
-            <Card style={{ width: 640, margin: "auto", marginTop: 32, marginBottom: 32 }} title="Latest Burny Boys">
-              <List
-                bordered
-                dataSource={data && data.burnyBoys}
-                renderItem={item => {
-                  const id = item.id;
-                  let height = BigInt(270);
-                  let fireHeight =
-                    (height *
-                      (BigInt(100) -
-                        (BigInt(100) * (BigInt(item.baseFee) - BigInt(data.block.minBaseFee))) /
-                          (BigInt(data.block.maxBaseFee) - BigInt(data.block.minBaseFee)))) /
-                    BigInt(100);
-
-                  let readableBaseFee = Math.floor(Number(ethers.utils.formatUnits(item.baseFee, "gwei")));
-
-                  let addressOrEmojis;
-                  if (item.baseFee == data.block.maxBaseFee) {
-                    addressOrEmojis =
-                      "Burniest Boy 🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
-                  } else if (item.baseFee == data.block.minBaseFee) {
-                    addressOrEmojis =
-                      "Ice cold 🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊🧊";
-                  } else if (readableBaseFee == 69) {
-                    addressOrEmojis = "Nice. ♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋♋";
-                  } else if (readableBaseFee == 420) {
-                    addressOrEmojis = "Nice. 🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲🌲";
-                  } else {
-                    addressOrEmojis = item.owner.toLowerCase() + "🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥🔥";
-                  }
-
-                  const generatedSvg = generateSVG({
-                    tokenId: id,
-                    fireHeight: fireHeight,
-                    rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,
-                    address: addressOrEmojis,
-                    baseFee: readableBaseFee,
-                  });
-                  let blob = new Blob([generatedSvg], { type: "image/svg+xml" });
-                  let url = URL.createObjectURL(blob);
-                  console.log(url);
-
-                  return (
-                    <List.Item key={id} extra={<img src={url} height="200" alt="" />}>
-                      <List.Item.Meta
-                        title={
-                          <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>
-                              {" "}
-                              <Link to={`/token/${id}`}>{`Burny Boy #${id}`}</Link>
-                            </span>
-                          </div>
-                        }
-                        description={
-                          <div style={{ padding: 4 }}>
-                            <p>{`When this burny boy was minted, the basefee was ${readableBaseFee} Gwei`}</p>
-                            <Address
-                              address={item.owner}
-                              ensProvider={mainnetProvider}
-                              blockExplorer={blockExplorer}
-                              fontSize={16}
-                            />
-                            <p>
-                              <a
-                                href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
-                                  readContracts && readContracts.BurnNFT.address
-                                }/${id}`}
-                                target="_blank"
-                              >
-                                OpenSea
-                              </a>
-                              <span>{` / `}</span>
-                              <a
-                                href={`${blockExplorer}/token/${
-                                  readContracts && readContracts.BurnNFT.address
-                                }?a=${id}`}
-                                target="_blank"
-                              >
-                                Etherscan
-                              </a>
-                            </p>
-                          </div>
-                        }
-                      />
-                    </List.Item>
-                  );
-                }}
-              />
-            </Card>
-            */}
             {address && beneficiary && address == beneficiary && (
               <Contract
                 name="BurnNFT"
@@ -604,7 +505,26 @@ function App(props) {
           </Route>
           <Route path="/stats">
             {header}
-            <BurnyStats data={data} loading={loading} />
+            <BurnyStats
+              data={data}
+              loading={loading}
+              contractAddress={readContracts && readContracts.BurnNFT.address}
+              setBurnyBoyFilters={setBurnyBoyFilters}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+            />
+          </Route>
+          <Route path="/holdings/:viewAddress">
+            {header}
+            <BurnyBoyList
+              data={data}
+              burnyBoys={data && data.burnyBoys}
+              contractAddress={readContracts && readContracts.BurnNFT.address}
+              setBurnyBoyFilters={setBurnyBoyFilters}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              search={true}
+            />
           </Route>
         </Switch>
       </BrowserRouter>
