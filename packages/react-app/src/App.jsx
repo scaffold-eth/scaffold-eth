@@ -247,7 +247,7 @@ function App(props) {
   `;
   const { loading, data } = useQuery(BURNY_STATS_GQL, {
     pollInterval: 5000,
-    variables: { boyCount: 12, filters: burnyBoyFilters },
+    variables: { boyCount: 1000, filters: burnyBoyFilters },
   });
 
   let networkDisplay = "";
@@ -383,8 +383,12 @@ function App(props) {
         >
           {"OpenSea"}
         </a>
-        <span>{" / "}</span>
-        <Link to={`/holdings/${address}`}>{"My Burnys"}</Link>
+        {address && (
+          <>
+            <span>{" / "}</span>
+            <Link to={`/holdings/${address}`}>{"My Burnys"}</Link>
+          </>
+        )}
         <span>{" / "}</span>
         <Link to={`/stats`}>{"Stats"}</Link>
       </p>
@@ -460,11 +464,12 @@ function App(props) {
                 {"@tomosaito"}
               </a>
             </p>
+            <Typography.Title level={2}>Recent burny boys</Typography.Title>
             <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
               {data &&
-                data.burnyBoys.map(item => {
+                data.burnyBoys.map((item, index) => {
                   const id = item.id;
-
+                  if (index > 12) return;
                   const url = generateSVG({
                     tokenId: id,
                     rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,

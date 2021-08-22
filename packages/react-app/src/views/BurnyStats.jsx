@@ -43,7 +43,7 @@ function BurnyStats({ data, loading, contractAddress, setBurnyBoyFilters, mainne
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
           />
-          <Typography.Title>Ice cold Boy</Typography.Title>
+          <Typography.Title>Ice cold</Typography.Title>
           <BurnyBoyList
             data={data}
             burnyBoys={data && [data.block.minBaseFeeBurnyBoy]}

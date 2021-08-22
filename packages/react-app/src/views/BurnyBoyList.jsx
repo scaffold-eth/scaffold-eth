@@ -1,5 +1,5 @@
 import { generateSVG } from "../helpers";
-import { useParams, Link, useHistory } from "react-router-dom";
+import { useParams, Link, useHistory, Redirect } from "react-router-dom";
 import React, { useEffect, useState } from "react";
 import { List } from "antd";
 import { Address, AddressInput } from "../components";
