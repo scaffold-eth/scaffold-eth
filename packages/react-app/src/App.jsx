@@ -57,7 +57,7 @@ console.log("📦 Assets: ", assets);
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS["mainnet"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS["rinkeby"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -177,7 +177,7 @@ function App(props) {
   const balance = useContractReader(readContracts, "MoonshotBot", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
-  const priceToMint = useContractReader(readContracts, "MoonshotBot", "priceWithBuffer");
+  const priceToMint = useContractReader(readContracts, "MoonshotBot", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
   //📟 Listen for broadcast events
@@ -439,8 +439,9 @@ function App(props) {
                   <Button
                     type={"primary"}
                     onClick={async () => {
-                      let price = await readContracts.MoonshotBot.price();
-                      tx(writeContracts.MoonshotBot.requestMint(address, { value: price }));
+                      let priceRightNow = await readContracts.MoonshotBot.price();
+                      priceRightNow = priceRightNow.mul(1003).div(1000);//up the price by 3% for the initial launch to avoid errors?
+                      tx(writeContracts.MoonshotBot.requestMint(address, { value: priceRightNow }));
                     }}
                   >
                     MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
