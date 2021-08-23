@@ -12,16 +12,16 @@ ___  __/_____________   ____________  ____  /____  /__(_)______   _______ ______
 __  /_ _  __ \_  ___/   ___  __ \  / / /_  __ \_  /__  /_  ___/   __  __ `/  __ \  __ \  __  /
 _  __/ / /_/ /  /       __  /_/ / /_/ /_  /_/ /  / _  / / /__     _  /_/ // /_/ / /_/ / /_/ /
 /_/    \____//_/        _  .___/\__,_/ /_.___//_/  /_/  \___/     _\__, / \____/\____/\__,_/
-                        /_/                                       /____/                       
-                                                                                                                                                        /_/                                       /____/
+                        /_/                                       /____/
+                                                                                                                                                      
+
 🦧✊ Demand more from PFPs! 👇
 🌱🌱 100% of MoonshotBot Minting Fees go to fund Ethereum Public Goods on Gitcoin Grants 🌱🌱
 🦧✊🌱100%🌱✊🦧
 
 */
+
 // https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve
-
-
 
 // File @openzeppelin/contracts/utils/Context.sol@v3.4.1
 
@@ -1912,14 +1912,6 @@ _  /  / / / /_/ / /_/ /  / / /(__  )_  / / / /_/ / /_ _(__  )     _  __/ / /_/ /
 
 */
 // https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve
-
-
-//import "hardhat/console.sol";
-
-
-//learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
-
-// GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract MoonshotBot is ERC721 {
 
