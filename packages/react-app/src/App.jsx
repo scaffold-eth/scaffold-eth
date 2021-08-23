@@ -483,7 +483,7 @@ function App(props) {
                   <br />
                   <br />
                   <ul class="rocks">
-                    <li>🤖🍠 Fair Launch - No Premine</li>
+                    <li>🤖🍠 Fair Launch</li>
                     <li>🤖👑 Ultra Super Mega Giga-Chad Rare</li>
                     <li>🤖🌱 All Proceeds Support Public Goods</li>
                     <li>
@@ -761,7 +761,7 @@ function App(props) {
                     <br />
                     This project was launched at the demo session of the monthly{" "}
                     <a href="https://moonshotcollective.space">Moonshot Collective</a> call to Moonshot'ers, during the
-                    demo session (a few minutes after 12pm MST on 8/23). None of the NFTs are pre-mined before that. Woo
+                    demo session (a few minutes after 12pm MST on 8/23).  Aside from the project authors (Kevin/Austin), who minted a 1 token each for testing, everyone got the the opportunity to mint their tokens all at the same time -- Woo
                     Fair Launch!!!1!
                   </p>
                 </li>
