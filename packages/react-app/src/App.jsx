@@ -398,16 +398,20 @@ function App(props) {
             <br/>
             <h1 >Moonshot Bots</h1>
 
-            <h2>An ⭐️Ultra-Rare⭐️ PFP (303 supply) by <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
-            <h3>🛠Seeded with &lt;3 for early BUIDLers in the <a href="https://moonshotcollective.space">Moonshot Collective</a></h3>
+            <h2>An ⭐️Ultra-Rare⭐️ PFP (303 supply)</h2>
+            <h2>Created by ya bois <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
+            <h2>❤️🛠 Seeded on 8/23 @ 12pm MST to BUIDLers in <a href="https://moonshotcollective.space">Moonshot Collective</a></h2>
             <div style={{padding:32}}>
               <Button type={"primary"} onClick={async ()=>{
                 let price = await readContracts.MoonshotBot.price()
                 tx( writeContracts.MoonshotBot.requestMint(address,{value: price}) )
               }}>MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}</Button>
 
-              <div style={{paddingTop:8}}>
-                ( 🌱🌱  All Minting Fees go to fund Ethereum Public Goods on Gitcoin Grants 🌱🌱  )
+              <div class="publicgoodsgood">
+                <h2>🌱❤️100% Proceeds To Public Goods❤️🌱</h2>
+                  🦧✊ <strong>Demand more from PFPs! 👇</strong> <br/>
+                 🌱🌱 <strong>100%</strong> of MoonshotBot Minting Fees go to fund Ethereum Public Goods on Gitcoin Grants 🌱🌱 <br/>
+                 <strong>🦧✊🌱100%🌱✊🦧</strong>
               </div>
               <br/>
               <br/>
@@ -439,7 +443,7 @@ function App(props) {
                🤖🍠 Fair Launch - No Premine
               </li>
               <li>
-               🤖👑 Ultra Super Mega Rare
+               🤖👑 Ultra Super Mega Giga-Chad Rare
               </li>
               <li>
                🤖🌱 All Proceeds Support Public Goods
@@ -448,7 +452,7 @@ function App(props) {
                🤖🛠 Early Holders are <a href="https://moonshotcollective.space">Moonshot Collective</a> Builders
               </li>
               <li>
-               🤖❤️ Hang with your botfrens on <a style={{padding:8}} href="https://discord.gg/ACKb28pSSP">Discord</a> & <a style={{padding:8}} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
+               🤖❤️ Hang with your botfrens on <a  href="https://discord.gg/ACKb28pSSP">Discord</a> & <a href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
               </li>
               
             </ul>
@@ -578,7 +582,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♀️ When was this project launched?
                  </strong>
                  <br/>
-                 This project was launched at the demo session of the monthly <a href="https://moonshotcollective.space">Moonshot Collective</a> call to Moonshot'ers, during the demo session (a few minutes after 12pm MST on 8/23).  None of the NFTs are pre-mined before that.  Woo Fair Launch Alert!
+                 This project was launched at the demo session of the monthly <a href="https://moonshotcollective.space">Moonshot Collective</a> call to Moonshot'ers, during the demo session (a few minutes after 12pm MST on 8/23).  None of the NFTs are pre-mined before that.  Woo Fair Launch!!!1!
                  </p>
               </li>
               <li>
@@ -587,7 +591,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♂️ Why was this project launched?
                  </strong>
                  <br/>
-                 These PFPs were designed for the BUIDLers in the Moonshot Collective, who are doing amazing work building coordination tools in the ecosystem.  
+                 These PFPs were designed to celebrate the BUIDLers in the Moonshot Collective (and the ecosystem they serve writ large).  Builders in this space are doing amazing work!
                  </p>
               </li>
               <li>
@@ -596,7 +600,10 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♀️ What are all the cool kids doing?
                  </strong>
                  <br/>
-                 You are welcome to purchase 2 MoonshotBots.  Keep one for yourself, and send another to your favorite Builder.                 </p>
+                 You are welcome to purchase 2 MoonshotBots.  Keep one for yourself, and send another to your favorite Builder.    
+                 <br/>
+                 <br/>
+                 Karma FTW!             </p>
               </li>
               <li>
                  <p>
@@ -606,7 +613,9 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  <br/>
                  These PFPs are minted on a bonding curve that increases 4.7% each purchase, and starts with a price of 0.0033 ETH.  Here's the bonding curve:
                  <br/>
+                 <a href="https://docs.google.com/spreadsheets/d/1TCdfHjCs21frJyNaR7EYtZ-zZ7xXW8vtoTH9_Qvie70/edit#gid=0">
                   <img src="chart.png" class="chart"/>
+                  </a>
 
                  </p>
               </li>
@@ -649,8 +658,6 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  </p>
               </li>
             </ul>
-            <br/>
-            <br/>
             <br/>
             <div id='bot_interlude2'>
             <img src="nfts/bot00.png" />
@@ -717,6 +724,9 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
             <img src="nfts/bot2.png" />
             <img src="nfts/bot8.png" />
             </div>
+            <br/>
+            <img src='builtoneth.png'/>
+            <br/>
 
               </footer>
 
