@@ -180,6 +180,9 @@ function App(props) {
   const priceToMint = useContractReader(readContracts, "MoonshotBot", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
+  const amountMintedAlready = useContractReader(readContracts, "MoonshotBot", "totalSupply");
+  console.log("🤗 amountMintedAlready:", amountMintedAlready);
+
   //📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
@@ -425,7 +428,7 @@ function App(props) {
               <br />
               <h1>Moonshot Bots</h1>
 
-              <h2>An ⭐️Ultra-Rare⭐️ PFP (303 supply)</h2>
+              <h2>An ⭐️Ultra-Rare⭐️ PFP (303 max supply)</h2>
               <h2>
                 Created by ya bois <a href="https://twitter.com/owocki">@owocki</a> &{" "}
                 <a href="https://twitter.com/austingriffith">@austingriffith</a>
@@ -592,6 +595,9 @@ function App(props) {
                 <h4>Give these bots a loving home 🤖🏠❤️</h4>
                 <br />
                 <br />
+                <h5>{amountMintedAlready && (amountMintedAlready.toNumber())} Minted so far of 303 Maximum Possible</h5>
+                <br />
+                <br />
                 <img src="nfts/Abrupt_Paste.png" title="Abrupt_Paste" /> <img src="nfts/Hungry_Inbox.png" />{" "}
                 <img src="nfts/Acidic_Digital.png" /> <img src="nfts/Hungry_Windows.png" />{" "}
                 <img src="nfts/Adorable_Malware.png" /> <img src="nfts/Hurt_App.png" />{" "}
@@ -751,9 +757,16 @@ function App(props) {
               <ul id="faq">
                 <li>
                   <p>
-                    <strong>🙋‍♂️ Why are there 303 MoonshotBots available?</strong>
+                    <strong>🙋‍♂️ Why is the MoonshotBots Maximum Supply 303?</strong>
                     <br />
                     Because this project was made with &lt;3 in Colorado + our area code out here is 303. #shillcolorado
+                  </p>
+                </li>
+                <li>
+                  <p>
+                    <strong>🙋‍♂️ How many Moonshot Bots have been minted so far?</strong>
+                    <br />
+                    {amountMintedAlready && (amountMintedAlready.toNumber())} Minted so far of 303 Maximum Possible.
                   </p>
                 </li>
                 <li>
@@ -888,7 +901,7 @@ function App(props) {
               |
               <a
                 style={{ padding: 8 }}
-                href="https://etherscan.io/address/0x87EB118B004579fd82ddEd7F8e9d261A03172Ef1#writeContract"
+                href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18"
               >
                 EtherScan
               </a>
