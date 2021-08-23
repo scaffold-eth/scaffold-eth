@@ -1,9 +1,9 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List, notification, Dropdown,  } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List, notification, Dropdown } from "antd";
 const { SubMenu } = Menu;
-import { DownOutlined, UserOutlined } from '@ant-design/icons';
+import { DownOutlined, UserOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -178,9 +178,9 @@ function App(props) {
   const [addresses, setAddresses] = useState([]);
   const [amount, setAmount] = useState(0);
   const [tokenAddress, setTokenAddress] = useState("");
-  const [approved, setApproved] = useState(false);
   const [owner, setOwner] = useState("");
-  const [menuTitle,setMenuTitle] = useState("Select Token...");
+  const [payoutCompleted, setPayoutCompleted] = useState(false);
+  const [menuTitle, setMenuTitle] = useState("Select Token...");
   const [openKeys, setOpenKeys] = useState([]);
 
   const logoutOfWeb3Modal = async () => {
@@ -251,7 +251,7 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  const isOwner = (address || "").toLowerCase() === owner.toLowerCase();
+  const isOwner = (address || "").toLowerCase() === (owner || "0x").toLowerCase();
 
   const title = isOwner ? "Pay your contributors" : "Sign in with your message";
 
@@ -446,14 +446,10 @@ function App(props) {
   // const [addresses,setAddresses] = useState()
   const [res, setRes] = useState("");
 
-
   function handleMenuClick(e) {
-    message.info('Click on menu item.');
-    console.log('click', e);
+    message.info("Click on menu item.");
+    console.log("click", e);
   }
-  
-
-  
 
   return (
     <div className="App">
@@ -554,7 +550,16 @@ function App(props) {
                     dataSource={addresses}
                     renderItem={(item, index) => (
                       <List.Item>
-                        <div>
+                        <div
+                          style={{
+                            width: "100%",
+                            flex: 1,
+                            display: "flex",
+                            flexDirection: "row",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                          }}
+                        >
                           <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
                           <Button
                             onClick={async () => {
@@ -563,7 +568,6 @@ function App(props) {
                               setAddresses(updatedAddresses);
                             }}
                             size="medium"
-                            style={{ marginLeft: "170px"}}
                           >
                             X
                           </Button>
@@ -572,108 +576,81 @@ function App(props) {
                     )}
                   />
 
-               {addresses && addresses.length > 0 && ( <div>
-               <Menu 
-                mode="inline" 
-                openKeys={openKeys} 
-                onOpenChange={(keys)=> {
-                  setOpenKeys(openKeys ? keys : [])}} 
-                style={{ marginTop: "10px" , border: "1px solid" }}
-                onClick={(e) => {
-                  setMenuTitle(e.key);
-                  setOpenKeys([]);
-                    }}>
-                  <SubMenu key="sub1" title={menuTitle}>
-                    <Menu.Item key="GTC">GTC</Menu.Item>
-                    <Menu.Item key="DAI">DAI</Menu.Item>
-                    <Menu.Item key="USDC">USDC</Menu.Item>
-                  </SubMenu>
-                </Menu>
+                  {addresses && addresses.length > 0 && (
+                    <div>
+                      <Menu
+                        mode="inline"
+                        openKeys={openKeys}
+                        onOpenChange={keys => {
+                          setOpenKeys(openKeys ? keys : []);
+                        }}
+                        style={{ marginTop: "10px", border: "1px solid" }}
+                        onClick={e => {
+                          setMenuTitle(e.key);
+                          setOpenKeys([]);
+                        }}
+                      >
+                        <SubMenu key="sub1" title={menuTitle}>
+                          <Menu.Item key="GTC">GTC</Menu.Item>
+                          <Menu.Item key="DAI">DAI</Menu.Item>
+                          <Menu.Item key="USDC">USDC</Menu.Item>
+                        </SubMenu>
+                      </Menu>
 
-                  <Input
-                    value={amount}
-                    addonBefore="Total Amount to Distribute"
-                    addonAfter = {menuTitle == "Select Token..." ? <span />: menuTitle}
-                    style={{ marginTop: "10px" }}
-                    onChange={e => setAmount(e.target.value.toLowerCase())}
-                  />
-               
+                      {/* TODO : disable input until ERC-20 token is selected */}
+                      <Input
+                        value={amount}
+                        addonBefore="Total Amount to Distribute"
+                        addonAfter={menuTitle == "Select Token..." ? <span /> : menuTitle}
+                        style={{ marginTop: "10px" }}
+                        onChange={e => setAmount(e.target.value.toLowerCase())}
+                      />
 
-              
-                <div style={{ marginTop: "10px", marginBottom: "10px" }}>
-                  <Button
-                    onClick={async () => {
-                      /* look how you call setPurpose on your contract: */
-                      /* notice how you pass a call back for tx updates too */
-                      const result = tx(
-                        writeContracts.DummyToken.approve(readContracts?.TokenDistributor.address, amount),
-                        update => {
-                          console.log("📡 Transaction Update:", update);
-                          if (update && (update.status === "confirmed" || update.status === 1)) {
-                            console.log(" 🍾 Transaction " + update.hash + " finished!");
-                            console.log(
-                              " ⛽️ " +
-                                update.gasUsed +
-                                "/" +
-                                (update.gasLimit || update.gas) +
-                                " @ " +
-                                parseFloat(update.gasPrice) / 1000000000 +
-                                " gwei",
+                      {/* TODO : disable button util token and amount > 0 <= balance */}
+                      <div style={{ marginTop: "15px" }}>
+                        <Button
+                          block
+                          type="primary"
+                          size="large"
+                          disabled={payoutCompleted}
+                          onClick={async () => {
+                            /* look how you call setPurpose on your contract: */
+                            /* notice how you pass a call back for tx updates too */
+                            const result = tx(
+                              writeContracts.TokenDistributor.splitTokenBalance(addresses, amount, tokenAddress),
+                              update => {
+                                console.log("📡 Transaction Update:", update);
+                                if (update && (update.status === "confirmed" || update.status === 1)) {
+                                  console.log(" 🍾 Transaction " + update.hash + " finished!");
+                                  console.log(
+                                    " ⛽️ " +
+                                      update.gasUsed +
+                                      "/" +
+                                      (update.gasLimit || update.gas) +
+                                      " @ " +
+                                      parseFloat(update.gasPrice) / 1000000000 +
+                                      " gwei",
+                                  );
+                                  notification.success({
+                                    message: "Payout successful",
+                                    description:
+                                      "Each user received " + Math.floor(amount / addresses.length) + " " + menuTitle,
+                                    placement: "topRight",
+                                  });
+                                }
+                              },
                             );
-                            notification.success({
-                              message: "Token successfully approved",
-                              placement: "topRight",
-                            });
-                          }
-                        },
-                      );
-                      console.log("awaiting metamask/web3 confirm result...", result);
-                      console.log(await result);
-                      setApproved(true);
-                    }}
-                  >
-                    Approve Token
-                  </Button>
-
-                  <Button
-                    disabled={!approved}
-                    style={{ marginLeft: "10px" }}
-                    onClick={async () => {
-                      /* look how you call setPurpose on your contract: */
-                      /* notice how you pass a call back for tx updates too */
-                      const result = tx(
-                        writeContracts.TokenDistributor.splitTokenFromUser(addresses, amount, tokenAddress),
-                        update => {
-                          console.log("📡 Transaction Update:", update);
-                          if (update && (update.status === "confirmed" || update.status === 1)) {
-                            console.log(" 🍾 Transaction " + update.hash + " finished!");
-                            console.log(
-                              " ⛽️ " +
-                                update.gasUsed +
-                                "/" +
-                                (update.gasLimit || update.gas) +
-                                " @ " +
-                                parseFloat(update.gasPrice) / 1000000000 +
-                                " gwei",
-                            );
-                            notification.success({
-                              message: "Payout successful",
-                              description: "Each user received " + Math.floor(amount/addresses.length) + " " + menuTitle,
-                              placement: "topRight",
-                            });
-                          }
-                        },
-                      );
-                      console.log("awaiting metamask/web3 confirm result...", result);
-                      console.log(await result);
-                      setApproved(false);
-                    }}
-                  >
-                    Payout
-                  </Button>
+                            console.log("awaiting metamask/web3 confirm result...", result);
+                            console.log(await result);
+                            setPayoutCompleted(true);
+                          }}
+                        >
+                          Payout
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
-              </div>)}
-               </div>
               )}
             </div>
           </Route>
