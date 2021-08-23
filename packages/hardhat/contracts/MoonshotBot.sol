@@ -1,9 +1,21 @@
 pragma solidity >=0.6.0 <0.7.0;
 //SPDX-License-Identifier: MIT
 
-// 🤖 🚀 🌔  MoonShotBots for public goods funding!
+// 🤖 🚀 🌔  MoonshotBots for public goods funding!
+/*
+______  ___                         ______       _____            ________                               ______ __________                              _________
+___   |/  /____________________________  /_________  /________    ___  __/_____________   ____________  ____  /____  /__(_)______   _______ __________________  /
+__  /|_/ /_  __ \  __ \_  __ \_  ___/_  __ \  __ \  __/_  ___/    __  /_ _  __ \_  ___/   ___  __ \  / / /_  __ \_  /__  /_  ___/   __  __ `/  __ \  __ \  __  /
+_  /  / / / /_/ / /_/ /  / / /(__  )_  / / / /_/ / /_ _(__  )     _  __/ / /_/ /  /       __  /_/ / /_/ /_  /_/ /  / _  / / /__     _  /_/ // /_/ / /_/ / /_/ /
+/_/  /_/  \____/\____//_/ /_//____/ /_/ /_/\____/\__/ /____/      /_/    \____//_/        _  .___/\__,_/ /_.___//_/  /_/  \___/     _\__, / \____/\____/\__,_/   
+                                                                                          /_/                                       /____/
+🦧✊ Demand more from PFPs! 👇
+🌱🌱 100% of MoonshotBot Minting Fees go to fund Ethereum Public Goods on Gitcoin Grants 🌱🌱
+🦧✊🌱100%🌱✊🦧
 
+*/
 // https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve
+
 
 //import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
