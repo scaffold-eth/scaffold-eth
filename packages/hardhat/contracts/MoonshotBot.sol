@@ -24,7 +24,7 @@ contract MoonshotBot is ERC721, Ownable {
   }
 
   uint256 public constant limit = 300;
-  uint256 public price = 0.003 ether;
+  uint256 public price = 0.0033 ether;
 
   function mintItem(address to, string memory tokenURI)
       private
@@ -45,7 +45,7 @@ contract MoonshotBot is ERC721, Ownable {
       payable
   {
     require( msg.value >= price, "NOT ENOUGH");
-    price = (price * 1025) / 1000;
+    price = (price * 1047) / 1000;
     (bool success,) = gitcoin.call{value:msg.value}("");
     require( success, "could not send");
     mintItem(to, uris[_tokenIds.current()]);
