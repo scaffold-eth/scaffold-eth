@@ -3,12 +3,12 @@ import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import {  JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, Switch as SwitchD } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, HashCircuitInput } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, SeedCommit } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -150,6 +150,7 @@ function App(props) {
   const [oldPurposeEvents, setOldPurposeEvents] = useState([])
 
   // For zk poker
+  const [seed, setSeed] = useState(0);
   const [seedCommit, setSeedCommit] = useState(0);
   const [cardCommit, setCardCommit] = useState(0);
   const [isValid, setIsValid] = useState(null);
@@ -175,7 +176,7 @@ function App(props) {
   
 
   const handleIsValid = async () => {
-    const res = await CircuitCalldata("hash", cardCommit, hash, threshold);
+    const res = await CircuitCalldata("hash", seed, hash, threshold);
     setIsValid(res.toString());
   };
   
@@ -305,9 +306,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <Button onClick={handleIsValid}>
-              Zk proof
-            </Button>
+            <SeedCommit />
 
 
 
