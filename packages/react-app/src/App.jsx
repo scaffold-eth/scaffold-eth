@@ -171,7 +171,7 @@ function App(props) {
   const balance = useContractReader(readContracts,"MoonshotBot", "balanceOf", [ address ])
   console.log("🤗 balance:",balance)
 
-  const priceToMint = useContractReader(readContracts,"MoonshotBot", "price")
+  const priceToMint = useContractReader(readContracts,"MoonshotBot", "priceWithBuffer")
   console.log("🤗 priceToMint:",priceToMint)
 
 
@@ -391,30 +391,121 @@ function App(props) {
             */}
 
 
-            <img src="moon.svg"/>
+            <div class="colorme">
+            <img class="logo_moonshot sub" src="logo.png" />
+            <img class="logo_moonshot" src="logo1.png" />
+            <img class="logo_moonshot sub" src="logo2.png" />
+            <br/>
+            <h1 >Moonshot Bots</h1>
 
-            <h1><img src="logo.png" />Moonshot Bots</h1>
-            <h2>An Ultra-Rare PFP (300 supply) by <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
-            <h3>Seeded with &lt;3 for early BUIDLers in the <a href="https://moonshotcollective.space">Moonshot Collective</a></h3>
-
-
+            <h2>An ⭐️Ultra-Rare⭐️ PFP (303 supply)</h2>
+            <h2>Created by ya bois <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
+            <h2>❤️🛠 Seeded on 8/23 @ 12pm MST to BUIDLers in <a href="https://moonshotcollective.space">Moonshot Collective</a></h2>
             <div style={{padding:32}}>
               <Button type={"primary"} onClick={async ()=>{
                 let price = await readContracts.MoonshotBot.price()
                 tx( writeContracts.MoonshotBot.requestMint(address,{value: price}) )
               }}>MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}</Button>
 
-              <div style={{paddingTop:8}}>
-                ( All funds will go to fund public goods on Gitcoin. )
+              <div class="publicgoodsgood">
+                <h2>🌱❤️100% Proceeds To Public Goods❤️🌱</h2>
+                  🦧✊ <strong>Demand more from PFPs! 👇</strong> <br/>
+                 🌱🌱 <strong>100%</strong> of MoonshotBot Minting Fees go to fund Ethereum Public Goods on Gitcoin Grants 🌱🌱 <br/>
+                 <strong>🦧✊🌱100%🌱✊🦧</strong>
               </div>
+              <br/>
+              <br/>
+            </div>
+
+            {yourCollectibles && yourCollectibles.length>0 ?
+              <div></div>
+              :
+            <div class="colorme2">
+
+            <div id='bot_interlude'>
+            <img src="nfts/bot00.png" />
+            <img src="nfts/bot1.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot3.png" />
+            <img src="nfts/bot4.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot6.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot8.png" />
+            <img src="nfts/bot9.png" />
+            </div>
+
+            <h4 style={{padding:5}}>Why We Think MoonShotBots Rock:</h4>
+            <br/>
+            <br/>
+            <ul class="rocks">
+              <li>
+               🤖🍠 Fair Launch - No Premine
+              </li>
+              <li>
+               🤖👑 Ultra Super Mega Giga-Chad Rare
+              </li>
+              <li>
+               🤖🌱 All Proceeds Support Public Goods
+              </li>
+              <li>
+               🤖🛠 Early Holders are <a href="https://moonshotcollective.space">Moonshot Collective</a> Builders
+              </li>
+              <li>
+               🤖❤️ Hang with your botfrens on <a  href="https://discord.gg/ACKb28pSSP">Discord</a> & <a href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
+              </li>
+              
+            </ul>
+
+
+            </div>
+             }
+    
+            {yourCollectibles && yourCollectibles.length>0 ?
+              <div></div>
+              :
+            <div class="colorme3">
+
+            <h4 style={{padding:5}}>Testimonials:</h4>
+            <br/>
+            <br/>
+            <div class='Testimonial'>
+              <img src="nfts/testimonial01.png" />
+              <h5>Corny Internet Bot</h5>
+              <p>11011101 11011001 1100101 11011101 11011101 11011001 11011101 11011101 1100101</p>
+            </div>
+            <div class='Testimonial'>
+              <img src="nfts/testimonial02.png" />
+              <h5>Large Linux Bot</h5>
+              <p>ba bup ba bup bup bup bup
+
+kwwaaaaaaaaaaaaa
+
+eeeeeuuuueeuuueeuuuu **denga denga**
+
+Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
+            </div>
+            <div class='Testimonial'>
+              <img src="nfts/testimonial03.png" />
+              <h5>Vicious MotherBoard Bot</h5>
+              <p>Beep Boop Bop Bop Moonshot Collective Beep Boop Bot Boop Boop Bloop Beep  Boop Boop Bloop Beep </p>
+            </div>
+
+
+            </div>
+             }
+
+
             </div>
 
 
 
-
             {yourCollectibles && yourCollectibles.length>0 ?
-              <div style={{ width:640, margin: "auto", marginTop:32, paddingBottom:32 }}>
-                <h2>Your MoonshotBots</h2>
+              <div style={{ width:640, margin: "auto", marginTop:32, padding:32 }}>
+               <h4 style={{padding:5}}>Your MoonshotBots 🤖🚀🌕</h4>
+            <br/>
+            <br/>
+
                 <List
                   bordered
                   dataSource={yourCollectibles}
@@ -462,20 +553,194 @@ function App(props) {
               </div>:
 
             <div id="preview">
+              <h4>Give these bots a loving home 🤖🏠❤️</h4>
+            <br/>
+            <br/>
 
-<img src="nfts/Abrupt_Paste.png" title='Abrupt_Paste'/> <img src="nfts/Hungry_Inbox.png"/> <img src="nfts/Acidic_Digital.png"/> <img src="nfts/Hungry_Windows.png"/> <img src="nfts/Adorable_Malware.png"/> <img src="nfts/Hurt_App.png"/> <img src="nfts/Adorable_Platform.png"/> <img src="nfts/Hurt_Bug.png"/> <img src="nfts/Adventurous_Hack.png"/> <img src="nfts/Hurt_Byte.png"/> <img src="nfts/Aggressive_Kernel.png"/> <img src="nfts/Hurt_Spyware.png"/> <img src="nfts/Alert_Flash.png"/> <img src="nfts/Icy_Hyperlink.png"/> <img src="nfts/Alert_Privacy.png"/> <img src="nfts/Ideal_Captcha.png"/> <img src="nfts/Alert_Status_bar.png"/> <img src="nfts/Ideal_Node.png"/> <img src="nfts/Aloof_Data.png"/> <img src="nfts/Immense_Enter.png"/> <img src="nfts/Aloof_Text_editor.png"/> <img src="nfts/Impressionable_Surf.png"/> <img src="nfts/Aloof_Url.png"/> <img src="nfts/Intrigued_Blogger.png"/> <img src="nfts/Amiable_Shift.png"/> <img src="nfts/Intrigued_Database.png"/> <img src="nfts/Anxious_Status_bar.png"/> <img src="nfts/Irate_Scanner.png"/> <img src="nfts/Apprehensive_Email.png"/> <img src="nfts/Irritable_Cloud_computing.png"/> <img src="nfts/Apprehensive_Teminal.png"/> <img src="nfts/Irritable_Xml.png"/> <img src="nfts/Arrogant_Dns_.png"/> <img src="nfts/Itchy_Notebook_computer.png"/> <img src="nfts/Ashamed_Backup.png"/> <img src="nfts/Jealous_Html.png"/> <img src="nfts/Ashamed_Password.png"/> <img src="nfts/Jittery_Script.png"/> <img src="nfts/Average_Platform.png"/> <img src="nfts/Jolly_Domain_name.png"/> <img src="nfts/Average_Router.png"/> <img src="nfts/Jolly_Real-time.png"/> <img src="nfts/Batty_Cypherpunk.png"/> <img src="nfts/Joyous_Queue.png"/> <img src="nfts/Beefy_Binary.png"/> <img src="nfts/Joyous_Security.png"/> <img src="nfts/Bland_Domain.png"/> <img src="nfts/Juicy_Template.png"/> <img src="nfts/Blushing_Malware.png"/> <img src="nfts/Jumpy_Widget.png"/> <img src="nfts/Blushing_Platform.png"/> <img src="nfts/Kind_Cd-rom.png"/> <img src="nfts/Blushing_Storage.png"/> <img src="nfts/Lackadaisical_Phishing.png"/> <img src="nfts/Bright_Log_out.png"/> <img src="nfts/Lackadaisical_Windows.png"/> <img src="nfts/Broad_Save.png"/> <img src="nfts/Lackadaisical_Zip.png"/> <img src="nfts/Burly_Configure.png"/> <img src="nfts/Large_Linux.png"/> <img src="nfts/Cheeky_Hacker.png"/> <img src="nfts/Large_Table.png"/> <img src="nfts/Cheeky_Spam.png"/> <img src="nfts/Large_Undo.png"/> <img src="nfts/Clueless_App.png"/> <img src="nfts/Lively_Scroll_bar.png"/> <img src="nfts/Clueless_Operating_system.png"/> <img src="nfts/Lively_Template.png"/> <img src="nfts/Colorful_Development.png"/> <img src="nfts/Lucky_Tag.png"/> <img src="nfts/Colorful_Email.png"/> <img src="nfts/Macho_Bite.png"/> <img src="nfts/Combative_Log_out.png"/> <img src="nfts/Magnificent_Captcha.png"/> <img src="nfts/Combative_Shareware.png"/> <img src="nfts/Maniacal_Dns_.png"/> <img src="nfts/Condemned_Bandwidth.png"/> <img src="nfts/Maniacal_Scan.png"/> <img src="nfts/Condemned_Keyword.png"/> <img src="nfts/Massive_Browser.png"/> <img src="nfts/Condescending_Kernel.png"/> <img src="nfts/Massive_Captcha.png"/> <img src="nfts/Condescending_Qwerty.png"/> <img src="nfts/Massive_Login.png"/> <img src="nfts/Contemplative_Dashboard.png"/> <img src="nfts/Massive_Offline.png"/> <img src="nfts/Convincing_Flash.png"/> <img src="nfts/Melancholy_Buffer.png"/> <img src="nfts/Convincing_Lurking.png"/> <img src="nfts/Melancholy_Bus.png"/> <img src="nfts/Cooperative_Computer.png"/> <img src="nfts/Melancholy_Shift_key.png"/> <img src="nfts/Cooperative_Screen.png"/> <img src="nfts/Miniature_Java.png"/> <img src="nfts/Corny_Internet.png"/> <img src="nfts/Misty_Drag.png"/> <img src="nfts/Corny_Motherboard.png"/> <img src="nfts/Misty_Zip.png"/> <img src="nfts/Crabby_Macro.png"/> <img src="nfts/Muddy_Backup.png"/> <img src="nfts/Crooked_Virus.png"/> <img src="nfts/Narrow_Hacker.png"/> <img src="nfts/Cruel_Dns_.png"/> <img src="nfts/Narrow_Hypertext.png"/> <img src="nfts/Cumbersome_Worm.png"/> <img src="nfts/Nasty_Faq__frequently_asked_questions_.png"/> <img src="nfts/Cynical_Desktop.png"/> <img src="nfts/Nasty_Pirate.png"/> <img src="nfts/Dashing_Clip_art.png"/> <img src="nfts/Naughty_Backup.png"/> <img src="nfts/Dashing_Cpu_.png"/> <img src="nfts/Naughty_Logic.png"/> <img src="nfts/Dashing_Data_mining.png"/> <img src="nfts/Naughty_Wireless.png"/> <img src="nfts/Dashing_Interface.png"/> <img src="nfts/Nervous_Html.png"/> <img src="nfts/Deceitful_Bus.png"/> <img src="nfts/Nonchalant_Log_out.png"/> <img src="nfts/Deceitful_Log_out.png"/> <img src="nfts/Nonsensical_Backup.png"/> <img src="nfts/Defeated_Host.png"/> <img src="nfts/Nonsensical_Gigabyte.png"/> <img src="nfts/Delicious_Widget.png"/> <img src="nfts/Nutritious_Flash_drive.png"/> <img src="nfts/Delightful_App.png"/> <img src="nfts/Odd_Clip_board.png"/> <img src="nfts/Delightful_Database.png"/> <img src="nfts/Odd_Gigabyte.png"/> <img src="nfts/Delightful_Hacker.png"/> <img src="nfts/Old-fashioned_Broadband.png"/> <img src="nfts/Distinct_Url.png"/> <img src="nfts/Panicky_Keyword.png"/> <img src="nfts/Disturbed_Domain_name.png"/> <img src="nfts/Panicky_User.png"/> <img src="nfts/Eager_Frame.png"/> <img src="nfts/Petite_Worm.png"/> <img src="nfts/Ecstatic_Version.png"/> <img src="nfts/Petty_Clip_art.png"/> <img src="nfts/Ecstatic_Zip.png"/> <img src="nfts/Plain_Cd.png"/> <img src="nfts/Elated_Bug.png"/> <img src="nfts/Plain_Firmware.png"/> <img src="nfts/Elated_Data_mining.png"/> <img src="nfts/Plain_Multimedia.png"/> <img src="nfts/Elegant_Wiki.png"/> <img src="nfts/Pleasant_Flaming.png"/> <img src="nfts/Emaciated_Page.png"/> <img src="nfts/Pleasant_Tag.png"/> <img src="nfts/Emaciated_Rom__read_only_memory_.png"/> <img src="nfts/Poised_Shell.png"/> <img src="nfts/Embarrassed_Server.png"/> <img src="nfts/Poised_Trojan_horse.png"/> <img src="nfts/Enchanting_Privacy.png"/> <img src="nfts/Poised_User.png"/> <img src="nfts/Enormous_Template.png"/> <img src="nfts/Precious_Computer.png"/> <img src="nfts/Enthusiastic_Disk.png"/> <img src="nfts/Precious_Logic.png"/> <img src="nfts/Exasperated_Encrypt.png"/> <img src="nfts/Prickly_Supercomputer.png"/> <img src="nfts/Exasperated_Finder.png"/> <img src="nfts/Proud_Storage.png"/> <img src="nfts/Excited_Hacker.png"/> <img src="nfts/Pungent_Floppy_disk.png"/> <img src="nfts/Excited_Home_page.png"/> <img src="nfts/Puny_Mirror.png"/> <img src="nfts/Extensive_Plug-in.png"/> <img src="nfts/Quaint_Bus.png"/> <img src="nfts/Exuberant_Broadband.png"/> <img src="nfts/Quaint_Shell.png"/> <img src="nfts/Exuberant_Kernel.png"/> <img src="nfts/Quizzical_Spyware.png"/> <img src="nfts/Fantastic_Linux.png"/> <img src="nfts/Repulsive_Analog.png"/> <img src="nfts/Fantastic_Screenshot.png"/> <img src="nfts/Responsive_Kernel.png"/> <img src="nfts/Flat_Portal.png"/> <img src="nfts/Responsive_Output.png"/> <img src="nfts/Floppy_Cloud_computing.png"/> <img src="nfts/Responsive_Shell.png"/> <img src="nfts/Floppy_Interface.png"/> <img src="nfts/Responsive_Tag.png"/> <img src="nfts/Fluttering_Integer.png"/> <img src="nfts/Robust_Interface.png"/> <img src="nfts/Fluttering_Upload.png"/> <img src="nfts/Round_Finder.png"/> <img src="nfts/Foolish_Kernel.png"/> <img src="nfts/Round_Username.png"/> <img src="nfts/Foolish_Network.png"/> <img src="nfts/Salty_Cybercrime.png"/> <img src="nfts/Frantic_Java.png"/> <img src="nfts/Salty_Shift_key.png"/> <img src="nfts/Fresh_Domain_name.png"/> <img src="nfts/Sarcastic_Desktop.png"/> <img src="nfts/Fresh_Laptop.png"/> <img src="nfts/Sarcastic_Save.png"/> <img src="nfts/Fresh_Password.png"/> <img src="nfts/Scary_Router.png"/> <img src="nfts/Fresh_Ram.png"/> <img src="nfts/Shaky_Output.png"/> <img src="nfts/Fresh_Shareware.png"/> <img src="nfts/Shallow_Link.png"/> <img src="nfts/Frustrating_Bug.png"/> <img src="nfts/Silky_Dot.png"/> <img src="nfts/Funny_Bitmap.png"/> <img src="nfts/Silky_Screenshot.png"/> <img src="nfts/Funny_Real-time.png"/> <img src="nfts/Silky_Trash.png"/> <img src="nfts/Fuzzy_Buffer.png"/> <img src="nfts/Slimy_Qwerty.png"/> <img src="nfts/Fuzzy_Virtual.png"/> <img src="nfts/Small_Internet.png"/> <img src="nfts/Gaudy_Data_mining.png"/> <img src="nfts/Small_Path.png"/> <img src="nfts/Gentle_Malware.png"/> <img src="nfts/Smarmy_Dynamic.png"/> <img src="nfts/Ghastly_Joystick.png"/> <img src="nfts/Smoggy_Monitor.png"/> <img src="nfts/Ghastly_Podcast.png"/> <img src="nfts/Soggy_Root.png"/> <img src="nfts/Ghastly_Pop-up.png"/> <img src="nfts/Sour_Paste.png"/> <img src="nfts/Ghastly_Status_bar.png"/> <img src="nfts/Spicy_Array.png"/> <img src="nfts/Ghastly_Version.png"/> <img src="nfts/Spicy_Database.png"/> <img src="nfts/Giddy_Computer.png"/> <img src="nfts/Stale_Download.png"/> <img src="nfts/Giddy_Laptop.png"/> <img src="nfts/Steady_Modem.png"/> <img src="nfts/Gigantic_Bug.png"/> <img src="nfts/Steady_Privacy.png"/> <img src="nfts/Gigantic_Log_out.png"/> <img src="nfts/Sticky_Font.png"/> <img src="nfts/Glamorous_Desktop.png"/> <img src="nfts/Stormy_Url.png"/> <img src="nfts/Gleaming_Byte.png"/> <img src="nfts/Stout_Cloud_computing.png"/> <img src="nfts/Gleaming_Process.png"/> <img src="nfts/Stunning_Programmer.png"/> <img src="nfts/Gleaming_Scan.png"/> <img src="nfts/Substantial_Monitor.png"/> <img src="nfts/Glorious_Integer.png"/> <img src="nfts/Succulent_Icon.png"/> <img src="nfts/Glorious_Programmer.png"/> <img src="nfts/Superficial_Array.png"/> <img src="nfts/Gorgeous_Piracy.png"/> <img src="nfts/Superior_Wiki.png"/> <img src="nfts/Graceful_Security.png"/> <img src="nfts/Swanky_Trojan_horse.png"/> <img src="nfts/Graceful_Software.png"/> <img src="nfts/Sweet_Host.png"/> <img src="nfts/Greasy_Bus.png"/> <img src="nfts/Tasty_Url.png"/> <img src="nfts/Greasy_Digital.png"/> <img src="nfts/Tense_Blogger.png"/> <img src="nfts/Grieving_Freeware.png"/> <img src="nfts/Terrible_Shift_key.png"/> <img src="nfts/Grotesque_Clip_art.png"/> <img src="nfts/Thoughtless_Html.png"/> <img src="nfts/Grotesque_Password.png"/> <img src="nfts/Uneven_Spam.png"/> <img src="nfts/Grubby_Computer.png"/> <img src="nfts/Uneven_Workstation.png"/> <img src="nfts/Grubby_Media.png"/> <img src="nfts/Unsightly_Backup.png"/> <img src="nfts/Grumpy_Bite.png"/> <img src="nfts/Unsightly_Network.png"/> <img src="nfts/Grumpy_Script.png"/> <img src="nfts/Unsightly_Word_processor.png"/> <img src="nfts/Grumpy_Teminal.png"/> <img src="nfts/Upset_Runtime.png"/> <img src="nfts/Grumpy_Url.png"/> <img src="nfts/Uptight_Restore.png"/> <img src="nfts/Handsome_Worm.png"/> <img src="nfts/Uptight_Text_editor.png"/> <img src="nfts/Happy_Delete.png"/> <img src="nfts/Vast_Cloud_computing.png"/> <img src="nfts/Happy_Drag.png"/> <img src="nfts/Vast_Compile.png"/> <img src="nfts/Happy_Macro.png"/> <img src="nfts/Victorious_Cyberspace.png"/> <img src="nfts/Healthy_Encryption.png"/> <img src="nfts/Victorious_Motherboard.png"/> <img src="nfts/Helpful_Version.png"/> <img src="nfts/Vivacious_Bug.png"/> <img src="nfts/Helpless_Flowchart.png"/> <img src="nfts/Vivid_Domain_name.png"/> <img src="nfts/Helpless_Laptop.png"/> <img src="nfts/Wacky_Cpu_.png"/> <img src="nfts/Helpless_Pirate.png"/> <img src="nfts/Wacky_Logic.png"/> <img src="nfts/Helpless_Shell.png"/> <img src="nfts/Whimsical_Pirate.png"/> <img src="nfts/High_Rom__read_only_memory_.png"/> <img src="nfts/Whopping_Screen.png"/> <img src="nfts/Hollow_Interface.png"/> <img src="nfts/Wicked_Development.png"/> <img src="nfts/Hollow_Kernel.png"/> <img src="nfts/Wicked_Key.png"/> <img src="nfts/Hollow_Spammer.png"/> <img src="nfts/Wicked_Online.png"/> <img src="nfts/Homely_Word_processor.png"/> <img src="nfts/Wonderful_Workstation.png"/> <img src="nfts/Horrific_Copy.png"/> <img src="nfts/Yummy_Cloud_computing.png"/> <img src="nfts/Horrific_Resolution.png"/> <img src="nfts/Zany_Client.png"/> <img src="nfts/Horrific_Widget.png"/>           
+<img src="nfts/Abrupt_Paste.png" title='Abrupt_Paste'/> <img src="nfts/Hungry_Inbox.png"/> <img src="nfts/Acidic_Digital.png"/> <img src="nfts/Hungry_Windows.png"/> <img src="nfts/Adorable_Malware.png"/> <img src="nfts/Hurt_App.png"/> <img src="nfts/Adorable_Platform.png"/> <img src="nfts/Hurt_Bug.png"/> <img src="nfts/Adventurous_Hack.png"/> <img src="nfts/Hurt_Byte.png"/> <img src="nfts/Aggressive_Kernel.png"/> <img src="nfts/Hurt_Spyware.png"/> <img src="nfts/Alert_Flash.png"/> <img src="nfts/Icy_Hyperlink.png"/> <img src="nfts/Alert_Privacy.png"/> <img src="nfts/Ideal_Captcha.png"/> <img src="nfts/Alert_Status_bar.png"/> <img src="nfts/Ideal_Node.png"/> <img src="nfts/Aloof_Data.png"/> <img src="nfts/Immense_Enter.png"/> <img src="nfts/Aloof_Text_editor.png"/> <img src="nfts/Impressionable_Surf.png"/> <img src="nfts/Aloof_Url.png"/> <img src="nfts/Intrigued_Blogger.png"/> <img src="nfts/Amiable_Shift.png"/> <img src="nfts/Intrigued_Database.png"/> <img src="nfts/Anxious_Status_bar.png"/> <img src="nfts/Irate_Scanner.png"/> <img src="nfts/Apprehensive_Email.png"/> <img src="nfts/Irritable_Cloud_computing.png"/> <img src="nfts/Apprehensive_Teminal.png"/> <img src="nfts/Irritable_Xml.png"/> <img src="nfts/Arrogant_Dns_.png"/> <img src="nfts/Itchy_Notebook_computer.png"/> <img src="nfts/Ashamed_Backup.png"/> <img src="nfts/Jealous_Html.png"/> <img src="nfts/Ashamed_Password.png"/> <img src="nfts/Jittery_Script.png"/> <img src="nfts/Average_Platform.png"/> <img src="nfts/Jolly_Domain_name.png"/> <img src="nfts/Average_Router.png"/> <img src="nfts/Jolly_Real-time.png"/> <img src="nfts/Batty_Cypherpunk.png"/> <img src="nfts/Joyous_Queue.png"/> <img src="nfts/Beefy_Binary.png"/> <img src="nfts/Joyous_Security.png"/> <img src="nfts/Bland_Domain.png"/> <img src="nfts/Juicy_Template.png"/> <img src="nfts/Blushing_Malware.png"/> <img src="nfts/Jumpy_Widget.png"/> <img src="nfts/Blushing_Platform.png"/> <img src="nfts/Kind_Cd-rom.png"/> <img src="nfts/Blushing_Storage.png"/> <img src="nfts/Lackadaisical_Phishing.png"/> <img src="nfts/Bright_Log_out.png"/> <img src="nfts/Lackadaisical_Windows.png"/> <img src="nfts/Broad_Save.png"/> <img src="nfts/Lackadaisical_Zip.png"/> <img src="nfts/Burly_Configure.png"/> <img src="nfts/Large_Linux.png"/> <img src="nfts/Cheeky_Hacker.png"/> <img src="nfts/Large_Table.png"/> <img src="nfts/Cheeky_Spam.png"/> <img src="nfts/Large_Undo.png"/> <img src="nfts/Clueless_App.png"/> <img src="nfts/Lively_Scroll_bar.png"/> <img src="nfts/Clueless_Operating_system.png"/> <img src="nfts/Lively_Template.png"/> <img src="nfts/Colorful_Development.png"/> <img src="nfts/Lucky_Tag.png"/> <img src="nfts/Colorful_Email.png"/> <img src="nfts/Macho_Bite.png"/> <img src="nfts/Combative_Log_out.png"/> <img src="nfts/Magnificent_Captcha.png"/> <img src="nfts/Combative_Shareware.png"/> <img src="nfts/Maniacal_Dns_.png"/> <img src="nfts/Condemned_Bandwidth.png"/> <img src="nfts/Maniacal_Scan.png"/> <img src="nfts/Condemned_Keyword.png"/> <img src="nfts/Massive_Browser.png"/> <img src="nfts/Condescending_Kernel.png"/> <img src="nfts/Massive_Captcha.png"/> <img src="nfts/Condescending_Qwerty.png"/> <img src="nfts/Massive_Login.png"/> <img src="nfts/Contemplative_Dashboard.png"/> <img src="nfts/Massive_Offline.png"/> <img src="nfts/Convincing_Flash.png"/> <img src="nfts/Melancholy_Buffer.png"/> <img src="nfts/Convincing_Lurking.png"/> <img src="nfts/Melancholy_Bus.png"/> <img src="nfts/Cooperative_Computer.png"/> <img src="nfts/Melancholy_Shift_key.png"/> <img src="nfts/Cooperative_Screen.png"/> <img src="nfts/Miniature_Java.png"/> <img src="nfts/Corny_Internet.png"/> <img src="nfts/Misty_Drag.png"/> <img src="nfts/Corny_Motherboard.png"/> <img src="nfts/Misty_Zip.png"/> <img src="nfts/Crabby_Macro.png"/> <img src="nfts/Muddy_Backup.png"/> <img src="nfts/Crooked_Virus.png"/> <img src="nfts/Narrow_Hacker.png"/> <img src="nfts/Cruel_Dns_.png"/> <img src="nfts/Narrow_Hypertext.png"/> <img src="nfts/Cumbersome_Worm.png"/> <img src="nfts/Nasty_Faq__frequently_asked_questions_.png"/> <img src="nfts/Cynical_Desktop.png"/> <img src="nfts/Nasty_Pirate.png"/> <img src="nfts/Dashing_Clip_art.png"/> <img src="nfts/Naughty_Backup.png"/> <img src="nfts/Dashing_Cpu_.png"/> <img src="nfts/Naughty_Logic.png"/> <img src="nfts/Dashing_Data_mining.png"/> <img src="nfts/Naughty_Wireless.png"/> <img src="nfts/Dashing_Interface.png"/> <img src="nfts/Nervous_Html.png"/> <img src="nfts/Deceitful_Bus.png"/> <img src="nfts/Nonchalant_Log_out.png"/> <img src="nfts/Deceitful_Log_out.png"/> <img src="nfts/Nonsensical_Backup.png"/> <img src="nfts/Defeated_Host.png"/> <img src="nfts/Nonsensical_Gigabyte.png"/> <img src="nfts/Delicious_Widget.png"/> <img src="nfts/Nutritious_Flash_drive.png"/> <img src="nfts/Delightful_App.png"/> <img src="nfts/Odd_Clip_board.png"/> <img src="nfts/Delightful_Database.png"/> <img src="nfts/Odd_Gigabyte.png"/> <img src="nfts/Delightful_Hacker.png"/> <img src="nfts/Old-fashioned_Broadband.png"/> <img src="nfts/Distinct_Url.png"/> <img src="nfts/Panicky_Keyword.png"/> <img src="nfts/Disturbed_Domain_name.png"/> <img src="nfts/Panicky_User.png"/> <img src="nfts/Eager_Frame.png"/> <img src="nfts/Petite_Worm.png"/> <img src="nfts/Ecstatic_Version.png"/> <img src="nfts/Petty_Clip_art.png"/> <img src="nfts/Ecstatic_Zip.png"/> <img src="nfts/Plain_Cd.png"/> <img src="nfts/Elated_Bug.png"/> <img src="nfts/Plain_Firmware.png"/> <img src="nfts/Elated_Data_mining.png"/> <img src="nfts/Plain_Multimedia.png"/> <img src="nfts/Elegant_Wiki.png"/> <img src="nfts/Pleasant_Flaming.png"/> <img src="nfts/Emaciated_Page.png"/> <img src="nfts/Pleasant_Tag.png"/> <img src="nfts/Emaciated_Rom__read_only_memory_.png"/> <img src="nfts/Poised_Shell.png"/> <img src="nfts/Embarrassed_Server.png"/> <img src="nfts/Poised_Trojan_horse.png"/> <img src="nfts/Enchanting_Privacy.png"/> <img src="nfts/Poised_User.png"/> <img src="nfts/Enormous_Template.png"/> <img src="nfts/Precious_Computer.png"/> <img src="nfts/Enthusiastic_Disk.png"/> <img src="nfts/Precious_Logic.png"/> <img src="nfts/Exasperated_Encrypt.png"/> <img src="nfts/Prickly_Supercomputer.png"/> <img src="nfts/Exasperated_Finder.png"/> <img src="nfts/Proud_Storage.png"/> <img src="nfts/Excited_Hacker.png"/> <img src="nfts/Pungent_Floppy_disk.png"/> <img src="nfts/Excited_Home_page.png"/> <img src="nfts/Puny_Mirror.png"/> <img src="nfts/Extensive_Plug-in.png"/> <img src="nfts/Quaint_Bus.png"/> <img src="nfts/Exuberant_Broadband.png"/> <img src="nfts/Quaint_Shell.png"/> <img src="nfts/Exuberant_Kernel.png"/> <img src="nfts/Quizzical_Spyware.png"/> <img src="nfts/Fantastic_Linux.png"/> <img src="nfts/Repulsive_Analog.png"/> <img src="nfts/Fantastic_Screenshot.png"/> <img src="nfts/Responsive_Kernel.png"/> <img src="nfts/Flat_Portal.png"/> <img src="nfts/Responsive_Output.png"/> <img src="nfts/Floppy_Cloud_computing.png"/> <img src="nfts/Responsive_Shell.png"/> <img src="nfts/Floppy_Interface.png"/> <img src="nfts/Responsive_Tag.png"/> <img src="nfts/Fluttering_Integer.png"/> <img src="nfts/Robust_Interface.png"/> <img src="nfts/Fluttering_Upload.png"/> <img src="nfts/Round_Finder.png"/> <img src="nfts/Foolish_Kernel.png"/> <img src="nfts/Round_Username.png"/> <img src="nfts/Foolish_Network.png"/> <img src="nfts/Salty_Cybercrime.png"/> <img src="nfts/Frantic_Java.png"/> <img src="nfts/Salty_Shift_key.png"/> <img src="nfts/Fresh_Domain_name.png"/> <img src="nfts/Sarcastic_Desktop.png"/> <img src="nfts/Fresh_Laptop.png"/> <img src="nfts/Sarcastic_Save.png"/> <img src="nfts/Fresh_Password.png"/> <img src="nfts/Scary_Router.png"/> <img src="nfts/Fresh_Ram.png"/> <img src="nfts/Shaky_Output.png"/> <img src="nfts/Fresh_Shareware.png"/> <img src="nfts/Shallow_Link.png"/> <img src="nfts/Frustrating_Bug.png"/> <img src="nfts/Silky_Dot.png"/> <img src="nfts/Funny_Bitmap.png"/> <img src="nfts/Silky_Screenshot.png"/> <img src="nfts/Funny_Real-time.png"/> <img src="nfts/Silky_Trash.png"/> <img src="nfts/Fuzzy_Buffer.png"/> <img src="nfts/Slimy_Qwerty.png"/> <img src="nfts/Fuzzy_Virtual.png"/> <img src="nfts/Small_Internet.png"/> <img src="nfts/Gaudy_Data_mining.png"/> <img src="nfts/Small_Path.png"/> <img src="nfts/Gentle_Malware.png"/> <img src="nfts/Smarmy_Dynamic.png"/> <img src="nfts/Ghastly_Joystick.png"/> <img src="nfts/Smoggy_Monitor.png"/> <img src="nfts/Ghastly_Podcast.png"/> <img src="nfts/Soggy_Root.png"/> <img src="nfts/Ghastly_Pop-up.png"/> <img src="nfts/Sour_Paste.png"/> <img src="nfts/Ghastly_Status_bar.png"/> <img src="nfts/Spicy_Array.png"/> <img src="nfts/Ghastly_Version.png"/> <img src="nfts/Spicy_Database.png"/> <img src="nfts/Giddy_Computer.png"/> <img src="nfts/Stale_Download.png"/> <img src="nfts/Giddy_Laptop.png"/> <img src="nfts/Steady_Modem.png"/> <img src="nfts/Gigantic_Bug.png"/> <img src="nfts/Steady_Privacy.png"/> <img src="nfts/Gigantic_Log_out.png"/> <img src="nfts/Sticky_Font.png"/> <img src="nfts/Glamorous_Desktop.png"/> <img src="nfts/Stormy_Url.png"/> <img src="nfts/Gleaming_Byte.png"/> <img src="nfts/Stout_Cloud_computing.png"/> <img src="nfts/Gleaming_Process.png"/> <img src="nfts/Stunning_Programmer.png"/> <img src="nfts/Gleaming_Scan.png"/> <img src="nfts/Substantial_Monitor.png"/> <img src="nfts/Glorious_Integer.png"/> <img src="nfts/Succulent_Icon.png"/> <img src="nfts/Glorious_Programmer.png"/> <img src="nfts/Superficial_Array.png"/> <img src="nfts/Gorgeous_Piracy.png"/> <img src="nfts/Superior_Wiki.png"/> <img src="nfts/Graceful_Security.png"/> <img src="nfts/Swanky_Trojan_horse.png"/> <img src="nfts/Graceful_Software.png"/> <img src="nfts/Sweet_Host.png"/> <img src="nfts/Greasy_Bus.png"/> <img src="nfts/Tasty_Url.png"/> <img src="nfts/Greasy_Digital.png"/> <img src="nfts/Tense_Blogger.png"/> <img src="nfts/Grieving_Freeware.png"/> <img src="nfts/Terrible_Shift_key.png"/> <img src="nfts/Grotesque_Clip_art.png"/> <img src="nfts/Thoughtless_Html.png"/> <img src="nfts/Grotesque_Password.png"/> <img src="nfts/Uneven_Spam.png"/> <img src="nfts/Grubby_Computer.png"/> <img src="nfts/Uneven_Workstation.png"/> <img src="nfts/Grubby_Media.png"/> <img src="nfts/Unsightly_Backup.png"/> <img src="nfts/Grumpy_Bite.png"/> <img src="nfts/Unsightly_Network.png"/> <img src="nfts/Grumpy_Script.png"/> <img src="nfts/Unsightly_Word_processor.png"/> <img src="nfts/Grumpy_Teminal.png"/> <img src="nfts/Upset_Runtime.png"/> <img src="nfts/Grumpy_Url.png"/> <img src="nfts/Uptight_Restore.png"/> <img src="nfts/Handsome_Worm.png"/> <img src="nfts/Uptight_Text_editor.png"/> <img src="nfts/Happy_Delete.png"/> <img src="nfts/Vast_Cloud_computing.png"/> <img src="nfts/Happy_Drag.png"/> <img src="nfts/Vast_Compile.png"/> <img src="nfts/Happy_Macro.png"/> <img src="nfts/Victorious_Cyberspace.png"/> <img src="nfts/Healthy_Encryption.png"/> <img src="nfts/Victorious_Motherboard.png"/> <img src="nfts/Helpful_Version.png"/> <img src="nfts/Vivacious_Bug.png"/> <img src="nfts/Helpless_Flowchart.png"/> <img src="nfts/Vivid_Domain_name.png"/> <img src="nfts/Helpless_Laptop.png"/> <img src="nfts/Wacky_Cpu_.png"/> <img src="nfts/Helpless_Pirate.png"/> <img src="nfts/Wacky_Logic.png"/> <img src="nfts/Helpless_Shell.png"/> <img src="nfts/Whimsical_Pirate.png"/> <img src="nfts/High_Rom__read_only_memory_.png"/> <img src="nfts/Whopping_Screen.png"/> <img src="nfts/Hollow_Interface.png"/> <img src="nfts/Wicked_Development.png"/> <img src="nfts/Hollow_Kernel.png"/> <img src="nfts/Wicked_Key.png"/> <img src="nfts/Hollow_Spammer.png"/> <img src="nfts/Wicked_Online.png"/> <img src="nfts/Homely_Word_processor.png"/>         
  </div>}
 
 
 
-            <footer style={{padding:64}}>
+            <footer class="colorme" style={{padding:64}}>
+               <h4 style={{padding:5}}>FAQ</h4>
+            <br/>
+            <br/>
+            <ul id="faq">
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️  Why are there 303 MoonshotBots available?
+                 </strong>
+                 <br/>
+                 Because this project was made with &lt;3 in Colorado + our area code out here is 303. #shillcolorado
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♀️ When was this project launched?
+                 </strong>
+                 <br/>
+                 This project was launched at the demo session of the monthly <a href="https://moonshotcollective.space">Moonshot Collective</a> call to Moonshot'ers, during the demo session (a few minutes after 12pm MST on 8/23).  None of the NFTs are pre-mined before that.  Woo Fair Launch!!!1!
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️ Why was this project launched?
+                 </strong>
+                 <br/>
+                 These PFPs were designed to celebrate the BUIDLers in the Moonshot Collective (and the ecosystem they serve writ large).  Builders in this space are doing amazing work!
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♀️ What are all the cool kids doing?
+                 </strong>
+                 <br/>
+                 You are welcome to purchase 2 MoonshotBots.  Keep one for yourself, and send another to your favorite Builder.    
+                 <br/>
+                 <br/>
+                 Karma FTW!             </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️ How is the price calculated?
+                 </strong>
+                 <br/>
+                 These PFPs are minted on a bonding curve that increases 4.7% each purchase, and starts with a price of 0.0033 ETH.  Here's the bonding curve:
+                 <br/>
+                 <a href="https://docs.google.com/spreadsheets/d/1TCdfHjCs21frJyNaR7EYtZ-zZ7xXW8vtoTH9_Qvie70/edit#gid=0">
+                  <img src="chart.png" class="chart"/>
+                  </a>
+
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♀️Where does the ETH go when I purchase a MoonshotBot?
+                 </strong>
+                 <br/>
+                100% of funds will go to the <a href="https://etherscan.io/address/0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6">Gitcoin Grants Multisig</a> to fund public goods on Gitcoin. 
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️Which MoonshotBots are the rarest?
+                 </strong>
+                 <br/>
+                 1. All attributes (legs, arms, face, body, quadratic vs plain, smile) have been distributed according to a bell curve to the bots.
+                 <br/>
+                 2. We have distributed hyper-mega-rare attributes (Quadratic backgrounds, a picture of a Chad, a bow tie) placed into the PFPs further along the curve. 
+                 <br/>
+                 3. See for yourself by browsing the bots above, or on <a href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a>.
+                 <br/>
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️ Whats the Moonshot Collective?
+                 </strong>
+                 <br/>
+                 It's the prototyping workstream of the GitcoinDAO.  For more information, <a href="https://moonshotcollective.space">click here</a>.
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️What else should we know?
+                 </strong>
+                 <br/>
+                 <a href="https://gitcoin.co/grants/">Gitcoin Grants Round 11</a> starts September 8th!  It's going to have new discoverability features, new checkout options, and will feature the launch of <a href="https://github.com/dcgtc/dgrants">dGrants</a>, the first decentralized Gitcoin Grants Round.
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️I has another question, where can I get in touch?
+                 </strong>
+                 <br/>
+                 Tweet at us; <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a>.
+                 </p>
+              </li>
+
+
+            </ul>
+            <br/>
+            <div id='bot_interlude2'>
+            <img src="nfts/bot00.png" />
+            <img src="nfts/bot1.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot3.png" />
+            <img src="nfts/bot4.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot6.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot8.png" />
+            <img src="nfts/bot1.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot4.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot9.png" />
+            <img src="nfts/bot00.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot6.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot8.png" />
+            <img src="nfts/bot9.png" />
+            </div>
+
               <a style={{padding:8}} href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve">Github</a>
                |
-              <a style={{padding:8}} href="https://opensea.io/collection/moonshotbots">OpenSea</a>
+              <a style={{padding:8}} href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a>
               |
               <a style={{padding:8}} href="https://etherscan.io/address/0x87EB118B004579fd82ddEd7F8e9d261A03172Ef1#writeContract">EtherScan</a>
               |
+
+              <a style={{padding:8}} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
+              |
+              <a style={{padding:8}} href="https://discord.gg/ACKb28pSSP">Discord</a>
+              |
               <a style={{padding:8}} href="https://moonshotcollective.space">Moonshot Collective</a>
+              |
+              Art by <a style={{padding:8}} href="https://Gitcoin.co/theCydonian">@theCydonian</a>/<a style={{padding:8}} href="https://Gitcoin.co/nasehim7">@nasehim7</a>
+
+            <div id='bot_interlude2'>
+            <img src="nfts/bot00.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot3.png" />
+            <img src="nfts/bot1.png" />
+            <img src="nfts/bot4.png" />
+            <img src="nfts/bot6.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot8.png" />
+            <img src="nfts/bot1.png" />
+            <img src="nfts/bot4.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot9.png" />
+            <img src="nfts/bot00.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot5.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot6.png" />
+            <img src="nfts/bot7.png" />
+            <img src="nfts/bot2.png" />
+            <img src="nfts/bot8.png" />
+            </div>
+            <br/>
+            <img src='builtoneth.png'/>
+            <br/>
 
               </footer>
 

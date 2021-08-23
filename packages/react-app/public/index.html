@@ -27,7 +27,7 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
     <style type="text/css">
       body{
         color:  #c9b8ff;
-        background-color: #0e0333;
+        background: url('background_3.png') repeat;
         text-align: center;
         font-family: "Space Mono",monospace;
         font-style: normal;
@@ -36,34 +36,210 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
         font-variant-numeric: normal;
         font-variant-east-asian: normal;
           }
+        #preview{
+          padding:  30px 0px;
+        }
       #preview img{
         margin: 5px;
-        height: 70px;
-        width:  70px;
+        height: 90px;
+        width:  90px;
         text-align: center;
-        border-radius: 35px;
+        border-radius: 45px;
         filter: grayscale(0.25);
-        border:  2px solid white;
+        border:  5px solid white;
       }
-      #preview img:nth-child(2n){
-        border:  2px solid #6c50ab;
+      #preview img:nth-child(5n){
+        height: 110px;
+        width:  110px;
+        border-radius: 55px;
+        border:  10px solid #8ac6ac;
       }
-      #preview img:nth-child(2n+1){
-        border:  2px solid #8ac6ac;
+      #preview img:nth-child(5n+1){
+        height: 80px;
+        width:  80px;
+        border-radius: 55px;
+        border:  5px dotted #DA5892;
+      }
+      #preview img:nth-child(5n+2){
+        height: 95px;
+        width:  95px;
+        border-radius: 55px;
+        border:  4px inset #7F51D6;
+      }
+      #preview img:nth-child(5n+3){
+        height: 105px;
+        width:  105px;
+        border-radius: 55px;
+        border:  7px outset #B44878;
+      }
+      #preview img:nth-child(6n+3){
+        height: 130px;
+        width:  130px;
+        border-radius: 105px;
+        border:  7px dashed #DA5892;
+      }
+      #preview img:nth-child(10n+1){
+        height: 140px;
+        width:  140px;
+        border-radius: 105px;
+        border:  3px dotted #7F51D6;
       }
       #preview img:hover{
         filter: grayscale(0);
         border-width: 5px;
       }
-      h1, h3, a{
-        color: #fc0;
+      .ant-page-header{
+        background-color:rgb(151, 96, 255, 1);
+        color: white;
       }
+      .logo_moonshot{
+        width: 300px;
+        height: 300px;
+        max-width: 300px;
+        max-height: 300px;
+      }
+      .logo_moonshot.sub{
+        width: 200px;
+        height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+      }
+      .ant-page-header-heading-title, .ant-typography a, .ant-typography-copy{
+        color: white;
+      }
+      .ant-btn-primary{
+        background-color: #FA72AF;
+        border: 5px solid #B44878;
+        font-size: 36px;
+        height: 75px;
+      }
+      .ant-btn-primary:hover{
+        background-color: #B44878;
+        border: 7px solid #B44878;
+      }
+      .colorme{
+        background-color:rgb(127, 81, 214, 0.7);
+        padding: 20px;
+      }
+      .colorme2{
+        background-color:rgb(151, 96, 255, 0.7);
+        padding: 20px;
+      }
+      .colorme3{
+        background-color:rgb(106, 67, 179, 0.7);
+        padding: 30px;
+      }
+      .Testimonial {
+        display: inline-block;
+        width: 30%;
+      }
+      .Testimonial img{
+        width: 150px;
+        height: 150px;
+      }
+      .Testimonial h5{
+        font-size: 18px;
+        color: white;
+      }
+      .Testimonial p{
+        font-size: italic;
+      }
+      h1, h3, h4{
+        color: #DA5892;
+      }
+      a{
+        color: #54D8D0;
+      }
+      h1{
+        font-size: 36px;
+      }
+      h4{
+        font-size: 24px;
+        font-weight: bold;
+        background-color: rgb(84, 216, 208, 0.8);
+        display: inline;
+        padding: 5px;
+        text-transform: uppercase;
+      }
+      ul.rocks{
+        margin-top: 10px;
+        font-size: 18px;
+      }
+      ul.rocks li{
+        margin: 5px;
+        list-style: none;
+      }
+      h1{
+        font-weight: bold;
+      }
+      #bot_interlude {
+        padding-top: 25px;
+      }
+      #bot_interlude img{
+        width: 100px;
+        height: 100px;
+        margin: 10px;
+      }
+      #bot_interlude img:nth-child(even){
+        width: 120px;
+        height: 120px;
+        margin: 10px;
+      }
+      .publicgoodsgood{
+        padding: 18px;
+        background-color:rgb(127, 81, 214, 0.7);
+        border:  2px solid #DA5892;
+        border-radius: 5px;
+        width: 55%;
+        margin: 20px auto 10px;
+        font-size: 20px;
+      }
+      #bot_interlude2 {
+        padding-top: 5px;
+      }
+      #bot_interlude2 img{
+        width: 50px;
+        height: 50;
+        margin: 5px;
+      }
+      #bot_interlude2 img:nth-child(even){
+        width: 60px;
+        height: 60px;
+        margin: 5px;
+      }
+
+
+h1 {
+  position: relative;
+  font-family: "Avenir Next", sans-serif;
+  font-weight: 900;
+  font-size: 64px;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-bottom: 0px;
+}
+
+/* We create a pseudo element and blur it using the SVG filter. We’ll grab the content from the custom HTML attribute. */
+
+h1:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: attr(filter-content);
+
+  filter: url(#motion-blur-filter);
+}
       a:hover{
-        color: #fc0;
+        color: #54D8D0;
         font-weight: bold;
       }
       h2{
         color: #eee;
+      }
+      .chart{
+        max-width: 600px;
       }
       h3{ color: white; }
       h1 img{
@@ -80,6 +256,7 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
       }
       footer{
         margin-top: 100px;
+        font-size: 24px;
       }
     </style>
     <!--
