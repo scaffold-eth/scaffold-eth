@@ -4,12 +4,11 @@ pragma solidity >=0.6.0 <0.7.0;
 //import "hardhat/console.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract MoonshotBot is ERC721, Ownable {
+contract MoonshotBot is ERC721 {
 
   address payable public constant gitcoin = 0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6;
 
@@ -25,7 +24,6 @@ contract MoonshotBot is ERC721, Ownable {
 
   uint256 public constant limit = 303;
   uint256 public price = 0.0033 ether;
-  uint256 public priceWithBuffer = 0.0036 ether; // a safe price just in case someone else mints the same block as u. (10% ahead of minimum price)
 
   function mintItem(address to, string memory tokenURI)
       private
@@ -47,7 +45,6 @@ contract MoonshotBot is ERC721, Ownable {
   {
     require( msg.value >= price, "NOT ENOUGH");
     price = (price * 1047) / 1000;
-    priceWithBuffer = (priceWithBuffer * 1047) / 1000;
     (bool success,) = gitcoin.call{value:msg.value}("");
     require( success, "could not send");
     mintItem(to, uris[_tokenIds.current()]);

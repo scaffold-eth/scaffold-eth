@@ -1,5 +1,4 @@
-yarn run v1.22.10
-$ cd packages/hardhat && npx hardhat flatten
+
 // Sources flattened with hardhat v2.1.1 https://hardhat.org
 
 // File @openzeppelin/contracts/utils/Context.sol@v3.4.1
