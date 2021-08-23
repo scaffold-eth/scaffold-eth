@@ -1,7 +1,9 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List, notification } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List, notification, Dropdown,  } from "antd";
+const { SubMenu } = Menu;
+import { DownOutlined, UserOutlined } from '@ant-design/icons';
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -48,7 +50,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -178,6 +180,8 @@ function App(props) {
   const [tokenAddress, setTokenAddress] = useState("");
   const [approved, setApproved] = useState(false);
   const [owner, setOwner] = useState("");
+  const [menuTitle,setMenuTitle] = useState("Select Token...");
+  const [openKeys, setOpenKeys] = useState([]);
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -442,6 +446,15 @@ function App(props) {
   // const [addresses,setAddresses] = useState()
   const [res, setRes] = useState("");
 
+
+  function handleMenuClick(e) {
+    message.info('Click on menu item.');
+    console.log('click', e);
+  }
+  
+
+  
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -550,7 +563,7 @@ function App(props) {
                               setAddresses(updatedAddresses);
                             }}
                             size="medium"
-                            style={{ marginLeft: "200px" }}
+                            style={{ marginLeft: "170px"}}
                           >
                             X
                           </Button>
@@ -558,22 +571,35 @@ function App(props) {
                       </List.Item>
                     )}
                   />
-                  <Input
-                    style={{ marginTop: "10px" }}
-                    addonBefore="Token Address"
-                    value={tokenAddress}
-                    onChange={e => setTokenAddress(e.target.value)}
-                  />
+
+               {addresses && addresses.length > 0 && ( <div>
+               <Menu 
+                mode="inline" 
+                openKeys={openKeys} 
+                onOpenChange={(keys)=> {
+                  setOpenKeys(openKeys ? keys : [])}} 
+                style={{ marginTop: "10px" , border: "1px solid" }}
+                onClick={(e) => {
+                  setMenuTitle(e.key);
+                  setOpenKeys([]);
+                    }}>
+                  <SubMenu key="sub1" title={menuTitle}>
+                    <Menu.Item key="GTC">GTC</Menu.Item>
+                    <Menu.Item key="DAI">DAI</Menu.Item>
+                    <Menu.Item key="USDC">USDC</Menu.Item>
+                  </SubMenu>
+                </Menu>
+
                   <Input
                     value={amount}
                     addonBefore="Total Amount to Distribute"
+                    addonAfter = {menuTitle == "Select Token..." ? <span />: menuTitle}
                     style={{ marginTop: "10px" }}
                     onChange={e => setAmount(e.target.value.toLowerCase())}
                   />
-                </div>
-              )}
+               
 
-              {addresses && addresses.length > 0 && (
+              
                 <div style={{ marginTop: "10px", marginBottom: "10px" }}>
                   <Button
                     onClick={async () => {
@@ -594,6 +620,10 @@ function App(props) {
                                 parseFloat(update.gasPrice) / 1000000000 +
                                 " gwei",
                             );
+                            notification.success({
+                              message: "Token successfully approved",
+                              placement: "topRight",
+                            });
                           }
                         },
                       );
@@ -626,6 +656,11 @@ function App(props) {
                                 parseFloat(update.gasPrice) / 1000000000 +
                                 " gwei",
                             );
+                            notification.success({
+                              message: "Payout successful",
+                              description: "Each user received " + Math.floor(amount/addresses.length) + " " + menuTitle,
+                              placement: "topRight",
+                            });
                           }
                         },
                       );
@@ -637,6 +672,8 @@ function App(props) {
                     Payout
                   </Button>
                 </div>
+              </div>)}
+               </div>
               )}
             </div>
           </Route>
@@ -673,6 +710,7 @@ function App(props) {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
+          isOwner={isOwner}
         />
         {faucetHint}
       </div>
