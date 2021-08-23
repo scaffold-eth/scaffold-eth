@@ -443,7 +443,7 @@ function App(props) {
                     type={"primary"}
                     onClick={async () => {
                       let priceRightNow = await readContracts.MoonshotBot.price();
-                      priceRightNow = priceRightNow.mul(1003).div(1000);//up the price by 3% for the initial launch to avoid errors?
+                      priceRightNow = priceRightNow.mul(102).div(100);//up the price by 3% for the initial launch to avoid errors?
                       tx(writeContracts.MoonshotBot.requestMint(address, { value: priceRightNow }));
                     }}
                   >
