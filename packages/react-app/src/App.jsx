@@ -625,7 +625,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♀️Where does the ETH go when I purchase a MoonshotBot?
                  </strong>
                  <br/>
-                All funds will go to the <a href="https://etherscan.io/address/0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6">Gitcoin Grants Multisig</a> to fund public goods on Gitcoin. 
+                100% of funds will go to the <a href="https://etherscan.io/address/0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6">Gitcoin Grants Multisig</a> to fund public goods on Gitcoin. 
                  </p>
               </li>
               <li>
@@ -634,9 +634,12 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♂️Which MoonshotBots are the rarest?
                  </strong>
                  <br/>
-                 All attributes (legs, arms, face, body, quadratic vs plain, smile) have been distributed according to a bell curve to the bots,
-                 and have been hyper-mega-rare attributes (Quadratic backgrounds, a picture of a Chad, a bow tie) placed into the PFPs further along the curve. 
-                 See for yourself by browsing the bots above, or on <a href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a> (click below, in the footer).
+                 1. All attributes (legs, arms, face, body, quadratic vs plain, smile) have been distributed according to a bell curve to the bots.
+                 <br/>
+                 2. We have distributed hyper-mega-rare attributes (Quadratic backgrounds, a picture of a Chad, a bow tie) placed into the PFPs further along the curve. 
+                 <br/>
+                 3. See for yourself by browsing the bots above, or on <a href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a>.
+                 <br/>
                  </p>
               </li>
               <li>
@@ -657,6 +660,17 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  <a href="https://gitcoin.co/grants/">Gitcoin Grants Round 11</a> starts September 8th!  It's going to have new discoverability features, new checkout options, and will feature the launch of <a href="https://github.com/dcgtc/dgrants">dGrants</a>, the first decentralized Gitcoin Grants Round.
                  </p>
               </li>
+              <li>
+                 <p>
+                 <strong>
+                 🙋‍♂️I has another question, where can I get in touch?
+                 </strong>
+                 <br/>
+                 Tweet at us; <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a>.
+                 </p>
+              </li>
+
+
             </ul>
             <br/>
             <div id='bot_interlude2'>
