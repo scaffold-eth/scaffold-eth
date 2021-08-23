@@ -566,6 +566,8 @@ function App(props) {
 
               <a style={{padding:8}} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
               |
+              <a style={{padding:8}} href="https://discord.gg/ACKb28pSSP">Discord</a>
+              |
               <a style={{padding:8}} href="https://moonshotcollective.space">Moonshot Collective</a>
               |
               <a style={{padding:8}} href="https://Gitcoin.co/theCydonian">Art by @theCydonian</a>
