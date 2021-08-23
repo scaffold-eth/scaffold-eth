@@ -398,7 +398,7 @@ function App(props) {
             <br/>
             <h1 >Moonshot Bots</h1>
 
-            <h2>⭐️ An Ultra-Rare PFP (303 supply) by <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
+            <h2>An ⭐️Ultra-Rare⭐️ PFP (303 supply) by <a href="https://twitter.com/owocki">@owocki</a> & <a href="https://twitter.com/austingriffith">@austingriffith</a></h2>
             <h3>🛠Seeded with &lt;3 for early BUIDLers in the <a href="https://moonshotcollective.space">Moonshot Collective</a></h3>
             <div style={{padding:32}}>
               <Button type={"primary"} onClick={async ()=>{
@@ -625,7 +625,9 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♂️Which MoonshotBots are the rarest?
                  </strong>
                  <br/>
-                 See for yourself on OpenSea (click below, in the footer).
+                 All attributes (legs, arms, face, body, quadratic vs plain, smile) have been distributed according to a bell curve to the bots,
+                 and have been hyper-mega-rare attributes (Quadratic backgrounds, a picture of a Chad, a bow tie) placed into the PFPs further along the curve. 
+                 See for yourself by browsing the bots above, or on <a href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a> (click below, in the footer).
                  </p>
               </li>
               <li>
@@ -643,7 +645,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
                  🙋‍♂️What else should we know?
                  </strong>
                  <br/>
-                 Gitcoin Grants Round 11 starts September 8th!  It's going to have new discoverability features, new checkout options, and will feature the launch of <a href="https://github.com/dcgtc/dgrants">dGrants</a>, the first decentralized Gitcoin Grants Round.
+                 <a href="https://gitcoin.co/grants/">Gitcoin Grants Round 11</a> starts September 8th!  It's going to have new discoverability features, new checkout options, and will feature the launch of <a href="https://github.com/dcgtc/dgrants">dGrants</a>, the first decentralized Gitcoin Grants Round.
                  </p>
               </li>
             </ul>
@@ -677,7 +679,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
 
               <a style={{padding:8}} href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve">Github</a>
                |
-              <a style={{padding:8}} href="https://opensea.io/collection/moonshotbots">OpenSea</a>
+              <a style={{padding:8}} href="https://gitcoin.co/l/moonshotbots_opensea">OpenSea</a>
               |
               <a style={{padding:8}} href="https://etherscan.io/address/0x87EB118B004579fd82ddEd7F8e9d261A03172Ef1#writeContract">EtherScan</a>
               |
@@ -688,7 +690,7 @@ Krchhhhhhhhhhhhhhhhhhhhhhhhhhh</p>
               |
               <a style={{padding:8}} href="https://moonshotcollective.space">Moonshot Collective</a>
               |
-              <a style={{padding:8}} href="https://Gitcoin.co/theCydonian">Art by @theCydonian</a>
+              Art by <a style={{padding:8}} href="https://Gitcoin.co/theCydonian">@theCydonian</a>/<a style={{padding:8}} href="https://Gitcoin.co/nasehim7">@nasehim7</a>
 
             <div id='bot_interlude2'>
             <img src="nfts/bot00.png" />
