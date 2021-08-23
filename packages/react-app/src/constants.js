@@ -563,6 +563,25 @@ export const DAI_ABI = [
 
 
 export const BUILDERS = [
+
+  {
+   name: "lekag.eth",
+   role: "fullstack",
+   address: "0x7C2F9E77CFB36Fc90bc8296C0cebbcd89E8D1981",
+   github: "https://github.com/austintgriffith/scaffold-eth/commits?author=le-kag",
+   builds: [ ],
+   streamAddress: "0xc3c9ff28Ffa2BB65E5827C5Fdc309FFC41e5017e",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://lekag.buidlguidl.com"
+  },
+  {
+    name: "nook.eth",
+    role: "fullstack",
+    address: "0x50c57894C3b9bf022D10B94B9D940a48A93cd8c0",
+    github: "",
+    builds: [ ],
+    streamAddress: "0xbD0944bb3aE59952E772A65661C1a51BBbF1ea92",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://nook.buidlguidl.com"
+  },
   {
     name: "blindnabler.eth",
     role: "fullstack",
@@ -727,6 +746,16 @@ export const BUILDERS = [
     builds: [ "xnft", ],
     streamAddress: "0x560Dd59ED235446d04da7C907289E3f88e685447",//dup"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f"//"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
     streamUrl: "http://hunterchang.buidlguidl.com",
+  },
+
+  {
+   name: "hipsterhelpdesk.eth",
+   role: "eth.build",
+   address: "0x84946f14B092A0b32B21dd10E742C02AE3710aDd",
+   github: "https://github.com/austintgriffith/eth.build/commits?author=grahamtallen",
+   builds: [ ],
+   streamAddress: "0x04e9245892391FB290D11D5deB0bB8C2A325B629",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://hipsterhelpdesk.buidlguidl.com"
   },
 
   {
