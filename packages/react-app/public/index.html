@@ -27,7 +27,7 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
     <style type="text/css">
       body{
         color:  #c9b8ff;
-        background-color: #0e0333;
+        background: url('background_3.png') repeat;
         text-align: center;
         font-family: "Space Mono",monospace;
         font-style: normal;
@@ -36,30 +36,124 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
         font-variant-numeric: normal;
         font-variant-east-asian: normal;
           }
+        #preview{
+          padding:  30px 0px;
+        }
       #preview img{
         margin: 5px;
-        height: 70px;
-        width:  70px;
+        height: 90px;
+        width:  90px;
         text-align: center;
-        border-radius: 35px;
+        border-radius: 45px;
         filter: grayscale(0.25);
-        border:  2px solid white;
+        border:  5px solid white;
       }
-      #preview img:nth-child(2n){
-        border:  2px solid #6c50ab;
+      #preview img:nth-child(5n){
+        height: 110px;
+        width:  110px;
+        border-radius: 55px;
+        border:  10px solid #8ac6ac;
       }
-      #preview img:nth-child(2n+1){
-        border:  2px solid #8ac6ac;
+      #preview img:nth-child(5n+1){
+        height: 80px;
+        width:  80px;
+        border-radius: 55px;
+        border:  5px dotted #DA5892;
+      }
+      #preview img:nth-child(5n+2){
+        height: 95px;
+        width:  95px;
+        border-radius: 55px;
+        border:  4px inset #7F51D6;
+      }
+      #preview img:nth-child(5n+3){
+        height: 105px;
+        width:  105px;
+        border-radius: 55px;
+        border:  7px outset #B44878;
+      }
+      #preview img:nth-child(6n+3){
+        height: 130px;
+        width:  130px;
+        border-radius: 105px;
+        border:  7px dashed #DA5892;
+      }
+      #preview img:nth-child(10n+1){
+        height: 140px;
+        width:  140px;
+        border-radius: 105px;
+        border:  3px dotted #7F51D6;
       }
       #preview img:hover{
         filter: grayscale(0);
         border-width: 5px;
       }
-      h1, h3, a{
-        color: #fc0;
+      .ant-page-header{
+        background-color:rgb(151, 96, 255, 1);
+        color: white;
       }
+      .logo_moonshot{
+        width: 300px;
+        height: 300px;
+        max-width: 300px;
+        max-height: 300px;
+      }
+      .logo_moonshot.sub{
+        width: 200px;
+        height: 200px;
+        max-width: 200px;
+        max-height: 200px;
+      }
+      .ant-page-header-heading-title, .ant-typography a, .ant-typography-copy{
+        color: white;
+      }
+      .ant-btn-primary{
+        background-color: #FA72AF;
+        border: 2px solid #B44878;
+      }
+      .ant-btn-primary: hover{
+        background-color: #B44878;
+        border: 4px solid #B44878;
+      }
+      .colorme{
+        background-color:rgb(127, 81, 214, 0.7);
+        padding: 20px;
+      }
+      h1, h3, a{
+        color: #DA5892;
+      }
+      h1{
+        font-size: 36px;
+      }
+      h1{
+        font-weight: bold;
+      }
+
+
+h1 {
+  position: relative;
+  font-family: "Avenir Next", sans-serif;
+  font-weight: 900;
+  font-size: 64px;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-bottom: 0px;
+}
+
+/* We create a pseudo element and blur it using the SVG filter. We’ll grab the content from the custom HTML attribute. */
+
+h1:before {
+  position: absolute;
+  left: 0;
+  top: 0;
+  content: attr(filter-content);
+
+  filter: url(#motion-blur-filter);
+}
       a:hover{
-        color: #fc0;
+        color: #DA5892;
         font-weight: bold;
       }
       h2{
@@ -80,6 +174,7 @@ Seeded with <3 for early BUIDLers in the Moonshot Collective" />
       }
       footer{
         margin-top: 100px;
+        font-size: 24px;
       }
     </style>
     <!--
