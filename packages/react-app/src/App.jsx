@@ -447,6 +447,7 @@ function App(props) {
             <QuadraticDiplomacyReward
               userSigner={userSigner}
               votesEntries={votesEntries}
+              contributorEntries={contributorEntries}
               price={price}
               isAdmin={isAdmin}
             />
