@@ -120,7 +120,11 @@ contract TokenDistributor is Ownable, AccessControl {
         for (uint256 i = 0; i < users.length; i++) {
             // if split token is requested, split from specified user
             if (isToken) {
-                ERC20(token).transferFrom(from, users[i], share);
+                if (from == address(this)) {
+                    ERC20(token).transfer(users[i], share);
+                } else {
+                    ERC20(token).transferFrom(from, users[i], share);
+                }
             } else {
                 payable(users[i]).transfer(share); // else split eth
             }
