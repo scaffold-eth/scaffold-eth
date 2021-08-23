@@ -563,6 +563,9 @@ function App(props) {
               |
               <a style={{padding:8}} href="https://etherscan.io/address/0x87EB118B004579fd82ddEd7F8e9d261A03172Ef1#writeContract">EtherScan</a>
               |
+
+              <a style={{padding:8}} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">Telegram</a>
+              |
               <a style={{padding:8}} href="https://moonshotcollective.space">Moonshot Collective</a>
               |
               <a style={{padding:8}} href="https://Gitcoin.co/theCydonian">Art by @theCydonian</a>
