@@ -1,7 +1,8 @@
 import { useEffect, useState } from "react";
 const ffjavascript = require('ffjavascript');
 const {stringifyBigInts: stringifyBigInts$3, unstringifyBigInts: unstringifyBigInts$1} = ffjavascript.utils;
-
+// const fs = require("fs");
+// const snarkjs = require("snarkjs");
 
 
 // copy pasta p256 from snarkjs cli.cjs line 6726
@@ -73,10 +74,10 @@ export default async function useCircuitCalldata(circuitName, signalNames, signa
   }, [circuitName, signalNames, signalValues]);
 
   async function genProve(inputSigs) {
-    const { proof, pubSigs } = await (window || global).snarkjs.groth16.fullProve(
+    const { proof, pubSigs } = await window.snarkjs.groth16.fullProve(
       inputSigs,
-      `../circuits/${circuitName}_circuit.wasm`,
-      `../circuits/${circuitName}_circuit_final.zkey`
+      `/react-app/src/circuits/${circuitName}_circuit.wasm`,
+      `/react-app/src/circuits/${circuitName}_circuit_final.zkey`
     );
 
     return [pubSigs, proof];
@@ -88,7 +89,7 @@ export default async function useCircuitCalldata(circuitName, signalNames, signa
   }, [signalInputs]);
 
   async function verify(pub, pru) {
-    const vKey = await fetch("../circuits/${circuitName}_verification_key.json").then(function(res) {
+    const vKey = await fetch(`/react-app/src/circuits/${circuitName}_verification_key.json`).then(function(res) {
       return res.json();
     });
     //const vKey = JSON.parse(fs.readFileSync(`../circuits/${circuitName}_verification_key.json`).toString('utf-8'));

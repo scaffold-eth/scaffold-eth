@@ -24,6 +24,7 @@ tenderly.yaml
 /node_modules
 /.pnp
 .pnp.js
+packages/server/node_modules
 
 # testing
 coverage

@@ -11,7 +11,7 @@ export default function HashCircuitInput(props) {
   // const [isValid, setIsValid] = useState(null);
 
 
-  const isValid = useCircuitCalldata(
+  const [isValid, calldata] = useCircuitCalldata(
     "hash",
     ["x", "hash", "threshold"],
     [inputNum, hash, threshold]
