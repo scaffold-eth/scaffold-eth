@@ -50,7 +50,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -180,6 +180,7 @@ function App(props) {
   const [tokenAddress, setTokenAddress] = useState("");
   const [owner, setOwner] = useState("");
   const [payoutCompleted, setPayoutCompleted] = useState(false);
+  const [approved, setApproved] = useState(false);
   const [menuTitle, setMenuTitle] = useState("Select Token...");
   const [openKeys, setOpenKeys] = useState([]);
 
@@ -607,15 +608,13 @@ function App(props) {
                       />
 
                       {/* TODO : disable button util token and amount > 0 <= balance */}
-                      <div style={{ marginTop: "15px" }}>
+                      {/* <div style={{ marginTop: "15px" }}>
                         <Button
                           block
                           type="primary"
                           size="large"
                           disabled={payoutCompleted}
                           onClick={async () => {
-                            /* look how you call setPurpose on your contract: */
-                            /* notice how you pass a call back for tx updates too */
                             const result = tx(
                               writeContracts.TokenDistributor.splitTokenBalance(addresses, amount, tokenAddress),
                               update => {
@@ -643,6 +642,79 @@ function App(props) {
                             console.log("awaiting metamask/web3 confirm result...", result);
                             console.log(await result);
                             setPayoutCompleted(true);
+                          }}
+                        >
+                          Payout
+                        </Button>
+                      </div> */}
+                      <div style={{ marginTop: "10px", marginBottom: "10px" }}>
+                        <Button
+                          onClick={async () => {
+                            /* look how you call setPurpose on your contract: */
+                            /* notice how you pass a call back for tx updates too */
+                            const result = tx(
+                              writeContracts.DummyToken.approve(readContracts?.TokenDistributor.address, amount),
+                              update => {
+                                console.log("📡 Transaction Update:", update);
+                                if (update && (update.status === "confirmed" || update.status === 1)) {
+                                  console.log(" 🍾 Transaction " + update.hash + " finished!");
+                                  console.log(
+                                    " ⛽️ " +
+                                      update.gasUsed +
+                                      "/" +
+                                      (update.gasLimit || update.gas) +
+                                      " @ " +
+                                      parseFloat(update.gasPrice) / 1000000000 +
+                                      " gwei",
+                                  );
+                                  notification.success({
+                                    message: "Token successfully approved",
+                                    placement: "topRight",
+                                  });
+                                }
+                              },
+                            );
+                            console.log("awaiting metamask/web3 confirm result...", result);
+                            console.log(await result);
+                            setApproved(true);
+                          }}
+                        >
+                          Approve Token
+                        </Button>
+
+                        <Button
+                          disabled={!approved}
+                          style={{ marginLeft: "10px" }}
+                          onClick={async () => {
+                            /* look how you call setPurpose on your contract: */
+                            /* notice how you pass a call back for tx updates too */
+                            const result = tx(
+                              writeContracts.TokenDistributor.splitTokenFromUser(addresses, amount, tokenAddress),
+                              update => {
+                                console.log("📡 Transaction Update:", update);
+                                if (update && (update.status === "confirmed" || update.status === 1)) {
+                                  console.log(" 🍾 Transaction " + update.hash + " finished!");
+                                  console.log(
+                                    " ⛽️ " +
+                                      update.gasUsed +
+                                      "/" +
+                                      (update.gasLimit || update.gas) +
+                                      " @ " +
+                                      parseFloat(update.gasPrice) / 1000000000 +
+                                      " gwei",
+                                  );
+                                  notification.success({
+                                    message: "Payout successful",
+                                    description:
+                                      "Each user received " + Math.floor(amount / addresses.length) + " " + menuTitle,
+                                    placement: "topRight",
+                                  });
+                                }
+                              },
+                            );
+                            console.log("awaiting metamask/web3 confirm result...", result);
+                            console.log(await result);
+                            setApproved(false);
                           }}
                         >
                           Payout
