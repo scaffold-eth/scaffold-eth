@@ -171,7 +171,7 @@ function App(props) {
   const balance = useContractReader(readContracts,"MoonshotBot", "balanceOf", [ address ])
   console.log("🤗 balance:",balance)
 
-  const priceToMint = useContractReader(readContracts,"MoonshotBot", "price")
+  const priceToMint = useContractReader(readContracts,"MoonshotBot", "priceWithBuffer")
   console.log("🤗 priceToMint:",priceToMint)
 
 
@@ -408,7 +408,7 @@ function App(props) {
               }}>MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}</Button>
 
               <div style={{paddingTop:8}}>
-                ( All funds will go to fund public goods on Gitcoin. )
+                ( All Minting Costs go to fund Public Goods on Gitcoin Grants. )
               </div>
             </div>
             </div>
@@ -474,6 +474,89 @@ function App(props) {
 
 
             <footer class="colorme" style={{padding:64}}>
+            <h3>FAQ</h3>
+            <ul id="faq">
+              <li>
+                 <p>
+                 <strong>
+                 Why are there 303 MoonshotBots available?
+                 </strong>
+                 <br/>
+                 Because this project was made with &lt;3 in Colorado + our area code out here is 303. #shillcolorado
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 When was this project launched?
+                 </strong>
+                 <br/>
+                 This project was launched at 12pm MST on 8/23 at the monthly <a href="https://moonshotcollective.space">Moonshot Collective</a> call to Moonshot'ers.  None of the NFTs are pre-mined before that.
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 Why was this project launched?
+                 </strong>
+                 <br/>
+                 These PFPs were designed for the BUIDLers in the Moonshot Collective, who are doing amazing work building coordination tools in the ecosystem.  You are welcome to purchase 2 MoonshotBots.  Keep one for yourself, and send another to your favorite Builder.
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 How is the price calculated?
+                 </strong>
+                 <br/>
+                 These PFPs are minted on a bonding curve that increases 4.7% each purchase, and starts with a price of 0.0033 ETH.  Here's the bonding curve:
+                 <br/>
+                  <img src="chart.png" class="chart"/>
+
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 Where does the ETH go when I purchase a MoonshotBot?
+                 </strong>
+                 <br/>
+                All funds will go to the <a href="https://etherscan.io/address/0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6">Gitcoin Grants Multisig</a> to fund public goods on Gitcoin. 
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 Which MoonshotBots are the rarest?
+                 </strong>
+                 <br/>
+                 See for yourself on OpenSea (click below, in the footer).
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 Whats the Moonshot Collective?
+                 </strong>
+                 <br/>
+                 It's the prototyping workstream of the GitcoinDAO  For more information, <a href="https://moonshotcollective.space">click here</a>.
+                 </p>
+              </li>
+              <li>
+                 <p>
+                 <strong>
+                 What else should we know?
+                 </strong>
+                 <br/>
+                 Gitcoin Grants Round 11 starts September 8th!  It's going to have new discoverability features, new checkout options, and will feature the launch of <a href="https://github.com/dcgtc/dgrants">dGrants</a>, the first decentralized Gitcoin Grants Round!
+                 </p>
+              </li>
+            </ul>
+            <br/>
+            <br/>
+            <br/>
+
+
               <a style={{padding:8}} href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve">Github</a>
                |
               <a style={{padding:8}} href="https://opensea.io/collection/moonshotbots">OpenSea</a>
