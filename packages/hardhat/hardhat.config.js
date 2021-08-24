@@ -26,6 +26,8 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 const defaultNetwork = "localhost";
 
+const mainnetGwei = 21
+
 function mnemonic() {
   try {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
@@ -69,6 +71,7 @@ module.exports = {
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      gasPrice: mainnetGwei*1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
