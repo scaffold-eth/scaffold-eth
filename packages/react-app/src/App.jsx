@@ -57,7 +57,7 @@ console.log("📦 Assets: ", assets);
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS["mainnet"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS["localhost"]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -186,6 +186,24 @@ function App(props) {
   //📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
+
+  
+  useEffect(() => {
+    const getLatestMintedBots = async () => {
+      if (transferEvents.length > 0){
+        
+        let tokenId = transferEvents[0].tokenId.toNumber()
+        const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
+        console.log("TRANSFER EVENT", tokenURI)
+      }
+    }
+    getLatestMintedBots();
+  })
+
+
+  // //📟 Listen for broadcast events
+  // const mintEvents = useEventListener(readContracts, "MoonshotBot", "Mint", localProvider, 1);
+  // console.log("📟 Mint events:", mintEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -472,7 +490,42 @@ function App(props) {
                     </a>
                 </div>
                 <br />
-                <br />                    
+                <br />  
+                
+                {yourCollectibles && yourCollectibles.length > 0 ? (
+                <div class="latestBots">
+                <h2>Latest Minted Bots</h2>
+
+                <List
+                  style={{ display: "inline" }}
+                  dataSource={yourCollectibles}
+                  renderItem={item => {
+                    const id = item.id.toNumber();
+                    return (
+                      <List.Item style={{ borderBottom:'none', border: 'none', maxWidth: 150 }}>
+                        <Card
+                          class="latestBotsList"
+                          title={
+                            <div>
+                              <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            </div>
+                          }
+                        >
+                          <div>
+                            <img src={item.image} style={{ maxWidth: 150 }} />
+                          </div>
+                        </Card>
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
+            ) : (
+              <div>
+              </div>
+            )}
+                <br />
+                <br /> 
               </div>
 
               {yourCollectibles && yourCollectibles.length > 0 ? (
