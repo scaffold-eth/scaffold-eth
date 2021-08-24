@@ -545,7 +545,7 @@ function App(props) {
                   renderItem={item => {
                     const id = item.id.toNumber();
                     return (
-                      <List.Item style={{display: "block"}}>
+                      <List.Item style={{display: "block", backgroundColor: "rgb(127, 81, 214)", border: "1px solid #DA5892"}}>
                         <Card
                           title={
                             <div>
@@ -580,6 +580,7 @@ function App(props) {
                             }}
                           />
                           <Button
+                            style={{border: "1px solid rgb(218, 88, 146)"}}
                             onClick={() => {
                               console.log("writeContracts", writeContracts);
                               tx(writeContracts.MoonshotBot.transferFrom(address, transferToAddresses[id], id));
