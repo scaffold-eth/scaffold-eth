@@ -464,6 +464,15 @@ function App(props) {
                 </div>
                 <br />
                 <br />
+                <div class="bondingcurvegood">
+                  <h2>Purchase Price Determined by a Bonding Curve</h2>
+                  <strong>👇 Click the chart to see the pricing model 👇</strong> <br />
+                    <a href="https://docs.google.com/spreadsheets/d/1TCdfHjCs21frJyNaR7EYtZ-zZ7xXW8vtoTH9_Qvie70/edit#gid=0">
+                      <img src="chartarrow.png" class="chart" />
+                    </a>
+                </div>
+                <br />
+                <br />                    
               </div>
 
               {yourCollectibles && yourCollectibles.length > 0 ? (
@@ -808,6 +817,8 @@ function App(props) {
                     <a href="https://docs.google.com/spreadsheets/d/1TCdfHjCs21frJyNaR7EYtZ-zZ7xXW8vtoTH9_Qvie70/edit#gid=0">
                       <img src="chart.png" class="chart" />
                     </a>
+                    <br/>
+                    The price goes up IFF people are willing to buy more MoonshotBots.  There are no guarantees that this will happen; it is probably unlikely to happen.   Please buy a MoonshotBot to support public goods or because you like the art or to show appreciation for your favorite dev, please DO NOT buy them for other reasons.
                   </p>
                 </li>
                 <li>
