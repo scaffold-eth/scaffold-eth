@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { LinkOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -34,6 +34,7 @@ const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+
 
 console.log("📦 Assets: ", assets);
 
@@ -544,7 +545,7 @@ function App(props) {
                   renderItem={item => {
                     const id = item.id.toNumber();
                     return (
-                      <List.Item>
+                      <List.Item style={{display: "block"}}>
                         <Card
                           title={
                             <div>
@@ -558,14 +559,16 @@ function App(props) {
                           <div>{item.description}</div>
                         </Card>
 
-                        <div>
-                          owner:{" "}
-                          <Address
-                            address={item.owner}
-                            ensProvider={mainnetProvider}
-                            blockExplorer={blockExplorer}
-                            fontSize={16}
-                          />
+                        <Space direction="vertical" style={{ marginTop: 8, width: "100%" }}>
+                          <div>
+                            owner:{" "}
+                            <Address
+                              address={item.owner}
+                              ensProvider={mainnetProvider}
+                              blockExplorer={blockExplorer}
+                              fontSize={16}
+                            />
+                          </div>
                           <AddressInput
                             ensProvider={mainnetProvider}
                             placeholder="transfer to address"
@@ -584,7 +587,7 @@ function App(props) {
                           >
                             Transfer
                           </Button>
-                        </div>
+                        </Space>
                       </List.Item>
                     );
                   }}
