@@ -1,8 +1,31 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { Input, Button, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
+import { useContractLoader, useContractExistsAtAddress } from "../hooks";
+import DisplayVariable from "./Contract/DisplayVariable";
+import FunctionForm from "./Contract/FunctionForm";
 
-export default function SeedCommit(props) {
+export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
+    const contracts = useContractLoader(provider);
+    
+    let contract
+    contract = contracts ? contracts[name] : "";
+    
+
+    const address = contract ? contract.address : "";
+    const contractIsDeployed = useContractExistsAtAddress(provider, address);
+    const displayedContractFunctions = useMemo(
+        () =>
+          contract
+            ? Object.values(contract.interface.functions).filter(
+                fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
+              )
+            : [],
+        [contract, show],
+      );
+    console.log("functions: ", displayedContractFunctions)
+    
+
     const [seed, setSeed] = useState();
     const [seedCommit, setSeedCommit] = useState(0);
     const [cardCommit, setCardCommit] = useState(0);
@@ -11,14 +34,14 @@ export default function SeedCommit(props) {
     const [threshold, setThreshold] = useState();
   
   
-    async function CircuitCalldata(circuitName, x, hash, threshold) {
+    async function CircuitCalldata(seed, hash, threshold) {
   
       const { proof, publicSignals } =
-        await window.snarkjs.groth16.fullProve({ "x": x, "hash": hash.toString(), "threshold":threshold },
-        "/react-app/src/circuits/hash_circuit.wasm",
-        "/react-app/src/circuits/hash_circuit_final.zkey");
+        await window.snarkjs.groth16.fullProve({ "x": seed, "hash": hash.toString(), "threshold":threshold },
+        "/circuits/hash_circuit.wasm",
+        "/circuits/hash_circuit_final.zkey");
   
-      const vKey = await fetch("/react-app/src/circuits/hash_verification_key.json").then(function(res) {
+      const vKey = await fetch("/circuits/hash_verification_key.json").then(function(res) {
         const js = res.json();
         return js;
       });
@@ -29,20 +52,22 @@ export default function SeedCommit(props) {
     
   
     const handleIsValid = async () => {
-      const res = await CircuitCalldata("hash", seed, hash, threshold);
+      const res = await CircuitCalldata(seed, hash, threshold);
       setIsValid(res.toString());
     };
 
     return(
+        <div>
         <div style={{padding:100}}>
             <span>
                 <Input
                     size="large"
-                    placeholder={props.placeholder ? props.placeholder : "Enter secret seed!!"}
+                    placeholder={"Enter secret seed!!"}
                     value={seed}
                     onChange={async e => {
                         const newSeed = e.target.value;
                         setSeed(newSeed);
+                        // TODO: Import MIMC hash function and set hash to the correct function
                         setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
@@ -63,7 +88,7 @@ export default function SeedCommit(props) {
             <span>
                 <Button
                     onClick={() =>{
-                        setThreshold(1000)
+                        setThreshold(2000)
                     }}
                     size="large"
                     >
@@ -85,5 +110,6 @@ export default function SeedCommit(props) {
                 </h2>
             </span>
         </div>
+      </div>
     )
 }

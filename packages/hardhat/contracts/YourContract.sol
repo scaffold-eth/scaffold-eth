@@ -30,6 +30,7 @@ contract YourContract is Verifier {
           keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
       );
       playerCommit = user_block_hash % 13 + 1;
+      // TODO: Convert to hash
   }
   function dealCard() public {
         uint threshold_block_hash = uint(

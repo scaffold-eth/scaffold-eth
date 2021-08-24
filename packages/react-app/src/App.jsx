@@ -148,37 +148,6 @@ function App(props) {
 
   // For Master Branch Example
   const [oldPurposeEvents, setOldPurposeEvents] = useState([])
-
-  // For zk poker
-  const [seed, setSeed] = useState(0);
-  const [seedCommit, setSeedCommit] = useState(0);
-  const [cardCommit, setCardCommit] = useState(0);
-  const [isValid, setIsValid] = useState(null);
-  const [hash, setHash] = useState(15893827533473716138720882070731822975159228540693753428689375377280130954696);
-  const [threshold, setThreshold] = useState(1);
-
-
-  async function CircuitCalldata(circuitName, x, hash, threshold) {
-
-    const { proof, publicSignals } =
-      await window.snarkjs.groth16.fullProve({ "x": x, "hash": hash.toString(), "threshold":threshold },
-      "/react-app/src/circuits/hash_circuit.wasm",
-      "/react-app/src/circuits/hash_circuit_final.zkey");
-
-    const vKey = await fetch("/react-app/src/circuits/hash_verification_key.json").then(function(res) {
-      const js = res.json();
-      return js;
-    });
-
-    const res = await window.snarkjs.groth16.verify(vKey, publicSignals, proof);
-    return res;
-  }
-  
-
-  const handleIsValid = async () => {
-    const res = await CircuitCalldata("hash", seed, hash, threshold);
-    setIsValid(res.toString());
-  };
   
 
   // For Buyer-Lazy-Mint Branch Example
@@ -305,11 +274,13 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            <SeedCommit />
-
-
-
+            <SeedCommit
+              provider={localProvider}
+              name="YourContract"
+              signer={userProvider.getSigner()}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
             <Contract
               name="YourContract"
               signer={userProvider.getSigner()}
