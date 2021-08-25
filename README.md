@@ -28,7 +28,7 @@ To summarize, our Heroku server is configured to accept address notifications, a
 Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
 
 ```
-git clone https://github.com/austintgriffith/scaffold-eth.git simple-nft-example
+git clone https://github.com/austintgriffith/scaffold-eth.git offchain_dynamic_nft
 ```
 ```
 cd offchain_dynamic_nft
@@ -44,29 +44,17 @@ cd offchain_dynamic_nft
 yarn chain
 ```
 
-> in a third terminal window:
+> in a third terminal window
 
 ```
 cd offchain_dynamic_nft
-yarn deploy
 ```
-
-📱 Open http://localhost:3000 to see the app
-
-> ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the toAddress to your frontend address (wallet address in the top right or localhost:3000).
-
-![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
-
-
-👀 You should see your collectibles show up if you minted to the correct address:
-
-![nft3](https://user-images.githubusercontent.com/526558/124386983-48965300-dcb3-11eb-88a7-e88ad6307976.png)
+📱 Open http://localhost:3000 to see the app (Note, we won't be using the frontend much here, but feel free to add to it!)
 
 ⛽️ Grab some gas for each account using the faucet https://faucet.rinkeby.io/.  In this fork, we use Alchemy as node provider and as a powerful blockchain data on-ramp so that we can access blockchain info and morph our wordcloud!  As a result, we will need to deploy on a testnet.  
 
 # 📡 Deploy NFT smart contract!
 
-🛰 Ready to deploy to a testnet?
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
 ![nft6](https://user-images.githubusercontent.com/526558/124387061-7a0f1e80-dcb3-11eb-9f4c-19229f43adec.png)
@@ -79,7 +67,7 @@ yarn deploy
 
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
-👨‍🎤 Deploy your NFT smart contract:
+👨‍🎤 Deploy your NFT smart contract (in that 3rd terminal window): 
 ```
 yarn deploy
 ```
@@ -91,16 +79,17 @@ You should see the correct network in the frontend:
 
 ![nft10](https://user-images.githubusercontent.com/526558/124387099-9a3edd80-dcb3-11eb-9a57-54a7d370589a.png)
 
-```
+
 Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run: (Make sure you use a public testnet for this tutorial!)
 ```
 yarn deploy --network NETWORK_OF_CHOICE
 ```
 
-## 🔶 Alchemy!
-> You will need to get a key from [alchemy.io](https://alchemyapi.io/) and paste it into constants.js in packages/react-app/src:
+### 🔶 Alchemy! ###
+You will need to get a key from [alchemy.io](https://alchemyapi.io/) and paste it into `constants.js` in `packages/react-app/src`
 
-```
+NOTE: When you copy your key from the dashboard you should get a full url like this: https://eth-mainnet.alchemyapi.io/v2/kXtBl52Cr0hNbOn0rI2up7lhUiGk_2eS, your key is just the last portion in the URL:kXtBl52Cr0hNbOn0rI2up7lhUiGk_2eS
+
 Once you have confirmed that you can `yarn deploy`, follow the next steps to get up and running with Heroku!
 
 ### 🚀 Launching with Heroku ###
