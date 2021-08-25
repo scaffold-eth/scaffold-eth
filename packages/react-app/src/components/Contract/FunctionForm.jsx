@@ -172,7 +172,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
         defaultValue=""
         bordered={false}
         disabled={true}
-        value={returnValue}
+        //value={returnValue}
         suffix={
           <div
             style={{ width: 50, height: 30, margin: 0 }}
