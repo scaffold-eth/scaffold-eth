@@ -16,3 +16,4 @@ export { default as useNonce } from "./Nonce";
 export { default as useTokenList } from "./TokenList";
 export { default as useDebounce } from "./Debounce";
 export { default as useCircuitCalldata } from "./CircuitCalldata";
+export { default as genSolidityCalldata } from './GenSolidityCallData';

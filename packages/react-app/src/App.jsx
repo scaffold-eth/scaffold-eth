@@ -251,8 +251,9 @@ function App(props) {
 
         <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
+            <Link onClick={()=>{setRoute("/")}} to="/">PokerContract</Link>
           </Menu.Item>
+          {/*
           <Menu.Item key="/hints">
             <Link onClick={()=>{setRoute("/hints")}} to="/hints">Hints</Link>
           </Menu.Item>
@@ -264,7 +265,7 @@ function App(props) {
           </Menu.Item>
           <Menu.Item key="/subgraph">
             <Link onClick={()=>{setRoute("/subgraph")}} to="/subgraph">Subgraph</Link>
-          </Menu.Item>
+          </Menu.Item>*/}
         </Menu>
 
         <Switch>
@@ -278,13 +279,6 @@ function App(props) {
               provider={localProvider}
               name="YourContract"
               signer={userProvider.getSigner()}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            <Contract
-              name="YourContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />

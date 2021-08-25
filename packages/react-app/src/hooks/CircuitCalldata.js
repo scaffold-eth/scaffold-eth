@@ -18,8 +18,6 @@ async function genSolidityCalldata(publicName, proofName) {
 
     const pub = unstringifyBigInts$1(publicName);
     const proof = unstringifyBigInts$1(proofName);
-    console.log(publicName)
-    console.log(proofName)
 
     let inputs = "";
     for (let i=0; i<pub.length; i++) {

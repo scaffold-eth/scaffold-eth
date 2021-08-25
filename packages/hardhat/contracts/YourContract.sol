@@ -21,7 +21,7 @@ contract YourContract is Verifier {
   constructor() public {
     // what should we do on deploy?
   }
-  function commiToCard(uint256 cardHash) public {
+  function commitToCard(uint256 cardHash) public {
     require(currentStep == 0, "You've already commited to a card.");
     playerCardHash = cardHash;
     currentStep ++;
@@ -43,7 +43,7 @@ contract YourContract is Verifier {
         uint dealerCardRandomness = uint(
             keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
         );
-        dealterCard = dealerCardRandomness % 13 + 1;
+        dealerCard = dealerCardRandomness % 13 + 1;
         currentStep ++;
   }
 
@@ -55,9 +55,9 @@ contract YourContract is Verifier {
   ) public {
     require(currentStep == 3, "Dealer hasn't drawn a card.");
     require(verifyProof(a, b, c, input), "Invalid Proof");
-    require(inputs[0] == cardHash, "Invalid Card");
-    require(inputs[3] == dealerCard, "Invalid Card");
-    if (inputs[1] == 1) win = true;
+    require(input[0] == playerCardHash, "Invalid Card");
+    require(input[3] == dealerCard, "Invalid Card");
+    if (input[1] == 1) win = true;
     currentStep++;
   }
 
