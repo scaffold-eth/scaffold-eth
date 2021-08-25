@@ -4,6 +4,7 @@ import { SendOutlined } from "@ant-design/icons";
 import { useContractLoader, useContractExistsAtAddress } from "../hooks";
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
+import mimcHash from '../mimc.js';
 
 export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -68,7 +69,8 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         const newSeed = e.target.value;
                         setSeed(newSeed);
                         // TODO: Import MIMC hash function and set hash to the correct function
-                        setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
+                        setSeedCommit(mimcHash(newSeed));
+                        // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
                         <Tooltip title="Commit your secret seed!!">
@@ -78,11 +80,16 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                             shape="circle"
                             icon={<SendOutlined />}
                         />
+                        
                         </Tooltip>
                     }
                 />
+                <Text copyable={{ text: seedCommit }} style={{marginTop: 25}}>
+                    {seedCommit}
+                </Text>
+                
                 <h2>
-                    Check your Mimc hash {seed} :   {hash}
+                    Check your MiMC hash {seed} :   {seedCommit}
                 </h2>
             </span>
             <span>
@@ -103,7 +110,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                     }}
                     size="large"
                 >
-                    Generate zk proof
+                    Generate ZK proof
                 </Button>
                 <h2>
                     Your proof is {isValid}
