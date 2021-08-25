@@ -142,7 +142,9 @@ IMPORTANT: In YourCollectible.sol, replace the default Heroku link with the http
 
 With all that done, go to terminal window where you previously ran `yarn deploy` to redeploy the contract once more with your own custom Heroku URL and your TIP ADDRESS!
 
-Now go to [Testnet OpenSea](https://testnets.opensea.io/), and log in via your MetaMask configured for Rinkeby. Send your TIP ADDRESSS which you defined earlier and watch the NFT change! NOTE: Heroku will automatically sleep apps after a set period of time so you will need to make sure you app is up and awake for onchain activity to be recognized!  
+Now go to [Testnet OpenSea](https://testnets.opensea.io/), and log in via your MetaMask configured for Rinkeby. Send your TIP ADDRESSS which you defined earlier and watch the NFT change!  Make sure to hit the "REFRESH" button underneath the Sell icon and refresh your entire webpage.  It may take a few attempts to get the NFT SVG to refresh!
+
+NOTE: Heroku will automatically sleep apps after a set period of time so you will need to make sure you app is up and awake for onchain activity to be recognized!  
 
   ![open_sea_img](snapshot.PNG)
 
