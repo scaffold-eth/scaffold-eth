@@ -28,7 +28,7 @@ import Blockie from "./Blockie";
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
   - Provide placeholder="Enter address" value for the input
   - Value of the address input is stored in value={toAddress}
-  - Control input change by onChange={setToAddress} 
+  - Control input change by onChange={setToAddress}
                           or onChange={address => { setToAddress(address);}}
 */
 
@@ -127,6 +127,7 @@ export default function AddressInput(props) {
         prefix={<Blockie address={currentValue} size={8} scale={3} />}
         value={ens || currentValue}
         addonAfter={scannerButton}
+        style={{border: "1px solid rgb(218, 88, 146)"}}
         onChange={e => {
           updateAddress(e.target.value);
         }}
