@@ -549,6 +549,13 @@ export const DAI_ABI = [
       readMore: "",
       image: "serverlessauth.png"
     },
+    {
+      name: "Burny Boys",
+      desc: "Dynamic Basefee NFTs, live on Ethereum",
+      branch: "https://github.com/austintgriffith/scaffold-eth/tree/burny-boy",
+      readMore: "https://burnyboys.com",
+      image: "burnyBoys.png"
+    },
 
     /*
     {
