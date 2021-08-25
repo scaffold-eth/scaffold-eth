@@ -14,8 +14,8 @@ contract YourCollectible is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("YourCollectible", "YCB") {
-    _setBaseURI("https://ipfs.io/ipfs/");
+  constructor() public ERC721("WordGen", "WG") {
+    mintItem(0x049aA75E6ab5e2ab2ae21ddab95252aB76EC800a,"https://evening-depths-89936.herokuapp.com/server");
   }
 
   function mintItem(address to, string memory tokenURI)
@@ -27,7 +27,7 @@ contract YourCollectible is ERC721, Ownable {
 
       uint256 id = _tokenIds.current();
       _mint(to, id);
-      _setTokenURI(id, tokenURI);
+      _setTokenURI(id, "https://evening-depths-89936.herokuapp.com/server");
 
       return id;
   }
