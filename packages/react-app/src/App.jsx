@@ -8,7 +8,7 @@ import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
 import { useExchangePrice, useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, SeedCommit } from "./components";
+import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch, PlayPoker } from "./components";
 import { Transactor } from "./helpers";
 import { formatEther, parseEther } from "@ethersproject/units";
 //import Hints from "./Hints";
@@ -275,7 +275,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <SeedCommit
+            <PlayPoker
               provider={localProvider}
               name="YourContract"
               signer={userProvider.getSigner()}

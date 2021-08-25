@@ -17,4 +17,4 @@ export { default as BytesStringInput } from "./BytesStringInput";
 export { default as Swap } from "./Swap";
 export { default as ThemeSwitch } from "./ThemeSwitch";
 export { default as HashCircuitInput} from "./HashCircuitInput";
-export { default as SeedCommit} from "./SeedCommit";
+export { default as PlayPoker} from "./PlayPoker";
