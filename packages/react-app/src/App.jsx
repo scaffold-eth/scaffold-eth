@@ -521,20 +521,22 @@ function App(props) {
                   renderItem={item => {
                     const id = item.id;
                     return (
-                      <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
-                        <Card
-                          style={{ borderBottom:'none', border: 'none', background: "none"}}
-                          title={
-                            <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
-                              <span>#{id}</span> {item.name}
+                      <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
+                        <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
+                          <Card
+                            style={{ borderBottom:'none', border: 'none', background: "none"}}
+                            title={
+                              <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                                <span>#{id}</span> {item.name}
+                              </div>
+                            }
+                          >
+                            <div>
+                              <img src={item.image} style={{ maxWidth: 150 }} />
                             </div>
-                          }
-                        >
-                          <div>
-                            <img src={item.image} style={{ maxWidth: 150 }} />
-                          </div>
-                        </Card>
-                      </List.Item>
+                          </Card>
+                        </List.Item>
+                      </a>
                     );
                   }}
                 />
