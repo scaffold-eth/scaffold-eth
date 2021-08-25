@@ -5,8 +5,7 @@
 
 While dApps on Ethereum have grown in complexity, depth, and breadth in the past few years. One missing piece is the efficient querying of blockchain information in real-time.
 
-Users need to know immediately when their trades execute, when their transactions fail, when their auction bid has been accepted, or when a wallet of interest has aped into some new token. Without these notifications, trades can be missed, critical actions are forgotten, and ultimately users end up abandoning your dApp.
-Unfortunately, building these real-time notifications into your dApp has traditionally been complicated, time-consuming, and error-prone. But now with Alchemy Notify, sending real-time push notifications to your users for critical events such as dropped transactions, mined transactions, wallet activity, and even gas price changes is straightforward, easy, and dependable.
+Users need to know immediately when their trades execute, when their transactions fail, when their auction bid has been accepted, or when a wallet of interest has aped into some new token. Without these notifications, trades can be missed, critical actions are forgotten, and ultimately users end up abandoning your dApp. Unfortunately, building these real-time notifications into your dApp has traditionally been complicated, time-consuming, and error-prone. But now with Alchemy Notify, sending real-time push notifications to your users for critical events such as dropped transactions, mined transactions, wallet activity, and even gas price changes is straightforward, easy, and dependable.
 
 In this tutorial, we’ll look at an example of how, with just a few lines of code, you can build a Dynamic NFT with the 🔋 power of Alchemy Notify.
 
@@ -67,7 +66,7 @@ cd offchain_dynamic_nft
 
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
-👨‍🎤 Deploy your NFT smart contract (in that 3rd terminal window): 
+👨‍🎤 Deploy your NFT smart contract (in that 3rd terminal window):
 ```
 yarn deploy
 ```
@@ -141,9 +140,9 @@ for more detailed instructions.  The Heroku instructions included below are abri
 
 IMPORTANT: In YourCollectible.sol, replace the default Heroku link with the http://xxxxxxxxx.herokuapp.com/alchemyhook URLthat you generated with your setup process.  Make sure it goes into the Constructor and the Mint function!  Likewise, change the toAddress to an address that you own!
 
-With all that done, go to command line window where you previously ran `yarn deploy` to redeploy the contract.
+With all that done, go to terminal window where you previously ran `yarn deploy` to redeploy the contract once more with your own custom Heroku URL and your TIP ADDRESS!
 
-Now go to OpenSea, and log in via your MetaMask on Opensea Testnets. Send your TIP ADDRESSS which you defined earlier and watch the NFT change! NOTE: Heroku will automatically sleep apps after a set period of time so you will need to make sure you app is up and awake for onchain activity to be recognized!  
+Now go to [Testnet OpenSea](https://testnets.opensea.io/), and log in via your MetaMask configured for Rinkeby. Send your TIP ADDRESSS which you defined earlier and watch the NFT change! NOTE: Heroku will automatically sleep apps after a set period of time so you will need to make sure you app is up and awake for onchain activity to be recognized!  
 
   ![open_sea_img](snapshot.PNG)
 
