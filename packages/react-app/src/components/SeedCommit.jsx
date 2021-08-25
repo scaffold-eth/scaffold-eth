@@ -14,6 +14,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
 
     const address = contract ? contract.address : "";
     const contractIsDeployed = useContractExistsAtAddress(provider, address);
+    const [refreshRequired, triggerRefresh] = useState(false);
     const displayedContractFunctions = useMemo(
         () =>
           contract
@@ -24,6 +25,20 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
         [contract, show],
       );
     console.log("functions: ", displayedContractFunctions)
+    const dealCard = contractIsDeployed ? displayedContractFunctions[0] : null
+    const dealCardForm = contractIsDeployed ? <FunctionForm 
+                                                key={"FF" + dealCard.name}
+                                                contractFunction={(dealCard.stateMutability === "view" || dealCard.stateMutability === "pure")?contract[dealCard.name]:contract.connect(signer)[dealCard.name]}
+                                                functionInfo={dealCard}
+                                                provider={provider}
+                                                gasPrice={gasPrice}
+                                                triggerRefresh={triggerRefresh}/> : <div></div>
+
+    const thresholdVariable = contractIsDeployed ? displayedContractFunctions[7] : 15
+    const thresholdForm = contractIsDeployed ? <DisplayVariable 
+            key={thresholdVariable.name} contractFunction={contract[thresholdVariable.name]} 
+            functionInfo={thresholdVariable} refreshRequired={refreshRequired} 
+            triggerRefresh={triggerRefresh}/> : null
     
 
     const [seed, setSeed] = useState();
@@ -86,17 +101,8 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                 </h2>
             </span>
             <span>
-                <Button
-                    onClick={() =>{
-                        setThreshold(2000)
-                    }}
-                    size="large"
-                    >
-                        Check threshold
-                </Button>
-                <h2>
-                    Your target is {threshold}
-                </h2>
+                {dealCardForm}
+                {thresholdForm}
                 <Button 
                     onClick={async() => {
                         handleIsValid()
