@@ -235,31 +235,33 @@ function App(props) {
   //
   useEffect(() => {
     const getLatestMintedBots = async () => {
+
       let latestMintedBotsUpdate = [];
+      if (transferEvents.length > 0){
+        for ( let botIndex = 0; botIndex < transferEvents.length - 1 ; botIndex++){
+          if (transferEvents[botIndex].from == "0x0000000000000000000000000000000000000000" && latestMintedBotsUpdate.length < 3) {
+            try{
+            let tokenId = transferEvents[botIndex].tokenId.toNumber()
+            const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
+            const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+            const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
-      for( let botIndex = 0; botIndex < 3; botIndex++){
-        if (transferEvents.length > 0){
-          try{
-          let tokenId = transferEvents[botIndex].tokenId.toNumber()
-          const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
-          const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-            try {
-              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-              latestMintedBotsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              try {
+                const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+                latestMintedBotsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              } catch (e) {
+                console.log(e);
+              }
             } catch (e) {
               console.log(e);
             }
-          } catch (e) {
-            console.log(e);
           }
-        }
+        } 
       }
       setLatestMintedBots(latestMintedBotsUpdate);
     }
     getLatestMintedBots();
-  }, [address, yourBalance])
+  }, [amountMintedAlready])
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -512,14 +514,14 @@ function App(props) {
                 
                 {lastestMintedBots && lastestMintedBots.length > 0 ? (
                 <div class="latestBots">
-                <h2>Latest Bots</h2>
+                <h2>Latest Minted Bots</h2>
 
                 <List
                   dataSource={lastestMintedBots}
                   renderItem={item => {
                     const id = item.id;
                     return (
-                      <List.Item style={{ display: 'inline'  }}>
+                      <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
                         <Card
                           style={{ borderBottom:'none', border: 'none', background: "none"}}
                           title={
