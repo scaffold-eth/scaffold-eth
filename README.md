@@ -78,7 +78,6 @@ yarn deploy --network NETWORK_OF_CHOICE
 ## 🔶 Alchemy!
 > You will need to get a key from alchemy.io and paste it into constants.js in packages/react-app/src:
 
-![nft13](https://user-images.githubusercontent.com/526558/124387174-d83c0180-dcb3-11eb-989e-d58ba15d26db.png)
 ```
 
 ```
