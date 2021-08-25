@@ -1,8 +1,9 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input, List, notification, Dropdown } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List, notification, Select } from "antd";
 const { SubMenu } = Menu;
+const { Option } = Select;
 import { DownOutlined, UserOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
@@ -50,7 +51,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.kovan; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -182,7 +183,7 @@ function App(props) {
   const [payoutCompleted, setPayoutCompleted] = useState(false);
   const [approved, setApproved] = useState(false);
   const [menuTitle, setMenuTitle] = useState("Select Token...");
-  const [openKeys, setOpenKeys] = useState([]);
+  const [link, setLink] = useState("")  
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -530,6 +531,10 @@ function App(props) {
                 )}
 
                 {isOwner && (
+                  <div>
+                  {/*<Button onClick = {() =>setLink(message)}>
+                    Generate Link
+                </Button>*/}
                   <Button
                     style={{ marginLeft: "10px" }}
                     onClick={async () => {
@@ -542,6 +547,13 @@ function App(props) {
                   >
                     Fetch Logged Accounts
                   </Button>
+ 
+                 { /*<p>
+                    Link: 
+                  {link? <a>https://signupfortokens.surge.sh/{link}</a> : ""}
+                  </p>
+                 */ }
+                  </div>
                 )}
               </div>
               {isOwner && (
@@ -579,24 +591,17 @@ function App(props) {
 
                   {addresses && addresses.length > 0 && (
                     <div>
-                      <Menu
-                        mode="inline"
-                        openKeys={openKeys}
-                        onOpenChange={keys => {
-                          setOpenKeys(openKeys ? keys : []);
-                        }}
-                        style={{ marginTop: "10px", border: "1px solid" }}
-                        onClick={e => {
-                          setMenuTitle(e.key);
-                          setOpenKeys([]);
-                        }}
-                      >
-                        <SubMenu key="sub1" title={menuTitle}>
-                          <Menu.Item key="GTC">GTC</Menu.Item>
-                          <Menu.Item key="DAI">DAI</Menu.Item>
-                          <Menu.Item key="USDC">USDC</Menu.Item>
-                        </SubMenu>
-                      </Menu>
+
+                      <Select defaultValue={menuTitle} 
+                      style={{ width: 150, textAlign: "left", float: "left", marginTop: "10px" }}
+                      onChange={value => {
+                        setMenuTitle(value);
+                       }} >
+                        <Option value="ETH">ETH</Option>
+                        <Option value="GTC">GTC</Option>
+                        <Option value="USDC">USDC</Option>
+  
+                      </Select>
 
                       {/* TODO : disable input until ERC-20 token is selected */}
                       <Input
@@ -801,7 +806,27 @@ function App(props) {
             }
           </Col>
         </Row>
-      </div> */}
+      </div>
+          <Menu
+            mode="inline"
+            openKeys={openKeys}
+          onOpenChange={keys => {
+          setOpenKeys(openKeys ? keys : []);
+        }}
+          style={{ marginTop: "10px", border: "1px solid" }}
+          onClick={e => {
+          setMenuTitle(e.key);
+          setOpenKeys([]);
+        }}
+      >
+      <SubMenu key="sub1" title={menuTitle}>
+        <Menu.Item key="GTC">GTC</Menu.Item>
+        <Menu.Item key="DAI">DAI</Menu.Item>
+        <Menu.Item key="USDC">USDC</Menu.Item>
+      </SubMenu>
+    </Menu>
+      
+      */}
     </div>
   );
 }

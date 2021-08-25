@@ -3,7 +3,7 @@
 const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
-  const frontendAddress = "YOUR FRONTEND ADDRESS";
+  const frontendAddress = "0xC24d5Cb1FFB485F9B1440C76c5afbD7bb1c5d1Ca";
 
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
