@@ -156,7 +156,7 @@ With all that done, go to command line window where you previously ran `yarn dep
 
 Now go to OpenSea, and log in via your MetaMask on Opensea Testnets. Send your TIP ADDRESSS which you defined earlier and watch the NFT change! NOTE: Heroku will automatically sleep apps after a set period of time so you will need to make sure you app is up and awake for onchain activity to be recognized!  
 
-  ![open_sea_img](https://ibb.co/LPdGW7wg)
+  ![open_sea_img](snapshot.PNG)
 
 🎉 Congratulations on your dApp deployment! Feel free to edit this NFT, change its behavior, or make the backend more robust!
 
