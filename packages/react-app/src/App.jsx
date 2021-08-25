@@ -232,7 +232,6 @@ function App(props) {
   
   //
   // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
-  //    We can check the contract for transferEvents or amountMintedAlready, but this causes ipfs.infura to throw a "Too many requests error"
   //
   useEffect(() => {
     const getLatestMintedBots = async () => {
@@ -537,11 +536,11 @@ function App(props) {
                     );
                   }}
                 />
-              </div>
-            ) : (
-              <div>
-              </div>
-            )}
+                </div>
+                ) : (
+                  <div>
+                  </div>
+                )}
                 <br />
                 <br /> 
               </div>
