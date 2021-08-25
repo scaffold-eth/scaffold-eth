@@ -188,6 +188,10 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  // track the lastest bots minted
+  const [lastestMintedBots, setLatestMintedBots] = useState();
+  console.log("📟 latestBotsMinted:", lastestMintedBots);
+
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
@@ -225,6 +229,37 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourBalance]);
+  
+  //
+  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
+  //
+  useEffect(() => {
+    const getLatestMintedBots = async () => {
+      let latestMintedBotsUpdate = [];
+
+      for( let botIndex = 0; botIndex < 3; botIndex++){
+        if (transferEvents.length > 0){
+          try{
+          let tokenId = transferEvents[botIndex].tokenId.toNumber()
+          const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
+          const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+              latestMintedBotsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+      setLatestMintedBots(latestMintedBotsUpdate);
+    }
+    getLatestMintedBots();
+  }, [address, yourBalance])
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -473,7 +508,41 @@ function App(props) {
                     </a>
                 </div>
                 <br />
-                <br />                    
+                <br />  
+                
+                {lastestMintedBots && lastestMintedBots.length > 0 ? (
+                <div class="latestBots">
+                <h2>Latest Bots</h2>
+
+                <List
+                  dataSource={lastestMintedBots}
+                  renderItem={item => {
+                    const id = item.id;
+                    return (
+                      <List.Item style={{ display: 'inline'  }}>
+                        <Card
+                          style={{ borderBottom:'none', border: 'none', background: "none"}}
+                          title={
+                            <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                              <span>#{id}</span> {item.name}
+                            </div>
+                          }
+                        >
+                          <div>
+                            <img src={item.image} style={{ maxWidth: 150 }} />
+                          </div>
+                        </Card>
+                      </List.Item>
+                    );
+                  }}
+                />
+                </div>
+                ) : (
+                  <div>
+                  </div>
+                )}
+                <br />
+                <br /> 
               </div>
 
               {yourCollectibles && yourCollectibles.length > 0 ? (
