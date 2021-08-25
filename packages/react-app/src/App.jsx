@@ -187,23 +187,9 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
-  
-  useEffect(() => {
-    const getLatestMintedBots = async () => {
-      if (transferEvents.length > 0){
-        
-        let tokenId = transferEvents[0].tokenId.toNumber()
-        const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
-        console.log("TRANSFER EVENT", tokenURI)
-      }
-    }
-    getLatestMintedBots();
-  })
-
-
-  // //📟 Listen for broadcast events
-  // const mintEvents = useEventListener(readContracts, "MoonshotBot", "Mint", localProvider, 1);
-  // console.log("📟 Mint events:", mintEvents);
+  // track the lastest bots minted
+  const [lastestMintedBots, setLatestMintedBots] = useState();
+  console.log("📟 latestBotsMinted:", lastestMintedBots);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -242,6 +228,38 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourBalance]);
+  
+  //
+  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
+  //    We can check the contract for transferEvents or amountMintedAlready, but this causes ipfs.infura to throw a "Too many requests error"
+  //
+  useEffect(() => {
+    const getLatestMintedBots = async () => {
+      let latestMintedBotsUpdate = [];
+
+      for( let botIndex = 0; botIndex < 3; botIndex++){
+        if (transferEvents.length > 0){
+          try{
+          let tokenId = transferEvents[botIndex].tokenId.toNumber()
+          const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
+          const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+              latestMintedBotsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+      }
+      setLatestMintedBots(latestMintedBotsUpdate);
+    }
+    getLatestMintedBots();
+  }, [address, yourBalance])
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -492,22 +510,21 @@ function App(props) {
                 <br />
                 <br />  
                 
-                {yourCollectibles && yourCollectibles.length > 0 ? (
+                {lastestMintedBots && lastestMintedBots.length > 0 ? (
                 <div class="latestBots">
-                <h2>Latest Minted Bots</h2>
+                <h2>Latest Bots</h2>
 
                 <List
-                  style={{ display: "inline" }}
-                  dataSource={yourCollectibles}
+                  dataSource={lastestMintedBots}
                   renderItem={item => {
-                    const id = item.id.toNumber();
+                    const id = item.id;
                     return (
-                      <List.Item style={{ borderBottom:'none', border: 'none', maxWidth: 150 }}>
+                      <List.Item style={{ display: 'inline'  }}>
                         <Card
-                          class="latestBotsList"
+                          style={{ borderBottom:'none', border: 'none', background: "none"}}
                           title={
-                            <div>
-                              <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                              <span>#{id}</span> {item.name}
                             </div>
                           }
                         >
