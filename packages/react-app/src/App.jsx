@@ -282,6 +282,13 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
             />
+            <Contract
+              provider={localProvider}
+              name="YourContract"
+              signer={userProvider.getSigner()}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
 
             {/*
             <div style={{padding:16}}>
