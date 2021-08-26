@@ -1,5 +1,5 @@
 include "../../node_modules/circomlib/circuits/mimcsponge.circom"
-include "../../node_modules/circomlib/circuits/modulus.circom"
+include "../../modulus.circom"
 
 template Main() {
   signal private input seed;
