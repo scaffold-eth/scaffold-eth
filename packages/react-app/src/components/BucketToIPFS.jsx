@@ -73,7 +73,7 @@ export default function BucketToIPFS() {
                                 lastModifiedDate:{' '}
                                 {selectedFile.lastModifiedDate.toLocaleDateString()}
                             </p>
-                            <p>SignedUrl: {signedURL.uploadURL}</p>
+                            <p>SignedUrl: {signedURL.uploadURL.slice(0,50)+"..."}</p>
                             <p>Key: {signedURL.Key}</p>
                         </div>
                     ) : (
