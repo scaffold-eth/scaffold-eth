@@ -1,13 +1,12 @@
-import mimcHash from "../mimc";
 import React, { useState, useCallback, useMemo } from "react";
 import { Input, Button, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
-import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata } from "../hooks";
+import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata, mimcHash } from "../hooks";
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
 import { Transactor } from "../helpers";
 
-export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
+export default function PlayPoker({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
     
     let contract
@@ -69,8 +68,8 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
     const win = contractIsDeployed ? ReturnDisplayVariable(displayedContractFunctions[10]) : null
     
 
-    const [seed, setSeed] = useState(1764);
-    const [seedCommit, setSeedCommit] = useState(0);
+    const [seed, setSeed] = useState();
+    const [seedCommit, setSeedCommit] = useState();
     // const [cardCommit, setCardCommit] = useState(0);
     const [isValid, setIsValid] = useState(null);
     const [callData, setCallData] = useState([]);
@@ -140,14 +139,14 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         const newSeed = e.target.value;
                         setSeed(newSeed);
                         // TODO: Import MIMC hash function and set hash to the correct function
-                        setSeedCommit(mimcHash(newSeed));
+                        setSeedCommit(mimcHash(newSeed).value.toString());
                         // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
                         <Tooltip title="Commit your secret seed!!">
                         <Button
                             onClick={() => {
-                                setSeedCommit(seed)
+                                setSeedCommit(mimcHash(seed).value.toString());
                             }}
                             shape="circle"
                             icon={<SendOutlined />}
@@ -155,10 +154,9 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         </Tooltip>
                     }
                 />
-                
 
                 <h2>
-                    Check your Mimc hash {seed} :   {seedCommit}
+                    Check your Mimc hash {seedCommit}
                 </h2>
             </span>
             <span>
