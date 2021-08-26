@@ -22,6 +22,7 @@ import {
 import { Biconomy } from "@biconomy/mexa";
 
 const { BufferList } = require("bl");
+const sigUtil = require("eth-sig-util");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
@@ -139,13 +140,36 @@ function App(props) {
   const [address, setAddress] = useState();
   const [biconomy, setBiconomy] = useState();
 
+  const getBiconomy = (provider, apiKey) => {
+    return new Biconomy(provider, {
+      apiKey: apiKey,
+      debug: true
+    });
+  }
+
+  useEffect(()=>{
+    if(biconomy) {
+      biconomy.onEvent(biconomy.READY, ()=>{
+        console.log(biconomy.status);
+        console.log("Biconomy is READY");
+      }).onEvent(biconomy.ERROR, (error, message) => {
+        console.log("Error while using Biconomy", error);
+        console.log(message);
+      });
+    }
+  }, [biconomy]);
+
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userSigner = useUserSigner(injectedProvider, localProvider);
+  if(!biconomy && localProvider) {
+    setBiconomy(getBiconomy(localProvider, BICONOMY_API_KEY));
+  }
+
+  const userSigner = useUserSigner(injectedProvider, biconomy);
 
   useEffect(() => {
     async function getAddress() {
@@ -352,23 +376,10 @@ function App(props) {
     );
   }
 
-  const getBiconomy = (provider, apiKey) => {
-    return new Biconomy(new ethers.providers.Web3Provider(provider), {
-      apiKey: apiKey,
-      debug: true
-    });
-  }
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
 
-    let _biconomy = getBiconomy(window.ethereum, BICONOMY_API_KEY);
-    _biconomy.onEvent(_biconomy.READY, ()=>{
-      console.log(_biconomy.status);
-      console.log("Biconomy is READY");
-    }).onEvent(_biconomy.ERROR, (error, message) => {
-      console.log("Error while using Biconomy", error);
-      console.log(message);
-    });
+    let _biconomy = getBiconomy(new ethers.providers.Web3Provider(provider), BICONOMY_API_KEY);
 
     setBiconomy(_biconomy);
 
@@ -376,7 +387,7 @@ function App(props) {
 
     provider.on("chainChanged", chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
-      let _biconomy = getBiconomy(provider, BICONOMY_API_KEY);
+      let _biconomy = getBiconomy(new ethers.providers.Web3Provider(provider), BICONOMY_API_KEY);
       setBiconomy(_biconomy);
       setInjectedProvider(new ethers.providers.Web3Provider(_biconomy));
     });
@@ -551,9 +562,28 @@ function App(props) {
                           }}
                         />
                         <Button
-                          onClick={() => {
+                          onClick={async () => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            if(userSigner && userSigner.privateKey) {
+                              let unsignedTransaction = await writeContracts.YourCollectible.populateTransaction.transferFrom(address, transferToAddresses[id], id);
+                              let signedTx = await userSigner.signTransaction(unsignedTransaction);
+                              // should get user message to sign for EIP712 or personal signature types
+                              const forwardData = await biconomy.getForwardRequestAndMessageToSign(signedTx);
+                              console.log(forwardData);      
+
+                              // optionally one can sign using sigUtil
+                              const signature = sigUtil.signTypedMessage(new Buffer.from(userSigner.privateKey.slice(2), "hex"), { data: forwardData.eip712Format }, 'V3');                                                                    
+
+                              let data = {
+                                  signature: signature,
+                                  forwardRequest: forwardData.request,
+                                  rawTransaction: signedTx,
+                                  signatureType: biconomy.EIP712_SIGN
+                              };
+                              tx(data);
+                            } else {
+                              tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            }
                           }}
                         >
                           Transfer

@@ -62,7 +62,7 @@ export default function useContractLoader(providerOrSigner, config = {}) {
             provider = providerOrSigner;
           }
 
-          const providerNetwork = await provider.getNetwork();
+          const providerNetwork = await ( provider.isBiconomy ? provider.originalProvider.getNetwork() : provider.getNetwork() );
 
           const _chainId = config.chainId || providerNetwork.chainId;
 
