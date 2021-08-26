@@ -10,7 +10,7 @@ template Main() {
   signal output outValid;
 
   /*
-    Verify that the player indeed has the card
+    Verify that the calculated hash of x (outHash) is the inputted hash (hash)
   */
 
   component mimc = MiMCSponge(1, 220, 1);

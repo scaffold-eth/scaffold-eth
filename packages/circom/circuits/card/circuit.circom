@@ -16,14 +16,14 @@ template Main() {
   cardCalculator.divisor <== 13;
 
   card <== cardCalculator.remainder + 1;
-  
+
   component cardHash = MiMCSponge(1, 220, 1);
   cardHash.ins[0] <== card;
   cardHash.k <== 0;
   cardCommit <== cardHash.outs[0]
 
   component seedHash = MiMCSponge(1, 220, 1);
-  seedHash.ins[0] = seed;
+  seedHash.ins[0] <== seed;
   seedHash.k <== 0;
   seedCommit <== seedHash.outs[0];
 }
