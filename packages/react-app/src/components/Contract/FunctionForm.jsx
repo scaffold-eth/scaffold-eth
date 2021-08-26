@@ -208,6 +208,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
 
                 // console.log("Running with extras",extras)
+                console.log("args", ...args)
                 const returned = await tx(contractFunction(...args, overrides));
                 result = tryToDisplay(returned);
               }

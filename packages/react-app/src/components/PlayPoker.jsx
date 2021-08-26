@@ -4,7 +4,7 @@ import { SendOutlined } from "@ant-design/icons";
 import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata } from "../hooks";
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
-const { utils } = require("ethers");
+import { Transactor } from "../helpers";
 
 export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -16,6 +16,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
     const address = contract ? contract.address : "";
     const contractIsDeployed = useContractExistsAtAddress(provider, address);
     const [refreshRequired, triggerRefresh] = useState(false);
+    const tx = Transactor(provider, gasPrice);
     const displayedContractFunctions = useMemo(
         () =>
           contract
@@ -25,7 +26,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
             : [],
         [contract, show],
       );
-    // console.log("functions: ", displayedContractFunctions)
+    //console.log("functions: ", displayedContractFunctions)
 
     function ReturnFunctionForm(fn){
         return <FunctionForm 
@@ -44,6 +45,8 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
             triggerRefresh={triggerRefresh}/>
     }
 
+    
+
     const playerCardCommit = contractIsDeployed ? displayedContractFunctions[0] : null
     const playerCardCommitForm = contractIsDeployed ? ReturnFunctionForm(playerCardCommit) : null
 
@@ -60,15 +63,22 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
 
     const thresholdVariable = contractIsDeployed ? displayedContractFunctions[3] : null
     const thresholdForm = contractIsDeployed ? ReturnDisplayVariable(thresholdVariable) : null
-    
+
+    const submitProofForm = contractIsDeployed ? ReturnFunctionForm(displayedContractFunctions[8]) : null
+    const win = contractIsDeployed ? ReturnDisplayVariable(displayedContractFunctions[10]) : null
     
 
     const [seed, setSeed] = useState(1764);
     const [seedCommit, setSeedCommit] = useState(0);
     // const [cardCommit, setCardCommit] = useState(0);
     const [isValid, setIsValid] = useState(null);
+    const [callData, setCallData] = useState([]);
     const [hash, setHash] = useState();
     const [threshold, setThreshold] = useState();
+    const [a, setA] = useState();
+    const [b, setB] = useState();
+    const [c, setC] = useState();
+    const [input, setInput] = useState();
     
 
     async function getValue(contractFunction, setVariable, triggerRefresh, number){
@@ -104,14 +114,17 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
   
       const res = await window.snarkjs.groth16.verify(vKey, publicSignals, proof);
       const genCallData = await genSolidityCalldata(publicSignals, proof);
-      // TODO: figure out how to send genSolidityCallData to backend
-      return res, genCallData;
+      return [res, genCallData];
     }
     
   
     const handleIsValid = async () => {
       const [res, genCallData] = await CircuitCalldata(seedCommit, hash, threshold);
       setIsValid(res.toString());
+      setA(genCallData[0]);
+      setB(genCallData[1]);
+      setC(genCallData[2]);
+      setInput(genCallData[3]);
     };
 
     return(
@@ -164,12 +177,31 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                     onClick={async() => {
                         //await getValue(contract[thresholdVariable.name], setThreshold, triggerRefresh, true);
                         //await getValue(contract[playerCardHash.name], setHash, triggerRefresh, false);
-                        handleIsValid()
+                        await handleIsValid();
                     }}
                     size="large"
                 >
                     Generate zk proof
                 </Button>
+                <h2></h2>
+                <p>{a}</p>
+                <h2></h2>
+                <p>{b}</p>
+                <h2></h2>
+                <p>{c}</p>
+                {submitProofForm}
+                {win}
+                
+                {/*
+            
+                <Button
+                    onClick={async() => {
+                        // TODO parse callData information
+                        //console.log(callData)
+                        //const returned = await tx(contract['submitProof'](callData[0], callData[1], callData[2], callData[3]));
+                    }}>
+                    Upload zk proof
+                </Button>*/}
                 <h2>
                     Your proof is {isValid}
                 </h2>

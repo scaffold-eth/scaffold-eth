@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 const ffjavascript = require('ffjavascript');
 const {stringifyBigInts: stringifyBigInts$3, unstringifyBigInts: unstringifyBigInts$1} = ffjavascript.utils;
-
+const { utils } = require("ethers");
 function p256(n) {
     let nstr = n.toString(16);
     while (nstr.length < 64) nstr = "0"+nstr;
@@ -19,7 +19,8 @@ export default async function genSolidityCalldata(publicName, proofName) {
         if (inputs != "") inputs = inputs + ",";
         inputs = inputs + p256(pub[i]);
     }
-
+    
+    /*
     let S;
     if ((typeof proof.protocol === "undefined") || (proof.protocol == "original")) {
         S=`[${p256(proof.pi_a[0])}, ${p256(proof.pi_a[1])}],` +
@@ -40,5 +41,13 @@ export default async function genSolidityCalldata(publicName, proofName) {
         throw new Error("InvalidProof");
     }
 
-    return S;
+    return S; */
+    
+    
+    let a, b, c, input; 
+    a = `[${p256(proof.pi_a[0])}, ${p256(proof.pi_a[1])}]`;
+    b = `[[${p256(proof.pi_b[0][1])}, ${p256(proof.pi_b[0][0])}],[${p256(proof.pi_b[1][1])}, ${p256(proof.pi_b[1][0])}]]`;
+    c = `[${p256(proof.pi_c[0])}, ${p256(proof.pi_c[1])}]`;
+    input = `[${inputs}]`;
+    return [a, b, c, input] 
 }
