@@ -47,7 +47,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.fuse; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = false;
@@ -55,20 +55,20 @@ const NETWORKCHECK = true;
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
-  description: "It's actually a bison?",
-  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
-  attributes: [
-    {
-      trait_type: "BackgroundColor",
-      value: "green",
-    },
-    {
-      trait_type: "Eyes",
-      value: "googly",
-    },
-  ],
+  "description": "FUSE Assembly",
+  "external_url": "https://forum.fuse.io/",// <-- this can link to a page for the specific file too
+  "image": "https://ipfs.io/ipfs/QmaUXuiKcaPSAFbBvzb3n6G9BqjYUDnjiimMg4rrVcsLr7/Fuse%20Assembly%20%20logos%20%281%29/2.jpg",
+  "name": "Anonymous",
+  "attributes": [
+      {
+        "trait_type": "Shape",
+        "value": "square"
+      },
+      {
+        "trait_type": "Generation",
+        "value": 0
+      }
+  ]
 };
 
 // helper function to "Get" from IPFS
@@ -194,28 +194,28 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "MishaCollectible", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "MishaCollectible", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  // 🧠 This effect will update mishaCollectibles by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
-  const [yourCollectibles, setYourCollectibles] = useState();
+  const [mishaCollectibles, setMishaCollectibles] = useState();
 
   useEffect(() => {
-    const updateYourCollectibles = async () => {
+    const updateMishaCollectibles = async () => {
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.MishaCollectible.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.MishaCollectible.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
@@ -234,9 +234,9 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourCollectibles(collectibleUpdate);
+      setMishaCollectibles(collectibleUpdate);
     };
-    updateYourCollectibles();
+    updateMishaCollectibles();
   }, [address, yourBalance]);
 
   /*
@@ -414,7 +414,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourCollectibles
+              MishaCollectibles
             </Link>
           </Menu.Item>
           <Menu.Item key="/transfers">
@@ -469,7 +469,7 @@ function App(props) {
             <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <List
                 bordered
-                dataSource={yourCollectibles}
+                dataSource={mishaCollectibles}
                 renderItem={item => {
                   const id = item.id.toNumber();
                   return (
@@ -508,7 +508,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.MishaCollectible.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -615,7 +615,7 @@ function App(props) {
           </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="YourCollectible"
+              name="MishaCollectible"
               signer={userSigner}
               provider={localProvider}
               address={address}

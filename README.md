@@ -54,11 +54,11 @@ yarn mint
 
 ![nft5](https://user-images.githubusercontent.com/526558/124387008-58ae3280-dcb3-11eb-920d-07b6118f1ab2.png)
 
-🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `YourCollectible`?
+🕵🏻‍♂️ Inspect the `Debug Contracts` tab to figure out what address is the `owner` of `MishaCollectible`?
 
 💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
 
-🔏 Edit your smart contract `YourCollectible.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `MishaCollectible.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
