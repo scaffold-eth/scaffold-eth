@@ -5,6 +5,7 @@ import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata } fr
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
 const { utils } = require("ethers");
+import mimcHash from '../mimc.js';
 
 export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -126,6 +127,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         const newSeed = e.target.value;
                         setSeed(newSeed);
                         // TODO: Import MIMC hash function and set hash to the correct function
+                        setSeedCommit(mimcHash(newSeed));
                         // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
@@ -140,8 +142,12 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         </Tooltip>
                     }
                 />
+                <Text copyable={{ text: seedCommit }} style={{marginTop: 25}}>
+                    {seedCommit}
+                </Text>
+                
                 <h2>
-                    Check your Mimc hash {seed} :   {hash}
+                    Check your Mimc hash {seed} :   {seedCommit}
                 </h2>
             </span>
             <span>
