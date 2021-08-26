@@ -1,3 +1,4 @@
+import mimcHash from "../mimc.ts";
 import React, { useState, useCallback, useMemo } from "react";
 import { Input, Button, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
@@ -139,6 +140,7 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         const newSeed = e.target.value;
                         setSeed(newSeed);
                         // TODO: Import MIMC hash function and set hash to the correct function
+                        setSeedCommit(mimcHash(newSeed));
                         // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
@@ -153,8 +155,10 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         </Tooltip>
                     }
                 />
+                
+
                 <h2>
-                    Check your Mimc hash {seed} :   {hash}
+                    Check your Mimc hash {seed} :   {seedCommit}
                 </h2>
             </span>
             <span>
