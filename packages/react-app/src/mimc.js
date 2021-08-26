@@ -1,9 +1,12 @@
 "use strict";
-exports.__esModule = true;
-exports.mimcWithRounds = exports.modPBigIntNative = exports.modPBigInt = exports.p = void 0;
-var big_integer_1 = require("big-integer");
-exports.p = big_integer_1["default"]('21888242871839275222246405745257275088548364400416034343698204186575808495617');
-var c = [
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.perlinRandHash = exports.mimcWithRounds = exports.modPBigIntNative = exports.modPBigInt = exports.p = void 0;
+const big_integer_1 = __importDefault(require("big-integer"));
+exports.p = big_integer_1.default('21888242871839275222246405745257275088548364400416034343698204186575808495617');
+const c = [
     '0',
     '7120861356467848435263064379192047478074060781135320967663101236819528304084',
     '5024705281721889198577876690145313457398658950011302225525409148828000436681',
@@ -224,66 +227,79 @@ var c = [
     '11050822248291117548220126630860474473945266276626263036056336623671308219529',
     '2119542016932434047340813757208803962484943912710204325088879681995922344971',
     '0',
-].map(function (n) { return big_integer_1["default"](n); });
-var FeistelState = /** @class */ (function () {
-    function FeistelState(rounds, k) {
-        this.l = big_integer_1["default"](0);
-        this.r = big_integer_1["default"](0);
+].map((n) => big_integer_1.default(n));
+class FeistelState {
+    constructor(rounds, k) {
+        this.l = big_integer_1.default(0);
+        this.r = big_integer_1.default(0);
         this.rounds = rounds;
         this.k = k;
     }
-    FeistelState.prototype.inject = function (elt) {
+    inject(elt) {
         this.l = this.l.add(elt).mod(exports.p);
-    };
-    FeistelState.prototype.mix = function () {
-        for (var i = 0; i < this.rounds - 1; i++) {
-            var t_1 = this.k.add(this.l).add(c[i]).mod(exports.p);
-            var lNew = t_1.modPow(5, exports.p).add(this.r).mod(exports.p);
+    }
+    mix() {
+        for (let i = 0; i < this.rounds - 1; i++) {
+            const t = this.k.add(this.l).add(c[i]).mod(exports.p);
+            const lNew = t.modPow(5, exports.p).add(this.r).mod(exports.p);
             this.r = this.l;
             this.l = lNew;
         }
-        var t = this.k.add(this.l).mod(exports.p);
+        const t = this.k.add(this.l).mod(exports.p);
         this.r = t.modPow(5, exports.p).add(this.r).mod(exports.p);
-    };
-    return FeistelState;
-}());
-function mimcSponge(inputs, nOutputs, rounds) {
-    var state = new FeistelState(rounds, big_integer_1["default"](0));
-    for (var _i = 0, inputs_1 = inputs; _i < inputs_1.length; _i++) {
-        var elt = inputs_1[_i];
+    }
+}
+function mimcSponge(inputs, nOutputs, rounds, key) {
+    const state = new FeistelState(rounds, big_integer_1.default(key));
+    for (const elt of inputs) {
         state.inject(elt);
         state.mix();
     }
-    var outputs = [state.l];
-    for (var i = 0; i < nOutputs - 1; i++) {
+    const outputs = [state.l];
+    for (let i = 0; i < nOutputs - 1; i++) {
         state.mix();
         outputs.push(state.l);
     }
     return outputs;
 }
-var modPBigInt = function (x) {
-    var ret = big_integer_1["default"](x).mod(exports.p);
-    if (ret.lesser(big_integer_1["default"](0))) {
+/**
+ * Modulo a number with the LOCATION_ID_UB constant.
+ * If the result is < 0, the LOCATION_ID_UB will then be added.
+ *
+ * @param x The number to modulo against LOCATION_ID_UB
+ */
+function modPBigInt(x) {
+    let ret = big_integer_1.default(x).mod(exports.p);
+    if (ret.lesser(big_integer_1.default(0))) {
         ret = ret.add(exports.p);
     }
     return ret;
-};
+}
 exports.modPBigInt = modPBigInt;
-var modPBigIntNative = function (x) {
-    var ret = x.mod(exports.p);
-    if (ret.lesser(big_integer_1["default"](0))) {
+/**
+ * Modulo a BigInt with the LOCATION_ID_UB constant.
+ * If the result is < 0, the LOCATION_ID_UB will then be added.
+ *
+ * @param x The number to modulo against LOCATION_ID_UB
+ */
+function modPBigIntNative(x) {
+    let ret = x.mod(exports.p);
+    if (ret.lesser(big_integer_1.default(0))) {
         ret = ret.add(exports.p);
     }
     return ret;
-};
+}
 exports.modPBigIntNative = modPBigIntNative;
-var mimcWithRounds = function (rounds) { return function () {
-    var inputs = [];
-    for (var _i = 0; _i < arguments.length; _i++) {
-        inputs[_i] = arguments[_i];
-    }
-    return mimcSponge(inputs.map(function (n) { return exports.modPBigInt(n); }), 1, rounds)[0];
-}; };
+const mimcWithRounds = (rounds, key) => (...inputs) => mimcSponge(inputs.map((n) => modPBigInt(n)), 1, rounds, key)[0];
 exports.mimcWithRounds = mimcWithRounds;
-var mimcHash = exports.mimcWithRounds(220);
-exports["default"] = mimcHash;
+/**
+ * The primary function used to build any MiMC hashing algorithm for Dark Forest.
+ *
+ * @param key The key for the MiMC algorithm. Will usually be PLANETHASH_KEY, SPACETYPE_KEY, or BIOMEBASE_KEY.
+ */
+function mimcHash(key) {
+    return exports.mimcWithRounds(220, key);
+}
+const perlinRandHash = (key) => exports.mimcWithRounds(4, key);
+exports.perlinRandHash = perlinRandHash;
+exports.default = mimcHash;

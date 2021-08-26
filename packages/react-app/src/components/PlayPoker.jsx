@@ -1,4 +1,4 @@
-import mimcHash from "../mimc.ts";
+import mimcHash from "../mimc";
 import React, { useState, useCallback, useMemo } from "react";
 import { Input, Button, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
