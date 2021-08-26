@@ -26,16 +26,21 @@ contract YourContract is Verifier {
   function commitToRandonmess(uint256 newSeedCommit) public {
     require(currentStep == 0, "You've already commited to a seed.");
     seedCommit = newSeedCommit;
-    playerCardCtractRandomness = uint(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
+    playerCardContractRandomness = uint(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
     currentStep ++;
   }
 
-  function commitToCard(uint256[2] a, uint256[2][2] b, uint256[2] c, uint256[3] inputs) public {
+  function commitToCard(
+      uint[2] memory a,
+      uint[2][2] memory b,
+      uint[2] memory c,
+      uint[3] memory inputs
+    ) public {
     require(currentStep == 1, "You've already commited to a card.");
-    // require(verifyProof(a, b, c, input), "Invalid Proof"); TODO: write circuit for this one
-    require(input[1] == seecCommit);
-    require(input[2] == playerCardCtractRandomness);
-    playerCardHash = input[0];
+    // require(verifyProof(a, b, c, inputs), "Invalid Proof"); TODO: write circuit for this one
+    require(inputs[1] == seedCommit);
+    require(inputs[2] == playerCardContractRandomness);
+    playerCardHash = inputs[0];
     currentStep ++;
   }
   
@@ -58,13 +63,13 @@ contract YourContract is Verifier {
       uint[2] memory a,
       uint[2][2] memory b,
       uint[2] memory c,
-      uint[4] memory input
+      uint[4] memory inputs
   ) public {
     require(currentStep == 3, "Dealer hasn't drawn a card.");
-    require(verifyProof(a, b, c, input), "Invalid Proof");
-    require(input[0] == playerCardHash, "Invalid Card");
-    require(input[3] == dealerCard, "Invalid Card");
-    if (input[1] == 1) win = true;
+    require(verifyProof(a, b, c, inputs), "Invalid Proof");
+    require(inputs[0] == playerCardHash, "Invalid Card");
+    require(inputs[3] == dealerCard, "Invalid Card");
+    if (inputs[1] == 1) win = true;
     currentStep++;
   }
 
