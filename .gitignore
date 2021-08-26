@@ -1,17 +1,21 @@
 packages/subgraph/subgraph.yaml
 packages/subgraph/generated
+packages/subgraph/abis/*
 packages/hardhat/*.txt
 **/aws.json
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 **/node_modules
-packages/hardhat/artifacts
-packages/react-app/src/contracts
-packages/hardhat/cache
+packages/hardhat/artifacts*
+packages/hardhat/deployments
+packages/react-app/src/contracts/*
+!packages/react-app/src/contracts/external_contracts.js
+packages/hardhat/cache*
 
-docker/**/data
+packages/**/data
 
 packages/subgraph/config/config.json
+tenderly.yaml
 
 # dependencies
 /node_modules
@@ -34,3 +38,6 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+
+# Local Netlify folder
+.netlify

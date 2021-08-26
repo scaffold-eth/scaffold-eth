@@ -7,7 +7,11 @@ export default function useNonce(mainnetProvider, address) {
     async function getNonce() {
         setNonce(await mainnetProvider.getTransactionCount(address));
     }
+<<<<<<< HEAD
     getNonce();
+=======
+    if (address) getNonce();
+>>>>>>> master
   };
   Nonce();
   return nonce;
