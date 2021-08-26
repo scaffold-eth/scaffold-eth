@@ -4,7 +4,14 @@ import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutli
 import { Address } from "../components";
 const { Title, Text } = Typography;
 
-export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries, tx, writeContracts, isVoter }) {
+export default function QuadraticDiplomacyVote({
+  voteCredits,
+  contributorEntries,
+  tx,
+  writeContracts,
+  isVoter,
+  mainnetProvider,
+}) {
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [spentVoteTokens, setSpentVoteTokens] = useState(0);
@@ -101,6 +108,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
           size="small"
           itemLayout="horizontal"
           header={<Title level={4}>1. Who've you been working with?</Title>}
+          style={{ width: "400px", margin: "0 auto" }}
           footer={
             <Button
               type="primary"
@@ -129,8 +137,9 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
                   size="large"
                   onClick={e => handleContributorSelection(e, contributorAddress)}
                   checked={selectedContributors[contributorAddress] !== undefined}
+                  style={{ color: "black" }}
                 >
-                  <Address address={contributorAddress} fontSize={16} size="short" />
+                  <Address address={contributorAddress} ensProvider={mainnetProvider} fontSize={16} size="short" />
                 </Checkbox>
               </List.Item>
             </>
@@ -140,6 +149,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
         <List
           size="large"
           itemLayout="horizontal"
+          style={{ width: "400px", margin: "0 auto" }}
           header={
             <Space direction="vertical">
               <Title level={4}>2. Allocate votes</Title>
@@ -199,7 +209,11 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
                   </Button.Group>
                 }
               >
-                <List.Item.Meta avatar={<Address address={contributorAddress} fontSize={14} size="short" />} />
+                <List.Item.Meta
+                  avatar={
+                    <Address address={contributorAddress} fontSize={14} size="short" ensProvider={mainnetProvider} />
+                  }
+                />
               </List.Item>
             </>
           )}
@@ -212,7 +226,7 @@ export default function QuadraticDiplomacyVote({ voteCredits, contributorEntries
             <Title level={4}>Your votes:</Title>
             {Object.entries(selectedContributors).map(([contributorAddress, voteTokens]) => (
               <p key={contributorAddress}>
-                <Address address={contributorAddress} fontSize={16} size="short" /> (<Text>{voteTokens}</Text>)
+                <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} /> (<Text>{voteTokens}</Text>)
               </p>
             ))}
           </>

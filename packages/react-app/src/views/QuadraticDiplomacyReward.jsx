@@ -10,7 +10,7 @@ const REWARD_STATUS = {
   FAILED: "reward_status.failed",
 };
 
-export default function QuadraticDiplomacyReward({ userSigner, votesEntries, contributorEntries, price, isAdmin }) {
+export default function QuadraticDiplomacyReward({ userSigner, votesEntries, contributorEntries, price, isAdmin, mainnetProvider }) {
   const [rewardAmount, setRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState({});
   const [totalSquare, setTotalSquare] = useState(0);
@@ -104,12 +104,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
       <Title level={3}>Reward Contributors</Title>
       <Title level={5}>
         Total votes:&nbsp;&nbsp;
-        <Badge
-          showZero
-          overflowCount={100000}
-          count={totalVotes}
-          style={{ backgroundColor: "#000000" }}
-        />
+        <Badge showZero overflowCount={100000} count={totalVotes} style={{ backgroundColor: "#000000" }} />
       </Title>
       <Title level={5}>
         Total Quadratic votes:&nbsp;&nbsp;
@@ -128,7 +123,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
           <Title level={5}>Pending votes from</Title>
           {missingVotingMembers.map(entry => (
             <p key={entry.wallet}>
-              <Address address={entry.wallet} fontSize={16} size="short" />
+              <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
             </p>
           ))}
         </>
@@ -140,7 +135,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
 
           return (
             <Card
-              title={<Address address={address} fontSize={16} size="short" />}
+              title={<Address address={address} fontSize={16} size="short" ensProvider={mainnetProvider} />}
               extra={
                 <Button
                   onClick={() => handlePayment(address, contributorReward)}

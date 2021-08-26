@@ -1,10 +1,11 @@
 import React, { useState } from "react";
-import { Form, Input, Divider, Button, Typography } from "antd";
+import { Form, Input, Divider, Button, Typography, Row, Col } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
+import { AddressInput } from "../components";
 const { Title } = Typography;
 
-export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
+export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeContracts }) {
   const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
   const [form] = Form.useForm();
@@ -13,7 +14,7 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
     // ToDo. Do some validation (non-empty elements, etc.)
     await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(voters, voteAllocation), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
-        setVoters([{}]);
+        setVoters([""]);
         setVoteAllocation(0);
         form.resetFields();
       }
@@ -35,7 +36,7 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
         </Form.Item>
         <Divider />
         {voters.map((_, index) => (
-          <VoterInput key={index} index={index} setVoters={setVoters} />
+          <VoterInput key={index} index={index} setVoters={setVoters} voters={voters} mainnetProvider={mainnetProvider} />
         ))}
         <Divider />
         <Form.Item style={{ justifyContent: "center" }}>
@@ -60,32 +61,39 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
   );
 }
 
-const VoterInput = ({ index, setVoters }) => {
+const VoterInput = ({ index, voters, setVoters, mainnetProvider }) => {
   return (
     <>
-      <Form.Item label="Address" name={`address[${index}]`} style={{ marginBottom: "5px" }}>
-        <Input
-          placeholder="Voter address"
-          onChange={event =>
-            setVoters(prevVoters => {
-              const nextVoters = [...prevVoters];
-              nextVoters[index] = event.target.value;
-              return nextVoters;
-            })
-          }
-        />
+      <Form.Item label={`Member ${index + 1}`} name={`address[${index}]`} style={{ marginBottom: "5px" }}>
+        <Row gutter={8} align="middle">
+          <Col flex="auto">
+            <AddressInput
+              autoFocus
+              ensProvider={mainnetProvider}
+              placeholder="Enter address"
+              value={voters[index]}
+              onChange={address => {
+                setVoters(prevVoters => {
+                  const nextVoters = [...prevVoters];
+                  nextVoters[index] = address;
+                  return nextVoters;
+                });
+              }}
+            />
+          </Col>
+          <Col>
+            <DeleteOutlined
+              style={{ cursor: "pointer", color: "#ff6666" }}
+              onClick={event => {
+                setVoters(prevVoters => {
+                  const nextVoters = [...prevVoters];
+                  return nextVoters.filter((_, i) => i !== index);
+                });
+              }}
+            />
+          </Col>
+        </Row>
       </Form.Item>
-      <div style={{ marginBottom: "20px" }}>
-        <DeleteOutlined
-          style={{ cursor: "pointer" }}
-          onClick={event => {
-            setVoters(prevVoters => {
-              const nextVoters = [...prevVoters];
-              return nextVoters.filter((_, i) => i !== index);
-            });
-          }}
-        />
-      </div>
     </>
   );
 };
