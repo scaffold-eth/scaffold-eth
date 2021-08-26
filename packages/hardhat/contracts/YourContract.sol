@@ -38,7 +38,7 @@ contract YourContract is Verifier {
       uint[3] memory inputs
     ) public {
     require(currentStep == 1, "You've already commited to a card.");
-    // require(verifyProof(a, b, c, inputs), "Invalid Proof"); TODO: write circuit for this one
+    require(cardverifyProof(a, b, c, inputs), "Invalid Proof"); 
     require(inputs[1] == seedCommit);
     require(inputs[2] == playerCardContractRandomness);
     playerCardHash = inputs[0];
