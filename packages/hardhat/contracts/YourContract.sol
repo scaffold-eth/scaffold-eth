@@ -2,7 +2,8 @@ pragma solidity >=0.6.0 <0.9.0;
 //SPDX-License-Identifier: MIT
  
 // import "hardhat/console.sol";
-import "./hashVerifier.sol"; 
+import "./HashVerifier.sol"; 
+import "./CardVerifier.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract is Verifier {
@@ -66,7 +67,7 @@ contract YourContract is Verifier {
       uint[4] memory inputs
   ) public {
     require(currentStep == 3, "Dealer hasn't drawn a card.");
-    require(verifyProof(a, b, c, inputs), "Invalid Proof");
+    require(hashverifyProof(a, b, c, inputs), "Invalid Proof");
     require(inputs[0] == playerCardHash, "Invalid Card");
     require(inputs[3] == dealerCard, "Invalid Card");
     if (inputs[1] == 1) win = true;
