@@ -15,37 +15,41 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
   const [rewardStatus, setRewardStatus] = useState({});
   const [totalSquare, setTotalSquare] = useState(0);
 
-  const [voteResults, totalSqrtVotes] = useMemo(() => {
+  const [voteResults, totalVotes, totalSqrtVotes] = useMemo(() => {
     const votes = {};
+    let voteCount = 0;
     let sqrts = 0;
     votesEntries.forEach(entry => {
-      const sqrtVote = Math.sqrt(entry.amount.toNumber());
+      const vote = entry.amount.toNumber();
+      const sqrtVote = Math.sqrt(vote);
       if (!votes[entry.wallet]) {
         votes[entry.wallet] = {
-          name: entry.name,
+          vote: 0,
           // Sum of the square root of the votes for each member.
           sqrtVote: 0,
           hasVoted: false,
         };
       }
       votes[entry.wallet].sqrtVote += sqrtVote;
+      votes[entry.wallet].vote += vote;
 
       if (!votes[entry.wallet].hasVoted) {
         votes[entry.wallet].hasVoted = entry.votingAddress === entry.wallet;
       }
 
+      voteCount += vote;
       // Total sum of the sum of the square roots of the votes for all members.
       sqrts += sqrtVote;
     });
 
     let total = 0;
-    Object.entries(votes).forEach(([wallet, { name, sqrtVote }]) => {
+    Object.entries(votes).forEach(([wallet, { sqrtVote }]) => {
       total += Math.pow(sqrtVote, 2);
     });
 
     setTotalSquare(total);
 
-    return [votes, sqrts];
+    return [votes, voteCount, sqrts];
   }, [votesEntries]);
 
   const missingVotingMembers = contributorEntries.filter(entry => !voteResults[entry.wallet]?.hasVoted);
@@ -99,7 +103,16 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
     <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
       <Title level={3}>Reward Contributors</Title>
       <Title level={5}>
-        Total sqrt votes:&nbsp;&nbsp;
+        Total votes:&nbsp;&nbsp;
+        <Badge
+          showZero
+          overflowCount={100000}
+          count={totalVotes}
+          style={{ backgroundColor: "#000000" }}
+        />
+      </Title>
+      <Title level={5}>
+        Total Quadratic votes:&nbsp;&nbsp;
         <Badge
           showZero
           overflowCount={100000}
@@ -115,8 +128,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
           <Title level={5}>Pending votes from</Title>
           {missingVotingMembers.map(entry => (
             <p key={entry.wallet}>
-              <Address address={entry.wallet} fontSize={16} size="short" />{" "}
-              (<Text type="danger">{entry.name}</Text>)
+              <Address address={entry.wallet} fontSize={16} size="short" />
             </p>
           ))}
         </>
@@ -128,7 +140,7 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
 
           return (
             <Card
-              title={contributor.name}
+              title={<Address address={address} fontSize={16} size="short" />}
               extra={
                 <Button
                   onClick={() => handlePayment(address, contributorReward)}
@@ -142,10 +154,11 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
               key={address}
             >
               <p>
-                <strong>Wallet: </strong> <Address address={address} fontSize={16} size="short" />
+                <strong>Votes: </strong>
+                {contributor.vote}
               </p>
               <p>
-                <strong>Votes sqrt: </strong>
+                <strong>Quadratic votes: </strong>
                 {contributor.sqrtVote.toFixed(2)} <Text type="secondary">({(contributorShare * 100).toFixed(2)}%)</Text>
               </p>
               <p>

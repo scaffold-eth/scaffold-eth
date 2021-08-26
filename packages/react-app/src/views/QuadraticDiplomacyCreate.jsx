@@ -5,21 +5,13 @@ import { DeleteOutlined } from "@ant-design/icons";
 const { Title } = Typography;
 
 export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
-  const [voters, setVoters] = useState([{}]);
+  const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
     // ToDo. Do some validation (non-empty elements, etc.)
-    const names = [];
-    const wallets = [];
-
-    voters.forEach(({ name, address }) => {
-      names.push(name);
-      wallets.push(address);
-    });
-
-    await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(names, wallets, voteAllocation), update => {
+    await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(voters, voteAllocation), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         setVoters([{}]);
         setVoteAllocation(0);
@@ -47,11 +39,12 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
         ))}
         <Divider />
         <Form.Item style={{ justifyContent: "center" }}>
+          {/*ToDo. Restart ant form state (the browser is keeping filled-removed elements)*/}
           <Button
             type="dashed"
             block
             icon={<PlusOutlined />}
-            onClick={() => setVoters(prevVoters => [...prevVoters, {}])}
+            onClick={() => setVoters(prevVoters => [...prevVoters, ""])}
           >
             Add Voter
           </Button>
@@ -70,26 +63,13 @@ export default function QuadraticDiplomacyCreate({ tx, writeContracts }) {
 const VoterInput = ({ index, setVoters }) => {
   return (
     <>
-      <Form.Item label="Name" name={`name[${index}]`} style={{ textAlign: "left", marginBottom: "5px" }}>
-        <Input
-          placeholder="Voter name"
-          style={{ width: "50%" }}
-          onChange={event =>
-            setVoters(prevVoters => {
-              const nextVoters = [...prevVoters];
-              nextVoters[index].name = event.target.value;
-              return nextVoters;
-            })
-          }
-        />
-      </Form.Item>
       <Form.Item label="Address" name={`address[${index}]`} style={{ marginBottom: "5px" }}>
         <Input
           placeholder="Voter address"
           onChange={event =>
             setVoters(prevVoters => {
               const nextVoters = [...prevVoters];
-              nextVoters[index].address = event.target.value;
+              nextVoters[index] = event.target.value;
               return nextVoters;
             })
           }

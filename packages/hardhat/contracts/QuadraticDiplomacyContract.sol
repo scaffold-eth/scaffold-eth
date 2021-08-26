@@ -5,8 +5,8 @@ import "@openzeppelin/contracts/access/AccessControl.sol";
 
 contract QuadraticDiplomacyContract is AccessControl {
 
-    event Vote(address votingAddress, string name, address wallet, uint256 amount);
-    event AddMember(address admin, string name, address wallet);
+    event Vote(address votingAddress, address wallet, uint256 amount);
+    event AddMember(address admin, address wallet);
 
     bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
@@ -30,18 +30,17 @@ contract QuadraticDiplomacyContract is AccessControl {
         _;
     }
 
-    function vote(string memory name, address wallet, uint256 amount) private {
+    function vote(address wallet, uint256 amount) private {
         require(votes[msg.sender] >= amount, "Not enough votes left");
         votes[msg.sender] -= amount;
-        emit Vote(msg.sender, name, wallet, amount);
+        emit Vote(msg.sender, wallet, amount);
     }
 
-    function voteMultiple(string[] memory names, address[] memory wallets, uint256[] memory amounts) public canVote {
+    function voteMultiple(address[] memory wallets, uint256[] memory amounts) public canVote {
         require(wallets.length == amounts.length, "Wrong size");
-        require(wallets.length == names.length, "Wrong size");
 
         for (uint256 i = 0; i < wallets.length; i++) {
-            vote(names[i], wallets[i], amounts[i]);
+            vote(wallets[i], amounts[i]);
         }
     }
 
@@ -57,16 +56,14 @@ contract QuadraticDiplomacyContract is AccessControl {
         votes[wallet] += amount;
     }
 
-    function addMember(string memory name, address wallet) public onlyAdmin {
+    function addMember(address wallet) public onlyAdmin {
         grantRole(VOTER_ROLE, wallet);
-        emit AddMember(msg.sender, name, wallet);
+        emit AddMember(msg.sender, wallet);
     }
 
-    function addMembersWithVotes(string[] memory names, address[] memory wallets, uint256 voteAllocation) public onlyAdmin {
-        require(wallets.length == names.length, "Wrong size");
-
+    function addMembersWithVotes(address[] memory wallets, uint256 voteAllocation) public onlyAdmin {
         for (uint256 i = 0; i < wallets.length; i++) {
-            addMember(names[i], wallets[i]);
+            addMember(wallets[i]);
             giveVotes(wallets[i], voteAllocation);
         }
     }
