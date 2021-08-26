@@ -2,7 +2,7 @@ pragma solidity >=0.6.0 <0.9.0;
 //SPDX-License-Identifier: MIT
  
 // import "hardhat/console.sol";
-import "./hashVerifier.sol";
+import "./hashVerifier.sol"; 
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract is Verifier {
@@ -10,6 +10,8 @@ contract YourContract is Verifier {
   event SetPurpose(address sender, string purpose);
 
   string public purpose = "Testing ZK Proofs!!";
+  uint256 public seedCommit;
+  uint256 public playerCardContractRandomness;
   uint256 public playerCardHash;
   uint256 public playerBet;
   uint256 public dealerCard;
@@ -21,9 +23,19 @@ contract YourContract is Verifier {
   constructor() public {
     // what should we do on deploy?
   }
-  function commitToCard(uint256 cardHash) public {
-    require(currentStep == 0, "You've already commited to a card.");
-    playerCardHash = cardHash;
+  function commitToRandonmess(uint256 newSeedCommit) public {
+    require(currentStep == 0, "You've already commited to a seed.");
+    seedCommit = newSeedCommit;
+    playerCardCtractRandomness = uint(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
+    currentStep ++;
+  }
+
+  function commitToCard(uint256[2] a, uint256[2][2] b, uint256[2] c, uint256[3] inputs) public {
+    require(currentStep == 1, "You've already commited to a card.");
+    // require(verifyProof(a, b, c, input), "Invalid Proof"); TODO: write circuit for this one
+    require(input[1] == seecCommit);
+    require(input[2] == playerCardCtractRandomness);
+    playerCardHash = input[0];
     currentStep ++;
   }
   
@@ -31,13 +43,8 @@ contract YourContract is Verifier {
       require(currentStep == 1, "You haven't chosen a card.");
       playerBet = bet;
       currentStep ++;
-      // playerSeed = seedHash;
-      // //TODO: Combine block hash with secret seed hash
-      // uint user_block_hash = uint(
-      //     keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
-      // );
-      // playerCommit = user_block_hash % 13 + 1;
   }
+
   function dealCard() public {
       require(currentStep == 2, "You haven't selected a bet.");
         uint dealerCardRandomness = uint(
