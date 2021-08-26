@@ -67,4 +67,13 @@ contract QuadraticDiplomacyContract is AccessControl {
             giveVotes(wallets[i], voteAllocation);
         }
     }
+
+    function payMultiple(address payable[] memory wallets, uint256[] memory amounts) public payable onlyAdmin {
+        require(wallets.length == amounts.length, "Wrong size");
+
+        // transfer the required amount of ether to each one of the wallets
+        for (uint256 i = 0; i < wallets.length; i++)
+            wallets[i].transfer(amounts[i]);
+    }
+
 }
