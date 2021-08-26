@@ -1,3 +1,4 @@
+import mimcHash from "../mimc.ts";
 import React, { useState, useCallback, useMemo } from "react";
 import { Input, Button, Tooltip } from "antd";
 import { SendOutlined } from "@ant-design/icons";
@@ -5,7 +6,6 @@ import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata } fr
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
 const { utils } = require("ethers");
-import mimcHash from '../mimc.js';
 
 export default function SeedCommit({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -142,10 +142,8 @@ export default function SeedCommit({customContract, account, gasPrice, signer, p
                         </Tooltip>
                     }
                 />
-                <Text copyable={{ text: seedCommit }} style={{marginTop: 25}}>
-                    {seedCommit}
-                </Text>
                 
+
                 <h2>
                     Check your Mimc hash {seed} :   {seedCommit}
                 </h2>
