@@ -175,7 +175,7 @@ contract Verifier {
         Pairing.G2Point B;
         Pairing.G1Point C;
     }
-    function verifyingKey() internal pure returns (VerifyingKey memory vk) {
+    function cardverifyingKey() internal pure returns (VerifyingKey memory vk) {
         vk.alfa1 = Pairing.G1Point(19642524115522290447760970021746675789341356000653265441069630957431566301675,15809037446102219312954435152879098683824559980020626143453387822004586242317);
         vk.beta2 = Pairing.G2Point([6402738102853475583969787773506197858266321704623454181848954418090577674938,3306678135584565297353192801602995509515651571902196852074598261262327790404], [15158588411628049902562758796812667714664232742372443470614751812018801551665,4983765881427969364617654516554524254158908221590807345159959200407712579883]);
         vk.gamma2 = Pairing.G2Point([11559732032986387107991004021392285783925812861821192530917403151452391805634,10857046999023057135944570762232829481370756359578518086990519993285655852781], [4082367875863433681332203403145435568316851327593401208105741076214120093531,8495653923123431417604973247489272438418190587263600148770280649306958101930]);
@@ -187,9 +187,9 @@ contract Verifier {
         vk.IC[3] = Pairing.G1Point(12928698149503974382159541404562871790062849190201133004749882156579927698962,18680179952011148929824524859657281389843171921082260938030791808575132421873);
 
     }
-    function verify(uint[] memory input, Proof memory proof) internal view returns (uint) {
+    function cardverify(uint[] memory input, Proof memory proof) internal view returns (uint) {
         uint256 snark_scalar_field = 21888242871839275222246405745257275088548364400416034343698204186575808495617;
-        VerifyingKey memory vk = verifyingKey();
+        VerifyingKey memory vk = cardverifyingKey();
         require(input.length + 1 == vk.IC.length,"verifier-bad-input");
         // Compute the linear combination vk_x
         Pairing.G1Point memory vk_x = Pairing.G1Point(0, 0);
@@ -207,7 +207,7 @@ contract Verifier {
         return 0;
     }
     /// @return r  bool true if proof is valid
-    function verifyProof(
+    function cardverifyProof(
             uint[2] memory a,
             uint[2][2] memory b,
             uint[2] memory c,
@@ -221,7 +221,7 @@ contract Verifier {
         for(uint i = 0; i < input.length; i++){
             inputValues[i] = input[i];
         }
-        if (verify(inputValues, proof) == 0) {
+        if (cardverify(inputValues, proof) == 0) {
             return true;
         } else {
             return false;
