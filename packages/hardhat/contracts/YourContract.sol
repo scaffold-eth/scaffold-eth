@@ -2,11 +2,11 @@ pragma solidity >=0.6.0 <0.9.0;
 //SPDX-License-Identifier: MIT
  
 // import "hardhat/console.sol";
-import "./HashVerifier.sol"; 
-import "./CardVerifier.sol";
+import "./hashVerifier.sol"; 
+import "./cardVerifier.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract YourContract is Verifier {
+contract YourContract is hashVerifier, cardVerifier {
 
   event SetPurpose(address sender, string purpose);
 
