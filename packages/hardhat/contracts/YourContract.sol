@@ -72,7 +72,7 @@ contract YourContract is hashVerifier, cardVerifier {
     require(hashverifyProof(a, b, c, inputs), "Invalid Proof");
     require(inputs[0] == playerCardHash, "Invalid Card");
     require(inputs[3] == dealerCard, "Invalid Card");
-    if (inputs[1] == 1) win = true;
+    if (inputs[1] == 0) win = true;
     currentStep++;
   }
   // function testVerifyProof(

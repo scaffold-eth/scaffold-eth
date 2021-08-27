@@ -6,7 +6,7 @@ import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
 import { Transactor } from "../helpers";
 import bigInt from 'big-integer';
-import { BigInteger } from 'big-integer';
+
 
 export default function PlayPoker({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -51,6 +51,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
   
     const playerSeedCommitForm = contractIsDeployed ? ReturnFunctionForm(2) : null
     const playerCardCommitForm = contractIsDeployed ? ReturnFunctionForm(1) : null
+    const playerCardHash = contractIsDeployed ? ReturnDisplayVariable(10) : null
 
     const placeBetForm = contractIsDeployed ? ReturnFunctionForm(7) : null
     const playerBetForm = contractIsDeployed ? ReturnDisplayVariable(8) : null
@@ -79,6 +80,10 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
     const [b2, setB2] = useState();
     const [c2, setC2] = useState();
     const [input2, setInput2] = useState();
+    const [winvar, setWinvar] = useState();
+    const [dealerCardvar, setdealerCard] = useState();
+    const [playerCardHashvar, setplayerCardHash] = useState();
+    const [playerBet, setplayerBet] = useState(); 
 
     
 
@@ -87,15 +92,17 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
             try {
             const funcResponse = await contractFunction();
             if (type == "card"){
-                setVariable((funcResponse + seed) % 13 + 1);
-                setBlockhash(bigInt(funcResponse.toString()));
+                const sum = bigInt(funcResponse.toString()).add(seed)
+                const remainder = sum.mod(13) + 1
+                setBlockhash(bigInt(funcResponse.toString()).value);
+                setVariable(remainder);
             }
             else if (type) {
                 setVariable(funcResponse.toNumber());
             } else{
                 setVariable(funcResponse.toString());
             }
-            triggerRefresh(false);
+            //triggerRefresh(false);
             } catch (e) {
             console.log(e);
             }
@@ -123,11 +130,10 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
     }
 
     async function CircuitCallDataCard(circuitName, seed, blockhash) {
-        console.log(seed)
-        console.log(blockhash.value.toString())
+        console.log(blockhash)
   
         const { proof, publicSignals } =
-          await window.snarkjs.groth16.fullProve({ "seed": seed, "blockhash": blockhash.value.toString()},
+          await window.snarkjs.groth16.fullProve({ "seed": seed, "blockhash": blockhash.toString()},
           `/circuits/${circuitName}_circuit.wasm`,
           `/circuits/${circuitName}_circuit_final.zkey`);
     
@@ -143,7 +149,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
     
   
     const handleIsValid = async () => {
-      const [res, genCallData] = await CircuitCallDataHash("hash", seedCommit, hash, threshold);
+      const [res, genCallData] = await CircuitCallDataHash("hash", card, cardCommit, threshold);
       setIsValid(res.toString());
       setA(genCallData[0]);
       setB(genCallData[1]);
@@ -225,8 +231,8 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
             <span>
                 <h2>Your card value is {card}. Good luck!</h2>
                 <br></br>
-                <h2>Your card hash that will be commited {cardCommit.toString()}</h2>
-                <h2></h2>
+                <h2>Your will commit card hash {cardCommit.toString()}</h2>
+                <br></br>
                 <p>{a2}</p>
                 <h2></h2>
                 <p>{b2}</p>
@@ -238,17 +244,35 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 
             <span>
                 {playerCardCommitForm}
+                <a onClick={async() => {
+                        await getValue(contract[displayedContractFunctions[10].name], setplayerCardHash, triggerRefresh, false)
+                    }}>
+                    🔄
+                </a>
+                <h2> The contract now knows your hash {playerCardHashvar}</h2>
+                <br></br>
                 {placeBetForm}
-                {playerBetForm}
+                <a onClick={async() => {
+                        await getValue(contract[displayedContractFunctions[8].name], setplayerBet, triggerRefresh, false)
+                    }}>
+                    🔄
+                </a>
+                <h2>{playerBet} eth into the bet! </h2>
+                <br></br>
                 {dealCardForm}
-                {dealerCard}
+                <a onClick={async() => {
+                        await getValue(contract[displayedContractFunctions[5].name], setdealerCard, triggerRefresh, false)
+                    }}>
+                    🔄
+                </a>
+                <h2>The dealer draws card {dealerCardvar}</h2>
                 <Button 
                     // TODO Figure out async handling in react and combine this button with the next
                     onClick={async()=>{
                         // get dealer card
-                        getValue(contract[displayedContractFunctions[6].name], setThreshold, triggerRefresh, true);
+                        getValue(contract[displayedContractFunctions[5].name], setThreshold, triggerRefresh, true);
                         // get player card hash
-                        getValue(contract[displayedContractFunctions[11].name], setHash, triggerRefresh, false);                        
+                        getValue(contract[displayedContractFunctions[10].name], setHash, triggerRefresh, false);                        
                     }}
                     size="large"
                 >
@@ -257,7 +281,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 <Button 
                     onClick={async() => {
                         //await getValue(contract[thresholdVariable.name], setThreshold, triggerRefresh, true);
-                        //await getValue(contract[playerCardHash.name], setHash, triggerRefresh, false);
+                        await getValue(contract[displayedContractFunctions[10].name], setHash, triggerRefresh, false);
                         await handleIsValid();
                     }}
                     size="large"
@@ -275,7 +299,12 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 {/* Submit proof and display outcome */}
                 
                 {submitProofForm}
-                {win}
+                <a onClick={async() => {
+                        await getValue(contract[displayedContractFunctions[14].name], setWinvar, triggerRefresh, false)
+                    }}>
+                    🔄
+                </a>
+                <h2>Did I win? {winvar}</h2>
                 
                 {/*
             
@@ -287,9 +316,6 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                     }}>
                     Upload zk proof
                 </Button>*/}
-                <h2>
-                    Your proof is {isValid}
-                </h2>
             </span>
         </div>
       </div>
