@@ -106,7 +106,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         IERC20 token,
         address spender
     ) public onlyAdmin {
-        _shareToken(users, shares, token, spender);
+        _sharePayedToken(users, shares, token, spender);
     }
 
     function deposit() public payable {}

@@ -63,7 +63,7 @@ contract Distributor {
     }
 
     // share tokens from approved spender account
-    function _shareToken(
+    function _sharePayedToken(
         address[] memory users,
         uint256[] memory shares,
         IERC20 token,

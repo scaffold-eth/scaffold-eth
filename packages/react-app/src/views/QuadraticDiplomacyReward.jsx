@@ -151,12 +151,21 @@ export default function QuadraticDiplomacyReward({
           })
         : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
     } else {
-      const tokenAddress = mainnetContracts[selectedToken].address;
-      const tokenDecimals = await mainnetContracts[selectedToken].decimals();
+      const tokenAddress = writeContracts[selectedToken].address;
       const userAddress = await userSigner.getAddress();
+      const tokenContract = writeContracts[selectedToken].connect(userSigner);
+      // approve only if have to pay from self wallet
+      if (payFromSelf) {
+        await tx(
+          tokenContract.approve(
+            writeContracts.QuadraticDiplomacyContract.address,
+            ethers.utils.parseUnits(totalRewardAmount.toString(), 18),
+          ),
+        );
+      }
       dataSource.forEach(({ address, rewardAmount }) => {
         wallets.push(address);
-        amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), tokenDecimals));
+        amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), 18));
       });
       func = payFromSelf
         ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userAddress)
