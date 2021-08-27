@@ -17,15 +17,16 @@ const columns = [
     render: address => <Address address={address} fontSize={16} size="short" />,
   },
   {
-    title: "Number of votes",
+    title: "Nº of votes",
     dataIndex: "vote",
     defaultSortOrder: "descend",
+    align: "center",
     sorter: (a, b) => a.vote - b.vote,
   },
   {
     title: "Quadratic votes",
     dataIndex: "votesSqrt",
-    defaultSortOrder: "descend",
+    align: "center",
     sorter: (a, b) => a.votesSqrt - b.votesSqrt,
     render: (votesSqrt, record) => (
       <p>
@@ -37,12 +38,14 @@ const columns = [
     title: "Reward Amount",
     dataIndex: "rewardAmount",
     defaultSortOrder: "descend",
+    align: "center",
     sorter: (a, b) => a.rewardAmount - b.rewardAmount,
     render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
   },
   {
     title: "Has Voted",
     dataIndex: "hasVoted",
+    align: "center",
     filters: [
       { text: "Yes", value: true },
       { text: "No", value: false },
@@ -60,6 +63,7 @@ export default function QuadraticDiplomacyReward({
   contributorEntries,
   price,
   isAdmin,
+  mainnetProvider,
 }) {
   const [totalRewardAmount, setTotalRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
@@ -191,10 +195,10 @@ export default function QuadraticDiplomacyReward({
             message={<Title level={5}>Votes are pending from:</Title>}
             description={missingVotingMembers.map(entry => (
               <p key={entry.wallet}>
-                <Address address={entry.wallet} fontSize={16} size="short" /> (<Text type="danger">{entry.name}</Text>)
+                <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
               </p>
             ))}
-          ></Alert>
+          />
         )}
         <Table
           bordered
