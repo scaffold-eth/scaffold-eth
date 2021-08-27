@@ -2,7 +2,7 @@
 
 This scaffold-eth branch introduces a file upload component. 
 
-![image](https://photos.app.goo.gl/7HLJGZZ82YhppYgYA)
+![image](https://adaptiveclaim.s3.amazonaws.com/1474488.jpg)
 
 🗝️ Currently, there are two ways to get data uploaded to IPFS...
 
