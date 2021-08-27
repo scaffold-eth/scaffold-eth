@@ -2,11 +2,15 @@ import React, { useState, useEffect } from "react";
 import { Button, Input, Col, Row, Spin, Card } from 'antd'
 
 const { BufferList } = require('bl')
-
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 
 const DEBUG = true;
+
+//AWS config
+const bucketName = "adaptiveclaim";
+APIGatewayEndpoint = "https://py1mx7j0eh.execute-api.us-east-1.amazonaws.com/default/getPresignedImageUrl";
+
 
 export default function BucketToIPFS() {
 
@@ -84,7 +88,7 @@ export default function BucketToIPFS() {
         }
 		setIsSelected(true);
 
-        await fetch("https://py1mx7j0eh.execute-api.us-east-1.amazonaws.com/default/getPresignedImageUrl", requestOptions)
+        await fetch(APIGatewayEndpoint, requestOptions)
         .then(response => response.json())
         .then(result => setSignedURL(result))
         .catch(error => console.log('error', error));
@@ -111,7 +115,7 @@ export default function BucketToIPFS() {
 	};
 
     useEffect(()=>{
-        if(signedURL) setURL("https://adaptiveclaim.s3.amazonaws.com/"+signedURL.Key)
+        if(signedURL) setURL("https://"+bucketName+".s3.amazonaws.com/"+signedURL.Key)
     },[uploadToS3Clicked])
 	
     if (DEBUG) console.log("Selected File Properties: ", selectedFile)
