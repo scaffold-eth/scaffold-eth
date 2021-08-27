@@ -429,11 +429,7 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            <QuadraticDiplomacyCreate
-              mainnetProvider={mainnetProvider}
-              writeContracts={writeContracts}
-              tx={tx}
-            />
+            <QuadraticDiplomacyCreate mainnetProvider={mainnetProvider} writeContracts={writeContracts} tx={tx} />
           </Route>
           <Route path="/quadratic-diplomacy-vote">
             <QuadraticDiplomacyVote
@@ -447,7 +443,8 @@ function App(props) {
           </Route>
           <Route path="/quadratic-diplomacy-reward">
             <QuadraticDiplomacyReward
-              userSigner={userSigner}
+              tx={tx}
+              writeContracts={writeContracts}
               votesEntries={votesEntries}
               contributorEntries={contributorEntries}
               price={price}

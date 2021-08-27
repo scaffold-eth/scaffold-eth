@@ -1,5 +1,6 @@
 import React, { useState, useMemo } from "react";
-import { Button, Card, Divider, Space, Typography, Badge, notification } from "antd";
+import { Alert, Button, Divider, Space, Typography, Table, Tag, Row, Col, notification } from "antd";
+import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { Address, EtherInput } from "../components";
 const { Text, Title } = Typography;
 const { ethers } = require("ethers");
@@ -10,15 +11,23 @@ const REWARD_STATUS = {
   FAILED: "reward_status.failed",
 };
 
-export default function QuadraticDiplomacyReward({ userSigner, votesEntries, contributorEntries, price, isAdmin, mainnetProvider }) {
-  const [rewardAmount, setRewardAmount] = useState(0);
-  const [rewardStatus, setRewardStatus] = useState({});
-  const [totalSquare, setTotalSquare] = useState(0);
+export default function QuadraticDiplomacyReward({
+  tx,
+  writeContracts,
+  votesEntries,
+  contributorEntries,
+  price,
+  isAdmin,
+  mainnetProvider,
+}) {
+  const [totalRewardAmount, setTotalRewardAmount] = useState(0);
+  const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
 
-  const [voteResults, totalVotes, totalSqrtVotes] = useMemo(() => {
+  const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
     let voteCount = 0;
     let sqrts = 0;
+    let total = 0;
     votesEntries.forEach(entry => {
       const vote = entry.amount.toNumber();
       const sqrtVote = Math.sqrt(vote);
@@ -42,17 +51,108 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
       sqrts += sqrtVote;
     });
 
-    let total = 0;
     Object.entries(votes).forEach(([wallet, { sqrtVote }]) => {
       total += Math.pow(sqrtVote, 2);
     });
 
-    setTotalSquare(total);
-
-    return [votes, voteCount, sqrts];
+    return [votes, voteCount, sqrts, total];
   }, [votesEntries]);
 
-  const missingVotingMembers = contributorEntries.filter(entry => !voteResults[entry.wallet]?.hasVoted);
+  const columns = useMemo(
+    () => [
+      {
+        title: "Address",
+        dataIndex: "address",
+        render: address => <Address address={address} fontSize={16} size="short" ensProvider={mainnetProvider} />,
+      },
+      {
+        title: "Nº of votes",
+        dataIndex: "vote",
+        defaultSortOrder: "descend",
+        align: "center",
+        sorter: (a, b) => a.vote - b.vote,
+      },
+      {
+        title: "Quadratic votes",
+        dataIndex: "votesSqrt",
+        align: "center",
+        sorter: (a, b) => a.votesSqrt - b.votesSqrt,
+        render: (votesSqrt, record) => (
+          <p>
+            {votesSqrt.toFixed(2)} <Text type="secondary">({(record.votesShare * 100).toFixed(2)}%)</Text>
+          </p>
+        ),
+      },
+      {
+        title: "Reward Amount",
+        dataIndex: "rewardAmount",
+        defaultSortOrder: "descend",
+        align: "center",
+        sorter: (a, b) => a.rewardAmount - b.rewardAmount,
+        render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
+      },
+      {
+        title: "Has Voted",
+        dataIndex: "hasVoted",
+        align: "center",
+        filters: [
+          { text: "Yes", value: true },
+          { text: "No", value: false },
+        ],
+        onFilter: (value, record) => record.hasVoted === value,
+        render: hasVoted =>
+          hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
+      },
+    ],
+    [mainnetProvider],
+  );
+
+  const dataSource = useMemo(
+    () =>
+      Object.entries(voteResults).map(([address, contributor]) => ({
+        key: address,
+        address: address,
+        vote: contributor?.vote,
+        votesSqrt: contributor?.sqrtVote,
+        votesShare: Math.pow(contributor?.sqrtVote, 2) / totalSquare,
+        rewardAmount: (Math.pow(contributor?.sqrtVote, 2) / totalSquare) * totalRewardAmount,
+        hasVoted: contributor?.hasVoted,
+      })),
+    [votesEntries, totalSquare, totalRewardAmount],
+  );
+
+  const missingVotingMembers = contributorEntries?.filter(entry => !voteResults[entry.wallet]?.hasVoted);
+
+  const handlePayment = async payFromSelf => {
+    // ToDo. Do some validation (non-empty elements, etc.)
+    const wallets = [];
+    const amounts = [];
+    // payable functions need an `overrides` param.
+    // relevant docs: https://docs.ethers.io/v5/api/contract/contract/#Contract-functionsCall
+    const overrides = {
+      value: ethers.utils.parseEther(totalRewardAmount.toString()),
+    };
+
+    dataSource.forEach(({ address, rewardAmount }) => {
+      wallets.push(address);
+      amounts.push(ethers.utils.parseEther(rewardAmount.toString()));
+    });
+
+    // choose appropriate function from contract
+    const func = payFromSelf
+      ? writeContracts.QuadraticDiplomacyContract.sharePayedETH(wallets, amounts, overrides)
+      : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
+
+    await tx(func, update => {
+      // ToDo. Handle errors.
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        notification.success({
+          message: "Payment sent!",
+        });
+        setRewardStatus(REWARD_STATUS.COMPLETED);
+      }
+    });
+  };
 
   if (!isAdmin) {
     return (
@@ -63,107 +163,67 @@ export default function QuadraticDiplomacyReward({ userSigner, votesEntries, con
     );
   }
 
-  const handlePayment = async (address, amount) => {
-    if (rewardStatus[address] === REWARD_STATUS.COMPLETED || !amount) {
-      return;
-    }
-
-    setRewardStatus(prev => ({
-      ...prev,
-      [address]: REWARD_STATUS.PENDING,
-    }));
-
-    try {
-      await userSigner.sendTransaction({
-        to: address,
-        value: ethers.utils.parseEther(amount.toString()),
-      });
-
-      setRewardStatus(prev => ({
-        ...prev,
-        [address]: REWARD_STATUS.COMPLETED,
-      }));
-
-      notification.success({
-        message: "Payment sent!",
-      });
-    } catch (error) {
-      notification.error({
-        message: "Payment Transaction Error",
-        description: error.toString(),
-      });
-      setRewardStatus(prev => ({
-        ...prev,
-        [address]: REWARD_STATUS.FAILED,
-      }));
-    }
-  };
-
   return (
-    <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+    <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64 }}>
       <Title level={3}>Reward Contributors</Title>
       <Title level={5}>
         Total votes:&nbsp;&nbsp;
-        <Badge showZero overflowCount={100000} count={totalVotes} style={{ backgroundColor: "#000000" }} />
+        <Tag color="#000000">{totalVotes}</Tag>
       </Title>
       <Title level={5}>
         Total Quadratic votes:&nbsp;&nbsp;
-        <Badge
-          showZero
-          overflowCount={100000}
-          count={totalSqrtVotes.toFixed(2)}
-          style={{ backgroundColor: "#52c41a" }}
-        />
+        <Tag color="#52c41a">{totalSqrtVotes.toFixed(2)}</Tag>
       </Title>
       <Divider />
-      <EtherInput autofocus placeholder="Reward amount" value={rewardAmount} onChange={setRewardAmount} price={price} />
+      <Row justify="center">
+        <Col sm={10}>
+          <EtherInput
+            autofocus
+            placeholder="Reward amount"
+            value={totalRewardAmount}
+            onChange={setTotalRewardAmount}
+            price={price}
+          />
+        </Col>
+      </Row>
       <Divider />
-      {missingVotingMembers?.length > 0 && (
-        <>
-          <Title level={5}>Pending votes from</Title>
-          {missingVotingMembers.map(entry => (
-            <p key={entry.wallet}>
-              <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
-            </p>
-          ))}
-        </>
-      )}
       <Space direction="vertical" style={{ width: "100%" }}>
-        {Object.entries(voteResults).map(([address, contributor]) => {
-          const contributorShare = Math.pow(contributor.sqrtVote, 2) / totalSquare;
-          const contributorReward = contributorShare * rewardAmount;
-
-          return (
-            <Card
-              title={<Address address={address} fontSize={16} size="short" ensProvider={mainnetProvider} />}
-              extra={
-                <Button
-                  onClick={() => handlePayment(address, contributorReward)}
-                  disabled={
-                    (rewardStatus[address] && rewardStatus[address] !== REWARD_STATUS.FAILED) || !contributorReward
-                  }
-                >
-                  Pay 💸
-                </Button>
-              }
-              key={address}
-            >
-              <p>
-                <strong>Votes: </strong>
-                {contributor.vote}
+        {missingVotingMembers?.length > 0 && (
+          <Alert
+            showIcon
+            type="warning"
+            message={<Title level={5}>Votes are pending from:</Title>}
+            description={missingVotingMembers.map(entry => (
+              <p key={entry.wallet}>
+                <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
               </p>
-              <p>
-                <strong>Quadratic votes: </strong>
-                {contributor.sqrtVote.toFixed(2)} <Text type="secondary">({(contributorShare * 100).toFixed(2)}%)</Text>
-              </p>
-              <p>
-                <strong>Reward amount: </strong>
-                {contributorReward.toFixed(6)} ETH
-              </p>
-              {!contributor.hasVoted && <Text mark>This member hasn't voted yet</Text>}
-            </Card>
-          );
-        })}
+            ))}
+          />
+        )}
+        <Table
+          bordered
+          dataSource={dataSource}
+          columns={columns}
+          pagination={{ pageSize: 10 }}
+          footer={() => (
+            <Space>
+              <Button
+                onClick={() => handlePayment(true)}
+                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                size="large"
+              >
+                Pay 💸
+              </Button>
+              <Button
+                onClick={() => handlePayment(false)}
+                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                size="large"
+              >
+                Pay from contract 💸
+              </Button>
+            </Space>
+          )}
+        />
       </Space>
       <Divider />
     </div>
