@@ -6,17 +6,32 @@ import "hardhat/console.sol";
 
 contract YourContract {
 
-  //event SetPurpose(address sender, string purpose);
-
-  string public purpose = "Building Unstoppable Apps";
-
-  constructor() {
-    // what should we do on deploy?
+  string public purpose = "Hacker News for Ethereum";
+  
+  struct Post{
+    uint data_hash;
+    address poster;
   }
 
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      //emit SetPurpose(msg.sender, purpose);
+  Post[] public posts;
+
+  mapping(uint => mapping(address => uint8)) public upvotes;
+
+  function addPost(uint data) public {
+    posts.push(Post({data_hash: data, poster: msg.sender}));
   }
+
+  function upvote(uint data_hash) public {
+    upvotes[data_hash][msg.sender] = 1;
+  }
+
+  function downvote(uint data_hash) public {
+    upvotes[data_hash][msg.sender] = 2;
+  }
+
+  function undoVote(uint data_hash) public {
+    upvotes[data_hash][msg.sender] = 0;
+  }
+
 }
+
