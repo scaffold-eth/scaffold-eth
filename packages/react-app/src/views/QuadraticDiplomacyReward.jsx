@@ -11,48 +11,6 @@ const REWARD_STATUS = {
   COMPLETED: "reward_status.completed",
   FAILED: "reward_status.failed",
 };
-const columns = [
-  {
-    title: "Address",
-    dataIndex: "address",
-    render: address => <Address address={address} fontSize={16} size="short" />,
-  },
-  {
-    title: "Number of votes",
-    dataIndex: "vote",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.vote - b.vote,
-  },
-  {
-    title: "Quadratic votes",
-    dataIndex: "votesSqrt",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.votesSqrt - b.votesSqrt,
-    render: (votesSqrt, record) => (
-      <p>
-        {votesSqrt.toFixed(2)} <Text type="secondary">({(record.votesShare * 100).toFixed(2)}%)</Text>
-      </p>
-    ),
-  },
-  {
-    title: "Reward Amount",
-    dataIndex: "rewardAmount",
-    defaultSortOrder: "descend",
-    sorter: (a, b) => a.rewardAmount - b.rewardAmount,
-    render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
-  },
-  {
-    title: "Has Voted",
-    dataIndex: "hasVoted",
-    filters: [
-      { text: "Yes", value: true },
-      { text: "No", value: false },
-    ],
-    onFilter: (value, record) => record.hasVoted === value,
-    render: hasVoted =>
-      hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
-  },
-];
 
 export default function QuadraticDiplomacyReward({
   tx,
@@ -63,6 +21,7 @@ export default function QuadraticDiplomacyReward({
   contributorEntries,
   price,
   isAdmin,
+  mainnetProvider,
 }) {
   const [totalRewardAmount, setTotalRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
@@ -102,6 +61,55 @@ export default function QuadraticDiplomacyReward({
 
     return [votes, voteCount, sqrts, total];
   }, [votesEntries]);
+
+  const columns = useMemo(
+    () => [
+      {
+        title: "Address",
+        dataIndex: "address",
+        render: address => <Address address={address} fontSize={16} size="short" ensProvider={mainnetProvider} />,
+      },
+      {
+        title: "Nº of votes",
+        dataIndex: "vote",
+        defaultSortOrder: "descend",
+        align: "center",
+        sorter: (a, b) => a.vote - b.vote,
+      },
+      {
+        title: "Quadratic votes",
+        dataIndex: "votesSqrt",
+        align: "center",
+        sorter: (a, b) => a.votesSqrt - b.votesSqrt,
+        render: (votesSqrt, record) => (
+          <p>
+            {votesSqrt.toFixed(2)} <Text type="secondary">({(record.votesShare * 100).toFixed(2)}%)</Text>
+          </p>
+        ),
+      },
+      {
+        title: "Reward Amount",
+        dataIndex: "rewardAmount",
+        defaultSortOrder: "descend",
+        align: "center",
+        sorter: (a, b) => a.rewardAmount - b.rewardAmount,
+        render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
+      },
+      {
+        title: "Has Voted",
+        dataIndex: "hasVoted",
+        align: "center",
+        filters: [
+          { text: "Yes", value: true },
+          { text: "No", value: false },
+        ],
+        onFilter: (value, record) => record.hasVoted === value,
+        render: hasVoted =>
+          hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
+      },
+    ],
+    [mainnetProvider],
+  );
 
   const dataSource = useMemo(
     () =>
@@ -210,10 +218,10 @@ export default function QuadraticDiplomacyReward({
             message={<Title level={5}>Votes are pending from:</Title>}
             description={missingVotingMembers.map(entry => (
               <p key={entry.wallet}>
-                <Address address={entry.wallet} fontSize={16} size="short" /> (<Text type="danger">{entry.name}</Text>)
+                <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
               </p>
             ))}
-          ></Alert>
+          />
         )}
         <Table
           bordered

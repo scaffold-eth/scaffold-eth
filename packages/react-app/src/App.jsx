@@ -451,6 +451,7 @@ function App(props) {
               contributorEntries={contributorEntries}
               price={price}
               isAdmin={isAdmin}
+              mainnetProvider={mainnetProvider}
             />
           </Route>
           <Route exact path="/contract">
