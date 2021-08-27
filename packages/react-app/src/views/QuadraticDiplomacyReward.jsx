@@ -1,10 +1,11 @@
 import React, { useState, useMemo } from "react";
-import { Alert, Button, Divider, Space, Typography, Table, Tag, Row, Col, notification } from "antd";
+import { Alert, Input, Button, Divider, Space, Typography, Table, Tag, Select, notification } from "antd";
 import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
-import { Address, EtherInput } from "../components";
+import { Address } from "../components";
 const { Text, Title } = Typography;
 const { ethers } = require("ethers");
 
+const TOKENS = ["ETH", "GTC", "DAI"];
 const REWARD_STATUS = {
   PENDING: "reward_status.pending",
   COMPLETED: "reward_status.completed",
@@ -14,6 +15,8 @@ const REWARD_STATUS = {
 export default function QuadraticDiplomacyReward({
   tx,
   writeContracts,
+  mainnetContracts,
+  userSigner,
   votesEntries,
   contributorEntries,
   price,
@@ -22,6 +25,7 @@ export default function QuadraticDiplomacyReward({
 }) {
   const [totalRewardAmount, setTotalRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
+  const [selectedToken, setSelectedToken] = useState("");
 
   const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
@@ -89,7 +93,11 @@ export default function QuadraticDiplomacyReward({
         defaultSortOrder: "descend",
         align: "center",
         sorter: (a, b) => a.rewardAmount - b.rewardAmount,
-        render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
+        render: rewardAmount => (
+          <p>
+            {rewardAmount.toFixed(2)} {selectedToken.toUpperCase()}
+          </p>
+        ),
       },
       {
         title: "Has Voted",
@@ -104,7 +112,7 @@ export default function QuadraticDiplomacyReward({
           hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
       },
     ],
-    [mainnetProvider],
+    [mainnetProvider, selectedToken],
   );
 
   const dataSource = useMemo(
@@ -127,21 +135,42 @@ export default function QuadraticDiplomacyReward({
     // ToDo. Do some validation (non-empty elements, etc.)
     const wallets = [];
     const amounts = [];
-    // payable functions need an `overrides` param.
-    // relevant docs: https://docs.ethers.io/v5/api/contract/contract/#Contract-functionsCall
-    const overrides = {
-      value: ethers.utils.parseEther(totalRewardAmount.toString()),
-    };
-
-    dataSource.forEach(({ address, rewardAmount }) => {
-      wallets.push(address);
-      amounts.push(ethers.utils.parseEther(rewardAmount.toString()));
-    });
 
     // choose appropriate function from contract
-    const func = payFromSelf
-      ? writeContracts.QuadraticDiplomacyContract.sharePayedETH(wallets, amounts, overrides)
-      : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
+    let func;
+    if (selectedToken == "ETH") {
+      dataSource.forEach(({ address, rewardAmount }) => {
+        wallets.push(address);
+        amounts.push(ethers.utils.parseEther(rewardAmount.toString()));
+      });
+      func = payFromSelf
+        ? // payable functions need an `overrides` param.
+          // relevant docs: https://docs.ethers.io/v5/api/contract/contract/#Contract-functionsCall
+          writeContracts.QuadraticDiplomacyContract.sharePayedETH(wallets, amounts, {
+            value: ethers.utils.parseEther(totalRewardAmount.toString()),
+          })
+        : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
+    } else {
+      const tokenAddress = writeContracts[selectedToken].address;
+      const userAddress = await userSigner.getAddress();
+      const tokenContract = writeContracts[selectedToken].connect(userSigner);
+      // approve only if have to pay from self wallet
+      if (payFromSelf) {
+        await tx(
+          tokenContract.approve(
+            writeContracts.QuadraticDiplomacyContract.address,
+            ethers.utils.parseUnits(totalRewardAmount.toString(), 18),
+          ),
+        );
+      }
+      dataSource.forEach(({ address, rewardAmount }) => {
+        wallets.push(address);
+        amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), 18));
+      });
+      func = payFromSelf
+        ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userAddress)
+        : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
+    }
 
     await tx(func, update => {
       // ToDo. Handle errors.
@@ -175,17 +204,22 @@ export default function QuadraticDiplomacyReward({
         <Tag color="#52c41a">{totalSqrtVotes.toFixed(2)}</Tag>
       </Title>
       <Divider />
-      <Row justify="center">
-        <Col sm={10}>
-          <EtherInput
-            autofocus
-            placeholder="Reward amount"
-            value={totalRewardAmount}
-            onChange={setTotalRewardAmount}
-            price={price}
-          />
-        </Col>
-      </Row>
+      <Space split>
+        <Input
+          type="number"
+          disabled={!selectedToken} // disable if no token selected
+          value={totalRewardAmount}
+          addonBefore="Total Amount to Distribute"
+          addonAfter={
+            <Select defaultValue="Select token..." onChange={setSelectedToken}>
+              {TOKENS.map(tokenName => (
+                <Select.Option value={tokenName}>{tokenName}</Select.Option>
+              ))}
+            </Select>
+          }
+          onChange={e => setTotalRewardAmount(e.target.value.toLowerCase())}
+        />
+      </Space>
       <Divider />
       <Space direction="vertical" style={{ width: "100%" }}>
         {missingVotingMembers?.length > 0 && (
