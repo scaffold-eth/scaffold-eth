@@ -126,7 +126,7 @@ export default function QuadraticDiplomacyReward({
         rewardAmount: (Math.pow(contributor?.sqrtVote, 2) / totalSquare) * totalRewardAmount,
         hasVoted: contributor?.hasVoted,
       })),
-    [votesEntries, totalSquare, totalRewardAmount],
+    [voteResults, totalSquare, totalRewardAmount],
   );
 
   const missingVotingMembers = contributorEntries?.filter(entry => !voteResults[entry.wallet]?.hasVoted);
