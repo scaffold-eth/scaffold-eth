@@ -2,6 +2,8 @@
 
 This scaffold-eth branch introduces a file upload component. 
 
+![image](https://photos.app.goo.gl/7HLJGZZ82YhppYgYA)
+
 🗝️ Currently, there are two ways to get data uploaded to IPFS...
 
 1). Calling the 'addToIPFS' hook in a component in your app:
