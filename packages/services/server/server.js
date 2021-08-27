@@ -6,7 +6,7 @@ const app = express()
 app.use(express.static('react-app'))
 
 app.get('/s3Url', async (req,res) => {
-    const url = await generateUploadURL()
+    const url = await generateUploadURL(req)
     res.send({url})
 })
 

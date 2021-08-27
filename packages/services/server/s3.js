@@ -15,8 +15,8 @@ const s3 = new aws.s3({
     signatureVersion: 'v4'
 })
 
-export async function generateUploadURL() {
-    const imageName = "Image name here"
+export async function generateUploadURL(hash) {
+    const imageName = hash;
 
     const params = ({
         Bucket: bucketName,
