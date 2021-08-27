@@ -153,12 +153,13 @@ export default function QuadraticDiplomacyReward({
     } else {
       const tokenAddress = mainnetContracts[selectedToken].address;
       const tokenDecimals = await mainnetContracts[selectedToken].decimals();
+      const userAddress = await userSigner.getAddress();
       dataSource.forEach(({ address, rewardAmount }) => {
         wallets.push(address);
         amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), tokenDecimals));
       });
       func = payFromSelf
-        ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userSigner.address)
+        ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userAddress)
         : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
     }
 
@@ -196,6 +197,7 @@ export default function QuadraticDiplomacyReward({
       <Divider />
       <Space split>
         <Input
+          type="number"
           disabled={!selectedToken} // disable if no token selected
           value={totalRewardAmount}
           addonBefore="Total Amount to Distribute"
