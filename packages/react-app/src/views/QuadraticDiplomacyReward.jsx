@@ -115,7 +115,7 @@ export default function QuadraticDiplomacyReward({
 
   const missingVotingMembers = contributorEntries?.filter(entry => !voteResults[entry.wallet]?.hasVoted);
 
-  const handlePayment = async () => {
+  const handlePayment = async payFromSelf => {
     // ToDo. Do some validation (non-empty elements, etc.)
     const wallets = [];
     const amounts = [];
@@ -130,7 +130,12 @@ export default function QuadraticDiplomacyReward({
       amounts.push(ethers.utils.parseEther(rewardAmount.toString()));
     });
 
-    await tx(writeContracts.QuadraticDiplomacyContract.payMultiple(wallets, amounts, overrides), update => {
+    // choose appropriate function from contract
+    const func = payFromSelf
+      ? writeContracts.QuadraticDiplomacyContract.sharePayedETH(wallets, amounts, overrides)
+      : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
+
+    await tx(func, update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         notification.success({
           message: "Payment sent!",
@@ -197,13 +202,22 @@ export default function QuadraticDiplomacyReward({
           columns={columns}
           pagination={{ pageSize: 10 }}
           footer={() => (
-            <Button
-              onClick={handlePayment}
-              disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
-              size="large"
-            >
-              Pay 💸
-            </Button>
+            <Space>
+              <Button
+                onClick={() => handlePayment(true)}
+                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                size="large"
+              >
+                Pay 💸
+              </Button>
+              <Button
+                onClick={() => handlePayment(false)}
+                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                size="large"
+              >
+                Pay from contract 💸
+              </Button>
+            </Space>
           )}
         />
       </Space>
