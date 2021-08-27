@@ -171,7 +171,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
             <span>
                 <Input
                     size="large"
-                    placeholder={"Enter secret seed!!"}
+                    placeholder={"enter secret seed here!"}
                     value={newSeed}
                     onChange={async e => {
                         // TODO: Import MIMC hash function and set hash to the correct function
@@ -182,7 +182,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                         // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
-                        <Tooltip title="Commit your secret seed!!">
+                        <Tooltip title="commit your secret seed!">
                         <Button
                             onClick={() => {
                                 setSeed(newSeed)
@@ -196,7 +196,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 />
 
                 <h2>
-                    Check your Mimc hash for seed {seed} {seedCommit}
+                    the MiMC hash of your seed is: {seedCommit}
                 </h2>
                 <br></br>
                 {playerSeedCommitForm}
@@ -208,7 +208,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                         getValue(contract[displayedContractFunctions[9].name], setCard, triggerRefresh, "card");
                     }}
                     size="large">
-                    Draw Random card!
+                    draw random card
                 </Button>
                 <Button 
                     // TODO Figure out async handling in react and combine this button with the next
@@ -217,7 +217,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                     }}
                     size="large"
                 >
-                    Prepare zk inputs
+                    prepare zk inputs
                 </Button>
                 <Button 
                     onClick={async() => {
@@ -225,7 +225,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                     }}
                     size="large"
                 >
-                    Generate zk proof
+                    generate zk proof
                 </Button>
             </span>
             <span>
@@ -276,7 +276,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                     }}
                     size="large"
                 >
-                    Prepare zk inputs
+                    prepare zk inputs
                 </Button>
                 <Button 
                     onClick={async() => {
@@ -286,7 +286,7 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                     }}
                     size="large"
                 >
-                    Generate zk proof
+                    generate zk proof
                 </Button>
                 <h2></h2>
                 <p>{a}</p>
