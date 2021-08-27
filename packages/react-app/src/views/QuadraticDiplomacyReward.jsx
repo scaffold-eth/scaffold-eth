@@ -5,7 +5,7 @@ import { Address } from "../components";
 const { Text, Title } = Typography;
 const { ethers } = require("ethers");
 
-const TOKENS = ["ETH", "GTC"];
+const TOKENS = ["ETH", "GTC", "DAI"];
 const REWARD_STATUS = {
   PENDING: "reward_status.pending",
   COMPLETED: "reward_status.completed",
@@ -93,7 +93,11 @@ export default function QuadraticDiplomacyReward({
         defaultSortOrder: "descend",
         align: "center",
         sorter: (a, b) => a.rewardAmount - b.rewardAmount,
-        render: rewardAmount => <p>{rewardAmount.toFixed(6)} ETH</p>,
+        render: rewardAmount => (
+          <p>
+            {rewardAmount.toFixed(2)} {selectedToken.toUpperCase()}
+          </p>
+        ),
       },
       {
         title: "Has Voted",
@@ -108,7 +112,7 @@ export default function QuadraticDiplomacyReward({
           hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
       },
     ],
-    [mainnetProvider],
+    [mainnetProvider, selectedToken],
   );
 
   const dataSource = useMemo(
@@ -154,7 +158,7 @@ export default function QuadraticDiplomacyReward({
         amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), tokenDecimals));
       });
       func = payFromSelf
-        ? writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress, userSigner.address)
+        ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userSigner.address)
         : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
     }
 
