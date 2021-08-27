@@ -128,11 +128,11 @@ On the Lambda services page in AWS click 'Add Trigger', next use the API Gateway
 
 Navigate back to the Lambda services page on aws and find the 'details' for the trigger we just created. In the 'details' for the trigger there is a API endpoint which has been generated for us and we will use to get the upload URL and data key. Add this endpoint to the aws config variable in the BucketToIPFS.jsx code.
 
--------------------------------------------------------------
 [AWS Docs for uploading to s3 from client](https://aws.amazon.com/blogs/compute/uploading-to-amazon-s3-directly-from-a-web-or-mobile-application/)
 
-Review section titled: 'Overview of serverless uploading to S3'. This is the main authentication flow for making PUT requests to an aws s3 bucket. 
+Review section titled: 'Overview of serverless uploading to S3'. This is the main authentication flow for making PUT requests to an aws s3 bucket.
 
+-------------------------------------------------------------
 
 # 🏄‍♂️ Quick Start
 
