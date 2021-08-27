@@ -9,7 +9,7 @@ const DEBUG = true;
 
 //AWS config
 const bucketName = "adaptiveclaim";
-APIGatewayEndpoint = "https://py1mx7j0eh.execute-api.us-east-1.amazonaws.com/default/getPresignedImageUrl";
+const APIGatewayEndpoint = "https://py1mx7j0eh.execute-api.us-east-1.amazonaws.com/default/getPresignedImageUrl";
 
 
 export default function BucketToIPFS() {
