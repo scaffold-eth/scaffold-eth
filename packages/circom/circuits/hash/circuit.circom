@@ -2,23 +2,23 @@ include "../../node_modules/circomlib/circuits/mimcsponge.circom"
 include "../../node_modules/circomlib/circuits/comparators.circom"
 
 template Main() {
-  signal private input x;
-  signal input hash;
-  signal input threshold;
-  
-  signal output outHash;
+  signal private input playerCard;
+  signal input playerCardCommit;
+  signal input dealerCard;
+
+  signal output outCardCommit;
   signal output outValid;
 
   /*
-    Verify that the calculated hash of x (outHash) is the inputted hash (hash)
+    Verify that the calculated hash of x (outCardCommit) is the inputted hash (playerCardCommit)
   */
 
   component mimc = MiMCSponge(1, 220, 1);
-  mimc.ins[0] <== x;
+  mimc.ins[0] <== playerCard;
   mimc.k <== 0;
 
-  outHash <== mimc.outs[0];
-  outHash === hash;
+  outCardCommit <== mimc.outs[0];
+  outCardCommit === playerCardCommit;
 
   /*
     TODO: Verify that the dealer has the given threshold
@@ -31,8 +31,8 @@ template Main() {
   */
 
   component greater = LessThan(11);
-  greater.in[0] <== x;
-  greater.in[1] <== threshold;
+  greater.in[0] <== playerCard;
+  greater.in[1] <== dealerCard;
 
   outValid <== greater.out; 
 }
