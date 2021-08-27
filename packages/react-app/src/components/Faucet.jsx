@@ -45,7 +45,7 @@ export default function Faucet(props) {
       if (props.localProvider) {
         const _faucetAddress = await props.localProvider.listAccounts();
         setFaucetAddress(_faucetAddress[0]);
-        console.log(_faucetAddress);
+        //console.log(_faucetAddress);
       }
     };
     getFaucetAddress();
