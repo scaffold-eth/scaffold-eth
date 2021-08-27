@@ -21,7 +21,7 @@ contract YourContract is hashVerifier, cardVerifier {
   // uint256 public verifiedHash;
   // uint256 public verifiedGreater;
 
-  constructor() public {
+  constructor() payable {
     // what should we do on deploy?
   }
   function commitToRandonmess(uint256 newSeedCommit) public {
@@ -73,7 +73,6 @@ contract YourContract is hashVerifier, cardVerifier {
     if (inputs[1] == 1) win = true;
     currentStep++;
   }
-
   // function testVerifyProof(
   //         uint[2] memory a,
   //         uint[2][2] memory b,

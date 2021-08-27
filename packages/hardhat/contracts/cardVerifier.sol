@@ -11,7 +11,7 @@
 //
 //
 // SPDX-License-Identifier: GPL-3.0
-pragma solidity ^0.6.11;
+pragma solidity ^0.8.7;
 library cardPairing {
     struct G1Point {
         uint X;

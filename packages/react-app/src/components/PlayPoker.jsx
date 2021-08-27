@@ -191,6 +191,8 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 <p>{b}</p>
                 <h2></h2>
                 <p>{c}</p>
+                <h2></h2>
+                <p>{input}</p>
                 {submitProofForm}
                 {win}
                 
