@@ -1440,10 +1440,10 @@
     "@babel/helper-validator-identifier" "^7.14.9"
     to-fast-properties "^2.0.0"
 
-"@biconomy/mexa@2.0.10":
-  version "2.0.10"
-  resolved "https://registry.yarnpkg.com/@biconomy/mexa/-/mexa-2.0.10.tgz#f97fd51caab56476e9c9622340c9270a79f5d93f"
-  integrity sha512-rVYmg+PPsu+4QWrMmEWlOd9Hu+CMIuToA0JnUAPIfEkENZxN4fzYqA39HluFKVBbi5L+ps8iSwFrx12veN42ug==
+"@biconomy/mexa@2.0.13":
+  version "2.0.13"
+  resolved "https://registry.yarnpkg.com/@biconomy/mexa/-/mexa-2.0.13.tgz#2b0a38a240cd9ef925b1faf5f662f9f29dcd621b"
+  integrity sha512-mYJZI0Pmh0VSqLLMyth0S3m4TcIeO7G5D34u8xD/FBWOflwCP26FOonHW4GMsdNvY9vA6tg3BgshakBTPyjJLA==
   dependencies:
     "@babel/core" "^7.12.13"
     "@babel/runtime" "^7.12.13"
@@ -8880,6 +8880,16 @@ eth-sig-util@^2.5.2, eth-sig-util@^2.5.3:
     ethereumjs-abi "0.6.5"
     ethereumjs-util "^5.1.1"
     tweetnacl "^1.0.0"
+    tweetnacl-util "^0.15.0"
+
+eth-sig-util@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/eth-sig-util/-/eth-sig-util-3.0.1.tgz#8753297c83a3f58346bd13547b59c4b2cd110c96"
+  integrity sha512-0Us50HiGGvZgjtWTyAI/+qTzYPMLy5Q451D0Xy68bxq1QMWdoOddDwGvsqcFT27uohKgalM9z/yxplyt+mY2iQ==
+  dependencies:
+    ethereumjs-abi "^0.6.8"
+    ethereumjs-util "^5.1.1"
+    tweetnacl "^1.0.3"
     tweetnacl-util "^0.15.0"
 
 eth-tx-summary@^3.1.2:
@@ -20369,7 +20379,7 @@ tweetnacl@^0.14.3, tweetnacl@~0.14.0:
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-0.14.5.tgz#5ae68177f192d4456269d108afa93ff8743f4f64"
   integrity sha1-WuaBd/GS1EViadEIr6k/+HQ/T2Q=
 
-tweetnacl@^1.0.0:
+tweetnacl@^1.0.0, tweetnacl@^1.0.3:
   version "1.0.3"
   resolved "https://registry.yarnpkg.com/tweetnacl/-/tweetnacl-1.0.3.tgz#ac0af71680458d8a6378d0d0d050ab1407d35596"
   integrity sha512-6rt+RN7aOi1nGMyC4Xa5DdYiukl2UWCbcJft7YhxReBGQD7OAM8Pbxw6YMo4r2diNEA8FEmu32YOn9rhaiE5yw==

@@ -21,13 +21,13 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       if (ethers.Signer.isSigner(providerOrSigner) === true) {
         provider = providerOrSigner.provider;
         signer = providerOrSigner;
-        network = providerOrSigner.provider && (await providerOrSigner.provider.getNetwork());
+        network = providerOrSigner.provider && (await ( providerOrSigner.provider.isBiconomy ? providerOrSigner.provider.originalProvider.getNetwork() : providerOrSigner.provider.getNetwork() ));
       } else if (providerOrSigner._isProvider) {
         provider = providerOrSigner;
         signer = providerOrSigner.getSigner();
         network = await providerOrSigner.getNetwork();
       }
-
+      
       console.log("network", network);
       
       var options = null;
@@ -66,6 +66,9 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
         if (tx instanceof Promise) {
           if (DEBUG) console.log("AWAITING TX", tx);
           result = await tx;
+        } else if(tx && tx.forwardRequest) {
+          let txHash = await provider.send("eth_sendRawTransaction", [tx]);
+          result = {hash: txHash};
         } else {
           if (!tx.gasPrice) {
             tx.gasPrice = gasPrice || ethers.utils.parseUnits("4.1", "gwei");
