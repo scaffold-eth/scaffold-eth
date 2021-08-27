@@ -24,6 +24,7 @@ This script uses the smae 'addToIPFS' hook that is shown in option one, the diff
     3a. Sign in to AWS console or create account for free.
 
     3b. Navigate to the S3 service and create a bucket for you image data. It is important to set the permissions for this bucket to be public. Next update the 'Bucket Policy' to a very simple policy crated with the policy generator.
+    
     ```bash
     {
         "Version": "2012-10-17",
@@ -44,6 +45,7 @@ This script uses the smae 'addToIPFS' hook that is shown in option one, the diff
     ```
 
     Next update the CORS policy with again a very simple policy which allows the 'PUT', 'HEAD', and 'GET' methods on this bucket.
+
     ```bash
     [
         {
@@ -70,6 +72,7 @@ This script uses the smae 'addToIPFS' hook that is shown in option one, the diff
     Click 'Create Function', name the function getPresignedImageUrl with node.js runtime enviroment. 
 
     In the code tab copy and paste the following.
+
     ```bash
     const AWS = require('aws-sdk')
     AWS.config.update({ region: process.env.AWS_REGION })
