@@ -54,7 +54,7 @@ const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend n
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
-const BICONOMY_API_KEY = "q1ckUY5sG.61824ace-355d-4660-9f35-dd88c8a07f97"; // <------- make sure to use the correct API Key as per the network
+const BICONOMY_API_KEY = "ce006c92-d283-4de6-a1f2-5b9dded9f3f7"; // <------- make sure to use the correct API Key as per the network
 
 // EXAMPLE STARTING JSON:
 const STARTING_JSON = {
@@ -569,10 +569,10 @@ function App(props) {
                               let signedTx = await userSigner.signTransaction(unsignedTransaction);
                               // should get user message to sign for EIP712 or personal signature types
                               const forwardData = await biconomy.getForwardRequestAndMessageToSign(signedTx);
-                              console.log(forwardData);      
+                              console.log(forwardData);
 
                               // optionally one can sign using sigUtil
-                              const signature = sigUtil.signTypedMessage(new Buffer.from(userSigner.privateKey.slice(2), "hex"), { data: forwardData.eip712Format }, 'V3');                                                                    
+                              const signature = sigUtil.signTypedMessage(new Buffer.from(userSigner.privateKey.slice(2), "hex"), { data: forwardData.eip712Format }, 'V3');
 
                               let data = {
                                   signature: signature,

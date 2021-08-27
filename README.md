@@ -29,7 +29,7 @@ First, be sure to check that you're deploying on `mumbai` by changing the `defau
 
 ![image1](https://user-images.githubusercontent.com/76530366/127908961-ba120324-02d9-4c5b-92fc-2daa053691b5.png)
 
- 
+
 🔐 We will need to generate a **deployer** account:
 
 ```
@@ -61,16 +61,6 @@ To point the frontend at `mumbai` we will also need to edit `targetNetwork` in `
 
 ![image2](https://user-images.githubusercontent.com/76530366/127909020-6cd40a05-c28a-4791-9493-307a615c7dc4.png)
 
-To add Biconomy meta transaction support, 
-
-1. Signup at https://dashboard.biconomy.io
-2. Register a DApp by following steps at https://docs.biconomy.io/guides/biconomy-dashboard#register-a-dapp and get the API Key.
-3. Upload your Smart Contract (Address and ABI), Select MetaTransaction type as "TrustedForwarder"
-4. Select "transferFrom" method under "Manage API" section on dashboard. Click +Save.
-
-Add the API Key to `BICONOMY_API_KEY` field in `packages/src/App.jsx`
-
-
 Start the frontend with:
 
 ```
@@ -98,6 +88,31 @@ yarn mint
 
 ![nft3](https://user-images.githubusercontent.com/526558/124386983-48965300-dcb3-11eb-88a7-e88ad6307976.png)
 
+---
+
+> ⚠️ Warning! You won't be able to transfer your NFTs gaslessly yet!
+
+First you need to:
+
+> ⛽️ Add Biconomy meta transaction support:
+
+1. Signup at https://dashboard.biconomy.io
+2. Register a DApp by following steps at https://docs.biconomy.io/guides/biconomy-dashboard#register-a-dapp and get the API Key.
+3. Upload your Smart Contract (Address and ABI), Select MetaTransaction type as "TrustedForwarder"
+(You can get your abi in `packages/hardhat/artifacts/contracts/YourCollectible...`)
+![image](https://user-images.githubusercontent.com/2653167/131190372-89c660f7-768a-441b-987c-5aae4ef7b4c1.png)
+
+4. Select "transferFrom" method under "Manage API" section on dashboard. Click +Save.
+
+![image](https://user-images.githubusercontent.com/2653167/131190455-882205fc-f16c-4559-b689-3b5c33f2e50e.png)
+
+
+Add the API Key to `BICONOMY_API_KEY` field in `packages/src/App.jsx`
+
+---
+
+> ✈️ Test sending from account to account and if you configured your Biconomy stuff correctly it shouldn't require gas!!!
+
 👛 Open an **incognito** window and navigate to http://localhost:3000 (You'll notice it has a new wallet address).
 
 🎟 Send an NFT to the incognito window address:
@@ -120,7 +135,7 @@ yarn mint
 
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js` to `matic`
 
-![image4](https://user-images.githubusercontent.com/76530366/127909096-82f262ee-9052-4b80-9298-6a14dd3d5b2e.png) 
+![image4](https://user-images.githubusercontent.com/76530366/127909096-82f262ee-9052-4b80-9298-6a14dd3d5b2e.png)
 
 👛 View your deployer address using `yarn account` to ensure you have some Matic. (You can exchange for Matic tokens on UniSwap using the bridge: https://wallet.matic.network/bridge).
 
@@ -149,6 +164,7 @@ yarn mint
 Once minted, you should be able to see them in your Frontend.
 
 ![nft11](https://user-images.githubusercontent.com/526558/124387132-b04c9e00-dcb3-11eb-95d1-03b8c272e52f.png)
+
 
 ## 🐟 Open Sea
 
@@ -195,7 +211,7 @@ What happens if I run into a gas error?
 
 # Documentation
 
-For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io) 
+For a more in-depth explanation, documentation, quick start guide, tutorials, tips and many more resources, visit our documentation site: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
 
 # 💬 Support Chat
 
