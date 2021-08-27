@@ -3,6 +3,7 @@
 import React, { useState, useEffect, useCallback } from "react";
 import { Row, Col, Divider } from "antd";
 import tryToDisplay from "./utils";
+import bigInt from 'big-integer';
 
 const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh}) => {
   const [variable, setVariable] = useState("");
@@ -20,7 +21,8 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
   useEffect(() => {
     refresh();
   }, [refresh, refreshRequired, contractFunction]);
-
+  return tryToDisplay(variable)
+  /*
   return (
     <div>
       <Row>
@@ -48,7 +50,7 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
       </Row>
       <Divider />
     </div>
-  );
+  );*/
 };
 
 export default DisplayVariable;

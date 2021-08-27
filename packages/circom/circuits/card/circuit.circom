@@ -10,7 +10,7 @@ template Main() {
   
   signal card;
   
-  component cardCalculator = Modulo(16, 1000000000000000000000000000000000000);
+  component cardCalculator = Modulo(16, 100000000000000000000000000000000000000);
   
   cardCalculator.dividend <== seed + blockhash;
   cardCalculator.divisor <== 13;

@@ -5,6 +5,8 @@ import { useContractLoader, useContractExistsAtAddress, genSolidityCalldata, mim
 import DisplayVariable from "./Contract/DisplayVariable";
 import FunctionForm from "./Contract/FunctionForm";
 import { Transactor } from "../helpers";
+import bigInt from 'big-integer';
+import { BigInteger } from 'big-integer';
 
 export default function PlayPoker({customContract, account, gasPrice, signer, provider, name, show, price, blockExplorer}) {
     const contracts = useContractLoader(provider);
@@ -28,7 +30,8 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
       );
     //console.log("functions: ", displayedContractFunctions)
 
-    function ReturnFunctionForm(fn){
+    function ReturnFunctionForm(i){
+        var fn = displayedContractFunctions[i]
         return <FunctionForm 
             key={"FF" + fn.name}
             contractFunction={(fn.stateMutability === "view" || fn.stateMutability === "pure")?contract[fn.name]:contract.connect(signer)[fn.name]}
@@ -38,54 +41,56 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
             triggerRefresh={triggerRefresh}/>
     }
 
-    function ReturnDisplayVariable(fn){
+    function ReturnDisplayVariable(i){
+        var fn = displayedContractFunctions[i]
         return <DisplayVariable 
             key={fn.name} contractFunction={contract[fn.name]} 
             functionInfo={fn} refreshRequired={fn} 
             triggerRefresh={triggerRefresh}/>
     }
+  
+    const playerSeedCommitForm = contractIsDeployed ? ReturnFunctionForm(2) : null
+    const playerCardCommitForm = contractIsDeployed ? ReturnFunctionForm(1) : null
 
+    const placeBetForm = contractIsDeployed ? ReturnFunctionForm(7) : null
+    const playerBetForm = contractIsDeployed ? ReturnDisplayVariable(8) : null
+    const dealCardForm = contractIsDeployed ? ReturnFunctionForm(4) : null
+    const dealerCard = contractIsDeployed ? ReturnDisplayVariable(5) : null
+    const submitProofForm = contractIsDeployed ? ReturnFunctionForm(13) : null
+    const win = contractIsDeployed ? ReturnDisplayVariable(14) : null
     
 
-    const playerCardCommit = contractIsDeployed ? displayedContractFunctions[0] : null
-    const playerCardCommitForm = contractIsDeployed ? ReturnFunctionForm(playerCardCommit) : null
-
-    const playerCardHash = contractIsDeployed ? displayedContractFunctions[6] : null
-
-    const placeBet = contractIsDeployed ? displayedContractFunctions[4] : null
-    const placeBetForm = contractIsDeployed ? ReturnFunctionForm(placeBet) : null
-
-    const playerBet = contractIsDeployed ? displayedContractFunctions[5] : null
-    const playerBetForm = contractIsDeployed ? ReturnDisplayVariable(playerBet) : null
-
-    const dealCard = contractIsDeployed ? displayedContractFunctions[2] : null
-    const dealCardForm = contractIsDeployed ? ReturnFunctionForm(dealCard) : null
-
-    const thresholdVariable = contractIsDeployed ? displayedContractFunctions[3] : null
-    const thresholdForm = contractIsDeployed ? ReturnDisplayVariable(thresholdVariable) : null
-
-    const submitProofForm = contractIsDeployed ? ReturnFunctionForm(displayedContractFunctions[8]) : null
-    const win = contractIsDeployed ? ReturnDisplayVariable(displayedContractFunctions[10]) : null
-    
-
-    const [seed, setSeed] = useState();
+    const [seed, setSeed] = useState(null);
+    const [newSeed, setNewSeed] = useState();
     const [seedCommit, setSeedCommit] = useState();
     // const [cardCommit, setCardCommit] = useState(0);
     const [isValid, setIsValid] = useState(null);
-    const [callData, setCallData] = useState([]);
+    const [card, setCard] = useState("a secret that is yet to be revealed");
+    const [cardCommit, setCardCommit] = useState("...");
     const [hash, setHash] = useState();
     const [threshold, setThreshold] = useState();
     const [a, setA] = useState();
     const [b, setB] = useState();
     const [c, setC] = useState();
     const [input, setInput] = useState();
+    const [blockhash, setBlockhash] = useState();
+
+    const [a2, setA2] = useState();
+    const [b2, setB2] = useState();
+    const [c2, setC2] = useState();
+    const [input2, setInput2] = useState();
+
     
 
-    async function getValue(contractFunction, setVariable, triggerRefresh, number){
+    async function getValue(contractFunction, setVariable, triggerRefresh, type){
         const refresh = async () => {
             try {
             const funcResponse = await contractFunction();
-            if (number) {
+            if (type == "card"){
+                setVariable((funcResponse + seed) % 13 + 1);
+                setBlockhash(bigInt(funcResponse.toString()));
+            }
+            else if (type) {
                 setVariable(funcResponse.toNumber());
             } else{
                 setVariable(funcResponse.toString());
@@ -100,14 +105,14 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
         
   
   
-    async function CircuitCalldata(seed, hash, threshold) {
+    async function CircuitCallDataHash(circuitName, cardCommit, hash, dealerCard) {
   
       const { proof, publicSignals } =
-        await window.snarkjs.groth16.fullProve({ "x": seed, "hash": hash, "threshold":threshold },
-        "/circuits/hash_circuit.wasm",
-        "/circuits/hash_circuit_final.zkey");
+        await window.snarkjs.groth16.fullProve({ "playerCard": cardCommit, "playerCardCommit": hash, "dealerCard":dealerCard },
+        `/circuits/${circuitName}_circuit.wasm`,
+        `/circuits/${circuitName}_circuit_final.zkey`);
   
-      const vKey = await fetch("/circuits/hash_verification_key.json").then(function(res) {
+      const vKey = await fetch(`/circuits/${circuitName}_verification_key.json`).then(function(res) {
         const js = res.json();
         return js;
       });
@@ -116,16 +121,43 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
       const genCallData = await genSolidityCalldata(publicSignals, proof);
       return [res, genCallData];
     }
+
+    async function CircuitCallDataCard(circuitName, seed, blockhash) {
+        console.log(seed)
+        console.log(blockhash.value.toString())
+  
+        const { proof, publicSignals } =
+          await window.snarkjs.groth16.fullProve({ "seed": seed, "blockhash": blockhash.value.toString()},
+          `/circuits/${circuitName}_circuit.wasm`,
+          `/circuits/${circuitName}_circuit_final.zkey`);
+    
+        const vKey = await fetch(`/circuits/${circuitName}_verification_key.json`).then(function(res) {
+          const js = res.json();
+          return js;
+        });
+    
+        const res = await window.snarkjs.groth16.verify(vKey, publicSignals, proof);
+        const genCallData = await genSolidityCalldata(publicSignals, proof);
+        return [res, genCallData];
+      }
     
   
     const handleIsValid = async () => {
-      const [res, genCallData] = await CircuitCalldata(seedCommit, hash, threshold);
+      const [res, genCallData] = await CircuitCallDataHash("hash", seedCommit, hash, threshold);
       setIsValid(res.toString());
       setA(genCallData[0]);
       setB(genCallData[1]);
       setC(genCallData[2]);
       setInput(genCallData[3]);
     };
+
+    const handleCard = async () => {
+        const [res, genCallData] = await CircuitCallDataCard("card", seed, blockhash);
+        setA2(genCallData[0]);
+        setB2(genCallData[1]);
+        setC2(genCallData[2]);
+        setInput2(genCallData[3]);
+    }
 
     return(
         <div>
@@ -134,19 +166,21 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 <Input
                     size="large"
                     placeholder={"Enter secret seed!!"}
-                    value={seed}
+                    value={newSeed}
                     onChange={async e => {
-                        const newSeed = e.target.value;
-                        setSeed(newSeed);
                         // TODO: Import MIMC hash function and set hash to the correct function
-                        setSeedCommit(mimcHash(newSeed).value.toString());
+                        setNewSeed(e.target.value);
+                        if (seed==null){
+                            setSeedCommit(mimcHash(newSeed).value.toString());
+                        }
                         // setHash("15893827533473716138720882070731822975159228540693753428689375377280130954696")
                     }}
                     suffix={
                         <Tooltip title="Commit your secret seed!!">
                         <Button
                             onClick={() => {
-                                setSeedCommit(mimcHash(seed).value.toString());
+                                setSeed(newSeed)
+                                setSeedCommit(mimcHash(newSeed).value.toString());
                             }}
                             shape="circle"
                             icon={<SendOutlined />}
@@ -156,24 +190,69 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 />
 
                 <h2>
-                    Check your Mimc hash {seedCommit}
+                    Check your Mimc hash for seed {seed} {seedCommit}
                 </h2>
+                <br></br>
+                {playerSeedCommitForm}
             </span>
+            <br></br>
+            <span>
+                <Button
+                    onClick={async()=>{
+                        getValue(contract[displayedContractFunctions[9].name], setCard, triggerRefresh, "card");
+                    }}
+                    size="large">
+                    Draw Random card!
+                </Button>
+                <Button 
+                    // TODO Figure out async handling in react and combine this button with the next
+                    onClick={async()=>{
+                        setCardCommit(mimcHash(card).value)                        
+                    }}
+                    size="large"
+                >
+                    Prepare zk inputs
+                </Button>
+                <Button 
+                    onClick={async() => {
+                        await handleCard();
+                    }}
+                    size="large"
+                >
+                    Generate zk proof
+                </Button>
+            </span>
+            <span>
+                <h2>Your card value is {card}. Good luck!</h2>
+                <br></br>
+                <h2>Your card hash that will be commited {cardCommit.toString()}</h2>
+                <h2></h2>
+                <p>{a2}</p>
+                <h2></h2>
+                <p>{b2}</p>
+                <h2></h2>
+                <p>{c2}</p>
+                <h2></h2>
+                <p>{input2}</p>
+            </span>
+                
             <span>
                 {playerCardCommitForm}
                 {placeBetForm}
                 {playerBetForm}
                 {dealCardForm}
-                {thresholdForm}
+                {dealerCard}
                 <Button 
                     // TODO Figure out async handling in react and combine this button with the next
                     onClick={async()=>{
-                        getValue(contract[thresholdVariable.name], setThreshold, triggerRefresh, true);
-                        getValue(contract[playerCardHash.name], setHash, triggerRefresh, false);                        
+                        // get dealer card
+                        getValue(contract[displayedContractFunctions[6].name], setThreshold, triggerRefresh, true);
+                        // get player card hash
+                        getValue(contract[displayedContractFunctions[11].name], setHash, triggerRefresh, false);                        
                     }}
                     size="large"
                 >
-                    Prepare zk proof
+                    Prepare zk inputs
                 </Button>
                 <Button 
                     onClick={async() => {
@@ -193,6 +272,8 @@ export default function PlayPoker({customContract, account, gasPrice, signer, pr
                 <p>{c}</p>
                 <h2></h2>
                 <p>{input}</p>
+                {/* Submit proof and display outcome */}
+                
                 {submitProofForm}
                 {win}
                 

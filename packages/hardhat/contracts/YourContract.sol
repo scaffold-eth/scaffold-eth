@@ -21,15 +21,16 @@ contract YourContract is hashVerifier, cardVerifier {
   // uint256 public verifiedHash;
   // uint256 public verifiedGreater;
 
-  constructor() payable {
+  constructor() public {
     // what should we do on deploy?
   }
   function commitToRandonmess(uint256 newSeedCommit) public {
     require(currentStep == 0, "You've already commited to a seed.");
     seedCommit = newSeedCommit;
-    playerCardContractRandomness = uint(keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp)));
+    playerCardContractRandomness = uint(keccak256(abi.encodePacked(blockhash(block.number - 1),block.timestamp))) % 1267650600228229401496703205376;
     currentStep ++;
   }
+
 
   function commitToCard(
       uint[2] memory a,
@@ -38,21 +39,22 @@ contract YourContract is hashVerifier, cardVerifier {
       uint[3] memory inputs
     ) public {
     require(currentStep == 1, "You've already commited to a card.");
+    require(inputs[1] == seedCommit, "Different seedcommit");
+    require(inputs[2] == playerCardContractRandomness, "Different blockhash");
     require(cardverifyProof(a, b, c, inputs), "Invalid Proof"); 
-    require(inputs[1] == seedCommit);
-    require(inputs[2] == playerCardContractRandomness);
+    
     playerCardHash = inputs[0];
     currentStep ++;
   }
   
   function placeBet(uint bet) public {
-      require(currentStep == 1, "You haven't chosen a card.");
+      require(currentStep == 2, "You haven't chosen a card.");
       playerBet = bet;
       currentStep ++;
   }
 
   function dealCard() public {
-      require(currentStep == 2, "You haven't selected a bet.");
+      require(currentStep == 3, "You haven't selected a bet.");
         uint dealerCardRandomness = uint(
             keccak256(abi.encodePacked(blockhash(block.number - 1), block.timestamp))
         );
@@ -66,7 +68,7 @@ contract YourContract is hashVerifier, cardVerifier {
       uint[2] memory c,
       uint[4] memory inputs
   ) public {
-    require(currentStep == 3, "Dealer hasn't drawn a card.");
+    require(currentStep == 4, "Dealer hasn't drawn a card.");
     require(hashverifyProof(a, b, c, inputs), "Invalid Proof");
     require(inputs[0] == playerCardHash, "Invalid Card");
     require(inputs[3] == dealerCard, "Invalid Card");
