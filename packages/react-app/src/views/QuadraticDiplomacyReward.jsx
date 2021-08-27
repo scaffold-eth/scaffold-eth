@@ -144,16 +144,12 @@ export default function QuadraticDiplomacyReward({
       : writeContracts.QuadraticDiplomacyContract.shareETH(wallets, amounts);
 
     await tx(func, update => {
+      // ToDo. Handle errors.
       if (update && (update.status === "confirmed" || update.status === 1)) {
         notification.success({
           message: "Payment sent!",
         });
         setRewardStatus(REWARD_STATUS.COMPLETED);
-      } else {
-        notification.error({
-          message: "Payment Transaction Error",
-        });
-        setRewardStatus(REWARD_STATUS.FAILED);
       }
     });
   };
