@@ -21,99 +21,99 @@ This script uses the smae 'addToIPFS' hook that is shown in option one, the diff
 
 ✴️ 3). This branch introduces a third method. Here we allow the user to upload an image to S3, IPFS, or both. Using S3 can be a convient database for all your images and their hashes you have uploaded. While still following best practices of NFT creation and using IPFS to generate the metadata hash.
 
-    3a. Sign in to AWS console or create account for free.
+3a. Sign in to AWS console or create account for free.
 
-    3b. Navigate to the S3 service and create a bucket for you image data. It is important to set the permissions for this bucket to be public. Next update the 'Bucket Policy' to a very simple policy crated with the policy generator.
-    
-    ```bash
-    {
-        "Version": "2012-10-17",
-        "Statement": [
-            {
-                "Sid": "PublicRead",
-                "Effect": "Allow",
-                "Principal": "*",
-                "Action": [
-                    "s3:GetObject",
-                    "s3:GetObjectVersion"
-                ],
-                "Resource": "arn:aws:s3:::adaptiveclaim/*"
-            }
-        ]
-    }
+3b. Navigate to the S3 service and create a bucket for you image data. It is important to set the permissions for this bucket to be public. Next update the 'Bucket Policy' to a very simple policy crated with the policy generator.
 
-    ```
-
-    Next update the CORS policy with again a very simple policy which allows the 'PUT', 'HEAD', and 'GET' methods on this bucket.
-
-    ```bash
-    [
+```bash
+{
+    "Version": "2012-10-17",
+    "Statement": [
         {
-            "AllowedHeaders": [
-                "*"
+            "Sid": "PublicRead",
+            "Effect": "Allow",
+            "Principal": "*",
+            "Action": [
+                "s3:GetObject",
+                "s3:GetObjectVersion"
             ],
-            "AllowedMethods": [
-                "PUT",
-                "HEAD",
-                "GET"
-            ],
-            "AllowedOrigins": [
-                "*"
-            ],
-            "ExposeHeaders": []
+            "Resource": "arn:aws:s3:::adaptiveclaim/*"
         }
     ]
-    ```
+}
 
-    Save and create the bucket.
+```
 
-    3c. Navigate to the Lambda aws services and set up the Lambda function that processes requests from the client application. 
+Next update the CORS policy with again a very simple policy which allows the 'PUT', 'HEAD', and 'GET' methods on this bucket.
 
-    Click 'Create Function', name the function getPresignedImageUrl with node.js runtime enviroment. 
-
-    In the code tab copy and paste the following.
-
-    ```bash
-    const AWS = require('aws-sdk')
-    AWS.config.update({ region: process.env.AWS_REGION })
-    const s3 = new AWS.S3()
-
-    const uploadBucket = "adaptiveclaim"
-
-    // Change this value to adjust the signed URL's expiration
-    const URL_EXPIRATION_SECONDS = 300
-
-    // Main Lambda entry point
-    exports.handler = async (event) => {
-    return await getUploadURL(event)
+```bash
+[
+    {
+        "AllowedHeaders": [
+            "*"
+        ],
+        "AllowedMethods": [
+            "PUT",
+            "HEAD",
+            "GET"
+        ],
+        "AllowedOrigins": [
+            "*"
+        ],
+        "ExposeHeaders": []
     }
+]
+```
 
-    const getUploadURL = async function(event) {
-    const randomID = parseInt(Math.random() * 10000000)
-    const Key = `${randomID}.jpg`
+Save and create the bucket.
 
-    // Get signed URL from S3
-    const s3Params = {
-        Bucket: uploadBucket,
-        Key,
-        Expires: URL_EXPIRATION_SECONDS,
-        ContentType: 'image/jpeg',
+3c. Navigate to the Lambda aws services and set up the Lambda function that processes requests from the client application. 
 
-        // This ACL makes the uploaded object publicly readable. You must also uncomment
-        // the extra permission for the Lambda function in the SAM template.
+Click 'Create Function', name the function getPresignedImageUrl with node.js runtime enviroment. 
 
-        // ACL: 'public-read'
-    }
+In the code tab copy and paste the following.
 
-    console.log('Params: ', s3Params)
-    const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
+```bash
+const AWS = require('aws-sdk')
+AWS.config.update({ region: process.env.AWS_REGION })
+const s3 = new AWS.S3()
 
-    return JSON.stringify({
-        uploadURL: uploadURL,
-        Key
-    })
-    }
-    ```
+const uploadBucket = "adaptiveclaim"
+
+// Change this value to adjust the signed URL's expiration
+const URL_EXPIRATION_SECONDS = 300
+
+// Main Lambda entry point
+exports.handler = async (event) => {
+return await getUploadURL(event)
+}
+
+const getUploadURL = async function(event) {
+const randomID = parseInt(Math.random() * 10000000)
+const Key = `${randomID}.jpg`
+
+// Get signed URL from S3
+const s3Params = {
+    Bucket: uploadBucket,
+    Key,
+    Expires: URL_EXPIRATION_SECONDS,
+    ContentType: 'image/jpeg',
+
+    // This ACL makes the uploaded object publicly readable. You must also uncomment
+    // the extra permission for the Lambda function in the SAM template.
+
+    // ACL: 'public-read'
+}
+
+console.log('Params: ', s3Params)
+const uploadURL = await s3.getSignedUrlPromise('putObject', s3Params)
+
+return JSON.stringify({
+    uploadURL: uploadURL,
+    Key
+})
+}
+```
 
 
 
