@@ -120,7 +120,6 @@ const web3Modal = new Web3Modal({
 });
 
 
-
 function App(props) {
   const mainnetProvider = mainnetInfura;
 
@@ -434,6 +433,7 @@ function App(props) {
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
               blockExplorer={blockExplorer}
+              targetNetwork={targetNetwork}
             />
           {/* </Route>
           <Route path="/mainnetdai">

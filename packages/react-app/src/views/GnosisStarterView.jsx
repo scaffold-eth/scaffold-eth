@@ -5,7 +5,8 @@ import Safe, { EthersAdapter, SafeFactory, SafeTransaction, TransactionOptions }
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
 import { Address, Balance, EtherInput, AddressInput } from "../components";
 import { usePoller, useLocalStorage, useBalance } from "../hooks";
-import {EthSignSignature}  from './EthSignSignature'
+import { EthSignSignature }  from './EthSignSignature'
+import WalletConnect from "@walletconnect/client";
 export default function GnosisStarterView({
   purpose,
   userSigner,
@@ -18,6 +19,7 @@ export default function GnosisStarterView({
   readContracts,
   writeContracts,
   blockExplorer,
+  targetNetwork
 }) {
   const [to, setTo] = useState('')
   const [currentThresold, setcurrentThresold] = useState([])
@@ -82,8 +84,116 @@ export default function GnosisStarterView({
         console.log("ERROR POLLING FROM SAFE:",e)
       }
     }
-  },15000);
+  },3333);
 
+  const [ walletConnectUrl, setWalletConnectUrl ] = useState()
+  const [ connected, setConnected ] = useState()
+
+  useEffect(()=>{
+    //walletConnectUrl
+    if(walletConnectUrl){
+
+
+
+      const connector = new WalletConnect(
+        {
+          // Required
+          uri: walletConnectUrl,
+          // Required
+          clientMeta: {
+            description: "Gnosis Safe Starter Kit",
+            url: "https://github.com/austintgriffith/scaffold-eth/tree/gnosis-starter-kit",
+            icons: ["http://s3.amazonaws.com/pix.iemoji.com/images/emoji/apple/ios-12/256/owl.png"],
+            name: "Gnosis Safe Starter Kit",
+          },
+        }/*,
+        {
+          // Optional
+          url: "<YOUR_PUSH_SERVER_URL>",
+          type: "fcm",
+          token: token,
+          peerMeta: true,
+          language: language,
+        }*/
+      );
+
+      // Subscribe to session requests
+      connector.on("session_request", (error, payload) => {
+        if (error) {
+          throw error;
+        }
+
+        console.log("SESSION REQUEST")
+        // Handle Session Request
+
+        connector.approveSession({
+          accounts: [                 // required
+            safeAddress
+          ],
+          chainId: targetNetwork.chainId               // required
+        })
+
+        setConnected(true)
+
+
+        /* payload:
+        {
+          id: 1,
+          jsonrpc: '2.0'.
+          method: 'session_request',
+          params: [{
+            peerId: '15d8b6a3-15bd-493e-9358-111e3a4e6ee4',
+            peerMeta: {
+              name: "WalletConnect Example",
+              description: "Try out WalletConnect v1.0",
+              icons: ["https://example.walletconnect.org/favicon.ico"],
+              url: "https://example.walletconnect.org"
+            }
+          }]
+        }
+        */
+      });
+
+      // Subscribe to call requests
+      connector.on("call_request", (error, payload) => {
+        if (error) {
+          throw error;
+        }
+
+        console.log("REQUEST PERMISSION TO:",payload,payload.params[0])
+        // Handle Call Request
+        console.log("SETTING TO",payload.params[0].to)
+        setTo(payload.params[0].to)
+        setData(payload.params[0].data?payload.params[0].data:"0x0000")
+        setValue(payload.params[0].value)
+        /* payload:
+        {
+          id: 1,
+          jsonrpc: '2.0'.
+          method: 'eth_sign',
+          params: [
+            "0xbc28ea04101f03ea7a94c1379bc3ab32e65e62d3",
+            "My email is john@doe.com - 1537836206101"
+          ]
+        }
+        */
+        /*connector.approveRequest({
+          id: payload.id,
+          result: "0x41791102999c339c844880b23950704cc43aa840f3739e365323cda4dfa89e7a"
+        });*/
+
+      });
+
+      connector.on("disconnect", (error, payload) => {
+        if (error) {
+          throw error;
+        }
+        console.log("disconnect")
+
+        // Delete connector
+      });
+    }
+  },[ walletConnectUrl ])
 
 
   let safeInfo
@@ -147,6 +257,7 @@ export default function GnosisStarterView({
 
 
 
+
   let proposeTransaction
   if(!safeAddress){
     proposeTransaction = ""
@@ -156,6 +267,18 @@ export default function GnosisStarterView({
     proposeTransaction = (
       <>
         <Divider />
+
+        {connected?"✅":""}<Input
+          style={{width:"70%"}}
+          placeholder={"wallet connect url"}
+          value={walletConnectUrl}
+          disabled={connected}
+          onChange={(e)=>{
+            setWalletConnectUrl(e.target.value)
+          }}
+        />{connected?<span onClick={()=>{setConnected(false);}}>X</span>:""}
+
+        <Divider />
         <h5>Propose Transaction:</h5>
 
         <div style={{ margin: 8}}>
@@ -163,6 +286,8 @@ export default function GnosisStarterView({
             <AddressInput placeholder="Enter To Address"
               onChange={setTo}
               ensProvider={mainnetProvider}
+              value={to}
+              onChange={setTo}
             />
           </div>
           <div style={{ padding: 4 }}>
@@ -170,6 +295,7 @@ export default function GnosisStarterView({
               autofocus
               price={price}
               placeholder="Enter Tx Value"
+              value={value}
               /*
               onChange={v => {
                 v = v && v.toString && v.toString()
@@ -196,6 +322,7 @@ export default function GnosisStarterView({
               }}
             />
           </div>
+          {data?data:""}
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
@@ -231,7 +358,7 @@ export default function GnosisStarterView({
               const partialTx = {
                 to: checksumForm,
                 data,
-                value: ethers.utils.parseEther(value.toString()).toString()
+                value: ethers.utils.parseEther(value?value.toString():"0").toString()
               }
               console.log("BUTTON CLICKED PROPOSING:",partialTx)
               try{
