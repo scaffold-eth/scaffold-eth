@@ -15,6 +15,7 @@ const addToIPFS = async fileToUpload => {
 or
 
 2). Using the manifest approach which is showcased in the buyer-mints-nft branch:
+
 Here the developer edits the 'artwork.js' file and publishes it via the 'upload.js' script.
 This script uses the smae 'addToIPFS' hook that is shown in option one, the difference is this script can do a batch deploy of all your files/artwork. 
 
