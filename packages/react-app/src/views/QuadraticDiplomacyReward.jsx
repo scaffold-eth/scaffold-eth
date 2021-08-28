@@ -138,11 +138,13 @@ export default function QuadraticDiplomacyReward({
 
     // choose appropriate function from contract
     let func;
-    if (selectedToken == "ETH") {
+    if (selectedToken === "ETH") {
       dataSource.forEach(({ address, rewardAmount }) => {
         wallets.push(address);
-        amounts.push(ethers.utils.parseEther(rewardAmount.toString()));
+        // Flooring some decimals to avoid rounding errors => can result in not having enough funds.
+        amounts.push(ethers.utils.parseEther((Math.floor(rewardAmount * 10000) / 10000).toString()));
       });
+
       func = payFromSelf
         ? // payable functions need an `overrides` param.
           // relevant docs: https://docs.ethers.io/v5/api/contract/contract/#Contract-functionsCall
@@ -163,9 +165,11 @@ export default function QuadraticDiplomacyReward({
           ),
         );
       }
+
       dataSource.forEach(({ address, rewardAmount }) => {
         wallets.push(address);
-        amounts.push(ethers.utils.parseUnits(rewardAmount.toString(), 18));
+        // Flooring some decimals to avoid rounding errors => can result in not having enough funds.
+        amounts.push(ethers.utils.parseUnits((Math.floor(rewardAmount * 10000) / 10000).toString()));
       });
       func = payFromSelf
         ? writeContracts.QuadraticDiplomacyContract.sharePayedToken(wallets, amounts, tokenAddress, userAddress)
