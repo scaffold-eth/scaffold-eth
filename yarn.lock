@@ -8546,7 +8546,7 @@ eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
     idna-uts46-hx "^2.3.1"
     js-sha3 "^0.5.7"
 
-eth-hooks@^2.2.1:
+eth-hooks@next:
   version "2.2.5"
   resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.2.5.tgz#3d0662112bec58a8bd273dedf4a807ed6e54aed1"
   integrity sha512-98bZAzWRDFPU7i+6XtWaQe9RBNyWEUfgljpfcGUz839dTzE07pa4zC2VLiA9pVUWh/xHHI90+Lbdt9F3lQEe9Q==
