@@ -18,3 +18,5 @@ Instead of directly publishing a private card, the player will publish a commitm
 The randomness is ensured by combining a private randomness commited by the player at the begining and a public randomness. In this way, the player can't bias his card.
 
 Next, the player commits a bet and another zk-proof showing whether his card is greater or smaller than the dealer card without revealing his own card value.
+
+![image](https://user-images.githubusercontent.com/71540484/131203355-72745a79-5b80-4694-8ded-43a9cc9692dd.png)
