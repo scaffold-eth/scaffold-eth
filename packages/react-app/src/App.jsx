@@ -454,7 +454,8 @@ function App(props) {
                     connect to mint
                   </Button>
                 )}
-
+                <p>Your purchase of the Bot NFT does NOT CONSTITUTE AN INVESTMENT.</p>
+                
                 <div class="publicgoodsgood">
                   <h2>🌱❤️100% Proceeds To Public Goods❤️🌱</h2>
                   🦧✊ <strong>Demand more from PFPs! 👇</strong> <br />
