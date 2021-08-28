@@ -69,6 +69,7 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
+const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
