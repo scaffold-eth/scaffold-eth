@@ -130,7 +130,7 @@ function App(props) {
   //
   useEffect(()=>{
     if(DEBUG && mainnetProvider && address && selectedChainId && yourLocalBalance && yourMainnetBalance && readContracts && writeContracts && mainnetDAIContract){
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________")
+      console.log("_____________________________________ 🏗 zk-poker _____________________________________")
       console.log("🌎 mainnetProvider",mainnetProvider)
       console.log("🏠 localChainId",localChainId)
       console.log("👩‍💼 selected address:",address)
