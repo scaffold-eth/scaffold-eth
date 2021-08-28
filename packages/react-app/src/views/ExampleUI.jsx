@@ -6,7 +6,6 @@ import { Address, Balance } from "../components";
 
 export default function ExampleUI({
   purpose,
-  setPurposeEvents,
   address,
   mainnetProvider,
   localProvider,
@@ -158,7 +157,6 @@ export default function ExampleUI({
         <h2>Events:</h2>
         <List
           bordered
-          dataSource={setPurposeEvents}
           renderItem={item => {
             return (
               <List.Item key={item.blockNumber + "_" + item.sender + "_" + item.purpose}>
