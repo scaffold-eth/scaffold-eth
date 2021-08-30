@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import useOnBlock from "./OnBlock";
 import usePoller from "./Poller";
 
@@ -32,7 +32,7 @@ export default function useContractReader(contracts, contractName, functionName,
   }
 
   const [value, setValue] = useState();
-  const [tried, setTried] = useState(false);
+  const tried = useRef(false);
 
   useEffect(() => {
     if (typeof onChange === "function") {
@@ -46,12 +46,12 @@ export default function useContractReader(contracts, contractName, functionName,
       if (DEBUG) console.log("CALLING ", contractName, functionName, "with args", args);
       if (args && args.length > 0) {
         newValue = await contracts[contractName][functionName](...args);
-        setTried(true);
+        tried.current = true;
         if (DEBUG)
           console.log("contractName", contractName, "functionName", functionName, "args", args, "RESULT:", newValue);
       } else {
         newValue = await contracts[contractName][functionName]();
-        setTried(true);
+        tried.current = true;
       }
       if (formatter && typeof formatter === "function") {
         newValue = formatter(newValue);
@@ -85,7 +85,7 @@ export default function useContractReader(contracts, contractName, functionName,
     contracts && contracts[contractName],
   );
 
-  if (tried === false && contracts && contracts[contractName]) {
+  if (tried.current === false && contracts && contracts[contractName]) {
     updateValue();
   }
 

@@ -3,23 +3,25 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
-    network: localhost
+    name: BurnyBoys
+    network: mainnet
     source:
-      address: "{{localhost_YourContractAddress}}"
-      abi: YourContract
-      startBlock: 1
+      address: "{{mainnet_BurnNFTAddress}}"
+      abi: BurnNFT
+      startBlock: 13062818
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.4
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - Total
+        - BurnyBoy
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: BurnNFT
+          file: ./abis/rinkeby_BurnNFT.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: NewToken(address,uint256,uint256)
+          handler: handleNewToken
+        - event: Transfer(indexed address,indexed address,indexed uint256)
+          handler: handleTransfer
       file: ./src/mapping.ts

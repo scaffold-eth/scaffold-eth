@@ -2,7 +2,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
 import { Alert, Button, Col, Menu, Row, List, Card, Typography, Collapse, Space, Breadcrumb } from "antd";
-import { GithubOutlined } from "@ant-design/icons";
+import { GithubOutlined, TwitterOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch, useParams } from "react-router-dom";
@@ -246,7 +246,7 @@ function App(props) {
     }
   `;
   const { loading, data } = useQuery(BURNY_STATS_GQL, {
-    pollInterval: 5000,
+    pollInterval: 13000,
     variables: { boyCount: 1000, filters: burnyBoyFilters },
   });
 
@@ -366,10 +366,6 @@ function App(props) {
           {"About"}
         </a>
         <span>{" / "}</span>
-        <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
-          <GithubOutlined />
-        </a>
-        <span>{" / "}</span>
         <a
           href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
           target="_blank"
@@ -456,6 +452,14 @@ function App(props) {
               } minted`}</Typography.Text>
             </p>
             <p>
+              <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
+                <GithubOutlined />
+              </a>
+              <span>{" / "}</span>
+              <a href="https://twitter.com/burny_boys" target="_blank">
+                <TwitterOutlined />
+              </a>
+              <span>{" / "}</span>
               <a href="https://buidlguidl.com/" target="_blank">
                 🏰 BuidlGuidl
               </a>
@@ -558,7 +562,7 @@ function App(props) {
           <Col style={{ textAlign: "center", opacity: 1 }}>
             <Button
               onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+                window.open("https://t.me/joinchat/4APZzuJdlPc1ZDdk");
               }}
               size="large"
               shape="round"
