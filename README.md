@@ -134,7 +134,7 @@ Navigate back to the Lambda services page on aws and find the 'details' for the 
 
 Review section titled: 'Overview of serverless uploading to S3'. This is the main authentication flow for making PUT requests to an aws s3 bucket.
 
--------------------------------------------------------------------------------
+---------------Following-Info-Related-To-IPFS----------------------
 
 # 🏄‍♂️ Quick Start
 

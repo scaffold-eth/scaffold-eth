@@ -12,7 +12,7 @@ const bucketName = "adaptiveclaim";
 const APIGatewayEndpoint = "https://py1mx7j0eh.execute-api.us-east-1.amazonaws.com/default/getPresignedImageUrl";
 
 
-export default function BucketToIPFS() {
+export default function ImageToIPFS() {
 
     const [ selectedFile, setSelectedFile ] = useState();
 	const [ isSelected, setIsSelected ] = useState(false);
