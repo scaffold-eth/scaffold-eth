@@ -4,7 +4,7 @@ import "antd/dist/antd.css";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { LinkOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -34,6 +34,7 @@ const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
+
 
 console.log("📦 Assets: ", assets);
 
@@ -187,6 +188,10 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "MoonshotBot", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  // track the lastest bots minted
+  const [lastestMintedBots, setLatestMintedBots] = useState();
+  console.log("📟 latestBotsMinted:", lastestMintedBots);
+
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
@@ -224,6 +229,39 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourBalance]);
+  
+  //
+  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
+  //
+  useEffect(() => {
+    const getLatestMintedBots = async () => {
+
+      let latestMintedBotsUpdate = [];
+      if (transferEvents.length > 0){
+        for ( let botIndex = 0; botIndex < transferEvents.length - 1 ; botIndex++){
+          if (transferEvents[botIndex].from == "0x0000000000000000000000000000000000000000" && latestMintedBotsUpdate.length < 3) {
+            try{
+            let tokenId = transferEvents[botIndex].tokenId.toNumber()
+            const tokenURI = await readContracts.MoonshotBot.tokenURI(tokenId);
+            const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+            const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+              try {
+                const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+                latestMintedBotsUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              } catch (e) {
+                console.log(e);
+              }
+            } catch (e) {
+              console.log(e);
+            }
+          }
+        } 
+      }
+      setLatestMintedBots(latestMintedBotsUpdate);
+    }
+    getLatestMintedBots();
+  }, [amountMintedAlready])
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -473,7 +511,43 @@ function App(props) {
                     </a>
                 </div>
                 <br />
-                <br />                    
+                <br />  
+                
+                {lastestMintedBots && lastestMintedBots.length > 0 ? (
+                <div class="latestBots">
+                <h2>Latest Minted Bots</h2>
+
+                <List
+                  dataSource={lastestMintedBots}
+                  renderItem={item => {
+                    const id = item.id;
+                    return (
+                      <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
+                        <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
+                          <Card
+                            style={{ borderBottom:'none', border: 'none', background: "none"}}
+                            title={
+                              <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                                <span>#{id}</span> {item.name}
+                              </div>
+                            }
+                          >
+                            <div>
+                              <img src={item.image} style={{ maxWidth: 150 }} />
+                            </div>
+                          </Card>
+                        </List.Item>
+                      </a>
+                    );
+                  }}
+                />
+                </div>
+                ) : (
+                  <div>
+                  </div>
+                )}
+                <br />
+                <br /> 
               </div>
 
               {yourCollectibles && yourCollectibles.length > 0 ? (
@@ -554,7 +628,7 @@ function App(props) {
                   renderItem={item => {
                     const id = item.id.toNumber();
                     return (
-                      <List.Item>
+                      <List.Item style={{display: "block", backgroundColor: "rgb(127, 81, 214)", border: "1px solid #DA5892"}}>
                         <Card
                           title={
                             <div>
@@ -568,14 +642,16 @@ function App(props) {
                           <div>{item.description}</div>
                         </Card>
 
-                        <div>
-                          owner:{" "}
-                          <Address
-                            address={item.owner}
-                            ensProvider={mainnetProvider}
-                            blockExplorer={blockExplorer}
-                            fontSize={16}
-                          />
+                        <Space direction="vertical" style={{ marginTop: 8, width: "100%" }}>
+                          <div>
+                            owner:{" "}
+                            <Address
+                              address={item.owner}
+                              ensProvider={mainnetProvider}
+                              blockExplorer={blockExplorer}
+                              fontSize={16}
+                            />
+                          </div>
                           <AddressInput
                             ensProvider={mainnetProvider}
                             placeholder="transfer to address"
@@ -587,6 +663,7 @@ function App(props) {
                             }}
                           />
                           <Button
+                            style={{border: "1px solid rgb(218, 88, 146)"}}
                             onClick={() => {
                               console.log("writeContracts", writeContracts);
                               tx(writeContracts.MoonshotBot.transferFrom(address, transferToAddresses[id], id));
@@ -594,7 +671,7 @@ function App(props) {
                           >
                             Transfer
                           </Button>
-                        </div>
+                        </Space>
                       </List.Item>
                     );
                   }}
