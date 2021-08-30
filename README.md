@@ -134,7 +134,37 @@ Navigate back to the Lambda services page on aws and find the 'details' for the 
 
 Review section titled: 'Overview of serverless uploading to S3'. This is the main authentication flow for making PUT requests to an aws s3 bucket.
 
--------------------------------------------------------------------------------
+---------------Following-Info-Related-To-IPFS----------------------
+
+This IPFS code was aggregated from the buyer-mints-nft branch. In this branch, the developer uses a script to upload the 'manifest' files to IPFS prior to launching the application itself. Then application uses the 'getFromIPFS' hook to fetch the images from IPFS and display them in the app. 
+
+In the UploadToIPFS component here, uploading and fetching can happen in the same component. You will notice in the component the ipfs object is created using Infura as the host node.
+
+```bash
+const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
+```
+
+The the 'add' method is called on the IPFS object. The main difference between adding an image and adding a Json object or string is that the image needs be read and saved as binary data. This is done with FileReader() and Buffer(). Show below. This occurs onFileChange in the 'input" selector.
+
+```bash
+const file = event.target.files[0];
+const reader = new window.FileReader()
+reader.readAsArrayBuffer(file)
+reader.onloadend = () => {
+    setBuffer(Buffer(reader.result))
+    console.log("buffer: ", buffer)
+}
+```
+
+Once setBuffer() state is set with the binary array, you are ready to use the addToIPFS(buffer) function. This is the process as the buyer-mints-nft branch and gets called when the 'Upload to IPFS' button is clicked.
+
+Once the data is uploaded to IPFS the function return the hash sting of the IPFS data. This can be used to fetch the image using the "img" component.
+
+```bash
+<img src={"https://ipfs.io/ipfs/"+ipfsHash} style={{width:"300px"}}/>
+```
+
+----------------------------------------------------------------------
 
 # 🏄‍♂️ Quick Start
 
