@@ -144,7 +144,7 @@ In the UploadToIPFS component here, uploading and fetching can happen in the sam
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' });
 ```
 
-The the 'add' method is called on the IPFS object. The main difference between adding an image and adding a Json object or string is that the image needs be read and saved as binary data. This is done with FileReader() and Buffer(). Show below. This occurs onFileChange in the <input/> selector.
+The the 'add' method is called on the IPFS object. The main difference between adding an image and adding a Json object or string is that the image needs be read and saved as binary data. This is done with FileReader() and Buffer(). Show below. This occurs onFileChange in the 'input" selector.
 
 ```bash
 const file = event.target.files[0];
@@ -158,7 +158,7 @@ reader.onloadend = () => {
 
 Once setBuffer() state is set with the binary array, you are ready to use the addToIPFS(buffer) function. This is the process as the buyer-mints-nft branch and gets called when the 'Upload to IPFS' button is clicked.
 
-Once the data is uploaded to IPFS the function return the hash sting of the IPFS data. This can be used to fetch the image using the <img/> component.
+Once the data is uploaded to IPFS the function return the hash sting of the IPFS data. This can be used to fetch the image using the "img" component.
 
 ```bash
 <img src={"https://ipfs.io/ipfs/"+ipfsHash} style={{width:"300px"}}/>
