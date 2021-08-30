@@ -7,17 +7,6 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
 
   const pollPrice = () => {
     async function getPrice() {
-<<<<<<< HEAD
-      const DAI = new Token(
-        mainnetProvider.network ? mainnetProvider.network.chainId : 1,
-        "0x6B175474E89094C44Da98b954EedeAC495271d0F",
-        18,
-      );
-      const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider);
-      const route = new Route([pair], WETH[DAI.chainId]);
-      console.log('price', route.midPrice.toSignificant(6))
-      setPrice(parseFloat(route.midPrice.toSignificant(6)));
-=======
       if(!mainnetProvider)
         return 0;
       if (targetNetwork.price) {
@@ -32,7 +21,6 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
         const route = new Route([pair], WETH[DAI.chainId]);
         setPrice(parseFloat(route.midPrice.toSignificant(6)));
       }
->>>>>>> master
     }
     getPrice();
   };

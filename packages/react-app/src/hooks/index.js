@@ -1,9 +1,4 @@
-<<<<<<< HEAD
-export { default as useContractLoader } from "./ContractLoader";
-export { default as useCustomContractLoader } from "./CustomContractLoader";
-=======
 export { default as useBalance } from "./Balance";
->>>>>>> master
 export { default as useContractExistsAtAddress } from "./ContractExistsAtAddress";
 export { default as useContractLoader } from "./ContractLoader";
 export { default as useContractReader } from "./ContractReader";

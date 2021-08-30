@@ -63,9 +63,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             #️⃣
           </div>
         </Tooltip>
-<<<<<<< HEAD
-      )
-=======
       );
     } else if (input.type === "uint256") {
       buttons = (
@@ -92,7 +89,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           </Tooltip>
         );
       }
->>>>>>> master
     }
 
     return (
@@ -196,17 +192,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 return value;
               });
 
-<<<<<<< HEAD
-              const overrides = {};
-              if (txValue) {
-                overrides.value = txValue; // ethers.utils.parseEther()
-              }
-
-              // console.log("Running with extras",extras)
-              const returned = await tx(contractFunction(...args, overrides));
-              const result = tryToDisplay(returned);
-
-=======
               let result;
               if (functionInfo.stateMutability === "view" || functionInfo.stateMutability === "pure") {
                 const returned = await contractFunction(...args);
@@ -227,7 +212,6 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 result = tryToDisplay(returned);
               }
 
->>>>>>> master
               console.log("SETTING RESULT:", result);
               setReturnValue(result);
               triggerRefresh(true);

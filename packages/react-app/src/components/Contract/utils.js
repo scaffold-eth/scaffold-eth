@@ -7,11 +7,7 @@ const tryToDisplay = thing => {
     try {
       return thing.toNumber();
     } catch (e) {
-<<<<<<< HEAD
-      return formatUnits(thing, "ether");
-=======
       return "Ξ" + utils.formatUnits(thing, "ether");
->>>>>>> master
     }
   }
   if (thing && thing.indexOf && thing.indexOf("0x") === 0 && thing.length === 42) {

@@ -1,22 +1,32 @@
-pragma solidity >=0.8.0 <0.9.0;
-//SPDX-License-Identifier: MIT
+pragma solidity >=0.6.11;
 
-import "hardhat/console.sol";
-//import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./ContinuousToken.sol";
 
-contract YourContract {
 
-  //event SetPurpose(address sender, string purpose);
+contract YourContract is ContinuousToken {
+    ERC20 public reserveToken;
 
-  string public purpose = "Building Unstoppable Apps";
+    constructor(
+        ERC20 _reserveToken
+    ) public ContinuousToken("Smile", "😃", 10 ether, 100000) {
+        reserveToken = _reserveToken;
 
-  constructor() {
-    // what should we do on deploy?
-  }
+    }
 
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      //emit SetPurpose(msg.sender, purpose);
-  }
+    function mint(uint _amount) public {
+        uint rewardAmount = _continuousMint(_amount);
+        require(reserveToken.transferFrom(msg.sender, address(this), _amount), "mint() ERC20.transferFrom failed.");
+        emit Minted(msg.sender, rewardAmount, _amount);
+    }
+
+    function burn(uint _amount) public {
+        uint returnAmount = _continuousBurn(_amount);
+        require(reserveToken.transfer(msg.sender, returnAmount), "burn() ERC20.transfer failed.");
+        emit Burned(msg.sender, _amount, returnAmount);
+    }
+
+    function reserveBalance() public override view returns (uint) {
+        // for testing
+        return reserveToken.balanceOf(address(this)).add(1);
+    }
 }
