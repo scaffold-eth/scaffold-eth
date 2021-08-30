@@ -20,10 +20,10 @@ import {
 } from "eth-hooks";
 import {
   useEventListener,
-} from "eth-hooks/lib/events";
+} from "eth-hooks/events/useEventListener";
 import {
   useExchangeEthPrice,
-} from "eth-hooks/lib/dapps/dex";
+} from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
@@ -108,12 +108,12 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           42: `https://kovan.infura.io/v3/${INFURA_ID}`,
           100: "https://dai.poa.network", // xDai
         },
       },
-      
+
     },
     portis: {
       display: {
@@ -173,7 +173,7 @@ function App(props) {
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
-    if(injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function"){
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
       await injectedProvider.provider.disconnect();
     }
     setTimeout(() => {
@@ -352,7 +352,7 @@ function App(props) {
                         // handle "add" error
                       }
                     }
-                    
+
                     if (switchTx) {
                       console.log(switchTx);
                     }

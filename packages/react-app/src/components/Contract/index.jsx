@@ -68,44 +68,54 @@ export default function Contract({
   const contractIsDeployed = useContractExistsAtAddress(provider, address);
 
   const displayedContractFunctions = useMemo(
-    () =>
-      contract
+    () => {
+      const results = contract
         ? Object.values(contract.interface.functions).filter(
           fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
         )
-        : [],
+        : []
+      return results;
+    },
     [contract, show],
   );
 
   const [refreshRequired, triggerRefresh] = useState(false);
-  const contractDisplay = displayedContractFunctions.map(fn => {
-    if (isQueryable(fn)) {
-      // If there are no inputs, just display return value
+  const contractDisplay = displayedContractFunctions.map(contractFuncInfo => {
+
+    const contractFunc = contractFuncInfo.stateMutability === "view" || contractFuncInfo.stateMutability === "pure"
+      ? contract[contractFuncInfo.name]
+      : contract.connect(signer)[contractFuncInfo.name];
+
+    if (typeof contractFunc === "function") {
+
+      if (isQueryable(contractFuncInfo)) {
+        // If there are no inputs, just display return value
+        return (
+          <DisplayVariable
+            key={contractFuncInfo.name}
+            contractFunction={contractFunc}
+            functionInfo={contractFuncInfo}
+            refreshRequired={refreshRequired}
+            triggerRefresh={triggerRefresh}
+          />
+        );
+      }
+
+
+      // If there are inputs, display a form to allow users to provide these
       return (
-        <DisplayVariable
-          key={fn.name}
-          contractFunction={contract[fn.name]}
-          functionInfo={fn}
-          refreshRequired={refreshRequired}
+        <FunctionForm
+          key={"FF" + contractFuncInfo.name}
+          contractFunction={contractFunc
+          }
+          functionInfo={contractFuncInfo}
+          provider={provider}
+          gasPrice={gasPrice}
           triggerRefresh={triggerRefresh}
         />
       );
     }
-    // If there are inputs, display a form to allow users to provide these
-    return (
-      <FunctionForm
-        key={"FF" + fn.name}
-        contractFunction={
-          fn.stateMutability === "view" || fn.stateMutability === "pure"
-            ? contract[fn.name]
-            : contract.connect(signer)[fn.name]
-        }
-        functionInfo={fn}
-        provider={provider}
-        gasPrice={gasPrice}
-        triggerRefresh={triggerRefresh}
-      />
-    );
+    return null;
   });
 
   return (

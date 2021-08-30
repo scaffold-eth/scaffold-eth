@@ -8503,10 +8503,10 @@ eth-ens-namehash@2.0.8, eth-ens-namehash@^2.0.8:
     idna-uts46-hx "^2.3.1"
     js-sha3 "^0.5.7"
 
-eth-hooks@next:
-  version "2.2.5"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.2.5.tgz#3d0662112bec58a8bd273dedf4a807ed6e54aed1"
-  integrity sha512-98bZAzWRDFPU7i+6XtWaQe9RBNyWEUfgljpfcGUz839dTzE07pa4zC2VLiA9pVUWh/xHHI90+Lbdt9F3lQEe9Q==
+eth-hooks@2.2.7:
+  version "2.2.7"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.2.7.tgz#b5ead3964fa4b97a8359fc147be6effc851e2dd3"
+  integrity sha512-7HXLBGKJd9HOQdsJc72OabdvpPT/nxY7HK+8B3QuapC/uhLO7B3xsBnkPWtvMr2uVuo+YV4Iquni2+dPTP3ABg==
   dependencies:
     "@ethersproject/address" "^5.4.0"
     "@ethersproject/bignumber" "^5.4.0"
