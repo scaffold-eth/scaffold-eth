@@ -1,0 +1,17 @@
+{
+   "name":"NAME Moonshot Bot",
+   "description":"NAME is a Moonshot Bots that builds coordination for public good.",
+   "image":"https://gateway.pinata.cloud/ipfs/QmX56GPN2iB9QG2s6qjFcBdaELDj5tLDUDsB2dQ7Dxt3Hj/nfts/NAME.png",
+   "external_url":"https://bots.moonshotcollective.space",
+   "background_color":"ffffff",
+   "attributes":[
+      {
+         "trait_type":"personhood_score",
+         "value":50.0
+      },
+      {
+         "trait_type":"cost_of_forgery",
+         "value":50.0
+      }
+   ]
+}
