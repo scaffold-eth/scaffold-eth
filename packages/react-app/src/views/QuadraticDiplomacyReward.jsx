@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from "react";
-import { Alert, Input, Button, Divider, Space, Typography, Table, Tag, Select, notification } from "antd";
+import { Alert, Input, Button, Divider, Space, Typography, Table, Tag, Select, notification, Spin } from "antd";
 import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { Address } from "../components";
 const { Text, Title } = Typography;
@@ -15,17 +15,16 @@ const REWARD_STATUS = {
 export default function QuadraticDiplomacyReward({
   tx,
   writeContracts,
-  mainnetContracts,
   userSigner,
   votesEntries,
   contributorEntries,
-  price,
   isAdmin,
   mainnetProvider,
 }) {
   const [totalRewardAmount, setTotalRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
   const [selectedToken, setSelectedToken] = useState("");
+  const [isSendingTx, setIsSendingTx] = useState(false);
 
   const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
@@ -129,13 +128,18 @@ export default function QuadraticDiplomacyReward({
     [voteResults, totalSquare, totalRewardAmount],
   );
 
-  const missingVotingMembers = contributorEntries?.filter(entry => !voteResults[entry.wallet]?.hasVoted);
+  const missingVotingMembers = contributorEntries
+    ?.map(entry => entry.wallet)
+    .filter(wallet => !voteResults[wallet]?.hasVoted)
+    // Remove duplicated.
+    .filter((item, pos, self) => self.indexOf(item) === pos);
 
   const handlePayment = async payFromSelf => {
     // ToDo. Do some validation (non-empty elements, etc.)
     const wallets = [];
     const amounts = [];
 
+    setIsSendingTx(true);
     // choose appropriate function from contract
     let func;
     if (selectedToken === "ETH") {
@@ -183,6 +187,9 @@ export default function QuadraticDiplomacyReward({
           message: "Payment sent!",
         });
         setRewardStatus(REWARD_STATUS.COMPLETED);
+        setIsSendingTx(false);
+      } else if (update.error) {
+        setIsSendingTx(false);
       }
     });
   };
@@ -231,9 +238,9 @@ export default function QuadraticDiplomacyReward({
             showIcon
             type="warning"
             message={<Title level={5}>Votes are pending from:</Title>}
-            description={missingVotingMembers.map(entry => (
-              <p key={entry.wallet}>
-                <Address address={entry.wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
+            description={missingVotingMembers.map(wallet => (
+              <p key={wallet}>
+                <Address address={wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
               </p>
             ))}
           />
@@ -243,24 +250,28 @@ export default function QuadraticDiplomacyReward({
           dataSource={dataSource}
           columns={columns}
           pagination={{ pageSize: 10 }}
-          footer={() => (
-            <Space>
-              <Button
-                onClick={() => handlePayment(true)}
-                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
-                size="large"
-              >
-                Pay 💸
-              </Button>
-              <Button
-                onClick={() => handlePayment(false)}
-                disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
-                size="large"
-              >
-                Pay from contract 💸
-              </Button>
-            </Space>
-          )}
+          footer={() =>
+            !isSendingTx ? (
+              <Space>
+                <Button
+                  onClick={() => handlePayment(true)}
+                  disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                  size="large"
+                >
+                  Pay 💸
+                </Button>
+                <Button
+                  onClick={() => handlePayment(false)}
+                  disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                  size="large"
+                >
+                  Pay from contract 💸
+                </Button>
+              </Space>
+            ) : (
+              <Spin size="small" />
+            )
+          }
         />
       </Space>
       <Divider />

@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge } from "antd";
+import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge, Spin } from "antd";
 import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Address } from "../components";
 const { Title, Text } = Typography;
@@ -15,6 +15,7 @@ export default function QuadraticDiplomacyVote({
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [spentVoteTokens, setSpentVoteTokens] = useState(0);
+  const [isSendingTx, setIsSendingTx] = useState(false);
 
   const availableVoteTokens = voteCredits?.toNumber() ?? 0;
   const remainingVoteTokens = availableVoteTokens - spentVoteTokens;
@@ -79,10 +80,14 @@ export default function QuadraticDiplomacyVote({
       amounts.push(voteTokens);
     });
 
+    setIsSendingTx(true);
     await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(wallets, amounts), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
-        setCurrentStep(3);
+        setIsSendingTx(false);
         setSpentVoteTokens(0);
+        setCurrentStep(3);
+      } else if (update.error) {
+        setIsSendingTx(false);
       }
     });
   };
@@ -166,10 +171,16 @@ export default function QuadraticDiplomacyVote({
           }
           footer={
             <Space split>
-              <Button onClick={() => setCurrentStep(1)}>Go back</Button>
-              <Button type="primary" onClick={handleSubmitVotes}>
-                Commit votes
-              </Button>
+              {!isSendingTx ? (
+                <>
+                  <Button onClick={() => setCurrentStep(1)}>Go back</Button>
+                  <Button type="primary" onClick={handleSubmitVotes}>
+                    Commit votes
+                  </Button>
+                </>
+              ) : (
+                <Spin size="small" />
+              )}
             </Space>
           }
           dataSource={Object.entries(selectedContributors)}

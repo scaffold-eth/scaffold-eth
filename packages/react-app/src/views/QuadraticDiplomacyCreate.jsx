@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { Form, Input, Divider, Button, Typography, Row, Col } from "antd";
+import { Form, Input, Divider, Button, Typography, Row, Col, Spin } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { AddressInput } from "../components";
@@ -8,16 +8,21 @@ const { Title } = Typography;
 export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeContracts }) {
   const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
+  const [isSendingTx, setIsSendingTx] = useState(false);
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
     // ToDo. Check if addresses are valid.
+    setIsSendingTx(true);
     const filteredVoters = voters.filter(voter => voter);
     await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(filteredVoters, voteAllocation), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         setVoters([""]);
         setVoteAllocation(0);
         form.resetFields();
+        setIsSendingTx(false);
+      } else if (update.error) {
+        setIsSendingTx(false);
       }
     });
   };
@@ -59,9 +64,13 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
         </Form.Item>
         <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
           {/*ToDo Disable if empty members */}
-          <Button type="primary" htmlType="submit" block disabled={!voteAllocation}>
-            Submit
-          </Button>
+          {!isSendingTx ? (
+            <Button type="primary" htmlType="submit" block disabled={!voteAllocation}>
+              Submit
+            </Button>
+          ) : (
+            <Spin size="small" />
+          )}
         </Form.Item>
       </Form>
     </div>
