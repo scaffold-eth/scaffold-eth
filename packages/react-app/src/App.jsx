@@ -27,6 +27,8 @@ import {
   useOnBlock,
   useUserProvider,
 } from "./hooks";
+import { BlockPicker } from 'react-color'
+
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -213,20 +215,23 @@ function App(props) {
           const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
           const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+/*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
 
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
 
+        */
           try {
-            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
             collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
+
         } catch (e) {
           console.log(e);
         }
@@ -386,13 +391,13 @@ function App(props) {
       const assetUpdate = [];
       for (const a in assets) {
         try {
-          const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
+          /*const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
           let owner;
           if (!forSale) {
             const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
             owner = await readContracts.YourCollectible.ownerOf(tokenId);
           }
-          assetUpdate.push({ id: a, ...assets[a], forSale, owner });
+          assetUpdate.push({ id: a, ...assets[a], forSale, owner });*/
         } catch (e) {
           console.log(e);
         }
@@ -410,6 +415,9 @@ function App(props) {
     if (loadedAssets[a].forSale) {
       cardActions.push(
         <div>
+
+          <BlockPicker onChange={(c)=>{console.log("c",c)}}/>
+
           <Button
             onClick={() => {
               console.log("gasPrice,", gasPrice);
@@ -538,6 +546,12 @@ function App(props) {
             */}
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
+              <Button onClick={()=>{
+                tx( writeContracts.YourCollectible.mintItem() )
+              }}>MINT</Button>
+            </div>
+
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
               <StackGrid columnWidth={200} gutterWidth={16} gutterHeight={16}>
                 {galleryList}
               </StackGrid>
@@ -551,6 +565,9 @@ function App(props) {
                 dataSource={yourCollectibles}
                 renderItem={item => {
                   const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image)
+
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -560,9 +577,7 @@ function App(props) {
                           </div>
                         }
                       >
-                        <div>
-                          <img src={item.image} style={{ maxWidth: 150 }} alt="" />
-                        </div>
+                        <img src={item.image} />
                         <div>{item.description}</div>
                       </Card>
 

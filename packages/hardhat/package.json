@@ -16,6 +16,7 @@
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^3.2.0",
     "@tenderly/hardhat-tenderly": "^1.0.10",
+    "base64-sol": "^1.0.1",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
