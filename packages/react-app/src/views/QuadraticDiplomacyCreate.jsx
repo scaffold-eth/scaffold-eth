@@ -11,8 +11,9 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
   const [form] = Form.useForm();
 
   const handleSubmit = async () => {
-    // ToDo. Do some validation (non-empty elements, etc.)
-    await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(voters, voteAllocation), update => {
+    // ToDo. Check if addresses are valid.
+    const filteredVoters = voters.filter(voter => voter);
+    await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(filteredVoters, voteAllocation), update => {
       if (update && (update.status === "confirmed" || update.status === 1)) {
         setVoters([""]);
         setVoteAllocation(0);
@@ -36,7 +37,13 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
         </Form.Item>
         <Divider />
         {voters.map((_, index) => (
-          <VoterInput key={index} index={index} setVoters={setVoters} voters={voters} mainnetProvider={mainnetProvider} />
+          <VoterInput
+            key={index}
+            index={index}
+            setVoters={setVoters}
+            voters={voters}
+            mainnetProvider={mainnetProvider}
+          />
         ))}
         <Divider />
         <Form.Item style={{ justifyContent: "center" }}>
