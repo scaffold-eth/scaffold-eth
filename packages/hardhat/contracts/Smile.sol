@@ -1,13 +1,18 @@
 pragma solidity ^0.6.12;
 
 import "./ContinuousToken.sol";
+import '@openzeppelin/contracts/math/SafeMath.sol';
 
 
 contract Smile is ContinuousToken {
+    using SafeMath for uint;
     uint256 internal reserve;
+
+    mapping(address => uint) userLockedBalance;
   
     constructor() public payable ContinuousToken("Smile", "😃", 100 ether, 200000) {
-        reserve = msg.value; 
+        reserve = msg.value;
+        userLockedBalance[msg.sender] = userLockedBalance[msg.sender].add(msg.value);
     }
 
     fallback() external payable { mint(); }
@@ -16,12 +21,14 @@ contract Smile is ContinuousToken {
 
     function mint() public payable {
         uint purchaseAmount = msg.value;
+        userLockedBalance[msg.sender] = userLockedBalance[msg.sender].add(msg.value);
         _continuousMint(purchaseAmount);
         reserve = reserve.add(purchaseAmount);
     }
 
     function burn(uint _amount) public {
         uint refundAmount = _continuousBurn(_amount);
+        userLockedBalance[msg.sender] = userLockedBalance[msg.sender].sub(refundAmount);
         reserve = reserve.sub(refundAmount);
         msg.sender.transfer(refundAmount);
     }
