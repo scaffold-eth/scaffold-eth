@@ -69,11 +69,15 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
 
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
@@ -113,7 +117,6 @@ const web3Modal = new Web3Modal({
           100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -159,22 +162,17 @@ const web3Modal = new Web3Modal({
     },
     authereum: {
       package: Authereum, // required
-    }
+    },
   },
 });
 
-
-
-const contractList = require("./contracts/hardhat_contracts.json");
-const externalContractList = require("./contracts/external_contracts.js");
-
-const contractsConfig = {
-  deployedContracts: contractList,
-  externalContracts: externalContractList
-}
-
 function App(props) {
-  const mainnetProvider = poktMainnetProvider && poktMainnetProvider._isProvider ? poktMainnetProvider : scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider =
+    poktMainnetProvider && poktMainnetProvider._isProvider
+      ? poktMainnetProvider
+      : scaffoldEthProvider && scaffoldEthProvider._network
+      ? scaffoldEthProvider
+      : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -346,14 +344,14 @@ function App(props) {
                     // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
                     try {
                       switchTx = await ethereum.request({
-                        method: 'wallet_switchEthereumChain',
+                        method: "wallet_switchEthereumChain",
                         params: [{ chainId: data[0].chainId }],
                       });
                     } catch (switchError) {
                       // not checking specific error code, because maybe we're not using MetaMask
                       try {
                         switchTx = await ethereum.request({
-                          method: 'wallet_addEthereumChain',
+                          method: "wallet_addEthereumChain",
                           params: data,
                         });
                       } catch (addError) {
@@ -383,8 +381,6 @@ function App(props) {
       </div>
     );
   }
-
-
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
