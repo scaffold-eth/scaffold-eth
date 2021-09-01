@@ -556,6 +556,7 @@ function App(props) {
               address={address}
               blockExplorer="https://etherscan.io/"
               contractConfig={contractConfig}
+              chainId={1}
             />
             {/*
             <Contract
