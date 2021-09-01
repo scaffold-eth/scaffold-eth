@@ -1,96 +1,131 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - 📈 Bonding Curve
 
-> everything you need to build on Ethereum! 🚀
+> Discover how you can get started with [Bonding Curve](https://yos.io/2018/11/10/bonding-curves/)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+<details open="open">
+  <summary>Table of Contents</summary>
+  <ol>
+    <li>
+      <a>About The Branch</a>
+    </li>
+    <li>
+      <a>Getting Started</a>
+      <ul>
+        <li><a>Installation</a></li>
+        <li><a>Introduction</a></li>
+      </ul>
+    </li>
+    <li><a>Branch UI Walkthrough</a></li>
+    <li><a>Contact</a></li>
+  </ol>
+</details>
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+## About The Branch
+
+This branch is entitled to showcase how you can get started integrating/using [Bonding Curve](https://yos.io/2018/11/10/bonding-curves/) which makes use of the [Bancor's Bonding Curve Formula](https://yos.io/2018/11/10/bonding-curves/#mathematical-formula).
 
 
-# 🏄‍♂️ Quick Start
+## Getting Started
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+### Installation
 
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+Let's start our environment for tinkering and exploring how NFT auction would work.
+
+1. Clone the repo first
+```sh
+git clone -b bonding-curve https://github.com/austintgriffith/scaffold-eth.git bonding-curve
+cd bonding-curve
 ```
 
-> install and start your 👷‍ Hardhat chain:
-
+2. Install dependencies
 ```bash
-cd scaffold-eth
 yarn install
+```
+
+3. Spin up local chain
+```sh
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+4. Deploy Contracts
+```sh
+yarn deplloy
+```
 
+5. Start React frontend
 ```bash
-cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
+## Introduction
+### What is a Bonding Curve ?
 
-```bash
-cd scaffold-eth
-yarn deploy
+![download](https://user-images.githubusercontent.com/26670962/102856353-4e7dc280-444c-11eb-891b-b1e414d9e4a5.png)
+
+A Bonding curve is a mathematical curve that defines a relationship between price and token supply, basically as a the supply of a token increases the it's price increases as well hece the price of nth token will be less than n+1th token and so on.
+
+So in a nutshell
+```sh
+token price = (supply)^2
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+### Mechanism
+During the deployment when the [Smile Contract](https://github.com/austintgriffith/scaffold-eth/blob/bonding-curve/packages/hardhat/contracts/Smile.sol) get's deployed there is small ```0.0001 eth``` to set the [reserve amount](https://github.com/austintgriffith/scaffold-eth/blob/bonding-curve/packages/hardhat/contracts/Smile.sol#L14) which is required as per the Bancor Formula.
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+Further on as user lock in eth they get 😃 Tokens minted and the price increases with the supply and vice-versa if the user burns the token.
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+### Price Sensitivity
+As mentioned below Purchase Return is basically the number of 😃 Tokens you get when you lock in your ETH, now this and Sale Return depend on mainly on [reserve ratio](https://github.com/austintgriffith/scaffold-eth/blob/bonding-curve/packages/hardhat/contracts/curves/BancorBondingCurve.sol#L17)
 
-📱 Open http://localhost:3000 to see the app
+which mainly in mathmatical terms is:
+```sh
+Reserve Ratio = Reserve Token Balance / (Bonding Curve/Continuous Token Supply x Bonding Curve/Continuous Token Price)
+```
 
-# 📚 Documentation
+<br />
 
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
+![qYnG26I](https://user-images.githubusercontent.com/26670962/103397769-bd030480-4b5f-11eb-9815-8b03d8d20e82.png)
 
-# 🔭 Learning Solidity
+The diagram above shows some examples of bonding curves with different Reserve Ratios. In the bottom-left curve with a 10% Reserve Ratio, the price curve grow more aggressively with increasing supply. A Reserve Ratio higher than 10% would flatten towards the linear top-right shape as it approaches 50%.
 
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
-
-  
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
+Currently the reserve ratio is set to [30 %](https://github.com/austintgriffith/scaffold-eth/blob/bonding-curve/packages/hardhat/contracts/Smile.sol#L13) 
 
 
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
+### Mathmatical Formula
 
-# 💬 Support Chat
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+- **Purchase Return**  The Amount of SMILE (😃) Token’s you get after you lock in eth is calculated as:
+```sh
+Purchase Return = SMILE Token Supply * ((1 + ReserveTokensReceived / ReserveTokenBalance) ^ (ReserveRatio) - 1)
+```
+<br />
 
----
+- **Sale Return** The locked in eth you get back based on the amount of SMILE (😃) token's you choose to burn and the current price at that point it is calculated as:
+```sh
+Sale Return = ReserveTokenBalance * (1 - (1 - SMILE Token Received / SMILE Token Supply) ^ (1 / (ReserveRatio)))**
+```
 
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
+
+
+
+## Branch UI Walkthrough
+
+Firstly, get us some funds using local faucet.
+
+<img width="1651" alt="mint" src="https://user-images.githubusercontent.com/26670962/131658776-b2365a6e-13d5-4426-9832-aaadb9dce88d.png">
+
+Mint the 😃 tokens by selecting the amount of eth you want to lock-in.
+
+<img width="1638" alt="burn" src="https://user-images.githubusercontent.com/26670962/131658890-a2a0eab4-0cb5-40e8-a876-0534a22da3d0.png">
+
+Burn a specific no of 😃 tokens
+
+<img width="1649" alt="transfer" src="https://user-images.githubusercontent.com/26670962/131659022-06a6a4ae-40ef-4b7a-ae2a-1b6d523ee8b7.png">
+
+Transfer your 😃 tokens to someone else
+
+
+## Contact
+
+Join the [telegram support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
