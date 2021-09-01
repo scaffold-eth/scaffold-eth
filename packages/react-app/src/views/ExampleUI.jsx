@@ -72,6 +72,7 @@ export default function ExampleUI({
           <EtherInput
             price={price}
             value={amount}
+            placeholder={"😃 Amount to Burn"}
             onChange={value => {
               setAmount(value);
             }}

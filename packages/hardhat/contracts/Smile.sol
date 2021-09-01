@@ -8,9 +8,9 @@ contract Smile is ContinuousToken {
     using SafeMath for uint;
     uint256 internal reserve;
 
-    mapping(address => uint) userLockedBalance;
+    mapping(address => uint) public userLockedBalance;
   
-    constructor() public payable ContinuousToken("Smile", "😃", 100 ether, 200000) {
+    constructor() public payable ContinuousToken("Smile", "😃", 100 ether, 300000) {
         reserve = msg.value;
         userLockedBalance[msg.sender] = userLockedBalance[msg.sender].add(msg.value);
     }
