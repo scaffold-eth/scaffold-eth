@@ -88,11 +88,8 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         votes[wallet] += amount;
     }
 
-    function setVotes(address wallet, uint256 amount) public onlyAdmin {
-        votes[wallet] = amount;
-    }
-
-    function addMember(address wallet) public onlyAdmin {
+    function addSingleMemberWithVotes(address wallet, uint256 voteAmount) public onlyAdmin {
+        votes[wallet] = voteAmount;
         grantRole(VOTER_ROLE, wallet);
         emit AddMember(msg.sender, wallet);
     }
@@ -102,8 +99,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         uint256 voteAllocation
     ) public onlyAdmin {
         for (uint256 i = 0; i < wallets.length; i++) {
-            addMember(wallets[i]);
-            setVotes(wallets[i], voteAllocation);
+            addSingleMemberWithVotes(wallets[i], voteAllocation);
         }
     }
 
