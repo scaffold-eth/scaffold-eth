@@ -179,6 +179,11 @@ function App() {
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
   // keep track of a variable from the contract in the local React state:
+  const currentElectionStartBlock = useContractReader(
+    readContracts,
+    "QuadraticDiplomacyContract",
+    "currentElectionStartBlock",
+  );
   const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
   const voterRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "VOTER_ROLE");
   const adminRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "DEFAULT_ADMIN_ROLE");
@@ -191,9 +196,15 @@ function App() {
     "QuadraticDiplomacyContract",
     "AddMember",
     localProvider,
-    1,
+    currentElectionStartBlock?.toNumber(),
   );
-  const votesEntries = useEventListener(readContracts, "QuadraticDiplomacyContract", "Vote", localProvider, 1);
+  const votesEntries = useEventListener(
+    readContracts,
+    "QuadraticDiplomacyContract",
+    "Vote",
+    localProvider,
+    currentElectionStartBlock?.toNumber(),
+  );
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
