@@ -35,8 +35,6 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         _;
     }
 
-    // Warning: Only use in combination with onlyAdmin. The caller will get any leftovers.
-    // Warning: Only ETH and the tokens from the provided token address are reimbursed.
     modifier startNewElectionAfter(address tokenAddress) {
         _;
 
@@ -44,16 +42,6 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         // an alternative (and less gas heavy?) way to do this would be to change the VOTER_ROLE to keccak256(abi.encodePacked(block.number));
         for (uint256 i = 0; i < getRoleMemberCount(VOTER_ROLE); i++) {
             revokeRole(VOTER_ROLE, getRoleMember(VOTER_ROLE, i));
-        }
-
-        // if there are leftover ETH in the contract, send it to the admin
-        if (address(this).balance > 0) {
-            payable(msg.sender).transfer(address(this).balance);
-        }
-
-        // if there are leftover tokens in the contract, send it to the admin
-        if (tokenAddress != address(0)) {
-            IERC20(tokenAddress).transfer(msg.sender, IERC20(tokenAddress).balanceOf(address(this)));
         }
 
         currentElectionStartBlock = block.number;
