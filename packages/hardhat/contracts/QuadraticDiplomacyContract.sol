@@ -8,14 +8,18 @@ import "./Distributor.sol";
 contract QuadraticDiplomacyContract is Distributor, AccessControl {
     event Vote(address votingAddress, address wallet, uint256 amount);
     event AddMember(address admin, address wallet);
+    event NewElection(uint256 blockNumber);
 
     bytes32 public constant VOTER_ROLE = keccak256("VOTER_ROLE");
 
     mapping(address => uint256) public votes;
 
+    uint256 public currentElectionStartBlock;
+
     constructor(address startingAdmin) public {
         _setupRole(DEFAULT_ADMIN_ROLE, startingAdmin);
         _setupRole(DEFAULT_ADMIN_ROLE, msg.sender);
+        currentElectionStartBlock = block.number; 
     }
 
     modifier onlyAdmin() {
@@ -29,6 +33,31 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
             "You don't have the permission to vote."
         );
         _;
+    }
+
+    // Warning: Only use in combination with onlyAdmin. The caller will get any leftovers.
+    // Warning: Only ETH and the tokens from the provided token address are reimbursed.
+    modifier startNewElectionAfter(address tokenAddress) {
+        _;
+
+        // remove all voter roles
+        // an alternative (and less gas heavy?) way to do this would be to change the VOTER_ROLE to keccak256(abi.encodePacked(block.number));
+        for (uint256 i = 0; i < getRoleMemberCount(VOTER_ROLE); i++) {
+            revokeRole(VOTER_ROLE, getRoleMember(VOTER_ROLE, i));
+        }
+
+        // if there are leftover ETH in the contract, send it to the admin
+        if (address(this).balance > 0) {
+            payable(msg.sender).transfer(address(this).balance);
+        }
+
+        // if there are leftover tokens in the contract, send it to the admin
+        if (tokenAddress != address(0)) {
+            IERC20(tokenAddress).transfer(msg.sender, IERC20(tokenAddress).balanceOf(address(this)));
+        }
+
+        currentElectionStartBlock = block.number;
+        emit NewElection(block.number);
     }
 
     function vote(address wallet, uint256 amount) private {
@@ -60,7 +89,8 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         votes[wallet] += amount;
     }
 
-    function addMember(address wallet) public onlyAdmin {
+    function addSingleMemberWithVotes(address wallet, uint256 voteAmount) public onlyAdmin {
+        votes[wallet] = voteAmount;
         grantRole(VOTER_ROLE, wallet);
         emit AddMember(msg.sender, wallet);
     }
@@ -70,8 +100,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         uint256 voteAllocation
     ) public onlyAdmin {
         for (uint256 i = 0; i < wallets.length; i++) {
-            addMember(wallets[i]);
-            giveVotes(wallets[i], voteAllocation);
+            addSingleMemberWithVotes(wallets[i], voteAllocation);
         }
     }
 
@@ -79,6 +108,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
     function shareETH(address[] memory users, uint256[] memory shares)
         public
         onlyAdmin
+        startNewElectionAfter(address(0))
     {
         _shareETH(users, shares);
     }
@@ -87,6 +117,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         public
         payable
         onlyAdmin
+        startNewElectionAfter(address(0))
     {
         // makes sure msg.value has some eth in it
         _sharePayedETH(users, shares);
@@ -96,7 +127,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         address[] memory users,
         uint256[] memory shares,
         IERC20 token
-    ) public onlyAdmin {
+    ) public onlyAdmin startNewElectionAfter(address(token)) {
         _shareToken(users, shares, token);
     }
 
@@ -105,7 +136,7 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
         uint256[] memory shares,
         IERC20 token,
         address spender
-    ) public onlyAdmin {
+    ) public onlyAdmin startNewElectionAfter(address(token)) {
         _sharePayedToken(users, shares, token, spender);
     }
 
