@@ -40,8 +40,8 @@ library MetadataGenerator {
 
   function tokenURI(address owner, uint256 tokenId, bytes3 color, uint256 chubbiness) internal pure returns (string memory) {
 
-      string memory name = string(abi.encodePacked('Example SVG ',tokenId.toString()));
-      string memory description = string(abi.encodePacked('this is an example svg with the color: ',color.toColor()));
+      string memory name = string(abi.encodePacked('Loogie #',tokenId.toString()));
+      string memory description = string(abi.encodePacked('This Loogie is the color #',color.toColor(),' with a chubbiness of ',uint2str(chubbiness),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(owner, tokenId, color, chubbiness)));
 
       return
@@ -59,7 +59,9 @@ library MetadataGenerator {
                               tokenId.toString(),
                               '", "attributes": [{"trait_type": "color", "value": "#',
                               color.toColor(),
-                              '"}], "owner":"',
+                              '"},{"trait_type": "chubbiness", "value": ',
+                              uint2str(chubbiness),
+                              '}], "owner":"',
                               (uint160(owner)).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
@@ -70,6 +72,28 @@ library MetadataGenerator {
                     )
               )
           );
+  }
+
+  function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
+      if (_i == 0) {
+          return "0";
+      }
+      uint j = _i;
+      uint len;
+      while (j != 0) {
+          len++;
+          j /= 10;
+      }
+      bytes memory bstr = new bytes(len);
+      uint k = len;
+      while (_i != 0) {
+          k = k-1;
+          uint8 temp = (48 + uint8(_i - _i / 10 * 10));
+          bytes1 b1 = bytes1(temp);
+          bstr[k] = b1;
+          _i /= 10;
+      }
+      return string(bstr);
   }
 
 }

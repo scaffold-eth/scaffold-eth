@@ -50,6 +50,7 @@ export default function Account({
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
+  isSigner
 }) {
   const modalButtons = [];
   if (web3Modal) {
@@ -83,7 +84,7 @@ export default function Account({
 
   const { currentTheme } = useThemeSwitcher();
 
-  const display = minimized ? (
+  const display = minimized || !isSigner ? (
     ""
   ) : (
     <span>

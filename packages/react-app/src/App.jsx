@@ -58,28 +58,10 @@ console.log("📦 Assets: ", assets);
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
-
-// EXAMPLE STARTING JSON:
-const STARTING_JSON = {
-  description: "It's actually a bison?",
-  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
-  attributes: [
-    {
-      trait_type: "BackgroundColor",
-      value: "green",
-    },
-    {
-      trait_type: "Eyes",
-      value: "googly",
-    },
-  ],
-};
 
 // helper function to "Get" from IPFS
 // you usually go content.toString() after this...
@@ -180,7 +162,7 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetDAIContract = useExternalContractLoader(mainnetProvider, DAI_ADDRESS, DAI_ABI);
+  const isSigner = injectedProvider && injectedProvider.getSigner && injectedProvider.getSigner()._isSigner;
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -188,9 +170,10 @@ function App(props) {
   });
 
   // Then read your DAI balance like:
+  /*
   const myMainnetDAIBalance = useContractReader({ DAI: mainnetDAIContract }, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
+  ]);*/
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
@@ -236,7 +219,7 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourCollectibles(collectibleUpdate);
+      setYourCollectibles(collectibleUpdate.reverse());
     };
     updateYourCollectibles();
   }, [address, yourBalance]);
@@ -258,8 +241,7 @@ function App(props) {
       yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
-      writeContracts &&
-      mainnetDAIContract
+      writeContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -269,7 +251,6 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetDAIContract);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -280,7 +261,6 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-    mainnetDAIContract,
   ]);
 
   let networkDisplay = "";
@@ -375,7 +355,6 @@ function App(props) {
     );
   }
 
-  const [yourJSON, setYourJSON] = useState(STARTING_JSON);
   const [sending, setSending] = useState();
   const [ipfsHash, setIpfsHash] = useState();
   const [ipfsDownHash, setIpfsDownHash] = useState();
@@ -408,64 +387,6 @@ function App(props) {
   }, [assets, readContracts, transferEvents]);
 
   const galleryList = [];
-  for (const a in loadedAssets) {
-    console.log("loadedAssets", a, loadedAssets[a]);
-
-    const cardActions = [];
-    if (loadedAssets[a].forSale) {
-      cardActions.push(
-        <div>
-
-          <BlockPicker onChange={(c)=>{console.log("c",c)}}/>
-
-          <Button
-            onClick={() => {
-              console.log("gasPrice,", gasPrice);
-              tx(writeContracts.YourCollectible.mintItem(loadedAssets[a].id, { gasPrice }));
-            }}
-          >
-            Mint
-          </Button>
-        </div>,
-      );
-    } else {
-      cardActions.push(
-        <div>
-          owned by:{" "}
-          <Address
-            address={loadedAssets[a].owner}
-            ensProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            minimized
-          />
-        </div>,
-      );
-    }
-
-    galleryList.push(
-      <Card
-        style={{ width: 200 }}
-        key={loadedAssets[a].name}
-        actions={cardActions}
-        title={
-          <div>
-            {loadedAssets[a].name}{" "}
-            <a
-              style={{ cursor: "pointer", opacity: 0.33 }}
-              href={loadedAssets[a].external_url}
-              target="_blank"
-              rel="noreferrer"
-            >
-              <LinkOutlined />
-            </a>
-          </div>
-        }
-      >
-        <img style={{ maxWidth: 130 }} src={loadedAssets[a].image} alt="" />
-        <div style={{ opacity: 0.77 }}>{loadedAssets[a].description}</div>
-      </Card>,
-    );
-  }
 
   return (
     <div className="App">
@@ -506,9 +427,14 @@ function App(props) {
             */}
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={()=>{
-                tx( writeContracts.YourCollectible.mintItem() )
-              }}>MINT</Button>
+              {isSigner?(
+                <Button type={"primary"} onClick={()=>{
+                  tx( writeContracts.YourCollectible.mintItem() )
+                }}>MINT</Button>
+              ):(
+                <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
+              )}
+
             </div>
 
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
@@ -525,7 +451,7 @@ function App(props) {
                       <Card
                         title={
                           <div>
-                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
                           </div>
                         }
                       >
@@ -573,7 +499,12 @@ function App(props) {
 
             </div>
           </Route>
-          <Route path="/debugcontracts">
+          <Route path="/debug">
+
+            <div style={{padding:32}}>
+              <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
+            </div>
+
             <Contract
               name="YourCollectible"
               signer={userProvider.getSigner()}
@@ -599,6 +530,7 @@ function App(props) {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
+          isSigner={isSigner}
         />
         {faucetHint}
       </div>
