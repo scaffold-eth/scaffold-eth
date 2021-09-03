@@ -455,7 +455,9 @@ function App(props) {
                           </div>
                         }
                       >
+                        <a href={"https://testnets.opensea.io/assets/"+(readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address)+"/"+item.id} target="_blank">
                         <img src={item.image} />
+                        </a>
                         <div>{item.description}</div>
                       </Card>
 
