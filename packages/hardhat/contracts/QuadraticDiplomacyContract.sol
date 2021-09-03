@@ -40,8 +40,8 @@ contract QuadraticDiplomacyContract is Distributor, AccessControl {
 
         // remove all voter roles
         // an alternative (and less gas heavy?) way to do this would be to change the VOTER_ROLE to keccak256(abi.encodePacked(block.number));
-        for (uint256 i = 0; i < getRoleMemberCount(VOTER_ROLE); i++) {
-            revokeRole(VOTER_ROLE, getRoleMember(VOTER_ROLE, i));
+        while (getRoleMemberCount(VOTER_ROLE) > 0) {
+            revokeRole(VOTER_ROLE, getRoleMember(VOTER_ROLE, 0));
         }
 
         currentElectionStartBlock = block.number;
