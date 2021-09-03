@@ -25,6 +25,7 @@ yarn start
 
 ```bash
 cd loogies-svg-nft
+
 yarn chain
 
 ```
