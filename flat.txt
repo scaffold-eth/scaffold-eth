@@ -14,7 +14,6 @@ https://github.com/austintgriffith/scaffold-eth/tree/loogies-svg-nft
 
 
 */
-
 // Sources flattened with hardhat v2.1.1 https://hardhat.org
 
 // File base64-sol/base64.sol@v1.0.1
@@ -220,9 +219,9 @@ library MetadataGenerator {
                               tokenId.toString(),
                               '", "attributes": [{"trait_type": "color", "value": "#',
                               color.toColor(),
-                              '"},{"trait_type": "chubbiness", "value": ",',
+                              '"},{"trait_type": "chubbiness", "value": ',
                               uint2str(chubbiness),
-                              '"}], "owner":"',
+                              '}], "owner":"',
                               (uint160(owner)).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
