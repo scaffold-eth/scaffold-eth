@@ -7,7 +7,6 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 import "./MetadataGenerator.sol";
-
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract YourCollectible is ERC721, Ownable {
@@ -15,17 +14,20 @@ contract YourCollectible is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("Nubs", "Nubs") {
-    _setBaseURI("https://ipfs.io/ipfs/");
+  constructor() public ERC721("Loogies", "LOOG") {
+    // RELEASE THE LOOGIES!
   }
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
 
+  uint256 mintDeadline = block.timestamp + 24 hours;
+
   function mintItem()
       public
       returns (uint256)
   {
+      require( block.timestamp < mintDeadline, "DONE MINTING");
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
@@ -37,11 +39,6 @@ contract YourCollectible is ERC721, Ownable {
 
       return id;
   }
-
-  function possibleHash() public view returns (bytes32) {
-    return blockhash(block.number-1);
-  }
-
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
