@@ -12,7 +12,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
-import assets from "./assets.js";
+//import assets from "./assets.js";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
@@ -36,7 +36,7 @@ const ipfsAPI = require("ipfs-http-client");
 
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
-console.log("📦 Assets: ", assets);
+//console.log("📦 Assets: ", assets);
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -368,18 +368,18 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   const [loadedAssets, setLoadedAssets] = useState();
-  useEffect(() => {
+  /*useEffect(() => {
     const updateYourCollectibles = async () => {
       const assetUpdate = [];
       for (const a in assets) {
         try {
-          /*const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
+          const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
           let owner;
           if (!forSale) {
             const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
             owner = await readContracts.YourCollectible.ownerOf(tokenId);
           }
-          assetUpdate.push({ id: a, ...assets[a], forSale, owner });*/
+          assetUpdate.push({ id: a, ...assets[a], forSale, owner });
         } catch (e) {
           console.log(e);
         }
@@ -387,7 +387,7 @@ function App(props) {
       setLoadedAssets(assetUpdate);
     };
     if (readContracts && readContracts.YourCollectible) updateYourCollectibles();
-  }, [assets, readContracts, transferEvents]);
+  }, [assets, readContracts, transferEvents]);*/
 
   const galleryList = [];
 
