@@ -1,6 +1,6 @@
 import { SendOutlined } from "@ant-design/icons";
 import { Button, Input, Tooltip } from "antd";
-import { useLookupAddress } from "eth-hooks/lib/dapps/ens";
+import { useLookupAddress } from "eth-hooks/dapps/ens";
 import React, { useCallback, useState, useEffect } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../helpers";
