@@ -143,6 +143,46 @@ export const NETWORKS = {
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
   },
+  localAvalanche: {
+    name: "localAvalanche",
+    color: "#666666",
+    chainId: 43112,
+    blockExplorer: "",
+    rpcUrl: `http://localhost:9650/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
+  fujiAvalanche: {
+    name: "fujiAvalanche",
+    color: "#666666",
+    chainId: 43113,
+    blockExplorer: "https://cchain.explorer.avax-test.network/",
+    rpcUrl: `https://api.avax-test.network/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
+  mainnetAvalanche: {
+    name: "mainnetAvalanche",
+    color: "#666666",
+    chainId: 43114,
+    blockExplorer: "https://cchain.explorer.avax.network/",
+    rpcUrl: `https://api.avax.network/ext/bc/C/rpc`,
+    gasPrice: 225000000000,
+  },
+  testnetHarmony: {
+    name: "Harmony Testnet",
+    color: "#00b0ef",
+    chainId: 1666700000,
+    blockExplorer: "https://explorer.pops.one/",
+    rpcUrl: `https://api.s0.b.hmny.io`,
+    gasPrice: 1000000000,
+  },
+  mainnetHarmony: {
+    name: "Harmony Mainnet",
+    color: "#00b0ef",
+    chainId: 1666600000,
+    blockExplorer: "https://explorer.harmony.one/",
+    rpcUrl: `https://api.harmony.one`,
+    gasPrice: 1000000000,
+  },
 };
 
 export const NETWORK = chainId => {

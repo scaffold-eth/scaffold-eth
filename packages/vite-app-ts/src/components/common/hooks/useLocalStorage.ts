@@ -17,9 +17,8 @@ export const useLocalStorage = (key: string, initialValue: any, ttl: number): [a
           // and return null
           window.localStorage.removeItem(key);
           return initialValue;
-        } else {
+        }
         return parsedItem.value;
-	}
       }
       // Parse stored json or if none return initialValue
       return parsedItem;
