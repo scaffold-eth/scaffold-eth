@@ -16,9 +16,13 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
           "0x6B175474E89094C44Da98b954EedeAC495271d0F",
           18,
         );
-        const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider);
-        const route = new Route([pair], WETH[DAI.chainId]);
-        setPrice(parseFloat(route.midPrice.toSignificant(6)));
+        const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider).catch(e => {
+          console.error("DAI fetch fail: ", e);
+        });
+        if (pair !== undefined) {
+          const route = new Route([pair], WETH[DAI.chainId]);
+          setPrice(parseFloat(route.midPrice.toSignificant(6)));
+        }
       }
     }
     getPrice();
