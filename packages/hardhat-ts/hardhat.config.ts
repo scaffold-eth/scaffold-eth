@@ -1,8 +1,9 @@
+/* eslint-disable no-underscore-dangle */
 /* eslint-disable import/order */
 // This adds support for typescript paths mappings
 import 'tsconfig-paths/register';
 
-import { ethers, Signer, utils } from 'ethers';
+import { Signer, utils } from 'ethers';
 
 import '@typechain/hardhat';
 import '@nomiclabs/hardhat-waffle';
@@ -375,7 +376,7 @@ task('send', 'Send ETH')
   .setAction(async (taskArgs, { network, ethers }) => {
     const from = await findFirstAddr(ethers, taskArgs.from);
     debug(`Normalized from address: ${from}`);
-    const fromSigner = await ethers.provider.getSigner(from);
+    const fromSigner = ethers.provider.getSigner(from);
 
     let to;
     if (taskArgs.to) {
