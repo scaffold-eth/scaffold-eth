@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, ZkpInterface } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -33,6 +33,10 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
 const { ethers } = require("ethers");
+
+// const wasm = require("./circuits/init.wasm");
+// const zkey = require("./circuits/init.zkey");
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -510,6 +514,11 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+
+            <ZkpInterface
+              inputFields={["x", "hash"]}
+
+            />
 
             <Contract
               name="YourContract"
