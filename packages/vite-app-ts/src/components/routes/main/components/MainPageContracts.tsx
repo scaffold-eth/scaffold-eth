@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { GenericContract } from '~~/components/generic-contract';
 import { Contract } from 'ethers';
 import { TEthersProvider, TProviderAndSigner } from 'eth-hooks/models';
-import { TContractConfig } from 'eth-hooks/lib';
+import { TContractConfig } from 'eth-hooks';
 
 interface IMainPageContracts {
   mainnetProvider: TEthersProvider;
