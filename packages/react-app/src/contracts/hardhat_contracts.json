@@ -520,7 +520,7 @@
       "chainId": "42",
       "contracts": {
         "QuadraticDiplomacyContract": {
-          "address": "0x374885B7903618b150Af555A679b5888ce9D4B0A",
+          "address": "0xf1Ee16bBf0CC0A2A584c2178Bf41892DFe85C666",
           "abi": [
             {
               "inputs": [

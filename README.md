@@ -1,6 +1,12 @@
-# Quadratic diplomacy
+# Quadratic diplomacy (event-driven)
 
-Built with [🏗 Scaffold-ETH](https://github.com/austintgriffith/scaffold-eth)
+A decentralized & effective way of distributing rewards to workstream contributors.
+
+![Preview](preview.png)
+
+This build uses *events* for storing members, votes, elections and minimizes on-chain storage.
+
+Built with [🏗 Scaffold-ETH](https://github.com/austintgriffith/scaffold-eth) as a [Moonshot collective](https://moonshotcollective.space/) project.
 
 ## 🏄‍♂️ Quick start
 
@@ -37,6 +43,8 @@ In `packages/hardhat/deploy/00_deploy_your_contract.js` paste your wallet addres
 const TO_ADDRESS = "YOUR_FRONTEND_ADDRESS";
 ```
 
+You can also tweak the script (add test data, etc)
+
 In a third terminal window, run:
 
 ```bash
@@ -44,10 +52,8 @@ cd quadratic-diplomacy
 yarn deploy
 ```
 
-This will deploy the contract and will add some test data (check `00_deploy_your_contract.js`)
-
 📱 Open http://localhost:3000 to see the app
 
-# 📚 Documentation
+## 📚 Documentation
 
 Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
