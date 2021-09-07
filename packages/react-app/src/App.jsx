@@ -22,6 +22,9 @@ import {
 } from "./hooks";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import Portis from "@portis/web3";
+import Fortmatic from "fortmatic";
+import Authereum from "authereum";
 
 const { ethers } = require("ethers");
 /*
@@ -57,8 +60,17 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -73,22 +85,20 @@ const blockExplorer = targetNetwork.blockExplorer;
 
 // Coinbase walletLink init
 const walletLink = new WalletLink({
-  appName: 'coinbase',
+  appName: "coinbase",
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(
-    `https://mainnet.infura.io/v3/${INFURA_ID}`,
-    1,
-);
+const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
 
+// Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
-  theme:"light", // optional. Change to "dark" for a dark theme.
+  theme: "light", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -96,19 +106,47 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1:`https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-          100:"https://dai.poa.network", // xDai
+          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          42: `https://kovan.infura.io/v3/${INFURA_ID}`,
+          100: "https://dai.poa.network", // xDai
         },
       },
     },
-    /*torus: {
-      package: Torus,
-    },*/
-    'custom-walletlink': {
+    portis: {
       display: {
-        logo: 'https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0',
-        name: 'Coinbase',
-        description: 'Connect to Coinbase Wallet (not Coinbase App)',
+        logo: "https://user-images.githubusercontent.com/9419140/128913641-d025bc0c-e059-42de-a57b-422f196867ce.png",
+        name: "Portis",
+        description: "Connect to Portis App",
+      },
+      package: Portis,
+      options: {
+        id: "6255fb2b-58c8-433b-a2c9-62098c05ddc9",
+      },
+    },
+    fortmatic: {
+      package: Fortmatic, // required
+      options: {
+        key: "pk_live_5A7C91B2FC585A17", // required
+      },
+    },
+    // torus: {
+    //   package: Torus,
+    //   options: {
+    //     networkParams: {
+    //       host: "https://localhost:8545", // optional
+    //       chainId: 1337, // optional
+    //       networkId: 1337 // optional
+    //     },
+    //     config: {
+    //       buildEnv: "development" // optional
+    //     },
+    //   },
+    // },
+    "custom-walletlink": {
+      display: {
+        logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
+        name: "Coinbase",
+        description: "Connect to Coinbase Wallet (not Coinbase App)",
       },
       package: walletLinkProvider,
       connector: async (provider, options) => {
@@ -116,20 +154,26 @@ const web3Modal = new Web3Modal({
         return provider;
       },
     },
+    authereum: {
+      package: Authereum, // required
+    },
   },
 });
 
-
-
 function App(props) {
-  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider =
+    poktMainnetProvider && poktMainnetProvider._isProvider
+      ? poktMainnetProvider
+      : scaffoldEthProvider && scaffoldEthProvider._network
+      ? scaffoldEthProvider
+      : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
-    if(injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function"){
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
       await injectedProvider.provider.disconnect();
     }
     setTimeout(() => {
@@ -286,9 +330,28 @@ function App(props) {
                       },
                     ];
                     console.log("data", data);
-                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
-                    if (tx) {
-                      console.log(tx);
+
+                    let switchTx;
+                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+                    try {
+                      switchTx = await ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: data[0].chainId }],
+                      });
+                    } catch (switchError) {
+                      // not checking specific error code, because maybe we're not using MetaMask
+                      try {
+                        switchTx = await ethereum.request({
+                          method: "wallet_addEthereumChain",
+                          params: data,
+                        });
+                      } catch (addError) {
+                        // handle "add" error
+                      }
+                    }
+
+                    if (switchTx) {
+                      console.log(switchTx);
                     }
                   }}
                 >
@@ -310,7 +373,6 @@ function App(props) {
       </div>
     );
   }
-
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
