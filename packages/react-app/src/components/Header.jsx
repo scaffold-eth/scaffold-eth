@@ -6,10 +6,7 @@ import React from "react";
 export default function Header() {
   return (
     <a href="https://github.com/carletex/quadratic-diplomacy" target="_blank" rel="noopener noreferrer">
-      <PageHeader
-        title="Quadratic diplomacy"
-        style={{ cursor: "pointer" }}
-      />
+      <PageHeader title="Quadratic diplomacy" style={{ cursor: "pointer" }} />
     </a>
   );
 }

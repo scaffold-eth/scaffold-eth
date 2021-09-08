@@ -237,7 +237,8 @@ export default function QuadraticDiplomacyVote({
             <Title level={4}>Your votes:</Title>
             {Object.entries(selectedContributors).map(([contributorAddress, voteTokens]) => (
               <p key={contributorAddress}>
-                <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} /> (<Text>{voteTokens}</Text>)
+                <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} /> (
+                <Text>{voteTokens}</Text>)
               </p>
             ))}
           </>

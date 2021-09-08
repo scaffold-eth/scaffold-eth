@@ -90,7 +90,7 @@ export default function Account({
   ) : (
     <Space>
       {isAdmin && <Badge count={"admin"} />}
-      {isVoter && <Badge count={"voter"} style={{ backgroundColor: '#52c41a' }} />}
+      {isVoter && <Badge count={"voter"} style={{ backgroundColor: "#52c41a" }} />}
       {address ? (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
       ) : (
