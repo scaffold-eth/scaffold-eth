@@ -7,8 +7,7 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
 
   const pollPrice = () => {
     async function getPrice() {
-      if(!mainnetProvider)
-        return 0;
+      if (!mainnetProvider) return 0;
       if (targetNetwork.price) {
         setPrice(targetNetwork.price);
       } else {
