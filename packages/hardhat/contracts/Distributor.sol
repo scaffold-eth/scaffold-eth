@@ -111,8 +111,9 @@ contract Distributor {
                         );
                     }
                 } else {
-                    // transfer ETH otherwise
-                    payable(users[i]).transfer(shares[i]);
+                    // transfer ETH otherwise (we do not care if the transfer is successful 
+                    // or not, as this would block all other transfers)
+                    users[i].call{value: shares[i]}("");
                 }
             }
         }
