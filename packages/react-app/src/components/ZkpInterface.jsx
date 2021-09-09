@@ -22,7 +22,8 @@ export default function ZkpInterface({
   const [fullProof, setFullProof] = useState("0");
 
   async function proveInputs() {
-    const { proof, pubSignals } = await snarkjs.groth16.fullprove(proofInputs, wasm, zkey);
+    const { proof, pubSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
+    console.log("Calculating Proof!")
     setFullProof(proof);
   }
 

@@ -32,11 +32,10 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
-import { readFile } from "fs";
 const { ethers } = require("ethers");
 
-const wasm = "init.wasm";
-const zkey = "init.zkey";
+const wasm = "./circuits/init.wasm";
+const zkey = require("./circuits/init.zkey");
 
 /*
     Welcome to 🏗 scaffold-eth !
