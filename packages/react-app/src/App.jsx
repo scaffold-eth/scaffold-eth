@@ -32,10 +32,11 @@ import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
+import { readFile } from "fs";
 const { ethers } = require("ethers");
 
-// const wasm = require("./circuits/init.wasm");
-// const zkey = require("./circuits/init.zkey");
+const wasm = "init.wasm";
+const zkey = "init.zkey";
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -516,7 +517,8 @@ function App(props) {
 
             <ZkpInterface
               inputFields={["x", "hash"]}
-
+              wasm={wasm}
+              zkey={zkey}
             />
 
             <Contract

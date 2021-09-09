@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
-import { Input } from "antd";
-import { groth16 } from "snarkjs";
-
+import { Input, Button } from "antd";
+const snarkjs = require("snarkjs");
 
 export default function ZkpInterface({
   name,
@@ -13,18 +12,18 @@ export default function ZkpInterface({
   const [proofInputs, setProofInputs] = useState(
     inputFields.reduce(
       (acc, curr, index) => {
-        acc[curr] = "0" /*inputs[index]*/;
+        acc[curr] = "0";
         return acc;
       },
       {}
     )
   );
 
-  const [fullProof, setFullProof] = useState();
+  const [fullProof, setFullProof] = useState("0");
 
   async function proveInputs() {
-    // const { proof, pubSignals } = await groth16.fullprove(proofInputs, wasm, zkey);
-    // setFullProof(proof);
+    const { proof, pubSignals } = await snarkjs.groth16.fullprove(proofInputs, wasm, zkey);
+    setFullProof(proof);
   }
 
   const fields = [];
@@ -52,7 +51,19 @@ export default function ZkpInterface({
         {fields}
       </div>
       <div>
+        <Button
+          style={{ margin: "2vw" }}
+          size="large"
+          danger
+          type=""
+          onClick={proveInputs}
+        >
+          Prove
+        </Button>
+      </div>
+      <div style={{ padding: "" }}>
         <p>{JSON.stringify(proofInputs)}</p>
+        <p>{fullProof}</p>
       </div>
     </div>
   );
