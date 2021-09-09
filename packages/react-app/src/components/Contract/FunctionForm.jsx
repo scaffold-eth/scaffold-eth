@@ -7,7 +7,7 @@ import tryToDisplay from "./utils";
 const { utils, BigNumber } = require("ethers");
 
 const getFunctionInputKey = (functionInfo, input, inputIndex) => {
-  const name = input?.name ? input.name : 'input_' + inputIndex + '_'
+  const name = input?.name ? input.name : "input_" + inputIndex + "_";
   return functionInfo.name + "_" + name + '_' + input.type;
 };
 
