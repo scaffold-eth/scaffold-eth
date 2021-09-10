@@ -5,7 +5,7 @@ const graphDir = "../subgraph";
 const deploymentsDir = "./deployments";
 const publishDir = "../react-app/src/contracts";
 const circuitsDir = "./client";
-const publishCircuitsDir = "../react-app/src/circuits";
+const publishCircuitsDir = "../react-app/public/circuits";
 
 function publishContract(contractName, networkName) {
   try {
