@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button, Tabs, Divider } from "antd";
 import JSONpretty from "react-json-pretty";
+import { useGroth16SolidityCalldata } from "../hooks"
 const snarkjs = require("snarkjs");
 
 let JSONPrettyMon = require('react-json-pretty/dist/monikai');
@@ -26,16 +27,23 @@ export default function ZkpInterface({
   );
 
   const [proof, setProof] = useState();
-  const [pubSignals, setpubSignals] = useState();
-  const solidityCalldata = undefined;
+  const [signals, setSignals] = useState();
+  const [solidityCalldata, setSolidityCalldata] = useState();
 
   async function proveInputs() {
-    const { proof, pubSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
+
     console.log("Calculating Proof! ...")
-    // console.log(proof);
+    const { proof, publicSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
+    const calldata = await snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
+
+    console.log(proof);
     setProof(proof);
-    // console.log(pubSignals);
-    setpubSignals(pubSignals);
+
+    console.log(publicSignals);
+    setSignals(publicSignals);
+
+    console.log(calldata)
+    setSolidityCalldata(calldata);
   }
 
   const fields = [];
@@ -60,7 +68,7 @@ export default function ZkpInterface({
   const proofDataDisp = (
     <div>
       <JSONpretty
-        data={proof}
+        data={(proof)}
         style={{fontSize: "0.7em"}}
       />
     </div>
@@ -69,7 +77,7 @@ export default function ZkpInterface({
   const solCalldataDisp = (
     <div>
       <JSONpretty
-        data={""}
+        data={solidityCalldata}
         style={{fontSize: "0.7em"}}
       />
     </div>
@@ -78,7 +86,7 @@ export default function ZkpInterface({
   const pubSigData = (
     <div>
       <JSONpretty
-        data={pubSignals}
+        data={signals}
         style={{fontSize: "0.7em"}}
       />
     </div>
@@ -109,7 +117,7 @@ export default function ZkpInterface({
           <TabPane tab="Proof Data" key="1">
             {proof ? proofDataDisp : "proof undefined"}
             <br/>
-            {pubSignals ? pubSigData : "public signals undefined"}
+            {signals ? pubSigData : "public signals undefined"}
           </TabPane>
         </Tabs>
         <Divider/>
