@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Tabs } from "antd";
+import { Input, Button, Tabs, Divider } from "antd";
 import JSONpretty from "react-json-pretty";
 const snarkjs = require("snarkjs");
 
@@ -70,7 +70,7 @@ export default function ZkpInterface({
     <div>
       <JSONpretty
         data={""}
-        theme={JSONPrettyMon}
+        style={{fontSize: "0.7em"}}
       />
     </div>
   );
@@ -79,7 +79,7 @@ export default function ZkpInterface({
     <div>
       <JSONpretty
         data={pubSignals}
-        theme={JSONPrettyMon}
+        style={{fontSize: "0.7em"}}
       />
     </div>
   );
@@ -112,6 +112,7 @@ export default function ZkpInterface({
             {pubSignals ? pubSigData : "public signals undefined"}
           </TabPane>
         </Tabs>
+        <Divider/>
       </div>
       <br/>
     </div>
