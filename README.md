@@ -4,12 +4,12 @@
 
 The end goal of the project is to mimic the Ethereum 2.0 staking contract. The requirements are pretty simple:
 
-- allow anyone to stack ether and track their balance
-- if a time and stack amount deadline have reached don’t allow users to withdraw their fund (those found are used for a future project, like the Ethereum PoS)
+- allow anyone to stake ether and track their balance
+- if a time and stake amount deadline have reached don’t allow users to withdraw their funds (those found are used for a future project, like the Ethereum PoS)
 
 ## What are you going to learn?
 
-- Setup the scaffold-eth project
+- Setup the 🏗 Scaffold-Eth project
 - Write a Staking Contract
 - Call an external Contract
 - Create unit test for your Solidity Contract
@@ -53,7 +53,7 @@ This command will launch your local react website on [http://localhost:3000](htt
 
 This command will deploy all your contracts and refresh your react’s app. To be more precise this command will run two javascript scripts (deploy and publish).
 
-So, open three different Terminals and launch those commands. Every time you make a change to your contracts you just need to re-launch your **deploy** command.
+So, open three different Terminals and launch those commands. Every time you make a change to your contracts you just need to run `yarn deploy` command.
 
 ## Exercise Part 1: Implement the stake() method
 
@@ -62,8 +62,8 @@ In this part of the exercise, we want to allow users to stake some ETH in our co
 ### Important Concepts to master
 
 - [Payable methods](https://solidity-by-example.org/payable/) — when a function is declared as **payable** it means that allows users to send ETH to it.
-- [Mapping](https://solidity-by-example.org/mapping/) — it’s one of the variable [types](https://docs.soliditylang.org/en/v0.8.7/types.html) supported by Solidity. It allows you to associate a **key** with a **value**.
-- [Events](https://solidity-by-example.org/events/) — events allow the contract to notify other entities (contracts, web3 applications, etc) that something has happened. When you declare an event you can specify at max 3 **indexed** parameters. When a parameter is declared as indexed it allows 3rd-party apps to **filter** events for that specific parameter.
+- [Mapping](https://solidity-by-example.org/mapping/) — it’s one of the variable [types](https://docs.soliditylang.org/en/v0.8.7/types.html) supported by Solidity.   It allows you to associate a **key** with a **value**.
+- [Events](https://solidity-by-example.org/events/) — events allow the contract to notify other entities (contracts, web3 applications, etc) that something has       happened. When you declare an event you can specify at max 3 **indexed** parameters. When a parameter is declared as indexed it allows 3rd-party apps to           **filter** events for that specific parameter.
 
 ### Exercise implementation
 
@@ -175,7 +175,7 @@ contract Staker {
 Some clarification:
 
 - `uint` and `uint256` are the same (it’s just an alias)
-- when a variable is declared public, Solidity will automagically create a getter method for you. This means that it will expose a `yourVariableName()` method to be called
+- when a variable is declared public, Solidity will automagically create a getter method for you. This means that it will expose a `yourVariableName()` method to     be called
 - when you declare a variable without initializing it, it will be initialized to its **default** value based on the variable type
 - Solidity exposes some utility units like [wei, ethers, or time units](https://docs.soliditylang.org/en/v0.8.7/units-and-global-variables.html).
 
@@ -206,7 +206,7 @@ As we previously said the final goal of this Contract is to create a Staking dAp
 
 These conditions are:
 
-- At least 1 ETH needs to be stacked on the Staker Contract
+- At least 1 ETH needs to be staked on the Staker Contract
 - The 1 ETH stack threshold is reached within a time deadline of 30 seconds
 
 ### Important Concepts to master
@@ -755,7 +755,7 @@ describe('Staker dApp', () => {
 
 Have you noticed that the test code coverage is far bigger than the Contract itself? That’s what we want to see! **Test all the things!**
 
-## Final step: deploy your Contract to the moon (testnet)
+## Final step: deploy your Contract to the moon 🌙 (testnet)
 
 Ok, now it’s time. We have implemented our Smart Contract, we have tested the frontend UI, we have covered every edge case with our tests. We are ready to deploy it on the testnet.
 
@@ -766,7 +766,7 @@ Following the [scaffold-eth documentation](https://docs.scaffoldeth.io/scaffold-
 3.  Generate a deployer account `with yarn generate` . This command should generate two `.txt` file. One that will represent the account address and one with the **seed phrase** of the generated account.
 4.  Run `yarn account` to see details of the account like eth balances across different networks.
 5.  Make sure that the **mnemonic.txt** and **relative account files** are not pushed with your git repository, otherwise, anyone could get ownership of your Contract!
-6.  Fund your deployer account with some funds. You can use an [instant wallet](https://instantwallet.io/) to send funds to the QR code you just saw on your console.
+6.  💵 Fund your deployer account with some funds. You can use an [instant wallet](https://instantwallet.io/) to send funds to the QR code you just saw on your console.
 7.  Deploy your contract with `yarn deploy`!
 
 If everything goes well you should see something like this on your console
