@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button } from "antd";
+import { Input, Button, Tabs } from "antd";
 import JSONpretty from "react-json-pretty";
 const snarkjs = require("snarkjs");
 
 let JSONPrettyMon = require('react-json-pretty/dist/monikai');
+
+const { TabPane } = Tabs;
+
 
 export default function ZkpInterface({
   name,
@@ -24,6 +27,7 @@ export default function ZkpInterface({
 
   const [proof, setProof] = useState();
   const [pubSignals, setpubSignals] = useState();
+  const solidityCalldata = undefined;
 
   async function proveInputs() {
     const { proof, pubSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
@@ -53,6 +57,33 @@ export default function ZkpInterface({
     );
   }
 
+  const proofDataDisp = (
+    <div>
+      <JSONpretty
+        data={proof}
+        style={{fontSize: "0.7em"}}
+      />
+    </div>
+  );
+
+  const solCalldataDisp = (
+    <div>
+      <JSONpretty
+        data={""}
+        theme={JSONPrettyMon}
+      />
+    </div>
+  );
+
+  const pubSigData = (
+    <div>
+      <JSONpretty
+        data={pubSignals}
+        theme={JSONPrettyMon}
+      />
+    </div>
+  );
+
   return (
     <div>
       <div style={{ margin: "auto", width: "46vw" }}>
@@ -70,20 +101,19 @@ export default function ZkpInterface({
         </Button>
       </div>
       <div>
-        <p style={{ padding: "1vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
-        <p style={{ padding: "1vw"}}>{pubSignals ? JSON.stringify(pubSignals) : "undefined public signals"}</p>
-        <div>
-          <h3>Proof Data</h3>
-          <JSONpretty
-            data={proof}
-            style={{fontSize: "0.7em"}}
-          />
-        </div>
-        <div>
-          <h3>Solidity Calldata</h3>
-          <JSONpretty data={""} theme={JSONPrettyMon} />
-        </div>
+        <p style={{ padding: "0.5vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
+        <Tabs defaultActiveKey="1" centered>
+          <TabPane tab="Solidity Calldata" key="0">
+            {solidityCalldata ? solCalldataDisp : "solidity calldata undefined"}
+          </TabPane>
+          <TabPane tab="Proof Data" key="1">
+            {proof ? proofDataDisp : "proof undefined"}
+            <br/>
+            {pubSignals ? pubSigData : "public signals undefined"}
+          </TabPane>
+        </Tabs>
       </div>
+      <br/>
     </div>
   );
 
