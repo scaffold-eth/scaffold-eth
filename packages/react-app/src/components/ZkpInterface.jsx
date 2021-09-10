@@ -19,12 +19,16 @@ export default function ZkpInterface({
     )
   );
 
-  const [fullProof, setFullProof] = useState("0");
+  const [proof, setProof] = useState();
+  const [pubSignals, setpubSignals] = useState();
 
   async function proveInputs() {
     const { proof, pubSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
-    console.log("Calculating Proof!")
-    setFullProof(proof);
+    console.log("Calculating Proof! ...")
+    // console.log(proof);
+    setProof(proof);
+    // console.log(pubSignals);
+    setpubSignals(pubSignals);
   }
 
   const fields = [];
@@ -62,9 +66,10 @@ export default function ZkpInterface({
           Prove
         </Button>
       </div>
-      <div style={{ padding: "" }}>
-        <p>{JSON.stringify(proofInputs)}</p>
-        <p>{fullProof}</p>
+      <div>
+        <p style={{ padding: "1vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
+        <p style={{ padding: "1vw"}}>{pubSignals ? JSON.stringify(pubSignals) : "undefined public signals"}</p>
+        <p style={{ padding: "1vw"}}>{proof ? JSON.stringify(proof) : "undefined "}</p>
       </div>
     </div>
   );

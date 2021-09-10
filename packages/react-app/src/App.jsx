@@ -34,8 +34,8 @@ import Authereum from "authereum";
 
 const { ethers } = require("ethers");
 
-const wasm = "./circuits/init.wasm";
-const zkey = require("./circuits/init.zkey");
+const wasm = `${process.env.PUBLIC_URL}/circuits/init.wasm`;
+const zkey = `${process.env.PUBLIC_URL}/circuits/init.zkey`;
 
 /*
     Welcome to 🏗 scaffold-eth !
