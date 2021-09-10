@@ -1,6 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Input, Button } from "antd";
+import JSONpretty from "react-json-pretty";
 const snarkjs = require("snarkjs");
+
+let JSONPrettyMon = require('react-json-pretty/dist/monikai');
 
 export default function ZkpInterface({
   name,
@@ -51,8 +54,8 @@ export default function ZkpInterface({
   }
 
   return (
-    <div style={{ margin: "auto", width: "46vw" }}>
-      <div >
+    <div>
+      <div style={{ margin: "auto", width: "46vw" }}>
         {fields}
       </div>
       <div>
@@ -69,7 +72,17 @@ export default function ZkpInterface({
       <div>
         <p style={{ padding: "1vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
         <p style={{ padding: "1vw"}}>{pubSignals ? JSON.stringify(pubSignals) : "undefined public signals"}</p>
-        <p style={{ padding: "1vw"}}>{proof ? JSON.stringify(proof) : "undefined "}</p>
+        <div>
+          <h3>Proof Data</h3>
+          <JSONpretty
+            data={proof}
+            style={{fontSize: "0.7em"}}
+          />
+        </div>
+        <div>
+          <h3>Solidity Calldata</h3>
+          <JSONpretty data={""} theme={JSONPrettyMon} />
+        </div>
       </div>
     </div>
   );
