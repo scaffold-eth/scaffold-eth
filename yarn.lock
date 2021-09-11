@@ -5573,6 +5573,13 @@ blake2b-wasm@^1.1.0:
   dependencies:
     nanoassert "^1.0.0"
 
+blake2b-wasm@^2.3.0:
+  version "2.3.0"
+  resolved "https://registry.yarnpkg.com/blake2b-wasm/-/blake2b-wasm-2.3.0.tgz#d8da788f9dd4cb64a801a67bb6ae0d1b9c887bf0"
+  integrity sha512-opFKx7sIXpKiG2/N24km9mJObgLOpu0JRf8CDgE/orn8LI/F7pUOSuZVSdZTJ7BMyFJunNdqoSInjwx1ty/z8A==
+  dependencies:
+    nanoassert "^2.0.0"
+
 "blake2b-wasm@https://github.com/jbaylina/blake2b-wasm.git":
   version "2.1.0"
   resolved "https://github.com/jbaylina/blake2b-wasm.git#0d5f024b212429c7f50a7f533aa3a2406b5b42b3"
@@ -15119,6 +15126,11 @@ nanoassert@^1.0.0:
   resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-1.1.0.tgz#4f3152e09540fde28c76f44b19bbcd1d5a42478d"
   integrity sha1-TzFS4JVA/eKMdvRLGbvNHVpCR40=
 
+nanoassert@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/nanoassert/-/nanoassert-2.0.0.tgz#a05f86de6c7a51618038a620f88878ed1e490c09"
+  integrity sha512-7vO7n28+aYO4J+8w96AzhmU8G+Y/xpPDJz/se19ICsqj/momRbb9mh9ZUtkoJ5X3nTnPdhEJyc0qnM6yAsHBaA==
+
 nanoid@3.1.20:
   version "3.1.20"
   resolved "https://registry.yarnpkg.com/nanoid/-/nanoid-3.1.20.tgz#badc263c6b1dcf14b71efaa85f6ab4c1d6cfc788"
@@ -19448,13 +19460,13 @@ snarkjs@^0.3.60:
     r1csfile "0.0.32"
     readline "^1.3.0"
 
-snarkjs@^0.4.6:
-  version "0.4.6"
-  resolved "https://registry.yarnpkg.com/snarkjs/-/snarkjs-0.4.6.tgz#763a557a36765ca3b4b8715fa5e1a7fce7127016"
-  integrity sha512-DioPEaDKD/MrYX4kKAtlFRkCIkkiELi89N1DvosoHLeX1MuA9LQVAoOTAbJgwkTMHgCZPio5bOwk6JjZl6Z/Pw==
+snarkjs@^0.4.7:
+  version "0.4.7"
+  resolved "https://registry.yarnpkg.com/snarkjs/-/snarkjs-0.4.7.tgz#d4f8e854896705ec746ca91742b076333efb7083"
+  integrity sha512-gehpEKZwhBZEYPLokfBqtHIxaHHy50LYDI4xFVopNEwICInHPIbG4nJ0nJ1vgqz+bv824UFQC84XnQ0C/mPjag==
   dependencies:
     "@iden3/binfileutils" "0.0.8"
-    blake2b-wasm "https://github.com/jbaylina/blake2b-wasm.git"
+    blake2b-wasm "^2.3.0"
     circom_runtime "0.1.13"
     ejs "^3.1.6"
     fastfile "0.0.19"
