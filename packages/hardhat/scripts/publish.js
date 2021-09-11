@@ -65,7 +65,7 @@ function publishContract(contractName, networkName) {
   }
 }
 
-function publishCircuits() {
+async function publishCircuits() {
   try {
     const circuitOutputs = fs.readdirSync(circuitsDir);
     if (!fs.existsSync(publishCircuitsDir)) {
@@ -77,7 +77,7 @@ function publishCircuits() {
         `${publishCircuitsDir}/${fileName}`
       );
     });
-    console.log("Published circuit files to react-app package.")
+    console.log("✅  Published circuit files to react-app package.")
   } catch (e) {
     console.log(e);
     return false;
