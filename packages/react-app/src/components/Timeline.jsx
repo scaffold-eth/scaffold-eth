@@ -1,9 +1,11 @@
+import { DownloadOutlined, EditOutlined, SendOutlined } from "@ant-design/icons";
+import { Timeline, Typography } from "antd";
 import React from "react";
 import Blockies from "react-blockies";
-import { Timeline, Typography } from "antd";
-import { SendOutlined, DownloadOutlined, EditOutlined } from "@ant-design/icons";
 
 const { Text } = Typography;
+
+// displays a timeline for scaffold-eth usage
 
 export default function TimelineDisplay(props) {
   return (
