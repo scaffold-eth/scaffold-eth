@@ -13,7 +13,8 @@ export default function ZkpInterface({
   name,
   inputFields,
   wasm,
-  zkey
+  zkey,
+  vkey,
 }) {
 
   const [proofInputs, setProofInputs] = useState(
