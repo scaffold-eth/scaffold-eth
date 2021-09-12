@@ -1,10 +1,20 @@
 @import "~antd/lib/style/color/colorPalette.less";
 @import "~antd/dist/antd.less";
 @import "~antd/lib/style/themes/default.less";
+@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Space+Mono&display=swap');
 
 // These are shared variables that can be extracted to their own file
-// @primary-color: #00adb5;
+@font-family: 'Poppins', sans-serif;
+@color-violet: #6F3FF5;
+@color-white: #FFFFFF;
+
+@primary-color: @color-violet;
 @border-radius-base: 4px;
+
+// Button
+@btn-primary-color: @color-white;
+@btn-primary-bg: @color-violet;
+@btn-border-radius-base: 40px;
 
 .highlight {
   background-color: #f9f9f9;
