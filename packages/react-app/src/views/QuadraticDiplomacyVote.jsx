@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useMemo } from "react";
-import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge, Spin } from "antd";
+import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge, Spin, Row, Col } from "antd";
 import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Address } from "../components";
 const { Title, Text } = Typography;
@@ -32,8 +32,8 @@ export default function QuadraticDiplomacyVote({
 
   if (!isVoter) {
     return (
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
-        <Title level={4}>Access denied</Title>
+      <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
+        <Title level={4} style={{ fontFamily: "Space Mono" }}>Access denied</Title>
         <p>You are not part of the members of this election.</p>
       </div>
     );
@@ -93,7 +93,7 @@ export default function QuadraticDiplomacyVote({
   };
 
   return (
-    <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+    <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
       <Steps initial={1} current={currentStep} labelPlacement="vertical">
         <Steps.Step
           title="Select Contributors"
@@ -110,18 +110,20 @@ export default function QuadraticDiplomacyVote({
       <Divider />
       {currentStep === 1 ? (
         <List
-          size="small"
+          size="large"
           itemLayout="horizontal"
-          header={<Title level={4}>1. Who've you been working with?</Title>}
-          style={{ width: "400px", margin: "0 auto" }}
+          header={<Title level={4} style={{ fontFamily: "Space Mono" }}>1. Who've you been working with?</Title>}
+          style={{ width: "600px", margin: "0 auto" }}
           footer={
-            <Button
-              type="primary"
-              onClick={() => setCurrentStep(2)}
-              disabled={!Object.keys(selectedContributors).length}
-            >
-              Next
-            </Button>
+            <Row justify="end">
+                <Button
+                  type="primary"
+                  onClick={() => setCurrentStep(2)}
+                  disabled={!Object.keys(selectedContributors).length}
+                >
+                  Next
+                </Button>
+            </Row>
           }
           dataSource={Object.entries(contributors)}
           renderItem={([contributorAddress, votes], index) => (
@@ -142,7 +144,6 @@ export default function QuadraticDiplomacyVote({
                   size="large"
                   onClick={e => handleContributorSelection(e, contributorAddress)}
                   checked={selectedContributors[contributorAddress] !== undefined}
-                  style={{ color: "black" }}
                 >
                   <Address address={contributorAddress} ensProvider={mainnetProvider} fontSize={16} size="short" />
                 </Checkbox>
@@ -154,10 +155,10 @@ export default function QuadraticDiplomacyVote({
         <List
           size="large"
           itemLayout="horizontal"
-          style={{ width: "400px", margin: "0 auto" }}
+          style={{ width: "600px", margin: "0 auto" }}
           header={
             <Space direction="vertical">
-              <Title level={4}>2. Allocate votes</Title>
+              <Title level={4} style={{ fontFamily: "Space Mono" }}>2. Allocate votes</Title>
               <Title level={5}>
                 Remaining vote tokens:&nbsp;&nbsp;
                 <Badge
@@ -170,10 +171,10 @@ export default function QuadraticDiplomacyVote({
             </Space>
           }
           footer={
-            <Space split>
+            <Row justify="end">
               {!isSendingTx ? (
                 <>
-                  <Button onClick={() => setCurrentStep(1)}>Go back</Button>
+                  <Button onClick={() => setCurrentStep(1)} style={{ marginRight: "8px" }} type="secondary">Go back</Button>
                   <Button type="primary" onClick={handleSubmitVotes}>
                     Commit votes
                   </Button>
@@ -181,7 +182,7 @@ export default function QuadraticDiplomacyVote({
               ) : (
                 <Spin size="small" />
               )}
-            </Space>
+            </Row>
           }
           dataSource={Object.entries(selectedContributors)}
           renderItem={([contributorAddress, contributor]) => (
@@ -222,7 +223,7 @@ export default function QuadraticDiplomacyVote({
               >
                 <List.Item.Meta
                   avatar={
-                    <Address address={contributorAddress} fontSize={14} size="short" ensProvider={mainnetProvider} />
+                    <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} />
                   }
                 />
               </List.Item>
@@ -232,9 +233,9 @@ export default function QuadraticDiplomacyVote({
       ) : (
         currentStep === 3 && (
           <>
-            <Title level={3}>Thank you for voting.</Title>
+            <Title level={3} style={{ fontFamily: "Space Mono" }}>Thank you for voting.</Title>
             <p>The allocation to this workstream will be informed by your votes. See you next month!</p>
-            <Title level={4}>Your votes:</Title>
+            <Title level={5} style={{ marginTop: "24px" }}>Your votes:</Title>
             {Object.entries(selectedContributors).map(([contributorAddress, voteTokens]) => (
               <p key={contributorAddress}>
                 <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} /> (
