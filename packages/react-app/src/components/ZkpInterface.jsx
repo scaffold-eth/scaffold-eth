@@ -4,8 +4,6 @@ import JSONpretty from "react-json-pretty";
 import { useGroth16SolidityCalldata } from "../hooks"
 const snarkjs = require("snarkjs");
 
-let JSONPrettyMon = require('react-json-pretty/dist/monikai');
-
 const { TabPane } = Tabs;
 
 
