@@ -610,6 +610,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
             <Contract
               name="ExampleExternalContract"
@@ -617,6 +618,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
           </Route>
         </Switch>
