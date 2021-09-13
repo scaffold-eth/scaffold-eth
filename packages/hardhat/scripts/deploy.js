@@ -17,7 +17,7 @@ const R = require("ramda");
 \_______)   )_(   (_______)|/
 
 This deploy script is no longer in use, but is left for reference purposes!
-
+*/
   const yourToken = await deploy("YourToken")
 
   //Todo: deploy the vendor

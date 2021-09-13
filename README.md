@@ -49,9 +49,10 @@ You'll have three terminals up for:
 
 > 👩‍💻 Edit `YourToken.sol` to inherit the **ERC20** token standard from OpenZeppelin
 
-Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy.js`:
+Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy/00_deploy_your_contract.js`:
 
 ```javascript
+const yourToken = await deployments.get("YourToken");
 const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", utils.parseEther("1000") );
 ```
 
@@ -78,15 +79,16 @@ uint256 public constant tokensPerEth = 100;
 
 > 📟 Emit **event** `BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens)` when tokens are purchased.
 
-Edit `deploy.js` to deploy the `Vendor` (uncomment Vendor deploy line), but also to send all the tokens to the `vendor.address`:
+Edit `deploy/01_deploy_vendor.js` to deploy the `Vendor` (uncomment Vendor deploy lines), but also to send all the tokens to the `vendor.address`:
 
 ```js
 const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
 ```
 
-In `deploy.js` you will also need to call `transferOwnership()` on the `Vendor` to make *your frontend address* the `owner`:
+In `deploy/01_deploy_vendor.js` you will also need to call `transferOwnership()` on the `Vendor` to make *your frontend address* the `owner`:
 
 ```js
+const vendor = await deployments.get("Vendor");
 await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 ```
 
@@ -127,7 +129,7 @@ Check out all the [active branches](https://github.com/austintgriffith/scaffold-
 
 ### Checkpoint 5: 💾 Deploy it! 🛰
 
-📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
+📡 Edit the `defaultNetwork` in `packages/hardhat/hardhat.config.js`, as well as `targetNetwork` in `packages/react-app/src/App.jsx`, to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/)
 
 👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**
 
