@@ -1,13 +1,23 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Divider, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import {
+  Account,
+  Address,
+  Balance,
+  Contract,
+  Faucet,
+  GasGauge,
+  Header,
+  Ramp,
+  ThemeSwitch
+} from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -249,13 +259,13 @@ function App(props) {
   const vendorAddress = readContracts && readContracts.Vendor && readContracts.Vendor.address
 
   const vendorETHBalance = useBalance(localProvider, vendorAddress);
-  if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance ? formatEther(vendorETHBalance) : '...')
+  if(DEBUG) console.log("💵 vendorETHBalance", vendorETHBalance ? ethers.utils.formatEther(vendorETHBalance) : '...')
 
   const vendorTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [ vendorAddress ])
-  console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? formatEther(vendorTokenBalance) : '...')
+  console.log("🏵 vendorTokenBalance:", vendorTokenBalance ? ethers.utils.formatEther(vendorTokenBalance) : '...')
 
   const yourTokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [ address ])
-  console.log("🏵 yourTokenBalance:", yourTokenBalance ? formatEther(yourTokenBalance) : '...')
+  console.log("🏵 yourTokenBalance:", yourTokenBalance ? ethers.utils.formatEther(yourTokenBalance) : '...')
 
   const tokensPerEth = useContractReader(readContracts, "Vendor", "tokensPerEth")
   console.log("🏦 tokensPerEth:", tokensPerEth ? tokensPerEth.toString() : '...')
@@ -654,17 +664,19 @@ function App(props) {
           <Route path="/contracts">
             <Contract
               name="Vendor"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
             <Contract
               name="YourToken"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
           </Route>
         </Switch>
