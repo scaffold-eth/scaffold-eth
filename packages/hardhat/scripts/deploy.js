@@ -1,13 +1,22 @@
 /* eslint no-use-before-define: "warn" */
 const fs = require("fs");
 const chalk = require("chalk");
-const { config, ethers } = require("hardhat");
+const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
-const main = async () => {
+/*
 
-  console.log("\n\n 📡 Deploying...\n");
+ _______ _________ _______  _______
+(  ____ \\__   __/(  ___  )(  ____ )
+| (    \/   ) (   | (   ) || (    )|
+| (_____    | |   | |   | || (____)|
+(_____  )   | |   | |   | ||  _____)
+      ) |   | |   | |   | || (
+/\____) |   | |   | (___) || )
+\_______)   )_(   (_______)|/
+
+This deploy script is no longer in use, but is left for reference purposes!
 
   const yourToken = await deploy("YourToken")
 
@@ -24,6 +33,7 @@ const main = async () => {
   //ToDo: change address with your burner wallet address vvvv
   //await vendor.transferOwnership( "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1" );
 
+  //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")
 
   // const exampleToken = await deploy("ExampleToken")
@@ -61,28 +71,50 @@ const main = async () => {
   );
 };
 
-const deploy = async (contractName, _args = [], overrides = {}, libraries = {}) => {
+const deploy = async (
+  contractName,
+  _args = [],
+  overrides = {},
+  libraries = {}
+) => {
   console.log(` 🛰  Deploying: ${contractName}`);
 
   const contractArgs = _args || [];
-  const contractArtifacts = await ethers.getContractFactory(contractName,{libraries: libraries});
+  const contractArtifacts = await ethers.getContractFactory(contractName, {
+    libraries: libraries,
+  });
   const deployed = await contractArtifacts.deploy(...contractArgs, overrides);
   const encoded = abiEncodeArgs(deployed, contractArgs);
   fs.writeFileSync(`artifacts/${contractName}.address`, deployed.address);
+
+  let extraGasInfo = "";
+  if (deployed && deployed.deployTransaction) {
+    const gasUsed = deployed.deployTransaction.gasLimit.mul(
+      deployed.deployTransaction.gasPrice
+    );
+    extraGasInfo = `${utils.formatEther(gasUsed)} ETH, tx hash ${
+      deployed.deployTransaction.hash
+    }`;
+  }
 
   console.log(
     " 📄",
     chalk.cyan(contractName),
     "deployed to:",
-    chalk.magenta(deployed.address),
+    chalk.magenta(deployed.address)
   );
+  console.log(" ⛽", chalk.grey(extraGasInfo));
+
+  await tenderly.persistArtifacts({
+    name: contractName,
+    address: deployed.address,
+  });
 
   if (!encoded || encoded.length <= 2) return deployed;
   fs.writeFileSync(`artifacts/${contractName}.args`, encoded.slice(2));
 
   return deployed;
 };
-
 
 // ------ utils -------
 
@@ -107,7 +139,9 @@ const abiEncodeArgs = (deployed, contractArgs) => {
 
 // checks if it is a Solidity file
 const isSolidity = (fileName) =>
-  fileName.indexOf(".sol") >= 0 && fileName.indexOf(".swp") < 0 && fileName.indexOf(".swap") < 0;
+  fileName.indexOf(".sol") >= 0 &&
+  fileName.indexOf(".swp") < 0 &&
+  fileName.indexOf(".swap") < 0;
 
 const readArgsFile = (contractName) => {
   let args = [];

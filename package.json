@@ -15,6 +15,7 @@
     "react-app:start": "yarn workspace @scaffold-eth/react-app start",
     "react-app:test": "yarn workspace @scaffold-eth/react-app test",
     "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
+    "prettier": "yarn workspace @scaffold-eth/react-app prettier",
     "chain": "yarn workspace @scaffold-eth/hardhat chain",
     "fork": "yarn workspace @scaffold-eth/hardhat fork",
     "node": "yarn workspace @scaffold-eth/hardhat chain",
@@ -32,12 +33,14 @@
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "yarn workspace @scaffold-eth/hardhat generate",
     "account": "yarn workspace @scaffold-eth/hardhat account",
-    "mine": "cd packages/hardhat && npx hardhat mine",
+    "mineContractAddress": "cd packages/hardhat && npx hardhat mineContractAddress",
     "wallet": "cd packages/hardhat && npx hardhat wallet",
     "fundedwallet": "cd packages/hardhat && npx hardhat fundedwallet",
     "flatten": "cd packages/hardhat && npx hardhat flatten",
-    "graph-run-node": "cd docker/graph-node && docker-compose up",
-    "graph-remove-node": "cd docker/graph-node && docker-compose down",
+    "clean": "cd packages/hardhat && npx hardhat clean",
+    "run-graph-node": "yarn workspace @scaffold-eth/services run-graph-node",
+    "remove-graph-node": "yarn workspace @scaffold-eth/services remove-graph-node",
+    "clean-graph-node": "yarn workspace @scaffold-eth/services clean-graph-node",
     "graph-prepare": "mustache packages/subgraph/config/config.json packages/subgraph/src/subgraph.template.yaml > packages/subgraph/subgraph.yaml",
     "graph-codegen": "yarn workspace @scaffold-eth/subgraph graph codegen",
     "graph-build": "yarn workspace @scaffold-eth/subgraph graph build",
@@ -45,7 +48,9 @@
     "graph-remove-local": "yarn workspace @scaffold-eth/subgraph graph remove --node http://localhost:8020/ scaffold-eth/your-contract",
     "graph-deploy-local": "yarn workspace @scaffold-eth/subgraph graph deploy --node http://localhost:8020/ --ipfs http://localhost:5001 scaffold-eth/your-contract",
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
-    "deploy-and-graph": "yarn deploy && yarn graph-ship-local"
+    "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
+    "theme": "yarn workspace @scaffold-eth/react-app theme",
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
   },
   "workspaces": {
     "packages": [
@@ -53,7 +58,12 @@
     ],
     "nohoist": [
       "**/@graphprotocol/graph-ts",
-      "**/@graphprotocol/graph-ts/**"
+      "**/@graphprotocol/graph-ts/**",
+      "**/hardhat",
+      "**/hardhat/**",
+      "**/hardhat-ts",
+      "**/hardhat-ts/**"
     ]
-  }
+  },
+  "dependencies": {}
 }

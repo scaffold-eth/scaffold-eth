@@ -120,7 +120,7 @@ The `Vendor` should call `transferFrom(msg.sender, address(this), theAmount)` an
 
 
 
----
+Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
 
 
 
