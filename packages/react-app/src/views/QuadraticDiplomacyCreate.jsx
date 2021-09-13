@@ -28,15 +28,15 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
   };
 
   return (
-    <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
-      <Title level={3}>Add members</Title>
+    <div style={{ border: "1px solid", padding: "40px", width: "800px", margin: "64px auto 0px auto", textAlign: "left" }}>
+      <Title level={3} style={{ fontFamily: "Space Mono" }}>Add members</Title>
       <Divider />
-      <Form form={form} name="basic" onFinish={handleSubmit} labelCol={{ span: 8 }} wrapperCol={{ span: 12 }}>
-        <Form.Item label="Vote allocation" name="voteCredit" style={{ textAlign: "left" }}>
+      <Form form={form} name="basic" onFinish={handleSubmit} labelCol={{ span: 8 }} wrapperCol={{ span: 16 }} layout="horizontal">
+        <Form.Item label="Vote Allocation" name="voteCredit" style={{ textAlign: "left" }} tooltip="Number of votes each voter will have">
           <Input
             type="number"
-            placeholder="Voter allocation"
-            style={{ width: "50%" }}
+            placeholder="100"
+            style={{ width: "30%" }}
             onChange={event => setVoteAllocation(event.target.value)}
           />
         </Form.Item>
@@ -50,8 +50,7 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
             mainnetProvider={mainnetProvider}
           />
         ))}
-        <Divider />
-        <Form.Item style={{ justifyContent: "center" }}>
+        <Form.Item style={{ justifyContent: "center", marginTop: 24 }}>
           {/*ToDo. Restart ant form state (the browser is keeping filled-removed elements)*/}
           <Button
             type="dashed"
@@ -62,7 +61,8 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
             Add Voter
           </Button>
         </Form.Item>
-        <Form.Item wrapperCol={{ offset: 8, span: 8 }}>
+        <Divider />
+        <Form.Item wrapperCol={{ offset: 16, span: 8 }}>
           {/*ToDo Disable if empty members */}
           {!isSendingTx ? (
             <Button type="primary" htmlType="submit" block disabled={!voteAllocation}>
@@ -80,9 +80,9 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
 const VoterInput = ({ index, voters, setVoters, mainnetProvider }) => {
   return (
     <>
-      <Form.Item label={`Member ${index + 1}`} name={`address[${index}]`} style={{ marginBottom: "5px" }}>
+      <Form.Item label={`Voter ${index + 1}`} name={`address[${index}]`} style={{ marginBottom: "16px" }}>
         <Row gutter={8} align="middle">
-          <Col flex="auto">
+          <Col span={16}>
             <AddressInput
               autoFocus
               ensProvider={mainnetProvider}
@@ -97,7 +97,7 @@ const VoterInput = ({ index, voters, setVoters, mainnetProvider }) => {
               }}
             />
           </Col>
-          <Col>
+          <Col span={8}>
             <DeleteOutlined
               style={{ cursor: "pointer", color: "#ff6666" }}
               onClick={event => {

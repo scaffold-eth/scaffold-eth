@@ -1,21 +1,49 @@
 @import "~antd/lib/style/color/colorPalette.less";
 @import "~antd/dist/antd.less";
 @import "~antd/lib/style/themes/dark.less";
+@import url('https://fonts.googleapis.com/css2?family=Poppins&family=Space+Mono&display=swap');
+
 
 // These are shared variables that can be extracted to their own file
-@primary-color: #2caad9;
+
+@font-family: 'Poppins', sans-serif;
+
+@color-moon: #FFCC00;
+@color-space-dark: #0B0228;
+@color-violet: #6F3FF5;
+@color-violet-dark: #5932C4;
+@color-white: #FFFFFF;
+@color-elder: #C9B8FF;
+
+@text-color: @color-elder;
+@heading-color: @color-elder;
+
+@primary-color: @color-violet;
 @border-radius-base: 4px;
+@border-color-base: @color-violet-dark;
+@border-color-split: @color-violet-dark;
 
-@component-background: #212121;
-@body-background: #212121;
-@popover-background: #212121;
-@border-color-base: #6f6c6c;
-@border-color-split: #424242;
-@table-header-sort-active-bg: #424242;
-@card-skeleton-bg: #424242;
-@skeleton-color: #424242;
-@table-header-sort-active-bg: #424242;
+@component-background: @color-space-dark;
+@body-background: @color-space-dark;
+@popover-background: @color-space-dark;
 
+// Menu
+@menu-item-color: @color-elder;
+@menu-highlight-color: @color-moon;
+
+// Form
+@label-color: @text-color;
+
+// Button
+@btn-primary-color: @color-white;
+@btn-primary-bg: @color-violet;
+@btn-border-radius-base: 40px;
+
+// Divider
+@divider-color: @color-violet-dark;
+
+// Input
+@input-placeholder-color: @color-violet;
 
 .highlight {
   background-color: #3f3f3f;
