@@ -1,13 +1,23 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, List } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import {
+  Account,
+  Address,
+  Balance,
+  Contract,
+  Faucet,
+  GasGauge,
+  Header,
+  Ramp,
+  ThemeSwitch,
+} from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -246,7 +256,7 @@ function App(props) {
   ]);
 
   //keep track of contract balance to know how much has been staked total:
-  const stakerContractBalance = useBalance(localProvider, readContracts && readContracts.Staker.address);
+  const stakerContractBalance = useBalance(localProvider, readContracts && readContracts.Staker ? readContracts.Staker.address : null);
   if(DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance )
 
   //keep track of total 'threshold' needed of ETH
@@ -270,7 +280,7 @@ function App(props) {
   const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
   console.log("✅ complete:",complete)
 
-  const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract.address);
+  const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract ? readContracts.ExampleExternalContract.address : null);
   if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
 
 
@@ -596,14 +606,14 @@ function App(props) {
           <Route path="/contracts">
             <Contract
               name="Staker"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
             <Contract
               name="ExampleExternalContract"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
