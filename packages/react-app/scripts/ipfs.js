@@ -11,6 +11,7 @@ const infura = { host: "ipfs.infura.io", port: "5001", protocol: "https" };
 const ipfs = ipfsAPI(infura);
 
 const ipfsGateway = "https://ipfs.io/ipfs/";
+const ipnsGateway = "https://ipfs.io/ipns/";
 
 const addOptions = {
   pin: true,
@@ -72,7 +73,7 @@ const deploy = async () => {
   console.log(`Use the link${ipnsName && "s"} below to access your app:`);
   console.log(`   IPFS: ${chalk.cyan(`${ipfsGateway}${cid.toString()}`)}`);
   if (ipnsName) {
-    console.log(`   IPNS: ${chalk.cyan(`${ipfsGateway}${ipnsName}`)}`);
+    console.log(`   IPNS: ${chalk.cyan(`${ipnsGateway}${ipnsName}`)}`);
     console.log();
     console.log(
       "Each new deployment will have a unique IPFS hash while the IPNS name will always point at the most recent deployment.",
