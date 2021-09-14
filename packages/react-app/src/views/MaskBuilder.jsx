@@ -4,13 +4,9 @@ import React, { useState, useEffect } from "react";
 import { Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
 import { bn } from '@ethersproject/bignumber'
-
 // Image manipulation
 import mergeImages from 'merge-images';
-import { Canvas, Image, createCanvas, loadImage  } from 'canvas';
-
 import { addToIPFS, transactionHandler } from "../helpers"
-
 import { PARTS } from '../partPicker';
 
 const { BufferList } = require('bl')
@@ -47,7 +43,9 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
     const [newImage, setNewImage] = useState();
     const [events, setEvents] = useState([]);
 
+    const [background, setBackground] = useState(PARTS.BACKGROUND[0]);
     const [face, setFace] = useState(PARTS.FACE[0]);
+    const [faceShadow, setFaceShadow] = useState(PARTS.FACE[10]);
     const [eyes, setEyes] = useState(PARTS.EYES[0]);
     const [mouth, setMouth] = useState(PARTS.MOUTH[0]);
     const [nose, setNose] = useState(PARTS.NOSE[0]);
@@ -77,7 +75,8 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 .then((res) => {
                     // set all the parts
                     setRandomNumber(res);
-                    //console.log(res.toString())                    
+                    //console.log(res.toString())  
+                    setBackground(PARTS.BACKGROUND[res.toString().substring(16, 18) % 10])                  
                     //console.log(res.toString().substring(0, 2) % 8);                    
                     setFace(PARTS.FACE[res.toString().substring(0, 2) % 10]);
                     //console.log(res.toString().substring(2, 4) % 8);
@@ -88,10 +87,21 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                     setNose(PARTS.NOSE[res.toString().substring(6, 8) % 8]);
                     //console.log(res.toString().substring(8, 10) % 8);
                     setIris(PARTS.IRIS[res.toString().substring(8, 10) % 8]);
+<<<<<<< HEAD
                     //console.log(res.toString().substring(10, 12) % 8);
 
                     // todo: need to randomly set the horns
                     setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
+=======
+                    
+                    
+                    console.log('Horns', res.toString().substring(10, 12) % 8);
+                    // todo: need to randomly set the horns
+                    if((res.toString().substring(10, 12) % 8) < 4){
+                        setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
+                    }
+                    
+>>>>>>> 9ad054ef33c2d7b9ae3daff8899e3e34929b3395
                     //console.log(res.toString().substring(12, 14) % 8);
                     setTop(PARTS.MISC.TOP[res.toString().substring(12, 14) % 8]);
                     //console.log(res.toString().substring(14, 16) % 8);
@@ -106,9 +116,9 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
         setLoadingMask(true);      
         try {
             await mergeImages([
-                //{ src: './images/Backgrounds/background1.png', x: 0, y: 0 }, 
-                //{ src: background1 },
+                { src: background },
                 { src: face }, 
+                { src: faceShadow },
                 { src: eyes },
                 { src: mouth },
                 { src: nose },
@@ -121,13 +131,13 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 // console.log(b64);
                 setNewImage(b64);
                 // save image to ipfs and get the uri for minting token
-                let generatedMaskImage = document.getElementById("generated-mask-image");
-                let imgCanvas = document.getElementById("canvas");
-                let imgContext = imgCanvas.getContext("2d");
+                // let generatedMaskImage = document.getElementById("generated-mask-image");
+                // let imgCanvas = document.getElementById("canvas");
+                // let imgContext = imgCanvas.getContext("2d");
 
-                imgCanvas.width = generatedMaskImage.width;
-                imgCanvas.height = generatedMaskImage.height;
-                imgContext.drawImage(generatedMaskImage, 0, 0, generatedMaskImage.width, generatedMaskImage.height);
+                // imgCanvas.width = generatedMaskImage.width;
+                // imgCanvas.height = generatedMaskImage.height;
+                // imgContext.drawImage(generatedMaskImage, 0, 0, generatedMaskImage.width, generatedMaskImage.height);
 
                 //const imgDataAsUrl = imgCanvas.toDataURL("image/png");
                 let imageBuffer = Buffer.from(b64.split(",")[1], 'base64');
@@ -174,9 +184,6 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
             <Button onClick={ () => { mintNft() } } disabled={partsLoaded}>Mint NFT</Button>
             <div style={{ width: 800, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
             
-
-            <canvas id='canvas'></canvas>
-
             {/* <List
                 bordered
                 dataSource={vrfEvents}
@@ -192,32 +199,6 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
         <Divider />
         </div>
     )
-
-    function testCanvas () {
-        const canvas = createCanvas(200, 200)
-        const ctx = canvas.getContext('2d')
-    
-        // Write "Awesome!"
-        ctx.font = '30px Impact'
-        //ctx.rotate(0.1)
-        ctx.fillText('Awesome!', 50, 100)
-    
-        // Draw line under text
-        var text = ctx.measureText('Awesome!')
-        ctx.strokeStyle = 'rgba(0,0,0,0.5)'
-        ctx.beginPath()
-        ctx.lineTo(50, 102)
-        ctx.lineTo(50 + text.width, 102)
-        ctx.stroke()
-    
-        // Draw cat with lime helmet
-        loadImage(PARTS.BACKGROUND[2]).then((image) => {
-        ctx.drawImage(image, 50, 0, 70, 70)
-    
-        console.log('<img src="' + canvas.toDataURL() + '" />')
-        })
-        setNewImage('<img src="' + canvas.toDataURL() + '" />');
-    }    
 }
 
 export default MaskBuilder;
