@@ -511,7 +511,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="PowDAO"
               signer={userSigner}
               provider={localProvider}
               address={address}
