@@ -88,7 +88,7 @@ export default function Account({
     ""
   ) : (
     <span>
-      {address ? (
+      {address && useBurner ? (
         <>
           <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
           <Balance address={address} provider={localProvider} price={price} />

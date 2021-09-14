@@ -53,7 +53,8 @@ const targetNetwork = NETWORKS.localhost; // <------- select your target fronten
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
-const NETWORKCHECK = true;
+const NETWORKCHECK = false;
+const USE_BURNER_WALLET = false;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -586,6 +587,7 @@ function App(props) {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
+          useBurner={USE_BURNER_WALLET}
         />
         {faucetHint}
       </div>
