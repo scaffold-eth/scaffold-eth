@@ -50,7 +50,6 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
         notify = Notify(options);
       }
 
-
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
         etherscanNetwork = network.name + ".";

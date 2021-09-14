@@ -3,7 +3,7 @@ import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
-// import Wallet from "./Wallet";
+import Wallet from "./Wallet";
 
 /*
   ~ What it does? ~
@@ -50,6 +50,7 @@ export default function Account({
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
+  useBurner,
 }) {
   const modalButtons = [];
   if (web3Modal) {
@@ -95,14 +96,18 @@ export default function Account({
       ) : (
         "Connect Wallet"
       )}
-      {/* <Wallet
-        address={address}
-        provider={localProvider}
-        signer={userSigner}
-        ensProvider={mainnetProvider}
-        price={price}
-        color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-      /> */}
+      {useBurner ? (
+        <Wallet
+          address={address}
+          provider={localProvider}
+          signer={userSigner}
+          ensProvider={mainnetProvider}
+          price={price}
+          color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+        />
+      ) : (
+        <></>
+      )}
     </span>
   );
 
