@@ -89,6 +89,8 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                     //console.log(res.toString().substring(8, 10) % 8);
                     setIris(PARTS.IRIS[res.toString().substring(8, 10) % 8]);
                     //console.log(res.toString().substring(10, 12) % 8);
+
+                    // todo: need to randomly set the horns
                     setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
                     //console.log(res.toString().substring(12, 14) % 8);
                     setTop(PARTS.MISC.TOP[res.toString().substring(12, 14) % 8]);
@@ -98,12 +100,6 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                 setLoadingParts(false);
                 setPartsLoaded(true);
         }, 12000);
-        
-        // setTimeout(() => {
-        //     makeMask();
-        // }, 20000);
-        
-        
     }
 
     const makeMask = async () => { 
