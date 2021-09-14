@@ -49,7 +49,7 @@ You'll have three terminals up for:
 
 > 👩‍💻 Edit `YourToken.sol` to inherit the **ERC20** token standard from OpenZeppelin
 
-Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy/00_deploy_your_contract.js`:
+Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy/00_deploy_your_token.js`:
 
 ```javascript
 const yourToken = await deployments.get("YourToken");
