@@ -52,7 +52,7 @@ const translateAddressesForLocal = (addy) => {
 const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -176,7 +176,6 @@ function App(props) {
       if(streamReadResult){
         let finalBuilderList = {}
         for(let b in BUILDERS){
-
           let badges = []
           for(let c in BUILDERS[b].builds){
             let buildString = BUILDERS[b].builds[c]
@@ -188,11 +187,8 @@ function App(props) {
                 )
               }
             }
-
-
           }
           finalBuilderList[BUILDERS[b].name] = {...BUILDERS[b],badges,cap:streamReadResult[b*4],frequency:streamReadResult[b*4+1],balance:streamReadResult[b*4+2],totalBalance:streamReadResult[b*4+3]}
-
         }
         setBuilderStreams(finalBuilderList)
       }
@@ -445,9 +441,9 @@ function App(props) {
             </div>
 
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto", paddingBottom: 256}}>
-{/*
+            {/*
               <Input placeholder="search builds" bordered={false} style={{textAlign:"center",borderBottom:"1px solid #efefef"}} />
-*/}
+            */}
               <List
                 /*bordered*/
                 itemLayout="vertical"
@@ -536,27 +532,6 @@ function App(props) {
                 }}
               />
             </div>
-
-            {/* uncomment for a second contract:
-            <Contract
-              name="SecondContract"
-              signer={userProvider.getSigner()}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
-
-            {/* Uncomment to display and interact with an external contract (DAI on mainnet):
-            <Contract
-              name="DAI"
-              customContract={mainnetDAIContract}
-              signer={userProvider.getSigner()}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
-            */}
           </Route>
           <Route path="/funders">
             <div style={{padding:32}}>
@@ -579,16 +554,16 @@ function App(props) {
                       </span>
                     )
                   }else{
-                    //console.log("looking for face...")
-                    //translate stream address to person's address face
+                    // console.log("looking for face...")
+                    // translate stream address to person's address face
                     let foundFace
                     for(let b in BUILDERS){
-                      //console.log("comparing...",BUILDERS[b].streamAddress,thisStream)
+                      // console.log("comparing...",BUILDERS[b].streamAddress,thisStream)
                       if(translateAddressesForLocal(BUILDERS[b].streamAddress)==thisStream){
                         foundFace = BUILDERS[b].address
                       }
                     }
-                    //console.log("foundFace", foundFace)
+                    // console.log("foundFace", foundFace)
                     if(foundFace){
                       inventory.push(
                         <span style={{margin:22}}>
@@ -656,16 +631,16 @@ function App(props) {
                     const stream = builderStreams && builderStreams[item.name]
                     if(stream){
 
-                      //console.log("STREAM DISPLAY",stream)
+                      // console.log("STREAM DISPLAY",stream)
 
                       let streamNetPercentSeconds = stream.totalBalance && stream.cap && stream.totalBalance.mul(100).div(stream.cap)
-                      //console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds.toNumber())
+                      // console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds.toNumber())
 
                       const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
-                      //console.log("numberOfTimesFull",numberOfTimesFull)
+                      // console.log("numberOfTimesFull",numberOfTimesFull)
 
                       const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
-                      //console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
+                      // console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
 
                       let totalProgress = []
 
@@ -761,13 +736,13 @@ function App(props) {
                 />
 
                 <div style={{marginTop:64, borderTop:"1px solid #eeeeee",paddingTop:64,marginBottom:64}}>
-                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
+                  <div>Join the <b>🏰 BuidlGuidl:</b> create something rad with <a style={{fontWeight:"bolder"}} href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">🏗 scaffold-eth</a>!</div>
                   <div style={{marginTop:16}}>Watch the latest <a target="_blank" href="https://youtu.be/mctO5EUx_wI?t=103">🎥 onboarding video</a></div>
                   <div style={{marginTop:8}}>
-                    Use the <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
-                     <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
+                    Use the <a target="_blank" href="https://github.com/scaffold-eth/scaffold-eth#-examples-and-tutorials">🚩 challenges</a>,
+                     <a target="_blank" href="https://github.com/scaffold-eth/scaffold-eth#-examples-and-tutorials">👨‍🏫 tutorials</a>,
                       and
-                       <a target="_blank" href="https://github.com/austintgriffith/scaffold-eth/branches/active">🌳 branches</a> for inspiration.
+                       <a target="_blank" href="https://github.com/scaffold-eth/scaffold-eth/branches/active">🌳 branches</a> for inspiration.
                   </div>
                   <div style={{marginTop:8}}>
                     Submit creations to the <a href="https://t.me/joinchat/PXu_P6pps5I5ZmUx" target="_blank">🏰 BuidlGuidl telegram</a>!
