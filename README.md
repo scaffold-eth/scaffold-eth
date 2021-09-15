@@ -34,7 +34,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd simple-nft-example
+cd buyer-mints-nft
 yarn chain
 
 ```
@@ -47,7 +47,7 @@ yarn chain
 
 
 ```bash
-cd simple-nft-example
+cd buyer-mints-nft
 
 yarn upload
 
