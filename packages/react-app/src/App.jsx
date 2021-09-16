@@ -451,14 +451,14 @@ function App(props) {
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link
+            {/* <Link
               onClick={() => {
                 setRoute("/");
               }}
               to="/"
             >
               Contract
-            </Link>
+            </Link> */}
           </Menu.Item>
           <Menu.Item key="/driver">
             <Link
