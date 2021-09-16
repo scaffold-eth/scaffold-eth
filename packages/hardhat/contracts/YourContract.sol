@@ -43,13 +43,18 @@ contract YourContract {
         owner = msg.sender;
     }
 
+    function setLicensePlate(string memory licensePlate) public {
+        console.log(msg.sender, "set license plate to", licensePlate);
+        emit SetPurpose(msg.sender, licensePlate);
+    }
+
     function setPurpose(string memory newPurpose) public {
         purpose = newPurpose;
         console.log(msg.sender, "set purpose to", purpose);
         emit SetPurpose(msg.sender, purpose);
     }
 
-    function driver_go_online(
+    function driverGoOnline(
         uint256 lat,
         uint256 lon,
         string memory licensePlate

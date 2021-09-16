@@ -16,7 +16,9 @@ export default function ExampleUI({
   readContracts,
   writeContracts,
 }) {
-  const [newPurpose, setNewPurpose] = useState("loading...");
+  const [licensePlate, setLicensePlate] = useState("loading...");
+  const [latitude, setLatitude] = useState("loading...");
+  const [longitude, setLongitude] = useState("loading...");
 
   return (
     <div>
@@ -28,9 +30,19 @@ export default function ExampleUI({
         <h4>purpose: {purpose}</h4>
         <Divider />
         <div style={{ margin: 8 }}>
-          <Input
+          <Input defaultValue="Lat"
             onChange={e => {
-              setNewPurpose(e.target.value);
+              setLatitude(e.target.value);
+            }}
+          />
+          <Input defaultValue="Lon"
+            onChange={e => {
+              setLongitude(e.target.value);
+            }}
+          />
+          <Input defaultValue="TSLA"
+            onChange={e => {
+              setLicensePlate(e.target.value);
             }}
           />
           <Button
@@ -38,7 +50,7 @@ export default function ExampleUI({
             onClick={async () => {
               /* look how you call setPurpose on your contract: */
               /* notice how you pass a call back for tx updates too */
-              const result = tx(writeContracts.YourContract.setPurpose(newPurpose), update => {
+              const result = tx(writeContracts.YourContract.driverGoOnline(latitude, longitude, licensePlate), update => {
                 console.log("📡 Transaction Update:", update);
                 if (update && (update.status === "confirmed" || update.status === 1)) {
                   console.log(" 🍾 Transaction " + update.hash + " finished!");
