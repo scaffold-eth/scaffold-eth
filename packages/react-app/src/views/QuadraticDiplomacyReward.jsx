@@ -4,6 +4,7 @@ import { CheckCircleTwoTone, CloseCircleTwoTone } from "@ant-design/icons";
 import { Address } from "../components";
 const { Text, Title } = Typography;
 const { ethers } = require("ethers");
+const axios = require("axios");
 
 const TOKENS = ["ETH", "GTC", "DAI"];
 const REWARD_STATUS = {
@@ -16,42 +17,57 @@ export default function QuadraticDiplomacyReward({
   tx,
   writeContracts,
   userSigner,
-  votesEntries,
-  contributorEntries,
   isAdmin,
   mainnetProvider,
+  currentDistribution,
+  serverUrl,
+  address,
 }) {
   const [totalRewardAmount, setTotalRewardAmount] = useState(0);
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
   const [selectedToken, setSelectedToken] = useState("");
   const [isSendingTx, setIsSendingTx] = useState(false);
+  const [distribution, setDistribution] = useState();
+
+  console.log(currentDistribution);
 
   const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
     let voteCount = 0;
     let sqrts = 0;
     let total = 0;
-    votesEntries.forEach(entry => {
-      const vote = entry.amount.toNumber();
-      const sqrtVote = Math.sqrt(vote);
-      if (!votes[entry.wallet]) {
-        votes[entry.wallet] = {
-          vote: 0,
-          // Sum of the square root of the votes for each member.
-          sqrtVote: 0,
-          hasVoted: false,
-        };
-      }
-      votes[entry.wallet].sqrtVote += sqrtVote;
-      votes[entry.wallet].vote += vote;
 
-      if (!votes[entry.wallet].hasVoted) {
-        votes[entry.wallet].hasVoted = entry.votingAddress === entry.wallet;
-      }
+    if (!currentDistribution.id) {
+      return [0, 0, 0, 0];
+    }
 
-      voteCount += vote;
-      // Total sum of the sum of the square roots of the votes for all members.
-      sqrts += sqrtVote;
+    Object.entries(currentDistribution.data.votes).forEach(memberVotes => {
+      const votingAddress = memberVotes[0];
+      Object.entries(memberVotes[1]).forEach(voteInfo => {
+        const contributor = voteInfo[0];
+        const vote = voteInfo[1];
+        const sqrtVote = Math.sqrt(vote);
+
+        if (!votes[contributor]) {
+          votes[contributor] = {
+            vote: 0,
+            // Sum of the square root of the votes for each member.
+            sqrtVote: 0,
+            hasVoted: false,
+          };
+        }
+
+        votes[contributor].sqrtVote += sqrtVote;
+        votes[contributor].vote += vote;
+
+        if (!votes[contributor].hasVoted) {
+          votes[contributor].hasVoted = votingAddress === contributor;
+        }
+
+        voteCount += vote;
+        // Total sum of the sum of the square roots of the votes for all members.
+        sqrts += sqrtVote;
+      });
     });
 
     Object.entries(votes).forEach(([wallet, { sqrtVote }]) => {
@@ -59,7 +75,7 @@ export default function QuadraticDiplomacyReward({
     });
 
     return [votes, voteCount, sqrts, total];
-  }, [votesEntries]);
+  }, [currentDistribution.id]);
 
   const columns = useMemo(
     () => [
@@ -128,9 +144,8 @@ export default function QuadraticDiplomacyReward({
     [voteResults, totalSquare, totalRewardAmount],
   );
 
-  const missingVotingMembers = contributorEntries
-    ?.map(entry => entry.wallet)
-    .filter(wallet => !voteResults[wallet]?.hasVoted)
+  const missingVotingMembers = currentDistribution.id && currentDistribution.data.members
+    ?.filter(wallet => !voteResults[wallet]?.hasVoted)
     // Remove duplicated.
     .filter((item, pos, self) => self.indexOf(item) === pos);
 
@@ -180,14 +195,30 @@ export default function QuadraticDiplomacyReward({
         : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
     }
 
+    let message = address + currentDistribution.id;
+    let signature = await userSigner.provider.send("personal_sign", [message, address]);
+
     await tx(func, update => {
       // ToDo. Handle errors.
       if (update && (update.status === "confirmed" || update.status === 1)) {
         notification.success({
           message: "Payment sent!",
         });
-        setRewardStatus(REWARD_STATUS.COMPLETED);
-        setIsSendingTx(false);
+
+        axios
+          .post(serverUrl + "distributions/" + currentDistribution.id + "/finish", {
+            address: address,
+            message: message,
+            signature: signature,
+          })
+          .then(response => {
+            setIsSendingTx(false);
+            setRewardStatus(REWARD_STATUS.COMPLETED);
+          })
+          .catch(e => {
+            console.log("Error finishing the distribution");
+            setIsSendingTx(false);
+          });
       } else if (update.error) {
         setIsSendingTx(false);
       }
@@ -205,7 +236,7 @@ export default function QuadraticDiplomacyReward({
 
   return (
     <div style={{ border: "1px solid #cccccc", padding: 16, width: 1000, margin: "auto", marginTop: 64 }}>
-      <Title level={3}>Reward Contributors</Title>
+      <Title level={3}>Reward Contributors {currentDistribution.id}</Title>
       <Title level={5}>
         Total votes:&nbsp;&nbsp;
         <Tag color="#000000">{totalVotes}</Tag>

@@ -17,6 +17,7 @@ import {
   useExchangePrice,
   useGasPrice,
   useUserSigner,
+  useCurrentDistribution,
 } from "./hooks";
 import QuadraticDiplomacyVote from "./views/QuadraticDiplomacyVote";
 import QuadraticDiplomacyReward from "./views/QuadraticDiplomacyReward";
@@ -44,6 +45,8 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const targetNetwork = process.env.REACT_APP_NETWORK ? NETWORKS[process.env.REACT_APP_NETWORK] : NETWORKS.localhost;
+
+const serverUrl = "http://localhost:45622/";
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -178,32 +181,13 @@ function App() {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
+  const [currentDistribution, isVoter, isAdmin] = useCurrentDistribution(serverUrl, address);
+
   // keep track of a variable from the contract in the local React state:
   const currentElectionStartBlock = useContractReader(
     readContracts,
     "QuadraticDiplomacyContract",
     "currentElectionStartBlock",
-  );
-  const voteCredits = useContractReader(readContracts, "QuadraticDiplomacyContract", "votes", [address]);
-  const voterRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "VOTER_ROLE");
-  const adminRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "DEFAULT_ADMIN_ROLE");
-  const isAdmin = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [adminRole, address]);
-  const isVoter = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [voterRole, address]);
-
-  // 📟 Listen for broadcast events
-  const contributorEntries = useEventListener(
-    readContracts,
-    "QuadraticDiplomacyContract",
-    "AddMember",
-    localProvider,
-    currentElectionStartBlock?.toNumber(),
-  );
-  const votesEntries = useEventListener(
-    readContracts,
-    "QuadraticDiplomacyContract",
-    "Vote",
-    localProvider,
-    currentElectionStartBlock?.toNumber(),
   );
 
   //
@@ -430,16 +414,21 @@ function App() {
 
         <Switch>
           <Route exact path="/">
-            <QuadraticDiplomacyCreate mainnetProvider={mainnetProvider} writeContracts={writeContracts} tx={tx} />
+            <QuadraticDiplomacyCreate
+              mainnetProvider={mainnetProvider}
+              serverUrl={serverUrl}
+              address={address}
+              userSigner={userSigner}
+            />
           </Route>
           <Route path="/quadratic-diplomacy-vote">
             <QuadraticDiplomacyVote
-              voteCredits={voteCredits}
-              contributorEntries={contributorEntries}
-              tx={tx}
-              writeContracts={writeContracts}
               isVoter={isVoter}
               mainnetProvider={mainnetProvider}
+              currentDistribution={currentDistribution}
+              address={address}
+              userSigner={userSigner}
+              serverUrl={serverUrl}
             />
           </Route>
           <Route path="/quadratic-diplomacy-reward">
@@ -447,11 +436,12 @@ function App() {
               tx={tx}
               writeContracts={writeContracts}
               userSigner={userSigner}
-              votesEntries={votesEntries}
-              contributorEntries={contributorEntries}
               price={price}
               isAdmin={isAdmin}
               mainnetProvider={mainnetProvider}
+              currentDistribution={currentDistribution}
+              serverUrl={serverUrl}
+              address={address}
             />
           </Route>
           <Route exact path="/contract">

@@ -3,32 +3,41 @@ import { Button, Checkbox, Divider, Space, List, Steps, Typography, Badge, Spin,
 import { SmileTwoTone, LikeTwoTone, CheckCircleTwoTone, MinusOutlined, PlusOutlined } from "@ant-design/icons";
 import { Address } from "../components";
 const { Title, Text } = Typography;
+const axios = require("axios");
 
 export default function QuadraticDiplomacyVote({
-  voteCredits,
   contributorEntries,
-  tx,
-  writeContracts,
   isVoter,
   mainnetProvider,
+  currentDistribution,
+  address,
+  userSigner,
+  serverUrl,
 }) {
   const [selectedContributors, setSelectedContributors] = useState({});
   const [currentStep, setCurrentStep] = useState(1);
   const [spentVoteTokens, setSpentVoteTokens] = useState(0);
   const [isSendingTx, setIsSendingTx] = useState(false);
 
-  const availableVoteTokens = voteCredits?.toNumber() ?? 0;
-  const remainingVoteTokens = availableVoteTokens - spentVoteTokens;
-
   const contributors = useMemo(
     () =>
-      contributorEntries.reduce((entries, current) => {
-        entries[current.wallet] = 0;
+      currentDistribution.id &&
+      currentDistribution.data.members.reduce((entries, current) => {
+        entries[current] = 0;
         return entries;
       }, {}),
-    [contributorEntries],
+    [currentDistribution.id],
   );
-  const allContributorsSelected = Object.keys(contributors).length === Object.keys(selectedContributors).length;
+
+  const remainingVoteTokens = useMemo(
+    () => currentDistribution.id && currentDistribution.data.voteAllocation - spentVoteTokens,
+    [currentDistribution.id, spentVoteTokens],
+  );
+
+  let allContributorsSelected = false;
+  if (contributors) {
+    allContributorsSelected = Object.keys(contributors).length === Object.keys(selectedContributors).length;
+  }
 
   if (!isVoter) {
     return (
@@ -66,7 +75,7 @@ export default function QuadraticDiplomacyVote({
       ...prevSelectedContributors,
       [clickedContributorAddress]:
         op === "add"
-          ? Math.min(prevSelectedContributors[clickedContributorAddress] + 1, availableVoteTokens)
+          ? Math.min(prevSelectedContributors[clickedContributorAddress] + 1, currentDistribution.data.voteAllocation)
           : Math.max(prevSelectedContributors[clickedContributorAddress] - 1, 0),
     }));
   };
@@ -75,29 +84,60 @@ export default function QuadraticDiplomacyVote({
     const wallets = [];
     const amounts = [];
 
-    Object.entries(selectedContributors).forEach(([contributorAddress, voteTokens]) => {
-      wallets.push(contributorAddress);
-      amounts.push(voteTokens);
-    });
+    console.log('submit');
+    console.log(selectedContributors);
+
+    let message = address + Object.keys(selectedContributors).join();
+    console.log("Message:" + message);
+
+    let signature = await userSigner.provider.send("personal_sign", [message, address]);
 
     setIsSendingTx(true);
-    await tx(writeContracts.QuadraticDiplomacyContract.voteMultiple(wallets, amounts), update => {
-      if (update && (update.status === "confirmed" || update.status === 1)) {
+
+    axios
+      .post(serverUrl + "distributions/" + currentDistribution.id + "/vote", {
+        address: address,
+        votes: selectedContributors,
+        message: message,
+        signature: signature
+      })
+      .then(response => {
+        console.log(response);
         setIsSendingTx(false);
         setSpentVoteTokens(0);
         setCurrentStep(3);
-      } else if (update.error) {
+      })
+      .catch(e => {
+        console.log("Error on vote");
         setIsSendingTx(false);
-      }
-    });
+      });
   };
+
+  if (!currentDistribution.id) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>No Current Distribution</Title>
+      </div>
+    );
+  }
+
+  if (
+    currentDistribution.id &&
+    currentStep != 3 &&
+    currentDistribution.data.votes &&
+    currentDistribution.data.votes[address]
+  ) {
+    setSelectedContributors(currentDistribution.data.votes[address]);
+    setCurrentStep(3);
+  }
 
   return (
     <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
+      <Title level={3}>Distribution {currentDistribution.id}</Title>
       <Steps initial={1} current={currentStep} labelPlacement="vertical">
         <Steps.Step
           title="Select Contributors"
-          subTitle={`${contributorEntries.length} contributors`}
+          subTitle={`${currentDistribution.data.members.length} contributors`}
           icon={<SmileTwoTone />}
         />
         <Steps.Step

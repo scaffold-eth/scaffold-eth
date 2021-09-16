@@ -4,8 +4,9 @@ import { PlusOutlined } from "@ant-design/icons";
 import { DeleteOutlined } from "@ant-design/icons";
 import { AddressInput } from "../components";
 const { Title } = Typography;
+const axios = require("axios");
 
-export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeContracts }) {
+export default function QuadraticDiplomacyCreate({ mainnetProvider, serverUrl, address, userSigner }) {
   const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
   const [isSendingTx, setIsSendingTx] = useState(false);
@@ -15,16 +16,30 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, tx, writeCon
     // ToDo. Check if addresses are valid.
     setIsSendingTx(true);
     const filteredVoters = voters.filter(voter => voter);
-    await tx(writeContracts.QuadraticDiplomacyContract.addMembersWithVotes(filteredVoters, voteAllocation), update => {
-      if (update && (update.status === "confirmed" || update.status === 1)) {
+
+    let message = address + voteAllocation + filteredVoters.join();
+    console.log("Message:" + message);
+
+    let signature = await userSigner.provider.send("personal_sign", [message, address]);
+
+    axios
+      .post(serverUrl + "distributions", {
+        address: address,
+        voteAllocation: voteAllocation,
+        members: filteredVoters,
+        message: message,
+        signature: signature
+      })
+      .then(response => {
+        console.log(response);
         setVoters([""]);
         setVoteAllocation(0);
         form.resetFields();
         setIsSendingTx(false);
-      } else if (update.error) {
-        setIsSendingTx(false);
-      }
-    });
+      })
+      .catch(e => {
+        console.log("Error on distributions post");
+      });
   };
 
   return (
