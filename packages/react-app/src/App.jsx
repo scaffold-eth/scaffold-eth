@@ -501,10 +501,12 @@ function App(props) {
           </Route>
           <Route path="/rider">
             <Rider
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
+              // address={address}
+              // yourLocalBalance={yourLocalBalance}
+              // mainnetProvider={mainnetProvider}
+              // price={price}
+              tx={tx}
+              writeContracts={writeContracts}
             />
           </Route>
           <Route path="/driver">

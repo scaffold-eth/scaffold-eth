@@ -24,7 +24,10 @@ const geolocateControlStyle= {
   margin: "3%"
 }
 
-function Rider() {
+function Rider({
+  tx,
+  writeContracts
+}) {
 
   // State controls
   const [destination, setDestination] = useState('');
@@ -49,7 +52,7 @@ function Rider() {
   var state
 
   if (destinationConfirm && pickUpConfirm) {
-    state = <OnTrip pickUp={pickUp} dest={destination}/>
+    state = <OnTrip pickUp={pickUp} dest={destination} tx={tx} writeContracts={writeContracts}/>
   }
   else if (destinationConfirm && !pickUpConfirm) {
     state = <SelectPickUp onPickUpChange={setPickUp} onPickUpConfirm={setPickUpConfirm} />

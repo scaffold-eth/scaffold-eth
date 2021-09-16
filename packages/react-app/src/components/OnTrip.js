@@ -4,11 +4,14 @@ import Geocode from "react-geocode";
 
 import { Spinner } from "baseui/spinner";
 
-Geocode.setApiKey("ask mike");
+Geocode.setApiKey("askmike");
 
 
 // OnTrip Step
-function OnTrip({pickUp, dest}) {
+function OnTrip({pickUp, dest,
+  tx,
+  writeContracts,
+}) {
   const  [pickUpLatLong, setPickUpLatLong] = useState([0,0])
   const  [destLatLong, setDestLatLong] = useState([0,0])
 
@@ -38,7 +41,25 @@ function OnTrip({pickUp, dest}) {
       }
     );
 
-
+        
+    // Set the src and dest lat long to the blockchain
+    const result = tx(writeContracts.YourContract.request_ride(pickUpLatLong[0], Math.abs(pickUpLatLong[1]), destLatLong[0], Math.abs(destLatLong[1])), update => {
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    });
+    console.log("awaiting metamask/web3 confirm result...", result);
+    console.log(result);
 
   }, []);
 
