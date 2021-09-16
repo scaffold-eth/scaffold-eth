@@ -17,15 +17,14 @@ import Timer from '../components/Timer';
 import GoOnline from '../components/GoOnline';
 import OnJob from '../components/OnJob';
 
-const MAPBOX_TOKEN = 'askmike';
+const MAPBOX_TOKEN = '';
 
 const geolocateControlStyle= {
   margin: "3%"
 }
 
 export default function Driver({
-  purpose,
-  setPurposeEvents,
+  RidesEvents,
   address,
   mainnetProvider,
   localProvider,
@@ -38,7 +37,7 @@ export default function Driver({
 
   // State controls
   const [isOnline, setIsOnline] = useState(false)
-  const [isRiderFound, setIsRiderFound] = useState(false)
+  const [isRiderFound, setIsRiderFound] = useState(null)
 
   // Map default view settings 
   const [viewport, setViewport] = useState({
@@ -55,11 +54,11 @@ export default function Driver({
   // Track state of trip UI
   var state
 
-  if (isOnline && !isRiderFound) {
-    state = <Timer onIsRiderFoundChange={setIsRiderFound} onIsOnlineChange={setIsOnline}/>
+  if (isOnline && isRiderFound === null) {
+    state = <Timer onIsRiderFoundChange={setIsRiderFound} onIsOnlineChange={setIsOnline} RidesEvents={RidesEvents} address={address}/>
   }
-  else if (isOnline && isRiderFound) {
-    state = <OnJob onJobComplete={setIsRiderFound}/>
+  else if (isOnline && isRiderFound !== null) {
+    state = <OnJob onJobComplete={setIsRiderFound} rideInfo={rideInfo}/>
   }
 
   else {

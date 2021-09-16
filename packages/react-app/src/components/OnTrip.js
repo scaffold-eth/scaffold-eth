@@ -3,22 +3,31 @@ import React, { useEffect, useState } from 'react';
 import Geocode from "react-geocode";
 
 import { Spinner } from "baseui/spinner";
-
-Geocode.setApiKey("askmike");
+Geocode.setApiKey("");
 
 
 // OnTrip Step
 function OnTrip({pickUp, dest,
   tx,
   writeContracts,
+  RidesEvents,
+  mainnetProvider,
+  localProvider
 }) {
-  const  [pickUpLatLong, setPickUpLatLong] = useState([0,0])
-  const  [destLatLong, setDestLatLong] = useState([0,0])
+  const [pickUpLatLong, setPickUpLatLong] = useState([0,0])
+  const [destLatLong, setDestLatLong] = useState([0,0])
+  const [driverLicense, setDriverLicense] = useState('')
+  let listening = false;
+
+  const handleDriverFound = (event) => {
+    setDriverLicense(event.value.licensePlate)
+  }
 
   // Geocode the addresses and send to chain
 
   useEffect(() => {
     // Get latitude & longitude from address.
+
     Geocode.fromAddress(pickUp).then(
       (response) => {
         const { lat, lng } = response.results[0].geometry.location;
@@ -61,11 +70,17 @@ function OnTrip({pickUp, dest,
     console.log("awaiting metamask/web3 confirm result...", result);
     console.log(result);
 
+    // Add event Listener (only do this once)
+    if (!listening) {
+      window.addEventListener(RidesEvents, handleDriverFound);
+      listening = true;
+    }
+
   }, []);
 
   return (
     <div>
-      Looking for Driver... <Spinner/>
+      {driverLicense.length > 0 ? <div> Looking for Driver... <Spinner/></div> : <div> Driver is coming: {driverLicense} </div>}
     </div>
   );
 };

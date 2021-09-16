@@ -31,6 +31,7 @@ contract YourContract {
     event Rides(
         address indexed rider,
         address indexed driver,
+        string licensePlate,
         uint256 ride_fare,
         Coordinate src,
         Coordinate dest
@@ -95,6 +96,7 @@ contract YourContract {
         emit Rides(
             msg.sender,
             assignedDriver.driverAddress,
+            assignedDriver.vehicle.licensePlate,
             RIDE_FARE,
             src,
             dest

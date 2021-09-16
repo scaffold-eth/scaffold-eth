@@ -18,15 +18,22 @@ import SelectPickUp from '../components/SelectPickUp';
 import OnTrip from '../components/OnTrip';
 import { Input } from 'baseui/input';
 
-const MAPBOX_TOKEN = 'askmike';
+const MAPBOX_TOKEN = '';
 
 const geolocateControlStyle= {
   margin: "3%"
 }
 
 function Rider({
+  RidesEvents,
+  address,
+  mainnetProvider,
+  localProvider,
+  yourLocalBalance,
+  price,
   tx,
-  writeContracts
+  readContracts,
+  writeContracts,
 }) {
 
   // State controls
@@ -52,7 +59,9 @@ function Rider({
   var state
 
   if (destinationConfirm && pickUpConfirm) {
-    state = <OnTrip pickUp={pickUp} dest={destination} tx={tx} writeContracts={writeContracts}/>
+    state = <OnTrip pickUp={pickUp} dest={destination}
+     tx={tx} writeContracts={writeContracts} RidesEvents={RidesEvents} mainnetProvider={mainnetProvider} 
+     localProvider={localProvider}/>
   }
   else if (destinationConfirm && !pickUpConfirm) {
     state = <SelectPickUp onPickUpChange={setPickUp} onPickUpConfirm={setPickUpConfirm} />

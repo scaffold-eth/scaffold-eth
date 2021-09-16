@@ -3,12 +3,17 @@ import React, { useCallback } from 'react';
 import { Button, SHAPE  } from "baseui/button";
 
 // On Job state
-function OnJob({onJobComplete}) {
+function OnJob({onJobComplete, rideInfo}) {
 
   // TODO: Get these lat / long
+  // var pickUpLat = rideInfo.src.lat * 0.001;
+  // var pickUpLong = rideInfo.src.lon * 0.001;
+  // var destLat = rideInfo.dest.lat * 0.001;
+  // var destLong = rideInfo.dest.lon * 0.001;
+
+
   var pickUpLat = 37.7577;
   var pickUpLong = -122.4376;
-
   var destLat = 37.7577;
   var destLong = -122.4376;
 

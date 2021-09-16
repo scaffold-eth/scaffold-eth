@@ -25,7 +25,7 @@ import {
   useExchangeEthPrice,
 } from "eth-hooks/dapps/dex";
 // import Rider from "./Rider";
-import { Driver, Rider, Subgraph } from "./views";
+import { Driver, Rider, Subgraph, Example } from "./views";
 
 import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
@@ -501,12 +501,31 @@ function App(props) {
           </Route>
           <Route path="/rider">
             <Rider
-              // address={address}
-              // yourLocalBalance={yourLocalBalance}
-              // mainnetProvider={mainnetProvider}
-              // price={price}
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
               tx={tx}
               writeContracts={writeContracts}
+              readContracts={readContracts}
+              RidesEvents={RidesEvents}
+            />
+          </Route>
+          <Route path="/ex">
+            <Example
+              address={address}
+              userSigner={userSigner}
+              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              yourLocalBalance={yourLocalBalance}
+              price={price}
+              tx={tx}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              purpose={purpose}
+              setPurposeEvents={setPurposeEvents}
             />
           </Route>
           <Route path="/driver">
@@ -520,8 +539,7 @@ function App(props) {
               tx={tx}
               writeContracts={writeContracts}
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
+              RidesEvents={RidesEvents}
             />
           </Route>
         </Switch>

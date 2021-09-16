@@ -3,17 +3,24 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, SHAPE } from "baseui/Button";
 
 // 10 min timer
-function Timer({onIsOnlineChange, onIsRiderFoundChange}) {
+function Timer({onIsOnlineChange, onIsRiderFoundChange, RidesEvents, address}) {
   const [seconds, setSeconds] = useState(600);
+  var listening = false;
 
 
   // Button click state handlers. Callback to parent
-  const handleSetOfline = useCallback( () => {
+  const handleSetOffline = useCallback( () => {
     onIsOnlineChange(false)
   }, [onIsOnlineChange])
 
-  const handleRiderFound = useCallback( () => {
-    onIsRiderFoundChange(true)
+  // TODO: Confirm this
+  const handleRiderFound = useCallback( (event) => {
+    if (event.value.driver == address) {
+      onIsRiderFoundChange(event.value)
+    }
+    else {
+      onIsRiderFoundChange(null)
+    }
   }, [onIsRiderFoundChange])
 
   // Timer control
@@ -25,10 +32,17 @@ function Timer({onIsOnlineChange, onIsRiderFoundChange}) {
         setSeconds(seconds => seconds - 1);
       }, 1000);
     } else {
+
       // When time runs out, set offline
-      handleSetOfline();
+      handleSetOffline();
     }
-    return () => clearInterval(interval);
+
+    // Add event Listener (only do this once)
+    if (!listening) {
+      window.addEventListener(RidesEvents, handleRiderFound);
+      listening = true;
+    }
+    
   }, [seconds]);
 
   return (
@@ -53,7 +67,6 @@ function Timer({onIsOnlineChange, onIsRiderFoundChange}) {
         onClick={handleRiderFound} >
         Rider Found
       </Button>
-
     </div>
   );
 };
