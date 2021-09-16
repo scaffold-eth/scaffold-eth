@@ -56,7 +56,7 @@ function Timer({onIsOnlineChange, onIsRiderFoundChange, RidesEvents, address}) {
       <Button className="offline-button"
         overrides={{BaseButton: {style: {width: '30%', marginRight: '5%'}}}}
         shape={SHAPE.pill}
-        onClick={handleSetOfline} >
+        onClick={handleSetOffline} >
         Go Offline
       </Button>
 
