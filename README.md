@@ -28,9 +28,11 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
-yarn start
+cd scaffold-eth/packages/react-app
+npm install
+HOST=0.0.0.0 HTTPS=true npm start
 ```
+Note: We need https to get device location
 
 > in a third terminal window, 🛰 deploy your contract:
 

@@ -5,6 +5,13 @@ import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
 
+// Base UI imports
+import {BaseProvider, LightTheme} from 'baseui';
+import { Provider as StyletronProvider } from "styletron-react";
+import { Client as Styletron } from "styletron-engine-atomic";
+
+const engine = new Styletron();
+
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
   light: `${process.env.PUBLIC_URL}/light-theme.css`,
@@ -22,7 +29,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={client}>
     <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <App subgraphUri={subgraphUri} />
+      <StyletronProvider value={engine}>
+        <BaseProvider theme={LightTheme}>
+          <App subgraphUri={subgraphUri} />
+        </BaseProvider>
+    </StyletronProvider>,]
     </ThemeSwitcherProvider>
   </ApolloProvider>,
   document.getElementById("root"),

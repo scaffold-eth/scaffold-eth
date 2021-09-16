@@ -1,0 +1,19 @@
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    .flex-container {
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: baseline;
+    }
+
+    /* TODO: Style this */
+    .time {
+
+    }
+
+    .offline-button {
+
+    }
+  }
+  

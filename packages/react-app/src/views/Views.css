@@ -1,0 +1,13 @@
+
+.card-container {
+  margin: 2%;
+  width: 30%;
+}
+
+@media only screen and (max-width: 768px) {
+  /* For mobile phones: */
+  .card-container {
+    margin: 2%;
+    width: 96%;
+  }
+}

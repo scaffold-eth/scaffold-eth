@@ -24,8 +24,8 @@ import {
 import {
   useExchangeEthPrice,
 } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+// import Rider from "./Rider";
+import { Driver, Rider, Subgraph } from "./views";
 
 import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
@@ -459,24 +459,24 @@ function App(props) {
               YourContract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/rider">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/rider");
               }}
-              to="/hints"
+              to="/rider"
             >
-              Hints
+              Rider
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          <Menu.Item key="/driver">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/driver");
               }}
-              to="/exampleui"
+              to="/driver"
             >
-              ExampleUI
+              Driver
             </Link>
           </Menu.Item>
           <Menu.Item key="/mainnetdai">
@@ -518,16 +518,16 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
+          <Route path="/rider">
+            <Rider
               address={address}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}
               price={price}
             />
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
+          <Route path="/driver">
+            <Driver
               address={address}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
