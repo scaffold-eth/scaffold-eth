@@ -26,9 +26,8 @@ contract PowDAO {    // is ReEntrancy
     
     // EVENTS
     // ***************
-    event SubmitProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed memberAddress);
+    event SubmitProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
     event SubmitVote(uint256 indexed proposalIndex, address indexed delegateKey, address indexed memberAddress, uint8 uintVote);
-    event Ragequit(address indexed memberAddress, uint256 sharesToBurn, uint256 lootToBurn);
     event CancelProposal(uint256 indexed proposalId, address applicantAddress);
     event ProcessedProposal(uint256 proposalId);
     event Deposit(uint256 amount);
@@ -128,26 +127,25 @@ contract PowDAO {    // is ReEntrancy
     //*****************
     // Vote on adding new members who want to contribute funds or work. 
     // OR kick members who do not contribute. 
-    function addMember(address newMemAddress) public {
-        _SubmitMemberProposal(newMemAddress, 0); // 0 adds a member
+    function addMember(address newMemAddress, string memory details) public onlyMember {
+        _SubmitMemberProposal(newMemAddress, details, 0); // 0 adds a member
     }
 
-    function kickMember(address memToKick) public onlyMember {
-        _SubmitMemberProposal(memToKick, 1);  // 1 kicks a member
+    function kickMember(address memToKick, string memory details) public onlyMember {
+        _SubmitMemberProposal(memToKick, details, 1);  // 1 kicks a member
     }
-    // Create a proposal that shows the address (entity) as the proposer. And sets the flags to indicate the type of proposal.
-    function _SubmitMemberProposal(address entity, uint256 action) internal {
+    // Create a proposal that shows the address (member to be added) as the proposer. And sets the flags to indicate the type of proposal, either add or kick.
+    function _SubmitMemberProposal(address entity, string memory details, uint256 action) internal {
         if(action == 0) {
             Proposal storage prop = proposals[proposalCount];
             prop.proposer = entity;
             prop.paymentRequested = 0;
             prop.startingTime = now;
-            prop.flags = flags;
-            prop.details = "https://etherscan.io/";
+            prop.flags = [false, false, false, false, true, false]; // memberAdd
+            prop.details = details;
             prop.exists = true;
-            prop.flag[4] = true; // memberAdd
             
-            emit SubmitProposal(0, details, flags, proposalCount, msg.sender);
+            emit SubmitProposal(0, prop.details, prop.flags, proposalCount, msg.sender);
             proposalCount += 1;
         }
 
@@ -156,11 +154,10 @@ contract PowDAO {    // is ReEntrancy
             prop.proposer = entity;
             prop.paymentRequested = 0;
             prop.startingTime = now;
-            prop.flags = flags;
-            prop.details = "https://etherscan.io/";
+            prop.flags = [false, false, false, false, false, true]; // memberkick
+            prop.details = details;
             prop.exists = true;
-            prop.flag[5] = true; // memberkick
-
+            
             emit SubmitProposal(0, prop.details, prop.flags, proposalCount, msg.sender);
             proposalCount += 1;
         }
@@ -171,10 +168,7 @@ contract PowDAO {    // is ReEntrancy
     // SUBMIT PROPOSAL, public function
     // Set applicant, paymentRequested, timelimit, details.
     // All payments made in the native currency. 
-    function submitProposal(
-        uint256 paymentRequested,
-        string memory details
-    ) public returns (uint256 proposalId) {
+    function submitProposal(uint256 paymentRequested, string memory details) public returns (uint256 proposalId) {
         address applicant = msg.sender;
         require(applicant != address(0), "applicant cannot be 0");
         require(members[applicant].jailed == 0, "proposal applicant must not be jailed");
@@ -184,11 +178,7 @@ contract PowDAO {    // is ReEntrancy
     }
 
     // Internal submit function
-    function _submitProposal(
-        uint256 paymentRequested,
-        string memory details,
-        bool[6] memory flags
-    ) internal {
+    function _submitProposal(uint256 paymentRequested, string memory details, bool[6] memory flags) internal {
         Proposal storage prop = proposals[proposalCount];
         prop.proposer = msg.sender;
         prop.paymentRequested = paymentRequested;
@@ -212,23 +202,53 @@ contract PowDAO {    // is ReEntrancy
     }
 
     // Function which can be called when the proposal voting time has expired. To either act on the proposal or cancel if not a majority yes vote. 
-    function processProposal(uint256 proposalId) public onlyMember returns (bool) {
+    function processProposal(uint256 proposalId) public returns (bool) {
         require(proposals[proposalId].exists, "This proposal does not exist.");
+        require(proposals[proposalId].flags[1] == false, "This proposal has already been processed");
         require(getCurrentTime() >= proposals[proposalId].startingTime, "voting period has not started");
         require(hasVotingPeriodExpired(proposals[proposalId].startingTime), "proposal voting period has not expired yet");
         require(proposals[proposalId].paymentRequested <= address(this).balance, "DAO balance too low to accept the proposal.");
 
         Proposal storage prop = proposals[proposalId];
 
-        if(prop.yesVotes > prop.noVotes) {
-            _increasePayout(prop.proposer, prop.paymentRequested);
+        // flags = [sponsored, processed, didPass, cancelled, memberAdd, memberKick]
+        if(prop.flags[4] == true) { // Member add 
+            if(prop.yesVotes > prop.noVotes) {
+                members[prop.proposer] = Member(1, 0, true, 0);
+                prop.flags[1] = true;
+                prop.flags[2] = true;
+            }
+            else{
+                prop.flags[1] = true;
+                prop.flags[3] = true;
+            }
         }
-        else{
-            cancelProposal(proposalId);
+        if(prop.flags[5] == true) { // Member kick
+            if(prop.yesVotes > prop.noVotes) {
+                    members[prop.proposer].shares = 0;
+                    prop.flags[1] = true;
+                    prop.flags[2] = true;
+                }
+                else{
+                    prop.flags[1] = true;
+                    prop.flags[3] = true;
+                }
         }
+        if(prop.flags[4] == false && prop.flags[5] == false) {
+            if(prop.yesVotes > prop.noVotes) {
+                prop.flags[1] = true;
+                prop.flags[2] = true;
+                _increasePayout(prop.proposer, prop.paymentRequested);
+            }
+            else{
+                prop.flags[3] = true;
+                prop.flags[1] = true;
+                cancelProposal(proposalId);
+            }
 
-        emit ProcessedProposal(proposalId);
-        return true;
+            emit ProcessedProposal(proposalId);
+            return true;
+        }
     } 
 
     // Function to submit a vote to a proposal if you are a member of the DAO and you have not voted yet. 
