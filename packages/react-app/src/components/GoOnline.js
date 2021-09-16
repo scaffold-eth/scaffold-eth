@@ -17,14 +17,33 @@ function GoOnline({isOnline, onIsOnlineChange,
 
   // device location succissfully obtained
   function positionSuccess(position) {
-    // console.log("Latitude is :", position.coords.latitude);
-    // console.log("Longitude is :", position.coords.longitude);
+    console.log("Latitude is :", position.coords.latitude);
+    console.log("Longitude is :", position.coords.longitude);
 
-    // Latitude is : 37.7775477
-    // Longitude is : -122.4181453
+    let [lat, long] = [Math.round(position.coords.latitude * 10**3), Math.round(position.coords.longitude * 10**3)]
 
-    // TOOD: for test untill network is fixed
-    return [Math.round(37.7775477 * 10**3), Math.round(-122.4181453 * 10**3)]
+    console.log("Set Latitude as:", lat);
+    console.log("Set Longitude as:", long);
+    console.log("Set License plate as:", licensePlate);
+
+    // Set the lat / long and license to the blockchain
+    const result = tx(writeContracts.YourContract.driverGoOnline(lat, long, licensePlate), update => {
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+          update.gasUsed +
+          "/" +
+          (update.gasLimit || update.gas) +
+          " @ " +
+          parseFloat(update.gasPrice) / 1000000000 +
+          " gwei",
+        );
+      }
+    });
+    console.log("awaiting metamask/web3 confirm result...", result);
+    console.log(result);
   }
 
   // If there is an error in retrieving the device location
@@ -34,6 +53,8 @@ function GoOnline({isOnline, onIsOnlineChange,
 
   // Go Online button clicked
   function goOnlineClicked() {
+
+    let [lat, long] = [0, 0]
 
     // Step 1: Get location of the driver
     if (navigator.geolocation) {
@@ -60,32 +81,6 @@ function GoOnline({isOnline, onIsOnlineChange,
     } else {
       alert("Sorry Not available!");
     }
-
-    // TODO: This is for testing untill network is fixed 
-    const [lat, long] = positionSuccess([])
-
-    console.log("Set Latitude as:", lat);
-    console.log("Set Longitude as:", long);
-    console.log("Set License plate as:", licensePlate);
-
-    // Set the lat / long and license to the blockchain
-    const result = tx(writeContracts.YourContract.driverGoOnline(lat, long, licensePlate), update => {
-      console.log("📡 Transaction Update:", update);
-      if (update && (update.status === "confirmed" || update.status === 1)) {
-        console.log(" 🍾 Transaction " + update.hash + " finished!");
-        console.log(
-          " ⛽️ " +
-          update.gasUsed +
-          "/" +
-          (update.gasLimit || update.gas) +
-          " @ " +
-          parseFloat(update.gasPrice) / 1000000000 +
-          " gwei",
-        );
-      }
-    });
-    console.log("awaiting metamask/web3 confirm result...", result);
-    console.log(result);
 
     // Set the user online
     handleSetOnline();
