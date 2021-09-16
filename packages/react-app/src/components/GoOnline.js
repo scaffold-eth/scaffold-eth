@@ -69,7 +69,7 @@ function GoOnline({isOnline, onIsOnlineChange,
     console.log("Set License plate as:", licensePlate);
 
     // Set the lat / long and license to the blockchain
-    const result = tx(writeContracts.YourContract.driverGoOnline(lat, Math.abs(long), licensePlate), update => {
+    const result = tx(writeContracts.YourContract.driverGoOnline(lat, long, licensePlate), update => {
       console.log("📡 Transaction Update:", update);
       if (update && (update.status === "confirmed" || update.status === 1)) {
         console.log(" 🍾 Transaction " + update.hash + " finished!");

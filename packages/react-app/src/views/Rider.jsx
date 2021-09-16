@@ -18,7 +18,7 @@ import SelectPickUp from '../components/SelectPickUp';
 import OnTrip from '../components/OnTrip';
 import { Input } from 'baseui/input';
 
-const MAPBOX_TOKEN = 'pk.eyJ1IjoibWlrZWU0NjkiLCJhIjoiY2t0a2FjZWM5MWp3YzJ3cWpjZHQ4emp6dSJ9.8yCFeeaDVi1qjQvPc5sG-Q';
+const MAPBOX_TOKEN = 'askmike';
 
 const geolocateControlStyle= {
   margin: "3%"
