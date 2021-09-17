@@ -29,7 +29,7 @@ contract PowDAO {    // is ReEntrancy
     event SubmitProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
     event SubmitVote(uint256 indexed proposalIndex, address indexed delegateKey, address indexed memberAddress, uint8 uintVote);
     event CancelProposal(uint256 indexed proposalId, address applicantAddress);
-    event ProcessedProposal(uint256 proposalId);
+    event ProcessedProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
     event Deposit(uint256 amount);
     event Withdraw(address proposerAddress, uint256 amount); 
 
@@ -136,6 +136,7 @@ contract PowDAO {    // is ReEntrancy
     }
     // Create a proposal that shows the address (member to be added) as the proposer. And sets the flags to indicate the type of proposal, either add or kick.
     function _SubmitMemberProposal(address entity, string memory details, uint256 action) internal {
+        proposalQueue.push(proposalCount);
         if(action == 0) {
             Proposal storage prop = proposals[proposalCount];
             prop.proposer = entity;
@@ -179,6 +180,7 @@ contract PowDAO {    // is ReEntrancy
 
     // Internal submit function
     function _submitProposal(uint256 paymentRequested, string memory details, bool[6] memory flags) internal {
+        proposalQueue.push(proposalCount);
         Proposal storage prop = proposals[proposalCount];
         prop.proposer = msg.sender;
         prop.paymentRequested = paymentRequested;
@@ -202,12 +204,17 @@ contract PowDAO {    // is ReEntrancy
     }
 
     // Function which can be called when the proposal voting time has expired. To either act on the proposal or cancel if not a majority yes vote. 
-    function processProposal(uint256 proposalId) public returns (bool) {
+    function processProposal(uint256 proposalId) public onlyMember returns (bool) {
         require(proposals[proposalId].exists, "This proposal does not exist.");
         require(proposals[proposalId].flags[1] == false, "This proposal has already been processed");
         require(getCurrentTime() >= proposals[proposalId].startingTime, "voting period has not started");
         require(hasVotingPeriodExpired(proposals[proposalId].startingTime), "proposal voting period has not expired yet");
         require(proposals[proposalId].paymentRequested <= address(this).balance, "DAO balance too low to accept the proposal.");
+        for(uint256 i=0; i<proposalQueue.length; i++) {
+            if (proposalQueue[i]==proposalId) {
+                delete proposalQueue[i];
+            }
+        }
 
         Proposal storage prop = proposals[proposalId];
 
@@ -231,7 +238,7 @@ contract PowDAO {    // is ReEntrancy
                 }
                 else{
                     prop.flags[1] = true;
-                    prop.flags[3] = true;
+                    cancelProposal(proposalId);
                 }
         }
         if(prop.flags[4] == false && prop.flags[5] == false) {
@@ -241,12 +248,11 @@ contract PowDAO {    // is ReEntrancy
                 _increasePayout(prop.proposer, prop.paymentRequested);
             }
             else{
-                prop.flags[3] = true;
                 prop.flags[1] = true;
                 cancelProposal(proposalId);
             }
 
-            emit ProcessedProposal(proposalId);
+            emit ProcessedProposal(prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);
             return true;
         }
     } 

@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Descriptions } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Balance } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -24,13 +24,13 @@ import {
 import {
   useExchangeEthPrice,
 } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, DAO } from "./views";
+import { DAO } from "./views";
 
 import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
+import { DataStore } from "apollo-client/data/store";
 
 const { ethers } = require("ethers");
 /*
@@ -246,11 +246,53 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const proposalQueue = useContractReader(readContracts, "PowDAO", "proposals", 0);
+  //if (DEBUG) console.log("Proposal Queue:", proposalQueue);
 
-  // 📟 Listen for broadcast events
+  // 📟 Listen for broadcast events and find the difference between the two arrays
   const submitProposalEvents = useEventListener(readContracts, "PowDAO", "SubmitProposal", localProvider, 1);
+  const processedProposalEvents = useEventListener(readContracts, "PowDAO", "ProcessedProposal", localProvider, 1);
+  console.log("Processed: ",processedProposalEvents)
+  console.log("Submitted", submitProposalEvents)
 
+  let processedDataSet = [];
+
+
+  if(submitProposalEvents) {
+    for(let i=0; i<submitProposalEvents.length; i++) {
+      for(let j=0; j<processedProposalEvents.length; j++) {
+        console.log(parseInt(submitProposalEvents[i].args["proposalId"]))
+        console.log(parseInt(processedProposalEvents[j].args["proposalId"]))
+        if(parseInt(submitProposalEvents[i].args["proposalId"]) == parseInt(processedProposalEvents[j].args["proposalId"])) {
+          processedDataSet.push(submitProposalEvents[i])
+          console.log("TESS")
+        }
+        else {
+          
+          console.log("nope")
+        }
+      }
+    }
+    const intersection = submitProposalEvents.filter(x => !processedDataSet.includes(x));
+    processedDataSet = intersection
+  }
+  else{
+    processedDataSet = submitProposalEvents
+  }
+  
+  
+  const [contractAddress, setContractAddress ] = useState()
+
+  useEffect(async() => {
+    if (readContracts) {
+      const PowDAO = await readContracts.PowDAO
+      if(PowDAO) {
+          setContractAddress(PowDAO.address)
+          return PowDAO.address
+      } 
+  }
+  });
+  
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -475,13 +517,15 @@ function App(props) {
         <Switch>
           <Route exact path="/">
               <DAO
-                address={address}
+                contractAddress={contractAddress}
                 readContracts={readContracts}
                 writeContracts={writeContracts}
-                submitProposalEvents={submitProposalEvents}
+                processedDataSet={processedDataSet}
                 yourLocalBalance={yourLocalBalance}
                 mainnetProvider={mainnetProvider}
                 price={price}
+                localProvider={localProvider}
+                tx={tx}
               />
             </Route>
 
@@ -514,6 +558,17 @@ function App(props) {
           blockExplorer={blockExplorer}
         />
         {faucetHint}
+      </div>
+
+      <div style={{ position: "fixed", textAlign: "center", right: 16, top:60, padding: 10 }}>
+        
+       PowDAO Balance
+        <Balance
+            address={contractAddress} 
+            provider={localProvider} // Change to Mainnet when contracts are deployed
+            price={price}
+        />
+        
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
