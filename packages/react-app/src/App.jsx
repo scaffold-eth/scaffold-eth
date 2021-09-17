@@ -181,7 +181,7 @@ function App() {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  const [currentDistribution, isVoter] = useCurrentDistribution(serverUrl, address);
+  const [currentDistribution, isVoter, setCurrentDistribution] = useCurrentDistribution(serverUrl, address);
 
   // keep track of a variable from the contract in the local React state:
   const currentElectionStartBlock = useContractReader(
@@ -422,6 +422,8 @@ function App() {
               serverUrl={serverUrl}
               address={address}
               userSigner={userSigner}
+              currentDistribution={currentDistribution}
+              setCurrentDistribution={setCurrentDistribution}
             />
           </Route>
           <Route path="/quadratic-diplomacy-vote">

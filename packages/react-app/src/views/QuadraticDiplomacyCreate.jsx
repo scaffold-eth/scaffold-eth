@@ -6,7 +6,14 @@ import { AddressInput } from "../components";
 const { Title } = Typography;
 const axios = require("axios");
 
-export default function QuadraticDiplomacyCreate({ mainnetProvider, serverUrl, address, userSigner }) {
+export default function QuadraticDiplomacyCreate({
+  mainnetProvider,
+  serverUrl,
+  address,
+  userSigner,
+  currentDistribution,
+  setCurrentDistribution,
+}) {
   const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
   const [isSendingTx, setIsSendingTx] = useState(false);
@@ -32,6 +39,7 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, serverUrl, a
       })
       .then(response => {
         console.log(response);
+        setCurrentDistribution(response);
         setVoters([""]);
         setVoteAllocation(0);
         form.resetFields();
@@ -41,6 +49,14 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, serverUrl, a
         console.log("Error on distributions post");
       });
   };
+
+  if (currentDistribution.id) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>Distribution {currentDistribution.id} in progress</Title>
+      </div>
+    );
+  }
 
   return (
     <div style={{ border: "1px solid", padding: "40px", width: "800px", margin: "64px auto 0px auto", textAlign: "left" }}>
@@ -78,7 +94,6 @@ export default function QuadraticDiplomacyCreate({ mainnetProvider, serverUrl, a
         </Form.Item>
         <Divider />
         <Form.Item wrapperCol={{ offset: 16, span: 8 }}>
-          {/*ToDo Disable if empty members */}
           {!isSendingTx ? (
             <Button type="primary" htmlType="submit" block disabled={!voteAllocation}>
               Submit

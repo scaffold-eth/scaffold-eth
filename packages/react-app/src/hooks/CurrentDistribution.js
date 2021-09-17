@@ -7,7 +7,7 @@ export default function useCurrentDistribution(serverUrl, address) {
   const [currentDistribution, setCurrentDistribution] = useState({});
   const [isVoter, setIsVoter] = useState(false);
 
-  useEffect(() => {
+  const loadCurrentDistribution = async () => {
     axios
       .get(serverUrl + "currentDistribution")
       .then(response => {
@@ -15,8 +15,13 @@ export default function useCurrentDistribution(serverUrl, address) {
         setCurrentDistribution(response.data);
         setIsVoter(response.data.data.members.includes(address));
       })
-      .catch(error => console.log(error));
-  }, [serverUrl, address]);
+      .catch(error => {
+        console.log(error);
+        setCurrentDistribution({});
+        setIsVoter(false);
+      });
+  };
 
-  return [currentDistribution, isVoter];
+  usePoller(loadCurrentDistribution, 10000);
+  return [currentDistribution, isVoter, setCurrentDistribution];
 }

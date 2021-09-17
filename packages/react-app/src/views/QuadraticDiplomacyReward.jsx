@@ -27,9 +27,6 @@ export default function QuadraticDiplomacyReward({
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
   const [selectedToken, setSelectedToken] = useState("");
   const [isSendingTx, setIsSendingTx] = useState(false);
-  const [distribution, setDistribution] = useState();
-
-  console.log(currentDistribution);
 
   const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
@@ -230,6 +227,14 @@ export default function QuadraticDiplomacyReward({
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
         <Title level={4}>Access denied</Title>
         <p>Only admins can send rewards.</p>
+      </div>
+    );
+  }
+
+  if (!currentDistribution.id) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>No Current Distribution</Title>
       </div>
     );
   }

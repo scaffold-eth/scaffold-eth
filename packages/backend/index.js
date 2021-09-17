@@ -61,7 +61,7 @@ app.post("/distributions", async function (request, response) {
     });
 
     console.log(resAdd.id);
-    return response.status(201).send(resAdd.id);
+    return response.status(201).send(resAdd);
   } catch (exception) {
     console.log(exception);
     return response.status(500).send('Error creating distribution');
