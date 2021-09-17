@@ -6,7 +6,6 @@ import { useEffect } from "react";
 export default function useCurrentDistribution(serverUrl, address) {
   const [currentDistribution, setCurrentDistribution] = useState({});
   const [isVoter, setIsVoter] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(false);
 
   useEffect(() => {
     axios
@@ -15,10 +14,9 @@ export default function useCurrentDistribution(serverUrl, address) {
         console.log(response);
         setCurrentDistribution(response.data);
         setIsVoter(response.data.data.members.includes(address));
-        setIsAdmin(response.data.data.owner == address);
       })
       .catch(error => console.log(error));
   }, [serverUrl, address]);
 
-  return [currentDistribution, isVoter, isAdmin];
+  return [currentDistribution, isVoter];
 }

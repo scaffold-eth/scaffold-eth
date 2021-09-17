@@ -181,7 +181,7 @@ function App() {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  const [currentDistribution, isVoter, isAdmin] = useCurrentDistribution(serverUrl, address);
+  const [currentDistribution, isVoter] = useCurrentDistribution(serverUrl, address);
 
   // keep track of a variable from the contract in the local React state:
   const currentElectionStartBlock = useContractReader(
@@ -189,6 +189,9 @@ function App() {
     "QuadraticDiplomacyContract",
     "currentElectionStartBlock",
   );
+
+  const adminRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "DEFAULT_ADMIN_ROLE");
+  const isAdmin = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [adminRole, address]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
