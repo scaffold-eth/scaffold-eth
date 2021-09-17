@@ -2,6 +2,8 @@
 
 > everything you need to build on Ethereum! 🚀
 
+👀 [View the Live Demo](https://nextjs-scaffold-eth.vercel.app/)
+
 - [Next.js](https://nextjs.org)
 - [Typescript](https://www.typescriptlang.org/)
 - [Hardhat](https://hardhat.org/)
@@ -11,8 +13,6 @@
 - [Chakra UI](https://chakra-ui.com/)
 - Linting with [ESLint](https://eslint.org/)
 - Formatting with [Prettier](https://prettier.io/)
-
-👀 [View the Live Demo](https://nextjs-ethereum-starter.vercel.app/)
 
 # 🏄‍♂️ Quick Start
 

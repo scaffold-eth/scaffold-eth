@@ -11,7 +11,7 @@ import {
 import { useEthers } from '@usedapp/core'
 import { utils } from 'ethers'
 import { useReducer } from 'react'
-import Layout from '../components/layout/Layout'
+import { Layout } from '../components/layout/Layout'
 
 type StateType = {
   signature: string
