@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth | 🏰 BuidlGuidl | Speedrun challenge 1
+# 🏗 scaffold-eth | 🏰 BuidlGuidl | 🚩 Challenge 1: Decentralized Staking App
 
 ## The goal of the dApp
 
@@ -779,3 +779,11 @@ That’s what we have learned and done so far
 - Deployed our dApp on Surge
 
 If everything works as expect, you are ready to make the big jump and deploy everything on Ethereum main net!
+
+---
+
+> 🎖 Show off your app by pasting the url in the [Challenge 1 telegram channel](https://t.me/joinchat/E6r91UFt4oMJlt01)
+
+> 👩‍🔬 Need a longer form tutorial to guide your coding? [Try this one!](https://github.com/austintgriffith/scaffold-eth/tree/staking-app-tutorial)
+
+> 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-eth developers chat](https://t.me/joinchat/F7nCRK3kI93PoCOk)
