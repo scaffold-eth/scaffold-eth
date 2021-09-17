@@ -12,7 +12,6 @@ import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
-  useContractLoader,
   useContractReader,
   useGasPrice,
   useOnBlock,
@@ -53,7 +52,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -246,10 +245,10 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  // const purpose = useContractReader(readContracts,"YourContract", "purpose")
 
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  // const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -421,7 +420,7 @@ function App(props) {
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    localProvider._network.chainId == 31337 &&
     yourLocalBalance &&
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
@@ -457,7 +456,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Mainnet DAI
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -478,16 +477,6 @@ function App(props) {
               to="/exampleui"
             >
               ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
             </Link>
           </Menu.Item>
           <Menu.Item key="/subgraph">
@@ -568,7 +557,7 @@ function App(props) {
             <Subgraph
               subgraphUri={props.subgraphUri}
               tx={tx}
-              writeContracts={writeContracts}
+              /* writeContracts={writeContracts} */
               mainnetProvider={mainnetProvider}
             />
           </Route>
@@ -593,45 +582,44 @@ function App(props) {
         {faucetHint}
       </div>
 
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
+      {/* 🗺 Extra UI like gas price, eth price, faucet, and support:
+       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+         <Row align="middle" gutter={[4, 4]}>
+           <Col span={8}>
+             <Ramp price={price} address={address} networks={NETWORKS}/>
+           </Col>
 
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
+           <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
+             <GasGauge gasPrice={gasPrice} />
+           </Col>
+           <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
+             <Button
+               onClick={() => {
+                 window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
+               }}
+               size="large"
+               shape="round"
+             >
+               <span style={{ marginRight: 8 }} role="img" aria-label="support">
+                 💬
+               </span>
+               Support
+             </Button>
+           </Col>
+         </Row>
 
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
-      </div>
+         <Row align="middle" gutter={[4, 4]}>
+           <Col span={24}>
+             {
+               faucetAvailable ? (
+                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider}/>
+               ) : (
+                 ""
+               )
+             }
+           </Col>
+         </Row>
+       </div> */}
     </div>
   );
 }

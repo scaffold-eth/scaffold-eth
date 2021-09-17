@@ -1,20 +1,23 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - 🧫 mainnet starterkit
 
-> everything you need to build on Ethereum! 🚀
+> "frontend only" version of 🏗 scaffold-eth
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+---
 
 
-# 🏄‍♂️ Quick Start
+# 🏃‍♀️ Quick Start
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
 
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/austintgriffith/scaffold-eth.git mainnet-starter
+
+cd mainnet-starter
+
+git checkout mainnet-starter
 ```
 
 > install and start your 👷‍ Hardhat chain:
