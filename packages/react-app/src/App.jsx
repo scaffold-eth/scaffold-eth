@@ -172,7 +172,7 @@ function App(props) {
       : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
+  const [address, setAddress] = useState("0x0000000000000000000000000000000000000000");
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();

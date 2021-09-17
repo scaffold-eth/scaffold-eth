@@ -23,6 +23,7 @@ import Wallet from "./Wallet";
     loadWeb3Modal={loadWeb3Modal}
     logoutOfWeb3Modal={logoutOfWeb3Modal}
     blockExplorer={blockExplorer}
+    useBurner={USE_BURNER_WALLET}
   />
 
   ~ Features ~
@@ -37,6 +38,7 @@ import Wallet from "./Wallet";
               to be able to log in/log out to/from existing accounts
   - Provide blockExplorer={blockExplorer}, click on address and get the link
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
+  - Provide the bool for whether or not to use the burner wallet/account
 */
 
 export default function Account({
@@ -84,11 +86,15 @@ export default function Account({
 
   const { currentTheme } = useThemeSwitcher();
 
+  function isValidAddress(address) {
+    return address && address !== "0x0000000000000000000000000000000000000000";
+  }
+
   const display = minimized ? (
     ""
   ) : (
     <span>
-      {web3Modal.cachedProvider ? (
+      {web3Modal && web3Modal.cachedProvider ? (
         <>
           <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
           <Balance address={address} provider={localProvider} price={price} />
@@ -102,7 +108,7 @@ export default function Account({
           />
         </>
       ) : (
-        "Connect Wallet"
+        useBurner ? "" : "Connect Wallet"
       )}
       {useBurner ? (
         <>
