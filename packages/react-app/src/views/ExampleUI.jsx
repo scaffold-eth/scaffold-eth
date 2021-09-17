@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
