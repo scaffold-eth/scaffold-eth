@@ -50,7 +50,7 @@ yarn chain
 
 4. Deploy Contracts
 ```sh
-yarn deplloy
+yarn deploy
 ```
 
 5. Start React frontend
