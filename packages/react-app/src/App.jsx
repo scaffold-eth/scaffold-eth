@@ -661,10 +661,10 @@ function App(props) {
                 dataSource={transferEvents}
                 renderItem={item => {
                   return (
-                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item[2].toNumber()}>
-                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item[2].toNumber()}</span>
-                      <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
-                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} />
+                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item.args[2].toNumber()}>
+                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item.args[2].toNumber()}</span>
+                      <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
+                      <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
                     </List.Item>
                   );
                 }}
