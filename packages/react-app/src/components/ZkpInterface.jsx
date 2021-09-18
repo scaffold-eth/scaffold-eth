@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Tabs, Divider } from "antd";
+import { Input, Button, Tabs, Divider, Result } from "antd";
 import JSONpretty from "react-json-pretty";
+import ReactJson from 'react-json-view';
 import { useGroth16SolidityCalldata } from "../hooks"
 const snarkjs = require("snarkjs");
 
@@ -65,35 +66,53 @@ export default function ZkpInterface({
   }
 
   const proofDataDisp = (
-    <div>
-      <JSONpretty
+    <div style={{textAlign: "left", margin: "auto"}}>
+      {/*<JSONpretty
         data={(proof)}
         style={{fontSize: "0.7em"}}
+      />*/}
+      <ReactJson
+        src={proof}
+        style={{fontSize: "0.7em"}}
+        displayArrayKey={false}
+        displayDataTypes={false}
       />
     </div>
   );
 
   const solCalldataDisp = (
-    <div>
+    <div style={{textAlign: "left", margin: "auto"}}>
       <JSONpretty
         data={solidityCalldata}
         style={{fontSize: "0.7em"}}
+      />
+      <ReactJson
+        src={solidityCalldata}
+        style={{fontSize: "0.7em"}}
+        displayArrayKey={false}
+        displayDataTypes={false}
       />
     </div>
   );
 
   const pubSigData = (
-    <div>
-      <JSONpretty
+    <div style={{textAlign: "left", margin: "auto"}}>
+      {/*<JSONpretty
         data={signals}
         style={{fontSize: "0.7em"}}
+      />*/}
+      <ReactJson
+        src={signals}
+        style={{fontSize: "0.7em"}}
+        displayArrayKey={false}
+        displayDataTypes={false}
       />
     </div>
   );
 
   return (
-    <div>
-      <div style={{ margin: "auto", width: "46vw" }}>
+    <div style={{ margin: "auto", width: "48vw" }}>
+      <div >
         {fields}
       </div>
       <div>
