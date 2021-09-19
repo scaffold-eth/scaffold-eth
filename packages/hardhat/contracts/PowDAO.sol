@@ -1,9 +1,17 @@
-// SPDX-License-Identifier: Unlicense
+// SPDX-License-Identifier: MIT
 // Code snippets taken from MulockDAO v2 https://github.com/MolochVentures/moloch/blob/master/contracts/Moloch.sol
+
+// Quickly initiate a DAO by sending an array of address in the constructor of this contract on deploy. 
+// DAO proposals can be created by anyone, but only voted on by members.
+// Members can create proposals to add or kick members. 
+// Members cannot withdraw their deposited funds once they are deposited. All deposited funds will be used for the good of the DAO.
+// Public Goods...
+// This type of DAO can be used by sports teams to pay for field time, equipment, travel, etc. Another use case is for public contruction or maintenance projects. 
+// A neighborhood/ town/ governoment can deposit a bunch of funds which can be democratically voted on and invoices can be submitted by the contractors.  
+
 pragma solidity 0.6.7;
 
-import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+// import "hardhat/console.sol";
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 
@@ -26,10 +34,10 @@ contract PowDAO {    // is ReEntrancy
     
     // EVENTS
     // ***************
-    event SubmitProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
+    event SubmitProposal(address proposer, uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
     event SubmitVote(uint256 indexed proposalIndex, address indexed delegateKey, address indexed memberAddress, uint8 uintVote);
     event CancelProposal(uint256 indexed proposalId, address applicantAddress);
-    event ProcessedProposal(uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
+    event ProcessedProposal(address proposer, uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
     event Deposit(uint256 amount);
     event Withdraw(address proposerAddress, uint256 amount); 
 
@@ -115,9 +123,9 @@ contract PowDAO {    // is ReEntrancy
         require(allowanceAvailable > 0, "You do not have any funds available.");
 
         if (allowanceAvailable != 0 && allowanceAvailable > 0) {
-            addressOfProposer.transfer(allowanceAvailable);
+            addressOfProposer.call.value(allowanceAvailable)("");   // addressOfProposer.transfer(allowanceAvailable) // Move down below _decreasePayout to create Re-Entrancy vulnerabilty.
             _decreasePayout(addressOfProposer, allowanceAvailable);
-            console.log("transfer success");
+            // console.log("transfer success");
             emit Withdraw(addressOfProposer, allowanceAvailable);
             return true;
         }
@@ -146,7 +154,7 @@ contract PowDAO {    // is ReEntrancy
             prop.details = details;
             prop.exists = true;
             
-            emit SubmitProposal(0, prop.details, prop.flags, proposalCount, msg.sender);
+            emit SubmitProposal(prop.proposer, 0, prop.details, prop.flags, proposalCount, msg.sender);
             proposalCount += 1;
         }
 
@@ -159,7 +167,7 @@ contract PowDAO {    // is ReEntrancy
             prop.details = details;
             prop.exists = true;
             
-            emit SubmitProposal(0, prop.details, prop.flags, proposalCount, msg.sender);
+            emit SubmitProposal(prop.proposer, 0, prop.details, prop.flags, proposalCount, msg.sender);
             proposalCount += 1;
         }
     }
@@ -189,7 +197,7 @@ contract PowDAO {    // is ReEntrancy
         prop.details = details;
         prop.exists = true;
         address memberAddress = msg.sender;
-        emit SubmitProposal(paymentRequested, details, flags, proposalCount, msg.sender);
+        emit SubmitProposal(msg.sender, paymentRequested, details, flags, proposalCount, msg.sender);
         proposalCount += 1;
     }
 
@@ -252,7 +260,7 @@ contract PowDAO {    // is ReEntrancy
                 cancelProposal(proposalId);
             }
 
-            emit ProcessedProposal(prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);
+            emit ProcessedProposal(prop.proposer, prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);
             return true;
         }
     } 
@@ -298,22 +306,6 @@ contract PowDAO {    // is ReEntrancy
         payable(address(this)).transfer(deposited);
         emit Deposit(msg.value);
         return(deposited);   
-    }
-
-    // Withdraw your balance, public function
-    function withdrawBalance(uint256 proposalId, uint256 amount) public {
-        _withdrawBalance(proposalId, amount);
-    }
-
-    // Withdraw your balance, internal function
-    // Checks if proposal exists, if that proposals proposer is the msg.sender and if the proposal is in the voting period. 
-    function _withdrawBalance(uint256 proposalId, uint256 amount) internal {
-        require(proposals[proposalId].exists, "This is not a valid proposal");
-        Proposal storage prop = proposals[proposalId];
-        require(prop.proposer == msg.sender, "You are not the original proposer of this proposal.");
-        require(hasVotingPeriodExpired(proposals[proposalId].startingTime)==true, "Proposal still in voting period.");
-        msg.sender.transfer(amount);
-        emit Withdraw(msg.sender, amount);
     }
 
     // GETTER FUNCTIONS

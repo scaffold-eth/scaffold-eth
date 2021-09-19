@@ -4,7 +4,7 @@ import { Address, AddressInput, Balance, EtherInput } from "../components";
 import { ethers } from "ethers";
 
 
-export default function DAO({ contractAddress, price, readContracts, writeContracts, mainnetProvider, localProvider, processedDataSet, getContractAddress, tx}) {
+export default function DAO({ contractAddress, price, readContracts, writeContracts, mainnetProvider, localProvider, processedDataSet, address, tx, blockExplorer}) {
   
     const [ toAddress, setToAddress ] = useState();
     const [ toAddKickAddress, setToAddKickAddress ] = useState();
@@ -15,6 +15,9 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
     const [ processProposalId, setProcessProposalId ] = useState();
     const [ proposalSubmitDetails, setProposalSubmitDetails ] = useState();
     const [ amount, setAmount ] = useState();
+
+    const [ payoutResult, setPayoutResult ] = useState();
+    const [ payoutClicked, setPayoutClicked ] = useState("none");
     
     async function voteYes(proposalId) {
         const result = await tx(writeContracts.PowDAO.submitVote(proposalId, 1));
@@ -87,10 +90,11 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
             </Row>
             
             <Row justify="center" style={{margin:"24px"}}>
-                <Col span={16}>
-                    <Card title="Vote on Proposals"> 
+                <Col span={20}>
+                    <Card title="Vote"> 
                         <List
                         dataSource={processedDataSet} // Only setting this data on proposal submit, never updated when proposal is processed.
+                        header={<div >Proposal ID  //  Proposal Details</div>}
                         renderItem={item => {
                             return (
                                 <List.Item key={item.args["proposalId"]} actions={[
@@ -101,12 +105,15 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                                         No
                                     </Button>
                                 ]}>
-                                    <Address address={item.args[4]} ensProvider={mainnetProvider} fontSize={18}/>
+                                    <div style={{margin:"8px"}}>
+                                        ID: {parseInt(item.args["proposalId"])}
+                                    </div>
+                                    <Address address={item.args["proposer"]} ensProvider={mainnetProvider} fontSize={18}/>
                                     <div style={{margin:"8px"}}>
                                         {item.args["details"]}
                                     </div>
                                     <div style={{margin:"8px"}}>
-                                        {parseInt(item.args["paymentRequested"])/10**18} Ξ
+                                        {ethers.utils.formatEther(""+item.args["paymentRequested"])} Ξ
                                     </div>
                                     <div style={{margin:"8px"}}>
                                         {item.args['flags'][4] || item.args['flags'][5] ? 
@@ -126,7 +133,6 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                 <Col span={10}>
                     <Card title="Create Proposal/Request">
                         <Input 
-                        style={{width:"500px"}}
                         onChange={(e)=>{
                             setProposalSubmitDetails(e.target.value)
                         }}
@@ -157,10 +163,11 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                 <Col span={4}>
                     <Card title="Process Proposal">
                         <Input 
-                        style={{width:"100px"}}
+                        style={{width:"140px"}}
                         onChange={(e)=>{
                             setProcessProposalId(e.target.value)
-                        }}/>
+                        }}
+                        placeholder="Enter Propsal ID"/>
                         <Button onClick={ async ()=>{
                             const result = await tx(writeContracts.PowDAO.processProposal(processProposalId))
                         }}>
@@ -168,12 +175,43 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                         </Button>
                     </Card>
                 </Col>
+                <Col span={1}></Col>
+                <Col >
+                    <Card >
+                        <div >
+                            <Button onClick={ async ()=>{
+                            const result = await tx(writeContracts.PowDAO.payout(address))
+                            console.log(parseInt(result))
+                            setPayoutResult(result)
+                            setPayoutClicked("block")
+                        }}>
+                                Check Payout
+                            </Button>
+                            <div style={{fontSize:"16px", margin:"12px", display:payoutClicked}} >
+                                {payoutResult > 0 ? ethers.utils.formatEther(""+payoutResult)+" Ξ" : "No payout is currently available."}
+                            </div>
+                        </div>
+                        <Button onClick={ async ()=>{
+                            const result = await tx(writeContracts.PowDAO.getPayout(address))
+                        }}
+                        style={{margin:"4px"}}>
+                            Get Paid
+                        </Button>
+                    </Card>
+                </Col>
             </Row>
-            <Row justify="center">
-                To deposit to the DAO, send funds to the smart contract! 🔒
+            <Row justify="center" style={{margin:"18px"}}>
+                To deposit into the DAO, send funds to the smart contract! 🔒
             </Row>
+            Etherscan Link: 
             <Row justify="center">
-                Etherscan: <a href="https://etherscan.io/address/0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6" target="blank"> 0x2279B7A0a67DB372996a5FaB50D91eAA73d2eBe6</a>
+                <a href={"https://etherscan.io/address/"+contractAddress} target="blank"> 
+                    <Address
+                        address={contractAddress}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={14}
+                    /></a>
             </Row>
 
         </div>

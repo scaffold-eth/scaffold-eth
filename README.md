@@ -4,9 +4,15 @@
 
 ## DAO Specifics
 
-Create and vote on a DAO proposal. The proposal struct includes a 'details' field where a IPFS hash can be placed or a simple description of the proposal. Once created, members of the PowDAO can vote on the proposal once. If a proposal is passed, the amount of crypto requested will be set aside as an allowance for the proposer to claim.
+Quickly initiate a DAO by sending an array of address in the constructor of this contract on deploy. DAO proposals can be created by anyone, but only voted on by members. Members can create proposals to add or kick members. Members cannot withdraw their deposited funds once they are deposited. All deposited funds will be used for the good of the DAO.
 
-Add or kick members via a similar proposal protocol. In each proposal, there are flags which indicate the state of a particular proposal. If when processing the proposal the processProposal function sees a flag in flags[4] or flags[5], then the function knows this is a member proposal not a regular proposal. 
+Public Goods...
+This type of DAO can be used by sports teams to pay for field time, equipment, travel, etc. Another use case is for public contruction or maintenance projects. 
+A neighborhood/ town/ governoment can deposit a bunch of funds which can be democratically voted on and invoices can be submitted by the contractors.  
+
+## Bonus
+
+A re-entrancy proxy contract has been created to verify the security of the PowDAo contract functions. 
 
 ## 🏄‍♂️ Quick Start
 

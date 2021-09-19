@@ -30,7 +30,6 @@ import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
-import { DataStore } from "apollo-client/data/store";
 
 const { ethers } = require("ethers");
 /*
@@ -252,24 +251,15 @@ function App(props) {
   // 📟 Listen for broadcast events and find the difference between the two arrays
   const submitProposalEvents = useEventListener(readContracts, "PowDAO", "SubmitProposal", localProvider, 1);
   const processedProposalEvents = useEventListener(readContracts, "PowDAO", "ProcessedProposal", localProvider, 1);
-  console.log("Processed: ",processedProposalEvents)
-  console.log("Submitted", submitProposalEvents)
 
+  // Find the events which have not been processed yet. Pass processed dataset down to the DAo component.
   let processedDataSet = [];
-
 
   if(submitProposalEvents) {
     for(let i=0; i<submitProposalEvents.length; i++) {
       for(let j=0; j<processedProposalEvents.length; j++) {
-        console.log(parseInt(submitProposalEvents[i].args["proposalId"]))
-        console.log(parseInt(processedProposalEvents[j].args["proposalId"]))
         if(parseInt(submitProposalEvents[i].args["proposalId"]) == parseInt(processedProposalEvents[j].args["proposalId"])) {
           processedDataSet.push(submitProposalEvents[i])
-          console.log("TESS")
-        }
-        else {
-          
-          console.log("nope")
         }
       }
     }
@@ -280,9 +270,8 @@ function App(props) {
     processedDataSet = submitProposalEvents
   }
   
-  
+  // Get contract address
   const [contractAddress, setContractAddress ] = useState()
-
   useEffect(async() => {
     if (readContracts) {
       const PowDAO = await readContracts.PowDAO
@@ -512,11 +501,22 @@ function App(props) {
               PowDAO Contract
             </Link>
           </Menu.Item>
+          <Menu.Item key="/reentrancycontract">
+            <Link
+              onClick={() => {
+                setRoute("/reentrancycontract");
+              }}
+              to="/reentrancycontract"
+            >
+              ReEntrancy Attack Contract
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
               <DAO
+                address={address}
                 contractAddress={contractAddress}
                 readContracts={readContracts}
                 writeContracts={writeContracts}
@@ -526,12 +526,24 @@ function App(props) {
                 price={price}
                 localProvider={localProvider}
                 tx={tx}
+                blockExplorer={blockExplorer}
               />
             </Route>
 
             <Route exact path="/contract">
               <Contract
                 name="PowDAO"
+                signer={userSigner}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+                contractConfig={contractConfig}
+              />
+            </Route>
+
+            <Route exact path="/reentrancycontract">
+              <Contract
+                name="ReEntrancyAttack"
                 signer={userSigner}
                 provider={localProvider}
                 address={address}
@@ -560,7 +572,7 @@ function App(props) {
         {faucetHint}
       </div>
 
-      <div style={{ position: "fixed", textAlign: "center", right: 16, top:60, padding: 10 }}>
+      <div style={{ position: "fixed", textAlign: "center", right: 420, top:0, padding: 10 }}>
         
        PowDAO Balance
         <Balance
