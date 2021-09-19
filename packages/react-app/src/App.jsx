@@ -99,6 +99,7 @@ const blockExplorer = targetNetwork.blockExplorer;
 const walletLink = new WalletLink({
   appName: "coinbase",
 });
+const humanizeDuration = require("humanize-duration")
 
 // WalletLink provider
 const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
