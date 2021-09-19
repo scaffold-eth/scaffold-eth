@@ -1,6 +1,6 @@
 # 🏛️ Simple DAO with Re-Entrancy Example
 
-> Quickly spin up a DAO smart contract where you choose the initial group of members. Members are set on deploy in the contract constructor. 
+> Quickly spin up a DAO smart contract where you choose the initial group of members.
 
 ## DAO Specifics
 
