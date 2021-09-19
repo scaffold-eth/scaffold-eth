@@ -87,21 +87,12 @@ const MaskBuilder = ({ address, readContracts, writeContracts, vrfEvents, tx }) 
                     setNose(PARTS.NOSE[res.toString().substring(6, 8) % 8]);
                     //console.log(res.toString().substring(8, 10) % 8);
                     setIris(PARTS.IRIS[res.toString().substring(8, 10) % 8]);
-<<<<<<< HEAD
                     //console.log(res.toString().substring(10, 12) % 8);
-
-                    // todo: need to randomly set the horns
-                    setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
-=======
                     
-                    
-                    console.log('Horns', res.toString().substring(10, 12) % 8);
                     // todo: need to randomly set the horns
                     if((res.toString().substring(10, 12) % 8) < 4){
                         setHorns(PARTS.HORNS[res.toString().substring(10, 12) % 8]);
                     }
-                    
->>>>>>> 9ad054ef33c2d7b9ae3daff8899e3e34929b3395
                     //console.log(res.toString().substring(12, 14) % 8);
                     setTop(PARTS.MISC.TOP[res.toString().substring(12, 14) % 8]);
                     //console.log(res.toString().substring(14, 16) % 8);
