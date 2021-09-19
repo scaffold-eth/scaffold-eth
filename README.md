@@ -7,9 +7,9 @@
 ## quickstart
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git your-next-dapp
+git clone -b commit-reveal-scafold https://github.com/austintgriffith/scaffold-eth.git commit-reveal-scafold 
 
-cd your-next-dapp
+cd commit-reveal-scafold
 ```
 
 ```bash
