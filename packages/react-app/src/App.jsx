@@ -8,7 +8,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -18,16 +18,12 @@ import {
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
-import {
-  useEventListener,
-} from "eth-hooks/events/useEventListener";
-import {
-  useExchangeEthPrice,
-} from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-import { useContractConfig } from "./hooks"
+import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -56,8 +52,8 @@ const { ethers } = require("ethers");
 const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
-const NETWORKCHECK = true;
+const DEBUG = process.env.REACT_APP_DEBUG;
+const NETWORKCHECK = process.env.REACT_APP_NETWORKCHECK;
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -67,20 +63,22 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 const scaffoldEthProvider = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  ? new ethers.providers.StaticJsonRpcProvider(process.env.REACT_APP_JSON_RPC_SCAFFOLDETH)
   : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(process.env.REACT_APP_JSON_RPC_POKT)
+  : null;
 const mainnetInfura = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  ? new ethers.providers.StaticJsonRpcProvider(process.env.REACT_APP_JSON_RPC_MAINNET)
   : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your REACT_APP_JSON_RPC_MAINNET
 
-// 🏠 Your local provider is usually pointed at your local blockchain
+// 🏠 Your local provider is usually pointed at your local blockchain by default
+// as you deploy to other networks (changing the targetNetwork value ) you need to correctly set the
+// relative REACT_APP_PROVIDER in packages/react-app/.env
 const localProviderUrl = targetNetwork.rpcUrl;
-// as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
-const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
-if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
+if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrl);
+const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrl);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
@@ -91,11 +89,12 @@ const walletLink = new WalletLink({
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
+const walletLinkProvider = walletLink.makeWeb3Provider(process.env.REACT_APP_JSON_RPC_MAINNET, 1);
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*
   Web3 modal helps us "connect" external wallets:
+  // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
 */
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
@@ -106,14 +105,15 @@ const web3Modal = new Web3Modal({
       package: WalletConnectProvider, // required
       options: {
         bridge: "https://polygon.bridge.walletconnect.org",
-        infuraId: INFURA_ID,
         rpc: {
-          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-          42: `https://kovan.infura.io/v3/${INFURA_ID}`,
+          1: process.env.REACT_APP_MAINNET_URL, // mainnet
+          3: process.env.REACT_APP_ROPSTEN_URL, // Ropsten
+          4: process.env.REACT_APP_RENKEBY_URL, // Rinkeby
+          5: process.env.REACT_APP_GOERLI_URL, // Goerli
+          42: process.env.REACT_APP_KOVAN_URL, // Kovan
           100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -123,13 +123,13 @@ const web3Modal = new Web3Modal({
       },
       package: Portis,
       options: {
-        id: "6255fb2b-58c8-433b-a2c9-62098c05ddc9",
+        id: process.env.REACT_APP_PORTIS_APP_ID,
       },
     },
     fortmatic: {
       package: Fortmatic, // required
       options: {
-        key: "pk_live_5A7C91B2FC585A17", // required
+        key: process.env.REACT_APP_FORTMATIC_KEY, // required
       },
     },
     // torus: {
@@ -378,8 +378,6 @@ function App(props) {
       </div>
     );
   }
-
-
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();

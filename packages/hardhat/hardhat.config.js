@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
@@ -42,6 +43,10 @@ function mnemonic() {
   return "";
 }
 
+const mnemonicAccounts = {
+  mnemonic: mnemonic(),
+};
+
 module.exports = {
   defaultNetwork,
 
@@ -61,114 +66,73 @@ module.exports = {
       
       */
     },
-
-    // rinkeby: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.RINKEBY_INFURA_KEY}`,
-    //   accounts: [`${process.env.RINKEBY_DEPLOYER_PRIV_KEY}`],
-    // },
-    // kovan: {
-    //   url: `https://rinkeby.infura.io/v3/${process.env.KOVAN_INFURA_KEY}`,
-    //   accounts: [`${process.env.KOVAN_DEPLOYER_PRIV_KEY}`],
-    // },
-    // mainnet: {
-    //   url: `https://mainnet.infura.io/v3/${process.env.MAINNET_INFURA_KEY}`,
-    //   accounts: [`${process.env.MAINNET_DEPLOYER_PRIV_KEY}`],
-    // },
-    // ropsten: {
-    //   url: `https://ropsten.infura.io/v3/${process.env.ROPSTEN_INFURA_KEY}`,
-    //   accounts: [`${process.env.ROPSTEN_DEPLOYER_PRIV_KEY}`],
-    // },
-    // goerli: {
-    //   url: `https://goerli.infura.io/v3/${process.env.GOERLI_INFURA_KEY}`,
-    //   accounts: [`${process.env.GOERLI_DEPLOYER_PRIV_KEY}`],
-    // },
-    // xdai: {
-    //   url: 'https://dai.poa.network',
-    //   gasPrice: 1000000000,
-    //   accounts: [`${process.env.XDAI_DEPLOYER_PRIV_KEY}`],
-    // },
-
-    rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
-       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
-      
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    kovan: {
-      url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-    
-      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-      
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
-    mainnet: {
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-        
-      gasPrice: mainnetGwei*1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },
     ropsten: {
-      url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
-      
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      url: process.env.ROPSTEN_URL,
+      accounts: process.env.ROPSTEN_PRIVATE_KEY
+        ? [process.env.ROPSTEN_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     goerli: {
-      url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
-      
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      url: process.env.GOERLI_URL,
+      accounts: process.env.GOERLI_PRIVATE_KEY
+        ? [process.env.GOERLI_PRIVATE_KEY]
+        : mnemonicAccounts,
+    },
+    rinkeby: {
+      url: process.env.RENKEBY_URL,
+      accounts: process.env.RINKEBY_PRIVATE_KEY
+        ? [process.env.RINKEBY_PRIVATE_KEY]
+        : mnemonicAccounts,
+    },
+    kovan: {
+      url: process.env.KOVAN_URL,
+      accounts: process.env.KOVAN_PRIVATE_KEY
+        ? [process.env.KOVAN_PRIVATE_KEY]
+        : mnemonicAccounts,
+    },
+    mainnet: {
+      url: process.env.MAINNET_URL,
+      accounts: process.env.MAINNET_PRIVATE_KEY
+        ? [process.env.MAINNET_PRIVATE_KEY]
+        : mnemonicAccounts,
+
+      gasPrice: mainnetGwei * 1000000000,
     },
     xdai: {
       url: "https://rpc.xdaichain.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.XDAI_PRIVATE_KEY
+        ? [process.env.XDAI_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     polygon: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: process.env.POLYGON_URL,
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },     
+      accounts: process.env.POLYGON_PRIVATE_KEY
+        ? [process.env.POLYGON_PRIVATE_KEY]
+        : mnemonicAccounts,
+    },
     polytest: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: process.env.POLYTEST_URL,
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-    },    
+      accounts: process.env.POLYTEST_PRIVATE_KEY
+        ? [process.env.POLYTEST_PRIVATE_KEY]
+        : mnemonicAccounts,
+    },
 
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
       gasPrice: 1000000000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.MATIC_PRIVATE_KEY
+        ? [process.env.MATIC_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     rinkebyArbitrum: {
       url: "https://rinkeby.arbitrum.io/rpc",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.ARBITRUM_RINKEBY_PRIVATE_KEY
+        ? [process.env.ARBITRUM_RINKEBY_PRIVATE_KEY]
+        : mnemonicAccounts,
       companionNetworks: {
         l1: "rinkeby",
       },
@@ -176,9 +140,7 @@ module.exports = {
     localArbitrum: {
       url: "http://localhost:8547",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: mnemonicAccounts,
       companionNetworks: {
         l1: "localArbitrumL1",
       },
@@ -186,9 +148,7 @@ module.exports = {
     localArbitrumL1: {
       url: "http://localhost:7545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: mnemonicAccounts,
       companionNetworks: {
         l2: "localArbitrum",
       },
@@ -196,9 +156,9 @@ module.exports = {
     kovanOptimism: {
       url: "https://kovan.optimism.io",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.OPTIMISM_KOVAN_PRIVATE_KEY
+        ? [process.env.OPTIMISM_KOVAN_PRIVATE_KEY]
+        : mnemonicAccounts,
       ovm: true,
       companionNetworks: {
         l1: "kovan",
@@ -207,9 +167,7 @@ module.exports = {
     localOptimism: {
       url: "http://localhost:8545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: mnemonicAccounts,
       ovm: true,
       companionNetworks: {
         l1: "localOptimismL1",
@@ -218,9 +176,7 @@ module.exports = {
     localOptimismL1: {
       url: "http://localhost:9545",
       gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: mnemonicAccounts,
       companionNetworks: {
         l2: "localOptimism",
       },
@@ -229,56 +185,45 @@ module.exports = {
       url: "http://localhost:9650/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43112,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: mnemonicAccounts,
     },
     fujiAvalanche: {
       url: "https://api.avax-test.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43113,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.AVALANCE_FUJI_PRIVATE_KEY
+        ? [process.env.AVALANCE_FUJI_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     mainnetAvalanche: {
       url: "https://api.avax.network/ext/bc/C/rpc",
       gasPrice: 225000000000,
       chainId: 43114,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.AVALANCE_MAINNET_PRIVATE_KEY
+        ? [process.env.AVALANCE_MAINNET_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     testnetHarmony: {
       url: "https://api.s0.b.hmny.io",
       gasPrice: 1000000000,
       chainId: 1666700000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.HARMONY_TESTNET_PRIVATE_KEY
+        ? [process.env.HARMONY_TESTNET_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
     mainnetHarmony: {
       url: "https://api.harmony.one",
       gasPrice: 1000000000,
       chainId: 1666600000,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
+      accounts: process.env.HARMONY_MAINNET_PRIVATE_KEY
+        ? [process.env.HARMONY_MAINNET_PRIVATE_KEY]
+        : mnemonicAccounts,
     },
   },
   solidity: {
     compilers: [
       {
         version: "0.8.4",
-        settings: {
-          optimizer: {
-            enabled: true,
-            runs: 200,
-          },
-        },
-      },
-      {
-        version: "0.6.7",
         settings: {
           optimizer: {
             enabled: true,
@@ -298,7 +243,7 @@ module.exports = {
   },
 };
 
-const DEBUG = false;
+const DEBUG = Boolean(process.env.DEBUG) || false;
 
 function debug(text) {
   if (DEBUG) {
@@ -599,4 +544,4 @@ task("send", "Send ETH")
     debug(JSON.stringify(txRequest, null, 2));
 
     return send(fromSigner, txRequest);
-  }); 
+  });

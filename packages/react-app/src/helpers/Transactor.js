@@ -1,6 +1,5 @@
 import { notification } from "antd";
 import Notify from "bnc-notify";
-import { BLOCKNATIVE_DAPPID } from "../constants";
 
 const { ethers } = require("ethers");
 
@@ -34,7 +33,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       let notify = null;
       if (navigator.onLine) {
         options = {
-          dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
+          dappId: process.env.REACT_APP_BLOCKNATIVE_DAPP_ID, // GET YOUR OWN KEY AT https://account.blocknative.com
           system: "ethereum",
           networkId: network.chainId,
           // darkMode: Boolean, // (default: false)
@@ -49,7 +48,6 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
 
         notify = Notify(options);
       }
-
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
