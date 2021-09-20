@@ -52,6 +52,16 @@ export default function GnosisStarterView({
 
   const [ safeFactory, setSafeFactory ] = useState()
 
+  const deploySafe = async (owners, threshold) => {
+    setDeploying(true)
+    const safeAccountConfig = { owners, threshold }
+    const safe = await safeFactory.deploySafe(safeAccountConfig)
+    const safeAddress = ethers.utils.getAddress(safe.getAddress())
+    console.log("SAFE", safe, safeAddress)
+    setSafeAddress(safeAddress)
+    setDeploying(false)
+  }
+
   useEffect(async () => {
     if (!userSigner) return
 
@@ -247,20 +257,7 @@ export default function GnosisStarterView({
   }else{
     safeInfo = (
       <div style={{padding:32}}>
-        <Button loading={deploying} onClick={async ()=>{
-
-          setDeploying(true)
-
-          const safeFactory = await SafeFactory.create({ ethAdapter })
-          const safeAccountConfig = { owners: OWNERS, threshold: THRESHOLD }
-          const safe = await safeFactory.deploySafe(safeAccountConfig)
-
-          setSafeAddress(ethers.utils.getAddress(safe.getAddress()))
-          setDeploying(false)
-
-          console.log("SAFE",safe,safe.getAddress())
-
-        }} type={"primary"} >
+        <Button loading={deploying} onClick={deploySafe(OWNERS, THRESHOLD)} type={"primary"} >
           DEPLOY SAFE
         </Button>
         <div> or enter existing address: </div>
