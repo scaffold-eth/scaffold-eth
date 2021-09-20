@@ -545,10 +545,10 @@ function App(props) {
       const assetUpdate = [];
       for (const a in assets) {
         try {
-          const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
+          const forSale = await readContracts.YourCollectible.forSale(ethers.utils.id(a));
           let owner;
           if (!forSale) {
-            const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
+            const tokenId = await readContracts.YourCollectible.uriToTokenId(ethers.utils.id(a));
             owner = await readContracts.YourCollectible.ownerOf(tokenId);
           }
           assetUpdate.push({ id: a, ...assets[a], forSale, owner });
