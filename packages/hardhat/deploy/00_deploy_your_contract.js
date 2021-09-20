@@ -13,14 +13,14 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
-  
+  /*
   await deploy("ReEntrancyAttack", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args:[PowDAO.address],
     log: true,
   });
-  
+  */
 
   /*
     // Getting a previously deployed contract

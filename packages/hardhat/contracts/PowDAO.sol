@@ -15,7 +15,7 @@ pragma solidity 0.6.7;
 import "@openzeppelin/contracts/math/SafeMath.sol";
 
 
-contract PowDAO {    // is ReEntrancy
+contract PowDAO { 
     
     using SafeMath for uint256;
 
@@ -119,17 +119,34 @@ contract PowDAO {    // is ReEntrancy
 
     // A proposer calls function and if address has an allowance, recieves ETH in return.
     function getPayout(address payable addressOfProposer) public returns (bool) {
-        uint256 allowanceAvailable = _payoutTotals[addressOfProposer];
+        uint256 allowanceAvailable = _payoutTotals[addressOfProposer];  // Get the available allowance first amd store in uint256. 
         require(allowanceAvailable > 0, "You do not have any funds available.");
 
         if (allowanceAvailable != 0 && allowanceAvailable > 0) {
-            addressOfProposer.call.value(allowanceAvailable)("");   // addressOfProposer.transfer(allowanceAvailable) // Move down below _decreasePayout to create Re-Entrancy vulnerabilty.
+            addressOfProposer.call.value(allowanceAvailable)("");   // can also be: addressOfProposer.transfer(allowanceAvailable) 
             _decreasePayout(addressOfProposer, allowanceAvailable);
             // console.log("transfer success");
             emit Withdraw(addressOfProposer, allowanceAvailable);
             return true;
         }
     }
+
+    // getPayout function with built in re-entrancy vulnerability.
+    // DO NOT USE IN PRODUCTION!!!!!!!!
+    /*
+    function getPayoutUnsafe(address payable addressOfProposer) public returns (bool) {
+        uint256 allowanceAvailable = _payoutTotals[addressOfProposer];  // Get the available allowance first amd store in uint256. 
+        require(allowanceAvailable > 0, "You do not have any funds available.");
+
+        if (allowanceAvailable != 0 && allowanceAvailable > 0) {
+            addressOfProposer.call.value(_payoutTotals[addressOfProposer])("");   
+            _decreasePayout(addressOfProposer, _payoutTotals[addressOfProposer]);
+            // console.log("transfer success");
+            emit Withdraw(addressOfProposer, allowanceAvailable);
+            return true;
+        }
+    }
+    */
 
     // MEMBER FUNCTIONS
     //*****************
@@ -202,10 +219,9 @@ contract PowDAO {    // is ReEntrancy
     }
 
     // Function cancels a proposal if it has not been cancelled already.
-    function cancelProposal(uint256 proposalId) public {
+    function _cancelProposal(uint256 proposalId) internal onlyMember {
         Proposal storage proposal = proposals[proposalId];
         require(!proposal.flags[3], "proposal has already been cancelled");
-        require(msg.sender == proposal.proposer, "Only the proposer can cancel the proposal!");
         proposal.flags[3] = true; // cancelled
         
         emit CancelProposal(proposalId, msg.sender);
@@ -246,7 +262,7 @@ contract PowDAO {    // is ReEntrancy
                 }
                 else{
                     prop.flags[1] = true;
-                    cancelProposal(proposalId);
+                    _cancelProposal(proposalId);
                 }
         }
         if(prop.flags[4] == false && prop.flags[5] == false) {
@@ -257,7 +273,7 @@ contract PowDAO {    // is ReEntrancy
             }
             else{
                 prop.flags[1] = true;
-                cancelProposal(proposalId);
+                _cancelProposal(proposalId);
             }
 
             emit ProcessedProposal(prop.proposer, prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);

