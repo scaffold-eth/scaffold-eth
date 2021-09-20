@@ -62,6 +62,21 @@ export default function GnosisStarterView({
     setDeploying(false)
   }
 
+  const proposeSafeTransaction = async (transaction) => {
+    console.log("BUTTON CLICKED PROPOSING:", transaction)
+    const safeTransaction = await safeSdk.createTransaction(transaction)
+    console.log('SAFE TX', safeTransaction)
+    const safeTxHash = await safeSdk.getTransactionHash(safeTransaction)
+    console.log('HASH', safeTxHash)
+    const signature = await safeSdk.signTransactionHash(safeTxHash)
+    await serviceClient.proposeTransaction(
+      safeAddress,
+      safeTransaction.data,
+      safeTxHash,
+      signature.data
+    )
+  }
+
   useEffect(async () => {
     if (!userSigner) return
 
@@ -360,31 +375,14 @@ export default function GnosisStarterView({
                 setData(data)
               }
 
-              const id = await ethAdapter.getChainId()
-              const contractNetworks = {
-                [id]: {
-                  multiSendAddress: safeAddress,
-                  safeMasterCopyAddress: safeAddress,
-                  safeProxyFactoryAddress: safeAddress
-                }
-              }
-
-              const nonce = await safeSdk.getNonce()
               const checksumForm = ethers.utils.getAddress(to)
               const partialTx = {
                 to: checksumForm,
                 data,
                 value: ethers.utils.parseEther(value?value.toString():"0").toString()
               }
-              console.log("BUTTON CLICKED PROPOSING:",partialTx)
               try{
-                const safeTransaction = await safeSdk.createTransaction(partialTx)
-                await safeSdk.signTransaction(safeTransaction)
-                const hash = await safeSdk.getTransactionHash(safeTransaction)
-                console.log('HASH', hash)
-                console.log('SAFE TX', safeTransaction)
-
-                await serviceClient.proposeTransaction(safeAddress, safeTransaction.data,  hash, safeTransaction.signatures.get(address.toLowerCase()))
+                await proposeSafeTransaction(partialTx)
               }catch(e){
                 console.log("🛑 Error Proposing Transaction",e)
                 notification.open({
