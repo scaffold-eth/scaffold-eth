@@ -5,7 +5,7 @@ import Safe, { EthersAdapter, SafeFactory, SafeTransaction, TransactionOptions }
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
 import { Address, Balance, EtherInput, AddressInput } from "../components";
 import { usePoller, useLocalStorage, useBalance } from "../hooks";
-import { EthSignSignature }  from './EthSignSignature'
+import { EthSignSignature } from './EthSignSignature'
 import WalletConnect from "@walletconnect/client";
 export default function GnosisStarterView({
   purpose,
@@ -22,8 +22,8 @@ export default function GnosisStarterView({
   targetNetwork
 }) {
   const [to, setTo] = useState('')
-  const [currentThresold, setcurrentThresold] = useState([])
-  const [thresold, setthresold] = useState(0)
+  const [currentThreshold, setCurrentThreshold] = useState([])
+  const [threshold, setThreshold] = useState(0)
   const [owners, setOwners] = useState([])
   const [transactions, setTransactions] = useState([])
   const [value, setValue] = useState(0)
@@ -47,38 +47,58 @@ export default function GnosisStarterView({
   const safeBalance = useBalance(localProvider, safeAddress);
 
   const [ ethAdapter, setEthAdapter ] = useState()
+
+  const [ safeSdk, setSafeSdk ] = useState()
+
+  const [ safeFactory, setSafeFactory ] = useState()
+
   useEffect(async () => {
-    if(userSigner){
-      setEthAdapter(new EthersAdapter({ ethers, signer: userSigner }))
+    if (!userSigner) return
+
+    const ethAdapter = new EthersAdapter({ ethers, signer: userSigner })
+    setEthAdapter(ethAdapter)
+
+    const id = await ethAdapter.getChainId()
+    const contractNetworks = {
+      [id]: {
+        multiSendAddress: (await ethAdapter.getMultiSendContract()).getAddress(),
+        safeMasterCopyAddress: (await ethAdapter.getSafeContract()).getAddress(),
+        safeProxyFactoryAddress: (await ethAdapter.getGnosisSafeProxyFactoryContract()).getAddress()
+      }
     }
-  },[ userSigner ]);
+
+    const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
+    setSafeSdk(safeSdk)
+
+    const safeFactory = await SafeFactory.create({ ethAdapter })
+    setSafeFactory(safeFactory)
+  }, [userSigner]);
 
   usePoller(async () => {
     if(safeAddress){
       setSafeAddress(ethers.utils.getAddress(safeAddress))
       try{
-        if(ethAdapter){
-          const contract = await ethAdapter.getSafeContract(safeAddress)
-          const owners = await contract.getOwners();
-          const thresold = await contract.getThreshold();
+        if(safeSdk){
+          const owners = await safeSdk.getOwners()
+          const threshold = await safeSdk.getThreshold()
           setOwners(owners)
-          setthresold(thresold)
-          console.log("owners",owners,"thresold",thresold)
+          setThreshold(threshold)
+          console.log("owners",owners,"threshold",threshold)
         }
         console.log("CHECKING TRANSACTIONS....",safeAddress)
         const transactions = await serviceClient.getPendingTransactions(safeAddress)
         console.log("transactions:",transactions)
-        const currentThresold = [];
+        const currentThreshold = [];
         for (let i = 0; i < transactions.results.length; i++) {
           const signers = [];
-          currentThresold.push(transactions.results[i].confirmations.length)
+          currentThreshold.push(transactions.results[i].confirmations.length)
           for (let j = 0; j < transactions.results[i].confirmations.length; j ++) {
             signers.push(transactions.results[i].confirmations[j].owner)
           }
           transactions.results[i].signers = signers;
         }
 
-        setcurrentThresold(currentThresold)
+        setCurrentThreshold(currentThreshold)
         setTransactions(transactions.results)
       }catch(e){
         console.log("ERROR POLLING FROM SAFE:",e)
@@ -352,7 +372,6 @@ export default function GnosisStarterView({
                 }
               }
 
-              const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
               const nonce = await safeSdk.getNonce()
               const checksumForm = ethers.utils.getAddress(to)
               const partialTx = {
@@ -390,12 +409,6 @@ export default function GnosisStarterView({
       </>
     )
   }
-
-
-
-
-
-
 
   return (
     <div>
@@ -439,7 +452,6 @@ export default function GnosisStarterView({
                           safeProxyFactoryAddress: safeAddress
                         }
                       }
-                      const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
                       const hash = transaction.safeTxHash;
                       const signature = await safeSdk.signTransactionHash(hash);
                       await serviceClient.confirmTransaction(hash, signature.data)
@@ -464,7 +476,6 @@ export default function GnosisStarterView({
                           safeProxyFactoryAddress: safeAddress
                         }
                       }
-                      const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
                       const safeSdk2 = await safeSdk.connect({ ethAdapter, safeAddress })
                       console.log(transaction)
 
