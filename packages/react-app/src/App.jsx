@@ -41,6 +41,7 @@ import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
+import humanizeDuration from "humanize-duration";
 
 const { ethers } = require("ethers");
 /*
@@ -548,13 +549,13 @@ function App(props) {
 
           <div style={{padding:8}}>
             <Button type={"default"} onClick={()=>{
-              tx( writeContracts.Staker.withdraw( address ) )
+              tx( writeContracts.Staker.withdraw(  ) )
             }}>🏧  Withdraw</Button>
           </div>
 
           <div style={{padding:8}}>
             <Button type={ balanceStaked ? "success" : "primary"} onClick={()=>{
-              tx( writeContracts.Staker.stake({value: parseEther("0.5")}) )
+              tx( writeContracts.Staker.stake({value: ethers.utils.parseEther("0.5")}) )
             }}>🥩  Stake 0.5 ether!</Button>
           </div>
 
