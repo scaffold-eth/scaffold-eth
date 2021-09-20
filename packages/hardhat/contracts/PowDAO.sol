@@ -43,7 +43,6 @@ contract PowDAO {
 
     mapping (uint256 => Proposal) public proposals;
     mapping (address => Member) public members;
-    mapping (address => mapping(address => uint256)) public userTokenBalances; // userTokenBalances[userAddress][tokenAddress]
     mapping (address => uint256) private _payoutTotals;   // The beneficiaries address and how much they are approved for.
 
     struct Member {
