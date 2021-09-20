@@ -16,7 +16,7 @@ A neighborhood/ town/ governoment can deposit a bunch of funds which can be demo
 
 A re-entrancy proxy contract has been created to verify the security of the PowDAO contract withdraw function. This contract can be found in `packages/hardhat/contracts`. To mimic a re-entrancy attack, uncomment the file in the deploy script `packages\hardhat\deploy\00_deploy_your_contract.js` and uncomment the 2 function calls in the contract itself ('powdao.getPayoutUnsafe(address(this));'). On deploy, this 'attacking' smart contract will create a proposal and if the proposal is approved by DAO members the proposer can withdraw the funds. To create a re-entrancy attack when you are withdrawing your funds, use the 'getPayoutUnsafe' function versus 'getPayout' which does not have the re-entrancy vulnerability. 
 
-Re-entrancy is caused by repeatedly calling the a fallback function in the rpoxy contracts receive function. This will create a loop which will be executed until it runs out of gas making repeated function calls. Try for yourself!
+Re-entrancy is caused by repeatedly calling the a fallback function in the proxy contracts receive function. This will create a loop which will be executed until it runs out of gas making repeated function calls. Try for yourself!
 
 [Info on Re-Entrancy Attack](https://quantstamp.com/blog/what-is-a-re-entrancy-attack)
 
