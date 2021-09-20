@@ -79,7 +79,7 @@ module.exports = {
         : mnemonicAccounts,
     },
     rinkeby: {
-      url: process.env.RENKEBY_URL,
+      url: process.env.RINKEBY_URL,
       accounts: process.env.RINKEBY_PRIVATE_KEY
         ? [process.env.RINKEBY_PRIVATE_KEY]
         : mnemonicAccounts,

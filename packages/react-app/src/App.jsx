@@ -108,7 +108,7 @@ const web3Modal = new Web3Modal({
         rpc: {
           1: process.env.REACT_APP_MAINNET_URL, // mainnet
           3: process.env.REACT_APP_ROPSTEN_URL, // Ropsten
-          4: process.env.REACT_APP_RENKEBY_URL, // Rinkeby
+          4: process.env.REACT_APP_RINKEBY_URL, // Rinkeby
           5: process.env.REACT_APP_GOERLI_URL, // Goerli
           42: process.env.REACT_APP_KOVAN_URL, // Kovan
           100: "https://dai.poa.network", // xDai
