@@ -4,11 +4,8 @@
 
 Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initial contract but then NFTs are only minted once a buyer wants them. (The buyer of the NFT pays the gas to mint. ~$55)
 
----
-
-## 🏃‍♀️ Quick Start
-
-required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+# 🏃‍♀️ Quick Start
+Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
 
 > clone/fork 🏗 scaffold-eth:
 
@@ -25,7 +22,7 @@ git checkout buyer-mints-nft
 ```bash
 cd scaffold-eth
 yarn install
-yarn chain
+yarn start
 ```
 
 > in a second terminal window, start your 📱 frontend:
@@ -82,8 +79,6 @@ Your artwork from `artwork.json` (if uploaded and deployed correctly) should sho
 
 💼 Edit your deployment script `deploy.js` in `packages/hardhat/scripts`
 
----
-
 🔏 Edit your smart contract `YourCollectible.sol` in `packages/hardhat/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
@@ -93,22 +88,21 @@ Your artwork from `artwork.json` (if uploaded and deployed correctly) should sho
 
 ⬇️ Installing a new package to your frontend? You need to `cd packages/react-app` and then `yarn add PACKAGE`
 
-## 📡 Deploy NFT smart contract!
+# 📡 Deploy NFT smart contract!
 
 🛰 Ready to deploy to a testnet?
-
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js`
 
-![image](https://user-images.githubusercontent.com/2653167/109538427-4d38c980-7a7d-11eb-878b-b59b6d316014.png)
+![nft6](https://user-images.githubusercontent.com/526558/124387061-7a0f1e80-dcb3-11eb-9f4c-19229f43adec.png)
 
 🔐 Generate a deploy account with `yarn generate`
 
-![image](https://user-images.githubusercontent.com/2653167/109537873-a2c0a680-7a7c-11eb-95de-729dbf3399a3.png)
+![nft7](https://user-images.githubusercontent.com/526558/124387064-7d0a0f00-dcb3-11eb-9d0c-195f93547fb9.png)
 
 
 👛 View your deployer address using `yarn account` (You'll need to fund this account. Hint: use an [instant wallet](https://instantwallet.io) to fund your account via QR code)
 
-![image](https://user-images.githubusercontent.com/2653167/109537339-ff6f9180-7a7b-11eb-85b0-46cd72311d12.png)
+![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
 📝 Triple check your `artwork.json` file and run:
 
@@ -130,51 +124,41 @@ yarn deploy
 
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
 
-![image](https://user-images.githubusercontent.com/2653167/109539175-3e9ee200-7a7e-11eb-8d26-3b107a276461.png)
+![nft9](https://user-images.githubusercontent.com/526558/124387095-9743ed00-dcb3-11eb-8ea5-afc25d7fef80.png)
 
 You should see the correct network in the frontend:
 
-![image](https://user-images.githubusercontent.com/2653167/109539305-655d1880-7a7e-11eb-9385-c169645dc2b5.png)
-
-An instant wallet running on xDAI insired by [xdai.io](https://xdai.io).
+![nft10](https://user-images.githubusercontent.com/526558/124387099-9a3edd80-dcb3-11eb-9a57-54a7d370589a.png)
 
 ## ⚔️ Side Quests
 
 #### 🐟 Open Sea
 
+# ⚔️ Side Quests
+## 🐟 Open Sea
 > Add your contract to OpenSea ( create -> submit NFTs -> "or add an existing contract" )
 
 (It can take a while before they show up, but here is an example:)
-
 https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
+## 🔍 Etherscan Contract Verification
+> run yarn flatten > flat.txt (You will need to clean up extra junk at the top and bottom of flat.txt. Sorry, rookie stuff here.)
 
 ---
 
 
 #### 🔍 Etherscan Contract Verification
 
-> run `yarn flatten > flat.txt` (You will need to clean up extra junk at the top and bottom of flat.txt. Sorry, rookie stuff here.)
+![nft12](https://user-images.githubusercontent.com/526558/124387153-c8bcb880-dcb3-11eb-8191-e53f87129b88.png)
 
-> copy the contents of `flat.txt` to the block explorer and select compiler `v0.6.7` and `Yes` to `Optimization` (200 runs if anyone asks)
+## 🔶 Infura
+> You will need to get a key from infura.io and paste it into constants.js in packages/react-app/src:
 
-![image](https://user-images.githubusercontent.com/2653167/109540618-f84a8280-7a7f-11eb-9a34-c239f1271247.png)
+![nft13](https://user-images.githubusercontent.com/526558/124387174-d83c0180-dcb3-11eb-989e-d58ba15d26db.png)
 
----
-
-#### 🔶 Infura
-
-> You will need to get a key from [infura.io](https://infura.io) and paste it into `constants.js` in `packages/react-app/src`:
-
-![image](https://user-images.githubusercontent.com/2653167/109541146-b5d57580-7a80-11eb-9f9e-04ea33f5f45a.png)
-
----
-
-## 🛳 Ship the app!
-
+# 🛳 Ship the app!
 > ⚙️ build and upload your frontend and share the url with your friends...
 
-```bash
-
+```
 # build it:
 
 yarn build
@@ -182,8 +166,6 @@ yarn build
 # upload it:
 
 yarn surge
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA)  to ask questions and find others building with 🏗 scaffold-eth!
 
 yarn s3
 

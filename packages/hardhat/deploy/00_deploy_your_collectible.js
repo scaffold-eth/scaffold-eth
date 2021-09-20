@@ -64,3 +64,12 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   */
 };
 module.exports.tags = ["YourCollectible"];
+
+/*
+Tenderly verification
+let verification = await tenderly.verify({
+  name: contractName,
+  address: contractAddress,
+  network: targetNetwork,
+});
+*/
