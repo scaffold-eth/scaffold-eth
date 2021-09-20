@@ -10,6 +10,7 @@ Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initia
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
+> clone/fork 🏗 scaffold-eth:
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
@@ -19,19 +20,15 @@ cd buyer-mints-nft
 git checkout buyer-mints-nft
 ```
 
-```bash
+> install and start your 👷‍ Hardhat chain:
 
+```bash
+cd scaffold-eth
 yarn install
-
+yarn chain
 ```
 
-```bash
-
-yarn start
-
-```
-
-> in a second terminal window:
+> in a second terminal window, start your 📱 frontend:
 
 ```bash
 cd buyer-mints-nft
@@ -191,12 +188,3 @@ Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6Aj
 yarn s3
 
 ===================================================== [⏫ back to the top ⏫](https://github.com/austintgriffith/scaffold-eth#-scaffold-eth)
-
-yarn ipfs
-```
-
-![image](https://user-images.githubusercontent.com/2653167/109540985-7575f780-7a80-11eb-9ebd-39079cc2eb55.png)
-
-> 👩‍❤️‍👨 Share your public url with a friend and ask them to buy a collectible
-
-![buyerpaysgastomint mov](https://user-images.githubusercontent.com/2653167/110540616-f322ae80-80e3-11eb-9009-41e445fdd0ff.gif)
