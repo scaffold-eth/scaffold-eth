@@ -415,8 +415,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable =
-    USE_BURNER_WALLET && localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
@@ -624,12 +623,11 @@ function App(props) {
             </Button>
           </Col>
         </Row>
-
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {
               /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
+              faucetAvailable && injectedProvider ? (
                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
               ) : (
                 ""
