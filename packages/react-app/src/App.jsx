@@ -92,7 +92,10 @@ const walletLink = new WalletLink({
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alchemyapi.io/v2/uzSAvWjqZ5fev8p6Hzjo2jDEL_yhwYLC`, 1);
+const walletLinkProvider = walletLink.makeWeb3Provider(
+  `https://eth-mainnet.alchemyapi.io/v2/uzSAvWjqZ5fev8p6Hzjo2jDEL_yhwYLC`,
+  1,
+);
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*

@@ -107,21 +107,23 @@ export default function Account({
             color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
           />
         </>
+      ) : useBurner ? (
+        ""
       ) : (
-        useBurner ? "" : "Connect Wallet"
+        "Connect Wallet"
       )}
       {useBurner ? (
         <>
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-        <Balance address={address} provider={localProvider} price={price} />
-        <Wallet
-          address={address}
-          provider={localProvider}
-          signer={userSigner}
-          ensProvider={mainnetProvider}
-          price={price}
-          color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-        />
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Balance address={address} provider={localProvider} price={price} />
+          <Wallet
+            address={address}
+            provider={localProvider}
+            signer={userSigner}
+            ensProvider={mainnetProvider}
+            price={price}
+            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+          />
         </>
       ) : (
         <></>
