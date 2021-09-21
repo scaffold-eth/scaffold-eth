@@ -2,7 +2,6 @@ import React, { useState, useEffect } from "react";
 import { Input, Button, Tabs, Divider, Result } from "antd";
 import JSONpretty from "react-json-pretty";
 import ReactJson from 'react-json-view';
-import { useGroth16SolidityCalldata } from "../hooks"
 const snarkjs = require("snarkjs");
 
 const { TabPane } = Tabs;
@@ -30,11 +29,34 @@ export default function ZkpInterface({
   const [signals, setSignals] = useState();
   const [solidityCalldata, setSolidityCalldata] = useState();
 
+  function parseSolidityCalldataString(str) {
+    let i = [];
+    while (i[i.length-1] != -1) {
+       i.push(str.indexOf('"', i[i.length-1]+1));
+    }
+    i.pop();
+    let data = [];
+    for (let j = 0; j<i.length-1; j+=2) {
+      data.push(str.slice(i[j]+1, i[j+1]));
+    }
+    let calldata = [
+      [data[0], data[1]],
+      [
+        [data[2], data[3]],
+        [data[4], data[5]]
+      ],
+      [data[6], data[7]],
+      [data[8], data[9]]
+    ];
+    return calldata;
+  }
+
   async function proveInputs() {
 
     console.log("Calculating Proof! ...")
     const { proof, publicSignals } = await snarkjs.groth16.fullProve(proofInputs, wasm, zkey);
-    const calldata = await snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
+    const calldataString = await snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
+    const calldata = parseSolidityCalldataString(calldataString);
 
     console.log(proof);
     setProof(proof);
@@ -82,10 +104,10 @@ export default function ZkpInterface({
 
   const solCalldataDisp = (
     <div style={{textAlign: "left", margin: "auto"}}>
-      <JSONpretty
+      {/*<JSONpretty
         data={solidityCalldata}
         style={{fontSize: "0.7em"}}
-      />
+      />*/}
       <ReactJson
         src={solidityCalldata}
         style={{fontSize: "0.7em"}}
