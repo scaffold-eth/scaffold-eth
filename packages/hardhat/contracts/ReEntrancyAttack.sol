@@ -17,10 +17,6 @@ contract ReEntrancyAttack {
         powdao.submitProposal(1*10**18, "Super important proposal, vote YES!");
     }
 
-    function deposit() public payable {
-        powdao.deposit{value:msg.value}();
-    }
-
     function withdraw() public {
         console.log("Withdrawing from PowDAO with gas ", gasleft());
         //powdao.getPayoutUnsafe(address(this));
