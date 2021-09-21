@@ -111,7 +111,10 @@ export default function Account({
       ) : useBurner ? (
         ""
       ) : isContract ? (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+        <>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Balance address={address} provider={localProvider} price={price} />
+        </>
       ) : (
         "Connect Wallet"
       )}
