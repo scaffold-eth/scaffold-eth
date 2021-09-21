@@ -3,7 +3,7 @@ pragma solidity >=0.6.11 < 0.9.0;
 
 import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
-import "./Verifier_init.sol";
+import "./InitVerifier.sol";
 
 contract YourContract is Verifier {
 

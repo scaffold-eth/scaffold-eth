@@ -358,7 +358,7 @@ async function circomTemplate({ zkeys }, hre) {
 
   for (const zkey of zkeys) {
     const verifierSol = await hre.snarkjs.zKey.exportSolidityVerifier(zkey, snarkjsTemplate);
-    const verifierPath = path.join(hre.config.paths.sources, `Verifier_${zkey.name}.sol`);
+    const verifierPath = path.join(hre.config.paths.sources, `${zkey.name.charAt(0).toUpperCase() + zkey.name.slice(1).toLowerCase()}Verifier.sol`);
     fs.writeFileSync(verifierPath, verifierSol);
   }
 }
