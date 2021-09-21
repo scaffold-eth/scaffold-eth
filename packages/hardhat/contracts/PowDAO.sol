@@ -38,7 +38,7 @@ contract PowDAO {
     event SubmitVote(uint256 indexed proposalIndex, address indexed delegateKey, address indexed memberAddress, uint8 uintVote);
     event CancelProposal(uint256 indexed proposalId, address applicantAddress);
     event ProcessedProposal(address proposer, uint256 paymentRequested, string details, bool[6] flags, uint256 proposalId, address indexed senderAddress);
-    event Deposit(uint256 amount);
+    event Deposit(address sender, uint256 amount);
     event Withdraw(address proposerAddress, uint256 amount); 
 
     mapping (uint256 => Proposal) public proposals;
@@ -122,7 +122,7 @@ contract PowDAO {
         require(allowanceAvailable > 0, "You do not have any funds available.");
 
         if (allowanceAvailable != 0 && allowanceAvailable > 0) {
-            addressOfProposer.call.value(allowanceAvailable)("");   // can also be: addressOfProposer.transfer(allowanceAvailable) 
+            addressOfProposer.call{value:allowanceAvailable}("");   // can also be: addressOfProposer.transfer(allowanceAvailable) 
             _decreasePayout(addressOfProposer, allowanceAvailable);
             // console.log("transfer success");
             emit Withdraw(addressOfProposer, allowanceAvailable);
@@ -212,7 +212,6 @@ contract PowDAO {
         prop.flags = flags;
         prop.details = details;
         prop.exists = true;
-        address memberAddress = msg.sender;
         emit SubmitProposal(msg.sender, paymentRequested, details, flags, proposalCount, msg.sender);
         proposalCount += 1;
     }
@@ -222,7 +221,6 @@ contract PowDAO {
         Proposal storage proposal = proposals[proposalId];
         require(!proposal.flags[3], "proposal has already been cancelled");
         proposal.flags[3] = true; // cancelled
-        
         emit CancelProposal(proposalId, msg.sender);
     }
 
@@ -258,11 +256,11 @@ contract PowDAO {
                     members[prop.proposer].shares = 0;
                     prop.flags[1] = true;
                     prop.flags[2] = true;
-                }
-                else{
-                    prop.flags[1] = true;
-                    _cancelProposal(proposalId);
-                }
+            }
+            else{
+                prop.flags[1] = true;
+                _cancelProposal(proposalId);
+            }
         }
         if(prop.flags[4] == false && prop.flags[5] == false) {
             if(prop.yesVotes > prop.noVotes) {
@@ -274,10 +272,10 @@ contract PowDAO {
                 prop.flags[1] = true;
                 _cancelProposal(proposalId);
             }
-
-            emit ProcessedProposal(prop.proposer, prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);
-            return true;
         }
+
+        emit ProcessedProposal(prop.proposer, prop.paymentRequested, prop.details, prop.flags, proposalId, prop.proposer);
+        return true;
     } 
 
     // Function to submit a vote to a proposal if you are a member of the DAO and you have not voted yet. 
@@ -311,19 +309,12 @@ contract PowDAO {
         emit SubmitVote(proposalId, msg.sender, memberAddress, uintVote);
     }
 
-    // Function to receive Ether, msg.data must be empty
-    receive() external payable {}
-
-    // Deposit function to provide liquidity to DAO contract
-    function deposit() public payable returns (uint256) {
-        require(msg.value > 0);
-        uint256 deposited = msg.value;
-        payable(address(this)).transfer(deposited);
-        emit Deposit(msg.value);
-        return(deposited);   
+    // Function to receive Ether and emit an event
+    receive() external payable {
+        emit Deposit(msg.sender, msg.value);
     }
 
-    // GETTER FUNCTIONS
+    // HELPER FUNCTIONS
     //*****************
     function max(uint256 x, uint256 y) internal pure returns (uint256) {
         return x >= y ? x : y;
@@ -341,31 +332,10 @@ contract PowDAO {
         return proposals[proposalId].flags;
     }
 
-    function getUserTokenBalance(address user, address token) public view returns (uint256) {
-        return userTokenBalances[user][token];
-    }
-
     function getMemberProposalVote(address memberAddress, uint256 proposalIndex) public view returns (Vote) {
         require(members[memberAddress].exists, "member does not exist");
         require(proposalIndex < proposalQueue.length, "proposal does not exist");
         return proposals[proposalQueue[proposalIndex]].votesByMember[memberAddress];
-    }
-
-
-    
-    // HELPER FUNCTIONS
-    //*****************
-    function unsafeAddToBalance(address user, address token, uint256 amount) internal {
-        userTokenBalances[user][token] += amount;
-    }
-
-    function unsafeSubtractFromBalance(address user, address token, uint256 amount) internal {
-        userTokenBalances[user][token] -= amount;
-    }
-
-    function unsafeInternalTransfer(address from, address to, address token, uint256 amount) internal {
-        unsafeSubtractFromBalance(from, token, amount);
-        unsafeAddToBalance(to, token, amount);
     }
 
     function hasVotingPeriodExpired(uint256 startingTime) public view returns (bool) {
