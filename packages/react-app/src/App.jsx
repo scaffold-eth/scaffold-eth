@@ -572,7 +572,7 @@ function App(props) {
         {faucetHint}
       </div>
 
-      <div style={{ position: "fixed", textAlign: "center", right: 420, top:0, padding: 10 }}>
+      <div style={{ position: "fixed", textAlign: "center", right: 450, top:0, padding: 10 }}>
         
        PowDAO Balance
         <Balance
