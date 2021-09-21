@@ -30,7 +30,7 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
     }
 
     return (
-        <div style={{margin:"0px", margin:"6px"}}>
+        <div style={{margin:"0px", margin:"0px"}}>
             
             <Row justify="center">
                 <Col span={6} style={{margin:"24px"}}>
@@ -89,7 +89,7 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                 </Col>
             </Row>
             
-            <Row justify="center" style={{margin:"24px"}}>
+            <Row justify="center" style={{margin:"18px"}}>
                 <Col span={20}>
                     <Card title="Vote"> 
                         <List
@@ -200,18 +200,25 @@ export default function DAO({ contractAddress, price, readContracts, writeContra
                     </Card>
                 </Col>
             </Row>
-            <Row justify="center" style={{margin:"18px"}}>
+            <Row justify="center" style={{margin:"8px", fontSize:"18px"}}>
                 To deposit into the DAO, send funds to the smart contract! 🔒
             </Row>
+            <Row justify="center" style={{margin:"0px", fontSize:"18px"}}>
             Etherscan Link: 
+            </Row>
+             
             <Row justify="center">
-                <a href={"https://etherscan.io/address/"+contractAddress} target="blank"> 
-                    <Address
-                        address={contractAddress}
-                        ensProvider={mainnetProvider}
-                        blockExplorer={blockExplorer}
-                        fontSize={14}
-                    /></a>
+                <div style={{fontSize:"16px"}}>
+                
+                    <a href={"https://etherscan.io/address/"+contractAddress} target="blank"> 
+                        <Address
+                            address={contractAddress}
+                            ensProvider={mainnetProvider}
+                            blockExplorer={blockExplorer}
+                            fontSize={18}
+                        />
+                    </a>
+                </div>
             </Row>
 
         </div>
