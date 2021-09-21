@@ -415,10 +415,11 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
+  const faucetAvailable = USE_BURNER_WALLET && localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
+    USE_BURNER_WALLET &&
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
@@ -518,6 +519,7 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
+              useBurner={USE_BURNER_WALLET}
             />
           </Route>
           <Route path="/hints">
@@ -553,6 +555,7 @@ function App(props) {
               blockExplorer="https://etherscan.io/"
               contractConfig={contractConfig}
               chainId={1}
+              useBurner={USE_BURNER_WALLET}
             />
             {/*
             <Contract

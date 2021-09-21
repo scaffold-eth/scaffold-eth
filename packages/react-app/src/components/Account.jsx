@@ -53,6 +53,7 @@ export default function Account({
   logoutOfWeb3Modal,
   blockExplorer,
   useBurner,
+  isContract,
 }) {
   const modalButtons = [];
   if (web3Modal) {
@@ -109,6 +110,8 @@ export default function Account({
         </>
       ) : useBurner ? (
         ""
+      ) : isContract ? (
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
       ) : (
         "Connect Wallet"
       )}
