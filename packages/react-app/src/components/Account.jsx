@@ -23,7 +23,8 @@ import Wallet from "./Wallet";
     loadWeb3Modal={loadWeb3Modal}
     logoutOfWeb3Modal={logoutOfWeb3Modal}
     blockExplorer={blockExplorer}
-    useBurner={USE_BURNER_WALLET}
+    useBurner={useBurner}
+    isContract={isContract}
   />
 
   ~ Features ~
@@ -39,6 +40,7 @@ import Wallet from "./Wallet";
   - Provide blockExplorer={blockExplorer}, click on address and get the link
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
   - Provide the bool for whether or not to use the burner wallet/account
+  - Provide is the account component being used for a contract?
 */
 
 export default function Account({
