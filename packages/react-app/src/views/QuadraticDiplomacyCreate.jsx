@@ -13,6 +13,7 @@ export default function QuadraticDiplomacyCreate({
   userSigner,
   currentDistribution,
   setCurrentDistribution,
+  isAdmin,
 }) {
   const [voters, setVoters] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
@@ -49,6 +50,15 @@ export default function QuadraticDiplomacyCreate({
         console.log("Error on distributions post");
       });
   };
+
+  if (!isAdmin) {
+    return (
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+        <Title level={4}>Access denied</Title>
+        <p>Only admins can create distributions.</p>
+      </div>
+    );
+  }
 
   if (currentDistribution.id) {
     return (

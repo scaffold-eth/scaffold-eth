@@ -424,6 +424,7 @@ function App() {
               userSigner={userSigner}
               currentDistribution={currentDistribution}
               setCurrentDistribution={setCurrentDistribution}
+              isAdmin={isAdmin}
             />
           </Route>
           <Route path="/quadratic-diplomacy-vote">
