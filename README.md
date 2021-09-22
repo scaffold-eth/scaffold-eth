@@ -1,12 +1,12 @@
-# 🏗 scaffold-eth
+# 🏗 Scaffold-ETH
 
 > is everything you need to get started building decentralized applications powered by smart contracts
 
 ---
 
-Let's get started with 🏗 scaffold-eth and create our own decentralized application! 
+Let's get started with 🏗 scaffold-eth and create our own decentralized application!
 
-:page_with_curl: In this tutorial, we will be building a **Commit-Reveal App** for random number generation. 
+:page_with_curl: In this tutorial, we will be building a **Commit-Reveal App** for random number generation.
 
 :o: *Why do we need commit-reveal scheme?*
 
@@ -14,7 +14,7 @@ Since Ethereum blockchain is public, anyone can view transaction data. However, 
 1) Commit: the value that needs to be hidden is commited
 2) Reveal: committed value is checked for matching and revealed
 
-In addition, Ethereum blockchain is deterministic, meaning that generating randomness is a difficult problem. So, we will be using commit-reveal scheme for solving the issue and generating a random number. 
+In addition, Ethereum blockchain is deterministic, meaning that generating randomness is a difficult problem. So, we will be using commit-reveal scheme for solving the issue and generating a random number.
 
 :o: *How will Commit-Reveal App operate?*
 
@@ -35,7 +35,7 @@ cd commit-reveal-app
 yarn install
 ```
 
-:arrow_forward: Get our frontend running: 
+:arrow_forward: Get our frontend running:
 
 ```
 yarn start
@@ -54,7 +54,7 @@ yarn deploy
 ```
 
 ## Editing smart contract
-The smart contract we need to edit is `YourContract.sol` and it is located in  `packages/hardhat/contracts`. 
+The smart contract we need to edit is `YourContract.sol` and it is located in  `packages/hardhat/contracts`.
 Contract has an address in the local chain and it changes every time we deploy it.
 
 ### Variables and structs
@@ -62,7 +62,7 @@ First, let's think about the variables and structs that we will need :thinking:
 
 :small_orange_diamond: Commit
 
-It is necessary to store information about the particular commit. One commit should consist of commit data, block number and of indication whether the commit is already revealed or not. The solidity allows us to store all information as one *struct*. Therefore, let's create struct `Commit` which will carry all above-mentioned data in a separate structure. To learn more about structs in Solidity visit this [example](https://solidity-by-example.org/structs/). 
+It is necessary to store information about the particular commit. One commit should consist of commit data, block number and of indication whether the commit is already revealed or not. The solidity allows us to store all information as one *struct*. Therefore, let's create struct `Commit` which will carry all above-mentioned data in a separate structure. To learn more about structs in Solidity visit this [example](https://solidity-by-example.org/structs/).
 
 ```
 struct Commit { }
@@ -87,7 +87,7 @@ mapping (address => Commit) public commits;
 
 :small_orange_diamond: max
 
-Next, we should specify the maximum boundary of generated random number in advance. In our case, we can make it 100. 
+Next, we should specify the maximum boundary of generated random number in advance. In our case, we can make it 100.
 
 ```
 uint8 public max = 100;
@@ -98,7 +98,7 @@ Now as we have all necessary variables, we can start writing functions in our co
 
 :small_blue_diamond: Get Hash
 
-Firstly, we need to be able to hash the string or bytes32 data, since our secret word is the hash of the string and when we commit, we enter hash of the secret word. To hash the data, we will use `KECCAK256` hash function and pass as an argument address of the contract and data. [Solidity-by-example](https://solidity-by-example.org/hashing/) gives a nice example on the usage of the hash function. Also you can refer to the contract address as `address(this)`. 
+Firstly, we need to be able to hash the string or bytes32 data, since our secret word is the hash of the string and when we commit, we enter hash of the secret word. To hash the data, we will use `KECCAK256` hash function and pass as an argument address of the contract and data. [Solidity-by-example](https://solidity-by-example.org/hashing/) gives a nice example on the usage of the hash function. Also you can refer to the contract address as `address(this)`.
 
 ```
 function getHash(bytes32 data) public view returns(bytes32){
@@ -107,8 +107,8 @@ function getHash(bytes32 data) public view returns(bytes32){
 ```
 Notice that getHash() function is a getter function, so we can directly view the return result (hashed value). To view the result, we should explicitly add `view` in function declaration. You can see an example of view type function [here](https://solidity-by-example.org/view-and-pure-functions/).
 
-Deploy the contract by `yarn deploy` and test this out! 
-First, get the hash of the word, this will be the secret word. 
+Deploy the contract by `yarn deploy` and test this out!
+First, get the hash of the word, this will be the secret word.
 ![gethash](https://user-images.githubusercontent.com/45527668/111355876-fdc7df80-86b1-11eb-83ef-8a6e2d6a59d5.gif)
 
 Second, get the hash of the secret word.
@@ -128,7 +128,7 @@ function commit(bytes32 dataHash, uint64 block_number) public {
   require(block_number > block.number,"CommitReveal::reveal: Already revealed");
 }
 ```
-As the next step we should assign the `Commit` data to the sender (address). To accomplish this, it is useful to be familair with [global variables](https://docs.soliditylang.org/en/v0.5.10/units-and-global-variables.html), such as `msg.sender` (sender of the message or transaction). Note that `block.number` that we used previously is also a global variable representing current block. So, we add the following code to assign `dataHash`, `block_number` to the `msg.sender` by `commits` mapping and we also set `revealed` initially as false. 
+As the next step we should assign the `Commit` data to the sender (address). To accomplish this, it is useful to be familair with [global variables](https://docs.soliditylang.org/en/v0.5.10/units-and-global-variables.html), such as `msg.sender` (sender of the message or transaction). Note that `block.number` that we used previously is also a global variable representing current block. So, we add the following code to assign `dataHash`, `block_number` to the `msg.sender` by `commits` mapping and we also set `revealed` initially as false.
 ```
 function commit(bytes32 dataHash, uint64 block_number) public {
   require(block_number > block.number,"CommitReveal::reveal: Already revealed");
@@ -157,7 +157,7 @@ function reveal(bytes32 revealHash) public {
   require(getHash(revealHash)==commits[msg.sender].commit,"CommitReveal::reveal: Revealed hash does not match commit");
 
   commits[msg.sender].revealed=true;
-  
+
   bytes32 blockHash = blockhash(commits[msg.sender].block);
   uint8 random = uint8(uint(keccak256(abi.encodePacked(blockHash,revealHash))))%max;
 }
@@ -165,7 +165,7 @@ function reveal(bytes32 revealHash) public {
 Deploy the contract once again and test the reveal function! Do not forget to make a commit first.
 ![reveal](https://user-images.githubusercontent.com/45527668/111356063-2ea81480-86b2-11eb-8ff6-f1e7422bfad3.gif)
 
-Now we are able to make a commit and reveal using `commit()` and `reveal()` functions. However, it would be more useful to see the list of events for those functions. It is very easy to do with  🏗 scaffold-eth! 
+Now we are able to make a commit and reveal using `commit()` and `reveal()` functions. However, it would be more useful to see the list of events for those functions. It is very easy to do with  🏗 scaffold-eth!
 
 Firstly, we need to declare our events in the contract:
 ```
@@ -198,9 +198,9 @@ Also you can read more about `useContractLoader()` and `useEventListener()` in `
 
 Notice that our front-end is already interacting with the smart contract! :collision:
 
-Let's gather the front-end components of our app in a separate file `views/CommitReveal.jsx`. 
+Let's gather the front-end components of our app in a separate file `views/CommitReveal.jsx`.
 
-As we have the events ready, we can display them as a list. 
+As we have the events ready, we can display them as a list.
 ```
 <List
   bordered
@@ -221,7 +221,7 @@ As we have the events ready, we can display them as a list.
 ```
 ![commit_events](https://user-images.githubusercontent.com/45527668/111356367-7e86db80-86b2-11eb-8747-6d69ce1407ab.gif)
 
-Replace `dataSource={commitEvents}` with `dataSource={revealEvents}` and display withdraw events too. Generated random number is displayed here as well. 
+Replace `dataSource={commitEvents}` with `dataSource={revealEvents}` and display withdraw events too. Generated random number is displayed here as well.
 
 ```
 <List
@@ -235,7 +235,7 @@ Replace `dataSource={commitEvents}` with `dataSource={revealEvents}` and display
                 ensProvider={mainnetProvider}
                 fontSize={16}
             /> =>
-            {item.revealHash} 
+            {item.revealHash}
             <h4>Random number: {item.random}</h4>
         </List.Item>
         )
@@ -272,7 +272,7 @@ It is very easy to access contract variables by using `useContractReader()` hook
 ```
 const hash = useContractReader(readContracts,"YourContract", "getHash", [hashData])
 ```
-Function of getting hash needs one argument, which is `bytes32 data`, so we pass the arguments as `[hashData]`. 
+Function of getting hash needs one argument, which is `bytes32 data`, so we pass the arguments as `[hashData]`.
 ```
 <Text copyable={{ text: hash }}> {hash} </Text>
 ```
@@ -290,7 +290,7 @@ const [ revealData, setRevealData ] = useState("");
 ```
 The input field is similar for each of them. We present one example below, you may views others in the code.
 ```
-<Input 
+<Input
   onChange={
     async e => {
       setCommitData(e.target.value);
@@ -300,7 +300,7 @@ We are able to initiate a transaction through `tx()` and we can also send the va
 ```
 <Button onClick={()=>{
   tx( writeContracts.YourContract.commit(commitData, commitBlock ))
-}}> 
+}}>
   Commit
 </Button>
 ```
@@ -322,5 +322,4 @@ The reveal button operates similarly.
 
 
 ## :triangular_flag_on_post:
-Congratulations! :collision: Your Commit-Reveal app is ready! 
-
+Congratulations! :collision: Your Commit-Reveal app is ready!

@@ -1,7 +1,7 @@
-import React, { useState } from "react";
-import { Button, Modal, Divider } from "antd";
 import { DollarCircleOutlined } from "@ant-design/icons";
 import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
+import { Button, Divider, Modal } from "antd";
+import React, { useState } from "react";
 
 // added display of 0 if price={price} is not provided
 
@@ -13,8 +13,8 @@ import { RampInstantSDK } from "@ramp-network/ramp-instant-sdk";
 
   ~ How can I use? ~
 
-  <Ramp 
-    price={price} 
+  <Ramp
+    price={price}
     address={address}
   />
 
@@ -30,13 +30,13 @@ export default function Ramp(props) {
 
   const type = "default";
 
-  let allFaucets = []
-  for(let n in props.networks){
-    if(props.networks[n].chainId!=31337&&props.networks[n].chainId!=1){
+  const allFaucets = [];
+  for (const n in props.networks) {
+    if (props.networks[n].chainId !== 31337 && props.networks[n].chainId !== 1) {
       allFaucets.push(
-        <p key={props.networks[n].id}>
+        <p key={props.networks[n].chainId}>
           <Button
-            style={{color:props.networks[n].color}}
+            style={{ color: props.networks[n].color }}
             type={type}
             size="large"
             shape="round"
@@ -46,8 +46,8 @@ export default function Ramp(props) {
           >
             {props.networks[n].name}
           </Button>
-        </p>
-      )
+        </p>,
+      );
     }
   }
 
@@ -60,7 +60,8 @@ export default function Ramp(props) {
           setModalUp("up");
         }}
       >
-        <DollarCircleOutlined style={{ color: "#52c41a" }} /> {typeof props.price == "undefined" ? 0 : props.price.toFixed(2)}
+        <DollarCircleOutlined style={{ color: "#52c41a" }} />{" "}
+        {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
       </Button>
       <Modal
         title="Buy ETH"
@@ -89,7 +90,9 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-              <span role="img" aria-label="flag-us">🇺🇸</span>
+              <span role="img" aria-label="flag-us">
+                🇺🇸
+              </span>
             </span>
             Wyre
           </Button>
@@ -113,7 +116,9 @@ export default function Ramp(props) {
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
-            <span role="img" aria-label="flag-gb">🇬🇧</span>
+              <span role="img" aria-label="flag-gb">
+                🇬🇧
+              </span>
             </span>
             Ramp
           </Button>
@@ -140,7 +145,6 @@ export default function Ramp(props) {
         <h2>Testnet ETH</h2>
 
         {allFaucets}
-
       </Modal>
     </div>
   );

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from "react";
 import { Input } from "antd";
+import React, { useEffect, useState } from "react";
 
 // small change in useEffect, display currentValue if it's provided by user
 
@@ -70,13 +70,11 @@ export default function EtherInput(props) {
     addonAfter = option("ETH 🔀");
   }
 
-  useEffect(
-    ()=>{
-      if(!currentValue){
-        setDisplay("");
-      }
+  useEffect(() => {
+    if (!currentValue) {
+      setDisplay("");
     }
-  ,[ currentValue ])
+  }, [currentValue]);
 
   return (
     <Input
@@ -88,15 +86,15 @@ export default function EtherInput(props) {
       onChange={async e => {
         const newValue = e.target.value;
         if (mode === "USD") {
-          const possibleNewValue = parseFloat(newValue)
-          if(possibleNewValue){
+          const possibleNewValue = parseFloat(newValue);
+          if (possibleNewValue) {
             const ethValue = possibleNewValue / props.price;
             setValue(ethValue);
             if (typeof props.onChange === "function") {
               props.onChange(ethValue);
             }
             setDisplay(newValue);
-          }else{
+          } else {
             setDisplay(newValue);
           }
         } else {

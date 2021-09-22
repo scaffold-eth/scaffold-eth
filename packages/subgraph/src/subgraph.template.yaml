@@ -6,7 +6,7 @@ dataSources:
     name: YourContract
     network: localhost
     source:
-      address: '{{YourContractAddress}}'
+      address: "{{localhost_YourContractAddress}}"
       abi: YourContract
       startBlock: 1
     mapping:
@@ -18,7 +18,7 @@ dataSources:
         - Sender
       abis:
         - name: YourContract
-          file: ./abis/YourContract.json
+          file: ./abis/localhost_YourContract.json
       eventHandlers:
         - event: SetPurpose(address,string)
           handler: handleSetPurpose
