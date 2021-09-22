@@ -7,9 +7,6 @@ var bodyParser = require("body-parser");
 var app = express();
 
 const admin = require('firebase-admin');
-const serviceAccount = require('./quadraticdiplomacy-325519-6dd3f86cc211.json');
-
-//credential: admin.credential.cert(serviceAccount)
 
 admin.initializeApp({
   credential: admin.credential.applicationDefault()
