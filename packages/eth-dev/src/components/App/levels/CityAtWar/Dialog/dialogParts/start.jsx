@@ -12,46 +12,34 @@ const dialog = [
   {
     component: ({ actions }) => (
       <SpeakerLeft
-        text='Welcome to eth.dev, a game for developers learning Ethereum.'
-        pathToAvatar='./assets/punk5950.png'
+        text='The city is at war, Anon.'
+        pathToAvatar='./assets/punkatwar.png'
       />
     )
   },
   {
     component: ({ actions }) => (
       <SpeakerLeft
-        text="I'm *Punk#5950* and I'm in charge of **onbaoarding** around here..."
-        pathToAvatar='./assets/punk5950.png'
+        text="The *baronesses* of each warring faction are dedicating larger amounts of their spending on **brawling**."
+        pathToAvatar='./assets/punkatwar.png'
+      />
+    )
+  },
+  {
+    component: ({ actions }) => (
+      <SpeakerLeft
+        text="We need to write a **smart contract** that allows each *baroness* to stake part of their treasury towards a coordinated effort."
+        pathToAvatar='./assets/punkatwar.png'
       />
     )
   },
   {
     hasChoices: true,
-    component: ({ isLastVisibleDialog, actions }) => (
-      <>
-        <SpeakerLeft
-          text='To begin the game, please use the **wallet generator** to create an identity:'
-          pathToAvatar='./assets/punk5950.png'
-        />
-        {isLastVisibleDialog && (
-          <Button
-            onClick={() => {
-              actions.setWalletGeneratorVisibility(true)
-            }}
-          >
-            Open Wallet Generator
-          </Button>
-        )}
-      </>
-    )
-  },
-  /*
-  {
-    hasChoices: true,
     component: ({ currentDialog, isLastVisibleDialog, actions }) => (
       <>
-        <SpeakerRight
-          text=''
+        <SpeakerLeft
+          text="Can you write this **smart contract** for us yet, or do you need more training?"
+          pathToAvatar='./assets/punkatwar.png'
         />
         {isLastVisibleDialog && (
           <>
@@ -63,7 +51,7 @@ const dialog = [
                 })
               }
             >
-              I'm an experienced developer
+              I can write Solidity well!
             </Button>
             <Button
               onClick={() =>
@@ -73,13 +61,13 @@ const dialog = [
                 })
               }
             >
-              I'm more of a beginner
+              I'm looking for Solidity training.
             </Button>
           </>
         )}
       </>
     )
-  } */
+  }
 ]
 
 const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, [])

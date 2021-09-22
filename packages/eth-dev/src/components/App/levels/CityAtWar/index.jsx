@@ -5,9 +5,9 @@ import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { InitChainInstructionsWindow, ExampleGameActionsWindow, GenerateWallet } from './components'
 import Dialog from './Dialog'
 
-const SetupLocalNetworkLevel = ({ dialog, actions }) => {
+const CityAtWar = ({ dialog, actions }) => {
   useEffect(() => {
-    actions.background.setCurrentBackground({ background: 'city' })
+    actions.background.setCurrentBackground({ background: 'cityAtWar' })
   }, [])
 
   const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(false)
@@ -22,8 +22,7 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   }
 
   return (
-    <div id='setupLocalNetworkLevel'>
-    
+    <div id='CityAtWar'>
       <Terminal>
         <Dialog
           dialog={dialog}
@@ -41,8 +40,9 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
         dialog={dialog}
       />
 
+
     </div>
   )
 }
 
-export default wrapGlobalGameData(SetupLocalNetworkLevel)
+export default wrapGlobalGameData(CityAtWar)
