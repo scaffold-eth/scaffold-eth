@@ -6,6 +6,57 @@ var cors = require("cors");
 var bodyParser = require("body-parser");
 var app = express();
 
+// MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
+const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
+
+/// 📡 What chain are your contracts deployed to?
+const targetNetwork = {
+    name: "localhost",
+    color: "#666666",
+    chainId: 31337,
+    blockExplorer: "",
+    rpcUrl: "http://localhost:8545",
+  };
+
+/*
+const targetNetwork = {
+    name: "mainnet",
+    color: "#ff8b9e",
+    chainId: 1,
+    rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    blockExplorer: "https://etherscan.io/",
+  };
+
+const targetNetwork = {
+    name: "rinkeby",
+    color: "#e0d068",
+    chainId: 4,
+    rpcUrl: `https://rinkeby.infura.io/v3/${INFURA_ID}`,
+    faucet: "https://faucet.rinkeby.io/",
+    blockExplorer: "https://rinkeby.etherscan.io/",
+  };
+*/
+
+// 🏠 Your local provider is usually pointed at your local blockchain
+const localProviderUrl = targetNetwork.rpcUrl;
+console.log("🏠 Connecting to provider:", localProviderUrl);
+const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrl);
+
+const isAdmin = async (address) => {
+  const providerNetwork = await localProvider.getNetwork();
+  const _chainId = providerNetwork.chainId;
+
+  contractList = require("../react-app/src/contracts/hardhat_contracts.json");
+
+  const contractData = contractList[_chainId][targetNetwork.name].contracts.QuadraticDiplomacyContract;
+  const contract = new ethers.Contract(contractData.address, contractData.abi, localProvider);
+
+  const adminRole = await contract.DEFAULT_ADMIN_ROLE();
+  const isAdmin = await contract.hasRole(adminRole, address);
+
+  return isAdmin;
+}
+
 const admin = require('firebase-admin');
 
 admin.initializeApp({
@@ -45,7 +96,11 @@ app.post("/distributions", async function (request, response) {
     return response.status(401).send('Wrong signature');
   }
 
-  // TODO: check that the address is the contract admin
+  const isAdminInContract = await isAdmin(recovered);
+  if (!isAdminInContract) {
+    console.log('No admin in contract');
+    return response.status(401).send('No admin in contract');
+  }
 
   try {
     const resAdd = await db.collection('distributions').add({
