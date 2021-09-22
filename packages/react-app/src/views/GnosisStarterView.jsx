@@ -25,7 +25,6 @@ export default function GnosisStarterView({
   targetNetwork
 }) {
   const [to, setTo] = useState('')
-  const [currentThreshold, setCurrentThreshold] = useState([])
   const [threshold, setThreshold] = useState(0)
   const [owners, setOwners] = useState([])
   const [transactions, setTransactions] = useState([])
@@ -38,18 +37,15 @@ export default function GnosisStarterView({
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
     "0xa81a6a910FeD20374361B35C451a4a44F86CeD46"
   ]
-
   const THRESHOLD = 2
 
   const [safeAddress, setSafeAddress] = useLocalStorage("deployedSafe")
-
   const [ deploying, setDeploying ] = useState()
-
   const safeBalance = useBalance(localProvider, safeAddress);
-
   const [ safeSdk, setSafeSdk ] = useState()
-
   const [ safeFactory, setSafeFactory ] = useState()
+
+  const isSafeOwnerConnected = owners.includes(address)
 
   const deploySafe = useCallback(async (owners, threshold) => {
     if (!safeFactory) return
@@ -110,6 +106,13 @@ export default function GnosisStarterView({
     console.log(receipt)
   }, [safeSdk])
 
+  const isTransactionExecutable = (transaction) => transaction.confirmations.length >= threshold
+
+  const isTransactionSignedByAddress = (transaction) => {
+    const confirmation = transaction.confirmations.find(confirmation => confirmation.owner === address)
+    return !!confirmation
+  }
+
   useEffect(async () => {
     if (!userSigner) return
     const ethAdapter = new EthersAdapter({ ethers, signer: userSigner })
@@ -151,17 +154,6 @@ export default function GnosisStarterView({
         console.log("CHECKING TRANSACTIONS....",safeAddress)
         const transactions = await serviceClient.getPendingTransactions(safeAddress)
         console.log("Pending transactions:", transactions)
-        const currentThreshold = [];
-        for (let i = 0; i < transactions.results.length; i++) {
-          const signers = [];
-          currentThreshold.push(transactions.results[i].confirmations.length)
-          for (let j = 0; j < transactions.results[i].confirmations.length; j ++) {
-            signers.push(transactions.results[i].confirmations[j].owner)
-          }
-          transactions.results[i].signers = signers;
-        }
-
-        setCurrentThreshold(currentThreshold)
         setTransactions(transactions.results)
       }catch(e){
         console.log("ERROR POLLING FROM SAFE:",e)
@@ -463,7 +455,7 @@ export default function GnosisStarterView({
       <Divider />
       <div style={{ margin: 8 }}>
         {
-          transactions.length > 0 && transactions.map((transaction, index) => {
+          transactions.length > 0 && transactions.map((transaction) => {
 
             let buttonDisplay = ""
 
@@ -471,8 +463,8 @@ export default function GnosisStarterView({
               buttonDisplay = (
                 <Spin/>
               )
-            }else if(currentThreshold[index] < threshold){
-              if(owners.includes(address) && !transaction.signers.includes(address)){
+            }else if(!isTransactionExecutable(transaction)){
+              if(isSafeOwnerConnected && !isTransactionSignedByAddress(transaction)){
                 buttonDisplay = (
                   <Button
                     style={{ marginTop: 8 }}
@@ -484,7 +476,7 @@ export default function GnosisStarterView({
                 buttonDisplay = "Waiting for more signatures..."
               }
             }else{
-              if(owners.includes(address) && currentThreshold[index] >= threshold){
+              if(isSafeOwnerConnected && isTransactionExecutable(transaction)){
                 buttonDisplay = (
                   <Button
                     style={{ marginTop: 8 }}
