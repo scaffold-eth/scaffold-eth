@@ -62,9 +62,5 @@ yarn-error.log*
 
 # Local Netlify folder
 .netlify
-
-# docker
-/docker
-
 *.tsbuildinfo
 *.stackdump
