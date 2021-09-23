@@ -5,9 +5,9 @@ import { SpeakerLeft } from '../components'
 
 export const DIALOG_PATH_ID = 'template-level/start'
 
-const dialog = [
+const _dialog = [
   {
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft text={`Let's generate a wallet for you ...`} />
@@ -17,6 +17,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

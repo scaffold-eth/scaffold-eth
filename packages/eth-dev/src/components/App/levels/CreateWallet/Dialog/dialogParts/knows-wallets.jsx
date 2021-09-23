@@ -5,10 +5,10 @@ import { SpeakerLeft } from '../components'
 
 export const DIALOG_PATH_ID = 'create-wallet/knows-wallets'
 
-const dialog = [
+const _dialog = [
   {
     hasChoices: true,
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft text={`Great! Let's generate one for you.`} />
@@ -28,6 +28,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

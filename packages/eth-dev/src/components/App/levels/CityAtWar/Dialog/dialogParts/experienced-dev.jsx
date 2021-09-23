@@ -6,7 +6,7 @@ import { SpeakerLeft } from '../components'
 
 export const DIALOG_PATH_ID = 'setup-local-network/experienced-dev'
 
-const dialog = [
+const _dialog = [
   {
     component: ({ actions }) => (
       <SpeakerLeft
@@ -14,9 +14,9 @@ const dialog = [
         pathToAvatar='./assets/punkatwar.png'
       />
     )
-  },
+  }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

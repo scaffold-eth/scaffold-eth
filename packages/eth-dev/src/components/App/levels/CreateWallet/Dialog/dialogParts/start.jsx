@@ -8,10 +8,10 @@ import { DIALOG_PATH_ID as DOES_NOT_KNOW_WALLETS_PATH_ID } from './does-not-know
 
 export const DIALOG_PATH_ID = 'create-wallet/start'
 
-const dialog = [
+const _dialog = [
   {
     hasChoices: true,
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft text='We need to get you a wallet.' />
@@ -29,8 +29,6 @@ const dialog = [
               </Button>
               <Button
                 onClick={() => {
-                  console.log('currentDialog', currentDialog)
-
                   actions.dialog.jumpToDialogPath({
                     currentDialog,
                     dialogPathId: DOES_NOT_KNOW_WALLETS_PATH_ID
@@ -47,6 +45,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

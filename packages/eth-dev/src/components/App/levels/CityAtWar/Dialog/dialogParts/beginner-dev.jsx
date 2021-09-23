@@ -5,7 +5,7 @@ import { SpeakerLeft } from '../components'
 
 export const DIALOG_PATH_ID = 'setup-local-network/beginner-dev'
 
-const dialog = [
+const _dialog = [
   {
     hasChoices: true,
     component: ({ actions }) => (
@@ -21,6 +21,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

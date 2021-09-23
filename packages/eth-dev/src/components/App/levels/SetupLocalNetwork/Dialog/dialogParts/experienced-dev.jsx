@@ -6,10 +6,10 @@ import { SpeakerLeft } from '../components'
 
 export const DIALOG_PATH_ID = 'setup-local-network/experienced-dev'
 
-const dialog = [
+const _dialog = [
   {
     hasChoices: true,
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft
@@ -30,7 +30,7 @@ const dialog = [
     }
   },
   {
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => {
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
       return (
         <>
           <SpeakerLeft text={`Greate! Now let's get you a wallet.`} />
@@ -49,6 +49,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

@@ -130,14 +130,11 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
                 const newWallet = ethers.Wallet.createRandom()
                 setGeneratedWallet(newWallet)
 
-                window.localStorage.setItem("mnemonic", newWallet._mnemonic().phrase);
+                window.localStorage.setItem('mnemonic', newWallet._mnemonic().phrase)
 
                 // eslint-disable-next-line no-underscore-dangle
                 setGeneratedMnemonic(newWallet._mnemonic().phrase)
                 setGeneratedAddress(newWallet.address)
-
-
-
               }}
             >
               Generate
@@ -149,13 +146,10 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
                 onClick={() => {
                   actions.setWalletGeneratorVisibility(false)
 
-
-
                   actions.dialog.jumpToDialogPath({
                     currentDialog: dialog.currentDialog,
                     dialogPathId: 'setup-local-network/beginner-dev'
                   })
-
 
                   // dialog.dialogPathsVisibleToUser
                   // actions.level.setCurrentLevel({ levelId: 'create-wallet' })

@@ -8,7 +8,7 @@ import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
 export const DIALOG_PATH_ID = 'setup-local-network/start'
 
-const dialog = [
+const _dialog = [
   {
     component: ({ actions }) => (
       <SpeakerLeft
@@ -44,11 +44,11 @@ const dialog = [
         )}
       </>
     )
-  },
+  }
   /*
   {
     hasChoices: true,
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerRight
           text=''
@@ -82,6 +82,6 @@ const dialog = [
   } */
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, [])
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID, [])
 
 export default enrichedDialog

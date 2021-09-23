@@ -8,37 +8,34 @@ import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
 export const DIALOG_PATH_ID = 'setup-local-network/start'
 
-const dialog = [
+const _dialog = [
   {
-    component: ({ actions }) => (
+    component: ({ dialog, actions }) => (
+      <SpeakerLeft text='The city is at war, Anon.' pathToAvatar='./assets/punkatwar.png' />
+    )
+  },
+  {
+    component: ({ dialog, actions }) => (
       <SpeakerLeft
-        text='The city is at war, Anon.'
+        text='The *baronesses* of each warring faction are dedicating larger amounts of their spending on **brawling**.'
         pathToAvatar='./assets/punkatwar.png'
       />
     )
   },
   {
-    component: ({ actions }) => (
+    component: ({ dialog, actions }) => (
       <SpeakerLeft
-        text="The *baronesses* of each warring faction are dedicating larger amounts of their spending on **brawling**."
-        pathToAvatar='./assets/punkatwar.png'
-      />
-    )
-  },
-  {
-    component: ({ actions }) => (
-      <SpeakerLeft
-        text="We need to write a **smart contract** that allows each *baroness* to stake part of their treasury towards a coordinated effort."
+        text='We need to write a **smart contract** that allows each *baroness* to stake part of their treasury towards a coordinated effort.'
         pathToAvatar='./assets/punkatwar.png'
       />
     )
   },
   {
     hasChoices: true,
-    component: ({ currentDialog, isLastVisibleDialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerLeft
-          text="Can you write this **smart contract** for us yet, or do you need more training?"
+          text='Can you write this **smart contract** for us yet, or do you need more training?'
           pathToAvatar='./assets/punkatwar.png'
         />
         {isLastVisibleDialog && (
@@ -70,6 +67,6 @@ const dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(dialog, DIALOG_PATH_ID, [])
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID, [])
 
 export default enrichedDialog
