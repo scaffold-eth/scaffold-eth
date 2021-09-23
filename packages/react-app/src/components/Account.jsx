@@ -23,6 +23,8 @@ import Wallet from "./Wallet";
     loadWeb3Modal={loadWeb3Modal}
     logoutOfWeb3Modal={logoutOfWeb3Modal}
     blockExplorer={blockExplorer}
+    useBurner={useBurner}
+    isContract={isContract}
   />
 
   ~ Features ~
@@ -37,6 +39,8 @@ import Wallet from "./Wallet";
               to be able to log in/log out to/from existing accounts
   - Provide blockExplorer={blockExplorer}, click on address and get the link
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
+  - Provide the bool for whether or not to use the burner wallet/account
+  - Provide is the account component being used for a contract?
 */
 
 export default function Account({
@@ -50,6 +54,8 @@ export default function Account({
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
+  useBurner,
+  isContract,
 }) {
   const modalButtons = [];
   if (web3Modal) {
@@ -83,24 +89,53 @@ export default function Account({
 
   const { currentTheme } = useThemeSwitcher();
 
+  function isValidAddress(address) {
+    return address && address !== "0x0000000000000000000000000000000000000000";
+  }
+
   const display = minimized ? (
     ""
   ) : (
     <span>
-      {address ? (
-        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+      {web3Modal && web3Modal.cachedProvider ? (
+        <>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Balance address={address} provider={localProvider} price={price} />
+          <Wallet
+            address={address}
+            provider={localProvider}
+            signer={userSigner}
+            ensProvider={mainnetProvider}
+            price={price}
+            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+          />
+        </>
+      ) : useBurner ? (
+        ""
+      ) : isContract ? (
+        <>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Balance address={address} provider={localProvider} price={price} />
+        </>
       ) : (
-        "Connecting..."
+        "Connect Wallet"
       )}
-      <Balance address={address} provider={localProvider} price={price} />
-      <Wallet
-        address={address}
-        provider={localProvider}
-        signer={userSigner}
-        ensProvider={mainnetProvider}
-        price={price}
-        color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-      />
+      {useBurner ? (
+        <>
+          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          <Balance address={address} provider={localProvider} price={price} />
+          <Wallet
+            address={address}
+            provider={localProvider}
+            signer={userSigner}
+            ensProvider={mainnetProvider}
+            price={price}
+            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+          />
+        </>
+      ) : (
+        <></>
+      )}
     </span>
   );
 
