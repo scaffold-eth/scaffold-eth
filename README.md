@@ -5,9 +5,9 @@
 Deployer pays around (0.283719 ETH ~$500 at todays gas and price) for the initial contract but then NFTs are only minted once a buyer wants them. (The buyer of the NFT pays the gas to mint. ~$55)
 
 # 🏃‍♀️ Quick Start
-Required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Git](https://git-scm.com/downloads)
+Required: [Git](https://git-scm.com/downloads), [Node](https://nodejs.org/dist/latest-v12.x/), [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable) and [Hardhat](https://hardhat.org/getting-started/#installation).
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork 🏗 scaffold-eth and get setup:
 
 ```bash
 git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
@@ -15,29 +15,42 @@ git clone https://github.com/austintgriffith/scaffold-eth.git buyer-mints-nft
 cd buyer-mints-nft
 
 git checkout buyer-mints-nft
+
+yarn
 ```
 
-> install and start your 👷‍ Hardhat chain:
+> upload the default art to IPFS:
 
 ```bash
-cd scaffold-eth
-yarn install
-yarn start
+
+yarn upload
+
 ```
 
-> in a second terminal window, start your 📱 frontend:
+> install and start your 👷‍ Hardhat chain in another terminal:
+
+```bash
+cd buyer-mints-nft/packages/hardhat
+
+npx hardhat node --network hardhat
+```
+
+> in a third terminal window, deploy all the things and start your 📱 frontend:
 
 ```bash
 cd buyer-mints-nft
-yarn chain
 
+yarn deploy
+
+yarn start
 ```
+📱 Open http://localhost:3000 to see the app
 
 ---
 
-> ✏️ Edit the artwork manifest `artwork.js` with all of your art, then upload it to IPFS:
+> ✏️ You can edit the artwork manifest `artwork.js` with all of your art, then re-upload it to IPFS:
 
-> in a third terminal window:
+> in another terminal window:
 
 
 ```bash
@@ -48,8 +61,6 @@ yarn upload
 yarn deploy
 
 ```
-
-📱 Open http://localhost:3000 to see the app
 
 ---
 
