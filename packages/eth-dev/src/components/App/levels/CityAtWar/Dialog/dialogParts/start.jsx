@@ -10,12 +10,12 @@ export const DIALOG_PATH_ID = 'setup-local-network/start'
 
 const _dialog = [
   {
-    component: ({ dialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft text='The city is at war, Anon.' pathToAvatar='./assets/punkatwar.png' />
     )
   },
   {
-    component: ({ dialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft
         text='The *baronesses* of each warring faction are dedicating larger amounts of their spending on **brawling**.'
         pathToAvatar='./assets/punkatwar.png'
@@ -23,7 +23,7 @@ const _dialog = [
     )
   },
   {
-    component: ({ dialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft
         text='We need to write a **smart contract** that allows each *baroness* to stake part of their treasury towards a coordinated effort.'
         pathToAvatar='./assets/punkatwar.png'

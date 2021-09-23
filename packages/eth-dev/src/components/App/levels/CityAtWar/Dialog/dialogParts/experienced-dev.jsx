@@ -8,7 +8,7 @@ export const DIALOG_PATH_ID = 'setup-local-network/experienced-dev'
 
 const _dialog = [
   {
-    component: ({ actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft
         text='Awesome, here are the specs........'
         pathToAvatar='./assets/punkatwar.png'

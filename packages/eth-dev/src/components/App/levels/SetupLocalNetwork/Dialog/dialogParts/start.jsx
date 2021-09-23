@@ -10,7 +10,7 @@ export const DIALOG_PATH_ID = 'setup-local-network/start'
 
 const _dialog = [
   {
-    component: ({ actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft
         text='Welcome to eth.dev, a game for developers learning Ethereum.'
         pathToAvatar='./assets/punk5950.png'
@@ -18,7 +18,7 @@ const _dialog = [
     )
   },
   {
-    component: ({ actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <SpeakerLeft
         text="I'm *Punk#5950* and I'm in charge of **onbaoarding** around here..."
         pathToAvatar='./assets/punk5950.png'
@@ -27,7 +27,7 @@ const _dialog = [
   },
   {
     hasChoices: true,
-    component: ({ isLastVisibleDialog, actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerLeft
           text='To begin the game, please use the **wallet generator** to create an identity:'

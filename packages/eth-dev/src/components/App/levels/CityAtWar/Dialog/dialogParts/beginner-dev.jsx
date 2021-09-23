@@ -8,7 +8,7 @@ export const DIALOG_PATH_ID = 'setup-local-network/beginner-dev'
 const _dialog = [
   {
     hasChoices: true,
-    component: ({ actions }) => (
+    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <>
         <SpeakerLeft
           text={`Not to worry, not to worry - I've got you covered. May I suggest that you head over to our dear friends at cryptozombies.io`}
