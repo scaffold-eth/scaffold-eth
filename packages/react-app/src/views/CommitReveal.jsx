@@ -19,9 +19,12 @@ export default function CommitReveal({
   const [ commitData, setCommitData ] = useState("");
   const [ commitBlock, setCommitBlock ] = useState(0);
   const [ revealData, setRevealData ] = useState("");
-  const [ hashData, setHashData ] = useState("");
+  const [ hashData, setHashData ] = useState(constants.HashZero);
 
-  const hash = useContractReader(readContracts, "YourContract", "getHash", [hashData]);
+  // const hash = useContractReader(readContracts, "YourContract", "getHash", [hashData]);
+  const hash = () => {
+    return utils.solidityKeccak256(["address", "bytes32"], [readContracts.YourContract.address, hashData]);
+  }
 
   return (
     <div>
@@ -48,8 +51,8 @@ export default function CommitReveal({
                 setHashData(tempVal);
               }}
             />
-            <Text copyable={{ text: hash }} style={{marginTop: 25}}>
-              {hash}
+            <Text copyable style={{marginTop: 25}}>
+              {readContracts && readContracts.YourContract ? hash() : constants.HashZero}
             </Text>
 
           </Row>
