@@ -54,7 +54,7 @@ export default function Contract({
   price,
   blockExplorer,
   chainId,
-  contractConfig
+  contractConfig,
 }) {
   const contracts = useContractLoader(provider, contractConfig, chainId);
   let contract;
@@ -67,27 +67,23 @@ export default function Contract({
   const address = contract ? contract.address : "";
   const contractIsDeployed = useContractExistsAtAddress(provider, address);
 
-  const displayedContractFunctions = useMemo(
-    () => {
-      const results = contract
-        ? Object.values(contract.interface.functions).filter(
+  const displayedContractFunctions = useMemo(() => {
+    const results = contract
+      ? Object.values(contract.interface.functions).filter(
           fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
         )
-        : []
-      return results;
-    },
-    [contract, show],
-  );
+      : [];
+    return results;
+  }, [contract, show]);
 
   const [refreshRequired, triggerRefresh] = useState(false);
   const contractDisplay = displayedContractFunctions.map(contractFuncInfo => {
-
-    const contractFunc = contractFuncInfo.stateMutability === "view" || contractFuncInfo.stateMutability === "pure"
-      ? contract[contractFuncInfo.name]
-      : contract.connect(signer)[contractFuncInfo.name];
+    const contractFunc =
+      contractFuncInfo.stateMutability === "view" || contractFuncInfo.stateMutability === "pure"
+        ? contract[contractFuncInfo.name]
+        : contract.connect(signer)[contractFuncInfo.name];
 
     if (typeof contractFunc === "function") {
-
       if (isQueryable(contractFuncInfo)) {
         // If there are no inputs, just display return value
         return (
@@ -101,13 +97,11 @@ export default function Contract({
         );
       }
 
-
       // If there are inputs, display a form to allow users to provide these
       return (
         <FunctionForm
           key={"FF" + contractFuncInfo.name}
-          contractFunction={contractFunc
-          }
+          contractFunction={contractFunc}
           functionInfo={contractFuncInfo}
           provider={provider}
           gasPrice={gasPrice}
