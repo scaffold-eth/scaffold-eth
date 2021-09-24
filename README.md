@@ -206,16 +206,16 @@ As we have the events ready, we can display them as a list.
   bordered
   dataSource={commitEvents}
   renderItem={(item) => {
-      return (
-      <List.Item>
-          <Address
-              value={item.sender}
-              ensProvider={mainnetProvider}
-              fontSize={16}
-          /> =>
-          {item.dataHash}
-      </List.Item>
-      )
+    return (
+    <List.Item>
+      <Address
+        value={item.args.sender}
+        ensProvider={mainnetProvider}
+        fontSize={16}
+      /> =>
+      {item.args.dataHash}
+    </List.Item>
+    )
   }}
 />
 ```
@@ -225,21 +225,21 @@ Replace `dataSource={commitEvents}` with `dataSource={revealEvents}` and display
 
 ```
 <List
-    bordered
-    dataSource={revealEvents}
-    renderItem={(item) => {
-        return (
-        <List.Item>
-            <Address
-                value={item.sender}
-                ensProvider={mainnetProvider}
-                fontSize={16}
-            /> =>
-            {item.revealHash}
-            <h4>Random number: {item.random}</h4>
-        </List.Item>
-        )
-    }}
+  bordered
+  dataSource={revealEvents}
+  renderItem={(item) => {
+    return (
+    <List.Item>
+      <Address
+        value={item.args.sender}
+        ensProvider={mainnetProvider}
+        fontSize={16}
+      /> =>
+      {item.args.revealHash}
+      <h4>Random number: {item.args.random}</h4>
+    </List.Item>
+    )
+  }}
 />
 ```
 ![reveal_events](https://user-images.githubusercontent.com/45527668/111356433-91011500-86b2-11eb-9abf-7d6d1cfe8e0e.gif)
