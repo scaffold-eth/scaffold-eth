@@ -83,11 +83,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.post("/distributions", async function (request, response) {
   const ip =
     request.headers["x-forwarded-for"] || request.connection.remoteAddress;
-  console.log("POST from ip address:", ip, request.body.message);
+  console.log("POST from ip address:", ip);
   console.log(request.body);
 
+  // TODO: add some nonce to avoid replay attacks
+  let message = request.body.address + request.body.voteAllocation + request.body.members.join();
+
   let recovered = ethers.utils.verifyMessage(
-    request.body.message,
+    message,
     request.body.signature
   );
 
@@ -109,6 +112,8 @@ app.post("/distributions", async function (request, response) {
       voteAllocation: request.body.voteAllocation,
       members: request.body.members,
       votes: {},
+      votesSignatures: {},
+      signature: request.body.signature,
       status: 'started'
     });
 
@@ -220,13 +225,14 @@ app.get("/distributions/:distributionId", async function (request, response) {
 });
 
 app.post("/distributions/:distributionId/vote", async function (request, response) {
-  const ip =
-    request.headers["x-forwarded-for"] || request.connection.remoteAddress;
-  console.log("POST from ip address:", ip, request.body.message);
-  console.log(request.body);
+  let message =
+    request.params.distributionId +
+    request.body.address +
+    Object.keys(request.body.votes).join() +
+    Object.values(request.body.votes).join();
 
   let recovered = ethers.utils.verifyMessage(
-    request.body.message,
+    message,
     request.body.signature
   );
 
@@ -247,9 +253,11 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     }
 
     let votes = distribution.data().votes;
+    let votesSignatures = distribution.data().votes;
 
     // TODO: validate total votes and members
     votes[recovered] = request.body.votes;
+    votesSignatures[recovered] = request.body.signature;
 
     const res = await distributionRef.update({votes: votes});
 
@@ -258,13 +266,10 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
 });
 
 app.post("/distributions/:distributionId/finish", async function (request, response) {
-  const ip =
-    request.headers["x-forwarded-for"] || request.connection.remoteAddress;
-  console.log("POST from ip address:", ip, request.body.message);
-  console.log(request.body);
+  let message = request.params.distributionId + request.body.address;
 
   let recovered = ethers.utils.verifyMessage(
-    request.body.message,
+    message,
     request.body.signature
   );
 

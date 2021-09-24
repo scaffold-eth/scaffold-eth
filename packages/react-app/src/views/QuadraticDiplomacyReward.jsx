@@ -141,10 +141,12 @@ export default function QuadraticDiplomacyReward({
     [voteResults, totalSquare, totalRewardAmount],
   );
 
-  const missingVotingMembers = currentDistribution.id && currentDistribution.data.members
-    ?.filter(wallet => !voteResults[wallet]?.hasVoted)
-    // Remove duplicated.
-    .filter((item, pos, self) => self.indexOf(item) === pos);
+  const missingVotingMembers =
+    currentDistribution.id &&
+    currentDistribution.data.members
+      ?.filter(wallet => !voteResults[wallet]?.hasVoted)
+      // Remove duplicated.
+      .filter((item, pos, self) => self.indexOf(item) === pos);
 
   const handlePayment = async payFromSelf => {
     // ToDo. Do some validation (non-empty elements, etc.)
@@ -192,7 +194,7 @@ export default function QuadraticDiplomacyReward({
         : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
     }
 
-    let message = address + currentDistribution.id;
+    let message = currentDistribution.id + address;
     let signature = await userSigner.provider.send("personal_sign", [message, address]);
 
     await tx(func, update => {
@@ -205,7 +207,6 @@ export default function QuadraticDiplomacyReward({
         axios
           .post(serverUrl + "distributions/" + currentDistribution.id + "/finish", {
             address: address,
-            message: message,
             signature: signature,
           })
           .then(response => {

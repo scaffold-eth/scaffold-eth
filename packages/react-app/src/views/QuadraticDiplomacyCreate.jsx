@@ -35,8 +35,7 @@ export default function QuadraticDiplomacyCreate({
         address: address,
         voteAllocation: voteAllocation,
         members: filteredVoters,
-        message: message,
-        signature: signature
+        signature: signature,
       })
       .then(response => {
         console.log(response);
