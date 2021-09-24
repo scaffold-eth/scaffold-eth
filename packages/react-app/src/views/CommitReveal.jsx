@@ -21,7 +21,7 @@ export default function CommitReveal({
   const [ revealData, setRevealData ] = useState("");
   const [ hashData, setHashData ] = useState("");
 
-  const hash = useContractReader(readContracts, "YourContract", "getHash", [hashData], 1);
+  const hash = useContractReader(readContracts, "YourContract", "getHash", [hashData]);
 
   return (
     <div>
