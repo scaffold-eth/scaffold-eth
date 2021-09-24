@@ -252,7 +252,7 @@ So far we interacted with the contract through the default UI. Let's now make it
 
 We can use `<BytesStringInput />` component from `/components` that takes bytes32/string data as an input and converts it to the opposite. Also it sets the value as `hashData`. Very simple, has a better UI and converts between string and bytes32! That is a reason why it makes sense to use components within scaffold-eth environment.  
 ```
-const [ hashData, setHashData ] = useState("");
+const [ hashData, setHashData ] = useState(constants.HashZero);
 ```
 ```
 <BytesStringInput
@@ -273,6 +273,14 @@ It is very easy to access contract variables by using `useContractReader()` hook
 const hash = useContractReader(readContracts,"YourContract", "getHash", [hashData])
 ```
 Function of getting hash needs one argument, which is `bytes32 data`, so we pass the arguments as `[hashData]`.
+
+Or we can use the `solidityKeccak256` function built into the ethers utils as shown bellow.
+```
+const hash = () => {
+  return utils.solidityKeccak256(["address", "bytes32"], [readContracts.YourContract.address, hashData]);
+}
+```
+
 ```
 <Text copyable={{ text: hash }}> {hash} </Text>
 ```
