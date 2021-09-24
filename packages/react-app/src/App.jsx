@@ -25,7 +25,7 @@ import {
   useExchangeEthPrice,
 } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, CommitReveal } from "./views";
 
 import { useContractConfig } from "./hooks"
 import Portis from "@portis/web3";
