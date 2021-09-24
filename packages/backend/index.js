@@ -87,9 +87,9 @@ app.post("/distributions", async function (request, response) {
   console.log(request.body);
 
   // TODO: add some nonce to avoid replay attacks
-  let message = request.body.address + request.body.voteAllocation + request.body.members.join();
+  const message = request.body.address + request.body.voteAllocation + request.body.members.join();
 
-  let recovered = ethers.utils.verifyMessage(
+  const recovered = ethers.utils.verifyMessage(
     message,
     request.body.signature
   );
@@ -225,13 +225,15 @@ app.get("/distributions/:distributionId", async function (request, response) {
 });
 
 app.post("/distributions/:distributionId/vote", async function (request, response) {
-  let message =
+  const sortedVotes = Object.keys(request.body.votes).sort();
+
+  const message =
     request.params.distributionId +
     request.body.address +
-    Object.keys(request.body.votes).join() +
-    Object.values(request.body.votes).join();
+    sortedVotes.join() +
+    sortedVotes.map(voter => request.body.votes[voter]).join();
 
-  let recovered = ethers.utils.verifyMessage(
+  const recovered = ethers.utils.verifyMessage(
     message,
     request.body.signature
   );
@@ -253,22 +255,22 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     }
 
     let votes = distribution.data().votes;
-    let votesSignatures = distribution.data().votes;
+    let votesSignatures = distribution.data().votesSignatures;
 
     // TODO: validate total votes and members
     votes[recovered] = request.body.votes;
     votesSignatures[recovered] = request.body.signature;
 
-    const res = await distributionRef.update({votes: votes});
+    const res = await distributionRef.update({votes: votes, votesSignatures: votesSignatures});
 
     return response.send(res);
   }
 });
 
 app.post("/distributions/:distributionId/finish", async function (request, response) {
-  let message = request.params.distributionId + request.body.address;
+  const message = request.params.distributionId + request.body.address;
 
-  let recovered = ethers.utils.verifyMessage(
+  const recovered = ethers.utils.verifyMessage(
     message,
     request.body.signature
   );

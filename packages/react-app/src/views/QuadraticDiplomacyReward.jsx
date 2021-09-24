@@ -40,7 +40,32 @@ export default function QuadraticDiplomacyReward({
 
     Object.entries(currentDistribution.data.votes).forEach(memberVotes => {
       const votingAddress = memberVotes[0];
-      Object.entries(memberVotes[1]).forEach(voteInfo => {
+      const selectedContributors = memberVotes[1];
+
+      const sortedVotes = Object.keys(selectedContributors).sort();
+
+      const message =
+        currentDistribution.id +
+        votingAddress +
+        sortedVotes.join() +
+        sortedVotes.map(voter => selectedContributors[voter]).join();
+
+      const recovered = ethers.utils.verifyMessage(message, currentDistribution.data.votesSignatures[votingAddress]);
+
+      if (!votes[votingAddress]) {
+        votes[votingAddress] = {
+          vote: 0,
+          // Sum of the square root of the votes for each member.
+          sqrtVote: 0,
+          hasVoted: true,
+          verifiedSignature: recovered === votingAddress,
+        };
+      } else {
+        votes[votingAddress].hasVoted = true;
+        votes[votingAddress].verifiedSignature = recovered === votingAddress;
+      }
+
+      Object.entries(selectedContributors).forEach(voteInfo => {
         const contributor = voteInfo[0];
         const vote = voteInfo[1];
         const sqrtVote = Math.sqrt(vote);
@@ -50,16 +75,11 @@ export default function QuadraticDiplomacyReward({
             vote: 0,
             // Sum of the square root of the votes for each member.
             sqrtVote: 0,
-            hasVoted: false,
           };
         }
 
         votes[contributor].sqrtVote += sqrtVote;
         votes[contributor].vote += vote;
-
-        if (!votes[contributor].hasVoted) {
-          votes[contributor].hasVoted = votingAddress === contributor;
-        }
 
         voteCount += vote;
         // Total sum of the sum of the square roots of the votes for all members.
@@ -123,6 +143,18 @@ export default function QuadraticDiplomacyReward({
         render: hasVoted =>
           hasVoted ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
       },
+      {
+        title: "Verified",
+        dataIndex: "verifiedSignature",
+        align: "center",
+        filters: [
+          { text: "Yes", value: true },
+          { text: "No", value: false },
+        ],
+        onFilter: (value, record) => record.verifiedSignature === value,
+        render: verifiedSignature =>
+          verifiedSignature ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
+      },
     ],
     [mainnetProvider, selectedToken],
   );
@@ -137,6 +169,7 @@ export default function QuadraticDiplomacyReward({
         votesShare: Math.pow(contributor?.sqrtVote, 2) / totalSquare,
         rewardAmount: (Math.pow(contributor?.sqrtVote, 2) / totalSquare) * totalRewardAmount,
         hasVoted: contributor?.hasVoted,
+        verifiedSignature: contributor?.verifiedSignature,
       })),
     [voteResults, totalSquare, totalRewardAmount],
   );

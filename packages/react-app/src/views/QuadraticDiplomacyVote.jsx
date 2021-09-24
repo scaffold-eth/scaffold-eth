@@ -84,12 +84,15 @@ export default function QuadraticDiplomacyVote({
     const wallets = [];
     const amounts = [];
 
-    let message =
+    const sortedVotes = Object.keys(selectedContributors).sort();
+
+    const message =
       currentDistribution.id +
       address +
-      Object.keys(selectedContributors).join() +
-      Object.values(selectedContributors).join();
-    let signature = await userSigner.provider.send("personal_sign", [message, address]);
+      sortedVotes.join() +
+      sortedVotes.map(voter => selectedContributors[voter]).join();
+
+    const signature = await userSigner.provider.send("personal_sign", [message, address]);
 
     setIsSendingTx(true);
 
@@ -97,7 +100,7 @@ export default function QuadraticDiplomacyVote({
       .post(serverUrl + "distributions/" + currentDistribution.id + "/vote", {
         address: address,
         votes: selectedContributors,
-        signature: signature
+        signature: signature,
       })
       .then(response => {
         console.log(response);
