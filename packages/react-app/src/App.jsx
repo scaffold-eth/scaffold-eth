@@ -10,23 +10,13 @@ import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import {
-  useBalance,
-  useContractReader,
-  useGasPrice,
-  useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
-import {
-  useEventListener,
-} from "eth-hooks/events/useEventListener";
-import {
-  useExchangeEthPrice,
-} from "eth-hooks/dapps/dex";
+import { useBalance, useContractReader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
+import { useEventListener } from "eth-hooks/events/useEventListener";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-import { useContractConfig } from "./hooks"
+import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -68,7 +58,11 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
@@ -112,7 +106,6 @@ const web3Modal = new Web3Modal({
           100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -377,8 +370,6 @@ function App(props) {
       </div>
     );
   }
-
-
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
