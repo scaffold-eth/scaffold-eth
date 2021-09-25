@@ -1,8 +1,8 @@
-import React, { useState, useCallback } from "react";
-import QrReader from "react-qr-reader";
 import { CameraOutlined, QrcodeOutlined } from "@ant-design/icons";
-import { Input, Badge } from "antd";
-import { useLookupAddress } from "eth-hooks";
+import { Badge, Input } from "antd";
+import { useLookupAddress } from "eth-hooks/dapps/ens";
+import React, { useCallback, useState } from "react";
+import QrReader from "react-qr-reader";
 import Blockie from "./Blockie";
 
 // probably we need to change value={toAddress} to address={toAddress}
@@ -28,7 +28,7 @@ import Blockie from "./Blockie";
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
   - Provide placeholder="Enter address" value for the input
   - Value of the address input is stored in value={toAddress}
-  - Control input change by onChange={setToAddress} 
+  - Control input change by onChange={setToAddress}
                           or onChange={address => { setToAddress(address);}}
 */
 
@@ -53,7 +53,7 @@ export default function AddressInput(props) {
     </div>
   );
 
-  const {ensProvider, onChange} = props;
+  const { ensProvider, onChange } = props;
   const updateAddress = useCallback(
     async newValue => {
       if (typeof newValue !== "undefined") {
@@ -119,8 +119,8 @@ export default function AddressInput(props) {
     <div>
       {scanner}
       <Input
-        id={"0xAddress"}//name it something other than address for auto fill doxxing
-        name={"0xAddress"}//name it something other than address for auto fill doxxing
+        id="0xAddress" // name it something other than address for auto fill doxxing
+        name="0xAddress" // name it something other than address for auto fill doxxing
         autoComplete="off"
         autoFocus={props.autoFocus}
         placeholder={props.placeholder ? props.placeholder : "address"}

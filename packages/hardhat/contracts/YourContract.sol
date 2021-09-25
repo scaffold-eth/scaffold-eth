@@ -1,4 +1,4 @@
-pragma solidity >=0.6.0 <0.9.0;
+pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
@@ -14,11 +14,11 @@ contract YourContract {
 
   mapping (address => Commit) public commits;
   uint8 public max = 100;
-  
+
   function getHash(bytes32 data) public view returns(bytes32){
     return keccak256(abi.encodePacked(address(this), data));
   }
-  
+
   function commit(bytes32 dataHash, uint64 block_number) public {
     require(block_number > block.number,"CommitReveal::reveal: Already revealed");
     commits[msg.sender].commit = dataHash;
@@ -43,6 +43,6 @@ contract YourContract {
   event RevealHash(address sender, bytes32 revealHash, uint8 random);
   event CommitHash(address sender, bytes32 dataHash, uint64 block);
 
-  constructor() public {}
+  constructor() {}
 
 }

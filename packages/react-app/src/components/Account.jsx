@@ -1,5 +1,6 @@
-import React from "react";
 import { Button } from "antd";
+import React from "react";
+import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
@@ -7,7 +8,7 @@ import Wallet from "./Wallet";
 /*
   ~ What it does? ~
 
-  Displays an Address, Balance, and Wallet as one Account component, 
+  Displays an Address, Balance, and Wallet as one Account component,
   also allows users to log in to existing accounts and log out
 
   ~ How can I use? ~
@@ -25,7 +26,7 @@ import Wallet from "./Wallet";
   />
 
   ~ Features ~
-  
+
   - Provide address={address} and get balance corresponding to the given address
   - Provide localProvider={localProvider} to access balance on local network
   - Provide userProvider={userProvider} to display a wallet
@@ -40,7 +41,7 @@ import Wallet from "./Wallet";
 
 export default function Account({
   address,
-  userProvider,
+  userSigner,
   localProvider,
   mainnetProvider,
   price,
@@ -71,7 +72,7 @@ export default function Account({
           style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
           shape="round"
           size="large"
-          /*type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time*/
+          /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
         >
           connect
@@ -80,13 +81,26 @@ export default function Account({
     }
   }
 
+  const { currentTheme } = useThemeSwitcher();
+
   const display = minimized ? (
     ""
   ) : (
     <span>
-      {address ? <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} /> : "Connecting..."}
+      {address ? (
+        <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+      ) : (
+        "Connecting..."
+      )}
       <Balance address={address} provider={localProvider} price={price} />
-      <Wallet address={address} provider={userProvider} ensProvider={mainnetProvider} price={price} />
+      <Wallet
+        address={address}
+        provider={localProvider}
+        signer={userSigner}
+        ensProvider={mainnetProvider}
+        price={price}
+        color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+      />
     </span>
   );
 
