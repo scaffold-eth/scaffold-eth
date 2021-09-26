@@ -32,8 +32,8 @@ cd scaffold-eth
 yarn deploy
 ```
 
-
 > in a third terminal window, start your 📱 frontend:
+
 ```bash
 cd scaffold-eth
 yarn dev
