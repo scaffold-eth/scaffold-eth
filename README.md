@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH + ▲ Next.js
 
 > everything you need to build on Ethereum! 🚀
 
@@ -36,12 +36,12 @@ yarn deploy
 
 ```bash
 cd scaffold-eth
-yarn dev
+yarn start
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+📝 Edit your frontend `index.js` in `packages/react-app/src/pages`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 

@@ -2,18 +2,19 @@ import React from "react";
 import { Web3Consumer } from "../helpers/Web3Context";
 import { Contract } from "../components";
 
+
 function Home({ web3 }) {
 
   console.log(`🗄 web3 context:`, web3);
 
   return (
-    <div className="flex flex-1 flex-col h-screen w-full items-center justify-center">
-      <div className="text-center" style={{marginBottom:32}}>
+    <div className="flex flex-1 flex-col h-screen w-full items-center">
+      <div className="text-center" style={{margin:64}}>
         <span>This App is powered by Scaffold-eth & Next.js!</span>
         <br />
         <span>
           Added{" "}
-          <a href="https://tailwindcss.com/" target="_blank">
+          <a href="https://tailwindcomponents.com/cheatsheet/" target="_blank">
             TailwindCSS
           </a>{" "}
           for easier styling.
@@ -24,7 +25,9 @@ function Home({ web3 }) {
            name="YourContract"
            signer={web3.userSigner}
            provider={web3.localProvider}
-           {...web3}
+           address={web3.address}
+           blockExplorer={web3.blockExplorer}
+           contractConfig={web3.contractConfig}
          />
       </div>
     </div>
