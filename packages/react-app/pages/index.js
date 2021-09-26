@@ -2,6 +2,7 @@ import React from "react";
 import { Web3Consumer } from "../helpers/Web3Context";
 import { Contract } from "../components";
 
+
 function Home({ web3 }) {
 
   console.log(`🗄 web3 context:`, web3);
@@ -13,7 +14,7 @@ function Home({ web3 }) {
         <br />
         <span>
           Added{" "}
-          <a href="https://tailwindcss.com/" target="_blank">
+          <a href="https://tailwindcomponents.com/cheatsheet/" target="_blank">
             TailwindCSS
           </a>{" "}
           for easier styling.
