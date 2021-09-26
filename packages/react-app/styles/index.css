@@ -1,0 +1,17 @@
+/* ./styles/index.css */
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  margin: 0;
+}
+
+/* fix and override tailwind canvas default styling */
+canvas {
+  @apply inline-block;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
