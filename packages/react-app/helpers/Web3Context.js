@@ -419,6 +419,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     faucetAvailable,
     loadWeb3Modal,
     logoutOfWeb3Modal,
+    contractConfig,
   };
 
   return <Web3Context.Provider value={providerProps}>{children}</Web3Context.Provider>;
