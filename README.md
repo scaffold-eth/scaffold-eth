@@ -29,7 +29,7 @@ yarn chain
 
 ```bash
 cd scaffold-eth
-yarn start
+yarn dev
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
