@@ -18,7 +18,7 @@ import Authereum from "authereum";
 const { ethers } = require("ethers");
 
 // create our app context
-const Web3Context = React.createContext({});
+export const Web3Context = React.createContext({});
 
 // provider Component that wraps the entire app and provides context variables
 export function Web3Provider({ children, network = "localhost", DEBUG = true, NETWORKCHECK = true, ...props }) {
