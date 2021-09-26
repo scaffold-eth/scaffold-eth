@@ -3,8 +3,7 @@ module.exports = {
     browser: true,
   },
   parser: "babel-eslint",
-  // airbnb disabled after upgrade to cra 4 due to errors in our code
-  extends: [/*"airbnb"*/ "plugin:prettier/recommended"],
+  extends: [/*"airbnb"*/ "plugin:prettier/recommended", "plugin:react/recommended", "plugin:@next/next/recommended"],
   plugins: [
     /*"babel"*/
   ],
