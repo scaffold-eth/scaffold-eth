@@ -36,7 +36,7 @@ yarn deploy
 
 ```bash
 cd scaffold-eth
-yarn dev
+yarn start
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
