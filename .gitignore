@@ -9,11 +9,11 @@ packages/hardhat/*.txt
 
 packages/hardhat/artifacts*
 packages/hardhat/deployments
-packages/react-app/src/contracts/*
-!packages/react-app/src/contracts/external_contracts.js
+packages/react-app/contracts/*
+!packages/react-app/contracts/external_contracts.js
 packages/hardhat/cache*
 packages/**/data
-!packages/react-app/src/contracts/contracts.js
+!packages/react-app/contracts/contracts.js
 
 
 # ts
@@ -59,6 +59,7 @@ yarn-debug.log*
 yarn-error.log*
 
 .idea
+.next
 
 # Local Netlify folder
 .netlify
