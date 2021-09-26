@@ -41,6 +41,8 @@
     "graphiql": "^1.0.5",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
+    "next": "^11.1.2",
+    "next-transpile-modules": "^8.0.0",
     "node-watch": "^0.7.1",
     "postcss": "^8.2.6",
     "qrcode.react": "^1.0.0",
@@ -58,7 +60,7 @@
     "@apollo/client": "^3.3.21",
     "@testing-library/dom": "^6.12.2",
     "@types/react": "^16.9.19",
-    "autoprefixer": "^10.2.4",
+    "autoprefixer": "^10.3.6",
     "chalk": "^4.1.0",
     "eslint": "^7.5.0",
     "eslint-config-airbnb": "^18.2.0",
@@ -76,18 +78,20 @@
     "gulp-postcss": "^9.0.0",
     "ipfs-http-client": "^45.0.0",
     "less-plugin-npm-import": "^2.1.0",
+    "postcss": "^8.3.8",
     "prettier": "^2.0.5",
     "s3-folder-upload": "^2.3.1",
-    "surge": "^0.21.5"
+    "surge": "^0.21.5",
+    "tailwindcss": "^2.2.16"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "scripts": {
-    "build": "react-scripts build",
-    "eject": "react-scripts eject",
+    "dev": "next dev",
+    "build": "next build",
     "prestart": "node ./scripts/create_contracts.js",
-    "start": "react-scripts start",
+    "start": "next start",
     "test": "react-scripts test",
     "lint": "eslint --config ./.eslintrc.js --ignore-path ./.eslintignore ./src/**/*",
     "ipfs": "node ./scripts/ipfs.js",
