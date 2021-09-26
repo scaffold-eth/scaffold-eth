@@ -8,8 +8,8 @@ function Home({ web3 }) {
   console.log(`🗄 web3 context:`, web3);
 
   return (
-    <div className="flex flex-1 flex-col h-screen w-full items-center justify-center">
-      <div className="text-center" style={{marginBottom:32}}>
+    <div className="flex flex-1 flex-col h-screen w-full items-center">
+      <div className="text-center" style={{margin:64}}>
         <span>This App is powered by Scaffold-eth & Next.js!</span>
         <br />
         <span>
