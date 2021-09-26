@@ -34,7 +34,7 @@ contract YourCollectible is ERC721, Ownable {
       _mint(msg.sender, id);
 
       bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
-      color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes2(predictableRandom[2]) >> 16 );
+      color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
       chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
 
       return id;
