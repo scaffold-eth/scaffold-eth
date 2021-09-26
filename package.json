@@ -12,7 +12,7 @@
   "scripts": {
     "react-app:build": "yarn workspace @scaffold-eth/react-app build",
     "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
-    "react-app:start": "yarn workspace @scaffold-eth/react-app start",
+    "react-app:start": "yarn workspace @scaffold-eth/react-app dev",
     "react-app:test": "yarn workspace @scaffold-eth/react-app test",
     "dev": "yarn workspace @scaffold-eth/react-app dev",
     "build": "yarn workspace @scaffold-eth/react-app build",
@@ -21,7 +21,7 @@
     "fork": "yarn workspace @scaffold-eth/hardhat fork",
     "node": "yarn workspace @scaffold-eth/hardhat chain",
     "test": "yarn workspace @scaffold-eth/hardhat test",
-    "start": "yarn workspace @scaffold-eth/react-app start",
+    "start": "yarn workspace @scaffold-eth/react-app dev",
     "compile": "yarn workspace @scaffold-eth/hardhat compile",
     "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
     "watch": "yarn workspace @scaffold-eth/hardhat watch",

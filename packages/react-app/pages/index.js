@@ -25,7 +25,9 @@ function Home({ web3 }) {
            name="YourContract"
            signer={web3.userSigner}
            provider={web3.localProvider}
-           {...web3}
+           address={web3.address}
+           blockExplorer={web3.blockExplorer}
+           contractConfig={web3.contractConfig}
          />
       </div>
     </div>
