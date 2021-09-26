@@ -41,7 +41,7 @@ yarn start
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
-📝 Edit your frontend `_app.js` in `packages/react-app/src/pages`
+📝 Edit your frontend `index.js` in `packages/react-app/src/pages`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
