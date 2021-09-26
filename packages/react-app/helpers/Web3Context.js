@@ -414,6 +414,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     yourMainnetBalance,
     address,
     blockExplorer,
+    networkDisplay,
     faucetHint,
     web3Modal,
     faucetAvailable,
