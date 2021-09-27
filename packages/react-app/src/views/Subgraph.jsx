@@ -5,7 +5,7 @@ import GraphiQL from "graphiql";
 import "graphiql/graphiql.min.css";
 import fetch from "isomorphic-fetch";
 import React, { useState } from "react";
-import { Address } from "../components";
+import { Address } from "eth-components/ant";
 
 const highlight = {
   marginLeft: 4,

@@ -3,7 +3,7 @@ import { Button, Input, Form, Select, InputNumber, Table, Radio } from "antd";
 import React, { useState, useEffect } from "react";
 import { useContractLoader, useOnBlock } from "eth-hooks";
 import { NETWORKS } from "../constants";
-import { Transactor } from "../helpers";
+import { transactor } from "eth-components/functions";
 
 /*
 This is a component for bridging between L1 & L2
@@ -44,7 +44,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
   const selectedChainId =
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
-  const tx = Transactor(userSigner);
+  const tx = transactor(userSigner);
 
   useEffect(() => {
     async function setProviders() {

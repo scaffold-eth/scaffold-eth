@@ -2,7 +2,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
-import { Address, Balance } from "../components";
+import { Address, Balance } from "eth-components/ant";
 
 export default function ExampleUI({
   purpose,
@@ -174,7 +174,7 @@ export default function ExampleUI({
         <Card>
           Check out all the{" "}
           <a
-            href="https://github.com/austintgriffith/scaffold-eth/tree/master/packages/react-app/src/components"
+            href="https://github.com/austintgriffith/eth-components/tree/master/src"
             target="_blank"
             rel="noopener noreferrer"
           >
