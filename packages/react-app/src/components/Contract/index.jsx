@@ -127,7 +127,7 @@ export default function Contract({
                 mainnetProvider={provider}
                 price={price}
                 blockExplorer={blockExplorer}
-                useBurner={useBurner}
+                burner={burner}
                 isContract={true}
               />
               {account}

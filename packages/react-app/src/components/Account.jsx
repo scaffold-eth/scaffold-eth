@@ -23,7 +23,7 @@ import Wallet from "./Wallet";
     loadWeb3Modal={loadWeb3Modal}
     logoutOfWeb3Modal={logoutOfWeb3Modal}
     blockExplorer={blockExplorer}
-    useBurner={useBurner}
+    burner={useBurner}
     isContract={isContract}
   />
 
@@ -54,7 +54,7 @@ export default function Account({
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
-  useBurner,
+  burner,
   isContract,
 }) {
   const modalButtons = [];
@@ -110,7 +110,7 @@ export default function Account({
             color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
           />
         </>
-      ) : useBurner ? (
+      ) : burner ? (
         ""
       ) : isContract ? (
         <>
@@ -120,7 +120,7 @@ export default function Account({
       ) : (
         "Connect Wallet"
       )}
-      {useBurner ? (
+      {burner ? (
         <>
           <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
           <Balance address={address} provider={localProvider} price={price} />
