@@ -512,7 +512,12 @@ function App(props) {
             */}
 
             <ZkpInterface
-              inputFields={["x", "hash"]}
+              inputFields={
+                {
+                  x: "1764",
+                  hash: "15893827533473716138720882070731822975159228540693753428689375377280130954696"
+                }
+              }
               wasm={wasm}
               zkey={zkey}
               scVerifyFunc={readContracts && readContracts.YourContract ? readContracts.YourContract.verifyProof : null}

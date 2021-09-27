@@ -17,13 +17,14 @@ export default function ZkpInterface({
 }) {
 
   const [proofInputs, setProofInputs] = useState(
-    inputFields.reduce(
-      (acc, curr, index) => {
-        acc[curr] = "0";
-        return acc;
-      },
-      {}
-    )
+    // inputFields.reduce(
+    //   (acc, curr, index) => {
+    //     acc[curr] = "0";
+    //     return acc;
+    //   },
+    //   {}
+    // )
+    inputFields
   );
 
   const [proof, setProof] = useState();
@@ -84,17 +85,19 @@ export default function ZkpInterface({
 
 
   const fields = [];
-  for (let i = 0; i < inputFields.length; i++) {
+  const inputFieldsKeys = Object.keys(inputFields);
+  for (let i = 0; i < inputFieldsKeys.length; i++) {
     fields.push(
       <div style={{padding: "8px"}}>
         <div style={{ float: "left" }}>
-          <h3>{inputFields[i]}:</h3>
+          <h3>{inputFieldsKeys[i]}:</h3>
         </div>
         <Input
+        placeholder={inputFields[inputFieldsKeys[i]]}
         allowClear={true}
         onChange={event => {
           const inputUpdate = { ...proofInputs };
-          inputUpdate[inputFields[i]] = event.target.value;
+          inputUpdate[inputFieldsKeys[i]] = event.target.value;
           setProofInputs(inputUpdate);
         }}
         />
