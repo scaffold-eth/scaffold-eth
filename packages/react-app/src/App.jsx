@@ -508,7 +508,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="Merkler"
               signer={userSigner}
               provider={localProvider}
               address={address}
