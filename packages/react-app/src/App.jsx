@@ -33,7 +33,7 @@ const { ethers } = require("ethers");
     Welcome to 🏗 scaffold-eth !
 
     Code:
-    https://github.com/austintgriffith/scaffold-eth
+    https://github.com/scaffold-eth/scaffold-eth
 
     Support:
     https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
