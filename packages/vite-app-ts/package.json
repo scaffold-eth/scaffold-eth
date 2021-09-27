@@ -38,7 +38,7 @@
     "buffer": "^6.0.3",
     "burner-provider": "^1.0.38",
     "contract-types": "file:../hardhat-ts/generated/contract-types/",
-    "eth-components": "0.1.0-beta07",
+    "eth-components": "0.1.0-beta10",
     "eth-hooks": "^2.4.0-beta05",
     "ethereum-cryptography": "^0.1.3",
     "ethers": "^5.4.1",

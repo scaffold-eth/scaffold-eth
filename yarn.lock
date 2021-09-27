@@ -6391,10 +6391,10 @@ eth-block-tracker@^4.4.2:
     pify "^3.0.0"
     safe-event-emitter "^1.0.1"
 
-eth-components@0.1.0-beta07:
-  version "0.1.0-beta07"
-  resolved "https://registry.yarnpkg.com/eth-components/-/eth-components-0.1.0-beta07.tgz#daaf375cf51790e1d258c07a69089fb7f16ba605"
-  integrity sha512-vOSDbzF7dGMM8By2EC6j/0sxSQcjLxO3rQEcG94s/0kihwwi/6RLD9NMFwMKimUjeh8aqJ8PFHdxMpvw4bcMew==
+eth-components@0.1.0-beta10:
+  version "0.1.0-beta10"
+  resolved "https://registry.yarnpkg.com/eth-components/-/eth-components-0.1.0-beta10.tgz#33cd6c5de3225ec318ccc6bc849018f149c604bf"
+  integrity sha512-X4I+T9LGTxnPjZi7UPtQhVtNzn4n//VxwV5YVq1ilOc+nRTjve6kBBlMFMeIs1cdpRxdgyK0jCGpqI2IotHYlA==
   dependencies:
     "@ethersproject/abstract-signer" "^5.4.0"
     "@ethersproject/address" "^5.4.0"

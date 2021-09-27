@@ -1,4 +1,4 @@
-import React, { FC, ReactElement, useCallback, useEffect, useState } from 'react';
+import React, { FC, ReactElement, useCallback, useContext, useEffect, useState } from 'react';
 import { BrowserRouter, Route, Switch } from 'react-router-dom';
 import 'antd/dist/antd.css';
 import { ExternalProvider, JsonRpcFetchFunc, StaticJsonRpcProvider, Web3Provider } from '@ethersproject/providers';
@@ -23,7 +23,7 @@ import { GenericContract } from 'eth-components/ant/generic-contract';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { Hints, Subgraph } from '~~/components/views';
 import { ExampleUI } from '~~/components/views/ExampleUI';
-import { transactor } from '~~/helpers';
+import { transactor } from 'eth-components/functions';
 
 import { parseEther } from '@ethersproject/units';
 
@@ -50,6 +50,7 @@ import { MainPageMenu } from './components/MainPageMenu';
 import { MainPageContracts } from './components/MainPageContracts';
 import { MainPageExtraUi } from './components/MainPageExtraUi';
 import { useContractConfig } from '~~/components/routes/main/hooks/useContractConfig';
+import { EthComponentsContext } from 'eth-components/models';
 
 const translateAddressesForLocal = (addy: string): string => {
   // if(addy=="0x90FC815Fe9338BB3323bAC84b82B9016ED021e70") return "0x9A9f2CCfdE556A7E9Ff0848998Aa4a0CFD8863AE"
@@ -112,13 +113,15 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
     });
   }
 
+
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
+  const context = useContext(EthComponentsContext);
 
   // The transactor wraps transactions and provides notificiations
-  const tx = transactor(userProviderAndSigner?.signer, gasPrice);
+  const tx = transactor(context, userProviderAndSigner?.signer, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
-  const faucetTx = transactor(localProvider, gasPrice);
+  const faucetTx = transactor(context, localProvider, gasPrice);
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, userAddress);
@@ -132,7 +135,7 @@ export const MainPage: FC<{ subgraphUri: string }> = (props) => {
   const readContracts = useContractLoader(localProvider, contractsConfig, localChainId);
 
   // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProviderAndSigner?.signer, contractsConfig);
+  const writeContracts = useContractLoader(userProviderAndSigner?.signer, contractsConfig, localChainId);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
