@@ -7,9 +7,8 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import {GenericContract} from "eth-components/ant/generic-contract"
-import { Account, Faucet, GasGauge} from "eth-components/ant";
-import {  Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Faucet, GasGauge,  } from "eth-components/ant";
+import { Header, Ramp, ThemeSwitch, Contract } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -509,7 +508,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <GenericContract
+            <Contract
               name="YourContract"
               signer={userSigner}
               provider={localProvider}
@@ -542,7 +541,7 @@ function App(props) {
             />
           </Route>
           <Route path="/mainnetdai">
-            <GenericContract
+            <Contract
               name="DAI"
               customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
               signer={userSigner}
