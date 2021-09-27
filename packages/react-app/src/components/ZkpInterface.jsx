@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Tabs, Divider, Result } from "antd";
-import JSONpretty from "react-json-pretty";
+import { Input, Button, Tabs, Divider, Result, Typography } from "antd";
 import ReactJson from 'react-json-view';
 const snarkjs = require("snarkjs");
 
 const { TabPane } = Tabs;
+const { Text } = Typography;
 
 
 export default function ZkpInterface({
@@ -16,16 +16,7 @@ export default function ZkpInterface({
   scVerifyFunc,
 }) {
 
-  const [proofInputs, setProofInputs] = useState(
-    // inputFields.reduce(
-    //   (acc, curr, index) => {
-    //     acc[curr] = "0";
-    //     return acc;
-    //   },
-    //   {}
-    // )
-    inputFields
-  );
+  const [proofInputs, setProofInputs] = useState(inputFields);
 
   const [proof, setProof] = useState();
   const [signals, setSignals] = useState();
@@ -93,7 +84,7 @@ export default function ZkpInterface({
           <h3>{inputFieldsKeys[i]}:</h3>
         </div>
         <Input
-        placeholder={inputFields[inputFieldsKeys[i]]}
+        defaultValue={proofInputs[inputFieldsKeys[i]]}
         allowClear={true}
         onChange={event => {
           const inputUpdate = { ...proofInputs };
@@ -107,10 +98,6 @@ export default function ZkpInterface({
 
   const proofDataDisp = (
     <div style={{textAlign: "left", margin: "auto"}}>
-      {/*<JSONpretty
-        data={(proof)}
-        style={{fontSize: "0.7em"}}
-      />*/}
       <ReactJson
         src={proof}
         style={{fontSize: "0.7em"}}
@@ -122,10 +109,6 @@ export default function ZkpInterface({
 
   const pubSigData = (
     <div style={{textAlign: "left", margin: "auto"}}>
-      {/*<JSONpretty
-        data={signals}
-        style={{fontSize: "0.7em"}}
-      />*/}
       <ReactJson
         src={signals}
         style={{fontSize: "0.7em"}}
@@ -137,10 +120,6 @@ export default function ZkpInterface({
 
   const solCalldataDisp = (
     <div style={{textAlign: "left", margin: "auto"}}>
-      {/*<JSONpretty
-        data={solidityCalldata}
-        style={{fontSize: "0.7em"}}
-      />*/}
       <ReactJson
         src={solidityCalldata}
         style={{fontSize: "0.7em"}}
@@ -167,7 +146,6 @@ export default function ZkpInterface({
         </Button>
       </div>
       <div>
-        <p style={{ padding: "0.5vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="Proof Data" key="1">
             <Result
@@ -176,6 +154,7 @@ export default function ZkpInterface({
               extra={
                 <Button
                   type="primary"
+                  ghost={verResult == undefined ? false : true}
                   onClick={
                     async () => {
                       let res = await verifyProof();
@@ -187,9 +166,9 @@ export default function ZkpInterface({
                 </Button>
               }
             />
-            {proof ? proofDataDisp : "proof undefined"}
+            {proof ? proofDataDisp : <Text>proof undefined</Text>}
             <br/>
-            {signals ? pubSigData : "public signals undefined"}
+            {signals ? pubSigData : <Text>public signals undefined</Text>}
           </TabPane>
           <TabPane tab="Solidity Calldata" key="0">
             <Result
@@ -198,6 +177,7 @@ export default function ZkpInterface({
               extra={
                 <Button
                   type="primary"
+                  ghost={scVerResult == undefined ? false : true}
                   onClick={
                     async () => {
                       let res = await scVerifyFunc(...solidityCalldata);
@@ -210,7 +190,7 @@ export default function ZkpInterface({
               }
             />
             <br/>
-            {solidityCalldata ? solCalldataDisp : "solidity calldata undefined"}
+            {solidityCalldata ? solCalldataDisp : <Text>solidity calldata undefined</Text>}
           </TabPane>
 
         </Tabs>

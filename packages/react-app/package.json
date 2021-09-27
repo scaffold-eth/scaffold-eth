@@ -48,7 +48,6 @@
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.2.2",
     "react-dom": "^17.0.2",
-    "react-json-pretty": "^2.2.0",
     "react-json-view": "^1.21.3",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
