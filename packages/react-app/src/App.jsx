@@ -515,6 +515,7 @@ function App(props) {
               inputFields={["x", "hash"]}
               wasm={wasm}
               zkey={zkey}
+              scVerifyFunc={readContracts && readContracts.YourContract ? readContracts.YourContract.verifyProof : null}
             />
 
             <Contract

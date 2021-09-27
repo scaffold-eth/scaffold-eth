@@ -13,6 +13,7 @@ export default function ZkpInterface({
   wasm,
   zkey,
   vkey,
+  scVerifyFunc,
 }) {
 
   const [proofInputs, setProofInputs] = useState(
@@ -29,6 +30,7 @@ export default function ZkpInterface({
   const [signals, setSignals] = useState();
   const [solidityCalldata, setSolidityCalldata] = useState();
   const [verResult, setVerResult] = useState();
+  const [scVerResult, setScVerReesult] = useState();
 
   function parseSolidityCalldataString(str) {
     let i = [];
@@ -60,6 +62,7 @@ export default function ZkpInterface({
     const calldata = parseSolidityCalldataString(calldataString);
 
     setVerResult(undefined);
+    setScVerReesult(undefined);
 
     console.log(proof);
     setProof(proof);
@@ -164,6 +167,24 @@ export default function ZkpInterface({
         <p style={{ padding: "0.5vw"}}>{proofInputs ? JSON.stringify(proofInputs) : "undefined proof inputs"}</p>
         <Tabs defaultActiveKey="1" centered>
           <TabPane tab="Solidity Calldata" key="0">
+            <Result
+              status={scVerResult == undefined ? undefined : scVerResult ? "success" : "error"}
+              subTitle={scVerResult == undefined ? "Proof unverified" : scVerResult ? "Valid proof" : "Invalid proof"}
+              extra={
+                <Button
+                  type="primary"
+                  onClick={
+                    async () => {
+                      let res = await scVerifyFunc(...solidityCalldata);
+                      setScVerReesult(res);
+                    }
+                  }
+                >
+                  Verify with smart contract
+                </Button>
+              }
+            />
+            <br/>
             {solidityCalldata ? solCalldataDisp : "solidity calldata undefined"}
           </TabPane>
           <TabPane tab="Proof Data" key="1">
