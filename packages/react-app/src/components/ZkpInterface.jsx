@@ -40,13 +40,13 @@ export default function ZkpInterface({
       data.push(str.slice(i[j]+1, i[j+1]));
     }
     let calldata = [
-      [data[0], data[1]],
+      [data[0].slice(2), data[1].slice(2)],
       [
-        [data[2], data[3]],
-        [data[4], data[5]]
+        [data[2].slice(2), data[3].slice(2)],
+        [data[4].slice(2), data[5].slice(2)]
       ],
-      [data[6], data[7]],
-      [data[8], data[9]]
+      [data[6].slice(2), data[7].slice(2)],
+      [data[8].slice(2), data[9].slice(2)]
     ];
     return calldata;
   }
