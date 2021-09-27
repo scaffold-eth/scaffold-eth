@@ -28,6 +28,7 @@ export default function ZkpInterface({
   const [proof, setProof] = useState();
   const [signals, setSignals] = useState();
   const [solidityCalldata, setSolidityCalldata] = useState();
+  const [verResult, setVerResult] = useState();
 
   function parseSolidityCalldataString(str) {
     let i = [];
@@ -58,6 +59,8 @@ export default function ZkpInterface({
     const calldataString = await snarkjs.groth16.exportSolidityCallData(proof, publicSignals);
     const calldata = parseSolidityCalldataString(calldataString);
 
+    setVerResult(undefined);
+
     console.log(proof);
     setProof(proof);
 
@@ -67,6 +70,15 @@ export default function ZkpInterface({
     console.log(calldata)
     setSolidityCalldata(calldata);
   }
+
+  async function verifyProof() {
+    if (!vkey) {
+      vkey = await snarkjs.zKey.exportVerificationKey(zkey);
+    }
+    const verified = await snarkjs.groth16.verify(vkey, signals, proof);
+    return verified;
+  }
+
 
   const fields = [];
   for (let i = 0; i < inputFields.length; i++) {
@@ -155,6 +167,23 @@ export default function ZkpInterface({
             {solidityCalldata ? solCalldataDisp : "solidity calldata undefined"}
           </TabPane>
           <TabPane tab="Proof Data" key="1">
+            <Result
+              status={verResult == undefined ? undefined : verResult ? "success" : "error"}
+              subTitle={verResult == undefined ? "Proof unverified" : verResult ? "Valid proof" : "Invalid proof"}
+              extra={
+                <Button
+                  type="primary"
+                  onClick={
+                    async () => {
+                      let res = await verifyProof();
+                      setVerResult(res);
+                    }
+                  }
+                >
+                  Verify
+                </Button>
+              }
+            />
             {proof ? proofDataDisp : "proof undefined"}
             <br/>
             {signals ? pubSigData : "public signals undefined"}
