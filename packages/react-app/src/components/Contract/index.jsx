@@ -1,7 +1,7 @@
 import { Card } from "antd";
 import React, { useMemo, useState } from "react";
 import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
-import {Account} from "eth-components/ant";
+import { Account } from "eth-components/ant";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
 
@@ -126,6 +126,7 @@ export default function Contract({
                 mainnetProvider={provider}
                 price={price}
                 blockExplorer={blockExplorer}
+                isContract={true}
               />
               {account}
             </div>

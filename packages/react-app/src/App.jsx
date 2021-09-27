@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Faucet, GasGauge,  } from "eth-components/ant";
+import { Account, Faucet, GasGauge } from "eth-components/ant";
 import { Header, Ramp, ThemeSwitch, Contract } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
@@ -587,6 +587,8 @@ function App(props) {
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
+          burner={true}
+          isContract={false}
         />
         {faucetHint}
       </div>
