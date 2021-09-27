@@ -487,6 +487,16 @@ function App(props) {
               Mainnet DAI
             </Link>
           </Menu.Item>
+          <Menu.Item key="/mainnetloog">
+            <Link
+              onClick={() => {
+                setRoute("/mainnetloog");
+              }}
+              to="/mainnetloog"
+            >
+              Mainnet LOOG
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/subgraph">
             <Link
               onClick={() => {
@@ -550,16 +560,16 @@ function App(props) {
               contractConfig={contractConfig}
               chainId={1}
             />
-            {/*
+          </Route>
+          <Route path="/mainnetloog">
             <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
+              name="LOOG"
+              customContract={writeContracts && writeContracts.LOOG}
               signer={userSigner}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
               blockExplorer="https://etherscan.io/"
             />
-            */}
           </Route>
           <Route path="/subgraph">
             <Subgraph
