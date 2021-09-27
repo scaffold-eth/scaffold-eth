@@ -80,7 +80,7 @@ function Subgraph(props) {
       </div>
       <div style={{ margin: "auto", marginTop: 32 }}>
         Instead, you can use{" "}
-        <a href="https://thegraph.com/docs/introduction" target="_blank" rel="noopener noreferrer">
+        <a href="https://thegraph.com/docs/about/introduction" target="_blank" rel="noopener noreferrer">
           The Graph
         </a>{" "}
         with 🏗 scaffold-eth (
