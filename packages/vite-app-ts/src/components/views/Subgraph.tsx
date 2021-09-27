@@ -8,7 +8,7 @@ import 'graphiql/graphiql.min.css';
 import fetch from 'isomorphic-fetch';
 import React, { FC, ReactElement, useState } from 'react';
 
-import { Address } from '~~/components/common';
+import { Address } from 'eth-components/ant';
 
 const highlight: React.CSSProperties = {
   marginLeft: 4,

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { GenericContract } from '~~/components/generic-contract';
+import { GenericContract } from 'eth-components/ant/generic-contract';
 import { Contract } from 'ethers';
 import { TEthersProvider, TProviderAndSigner } from 'eth-hooks/models';
 import { TContractConfig } from 'eth-hooks';

@@ -1,12 +1,10 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import { SyncOutlined } from '@ant-design/icons';
 import { formatEther, parseEther } from '@ethersproject/units';
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from 'antd';
 import { Signer, Contract } from 'ethers';
 import React, { useState, FC } from 'react';
 
-import { Address, Balance } from '~~/components/common';
+import { Address, Balance } from 'eth-components/ant';
 
 interface IExampleUIProps {
   userSigner: Signer | undefined;

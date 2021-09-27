@@ -77,7 +77,10 @@
   },
   "workspaces": {
     "packages": [
-      "packages/*"
+      "packages/hardhat-ts",
+      "packages/vite-app-ts",
+      "packages/services/*",
+      "packages/subgraph"
     ],
     "nohoist": [
       "**/@graphprotocol/graph-ts",

@@ -1,6 +1,7 @@
 import React, { FC } from 'react';
 import { Row, Col, Button } from 'antd';
-import { Faucet, Ramp, GasGauge } from '~~/components/common';
+import { Ramp } from '~~/components/common';
+import { Faucet, GasGauge } from 'eth-components/ant';
 import { NETWORKS } from '~~/models/constants/networks';
 import { TEthersProvider } from 'eth-hooks/models';
 

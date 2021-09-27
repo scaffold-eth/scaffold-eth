@@ -16,9 +16,10 @@ import {
 } from 'eth-hooks';
 import { useExchangeEthPrice } from 'eth-hooks/dapps/dex';
 
-import { Header, Account, ThemeSwitcher } from '~~/components/common';
+import { Header, ThemeSwitcher } from '~~/components/common';
+import { Account } from 'eth-components/ant';
 
-import { GenericContract } from '~~/components/generic-contract';
+import { GenericContract } from 'eth-components/ant/generic-contract';
 import { web3ModalProvider, logoutOfWeb3Modal } from '~~/components/layout/web3ModalProvider';
 import { Hints, Subgraph } from '~~/components/views';
 import { ExampleUI } from '~~/components/views/ExampleUI';

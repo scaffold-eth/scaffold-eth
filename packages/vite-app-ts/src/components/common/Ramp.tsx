@@ -4,7 +4,7 @@ import { RampInstantSDK } from '@ramp-network/ramp-instant-sdk';
 import { Button, Divider, Modal } from 'antd';
 import React, { useState, FC } from 'react';
 
-import { TNetwork } from '~~/models/networkTypes';
+import { TNetwork } from 'eth-hooks/models/networkTypes';
 
 interface IRampProps {
   price: number;

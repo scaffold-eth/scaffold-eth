@@ -5,7 +5,7 @@ import React, { FC, ReactElement, useState } from 'react';
 import { useHistory } from 'react-router-dom';
 import StackGrid from 'react-stack-grid';
 
-import { AddressInput, EtherInput } from '~~/components/common';
+import { AddressInput, EtherInput } from 'eth-components/ant';
 
 interface ICheckoutProps {
   setRoute: any;
