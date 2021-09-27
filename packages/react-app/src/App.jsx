@@ -594,6 +594,7 @@ function App(props) {
           logoutOfWeb3Modal={logoutOfWeb3Modal}
           blockExplorer={blockExplorer}
           useBurner={USE_BURNER_WALLET}
+          isContract={false}
         />
         {faucetHint}
       </div>
