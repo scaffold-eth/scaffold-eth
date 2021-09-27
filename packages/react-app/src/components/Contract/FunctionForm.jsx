@@ -7,8 +7,8 @@ import tryToDisplay from "./utils";
 const { utils, BigNumber } = require("ethers");
 
 const getFunctionInputKey = (functionInfo, input, inputIndex) => {
-  const name = input?.name ? input.name : 'input_' + inputIndex + '_'
-  return functionInfo.name + "_" + name + '_' + input.type;
+  const name = input?.name ? input.name : "input_" + inputIndex + "_";
+  return functionInfo.name + "_" + name + "_" + input.type;
 };
 
 export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh }) {
@@ -198,9 +198,8 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 try {
                   const returned = await contractFunction(...args);
                   result = tryToDisplay(returned);
-                }
-                catch (err) {
-                  console.error(err)
+                } catch (err) {
+                  console.error(err);
                 }
               } else {
                 const overrides = {};
@@ -250,4 +249,3 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     </div>
   );
 }
-
