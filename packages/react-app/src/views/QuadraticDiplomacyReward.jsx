@@ -12,6 +12,7 @@ const REWARD_STATUS = {
   COMPLETED: "reward_status.completed",
   FAILED: "reward_status.failed",
 };
+const VOTING_TYPES = ["Quadratic", "Common"];
 
 export default function QuadraticDiplomacyReward({
   tx,
@@ -27,6 +28,7 @@ export default function QuadraticDiplomacyReward({
   const [rewardStatus, setRewardStatus] = useState(REWARD_STATUS.PENDING);
   const [selectedToken, setSelectedToken] = useState("");
   const [isSendingTx, setIsSendingTx] = useState(false);
+  const [votingType, setVotingType] = useState("Quadratic");
 
   const [voteResults, totalVotes, totalSqrtVotes, totalSquare] = useMemo(() => {
     const votes = {};
@@ -69,7 +71,10 @@ export default function QuadraticDiplomacyReward({
       Object.entries(selectedContributors).forEach(voteInfo => {
         const contributor = voteInfo[0];
         const vote = voteInfo[1];
-        const sqrtVote = Math.sqrt(vote);
+        let sqrtVote = Math.sqrt(vote);
+        if (votingType === "Common") {
+          sqrtVote = vote;
+        }
 
         if (!votes[contributor]) {
           votes[contributor] = {
@@ -89,11 +94,15 @@ export default function QuadraticDiplomacyReward({
     });
 
     Object.entries(votes).forEach(([wallet, { sqrtVote }]) => {
-      total += Math.pow(sqrtVote, 2);
+      if (votingType === "Common") {
+        total += sqrtVote;
+      } else {
+        total += Math.pow(sqrtVote, 2);
+      }
     });
 
     return [votes, voteCount, sqrts, total];
-  }, [currentDistribution.id]);
+  }, [currentDistribution.id, votingType]);
 
   const columns = useMemo(
     () => [
@@ -110,7 +119,7 @@ export default function QuadraticDiplomacyReward({
         sorter: (a, b) => a.vote - b.vote,
       },
       {
-        title: "Quadratic votes",
+        title: votingType + " votes",
         dataIndex: "votesSqrt",
         align: "center",
         sorter: (a, b) => a.votesSqrt - b.votesSqrt,
@@ -167,8 +176,14 @@ export default function QuadraticDiplomacyReward({
         address: address,
         vote: contributor?.vote,
         votesSqrt: contributor?.sqrtVote,
-        votesShare: Math.pow(contributor?.sqrtVote, 2) / totalSquare,
-        rewardAmount: (Math.pow(contributor?.sqrtVote, 2) / totalSquare) * totalRewardAmount,
+        votesShare:
+          votingType === "Quadratic"
+            ? contributor?.sqrtVote / totalSqrtVotes
+            : contributor?.sqrtVote / totalSquare,
+        rewardAmount:
+          votingType === "Quadratic"
+            ? (contributor?.sqrtVote / totalSqrtVotes) * totalRewardAmount
+            : (contributor?.sqrtVote / totalSquare) * totalRewardAmount,
         hasVoted: contributor?.hasVoted,
         verifiedSignature: contributor?.verifiedSignature,
       })),
@@ -292,8 +307,13 @@ export default function QuadraticDiplomacyReward({
         <Tag color="#000000">{totalVotes}</Tag>
       </Title>
       <Title level={5}>
-        Total Quadratic votes:&nbsp;&nbsp;
+        Total {votingType} votes:&nbsp;&nbsp;
         <Tag color="#52c41a">{totalSqrtVotes.toFixed(2)}</Tag>
+        <Select defaultValue={votingType} onChange={setVotingType}>
+          {VOTING_TYPES.map(vType => (
+            <Select.Option value={vType}>{vType}</Select.Option>
+          ))}
+        </Select>
       </Title>
       <Divider />
       <Space split>
