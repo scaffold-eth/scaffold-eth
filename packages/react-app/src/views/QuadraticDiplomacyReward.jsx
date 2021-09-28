@@ -330,13 +330,6 @@ export default function QuadraticDiplomacyReward({
                 >
                   Pay 💸
                 </Button>
-                <Button
-                  onClick={() => handlePayment(false)}
-                  disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
-                  size="large"
-                >
-                  Pay from contract 💸
-                </Button>
               </Space>
             ) : (
               <Spin size="small" />
