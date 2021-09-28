@@ -102,7 +102,7 @@ export default function QuadraticDiplomacyReward({
     });
 
     return [votes, voteCount, sqrts, total];
-  }, [currentDistribution.id, votingType]);
+  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.data.votes), votingType]);
 
   const columns = useMemo(
     () => [
