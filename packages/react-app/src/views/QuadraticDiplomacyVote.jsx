@@ -19,6 +19,15 @@ export default function QuadraticDiplomacyVote({
   const [spentVoteTokens, setSpentVoteTokens] = useState(0);
   const [isSendingTx, setIsSendingTx] = useState(false);
 
+  if (Object.keys(selectedContributors).length === 0 && currentDistribution.id) {
+    setSelectedContributors(
+      currentDistribution.data.members.reduce((entries, current) => {
+        entries[current] = 0;
+        return entries;
+      }, {}),
+    );
+  }
+
   const contributors = useMemo(
     () =>
       currentDistribution.id &&
@@ -34,11 +43,6 @@ export default function QuadraticDiplomacyVote({
     [currentDistribution.id, spentVoteTokens],
   );
 
-  let allContributorsSelected = false;
-  if (contributors) {
-    allContributorsSelected = Object.keys(contributors).length === Object.keys(selectedContributors).length;
-  }
-
   if (!isVoter) {
     return (
       <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
@@ -47,24 +51,6 @@ export default function QuadraticDiplomacyVote({
       </div>
     );
   }
-
-  const handleSelectAllContributors = () =>
-    allContributorsSelected ? setSelectedContributors({}) : setSelectedContributors(contributors);
-
-  const handleContributorSelection = (e, contributorAddress) => {
-    setSelectedContributors(prevSelectedContributors => {
-      if (prevSelectedContributors[contributorAddress] !== undefined) {
-        const state = { ...prevSelectedContributors };
-        delete state[contributorAddress];
-        return state;
-      } else {
-        return {
-          ...prevSelectedContributors,
-          [contributorAddress]: contributors[contributorAddress],
-        };
-      }
-    });
-  };
 
   const handleContributorVote = (e, op, clickedContributorAddress) => {
     // adjust available vote tokens
@@ -106,7 +92,7 @@ export default function QuadraticDiplomacyVote({
         console.log(response);
         setIsSendingTx(false);
         setSpentVoteTokens(0);
-        setCurrentStep(3);
+        setCurrentStep(2);
       })
       .catch(e => {
         console.log("Error on vote");
@@ -124,82 +110,26 @@ export default function QuadraticDiplomacyVote({
 
   if (
     currentDistribution.id &&
-    currentStep != 3 &&
+    currentStep != 2 &&
     currentDistribution.data.votes &&
     currentDistribution.data.votes[address]
   ) {
     setSelectedContributors(currentDistribution.data.votes[address]);
-    setCurrentStep(3);
+    setCurrentStep(2);
   }
 
   return (
     <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
       <Title level={3}>Distribution {currentDistribution.id}</Title>
-      <Steps initial={1} current={currentStep} labelPlacement="vertical">
-        <Steps.Step
-          title="Select Contributors"
-          subTitle={`${currentDistribution.data.members.length} contributors`}
-          icon={<SmileTwoTone />}
-        />
-        <Steps.Step
-          title="Allocate Votes"
-          subTitle={`${remainingVoteTokens} votes left`}
-          icon={<LikeTwoTone twoToneColor="#eb2f96" />}
-        />
-        <Steps.Step title="Done" subTitle="Thank you!" icon={<CheckCircleTwoTone twoToneColor="#52c41a" />} />
-      </Steps>
       <Divider />
       {currentStep === 1 ? (
-        <List
-          size="large"
-          itemLayout="horizontal"
-          header={<Title level={4} style={{ fontFamily: "Space Mono" }}>1. Who've you been working with?</Title>}
-          style={{ width: "600px", margin: "0 auto" }}
-          footer={
-            <Row justify="end">
-                <Button
-                  type="primary"
-                  onClick={() => setCurrentStep(2)}
-                  disabled={!Object.keys(selectedContributors).length}
-                >
-                  Next
-                </Button>
-            </Row>
-          }
-          dataSource={Object.entries(contributors)}
-          renderItem={([contributorAddress, votes], index) => (
-            <>
-              {index === 0 && (
-                <List.Item>
-                  <Checkbox
-                    indeterminate={!allContributorsSelected && Object.keys(selectedContributors).length}
-                    checked={allContributorsSelected}
-                    onChange={handleSelectAllContributors}
-                  >
-                    Select All
-                  </Checkbox>
-                </List.Item>
-              )}
-              <List.Item key={contributorAddress}>
-                <Checkbox
-                  size="large"
-                  onClick={e => handleContributorSelection(e, contributorAddress)}
-                  checked={selectedContributors[contributorAddress] !== undefined}
-                >
-                  <Address address={contributorAddress} ensProvider={mainnetProvider} fontSize={16} size="short" />
-                </Checkbox>
-              </List.Item>
-            </>
-          )}
-        />
-      ) : currentStep === 2 ? (
         <List
           size="large"
           itemLayout="horizontal"
           style={{ width: "600px", margin: "0 auto" }}
           header={
             <Space direction="vertical">
-              <Title level={4} style={{ fontFamily: "Space Mono" }}>2. Allocate votes</Title>
+              <Title level={4} style={{ fontFamily: "Space Mono" }}>Allocate votes</Title>
               <Title level={5}>
                 Remaining vote tokens:&nbsp;&nbsp;
                 <Badge
@@ -215,7 +145,6 @@ export default function QuadraticDiplomacyVote({
             <Row justify="end">
               {!isSendingTx ? (
                 <>
-                  <Button onClick={() => setCurrentStep(1)} style={{ marginRight: "8px" }} type="secondary">Go back</Button>
                   <Button type="primary" onClick={handleSubmitVotes}>
                     Commit votes
                   </Button>
@@ -272,7 +201,7 @@ export default function QuadraticDiplomacyVote({
           )}
         />
       ) : (
-        currentStep === 3 && (
+        currentStep === 2 && (
           <>
             <Title level={3} style={{ fontFamily: "Space Mono" }}>Thank you for voting.</Title>
             <p>The allocation to this workstream will be informed by your votes.</p>
