@@ -69,8 +69,8 @@ export default function Contract({
 
   const displayedContractFunctions = useMemo(() => {
     const results = contract
-      ? Object.values(contract.interface.functions).filter(
-          fn => fn.type === "function" && !(show && show.indexOf(fn.name) < 0),
+      ? Object.entries(contract.interface.functions).filter(
+          fn => fn[1]["type"] === "function" && !(show && show.indexOf(fn[1]["name"]) < 0),
         )
       : [];
     return results;
@@ -79,18 +79,18 @@ export default function Contract({
   const [refreshRequired, triggerRefresh] = useState(false);
   const contractDisplay = displayedContractFunctions.map(contractFuncInfo => {
     const contractFunc =
-      contractFuncInfo.stateMutability === "view" || contractFuncInfo.stateMutability === "pure"
-        ? contract[contractFuncInfo.name]
-        : contract.connect(signer)[contractFuncInfo.name];
+      contractFuncInfo[1].stateMutability === "view" || contractFuncInfo[1].stateMutability === "pure"
+        ? contract[contractFuncInfo[0]]
+        : contract.connect(signer)[contractFuncInfo[0]];
 
     if (typeof contractFunc === "function") {
-      if (isQueryable(contractFuncInfo)) {
+      if (isQueryable(contractFuncInfo[1])) {
         // If there are no inputs, just display return value
         return (
           <DisplayVariable
-            key={contractFuncInfo.name}
+            key={contractFuncInfo[1].name}
             contractFunction={contractFunc}
-            functionInfo={contractFuncInfo}
+            functionInfo={contractFuncInfo[1]}
             refreshRequired={refreshRequired}
             triggerRefresh={triggerRefresh}
           />
@@ -100,9 +100,9 @@ export default function Contract({
       // If there are inputs, display a form to allow users to provide these
       return (
         <FunctionForm
-          key={"FF" + contractFuncInfo.name}
+          key={"FF" + contractFuncInfo[0]}
           contractFunction={contractFunc}
-          functionInfo={contractFuncInfo}
+          functionInfo={contractFuncInfo[1]}
           provider={provider}
           gasPrice={gasPrice}
           triggerRefresh={triggerRefresh}
