@@ -280,6 +280,12 @@ app.post("/distributions/:distributionId/finish", async function (request, respo
     return response.status(401).send('Wrong signature');
   }
 
+  const isAdminInContract = await isAdmin(recovered);
+  if (!isAdminInContract) {
+    console.log('No admin in contract');
+    return response.status(401).send('No admin in contract');
+  }
+
   const distributionRef = db.collection('distributions').doc(request.params.distributionId);
   const distribution = await distributionRef.get();
 
@@ -287,9 +293,6 @@ app.post("/distributions/:distributionId/finish", async function (request, respo
     return response.status(404).send('Distribution not found');
   } else {
     console.log(distribution.data());
-    if (distribution.data().owner != recovered) {
-      return response.status(401).send('Only owner can finish the distribution');
-    }
 
     const res = await distributionRef.update({status: 'finished'});
 
