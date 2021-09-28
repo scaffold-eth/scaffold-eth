@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Input, Button, Tabs, Divider, Result, Typography } from "antd";
+import { Input, Button, Tabs, Divider, Result, Typography, message } from "antd";
 import ReactJson from 'react-json-view';
 const snarkjs = require("snarkjs");
 
@@ -157,8 +157,13 @@ export default function ZkpInterface({
                   ghost={verResult == undefined ? false : true}
                   onClick={
                     async () => {
-                      let res = await verifyProof();
-                      setVerResult(res);
+                      try {
+                        let res = await verifyProof();
+                        setVerResult(res);
+                      } catch (err) {
+                        console.error(err);
+                        message.error("Something is not right here", 3);
+                      }
                     }
                   }
                 >
@@ -180,8 +185,13 @@ export default function ZkpInterface({
                   ghost={scVerResult == undefined ? false : true}
                   onClick={
                     async () => {
-                      let res = await scVerifyFunc(...solidityCalldata);
-                      setScVerReesult(res);
+                      try {
+                        let res = await scVerifyFunc(...solidityCalldata);
+                        setScVerReesult(res);
+                      } catch (err) {
+                        console.error(err);
+                        message.error("Something is not right here", 3);
+                      }
                     }
                   }
                 >
@@ -189,7 +199,6 @@ export default function ZkpInterface({
                 </Button>
               }
             />
-            <br/>
             {solidityCalldata ? solCalldataDisp : <Text>solidity calldata undefined</Text>}
           </TabPane>
 
