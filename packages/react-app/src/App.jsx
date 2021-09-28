@@ -7,17 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import {
-  Account,
-  Address,
-  Balance,
-  Contract,
-  Faucet,
-  GasGauge,
-  Header,
-  Ramp,
-  ThemeSwitch,
-} from "./components";
+import { Account, Address, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -28,16 +18,12 @@ import {
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
-import {
-  useEventListener,
-} from "eth-hooks/events/useEventListener";
-import {
-  useExchangeEthPrice,
-} from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-import { useContractConfig } from "./hooks"
+import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -80,7 +66,11 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
@@ -124,7 +114,6 @@ const web3Modal = new Web3Modal({
           100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -257,52 +246,51 @@ function App(props) {
   ]);
 
   //keep track of contract balance to know how much has been staked total:
-  const stakerContractBalance = useBalance(localProvider, readContracts && readContracts.Staker ? readContracts.Staker.address : null);
-  if(DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance )
+  const stakerContractBalance = useBalance(
+    localProvider,
+    readContracts && readContracts.Staker ? readContracts.Staker.address : null,
+  );
+  if (DEBUG) console.log("💵 stakerContractBalance", stakerContractBalance);
 
-  //keep track of total 'threshold' needed of ETH
-  const threshold = useContractReader(readContracts,"Staker", "threshold" )
-  console.log("💵 threshold:",threshold)
+  // ** keep track of total 'threshold' needed of ETH
+  const threshold = useContractReader(readContracts, "Staker", "threshold");
+  console.log("💵 threshold:", threshold);
 
-  // keep track of a variable from the contract in the local React state:
-  const balanceStaked = useContractReader(readContracts,"Staker", "balances",[ address ])
-  console.log("💸 balanceStaked:",balanceStaked)
+  // ** keep track of a variable from the contract in the local React state:
+  const balanceStaked = useContractReader(readContracts, "Staker", "balances", [address]);
+  console.log("💸 balanceStaked:", balanceStaked);
 
-  //📟 Listen for broadcast events
+  // ** 📟 Listen for broadcast events
   const stakeEvents = useEventListener(readContracts, "Staker", "Stake", localProvider, 1);
-  console.log("📟 stake events:",stakeEvents)
+  console.log("📟 stake events:", stakeEvents);
 
-  // keep track of a variable from the contract in the local React state:
-  const timeLeft = useContractReader(readContracts,"Staker", "timeLeft")
-  console.log("⏳ timeLeft:",timeLeft)
+  // ** keep track of a variable from the contract in the local React state:
+  const timeLeft = useContractReader(readContracts, "Staker", "timeLeft");
+  console.log("⏳ timeLeft:", timeLeft);
 
+  // ** Listen for when the contract has been 'completed'
+  const complete = useContractReader(readContracts, "ExampleExternalContract", "completed");
+  console.log("✅ complete:", complete);
 
+  const exampleExternalContractBalance = useBalance(
+    localProvider,
+    readContracts && readContracts.ExampleExternalContract ? readContracts.ExampleExternalContract.address : null,
+  );
+  if (DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance);
 
-  const complete = useContractReader(readContracts,"ExampleExternalContract", "completed")
-  console.log("✅ complete:",complete)
-
-  const exampleExternalContractBalance = useBalance(localProvider, readContracts && readContracts.ExampleExternalContract ? readContracts.ExampleExternalContract.address : null);
-  if(DEBUG) console.log("💵 exampleExternalContractBalance", exampleExternalContractBalance )
-
-
-  let completeDisplay = ""
-  if(complete){
+  let completeDisplay = "";
+  if (complete) {
     completeDisplay = (
-      <div style={{padding:64, backgroundColor:"#eeffef", fontWeight:"bolder"}}>
-        🚀 🎖 👩‍🚀  -  Staking App triggered `ExampleExternalContract` -- 🎉  🍾   🎊
-        <Balance
-          balance={exampleExternalContractBalance}
-          fontSize={64}
-        /> ETH staked!
+      <div style={{ padding: 64, backgroundColor: "#eeffef", fontWeight: "bolder" }}>
+        🚀 🎖 👩‍🚀 - Staking App triggered `ExampleExternalContract` -- 🎉 🍾 🎊
+        <Balance balance={exampleExternalContractBalance} fontSize={64} /> ETH staked!
       </div>
-    )
+    );
   }
-
-
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
+  console.log("🏷 Resolved austingriffith.eth as:", addressFromENS)
   */
 
   //
@@ -428,8 +416,6 @@ function App(props) {
     );
   }
 
-
-
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
@@ -492,9 +478,6 @@ function App(props) {
     );
   }
 
-
-
-
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -503,63 +486,78 @@ function App(props) {
       <BrowserRouter>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
-            <Link onClick={()=>{setRoute("/")}} to="/">Staker UI</Link>
+            <Link
+              onClick={() => {
+                setRoute("/");
+              }}
+              to="/"
+            >
+              Staker UI
+            </Link>
           </Menu.Item>
           <Menu.Item key="/contracts">
-            <Link onClick={()=>{setRoute("/contracts")}} to="/contracts">Debug Contracts</Link>
+            <Link
+              onClick={() => {
+                setRoute("/contracts");
+              }}
+              to="/contracts"
+            >
+              Debug Contracts
+            </Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
           <Route exact path="/">
+            {completeDisplay}
 
-          {completeDisplay}
+            <div style={{ padding: 8, marginTop: 32 }}>
+              <div>Timeleft:</div>
+              {timeLeft && humanizeDuration(timeLeft.toNumber() * 1000)}
+            </div>
 
-          <div style={{padding:8,marginTop:32}}>
-            <div>Timeleft:</div>
-            {timeLeft && humanizeDuration(timeLeft.toNumber()*1000)}
-          </div>
+            <div style={{ padding: 8 }}>
+              <div>Total staked:</div>
+              <Balance balance={stakerContractBalance} fontSize={64} />/<Balance balance={threshold} fontSize={64} />
+            </div>
 
-          <div style={{padding:8}}>
-            <div>Total staked:</div>
-            <Balance
-              balance={stakerContractBalance}
-              fontSize={64}
-            />/<Balance
-              balance={threshold}
-              fontSize={64}
-            />
-          </div>
+            <div style={{ padding: 8 }}>
+              <div>You staked:</div>
+              <Balance balance={balanceStaked} fontSize={64} />
+            </div>
 
+            <div style={{ padding: 8 }}>
+              <Button
+                type={"default"}
+                onClick={() => {
+                  tx(writeContracts.Staker.execute());
+                }}
+              >
+                📡 Execute!
+              </Button>
+            </div>
 
-          <div style={{padding:8}}>
-            <div>You staked:</div>
-            <Balance
-              balance={balanceStaked}
-              fontSize={64}
-            />
-          </div>
+            <div style={{ padding: 8 }}>
+              <Button
+                type={"default"}
+                onClick={() => {
+                  tx(writeContracts.Staker.withdraw());
+                }}
+              >
+                🏧 Withdraw
+              </Button>
+            </div>
 
-
-          <div style={{padding:8}}>
-            <Button type={"default"} onClick={()=>{
-              tx( writeContracts.Staker.execute() )
-            }}>📡  Execute!</Button>
-          </div>
-
-          <div style={{padding:8}}>
-            <Button type={"default"} onClick={()=>{
-              tx( writeContracts.Staker.withdraw(  ) )
-            }}>🏧  Withdraw</Button>
-          </div>
-
-          <div style={{padding:8}}>
-            <Button type={ balanceStaked ? "success" : "primary"} onClick={()=>{
-              tx( writeContracts.Staker.stake({value: ethers.utils.parseEther("0.5")}) )
-            }}>🥩  Stake 0.5 ether!</Button>
-          </div>
-
-
+            <div style={{ padding: 8 }}>
+              <Button
+                type={balanceStaked ? "success" : "primary"}
+                onClick={() => {
+                  tx(writeContracts.Staker.stake({ value: ethers.utils.parseEther("0.5") }));
+                }}
+              >
+                🥩 Stake 0.5 ether!
+              </Button>
+            </div>
 
             {/*
                 🎛 this scaffolding is full of commonly used components
@@ -567,33 +565,22 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <div style={{width:500, margin:"auto",marginTop:64}}>
+            <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
               <div>Stake Events:</div>
               <List
                 dataSource={stakeEvents}
-                renderItem={(item) => {
+                renderItem={item => {
                   return (
-                    <List.Item key={item[0]+item[1]+item.blockNumber}>
-                      <Address
-                          value={item[0]}
-                          ensProvider={mainnetProvider}
-                          fontSize={16}
-                        /> =>
-                        <Balance
-                          balance={item[1]}
-
-                        />
-
+                    <List.Item key={item[0] + item[1] + item.blockNumber}>
+                      <Address value={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
+                      <Balance balance={item[1]} />
                     </List.Item>
-                  )
+                  );
                 }}
               />
             </div>
 
-
-
-
-            { /* uncomment for a second contract:
+            {/* uncomment for a second contract:
             <Contract
               name="SecondContract"
               signer={userProvider.getSigner()}
@@ -643,13 +630,16 @@ function App(props) {
         {faucetHint}
       </div>
 
-      <div style={{marginTop:32,opacity:0.5}}>Created by <Address
-        value={"Your...address"}
-        ensProvider={mainnetProvider}
-        fontSize={16}
-      /></div>
+      <div style={{ marginTop: 32, opacity: 0.5 }}>
+        {/* Add your address here */}
+        Created by <Address value={"Your...address"} ensProvider={mainnetProvider} fontSize={16} />
+      </div>
 
-      <div style={{marginTop:32,opacity:0.5}}><a target="_blank" style={{padding:32,color:"#000"}} href="https://github.com/austintgriffith/scaffold-eth">🍴 Fork me!</a></div>
+      <div style={{ marginTop: 32, opacity: 0.5 }}>
+        <a target="_blank" style={{ padding: 32, color: "#000" }} href="https://github.com/scaffold-eth/scaffold-eth">
+          🍴 Fork me!
+        </a>
+      </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
