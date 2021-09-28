@@ -181,7 +181,28 @@ export default function QuadraticDiplomacyReward({
       // Remove duplicated.
       .filter((item, pos, self) => self.indexOf(item) === pos);
 
-  const handlePayment = async payFromSelf => {
+  const handleFinishDistribution = async finishDistribution => {
+    const message = currentDistribution.id + address;
+    const signature = await userSigner.provider.send("personal_sign", [message, address]);
+
+    setIsSendingTx(true);
+
+    axios
+      .post(serverUrl + "distributions/" + currentDistribution.id + "/finish", {
+        address: address,
+        signature: signature,
+      })
+      .then(response => {
+        setIsSendingTx(false);
+        setRewardStatus(REWARD_STATUS.COMPLETED);
+      })
+      .catch(e => {
+        console.log("Error finishing the distribution");
+        setIsSendingTx(false);
+      });
+  };
+
+  const handlePayment = async function payFromSelf(close) {
     // ToDo. Do some validation (non-empty elements, etc.)
     const wallets = [];
     const amounts = [];
@@ -227,9 +248,6 @@ export default function QuadraticDiplomacyReward({
         : writeContracts.QuadraticDiplomacyContract.shareToken(wallets, amounts, tokenAddress);
     }
 
-    let message = currentDistribution.id + address;
-    let signature = await userSigner.provider.send("personal_sign", [message, address]);
-
     await tx(func, update => {
       // ToDo. Handle errors.
       if (update && (update.status === "confirmed" || update.status === 1)) {
@@ -237,19 +255,11 @@ export default function QuadraticDiplomacyReward({
           message: "Payment sent!",
         });
 
-        axios
-          .post(serverUrl + "distributions/" + currentDistribution.id + "/finish", {
-            address: address,
-            signature: signature,
-          })
-          .then(response => {
-            setIsSendingTx(false);
-            setRewardStatus(REWARD_STATUS.COMPLETED);
-          })
-          .catch(e => {
-            console.log("Error finishing the distribution");
-            setIsSendingTx(false);
-          });
+        if (close) {
+          handleFinishDistribution();
+        } else {
+          setIsSendingTx(false);
+        }
       } else if (update.error) {
         setIsSendingTx(false);
       }
@@ -324,11 +334,24 @@ export default function QuadraticDiplomacyReward({
             !isSendingTx ? (
               <Space>
                 <Button
-                  onClick={() => handlePayment(true)}
+                  onClick={() => handlePayment(false)}
                   disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
                   size="large"
                 >
                   Pay 💸
+                </Button>
+                <Button
+                  onClick={() => handlePayment(true)}
+                  disabled={rewardStatus === REWARD_STATUS.COMPLETED || !totalRewardAmount || !dataSource?.length}
+                  size="large"
+                >
+                  Pay and Close 💸🔒
+                </Button>
+                <Button
+                  onClick={() => { if (confirm("Are you sure you want to close the distribution? You can't send payments after a distribution is closed.")) { handleFinishDistribution() }}}
+                  size="large"
+                >
+                  Just Close 🔒
                 </Button>
               </Space>
             ) : (
