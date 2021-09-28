@@ -319,7 +319,7 @@ export default function QuadraticDiplomacyReward({
           bordered
           dataSource={dataSource}
           columns={columns}
-          pagination={{ pageSize: 10 }}
+          pagination={{ pageSize: 30, hideOnSinglePage: true }}
           footer={() =>
             !isSendingTx ? (
               <Space>
