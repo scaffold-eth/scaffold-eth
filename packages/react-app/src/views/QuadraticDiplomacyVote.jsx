@@ -73,6 +73,7 @@ export default function QuadraticDiplomacyVote({
     const sortedVotes = Object.keys(selectedContributors).sort();
 
     const message =
+      "qdip-vote-" +
       currentDistribution.id +
       address +
       sortedVotes.join() +

@@ -25,7 +25,7 @@ export default function QuadraticDiplomacyCreate({
     setIsSendingTx(true);
     const filteredVoters = voters.filter(voter => voter);
 
-    let message = address + voteAllocation + filteredVoters.join();
+    let message = "qdip-creation-" + address + voteAllocation + filteredVoters.join();
     console.log("Message:" + message);
 
     let signature = await userSigner.provider.send("personal_sign", [message, address]);

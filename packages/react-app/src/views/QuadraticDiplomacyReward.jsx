@@ -182,7 +182,7 @@ export default function QuadraticDiplomacyReward({
       .filter((item, pos, self) => self.indexOf(item) === pos);
 
   const handleFinishDistribution = async finishDistribution => {
-    const message = currentDistribution.id + address;
+    const message = "qdip-finish-" + currentDistribution.id + address;
     const signature = await userSigner.provider.send("personal_sign", [message, address]);
 
     setIsSendingTx(true);

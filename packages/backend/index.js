@@ -87,7 +87,7 @@ app.post("/distributions", async function (request, response) {
   console.log(request.body);
 
   // TODO: add some nonce to avoid replay attacks
-  const message = request.body.address + request.body.voteAllocation + request.body.members.join();
+  const message = "qdip-creation-" + request.body.address + request.body.voteAllocation + request.body.members.join();
 
   const recovered = ethers.utils.verifyMessage(
     message,
@@ -228,6 +228,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
   const sortedVotes = Object.keys(request.body.votes).sort();
 
   const message =
+    "qdip-vote-" +
     request.params.distributionId +
     request.body.address +
     sortedVotes.join() +
@@ -268,7 +269,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
 });
 
 app.post("/distributions/:distributionId/finish", async function (request, response) {
-  const message = request.params.distributionId + request.body.address;
+  const message = "qdip-finish-" + request.params.distributionId + request.body.address;
 
   const recovered = ethers.utils.verifyMessage(
     message,
