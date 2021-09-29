@@ -258,7 +258,21 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     let votes = distribution.data().votes;
     let votesSignatures = distribution.data().votesSignatures;
 
-    // TODO: validate total votes and members
+    // Check if all votes are to members
+    const allMembers = Object.keys(request.body.votes).every(voteAddress => {
+      return distribution.data().members.includes(voteAddress);
+    });
+    if (!allMembers) {
+      return response.status(401).send('No member votes on voting data');
+    }
+
+    // Check if the total votes are equal or less than the vote allocation
+    const reducer = (previousValue, currentValue) => previousValue + currentValue;
+    const totalVotes = Object.values(request.body.votes).reduce(reducer);
+    if (totalVotes > distribution.data().voteAllocation) {
+      return response.status(401).send('More total votes than allowed');
+    }
+
     votes[recovered] = request.body.votes;
     votesSignatures[recovered] = request.body.signature;
 
