@@ -8,7 +8,6 @@ const { Text } = Typography;
 
 
 export default function ZkpInterface({
-  name,
   inputFields,
   wasm,
   zkey,
