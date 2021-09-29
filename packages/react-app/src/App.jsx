@@ -56,23 +56,6 @@ const opensea = "https://testnets.opensea.io/assets/"
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 
-// EXAMPLE STARTING JSON:
-const STARTING_JSON = {
-  description: "It's actually a bison?",
-  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
-  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
-  name: "Buffalo",
-  attributes: [
-    {
-      trait_type: "BackgroundColor",
-      value: "green",
-    },
-    {
-      trait_type: "Eyes",
-      value: "googly",
-    },
-  ],
-};
 
 // helper function to "Get" from IPFS
 // you usually go content.toString() after this...
@@ -188,11 +171,11 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "ButterflyClaims", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "WholeEarthCatalog", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "ButterflyClaims", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "WholeEarthCatalog", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -204,13 +187,18 @@ function App(props) {
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+      for (let i = 0; i < balance; i++) {
         try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.ButterflyClaims.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("GEtting token index", i);
+          const tokenId = await readContracts.WholeEarthCatalog.tokenOfOwnerByIndex(address, i);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.ButterflyClaims.tokenURI(tokenId);
+          const tokenURI = await readContracts.WholeEarthCatalog.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
+
+          const videoIndex = await readContracts.WholeEarthCatalog.videoIndex(tokenId);
+          console.log("videoIndex", videoIndex);
+          const age = await readContracts.WholeEarthCatalog.age(tokenId);
+          console.log("age", age);
 
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
@@ -220,7 +208,7 @@ function App(props) {
           try {
               const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
               console.log("jsonManifest", jsonManifest);
-              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest, videoIndex, age });
               //if(tokenIndex>=balance||tokenIndex%9){
               //}
           } catch (e) {
@@ -369,7 +357,6 @@ function App(props) {
     );
   }
 
-  const [yourJSON, setYourJSON] = useState(STARTING_JSON);
   const [sending, setSending] = useState();
   const [ipfsHash, setIpfsHash] = useState();
   const [ipfsDownHash, setIpfsDownHash] = useState();
@@ -393,17 +380,7 @@ function App(props) {
               }}
               to="/"
             >
-              Your Butterflies
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/transfers">
-            <Link
-              onClick={() => {
-                setRoute("/transfers");
-              }}
-              to="/transfers"
-            >
-              Transfers
+              Mint
             </Link>
           </Menu.Item>
           <Menu.Item key="/debugcontracts">
@@ -431,11 +408,11 @@ function App(props) {
               <div style={{padding:32}}>
                 <Button
                   onClick={()=>{
-                    tx( writeContracts.ButterflyClaims.claim() )
+                    tx( writeContracts.WholeEarthCatalog.mint({ value: parseEther("0.1") }) )
                   }}
                   type={"primary"}
                 >
-                 Claim
+                 Mint
                 </Button>
               </div>
 
@@ -454,9 +431,18 @@ function App(props) {
                         }
                       >
                         <div style={{cursor:"pointer"}} onClick={()=>{
-                          window.open(opensea+readContracts.ButterflyClaims.address+"/"+item.id)
+                          window.open(opensea+readContracts.WholeEarthCatalog.address+"/"+item.id)
                         }}>
-                          <img src={item.image} style={{ maxWidth: 150 }} />
+                          <video id={"thevideo"} width={187*1.4} height={245*1.4} autoPlay muted loop>
+                            <source src={item.image} type="video/mp4"/>
+                            Your browser does not support the video tag.
+                          </video>
+                          <div>
+                            (age: {item.age && item.age.toNumber()})
+                          </div>
+                          <div>
+                            (video index: {item.videoIndex && item.videoIndex.toNumber()})
+                          </div>
                         </div>
                         {/*<div>{item.description}</div>*/}
                       </Card>
@@ -482,7 +468,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.ButterflyClaims.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.WholeEarthCatalog.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -514,83 +500,10 @@ function App(props) {
             </div>
           </Route>
 
-          <Route path="/ipfsup">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
-              <ReactJson
-                style={{ padding: 8 }}
-                src={yourJSON}
-                theme="pop"
-                enableClipboard={false}
-                onEdit={(edit, a) => {
-                  setYourJSON(edit.updated_src);
-                }}
-                onAdd={(add, a) => {
-                  setYourJSON(add.updated_src);
-                }}
-                onDelete={(del, a) => {
-                  setYourJSON(del.updated_src);
-                }}
-              />
-            </div>
 
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("UPLOADING...", yourJSON);
-                setSending(true);
-                setIpfsHash();
-                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.path) {
-                  setIpfsHash(result.path);
-                }
-                setSending(false);
-                console.log("RESULT:", result);
-              }}
-            >
-              Upload to IPFS
-            </Button>
-
-            <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
-          </Route>
-          <Route path="/ipfsdown">
-            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
-              <Input
-                value={ipfsDownHash}
-                placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
-                onChange={e => {
-                  setIpfsDownHash(e.target.value);
-                }}
-              />
-            </div>
-            <Button
-              style={{ margin: 8 }}
-              loading={sending}
-              size="large"
-              shape="round"
-              type="primary"
-              onClick={async () => {
-                console.log("DOWNLOADING...", ipfsDownHash);
-                setDownloading(true);
-                setIpfsContent();
-                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
-                if (result && result.toString) {
-                  setIpfsContent(result.toString());
-                }
-                setDownloading(false);
-              }}
-            >
-              Download from IPFS
-            </Button>
-
-            <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
-          </Route>
           <Route path="/debugcontracts">
             <Contract
-              name="ButterflyClaims"
+              name="WholeEarthCatalog"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}

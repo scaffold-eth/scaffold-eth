@@ -1,1 +1,1 @@
-module.exports = ["ButterflyClaims"];
+module.exports = ["WholeEarthCatalog"];

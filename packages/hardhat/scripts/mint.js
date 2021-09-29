@@ -11,6 +11,45 @@ const delayMS = 1000 //sometimes xDAI needs a 6000ms break lol 😅
 
 const main = async () => {
 
+  const name = "Whole Earth Catalog (Aging)"
+  const desc = "This Whole Earth Catalog NFT slowly ages over time so that it looks like the aged artifact of today. Over the next 100 years, this generative art project will reward patience and long term thinking. On a dozen intervaled Earth Days (starting April 22nd 2022) over the next 100 years, The NFT will generate new Whole Earth Catalog cover in your wallet.  For the next century, this NFT will continually morph into new and surprising animated versions of the Catalog, capturing the spirit of Stewart’s original publication, and conferring value to the artpiece for the next century. Can you think long term? If so, this one's for you."
+
+  let files = await fs.readdirSync("./Loops")
+
+  console.log("uploading",files.length,"files")
+
+  let ages = []
+
+  for(let f in files){
+    console.log("uploading file:",files[f])
+    const uploaded = await ipfs.add(fs.readFileSync("./Loops/"+files[f]))
+    console.log("uploaded",uploaded)
+
+    const manifest = {
+      "name": name,
+      "description": desc,
+      //"external_url": "https://www.weareasgods.film/3",// <-- this can link to a page for the specific file too
+      "image": "https://ipfs.io/ipfs/"+uploaded.path,
+      /*"attributes": [
+        {
+          "trait_type": "year",
+          "value": 2021
+        }
+      ]*/
+    }
+
+    console.log("manifest",manifest)
+    const manifestUpload = await ipfs.add(JSON.stringify(manifest))
+
+    console.log("manifestUpload",manifestUpload)
+    //ages
+    ages.push(manifestUpload.path)
+  }
+
+  console.log("AGES",ages)
+
+
+/*
   // ADDRESS TO MINT TO:
   const toAddress = "0xD75b0609ed51307E13bae0F9394b5f63A7f8b6A1"
 
@@ -80,7 +119,7 @@ const main = async () => {
   await yourCollectible.transferOwnership(toAddress)
 
   //await sleep(delayMS)
-
+*/
   /*
 
 
