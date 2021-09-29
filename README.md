@@ -1,91 +1,73 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH - Circom Starter Kit
 
 > everything you need to build on Ethereum! 🚀
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+🧪 Quickly experiment with Circom and Solidity using a frontend that adapts to your circuits and smart contracts!
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+# Circuits
 
+Check out `packages/hardhat/circuits/init` to see the example circuit! inside `circuit.circom` you'll see some code that probably looks a little unfamiliar. This is circom! A language used to describe zero knowledge circuits.
 
-# 🏄‍♂️ Quick Start
+Read through the [circom docs](https://docs.circom.io/) and [github repo](https://github.com/iden3/circom) to learn more about it!
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+Our `init` circuit takes a private input signal `x` and a public input signal `hash`. The circuit will verify that `x` hashes into `hash` using the mimic hash function (a snark friendly hashing function) without revealing the true value of `x`!
 
-> clone/fork 🏗 scaffold-eth:
+`input.json` contains our input signals and will be used to test the circuit when we compile it.
 
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+When we create a new circuit we will keep this same file structure:
+
+```
+packages
+├── hardhat
+│   ├── circuits
+|   │   ├── init
+|   |   |   ├── circuit.circom
+|   |   |   └── input.json
+|   │   └── <NEW_CIRCUIT>
+|   |       ├── circuit.circom
+|   |       └── input.json
+|   └── powersOfTau28_hez_final_15.ptau
+├── react-app
+├── services
+└── subgraph
 ```
 
-> install and start your 👷‍ Hardhat chain:
+You've probably noticed `powersOfTau28_hez_final_15.ptau`, this file is needed to compile out circuits. See [hardhat-circom](https://github.com/projectsophon/hardhat-circom) and [snarkjs](https://github.com/iden3/snarkjs) for more details. You may need to replace this file if you will be compiling fairly large circuits.
 
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
+# Compile
 
-> in a second terminal window, start your 📱 frontend:
+We'll use the `yarn circom` command to compile our circuits.
 
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
-
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
-
-📱 Open http://localhost:3000 to see the app
-
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
-
-  
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
+A smart contract verifier will be created and published into our `packages/hardhat/contracts` directory.
 
 
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
+Everything else we will need to generate our zero knowledge proofs will then be published into `packages/react-app/public/circuits`, these are our `r1cs`, `wasm`, and `zkey` files (another copy of these files will remain in `packages/hardhat/client`, but we want to use them in the frontend).
+
+# Frontend
+
+After `yarn deploy`ing and `yarn start`ing we should have our frontend up and running!
+
+You should see a few input fields, a "prove" button, and a "verify" button. Looking pretty sparse. Let's change that and click the "prove" button.
+
+You may need to scroll down but you should see something interesting. That's our zero knowledge proof!
+
+Right now you're in the "Proof Data" tab, click over into the "Solidity Calldata" tab and you will see an array of inputs that will be passed to our smart contract when we call the verify function. Click on the "Verify with smart contract" button to do just that!
+
+If everything went right you will see a big ol' green check mark. Our proof has been verified!
+
+We can do this in the "Proof Data" tab as well, but this will verify inside the browser instead of using our fancy smart contract.
+
+Try playing with the input fields to generate an invalid proof!
+
+# `ZkpInterface` component
+
+The frontend is powered by the `ZkpInterface` component. It needs to be fed a few properties in order to function properly.
+
+- `inputFields`: An object containing the circuit's default input signals, you can reuse the `input.json` from earlier.
+- `zkey`: The circuit's zkey file.
+- `wasm`: The circuit's wasm file.
+- `vkey`: (optional) A verification key used to verify the the generated proof. If this is not provided the interface will generate one for you.
+- `scVerifyFunc`: The verification function from our smart contract verifier.
 
 # 💬 Support Chat
 
