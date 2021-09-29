@@ -59,6 +59,8 @@ We can do this in the "Proof Data" tab as well, but this will verify inside the 
 
 Try playing with the input fields to generate an invalid proof!
 
+You may also want to scroll down to see the contract's verify function. It takes 4 arguments. To get a better feel for how the function works try copy pasting each element from the solidity calldata array into the argument fields.
+
 # `ZkpInterface` component
 
 The frontend is powered by the `ZkpInterface` component. It needs to be fed a few properties in order to function properly.
