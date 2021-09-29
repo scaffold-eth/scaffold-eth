@@ -56,10 +56,14 @@ yarn deploy
 
 - This will work only if you own a loogie on ethereum mainnet. An interesting side quest it to make it work with account impersonation. Watch this [video](https://www.youtube.com/watch?v=xcBT4Jmi5TM) to learn how to impersonate an account on mainnet fork.
 - If you own a Loogie, take its tokenId and transfer it to the deployed LoogieTank contract. On the Mainnet LOOG tab, call `safeTransferFrom` function. Put your address, deployed LoogieTank's address, and Loogie tokenId and click "Send".
+<img width="875" alt="Screen Shot 2021-09-29 at 8 50 59 PM" src="https://user-images.githubusercontent.com/1689531/135340999-19fa76de-3363-4065-8f18-5a8748ea0ec9.png">
 
 > Generate the tank SVG:
 
 - Go to "Loogie Tank" tab, and enter `1` for `tokenURI` and click "Send". It will output a string.
+<img width="806" alt="Screen Shot 2021-09-29 at 9 08 43 PM" src="https://user-images.githubusercontent.com/1689531/135341087-e803b4e9-314e-487b-b087-fc8906a91085.png">
+
+
 - Paste it into an editor. Remove the quotations aroud the string, and replace `\"` with `"`. This gives you the SVG of the tank.
 - Use any [online SVG render](https://www.freecodeformat.com/svg-editor.php) to render your tank.
 
