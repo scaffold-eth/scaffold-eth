@@ -5,10 +5,10 @@
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("YourContract", {
+  await deploy("LoogieTank", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    //args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [ "0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d" ],
     log: true,
   });
 
