@@ -20,6 +20,17 @@ export default function QuadraticDiplomacyCreate({
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [form] = Form.useForm();
 
+  const handleAddVoters = async () => {
+    const text = await navigator.clipboard.readText();
+    const addresses = text.split(",");
+    if (voters.length === 1 && voters[0] === "") {
+      setVoters([]);
+    }
+    addresses.forEach(voteAddress => {
+      setVoters(prevVoters => [...prevVoters, voteAddress]);
+    });
+  };
+
   const handleSubmit = async () => {
     // ToDo. Check if addresses are valid.
     setIsSendingTx(true);
@@ -80,6 +91,13 @@ export default function QuadraticDiplomacyCreate({
             onChange={event => setVoteAllocation(event.target.value)}
           />
         </Form.Item>
+        <Button
+          type="primary"
+          block
+          onClick={() => handleAddVoters()}
+        >
+          Add Votes from Clipboard
+        </Button>
         <Divider />
         {voters.map((_, index) => (
           <VoterInput
