@@ -96,7 +96,7 @@ export default function QuadraticDiplomacyCreate({
           block
           onClick={() => handleAddVoters()}
         >
-          Add Votes from Clipboard
+          Add Voters from Clipboard
         </Button>
         <Divider />
         {voters.map((_, index) => (
