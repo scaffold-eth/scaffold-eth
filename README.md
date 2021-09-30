@@ -2,14 +2,14 @@
 A 1 of 1 NFT which renders loogies it owns in a fish tank.
 
 ## What is a 1 of 1 (or 1/1) NFT contract?
-Checkout scaffold-eth's [mvp-nft-1of1](https://github.com/scaffold-eth/scaffold-eth/tree/mvp-nft-1of1). It's a ERC721 contract with only a single tokenId.
+Checkout scaffold-eth's [mvp-nft-1of1](https://github.com/scaffold-eth/scaffold-eth/tree/mvp-nft-1of1). It's an ERC721 contract with only a single tokenId.
 
 ## What is a Loogie?
-Checkout scaffold-eth's [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch and watch it's [demo](https://www.youtube.com/watch?v=m0bwE5UelEo).
+Checkout scaffold-eth's [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch and watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo).
 
 [Here](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft/packages/hardhat/contracts) is the smart contract code for loogie.
 
-Check it out on [Opensea](https://opensea.io/collection/loogies-v2), and on [etherscan](https://etherscan.io/token/0xe203cdc6011879cde80c6a1dcf322489e4786eb3).
+Check it out on [Opensea](https://opensea.io/collection/loogies-v2), and on [etherscan](https://etherscan.io/address/0xe203cdc6011879cde80c6a1dcf322489e4786eb3).
 
 # 🏄‍♂️ Quick Start
 
