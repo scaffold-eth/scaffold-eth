@@ -41,7 +41,7 @@ We'll use the `yarn circom` command to compile our circuits.
 A smart contract verifier will be created and published into our `packages/hardhat/contracts` directory.
 
 
-Everything else we will need to generate our zero knowledge proofs will then be published into `packages/react-app/public/circuits`, these are our `r1cs`, `wasm`, and `zkey` files (another copy of these files will remain in `packages/hardhat/client`, but we want to use them in the frontend).
+Everything else we will need to generate our zero knowledge proofs will then be published into `packages/react-app/public/circuits` after `yarn deploy`ing, these are our `r1cs`, `wasm`, and `zkey` files (another copy of these files will remain in `packages/hardhat/client`, but we want to use them in the frontend).
 
 # Frontend
 
