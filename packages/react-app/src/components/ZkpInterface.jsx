@@ -50,7 +50,7 @@ export default function ZkpInterface({
         [prf.pi_b[1][1], prf.pi_b[1][0]]
       ],
       [prf.pi_c[0], prf.pi_c[1]],
-      [sgn[0], sgn[1]]
+      [...sgn]
     ];
 
     return calldata;
