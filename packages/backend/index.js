@@ -257,16 +257,12 @@ app.post("/distributions/:distributionId/finish", async function (request, respo
     return response.status(401).send('No admin in contract');
   }
 
-  const distributionRef = db.collection('distributions').doc(request.params.distributionId);
-  const distribution = await distributionRef.get();
+  const distribution = await db.getDistribution(request.params.distributionId);
 
-  if (!distribution.exists) {
+  if (!distribution) {
     return response.status(404).send('Distribution not found');
   } else {
-    console.log(distribution.data());
-
-    const res = await distributionRef.update({status: 'finished'});
-
+    const res = await db.finishDistribution(request.params.distributionId);
     return response.send(res);
   }
 });
