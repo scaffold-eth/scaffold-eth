@@ -566,10 +566,113 @@ export const DAI_ABI = [
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
+/*
+{
+ name: ".eth",
+ role: "fullstack",
+ address: "",
+ github: "",
+ builds: [ ],
+ streamAddress: "",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+ streamUrl: "http://.buidlguidl.com"
+},
 
+
+*/
 
 
 export const BUILDERS = [
+  {
+   name: "stermi.eth",
+   role: "fullstack",
+   address: "0x67960c0c99498AfF880D1bd68FE596C9443528ae",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x3B2ca03Bae949bA2C72C78D2f331b5Ebd155c735",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://stermi.buidlguidl.com"
+  },
+  {
+   name: "damianmarti.eth",
+   role: "fullstack",
+   address: "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x8FE72B655b54f4a900b1A0e6FD9957a6a3779209",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://damianmarti.buidlguidl.com"
+  },
+  {
+   name: "mridul.eth",
+   role: "fullstack",
+   address: "0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x4cc7976d1b0784808E838CD89e0A4dF957B0f652",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://mridul.buidlguidl.com"
+  },
+
+  {
+   name: "developermarwan.eth",
+   role: "fullstack",
+   address: "0x53E7f107F3037Df2A03C79Fa9750908c67B55CD3",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x52864De6545554437999FA20374AFf409B4F52b7",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://developermarwan.buidlguidl.com"
+  },
+  {
+   name: "dgrcode.eth",
+   role: "fullstack",
+   address: "0x0D0f9Ebd254e510AA6F3788ecb6E6fC8bf78188F",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xE5C281c470AcedD6f15d41C640988822594bf69A",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://dgrcode.buidlguidl.com"
+  },
+  {
+   name: "carletex.eth",
+   role: "fullstack",
+   address: "0x60583563D5879C2E59973E5718c7DE2147971807",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x4b5ed9760e5F5E87c50d9739BeFf5b13FB61cC2F",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://carletex.buidlguidl.com"
+  },
+  {
+   name: "trombone.eth",
+   role: "support",
+   address: "0x18EE15f0C12B3035C84a9A1027dB1e1151308ac5",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x853E9d7036C48FA36CCCfF0e5b8907ae013ae8Eb",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://trombone.buidlguidl.com"
+  },
+  {
+   name: "ghostffcode.eth",
+   role: "fullstack",
+   address: "0xbF7877303B90297E7489AA1C067106331DfF7288",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x0e185D75A3658De186fCef13Ae01e816cCCE599a",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://ghostffcode.buidlguidl.com"
+  },
+  {
+   name: "ryanpetroff.eth",
+   role: "gardener",
+   address: "0x00555dC77a343E205CB1C7755407c93470DB3F91",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x6459ED3063E1267B9c22E6410076d328E4B971a6",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://ryanpetroff.buidlguidl.com"
+  },
+  {
+   name: "captnseagraves.eth",
+   role: "fullstack",
+   address: "0x5Ad3b55625553CEf54D7561cD256658537d54AAd",
+   github: "https://github.com/austintgriffith/scaffold-eth/commits?author=captnseagraves",
+   builds: [ ],
+   streamAddress: "0x446455ece8922a5C4CE8b205b74D06bD9706143b",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://captnseagraves.buidlguidl.com"
+  },
 
   {
    name: "lekag.eth",
@@ -724,8 +827,8 @@ export const BUILDERS = [
     address: "0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=codenamejason",
     builds: [ "vrf" ],
-    streamAddress: "0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
-    streamUrl: "http://rawcipher.buidlguidl.com",//rawcipherstream.surge.sh
+    streamAddress: "0x3DC246459433aFc0360b83166A6Dd9B7697EaA4A",//"0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
+    streamUrl: "http://rawcipher1.buidlguidl.com",//rawcipherstream.surge.sh
   },
   {
     name: "mrdee.eth",
