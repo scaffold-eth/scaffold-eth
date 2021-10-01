@@ -1,96 +1,89 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - Composable SVG NFT
 
-> everything you need to build on Ethereum! 🚀
-
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+> Demonstration showing how SVG NFTs can be composed on top of each other.
 
 
-# 🏄‍♂️ Quick Start
+## Prerequisites
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch. Watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it.
 
-> clone/fork 🏗 scaffold-eth:
+## Introduction
 
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+This branch shows how to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
+
+This demo defines two SVG NFTs:
+1. **Loogies**: They look like this:
+
+Each loogie can have a different `color` and `chubbiness` randomly generated at mint.
+
+1. **LoogieTank**: 
+
+Take a look at `Loogies.sol` at `packages/hardhat/contracts`. It exposes a function:
+```
+function renderTokenById(uint256 id) public view returns (string memory)
 ```
 
-> install and start your 👷‍ Hardhat chain:
+It returns the relevant SVG that be embedded in other SVG code for rendering.
 
-```bash
-cd scaffold-eth
+To see how, take a look at `LoogieTank.sol` at `packages/hardhat/contracts`. Its `renderTokenById` function calls `Loogies` contract's `renderTokenById` to include the SVG in its own SVG code.
+
+Without this function, `LoogieTank` would have to do additional processing to extract the SVG code.
+
+Play with the [live app](https://absent-earthquake.surge.sh/) deployed on rinkeby network.
+
+## SVG Motion
+The SVG code is generated on each `tokenURI()` invocation. Thus, you can output different SVG code on each invocation.
+
+### Installation
+
+Clone the repo:
+```
+git clone -b composable-svg-nft https://github.com/scaffold-eth/scaffold-eth.git composable-svg-nft
+cd composable-svg-nft
+```
+
+Install dependencies:
+```
 yarn install
-yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
+Start frontend
+```
+cd composable-svg-nft
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
+In a second terminal window, start a local blockchain
+```
+yarn chain
+```
 
-```bash
-cd scaffold-eth
+In a third terminal window, deploy contracts:
+```
+cd composable-svg-nft
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+## Demo
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+1. Go to the **Mint Loogie Tank** tab and mint a tank by clicking the **MINT** button. Notice that each tank has a unique ID.
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761678-d7f0c82c-9129-49ca-b943-d8d4a0222d9b.png">
 
-📱 Open http://localhost:3000 to see the app
+1. Now mint some loogies on **Mint Loogies** tab.
 
-# 📚 Documentation
-
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
-
-# 🔭 Learning Solidity
-
-📕 Read the docs: https://docs.soliditylang.org
-
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
-
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
-
-  
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
+   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761696-4fc759bf-17f6-416d-a454-0d5722d0aa7f.png">
 
 
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
+1. Send these loogies to any of the minted tanks by entering the tank ID and click **Transfer**.
 
-# 💬 Support Chat
+   <img width="354" src="https://user-images.githubusercontent.com/1689531/135761726-8c2f5ea4-8c0a-4fa8-b08d-d38a7fe2634a.png">
+
+1. Enjoy your loogies in a tank. 😎
+
+   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761763-0bdb225b-ee33-44e5-a800-1f217a83ec37.jpeg">
+
+
+## Contact
 
 Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
