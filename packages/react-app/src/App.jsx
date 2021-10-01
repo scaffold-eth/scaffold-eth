@@ -571,9 +571,9 @@ function App(props) {
                 dataSource={stakeEvents}
                 renderItem={item => {
                   return (
-                    <List.Item key={item[0] + item[1] + item.blockNumber}>
-                      <Address value={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
-                      <Balance balance={item[1]} />
+                    <List.Item key={item.blockNumber}>
+                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
+                      <Balance balance={item.args[1]} />
                     </List.Item>
                   );
                 }}
