@@ -40,7 +40,7 @@ export default function QuadraticDiplomacyReward({
       return [0, 0, 0, 0];
     }
 
-    Object.entries(currentDistribution.data.votes).forEach(memberVotes => {
+    Object.entries(currentDistribution.votes).forEach(memberVotes => {
       const votingAddress = memberVotes[0];
       const selectedContributors = memberVotes[1];
 
@@ -53,7 +53,7 @@ export default function QuadraticDiplomacyReward({
         sortedVotes.join() +
         sortedVotes.map(voter => selectedContributors[voter]).join();
 
-      const recovered = ethers.utils.verifyMessage(message, currentDistribution.data.votesSignatures[votingAddress]);
+      const recovered = ethers.utils.verifyMessage(message, currentDistribution.votesSignatures[votingAddress]);
 
       if (!votes[votingAddress]) {
         votes[votingAddress] = {
@@ -102,7 +102,7 @@ export default function QuadraticDiplomacyReward({
     });
 
     return [votes, voteCount, sqrts, total];
-  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.data.votes), votingType]);
+  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.votes), votingType]);
 
   const columns = useMemo(
     () => [
@@ -192,7 +192,7 @@ export default function QuadraticDiplomacyReward({
 
   const missingVotingMembers =
     currentDistribution.id &&
-    currentDistribution.data.members
+    currentDistribution.members
       ?.filter(wallet => !voteResults[wallet]?.hasVoted)
       // Remove duplicated.
       .filter((item, pos, self) => self.indexOf(item) === pos);

@@ -1,10 +1,11 @@
-var ethers = require("ethers");
-var express = require("express");
-var fs = require("fs");
+const ethers = require("ethers");
+const express = require("express");
+const fs = require("fs");
 const https = require("https");
-var cors = require("cors");
-var bodyParser = require("body-parser");
-var app = express();
+const cors = require("cors");
+const bodyParser = require("body-parser");
+const app = express();
+const db = require("./services/db");
 
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 const INFURA_ID = "460f40a260564ac4a4f4b3fffb032dad";
@@ -57,14 +58,6 @@ const isAdmin = async (address) => {
   return isAdmin;
 }
 
-const admin = require('firebase-admin');
-
-admin.initializeApp({
-  credential: admin.credential.applicationDefault()
-});
-
-const db = admin.firestore();
-
 //Uncomment this if you want to create a wallet to send ETH or something...
 // const INFURA = JSON.parse(fs.readFileSync("./infura.txt").toString().trim())
 // const PK = fs.readFileSync("./pk.txt").toString().trim()
@@ -106,7 +99,7 @@ app.post("/distributions", async function (request, response) {
   }
 
   try {
-    const resAdd = await db.collection('distributions').add({
+    const resAdd = await db.createDistribution({
       owner: request.body.address,
       createdAt: Date.now(),
       voteAllocation: request.body.voteAllocation,
@@ -128,18 +121,9 @@ app.post("/distributions", async function (request, response) {
 app.get("/distributions", async function (request, response) {
 
   try {
-    const snapshot = await db.collection('distributions').get();
+    const distributions = await db.findAllDistributions();
 
-    let data = [];
-
-    snapshot.forEach(doc => {
-      data.push({
-        id: doc.id,
-        data: doc.data()
-      });
-    });
-
-    response.send(data);
+    response.send(distributions);
   } catch (exception) {
     console.log(exception);
     response.status(500).send('Error retrieving distributions');
@@ -149,21 +133,13 @@ app.get("/distributions", async function (request, response) {
 app.get("/currentDistribution", async function (request, response) {
 
   try {
-    db.collection('distributions')
-      .where('status', '==', 'started')
-      .get()
-      .then(snapshot => {
-        if(!snapshot.empty) {
-          data = {
-            id: snapshot.docs[0].id,
-            data: snapshot.docs[0].data()
-          }
-          console.log(data);
-          response.send(data);
-        } else {
-          response.status(404).send('No current distribution');
-        }
-      });
+    const distribution = await db.currentDistribution();
+    if(distribution) {
+      console.log(distribution);
+      response.send(distribution);
+    } else {
+      response.status(404).send('No current distribution');
+    }
   } catch (exception) {
     console.log(exception);
     response.status(500).send('Error retrieving current distribution');
@@ -174,18 +150,9 @@ app.get("/currentDistribution", async function (request, response) {
 app.get("/ownedDistributions/:owner", async function (request, response) {
 
   try {
-    const snapshot = await db.collection('distributions').where('owner', '==', request.params.owner).get();
+    const distributions = await db.ownedDistributions(request.params.owner);
 
-    let data = [];
-
-    snapshot.forEach(doc => {
-      data.push({
-        id: doc.id,
-        data: doc.data()
-      });
-    });
-
-    response.send(data);
+    response.send(distributions);
   } catch (exception) {
     console.log(exception);
     response.status(500).send('Error retrieving distributions');
@@ -195,18 +162,9 @@ app.get("/ownedDistributions/:owner", async function (request, response) {
 app.get("/votingDistributions/:voter", async function (request, response) {
 
   try {
-    const snapshot = await db.collection('distributions').where('members', 'array-contains', request.params.voter).get();
+    const distributions = await db.votingDistributions(request.params.voter);
 
-    let data = [];
-
-    snapshot.forEach(doc => {
-      data.push({
-        id: doc.id,
-        data: doc.data()
-      });
-    });
-
-    response.send(data);
+    response.send(distributions);
   } catch (exception) {
     console.log(exception);
     response.status(500).send('Error retrieving distributions');
@@ -214,10 +172,9 @@ app.get("/votingDistributions/:voter", async function (request, response) {
 });
 
 app.get("/distributions/:distributionId", async function (request, response) {
-  const distributionRef = db.collection('distributions').doc(request.params.distributionId);
-  const distribution = await distributionRef.get();
+  const distribution = await db.getDistribution(request.params.distributionId);
 
-  if (!distribution.exists) {
+  if (!distribution) {
     response.status(404).send('Distribution not found');
   } else {
     response.send(distribution);
@@ -244,23 +201,22 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     return response.status(401).send('Wrong signature');
   }
 
-  const distributionRef = db.collection('distributions').doc(request.params.distributionId);
-  const distribution = await distributionRef.get();
+  const distribution = await db.getDistribution(request.params.distributionId);
 
-  if (!distribution.exists) {
+  if (!distribution) {
     return response.status(404).send('Distribution not found');
   } else {
-    console.log(distribution.data());
-    if (!distribution.data().members.includes(recovered)) {
+    console.log(distribution);
+    if (!distribution.members.includes(recovered)) {
       return response.status(401).send('Voter not allowed');
     }
 
-    let votes = distribution.data().votes;
-    let votesSignatures = distribution.data().votesSignatures;
+    let votes = distribution.votes;
+    let votesSignatures = distribution.votesSignatures;
 
     // Check if all votes are to members
     const allMembers = Object.keys(request.body.votes).every(voteAddress => {
-      return distribution.data().members.includes(voteAddress);
+      return distribution.members.includes(voteAddress);
     });
     if (!allMembers) {
       return response.status(401).send('No member votes on voting data');
@@ -269,14 +225,14 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     // Check if the total votes are equal or less than the vote allocation
     const reducer = (previousValue, currentValue) => previousValue + currentValue;
     const totalVotes = Object.values(request.body.votes).reduce(reducer);
-    if (totalVotes > distribution.data().voteAllocation) {
+    if (totalVotes > distribution.voteAllocation) {
       return response.status(401).send('More total votes than allowed');
     }
 
     votes[recovered] = request.body.votes;
     votesSignatures[recovered] = request.body.signature;
 
-    const res = await distributionRef.update({votes: votes, votesSignatures: votesSignatures});
+    const res = await db.updateDistribution(distribution.id, { votes: votes, votesSignatures: votesSignatures });
 
     return response.send(res);
   }

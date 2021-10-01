@@ -21,7 +21,7 @@ export default function QuadraticDiplomacyVote({
 
   if (Object.keys(selectedContributors).length === 0 && currentDistribution.id) {
     setSelectedContributors(
-      currentDistribution.data.members.reduce((entries, current) => {
+      currentDistribution.members.reduce((entries, current) => {
         entries[current] = 0;
         return entries;
       }, {}),
@@ -31,7 +31,7 @@ export default function QuadraticDiplomacyVote({
   const contributors = useMemo(
     () =>
       currentDistribution.id &&
-      currentDistribution.data.members.reduce((entries, current) => {
+      currentDistribution.members.reduce((entries, current) => {
         entries[current] = 0;
         return entries;
       }, {}),
@@ -39,7 +39,7 @@ export default function QuadraticDiplomacyVote({
   );
 
   const remainingVoteTokens = useMemo(
-    () => currentDistribution.id && currentDistribution.data.voteAllocation - spentVoteTokens,
+    () => currentDistribution.id && currentDistribution.voteAllocation - spentVoteTokens,
     [currentDistribution.id, spentVoteTokens],
   );
 
@@ -61,7 +61,7 @@ export default function QuadraticDiplomacyVote({
       ...prevSelectedContributors,
       [clickedContributorAddress]:
         op === "add"
-          ? Math.min(prevSelectedContributors[clickedContributorAddress] + 1, currentDistribution.data.voteAllocation)
+          ? Math.min(prevSelectedContributors[clickedContributorAddress] + 1, currentDistribution.voteAllocation)
           : Math.max(prevSelectedContributors[clickedContributorAddress] - 1, 0),
     }));
   };
@@ -112,10 +112,10 @@ export default function QuadraticDiplomacyVote({
   if (
     currentDistribution.id &&
     currentStep != 2 &&
-    currentDistribution.data.votes &&
-    currentDistribution.data.votes[address]
+    currentDistribution.votes &&
+    currentDistribution.votes[address]
   ) {
-    setSelectedContributors(currentDistribution.data.votes[address]);
+    setSelectedContributors(currentDistribution.votes[address]);
     setCurrentStep(2);
   }
 
