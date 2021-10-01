@@ -61,7 +61,7 @@ export default function QuadraticDiplomacyReward({
           // Sum of the square root of the votes for each member.
           sqrtVote: 0,
           hasVoted: true,
-          verifiedSignature: recovered === votingAddress,
+          verifiedSignature: recovered.toLowerCase() === votingAddress.toLowerCase(),
         };
       } else {
         votes[votingAddress].hasVoted = true;
@@ -350,7 +350,7 @@ export default function QuadraticDiplomacyReward({
           bordered
           dataSource={dataSource}
           columns={columns}
-          pagination={{ pageSize: 30, hideOnSinglePage: true }}
+          pagination={{ pageSize: 100, hideOnSinglePage: true }}
           footer={() =>
             !isSendingTx ? (
               <Space>

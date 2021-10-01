@@ -103,7 +103,7 @@ app.post("/distributions", async function (request, response) {
       owner: request.body.address,
       createdAt: Date.now(),
       voteAllocation: request.body.voteAllocation,
-      members: request.body.members,
+      members: request.body.members.map(voter => voter.toLowerCase()),
       votes: {},
       votesSignatures: {},
       signature: request.body.signature,
@@ -187,7 +187,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
   const message =
     "qdip-vote-" +
     request.params.distributionId +
-    request.body.address +
+    request.body.address.toLowerCase() +
     sortedVotes.join() +
     sortedVotes.map(voter => request.body.votes[voter]).join();
 
@@ -196,7 +196,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     request.body.signature
   );
 
-  if (recovered != request.body.address) {
+  if (recovered.toLowerCase() != request.body.address.toLowerCase()) {
     console.log('Wrong signature');
     return response.status(401).send('Wrong signature');
   }
@@ -207,7 +207,10 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     return response.status(404).send('Distribution not found');
   } else {
     console.log(distribution);
-    if (!distribution.members.includes(recovered)) {
+
+    const voter = recovered.toLowerCase();
+
+    if (!distribution.members.includes(voter)) {
       return response.status(401).send('Voter not allowed');
     }
 
@@ -229,8 +232,8 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
       return response.status(401).send('More total votes than allowed');
     }
 
-    votes[recovered] = request.body.votes;
-    votesSignatures[recovered] = request.body.signature;
+    votes[voter] = request.body.votes;
+    votesSignatures[voter] = request.body.signature;
 
     const res = await db.updateDistribution(distribution.id, { votes: votes, votesSignatures: votesSignatures });
 
