@@ -100,7 +100,7 @@ contract LoogieTank is ERC721, IERC721Receiver {
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
       loogieSVG = string(abi.encodePacked(
         loogieSVG, 
-        '<g transform="translate(', (i+20).toString(), ' ', (i+20).toString(), ')">',
+        '<g transform="translate(', (i*10).toString(), ' ', (i*10).toString(), ')">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
