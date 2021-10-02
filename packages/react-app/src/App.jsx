@@ -30,8 +30,8 @@ import Authereum from "authereum";
 
 const { ethers } = require("ethers");
 
-const wasm = `${process.env.PUBLIC_URL}/circuits/init.wasm`;
-const zkey = `${process.env.PUBLIC_URL}/circuits/init.zkey`;
+const wasm = `${process.env.PUBLIC_URL}/circuits/sqMul.wasm`;
+const zkey = `${process.env.PUBLIC_URL}/circuits/sqMul.zkey`;
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -513,8 +513,8 @@ function App(props) {
             <ZkpInterface
               inputFields={
                 {
-                  x: "1764",
-                  hash: "15893827533473716138720882070731822975159228540693753428689375377280130954696"
+                  x: "2",
+                  state: "2"
                 }
               }
               wasm={wasm}
