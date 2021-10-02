@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
-
+import "hardhat/console.sol";
 import './HexStrings.sol';
 import './ToColor.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
@@ -93,6 +93,8 @@ contract Loogies is ERC721Enumerable, Ownable {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
+    console.log(id);
+    console.log("chubbiness", chubbiness[id]);
     string memory render = string(abi.encodePacked(
       '<g id="eye1">',
           '<ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>',
