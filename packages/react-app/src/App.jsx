@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -244,10 +244,53 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
+  console.log("🤗 loogie balance:", loogieBalance);
 
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
+  console.log("📟 Loogie Transfer events:", loogieTransferEvents);
+
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+  const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
+  const [yourLoogies, setYourLoogies] = useState();
+
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourLoogies(collectibleUpdate.reverse());
+    };
+    updateYourCollectibles();
+  }, [address, yourLoogieBalance]);
+  
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -439,6 +482,8 @@ function App(props) {
     );
   }
 
+  const [transferToAddresses, setTransferToAddresses] = useState({});
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -466,24 +511,24 @@ function App(props) {
               Loogie Tank
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/mintloogies">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/mintloogies");
               }}
-              to="/hints"
+              to="/mintloogies"
             >
-              Hints
+              Mint Loogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/exampleui">
+          <Menu.Item key="/mintloogietank">
             <Link
               onClick={() => {
-                setRoute("/exampleui");
+                setRoute("/mintloogietank");
               }}
-              to="/exampleui"
+              to="/mintloogietank"
             >
-              ExampleUI
+              Mint Loogie Tank
             </Link>
           </Menu.Item>
         </Menu>
@@ -516,28 +561,77 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
+         <Route exact path="/mintloogies">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.Loogies.mintItem())
+              }}>MINT</Button>
+            </div>
+            {/* */}
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourLoogies}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+            {/* */}
+
+            
           </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
+           <Route exact path="/mintloogietank">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.LoogieTank.mintItem())
+              }}>MINT</Button>
+            </div>
           </Route>
         </Switch>
       </BrowserRouter>
