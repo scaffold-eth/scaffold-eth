@@ -1,26 +1,19 @@
 pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
+import "hardhat/console.sol";
+
 
 abstract contract LoogiesContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
-  function tokenOfOwnerByIndex(
-    address _owner,
-    uint256 _index
-  )
-    external
-    virtual
-    view
-    returns (uint256);
-  function balanceOf(address _addr) external virtual view returns (uint256);
 }
 
-contract LoogieTank is ERC721, IERC721Receiver {
+contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
   using HexStrings for uint160;
@@ -98,9 +91,14 @@ contract LoogieTank is ERC721, IERC721Receiver {
     string memory loogieSVG = "";
     
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
+        uint256 x = uint256(keccak256(abi.encodePacked( blockhash(block.number), i)))%200;
+        uint256 y = uint256(keccak256(abi.encodePacked( blockhash(block.number-1), i)))%200;
+        console.log("x", x.toString());
+        console.log("y", y.toString());
+
       loogieSVG = string(abi.encodePacked(
         loogieSVG, 
-        '<g transform="translate(', (i*10).toString(), ' ', (i*10).toString(), ')">',
+        '<g transform="translate(', x.toString(), ' ', y.toString(), ') scale(0.30 0.30)">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
@@ -125,12 +123,12 @@ contract LoogieTank is ERC721, IERC721Receiver {
       address operator,
       address from,
       uint256 loogieTokenId,
-      bytes calldata data) external override returns (bytes4) {
+      bytes calldata tankIdData) external override returns (bytes4) {
 
-      uint256 tokenId = toUint256(data);
-      require(ownerOf(tokenId) == from, "you can only add loogies to a tank you own.");
+      uint256 tankId = toUint256(tankIdData);
+      require(ownerOf(tankId) == from, "you can only add loogies to a tank you own.");
 
-      loogiesById[tokenId].push(loogieTokenId);
+      loogiesById[tankId].push(loogieTokenId);
     
       return this.onERC721Received.selector;
     }

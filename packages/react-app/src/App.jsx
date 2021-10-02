@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Card, Col, List, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -20,8 +20,6 @@ import {
 } from "eth-hooks";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
 
 import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
@@ -247,19 +245,28 @@ function App(props) {
   const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   console.log("🤗 loogie balance:", loogieBalance);
 
+  const loogieTankBalance = useContractReader(readContracts, "LoogieTank", "balanceOf", [address]);
+  console.log("🤗 loogie tank balance:", loogieTankBalance);
+
   // 📟 Listen for broadcast events
   const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
   console.log("📟 Loogie Transfer events:", loogieTransferEvents);
 
+  const loogieTankTransferEvents = useEventListener(readContracts, "LoogieTank", "Transfer", localProvider, 1);
+  console.log("📟 Loogie Tank Transfer events:", loogieTankTransferEvents);
+ 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourLoogies, setYourLoogies] = useState();
 
+  const yourLoogieTankBalance = loogieTankBalance && loogieTankBalance.toNumber && loogieTankBalance.toNumber();
+  const [yourLoogieTanks, setYourLoogieTanks] = useState();
+
   useEffect(() => {
     const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
+      const loogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
@@ -277,7 +284,7 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -286,10 +293,35 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourLoogies(collectibleUpdate.reverse());
+      setYourLoogies(loogieUpdate.reverse());
+
+      const loogieTankUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourLoogieTankBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.LoogieTank.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.LoogieTank.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            loogieTankUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourLoogieTanks(loogieTankUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance]);
+  }, [address, yourLoogieBalance, yourLoogieTankBalance]);
   
 
   /*
@@ -483,6 +515,7 @@ function App(props) {
   }
 
   const [transferToAddresses, setTransferToAddresses] = useState({});
+  const [transferToTankId, setTransferToTankId] = useState({});
 
   return (
     <div className="App">
@@ -616,6 +649,36 @@ function App(props) {
                         >
                           Transfer
                         </Button>
+                        <br/><br/>
+                        Transfer to Loogie Tank:{" "}
+                        <Address
+                          address={readContracts.LoogieTank.address}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <Input
+                          placeholder="Tank ID"
+                          // value={transferToTankId[id]}
+                          onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
+                            const update = {};
+                            update[id] = newValue.target.value;
+                            setTransferToTankId({ ...transferToTankId, ...update});
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            console.log("transferToTankId[id]", transferToTankId[id]);
+                            console.log(parseInt(transferToTankId[id]));
+
+                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                            console.log(tankIdInBytes);
+
+                            tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, id, tankIdInBytes));
+                          }}>
+                          Transfer
+                        </Button>
                       </div>
                     </List.Item>
                   );
@@ -632,6 +695,64 @@ function App(props) {
                 tx(writeContracts.LoogieTank.mintItem())
               }}>MINT</Button>
             </div>
+            {/* */}
+
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourLoogieTanks}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+
+            {/* */}
           </Route>
         </Switch>
       </BrowserRouter>
