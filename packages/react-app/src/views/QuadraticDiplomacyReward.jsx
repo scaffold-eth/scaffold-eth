@@ -338,7 +338,7 @@ export default function QuadraticDiplomacyReward({
           <Alert
             showIcon
             type="warning"
-            message={<Title level={5}>Votes are pending from:</Title>}
+            message={<Title level={5}>{missingVotingMembers.length} members has not voted yet:</Title>}
             description={missingVotingMembers.map(wallet => (
               <p key={wallet}>
                 <Address address={wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
