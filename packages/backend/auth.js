@@ -6,7 +6,7 @@ const getProvider = () => {
 };
 
 const userHasToken = async (address) => {
-  const tokenAddress = "0xE203cDC6011879CDe80c6a1DcF322489e4786eB3";
+  const tokenAddress = process.env.TOKEN;
   const abi = [
     "function balanceOf(address _owner) external view returns (uint256)",
   ];
