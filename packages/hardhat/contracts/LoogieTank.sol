@@ -10,12 +10,14 @@ import "hardhat/console.sol";
 
 
 abstract contract LoogiesContract {
+  mapping(uint256 => bytes32) public genes;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
 contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
+  using Strings for uint8;
   using HexStrings for uint160;
   using Counters for Counters.Counter;
 
@@ -91,10 +93,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     string memory loogieSVG = "";
     
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-        uint256 x = uint256(keccak256(abi.encodePacked( blockhash(block.number), i)))%200;
-        uint256 y = uint256(keccak256(abi.encodePacked( blockhash(block.number-1), i)))%200;
-        console.log("x", x.toString());
-        console.log("y", y.toString());
+      uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
+      uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG, 
