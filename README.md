@@ -1,75 +1,360 @@
-# 🏗 Scaffold-ETH - Circom Starter Kit
+# 🏗 Scaffold-ETH - Circom Contract State
 
-> everything you need to build on Ethereum! 🚀
+So you've checked out the [circom starter kit](https://github.com/scaffold-eth/scaffold-eth/tree/circom-starter-kit) and want to move on the the next step, this is it!
 
-🧪 Quickly experiment with Circom and Solidity using a frontend that adapts to your circuits and smart contracts!
+We're going to learn how to use a circom zk circuit to modify smart contract state.
 
-# Circuits
+Today we'll:
+- Create a circuit that will give us the product of the squares of a private input, and a public input that is equal to our contract state.
+- Implement a function to modify our smart contract state using the output of the circuit we create.
 
-Check out `packages/hardhat/circuits/init` to see the example circuit! inside `circuit.circom` you'll see some code that probably looks a little unfamiliar. This is circom! A language used to describe zero knowledge circuits.
+## Installation
 
-Read through the [circom docs](https://docs.circom.io/) and [github repo](https://github.com/iden3/circom) to learn more about it!
+Clone the repo and install dependencies.
 
-Our `init` circuit takes a private input signal `x` and a public input signal `hash`. The circuit will verify that `x` hashes into `hash` using the mimic hash function (a snark friendly hashing function) without revealing the true value of `x`!
+```bash
+git clone -b circom-contract-state https://github.com/austintgriffith/scaffold-eth.git circom-contract-state
 
-`input.json` contains our input signals and will be used to test the circuit when we compile it.
-
-When we create a new circuit we will keep this same file structure:
-
-```
-packages
-├── hardhat
-│   ├── circuits
-|   │   ├── init
-|   |   |   ├── circuit.circom
-|   |   |   └── input.json
-|   │   └── <NEW_CIRCUIT>
-|   |       ├── circuit.circom
-|   |       └── input.json
-|   └── powersOfTau28_hez_final_15.ptau
-├── react-app
-├── services
-└── subgraph
+yarn install
 ```
 
-You've probably noticed `powersOfTau28_hez_final_15.ptau`, this file is needed to compile out circuits. See [hardhat-circom](https://github.com/projectsophon/hardhat-circom) and [snarkjs](https://github.com/iden3/snarkjs) for more details. You may need to replace this file if you will be compiling fairly large circuits.
+## Creating a Circuit
 
-# Compile
+#### Creating Files
 
-We'll use the `yarn circom` command to compile our circuits.
+First step is to actually make a circuit.
 
-A smart contract verifier will be created and published into our `packages/hardhat/contracts` directory.
+In `packages/hardhat/circuits` we will create a new directory and name it `sqMul`. Inside we will need to make two files: `circuit.circom`, and `input.json`.
 
+We should make our `circuit.circom` look like this:
 
-Everything else we will need to generate our zero knowledge proofs will then be published into `packages/react-app/public/circuits` after `yarn deploy`ing, these are our `r1cs`, `wasm`, and `zkey` files (another copy of these files will remain in `packages/hardhat/client`, but we want to use them in the frontend).
+```
+template Main() {
 
-# Frontend
+}
 
-After `yarn deploy`ing and `yarn start`ing we should have our frontend up and running!
+component main = Main();
+```
 
-You should see a few input fields, a "prove" button, and a "verify" button. Looking pretty sparse. Let's change that and click the "prove" button.
+And out `input.json` should be an empty `JSON` like this:
 
-You may need to scroll down but you should see something interesting. That's our zero knowledge proof!
+```
+{
 
-Right now you're in the "Proof Data" tab, click over into the "Solidity Calldata" tab and you will see an array of inputs that will be passed to our smart contract when we call the verify function. Click on the "Verify with smart contract" button to do just that!
+}
+```
 
-If everything went right you will see a big ol' green check mark. Our proof has been verified!
+#### Adding Input & Output Signals
 
-We can do this in the "Proof Data" tab as well, but this will verify inside the browser instead of using our fancy smart contract.
+We know that we want two input signals; `x`, and `state`, and a single output signal we will call `out`.
 
-Try playing with the input fields to generate an invalid proof!
+Our inputs will look like this:
 
-You may also want to scroll down to see the contract's verify function. It takes 4 arguments. To get a better feel for how the function works try copy pasting each element from the solidity calldata array into the argument fields.
+```
+signal private input x;
+signal input state;
+```
+Notice our `x` is private, this is a zk circuit after all. And out `state` is public as we want our smart contract be able  to confirm this signal. If a signal is not stated to be private it will be public.
 
-# `ZkpInterface` component
+```
+signal output out;
+```
 
-The frontend is powered by the `ZkpInterface` component. It needs to be fed a few properties in order to function properly.
+Output signals will always be public.
 
-- `inputFields`: An object containing the circuit's default input signals, you can reuse the `input.json` from earlier.
-- `zkey`: The circuit's zkey file.
-- `wasm`: The circuit's wasm file.
-- `vkey`: (optional) A verification key used to verify the the generated proof. If this is not provided the interface will generate one for you.
-- `scVerifyFunc`: The verification function from our smart contract verifier.
+For now we will simply assign out `out` signal as the product of `x` and `state`.
+
+```
+out <== x*state;
+```
+
+Notice the `<==` operator. This assigns a value to a signal while generating a constraint at the same time. See [here](https://docs.circom.io/2.-circom-fundamentals/constraints-generation) for more info.
+
+Your `circuit.circom` should now look like this:
+
+```
+template Main() {
+  signal private input x;
+  signal input state;
+
+  signal output out;
+
+  out <== x*state;
+}
+```
+
+Before we compile our circuit we will need to define some inputs in our `input.json`. Let's keep it simple and give both input signals a value of 2:
+
+```
+{
+  "x": "2",
+  "state": "2"
+}
+```
+
+#### Compile
+
+Now just open up a terminal and run `yarn circom` and our circuit should now be compiled!
+
+## Smart Contract
+
+We're not quite done with our circuit yet, but let's move on to getting our smart contract to accept a zk proof to change state.
+
+Within `packages/hardhat/contracts` there are two contracts we will be interested in; `YourContract.sol`, and `SqMulVerifier.sol` which was generated when we ran `yarn circom` earlier. Take a look through `SqMulVerifier.sol` to see what's happening inside. It looks quite complex, but the part we are interested in is right at the bottom, the `verifyProof()` function!
+
+#### Make `YourContract` a Verifier
+
+First we will need to import our verifier into `YourContract.sol` like so:
+
+```solidity
+import "./SqMulVerifier.sol";
+```
+
+Next our contract will need to become a verifier. Simply:
+
+```solidity
+contract YourContract is Verifier {
+  //...
+}
+```
+
+#### Public Signals
+
+Now that our contract is a verifier we can deploy it and make ourselves a proof!
+
+Run `yarn deploy` in a terminal.
+
+And in another terminal run `yarn start`.
+
+Our app should open in your browser with a simple interface to generate and verify our proofs. Click the "Prove" button and you should see a proof generated that looks somewhat like this:
+
+```json
+{
+  "pi_a": [
+    "10039919915899401315472254225431071885428813597219685501708762199406818073997",
+    "10268184631797638178785625160234178178115421279991328152990740358608470266382",
+    "1"
+  ],
+  "pi_b": [
+    [
+      "11642484425833421100449968257808426788055366991788474857846708714340360060196",
+      "19621364499331227782809817986222885640864370747697002156727573531922689957971"
+    ],
+    [
+      "20503237014553477645966398361239821946600452477321694809944111385033442842598",
+      "19398798654345896021419633604235680694583837162151729573015163364525849528935"
+    ],
+    [
+      "1",
+      "0"
+    ]
+  ],
+  "pi_c": [
+    "17787311029596494884334190326985550454202801548207446007162228337569655281207",
+    "779294060049653872554670723408686596071206860912730416303556369095500166468",
+    "1"
+  ],
+  "protocol": "groth16",
+  "curve": "bn128"
+}
+[
+  "4",
+  "2"
+]
+```
+
+Now if we click over into the "Solidity Calldata" tab you will see this proof parsed into something our solidity smart contract verifier can use:
+
+```json
+[
+  [
+    "10039919915899401315472254225431071885428813597219685501708762199406818073997",
+    "10268184631797638178785625160234178178115421279991328152990740358608470266382"
+  ],
+  [
+    [
+      "19621364499331227782809817986222885640864370747697002156727573531922689957971",
+      "11642484425833421100449968257808426788055366991788474857846708714340360060196"
+    ],
+    [
+      "19398798654345896021419633604235680694583837162151729573015163364525849528935",
+      "20503237014553477645966398361239821946600452477321694809944111385033442842598"
+    ]
+  ],
+  [
+    "17787311029596494884334190326985550454202801548207446007162228337569655281207",
+    "779294060049653872554670723408686596071206860912730416303556369095500166468"
+  ],
+  [
+    "4",
+    "2"
+  ]
+]
+```
+
+These are all the arguments needed for the `verifyProof()` contract function.
+
+The important part for us to understand is the last array. These are the public signals of our proof.
+
+```json
+[
+  "4",
+  "2"
+]
+```
+
+The output signals will be listed first in the array. So in this case our output signal `out` is equal to `4`. Our public input signals are listed after our output signals. The `state` signal is equal to `2` in this proof. Our private input signals will not be listed.
+
+#### Changing Contract State
+
+Now that we understand public signals and where they end up in our proof we can modify our contract state!
+
+In `YourContract.sol` we have :
+
+```
+uint256 public state = 2;
+```
+
+This variable is what we will change with our zk proof.
+
+Take a look at the `verifyProof()` function in `SqMulVerifier.sol` again. Notice the function arguments.
+
+We will create a new function, `changeState()`, in `YourContract.sol` that will take the same arguments as `VerifyProof`:
+
+```solidity
+    function changeState(
+        uint[2] memory a,
+        uint[2][2] memory b,
+        uint[2] memory c,
+        uint[2] memory input
+    ) public {
+
+    }
+```
+
+This function will accept the members of out solidity calldata array from earlier as arguments. But it doesn't do anything yet!
+
+All of our public signal are givent to `changeState()` as the `uint[2] memory input` arg. So `input[0]` is our `out` signal, and `input[1]` is our `state` signal from our circuit.
+
+But before we get to changing state we have to make sure the proof passed into our `changeState()` function is valid. We can just call `verifyProof()` with all of our function arguments, and add a require statement to make sure the proof is valid!
+
+```solidity
+    bool proof = verifyProof(a, b, c, input);
+    require(proof == true, "Invalid proof");
+```
+
+We are going to have a problem here though. Do you know what it is?
+
+Anybody can submit a proof with any input signals. We want to make sure that the circuit's `state` signal is equal to our contract's `state` variable. The solution? Another require statement!
+
+```solidity
+    require(input[1] == state, "Incorrect value");
+```
+
+Now changing the contract's `state` variable is as simple as assigning our proof's `out` signal to the `state` variable.
+
+```soidity
+    state = input[0];
+```
+
+Your `changeState()` function should look a little something like this:
+
+```solidity
+    function changeState(
+        uint[2] memory a,
+        uint[2][2] memory b,
+        uint[2] memory c,
+        uint[2] memory input
+    ) public {
+        bool proof = verifyProof(a, b, c, input);
+        require(input[1] == state, "Incorrect value");
+        require(proof == true, "Invalid proof");
+        state = input[0];
+    }
+```
+
+Now test it out in the frontend! Copy & paste the members of the solidity calldata array into the `changeState()` function of the contract componenet near the bottom of the page.
+
+## A Slightly More Complex Circuit
+
+#### multiplication & Constraints
+
+Congratulations! You can now modify a smart contract's state with a zero knowledge proof!
+
+But our circuit isn't very complex. Let's try to make something a little more interesting.
+
+Head back into our `sqMul/circuit.circom`. Let's square our signals and multiply them by each other.
+
+```
+out <== (x*x)*(state*state);
+```
+
+Now run `yarn circom`.
+
+You should get this error:
+
+```
+Error: Type NQ can not be converted to QEX
+```
+
+This is because we cannot have more than one multiplication per constraint. In other word for each `<==` operation we can only have one `*` operation.
+
+We will need to create a couple intermediate signals and assign the squares of our input signals:
+
+```
+signal temp[2];
+temp[0] <== x*x;
+temp[1] <== state*state;
+```
+Now all we have to do is multiply out `temp` signals and assign them to our `out` signal:
+
+```
+out <== temp[0]*temp[1];
+```
+
+We can `yarn circom` and `yarn deploy` to test our newly modified circuit.
+
+#### Wait, you want more complexity?
+
+Alright, let's do the same computation for `n` number of rounds, except we take the latest product of our squared inputs and multiply it by the last product.
+
+We will have to add the `n` parameter to our circuit template.
+
+```
+template Main(n) {
+  //...
+}
+```
+
+We will also need `n+2` `temp` signals.
+
+```
+signal temp[n+2];
+```
+
+And our circuit will need a `for` loop so we can use an arbitrary number of `n` rounds:
+
+```
+for (var i = 0; i < n; i++) {
+  temp[i+2] <== temp[i]*temp[i+1];
+}
+```
+
+Our `out` signal will need to be assigned the latest `temp` signal:
+
+```
+out <== temp[n+1];
+```
+
+Lastly the instantiation of our circuit will need to specify how many rounds our circuit should calculate.
+
+```
+component main = Main(53);
+```
+
+Now we can `yarn circom` and `yarn deploy`. Give your new circuit and smart contract a whirl!
+
+If this circuit wasn't complex enough for you try building one for yourself, and if you want a different kind of challenge try building a specialized frontend for this or another circuit & smart contract pair!
 
 # 💬 Support Chat
 
