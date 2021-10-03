@@ -13,7 +13,7 @@ Today we'll:
 Clone the repo and install dependencies.
 
 ```bash
-git clone -b circom-contract-state https://github.com/austintgriffith/scaffold-eth.git circom-contract-state
+git clone -b circom-contract-tutorial https://github.com/austintgriffith/scaffold-eth.git circom-contract-tutorial
 
 yarn install
 ```
