@@ -16,4 +16,4 @@ template Main(n) {
   out <== temp[n+1];
 }
 
-component main = Main(42);
+component main = Main(53);
