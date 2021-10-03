@@ -96,9 +96,13 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       //uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
       //uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
 
+      uint256 traveled = block.timestamp-timeAdded[loogiesById[_id][i]];
+      uint8 SPEED = 5;//we will randomize this or have it based on chubbiness
+      traveled = ((traveled * SPEED) + x[loogiesById[_id][i]]) % 400;
+
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
-        '<g transform="translate(', x[loogiesById[_id][i]].toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
+        '<g transform="translate(', uint8(traveled).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
@@ -121,6 +125,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   mapping(uint256 => uint8) x;
   mapping(uint256 => uint8) y;
 
+  mapping(uint256 => uint256) timeAdded;
+
   // to receive ERC721 tokens
   function onERC721Received(
       address operator,
@@ -136,6 +142,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
       x[loogieTokenId] = uint8(randish[0]);
       y[loogieTokenId] = uint8(randish[1]);
+      timeAdded[loogieTokenId] = block.timestamp;
 
       return this.onERC721Received.selector;
     }
