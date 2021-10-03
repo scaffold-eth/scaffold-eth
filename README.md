@@ -62,7 +62,7 @@ signal output out;
 
 Output signals will always be public.
 
-For now we will simply assign out `out` signal as the product of `x` and `state`.
+For now we will simply assign our `out` signal as the product of `x` and `state`.
 
 ```
 out <== x*state;
@@ -234,7 +234,7 @@ We will create a new function, `changeState()`, in `YourContract.sol` that will 
 
 This function will accept the members of out solidity calldata array from earlier as arguments. But it doesn't do anything yet!
 
-All of our public signal are givent to `changeState()` as the `uint[2] memory input` arg. So `input[0]` is our `out` signal, and `input[1]` is our `state` signal from our circuit.
+All of our public signals are given to `changeState()` as the `uint[2] memory input` arg. So `input[0]` is our `out` signal, and `input[1]` is our `state` signal from our circuit.
 
 But before we get to changing state we have to make sure the proof passed into our `changeState()` function is valid. We can just call `verifyProof()` with all of our function arguments, and add a require statement to make sure the proof is valid!
 
@@ -266,8 +266,8 @@ Your `changeState()` function should look a little something like this:
         uint[2] memory c,
         uint[2] memory input
     ) public {
-        bool proof = verifyProof(a, b, c, input);
         require(input[1] == state, "Incorrect value");
+        bool proof = verifyProof(a, b, c, input);
         require(proof == true, "Invalid proof");
         state = input[0];
     }
@@ -316,7 +316,7 @@ We can `yarn circom` and `yarn deploy` to test our newly modified circuit.
 
 #### Wait, you want more complexity?
 
-Alright, let's do the same computation for `n` number of rounds, except we take the latest product of our squared inputs and multiply it by the last product.
+Alright, let's do the same computation for `n` number of rounds, except we take the latest product of our signals and multiply it by the last product.
 
 We will have to add the `n` parameter to our circuit template.
 
