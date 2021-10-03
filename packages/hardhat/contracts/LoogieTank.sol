@@ -22,7 +22,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   using Counters for Counters.Counter;
 
   Counters.Counter private _tokenIds;
-  
+
   LoogiesContract loogies;
   mapping(uint256 => uint256[]) loogiesById;
 
@@ -91,14 +91,14 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   function renderLoogies(uint256 _id) internal view returns (string memory) {
     string memory loogieSVG = "";
-    
+
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
-      uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
+      //uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
+      //uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
 
       loogieSVG = string(abi.encodePacked(
-        loogieSVG, 
-        '<g transform="translate(', x.toString(), ' ', y.toString(), ') scale(0.30 0.30)">',
+        loogieSVG,
+        '<g transform="translate(', x[loogiesById[_id][i]].toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
@@ -116,7 +116,10 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         }
 
         return tempUint;
-    }
+  }
+
+  mapping(uint256 => uint8) x;
+  mapping(uint256 => uint8) y;
 
   // to receive ERC721 tokens
   function onERC721Received(
@@ -129,7 +132,11 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       require(ownerOf(tankId) == from, "you can only add loogies to a tank you own.");
 
       loogiesById[tankId].push(loogieTokenId);
-    
+
+      bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
+      x[loogieTokenId] = uint8(randish[0]);
+      y[loogieTokenId] = uint8(randish[1]);
+
       return this.onERC721Received.selector;
     }
 }

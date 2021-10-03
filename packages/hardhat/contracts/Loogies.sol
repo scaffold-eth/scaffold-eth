@@ -38,10 +38,9 @@ contract Loogies is ERC721Enumerable, Ownable {
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
 
-      bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
-      color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
-      chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
-      genes[id] = keccak256(abi.encodePacked(color[id], chubbiness[id]));
+      genes[id] = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
+      color[id] = bytes2(genes[id][0]) | ( bytes2(genes[id][1]) >> 8 ) | ( bytes3(genes[id][2]) >> 16 );
+      chubbiness[id] = 35+((55*uint256(uint8(genes[id][3])))/255);
 
       return id;
   }
