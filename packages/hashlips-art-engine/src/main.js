@@ -23,9 +23,11 @@ var attributesList = [];
 var dnaList = [];
 
 const buildSetup = () => {
+  // Delete the buildDir if it exists and clear out
   if (fs.existsSync(buildDir)) {
     fs.rmdirSync(buildDir, { recursive: true });
   }
+  // Make the new directory and subdirectories
   fs.mkdirSync(buildDir);
   fs.mkdirSync(`${buildDir}/json`);
   fs.mkdirSync(`${buildDir}/images`);
@@ -98,6 +100,7 @@ const drawBackground = () => {
   ctx.fillRect(0, 0, format.width, format.height);
 };
 
+// Here you can update the metadata for each nft you create...
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
   let tempMetadata = {
@@ -114,6 +117,7 @@ const addMetadata = (_dna, _edition) => {
   attributesList = [];
 };
 
+// Adds the metadata attributes (each layer)
 const addAttributes = (_element) => {
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
@@ -178,10 +182,12 @@ const createDna = (_layers) => {
   return randNum;
 };
 
+// Add the metadata to the manifest
 const writeMetaData = (_data) => {
   fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data);
 };
 
+// Create a single file of metadata for each nft
 const saveMetaDataSingleFile = (_editionCount) => {
   fs.writeFileSync(
     `${buildDir}/json/${_editionCount}.json`,
@@ -198,7 +204,6 @@ const startCreating = async () => {
   let editionCount = 1;
   let failedCount = 0;
   while (layerConfigIndex < layerConfigurations.length) {
-    // console.log(layerConfigurations.length);
     const layers = layersSetup(
       layerConfigurations[layerConfigIndex].layersOrder
     );
