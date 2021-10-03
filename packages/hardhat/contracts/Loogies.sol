@@ -27,6 +27,7 @@ contract Loogies is ERC721Enumerable, Ownable {
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
+  mapping(uint256 => bytes32) public genes;
 
   uint256 mintDeadline = block.timestamp + 24 hours;
 
@@ -40,6 +41,7 @@ contract Loogies is ERC721Enumerable, Ownable {
       bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
       color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
       chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
+      genes[id] = keccak256(abi.encodePacked(color[id], chubbiness[id]));
 
       return id;
   }
@@ -93,8 +95,6 @@ contract Loogies is ERC721Enumerable, Ownable {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
-    console.log(id);
-    console.log("chubbiness", chubbiness[id]);
     string memory render = string(abi.encodePacked(
       '<g id="eye1">',
           '<ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>',
