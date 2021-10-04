@@ -39,7 +39,7 @@ export default function QuadraticDiplomacyCreate({
     let message = "qdip-creation-" + address + voteAllocation + filteredVoters.join();
     console.log("Message:" + message);
 
-    let signature = await userSigner.provider.send("personal_sign", [message, address]);
+    const signature = await userSigner.signMessage(message);
 
     axios
       .post(serverUrl + "distributions", {

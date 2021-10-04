@@ -79,7 +79,7 @@ export default function QuadraticDiplomacyVote({
       sortedVotes.join() +
       sortedVotes.map(voter => selectedContributors[voter]).join();
 
-    const signature = await userSigner.provider.send("personal_sign", [message, address]);
+    const signature = await userSigner.signMessage(message);
 
     setIsSendingTx(true);
 
