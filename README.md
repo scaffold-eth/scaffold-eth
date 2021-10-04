@@ -36,7 +36,7 @@ template Main() {
 component main = Main();
 ```
 
-And out `input.json` should be an empty `JSON` like this:
+And our `input.json` should be an empty `JSON` like this:
 
 ```
 {
@@ -54,7 +54,7 @@ Our inputs will look like this:
 signal private input x;
 signal input state;
 ```
-Notice our `x` is private, this is a zk circuit after all. And out `state` is public as we want our smart contract be able  to confirm this signal. If a signal is not stated to be private it will be public.
+Notice our `x` is private, this is a zk circuit after all. And our `state` is public as we want our smart contract be able  to confirm this signal. If a signal is not stated to be private it will be public.
 
 ```
 signal output out;
@@ -232,7 +232,7 @@ We will create a new function, `changeState()`, in `YourContract.sol` that will 
     }
 ```
 
-This function will accept the members of out solidity calldata array from earlier as arguments. But it doesn't do anything yet!
+This function will accept the members of our solidity calldata array from earlier as arguments. But it doesn't do anything yet!
 
 All of our public signals are given to `changeState()` as the `uint[2] memory input` arg. So `input[0]` is our `out` signal, and `input[1]` is our `state` signal from our circuit.
 
@@ -306,7 +306,7 @@ signal temp[2];
 temp[0] <== x*x;
 temp[1] <== state*state;
 ```
-Now all we have to do is multiply out `temp` signals and assign them to our `out` signal:
+Now all we have to do is multiply our `temp` signals and assign them to our `out` signal:
 
 ```
 out <== temp[0]*temp[1];
