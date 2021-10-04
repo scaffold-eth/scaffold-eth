@@ -65,7 +65,7 @@ export default function QuadraticDiplomacyReward({
         };
       } else {
         votes[votingAddress].hasVoted = true;
-        votes[votingAddress].verifiedSignature = recovered === votingAddress;
+        votes[votingAddress].verifiedSignature = recovered.toLowerCase() === votingAddress.toLowerCase();
       }
 
       Object.entries(selectedContributors).forEach(voteInfo => {
@@ -102,7 +102,7 @@ export default function QuadraticDiplomacyReward({
     });
 
     return [votes, voteCount, sqrts, total];
-  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.votes), votingType]);
+  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.votes).sort().join(), votingType]);
 
   const columns = useMemo(
     () => [
