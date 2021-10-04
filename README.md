@@ -297,7 +297,7 @@ You should get this error:
 Error: Type NQ can not be converted to QEX
 ```
 
-This is because we cannot have more than one multiplication per constraint. In other word for each `<==` operation we can only have one `*` operation.
+See the circom docs([1](https://docs.circom.io/2.-circom-fundamentals/constraints-generation), [2](https://docs.circom.io/2.-circom-fundamentals/signals#assignment-to-signals), [3](https://docs.circom.io/5.-circom-insights/circom-compiler#unknowns)) to see why. A simplified rule to go by is for each `<==` operation we can only have one `*` operation on a signal.
 
 We will need to create a couple intermediate signals and assign the squares of our input signals:
 
