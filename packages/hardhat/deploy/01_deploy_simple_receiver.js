@@ -8,4 +8,5 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     args: [ bank.address ],
     log: true,
   });
+}
 module.exports.tags = ["ClientSimple"];
