@@ -2,6 +2,10 @@ import React, { useState } from "react";
 import { Button, notification } from "antd";
 import axios from "axios";
 
+/* This Home build uses the custom auth process
+  - Signature, message and address is sent to the server for verification and custom JWT token
+  - User can call /video route with JWT token attached to stream video
+*/
 const server = "http://localhost:49832";
 
 function Home({ userSigner, web3Modal }) {
