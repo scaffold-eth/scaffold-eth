@@ -10,7 +10,7 @@ There are profound security implications to how contracts process ether, as we w
 
 The bank contract allows anyone to deposit ether into it. A client must call the deposit() method and attach the ether along with the message. The bank must also keep track of how much each user has deposited.
 
-"""
+```
 contract Bank {
 
   mapping( address => uint256 ) balances;
@@ -20,11 +20,11 @@ contract Bank {
   function deposit() public payable {
       balances[msg.sender] += msg.value;
   }
-"""
+```
 
 Of course, the bank must allow clients to withdraw their funds. To illustrate the differences between send(), transfer(), and call(), the bank has implemented its withdrawls by either method.
 
-"""
+```
   function withdraw_via_transfer(uint256 amount) public {
       // forwards 2300 gas, not adjustable
       require(balances[msg.sender] >= amount, "Invalid withdraw request");
@@ -52,7 +52,7 @@ Of course, the bank must allow clients to withdraw their funds. To illustrate th
       balances[msg.sender] -= amount;
   }
 }
-"""
+```
 
 In each withdraw method, the bank must check the client's balance and reverts if overdrawn.
 
@@ -70,7 +70,7 @@ When you interacted with the bank contract using your own Ethereum account, you 
 
 However, the bank may have another type of client: another contract. Let's define a simple client contract that will send and receive ether from the bank contract. Note that the client contract must be deployed *after* the bank contract, because the address of the bank contract must be passed to the client in it's constructor method.
 
-"""
+```
 import "./Bank.sol";
 
 contract ClientSimple {
@@ -98,7 +98,7 @@ contract ClientSimple {
   fallback() external payable {}
 
 }
-"""
+```
 
 Notice that this contract must have a `receive()` and a `fallback()` function. These functions are called to process the ether when the client contract withdraws from the bank. More information on when each is called can be found [here](https://solidity-by-example.org/sending-ether/).
 
@@ -110,7 +110,7 @@ You may be growing frustrated, hoping to understand the difference between these
 
 A main difference between `send()`, `transfer()`, and `call()` involves how they forward gas with the message for the client to process the ether. So far, we have done nothing but return the ether to the client's balance in either its `receive()` or `fallback()` functions (which are empty). The challenge comes when the client tries to execute more code in these functions:
 
-"""
+```
 contract ClientCounter {
 
   uint256 public count;
@@ -141,7 +141,7 @@ contract ClientCounter {
       count++;
   }
 }
-"""
+```
 
 Now the client wishes to maintain a counter variable, and increment it each time it receives ether. It does so in the receive() or fallback() functions with just one line of code `count++`. Updating an additional storage variable in the EVM requires gas, and the gas comes from the same message that returned the ether to the client. This is where we encounter trouble.
 
@@ -159,7 +159,7 @@ Our bank contract only updates client `balances` after sending ether, this makes
 
 This process continues, much like a recursive algorithm, until the bank balance is drained.
 
-"""
+```
 contract ClientHacker {
 
   Bank bank;
@@ -196,7 +196,7 @@ contract ClientHacker {
     }
   }
 }
-"""
+```
 
 Note that the hacker client contract implementation includes a `hack` boolean flag, so that the hacker can receive ether with the malicious code enabled or disabled.
 
