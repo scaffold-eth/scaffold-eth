@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 import "hardhat/console.sol";
-
+import './ToColor.sol';
 
 abstract contract LoogiesContract {
   mapping(uint256 => bytes32) public genes;
@@ -20,11 +20,13 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   using Strings for uint8;
   using HexStrings for uint160;
   using Counters for Counters.Counter;
+  using ToColor for bytes3;
 
   Counters.Counter private _tokenIds;
 
   LoogiesContract loogies;
   mapping(uint256 => uint256[]) loogiesById;
+  mapping (uint256 => bytes3) public color;
 
   constructor(address _loogies) ERC721("Loogie Tank", "LOOGTANK") {
     loogies = LoogiesContract(_loogies);
@@ -35,6 +37,9 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
+
+      bytes32 genes = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this) ));
+      color[id] = bytes2(genes[0]) | ( bytes2(genes[1]) >> 8 ) | ( bytes3(genes[2]) >> 16 );
 
       return id;
   }
@@ -56,7 +61,9 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
                     description,
                     '", "external_url":"https://burnyboys.com/token/',
                     id.toString(),
-                    '", "owner":"',
+                    '", "attributes": [{"trait_type": "color", "value": "#',
+                    color[id].toColor(),
+                    '"}], "owner":"',
                     (uint160(ownerOf(id))).toHexString(20),
                     '", "image": "',
                     'data:image/svg+xml;base64,',
@@ -82,7 +89,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
+       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#', color[id].toColor(), '" stroke-width="5"/>',
        renderLoogies(id)
     ));
 
