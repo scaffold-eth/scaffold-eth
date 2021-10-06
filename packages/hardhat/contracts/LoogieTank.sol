@@ -93,16 +93,19 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     string memory loogieSVG = "";
 
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      //uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
-      //uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
-
-      uint256 traveled = block.timestamp-timeAdded[loogiesById[_id][i]];
-      uint8 SPEED = 5;//we will randomize this or have it based on chubbiness
-      traveled = ((traveled * SPEED) + x[loogiesById[_id][i]]) % 400;
+      uint8 speedFromGen0 = uint8(loogies.genes(loogiesById[_id][i])[0])%10;
+      uint256 blocksTraveled = block.number-blockAdded[loogiesById[_id][i]];
+      uint8 traveled = uint8((blocksTraveled * speedFromGen0) % 256);
+      uint16 newX;
+      if (traveled > x[loogiesById[_id][i]]) {
+        newX = uint16(x[loogiesById[_id][i]]) + 255 - traveled;
+      } else {
+        newX = x[loogiesById[_id][i]] - traveled;
+      }
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
-        '<g transform="translate(', uint8(traveled).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
+        '<g transform="translate(', uint8(newX).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
@@ -125,7 +128,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   mapping(uint256 => uint8) x;
   mapping(uint256 => uint8) y;
 
-  mapping(uint256 => uint256) timeAdded;
+  mapping(uint256 => uint256) blockAdded;
 
   // to receive ERC721 tokens
   function onERC721Received(
@@ -142,7 +145,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
       x[loogieTokenId] = uint8(randish[0]);
       y[loogieTokenId] = uint8(randish[1]);
-      timeAdded[loogieTokenId] = block.timestamp;
+      blockAdded[loogieTokenId] = block.number;
 
       return this.onERC721Received.selector;
     }
