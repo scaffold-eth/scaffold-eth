@@ -4,8 +4,6 @@ Sending and receiving ether is one of the most fundamental things that a smart c
 
 Let's use 🏗 Scaffold-ETH to explore the methods of sending and receiving ether. We will implement one contract to serve as a "bank," allowing users to deposit and then withdraw funds by either of the three methods.
 
-There are profound security implications to how contracts process ether, as we will soon see. (*foreshadowing*)
-
 ## Bank contract
 
 The bank contract allows anyone to deposit ether into it. A client must call the deposit() method and attach the ether along with the message. The bank must also keep track of how much each user has deposited.
@@ -153,7 +151,7 @@ Find the counter client on the [frontend](https://bank-client-hacker.surge.sh/),
 
 A bank is a honeypot for a hacker. All that ether, just sitting there in the contract balance, sitting there for someone crafty enough to snatch it.
 
-The engineer deploying the bank contract was not schooled in the history of Ethereum, namely the infamous [DAO hack](https://www.coindesk.com/markets/2016/06/25/understanding-the-dao-attack/). The DAO hack was due to a "re-entrancy" attack, in which the attacker receives ether from a contract, and then re-calls the contract method in its `receive()` or `fallback()` functions. The new method call gets added to the EVM stack and is executed with priority over prior calls.
+The engineer deploying the bank contract was not schooled in the history of Ethereum, namely the infamous [DAO hack](https://quantstamp.com/blog/what-is-a-re-entrancy-attack). The DAO hack was due to a "re-entrancy" attack, in which the attacker receives ether from a contract, and then re-calls the contract method in its `receive()` or `fallback()` functions. The new method call gets added to the EVM stack and is executed with priority over prior calls.
 
 Our bank contract only updates client `balances` after sending ether, this makes it vulnerable to a reentrant attack. A hacker can deposit ether into the bank, and then withdraw it. The bank sends the hacker his ether. Before the `balances` are updated, the hacker makes another withdraw. The call still passes our `require(balances[msg.sender] >= amount)` check because `balances` have not been updated yet; as far as the bank is concerned, it still owes the hacker their ether. The bank sends more ether.
 
