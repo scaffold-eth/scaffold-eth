@@ -8,7 +8,7 @@ Let's use 🏗 Scaffold-ETH to explore the methods of sending and receiving ethe
 
 The bank contract allows anyone to deposit ether into it. A client must call the deposit() method and attach the ether along with the message. The bank must also keep track of how much each user has deposited.
 
-```
+```solidity
 contract Bank {
 
   mapping( address => uint256 ) balances;
@@ -22,7 +22,7 @@ contract Bank {
 
 Of course, the bank must allow clients to withdraw their funds. To illustrate the differences between send(), transfer(), and call(), the bank has implemented its withdrawls by either method.
 
-```
+```solidity
   function withdraw_via_transfer(uint256 amount) public {
       // forwards 2300 gas, not adjustable
       require(balances[msg.sender] >= amount, "Invalid withdraw request");
@@ -68,7 +68,7 @@ When you interacted with the bank contract using your own Ethereum account, you 
 
 However, the bank may have another type of client: another contract. Let's define a simple client contract that will send and receive ether from the bank contract. Note that the client contract must be deployed *after* the bank contract, because the address of the bank contract must be passed to the client in it's constructor method.
 
-```
+```solidity
 import "./Bank.sol";
 
 contract ClientSimple {
@@ -108,7 +108,7 @@ You may be growing frustrated, hoping to understand the difference between these
 
 A main difference between `send()`, `transfer()`, and `call()` involves how they forward gas with the message for the client to process the ether. So far, we have done nothing but return the ether to the client's balance in either its `receive()` or `fallback()` functions (which are empty). The challenge comes when the client tries to execute more code in these functions:
 
-```
+```solidity
 contract ClientCounter {
 
   uint256 public count;
@@ -157,7 +157,7 @@ Our bank contract only updates client `balances` after sending ether, this makes
 
 This process continues, much like a recursive algorithm, until the bank balance is drained.
 
-```
+```solidity
 contract ClientHacker {
 
   Bank bank;
