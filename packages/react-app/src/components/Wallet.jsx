@@ -59,7 +59,7 @@ export default function Wallet(props) {
   const [toAddress, setToAddress] = useState();
   const [pk, setPK] = useState();
 
-  const providerSend = props.provider ? (
+  const providerSend = props.signer ? (
     <Tooltip title="Wallet">
       <WalletOutlined
         onClick={() => {
@@ -320,7 +320,7 @@ export default function Wallet(props) {
             disabled={!amount || !toAddress || qr}
             loading={false}
             onClick={() => {
-              const tx = Transactor(props.signer || props.provider);
+              const tx = Transactor(props.signer);
 
               let value;
               try {

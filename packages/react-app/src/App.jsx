@@ -4,11 +4,12 @@ import WalletLink from "walletlink";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
+import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import {INFURA_ID, NETWORK, NETWORKS, ALCHEMY_KEY } from "./constants";
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -16,12 +17,13 @@ import {
   useContractReader,
   useGasPrice,
   useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
-import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+  useUserSigner,
+} from "./hooks";
+
+const { BufferList } = require("bl");
+// https://www.npmjs.com/package/ipfs-http-client
+const ipfsAPI = require("ipfs-http-client");
+const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -33,6 +35,7 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
 const { ethers } = require("ethers");
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -53,11 +56,44 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
+
+// EXAMPLE STARTING JSON:
+const STARTING_JSON = {
+  description: "It's actually a bison?",
+  external_url: "https://austingriffith.com/portfolio/paintings/", // <-- this can link to a page for the specific file too
+  image: "https://austingriffith.com/images/paintings/buffalo.jpg",
+  name: "Buffalo",
+  attributes: [
+    {
+      trait_type: "BackgroundColor",
+      value: "green",
+    },
+    {
+      trait_type: "Eyes",
+      value: "googly",
+    },
+  ],
+};
+
+// helper function to "Get" from IPFS
+// you usually go content.toString() after this...
+const getFromIPFS = async hashToGet => {
+  for await (const file of ipfs.get(hashToGet)) {
+    console.log(file.path);
+    if (!file.content) continue;
+    const content = new BufferList();
+    for await (const chunk of file.content) {
+      content.append(chunk);
+    }
+    console.log(content);
+    return content;
+  }
+};
 
 // 🛰 providers
 if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
@@ -66,18 +102,11 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
-  : null;
-const poktMainnetProvider = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
-    )
-  : null;
-const mainnetInfura = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
-  : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
+const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
+const mainnetAlchemy = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.alchemyapi.io/v2/" + ALCHEMY_KEY) : null;
+const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
+
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
@@ -166,12 +195,7 @@ const web3Modal = new Web3Modal({
 });
 
 function App(props) {
-  const mainnetProvider =
-    poktMainnetProvider && poktMainnetProvider._isProvider
-      ? poktMainnetProvider
-      : scaffoldEthProvider && scaffoldEthProvider._network
-      ? scaffoldEthProvider
-      : mainnetInfura;
+  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetAlchemy;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -250,10 +274,50 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  console.log("🤗 balance:", balance);
 
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  console.log("📟 Transfer events:", transferEvents);
+
+  //
+  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  //
+  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  const [yourCollectibles, setYourCollectibles] = useState();
+
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourCollectibles(collectibleUpdate);
+    };
+    updateYourCollectibles();
+  }, [address, yourBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -340,33 +404,14 @@ function App(props) {
                       },
                     ];
                     console.log("data", data);
-
-                    let switchTx;
-                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
-                    try {
-                      switchTx = await ethereum.request({
-                        method: "wallet_switchEthereumChain",
-                        params: [{ chainId: data[0].chainId }],
-                      });
-                    } catch (switchError) {
-                      // not checking specific error code, because maybe we're not using MetaMask
-                      try {
-                        switchTx = await ethereum.request({
-                          method: "wallet_addEthereumChain",
-                          params: data,
-                        });
-                      } catch (addError) {
-                        // handle "add" error
-                      }
-                    }
-
-                    if (switchTx) {
-                      console.log(switchTx);
+                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
+                    if (tx) {
+                      console.log(tx);
                     }
                   }}
                 >
                   <b>{networkLocal && networkLocal.name}</b>
-                </Button>
+                </Button>.
               </div>
             }
             type="error"
@@ -423,7 +468,7 @@ function App(props) {
     !faucetClicked &&
     localProvider &&
     localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    localProvider._network.chainId == 31337 &&
     yourLocalBalance &&
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
@@ -445,6 +490,16 @@ function App(props) {
     );
   }
 
+  const [yourJSON, setYourJSON] = useState(STARTING_JSON);
+  const [sending, setSending] = useState();
+  const [ipfsHash, setIpfsHash] = useState();
+  const [ipfsDownHash, setIpfsDownHash] = useState();
+
+  const [downloading, setDownloading] = useState();
+  const [ipfsContent, setIpfsContent] = useState();
+
+  const [transferToAddresses, setTransferToAddresses] = useState({});
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -457,49 +512,19 @@ function App(props) {
               onClick={() => {
                 setRoute("/");
               }}
-              to="/"
+              to="/transfers"
             >
-              YourContract
+              Transfers
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/debugcontracts">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/debugcontracts");
               }}
-              to="/hints"
+              to="/debugcontracts"
             >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              Debug Contracts
             </Link>
           </Menu.Item>
         </Menu>
@@ -511,67 +536,160 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+            <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <List
+                bordered
+                dataSource={yourCollectibles}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
+                          </div>
+                        }
+                      >
+                        <div>
+                          <img src={item.image} style={{ maxWidth: 150 }} />
+                        </div>
+                        <div>{item.description}</div>
+                      </Card>
 
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          </Route>
+
+          <Route path="/transfers">
+            <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <List
+                bordered
+                dataSource={transferEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item[0] + "_" + item[1] + "_" + item.blockNumber + "_" + item[2].toNumber()}>
+                      <span style={{ fontSize: 16, marginRight: 8 }}>#{item[2].toNumber()}</span>
+                      <Address address={item[0]} ensProvider={mainnetProvider} fontSize={16} /> =&gt;
+                      <Address address={item[1]} ensProvider={mainnetProvider} fontSize={16} />
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          </Route>
+
+          <Route path="/ipfsup">
+            <div style={{ paddingTop: 32, width: 740, margin: "auto", textAlign: "left" }}>
+              <ReactJson
+                style={{ padding: 8 }}
+                src={yourJSON}
+                theme="pop"
+                enableClipboard={false}
+                onEdit={(edit, a) => {
+                  setYourJSON(edit.updated_src);
+                }}
+                onAdd={(add, a) => {
+                  setYourJSON(add.updated_src);
+                }}
+                onDelete={(del, a) => {
+                  setYourJSON(del.updated_src);
+                }}
+              />
+            </div>
+
+            <Button
+              style={{ margin: 8 }}
+              loading={sending}
+              size="large"
+              shape="round"
+              type="primary"
+              onClick={async () => {
+                console.log("UPLOADING...", yourJSON);
+                setSending(true);
+                setIpfsHash();
+                const result = await ipfs.add(JSON.stringify(yourJSON)); // addToIPFS(JSON.stringify(yourJSON))
+                if (result && result.path) {
+                  setIpfsHash(result.path);
+                }
+                setSending(false);
+                console.log("RESULT:", result);
+              }}
+            >
+              Upload to IPFS
+            </Button>
+
+            <div style={{ padding: 16, paddingBottom: 150 }}>{ipfsHash}</div>
+          </Route>
+          <Route path="/ipfsdown">
+            <div style={{ paddingTop: 32, width: 740, margin: "auto" }}>
+              <Input
+                value={ipfsDownHash}
+                placeHolder="IPFS hash (like QmadqNw8zkdrrwdtPFK1pLi8PPxmkQ4pDJXY8ozHtz6tZq)"
+                onChange={e => {
+                  setIpfsDownHash(e.target.value);
+                }}
+              />
+            </div>
+            <Button
+              style={{ margin: 8 }}
+              loading={sending}
+              size="large"
+              shape="round"
+              type="primary"
+              onClick={async () => {
+                console.log("DOWNLOADING...", ipfsDownHash);
+                setDownloading(true);
+                setIpfsContent();
+                const result = await getFromIPFS(ipfsDownHash); // addToIPFS(JSON.stringify(yourJSON))
+                if (result && result.toString) {
+                  setIpfsContent(result.toString());
+                }
+                setDownloading(false);
+              }}
+            >
+              Download from IPFS
+            </Button>
+
+            <pre style={{ padding: 16, width: 500, margin: "auto", paddingBottom: 150 }}>{ipfsContent}</pre>
+          </Route>
+          <Route path="/debugcontracts">
             <Contract
-              name="YourContract"
+              name="YourCollectible"
               signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-              contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
             />
           </Route>
         </Switch>
