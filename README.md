@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH - 🎟 Offchain Dynatic NFT Generation
+# 🏗 Scaffold-ETH - 🎟 Offchain Dynamic NFT Generation
 
 > Deploy your own dynamic ERC721!
 ============
