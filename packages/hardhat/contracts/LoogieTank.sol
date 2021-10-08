@@ -93,24 +93,40 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     string memory loogieSVG = "";
 
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      uint8 speedFromGen0 = uint8(loogies.genes(loogiesById[_id][i])[0])%10;
-      uint256 blocksTraveled = block.number-blockAdded[loogiesById[_id][i]];
-      uint8 traveled = uint8((blocksTraveled * speedFromGen0) % 256);
-      uint16 newX;
-      if (traveled > x[loogiesById[_id][i]]) {
-        newX = uint16(x[loogiesById[_id][i]]) + 255 - traveled;
-      } else {
-        newX = x[loogiesById[_id][i]] - traveled;
-      }
+      uint8 blocksTraveled = uint8((block.number-blockAdded[loogiesById[_id][i]])%256);
+
+      uint8 newX = newPos(
+        // speed in x direction
+        int8(uint8(loogies.genes(loogiesById[_id][i])[0]))%10,
+        blocksTraveled,
+        x[loogiesById[_id][i]]);
+
+      uint8 newY = newPos(
+        // speed in y direction
+        int8(uint8(loogies.genes(loogiesById[_id][i])[1]))%10,
+        blocksTraveled,
+        y[loogiesById[_id][i]]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
-        '<g transform="translate(', uint8(newX).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
+        '<g transform="translate(', newX.toString(), ' ', newY.toString(), ') scale(0.30 0.30)">',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
 
     return loogieSVG;
+  }
+
+  function newPos(int8 speed, uint8 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
+      uint16 traveled;
+      if (speed >= 0) {
+        traveled = uint16((blocksTraveled * uint8(speed)) % 256);
+        return uint8((initPos + traveled) % 256);
+      } else {
+        traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
+        uint16 l = (uint16(initPos) + 255 - traveled)%256;
+        return uint8(l);
+      }
   }
 
   // https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol#L374
