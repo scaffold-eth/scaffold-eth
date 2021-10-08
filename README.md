@@ -1,7 +1,6 @@
 # 🏗 Scaffold-ETH - 🎟 Offchain Dynamic NFT Generation
 
 > Deploy your own dynamic ERC721!
-============
 
 While dApps on Ethereum have grown in complexity, depth, and breadth in the past few years. One missing piece is the efficient querying of blockchain information in real-time.
 
