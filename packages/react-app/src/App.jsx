@@ -188,12 +188,39 @@ function App(props) {
   const yourLoogieTankBalance = loogieTankBalance && loogieTankBalance.toNumber && loogieTankBalance.toNumber();
   const [yourLoogieTanks, setYourLoogieTanks] = useState();
 
+  async function updateLoogieTanks() {
+    const loogieTankUpdate = [];
+    for (let tokenIndex = 0; tokenIndex < yourLoogieTankBalance; tokenIndex++) {
+      try {
+        console.log("Getting token index", tokenIndex);
+        const tokenId = await readContracts.LoogieTank.tokenOfOwnerByIndex(address, tokenIndex);
+        console.log("tokenId", tokenId);
+        const tokenURI = await readContracts.LoogieTank.tokenURI(tokenId);
+        console.log("tokenURI", tokenURI);
+        const jsonManifestString = atob(tokenURI.substring(29))
+        console.log("jsonManifestString", jsonManifestString);
+
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          loogieTankUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+
+      } catch (e) {
+        console.log(e);
+      }
+    }
+    setYourLoogieTanks(loogieTankUpdate.reverse());
+  }
+
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const loogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
+          console.log("Getting token index", tokenIndex);
           const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
           const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
@@ -218,35 +245,10 @@ function App(props) {
         }
       }
       setYourLoogies(loogieUpdate.reverse());
-
-      const loogieTankUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < yourLoogieTankBalance; tokenIndex++) {
-        try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.LoogieTank.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.LoogieTank.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
-            loogieTankUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourLoogieTanks(loogieTankUpdate.reverse());
+      updateLoogieTanks();
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance, yourLoogieTankBalance]);
-  
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -502,6 +504,7 @@ function App(props) {
               <Button type={"primary"} onClick={() => {
                 tx(writeContracts.LoogieTank.mintItem())
               }}>MINT</Button>
+              <Button onClick={() => updateLoogieTanks()}>Refresh</Button>
             </div>
             {/* */}
 
@@ -552,6 +555,13 @@ function App(props) {
                           }}
                         >
                           Transfer
+                        </Button>
+                        <br/><br/>
+                        <Button
+                          onClick={() => {
+                            tx(writeContracts.LoogieTank.returnAllLoogies(id))
+                          }}>
+                          Eject Loogies
                         </Button>
                       </div>
                     </List.Item>

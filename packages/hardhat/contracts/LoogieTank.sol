@@ -12,6 +12,7 @@ import "hardhat/console.sol";
 abstract contract LoogiesContract {
   mapping(uint256 => bytes32) public genes;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
+  function transferFrom(address from, address to, uint256 id) external virtual;
 }
 
 contract LoogieTank is ERC721Enumerable, IERC721Receiver {
@@ -37,6 +38,15 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       _mint(msg.sender, id);
 
       return id;
+  }
+
+  function returnAllLoogies(uint256 _id) external {
+    require(msg.sender == ownerOf(_id), "only tank owner can return the loogies");
+    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
+      loogies.transferFrom(address(this), ownerOf(_id), loogiesById[_id][i]);
+    }
+
+    delete loogiesById[_id];
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
@@ -93,7 +103,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     string memory loogieSVG = "";
 
     for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      uint8 blocksTraveled = uint8((block.number-blockAdded[loogiesById[_id][i]])%256);
+      uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
 
       uint8 newX = newPos(
         // speed in x direction
@@ -117,15 +127,14 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     return loogieSVG;
   }
 
-  function newPos(int8 speed, uint8 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
+  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
       uint16 traveled;
       if (speed >= 0) {
         traveled = uint16((blocksTraveled * uint8(speed)) % 256);
         return uint8((initPos + traveled) % 256);
       } else {
         traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
-        uint16 l = (uint16(initPos) + 255 - traveled)%256;
-        return uint8(l);
+        return uint8((255 - traveled + initPos)%256);
       }
   }
 
