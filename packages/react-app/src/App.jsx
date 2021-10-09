@@ -156,8 +156,9 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
   // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
+  useOnBlock(localProvider, () => {
+    console.log(`⛓ A new rinkeby block is here: ${localProvider._lastBlockNumber}`);
+    updateLoogieTanks();
   });
 
   // Then read your DAI balance like:
