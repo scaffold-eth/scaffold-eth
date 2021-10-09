@@ -1,6 +1,5 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
-
-//SPDX-License-Identifier: MIT
 
 contract Variables {
     // State variables are declared outside a function, stored on the blockchain

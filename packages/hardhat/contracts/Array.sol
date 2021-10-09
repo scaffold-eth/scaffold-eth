@@ -1,9 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "hardhat/console.sol";
-
-contract YourContract {
+contract Array {
   uint[] public array;
   uint[] public array2 = [1, 2, 3];
   uint[10] public fixedSizeArray; // fixed size array, all elements initialize to 0

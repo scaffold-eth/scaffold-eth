@@ -1,11 +1,10 @@
+// SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
-//SPDX-License-Identifier: MIT
 
 contract Mapping {
   mapping(address => uint) public myMap;
 
   function get(address _addr) public view returns (uint) {
-    // If value was never set, Mapping will return the default value
     return myMap[_addr];
   }
 

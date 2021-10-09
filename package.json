@@ -65,5 +65,7 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {}
+  "dependencies": {
+    "babel-jest": "^26.6.0"
+  }
 }
