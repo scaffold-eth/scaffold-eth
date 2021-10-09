@@ -5,10 +5,6 @@ import "hardhat/console.sol";
 //import "@openzeppelin/contracts/access/Ownable.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 
-contract HelloWorld {
-    string public greet = "Hello World!";
-}
-
 
   //event SetPurpose(address sender, string purpose);
 
@@ -18,8 +14,12 @@ contract HelloWorld {
     // what should we do on deploy?
   }
 
+contract HelloWorld {
+    string public greet = "Hello World!";
+}
+
   function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
+      greet = "Hello World!";
       console.log(msg.sender,"set purpose to",purpose);
       //emit SetPurpose(msg.sender, purpose);
   }
