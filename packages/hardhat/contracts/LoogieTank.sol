@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
-import "hardhat/console.sol";
+// import "hardhat/console.sol";
 
 
 abstract contract LoogiesContract {
@@ -81,7 +81,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="270" height="270" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -92,8 +92,12 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
-       renderLoogies(id)
+       '<rect x="0" y="0" width="270" height="270" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
+       // - (0.3, the scaling factor) * loogie head's (cx, cy).
+       // Without this, the loogies move in rectangle translated towards bottom-right.
+       '<g transform="translate(-60 -62)">',
+       renderLoogies(id),
+       '</g>'
     ));
 
     return render;
@@ -102,24 +106,31 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function renderLoogies(uint256 _id) internal view returns (string memory) {
     string memory loogieSVG = "";
 
-    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
+    for (uint8 i = 0; i < loogiesById[_id].length; i++) {
       uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
+      uint8 newX;
+      uint8 endX;
+      uint8 newY;
+      uint8 endY;
 
-      uint8 newX = newPos(
+      (newX, endX) = newPos(
         // speed in x direction
-        int8(uint8(loogies.genes(loogiesById[_id][i])[0]))%10,
+        int8(uint8(loogies.genes(loogiesById[_id][i])[0])),
         blocksTraveled,
         x[loogiesById[_id][i]]);
 
-      uint8 newY = newPos(
+      (newY, endY) = newPos(
         // speed in y direction
-        int8(uint8(loogies.genes(loogiesById[_id][i])[1]))%10,
+        int8(uint8(loogies.genes(loogiesById[_id][i])[1])),
         blocksTraveled,
         y[loogiesById[_id][i]]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
-        '<g transform="translate(', newX.toString(), ' ', newY.toString(), ') scale(0.30 0.30)">',
+        '<g>',
+        '<animateTransform attributeName="transform" dur="15s" fill="freeze" type="translate" additive="sum" ',
+        'values="', newX.toString(), ' ', newY.toString(), ';', endX.toString(), ' ', endY.toString(),'"/>',
+        '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
@@ -127,14 +138,32 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     return loogieSVG;
   }
 
-  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
+  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8, uint8) {
       uint16 traveled;
+      uint16 start;
+      uint16 end;
+
       if (speed >= 0) {
+        // console.log("speed", uint8(speed).toString());
         traveled = uint16((blocksTraveled * uint8(speed)) % 256);
-        return uint8((initPos + traveled) % 256);
+        start = (initPos + traveled) % 256;
+        end = (start + uint8(speed)) % 256;
+        // console.log("start", start.toString());
+        // console.log("end", end.toString());
+        return (uint8(start), uint8(end));
       } else {
+        // console.log("speed", uint8(-speed).toString());
         traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
-        return uint8((255 - traveled + initPos)%256);
+        start = (255 - traveled + initPos)%256;
+
+        if (start >= uint8(-speed)) {
+          end = start - uint8(-speed);
+        } else {
+          end = start + 255  - uint8(-speed);
+        }
+        // console.log("start", start.toString());
+        // console.log("end", end.toString());
+        return (uint8(start), uint8(end));
       }
   }
 
