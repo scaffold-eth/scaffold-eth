@@ -2,7 +2,7 @@ import React from "react";
 import Jazzicon from "react-jazzicon";
 import { toChecksumAddress } from "ethereumjs-util";
 
-export default function JazziconComponent (props) {
+export default function Blockie (props) {
   if (!props.address || typeof props.address.toLowerCase !== "function") {
     return <span />;
   }
