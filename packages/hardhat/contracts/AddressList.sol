@@ -85,6 +85,27 @@ contract AddressList {
         list = listGroup[id].list.values();
     }
 
+    // get list length
+    function getLength(string calldata name)
+        external
+        view
+        returns (uint256 length)
+    {
+        bytes32 id = _getRoomId(name);
+
+        length = listGroup[id].list.length();
+    }
+
+    function getAddressAtIndex(string calldata name, uint256 index)
+        external
+        view
+        returns (address add)
+    {
+        bytes32 id = _getRoomId(name);
+
+        add = listGroup[id].list.at(index);
+    }
+
     // get List owner
     function getListMeta(string calldata name)
         external
