@@ -12,6 +12,7 @@ import './ToColor.sol';
 abstract contract LoogiesContract {
   mapping(uint256 => bytes32) public genes;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
+  function transferFrom(address from, address to, uint256 id) external virtual;
 }
 
 contract LoogieTank is ERC721Enumerable, IERC721Receiver {
@@ -42,6 +43,15 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       color[id] = bytes2(genes[0]) | ( bytes2(genes[1]) >> 8 ) | ( bytes3(genes[2]) >> 16 );
 
       return id;
+  }
+
+  function returnAllLoogies(uint256 _id) external {
+    require(msg.sender == ownerOf(_id), "only tank owner can return the loogies");
+    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
+      loogies.transferFrom(address(this), ownerOf(_id), loogiesById[_id][i]);
+    }
+
+    delete loogiesById[_id];
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
@@ -78,7 +88,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="270" height="270" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -99,22 +109,65 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function renderLoogies(uint256 _id) internal view returns (string memory) {
     string memory loogieSVG = "";
 
-    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      //uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
-      //uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
+    for (uint8 i = 0; i < loogiesById[_id].length; i++) {
+      uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
+      uint8 newX;
+      uint8 endX;
+      uint8 newY;
+      uint8 endY;
 
-      uint256 traveled = block.timestamp-timeAdded[loogiesById[_id][i]];
-      uint8 SPEED = 5;//we will randomize this or have it based on chubbiness
-      traveled = ((traveled * SPEED) + x[loogiesById[_id][i]]) % 400;
+      (newX, endX) = newPos(
+        // speed in x direction
+        int8(uint8(loogies.genes(loogiesById[_id][i])[0])),
+        blocksTraveled,
+        x[loogiesById[_id][i]]);
+
+      (newY, endY) = newPos(
+        // speed in y direction
+        int8(uint8(loogies.genes(loogiesById[_id][i])[1])),
+        blocksTraveled,
+        y[loogiesById[_id][i]]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
-        '<g transform="translate(', uint8(traveled).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
+        '<g>',
+        '<animateTransform attributeName="transform" dur="15s" fill="freeze" type="translate" additive="sum" ',
+        'values="', newX.toString(), ' ', newY.toString(), ';', endX.toString(), ' ', endY.toString(),'"/>',
+        '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
     }
 
     return loogieSVG;
+  }
+
+  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8, uint8) {
+      uint16 traveled;
+      uint16 start;
+      uint16 end;
+
+      if (speed >= 0) {
+        // console.log("speed", uint8(speed).toString());
+        traveled = uint16((blocksTraveled * uint8(speed)) % 256);
+        start = (initPos + traveled) % 256;
+        end = (start + uint8(speed)) % 256;
+        // console.log("start", start.toString());
+        // console.log("end", end.toString());
+        return (uint8(start), uint8(end));
+      } else {
+        // console.log("speed", uint8(-speed).toString());
+        traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
+        start = (255 - traveled + initPos)%256;
+
+        if (start >= uint8(-speed)) {
+          end = start - uint8(-speed);
+        } else {
+          end = start + 255  - uint8(-speed);
+        }
+        // console.log("start", start.toString());
+        // console.log("end", end.toString());
+        return (uint8(start), uint8(end));
+      }
   }
 
   // https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol#L374
@@ -132,7 +185,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   mapping(uint256 => uint8) x;
   mapping(uint256 => uint8) y;
 
-  mapping(uint256 => uint256) timeAdded;
+  mapping(uint256 => uint256) blockAdded;
 
   // to receive ERC721 tokens
   function onERC721Received(
@@ -149,7 +202,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
       x[loogieTokenId] = uint8(randish[0]);
       y[loogieTokenId] = uint8(randish[1]);
-      timeAdded[loogieTokenId] = block.timestamp;
+      blockAdded[loogieTokenId] = block.number;
 
       return this.onERC721Received.selector;
     }
