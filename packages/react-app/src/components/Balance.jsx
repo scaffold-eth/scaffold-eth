@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useBalance } from "eth-hooks";
-import { useLocalStorage } from "../hooks"
 
 const { utils } = require("ethers");
 
@@ -31,7 +30,7 @@ const { utils } = require("ethers");
 */
 
 export default function Balance(props) {
-  const [dollarMode, setDollarMode] = useLocalStorage("dollarMode", true);
+  const [dollarMode, setDollarMode] = useState(true);
 
   // const [listening, setListening] = useState(false);
 
