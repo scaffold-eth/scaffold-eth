@@ -60,7 +60,9 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = 
+// NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+NETWORKS.ropsten;
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
