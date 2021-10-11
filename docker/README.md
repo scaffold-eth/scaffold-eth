@@ -18,9 +18,12 @@ cd scaffold-eth
 > [advanced] running front-end on a different port (eg. 8080):
 
 ```bash
+docker rm -f SCAFFOLD_ETH
+
 docker run \
   --name SCAFFOLD_ETH \
   -v `pwd`:/opt/scaffold-eth \
+  -w /opt/scaffold-eth \
   -e PORT=8080 \
   -p 8080:8080 \
   -p 8545:8545 \
@@ -32,6 +35,8 @@ docker run \
 > [advanced] running the container in interactive mode (must run each tool manually):
 
 ```bash
+docker rm -f SCAFFOLD_ETH
+
 docker run \
   --name SCAFFOLD_ETH \
   -v `pwd`:/opt/scaffold-eth \
