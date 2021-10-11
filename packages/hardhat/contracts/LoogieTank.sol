@@ -108,28 +108,39 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
     for (uint8 i = 0; i < loogiesById[_id].length; i++) {
       uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
+      int8 speedX = int8(uint8(loogies.genes(loogiesById[_id][i])[0]));
+      int8 speedY = int8(uint8(loogies.genes(loogiesById[_id][i])[1]));
       uint8 newX;
-      uint8 endX;
       uint8 newY;
-      uint8 endY;
 
-      (newX, endX) = newPos(
-        // speed in x direction
-        int8(uint8(loogies.genes(loogiesById[_id][i])[0])),
+      newX = newPos(
+        speedX,
         blocksTraveled,
         x[loogiesById[_id][i]]);
 
-      (newY, endY) = newPos(
-        // speed in y direction
-        int8(uint8(loogies.genes(loogiesById[_id][i])[1])),
+      newY = newPos(
+        speedY,
         blocksTraveled,
         y[loogiesById[_id][i]]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
         '<g>',
-        '<animateTransform attributeName="transform" dur="15s" fill="freeze" type="translate" additive="sum" ',
-        'values="', newX.toString(), ' ', newY.toString(), ';', endX.toString(), ' ', endY.toString(),'"/>',
+        '<animateTransform attributeName="transform" dur="1500s" fill="freeze" type="translate" additive="sum" ',
+        'values="', newX.toString(), ' ', newY.toString(), ';'));
+
+      for (uint8 j = 0; j < 100; j++) {
+        newX = newPos(speedX, 1, newX);
+        newY = newPos(speedY, 1, newY);
+
+        loogieSVG = string(abi.encodePacked(
+          loogieSVG,
+          newX.toString(), ' ', newY.toString(), ';'));
+      }
+
+      loogieSVG = string(abi.encodePacked(
+        loogieSVG,
+        '"/>',
         '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
         loogies.renderTokenById(loogiesById[_id][i]),
         '</g>'));
@@ -138,32 +149,25 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     return loogieSVG;
   }
 
-  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8, uint8) {
+  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
       uint16 traveled;
       uint16 start;
-      uint16 end;
 
       if (speed >= 0) {
         // console.log("speed", uint8(speed).toString());
         traveled = uint16((blocksTraveled * uint8(speed)) % 256);
         start = (initPos + traveled) % 256;
-        end = (start + uint8(speed)) % 256;
         // console.log("start", start.toString());
         // console.log("end", end.toString());
-        return (uint8(start), uint8(end));
+        return uint8(start);
       } else {
         // console.log("speed", uint8(-speed).toString());
         traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
         start = (255 - traveled + initPos)%256;
 
-        if (start >= uint8(-speed)) {
-          end = start - uint8(-speed);
-        } else {
-          end = start + 255  - uint8(-speed);
-        }
         // console.log("start", start.toString());
         // console.log("end", end.toString());
-        return (uint8(start), uint8(end));
+        return uint8(start);
       }
   }
 
@@ -193,6 +197,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
       uint256 tankId = toUint256(tankIdData);
       require(ownerOf(tankId) == from, "you can only add loogies to a tank you own.");
+      require(loogiesById[tankId].length < 256, "tank has reached the max limit of 255 loogies.");
 
       loogiesById[tankId].push(loogieTokenId);
 
