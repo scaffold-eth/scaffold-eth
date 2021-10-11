@@ -8,29 +8,38 @@ Prerequisite: [Docker](https://docs.docker.com/engine/install/)/)
 git clone https://github.com/austintgriffith/scaffold-eth.git
 ```
 
-> run the script that builds the Docker image (takes some minutes to finish):
+> [basic] run the script that sets the stack up and that's it (takes some minutes to finish):
 
 ```bash
-cd scaffold-eth/docker
-./docker_build.sh
-```
-
-> [basic] run the script that spins the stack up and that's it (can take few seconds to set up):
-
-```bash
-./docker_run.sh
+cd scaffold-eth
+./docker/docker_setup.sh
 ```
 
 > [advanced] running front-end on a different port (eg. 8080):
 
 ```bash
-docker run --name SCAFFOLD_ETH -e PORT=8080 -p 8080:8080 -p 8545:8545 -dt scaffold-eth
+docker run \
+  --name SCAFFOLD_ETH \
+  -v `pwd`:/opt/scaffold-eth \
+  -e PORT=8080 \
+  -p 8080:8080 \
+  -p 8545:8545 \
+  -dt node:16
+
+./docker/docker_setup.sh
 ```
 
 > [advanced] running the container in interactive mode (must run each tool manually):
 
 ```bash
-docker run --name SCAFFOLD_ETH -p 3000:3000 -p 8545:8545 --entrypoint /bin/bash -ti scaffold-eth
+docker run \
+  --name SCAFFOLD_ETH \
+  -v `pwd`:/opt/scaffold-eth \
+  -w /opt/scaffold-eth \
+  -p 3000:3000 \
+  -p 8545:8545 \
+  --entrypoint /bin/bash \
+  -ti node:16
 ```
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
