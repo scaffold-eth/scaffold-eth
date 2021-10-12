@@ -1,6 +1,7 @@
 import { Menu } from "antd";
 import "antd/dist/antd.css";
 import Head from "next/head";
+import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { Header } from "../components";
@@ -12,6 +13,11 @@ const { SubMenu } = Menu;
 
 function MyApp({ Component, pageProps }) {
   const prevTheme = useRef("light");
+  const [current, setCurrent] = useState();
+
+  const handleMenuClick = e => {
+    setCurrent(e.key);
+  };
 
   const themes = {
     dark: `/css/dark-theme.css`,
@@ -33,7 +39,18 @@ function MyApp({ Component, pageProps }) {
             />
           </Head>
           <Header />
-          <MenuHeader />
+          <Menu onClick={handleMenuClick} selectedKeys={[current]} mode="horizontal">
+            <Menu.Item key="home">
+              <Link href="/">
+                <a>Home</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="debug">
+              <Link href="/debug">
+                <a>Debug Contracts</a>
+              </Link>
+            </Menu.Item>
+          </Menu>
           <DevUI />
           <Component {...pageProps} />
         </>
@@ -41,25 +58,5 @@ function MyApp({ Component, pageProps }) {
     </Web3Provider>
   );
 }
-
-// todo: implement the next/router for routing the pages
-const MenuHeader = () => {
-  const [current, setCurrent] = useState();
-
-  const handleMenuClick = e => {
-    setCurrent(e.key);
-  };
-
-  return (
-    <Menu onClick={handleMenuClick} selectedKeys={[current]} mode="horizontal">
-      <Menu.Item key="home">
-        <a href="/">Home</a>
-      </Menu.Item>
-      <Menu.Item key="debug">
-        <a href="/debug">Debug Contracts</a>
-      </Menu.Item>
-    </Menu>
-  );
-};
 
 export default MyApp;
