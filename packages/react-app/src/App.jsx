@@ -1,13 +1,15 @@
+/* eslint-disable prettier/prettier */
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Input } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, AddressInput } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -23,7 +25,7 @@ import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
-import { useContractConfig } from "./hooks";
+import { useContractConfig, useExternalContractLoader } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -49,7 +51,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -96,6 +98,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.i
 /*
   Web3 modal helps us "connect" external wallets:
 */
+/*
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
@@ -160,6 +163,7 @@ const web3Modal = new Web3Modal({
     },
   },
 });
+*/
 
 function App(props) {
   const mainnetProvider =
@@ -379,6 +383,18 @@ function App(props) {
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
+    setInjectedProvider(new Web3Provider(provider));
+  }, [setInjectedProvider]);
+
+  useEffect(() => {
+    if (web3Modal.cachedProvider) {
+      loadWeb3Modal();
+    }
+  }, [loadWeb3Modal]);
+
+  /*
+  const loadWeb3Modal = useCallback(async () => {
+    const provider = await web3Modal.connect();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {
@@ -403,7 +419,7 @@ function App(props) {
       loadWeb3Modal();
     }
   }, [loadWeb3Modal]);
-
+  */
   const [route, setRoute] = useState();
   useEffect(() => {
     setRoute(window.location.pathname);
@@ -439,6 +455,46 @@ function App(props) {
     );
   }
 
+  const [contractAddress, setContractAddress] = useState("");
+  const [contractABI, setContractABI] = useState("");
+  const { TextArea } = Input;
+  let theExternalContract = useExternalContractLoader(injectedProvider, contractAddress, contractABI);
+
+  let externalContractDisplay = "";
+  /*
+  useEffect(() => {
+    if (contractAddress && contractABI) {
+      externalContractDisplay = (
+        <div style={{ padding: 32, backgroundColor: "#eeffef", fontWeight: "bolder" }}>
+          🚀 🎖 👩‍🚀 - External contract data entered -- PROCEED -- 🎉 🍾 🎊
+        </div>
+      );
+    }
+  }, [contractAddress, contractABI]);
+  */
+
+  if (contractAddress && contractABI) {
+    externalContractDisplay = (
+      <><div style={{ padding: 32, backgroundColor: "#eeffef", fontWeight: "bolder" }}>
+        🚀 🎖 👩‍🚀 - External contract data entered -- PROCEED -- 🎉 🍾 🎊
+      </div><Contract
+          customContract={theExternalContract}
+          signer={userSigner}
+          provider={localProvider}
+          chainId={selectedChainId} /></>
+    );
+  } else {
+    theExternalContract = null;
+  }
+
+  console.log("==-- userSigner: ", userSigner);
+  console.log("==-- localProvider: ", localProvider);
+  console.log("==-- address: ", address);
+  console.log("==-- blockExplorer: ", blockExplorer);
+  console.log("==-- contractConfig: ", contractConfig);
+  console.log("==-- selectedChainId: ", selectedChainId);
+  console.log("==-- theExternalContract: ", theExternalContract);
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -456,44 +512,14 @@ function App(props) {
               YourContract
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/externalContract">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/externalContract");
               }}
-              to="/hints"
+              to="/externalContract"
             >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              External Contract
             </Link>
           </Menu.Item>
         </Menu>
@@ -505,7 +531,6 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
             <Contract
               name="YourContract"
               signer={userSigner}
@@ -513,60 +538,31 @@ function App(props) {
               address={address}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
+              chainId={selectedChainId}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-              contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
-            />
+          <Route path="/externalContract">
+            <div>This is where we intercat with the external contract</div>
+            <div style={{ margin: 8 }}>
+              <div style={{ padding: 4 }}>
+                <AddressInput
+                  placeholder="Enter Contract Address"
+                  ensProvider={mainnetProvider}
+                  value={contractAddress}
+                  onChange={setContractAddress}
+                />
+              </div>
+              <div style={{ padding: 4 }}>
+                <TextArea
+                  placeholder="Enter Contract ABI JSON"
+                  value={contractABI}
+                  onChange={e => {
+                    setContractABI(e.target.value);
+                  }}
+                />
+              </div>
+              {externalContractDisplay}
+            </div>
           </Route>
         </Switch>
       </BrowserRouter>
@@ -632,4 +628,42 @@ function App(props) {
   );
 }
 
+/*
+  Web3 modal helps us "connect" external wallets:
+*/
+const web3Modal = new Web3Modal({
+  // network: "mainnet", // optional
+  cacheProvider: true, // optional
+  providerOptions: {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: INFURA_ID,
+      },
+    },
+  },
+});
+
+const logoutOfWeb3Modal = async () => {
+  await web3Modal.clearCachedProvider();
+  setTimeout(() => {
+    window.location.reload();
+  }, 1);
+};
+
+window.ethereum &&
+  window.ethereum.on("chainChanged", chainId => {
+    web3Modal.cachedProvider &&
+      setTimeout(() => {
+        window.location.reload();
+      }, 1);
+  });
+
+window.ethereum &&
+  window.ethereum.on("accountsChanged", accounts => {
+    web3Modal.cachedProvider &&
+      setTimeout(() => {
+        window.location.reload();
+      }, 1);
+  });
 export default App;
