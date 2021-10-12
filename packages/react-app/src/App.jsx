@@ -255,6 +255,8 @@ function App(props) {
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
+  const svg = useContractReader(readContracts, "YourCollectible", "renderDonut");
+  console.log('svg', svg);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -511,9 +513,26 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+            <img style={{width: '200px', height: '200px'}} src={`data:image/svg+xml;utf8,${svg}`} />
 
             <Contract
               name="YourContract"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="SilentAuction"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="YourCollectible"
               signer={userSigner}
               provider={localProvider}
               address={address}
