@@ -1,11 +1,11 @@
-import "../styles/index.css";
 import "antd/dist/antd.css";
+import Head from "next/head";
 import React, { useEffect, useRef } from "react";
-import { Web3Provider } from "../helpers/Web3Context";
+import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import { Header } from "../components";
 import DevUI from "../components/DevUI";
-import { ThemeSwitcherProvider } from "react-css-theme-switcher";
-import Head from "next/head";
+import { Web3Provider } from "../helpers/Web3Context";
+import "../styles/index.css";
 
 function MyApp({ Component, pageProps }) {
   const prevTheme = useRef("light");

@@ -1,19 +1,18 @@
+import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
 import { Alert, Button } from "antd";
 import "antd/dist/antd.css";
-import React, { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import Authereum from "authereum";
+import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import Fortmatic from "fortmatic";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+//import Torus from "@toruslabs/torus-embed"
+import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import { INFURA_ID, NETWORK, NETWORKS } from "../constants";
 import { Transactor } from "../helpers";
-import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
-import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-
 import { useContractConfig } from "../hooks";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Authereum from "authereum";
 
 const { ethers } = require("ethers");
 

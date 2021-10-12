@@ -2,7 +2,7 @@ import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-
 import { Button, Modal, Spin, Tooltip, Typography } from "antd";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Transactor } from "../helpers";
 import Address from "./Address";
 import AddressInput from "./AddressInput";

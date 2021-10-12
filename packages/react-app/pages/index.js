@@ -11,6 +11,7 @@ function Home() {
     <div className="flex flex-1 flex-col h-screen w-full items-center">
       <div className="text-center" style={{ margin: 64 }}>
         <span>This App is powered by Scaffold-eth & Next.js!</span>
+        <span>and is ready for your next Moonshot </span>
         <br />
         <span>
           Added{" "}
