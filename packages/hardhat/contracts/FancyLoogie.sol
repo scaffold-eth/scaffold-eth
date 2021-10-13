@@ -10,11 +10,14 @@ import "hardhat/console.sol";
 
 
 abstract contract LoogiesContract {
-  mapping(uint256 => bytes32) public genes;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
-contract LoogieTank is ERC721Enumerable, IERC721Receiver {
+abstract contract TopKnotContract {
+  function renderTokenById(uint256 id) external virtual view returns (string memory);
+}
+
+contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
   using Strings for uint8;
@@ -24,10 +27,14 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   Counters.Counter private _tokenIds;
 
   LoogiesContract loogies;
-  mapping(uint256 => uint256[]) loogiesById;
+  mapping(uint256 => uint256) loogieById;
 
-  constructor(address _loogies) ERC721("Loogie Tank", "LOOGTANK") {
+  TopKnotContract topKnot;
+  mapping(uint256 => uint256) topKnotById;
+
+  constructor(address _loogies, address _topKnot) ERC721("FancyLoogie", "FLOOG") {
     loogies = LoogiesContract(_loogies);
+    topKnot = TopKnotContract(_topKnot);
   }
 
   function mintItem() public returns (uint256) {
@@ -41,8 +48,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
-      string memory name = string(abi.encodePacked('Loogie Tank #',id.toString()));
-      string memory description = string(abi.encodePacked('Loogie Tank'));
+      string memory name = string(abi.encodePacked('FancyLoogie #',id.toString()));
+      string memory description = string(abi.encodePacked('FancyLoogie'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return string(abi.encodePacked(
@@ -82,32 +89,18 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
-       renderLoogies(id)
+       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#8FB9EB" stroke-width="5"/>'
     ));
 
-    return render;
-  }
-
-  function renderLoogies(uint256 _id) internal view returns (string memory) {
-    string memory loogieSVG = "";
-
-    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      //uint8 x = uint8(loogies.genes(loogiesById[_id][i])[30]);
-      //uint8 y = uint8(loogies.genes(loogiesById[_id][i])[31]);
-
-      uint256 traveled = block.timestamp-timeAdded[loogiesById[_id][i]];
-      uint8 SPEED = 5;//we will randomize this or have it based on chubbiness
-      traveled = ((traveled * SPEED) + x[loogiesById[_id][i]]) % 400;
-
-      loogieSVG = string(abi.encodePacked(
-        loogieSVG,
-        '<g transform="translate(', uint8(traveled).toString(), ' ', y[loogiesById[_id][i]].toString(), ') scale(0.30 0.30)">',
-        loogies.renderTokenById(loogiesById[_id][i]),
-        '</g>'));
+    if (loogieById[id] > 0) {
+      render = string(abi.encodePacked(render, loogies.renderTokenById(loogieById[id])));
     }
 
-    return loogieSVG;
+    if (topKnotById[id] > 0) {
+      render = string(abi.encodePacked(render, topKnot.renderTokenById(topKnotById[id])));
+    }
+
+    return render;
   }
 
   // https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol#L374
@@ -122,27 +115,25 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         return tempUint;
   }
 
-  mapping(uint256 => uint8) x;
-  mapping(uint256 => uint8) y;
-
-  mapping(uint256 => uint256) timeAdded;
-
   // to receive ERC721 tokens
   function onERC721Received(
       address operator,
       address from,
-      uint256 loogieTokenId,
-      bytes calldata tankIdData) external override returns (bytes4) {
+      uint256 tokenId,
+      bytes calldata fancyIdData) external override returns (bytes4) {
 
-      uint256 tankId = toUint256(tankIdData);
-      require(ownerOf(tankId) == from, "you can only add loogies to a tank you own.");
+      console.log("Received sender: ",msg.sender);
 
-      loogiesById[tankId].push(loogieTokenId);
+      uint256 fancyId = toUint256(fancyIdData);
+      require(ownerOf(fancyId) == from, "you can only add loogies to a tank you own.");
 
-      bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
-      x[loogieTokenId] = uint8(randish[0]);
-      y[loogieTokenId] = uint8(randish[1]);
-      timeAdded[loogieTokenId] = block.timestamp;
+      if (msg.sender == address(loogies)) {
+        loogieById[fancyId] = tokenId;
+      }
+
+      if (msg.sender == address(topKnot)) {
+        topKnotById[fancyId] = tokenId;
+      }
 
       return this.onERC721Received.selector;
     }

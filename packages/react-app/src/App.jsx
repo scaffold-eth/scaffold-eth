@@ -245,15 +245,18 @@ function App(props) {
   const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   console.log("🤗 loogie balance:", loogieBalance);
 
-  const loogieTankBalance = useContractReader(readContracts, "LoogieTank", "balanceOf", [address]);
-  console.log("🤗 loogie tank balance:", loogieTankBalance);
+  const topKnotBalance = useContractReader(readContracts, "TopKnot", "balanceOf", [address]);
+  console.log("🤗 top knot balance:", topKnotBalance);
+
+  const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogie", "balanceOf", [address]);
+  console.log("🤗 fancy loogie balance:", fancyLoogieBalance);
 
   // 📟 Listen for broadcast events
   const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
   console.log("📟 Loogie Transfer events:", loogieTransferEvents);
 
-  const loogieTankTransferEvents = useEventListener(readContracts, "LoogieTank", "Transfer", localProvider, 1);
-  console.log("📟 Loogie Tank Transfer events:", loogieTankTransferEvents);
+  const fancyLoogieTransferEvents = useEventListener(readContracts, "FancyLoogie", "Transfer", localProvider, 1);
+  console.log("📟 Fancy Loogie Transfer events:", fancyLoogieTransferEvents);
  
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -261,8 +264,11 @@ function App(props) {
   const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourLoogies, setYourLoogies] = useState();
 
-  const yourLoogieTankBalance = loogieTankBalance && loogieTankBalance.toNumber && loogieTankBalance.toNumber();
-  const [yourLoogieTanks, setYourLoogieTanks] = useState();
+  const yourTopKnotBalance = topKnotBalance && topKnotBalance.toNumber && topKnotBalance.toNumber();
+  const [yourTopKnots, setYourTopKnots] = useState();
+
+  const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
+  const [yourFancyLoogies, setYourFancyLoogies] = useState();
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -295,21 +301,25 @@ function App(props) {
       }
       setYourLoogies(loogieUpdate.reverse());
 
-      const loogieTankUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < yourLoogieTankBalance; tokenIndex++) {
+      const topKnotUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourTopKnotBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.LoogieTank.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.TopKnot.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.LoogieTank.tokenURI(tokenId);
+          const tokenURI = await readContracts.TopKnot.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
-
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
-            loogieTankUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            topKnotUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -318,10 +328,35 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourLoogieTanks(loogieTankUpdate.reverse());
+      setYourTopKnots(topKnotUpdate.reverse());
+
+      const fancyLoogieUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.FancyLoogie.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.FancyLoogie.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            fancyLoogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourFancyLoogies(fancyLoogieUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourLoogieTankBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance]);
   
 
   /*
@@ -534,14 +569,24 @@ function App(props) {
               Loogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/loogietank">
+          <Menu.Item key="/fancyLoogie">
             <Link
               onClick={() => {
-                setRoute("/loogietank");
+                setRoute("/fancyLoogie");
               }}
-              to="/loogietank"
+              to="/fancyLoogie"
             >
-              Loogie Tank
+              FancyLoogies
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/topKnot">
+            <Link
+              onClick={() => {
+                setRoute("/topKnot");
+              }}
+              to="/topKnot"
+            >
+              Top Knot
             </Link>
           </Menu.Item>
           <Menu.Item key="/mintloogies">
@@ -554,14 +599,24 @@ function App(props) {
               Mint Loogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/mintloogietank">
+          <Menu.Item key="/mintTopKnot">
             <Link
               onClick={() => {
-                setRoute("/mintloogietank");
+                setRoute("/mintTopKnot");
               }}
-              to="/mintloogietank"
+              to="/mintTopKnot"
             >
-              Mint Loogie Tank
+              Mint Top Knot
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/mintFancyLoogie">
+            <Link
+              onClick={() => {
+                setRoute("/mintFancyLoogie");
+              }}
+              to="/mintFancyLoogie"
+            >
+              Mint FancyLoogie
             </Link>
           </Menu.Item>
         </Menu>
@@ -584,9 +639,19 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route exact path="/loogietank">
+          <Route exact path="/fancyLoogie">
             <Contract
-              name="LoogieTank"
+              name="FancyLoogie"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/topknot">
+            <Contract
+              name="TopKnot"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -650,9 +715,9 @@ function App(props) {
                           Transfer
                         </Button>
                         <br/><br/>
-                        Transfer to Loogie Tank:{" "}
+                        Transfer to FancyLoogie:{" "}
                         <Address
-                          address={readContracts.LoogieTank.address}
+                          address={readContracts.FancyLoogie.address}
                           blockExplorer={blockExplorer}
                           fontSize={16}
                         />
@@ -675,7 +740,7 @@ function App(props) {
                             const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
                             console.log(tankIdInBytes);
 
-                            tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, id, tankIdInBytes));
+                            tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
                           }}>
                           Transfer
                         </Button>
@@ -689,10 +754,10 @@ function App(props) {
 
             
           </Route>
-           <Route exact path="/mintloogietank">
+           <Route exact path="/mintFancyLoogie">
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button type={"primary"} onClick={() => {
-                tx(writeContracts.LoogieTank.mintItem())
+                tx(writeContracts.FancyLoogie.mintItem())
               }}>MINT</Button>
             </div>
             {/* */}
@@ -700,7 +765,7 @@ function App(props) {
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
-                dataSource={yourLoogieTanks}
+                dataSource={yourFancyLoogies}
                 renderItem={item => {
                   const id = item.id.toNumber();
 
@@ -753,6 +818,101 @@ function App(props) {
             </div>
 
             {/* */}
+          </Route>
+          <Route exact path="/mintTopKnot">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.TopKnot.mintItem())
+              }}>MINT</Button>
+            </div>
+            {/* */}
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourTopKnots}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.TopKnot.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                        <br/><br/>
+                        Transfer to FancyLoogie:{" "}
+                        <Address
+                          address={readContracts.FancyLoogie.address}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <Input
+                          placeholder="Tank ID"
+                          // value={transferToTankId[id]}
+                          onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
+                            const update = {};
+                            update[id] = newValue.target.value;
+                            setTransferToTankId({ ...transferToTankId, ...update});
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            console.log("transferToTankId[id]", transferToTankId[id]);
+                            console.log(parseInt(transferToTankId[id]));
+
+                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                            console.log(tankIdInBytes);
+
+                            tx(writeContracts.TopKnot["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                          }}>
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+            {/* */}
+
+
           </Route>
         </Switch>
       </BrowserRouter>

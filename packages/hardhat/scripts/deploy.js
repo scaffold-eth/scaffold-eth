@@ -27,6 +27,7 @@ const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
   const loogies = await deploy("Loogies"); // <-- add in constructor args like line 19 vvvv
+  const topKnot = await deploy("TopKnot");
   await deploy("LoogieTank", [loogies.address]);
   // use for local token bridging
   // const mockToken = await deploy("MockERC20") // <-- add in constructor args like line 19 vvvv
