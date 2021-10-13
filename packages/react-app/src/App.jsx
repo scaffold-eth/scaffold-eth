@@ -21,7 +21,7 @@ import {
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, ZkHashUI } from "./views";
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -546,7 +546,12 @@ function App(props) {
             />
           </Route>
           <Route path="/exampleui">
-            <ExampleUI
+            <ZkHashUI
+              wasm={wasm}
+              zkey={zkey}
+              scVerifyFn={readContracts && readContracts.YourContract ? readContracts.YourContract.verifyProof : null}
+            />
+            {/*<ExampleUI
               address={address}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
@@ -558,7 +563,7 @@ function App(props) {
               readContracts={readContracts}
               purpose={purpose}
               setPurposeEvents={setPurposeEvents}
-            />
+            />*/}
           </Route>
           <Route path="/mainnetdai">
             <Contract
