@@ -1,29 +1,25 @@
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, notification } from "antd";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
-import Safe, { EthersAdapter, SafeFactory, SafeTransaction, TransactionOptions } from '@gnosis.pm/safe-core-sdk'
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
 import { Address, Balance, EtherInput, AddressInput } from "../components";
-import { usePoller, useLocalStorage, useBalance } from "../hooks";
-import { EthSignSignature }  from './EthSignSignature'
+import { usePoller, useLocalStorage, useBalance, useSafeSdk } from "../hooks";
+import { EthSignSignature } from './EthSignSignature'
 import WalletConnect from "@walletconnect/client";
+
+const serviceClient = new SafeServiceClient('https://safe-transaction.rinkeby.gnosis.io')
+
 export default function GnosisStarterView({
-  purpose,
   userSigner,
   address,
   mainnetProvider,
   localProvider,
-  yourLocalBalance,
   price,
-  tx,
-  readContracts,
-  writeContracts,
   blockExplorer,
   targetNetwork
 }) {
   const [to, setTo] = useState('')
-  const [currentThresold, setcurrentThresold] = useState([])
-  const [thresold, setthresold] = useState(0)
+  const [threshold, setThreshold] = useState(0)
   const [owners, setOwners] = useState([])
   const [transactions, setTransactions] = useState([])
   const [value, setValue] = useState(0)
@@ -35,50 +31,119 @@ export default function GnosisStarterView({
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
     "0xa81a6a910FeD20374361B35C451a4a44F86CeD46"
   ]
-
   const THRESHOLD = 2
 
   const [safeAddress, setSafeAddress] = useLocalStorage("deployedSafe")
-
-  const serviceClient = new SafeServiceClient('https://safe-transaction.rinkeby.gnosis.io/')
-
   const [ deploying, setDeploying ] = useState()
-
   const safeBalance = useBalance(localProvider, safeAddress);
+  const { safeSdk, safeFactory } = useSafeSdk(userSigner, safeAddress)
 
-  const [ ethAdapter, setEthAdapter ] = useState()
-  useEffect(async () => {
-    if(userSigner){
-      setEthAdapter(new EthersAdapter({ ethers, signer: userSigner }))
+  const isSafeOwnerConnected = owners.includes(address)
+
+  const deploySafe = useCallback(async (owners, threshold) => {
+    if (!safeFactory) return
+    setDeploying(true)
+    const safeAccountConfig = { owners, threshold }
+    let safe
+    try {
+      safe = await safeFactory.deploySafe(safeAccountConfig)
+    } catch (error) {
+      console.error(error)
+      setDeploying(false)
+      return
     }
-  },[ userSigner ]);
+    const newSafeAddress = ethers.utils.getAddress(safe.getAddress())
+    setSafeAddress(newSafeAddress)
+  }, [safeFactory])
+
+  const proposeSafeTransaction = useCallback(async (transaction) => {
+    if (!safeSdk || !serviceClient) return
+    let safeTransaction
+    try {
+      safeTransaction = await safeSdk.createTransaction(transaction)
+    } catch (error) {
+      console.error(error)
+      return
+    }
+    console.log('SAFE TX', safeTransaction)
+    const safeTxHash = await safeSdk.getTransactionHash(safeTransaction)
+    console.log('HASH', safeTxHash)
+    const safeSignature = await safeSdk.signTransactionHash(safeTxHash)
+    await serviceClient.proposeTransaction(
+      safeAddress,
+      safeTransaction.data,
+      safeTxHash,
+      safeSignature
+    )
+  }, [safeSdk, serviceClient, safeAddress])
+
+  const confirmTransaction = useCallback(async (transaction) => {
+    if (!safeSdk || !serviceClient) return
+    const hash = transaction.safeTxHash
+    let signature
+    try {
+      signature = await safeSdk.signTransactionHash(hash)
+    } catch (error) {
+      console.error(error)
+      return
+    }
+    await serviceClient.confirmTransaction(hash, signature.data)
+  }, [safeSdk, serviceClient])
+
+  const executeSafeTransaction = useCallback(async (transaction) => {
+    if (!safeSdk) return
+    console.log(transaction)
+    const safeTransactionData = {
+      to: transaction.to,
+      value: transaction.value,
+      data: transaction.data || '0x',
+      operation: transaction.operation,
+      safeTxGas: transaction.safeTxGas,
+      baseGas: transaction.baseGas,
+      gasPrice: Number(transaction.gasPrice),
+      gasToken: transaction.gasToken,
+      refundReceiver: transaction.refundReceiver,
+      nonce: transaction.nonce
+    }
+    const safeTransaction = await safeSdk.createTransaction(safeTransactionData)
+    transaction.confirmations.forEach(confirmation => {
+      const signature = new EthSignSignature(confirmation.owner, confirmation.signature)
+      safeTransaction.addSignature(signature)
+    })
+    let executeTxResponse
+    try {
+      executeTxResponse = await safeSdk.executeTransaction(safeTransaction)
+    } catch(error) {
+      console.error(error)
+      return
+    }
+    const receipt = executeTxResponse.transactionResponse && (await executeTxResponse.transactionResponse.wait())
+    console.log(receipt)
+  }, [safeSdk])
+
+  const isTransactionExecutable = (transaction) => transaction.confirmations.length >= threshold
+
+  const isTransactionSignedByAddress = (transaction) => {
+    const confirmation = transaction.confirmations.find(confirmation => confirmation.owner === address)
+    return !!confirmation
+  }
+
+
 
   usePoller(async () => {
     if(safeAddress){
       setSafeAddress(ethers.utils.getAddress(safeAddress))
       try{
-        if(ethAdapter){
-          const contract = await ethAdapter.getSafeContract(safeAddress)
-          const owners = await contract.getOwners();
-          const thresold = await contract.getThreshold();
+        if(safeSdk){
+          const owners = await safeSdk.getOwners()
+          const threshold = await safeSdk.getThreshold()
           setOwners(owners)
-          setthresold(thresold)
-          console.log("owners",owners,"thresold",thresold)
+          setThreshold(threshold)
+          console.log("owners",owners,"threshold",threshold)
         }
         console.log("CHECKING TRANSACTIONS....",safeAddress)
         const transactions = await serviceClient.getPendingTransactions(safeAddress)
-        console.log("transactions:",transactions)
-        const currentThresold = [];
-        for (let i = 0; i < transactions.results.length; i++) {
-          const signers = [];
-          currentThresold.push(transactions.results[i].confirmations.length)
-          for (let j = 0; j < transactions.results[i].confirmations.length; j ++) {
-            signers.push(transactions.results[i].confirmations[j].owner)
-          }
-          transactions.results[i].signers = signers;
-        }
-
-        setcurrentThresold(currentThresold)
+        console.log("Pending transactions:", transactions)
         setTransactions(transactions.results)
       }catch(e){
         console.log("ERROR POLLING FROM SAFE:",e)
@@ -227,20 +292,7 @@ export default function GnosisStarterView({
   }else{
     safeInfo = (
       <div style={{padding:32}}>
-        <Button loading={deploying} onClick={async ()=>{
-
-          setDeploying(true)
-
-          const safeFactory = await SafeFactory.create({ ethAdapter })
-          const safeAccountConfig = { owners: OWNERS, threshold: THRESHOLD }
-          const safe = await safeFactory.deploySafe(safeAccountConfig)
-
-          setSafeAddress(ethers.utils.getAddress(safe.getAddress()))
-          setDeploying(false)
-
-          console.log("SAFE",safe,safe.getAddress())
-
-        }} type={"primary"} >
+        <Button loading={deploying} onClick={() => deploySafe(OWNERS, THRESHOLD)} type={"primary"} >
           DEPLOY SAFE
         </Button>
         <div> or enter existing address: </div>
@@ -343,32 +395,14 @@ export default function GnosisStarterView({
                 setData(data)
               }
 
-              const id = await ethAdapter.getChainId()
-              const contractNetworks = {
-                [id]: {
-                  multiSendAddress: safeAddress,
-                  safeMasterCopyAddress: safeAddress,
-                  safeProxyFactoryAddress: safeAddress
-                }
-              }
-
-              const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
-              const nonce = await safeSdk.getNonce()
               const checksumForm = ethers.utils.getAddress(to)
               const partialTx = {
                 to: checksumForm,
                 data,
                 value: ethers.utils.parseEther(value?value.toString():"0").toString()
               }
-              console.log("BUTTON CLICKED PROPOSING:",partialTx)
               try{
-                const safeTransaction = await safeSdk.createTransaction(partialTx)
-                await safeSdk.signTransaction(safeTransaction)
-                const hash = await safeSdk.getTransactionHash(safeTransaction)
-                console.log('HASH', hash)
-                console.log('SAFE TX', safeTransaction)
-
-                await serviceClient.proposeTransaction(safeAddress, safeTransaction.data,  hash, safeTransaction.signatures.get(address.toLowerCase()))
+                await proposeSafeTransaction(partialTx)
               }catch(e){
                 console.log("🛑 Error Proposing Transaction",e)
                 notification.open({
@@ -391,12 +425,6 @@ export default function GnosisStarterView({
     )
   }
 
-
-
-
-
-
-
   return (
     <div>
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
@@ -417,7 +445,7 @@ export default function GnosisStarterView({
       <Divider />
       <div style={{ margin: 8 }}>
         {
-          transactions.length > 0 && transactions.map((transaction, index) => {
+          transactions.length > 0 && transactions.map((transaction) => {
 
             let buttonDisplay = ""
 
@@ -425,25 +453,12 @@ export default function GnosisStarterView({
               buttonDisplay = (
                 <Spin/>
               )
-            }else if(currentThresold[index] < thresold){
-              if(owners.includes(address) && !transaction.signers.includes(address)){
+            }else if(!isTransactionExecutable(transaction)){
+              if(isSafeOwnerConnected && !isTransactionSignedByAddress(transaction)){
                 buttonDisplay = (
                   <Button
                     style={{ marginTop: 8 }}
-                    onClick={async () => {
-                      const id = await ethAdapter.getChainId()
-                      const contractNetworks = {
-                        [id]: {
-                          multiSendAddress: safeAddress,
-                          safeMasterCopyAddress: safeAddress,
-                          safeProxyFactoryAddress: safeAddress
-                        }
-                      }
-                      const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
-                      const hash = transaction.safeTxHash;
-                      const signature = await safeSdk.signTransactionHash(hash);
-                      await serviceClient.confirmTransaction(hash, signature.data)
-                    }}
+                    onClick={() => confirmTransaction(transaction)}
                   >
                   Sign TX</Button>
                 )
@@ -451,48 +466,12 @@ export default function GnosisStarterView({
                 buttonDisplay = "Waiting for more signatures..."
               }
             }else{
-              if(owners.includes(address) && currentThresold[index] >= thresold){
+              if(isSafeOwnerConnected && isTransactionExecutable(transaction)){
                 buttonDisplay = (
                   <Button
                     style={{ marginTop: 8 }}
-                    onClick={async () => {
-                      const id = await ethAdapter.getChainId()
-                      const contractNetworks = {
-                        [id]: {
-                          multiSendAddress: safeAddress,
-                          safeMasterCopyAddress: safeAddress,
-                          safeProxyFactoryAddress: safeAddress
-                        }
-                      }
-                      const safeSdk = await Safe.create({ ethAdapter, safeAddress, contractNetworks })
-                      const safeSdk2 = await safeSdk.connect({ ethAdapter, safeAddress })
-                      console.log(transaction)
-
-                      const safeTransactionData = {
-                        to: transaction.to,
-                        value: transaction.value,
-                        data: transaction.data || '0x',
-                        operation: transaction.operation,
-                        safeTxGas: transaction.safeTxGas,
-                        baseGas: transaction.baseGas,
-                        gasPrice: Number(transaction.gasPrice),
-                        gasToken: transaction.gasToken,
-                        refundReceiver: transaction.refundReceiver,
-                        nonce: transaction.nonce
-                      }
-                      const safeTransaction = await safeSdk.createTransaction(safeTransactionData)
-                      if (transaction.confirmations) {
-                        for(let i = 0; i < transaction.confirmations?.length; i++) {
-                          const confirmation = transaction.confirmations[i]
-                          const signature = new EthSignSignature(confirmation.owner, confirmation.signature)
-                          await safeTransaction.addSignature(signature)
-                        }
-                      }
-                      const executeTxResponse = await safeSdk2.executeTransaction(safeTransaction)
-                      const receipt = executeTxResponse.transactionResponse && (await executeTxResponse.transactionResponse.wait())
-                      console.log(receipt);
-                    }}>Execute TX</Button>
-
+                    onClick={() => executeSafeTransaction(transaction)}
+                  >Execute TX</Button>
                 )
               } else {
                 buttonDisplay = "Waiting to execute..."
