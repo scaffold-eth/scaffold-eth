@@ -255,8 +255,19 @@ function App(props) {
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
+  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+
   const svg = useContractReader(readContracts, "YourCollectible", "renderDonut");
-  console.log('svg', svg);
+
+  useEffect(() => {
+    const getCollectibles = async () => {
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        // const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+        // console.log('token:', tokenId);
+      }
+    };
+    getCollectibles();
+  })
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)

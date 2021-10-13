@@ -1,5 +1,7 @@
 // deploy/00_deploy_your_contract.js
 
+const { ethers } = require("hardhat");
+
 //const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
@@ -12,6 +14,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  const auction = await ethers.getContract("SilentAuction", deployer);
+  await auction.transferOwnership("0x0606a0D4F33c78D992f20Cdde5d9F41031D6D7bb");
   /*
     // Getting a previously deployed contract
     const YourContract = await ethers.getContract("YourContract", deployer);
