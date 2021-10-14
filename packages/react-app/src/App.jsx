@@ -542,7 +542,7 @@ function App(props) {
             />
           </Route>
           <Route path="/externalContract">
-            <div>This is where we intercat with the external contract</div>
+            <div>Paste the contract's address and ABI below:</div>
             <div style={{ margin: 8 }}>
               <div style={{ padding: 4 }}>
                 <AddressInput

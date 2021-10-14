@@ -1,9 +1,12 @@
 import { Card } from "antd";
 import React, { useMemo, useState } from "react";
 import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import Account from "../Account";
+import Address from "../Address";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
+import { useContractEvents } from "../../hooks";
 
 const noContractDisplay = (
   <div>
@@ -41,6 +44,8 @@ const noContractDisplay = (
   </div>
 );
 
+const noEventsDisplay = <div>No Events found!!</div>;
+
 const isQueryable = fn => (fn.stateMutability === "view" || fn.stateMutability === "pure") && fn.inputs.length === 0;
 
 export default function Contract({
@@ -77,6 +82,8 @@ export default function Contract({
   }, [contract, show]);
 
   const [refreshRequired, triggerRefresh] = useState(false);
+  const contractEventsDisplay = useContractEvents(contract, "");
+
   const contractDisplay = displayedContractFunctions.map(contractFuncInfo => {
     const contractFunc =
       contractFuncInfo[1].stateMutability === "view" || contractFuncInfo[1].stateMutability === "pure"
@@ -137,6 +144,7 @@ export default function Contract({
       >
         {contractIsDeployed ? contractDisplay : noContractDisplay}
       </Card>
+      <Card>{contractIsDeployed ? contractEventsDisplay : noEventsDisplay}</Card>
     </div>
   );
 }
