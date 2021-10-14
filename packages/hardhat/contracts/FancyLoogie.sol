@@ -11,6 +11,11 @@ import "hardhat/console.sol";
 
 abstract contract LoogiesContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
+  function transferFrom(
+        address from,
+        address to,
+        uint256 tokenId
+    ) external virtual;
 }
 
 abstract contract TopKnotContract {
@@ -37,11 +42,15 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
     topKnot = TopKnotContract(_topKnot);
   }
 
-  function mintItem() public returns (uint256) {
+  function mintItem(uint256 loogieId) public returns (uint256) {
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
+
+      loogies.transferFrom(msg.sender, address(this), loogieId);
+
+      loogieById[id] = loogieId;
 
       return id;
   }
@@ -126,10 +135,7 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
       uint256 fancyId = toUint256(fancyIdData);
       require(ownerOf(fancyId) == from, "you can only add loogies to a tank you own.");
-
-      if (msg.sender == address(loogies)) {
-        loogieById[fancyId] = tokenId;
-      }
+      require(msg.sender == address(topKnot), "the loogies can wear only top knot for now");
 
       if (msg.sender == address(topKnot)) {
         topKnotById[fancyId] = tokenId;

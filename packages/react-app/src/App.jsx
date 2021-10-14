@@ -270,9 +270,12 @@ function App(props) {
   const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
 
+  const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
+
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const loogieUpdate = [];
+      const loogieApproved = {};
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
@@ -282,24 +285,22 @@ function App(props) {
           console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
-/*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-        */
+
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
             loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            let approved = await readContracts.Loogies.getApproved(tokenId);
+            loogieApproved[tokenId] = approved;
           } catch (e) {
             console.log(e);
           }
-
         } catch (e) {
           console.log(e);
         }
       }
       setYourLoogies(loogieUpdate.reverse());
+      setYourLoogiesApproved(loogieApproved);
 
       const topKnotUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourTopKnotBalance; tokenIndex++) {
@@ -311,11 +312,6 @@ function App(props) {
           console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
-/*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-        */
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
@@ -323,7 +319,6 @@ function App(props) {
           } catch (e) {
             console.log(e);
           }
-
         } catch (e) {
           console.log(e);
         }
@@ -348,7 +343,6 @@ function App(props) {
           } catch (e) {
             console.log(e);
           }
-
         } catch (e) {
           console.log(e);
         }
@@ -357,7 +351,6 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance]);
-  
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -673,8 +666,6 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id.toNumber();
 
-                  console.log("IMAGE",item.image);
-
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
@@ -715,53 +706,40 @@ function App(props) {
                           Transfer
                         </Button>
                         <br/><br/>
-                        Transfer to FancyLoogie:{" "}
+                        Upgrade to FancyLoogie:{" "}
                         <Address
                           address={readContracts.FancyLoogie.address}
                           blockExplorer={blockExplorer}
                           fontSize={16}
                         />
-                        <Input
-                          placeholder="Tank ID"
-                          // value={transferToTankId[id]}
-                          onChange={newValue => {
-                            console.log("newValue", newValue.target.value);
-                            const update = {};
-                            update[id] = newValue.target.value;
-                            setTransferToTankId({ ...transferToTankId, ...update});
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            console.log("transferToTankId[id]", transferToTankId[id]);
-                            console.log(parseInt(transferToTankId[id]));
-
-                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
-                            console.log(tankIdInBytes);
-
-                            tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
-                          }}>
-                          Transfer
-                        </Button>
+                        { yourLoogiesApproved[id] != readContracts.FancyLoogie.address
+                        ? <Button
+                            onClick={ async () => {
+                              tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(_res => {
+                                //const newAddress = await readContracts.Loogies.getApproved(id)
+                                setYourLoogiesApproved(yourLoogiesApproved => ({
+                                  ...yourLoogiesApproved,
+                                  [id]: readContracts.FancyLoogie.address
+                                }));
+                              });
+                            }}>
+                            Approve
+                          </Button>
+                        :  <Button
+                            onClick={ async () => {
+                              tx(writeContracts.FancyLoogie.mintItem(id));
+                            }}>
+                            Upgrade
+                          </Button>
+                        }
                       </div>
                     </List.Item>
                   );
                 }}
               />
             </div>
-            {/* */}
-
-            
           </Route>
            <Route exact path="/mintFancyLoogie">
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={() => {
-                tx(writeContracts.FancyLoogie.mintItem())
-              }}>MINT</Button>
-            </div>
-            {/* */}
-
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
