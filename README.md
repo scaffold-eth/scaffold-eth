@@ -14,13 +14,19 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/austintgriffith/scaffold-eth.git scaffold-nextjs
+```
+
+> checkout the `scaffold-nextjs` branch
+
+```bash
+cd scaffold-nextjs
+git checkout scaffold-nextjs
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
 yarn install
 yarn chain
 ```
@@ -28,14 +34,14 @@ yarn chain
 > in a second terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd scaffold-nextjs
 yarn deploy
 ```
 
 > in a third terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd scaffold-nextjs
 yarn start
 ```
 
