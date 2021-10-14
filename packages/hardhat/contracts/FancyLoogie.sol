@@ -18,7 +18,7 @@ abstract contract LoogiesContract {
     ) external virtual;
 }
 
-abstract contract TopKnotContract {
+abstract contract BowContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
@@ -42,8 +42,8 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   LoogiesContract loogies;
   mapping(uint256 => uint256) loogieById;
 
-  TopKnotContract topKnot;
-  mapping(uint256 => uint256) topKnotById;
+  BowContract bow;
+  mapping(uint256 => uint256) bowById;
 
   MustacheContract mustache;
   mapping(uint256 => uint256) mustacheById;
@@ -51,9 +51,9 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   ContactLensesContract lenses;
   mapping(uint256 => uint256) lensesById;
 
-  constructor(address _loogies, address _topKnot, address _mustache, address _lenses) ERC721("FancyLoogie", "FLOOG") {
+  constructor(address _loogies, address _bow, address _mustache, address _lenses) ERC721("FancyLoogie", "FLOOG") {
     loogies = LoogiesContract(_loogies);
-    topKnot = TopKnotContract(_topKnot);
+    bow = BowContract(_bow);
     mustache = MustacheContract(_mustache);
     lenses = ContactLensesContract(_lenses);
   }
@@ -119,8 +119,8 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
       render = string(abi.encodePacked(render, loogies.renderTokenById(loogieById[id])));
     }
 
-    if (topKnotById[id] > 0) {
-      render = string(abi.encodePacked(render, topKnot.renderTokenById(topKnotById[id])));
+    if (bowById[id] > 0) {
+      render = string(abi.encodePacked(render, bow.renderTokenById(bowById[id])));
     }
 
     if (mustacheById[id] > 0) {
@@ -156,12 +156,12 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
       console.log("Received sender: ",msg.sender);
 
       uint256 fancyId = toUint256(fancyIdData);
-      require(ownerOf(fancyId) == from, "you can only add loogies to a tank you own.");
-      require(msg.sender == address(topKnot) || msg.sender == address(mustache) || msg.sender == address(lenses), "the loogies can wear only top knot, mustache and contact lenses for now");
+      require(ownerOf(fancyId) == from, "you can only add stuff to a fancy loogie you own.");
+      require(msg.sender == address(bow) || msg.sender == address(mustache) || msg.sender == address(lenses), "the loogies can wear only bow, mustache and contact lenses for now");
 
-      if (msg.sender == address(topKnot)) {
-        require(topKnotById[fancyId] == 0, "the loogie has a top knot!");
-        topKnotById[fancyId] = tokenId;
+      if (msg.sender == address(bow)) {
+        require(bowById[fancyId] == 0, "the loogie has a bow!");
+        bowById[fancyId] = tokenId;
       }
 
       if (msg.sender == address(mustache)) {

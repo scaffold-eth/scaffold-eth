@@ -245,8 +245,8 @@ function App(props) {
   const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   console.log("🤗 loogie balance:", loogieBalance);
 
-  const topKnotBalance = useContractReader(readContracts, "TopKnot", "balanceOf", [address]);
-  console.log("🤗 top knot balance:", topKnotBalance);
+  const bowBalance = useContractReader(readContracts, "Bow", "balanceOf", [address]);
+  console.log("🤗 bow balance:", bowBalance);
 
   const mustacheBalance = useContractReader(readContracts, "Mustache", "balanceOf", [address]);
   console.log("🤗 mustache balance:", mustacheBalance);
@@ -270,8 +270,8 @@ function App(props) {
   const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourLoogies, setYourLoogies] = useState();
 
-  const yourTopKnotBalance = topKnotBalance && topKnotBalance.toNumber && topKnotBalance.toNumber();
-  const [yourTopKnots, setYourTopKnots] = useState();
+  const yourBowBalance = bowBalance && bowBalance.toNumber && bowBalance.toNumber();
+  const [yourBows, setYourBows] = useState();
 
   const yourMustacheBalance = mustacheBalance && mustacheBalance.toNumber && mustacheBalance.toNumber();
   const [yourMustaches, setYourMustaches] = useState();
@@ -314,20 +314,20 @@ function App(props) {
       setYourLoogies(loogieUpdate.reverse());
       setYourLoogiesApproved(loogieApproved);
 
-      const topKnotUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < yourTopKnotBalance; tokenIndex++) {
+      const bowUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourBowBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.TopKnot.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.Bow.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.TopKnot.tokenURI(tokenId);
+          const tokenURI = await readContracts.Bow.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
-            topKnotUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            bowUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -335,7 +335,7 @@ function App(props) {
           console.log(e);
         }
       }
-      setYourTopKnots(topKnotUpdate.reverse());
+      setYourBows(bowUpdate.reverse());
 
       const mustacheUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourMustacheBalance; tokenIndex++) {
@@ -408,7 +408,7 @@ function App(props) {
       setYourFancyLoogies(fancyLoogieUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance, yourMustacheBalance, yourLensesBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourBowBalance, yourMustacheBalance, yourLensesBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -630,14 +630,14 @@ function App(props) {
               FancyLoogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/topKnot">
+          <Menu.Item key="/bow">
             <Link
               onClick={() => {
-                setRoute("/topKnot");
+                setRoute("/bow");
               }}
-              to="/topKnot"
+              to="/bow"
             >
-              Top Knot
+              Bow
             </Link>
           </Menu.Item>
           <Menu.Item key="/mustache">
@@ -670,14 +670,14 @@ function App(props) {
               Mint Loogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/mintTopKnot">
+          <Menu.Item key="/mintBow">
             <Link
               onClick={() => {
-                setRoute("/mintTopKnot");
+                setRoute("/mintBow");
               }}
-              to="/mintTopKnot"
+              to="/mintBow"
             >
-              Mint Top Knot
+              Mint Bow
             </Link>
           </Menu.Item>
           <Menu.Item key="/mintMustache">
@@ -740,9 +740,9 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route exact path="/topknot">
+          <Route exact path="/bow">
             <Contract
-              name="TopKnot"
+              name="Bow"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -915,17 +915,17 @@ function App(props) {
 
             {/* */}
           </Route>
-          <Route exact path="/mintTopKnot">
+          <Route exact path="/mintBow">
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button type={"primary"} onClick={() => {
-                tx(writeContracts.TopKnot.mintItem())
+                tx(writeContracts.Bow.mintItem())
               }}>MINT</Button>
             </div>
             {/* */}
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
-                dataSource={yourTopKnots}
+                dataSource={yourBows}
                 renderItem={item => {
                   const id = item.id.toNumber();
 
@@ -965,7 +965,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.TopKnot.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.Bow.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -996,7 +996,7 @@ function App(props) {
                             const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
                             console.log(tankIdInBytes);
 
-                            tx(writeContracts.TopKnot["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                            tx(writeContracts.Bow["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
                           }}>
                           Transfer
                         </Button>
