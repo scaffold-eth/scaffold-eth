@@ -259,11 +259,31 @@ function App(props) {
 
   const svg = useContractReader(readContracts, "YourCollectible", "renderDonut");
 
+  const [tokenURI, setTokenURI] = useState();
+
+
+  let auctionView = "";
+  if (useContractReader(readContracts, "SilentAuction", "owner") === address) {
+    // TODO: create a component for bidders, and one for the owner
+    auctionView = <div>YOU OWN IT</div>
+  } else {
+    auctionView = <div>YOU DO NOT OWN IT</div>
+  }
+
   useEffect(() => {
     const getCollectibles = async () => {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        // const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-        // console.log('token:', tokenId);
+        const tokenURI = await readContracts.YourCollectible.tokenURI(1);
+        const jsonManifestString = atob(tokenURI.substring(29));
+        // console.log("jsonManifestString", jsonManifestString);
+
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          // console.log("jsonManifest", jsonManifest);
+          setTokenURI({ id: 'TODO', uri: tokenURI, owner: address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
       }
     };
     getCollectibles();
@@ -524,8 +544,20 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <img style={{width: '200px', height: '200px'}} src={`data:image/svg+xml;utf8,${svg}`} />
-
+            {auctionView}
+            <img src={tokenURI?.image} />
+            <Button
+              type="primary"
+              onClick={() => {
+                tx(writeContracts.YourCollectible.mintItem())
+              }}
+              >Mint</Button>
+            <Button
+              type="primary"
+              onClick={() => {
+                tx(writeContracts.SilentAuction.createAuction(readContracts.YourCollectible.address, 1))
+              }}
+              >Start Auction</Button>
             <Contract
               name="YourContract"
               signer={userSigner}

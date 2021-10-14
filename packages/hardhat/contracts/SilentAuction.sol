@@ -1,10 +1,12 @@
-pragma solidity >=0.6.0 <0.9.0;
+pragma solidity ^0.8.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 
-contract SilentAuction is Ownable {
+contract SilentAuction is IERC721Receiver, Ownable {
     // assuming just 1 item for now
     mapping(address => uint) public bids;
     uint public highestBid = 0;
@@ -50,5 +52,15 @@ contract SilentAuction is Ownable {
             endTime: block.timestamp + 60 seconds
         });
         auction = a;
+        IERC721(nft).safeTransferFrom(msg.sender, address(this), tokenId);
+    }
+
+    function onERC721Received(
+        address,
+        address,
+        uint256,
+        bytes calldata
+    ) external pure override returns(bytes4) {
+        return bytes4(keccak256("onERC721Received(address,address,uint256,bytes)"));
     }
 }
