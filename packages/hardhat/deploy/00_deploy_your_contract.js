@@ -19,9 +19,16 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  const mustache = await deploy("Mustache", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    //args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+
   const FancyLoogie = await deploy("FancyLoogie",  {
     from: deployer,
-    args: [loogies.address, topKnot.address],
+    args: [loogies.address, topKnot.address, mustache.address],
     log: true,
   });
 

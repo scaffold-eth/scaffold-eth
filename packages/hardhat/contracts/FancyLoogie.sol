@@ -22,6 +22,10 @@ abstract contract TopKnotContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
+abstract contract MustacheContract {
+  function renderTokenById(uint256 id) external virtual view returns (string memory);
+}
+
 contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
@@ -37,9 +41,13 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   TopKnotContract topKnot;
   mapping(uint256 => uint256) topKnotById;
 
-  constructor(address _loogies, address _topKnot) ERC721("FancyLoogie", "FLOOG") {
+  MustacheContract mustache;
+  mapping(uint256 => uint256) mustacheById;
+
+  constructor(address _loogies, address _topKnot, address _mustache) ERC721("FancyLoogie", "FLOOG") {
     loogies = LoogiesContract(_loogies);
     topKnot = TopKnotContract(_topKnot);
+    mustache = MustacheContract(_mustache);
   }
 
   function mintItem(uint256 loogieId) public returns (uint256) {
@@ -97,9 +105,7 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
-    string memory render = string(abi.encodePacked(
-       '<rect x="0" y="0" width="400" height="400" stroke="black" fill="#8FB9EB" stroke-width="5"/>'
-    ));
+    string memory render;
 
     if (loogieById[id] > 0) {
       render = string(abi.encodePacked(render, loogies.renderTokenById(loogieById[id])));
@@ -107,6 +113,10 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
     if (topKnotById[id] > 0) {
       render = string(abi.encodePacked(render, topKnot.renderTokenById(topKnotById[id])));
+    }
+
+    if (mustacheById[id] > 0) {
+      render = string(abi.encodePacked(render, mustache.renderTokenById(mustacheById[id])));
     }
 
     return render;
@@ -135,10 +145,16 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
       uint256 fancyId = toUint256(fancyIdData);
       require(ownerOf(fancyId) == from, "you can only add loogies to a tank you own.");
-      require(msg.sender == address(topKnot), "the loogies can wear only top knot for now");
+      require(msg.sender == address(topKnot) || msg.sender == address(mustache), "the loogies can wear only top knot and mustache for now");
 
       if (msg.sender == address(topKnot)) {
+        require(topKnotById[fancyId] == 0, "the loogie has a top knot!");
         topKnotById[fancyId] = tokenId;
+      }
+
+      if (msg.sender == address(mustache)) {
+        require(mustacheById[fancyId] == 0, "the loogie has a mustache!");
+        mustacheById[fancyId] = tokenId;
       }
 
       return this.onERC721Received.selector;

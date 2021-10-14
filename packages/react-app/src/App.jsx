@@ -248,6 +248,9 @@ function App(props) {
   const topKnotBalance = useContractReader(readContracts, "TopKnot", "balanceOf", [address]);
   console.log("🤗 top knot balance:", topKnotBalance);
 
+  const mustacheBalance = useContractReader(readContracts, "Mustache", "balanceOf", [address]);
+  console.log("🤗 mustache balance:", mustacheBalance);
+
   const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogie", "balanceOf", [address]);
   console.log("🤗 fancy loogie balance:", fancyLoogieBalance);
 
@@ -266,6 +269,9 @@ function App(props) {
 
   const yourTopKnotBalance = topKnotBalance && topKnotBalance.toNumber && topKnotBalance.toNumber();
   const [yourTopKnots, setYourTopKnots] = useState();
+
+  const yourMustacheBalance = mustacheBalance && mustacheBalance.toNumber && mustacheBalance.toNumber();
+  const [yourMustaches, setYourMustaches] = useState();
 
   const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
@@ -325,6 +331,29 @@ function App(props) {
       }
       setYourTopKnots(topKnotUpdate.reverse());
 
+      const mustacheUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourMustacheBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.Mustache.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.Mustache.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            mustacheUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourMustaches(mustacheUpdate.reverse());
+
       const fancyLoogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
         try {
@@ -350,7 +379,7 @@ function App(props) {
       setYourFancyLoogies(fancyLoogieUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance, yourMustacheBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -582,6 +611,16 @@ function App(props) {
               Top Knot
             </Link>
           </Menu.Item>
+          <Menu.Item key="/mustache">
+            <Link
+              onClick={() => {
+                setRoute("/mustache");
+              }}
+              to="/mustache"
+            >
+              Mustache
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mintloogies">
             <Link
               onClick={() => {
@@ -602,6 +641,16 @@ function App(props) {
               Mint Top Knot
             </Link>
           </Menu.Item>
+          <Menu.Item key="/mintMustache">
+            <Link
+              onClick={() => {
+                setRoute("/mintMustache");
+              }}
+              to="/mintMustache"
+            >
+              Mint Mustache
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mintFancyLoogie">
             <Link
               onClick={() => {
@@ -609,7 +658,7 @@ function App(props) {
               }}
               to="/mintFancyLoogie"
             >
-              Mint FancyLoogie
+              FancyLoogies
             </Link>
           </Menu.Item>
         </Menu>
@@ -652,7 +701,17 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-         <Route exact path="/mintloogies">
+          <Route exact path="/mustache">
+            <Contract
+              name="Mustache"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/mintloogies">
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button type={"primary"} onClick={() => {
                 tx(writeContracts.Loogies.mintItem())
@@ -860,7 +919,7 @@ function App(props) {
                           fontSize={16}
                         />
                         <Input
-                          placeholder="Tank ID"
+                          placeholder="FancyLoogie ID"
                           // value={transferToTankId[id]}
                           onChange={newValue => {
                             console.log("newValue", newValue.target.value);
@@ -888,9 +947,98 @@ function App(props) {
                 }}
               />
             </div>
+          </Route>
+          <Route exact path="/mintMustache">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.Mustache.mintItem())
+              }}>MINT</Button>
+            </div>
             {/* */}
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourMustaches}
+                renderItem={item => {
+                  const id = item.id.toNumber();
 
+                  console.log("IMAGE",item.image);
 
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.Mustache.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                        <br/><br/>
+                        Transfer to FancyLoogie:{" "}
+                        <Address
+                          address={readContracts.FancyLoogie.address}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <Input
+                          placeholder="FancyLoogie ID"
+                          // value={transferToTankId[id]}
+                          onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
+                            const update = {};
+                            update[id] = newValue.target.value;
+                            setTransferToTankId({ ...transferToTankId, ...update});
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            console.log("transferToTankId[id]", transferToTankId[id]);
+                            console.log(parseInt(transferToTankId[id]));
+
+                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                            console.log(tankIdInBytes);
+
+                            tx(writeContracts.Mustache["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                          }}>
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           </Route>
         </Switch>
       </BrowserRouter>

@@ -13,7 +13,7 @@ import './ToColor.sol';
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract TopKnot is ERC721Enumerable, Ownable {
+contract Mustache is ERC721Enumerable, Ownable {
 
   using Strings for uint256;
   using HexStrings for uint160;
@@ -21,8 +21,8 @@ contract TopKnot is ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() ERC721("Loogie Top Knots", "LOOGTK") {
-    // RELEASE THE LOOGIE TOP KNOTS!
+  constructor() ERC721("Loogie Mustaches", "LOOGMUS") {
+    // RELEASE THE LOOGIE MUSTACHES!
   }
 
   mapping (uint256 => bytes3) public color;
@@ -44,8 +44,8 @@ contract TopKnot is ERC721Enumerable, Ownable {
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
-      string memory name = string(abi.encodePacked('Loogie Top Knot #',id.toString()));
-      string memory description = string(abi.encodePacked('This Loogie Top Knot is the color #',color[id].toColor(),'!!!'));
+      string memory name = string(abi.encodePacked('Loogie Mustache #',id.toString()));
+      string memory description = string(abi.encodePacked('This Loogie Mustache is the color #',color[id].toColor(),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -79,7 +79,7 @@ contract TopKnot is ERC721Enumerable, Ownable {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" transform="translate(-30,-250) scale(4 4)" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="400" height="400" transform="translate(150,-100) scale(4 4)" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -89,10 +89,10 @@ contract TopKnot is ERC721Enumerable, Ownable {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
-    // top knot svg from https://www.svgrepo.com/svg/203940/bow with CCO Licence
+    // mustache svg from https://www.svgrepo.com/svg/85048/mustache-shape with CCO Licence
     string memory render = string(abi.encodePacked(
-      '<g class="top-knot" transform="translate(180,235) scale(0.10 0.10)">',
-          '<path fill="#',color[id].toColor(),'" d="M476.532,135.396c-12.584-7.796-29-7.356-46.248,1.228l-117.868,59.88c-10.048-9.7-23.728-14.452-38.816-14.452h-50.156c-15.204,0-28.992,4.828-39.064,14.652L66.1,137.256c-17.232-8.58-33.836-9.336-46.412-1.544C7.1,143.508,0,158.1,0,177.368v141.104c0,19.268,7.1,34.18,19.68,41.96c5.972,3.708,12.904,5.556,20.28,5.556c8.164,0,17.04-2.256,26.092-6.764l118.312-58.14c10.072,9.824,23.88,16.588,39.08,16.588H273.6c15.084,0,28.78-6.692,38.82-16.396l117.884,58.276c9.068,4.512,17.9,6.596,26.064,6.596c7.388,0,14.192-1.928,20.164-5.636C489.108,352.72,496,337.744,496,318.476V177.368C496,158.1,489.108,143.192,476.532,135.396z"/>',
+      '<g class="mustache" transform="translate(140,195) scale(1.50 1.50)">',
+          '<path fill="#',color[id].toColor(),'" d="M21.455,13.025c-0.604-3.065-5.861-4.881-7.083-2.583c-1.22-2.299-6.477-0.483-7.081,2.583C6.501,16.229,2.321,17.11,0,15.439c0,3.622,3.901,3.669,6.315,3.9c5.718-0.25,7.525-2.889,8.057-4.093c0.532,1.205,2.34,3.843,8.058,4.093c2.416-0.231,6.315-0.278,6.315-3.9C26.423,17.11,22.244,16.229,21.455,13.025z"/>',
         '</g>'
       ));
 
