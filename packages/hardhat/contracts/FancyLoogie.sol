@@ -26,6 +26,10 @@ abstract contract MustacheContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
+abstract contract ContactLensesContract {
+  function renderTokenById(uint256 id) external virtual view returns (string memory);
+}
+
 contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
@@ -44,10 +48,14 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   MustacheContract mustache;
   mapping(uint256 => uint256) mustacheById;
 
-  constructor(address _loogies, address _topKnot, address _mustache) ERC721("FancyLoogie", "FLOOG") {
+  ContactLensesContract lenses;
+  mapping(uint256 => uint256) lensesById;
+
+  constructor(address _loogies, address _topKnot, address _mustache, address _lenses) ERC721("FancyLoogie", "FLOOG") {
     loogies = LoogiesContract(_loogies);
     topKnot = TopKnotContract(_topKnot);
     mustache = MustacheContract(_mustache);
+    lenses = ContactLensesContract(_lenses);
   }
 
   function mintItem(uint256 loogieId) public returns (uint256) {
@@ -119,6 +127,10 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
       render = string(abi.encodePacked(render, mustache.renderTokenById(mustacheById[id])));
     }
 
+    if (lensesById[id] > 0) {
+      render = string(abi.encodePacked(render, lenses.renderTokenById(lensesById[id])));
+    }
+
     return render;
   }
 
@@ -145,7 +157,7 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
 
       uint256 fancyId = toUint256(fancyIdData);
       require(ownerOf(fancyId) == from, "you can only add loogies to a tank you own.");
-      require(msg.sender == address(topKnot) || msg.sender == address(mustache), "the loogies can wear only top knot and mustache for now");
+      require(msg.sender == address(topKnot) || msg.sender == address(mustache) || msg.sender == address(lenses), "the loogies can wear only top knot, mustache and contact lenses for now");
 
       if (msg.sender == address(topKnot)) {
         require(topKnotById[fancyId] == 0, "the loogie has a top knot!");
@@ -155,6 +167,11 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
       if (msg.sender == address(mustache)) {
         require(mustacheById[fancyId] == 0, "the loogie has a mustache!");
         mustacheById[fancyId] = tokenId;
+      }
+
+      if (msg.sender == address(lenses)) {
+        require(lensesById[fancyId] == 0, "the loogie has contact lenses!");
+        lensesById[fancyId] = tokenId;
       }
 
       return this.onERC721Received.selector;

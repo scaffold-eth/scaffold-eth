@@ -251,6 +251,9 @@ function App(props) {
   const mustacheBalance = useContractReader(readContracts, "Mustache", "balanceOf", [address]);
   console.log("🤗 mustache balance:", mustacheBalance);
 
+  const lensesBalance = useContractReader(readContracts, "ContactLenses", "balanceOf", [address]);
+  console.log("🤗 lenses balance:", lensesBalance);
+
   const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogie", "balanceOf", [address]);
   console.log("🤗 fancy loogie balance:", fancyLoogieBalance);
 
@@ -272,6 +275,9 @@ function App(props) {
 
   const yourMustacheBalance = mustacheBalance && mustacheBalance.toNumber && mustacheBalance.toNumber();
   const [yourMustaches, setYourMustaches] = useState();
+
+  const yourLensesBalance = lensesBalance && lensesBalance.toNumber && lensesBalance.toNumber();
+  const [yourLenses, setYourLenses] = useState();
 
   const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
@@ -354,6 +360,29 @@ function App(props) {
       }
       setYourMustaches(mustacheUpdate.reverse());
 
+      const lensesUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourLensesBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.ContactLenses.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.ContactLenses.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            lensesUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourLenses(lensesUpdate.reverse());
+
       const fancyLoogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
         try {
@@ -379,7 +408,7 @@ function App(props) {
       setYourFancyLoogies(fancyLoogieUpdate.reverse());
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance, yourMustacheBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourTopKnotBalance, yourMustacheBalance, yourLensesBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -621,6 +650,16 @@ function App(props) {
               Mustache
             </Link>
           </Menu.Item>
+          <Menu.Item key="/lenses">
+            <Link
+              onClick={() => {
+                setRoute("/lenses");
+              }}
+              to="/lenses"
+            >
+              Contact Lenses
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mintloogies">
             <Link
               onClick={() => {
@@ -649,6 +688,16 @@ function App(props) {
               to="/mintMustache"
             >
               Mint Mustache
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/mintLenses">
+            <Link
+              onClick={() => {
+                setRoute("/mintLenses");
+              }}
+              to="/mintLenses"
+            >
+              Mint Contact Lenses
             </Link>
           </Menu.Item>
           <Menu.Item key="/mintFancyLoogie">
@@ -704,6 +753,16 @@ function App(props) {
           <Route exact path="/mustache">
             <Contract
               name="Mustache"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/lenses">
+            <Contract
+              name="ContactLenses"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -1030,6 +1089,98 @@ function App(props) {
                             console.log(tankIdInBytes);
 
                             tx(writeContracts.Mustache["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                          }}>
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          </Route>
+          <Route exact path="/mintLenses">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.ContactLenses.mintItem())
+              }}>MINT</Button>
+            </div>
+            {/* */}
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourLenses}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.ContactLenses.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                        <br/><br/>
+                        Transfer to FancyLoogie:{" "}
+                        <Address
+                          address={readContracts.FancyLoogie.address}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <Input
+                          placeholder="FancyLoogie ID"
+                          // value={transferToTankId[id]}
+                          onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
+                            const update = {};
+                            update[id] = newValue.target.value;
+                            setTransferToTankId({ ...transferToTankId, ...update});
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            console.log("transferToTankId[id]", transferToTankId[id]);
+                            console.log(parseInt(transferToTankId[id]));
+
+                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                            console.log(tankIdInBytes);
+
+                            tx(writeContracts.ContactLenses["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
                           }}>
                           Transfer
                         </Button>
