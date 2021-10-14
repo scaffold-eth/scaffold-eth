@@ -261,14 +261,22 @@ function App(props) {
 
   const [tokenURI, setTokenURI] = useState();
 
+  const [auction, setAuction] = useState("");
 
-  let auctionView = "";
-  if (useContractReader(readContracts, "SilentAuction", "owner") === address) {
-    // TODO: create a component for bidders, and one for the owner
-    auctionView = <div>YOU OWN IT</div>
-  } else {
-    auctionView = <div>YOU DO NOT OWN IT</div>
-  }
+  useEffect(() => {
+    const getAuctionView = async () => {
+      const owner = await readContracts.SilentAuction?.owner();
+      if (!owner) return;
+      if (owner === address) {
+        setAuction('YOU OWN IT');
+      } else {
+        const auction = await readContracts.SilentAuction.currentAuction();
+        console.log(auction);
+        setAuction('YOU DONT');
+      }
+    }
+    getAuctionView();
+  })
 
   useEffect(() => {
     const getCollectibles = async () => {
@@ -544,7 +552,7 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            {auctionView}
+            <div>{auction}</div>
             <img src={tokenURI?.image} />
             <Button
               type="primary"
