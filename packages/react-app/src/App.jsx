@@ -25,6 +25,10 @@ import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
+// contracts
+import deployedContracts from "./contracts/hardhat_contracts.json";
+import externalContracts from "./contracts/external_contracts";
+
 import { useContractConfig, useExternalContractLoader } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
