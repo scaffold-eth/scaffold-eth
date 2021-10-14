@@ -7,6 +7,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
 
 require("hardhat-deploy");
+require("hardhat-gas-reporter");
 
 require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
@@ -44,6 +45,16 @@ function mnemonic() {
 
 module.exports = {
   defaultNetwork,
+
+  /**
+   * gas reporter configuration that let's you know
+   * an estimate of gas for contract deployments and function calls
+   * More here: https://hardhat.org/plugins/hardhat-gas-reporter.html
+   */
+  gasReporter: {
+    currency: "USD",
+    coinmarketcap: process.env.COINMARKETCAP || null,
+  },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
   // 1. An Infura key (or similar)
@@ -90,46 +101,46 @@ module.exports = {
 
     rinkeby: {
       url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
-       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
-      
+
+      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
+
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     kovan: {
       url: "https://kovan.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-    
+
       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/kovan", // <---- YOUR MORALIS ID! (not limited to infura)
-      
+
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     mainnet: {
       url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
+
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-        
-      gasPrice: mainnetGwei*1000000000,
+
+      gasPrice: mainnetGwei * 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
+
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
-      
+
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     goerli: {
       url: "https://goerli.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-      
+
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/goerli", // <---- YOUR MORALIS ID! (not limited to infura)
-      
+
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -142,19 +153,19 @@ module.exports = {
       },
     },
     polygon: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
-    },     
+    },
     polytest: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
-    },    
+    },
 
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
@@ -599,4 +610,4 @@ task("send", "Send ETH")
     debug(JSON.stringify(txRequest, null, 2));
 
     return send(fromSigner, txRequest);
-  }); 
+  });

@@ -224,7 +224,9 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  const contractConfig = useContractConfig();
+  // const contractConfig = useContractConfig();
+
+  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
