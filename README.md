@@ -84,7 +84,7 @@ yarn mint
 
 👨‍🎤 Deploy your NFT smart contract:
 ```
-yarn deploy
+yarn deploy --network rinkeby
 ```
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
 
