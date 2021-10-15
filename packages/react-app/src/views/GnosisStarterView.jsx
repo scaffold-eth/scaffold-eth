@@ -7,7 +7,7 @@ import { usePoller, useLocalStorage, useBalance, useSafeSdk } from "../hooks";
 import { EthSignSignature } from './EthSignSignature'
 import WalletConnect from "@walletconnect/client";
 
-const serviceClient = new SafeServiceClient('https://safe-transaction.rinkeby.gnosis.io')
+const serviceClient = new SafeServiceClient('https://safe-transaction.mainnet.gnosis.io')
 
 export default function GnosisStarterView({
   userSigner,
@@ -33,7 +33,7 @@ export default function GnosisStarterView({
   ]
   const THRESHOLD = 2
 
-  const [safeAddress, setSafeAddress] = useLocalStorage("deployedSafe")
+  const [safeAddress, setSafeAddress] = useState("0x0eb2AB241210900Aeac2fbA054dD605355fe2490")
   const [ deploying, setDeploying ] = useState()
   const safeBalance = useBalance(localProvider, safeAddress);
   const { safeSdk, safeFactory } = useSafeSdk(userSigner, safeAddress)
@@ -427,6 +427,11 @@ export default function GnosisStarterView({
 
   return (
     <div>
+
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+
+      </div>
+
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
         {safeAddress?<div style={{float:"right", padding:4, cursor:"pointer", fontSize:28}} onClick={()=>{
           setSafeAddress("")
