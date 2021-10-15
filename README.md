@@ -18,7 +18,7 @@ Dynamic NFTs are all the rage... but they're had to make on-chain, cost a lot of
 
 For this example, we build a dynamic NFT that adds addresses that "tip it" to a dynamic wordcloud.  Note this is a simple example but can be made much more complicated like using addresses as a random hash to morph a NFT!
 
-Wanting to create a dynamic off-chain NFT that adjusts it's image based on chain interations, we specifically use Alchemy's Enhanced API method (particularly Alchemy Notify) specifically to get the Address Activity notifications.  This lets us hook onto any transactions that interact with our target address and allows us to inject that info into our SVG generation. To generatively create our NFT, we use the python package `wordcloud` to create a wordcloud of all the addresses that have interacted with our NFT.  
+Wanting to create a dynamic off-chain NFT that adjusts it's image based on chain interactions, we specifically use Alchemy's Enhanced API method (particularly Alchemy Notify) specifically to get the Address Activity notifications.  This lets us hook onto any transactions that interact with our target address and allows us to inject that info into our SVG generation. To generatively create our NFT, we use the python package `wordcloud` to create a wordcloud of all the addresses that have interacted with our NFT.  
 
 To summarize, our Heroku server is configured to accept address notifications, add addresses to our wordcloud, and return an updated NFT SVG based on on-chain interacions!
 
