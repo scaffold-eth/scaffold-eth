@@ -1,11 +1,13 @@
-# 🏗 scaffold-eth - Composable SVG NFT
+# 🏗 scaffold-eth - Fancy Loogie - Loogie Mashup SVG NFT
+
+![loogie-with-topknot-mustache-contactlenses](https://user-images.githubusercontent.com/466652/137544014-15962686-365b-438d-8895-68a31aab16d1.png)
 
 > Demonstration showing how SVG NFTs can be composed on top of each other.
 
 
 ## Prerequisites
 
-This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch. Watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it.
+This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch (watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it) and [composable-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/composable-svg-nft) branch.
 
 
 ## Getting Started
@@ -14,8 +16,8 @@ This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/
 
 Clone the repo:
 ```
-git clone -b composable-svg-nft https://github.com/scaffold-eth/scaffold-eth.git composable-svg-nft
-cd composable-svg-nft
+git clone -b loogie-mashup https://github.com/scaffold-eth/scaffold-eth.git loogie-mashup
+cd loogie-mashup
 ```
 
 Install dependencies:
@@ -25,7 +27,7 @@ yarn install
 
 Start frontend
 ```
-cd composable-svg-nft
+cd loogie-mashup
 yarn start
 ```
 
@@ -36,7 +38,7 @@ yarn chain
 
 In a third terminal window, deploy contracts:
 ```
-cd composable-svg-nft
+cd loogie-mashup
 yarn deploy
 ```
 
@@ -52,28 +54,24 @@ function renderTokenById(uint256 id) public view returns (string memory)
 
 It returns the relevant SVG that be embedded in other SVG code for rendering.
 
-To see how, take a look at `LoogieTank.sol` at `packages/hardhat/contracts`. Its `renderTokenById` function calls `Loogies` contracts `renderTokenById` to include the SVG in its own SVG code.
+Then, you can mint a FancyLoogie from a Loogie and then send another NFTs (Bow, Mustache and ContactLenses for now) to that Loogie, to be rendered as one SVG.
 
-Without this function, `LoogieTank` would have to do additional processing to extract the SVG code.
+Take a look at `FancyLoogie.sol` at `packages/hardhat/contracts`. Its `renderTokenById` function calls the method `renderTokenById` from the other contracts  to include the SVG in its own SVG code.
 
 ## Demo
 
-1. Go to the **Mint Loogie Tank** tab and mint some tank by clicking the **MINT** button. Notice that each tank has a unique ID.
+1. Go to the **Mint Loogies** tab and mint a Loogie clicking the **MINT** button.
+2. Right to the minted Loogie you have the option to upgrade to a FancyLoogie. Click on `Approve`, to be able to mint a new fancy loogie using this loogie as the source. With the approval, you are approving the fancy loogie contract to transfer this loogie.
 
-   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761678-d7f0c82c-9129-49ca-b943-d8d4a0222d9b.png">
+![loogie](https://user-images.githubusercontent.com/466652/137542729-c5bf606a-4e98-4222-907c-708c5428138e.png)
 
-1. Now mint some loogies on **Mint Loogies** tab.
+3. After you Approve to spend the Loogie, you have to click on the `Upgrade` button.
+![loogie-upgrade](https://user-images.githubusercontent.com/466652/137543625-feb83455-1bc5-402e-bc5c-f77e5fc7150e.png)
 
-   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761696-4fc759bf-17f6-416d-a454-0d5722d0aa7f.png">
+4. Go to the last **FancyLoogies** tab and you will see your new FancyLoogie.
+5. Then you can go the the **Mint Bow**, **Mint Mustache** or **Mint Contact Lenses** to mint some new stuff and transfer it to the FancyLoogie.
 
-
-1. Send these loogies to any of the minted tanks by entering the tank ID and click **Transfer**.
-
-   <img width="354" src="https://user-images.githubusercontent.com/1689531/135761726-8c2f5ea4-8c0a-4fa8-b08d-d38a7fe2634a.png">
-
-1. Enjoy your loogies in a tank. 😎
-
-   <img width="400" src="https://user-images.githubusercontent.com/1689531/135761763-0bdb225b-ee33-44e5-a800-1f217a83ec37.jpeg">
+![fancyloogie](https://user-images.githubusercontent.com/466652/137544512-c32cdae9-8557-4aa8-88c2-bd8ad51e0614.png)
 
 
 ## Contact
