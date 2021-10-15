@@ -205,7 +205,7 @@ const main = async () => {
 
   console.log("Transferring Ownership of YourCollectible to "+toAddress+"...")
 
-  await yourCollectible.transferOwnership(toAddress)
+  await yourCollectible.transferOwnership(toAddress, { gasLimit: 400000 });
 
   await sleep(delayMS)
 
