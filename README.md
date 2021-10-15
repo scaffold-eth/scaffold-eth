@@ -83,8 +83,11 @@ yarn mint
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
 
 👨‍🎤 Deploy your NFT smart contract:
+
+Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
+
 ```
-yarn deploy --network rinkeby
+yarn deploy --network NETWORK_OF_CHOICE
 ```
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to wherever you deployed your contract:
 
@@ -94,19 +97,9 @@ You should see the correct network in the frontend:
 
 ![nft10](https://user-images.githubusercontent.com/526558/124387099-9a3edd80-dcb3-11eb-9a57-54a7d370589a.png)
 
-An instant wallet running on xDAI insired by xdai.io.
 🎫 Ready to mint a batch of NFTs for reals?
 ```
 yarn mint
-
-await tenderlyVerify(
-  {contractName: "YourContract",
-   contractAddress: yourContract.address
-})
-```
-Make sure your target network is present in the hardhat networks config, then either update the default network in `hardhat.config.js` to your network of choice or run:
-```
-yarn deploy --network NETWORK_OF_CHOICE
 ```
 Once verified, they will then be available to view on Tenderly!
 
