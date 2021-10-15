@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Menu, Row, List } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -262,21 +262,82 @@ function App(props) {
   const [tokenURI, setTokenURI] = useState();
 
   const [auction, setAuction] = useState("");
+  const [owner, setOwner] = useState(false);
+  useEffect(() => {
+    const getOwner = async () => {
+      const owner = await readContracts.SilentAuction?.owner();
+      setOwner(owner === address);
+    }
+    getOwner();
+  });
+
+  const [currentAuction, setCurrentAuction] = useState();
+  useEffect(() => {
+    const getAuction = async () => {
+      const auction = await readContracts.SilentAuction?.currentAuction();
+      setCurrentAuction(auction);
+    }
+    getAuction();
+  });
 
   useEffect(() => {
     const getAuctionView = async () => {
-      const owner = await readContracts.SilentAuction?.owner();
-      if (!owner) return;
-      if (owner === address) {
-        setAuction('YOU OWN IT');
-      } else {
-        const auction = await readContracts.SilentAuction.currentAuction();
-        console.log(auction);
-        setAuction('YOU DONT');
+      if (owner) {
+        return;
+      }
+
+      const auction = await readContracts.SilentAuction?.currentAuction();
+      console.log(auction);
+      if (auction?.tokenId) {
+        const tokenURI = await readContracts.YourCollectible.tokenURI(auction.tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          setAuction({ id: auction.tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
       }
     }
     getAuctionView();
-  })
+  }, [address, balance])
+
+  let auctionView = "";
+  if (!owner && auction?.id) {
+    auctionView = (
+      <>
+      <h1>BUY ME YO</h1>
+        <Card style={{width: '200px', heigth: '200px'}}>
+          <List.Item key={auction.uri}>
+            <img src={auction.image} />
+          </List.Item>
+        </Card>
+      </>
+    );
+  }
+
+  const [itemsToAuction, setItemsToAuction] = useState([]);
+  useEffect(() => {
+    const getItems = async() => {
+      const items = [];
+      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+        const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+        const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          items.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setItemsToAuction(items);
+    }
+    getItems();
+  }, [address, balance]);
 
   useEffect(() => {
     const getCollectibles = async () => {
@@ -552,8 +613,41 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <div>{auction}</div>
-            <img src={tokenURI?.image} />
+            {auctionView}
+            <List
+              bordered
+              dataSource={itemsToAuction}
+              renderItem={item => {
+                return (
+                  <>
+                    <Card style={{width: '200px', heigth: '200px'}}>
+                      <List.Item key={item.uri}>
+                        <img src={item.image} />
+                      </List.Item>
+                    </Card>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        tx(writeContracts.YourCollectible.approve("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", item.id))
+                      }}
+                    >
+                      Approve
+                    </Button>
+                    <Button
+                      type="primary"
+                      onClick={() => {
+                        tx(writeContracts.SilentAuction.createAuction(readContracts.YourCollectible.address, item.id))
+                      }}
+                    >
+                      Start Auction
+                    </Button>
+                  </>
+                )
+              }}
+              >
+            </List>
+
+
             <Button
               type="primary"
               onClick={() => {
