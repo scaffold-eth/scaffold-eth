@@ -10,6 +10,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 contract AgingNFT is ERC721  {
 
+
   string[] public phases = [
     "1",
     "2",
@@ -22,37 +23,19 @@ contract AgingNFT is ERC721  {
     "9",
     "10",
     "11",
-    "12",
-    "13",
-    "14",
-    "15",
-    "16",
-    "17",
-    "18",
-    "19",
-    "20"
+    "12"
   ];
 
-  mapping (uint256 => uint256) public birth;
-
+  //Making the birth of the token for now just be 10/12/2021 12am GMT 
+  uint256 birth = 1633996800;
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
   constructor() ERC721("AgingNFT", "AGING") {
-  }
-
-  function claim()
-      public
-      returns (uint256)
-  {
-      _tokenIds.increment();
-
-      uint256 id = _tokenIds.current();
-      _mint(msg.sender, id);
-
-      birth[id] = block.timestamp;
-
-      return id;
+      //This is going to be filled with the addresses receiving the airdrop
+     _tokenIds.increment();
+     _mint(0xC9FFEe9e34723d882CB97a6c056100661d00Bfe1, _tokenIds.current());
+      // Repeat 7? Times or so
   }
 
 
@@ -61,54 +44,37 @@ contract AgingNFT is ERC721  {
 
       string memory _tokenURI;
 
-      uint256 age = block.timestamp - birth[tokenId];
-
-      uint256 timePerProgression = 1 minutes;
+      uint256 age = block.timestamp - birth;
 
       string memory base = _baseURI();
 
-      if(age<timePerProgression){
+      if(age< 10 seconds){
         _tokenURI = phases[0];
-      }else if(age<timePerProgression*2){
+      }else if(age< 31 days){
         _tokenURI = phases[1];
-      }else if(age<timePerProgression*3){
+      }else if(age< 193 days){
         _tokenURI = phases[2];
-      }else if(age<timePerProgression*4){
+      }else if(age< 376 days){
         _tokenURI = phases[3];
-      }else if(age<timePerProgression*5){
+      }else if(age< 558 days){
         _tokenURI = phases[4];
-      }else if(age<timePerProgression*6){
+      }else if(age< 924 days){
         _tokenURI = phases[5];
-      }else if(age<timePerProgression*7){
+      }else if(age< 1654 days){
         _tokenURI = phases[6];
-      }else if(age<timePerProgression*8){
+      }else if(age< 3115 days){
         _tokenURI = phases[7];
-      }else if(age<timePerProgression*9){
+      }else if(age< 6768 days){
         _tokenURI = phases[8];
-      }else if(age<timePerProgression*10){
+      }else if(age< 14073 days){
         _tokenURI = phases[9];
-      }else if(age<timePerProgression*11){
+      }else if(age< 28682 days){
         _tokenURI = phases[10];
-      }else if(age<timePerProgression*12){
+      }else {
         _tokenURI = phases[11];
-      }else if(age<timePerProgression*13){
-        _tokenURI = phases[12];
-      }else if(age<timePerProgression*14){
-        _tokenURI = phases[13];
-      }else if(age<timePerProgression*15){
-        _tokenURI = phases[14];
-      }else if(age<timePerProgression*16){
-        _tokenURI = phases[15];
-      }else if(age<timePerProgression*17){
-        _tokenURI = phases[16];
-      }else if(age<timePerProgression*18){
-        _tokenURI = phases[17];
-      }else if(age<timePerProgression*19){
-        _tokenURI = phases[18];
-      }else{
-          _tokenURI = phases[19];
-      }
       return string(abi.encodePacked(base, _tokenURI));
   }
+
+}
 
 }
