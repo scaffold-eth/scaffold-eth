@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Button, notification } from "antd";
 import axios from "axios";
-import { Account } from "../components";
 import arm from '../assets/g35.png'
+import playFilmImg from '../assets/earth.png'
 
 /* This Home build uses the custom auth process
   - Signature, message and address is sent to the server for verification and custom JWT token
@@ -58,10 +58,10 @@ function Home({ userSigner, web3Modal, loadWeb3Modal }) {
     setIsSigning(false);
   };
 
-  const connectAndSignPhases = [];
+  const phases = [];
   if (web3Modal) {
     if (!web3Modal.cachedProvider) {
-      connectAndSignPhases.push(
+      phases.push(
         <div>
           <h2 className="instruction">
             1. To watch the film, <br />
@@ -77,8 +77,8 @@ function Home({ userSigner, web3Modal, loadWeb3Modal }) {
         </div>
         ,
       );
-    } else {
-      connectAndSignPhases.push(
+    } else if (web3Modal.cachedProvider && !token) {
+      phases.push(
         <div>
           <h2 className="instruction">
             2. Thanks for linking your wallet. Next, sign<br />
@@ -91,6 +91,15 @@ function Home({ userSigner, web3Modal, loadWeb3Modal }) {
         </div>
         ,
       );
+    } else if (web3Modal.cachedProvider && token) {
+      phases.push(
+        <div>
+          <h2 className="instruction earth-small">
+            3. Click to play the film. Enjoy!
+          </h2>
+          <img className="play-film" src={playFilmImg} alt="click to play the film" />
+        </div>
+      );
     }
   }
 
@@ -98,16 +107,8 @@ function Home({ userSigner, web3Modal, loadWeb3Modal }) {
     <div className="home">
       <img className="arm" src={arm} alt="arm and hand pointing to button" />
 
-      {connectAndSignPhases}
+      {phases}
 
-      {token && (
-        <div style={{ marginTop: 60 }}>
-          <video width="400" height="400" controls>
-            <source src={`${server}/video?token=${token}`} type="video/mp4" />
-            Your browser does not support the video tag.
-          </video>
-        </div>
-      )}
     </div>
   );
 }

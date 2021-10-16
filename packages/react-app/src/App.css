@@ -49,7 +49,7 @@ button,button.ant-btn,button.ant-btn.ant-btn-round.ant-btn-lg{
   border-radius: 12px;
   background: none;
   border: solid 4px #ffd942;
-  padding:none;
+  padding:revert;
 }
 
 button:hover,button.ant-btn:hover,button.ant-btn.ant-btn-round.ant-btn-lg:hover,button:focus,button.ant-btn:focus,button.ant-btn.ant-btn-round.ant-btn-lg:focus{
@@ -97,6 +97,7 @@ button:hover span,button:focus span {
 }
 
 .instruction{
+  margin-top:20px;
   font-size:32px;
   line-height: 38px;
 }
@@ -107,6 +108,23 @@ button:hover span,button:focus span {
   padding: 10px 36px;
   margin: 50px;
   height:50px;
+}
+
+.play-film {
+  width: 50%;
+  cursor:pointer;
+}
+
+.earth-small:before{
+  content: "";
+    display: block;
+    position: absolute;
+    left: 48.5%;
+    width: 48px;
+    height: 48px;
+    background-position: center;
+     z-index: -999;
+  background-image: url(./assets/earth-small.png);
 }
 
 @media screen and (max-width: 600px) {
@@ -124,6 +142,9 @@ button:hover span,button:focus span {
   .instruction{
     font-size:24px;
     line-height: 28px;
+  }
+  .play-film {
+    width: 80%;
   }
 }
 
