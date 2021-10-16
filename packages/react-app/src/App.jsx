@@ -1,15 +1,16 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, List, Card } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import axios from "axios";
 import {
   useBalance,
   useContractLoader,
@@ -18,10 +19,12 @@ import {
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
+import { useEventListener } from "./hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
+import { ExampleUI, Hints, Subgraph, NewMerkler, ViewMerkler } from "./views";
+import { readString } from "react-papaparse";
+import { MerkleTree } from "merkletreejs";
 
 import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
@@ -29,6 +32,9 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
 const { ethers } = require("ethers");
+
+const pinataSDK = require("@pinata/sdk");
+const pinata = pinataSDK(process.env.REACT_APP_PINATA_API_KEY, process.env.REACT_APP_PINATA_SECRET);
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -221,7 +227,9 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  const contractConfig = useContractConfig();
+  const [customAddresses, setCustomAddresses] = useState({});
+
+  let contractConfig = useContractConfig({ customAddresses });
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
@@ -248,50 +256,7 @@ function App(props) {
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
   // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
-  //
-  // 🧫 DEBUG 👨🏻‍🔬
-  //
-  useEffect(() => {
-    if (
-      DEBUG &&
-      mainnetProvider &&
-      address &&
-      selectedChainId &&
-      yourLocalBalance &&
-      yourMainnetBalance &&
-      readContracts &&
-      writeContracts &&
-      mainnetContracts
-    ) {
-      console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
-      console.log("🌎 mainnetProvider", mainnetProvider);
-      console.log("🏠 localChainId", localChainId);
-      console.log("👩‍💼 selected address:", address);
-      console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
-      console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
-      console.log("🔐 writeContracts", writeContracts);
-    }
-  }, [
-    mainnetProvider,
-    address,
-    selectedChainId,
-    yourLocalBalance,
-    yourMainnetBalance,
-    readContracts,
-    writeContracts,
-    mainnetContracts,
-  ]);
+  let merkleDeploymentEvents = useEventListener(readContracts, "MerkleDeployer", "Deployed", localProvider, 1);
 
   let networkDisplay = "";
   if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
@@ -454,47 +419,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Merklers
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
+          <Menu.Item key="/new">
             <Link
               onClick={() => {
-                setRoute("/hints");
+                setRoute("/new");
               }}
-              to="/hints"
+              to="/new"
             >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
+              New
             </Link>
           </Menu.Item>
         </Menu>
@@ -506,67 +441,45 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            <Contract
-              name="Merkler"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
+            <Card title={"Merklers"} style={{ maxWidth: 600, margin: "auto", marginTop: 10 }}>
+              <List
+                itemLayout="horizontal"
+                rowKey={item => `${item.transactionHash}_${item.logIndex}`}
+                dataSource={merkleDeploymentEvents}
+                renderItem={item => (
+                  <List.Item>
+                    <List.Item.Meta
+                      title={
+                        <Link to={`/view/${item.args._address}`}>
+                          <Address value={item.args._address} />
+                        </Link>
+                      }
+                      description={`${ethers.utils.formatUnits(item.args._amount, item.args._decimals)} ${
+                        item.args._symbol
+                      } dropped by ${item.args._dropper}`}
+                    />
+                  </List.Item>
+                )}
+              />
+            </Card>
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
+          <Route path="/new">
+            <NewMerkler
               readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-              contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
               writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
+              localProvider={localProvider}
+              userSigner={userSigner}
+              address={address}
+            />
+          </Route>
+          <Route path="/view/:merkler">
+            <ViewMerkler
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              localProvider={localProvider}
+              userSigner={userSigner}
+              address={address}
+              localChainId={localChainId}
             />
           </Route>
         </Switch>

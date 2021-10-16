@@ -798,4 +798,12 @@ module.exports = {
       },
     },
   },
+  31337: {
+    contracts: {
+      ERC20: {
+        address: "0xc944e90c64b2c07662a292be6244bdf05cda44a7",
+        abi: ERC20ABI,
+      },
+    },
+  },
 };
