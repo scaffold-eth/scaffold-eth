@@ -8,7 +8,9 @@
     "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-prettier": "^3.1.4"
+    "eslint-plugin-prettier": "^3.1.4",
+    "keccak256": "^1.0.3",
+    "merkletreejs": "^0.2.24"
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "^2.0.0",
@@ -16,6 +18,9 @@
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^4.3.2",
     "@tenderly/hardhat-tenderly": "^1.0.10",
+    "@types/chai": "^4.2.18",
+    "@types/mocha": "^8.2.2",
+    "@types/node": "^15.12.2",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "ethereum-waffle": "^3.1.1",
@@ -23,7 +28,13 @@
     "hardhat": "^2.0.11",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
-    "ramda": "^0.27.1"
+    "ramda": "^0.27.1",
+    "hardhat-ethers": "^1.0.1",
+    "hardhat-gas-reporter": "^1.0.4",
+    "hardhat-typechain": "^0.3.5",
+    "solidity-coverage": "^0.7.17",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.3.2"
   },
   "scripts": {
     "chain": "hardhat node",

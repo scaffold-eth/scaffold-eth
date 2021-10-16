@@ -43,16 +43,19 @@ contract Bufficorn is ERC721, Ownable{
     _setBaseURI(baseURI_);
     root = _root;
   }
+  
+  // todo on script - full set attribute
 
   uint256 constant MAX_PER_MINT = 20;
   uint256 constant PRESALE_LIMIT = 5280;
-  uint256 constant PUBLIC_LIMIT = 10000;
+  uint256 constant PUBLIC_LIMIT = 10000; // TODO Change to admin premint rather than max + elastic
   uint256 constant PRESALE_PRICE = 0.0528 ether;
   uint256 constant PUBLIC_PRICE = 0.1056 ether;
   
   uint256 public elasticCap;
   
   
+  // todo active at same time
   enum ContractState {Paused, Presale, Public}
   
   ContractState public contractState;

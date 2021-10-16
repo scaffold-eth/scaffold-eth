@@ -4,6 +4,10 @@ const { solidity } = require("ethereum-waffle");
 
 use(solidity);
 
+function hashToken(tokenId, account) {
+  return Buffer.from(ethers.utils.solidityKeccak256(['uint256', 'address'], [tokenId, account]).slice(2), 'hex')
+}
+
 describe("My Dapp", function () {
   let myContract;
 
