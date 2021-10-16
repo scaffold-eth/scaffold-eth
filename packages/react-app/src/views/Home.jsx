@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { Button, notification } from "antd";
 import axios from "axios";
+import { Account } from "../components";
+import arm from '../assets/g35.png'
 
 /* This Home build uses the custom auth process
   - Signature, message and address is sent to the server for verification and custom JWT token
@@ -8,7 +10,7 @@ import axios from "axios";
 */
 const server = "http://localhost:49832";
 
-function Home({ userSigner, web3Modal }) {
+function Home({ userSigner, web3Modal, loadWeb3Modal }) {
   const [isSigning, setIsSigning] = useState(false);
   const [token, setToken] = useState(null);
 
@@ -20,7 +22,6 @@ function Home({ userSigner, web3Modal }) {
   };
 
   const handleSignIn = async () => {
-    const message = "tokenValidation";
 
     if (web3Modal.cachedProvider == "") {
       return sendNotification("error", {
@@ -34,6 +35,9 @@ function Home({ userSigner, web3Modal }) {
     try {
       // sign message using wallet
       const address = await userSigner.getAddress();
+      const message = `I am ${address} and I would like to watch the film 
+  “We Are as Gods” from Structure Films. I am presenting my token for validation, the token will 
+  remain in my wallet`;
       let signature = await userSigner.signMessage(message);
       // send signature here for auth token
       const { data } = await axios.post(`${server}/signIn`, { signature, message, address });
@@ -54,11 +58,47 @@ function Home({ userSigner, web3Modal }) {
     setIsSigning(false);
   };
 
+  const connectAndSignPhases = [];
+  if (web3Modal) {
+    if (!web3Modal.cachedProvider) {
+      connectAndSignPhases.push(
+        <div>
+          <h2 className="instruction">
+            1. To watch the film, <br />
+            first link your wallet.
+          </h2>
+          <Button
+            key="loginbutton"
+            onClick={loadWeb3Modal}
+          >
+            connect wallet
+          </Button>
+          <h2 className="instruction">(You will have to present a token once your wallet is linked.)</h2>
+        </div>
+        ,
+      );
+    } else {
+      connectAndSignPhases.push(
+        <div>
+          <h2 className="instruction">
+            2. Thanks for linking your wallet. Next, sign<br />
+            a message presenting your token.
+          </h2>
+          <Button loading={isSigning}
+            onClick={handleSignIn}>
+            sign message
+          </Button>
+        </div>
+        ,
+      );
+    }
+  }
+
   return (
-    <div>
-      <Button loading={isSigning} style={{ marginTop: 32 }} type="primary" onClick={handleSignIn}>
-        <span style={{ marginRight: 8 }}>🔏</span> sign a message with your ethereum wallet
-      </Button>
+    <div className="home">
+      <img className="arm" src={arm} alt="arm and hand pointing to button" />
+
+      {connectAndSignPhases}
 
       {token && (
         <div style={{ marginTop: 60 }}>
