@@ -28,7 +28,7 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
 import StackGrid from "react-stack-grid";
 import ReactJson from "react-json-view";
-import assets from "./assets.js";
+const assets = []
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client

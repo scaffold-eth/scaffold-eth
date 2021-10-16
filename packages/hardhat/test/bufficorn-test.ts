@@ -6,14 +6,11 @@ import { keccak256 } from 'keccak256'
 
 const allowlist = require('./tokens.json')
 import {Bufficorn} from '../src/types/Bufficorn'
+import { hashToken } from '../src/util/util'
 
 use(solidity)
 
-function hashToken(account: string) {
-  return Buffer.from(ethers.utils.solidityKeccak256(['address'], [account]).slice(2), 'hex')
-}
-
-describe('My Dapp', function () {
+describe('Bufficorn', function () {
   let myContract: Bufficorn
   let merkleTree: MerkleTree
 
@@ -26,7 +23,7 @@ describe('My Dapp', function () {
     console.log({ merkleTree })
   })
 
-  describe('YourContract', function () {
+  describe('Configuration', function () {
     it('Should deploy YourContract', async function () {
       const YourContract = await ethers.getContractFactory('Bufficorn')
 
