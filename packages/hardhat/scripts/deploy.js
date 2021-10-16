@@ -4,11 +4,22 @@ const chalk = require("chalk");
 const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
+const { MerkleTree } = require('merkletreejs');
+const keccak256 = require('keccak256');
+const allowlist = require('../test/tokens.json')
 
+function hashToken(account) {
+  return Buffer.from(ethers.utils.solidityKeccak256(['address'], [account]).slice(2), 'hex')
+}
 
 const main = async () => {
 
   console.log("\n\n 📡 Deploying...\n");
+    const merkleTree = new MerkleTree(
+      allowlist.addresses.map((token) => hashToken(token)),
+      keccak256,
+      { sortPairs: true }
+    )
 
 /*  // read in all the assets to get their IPFS hash...
   let uploadedAssets = JSON.parse(fs.readFileSync("./uploaded.json"))
@@ -22,7 +33,7 @@ const main = async () => {
   console.log(" \n")
 */
   // deploy the contract with all the artworks forSale
-  const yourCollectible = await deploy("Bufficorn", ["", "0x"]) // <-- add in constructor args like line 19 vvvv
+  const bufficorn = await deploy("Bufficorn", ["test", merkleTree.getHexRoot()]) // <-- add in constructor args like line 19 vvvv
 
   //await yourCollectible.transferOwnership("0x569F26ED0E0f55c5e4d31687da620A8C4B24b8b6")
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
