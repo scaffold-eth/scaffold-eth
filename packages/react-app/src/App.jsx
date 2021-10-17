@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Address, SnatchToken } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import axios from "axios";
@@ -432,6 +432,20 @@ function App(props) {
               New
             </Link>
           </Menu.Item>
+          {targetNetwork.chainId == 31337 && (
+            <>
+              <Menu.Item key="/snatch">
+                <Link
+                  onClick={() => {
+                    setRoute("/snatch");
+                  }}
+                  to="/snatch"
+                >
+                  Snatch
+                </Link>
+              </Menu.Item>
+            </>
+          )}
         </Menu>
 
         <Switch>
@@ -481,6 +495,13 @@ function App(props) {
               address={address}
               localChainId={localChainId}
             />
+          </Route>
+          <Route path="/snatch">
+            {targetNetwork.chainId == 31337 ? (
+              <SnatchToken mainnetProvider={mainnetProvider} localProvider={localProvider} tx={tx} />
+            ) : (
+              <span>Snatching tokens only supported on a local chain</span>
+            )}
           </Route>
         </Switch>
       </BrowserRouter>
