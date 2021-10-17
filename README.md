@@ -7,8 +7,32 @@
 
 This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch. Watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it.
 
+## Introduction
 
-## Getting Started
+This branch shows how to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
+
+This demo defines two SVG NFTs:
+1. **Loogies**: They look like this:
+
+Each loogie can have a different `color` and `chubbiness` randomly generated at mint.
+
+1. **LoogieTank**: 
+
+Take a look at `Loogies.sol` at `packages/hardhat/contracts`. It exposes a function:
+```
+function renderTokenById(uint256 id) public view returns (string memory)
+```
+
+It returns the relevant SVG that be embedded in other SVG code for rendering.
+
+To see how, take a look at `LoogieTank.sol` at `packages/hardhat/contracts`. Its `renderTokenById` function calls `Loogies` contract's `renderTokenById` to include the SVG in its own SVG code.
+
+Without this function, `LoogieTank` would have to do additional processing to extract the SVG code.
+
+Play with the [live app](https://absent-earthquake.surge.sh/) deployed on rinkeby network.
+
+## SVG Motion
+The SVG code is generated on each `tokenURI()` invocation. Thus, you can output different SVG code on each invocation.
 
 ### Installation
 
@@ -67,7 +91,7 @@ Without this function, `LoogieTank` would have to do additional processing to ex
 
 ## Demo
 
-1. Go to the **Mint Loogie Tank** tab and mint some tank by clicking the **MINT** button. Notice that each tank has a unique ID.
+1. Go to the **Mint Loogie Tank** tab and mint a tank by clicking the **MINT** button. Notice that each tank has a unique ID.
 
    <img width="400" src="https://user-images.githubusercontent.com/1689531/135761678-d7f0c82c-9129-49ca-b943-d8d4a0222d9b.png">
 

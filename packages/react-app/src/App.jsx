@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -9,11 +9,14 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import {
   Account,
+  Address,
+  AddressInput,
   Contract,
   Faucet,
   GasGauge,
@@ -322,6 +325,9 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const [transferToAddresses, setTransferToAddresses] = useState({});
+  const [transferToTankId, setTransferToTankId] = useState({});
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -335,44 +341,16 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
           <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Loogies
-            </Link>
+            <Link to="/">Loogies</Link>
           </Menu.Item>
           <Menu.Item key="/loogietank">
-            <Link
-              onClick={() => {
-                setRoute("/loogietank");
-              }}
-              to="/loogietank"
-            >
-              Loogie Tank
-            </Link>
+            <Link to="/loogietank">Loogie Tank</Link>
           </Menu.Item>
           <Menu.Item key="/mintloogies">
-            <Link
-              onClick={() => {
-                setRoute("/mintloogies");
-              }}
-              to="/mintloogies"
-            >
-              Mint Loogies
-            </Link>
+            <Link to="/mintloogies">Mint Loogies</Link>
           </Menu.Item>
           <Menu.Item key="/mintloogietank">
-            <Link
-              onClick={() => {
-                setRoute("/mintloogietank");
-              }}
-              to="/mintloogietank"
-            >
-              Mint Loogie Tank
-            </Link>
+            <Link to="/mintloogietank">Mint Loogie Tank</Link>
           </Menu.Item>
         </Menu>
 
