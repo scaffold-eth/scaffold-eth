@@ -14,43 +14,26 @@ import {
   Contract,
   ContractTransaction,
   Overrides,
-  PayableOverrides,
   CallOverrides,
 } from "@ethersproject/contracts";
 import { BytesLike } from "@ethersproject/bytes";
 import { Listener, Provider } from "@ethersproject/providers";
 import { FunctionFragment, EventFragment, Result } from "@ethersproject/abi";
 
-interface BufficornInterface extends ethers.utils.Interface {
+interface Ierc721EnumerableInterface extends ethers.utils.Interface {
   functions: {
     "approve(address,uint256)": FunctionFragment;
     "balanceOf(address)": FunctionFragment;
-    "baseURI()": FunctionFragment;
-    "contractState(uint8)": FunctionFragment;
-    "ethSink()": FunctionFragment;
     "getApproved(uint256)": FunctionFragment;
     "isApprovedForAll(address,address)": FunctionFragment;
-    "mintOpensale(uint256)": FunctionFragment;
-    "mintPresale(uint256,bytes32[])": FunctionFragment;
-    "mintSpecial(uint256)": FunctionFragment;
-    "name()": FunctionFragment;
-    "owner()": FunctionFragment;
     "ownerOf(uint256)": FunctionFragment;
-    "renounceOwnership()": FunctionFragment;
-    "root()": FunctionFragment;
     "safeTransferFrom(address,address,uint256)": FunctionFragment;
     "setApprovalForAll(address,bool)": FunctionFragment;
-    "setBaseURI(string)": FunctionFragment;
-    "setContractState(uint8,bool)": FunctionFragment;
-    "setRoot(bytes32)": FunctionFragment;
     "supportsInterface(bytes4)": FunctionFragment;
-    "symbol()": FunctionFragment;
     "tokenByIndex(uint256)": FunctionFragment;
     "tokenOfOwnerByIndex(address,uint256)": FunctionFragment;
-    "tokenURI(uint256)": FunctionFragment;
     "totalSupply()": FunctionFragment;
     "transferFrom(address,address,uint256)": FunctionFragment;
-    "transferOwnership(address)": FunctionFragment;
   };
 
   encodeFunctionData(
@@ -58,12 +41,6 @@ interface BufficornInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "balanceOf", values: [string]): string;
-  encodeFunctionData(functionFragment: "baseURI", values?: undefined): string;
-  encodeFunctionData(
-    functionFragment: "contractState",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "ethSink", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "getApproved",
     values: [BigNumberish]
@@ -73,28 +50,9 @@ interface BufficornInterface extends ethers.utils.Interface {
     values: [string, string]
   ): string;
   encodeFunctionData(
-    functionFragment: "mintOpensale",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintPresale",
-    values: [BigNumberish, BytesLike[]]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "mintSpecial",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(functionFragment: "name", values?: undefined): string;
-  encodeFunctionData(functionFragment: "owner", values?: undefined): string;
-  encodeFunctionData(
     functionFragment: "ownerOf",
     values: [BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "renounceOwnership",
-    values?: undefined
-  ): string;
-  encodeFunctionData(functionFragment: "root", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "safeTransferFrom",
     values: [string, string, BigNumberish]
@@ -103,17 +61,10 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     values: [string, boolean]
   ): string;
-  encodeFunctionData(functionFragment: "setBaseURI", values: [string]): string;
-  encodeFunctionData(
-    functionFragment: "setContractState",
-    values: [BigNumberish, boolean]
-  ): string;
-  encodeFunctionData(functionFragment: "setRoot", values: [BytesLike]): string;
   encodeFunctionData(
     functionFragment: "supportsInterface",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(functionFragment: "symbol", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "tokenByIndex",
     values: [BigNumberish]
@@ -123,10 +74,6 @@ interface BufficornInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "tokenURI",
-    values: [BigNumberish]
-  ): string;
-  encodeFunctionData(
     functionFragment: "totalSupply",
     values?: undefined
   ): string;
@@ -134,19 +81,9 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     values: [string, string, BigNumberish]
   ): string;
-  encodeFunctionData(
-    functionFragment: "transferOwnership",
-    values: [string]
-  ): string;
 
   decodeFunctionResult(functionFragment: "approve", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "balanceOf", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "baseURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "contractState",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "ethSink", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getApproved",
     data: BytesLike
@@ -155,26 +92,7 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "isApprovedForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintOpensale",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintPresale",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "mintSpecial",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "name", data: BytesLike): Result;
-  decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "ownerOf", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "renounceOwnership",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "root", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "safeTransferFrom",
     data: BytesLike
@@ -183,17 +101,10 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "setApprovalForAll",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "setBaseURI", data: BytesLike): Result;
-  decodeFunctionResult(
-    functionFragment: "setContractState",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(functionFragment: "setRoot", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "supportsInterface",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "symbol", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "tokenByIndex",
     data: BytesLike
@@ -202,7 +113,6 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "tokenOfOwnerByIndex",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "tokenURI", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "totalSupply",
     data: BytesLike
@@ -211,25 +121,19 @@ interface BufficornInterface extends ethers.utils.Interface {
     functionFragment: "transferFrom",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "transferOwnership",
-    data: BytesLike
-  ): Result;
 
   events: {
     "Approval(address,address,uint256)": EventFragment;
     "ApprovalForAll(address,address,bool)": EventFragment;
-    "OwnershipTransferred(address,address)": EventFragment;
     "Transfer(address,address,uint256)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "Approval"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ApprovalForAll"): EventFragment;
-  getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Transfer"): EventFragment;
 }
 
-export class Bufficorn extends Contract {
+export class Ierc721Enumerable extends Contract {
   connect(signerOrProvider: Signer | Provider | string): this;
   attach(addressOrName: string): this;
   deployed(): Promise<this>;
@@ -240,7 +144,7 @@ export class Bufficorn extends Contract {
   removeAllListeners(eventName: EventFilter | string): this;
   removeListener(eventName: any, listener: Listener): this;
 
-  interface: BufficornInterface;
+  interface: Ierc721EnumerableInterface;
 
   functions: {
     approve(
@@ -259,6 +163,7 @@ export class Bufficorn extends Contract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<{
+      balance: BigNumber;
       0: BigNumber;
     }>;
 
@@ -266,51 +171,15 @@ export class Bufficorn extends Contract {
       owner: string,
       overrides?: CallOverrides
     ): Promise<{
+      balance: BigNumber;
       0: BigNumber;
-    }>;
-
-    baseURI(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "baseURI()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    contractState(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    "contractState(uint8)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: boolean;
-    }>;
-
-    ethSink(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "ethSink()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
     }>;
 
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      operator: string;
       0: string;
     }>;
 
@@ -318,6 +187,7 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      operator: string;
       0: string;
     }>;
 
@@ -337,66 +207,11 @@ export class Bufficorn extends Contract {
       0: boolean;
     }>;
 
-    mintOpensale(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "mintOpensale(uint256)"(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<ContractTransaction>;
-
-    mintSpecial(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "mintSpecial(uint256)"(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    name(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "name()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    owner(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "owner()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      owner: string;
       0: string;
     }>;
 
@@ -404,22 +219,7 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
-      0: string;
-    }>;
-
-    renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-    root(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "root()"(
-      overrides?: CallOverrides
-    ): Promise<{
+      owner: string;
       0: string;
     }>;
 
@@ -434,51 +234,19 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "setApprovalForAll(address,bool)"(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setBaseURI(
-      baseURI_: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setBaseURI(string)"(
-      baseURI_: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setContractState(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setContractState(uint8,bool)"(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    setRoot(
-      _root: BytesLike,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "setRoot(bytes32)"(
-      _root: BytesLike,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -494,18 +262,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<{
       0: boolean;
-    }>;
-
-    symbol(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "symbol()"(
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
     }>;
 
     tokenByIndex(
@@ -527,6 +283,7 @@ export class Bufficorn extends Contract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      tokenId: BigNumber;
       0: BigNumber;
     }>;
 
@@ -535,21 +292,8 @@ export class Bufficorn extends Contract {
       index: BigNumberish,
       overrides?: CallOverrides
     ): Promise<{
+      tokenId: BigNumber;
       0: BigNumber;
-    }>;
-
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
-    }>;
-
-    "tokenURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<{
-      0: string;
     }>;
 
     totalSupply(
@@ -577,16 +321,6 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<ContractTransaction>;
   };
 
   approve(
@@ -607,24 +341,6 @@ export class Bufficorn extends Contract {
     owner: string,
     overrides?: CallOverrides
   ): Promise<BigNumber>;
-
-  baseURI(overrides?: CallOverrides): Promise<string>;
-
-  "baseURI()"(overrides?: CallOverrides): Promise<string>;
-
-  contractState(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  "contractState(uint8)"(
-    arg0: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
-
-  ethSink(overrides?: CallOverrides): Promise<string>;
-
-  "ethSink()"(overrides?: CallOverrides): Promise<string>;
 
   getApproved(
     tokenId: BigNumberish,
@@ -648,60 +364,12 @@ export class Bufficorn extends Contract {
     overrides?: CallOverrides
   ): Promise<boolean>;
 
-  mintOpensale(
-    quantity: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "mintOpensale(uint256)"(
-    quantity: BigNumberish,
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  mintPresale(
-    quantity: BigNumberish,
-    proof: BytesLike[],
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  "mintPresale(uint256,bytes32[])"(
-    quantity: BigNumberish,
-    proof: BytesLike[],
-    overrides?: PayableOverrides
-  ): Promise<ContractTransaction>;
-
-  mintSpecial(
-    quantity: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "mintSpecial(uint256)"(
-    quantity: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  name(overrides?: CallOverrides): Promise<string>;
-
-  "name()"(overrides?: CallOverrides): Promise<string>;
-
-  owner(overrides?: CallOverrides): Promise<string>;
-
-  "owner()"(overrides?: CallOverrides): Promise<string>;
-
   ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
   "ownerOf(uint256)"(
     tokenId: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  renounceOwnership(overrides?: Overrides): Promise<ContractTransaction>;
-
-  "renounceOwnership()"(overrides?: Overrides): Promise<ContractTransaction>;
-
-  root(overrides?: CallOverrides): Promise<string>;
-
-  "root()"(overrides?: CallOverrides): Promise<string>;
 
   "safeTransferFrom(address,address,uint256)"(
     from: string,
@@ -714,51 +382,19 @@ export class Bufficorn extends Contract {
     from: string,
     to: string,
     tokenId: BigNumberish,
-    _data: BytesLike,
+    data: BytesLike,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   setApprovalForAll(
     operator: string,
-    approved: boolean,
+    _approved: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "setApprovalForAll(address,bool)"(
     operator: string,
-    approved: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setBaseURI(
-    baseURI_: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setBaseURI(string)"(
-    baseURI_: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setContractState(
-    _state: BigNumberish,
-    _enabled: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setContractState(uint8,bool)"(
-    _state: BigNumberish,
-    _enabled: boolean,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  setRoot(
-    _root: BytesLike,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "setRoot(bytes32)"(
-    _root: BytesLike,
+    _approved: boolean,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -771,10 +407,6 @@ export class Bufficorn extends Contract {
     interfaceId: BytesLike,
     overrides?: CallOverrides
   ): Promise<boolean>;
-
-  symbol(overrides?: CallOverrides): Promise<string>;
-
-  "symbol()"(overrides?: CallOverrides): Promise<string>;
 
   tokenByIndex(
     index: BigNumberish,
@@ -798,13 +430,6 @@ export class Bufficorn extends Contract {
     overrides?: CallOverrides
   ): Promise<BigNumber>;
 
-  tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-  "tokenURI(uint256)"(
-    tokenId: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
   "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -820,16 +445,6 @@ export class Bufficorn extends Contract {
     from: string,
     to: string,
     tokenId: BigNumberish,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  transferOwnership(
-    newOwner: string,
-    overrides?: Overrides
-  ): Promise<ContractTransaction>;
-
-  "transferOwnership(address)"(
-    newOwner: string,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -853,24 +468,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    baseURI(overrides?: CallOverrides): Promise<string>;
-
-    "baseURI()"(overrides?: CallOverrides): Promise<string>;
-
-    contractState(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    "contractState(uint8)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
-
-    ethSink(overrides?: CallOverrides): Promise<string>;
-
-    "ethSink()"(overrides?: CallOverrides): Promise<string>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -893,60 +490,12 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<boolean>;
 
-    mintOpensale(
-      quantity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "mintOpensale(uint256)"(
-      quantity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    mintSpecial(
-      quantity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "mintSpecial(uint256)"(
-      quantity: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    name(overrides?: CallOverrides): Promise<string>;
-
-    "name()"(overrides?: CallOverrides): Promise<string>;
-
-    owner(overrides?: CallOverrides): Promise<string>;
-
-    "owner()"(overrides?: CallOverrides): Promise<string>;
-
     ownerOf(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
 
     "ownerOf(uint256)"(
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    renounceOwnership(overrides?: CallOverrides): Promise<void>;
-
-    "renounceOwnership()"(overrides?: CallOverrides): Promise<void>;
-
-    root(overrides?: CallOverrides): Promise<string>;
-
-    "root()"(overrides?: CallOverrides): Promise<string>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -959,45 +508,19 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "setApprovalForAll(address,bool)"(
       operator: string,
-      approved: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setBaseURI(baseURI_: string, overrides?: CallOverrides): Promise<void>;
-
-    "setBaseURI(string)"(
-      baseURI_: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setContractState(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "setContractState(uint8,bool)"(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    setRoot(_root: BytesLike, overrides?: CallOverrides): Promise<void>;
-
-    "setRoot(bytes32)"(
-      _root: BytesLike,
+      _approved: boolean,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1010,10 +533,6 @@ export class Bufficorn extends Contract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<boolean>;
-
-    symbol(overrides?: CallOverrides): Promise<string>;
-
-    "symbol()"(overrides?: CallOverrides): Promise<string>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1037,13 +556,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    tokenURI(tokenId: BigNumberish, overrides?: CallOverrides): Promise<string>;
-
-    "tokenURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1061,16 +573,6 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
-      overrides?: CallOverrides
-    ): Promise<void>;
   };
 
   filters: {
@@ -1084,11 +586,6 @@ export class Bufficorn extends Contract {
       owner: string | null,
       operator: string | null,
       approved: null
-    ): EventFilter;
-
-    OwnershipTransferred(
-      previousOwner: string | null,
-      newOwner: string | null
     ): EventFilter;
 
     Transfer(
@@ -1118,24 +615,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    baseURI(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "baseURI()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    contractState(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "contractState(uint8)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    ethSink(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "ethSink()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1158,46 +637,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    mintOpensale(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "mintOpensale(uint256)"(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<BigNumber>;
-
-    mintSpecial(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "mintSpecial(uint256)"(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    name(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "name()"(overrides?: CallOverrides): Promise<BigNumber>;
-
-    owner(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "owner()"(overrides?: CallOverrides): Promise<BigNumber>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1207,14 +646,6 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    renounceOwnership(overrides?: Overrides): Promise<BigNumber>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<BigNumber>;
-
-    root(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "root()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1227,45 +658,19 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "setApprovalForAll(address,bool)"(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setBaseURI(baseURI_: string, overrides?: Overrides): Promise<BigNumber>;
-
-    "setBaseURI(string)"(
-      baseURI_: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setContractState(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "setContractState(uint8,bool)"(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    setRoot(_root: BytesLike, overrides?: Overrides): Promise<BigNumber>;
-
-    "setRoot(bytes32)"(
-      _root: BytesLike,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1278,10 +683,6 @@ export class Bufficorn extends Contract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    symbol(overrides?: CallOverrides): Promise<BigNumber>;
-
-    "symbol()"(overrides?: CallOverrides): Promise<BigNumber>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1305,16 +706,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    "tokenURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     totalSupply(overrides?: CallOverrides): Promise<BigNumber>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<BigNumber>;
@@ -1330,16 +721,6 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<BigNumber>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
       overrides?: Overrides
     ): Promise<BigNumber>;
   };
@@ -1367,24 +748,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    baseURI(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "baseURI()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    contractState(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "contractState(uint8)"(
-      arg0: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    ethSink(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "ethSink()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     getApproved(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1407,46 +770,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    mintOpensale(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mintOpensale(uint256)"(
-      quantity: BigNumberish,
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
-      overrides?: PayableOverrides
-    ): Promise<PopulatedTransaction>;
-
-    mintSpecial(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "mintSpecial(uint256)"(
-      quantity: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    name(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "name()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "owner()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     ownerOf(
       tokenId: BigNumberish,
       overrides?: CallOverrides
@@ -1456,14 +779,6 @@ export class Bufficorn extends Contract {
       tokenId: BigNumberish,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    renounceOwnership(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    "renounceOwnership()"(overrides?: Overrides): Promise<PopulatedTransaction>;
-
-    root(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "root()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "safeTransferFrom(address,address,uint256)"(
       from: string,
@@ -1476,51 +791,19 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      _data: BytesLike,
+      data: BytesLike,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     setApprovalForAll(
       operator: string,
-      approved: boolean,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "setApprovalForAll(address,bool)"(
       operator: string,
-      approved: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setBaseURI(
-      baseURI_: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setBaseURI(string)"(
-      baseURI_: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setContractState(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setContractState(uint8,bool)"(
-      _state: BigNumberish,
-      _enabled: boolean,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    setRoot(
-      _root: BytesLike,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "setRoot(bytes32)"(
-      _root: BytesLike,
+      _approved: boolean,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
@@ -1533,10 +816,6 @@ export class Bufficorn extends Contract {
       interfaceId: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
-
-    symbol(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    "symbol()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     tokenByIndex(
       index: BigNumberish,
@@ -1560,16 +839,6 @@ export class Bufficorn extends Contract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    tokenURI(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    "tokenURI(uint256)"(
-      tokenId: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     totalSupply(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     "totalSupply()"(overrides?: CallOverrides): Promise<PopulatedTransaction>;
@@ -1585,16 +854,6 @@ export class Bufficorn extends Contract {
       from: string,
       to: string,
       tokenId: BigNumberish,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    transferOwnership(
-      newOwner: string,
-      overrides?: Overrides
-    ): Promise<PopulatedTransaction>;
-
-    "transferOwnership(address)"(
-      newOwner: string,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
   };

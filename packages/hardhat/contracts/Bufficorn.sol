@@ -19,7 +19,7 @@ pragma solidity >=0.8.0;
 // https://github.com/scaffold-eth/scaffold-eth/tree/bufficorn-buidl-brigade
 
 //import "hardhat/console.sol";
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
@@ -29,7 +29,7 @@ import "@openzeppelin/contracts/utils/cryptography/MerkleProof.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract Bufficorn is ERC721, Ownable {
+contract Bufficorn is ERC721Enumerable, Ownable {
     uint256 constant MAX_PER_MINT = 20;
     uint256 constant RESERVED = 150;
     uint256 constant PRESALE_LIMIT = 5280;

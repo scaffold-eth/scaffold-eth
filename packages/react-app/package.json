@@ -56,6 +56,8 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-stack-grid": "^0.7.1",
+    "keccak256": "^1.0.3",
+    "merkletreejs": "^0.2.24",
     "web3modal": "^1.9.1"
   },
   "devDependencies": {
