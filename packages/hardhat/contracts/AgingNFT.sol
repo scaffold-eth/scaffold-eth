@@ -12,22 +12,20 @@ contract AgingNFT is ERC721  {
 
 
   string[] public phases = [
-    "1",
-    "2",
-    "3",
-    "4",
-    "5",
-    "6",
-    "7",
-    "8",
-    "9",
-    "10",
-    "11",
-    "12"
+    "QmPqWcjfUzfQarRuP9d7QCyAZREZD9uSxEK9fzvn3abhXx",
+    "QmPskmBY1MhpkdTyNKup8NkEFJFtr9u9ARUHc195GPoi92",
+    "QmaACkqw4JHMNpdfaxM7QhfcjM8heoTo313JNdct9nwqgE",
+    "QmRnEwVQW3Nc7ozy4ZrvFvZ5cAYEUWkaHzSxi8jbLpvwTZ",
+    "QmdCvspMs58ZQYvzF4cw1kGde4xaYvFWFKDZQchYqtHJA9",
+    "QmSmVKnnzuWkmB78E3hGCQAQEitvfEjfS3JGxryikGqwG2",
+    "Qmdt8UAZ7DHe8hFo5cq2T77SrDeMnkvAffQB9Zccur6svM",
+    "QmPz7nM1HEsyKtT4G3fpTeeqFFHY2uvW3Hs6GS5UfGdoca",
+    "QmV7Uq3yMFVCwtofDghNnwG2PpytfeiMr6nN9yFxks5UEF",
+    "QmbxZ5oxkCdPkiPs9nRRS9LVYLLmKAozyCUGvcfbQJHB6L",
+    "QmTJCYegcWojfgZYMuJS1LmWGgoZkHjHdguahNFARwcXxj",
+    "QmQK2XASY5sHYWamtAUzmXH1g1k7PSBr7Vx4VhbDhzR2gz"
   ];
 
-  //Making the birth of the token for now just be 10/12/2021 12am GMT 
-  uint256 birth = 1633996800;
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
@@ -44,31 +42,30 @@ contract AgingNFT is ERC721  {
 
       string memory _tokenURI;
 
-      uint256 age = block.timestamp - birth;
-
       string memory base = _baseURI();
 
-      if(age< 10 seconds){
+      //These need to be updated with the correct epoch times
+      if(block.timestamp< 1636502400){
         _tokenURI = phases[0];
-      }else if(age< 31 days){
+      }else if(block.timestamp< 1650585600){
         _tokenURI = phases[1];
-      }else if(age< 193 days){
+      }else if(block.timestamp< 1666396800){
         _tokenURI = phases[2];
-      }else if(age< 376 days){
+      }else if(block.timestamp< 1682121600){
         _tokenURI = phases[3];
-      }else if(age< 558 days){
+      }else if(block.timestamp< 1713744000){
         _tokenURI = phases[4];
-      }else if(age< 924 days){
+      }else if(block.timestamp< 1776816000){
         _tokenURI = phases[5];
-      }else if(age< 1654 days){
+      }else if(block.timestamp< 1903046400){
         _tokenURI = phases[6];
-      }else if(age< 3115 days){
+      }else if(block.timestamp< 2218665600){
         _tokenURI = phases[7];
-      }else if(age< 6768 days){
+      }else if(block.timestamp< 2849817600){
         _tokenURI = phases[8];
-      }else if(age< 14073 days){
+      }else if(block.timestamp< 4112035200){
         _tokenURI = phases[9];
-      }else if(age< 28682 days){
+      }else if(block.timestamp< 4774723200){
         _tokenURI = phases[10];
       }else {
         _tokenURI = phases[11];
