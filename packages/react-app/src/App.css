@@ -23,11 +23,6 @@
   src: url("assets/fonts/43a7e94f-0ff1-425c-bb72-2da078f9ba66.woff2") format("woff2"), url("assets/fonts/c3b0a3c4-8018-48ed-8707-ac140e5165c8.woff") format("woff");
 }
 
-.App {
-  text-align: center;
-
-}
-
 h1,
 h2,
 h3,
@@ -39,9 +34,19 @@ h6 {
 }
 
 p,
-span {
+span,a {
   font-family: "Swiss721 BT W01 Regular";
   color:#ffd942;
+}
+
+.ant-typography a, .ant-typography a:hover, .ant-typography-copy, .ant-typography-copy:hover{
+  font-family: "Swiss721 BT W01 Regular";
+    color: #ffd942;
+}
+
+.App {
+  text-align: center;
+
 }
 
 button,button.ant-btn,button.ant-btn.ant-btn-round.ant-btn-lg{
@@ -73,8 +78,8 @@ button:hover span,button:focus span {
 .main-header{
   font-size: 64px;
     text-align: left;
-    margin-top: 40px;
-    margin-left: 60px;
+    padding-top: 40px;
+    padding-left: 60px;
 }
 
 .underlined{
@@ -131,7 +136,7 @@ button:hover span,button:focus span {
   .main-header {
     font-size:48px;
     text-align: center;
-    margin-left: 0;
+    padding-left: 0;
   }
   .home {
     margin-top:-140px;
