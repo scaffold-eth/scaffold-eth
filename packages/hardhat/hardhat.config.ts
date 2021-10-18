@@ -4,6 +4,7 @@ import "@nomiclabs/hardhat-ethers";
 import "hardhat-gas-reporter"
 import "@nomiclabs/hardhat-etherscan";
 // import "solidity-coverage";
+import "solidity-coverage"
 
 import * as fs from 'fs'
 import "hardhat-typechain";

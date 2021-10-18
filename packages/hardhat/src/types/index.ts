@@ -5,3 +5,5 @@ export { Erc721Factory } from "./Erc721Factory";
 export type { Erc721 } from "./Erc721";
 export { BufficornFactory } from "./BufficornFactory";
 export type { Bufficorn } from "./Bufficorn";
+export { NonReceiverFactory } from "./NonReceiverFactory";
+export type { NonReceiver } from "./NonReceiver";

@@ -23,7 +23,7 @@ import { utils, ethers } from "ethers";
 //import Hints from "./Hints";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 
-import {getProof} from "./mint/util"
+import {getProof, hashToken} from "./mint/util"
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -299,6 +299,11 @@ function App(props) {
                     type={"primary"}
                     onClick={async () => {
                       const proof = getProof(address)
+                      const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+                      const demo = hashToken(testAddr)
+                      const demoProof = getProof(testAddr)
+                      console.log({demo, demoProof})
+
                       tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
                     }}
                   >

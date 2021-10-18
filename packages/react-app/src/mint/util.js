@@ -13,4 +13,15 @@ export const merkleTree = new MerkleTree(
   { sortPairs: true },
 );
 
-export const getProof = (account) => merkleTree.getHexProof(hashToken(account));
+export const getProof = (account) => {
+  // console.log({merkleTree})
+  const proof = merkleTree.getHexProof(hashToken(account))
+  const root = merkleTree.getHexRoot()
+  console.log({root})
+  console.log({allowlist})
+  const stringmerkle = merkleTree.toString()
+  console.log({stringmerkle})
+  // const verified = merkleTree.verify(proof, hashToken(account), merkleTree.getHexRoot())
+  // console.log({verified})
+  return proof
+}

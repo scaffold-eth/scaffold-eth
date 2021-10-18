@@ -338,34 +338,34 @@ export class Bufficorn extends Contract {
     }>;
 
     mintOpensale(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "mintOpensale(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<ContractTransaction>;
 
     mintSpecial(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
     "mintSpecial(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<ContractTransaction>;
 
@@ -649,34 +649,34 @@ export class Bufficorn extends Contract {
   ): Promise<boolean>;
 
   mintOpensale(
-    quantity: BigNumberish,
+    _quantity: BigNumberish,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "mintOpensale(uint256)"(
-    quantity: BigNumberish,
+    _quantity: BigNumberish,
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   mintPresale(
-    quantity: BigNumberish,
-    proof: BytesLike[],
+    _quantity: BigNumberish,
+    _proof: BytesLike[],
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   "mintPresale(uint256,bytes32[])"(
-    quantity: BigNumberish,
-    proof: BytesLike[],
+    _quantity: BigNumberish,
+    _proof: BytesLike[],
     overrides?: PayableOverrides
   ): Promise<ContractTransaction>;
 
   mintSpecial(
-    quantity: BigNumberish,
+    _quantity: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
   "mintSpecial(uint256)"(
-    quantity: BigNumberish,
+    _quantity: BigNumberish,
     overrides?: Overrides
   ): Promise<ContractTransaction>;
 
@@ -894,34 +894,34 @@ export class Bufficorn extends Contract {
     ): Promise<boolean>;
 
     mintOpensale(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "mintOpensale(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: CallOverrides
     ): Promise<void>;
 
     mintSpecial(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     "mintSpecial(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -1159,34 +1159,34 @@ export class Bufficorn extends Contract {
     ): Promise<BigNumber>;
 
     mintOpensale(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "mintOpensale(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<BigNumber>;
 
     mintSpecial(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
     "mintSpecial(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<BigNumber>;
 
@@ -1408,34 +1408,34 @@ export class Bufficorn extends Contract {
     ): Promise<PopulatedTransaction>;
 
     mintOpensale(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "mintOpensale(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     mintPresale(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     "mintPresale(uint256,bytes32[])"(
-      quantity: BigNumberish,
-      proof: BytesLike[],
+      _quantity: BigNumberish,
+      _proof: BytesLike[],
       overrides?: PayableOverrides
     ): Promise<PopulatedTransaction>;
 
     mintSpecial(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
     "mintSpecial(uint256)"(
-      quantity: BigNumberish,
+      _quantity: BigNumberish,
       overrides?: Overrides
     ): Promise<PopulatedTransaction>;
 
