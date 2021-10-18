@@ -482,9 +482,9 @@ function App(props) {
               injectedProvider={injectedProvider}
             />
           </Route>
-          <Route path="/debug">
+          <Route path="/contract">
             <Contract
-              name="YourContract"
+              name="AgingNFT"
               signer={userSigner}
               provider={localProvider}
               address={address}
