@@ -36,17 +36,28 @@ const main = async () => {
   }
   console.log(" \n")
 */
+  const localConfiguration = {
+    baseUri: "test:",
+    reserved: 25,
+    presale: 50,
+    public: 75,
+    ethSink: "0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6",
+  };
   // deploy the contract with all the artworks forSale
   const bufficorn = await deploy("Bufficorn", [
-    "test",
+    localConfiguration.baseUri,
     merkleTree.getHexRoot(),
+    localConfiguration.reserved,
+    localConfiguration.presale,
+    localConfiguration.public,
+    localConfiguration.ethSink,
   ]); // <-- add in constructor args like line 19 vvvv
   await bufficorn.setContractState(0, true);
   await bufficorn.setContractState(1, true);
 
   // send testnet eth to MM
   await accounts[0].sendTransaction({
-    to: "0x744222844bFeCC77156297a6427B5876A6769e19",
+    to: "0xd26a3F686D43f2A62BA9eaE2ff77e9f516d945B9",
     value: ethers.utils.parseEther("1"),
   });
 
@@ -62,7 +73,7 @@ const main = async () => {
   //If you want to send value to an address from the deployer
   const deployerWallet = ethers.provider.getSigner()
   await deployerWallet.sendTransaction({
-    to: "0xd26a3F686D43f2A62BA9eaE2ff77e9f516d945B9",
+    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
     value: ethers.utils.parseEther("0.001")
   })
   */
