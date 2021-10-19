@@ -521,7 +521,7 @@ function App(props) {
             <Button
               type={"primary"}
               onClick={() => {
-                tx(writeContracts.YourToken.transfer(tokenSendToAddress, parseEther("" + tokenSendAmount)));
+                tx(writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)));
               }}
             >
               Send Tokens
@@ -620,11 +620,11 @@ function App(props) {
                 dataSource={buyTokensEvents}
                 renderItem={item => {
                   return (
-                    <List.Item key={item[0] + item[1] + item.blockNumber}>
-                      <Address value={item[0]} ensProvider={mainnetProvider} fontSize={16} /> paid
-                      <Balance balance={item[1]} />
+                    <List.Item key={item.blockNumber + item.blockHash}>
+                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> paid
+                      <Balance balance={item.args[1]} />
                       ETH to get
-                      <Balance balance={item[2]} />
+                      <Balance balance={item.args[2]} />
                       Tokens
                     </List.Item>
                   );
