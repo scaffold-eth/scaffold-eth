@@ -269,7 +269,7 @@ function App(props) {
       setOwner(owner === address);
     }
     getOwner();
-  });
+  }, [address, balance]);
 
   const [currentAuction, setCurrentAuction] = useState();
   useEffect(() => {
@@ -278,7 +278,7 @@ function App(props) {
       setCurrentAuction(auction);
     }
     getAuction();
-  });
+  }, [address, balance]);
 
   useEffect(() => {
     const getAuctionView = async () => {
@@ -288,7 +288,7 @@ function App(props) {
 
       const auction = await readContracts.SilentAuction?.currentAuction();
       console.log(auction);
-      if (auction?.tokenId) {
+      if (auction?.inProgress) {
         const tokenURI = await readContracts.YourCollectible.tokenURI(auction.tokenId);
         const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
         try {
@@ -303,6 +303,30 @@ function App(props) {
     getAuctionView();
   }, [address, balance])
 
+  const signData = async (tokenId) => {
+    const bidAmount = ethers.utils.parseEther("1");
+    let hash = await ethers.utils.solidityKeccak256(
+      ['uint256', 'address', 'uint256'],
+      [tokenId, address, bidAmount]
+    );
+    const signature = await userProviderAndSigner.provider.send('personal_sign', [hash, address]);
+    console.log('signature', signature);
+
+    await fetch('http://localhost:8001/', {
+      method: 'POST',
+      mode: "cors",
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        tokenId,
+        signature,
+        bidder: address,
+        bidAmount
+      })
+    });
+  }
+
   let auctionView = "";
   if (!owner && auction?.id) {
     auctionView = (
@@ -313,6 +337,11 @@ function App(props) {
             <img src={auction.image} />
           </List.Item>
         </Card>
+        <Button
+          onClick={() => signData(auction.id)}
+        >
+          Sign
+        </Button>
       </>
     );
   }

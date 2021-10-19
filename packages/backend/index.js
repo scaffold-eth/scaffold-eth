@@ -31,10 +31,11 @@ app.post('/clearAddress', function(request, response){
 app.post('/', function(request, response){
   console.log("POOOOST!!!!",request.body);      // your JSON
   response.send(request.body);    // echo the result back
-  if(!transactions[request.body.address]){
-    transactions[request.body.address] = {}
+  const tokenId = request.body.tokenId.hex;
+  if(!transactions[tokenId]){
+    transactions[tokenId] = {}
   }
-  transactions[request.body.address][request.body.hash] = request.body
+  transactions[tokenId] = request.body
   console.log("transactions",transactions)
 });
 

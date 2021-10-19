@@ -18,6 +18,7 @@ contract SilentAuction is IERC721Receiver, Ownable {
         uint endPrice;
         uint startTime;
         uint endTime;
+        bool inProgress;
     }
 
     Auction public auction;
@@ -49,7 +50,8 @@ contract SilentAuction is IERC721Receiver, Ownable {
             startPrice: 0,
             endPrice: 0,
             startTime: block.timestamp,
-            endTime: block.timestamp + 60 seconds
+            endTime: block.timestamp + 60 seconds,
+            inProgress: true
         });
         auction = a;
         IERC721(nft).safeTransferFrom(msg.sender, address(this), tokenId);
