@@ -12,12 +12,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", function(req, res) {
   console.log("/")
-  res.status(200).send("hello world");
+  res.status(200).send(transactions);
 });
-app.get("/:address", function(req, res) {
+app.get("/:tokenId", function(req, res) {
   let address = req.params.address
   console.log("/",address)
-  res.status(200).send(transactions[address]);
+  res.status(200).send(transactions[tokenId]);
 });
 
 app.post('/clearAddress', function(request, response){
@@ -33,9 +33,9 @@ app.post('/', function(request, response){
   response.send(request.body);    // echo the result back
   const tokenId = request.body.tokenId.hex;
   if(!transactions[tokenId]){
-    transactions[tokenId] = {}
+    transactions[tokenId] = {};
   }
-  transactions[tokenId] = request.body
+  transactions[tokenId][request.body.bidder] = request.body;
   console.log("transactions",transactions)
 });
 

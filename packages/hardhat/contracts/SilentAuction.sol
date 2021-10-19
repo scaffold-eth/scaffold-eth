@@ -5,11 +5,11 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "./VerifySignature.sol";
 
-contract SilentAuction is IERC721Receiver, Ownable {
-    // assuming just 1 item for now
-    mapping(address => uint) public bids;
-    uint public highestBid = 0;
+contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
+
+    mapping(address => uint256) public stakedAmount;
 
     struct Auction {
         address nft;
@@ -28,11 +28,13 @@ contract SilentAuction is IERC721Receiver, Ownable {
         _;
     }
 
-    function bid(uint256 amount) public onlyBeforeEnd {
-        bids[msg.sender] = amount;
-        if (amount > highestBid) {
-            highestBid = amount;
-        }
+    function stake() public payable {
+        require(msg.value > 0, "Stake amount must be greater than 0");
+        stakedAmount[msg.sender] += msg.value;
+    }
+
+    function getStakeAmount(address adr) public view returns(uint256) {
+        return stakedAmount[adr];
     }
 
     function auctionInProgress() public view returns (bool) {
@@ -55,6 +57,17 @@ contract SilentAuction is IERC721Receiver, Ownable {
         });
         auction = a;
         IERC721(nft).safeTransferFrom(msg.sender, address(this), tokenId);
+    }
+
+    function completeAuction(address nft, uint256 tokenId, address bidder, uint256 amount, bytes memory signature) public {
+        require(verify(bidder, tokenId, bidder, amount, signature), "Invalid signature");
+        require(stakedAmount[bidder] >= amount, "Not enough staked");
+
+        stakedAmount[bidder] -= amount;
+        (bool success, ) = owner().call{value: amount}("");
+        require(success, "Failed to transfer tokens");
+
+        IERC721(nft).safeTransferFrom(address(this), bidder, tokenId);
     }
 
     function onERC721Received(

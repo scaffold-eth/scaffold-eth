@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Card, Col, Menu, Row, List } from "antd";
+import { Alert, Button, Card, Col, Menu, Row, List, Input } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -257,9 +257,37 @@ function App(props) {
 
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
 
-  const svg = useContractReader(readContracts, "YourCollectible", "renderDonut");
+  const stakedAmount = useContractReader(readContracts, "SilentAuction", "getStakeAmount", [address]);
 
   const [tokenURI, setTokenURI] = useState();
+  const [amountToStake, setAmountToStake] = useState(null);
+
+  const [bids, setBids] = useState([]);
+  useOnBlock(mainnetProvider, () => {
+    const getBids = async () => {
+      if (!auction) {
+        return;
+      }
+
+      try {
+        const data = await fetch(`http://localhost:8001/?tokenId=${auction.id._hex}`).then(res => res.json());
+        console.log(data);
+
+        const temp = [];
+        const auctionBids = data[auction.id._hex];
+        Object.keys(auctionBids).forEach(key => {
+          temp.push(auctionBids[key]);
+        });
+        setBids(temp);
+        console.log('bids:', bids);
+      } catch (e) {
+        console.log(e);
+        setBids({});
+      }
+    };
+
+    getBids();
+  });
 
   const [auction, setAuction] = useState("");
   const [owner, setOwner] = useState(false);
@@ -303,8 +331,8 @@ function App(props) {
     getAuctionView();
   }, [address, balance])
 
-  const signData = async (tokenId) => {
-    const bidAmount = ethers.utils.parseEther("1");
+  const signData = async (tokenId, amount) => {
+    const bidAmount = ethers.utils.parseEther(amount);
     let hash = await ethers.utils.solidityKeccak256(
       ['uint256', 'address', 'uint256'],
       [tokenId, address, bidAmount]
@@ -327,6 +355,8 @@ function App(props) {
     });
   }
 
+  const [amountToBid, setAmountToBid] = useState(null);
+
   let auctionView = "";
   if (!owner && auction?.id) {
     auctionView = (
@@ -337,11 +367,33 @@ function App(props) {
             <img src={auction.image} />
           </List.Item>
         </Card>
+        <Input value={amountToBid} onChange={e => setAmountToBid(e.target.value)} />
         <Button
-          onClick={() => signData(auction.id)}
+          onClick={() => signData(auction.id, amountToBid)}
         >
-          Sign
+          Bid!
         </Button>
+      </>
+    );
+  } else if(owner && auction?.id) {
+    auctionView = (
+      <>
+        <List
+          bordered
+          dataSource={bids}
+            renderItem={bid => {
+              return (
+                <Button
+                  onClick={() => {
+                    tx(writeContracts.SilentAuction.completeAuction(readContracts.YourCollectible.address, bid.tokenId, bid.bidder, bid.bidAmount, bid.signature))
+                  }}
+                >Accept!</Button>
+              )
+            }
+          }
+        >
+
+        </List>
       </>
     );
   }
@@ -642,6 +694,21 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+            <h3>Staked Amount: {ethers.utils.formatEther(stakedAmount ?? 0)}</h3>
+            <Input
+              style={{ textAlign: "center" }}
+              placeholder={"Amount of ETH to stake"}
+              value={amountToStake}
+              onChange={e => setAmountToStake(e.target.value)}
+            />
+            <Button
+              type="primary"
+              onClick={() => {
+                tx(writeContracts.SilentAuction.stake({value: ethers.utils.parseEther(amountToStake)}));
+              }}
+            >Stake
+            </Button>
+
             {auctionView}
             <List
               bordered
