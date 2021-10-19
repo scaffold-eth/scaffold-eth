@@ -71,9 +71,8 @@ contract AgingNFTcopy is ERC721  {
         _tokenURI = phases[10];
       }else {
         _tokenURI = phases[11];
-      return string(abi.encodePacked(base, _tokenURI));
   }
-
+      return string(abi.encodePacked(base, _tokenURI));
 }
 
 }
