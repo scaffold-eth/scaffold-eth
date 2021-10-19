@@ -27,8 +27,8 @@
     <style type="text/css">
       body{
         color:  #c9b8ff;
-        background: url('background_3.png') repeat;
-        text-align: center;
+        /* background: url('background_3.png') repeat; */
+        text-align: left;
         font-family: "Space Mono",monospace;
         font-style: normal;
         font-variant-ligatures: normal;
@@ -43,7 +43,7 @@
         margin: 5px;
         height: 90px;
         width:  90px;
-        text-align: center;
+        text-align: left;
         border-radius: 45px;
         filter: grayscale(0.25);
         border:  5px solid white;
@@ -128,6 +128,33 @@
       .colorme3{
         background-color:rgb(106, 67, 179, 0.7);
         padding: 30px;
+      }
+      .FlexRow {
+        display: flex;
+        width: 100%;
+        max-width: 1200px;
+        margin: 0 auto;
+        justify-content: center;
+        align-items: space-between;
+        flex-wrap: wrap;
+      }
+      .Block {
+        padding-top: 75px;
+        padding-bottom: 75px;
+      }
+      .Lore {
+        background-color: rgb(127, 81, 214, 0.7);
+      }
+      .Hero {
+        min-height: 65vh;
+        /* background: url('background_3.png') repeat; */
+      }
+      .Column {
+        display: flex;
+        flex-direction: column;
+        width: 45%;
+        align-items: start;
+        justify-content: center;
       }
       .Testimonial {
         display: inline-block;
@@ -275,6 +302,12 @@ h1:before {
       footer{
         margin-top: 100px;
         font-size: 24px;
+      }
+
+      @media all and (max-width: 1200px) {
+        .Column {
+          width: 100%;
+        }
       }
     </style>
     <!--

@@ -284,55 +284,62 @@ function App(props) {
             */}
 
             <div class="colorme">
-              <img class="logo_moonshot sub" src="logo.png" />
-              <br />
-              <h1>Bufficorn Buidl Brigade</h1>
-
-              <h2>An ETHDenver PFP (10000 max supply)</h2>
-              <h2>
-                Created by EthDenver<a href="https://twitter.com/EthereumDenver"> @ethereumdenver</a>
-              </h2>
-              <div style={{ padding: 32 }}>
-                {address ? (
-                  <div>
-                  <Button
-                    type={"primary"}
-                    onClick={async () => {
-                      const proof = getProof(address)
-                      const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-                      const demo = hashToken(testAddr)
-                      const demoProof = getProof(testAddr)
-                      console.log({demo, demoProof})
-
-                      tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
-                    }}
-                  >
-                    MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
-                  </Button>
-                  <Button
-                    type={"primary"}
-                    onClick={async () => {
-                      tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
-                    }}
-                  >
-                    MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-                  </Button>
-
-                  </div>
-                ) : (
-                  <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
-                    connect to mint
-                  </Button>
-                )}
-                
-                <div class="publicgoodsgood">
-                  <h2>🌱❤️100% of content can go here❤️🌱</h2>
-                  🦧✊ <strong>Demand more from PFPs! 👇</strong> <br />
+              <div class="FlexRow Hero Block">
+                <div class="Column">
+                  <h1>Bufficorn Buidl Brigade</h1>
+                  <h2>An ETHDenver PFP (10000 max supply)</h2>
+                  <h2>
+                    Created by EthDenver<a href="https://twitter.com/EthereumDenver"> @ethereumdenver</a>
+                  </h2>
                 </div>
-                <br />
-                <br />
-                <br />
-                <br />  
+                <div class="Column">
+                
+                  <img class="logo_moonshot sub" src="logo.png" />
+                  
+                  <div style={{ padding: 32 }}>
+                    {address ? (
+                      <div>
+                      <Button
+                        type={"primary"}
+                        onClick={async () => {
+                          const proof = getProof(address)
+                          const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+                          const demo = hashToken(testAddr)
+                          const demoProof = getProof(testAddr)
+                          console.log({demo, demoProof})
+
+                          tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
+                        }}
+                      >
+                        MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
+                      </Button>
+                      <Button
+                        type={"primary"}
+                        onClick={async () => {
+                          tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
+                        }}
+                      >
+                        MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+                      </Button>
+
+                      </div>
+                    ) : (
+                      <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                        connect to mint
+                      </Button>
+                    )}
+                  </div>
+                </div>
+              </div>
+                <div class="FlexRow Block">
+                  <div class="Column">
+                    <h2>Lore of the Bufficorn</h2>
+                    <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild. Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
+                  </div>
+                  <div class="Column">
+                    <img class="logo_moonshot sub" src="logo.png" />
+                  </div>
+                </div>
                 
                 {latestMintedBufficorns && latestMintedBufficorns.length > 0 ? (
                 <div class="latestBots">
@@ -367,9 +374,6 @@ function App(props) {
                   <div>
                   </div>
                 )}
-                <br />
-                <br /> 
-              </div>
 
             </div>
 
