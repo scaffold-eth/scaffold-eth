@@ -52,8 +52,7 @@ You'll have three terminals up for:
 Mint **1000** (* 10 ** 18) in the constructor (to the `msg.sender`) and then send them to your frontend address in the `deploy/00_deploy_your_token.js`:
 
 ```javascript
-const yourToken = await deployments.get("YourToken");
-const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", utils.parseEther("1000") );
+const result = await yourToken.transfer( "**YOUR FRONTEND ADDRESS**", ethers.utils.parseEther("1000") );
 ```
 
 (Your frontend address is the address in the top right of your frontend. Go to localhost:3000 and copy the address from the top right.)
@@ -82,13 +81,12 @@ uint256 public constant tokensPerEth = 100;
 Edit `deploy/01_deploy_vendor.js` to deploy the `Vendor` (uncomment Vendor deploy lines), but also to send all the tokens to the `vendor.address`:
 
 ```js
-const result = await yourToken.transfer( vendor.address, utils.parseEther("1000") );
+const result = await yourToken.transfer( vendor.address, ethers.utils.parseEther("1000") );
 ```
 
 In `deploy/01_deploy_vendor.js` you will also need to call `transferOwnership()` on the `Vendor` to make *your frontend address* the `owner`:
 
 ```js
-const vendor = await deployments.get("Vendor");
 await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 ```
 
