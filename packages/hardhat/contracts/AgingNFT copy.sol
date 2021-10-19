@@ -8,7 +8,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract AgingNFT is ERC721  {
+contract AgingNFTcopy is ERC721  {
 
 
   string[] public phases = [
@@ -46,33 +46,34 @@ contract AgingNFT is ERC721  {
 
       string memory base = _baseURI();
 
-      if(block.timestamp < 1634604286){
+      //These need to be updated with the correct epoch times
+      if(block.timestamp< 1636502400){
         _tokenURI = phases[0];
-      }else if(block.timestamp < 1634690686){
+      }else if(block.timestamp< 1650585600){
         _tokenURI = phases[1];
-      }else if(block.timestamp < 1634777086){
+      }else if(block.timestamp< 1666396800){
         _tokenURI = phases[2];
-      }else if(block.timestamp < 1634863486){
+      }else if(block.timestamp< 1682121600){
         _tokenURI = phases[3];
-      }else if(block.timestamp < 1634949886){
+      }else if(block.timestamp< 1713744000){
         _tokenURI = phases[4];
-      }else if(block.timestamp < 1635036286){
+      }else if(block.timestamp< 1776816000){
         _tokenURI = phases[5];
-      }else if(block.timestamp < 1635122686){
+      }else if(block.timestamp< 1903046400){
         _tokenURI = phases[6];
-      }else if(block.timestamp < 1635295486){
+      }else if(block.timestamp< 2218665600){
         _tokenURI = phases[7];
-      }else if(block.timestamp < 1635381886){
+      }else if(block.timestamp< 2849817600){
         _tokenURI = phases[8];
-      }else if(block.timestamp < 1635468286){
+      }else if(block.timestamp< 4112035200){
         _tokenURI = phases[9];
-      }else if(block.timestamp < 1635554686){
+      }else if(block.timestamp< 4774723200){
         _tokenURI = phases[10];
       }else {
         _tokenURI = phases[11];
-  }
       return string(abi.encodePacked(base, _tokenURI));
-}
+  }
 
+}
 
 }
