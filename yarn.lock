@@ -17598,6 +17598,13 @@ react-blockies@^1.4.1:
   dependencies:
     prop-types "^15.5.10"
 
+react-countdown@^2.3.2:
+  version "2.3.2"
+  resolved "https://registry.yarnpkg.com/react-countdown/-/react-countdown-2.3.2.tgz#4cc27f28f2dcd47237ee66e4b9f6d2a21fc0b0ad"
+  integrity sha512-Q4SADotHtgOxNWhDdvgupmKVL0pMB9DvoFcxv5AzjsxVhzOVxnttMbAywgqeOdruwEAmnPhOhNv/awAgkwru2w==
+  dependencies:
+    prop-types "^15.7.2"
+
 react-css-theme-switcher@^0.2.2:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/react-css-theme-switcher/-/react-css-theme-switcher-0.2.3.tgz#1de02aa5624790ec44ff51824a142de35ca008f4"

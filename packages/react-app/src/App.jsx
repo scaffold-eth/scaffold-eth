@@ -10,6 +10,7 @@ import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import Countdown from "react-countdown";
 import {
   useBalance,
   useContractLoader,
@@ -930,6 +931,7 @@ function Auction(props) {
   const [amountToBid, setAmountToBid] = useState(null);
   const [auction, setAuction] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
+  const [endTime, setEndTime] = useState(null);
 
   useOnBlock(props.mainnetProvider, () => {
     const getAuction = async () => {
@@ -939,6 +941,9 @@ function Auction(props) {
       setAuctionEnded(endTime < Date.now());
 
       if (!auctionEnded) {
+        const endsAt = new Date((endTime - Date.now()) + Date.now());
+        setEndTime(endsAt);
+
         const tokenURI = await props.readContracts.YourCollectible.tokenURI(auction.tokenId);
         const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
         try {
@@ -963,15 +968,24 @@ function Auction(props) {
   } else if (auction) {
     auctionView = (
       <>
+        <Countdown
+          date={endTime}
+          renderer={(props) => {
+            return (
+              <span>{props.hours}h {props.minutes}m {props.seconds}s</span>
+            )
+          }}
+        />
         <Card style={{width: '400px', heigth: '200px'}}>
           <List.Item key={auction.uri}>
             <img src={auction.image} />
           </List.Item>
         </Card>
         <div style={{margin: '10px'}}>
-          <Input style={{width: '100px'}} value={amountToBid} onChange={e => setAmountToBid(e.target.value)} />
+          <Input style={{width: '100px', marginRight: '10px'}} value={amountToBid} onChange={e => setAmountToBid(e.target.value)} placeholder="eth" />
           <Button
             type="primary"
+            disabled={auctionEnded || !amountToBid}
             onClick={() => signData(auction.id, amountToBid)}
           >
             Bid!
