@@ -4,6 +4,7 @@ pragma solidity >=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 import "hardhat/console.sol";
@@ -18,19 +19,11 @@ abstract contract LoogiesContract {
     ) external virtual;
 }
 
-abstract contract BowContract {
+abstract contract NFTContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
 }
 
-abstract contract MustacheContract {
-  function renderTokenById(uint256 id) external virtual view returns (string memory);
-}
-
-abstract contract ContactLensesContract {
-  function renderTokenById(uint256 id) external virtual view returns (string memory);
-}
-
-contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
+contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
 
   using Strings for uint256;
   using Strings for uint8;
@@ -42,20 +35,17 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   LoogiesContract loogies;
   mapping(uint256 => uint256) loogieById;
 
-  BowContract bow;
-  mapping(uint256 => uint256) bowById;
+  NFTContract[] nftContracts;
+  mapping(address => bool) nftContractsAvailables;
+  mapping(address => mapping(uint256 => uint256)) nftById;
 
-  MustacheContract mustache;
-  mapping(uint256 => uint256) mustacheById;
-
-  ContactLensesContract lenses;
-  mapping(uint256 => uint256) lensesById;
-
-  constructor(address _loogies, address _bow, address _mustache, address _lenses) ERC721("FancyLoogie", "FLOOG") {
+  constructor(address _loogies) ERC721("FancyLoogie", "FLOOG") {
     loogies = LoogiesContract(_loogies);
-    bow = BowContract(_bow);
-    mustache = MustacheContract(_mustache);
-    lenses = ContactLensesContract(_lenses);
+  }
+
+  function addNft(address _nft) public onlyOwner {
+    nftContractsAvailables[_nft] = true;
+    nftContracts.push(NFTContract(_nft));
   }
 
   function mintItem(uint256 loogieId) public returns (uint256) {
@@ -115,20 +105,12 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render;
 
-    if (loogieById[id] > 0) {
-      render = string(abi.encodePacked(render, loogies.renderTokenById(loogieById[id])));
-    }
+    render = string(abi.encodePacked(render, loogies.renderTokenById(loogieById[id])));
 
-    if (bowById[id] > 0) {
-      render = string(abi.encodePacked(render, bow.renderTokenById(bowById[id])));
-    }
-
-    if (mustacheById[id] > 0) {
-      render = string(abi.encodePacked(render, mustache.renderTokenById(mustacheById[id])));
-    }
-
-    if (lensesById[id] > 0) {
-      render = string(abi.encodePacked(render, lenses.renderTokenById(lensesById[id])));
+    for (uint i=0; i<nftContracts.length; i++) {
+      if (nftById[address(nftContracts[i])][id] > 0) {
+        render = string(abi.encodePacked(render, nftContracts[i].renderTokenById(nftById[address(nftContracts[i])][id])));
+      }
     }
 
     return render;
@@ -153,26 +135,13 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver {
       uint256 tokenId,
       bytes calldata fancyIdData) external override returns (bytes4) {
 
-      console.log("Received sender: ",msg.sender);
-
       uint256 fancyId = toUint256(fancyIdData);
+
       require(ownerOf(fancyId) == from, "you can only add stuff to a fancy loogie you own.");
-      require(msg.sender == address(bow) || msg.sender == address(mustache) || msg.sender == address(lenses), "the loogies can wear only bow, mustache and contact lenses for now");
+      require(nftContractsAvailables[msg.sender], "the loogies can't wear this NFT");
+      require(nftById[msg.sender][fancyId] == 0, "the loogie already has this NFT!");
 
-      if (msg.sender == address(bow)) {
-        require(bowById[fancyId] == 0, "the loogie has a bow!");
-        bowById[fancyId] = tokenId;
-      }
-
-      if (msg.sender == address(mustache)) {
-        require(mustacheById[fancyId] == 0, "the loogie has a mustache!");
-        mustacheById[fancyId] = tokenId;
-      }
-
-      if (msg.sender == address(lenses)) {
-        require(lensesById[fancyId] == 0, "the loogie has contact lenses!");
-        lensesById[fancyId] = tokenId;
-      }
+      nftById[msg.sender][fancyId] = tokenId;
 
       return this.onERC721Received.selector;
     }

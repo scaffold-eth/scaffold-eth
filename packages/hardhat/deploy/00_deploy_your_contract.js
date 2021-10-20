@@ -33,17 +33,18 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
-  const FancyLoogie = await deploy("FancyLoogie",  {
+  const fancyLoogie = await deploy("FancyLoogie",  {
     from: deployer,
-    args: [loogies.address, bow.address, mustache.address, contactLenses.address],
+    args: [loogies.address],
     log: true,
   });
 
-  /*
-    // Getting a previously deployed contract
-    const YourContract = await ethers.getContract("YourContract", deployer);
-    await YourContract.setPurpose("Hello");
+  const FancyLoogie = await ethers.getContract("FancyLoogie", deployer);
+  await FancyLoogie.addNft(bow.address);
+  await FancyLoogie.addNft(mustache.address);
+  await FancyLoogie.addNft(contactLenses.address);
 
+  /*
     To take ownership of yourContract using the ownable library uncomment next line and add the
     address you want to be the owner.
     // yourContract.transferOwnership(YOUR_ADDRESS_HERE);
