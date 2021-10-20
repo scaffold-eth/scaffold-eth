@@ -971,9 +971,17 @@ function Auction(props) {
         <Countdown
           date={endTime}
           renderer={(props) => {
-            return (
-              <span>{props.hours}h {props.minutes}m {props.seconds}s</span>
-            )
+            if (props.completed) {
+              return (
+                <div>
+                  <h2>Auction ended!</h2>
+                </div>
+              );
+            } else {
+              return (
+                <span>{props.hours}h {props.minutes}m {props.seconds}s</span>
+              );
+            }
           }}
         />
         <Card style={{width: '400px', heigth: '200px'}}>
