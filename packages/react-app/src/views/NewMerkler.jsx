@@ -99,6 +99,16 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
     }
   }, [merkleJson]);
 
+  console.log(
+    !allowance,
+    ethers.utils.parseUnits(String(amountRequired | "0"), decimals),
+    allowance,
+    !allowance || ethers.utils.parseUnits(String(amountRequired | "0"), decimals) > allowance,
+    ethers.utils.parseUnits(String(amountRequired | "0"), decimals) > allowance,
+    amountRequired | "0",
+    amountRequired,
+  );
+
   return (
     <Card title="Make a merkler" style={{ maxWidth: 600, margin: "auto", marginTop: 10 }}>
       <Form layout="vertical" initialValues={{ type: assetType, deadline: moment.unix(deadline), owner: address }}>
@@ -215,7 +225,9 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
             >
               <DatePicker
                 showTime
-                onChange={v => setDeadline(Math.round(v.format("X")))}
+                onChange={v => {
+                  setDeadline(Math.round(v.format("X")));
+                }}
                 value={moment.unix(deadline)}
               />
             </Form.Item>
@@ -258,11 +270,12 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
               setDeploying(false);
             }}
           >
-            Deploy ETH Merkler
+            {`Deploy ETH Merkler: ${amountRequired} ${symbol}`}
           </Button>
-        ) : amountRequired > allowance ? (
+        ) : ethers.utils.parseUnits(String(amountRequired || "0"), decimals) > allowance ? (
           <Button
             loading={deploying}
+            disabled={!allowance}
             onClick={() => {
               setDeploying(true);
               try {
@@ -272,7 +285,9 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
                     writeContracts.MerkleDeployer.address,
                     ethers.utils.parseUnits(amountRequired.toString(), decimals),
                   ),
-                );
+                ).then(result => {
+                  getAllowance();
+                });
               } catch (e) {
                 console.log(e);
               }
@@ -284,7 +299,7 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
         ) : (
           <Button
             loading={deploying}
-            disabled={!tokenAddress || !amountRequired || allowance.toString() == "0"}
+            disabled={!tokenAddress || !amountRequired || (allowance.toString() | "0") == "0"}
             onClick={() => {
               setDeploying(true);
               pinata
@@ -325,7 +340,7 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
               setDeploying(false);
             }}
           >
-            Deploy Token Merkler
+            {`Deploy Token Merkler: ${amountRequired} ${symbol}`}
           </Button>
         )}
       </Form>

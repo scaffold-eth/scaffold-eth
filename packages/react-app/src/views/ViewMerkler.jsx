@@ -185,16 +185,25 @@ function ViewMerkler({ localProvider, userSigner, address, localChainId }) {
             title: "ID",
             dataIndex: "id",
             key: "id",
+            sorter: (a, b) => a.id - b.id,
           },
           {
             title: "Address",
             dataIndex: "address",
             key: "id",
+            onFilter: (value, record) => record.address.startsWith(value),
+            filters: [
+              {
+                text: "My address",
+                value: address,
+              },
+            ],
           },
           {
             title: "Amount",
             dataIndex: "amount",
             key: "id",
+            sorter: (a, b) => a.amount - b.amount,
           },
           {
             title: "Check",
@@ -233,13 +242,13 @@ function ViewMerkler({ localProvider, userSigner, address, localChainId }) {
           },
         ]}
       />
-      <Contract
+      {/*<Contract
         name="Merkler"
         signer={userSigner}
         provider={localProvider}
         address={address}
         contractConfig={contractConfig}
-      />
+      />*/}
     </Card>
   );
 }

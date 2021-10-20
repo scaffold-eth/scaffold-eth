@@ -32,7 +32,7 @@ contract MerkleDeployer {
   function deployEthMerkler(bytes32 _root, address _dropper, uint256 _deadline, string calldata _treefile) public payable returns (address) {
 
     // clone deterministically
-    address deployment = Clones.cloneDeterministic(implementation, keccak256(abi.encodePacked("1", _root, _dropper, _treefile)));
+    address deployment = Clones.clone(implementation);
 
     IMerkler(deployment).initializeEthMerkler{value: msg.value}(_root, _dropper, _deadline, _treefile);
 
@@ -45,7 +45,7 @@ contract MerkleDeployer {
   function deployTokenMerkler(bytes32 _root, address _tokenAddress, uint256 _amount, address _dropper, uint256 _deadline, string calldata _treefile) public returns (address) {
 
     // clone deterministically
-    address deployment = Clones.cloneDeterministic(implementation, keccak256(abi.encodePacked("2", _root, _dropper, _treefile)));
+    address deployment = Clones.clone(implementation);
 
     IERC20Metadata token = IERC20Metadata(_tokenAddress);
     token.transferFrom(msg.sender, address(this), _amount);
