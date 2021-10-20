@@ -11,12 +11,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     //args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
   });
-
-  const loogieTank = await deploy("LoogieTank",  {
-    from: deployer,
-    args: [loogies.address],
-    log: true,
-  });
+  
+  // loogies.transferOwnership("0x36A822469B5e09461130A152d647Aa395eeB47af");
 
   /*
     // Getting a previously deployed contract
@@ -54,4 +50,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["Loogies", "LoogieTank"];
+module.exports.tags = ["Loogies"];
