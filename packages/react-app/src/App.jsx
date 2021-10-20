@@ -259,7 +259,6 @@ function App(props) {
 
   const stakedAmount = useContractReader(readContracts, "SilentAuction", "getStakeAmount", [address]);
 
-  const [tokenURI, setTokenURI] = useState();
   const [amountToStake, setAmountToStake] = useState(null);
 
   const [bids, setBids] = useState([]);
@@ -275,6 +274,10 @@ function App(props) {
 
         const temp = [];
         const auctionBids = data[auction.id._hex];
+        if (!auctionBids) {
+          return;
+        }
+
         Object.keys(auctionBids).forEach(key => {
           temp.push(auctionBids[key]);
         });
@@ -300,10 +303,15 @@ function App(props) {
   }, [address, balance]);
 
   const [currentAuction, setCurrentAuction] = useState();
+  const [auctionEnded, setAuctionEnded] = useState(false);
+
   useEffect(() => {
     const getAuction = async () => {
       const auction = await readContracts.SilentAuction?.currentAuction();
       setCurrentAuction(auction);
+      const endTime = new Date(auction?.endTime * 1000);
+      setAuctionEnded(endTime < Date.now());
+      console.log('ended', auctionEnded);
     }
     getAuction();
   }, [address, balance]);
@@ -420,24 +428,6 @@ function App(props) {
     getItems();
   }, [address, balance]);
 
-  useEffect(() => {
-    const getCollectibles = async () => {
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        const tokenURI = await readContracts.YourCollectible.tokenURI(1);
-        const jsonManifestString = atob(tokenURI.substring(29));
-        // console.log("jsonManifestString", jsonManifestString);
-
-        try {
-          const jsonManifest = JSON.parse(jsonManifestString);
-          // console.log("jsonManifest", jsonManifest);
-          setTokenURI({ id: 'TODO', uri: tokenURI, owner: address, ...jsonManifest });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    };
-    getCollectibles();
-  })
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -710,39 +700,16 @@ function App(props) {
             </Button>
 
             {auctionView}
-            <List
-              bordered
-              dataSource={itemsToAuction}
-              renderItem={item => {
-                return (
-                  <>
-                    <Card style={{width: '200px', heigth: '200px'}}>
-                      <List.Item key={item.uri}>
-                        <img src={item.image} />
-                      </List.Item>
-                    </Card>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        tx(writeContracts.YourCollectible.approve("0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512", item.id))
-                      }}
-                    >
-                      Approve
-                    </Button>
-                    <Button
-                      type="primary"
-                      onClick={() => {
-                        tx(writeContracts.SilentAuction.createAuction(readContracts.YourCollectible.address, item.id))
-                      }}
-                    >
-                      Start Auction
-                    </Button>
-                  </>
-                )
-              }}
-              >
-            </List>
 
+            <div style={{display: 'flex', flexDirection: 'column'}}>
+              <MintedItems
+                address={address}
+                mainnetProvider={mainnetProvider}
+                writeContracts={writeContracts}
+                readContracts={readContracts}
+                tx={tx}
+              ></MintedItems>
+            </div>
 
             <Button
               type="primary"
@@ -896,6 +863,70 @@ function App(props) {
       </div>
     </div>
   );
+}
+
+function MintedItems(props) {
+  const [mintedItems, setMintedItems] = useState([]);
+  const theBalance = useContractReader(props.readContracts, "YourCollectible", "balanceOf", [props.address]);
+
+  useOnBlock(props.mainnetProvider, () => {
+    const getItems = async() => {
+      const items = [];
+      for (let tokenIndex = 0; tokenIndex < theBalance; tokenIndex++) {
+        const tokenId = await props.readContracts.YourCollectible.tokenOfOwnerByIndex(props.address, tokenIndex);
+        const tokenURI = await props.readContracts.YourCollectible.tokenURI(tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          items.push({ id: tokenId, uri: tokenURI, owner: props.address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setMintedItems(items);
+    }
+    getItems();
+  });
+
+  return (
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+      <List
+        style={{width: '400px'}}
+        bordered
+        dataSource={mintedItems}
+        renderItem={item => {
+          return (
+            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+              <Card style={{width: '400px', heigth: '200px'}}>
+                <List.Item key={item.uri}>
+                  <img src={item.image} />
+                </List.Item>
+                <Button
+                  style={{ marginTop: '24px' }}
+                  type="primary"
+                  onClick={async () => {
+                    await props.tx(props.writeContracts.YourCollectible.approve(props.readContracts.SilentAuction.address, item.id));
+                    props.tx(props.writeContracts.SilentAuction.createAuction(props.readContracts.YourCollectible.address, item.id))
+                  }}
+                >
+                  Approve transfer and start auction
+                </Button>
+              </Card>
+            </div>
+          )
+        }}
+        >
+      </List>
+      <Button
+        type="primary"
+        onClick={() => {
+          props.tx(props.writeContracts.YourCollectible.mintItem())
+        }}
+      >Mint!</Button>
+    </div>
+  )
 }
 
 export default App;
