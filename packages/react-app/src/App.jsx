@@ -283,111 +283,157 @@ function App(props) {
             </div>
             */}
 
-            <div class="colorme">
-              <div class="FlexRow Hero Block">
-                <div class="Column">
-                  <h1>Bufficorn Buidl Brigade</h1>
-                  <h2>An ETHDenver PFP (10000 max supply)</h2>
-                  <h2>
-                    Created by EthDenver<a href="https://twitter.com/EthereumDenver"> @ethereumdenver</a>
-                  </h2>
-                </div>
-                <div class="Column">
-                
-                  <img class="logo_moonshot sub" src="logo.png" />
-                  
-                  <div style={{ padding: 32 }}>
-                    {address ? (
-                      <div>
-                      <Button
-                        type={"primary"}
-                        onClick={async () => {
-                          const proof = getProof(address)
-                          const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-                          const demo = hashToken(testAddr)
-                          const demoProof = getProof(testAddr)
-                          console.log({demo, demoProof})
-
-                          tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
-                        }}
-                      >
-                        MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
-                      </Button>
-                      <Button
-                        type={"primary"}
-                        onClick={async () => {
-                          tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
-                        }}
-                      >
-                        MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-                      </Button>
-
-                      </div>
-                    ) : (
-                      <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
-                        connect to mint
-                      </Button>
-                    )}
+            <div class="background">
+              <div class="Section Hero">
+                <div class="FlexRow Content Block">
+                  <div class="Column">
+                  <img class="img_hero" src="Bufficorn_astronaut.png" />
+                  </div>
+                  <div class="Column">
+                  <h1 class="Title">Bufficorn Buidl Brigade</h1>
+                    <h2>An ETHDenver PFP (10000 max supply)</h2>
+                    <h3>
+                      Created by EthDenver <a href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
+                    </h3>
+                    
+                      {address ? (
+                        <Button class="Button" type="primary" href="#Mint">
+                          Mint a Bufficorn &darr;
+                        </Button>
+                      ) : (
+                        <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                          connect to mint
+                        </Button>
+                      )}
                   </div>
                 </div>
               </div>
-                <div class="FlexRow Block">
+              <div class="Section Lore">
+                <div class="FlexRow Block Content">
                   <div class="Column">
-                    <h2>Lore of the Bufficorn</h2>
-                    <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild. Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
+                    <img class="img" src="bufficorns.png" />
                   </div>
                   <div class="Column">
-                    <img class="logo_moonshot sub" src="logo.png" />
+                    <h2 class="Heading">Lore of the Bufficorn</h2>
+                    <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild.</p>
+                    <p>Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
                   </div>
                 </div>
-                
-                {latestMintedBufficorns && latestMintedBufficorns.length > 0 ? (
-                <div class="latestBots">
-                <h2>Latest Minted Bufficorns</h2>
+              </div>
+              <div class="Section Mint" id="Mint">
+                <div class="FlexRow Block Content">
+                  <div class="Column">
+                    <h2>Mint Bufficorns</h2>
+                    <h3>Spork holders</h3>
+                    <p><i>First 24 hrs of launch</i></p>
+                    <p><i>Must hold 1900 Spork</i></p>
+                    <p>5280 available</p>
+                    <div>
+                      {address ? (
+                        <Button class="Button"
+                          type={"primary"}
+                          onClick={async () => {
+                            const proof = getProof(address)
+                            const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
+                            const demo = hashToken(testAddr)
+                            const demoProof = getProof(testAddr)
+                            console.log({demo, demoProof})
 
-                <List
-                  dataSource={latestMintedBufficorns}
-                  renderItem={item => {
-                    const id = item.id;
-                    return (
-                      <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
-                        <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
-                          <Card
-                            style={{ borderBottom:'none', border: 'none', background: "none"}}
-                            title={
-                              <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
-                                <span>#{id}</span> {item.name}
-                              </div>
-                            }
-                          >
-                            <div>
-                              <img src={item.image} style={{ maxWidth: 150 }} />
-                            </div>
-                          </Card>
-                        </List.Item>
-                      </a>
-                    );
-                  }}
-                />
-                </div>
-                ) : (
-                  <div>
+                            tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
+                          }}
+                        >
+                          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
+                        </Button>
+                      ) : (
+                        <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                          connect to mint
+                        </Button>
+                      )}
+                    </div>
                   </div>
-                )}
+                  <div class="Column">
+                    <h4>Everyone</h4>
+                    <p><i>Open to everyone</i></p>
+                    <p>Remaining Bufficorns up to 10000 total supply</p>
+                    <div>
+                      {address ? (
+                        <Button
+                          type={"primary"}
+                          onClick={async () => {
+                            tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
+                          }}
+                        >
+                          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+                        </Button>
+                      ) : (
+                        <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                          connect to mint
+                        </Button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <div class="Section Trailmap">
+                <div class="FlexRow Block Content">
+                  <h2>Trailmap</h2>
+                  <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
+                    <div class="Stop"><div class="Point Filled"></div><h5>Halloween 2021</h5><h4>Launch</h4></div>
+                    <div class="Stop"><div class="Point"></div><h5>Q1 2021</h5><h4>Cool stuff</h4></div>
+                    <div class="Stop"><div class="Point"></div><h5>Q2 2021</h5><h4>Cooler stuff</h4></div>
+                  </div>
+                </div>
+              </div>
+              
+              {latestMintedBufficorns && latestMintedBufficorns.length > 0 ? (
+                <div class="latestBots">
+                  <h2>Bufficorns recently released into the Wild</h2>
+
+                  <List
+                    dataSource={latestMintedBufficorns}
+                    renderItem={item => {
+                      const id = item.id;
+                      return (
+                        <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
+                          <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
+                            <Card
+                              style={{ borderBottom:'none', border: 'none', background: "none"}}
+                              title={
+                                <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                                  <span>#{id}</span> {item.name}
+                                </div>
+                              }
+                            >
+                              <div>
+                                <img src={item.image} style={{ maxWidth: 150 }} />
+                              </div>
+                            </Card>
+                          </List.Item>
+                        </a>
+                      );
+                    }}
+                  />
+                  </div>
+                  ) : (
+                  <div>
+                </div>
+              )}
 
             </div>
 
 
-            <footer class="colorme" style={{ padding: 64 }}>
-              <h4 style={{ padding: 5 }}>FAQ</h4>
+            <footer class="colorme Section">
+              <div class="Content">
+              <h3>FAQ</h3>
               <br />
               <br />
               <ul id="faq">
                 <li>
                   <p>
-                    <strong>🙋‍♂️ Why is the MoonshotBots Maximum Supply 303?</strong>
+                    <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
                     <br />
-                    Because this project was made with &lt;3 in Colorado + our area code out here is 303. #shillcolorado
+                    Because.
                   </p>
                 </li>
               </ul>
@@ -432,6 +478,7 @@ function App(props) {
               <br />
               <img src="builtoneth.png" />
               <br />
+              </div>
             </footer>
           </Route>
 

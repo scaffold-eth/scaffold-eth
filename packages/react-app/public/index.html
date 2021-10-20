@@ -118,36 +118,63 @@
         border: 7px solid #B44878;
       }
       .colorme{
-        background-color:rgb(127, 81, 214, 0.7);
-        padding: 20px;
+        padding: 0px 25px;
       }
       .colorme2{
         background-color:rgb(151, 96, 255, 0.7);
-        padding: 20px;
       }
       .colorme3{
         background-color:rgb(106, 67, 179, 0.7);
-        padding: 30px;
       }
-      .FlexRow {
-        display: flex;
+
+      /* begin vg edits */
+
+      .background {
+        background-color:#13415D;
+      }
+
+      .Section {
         width: 100%;
-        max-width: 1200px;
-        margin: 0 auto;
-        justify-content: center;
-        align-items: space-between;
-        flex-wrap: wrap;
-      }
-      .Block {
         padding-top: 75px;
         padding-bottom: 75px;
       }
+
+      .Content {
+        max-width: 1200px;
+        margin: 0 auto;
+        width: 100%;
+        padding-left: 25px;
+        padding-right: 25px;
+      }
+
+      .FlexRow {
+        display: flex;
+        width: 100%;
+        justify-content: space-between;
+        align-items: center;
+        flex-wrap: wrap;
+      }
+      .Block {
+        padding-top: 150px;
+        padding-bottom: 150px;
+      }
       .Lore {
-        background-color: rgb(127, 81, 214, 0.7);
+        background-color: #172734;        
+        font-size: 1.5em;
       }
       .Hero {
         min-height: 65vh;
-        /* background: url('background_3.png') repeat; */
+        background: url('mtns_2.jpg') no-repeat center bottom;
+        background-size: cover;
+      }
+      .Mint {
+        background-color: #13415D;
+        font-size: 2em;
+      }
+      .Trailmap {
+        background-color: #13415D;
+        font-size: 1.5em;
+        background: url('topo.jpg') no-repeat center bottom;
       }
       .Column {
         display: flex;
@@ -156,6 +183,36 @@
         align-items: start;
         justify-content: center;
       }
+      .Title {
+        line-height: 1em;
+        color: white;
+      }
+      .Button {
+        background-color: #FC508F;
+        vertical-align: middle;
+      }
+      img {
+        max-width: 100%;
+      }
+      .Stop {
+        display: flex;
+        align-items: center;
+        justify-content: start;
+        margin: 0;
+      }
+      .Point {
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        border: 2px solid white;
+      }
+
+      .Point.Filled {
+        background-color: white;
+      }
+
+      /* end vg edits */
+
       .Testimonial {
         display: inline-block;
         width: 30%;
@@ -164,6 +221,7 @@
         width: 150px;
         height: 150px;
       }
+      
       h5{
         font-size: 18px;
         color: white;
@@ -173,6 +231,11 @@
       }
       h1, h3, h4{
         color: #DA5892;
+        font-family: "Avenir Next", sans-serif;
+        font-weight: 900;
+        text-transform: uppercase;
+        font-style: italic;
+        letter-spacing: 0.05em;
       }
       a{
         color: #54D8D0;
@@ -183,7 +246,6 @@
       h4{
         font-size: 24px;
         font-weight: bold;
-        background-color: rgb(84, 216, 208, 0.8);
         display: inline;
         padding: 5px;
         text-transform: uppercase;
@@ -266,6 +328,14 @@ h1 {
   margin-bottom: 0px;
 }
 
+.Heading {
+  font-family: "Avenir Next", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.05em;
+}
+
 /* We create a pseudo element and blur it using the SVG filter. We’ll grab the content from the custom HTML attribute. */
 
 h1:before {
@@ -282,11 +352,21 @@ h1:before {
       }
       h2{
         color: #eee;
+        font-family: "Avenir Next", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.05em;
       }
       .chart{
         max-width: 600px;
       }
-      h3{ color: white; }
+      h3{ color: white;
+        font-family: "Avenir Next", sans-serif;
+  font-weight: 900;
+  text-transform: uppercase;
+  font-style: italic;
+  letter-spacing: 0.05em; }
       h1 img{
         max-width: 50px;
         max-height: 50px;
@@ -300,15 +380,17 @@ h1:before {
         border-radius: 5px;
       }
       footer{
-        margin-top: 100px;
+        padding-bottom: 150px;
         font-size: 24px;
       }
 
       @media all and (max-width: 1200px) {
         .Column {
           width: 100%;
+          margin-top: 40px;
         }
       }
+
     </style>
     <!--
       This HTML file is a template.
