@@ -406,28 +406,6 @@ function App(props) {
     );
   }
 
-  const [itemsToAuction, setItemsToAuction] = useState([]);
-  useEffect(() => {
-    const getItems = async() => {
-      const items = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-        const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
-
-        try {
-          const jsonManifest = JSON.parse(jsonManifestString);
-          console.log("jsonManifest", jsonManifest);
-          items.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setItemsToAuction(items);
-    }
-    getItems();
-  }, [address, balance]);
-
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -635,6 +613,16 @@ function App(props) {
               YourContract
             </Link>
           </Menu.Item>
+          <Menu.Item key="/auction">
+            <Link
+              onClick={() => {
+                setRoute("/auction");
+              }}
+              to="/auction"
+            >
+              Auction
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/hints">
             <Link
               onClick={() => {
@@ -747,6 +735,15 @@ function App(props) {
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
             />
+          </Route>
+          <Route path="/auction">
+            <Auction
+              address={address}
+              mainnetProvider={mainnetProvider}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              tx={tx}
+            ></Auction>
           </Route>
           <Route path="/hints">
             <Hints
@@ -927,6 +924,68 @@ function MintedItems(props) {
       >Mint!</Button>
     </div>
   )
+}
+
+function Auction(props) {
+  const [amountToBid, setAmountToBid] = useState(null);
+  const [auction, setAuction] = useState(null);
+  const [auctionEnded, setAuctionEnded] = useState(false);
+
+  useOnBlock(props.mainnetProvider, () => {
+    const getAuction = async () => {
+      const auction = await props.readContracts.SilentAuction?.currentAuction();
+
+      const endTime = new Date(auction?.endTime * 1000);
+      setAuctionEnded(endTime < Date.now());
+
+      if (!auctionEnded) {
+        const tokenURI = await props.readContracts.YourCollectible.tokenURI(auction.tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          setAuction({ id: auction.tokenId, uri: tokenURI, owner: props.address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    }
+    getAuction();
+  })
+
+  let auctionView = "";
+  if (auctionEnded) {
+    auctionView = (
+      <div>
+        <h2>Auction ended!</h2>
+      </div>
+    );
+  } else if (auction) {
+    auctionView = (
+      <>
+        <Card style={{width: '400px', heigth: '200px'}}>
+          <List.Item key={auction.uri}>
+            <img src={auction.image} />
+          </List.Item>
+        </Card>
+        <div style={{margin: '10px'}}>
+          <Input style={{width: '100px'}} value={amountToBid} onChange={e => setAmountToBid(e.target.value)} />
+          <Button
+            type="primary"
+            onClick={() => signData(auction.id, amountToBid)}
+          >
+            Bid!
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+      {auctionView}
+    </div>
+  );
 }
 
 export default App;
