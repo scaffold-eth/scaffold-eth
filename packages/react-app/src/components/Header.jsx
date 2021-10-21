@@ -9,7 +9,7 @@ export default function Header() {
       <PageHeader
         title="Bufficorn Buidl Brigade"
         subTitle=""
-        style={{ cursor: "pointer" }}
+        style={{ cursor: "pointer", backgroundColor: '#141414', fontFamily: "'Avenir', sans-serif", textTransform: 'uppercase', fontStyle: "italic", fontWeight: '900 !important' }}
       />
     </a>
   );

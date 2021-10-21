@@ -287,24 +287,24 @@ function App(props) {
               <div class="Section Hero">
                 <div class="FlexRow Content Block">
                   <div class="Column">
-                  <img class="img_hero" src="Bufficorn_astronaut.png" />
+                    <img class="img_hero" src="Bufficorn_astronaut.png" />
                   </div>
                   <div class="Column">
-                  <h1 class="Title">Bufficorn Buidl Brigade</h1>
+                    <h1 class="Title">Bufficorn Buidl Brigade</h1>
                     <h2>An ETHDenver PFP (10000 max supply)</h2>
                     <h3>
                       Created by EthDenver <a href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
                     </h3>
                     
-                      {address ? (
-                        <Button class="Button" type="primary" href="#Mint">
-                          Mint a Bufficorn &darr;
-                        </Button>
-                      ) : (
-                        <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
-                          connect to mint
-                        </Button>
-                      )}
+                    {address ? (
+                      <Button class="Button" type="primary" href="#Mint">
+                        Mint a Bufficorn &darr;
+                      </Button>
+                    ) : (
+                      <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                        connect to mint
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -314,16 +314,18 @@ function App(props) {
                     <img class="img" src="bufficorns.png" />
                   </div>
                   <div class="Column">
-                    <h2 class="Heading">Lore of the Bufficorn</h2>
+                    <h2>Lore of the Bufficorn</h2>
                     <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild.</p>
                     <p>Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
                   </div>
                 </div>
               </div>
               <div class="Section Mint" id="Mint">
+                <div class="FlexRow Content">
+                  <h2>Mint Bufficorns</h2>
+                </div>
                 <div class="FlexRow Block Content">
                   <div class="Column">
-                    <h2>Mint Bufficorns</h2>
                     <h3>Spork holders</h3>
                     <p><i>First 24 hrs of launch</i></p>
                     <p><i>Must hold 1900 Spork</i></p>
@@ -376,12 +378,25 @@ function App(props) {
               </div>
 
               <div class="Section Trailmap">
-                <div class="FlexRow Block Content">
-                  <h2>Trailmap</h2>
-                  <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                    <div class="Stop"><div class="Point Filled"></div><h5>Halloween 2021</h5><h4>Launch</h4></div>
-                    <div class="Stop"><div class="Point"></div><h5>Q1 2021</h5><h4>Cool stuff</h4></div>
-                    <div class="Stop"><div class="Point"></div><h5>Q2 2021</h5><h4>Cooler stuff</h4></div>
+                <div class="Content">
+                  <div class="FlexRow" style={{width: '100%'}}>
+                    <h2 style={{marginBottom: 50}}>Trail of the Bufficorns</h2>
+                  </div>
+                  <div class="FlexRow">
+                    <div class="Column">
+                      <div class="Point Filled" />
+                      <div class="Line" />
+                      <div class="Point" />
+                      <div class="Line" />
+                      <div class="Point" />
+                    </div>
+                    <div class="Column">
+                      <div class="Stop"><h5>Halloween 2021</h5><h4>Launch of the Bufficorns</h4></div>
+                      <div class="LineSpacer" />
+                      <div class="Stop"><h5>Q1 2022</h5><h4>Cool stuff</h4></div>
+                      <div class="LineSpacer" />
+                      <div class="Stop"><h5>Q2 2022</h5><h4>Cooler stuff</h4></div>
+                    </div>
                   </div>
                 </div>
               </div>
@@ -414,70 +429,68 @@ function App(props) {
                       );
                     }}
                   />
-                  </div>
-                  ) : (
-                  <div>
+                  ) : (<div></div>)
                 </div>
-              )}
+              ):null}
 
             </div>
 
 
             <footer class="colorme Section">
               <div class="Content">
-              <h3>FAQ</h3>
-              <br />
-              <br />
-              <ul id="faq">
-                <li>
-                  <p>
-                    <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
-                    <br />
-                    Because.
-                  </p>
-                </li>
-              </ul>
-              <br />
-              <a
-                style={{ padding: 8 }}
-                href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve"
-              >
-                Github
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://gitcoin.co/l/moonshotbots_opensea">
-                OpenSea
-              </a>
-              |
-              <a
-                style={{ padding: 8 }}
-                href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18"
-              >
-                EtherScan
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">
-                Telegram
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://discord.gg/ACKb28pSSP">
-                Discord
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://moonshotcollective.space">
-                Moonshot Collective
-              </a>
-              | Art by{" "}
-              <a style={{ padding: 8 }} href="https://Gitcoin.co/theCydonian">
-                @theCydonian
-              </a>
-              /
-              <a style={{ padding: 8 }} href="https://Gitcoin.co/nasehim7">
-                @nasehim7
-              </a>
-              <br />
-              <img src="builtoneth.png" />
-              <br />
+                <h3>FAQ</h3>
+                <br />
+                <br />
+                <ul id="faq">
+                  <li>
+                    <p>
+                      <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
+                      <br />
+                      Because.
+                    </p>
+                  </li>
+                </ul>
+                <br />
+                <a
+                  style={{ padding: 8 }}
+                  href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve"
+                >
+                  Github
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://gitcoin.co/l/moonshotbots_opensea">
+                  OpenSea
+                </a>
+                |
+                <a
+                  style={{ padding: 8 }}
+                  href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18"
+                >
+                  EtherScan
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">
+                  Telegram
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://discord.gg/ACKb28pSSP">
+                  Discord
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://moonshotcollective.space">
+                  Moonshot Collective
+                </a>
+                | Art by{" "}
+                <a style={{ padding: 8 }} href="https://Gitcoin.co/theCydonian">
+                  @theCydonian
+                </a>
+                /
+                <a style={{ padding: 8 }} href="https://Gitcoin.co/nasehim7">
+                  @nasehim7
+                </a>
+                <br />
+                <img src="builtoneth.png" />
+                <br />
               </div>
             </footer>
           </Route>
@@ -551,6 +564,7 @@ function App(props) {
           </Col>
         </Row>
       </div>
+
     </div>
   );
 }
