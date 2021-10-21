@@ -21,6 +21,7 @@ abstract contract LoogiesContract {
 
 abstract contract NFTContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
+  function transferFrom(address from, address to, uint256 id) external virtual;
 }
 
 contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
@@ -35,7 +36,7 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
   LoogiesContract loogies;
   mapping(uint256 => uint256) loogieById;
 
-  NFTContract[] nftContracts;
+  NFTContract[] public nftContracts;
   mapping(address => bool) nftContractsAvailables;
   mapping(address => mapping(uint256 => uint256)) nftById;
 
@@ -46,6 +47,18 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
   function addNft(address _nft) public onlyOwner {
     nftContractsAvailables[_nft] = true;
     nftContracts.push(NFTContract(_nft));
+  }
+
+  function nftContractsCount() public view returns (uint256) {
+    return nftContracts.length;
+  }
+
+  function getContractsAddress() public view returns (address[] memory) {
+    address[] memory addresses = new address[](nftContracts.length);
+    for (uint i=0; i<nftContracts.length; i++) {
+      addresses[i] = address(nftContracts[i]);
+    }
+    return addresses;
   }
 
   function mintItem(uint256 loogieId) public returns (uint256) {
@@ -126,6 +139,23 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
         }
 
         return tempUint;
+  }
+
+  function removeNftFromLoogie(address _nft, uint256 _id) external {
+    require(msg.sender == ownerOf(_id), "only the owner can undress a loogie!!");
+    require(nftContractsAvailables[_nft], "the loogies can't wear this NFT");
+    require(nftById[_nft][_id] != 0, "the loogie is not wearing this NFT");
+
+    NFTContract nftContract = NFTContract(_nft);
+    nftContract.transferFrom(address(this), ownerOf(_id), nftById[_nft][_id]);
+
+    nftById[_nft][_id] = 0;
+  }
+
+  function hasNft(address _nft, uint256 _id) external view returns (bool) {
+    require(nftContractsAvailables[_nft], "the loogies can't wear this NFT");
+
+    return (nftById[_nft][_id] != 0);
   }
 
   // to receive ERC721 tokens

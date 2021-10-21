@@ -257,6 +257,9 @@ function App(props) {
   const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogie", "balanceOf", [address]);
   console.log("🤗 fancy loogie balance:", fancyLoogieBalance);
 
+  const fancyLoogieContracts = useContractReader(readContracts, "FancyLoogie", "getContractsAddress");
+  console.log("🤗 fancy loogie contracts:", fancyLoogieContracts);
+
   // 📟 Listen for broadcast events
   const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
   console.log("📟 Loogie Transfer events:", loogieTransferEvents);
@@ -283,6 +286,8 @@ function App(props) {
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
 
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
+
+  const [fancyLoogiesNfts, setFancyLoogiesNfts] = useState();
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -384,6 +389,7 @@ function App(props) {
       setYourLenses(lensesUpdate.reverse());
 
       const fancyLoogieUpdate = [];
+      const fancyLoogiesNftsUpdate = {};
       for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
@@ -398,6 +404,12 @@ function App(props) {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
             fancyLoogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            fancyLoogiesNftsUpdate[tokenId] = {};
+            for (let contractIndex = 0; contractIndex < fancyLoogieContracts.length; contractIndex++) {
+              const contractAddress = fancyLoogieContracts[contractIndex];
+              const hasNft = await readContracts.FancyLoogie.hasNft(contractAddress, tokenId);
+              fancyLoogiesNftsUpdate[tokenId][contractAddress] = hasNft;
+            };
           } catch (e) {
             console.log(e);
           }
@@ -406,6 +418,7 @@ function App(props) {
         }
       }
       setYourFancyLoogies(fancyLoogieUpdate.reverse());
+      setFancyLoogiesNfts(fancyLoogiesNftsUpdate);
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourBowBalance, yourMustacheBalance, yourLensesBalance]);
@@ -901,11 +914,48 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.FancyLoogie.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
                         </Button>
+                        <br />
+                        <br />
+                        {fancyLoogiesNfts &&
+                          fancyLoogiesNfts[id] &&
+                          fancyLoogiesNfts[id][readContracts["Bow"].address] && (
+                            <Button
+                              style={{marginBottom: '10px'}}
+                              onClick={() => {
+                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Bow"].address, id));
+                              }}
+                            >
+                              Remove Bow
+                            </Button>
+                          )}
+                        {fancyLoogiesNfts &&
+                          fancyLoogiesNfts[id] &&
+                          fancyLoogiesNfts[id][readContracts["Mustache"].address] && (
+                            <Button
+                              style={{marginBottom: '10px'}}
+                              onClick={() => {
+                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mustache"].address, id));
+                              }}
+                            >
+                              Remove Mustache
+                            </Button>
+                          )}
+                        {fancyLoogiesNfts &&
+                          fancyLoogiesNfts[id] &&
+                          fancyLoogiesNfts[id][readContracts["ContactLenses"].address] && (
+                            <Button
+                              onClick={() => {
+                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["ContactLenses"].address, id));
+                              }}
+                            >
+                              Remove ContactLenses
+                            </Button>
+                          )}
                       </div>
                     </List.Item>
                   );
