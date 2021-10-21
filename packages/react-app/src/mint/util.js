@@ -1,6 +1,7 @@
 import { ethers } from "ethers";
 const { MerkleTree } = require("merkletreejs");
 const keccak256 = require("keccak256");
+
 const allowlist = require('../tokens.json')
 
 export function hashToken(account) {
@@ -17,3 +18,5 @@ export const getProof = (account) => {
   const proof = merkleTree.getHexProof(hashToken(account))
   return proof
 }
+
+export const premintAddresses = allowlist.addresses

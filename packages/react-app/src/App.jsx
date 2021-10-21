@@ -23,7 +23,7 @@ import { utils, ethers } from "ethers";
 //import Hints from "./Hints";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 
-import {getProof, hashToken} from "./mint/util"
+import { getProof, premintAddresses } from "./mint/util";
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -116,13 +116,12 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider);
   if (DEBUG) console.log("🔐 writeContracts", writeContracts);
 
-
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "Bufficorn", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
-  const priceToMint = ethers.utils.parseEther('0.1')
-  const priceToPremint = ethers.utils.parseEther('0.0528')
+  const priceToMint = ethers.utils.parseEther("0.1");
+  const priceToPremint = ethers.utils.parseEther("0.0528");
   // useContractReader(readContracts, "MoonshotBot", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
@@ -133,29 +132,43 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "Bufficorn", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  // Track if connected address qualifies for preminting
+  const [premintQualified, setPremintQualified] = useState(false);
+  console.log("premintQualified:", premintQualified);
+
+  useEffect(() => {
+    const checkQualified = async () => {
+      if (premintAddresses.indexOf(address.toLowerCase()) > -1) setPremintQualified(true);
+      else setPremintQualified(false);
+    };
+    checkQualified();
+  }, [address]);
+
   // track the lastest bots minted
   const [latestMintedBufficorns, setLatestMintedBufficorns] = useState();
   console.log("📟 latestBuffsMinted:", latestMintedBufficorns);
 
   //
-  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
+  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes.
   //
   useEffect(() => {
     const getLatestMintedBufficorns = async () => {
-
       let latestMintedBufficornsUpdate = [];
-      if (transferEvents.length > 0){
-        for ( let buffIndex = 0; buffIndex < transferEvents.length ; buffIndex++){
-          if (transferEvents[buffIndex].from == "0x0000000000000000000000000000000000000000" && latestMintedBufficornsUpdate.length < 3) {
-            try{
-            let tokenId = transferEvents[buffIndex].tokenId.toNumber()
-            const tokenURI = await readContracts.Bufficorn.tokenURI(tokenId);
-            // const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
-            // const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-            const jsonManifest = {
-              name: 'Placeholder',
-              image: 'logo.png'
-            }
+      if (transferEvents.length > 0) {
+        for (let buffIndex = 0; buffIndex < transferEvents.length; buffIndex++) {
+          if (
+            transferEvents[buffIndex].from == "0x0000000000000000000000000000000000000000" &&
+            latestMintedBufficornsUpdate.length < 3
+          ) {
+            try {
+              let tokenId = transferEvents[buffIndex].tokenId.toNumber();
+              const tokenURI = await readContracts.Bufficorn.tokenURI(tokenId);
+              // const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+              // const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+              const jsonManifest = {
+                name: "Placeholder",
+                image: "logo.png",
+              };
 
               try {
                 // const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
@@ -167,12 +180,12 @@ function App(props) {
               console.log(e);
             }
           }
-        } 
+        }
       }
       setLatestMintedBufficorns(latestMintedBufficornsUpdate);
-    }
+    };
     getLatestMintedBufficorns();
-  }, [amountMintedAlready])
+  }, [amountMintedAlready]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -250,46 +263,34 @@ function App(props) {
       </div>
     );
   }
-  
+
   async function premint(address, quantity) {
-      const proof = getProof(address)
-      tx(writeContracts.Bufficorn.mintPresale(quantity, proof, { value: priceToPremint.mul(quantity)}));
+    const proof = getProof(address);
+    tx(writeContracts.Bufficorn.mintPresale(quantity, proof, { value: priceToPremint.mul(quantity) }));
   }
-  
+
   async function handleMenuClick(e) {
-    premint(address, parseInt(e.key))
+    premint(address, parseInt(e.key));
   }
-  
+
   const premintMenu = (
     <Menu onClick={handleMenuClick}>
-      <Menu.Item key="1" >
-        Mint 1
-      </Menu.Item>
-      <Menu.Item key="3" >
-        Mint 3
-      </Menu.Item>
-      <Menu.Item key="5" >
-        Mint 5
-      </Menu.Item>
+      <Menu.Item key="1">Mint 1</Menu.Item>
+      <Menu.Item key="3">Mint 3</Menu.Item>
+      <Menu.Item key="5">Mint 5</Menu.Item>
     </Menu>
   );
 
   async function handlePublicMenuClick(e) {
-    const qty = parseInt(e.key)
-    tx(writeContracts.Bufficorn.mintOpensale(qty, { value: priceToMint.mul(qty)}));
+    const qty = parseInt(e.key);
+    tx(writeContracts.Bufficorn.mintOpensale(qty, { value: priceToMint.mul(qty) }));
   }
-  
+
   const publicMintMenu = (
     <Menu onClick={handlePublicMenuClick}>
-      <Menu.Item key="1" >
-        Mint 1
-      </Menu.Item>
-      <Menu.Item key="3" >
-        Mint 3
-      </Menu.Item>
-      <Menu.Item key="5" >
-        Mint 5
-      </Menu.Item>
+      <Menu.Item key="1">Mint 1</Menu.Item>
+      <Menu.Item key="3">Mint 3</Menu.Item>
+      <Menu.Item key="5">Mint 5</Menu.Item>
     </Menu>
   );
 
@@ -322,24 +323,24 @@ function App(props) {
               <div class="Section Hero">
                 <div class="FlexRow Content Block">
                   <div class="Column">
-                  <img class="img_hero" src="Bufficorn_astronaut.png" />
+                    <img class="img_hero" src="Bufficorn_astronaut.png" />
                   </div>
                   <div class="Column">
-                  <h1 class="Title">Bufficorn Buidl Brigade</h1>
+                    <h1 class="Title">Bufficorn Buidl Brigade</h1>
                     <h2>An ETHDenver PFP (10000 max supply)</h2>
                     <h3>
                       Created by EthDenver <a href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
                     </h3>
-                    
-                      {address ? (
+
+                    {address ? (
                         <Button class="Button" type="primary" href="#Mint">
                           Mint a Bufficorn &darr;
                         </Button>
-                      ) : (
-                        <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
-                          connect to mint
-                        </Button>
-                      )}
+                    ) : (
+                      <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
+                        connect to mint
+                      </Button>
+                    )}
                   </div>
                 </div>
               </div>
@@ -350,8 +351,24 @@ function App(props) {
                   </div>
                   <div class="Column">
                     <h2 class="Heading">Lore of the Bufficorn</h2>
-                    <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild.</p>
-                    <p>Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
+                    <p>
+                      The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the
+                      Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is
+                      making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns
+                      roaming the wild.
+                    </p>
+                    <p>
+                      Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge,
+                      Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the
+                      Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance,
+                      near the summit of Quandary Peak. In addition to their natural magesty, they are known as
+                      voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more
+                      about the Bufficorn in the{" "}
+                      <a href="" target="_blank" rel="noopener noreferrer">
+                        Medium post
+                      </a>
+                      .
+                    </p>
                   </div>
                 </div>
               </div>
@@ -360,20 +377,25 @@ function App(props) {
                   <div class="Column">
                     <h2>Mint Bufficorns</h2>
                     <h3>Spork holders</h3>
-                    <p><i>First 24 hrs of launch</i></p>
-                    <p><i>Must hold 1900 Spork</i></p>
+                    <p>
+                      <i>First 24 hrs of launch</i>
+                    </p>
+                    <p>
+                      <i>Must hold 1900 Spork</i>
+                    </p>
                     <p>5280 available</p>
                     <div>
                       {address ? (
-                        <Dropdown.Button class="Button"
+                        <Dropdown.Button
+                          class="Button"
                           type={"primary"}
+                          disabled={!premintQualified}
                           overlay={premintMenu}
-                          onClick={async () => premint(address, 1)
-                          }
+                          onClick={async () => premint(address, 1)}
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
                         </Dropdown.Button>
-                      ) : (
+                    ) : (
                         <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                           connect to mint
                         </Button>
@@ -382,7 +404,9 @@ function App(props) {
                   </div>
                   <div class="Column">
                     <h4>Everyone</h4>
-                    <p><i>Open to everyone</i></p>
+                    <p>
+                      <i>Open to everyone</i>
+                    </p>
                     <p>Remaining Bufficorns up to 10000 total supply</p>
                     <div>
                       {address ? (
@@ -390,7 +414,7 @@ function App(props) {
                           type={"primary"}
                           overlay={publicMintMenu}
                           onClick={async () => {
-                            tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
+                            tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint }));
                           }}
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
@@ -408,14 +432,26 @@ function App(props) {
               <div class="Section Trailmap">
                 <div class="FlexRow Block Content">
                   <h2>Trailmap</h2>
-                  <div style={{display: 'flex', flexDirection: 'column', width: '100%'}}>
-                    <div class="Stop"><div class="Point Filled"></div><h5>Halloween 2021</h5><h4>Launch</h4></div>
-                    <div class="Stop"><div class="Point"></div><h5>Q1 2021</h5><h4>Cool stuff</h4></div>
-                    <div class="Stop"><div class="Point"></div><h5>Q2 2021</h5><h4>Cooler stuff</h4></div>
+                  <div style={{ display: "flex", flexDirection: "column", width: "100%" }}>
+                    <div class="Stop">
+                      <div class="Point Filled"></div>
+                      <h5>Halloween 2021</h5>
+                      <h4>Launch</h4>
+                    </div>
+                    <div class="Stop">
+                      <div class="Point"></div>
+                      <h5>Q1 2021</h5>
+                      <h4>Cool stuff</h4>
+                    </div>
+                    <div class="Stop">
+                      <div class="Point"></div>
+                      <h5>Q2 2021</h5>
+                      <h4>Cooler stuff</h4>
+                    </div>
                   </div>
                 </div>
               </div>
-              
+
               {latestMintedBufficorns && latestMintedBufficorns.length > 0 ? (
                 <div class="latestBots">
                   <h2>Bufficorns recently released into the Wild</h2>
@@ -426,11 +462,11 @@ function App(props) {
                       const id = item.id;
                       return (
                         <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
-                          <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
+                          <List.Item style={{ display: "inline-block", border: "none", margin: 10 }}>
                             <Card
-                              style={{ borderBottom:'none', border: 'none', background: "none"}}
+                              style={{ borderBottom: "none", border: "none", background: "none" }}
                               title={
-                                <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                                <div style={{ fontSize: 16, marginRight: 8, color: "white" }}>
                                   <span>#{id}</span> {item.name}
                                 </div>
                               }
@@ -444,70 +480,64 @@ function App(props) {
                       );
                     }}
                   />
-                  </div>
-                  ) : (
-                  <div>
                 </div>
+              ) : (
+                <div></div>
               )}
-
             </div>
-
 
             <footer class="colorme Section">
               <div class="Content">
-              <h3>FAQ</h3>
-              <br />
-              <br />
-              <ul id="faq">
-                <li>
-                  <p>
-                    <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
-                    <br />
-                    Because.
-                  </p>
-                </li>
-              </ul>
-              <br />
-              <a
-                style={{ padding: 8 }}
-                href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve"
-              >
-                Github
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://gitcoin.co/l/moonshotbots_opensea">
-                OpenSea
-              </a>
-              |
-              <a
-                style={{ padding: 8 }}
-                href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18"
-              >
-                EtherScan
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">
-                Telegram
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://discord.gg/ACKb28pSSP">
-                Discord
-              </a>
-              |
-              <a style={{ padding: 8 }} href="https://moonshotcollective.space">
-                Moonshot Collective
-              </a>
-              | Art by{" "}
-              <a style={{ padding: 8 }} href="https://Gitcoin.co/theCydonian">
-                @theCydonian
-              </a>
-              /
-              <a style={{ padding: 8 }} href="https://Gitcoin.co/nasehim7">
-                @nasehim7
-              </a>
-              <br />
-              <img src="builtoneth.png" />
-              <br />
+                <h3>FAQ</h3>
+                <br />
+                <br />
+                <ul id="faq">
+                  <li>
+                    <p>
+                      <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
+                      <br />
+                      Because.
+                    </p>
+                  </li>
+                </ul>
+                <br />
+                <a
+                  style={{ padding: 8 }}
+                  href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve"
+                >
+                  Github
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://gitcoin.co/l/moonshotbots_opensea">
+                  OpenSea
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18">
+                  EtherScan
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">
+                  Telegram
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://discord.gg/ACKb28pSSP">
+                  Discord
+                </a>
+                |
+                <a style={{ padding: 8 }} href="https://moonshotcollective.space">
+                  Moonshot Collective
+                </a>
+                | Art by{" "}
+                <a style={{ padding: 8 }} href="https://Gitcoin.co/theCydonian">
+                  @theCydonian
+                </a>
+                /
+                <a style={{ padding: 8 }} href="https://Gitcoin.co/nasehim7">
+                  @nasehim7
+                </a>
+                <br />
+                <img src="builtoneth.png" />
+                <br />
               </div>
             </footer>
           </Route>
