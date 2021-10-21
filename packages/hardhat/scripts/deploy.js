@@ -57,7 +57,7 @@ const main = async () => {
 
   // send testnet eth to MM
   await accounts[0].sendTransaction({
-    to: "0xd26a3F686D43f2A62BA9eaE2ff77e9f516d945B9",
+    to: "0x744222844bFeCC77156297a6427B5876A6769e19",
     value: ethers.utils.parseEther("1"),
   });
 

@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { LinkOutlined } from "@ant-design/icons";
+import { ConsoleSqlOutlined, LinkOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space, Dropdown } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -23,7 +23,7 @@ import { utils, ethers } from "ethers";
 //import Hints from "./Hints";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 
-import {getProof, hashToken} from "./mint/util"
+import { getProof, premintAddresses } from "./mint/util";
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -116,13 +116,12 @@ function App(props) {
   const writeContracts = useContractLoader(userProvider);
   if (DEBUG) console.log("🔐 writeContracts", writeContracts);
 
-
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "Bufficorn", "balanceOf", [address]);
   console.log("🤗 balance:", balance);
 
-  const priceToMint = ethers.utils.parseEther('0.1')
-  const priceToPremint = ethers.utils.parseEther('0.0528')
+  const priceToMint = ethers.utils.parseEther("0.1");
+  const priceToPremint = ethers.utils.parseEther("0.0528");
   // useContractReader(readContracts, "MoonshotBot", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
@@ -133,36 +132,43 @@ function App(props) {
   const transferEvents = useEventListener(readContracts, "Bufficorn", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
+  // Track if connected address qualifies for preminting
+  const [premintQualified, setPremintQualified] = useState(false);
+  console.log("premintQualified:", premintQualified);
+
+  useEffect(() => {
+    const checkQualified = async () => {
+      if (premintAddresses.indexOf(address.toLowerCase()) > -1) setPremintQualified(true);
+      else setPremintQualified(false);
+    };
+    checkQualified();
+  }, [address]);
+
   // track the lastest bots minted
   const [latestMintedBufficorns, setLatestMintedBufficorns] = useState();
   console.log("📟 latestBuffsMinted:", latestMintedBufficorns);
 
   //
-  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes. 
+  // 🧠 This effect will update latestMintedBots by polling when your balance or address changes.
   //
   useEffect(() => {
     const getLatestMintedBufficorns = async () => {
-      console.log('getting latest minted')
-
       let latestMintedBufficornsUpdate = [];
-      if (transferEvents.length > 0){
-        console.log({transferEvents})
-        console.log({latestMintedBufficorns})
-        for ( let buffIndex = 0; buffIndex < transferEvents.length ; buffIndex++){
-          if (transferEvents[buffIndex].from == "0x0000000000000000000000000000000000000000" && latestMintedBufficornsUpdate.length < 3) {
-            console.log('new mints')
-            try{
-            let tokenId = transferEvents[buffIndex].tokenId.toNumber()
-            console.log({tokenId})
-            const tokenURI = await readContracts.Bufficorn.tokenURI(tokenId);
-            console.log({tokenURI})
-            // const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
-            // const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-            const jsonManifest = {
-              name: 'Placeholder',
-              image: 'logo.png'
-            }
-            console.log({jsonManifest})
+      if (transferEvents.length > 0) {
+        for (let buffIndex = 0; buffIndex < transferEvents.length; buffIndex++) {
+          if (
+            transferEvents[buffIndex].from == "0x0000000000000000000000000000000000000000" &&
+            latestMintedBufficornsUpdate.length < 3
+          ) {
+            try {
+              let tokenId = transferEvents[buffIndex].tokenId.toNumber();
+              const tokenURI = await readContracts.Bufficorn.tokenURI(tokenId);
+              // const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
+              // const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+              const jsonManifest = {
+                name: "Placeholder",
+                image: "logo.png",
+              };
 
               try {
                 // const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
@@ -174,12 +180,12 @@ function App(props) {
               console.log(e);
             }
           }
-        } 
+        }
       }
       setLatestMintedBufficorns(latestMintedBufficornsUpdate);
-    }
+    };
     getLatestMintedBufficorns();
-  }, [amountMintedAlready])
+  }, [amountMintedAlready]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -258,6 +264,36 @@ function App(props) {
     );
   }
 
+  async function premint(address, quantity) {
+    const proof = getProof(address);
+    tx(writeContracts.Bufficorn.mintPresale(quantity, proof, { value: priceToPremint.mul(quantity) }));
+  }
+
+  async function handleMenuClick(e) {
+    premint(address, parseInt(e.key));
+  }
+
+  const premintMenu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1">Mint 1</Menu.Item>
+      <Menu.Item key="3">Mint 3</Menu.Item>
+      <Menu.Item key="5">Mint 5</Menu.Item>
+    </Menu>
+  );
+
+  async function handlePublicMenuClick(e) {
+    const qty = parseInt(e.key);
+    tx(writeContracts.Bufficorn.mintOpensale(qty, { value: priceToMint.mul(qty) }));
+  }
+
+  const publicMintMenu = (
+    <Menu onClick={handlePublicMenuClick}>
+      <Menu.Item key="1">Mint 1</Menu.Item>
+      <Menu.Item key="3">Mint 3</Menu.Item>
+      <Menu.Item key="5">Mint 5</Menu.Item>
+    </Menu>
+  );
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -290,16 +326,16 @@ function App(props) {
                     <img class="img_hero" src="Bufficorn_astronaut.png" />
                   </div>
                   <div class="Column">
-                    <h1 class="Title">Bufficorn Buidl Brigade</h1>
-                    <h2>An ETHDenver PFP (10000 max supply)</h2>
-                    <h3>
+                    <h1 class="Title" style={{marginBottom: 25}}>Bufficorn Buidl Brigade</h1>
+                    <h2 style={{marginBottom: 25}}>An ETHDenver PFP (10000 max supply)</h2>
+                    <h3 style={{marginBottom: 25}}>
                       Created by EthDenver <a href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
                     </h3>
-                    
+
                     {address ? (
-                      <Button class="Button" type="primary" href="#Mint">
-                        Mint a Bufficorn &darr;
-                      </Button>
+                        <Button class="Button" type="primary" href="#Mint">
+                          Mint a Bufficorn &darr;
+                        </Button>
                     ) : (
                       <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                         connect to mint
@@ -327,26 +363,25 @@ function App(props) {
                 <div class="FlexRow Block Content">
                   <div class="Column">
                     <h3>Spork holders</h3>
-                    <p><i>First 24 hrs of launch</i></p>
-                    <p><i>Must hold 1900 Spork</i></p>
+                    <p>
+                      <i>First 24 hrs of launch</i>
+                    </p>
+                    <p>
+                      <i>Must hold 1900 Spork</i>
+                    </p>
                     <p>5280 available</p>
                     <div>
                       {address ? (
-                        <Button class="Button"
+                        <Dropdown.Button
+                          class="Button"
                           type={"primary"}
-                          onClick={async () => {
-                            const proof = getProof(address)
-                            const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-                            const demo = hashToken(testAddr)
-                            const demoProof = getProof(testAddr)
-                            console.log({demo, demoProof})
-
-                            tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
-                          }}
+                          disabled={!premintQualified}
+                          overlay={premintMenu}
+                          onClick={async () => premint(address, 1)}
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
-                        </Button>
-                      ) : (
+                        </Dropdown.Button>
+                    ) : (
                         <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                           connect to mint
                         </Button>
@@ -355,18 +390,21 @@ function App(props) {
                   </div>
                   <div class="Column">
                     <h4>Everyone</h4>
-                    <p><i>Open to everyone</i></p>
+                    <p>
+                      <i>Open to everyone</i>
+                    </p>
                     <p>Remaining Bufficorns up to 10000 total supply</p>
                     <div>
                       {address ? (
-                        <Button
+                        <Dropdown.Button
                           type={"primary"}
+                          overlay={publicMintMenu}
                           onClick={async () => {
-                            tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
+                            tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint }));
                           }}
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-                        </Button>
+                        </Dropdown.Button>
                       ) : (
                         <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                           connect to mint
@@ -400,7 +438,7 @@ function App(props) {
                   </div>
                 </div>
               </div>
-              
+
               {latestMintedBufficorns && latestMintedBufficorns.length > 0 ? (
                 <div class="latestBots">
                   <h2>Bufficorns recently released into the Wild</h2>
@@ -411,11 +449,11 @@ function App(props) {
                       const id = item.id;
                       return (
                         <a href={`https://opensea.io/assets/0x8b13e88EAd7EF8075b58c94a7EB18A89FD729B18/${item.id}`}>
-                          <List.Item style={{ display: 'inline-block', border: 'none', margin: 10 }}> 
+                          <List.Item style={{ display: "inline-block", border: "none", margin: 10 }}>
                             <Card
-                              style={{ borderBottom:'none', border: 'none', background: "none"}}
+                              style={{ borderBottom: "none", border: "none", background: "none" }}
                               title={
-                                <div style={{ fontSize: 16, marginRight: 8, color: 'white' }}>
+                                <div style={{ fontSize: 16, marginRight: 8, color: "white" }}>
                                   <span>#{id}</span> {item.name}
                                 </div>
                               }
@@ -429,12 +467,11 @@ function App(props) {
                       );
                     }}
                   />
-                  ) : (<div></div>)
                 </div>
-              ):null}
-
+              ) : (
+                <div />
+              )}
             </div>
-
 
             <footer class="colorme Section">
               <div class="Content">
