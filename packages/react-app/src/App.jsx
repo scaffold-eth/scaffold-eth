@@ -258,10 +258,6 @@ function App(props) {
 
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
 
-  const stakedAmount = useContractReader(readContracts, "SilentAuction", "getStakeAmount", [address]);
-
-  const [amountToStake, setAmountToStake] = useState(null);
-
   const [bids, setBids] = useState([]);
   useOnBlock(mainnetProvider, () => {
     const getBids = async () => {
@@ -673,20 +669,6 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-            <h3>Staked Amount: {ethers.utils.formatEther(stakedAmount ?? 0)}</h3>
-            <Input
-              style={{ textAlign: "center" }}
-              placeholder={"Amount of ETH to stake"}
-              value={amountToStake}
-              onChange={e => setAmountToStake(e.target.value)}
-            />
-            <Button
-              type="primary"
-              onClick={() => {
-                tx(writeContracts.SilentAuction.stake({value: ethers.utils.parseEther(amountToStake)}));
-              }}
-            >Stake
-            </Button>
 
             {auctionView}
 
@@ -700,18 +682,6 @@ function App(props) {
               ></MintedItems>
             </div>
 
-            <Button
-              type="primary"
-              onClick={() => {
-                tx(writeContracts.YourCollectible.mintItem())
-              }}
-              >Mint</Button>
-            <Button
-              type="primary"
-              onClick={() => {
-                tx(writeContracts.SilentAuction.createAuction(readContracts.YourCollectible.address, 1))
-              }}
-              >Start Auction</Button>
             <Contract
               name="YourContract"
               signer={userSigner}
@@ -932,15 +902,18 @@ function Auction(props) {
   const [auction, setAuction] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
   const [endTime, setEndTime] = useState(null);
+  const [highestBid, setHighestBid] = useState(null);
 
   useOnBlock(props.mainnetProvider, () => {
     const getAuction = async () => {
       const auction = await props.readContracts.SilentAuction?.currentAuction();
 
       const endTime = new Date(auction?.endTime * 1000);
-      setAuctionEnded(endTime < Date.now());
+      const ended = endTime < new Date();
 
-      if (!auctionEnded) {
+      setAuctionEnded(ended);
+
+      if (!ended) {
         const endsAt = new Date((endTime - Date.now()) + Date.now());
         setEndTime(endsAt);
 
@@ -953,16 +926,46 @@ function Auction(props) {
         } catch (e) {
           console.log(e);
         }
+
+        try {
+          const highBid = await props.readContracts.SilentAuction.currentBid();
+          setHighestBid(ethers.utils.formatEther(highBid));
+        } catch (e) {
+          console.log(e);
+        }
       }
     }
     getAuction();
-  })
+  });
 
+  const [owner, setOwner] = useState(false);
+  useEffect(() => {
+    const getOwner = async () => {
+      const owner = await props.readContracts.SilentAuction?.owner();
+      setOwner(owner === props.address);
+    }
+    getOwner();
+  }, [props.address]);
+
+  let settleAuction = "";
+  if (owner) {
+    settleAuction = (
+      <Button
+        type="primary"
+        disabled={!auctionEnded}
+        onClick={async () => {
+          await props.tx(props.writeContracts.SilentAuction.settleAuction());
+        }}
+      > Settle Auction
+      </Button>
+    );
+  }
   let auctionView = "";
   if (auctionEnded) {
     auctionView = (
       <div>
         <h2>Auction ended!</h2>
+        {settleAuction}
       </div>
     );
   } else if (auction) {
@@ -979,7 +982,12 @@ function Auction(props) {
               );
             } else {
               return (
-                <span>{props.hours}h {props.minutes}m {props.seconds}s</span>
+                <span style={{display: 'flex', alignItems: 'baseline'}}>
+                  <h4 style={{marginRight: '10px'}}>Ends in</h4>
+                  <h1>{props.hours}</h1>h
+                  <h1>{props.minutes}</h1>m
+                  <h1>{props.seconds}</h1>s
+                </span>
               );
             }
           }}
@@ -994,7 +1002,9 @@ function Auction(props) {
           <Button
             type="primary"
             disabled={auctionEnded || !amountToBid}
-            onClick={() => signData(auction.id, amountToBid)}
+            onClick={async () => {
+              await props.tx(props.writeContracts.SilentAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
+            }}
           >
             Bid!
           </Button>
