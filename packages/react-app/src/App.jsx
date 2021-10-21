@@ -2,9 +2,9 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
 import "antd/dist/antd.css";
 import { JsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { LinkOutlined } from "@ant-design/icons";
+import { ConsoleSqlOutlined, LinkOutlined } from "@ant-design/icons";
 import "./App.css";
-import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space } from "antd";
+import { Row, Col, Button, Menu, Alert, Input, List, Card, Switch as SwitchD, Space, Dropdown } from "antd";
 import Web3Modal from "web3modal";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import { useUserAddress } from "eth-hooks";
@@ -142,27 +142,20 @@ function App(props) {
   //
   useEffect(() => {
     const getLatestMintedBufficorns = async () => {
-      console.log('getting latest minted')
 
       let latestMintedBufficornsUpdate = [];
       if (transferEvents.length > 0){
-        console.log({transferEvents})
-        console.log({latestMintedBufficorns})
         for ( let buffIndex = 0; buffIndex < transferEvents.length ; buffIndex++){
           if (transferEvents[buffIndex].from == "0x0000000000000000000000000000000000000000" && latestMintedBufficornsUpdate.length < 3) {
-            console.log('new mints')
             try{
             let tokenId = transferEvents[buffIndex].tokenId.toNumber()
-            console.log({tokenId})
             const tokenURI = await readContracts.Bufficorn.tokenURI(tokenId);
-            console.log({tokenURI})
             // const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
             // const jsonManifestBuffer = await getFromIPFS(ipfsHash);
             const jsonManifest = {
               name: 'Placeholder',
               image: 'logo.png'
             }
-            console.log({jsonManifest})
 
               try {
                 // const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
@@ -257,6 +250,48 @@ function App(props) {
       </div>
     );
   }
+  
+  async function premint(address, quantity) {
+      const proof = getProof(address)
+      tx(writeContracts.Bufficorn.mintPresale(quantity, proof, { value: priceToPremint.mul(quantity)}));
+  }
+  
+  async function handleMenuClick(e) {
+    premint(address, parseInt(e.key))
+  }
+  
+  const premintMenu = (
+    <Menu onClick={handleMenuClick}>
+      <Menu.Item key="1" >
+        Mint 1
+      </Menu.Item>
+      <Menu.Item key="3" >
+        Mint 3
+      </Menu.Item>
+      <Menu.Item key="5" >
+        Mint 5
+      </Menu.Item>
+    </Menu>
+  );
+
+  async function handlePublicMenuClick(e) {
+    const qty = parseInt(e.key)
+    tx(writeContracts.Bufficorn.mintOpensale(qty, { value: priceToMint.mul(qty)}));
+  }
+  
+  const publicMintMenu = (
+    <Menu onClick={handlePublicMenuClick}>
+      <Menu.Item key="1" >
+        Mint 1
+      </Menu.Item>
+      <Menu.Item key="3" >
+        Mint 3
+      </Menu.Item>
+      <Menu.Item key="5" >
+        Mint 5
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <div className="App">
@@ -330,20 +365,14 @@ function App(props) {
                     <p>5280 available</p>
                     <div>
                       {address ? (
-                        <Button class="Button"
+                        <Dropdown.Button class="Button"
                           type={"primary"}
-                          onClick={async () => {
-                            const proof = getProof(address)
-                            const testAddr = '0x70997970c51812dc3a010c7d01b50e0d17dc79c8'
-                            const demo = hashToken(testAddr)
-                            const demoProof = getProof(testAddr)
-                            console.log({demo, demoProof})
-
-                            tx(writeContracts.Bufficorn.mintPresale(1, proof, { value: priceToPremint}));
-                          }}
+                          overlay={premintMenu}
+                          onClick={async () => premint(address, 1)
+                          }
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToPremint)).toFixed(4)}
-                        </Button>
+                        </Dropdown.Button>
                       ) : (
                         <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                           connect to mint
@@ -357,14 +386,15 @@ function App(props) {
                     <p>Remaining Bufficorns up to 10000 total supply</p>
                     <div>
                       {address ? (
-                        <Button
+                        <Dropdown.Button
                           type={"primary"}
+                          overlay={publicMintMenu}
                           onClick={async () => {
                             tx(writeContracts.Bufficorn.mintOpensale(1, { value: priceToMint}));
                           }}
                         >
                           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-                        </Button>
+                        </Dropdown.Button>
                       ) : (
                         <Button key="loginbutton" type="primary" onClick={loadWeb3Modal}>
                           connect to mint
