@@ -9,6 +9,7 @@ import 'base64-sol/base64.sol';
 
 import './HexStrings.sol';
 import './ToColor.sol';
+
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two

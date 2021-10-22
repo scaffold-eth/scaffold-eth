@@ -13,7 +13,7 @@ import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
 //import assets from "./assets.js";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, TokenBalance } from "./components";
 import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -28,7 +28,6 @@ import {
   useUserProvider,
 } from "./hooks";
 import { BlockPicker } from 'react-color'
-
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -179,12 +178,15 @@ function App(props) {
   ]);*/
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-  console.log("🤗 balance:", balance);
+  const balance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+  //console.log("🟢 Loogie balance:", balance);
+
+  const tokenBalance = useContractReader(readContracts, "YourToken", "TokenBalanceOf", [address]);
+  //console.log("💦 Flemjamin balance:", parseInt(tokenBalance));
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
-  console.log("📟 Transfer events:", transferEvents);
+  const transferEvents = useEventListener(readContracts, "YourToken", "Transfer", localProvider, 1);
+  //console.log("📟 Transfer events:", transferEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
@@ -197,10 +199,10 @@ function App(props) {
       const collectibleUpdate = [];
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("Getting token index", tokenIndex);
+          const tokenId = await readContracts.YourToken.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.YourToken.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
 /*
@@ -432,7 +434,7 @@ function App(props) {
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner?(
                 <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.YourCollectible.mintItem() )
+                  const result = tx( writeContracts.YourToken.mintItem() )
                 }}>MINT</Button>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
@@ -458,7 +460,7 @@ function App(props) {
                           </div>
                         }
                       >
-                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address)+"/"+item.id} target="_blank">
+                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.YourToken && readContracts.YourToken.address)+"/"+item.id} target="_blank">
                         <img src={item.image} />
                         </a>
                         <div>{item.description}</div>
@@ -485,10 +487,18 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.YourToken.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
+                        </Button>
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.YourToken.burnLoogie(id));
+                          }}
+                        >
+                          Burn
                         </Button>
                       </div>
                     </List.Item>
@@ -497,27 +507,28 @@ function App(props) {
               />
             </div>
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
-
+              <div style={{margin:'12px'}}>
               🛠 built with <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a>
-
-              🍴 <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
-
+              </div >
+              <div>
+              🍴 <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">Fork this repo</a> and build a burnable SVG NFT!
+              </div>
             </div>
           </Route>
+
           <Route path="/debug">
-
             <div style={{padding:32}}>
-              <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
+              <Address value={readContracts && readContracts.YourToken && readContracts.YourToken.address} />
             </div>
-
             <Contract
-              name="YourCollectible"
+              name="YourToken"
               signer={userProvider.getSigner()}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
             />
           </Route>
+
         </Switch>
       </BrowserRouter>
 
@@ -537,6 +548,9 @@ function App(props) {
           blockExplorer={blockExplorer}
           isSigner={isSigner}
         />
+        <div style={{margin:'25px'}}>
+        Balance:{" "+(parseInt(tokenBalance)/10**18)+" FLEM"}
+        </div>
         {faucetHint}
       </div>
 
