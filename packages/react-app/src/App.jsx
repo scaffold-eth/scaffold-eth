@@ -548,8 +548,8 @@ function App(props) {
           blockExplorer={blockExplorer}
           isSigner={isSigner}
         />
-        <div style={{margin:'25px'}}>
-        Balance:{" "+(parseInt(tokenBalance)/10**18)+" FLEM"}
+        <div style={{margin:'25px', fontSize:'20px'}}>
+        Balance:{" "+(parseInt(tokenBalance)/10**18)+" FLEM 💦"}
         </div>
         {faucetHint}
       </div>
