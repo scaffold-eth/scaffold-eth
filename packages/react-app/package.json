@@ -46,12 +46,22 @@
     "qrcode.react": "^1.0.0",
     "react": "^17.0.2",
     "react-blockies": "^1.4.1",
+    "react-color": "^2.19.3",
     "react-css-theme-switcher": "^0.2.2",
+<<<<<<< HEAD
+    "react-dom": "^16.14.0",
+    "react-json-view": "^1.21.1",
+    "react-qr-reader": "^2.2.1",
+    "react-router-dom": "^5.2.0",
+    "react-scripts": "^3.4.3",
+    "react-stack-grid": "^0.7.1",
+=======
     "react-dom": "^17.0.2",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
     "walletlink": "^2.1.5",
+>>>>>>> master
     "web3modal": "^1.9.1"
   },
   "devDependencies": {

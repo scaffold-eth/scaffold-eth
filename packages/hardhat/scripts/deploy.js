@@ -5,6 +5,10 @@ const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
 
+<<<<<<< HEAD
+
+const main = async () => {
+=======
 /*
 
  _______ _________ _______  _______
@@ -17,6 +21,7 @@ const R = require("ramda");
 \_______)   )_(   (_______)|/
 
 This deploy script is no longer in use, but is left for reference purposes!
+>>>>>>> master
 
 scaffold-eth now uses hardhat-deploy to manage deployments, see the /deploy folder
 And learn more here: https://www.npmjs.com/package/hardhat-deploy
@@ -26,9 +31,28 @@ And learn more here: https://www.npmjs.com/package/hardhat-deploy
 const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
+<<<<<<< HEAD
+  // read in all the assets to get their IPFS hash...
+  /*let uploadedAssets = JSON.parse(fs.readFileSync("./uploaded.json"))
+  let bytes32Array = []
+  for(let a in uploadedAssets){
+    console.log(" 🏷 IPFS:",a)
+    let bytes32 = utils.id(a)
+    console.log(" #️⃣ hashed:",bytes32)
+    bytes32Array.push(bytes32)
+  }
+  console.log(" \n")*/
+
+  // deploy the contract with all the artworks forSale
+  const yourCollectible = await deploy("YourCollectible"/*,[ bytes32Array ]*/) // <-- add in constructor args like line 19 vvvv
+  const yourToken = await deploy("YourToken"/*,[ bytes32Array ]*/)
+
+  yourCollectible.transferOwnership("0x9E67029403675Ee18777Ed38F9C1C5c75F7B34f2") //powvt.eth
+=======
   const yourContract = await deploy("YourContract"); // <-- add in constructor args like line 19 vvvv
   // use for local token bridging
   // const mockToken = await deploy("MockERC20") // <-- add in constructor args like line 19 vvvv
+>>>>>>> master
 
   //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   //const secondContract = await deploy("SecondContract")
