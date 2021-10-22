@@ -17,6 +17,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 /*
       📡 This is where you configure your deploy configuration for 🏗 scaffold-eth
 
+      You will have to run `yarn generate` to create a mnemonic for a deployer account
+      otherwise it will use default account 0 of hardhat node.
+
       check out `packages/scripts/deploy.js` to customize your deployment
 
       out of the box it will auto deploy anything in the `contracts` folder and named *.sol
@@ -57,10 +60,11 @@ module.exports = {
   },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
-  // 1. An Infura key (or similar)
+  // 1. An Infura key (or similar, ie: Moralis, Alchemy)
   // 2. A private key for the deployer
-  // DON'T PUSH THESE HERE!!!
+  // DON'T PUSH THESE HERE (PRIVATE KEYS)!!!
   // An `example.env` has been provided in the Hardhat root. Copy it and rename it `.env`
+  // and make sure to put your sensitive information here.
   // Follow the directions, and uncomment the network you wish to deploy to.
 
   networks: {

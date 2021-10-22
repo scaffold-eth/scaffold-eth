@@ -55,6 +55,7 @@ export default function Contract({
   blockExplorer,
   chainId,
   contractConfig,
+  useBurner,
 }) {
   const contracts = useContractLoader(provider, contractConfig, chainId);
   let contract;
@@ -126,6 +127,8 @@ export default function Contract({
                 mainnetProvider={provider}
                 price={price}
                 blockExplorer={blockExplorer}
+                burner={burner}
+                isContract={true}
               />
               {account}
             </div>

@@ -64,18 +64,18 @@ export default function Faucet(props) {
 
   const updateAddress = useCallback(
     async newValue => {
-      if (typeof newValue !== "undefined" && utils.isAddress(newValue)) {
-        let newAddress = newValue;
-        // if (newAddress.indexOf(".eth") > 0 || newAddress.indexOf(".xyz") > 0) {
-        //   try {
-        //     const possibleAddress = await ensProvider.resolveName(newAddress);
-        //     if (possibleAddress) {
-        //       newAddress = possibleAddress;
-        //     }
-        //     // eslint-disable-next-line no-empty
-        //   } catch (e) { }
-        // }
-        setAddress(newAddress);
+      if (typeof newValue !== "undefined") {
+        let address = newValue;
+        if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
+          try {
+            const possibleAddress = await props.ensProvider.resolveName(address);
+            if (possibleAddress) {
+              address = possibleAddress;
+            }
+            // eslint-disable-next-line no-empty
+          } catch (e) {}
+        }
+        setAddress(address);
       }
     },
     [ensProvider, onChange],

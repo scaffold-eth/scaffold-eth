@@ -168,6 +168,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key="goButton">
       <Input
+        autoComplete="off"
         onChange={e => setReturnValue(e.target.value)}
         defaultValue=""
         bordered={false}
