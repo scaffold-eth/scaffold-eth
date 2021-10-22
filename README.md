@@ -40,7 +40,6 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-<<<<<<< HEAD
 cd flemjamins-and-burnable-loogies
 
 yarn chain
