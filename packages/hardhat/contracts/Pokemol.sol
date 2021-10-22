@@ -128,13 +128,6 @@ contract Pokemol is ERC721Enumerable, Ownable {
     EXTERNAL MINTING FUNCTIONS
     *****************/
 
-    /// @notice Mint public by anyone
-    /// @dev Public sale state must be enabled
-    /// @param _quantity How many tokens to buy - up to 20 at a time
-    function mintOpensale(uint256 _quantity) external payable {
-        require(contractState[ContractState.Public], "!round");
-        _purchase(_quantity, PUBLIC_LIMIT, PUBLIC_PRICE);
-    }
 
     /// @notice Mint special reserve by owner
     function mintDemo() external {
@@ -165,23 +158,17 @@ contract Pokemol is ERC721Enumerable, Ownable {
         view
         returns (string memory)
     {
-        address _address = _owners[_tokenId];
-        Member storage _member = members[_address];
+        // address _address = _owners[_tokenId];
+        // Member storage _member = members[_address];
 
         string memory _nftName = string(
-            abi.encodePacked("Baal ", name)
+            abi.encodePacked("Pokemol ")
         );
 
         string memory _baalMetadataSVGs =
                 string(abi.encodePacked(
-                    '<text dominant-baseline="middle" text-anchor="middle" fill="white" x="50%" y="20px">',
-                    Strings.toString(balanceOf[_address]),
-                    ' Shares',
-                    "</text>",
-                    '<text dominant-baseline="middle" text-anchor="middle" fill="white" x="50%" y="40px">',
-                    Strings.toString(_member.loot),
-                    ' Loot',
-                    "</text>"
+                    '<image href="https://gateway.pinata.cloud/ipfs/QmWen79eThj9GgwCVt9kw8GuvGPXEReFESE6u9JL9PdpnN/Gittron__Arms--1.svg"/>',
+                    '<image href="https://gateway.pinata.cloud/ipfs/QmWen79eThj9GgwCVt9kw8GuvGPXEReFESE6u9JL9PdpnN/Gittron__Legs--4.svg"/>'
                 ));
 
         bytes memory svg = abi.encodePacked(
@@ -220,11 +207,11 @@ contract Pokemol is ERC721Enumerable, Ownable {
     function tokenURI(uint256 _tokenId)
         public
         view
-        virtual
+        override
         returns (string memory)
     {
         require(
-            _owners[_tokenId] != address(0),
+            _exists(_tokenId),
             "ERC721Metadata: URI query for nonexistent token"
         );
         return string(_constructTokenURI(_tokenId));
