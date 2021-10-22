@@ -7,6 +7,7 @@ require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
 
 require("hardhat-deploy");
+require("hardhat-gas-reporter");
 
 require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
@@ -47,6 +48,16 @@ function mnemonic() {
 
 module.exports = {
   defaultNetwork,
+
+  /**
+   * gas reporter configuration that let's you know
+   * an estimate of gas for contract deployments and function calls
+   * More here: https://hardhat.org/plugins/hardhat-gas-reporter.html
+   */
+  gasReporter: {
+    currency: "USD",
+    coinmarketcap: process.env.COINMARKETCAP || null,
+  },
 
   // if you want to deploy to a testnet, mainnet, or xdai, you will need to configure:
   // 1. An Infura key (or similar, ie: Moralis, Alchemy)
