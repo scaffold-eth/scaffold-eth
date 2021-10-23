@@ -1,9 +1,8 @@
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
+import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
-import { Address, Balance } from "../components";
-import { useEventListener } from "eth-hooks/events/useEventListener";
+import { Address, Balance, Events } from "../components";
 
 export default function ExampleUI({
   purpose,
@@ -17,9 +16,6 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
-
-  // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   return (
     <div>
@@ -157,21 +153,14 @@ export default function ExampleUI({
         📑 Maybe display a list of events?
           (uncomment the event and emit line in YourContract.sol! )
       */}
-      <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-        <h2>Events:</h2>
-        <List
-          bordered
-          dataSource={setPurposeEvents}
-          renderItem={item => {
-            return (
-              <List.Item key={item.blockNumber + "_" + item.args.sender + "_" + item.args.purpose}>
-                <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-                {item.args[1]}
-              </List.Item>
-            );
-          }}
-        />
-      </div>
+      <Events
+        contracts={readContracts}
+        contractName="YourContract"
+        eventName="SetPurpose"
+        localProvider={localProvider}
+        mainnetProvider={mainnetProvider}
+        startBlock={1}
+      />
 
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>
