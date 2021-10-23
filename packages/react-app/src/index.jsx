@@ -12,8 +12,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const subgraphUri =
-  "https://gateway.thegraph.com/api/a6ce8895a12d85fffda1fa523b8a8c9d/subgraphs/id/0x60ca282757ba67f3adbf21f3ba2ebe4ab3eb01fc-0";
+const subgraphUri = "https://api.thegraph.com/subgraphs/name/azf20/burny-boys";
 
 const client = new ApolloClient({
   uri: subgraphUri,

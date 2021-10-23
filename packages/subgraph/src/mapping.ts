@@ -37,7 +37,7 @@ export function handleNewToken(event: NewToken): void {
       latest.minBaseFeeBurnyBoy = burnyId;
     }
 
-    if (latest.number != event.block.number) {
+    if (latest.number !== event.block.number) {
       latest.burnyBoyCount = BigInt.fromI32(1);
     } else {
       latest.burnyBoyCount = latest.burnyBoyCount + BigInt.fromI32(1);
