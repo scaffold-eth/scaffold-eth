@@ -23,6 +23,7 @@ import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import { Address } from "./components";
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -255,6 +256,9 @@ function App(props) {
 
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+
+  const settledEvents = useEventListener(readContracts, "SilentAuction", "AuctionSettled", localProvider, 1);
+  console.log("settledEvents", settledEvents);
 
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
 
@@ -715,6 +719,22 @@ function App(props) {
               readContracts={readContracts}
               tx={tx}
             ></Auction>
+            <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <h2>Events:</h2>
+              <List
+                bordered
+                dataSource={settledEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + "_" + item.blockHash}>
+                      Winner:
+                      <Address address={item.args[3]} ensProvider={mainnetProvider} fontSize={16} />
+                      {ethers.utils.formatEther(item.args[2])}
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           </Route>
           <Route path="/hints">
             <Hints
@@ -902,7 +922,6 @@ function Auction(props) {
   const [auction, setAuction] = useState(null);
   const [auctionEnded, setAuctionEnded] = useState(false);
   const [endTime, setEndTime] = useState(null);
-  const [highestBid, setHighestBid] = useState(null);
 
   useOnBlock(props.mainnetProvider, () => {
     const getAuction = async () => {
@@ -923,13 +942,6 @@ function Auction(props) {
           const jsonManifest = JSON.parse(jsonManifestString);
           console.log("jsonManifest", jsonManifest);
           setAuction({ id: auction.tokenId, uri: tokenURI, owner: props.address, ...jsonManifest });
-        } catch (e) {
-          console.log(e);
-        }
-
-        try {
-          const highBid = await props.readContracts.SilentAuction.currentBid();
-          setHighestBid(ethers.utils.formatEther(highBid));
         } catch (e) {
           console.log(e);
         }
@@ -1003,7 +1015,8 @@ function Auction(props) {
             type="primary"
             disabled={auctionEnded || !amountToBid}
             onClick={async () => {
-              await props.tx(props.writeContracts.SilentAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
+              const result = await props.tx(props.writeContracts.SilentAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
+              setAmountToBid(null);
             }}
           >
             Bid!
