@@ -84,7 +84,12 @@ contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
         (bool success, ) = owner().call{value: auction.amount}("");
         require(success, "Failed to transfer tokens");
 
-        IERC721(auction.nft).safeTransferFrom(address(this), auction.bidder, auction.tokenId);
+        // Transfer back to owner if there were no bids
+        if (auction.bidder != address(0)) {
+            IERC721(auction.nft).safeTransferFrom(address(this), auction.bidder, auction.tokenId);
+        } else {
+            IERC721(auction.nft).safeTransferFrom(address(this), owner(), auction.tokenId);
+        }
 
         emit AuctionSettled(auction.nft, auction.tokenId, auction.amount, auction.bidder);
     }
