@@ -963,6 +963,10 @@ function Auction(props) {
             <img src={auction.image} />
           </List.Item>
         </Card>
+        <div>
+          <span style={{marginRight: '10px'}}>{auction.description}</span>
+          <span>{auction.name}</span>
+        </div>
         <div style={{margin: '10px'}}>
           <Input style={{width: '100px', marginRight: '10px'}} value={amountToBid} onChange={e => setAmountToBid(e.target.value)} placeholder="eth" />
           <Button
