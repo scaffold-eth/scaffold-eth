@@ -3,10 +3,10 @@ import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
 import { Address, Balance } from "../components";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 
 export default function ExampleUI({
   purpose,
-  setPurposeEvents,
   address,
   mainnetProvider,
   localProvider,
@@ -17,6 +17,9 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+
+  // 📟 Listen for broadcast events
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   return (
     <div>
