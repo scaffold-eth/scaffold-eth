@@ -8,6 +8,7 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "./VerifySignature.sol";
 
 contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
+    bool public auctionInProgress;
 
     struct Auction {
         address nft;
@@ -29,6 +30,8 @@ contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
 
     Auction public auction;
 
+    event AuctionSettled(address _nft, uint256 _tokenId, uint256 _amount, address _bidder);
+
     function currentAuction() public view returns (AuctionView memory) {
         return AuctionView({
             nft: auction.nft,
@@ -38,12 +41,10 @@ contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
         });
     }
 
-    function currentBid() public view returns (uint256) {
-        return auction.amount;
-    }
-
     function createAuction(address nft, uint256 tokenId) public onlyOwner {
-        require(!auction.settled, "Auction already in progress");
+        require(auctionInProgress == false, "Auction already in progress");
+
+        auctionInProgress = true;
 
         auction = Auction({
             nft: nft,
@@ -79,11 +80,13 @@ contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
         require(!auction.settled, "Auction has already been settled");
 
         auction.settled = true;
-
+        auctionInProgress = false;
         (bool success, ) = owner().call{value: auction.amount}("");
         require(success, "Failed to transfer tokens");
 
         IERC721(auction.nft).safeTransferFrom(address(this), auction.bidder, auction.tokenId);
+
+        emit AuctionSettled(auction.nft, auction.tokenId, auction.amount, auction.bidder);
     }
 
     function onERC721Received(
