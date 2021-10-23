@@ -258,154 +258,109 @@ function App(props) {
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   const settledEvents = useEventListener(readContracts, "SilentAuction", "AuctionSettled", localProvider, 1);
-  console.log("settledEvents", settledEvents);
 
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  // const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
 
-  const [bids, setBids] = useState([]);
-  useOnBlock(mainnetProvider, () => {
-    const getBids = async () => {
-      if (!auction) {
-        return;
-      }
+  // const [bids, setBids] = useState([]);
+  // useOnBlock(mainnetProvider, () => {
+  //   const getBids = async () => {
+  //     if (!auction) {
+  //       return;
+  //     }
 
-      try {
-        const data = await fetch(`http://localhost:8001/?tokenId=${auction.id._hex}`).then(res => res.json());
-        console.log(data);
+  //     try {
+  //       const data = await fetch(`http://localhost:8001/?tokenId=${auction.id._hex}`).then(res => res.json());
+  //       console.log(data);
 
-        const temp = [];
-        const auctionBids = data[auction.id._hex];
-        if (!auctionBids) {
-          return;
-        }
+  //       const temp = [];
+  //       const auctionBids = data[auction.id._hex];
+  //       if (!auctionBids) {
+  //         return;
+  //       }
 
-        Object.keys(auctionBids).forEach(key => {
-          temp.push(auctionBids[key]);
-        });
-        setBids(temp);
-        console.log('bids:', bids);
-      } catch (e) {
-        console.log(e);
-        setBids({});
-      }
-    };
+  //       Object.keys(auctionBids).forEach(key => {
+  //         temp.push(auctionBids[key]);
+  //       });
+  //       setBids(temp);
+  //       console.log('bids:', bids);
+  //     } catch (e) {
+  //       console.log(e);
+  //       setBids({});
+  //     }
+  //   };
 
-    getBids();
-  });
+  //   getBids();
+  // });
 
-  const [auction, setAuction] = useState("");
-  const [owner, setOwner] = useState(false);
-  useEffect(() => {
-    const getOwner = async () => {
-      const owner = await readContracts.SilentAuction?.owner();
-      setOwner(owner === address);
-    }
-    getOwner();
-  }, [address, balance]);
+  // const [auction, setAuction] = useState("");
+  // const [owner, setOwner] = useState(false);
+  // useEffect(() => {
+  //   const getOwner = async () => {
+  //     const owner = await readContracts.SilentAuction?.owner();
+  //     setOwner(owner === address);
+  //   }
+  //   getOwner();
+  // }, [address, balance]);
 
-  const [currentAuction, setCurrentAuction] = useState();
-  const [auctionEnded, setAuctionEnded] = useState(false);
+  // const [auctionEnded, setAuctionEnded] = useState(false);
 
-  useEffect(() => {
-    const getAuction = async () => {
-      const auction = await readContracts.SilentAuction?.currentAuction();
-      setCurrentAuction(auction);
-      const endTime = new Date(auction?.endTime * 1000);
-      setAuctionEnded(endTime < Date.now());
-      console.log('ended', auctionEnded);
-    }
-    getAuction();
-  }, [address, balance]);
+  // useEffect(() => {
+  //   const getAuction = async () => {
+  //     const auction = await readContracts.SilentAuction?.currentAuction();
+  //     setCurrentAuction(auction);
+  //     const endTime = new Date(auction?.endTime * 1000);
+  //     setAuctionEnded(endTime < Date.now());
+  //     console.log('ended', auctionEnded);
+  //   }
+  //   getAuction();
+  // }, [address, balance]);
 
-  useEffect(() => {
-    const getAuctionView = async () => {
-      if (owner) {
-        return;
-      }
+  // useEffect(() => {
+  //   const getAuctionView = async () => {
+  //     if (owner) {
+  //       return;
+  //     }
 
-      const auction = await readContracts.SilentAuction?.currentAuction();
-      console.log(auction);
-      if (auction?.inProgress) {
-        const tokenURI = await readContracts.YourCollectible.tokenURI(auction.tokenId);
-        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
-        try {
-          const jsonManifest = JSON.parse(jsonManifestString);
-          console.log("jsonManifest", jsonManifest);
-          setAuction({ id: auction.tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-    }
-    getAuctionView();
-  }, [address, balance])
+  //     const auction = await readContracts.SilentAuction?.currentAuction();
+  //     console.log(auction);
+  //     if (auction?.inProgress) {
+  //       const tokenURI = await readContracts.YourCollectible.tokenURI(auction.tokenId);
+  //       const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+  //       try {
+  //         const jsonManifest = JSON.parse(jsonManifestString);
+  //         console.log("jsonManifest", jsonManifest);
+  //         setAuction({ id: auction.tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
+  //     }
+  //   }
+  //   getAuctionView();
+  // }, [address, balance])
 
-  const signData = async (tokenId, amount) => {
-    const bidAmount = ethers.utils.parseEther(amount);
-    let hash = await ethers.utils.solidityKeccak256(
-      ['uint256', 'address', 'uint256'],
-      [tokenId, address, bidAmount]
-    );
-    const signature = await userProviderAndSigner.provider.send('personal_sign', [hash, address]);
-    console.log('signature', signature);
+  // const signData = async (tokenId, amount) => {
+  //   const bidAmount = ethers.utils.parseEther(amount);
+  //   let hash = await ethers.utils.solidityKeccak256(
+  //     ['uint256', 'address', 'uint256'],
+  //     [tokenId, address, bidAmount]
+  //   );
+  //   const signature = await userProviderAndSigner.provider.send('personal_sign', [hash, address]);
+  //   console.log('signature', signature);
 
-    await fetch('http://localhost:8001/', {
-      method: 'POST',
-      mode: "cors",
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify({
-        tokenId,
-        signature,
-        bidder: address,
-        bidAmount
-      })
-    });
-  }
-
-  const [amountToBid, setAmountToBid] = useState(null);
-
-  let auctionView = "";
-  if (!owner && auction?.id) {
-    auctionView = (
-      <>
-      <h1>BUY ME YO</h1>
-        <Card style={{width: '200px', heigth: '200px'}}>
-          <List.Item key={auction.uri}>
-            <img src={auction.image} />
-          </List.Item>
-        </Card>
-        <Input value={amountToBid} onChange={e => setAmountToBid(e.target.value)} />
-        <Button
-          onClick={() => signData(auction.id, amountToBid)}
-        >
-          Bid!
-        </Button>
-      </>
-    );
-  } else if(owner && auction?.id) {
-    auctionView = (
-      <>
-        <List
-          bordered
-          dataSource={bids}
-            renderItem={bid => {
-              return (
-                <Button
-                  onClick={() => {
-                    tx(writeContracts.SilentAuction.completeAuction(readContracts.YourCollectible.address, bid.tokenId, bid.bidder, bid.bidAmount, bid.signature))
-                  }}
-                >Accept!</Button>
-              )
-            }
-          }
-        >
-
-        </List>
-      </>
-    );
-  }
+  //   await fetch('http://localhost:8001/', {
+  //     method: 'POST',
+  //     mode: "cors",
+  //     headers: {
+  //       'Content-Type': 'application/json'
+  //     },
+  //     body: JSON.stringify({
+  //       tokenId,
+  //       signature,
+  //       bidder: address,
+  //       bidAmount
+  //     })
+  //   });
+  // }
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -611,17 +566,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Auction
             </Link>
           </Menu.Item>
-          <Menu.Item key="/auction">
+          <Menu.Item key="/admin">
             <Link
               onClick={() => {
-                setRoute("/auction");
+                setRoute("/admin");
               }}
-              to="/auction"
+              to="/admin"
             >
-              Auction
+              Admin
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -667,14 +622,12 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/admin">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
-            {auctionView}
 
             <div style={{display: 'flex', flexDirection: 'column'}}>
               <MintedItems
@@ -711,7 +664,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/auction">
+          <Route path="/">
             <Auction
               address={address}
               mainnetProvider={mainnetProvider}
@@ -972,6 +925,7 @@ function Auction(props) {
       </Button>
     );
   }
+
   let auctionView = "";
   if (auctionEnded) {
     auctionView = (
