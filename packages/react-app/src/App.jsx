@@ -22,13 +22,23 @@ import {
   useOnBlock,
   usePoller,
   useUserSigner,
+  useBurnerSigner,
 } from "./hooks";
-import { ViewBurnyBoy, BurnyStats, BurnyBoyList } from "./views";
+import { ViewBurnyBoy, BurnyBoyList } from "./views";
 import { gql, useQuery } from "@apollo/client";
+import ImageUploading from "react-images-uploading";
+
+import { NFTStorage, File } from "nft.storage";
+
+const { RelayProvider } = require("@opengsn/provider");
+const Web3HttpProvider = require("web3-providers-http");
+
+const apiKey = process.env.REACT_APP_NFT_STORAGE;
+const client = new NFTStorage({ token: apiKey });
 
 const { ethers } = require("ethers");
 
-const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 const DEBUG = true;
 const NETWORKCHECK = true;
@@ -123,6 +133,33 @@ function App(props) {
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
   const userSigner = useUserSigner(injectedProvider, localProvider);
+  const burnerSigner = useBurnerSigner(localProvider);
+  const [burnerGsnSigner, setBurnerGsnSigner] = useState();
+
+  let httpProvider = new Web3HttpProvider(localProviderUrl);
+
+  const gsnConfig = {
+    paymasterAddress: "0xA6e10aA9B038c9Cddea24D2ae77eC3cE38a0c016", //"0xdA78a11FD57aF7be2eDD804840eA7f4c2A38801d", //"0x9e59Ea5333cD4f402dAc320a04fafA023fe3810D",
+    loggerConfiguration: {
+      logLevel: "debug",
+      // loggerUrl: 'logger.opengsn.org',
+    },
+  };
+
+  useEffect(() => {
+    console.log("check");
+    const updateGsnSigner = async () => {
+      let burnerAddress = await burnerSigner.getAddress();
+      // Adding a burner meta provider
+      const burnerGsnProvider = await RelayProvider.newProvider({ provider: httpProvider, config: gsnConfig }).init();
+      burnerGsnProvider.addAccount(burnerSigner.privateKey);
+      const burnerGsnWeb3Provider = new ethers.providers.Web3Provider(burnerGsnProvider);
+      const newBurnerGsnSigner = burnerGsnWeb3Provider.getSigner(burnerAddress);
+      console.log(newBurnerGsnSigner);
+      setBurnerGsnSigner(newBurnerGsnSigner);
+    };
+    if (burnerSigner) updateGsnSigner();
+  }, [burnerSigner]);
 
   useEffect(() => {
     async function getAddress() {
@@ -156,10 +193,7 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  const totalSupply = useContractReader(readContracts, "BurnNFT", "totalSupply");
-  const tokenPrice = useContractReader(readContracts, "BurnNFT", "price", 10000);
-  const tokenLimit = useContractReader(readContracts, "BurnNFT", "limit", 10000);
-  const beneficiary = useContractReader(readContracts, "BurnNFT", "beneficiary", 10000);
+  const totalSupply = useContractReader(readContracts, "NataNFT", "totalSupply");
 
   const [latestBlock, setLatestBlock] = useState();
   usePoller(async () => {
@@ -172,71 +206,22 @@ function App(props) {
   const STARTS_WITH = "data:application/json,";
   //let token1Image = token1 && JSON.parse(token1.slice(STARTS_WITH.length));
 
-  const [burnyBoyFilters, setBurnyBoyFilters] = useState({});
+  const [burnyBoyFilters, setBurnyBoyFilters] = useState({ owner_not: "0x0000000000000000000000000000000000000000" });
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
-  /*
-  useEffect(() => {
-    let active = true;
-    const updateBurnyBoys = async () => {
-      const tokenUpdate = [];
-      let starter = 5;
-      for (let tokenIndex = starter; tokenIndex > 0 && tokenIndex > starter - 5; tokenIndex--) {
-        try {
-          if (active) {
-            console.log("getting", tokenIndex);
-            const tokenURI = await readContracts.BurnNFT.tokenURI(tokenIndex);
-            const STARTS_WITH = "data:application/json;base64,";
-            let tokenURIJSON = JSON.parse(atob(tokenURI.slice(STARTS_WITH.length)));
-            tokenUpdate.push({ id: tokenIndex, uri: tokenURIJSON });
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setBurnyBoys(tokenUpdate);
-      return () => {
-        active = false;
-      };
-    };
-    updateBurnyBoys();
-  }, [totalSupply && totalSupply.toString()]);
-  */
+  const [images, setImages] = useState([]);
 
-  const BURNY_STATS_GQL = gql`
-    query ($filters: BurnyBoy_filter, $boyCount: Int!) {
-      block(id: "latest") {
+  const onChange = (imageList, addUpdateIndex) => {
+    // data for submit
+    console.log(imageList, addUpdateIndex);
+    setImages(imageList);
+  };
+
+  const NATA_GQL = gql`
+    query ($filters: Nata_filter, $boyCount: Int!) {
+      natas(first: $boyCount, orderBy: createdAt, orderDirection: desc, where: $filters) {
         id
-        number
-        baseFee
-        timestamp
-        burnyBoyCount
-        burnyBoyTotal
-        minterTotal
-        minBaseFee
-        maxBaseFee
-        minBaseFeeBurnyBoy {
-          id
-          baseFee
-          createdAt
-          minter {
-            id
-          }
-          owner
-        }
-        maxBaseFeeBurnyBoy {
-          id
-          baseFee
-          createdAt
-          minter {
-            id
-          }
-          owner
-        }
-      }
-      burnyBoys(first: $boyCount, orderBy: createdAt, orderDirection: desc, where: $filters) {
-        id
-        baseFee
+        ipfsHash
         createdAt
         minter {
           id
@@ -245,77 +230,15 @@ function App(props) {
       }
     }
   `;
-  const { loading, data } = useQuery(BURNY_STATS_GQL, {
+  const { loading, data, error } = useQuery(NATA_GQL, {
     pollInterval: 13000,
     variables: { boyCount: 1000, filters: burnyBoyFilters },
   });
-
-  let networkDisplay = "";
-  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
-    const networkSelected = NETWORK(selectedChainId);
-    const networkLocal = NETWORK(localChainId);
-    if (selectedChainId === 1337 && localChainId === 31337) {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network ID"
-            description={
-              <div>
-                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
-                HardHat.
-                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    } else {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network"
-            description={
-              <div>
-                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <Button
-                  onClick={async () => {
-                    const ethereum = window.ethereum;
-                    const data = [
-                      {
-                        chainId: "0x" + targetNetwork.chainId.toString(16),
-                        chainName: targetNetwork.name,
-                        nativeCurrency: targetNetwork.nativeCurrency,
-                        rpcUrls: [targetNetwork.rpcUrl],
-                        blockExplorerUrls: [targetNetwork.blockExplorer],
-                      },
-                    ];
-                    console.log("data", data);
-                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
-                    if (tx) {
-                      console.log(tx);
-                    }
-                  }}
-                >
-                  <b>{networkLocal && networkLocal.name}</b>
-                </Button>
-                .
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    }
-  } else {
-    networkDisplay = (
-      <div style={{ zIndex: 0, position: "absolute", right: 15, top: 40, padding: 16, color: "white" }}>
-        {targetNetwork.name}
-      </div>
-    );
-  }
+  let networkDisplay = (
+    <div style={{ zIndex: 0, position: "absolute", right: 15, top: 40, padding: 16, color: "white" }}>
+      {targetNetwork.name}
+    </div>
+  );
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
@@ -359,34 +282,19 @@ function App(props) {
             setRoute("/");
           }}
           to="/"
-        >{`🔥 Burny Boys 🔥`}</Link>
+        >{`Proof de Nata`}</Link>
       </Typography.Title>
       <p>
-        <a href={"https://azfuller20.medium.com/burny-boys-so-hot-right-now-f16482c5f474"} target="_blank">
+        <a href={"https://azf.notion.site/Proof-de-nata-6cc8cd8afa504bb8a5fda5b5f1761973"} target="_blank">
           {"About"}
         </a>
         <span>{" / "}</span>
         <a
-          href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.BurnNFT.address}
+          href={readContracts && targetNetwork.blockExplorer + "address/" + readContracts.NataNFT.address}
           target="_blank"
         >
           {"Contract"}
         </a>
-        <span>{" / "}</span>
-        <a
-          href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/collection/burnyboy`}
-          target="_blank"
-        >
-          {"OpenSea"}
-        </a>
-        {address && (
-          <>
-            <span>{" / "}</span>
-            <Link to={`/holdings/${address}`}>{"My Burnys"}</Link>
-          </>
-        )}
-        <span>{" / "}</span>
-        <Link to={`/stats`}>{"Stats"}</Link>
       </p>
     </>
   );
@@ -399,40 +307,83 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             {header}
-            <Typography.Title level={2}>{`Latest baseFee: ${
-              latestBlock ? Number(ethers.utils.formatUnits(latestBlock.baseFeePerGas, 9)).toFixed(3) : "..."
-            } Gwei`}</Typography.Title>
             {address ? (
-              <Button
-                style={{ margin: 8, fontSize: 24, height: 50 }}
-                type="primary"
-                size="large"
-                loading={minting}
-                disabled={
-                  !address ||
-                  price > yourLocalBalance ||
-                  (tokenLimit && totalSupply && tokenLimit.toString() == totalSupply.toString())
-                }
-                onClick={async () => {
-                  try {
-                    setMinting(true);
-                    const result = tx(
-                      writeContracts.BurnNFT.mint({
-                        value: tokenPrice,
-                        gasLimit: "140000",
-                      }),
-                    );
-                    console.log("awaiting metamask/web3 confirm result...", result);
-                    console.log(await result);
-                    setMinting(false);
-                  } catch (e) {
-                    console.log(e);
-                    setMinting(false);
-                  }
-                }}
-              >
-                {`Mint for ${tokenPrice ? ethers.utils.formatEther(tokenPrice) : "..."} ETH`}
-              </Button>
+              <>
+                <ImageUploading value={images} onChange={onChange} dataURLKey="data_url">
+                  {({
+                    imageList,
+                    onImageUpload,
+                    onImageRemoveAll,
+                    onImageUpdate,
+                    onImageRemove,
+                    isDragging,
+                    dragProps,
+                  }) => (
+                    // write your building UI
+                    <div>
+                      {imageList.length == 0 && (
+                        <Button
+                          type="primary"
+                          size="large"
+                          style={isDragging ? { color: "red" } : undefined}
+                          onClick={onImageUpload}
+                          {...dragProps}
+                        >
+                          Upload Proof de Nata
+                        </Button>
+                      )}
+                      {imageList.map((image, index) => (
+                        <div key={index} className="image-item">
+                          <img src={image["data_url"]} alt="" width="100" />
+                          <div>
+                            <Button onClick={() => onImageUpdate(index)}>Update</Button>
+                            <Button onClick={() => onImageRemove(index)}>Remove</Button>
+                          </div>
+                        </div>
+                      ))}
+                      {images.length > 0 && (
+                        <Button
+                          style={{ margin: 8, fontSize: 24, height: 50 }}
+                          type="primary"
+                          size="large"
+                          loading={minting}
+                          disabled={!address}
+                          onClick={async () => {
+                            try {
+                              setMinting(true);
+
+                              const ipfsHash = await client.storeBlob(images[0]["file"]);
+
+                              let hashToSign = ethers.utils.solidityKeccak256(
+                                ["address", "string"],
+                                [address, ipfsHash],
+                              );
+                              console.log(hashToSign);
+                              let signature = await injectedProvider.send("personal_sign", [hashToSign, address]);
+                              console.log(signature);
+                              let gsnContract = writeContracts.NataNFT.connect(burnerGsnSigner);
+                              const result = tx(
+                                gsnContract.mint(address, ipfsHash, signature, {
+                                  gasLimit: "2000000",
+                                }),
+                              );
+                              console.log("awaiting metamask/web3 confirm result...", result);
+                              console.log(await result);
+                              setMinting(false);
+                              onImageRemove(0);
+                            } catch (e) {
+                              console.log(e);
+                              setMinting(false);
+                            }
+                          }}
+                        >
+                          {`Mint`}
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                </ImageUploading>
+              </>
             ) : (
               <Button
                 key="loginbutton"
@@ -446,61 +397,40 @@ function App(props) {
                 connect to mint
               </Button>
             )}
-            <p>
-              <Typography.Text style={{ margin: 8 }}>{`${totalSupply || "..."} out of ${
-                tokenLimit || "..."
-              } minted`}</Typography.Text>
-            </p>
-            <p>
-              <a href="https://github.com/austintgriffith/scaffold-eth/tree/burny-boy" target="_blank">
-                <GithubOutlined />
-              </a>
-              <span>{" / "}</span>
-              <a href="https://twitter.com/burny_boys" target="_blank">
-                <TwitterOutlined />
-              </a>
-              <span>{" / "}</span>
-              <a href="https://buidlguidl.com/" target="_blank">
-                🏰 BuidlGuidl
-              </a>
-              <span>{" with art by "}</span>
-              <a href="https://twitter.com/tomosaito" target="_blank">
-                {"@tomosaito"}
-              </a>
-            </p>
-            <Typography.Title level={2}>Recent burny boys</Typography.Title>
+            <Typography.Title level={2} style={{ marginTop: 14 }}>
+              Recent Proof de nata
+            </Typography.Title>
             <ul style={{ padding: 0, textAlign: "center", listStyle: "none" }}>
               {data &&
-                data.burnyBoys.map((item, index) => {
+                data.natas.map((item, index) => {
                   const id = item.id;
                   if (index > 12) return;
-                  const url = generateSVG({
-                    tokenId: id,
-                    rotation: (parseInt(item.baseFee) + parseInt(id) * 30) % 360,
-                    baseFee: item.baseFee,
-                    maxBaseFee: data.block.maxBaseFee,
-                    minBaseFee: data.block.minBaseFee,
-                    owner: item.owner,
-                  });
                   return (
-                    <Link to={`/token/${id}`}>
+                    <Link to={`/token/${id}`} key={id}>
                       <LazyLoadImage
                         height={"180"}
-                        src={url} // use normal <img> attributes as props
+                        src={`https://${item.ipfsHash}.ipfs.dweb.link/`} // use normal <img> attributes as props
                       />
                     </Link>
                   );
                 })}
             </ul>
-            {address && beneficiary && address == beneficiary && (
-              <Contract
-                name="BurnNFT"
-                signer={userSigner}
-                provider={localProvider}
-                address={address}
-                blockExplorer={blockExplorer}
-              />
-            )}
+            <Contract
+              name="NataNFT"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+            />
+            <p>
+              <a href="https://github.com/austintgriffith/scaffold-eth/tree/proof-de-nata" target="_blank">
+                <GithubOutlined />
+              </a>
+              <span>{" / "}</span>
+              <a href="https://buidlguidl.com/" target="_blank">
+                🏰 BuidlGuidl
+              </a>
+            </p>
           </Route>
           <Route path="/token/:id">
             {header}
@@ -510,29 +440,6 @@ function App(props) {
               mainnetProvider={mainnetProvider}
               targetNetwork={targetNetwork}
               totalSupply={totalSupply}
-            />
-          </Route>
-          <Route path="/stats">
-            {header}
-            <BurnyStats
-              data={data}
-              loading={loading}
-              contractAddress={readContracts && readContracts.BurnNFT.address}
-              setBurnyBoyFilters={setBurnyBoyFilters}
-              mainnetProvider={mainnetProvider}
-              blockExplorer={blockExplorer}
-            />
-          </Route>
-          <Route path="/holdings/:viewAddress">
-            {header}
-            <BurnyBoyList
-              data={data}
-              burnyBoys={data && data.burnyBoys}
-              contractAddress={readContracts && readContracts.BurnNFT.address}
-              setBurnyBoyFilters={setBurnyBoyFilters}
-              mainnetProvider={mainnetProvider}
-              blockExplorer={blockExplorer}
-              search={true}
             />
           </Route>
         </Switch>

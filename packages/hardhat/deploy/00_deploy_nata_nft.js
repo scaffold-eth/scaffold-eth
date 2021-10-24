@@ -5,13 +5,12 @@ const { utils } = require("ethers");
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("BurnNFT", {
+  await deploy("NataNFT", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: [
-      1559,
-      utils.parseEther("0.01559"),
-      "0x97843608a00e2bbc75ab0C1911387E002565DEDE",
+      "0x60Ca282757BA67f3aDbF21F3ba2eBe4Ab3eb01fc", //"0x95e2D6F585d5cb45c169A12F2F6429641C632c30",
+      "0x83A54884bE4657706785D7309cf46B58FE5f6e8a", //"0x7eEae829DF28F9Ce522274D5771A6Be91d00E5ED",
     ],
     log: true,
   });
@@ -48,4 +47,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["BurnNFT"];
+module.exports.tags = ["NataNFT"];

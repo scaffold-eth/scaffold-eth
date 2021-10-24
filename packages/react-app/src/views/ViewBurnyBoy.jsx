@@ -24,7 +24,7 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
   const [tokenURI, setTokenURI] = useState();
   useEffect(() => {
     const getTokenData = async () => {
-      let rawTokenURI = await readContracts.BurnNFT.tokenURI(id);
+      let rawTokenURI = await readContracts.NataNFT.tokenURI(id);
 
       if (rawTokenURI) {
         const STARTS_WITH = "data:application/json;base64,";
@@ -37,12 +37,14 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
     if (id && readContracts && id !== fetchedId.current) getTokenData();
   }, [id, readContracts]);
 
+  console.log(tokenURI);
+
   const tokenView = tokenURI ? (
     <>
       <div>
         {id !== "1" && <Link to={`/token/${parseInt(id) - 1}`}>{"<"}</Link>}
         <span style={{ fontSize: 24, marginRight: 8 }}>{tokenURI.name}</span>
-        {id !== totalSupply.toString() && <Link to={`/token/${parseInt(id) + 1}`}>></Link>}
+        {totalSupply && id !== totalSupply.toString() && <Link to={`/token/${parseInt(id) + 1}`}>></Link>}
       </div>
       <img src={tokenURI && tokenURI.image} height="200" alt="" />
 
@@ -52,20 +54,10 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
           <Address address={tokenURI.owner} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
         </p>
         <p>
-          <a
-            href={`https://${targetNetwork.name == "rinkeby" ? `testnets.` : ""}opensea.io/assets/${
-              readContracts.BurnNFT.address
-            }/${id}`}
-            target="_blank"
-          >
-            OpenSea
-          </a>
-          <span>{` / `}</span>
-          <a href={`${blockExplorer}/token/${readContracts.BurnNFT.address}?a=${id}`} target="_blank">
-            Etherscan
+          <a href={`${blockExplorer}/token/${readContracts.NataNFT.address}/instance/${id}`} target="_blank">
+            Blockscout
           </a>
         </p>
-        <p>{tokenURI.description}</p>
         {/*<p>{item.uri.attributes[0]["value"]}</p>*/}
         {/*<img src={url} height="200" alt="" />*/}
       </div>

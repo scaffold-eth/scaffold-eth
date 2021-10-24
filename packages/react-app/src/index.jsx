@@ -12,7 +12,7 @@ const themes = {
 
 const prevTheme = window.localStorage.getItem("theme");
 
-const subgraphUri = "https://api.thegraph.com/subgraphs/name/azf20/burny-boys";
+const subgraphUri = "https://api.thegraph.com/subgraphs/name/azf20/nata";
 
 const client = new ApolloClient({
   uri: subgraphUri,

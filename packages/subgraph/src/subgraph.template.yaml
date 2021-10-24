@@ -3,24 +3,24 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: BurnyBoys
-    network: mainnet
+    name: NataNFT
+    network: rinkeby
     source:
-      address: "{{mainnet_BurnNFTAddress}}"
-      abi: BurnNFT
-      startBlock: 13062818
+      address: "{{rinkeby_NataNFTAddress}}"
+      abi: NataNFT
+      startBlock: 9518980
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Total
-        - BurnyBoy
+        - Minter
+        - Nata
       abis:
-        - name: BurnNFT
-          file: ./abis/rinkeby_BurnNFT.json
+        - name: NataNFT
+          file: ./abis/rinkeby_NataNFT.json
       eventHandlers:
-        - event: NewToken(address,uint256,uint256)
+        - event: NewToken(address,uint256,string)
           handler: handleNewToken
         - event: Transfer(indexed address,indexed address,indexed uint256)
           handler: handleTransfer
