@@ -42,9 +42,7 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
   const tokenView = tokenURI ? (
     <>
       <div>
-        {id !== "1" && <Link to={`/token/${parseInt(id) - 1}`}>{"<"}</Link>}
         <span style={{ fontSize: 24, marginRight: 8 }}>{tokenURI.name}</span>
-        {totalSupply && id !== totalSupply.toString() && <Link to={`/token/${parseInt(id) + 1}`}>></Link>}
       </div>
       <img src={tokenURI && tokenURI.image} height="200" alt="" />
 
@@ -54,8 +52,8 @@ function ViewBurnyBoy({ readContracts, blockExplorer, mainnetProvider, targetNet
           <Address address={tokenURI.owner} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={16} />
         </p>
         <p>
-          <a href={`${blockExplorer}/token/${readContracts.NataNFT.address}/instance/${id}`} target="_blank">
-            Blockscout
+          <a href={`${blockExplorer}token/${readContracts.NataNFT.address}?a=${id}`} target="_blank">
+            Etherscan
           </a>
         </p>
         {/*<p>{item.uri.attributes[0]["value"]}</p>*/}

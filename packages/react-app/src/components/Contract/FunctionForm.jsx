@@ -203,7 +203,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                   overrides.gasPrice = gasPrice;
                 }
                 // Uncomment this if you want to skip the gas estimation for each transaction
-                // overrides.gasLimit = hexlify(1200000);
+                //overrides.gasLimit = "2000000";
 
                 // console.log("Running with extras",extras)
                 const returned = await tx(contractFunction(...args, overrides));

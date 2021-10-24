@@ -147,7 +147,6 @@ function App(props) {
   };
 
   useEffect(() => {
-    console.log("check");
     const updateGsnSigner = async () => {
       let burnerAddress = await burnerSigner.getAddress();
       // Adding a burner meta provider
@@ -155,7 +154,6 @@ function App(props) {
       burnerGsnProvider.addAccount(burnerSigner.privateKey);
       const burnerGsnWeb3Provider = new ethers.providers.Web3Provider(burnerGsnProvider);
       const newBurnerGsnSigner = burnerGsnWeb3Provider.getSigner(burnerAddress);
-      console.log(newBurnerGsnSigner);
       setBurnerGsnSigner(newBurnerGsnSigner);
     };
     if (burnerSigner) updateGsnSigner();
@@ -194,6 +192,7 @@ function App(props) {
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
   const totalSupply = useContractReader(readContracts, "NataNFT", "totalSupply");
+  const dao = useContractReader(readContracts, "NataNFT", "dao");
 
   const [latestBlock, setLatestBlock] = useState();
   usePoller(async () => {
@@ -231,7 +230,7 @@ function App(props) {
     }
   `;
   const { loading, data, error } = useQuery(NATA_GQL, {
-    pollInterval: 13000,
+    pollInterval: 5000,
     variables: { boyCount: 1000, filters: burnyBoyFilters },
   });
   let networkDisplay = (
@@ -363,7 +362,7 @@ function App(props) {
                               console.log(signature);
                               let gsnContract = writeContracts.NataNFT.connect(burnerGsnSigner);
                               const result = tx(
-                                gsnContract.mint(address, ipfsHash, signature, {
+                                gsnContract.mintFromSignature(address, ipfsHash, signature, {
                                   gasLimit: "2000000",
                                 }),
                               );
@@ -415,13 +414,15 @@ function App(props) {
                   );
                 })}
             </ul>
-            <Contract
-              name="NataNFT"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-            />
+            {address && dao && address == dao && (
+              <Contract
+                name="NataNFT"
+                signer={userSigner}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+              />
+            )}
             <p>
               <a href="https://github.com/austintgriffith/scaffold-eth/tree/proof-de-nata" target="_blank">
                 <GithubOutlined />
@@ -462,26 +463,6 @@ function App(props) {
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-          <Col style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/4APZzuJdlPc1ZDdk");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {

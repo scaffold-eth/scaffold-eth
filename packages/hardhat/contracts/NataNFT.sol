@@ -1,5 +1,19 @@
 // SPDX-License-Identifier: MIT
 /*
+
+                     ___
+                    (   )
+ ___ .-.     .---.   | |_       .---.
+(   )   \   / .-, \ (   __)    / .-, \
+ |  .-. .  (__) ; |  | |      (__) ; |
+ | |  | |    .'`  |  | | ___    .'`  |
+ | |  | |   / .'| |  | |(   )  / .'| |
+ | |  | |  | /  | |  | | | |  | /  | |
+ | |  | |  ; |  ; |  | ' | |  ; |  ; |
+ | |  | |  ' `-'  |  ' `-' ;  ' `-'  |
+(___)(___) `.__.'_.   `.__.   `.__.'_.
+
+
 */
 
 pragma solidity ^0.8.7;
@@ -14,6 +28,7 @@ contract NataNFT is ERC721 {
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
+    Counters.Counter private _burnedTokens;
 
     event NewToken(address _minter, uint256 _tokenId, string _ipfsHash);
 
@@ -45,7 +60,21 @@ contract NataNFT is ERC721 {
         return SignatureChecker.isValidSignatureNow(_enjoyer, _hash, _signature);
     }
 
-    function mint(address _enjoyer, string calldata _ipfsHash, bytes calldata _signature) public returns (uint256) {
+    function createToken(address _enjoyer, string calldata _ipfsHash) internal returns (uint256) {
+      _tokenIds.increment();
+      uint256 newItemId = _tokenIds.current();
+
+      tokenIpfsHash[newItemId] = _ipfsHash;
+      nataHash[_ipfsHash] = true;
+
+      emit NewToken(_enjoyer, newItemId, _ipfsHash);
+
+      _safeMint(_enjoyer, newItemId);
+
+      return newItemId;
+    }
+
+    function mintFromSignature(address _enjoyer, string calldata _ipfsHash, bytes calldata _signature) public returns (uint256) {
 
         require(!nataHash[_ipfsHash], "this nata has already been enjoyed");
 
@@ -53,27 +82,34 @@ contract NataNFT is ERC721 {
 
         require(SignatureChecker.isValidSignatureNow(_enjoyer, _hash, _signature), "not a valid signature");
 
-        _tokenIds.increment();
-        uint256 newItemId = _tokenIds.current();
+        return createToken(_enjoyer, _ipfsHash);
+    }
 
-        tokenIpfsHash[newItemId] = _ipfsHash;
-        nataHash[_ipfsHash] = true;
+    function mint(string calldata _ipfsHash) public returns (uint256) {
 
-        emit NewToken(_enjoyer, newItemId, _ipfsHash);
+        require(!nataHash[_ipfsHash], "this nata has already been enjoyed");
 
-        _safeMint(_enjoyer, newItemId);
-
-        return newItemId;
+        return createToken(_msgSender(), _ipfsHash);
     }
 
     function burn(uint256 _tokenId) public {
       require(msg.sender == dao, 'only dao');
 
+      delete tokenIpfsHash[_tokenId];
       _burn(_tokenId);
+      _burnedTokens.increment();
     }
 
     function totalSupply() public view returns (uint256) {
+      return _tokenIds.current() - _burnedTokens.current();
+    }
+
+    function totalMinted() public view returns (uint256) {
       return _tokenIds.current();
+    }
+
+    function totalBurned() public view returns (uint256) {
+      return _burnedTokens.current();
     }
 
     function tokenURI(uint256 id) public view override returns (string memory) {
