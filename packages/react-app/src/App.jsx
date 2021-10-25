@@ -921,11 +921,20 @@ function App(props) {
                         </Button>
                         <br />
                         <br />
+                        <Button
+                          className="action-button"
+                          onClick={() => {
+                            tx(writeContracts.FancyLoogie.downgradeLoogie(id));
+                          }}
+                        >
+                          Downgrade
+                        </Button>
+                        <br />
                         {fancyLoogiesNfts &&
                           fancyLoogiesNfts[id] &&
                           fancyLoogiesNfts[id][readContracts["Bow"].address] && (
                             <Button
-                              style={{marginBottom: '10px'}}
+                              className="action-button"
                               onClick={() => {
                                 tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Bow"].address, id));
                               }}
@@ -937,7 +946,7 @@ function App(props) {
                           fancyLoogiesNfts[id] &&
                           fancyLoogiesNfts[id][readContracts["Mustache"].address] && (
                             <Button
-                              style={{marginBottom: '10px'}}
+                              className="action-button"
                               onClick={() => {
                                 tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mustache"].address, id));
                               }}
@@ -949,6 +958,7 @@ function App(props) {
                           fancyLoogiesNfts[id] &&
                           fancyLoogiesNfts[id][readContracts["ContactLenses"].address] && (
                             <Button
+                              className="action-button"
                               onClick={() => {
                                 tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["ContactLenses"].address, id));
                               }}
