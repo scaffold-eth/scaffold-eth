@@ -1,5 +1,7 @@
 body {
   margin: 0;
+  background-image:url('assets/background.png');
+  background-size: cover;
 }
 
 code {

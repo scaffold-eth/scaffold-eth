@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH: NFT Gated Video Streaming DApp
 
 > everything you need to build on Ethereum! 🚀
 
@@ -17,6 +17,16 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 git clone https://github.com/austintgriffith/scaffold-eth.git
 ```
 
+> Rename `sample.env` file in `packages/backend` to `.env` and edit values:
+
+```txt
+PROVIDER='your eth provider (Infura etc)'
+SECRET='secret phrase for signing JWT tokens'
+TOKEN='your NFT token address'
+```
+
+> Add a `.mp4` file as `sample.mp4` in `packages/backend/assets`.
+
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
@@ -25,14 +35,20 @@ yarn install
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
+> In a second terminal window, start your backend server:
+
+```bash
+cd packages/backend && yarn dev
+```
+
+> in a third terminal window, start your 📱 frontend:
 
 ```bash
 cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
+> in a fourth terminal window, 🛰 deploy your contract:
 
 ```bash
 cd scaffold-eth
@@ -44,6 +60,8 @@ yarn deploy
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
+
+Edit your backend server in `packages/backend`
 
 📱 Open http://localhost:3000 to see the app
 
