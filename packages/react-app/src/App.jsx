@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, TokenBalance } from "./components";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, TokenBalance, Dex } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -23,11 +23,12 @@ import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
 
+import { useContractConfig } from "./hooks";
+
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import externalContracts from "./contracts/external_contracts";
 
-import { useContractConfig } from "./hooks";
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -224,9 +225,7 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  // const contractConfig = useContractConfig();
-
-  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
+  const contractConfig = useContractConfig();
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
@@ -249,11 +248,6 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  // 📟 Listen for broadcast events
-  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -476,10 +470,26 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-             Go to the debug tab to test out your DEX and Token Contracts!
-            </Route>
 
-            <Route path="/contracts">
+            {/* Uncomment below to view front end */}
+            {/* { readContracts && readContracts.DEX && address && localProvider ?
+                <Dex
+              address={address}
+              tx={tx}
+              writeContracts={writeContracts}
+              localProvider={localProvider}
+              mainnetProvider={mainnetProvider}
+              readContracts={readContracts}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+              signer={userSigner}
+              price={price}
+            /> : ""
+             }  */}
+           
+          </Route>
+
+          <Route path="/contracts">
             <Contract
               name="DEX"
               signer={userSigner}
