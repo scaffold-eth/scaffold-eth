@@ -258,7 +258,8 @@ function App(props) {
 
   // a hacky workaround: replace `readContracts.BlueLoogies.address` with `address`. After the localhost page loads, revert the change.
   // const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [address])
-  const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [readContracts.BlueLoogies.address])
+  const blueLoogiesAddress = readContracts.BlueLoogies && readContracts.BlueLoogies.address;
+  const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [blueLoogiesAddress])
   const totalBlueLoogieBalance = blueLoogieBalance && blueLoogieBalance.toNumber && blueLoogieBalance.toNumber();
   const [blueLoogies, setBlueLoogies] = useState();
   const [previewLoogie, setPreviewLoogie] = useState({});
@@ -312,13 +313,13 @@ function App(props) {
 
   useEffect(() => {
     const applyEffect = async() => {
-      const update = await updateYourCollectibles(totalBlueLoogieBalance, readContracts.BlueLoogies, readContracts.BlueLoogies.address);
+      const update = await updateYourCollectibles(totalBlueLoogieBalance, readContracts.BlueLoogies, blueLoogiesAddress);
       console.log("blue update", update);
       setBlueLoogies(update);
     };
-
     applyEffect();
   }, [totalBlueLoogieBalance]);
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
