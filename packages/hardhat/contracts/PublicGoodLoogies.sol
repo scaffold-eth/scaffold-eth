@@ -46,7 +46,6 @@ contract PublicGoodLoogies is ERC721Enumerable, Ownable {
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
       
-      // check if it's correct
       color[id] = loogies.color(loogieId) | (bytes3(blueLoogies.idToBlue(blueLoogieId)) >> 16);
       chubbiness[id] = loogies.chubbiness(loogieId);
       
@@ -56,7 +55,7 @@ contract PublicGoodLoogies is ERC721Enumerable, Ownable {
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
       string memory name = string(abi.encodePacked('Public Goods Loogie #',id.toString()));
-      string memory description = string(abi.encodePacked('This Loogie is the color #', toColor(color[id]),'!'));
+      string memory description = string(abi.encodePacked('This Loogie is the color #', toColor(color[id]),' with a chubbiness of ', uint2str(chubbiness[id]),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return

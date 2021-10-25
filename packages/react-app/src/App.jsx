@@ -268,6 +268,7 @@ function App(props) {
   const pGLoogieBalance = useContractReader(readContracts, "PublicGoodLoogies", "balanceOf", [address]);
   const yourPGLoogieBalance = pGLoogieBalance && pGLoogieBalance.toNumber && pGLoogieBalance.toNumber();
   const [yourPGLoogies, setYourPGLoogies] = useState();
+  const [transferToAddresses, setTransferToAddresses] = useState({});
 
   async function updateYourCollectibles(balance, svgContract, _address) {
     const update = [];
@@ -788,6 +789,24 @@ function App(props) {
                           blockExplorer={blockExplorer}
                           fontSize={16}
                         />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.PublicGoodLoogies.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
                       </div>
                     </List.Item>
                   );

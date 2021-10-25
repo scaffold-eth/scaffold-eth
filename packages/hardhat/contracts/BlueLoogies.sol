@@ -29,7 +29,7 @@ contract BlueLoogies is ERC721Enumerable, Ownable {
 
   uint256 mintDeadline = block.timestamp + 24 hours;
 
-  function mintItem(address _grant) public returns (uint256) {
+  function mintItem(address _grant) public onlyOwner returns (uint256) {
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _mint(address(this), id);
