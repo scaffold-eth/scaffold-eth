@@ -243,20 +243,25 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const loogieAddress = "0x0165878A594ca255338adfa4d48449f69242Eb8F";
-  const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [loogieAddress]);
+  const loogieBalance = useContractReader(readContracts, "LOOG", "balanceOf", [address]);
   console.log("🤗 loogie balance:", loogieBalance);
 
   // 📟 Listen for broadcast events
-  const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
-  console.log("📟 Loogie Transfer events:", loogieTransferEvents);
+  // const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
+  // console.log("📟 Loogie Transfer events:", loogieTransferEvents);
 
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
   const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourLoogies, setYourLoogies] = useState();
-  const [grantAddress, setGrantAddress] = useState();
+
+  // a hacky workaround: replace `readContracts.BlueLoogies.address` with `address`. After the localhost page loads, revert the change.
+  const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [readContracts.BlueLoogies.address])
+  const totalBlueLoogieBalance = blueLoogieBalance && blueLoogieBalance.toNumber && blueLoogieBalance.toNumber();
+  const [blueLoogies, setBlueLoogies] = useState();
+  const [previewLoogie, setPreviewLoogie] = useState({});
+  const [previewSVG, setPreviewSVG] = useState({});
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -264,9 +269,9 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
           console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(loogieAddress, tokenIndex);
+          const tokenId = await readContracts.LOOG.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
+          const tokenURI = await readContracts.LOOG.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
@@ -278,7 +283,7 @@ function App(props) {
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
-            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: loogieAddress, ...jsonManifest });
+            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
           }
@@ -292,6 +297,39 @@ function App(props) {
     updateYourCollectibles();
   }, [address, yourLoogieBalance]);
 
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const loogieUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < totalBlueLoogieBalance; tokenIndex++) {
+        try {
+          console.log("Getting token index", tokenIndex);
+          const tokenId = await readContracts.BlueLoogies.tokenOfOwnerByIndex(readContracts.BlueLoogies.address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.BlueLoogies.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+/*
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+        */
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setBlueLoogies(loogieUpdate.reverse());
+    };
+    updateYourCollectibles();
+  }, [totalBlueLoogieBalance]);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -482,9 +520,32 @@ function App(props) {
     );
   }
 
-  const [transferToAddresses, setTransferToAddresses] = useState({});
-  const [transferToTankId, setTransferToTankId] = useState({});
+  async function generatePreviewSVG(blueLoogieId, loogieId) {
+    const chubbiness = await readContracts.LOOG.chubbiness(loogieId);
+    const color = await readContracts.LOOG.color(loogieId);
 
+    const blue = await readContracts.BlueLoogies.idToBlue(blueLoogieId);
+    // console.log("type(color)", color.toString());
+
+    const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\
+    <g transform="scale(0.5 0.5)">
+    <g id="eye1">\
+      <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>\
+      <ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#000" fill="#000000"/>\
+    </g>\
+    <g id="head">\
+      <ellipse fill="#${color.slice(2,6)}${blue.slice(2)}" stroke-width="3" cx="204.5" cy="211.80065" id="svg_5" rx="${chubbiness}" ry="51.80065" stroke="#000"/>\
+    </g>\
+    <g id="eye2">\
+      <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="#000" fill="#fff"/>\
+      <ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#000"/>\
+    </g></g>\
+  </svg>`;
+
+    const update = {};
+    update[blueLoogieId] = "data:image/svg+xml;base64,"+Buffer.from(svg).toString('base64');
+    setPreviewSVG({ ...previewSVG, ...update});
+  }
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -499,17 +560,47 @@ function App(props) {
               }}
               to="/"
             >
-              Loogies
+              PG Loogies Debug
             </Link>
           </Menu.Item>
-          <Menu.Item key="/mintloogies">
+          <Menu.Item key="/blueloogiesdebug">
             <Link
               onClick={() => {
-                setRoute("/mintloogies");
+                setRoute("/blueloogiesdebug");
               }}
-              to="/mintloogies"
+              to="/blueloogiesdebug"
             >
-              Mint Loogies
+              Blue Loogies Debug
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/loogiesdebug">
+            <Link
+              onClick={() => {
+                setRoute("/loogiesdebug");
+              }}
+              to="/loogiesdebug"
+            >
+              Loogies Debug
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/blueloogies">
+            <Link
+              onClick={() => {
+                setRoute("/blueloogies");
+              }}
+              to="/blueloogies"
+            >
+              Blue Loogies
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/loogies">
+            <Link
+              onClick={() => {
+                setRoute("/loogies");
+              }}
+              to="/loogies"
+            >
+              Loogies
             </Link>
           </Menu.Item>
         </Menu>
@@ -523,7 +614,7 @@ function App(props) {
             */}
 
             <Contract
-              name="Loogies"
+              name="PublicGoodLoogies"
               customContract={writeContracts && writeContracts.Loogies}
               signer={userSigner}
               provider={localProvider}
@@ -532,24 +623,42 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-         <Route exact path="/mintloogies">
-            <div style={{ maxWidth: 420, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={() => {
-                tx(writeContracts.Loogies.mintItem(grantAddress))
-              }}>MINT</Button>
-              <AddressInput
-                ensProvider={mainnetProvider}
-                placeholder="Enter Grant address"
-                onChange={newValue => {
-                  setGrantAddress(newValue);
-                }}
-              />
-            </div>
-            {/* */}
+          <Route exact path="/blueloogiesdebug">
+            {/*
+                🎛 this scaffolding is full of commonly used components
+                this <Contract/> component will automatically parse your ABI
+                and give you a form to interact with it locally
+            */}
+
+            <Contract
+              name="BlueLoogies"
+              customContract={writeContracts && writeContracts.Loogies}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/loogiesdebug">
+
+            <Contract
+              name="LOOG"
+              customContract={writeContracts && writeContracts.LOOG}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+
+          </Route>
+
+          <Route exact path="/blueloogies">
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
-                dataSource={yourLoogies}
+                dataSource={blueLoogies}
                 renderItem={item => {
                   const id = item.id.toNumber();
 
@@ -580,29 +689,70 @@ function App(props) {
                           ensProvider={mainnetProvider}
                           placeholder="enter loogie ID"
                           onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
                             const update = {};
-                            update[id] = newValue;
+                            update[id] = newValue.target.value;
                             setPreviewLoogie({ ...previewLoogie, ...update });
                           }}
                         />
                         <Button
                           onClick={() => {
-                            console.log("readContracts", readContracts);
-                            readContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                            generatePreviewSVG(id, previewLoogie[id]);
                           }}
                         >
                           Preview
                         </Button>
+                        <Card>
+                          <img src={previewSVG[id]}/>
+                        </Card>
                       </div>
                     </List.Item>
                   );
                 }}
               />
             </div>
-            {/* */}
-
-            
           </Route>
+         <Route exact path="/loogies">
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourLoogies}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+
+
+
+              </Route>
         </Switch>
       </BrowserRouter>
 
