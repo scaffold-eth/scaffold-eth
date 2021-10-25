@@ -29,10 +29,7 @@ contract Loogies is ERC721Enumerable, Ownable {
   mapping (uint256 => uint256) public chubbiness;
   mapping(uint256 => bytes32) public genes;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
-
   function mintItem() public returns (uint256) {
-      require(block.timestamp < mintDeadline, "DONE MINTING");
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
