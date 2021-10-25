@@ -1,45 +1,33 @@
-# 🏗 scaffold-eth - Composable SVG NFT
+# 🏗 scaffold-eth - Public Goods Loogies
 
-> Demonstration showing how SVG NFTs can be composed on top of each other.
+> Add blue to your loogies and support Public Goods in Ethereum.
 
 
-## Prerequisites
+## Pre-requisites
 
-This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch. Watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it.
+1. Loogies: Watch this [demo](https://www.youtube.com/watch?v=m0bwE5UelEo).
+
+1. [Composable SVG NFT](https://github.com/scaffold-eth/scaffold-eth/tree/composable-svg-nft): It's a way to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
 
 ## Introduction
 
-This branch shows how to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
+The Loogies deployed on mainnet doesn't follow the composable SVG NFT standard and doesn't have the blue color component.
 
-This demo defines two SVG NFTs:
-1. **Loogies**: They look like this:
+So this is a way to upgrade your loogies and also support Ethereum public goods.
 
-Each loogie can have a different `color` and `chubbiness` randomly generated at mint.
+This demo defines two SVG NFT contracts:
+1. **BlueLoogies**: They are the same as loogies except they have fixed `chubbiness` and only a blue color component associated with a public good. These can only be minted by the owner of the contract.
 
-1. **LoogieTank**: 
+1. **PublicGoodLoogies**: 
 
-Take a look at `Loogies.sol` at `packages/hardhat/contracts`. It exposes a function:
-```
-function renderTokenById(uint256 id) public view returns (string memory)
-```
-
-It returns the relevant SVG that be embedded in other SVG code for rendering.
-
-To see how, take a look at `LoogieTank.sol` at `packages/hardhat/contracts`. Its `renderTokenById` function calls `Loogies` contract's `renderTokenById` to include the SVG in its own SVG code.
-
-Without this function, `LoogieTank` would have to do additional processing to extract the SVG code.
-
-Play with the [live app](https://absent-earthquake.surge.sh/) deployed on rinkeby network.
-
-## SVG Motion
-The SVG code is generated on each `tokenURI()` invocation. Thus, you can output different SVG code on each invocation.
+   These are minted by breeding a Loogie and a BlueLoogie. The resulting NFT will have the same chubbiness as the loogie, and the color will have the the blue component from BlueLoogie.
 
 ### Installation
 
 Clone the repo:
 ```
-git clone -b composable-svg-nft https://github.com/scaffold-eth/scaffold-eth.git composable-svg-nft
-cd composable-svg-nft
+git clone -b public-goods-loogies https://github.com/scaffold-eth/scaffold-eth.git public-goods-loogies
+cd public-goods-loogies
 ```
 
 Install dependencies:
@@ -49,18 +37,18 @@ yarn install
 
 Start frontend
 ```
-cd composable-svg-nft
+cd public-goods-loogies
 yarn start
 ```
 
-In a second terminal window, start a local blockchain
+In a second terminal window, fork ethereum mainnet.
 ```
-yarn chain
+yarn fork
 ```
 
 In a third terminal window, deploy contracts:
 ```
-cd composable-svg-nft
+cd public-goods-loogies
 yarn deploy
 ```
 
