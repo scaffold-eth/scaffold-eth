@@ -257,78 +257,67 @@ function App(props) {
   const [yourLoogies, setYourLoogies] = useState();
 
   // a hacky workaround: replace `readContracts.BlueLoogies.address` with `address`. After the localhost page loads, revert the change.
+  // const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [address])
   const blueLoogieBalance = useContractReader(readContracts, "BlueLoogies", "balanceOf", [readContracts.BlueLoogies.address])
   const totalBlueLoogieBalance = blueLoogieBalance && blueLoogieBalance.toNumber && blueLoogieBalance.toNumber();
   const [blueLoogies, setBlueLoogies] = useState();
   const [previewLoogie, setPreviewLoogie] = useState({});
   const [previewSVG, setPreviewSVG] = useState({});
 
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const loogieUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
-        try {
-          console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.LOOG.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.LOOG.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
-/*
+  const pGLoogieBalance = useContractReader(readContracts, "PublicGoodLoogies", "balanceOf", [address]);
+  const yourPGLoogieBalance = pGLoogieBalance && pGLoogieBalance.toNumber && pGLoogieBalance.toNumber();
+  const [yourPGLoogies, setYourPGLoogies] = useState();
+
+  async function updateYourCollectibles(balance, svgContract, _address) {
+    const update = [];
+    for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+      try {
+        console.log("Getting token index", tokenIndex);
+        const tokenId = await svgContract.tokenOfOwnerByIndex(_address, tokenIndex);
+        console.log("tokenId", tokenId);
+        const tokenURI = await svgContract.tokenURI(tokenId);
+        console.log("tokenURI", tokenURI);
+        const jsonManifestString = atob(tokenURI.substring(29))
+        console.log("jsonManifestString", jsonManifestString);
+        /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
         */
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
-            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          update.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
         } catch (e) {
           console.log(e);
         }
+
+      } catch (e) {
+        console.log(e);
       }
-      setYourLoogies(loogieUpdate.reverse());
-    };
-    updateYourCollectibles();
-  }, [address, yourLoogieBalance]);
+    }
+    return update;
+  };
 
   useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const loogieUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < totalBlueLoogieBalance; tokenIndex++) {
-        try {
-          console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.BlueLoogies.tokenOfOwnerByIndex(readContracts.BlueLoogies.address, tokenIndex);
-          console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.BlueLoogies.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
-/*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-        */
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
-            loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setBlueLoogies(loogieUpdate.reverse());
+    const applyEffect = async() => {
+      var update = await updateYourCollectibles(yourLoogieBalance, readContracts.LOOG, address);
+      console.log("update", update);
+      setYourLoogies(update);
+      update = await updateYourCollectibles(yourPGLoogieBalance, readContracts.PublicGoodLoogies, address);
+      setYourPGLoogies(update);
     };
-    updateYourCollectibles();
+    applyEffect();
+  }, [address, yourLoogieBalance, yourPGLoogieBalance]);
+
+  useEffect(() => {
+    const applyEffect = async() => {
+      const update = await updateYourCollectibles(totalBlueLoogieBalance, readContracts.BlueLoogies, readContracts.BlueLoogies.address);
+      console.log("blue update", update);
+      setBlueLoogies(update);
+    };
+
+    applyEffect();
   }, [totalBlueLoogieBalance]);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -603,6 +592,16 @@ function App(props) {
               Loogies
             </Link>
           </Menu.Item>
+          <Menu.Item key="/pgloogies">
+            <Link
+              onClick={() => {
+                setRoute("/pgloogies");
+              }}
+              to="/pgloogies"
+            >
+              PG Loogies
+            </Link>
+          </Menu.Item>
         </Menu>
 
         <Switch>
@@ -705,6 +704,12 @@ function App(props) {
                         <Card>
                           <img src={previewSVG[id]}/>
                         </Card>
+                        <Button
+                          onClick={() => {
+                            tx(writeContracts.PublicGoodLoogies.mintItem(previewLoogie[id], id));
+                          }}>
+                          Buy Public Good Loogie
+                        </Button>
                       </div>
                     </List.Item>
                   );
@@ -749,10 +754,46 @@ function App(props) {
                 }}
               />
             </div>
+          </Route>
 
+          <Route exact path="/pgloogies">
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourPGLoogies}
+                renderItem={item => {
+                  const id = item.id.toNumber();
 
+                  console.log("IMAGE",item.image);
 
-              </Route>
+                  return (
+                    <List.Item key={id + "_" + item.uri}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          </Route>
         </Switch>
       </BrowserRouter>
 

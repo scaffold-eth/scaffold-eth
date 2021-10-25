@@ -47,7 +47,7 @@ contract PublicGoodLoogies is ERC721Enumerable, Ownable {
       _mint(msg.sender, id);
       
       // check if it's correct
-      color[id] = loogies.color(loogieId) | (blueLoogies.idToBlue(blueLoogieId));
+      color[id] = loogies.color(loogieId) | (bytes3(blueLoogies.idToBlue(blueLoogieId)) >> 16);
       chubbiness[id] = loogies.chubbiness(loogieId);
       
       return id;
