@@ -6,15 +6,17 @@ const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
+  console.log(deploy);
   const { deployer } = await getNamedAccounts();
-  await deploy("SilentAuction", {
+  await deploy("BlindAuction", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     //args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
   });
 
-  const auction = await ethers.getContract("SilentAuction", deployer);
+  const auction = await ethers.getContract("BlindAuction", deployer);
+  console.log(auction);
   await auction.transferOwnership("0x0606a0D4F33c78D992f20Cdde5d9F41031D6D7bb");
   /*
     // Getting a previously deployed contract
@@ -52,4 +54,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["SilentAuction"];
+module.exports.tags = ["BlindAuction"];

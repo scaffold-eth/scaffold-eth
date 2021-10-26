@@ -5,9 +5,8 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-import "./VerifySignature.sol";
 
-contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
+contract BlindAuction is IERC721Receiver, Ownable {
     bool public auctionInProgress;
 
     struct Auction {
@@ -50,7 +49,7 @@ contract SilentAuction is IERC721Receiver, Ownable, VerifySignature {
             nft: nft,
             tokenId: tokenId,
             startTime: block.timestamp,
-            endTime: block.timestamp + 180 seconds,
+            endTime: block.timestamp + 24 hours,
             amount: 0,
             bidder: payable(0),
             settled: false

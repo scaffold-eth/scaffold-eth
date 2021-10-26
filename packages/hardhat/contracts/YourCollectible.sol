@@ -19,9 +19,7 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("Numbas", "NUMB") {
-    // RELEASE THE LOOGIES!
-  }
+  constructor() public ERC721("Numbas", "NUMB") {}
 
   function mintItem()
       public

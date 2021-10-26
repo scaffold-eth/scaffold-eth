@@ -55,7 +55,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -257,110 +257,7 @@ function App(props) {
   // 📟 Listen for broadcast events
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
-  const settledEvents = useEventListener(readContracts, "SilentAuction", "AuctionSettled", localProvider, 1);
-
-  // const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-
-  // const [bids, setBids] = useState([]);
-  // useOnBlock(mainnetProvider, () => {
-  //   const getBids = async () => {
-  //     if (!auction) {
-  //       return;
-  //     }
-
-  //     try {
-  //       const data = await fetch(`http://localhost:8001/?tokenId=${auction.id._hex}`).then(res => res.json());
-  //       console.log(data);
-
-  //       const temp = [];
-  //       const auctionBids = data[auction.id._hex];
-  //       if (!auctionBids) {
-  //         return;
-  //       }
-
-  //       Object.keys(auctionBids).forEach(key => {
-  //         temp.push(auctionBids[key]);
-  //       });
-  //       setBids(temp);
-  //       console.log('bids:', bids);
-  //     } catch (e) {
-  //       console.log(e);
-  //       setBids({});
-  //     }
-  //   };
-
-  //   getBids();
-  // });
-
-  // const [auction, setAuction] = useState("");
-  // const [owner, setOwner] = useState(false);
-  // useEffect(() => {
-  //   const getOwner = async () => {
-  //     const owner = await readContracts.SilentAuction?.owner();
-  //     setOwner(owner === address);
-  //   }
-  //   getOwner();
-  // }, [address, balance]);
-
-  // const [auctionEnded, setAuctionEnded] = useState(false);
-
-  // useEffect(() => {
-  //   const getAuction = async () => {
-  //     const auction = await readContracts.SilentAuction?.currentAuction();
-  //     setCurrentAuction(auction);
-  //     const endTime = new Date(auction?.endTime * 1000);
-  //     setAuctionEnded(endTime < Date.now());
-  //     console.log('ended', auctionEnded);
-  //   }
-  //   getAuction();
-  // }, [address, balance]);
-
-  // useEffect(() => {
-  //   const getAuctionView = async () => {
-  //     if (owner) {
-  //       return;
-  //     }
-
-  //     const auction = await readContracts.SilentAuction?.currentAuction();
-  //     console.log(auction);
-  //     if (auction?.inProgress) {
-  //       const tokenURI = await readContracts.YourCollectible.tokenURI(auction.tokenId);
-  //       const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
-  //       try {
-  //         const jsonManifest = JSON.parse(jsonManifestString);
-  //         console.log("jsonManifest", jsonManifest);
-  //         setAuction({ id: auction.tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-  //       } catch (e) {
-  //         console.log(e);
-  //       }
-  //     }
-  //   }
-  //   getAuctionView();
-  // }, [address, balance])
-
-  // const signData = async (tokenId, amount) => {
-  //   const bidAmount = ethers.utils.parseEther(amount);
-  //   let hash = await ethers.utils.solidityKeccak256(
-  //     ['uint256', 'address', 'uint256'],
-  //     [tokenId, address, bidAmount]
-  //   );
-  //   const signature = await userProviderAndSigner.provider.send('personal_sign', [hash, address]);
-  //   console.log('signature', signature);
-
-  //   await fetch('http://localhost:8001/', {
-  //     method: 'POST',
-  //     mode: "cors",
-  //     headers: {
-  //       'Content-Type': 'application/json'
-  //     },
-  //     body: JSON.stringify({
-  //       tokenId,
-  //       signature,
-  //       bidder: address,
-  //       bidAmount
-  //     })
-  //   });
-  // }
+  const settledEvents = useEventListener(readContracts, "BlindAuction", "AuctionSettled", localProvider, 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -648,7 +545,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
             <Contract
-              name="SilentAuction"
+              name="BlindAuction"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -848,8 +745,8 @@ function MintedItems(props) {
                   style={{ marginTop: '24px' }}
                   type="primary"
                   onClick={async () => {
-                    await props.tx(props.writeContracts.YourCollectible.approve(props.readContracts.SilentAuction.address, item.id));
-                    props.tx(props.writeContracts.SilentAuction.createAuction(props.readContracts.YourCollectible.address, item.id))
+                    await props.tx(props.writeContracts.YourCollectible.approve(props.readContracts.BlindAuction.address, item.id));
+                    props.tx(props.writeContracts.BlindAuction.createAuction(props.readContracts.YourCollectible.address, item.id))
                   }}
                 >
                   Approve transfer and start auction
@@ -878,7 +775,7 @@ function Auction(props) {
 
   useOnBlock(props.mainnetProvider, () => {
     const getAuction = async () => {
-      const auction = await props.readContracts.SilentAuction?.currentAuction();
+      const auction = await props.readContracts.BlindAuction?.currentAuction();
 
       const endTime = new Date(auction?.endTime * 1000);
       const ended = endTime < new Date();
@@ -906,7 +803,7 @@ function Auction(props) {
   const [owner, setOwner] = useState(false);
   useEffect(() => {
     const getOwner = async () => {
-      const owner = await props.readContracts.SilentAuction?.owner();
+      const owner = await props.readContracts.BlindAuction?.owner();
       setOwner(owner === props.address);
     }
     getOwner();
@@ -919,7 +816,7 @@ function Auction(props) {
         type="primary"
         disabled={!auctionEnded}
         onClick={async () => {
-          await props.tx(props.writeContracts.SilentAuction.settleAuction());
+          await props.tx(props.writeContracts.BlindAuction.settleAuction());
         }}
       > Settle Auction
       </Button>
@@ -973,7 +870,7 @@ function Auction(props) {
             type="primary"
             disabled={auctionEnded || !amountToBid}
             onClick={async () => {
-              const result = await props.tx(props.writeContracts.SilentAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
+              const result = await props.tx(props.writeContracts.BlindAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
               setAmountToBid(null);
             }}
           >
