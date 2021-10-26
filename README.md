@@ -31,7 +31,7 @@ You'll have three terminals up for:
 
 `yarn start` (react app frontend)
 
-`yarn chain` (harthat backend)
+`yarn chain` (hardhat backend)
 
 `yarn deploy` (to compile, deploy, and publish your contracts to the frontend)
 
