@@ -7,7 +7,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, BytesStringInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import Countdown from "react-countdown";
@@ -55,7 +55,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -258,7 +258,7 @@ function App(props) {
   const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
 
   const settledEvents = useEventListener(readContracts, "BlindAuction", "AuctionSettled", localProvider, 1);
-
+  const revealEvents = useEventListener(readContracts, "BlindAuction", "BidRevealed", localProvider, 1);
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -526,7 +526,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-            <div style={{display: 'flex', flexDirection: 'column'}}>
+            <div style={{ display: "flex", flexDirection: "column" }}>
               <MintedItems
                 address={address}
                 mainnetProvider={mainnetProvider}
@@ -578,6 +578,19 @@ function App(props) {
                   return (
                     <List.Item key={item.blockNumber + "_" + item.blockHash}>
                       Winner:
+                      <Address address={item.args[3]} ensProvider={mainnetProvider} fontSize={16} />
+                      {ethers.utils.formatEther(item.args[2])}
+                    </List.Item>
+                  );
+                }}
+              />
+              <List
+                bordered
+                dataSource={revealEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + "_" + item.blockHash}>
+                      Revealed:
                       <Address address={item.args[3]} ensProvider={mainnetProvider} fontSize={16} />
                       {ethers.utils.formatEther(item.args[2])}
                     </List.Item>
@@ -708,12 +721,12 @@ function MintedItems(props) {
   const theBalance = useContractReader(props.readContracts, "YourCollectible", "balanceOf", [props.address]);
 
   useOnBlock(props.mainnetProvider, () => {
-    const getItems = async() => {
+    const getItems = async () => {
       const items = [];
       for (let tokenIndex = 0; tokenIndex < theBalance; tokenIndex++) {
         const tokenId = await props.readContracts.YourCollectible.tokenOfOwnerByIndex(props.address, tokenIndex);
         const tokenURI = await props.readContracts.YourCollectible.tokenURI(tokenId);
-        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64");
 
         try {
           const jsonManifest = JSON.parse(jsonManifestString);
@@ -724,47 +737,55 @@ function MintedItems(props) {
         }
       }
       setMintedItems(items);
-    }
+    };
     getItems();
   });
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
       <List
-        style={{width: '400px'}}
+        style={{ width: "400px" }}
         bordered
         dataSource={mintedItems}
         renderItem={item => {
           return (
-            <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
-              <Card style={{width: '400px', heigth: '200px'}}>
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <Card style={{ width: "400px", heigth: "200px" }}>
                 <List.Item key={item.uri}>
                   <img src={item.image} />
                 </List.Item>
                 <Button
-                  style={{ marginTop: '24px' }}
+                  style={{ marginTop: "24px" }}
                   type="primary"
                   onClick={async () => {
-                    await props.tx(props.writeContracts.YourCollectible.approve(props.readContracts.BlindAuction.address, item.id));
-                    props.tx(props.writeContracts.BlindAuction.createAuction(props.readContracts.YourCollectible.address, item.id))
+                    await props.tx(
+                      props.writeContracts.YourCollectible.approve(props.readContracts.BlindAuction.address, item.id),
+                    );
+                    props.tx(
+                      props.writeContracts.BlindAuction.createAuction(
+                        props.readContracts.YourCollectible.address,
+                        item.id,
+                      ),
+                    );
                   }}
                 >
                   Approve transfer and start auction
                 </Button>
               </Card>
             </div>
-          )
+          );
         }}
-        >
-      </List>
+      ></List>
       <Button
         type="primary"
         onClick={() => {
-          props.tx(props.writeContracts.YourCollectible.mintItem())
+          props.tx(props.writeContracts.YourCollectible.mintItem());
         }}
-      >Mint!</Button>
+      >
+        Mint!
+      </Button>
     </div>
-  )
+  );
 }
 
 function Auction(props) {
@@ -783,11 +804,11 @@ function Auction(props) {
       setAuctionEnded(ended);
 
       if (!ended) {
-        const endsAt = new Date((endTime - Date.now()) + Date.now());
+        const endsAt = new Date(endTime - Date.now() + Date.now());
         setEndTime(endsAt);
 
         const tokenURI = await props.readContracts.YourCollectible.tokenURI(auction.tokenId);
-        const jsonManifestString = Buffer.from(tokenURI.substring(29), 'base64');
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64");
         try {
           const jsonManifest = JSON.parse(jsonManifestString);
           console.log("jsonManifest", jsonManifest);
@@ -796,7 +817,7 @@ function Auction(props) {
           console.log(e);
         }
       }
-    }
+    };
     getAuction();
   });
 
@@ -805,7 +826,7 @@ function Auction(props) {
     const getOwner = async () => {
       const owner = await props.readContracts.BlindAuction?.owner();
       setOwner(owner === props.address);
-    }
+    };
     getOwner();
   }, [props.address]);
 
@@ -818,7 +839,9 @@ function Auction(props) {
         onClick={async () => {
           await props.tx(props.writeContracts.BlindAuction.settleAuction());
         }}
-      > Settle Auction
+      >
+        {" "}
+        Settle Auction
       </Button>
     );
   }
@@ -828,6 +851,30 @@ function Auction(props) {
     auctionView = (
       <div>
         <h2>Auction ended!</h2>
+        <Input
+          style={{ width: "100px", marginRight: "10px" }}
+          value={amountToBid}
+          onChange={e => setAmountToBid(e.target.value)}
+          placeholder="Enter amount to bid"
+        />
+        <Button
+          type="primary"
+          disabled={!amountToBid}
+          onClick={async () => {
+            const data = ethers.utils.formatBytes32String(amountToBid);
+            const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
+            console.log(amountToBid);
+            console.log(ethers.utils.parseEther(amountToBid));
+            await props.tx(
+              props.writeContracts.BlindAuction.revealBid(auction.id, blindBid, {
+                value: ethers.utils.parseEther(amountToBid),
+              }),
+            );
+            setAmountToBid(null);
+          }}
+        >
+          Reveal Bid!
+        </Button>
         {settleAuction}
       </div>
     );
@@ -836,7 +883,7 @@ function Auction(props) {
       <>
         <Countdown
           date={endTime}
-          renderer={(props) => {
+          renderer={props => {
             if (props.completed) {
               return (
                 <div>
@@ -845,36 +892,59 @@ function Auction(props) {
               );
             } else {
               return (
-                <span style={{display: 'flex', alignItems: 'baseline'}}>
-                  <h4 style={{marginRight: '10px'}}>Ends in</h4>
-                  <h1>{props.hours}</h1>h
-                  <h1>{props.minutes}</h1>m
-                  <h1>{props.seconds}</h1>s
+                <span style={{ display: "flex", alignItems: "baseline" }}>
+                  <h4 style={{ marginRight: "10px" }}>Ends in</h4>
+                  <h1>{props.hours}</h1>h<h1>{props.minutes}</h1>m<h1>{props.seconds}</h1>s
                 </span>
               );
             }
           }}
         />
-        <Card style={{width: '400px', heigth: '200px'}}>
+        <Card style={{ width: "400px", heigth: "200px" }}>
           <List.Item key={auction.uri}>
             <img src={auction.image} />
           </List.Item>
         </Card>
         <div>
-          <span style={{marginRight: '10px'}}>{auction.description}</span>
+          <span style={{ marginRight: "10px" }}>{auction.description}</span>
           <span>{auction.name}</span>
         </div>
-        <div style={{margin: '10px'}}>
-          <Input style={{width: '100px', marginRight: '10px'}} value={amountToBid} onChange={e => setAmountToBid(e.target.value)} placeholder="eth" />
+        <div style={{ margin: "10px" }}>
+          <Input
+            style={{ width: "100px", marginRight: "10px" }}
+            value={amountToBid}
+            onChange={e => setAmountToBid(e.target.value)}
+            placeholder="Enter amount to bid"
+          />
           <Button
             type="primary"
             disabled={auctionEnded || !amountToBid}
             onClick={async () => {
-              const result = await props.tx(props.writeContracts.BlindAuction.createBid(auction.id, {value: ethers.utils.parseEther(amountToBid) }));
+              const data = ethers.utils.formatBytes32String(amountToBid);
+              const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
+              await props.tx(props.writeContracts.BlindAuction.createBid(auction.id, blindBid));
               setAmountToBid(null);
             }}
           >
-            Bid!
+            Commit Bid!
+          </Button>
+          <Button
+            type="primary"
+            disabled={auctionEnded || !amountToBid}
+            onClick={async () => {
+              const data = ethers.utils.formatBytes32String(amountToBid);
+              const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
+              console.log(amountToBid);
+              console.log(ethers.utils.parseEther(amountToBid));
+              await props.tx(
+                props.writeContracts.BlindAuction.revealBid(auction.id, blindBid, {
+                  value: ethers.utils.parseEther(amountToBid),
+                }),
+              );
+              setAmountToBid(null);
+            }}
+          >
+            Reveal Bid!
           </Button>
         </div>
       </>
@@ -882,7 +952,7 @@ function Auction(props) {
   }
 
   return (
-    <div style={{display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center'}}>
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
       {auctionView}
     </div>
   );

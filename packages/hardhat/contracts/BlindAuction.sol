@@ -9,35 +9,30 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 contract BlindAuction is IERC721Receiver, Ownable {
     bool public auctionInProgress;
 
+    struct Bid {
+        bytes32 blindBid;
+        bool revealed;
+    }
+
+    mapping(uint256 => mapping(address => Bid)) public bids;
+
     struct Auction {
         address nft;
         uint256 tokenId;
         uint256 startTime;
         uint256 endTime;
-        uint256 amount;
+        uint256 highestBid;
         address payable bidder;
         bool settled;
-    }
-
-    // Since it's a blind auction, don't expose the current bid/bidder info
-    struct AuctionView {
-        address nft;
-        uint256 tokenId;
-        uint256 startTime;
-        uint256 endTime;
     }
 
     Auction public auction;
 
     event AuctionSettled(address _nft, uint256 _tokenId, uint256 _amount, address _bidder);
+    event BidRevealed(address _nft, uint256 _tokenId, uint256 _amount, address _bidder);
 
-    function currentAuction() public view returns (AuctionView memory) {
-        return AuctionView({
-            nft: auction.nft,
-            tokenId: auction.tokenId,
-            startTime: auction.startTime,
-            endTime: auction.endTime
-        });
+    function currentAuction() public view returns (Auction memory) {
+        return auction;
     }
 
     function createAuction(address nft, uint256 tokenId) public onlyOwner {
@@ -49,8 +44,8 @@ contract BlindAuction is IERC721Receiver, Ownable {
             nft: nft,
             tokenId: tokenId,
             startTime: block.timestamp,
-            endTime: block.timestamp + 24 hours,
-            amount: 0,
+            endTime: block.timestamp + 10 minutes,
+            highestBid: 0,
             bidder: payable(0),
             settled: false
         });
@@ -58,20 +53,34 @@ contract BlindAuction is IERC721Receiver, Ownable {
         IERC721(nft).safeTransferFrom(msg.sender, address(this), tokenId);
     }
 
-    function createBid(uint256 tokenId) public payable {
+    function revealBid(uint256 tokenId, bytes32 _blindBid) public payable {
+        require(bids[tokenId][msg.sender].blindBid != 0, "You haven't placed a bid");
+        require(bids[tokenId][msg.sender].revealed == false, "You already revealed your bid");
+        require(bids[tokenId][msg.sender].blindBid == _blindBid, "Your bid is invalid");
+
+        bids[tokenId][msg.sender].revealed = true;
+
+        emit BidRevealed(auction.nft, auction.tokenId, msg.value, msg.sender);
+
+        require(msg.value > auction.highestBid, "Your bid is not higher than the current highest bid");
+
+        address previousHighBidder = auction.bidder;
+        uint256 previousHighestBid = auction.highestBid;
+
+        auction.highestBid = msg.value;
+        auction.bidder = payable(msg.sender);
+
+        (bool success, ) = previousHighBidder.call{value: previousHighestBid}("");
+        require(success, "Failed to send last bid amount");
+    }
+
+    function createBid(uint256 tokenId, bytes32 _blindBid) public {
         require(auction.tokenId == tokenId, "TokenId not up for auction");
         require(block.timestamp < auction.endTime, "Auction already ended");
-        require(msg.value > auction.amount, "You are not the high bidder");
+        require(bids[tokenId][msg.sender].blindBid == 0, "You already placed a bid");
 
-        address payable lastBidder = auction.bidder;
-        if (lastBidder != address(0)) {
-            uint256 lastAmount = auction.amount;
-            (bool success, ) = lastBidder.call{value: lastAmount}("");
-            require(success, "Failed to send last bid amount");
-        }
-
-        auction.amount = msg.value;
-        auction.bidder = payable(msg.sender);
+        bids[tokenId][msg.sender].blindBid = _blindBid;
+        bids[tokenId][msg.sender].revealed = false;
     }
 
     function settleAuction() public onlyOwner {
@@ -80,7 +89,7 @@ contract BlindAuction is IERC721Receiver, Ownable {
 
         auction.settled = true;
         auctionInProgress = false;
-        (bool success, ) = owner().call{value: auction.amount}("");
+        (bool success, ) = owner().call{value: auction.highestBid}("");
         require(success, "Failed to transfer tokens");
 
         // Transfer back to owner if there were no bids
@@ -90,7 +99,7 @@ contract BlindAuction is IERC721Receiver, Ownable {
             IERC721(auction.nft).safeTransferFrom(address(this), owner(), auction.tokenId);
         }
 
-        emit AuctionSettled(auction.nft, auction.tokenId, auction.amount, auction.bidder);
+        emit AuctionSettled(auction.nft, auction.tokenId, auction.highestBid, auction.bidder);
     }
 
     function onERC721Received(
