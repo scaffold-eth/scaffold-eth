@@ -26,7 +26,7 @@ yarn chain
 
 ```
 cd simple-nft-example
-yarn deploy
+yarn deploy --network NETWORK_OF_CHOICE (localhost, kovan, rinkeby, mainnet)
 ```
 
 📱 Open http://localhost:3000 to see the app
