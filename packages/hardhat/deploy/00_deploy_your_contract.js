@@ -19,6 +19,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  const mouth = await deploy("Mouth", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    //args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+
   const mustache = await deploy("Mustache", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
@@ -41,6 +48,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
 
   const FancyLoogie = await ethers.getContract("FancyLoogie", deployer);
   await FancyLoogie.addNft(bow.address);
+  await FancyLoogie.addNft(mouth.address);
   await FancyLoogie.addNft(mustache.address);
   await FancyLoogie.addNft(contactLenses.address);
 
