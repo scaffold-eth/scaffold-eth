@@ -30,9 +30,9 @@ yarn upload
 > install and start your 👷‍ Hardhat chain in another terminal:
 
 ```bash
-cd buyer-mints-nft/packages/hardhat
+cd buyer-mints-nft
 
-npx hardhat node --network hardhat
+yarn chain
 ```
 
 > in a third terminal window, deploy all the things and start your 📱 frontend:
