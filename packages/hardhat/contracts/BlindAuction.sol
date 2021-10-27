@@ -44,7 +44,7 @@ contract BlindAuction is IERC721Receiver, Ownable {
             nft: nft,
             tokenId: tokenId,
             startTime: block.timestamp,
-            endTime: block.timestamp + 10 minutes,
+            endTime: block.timestamp + 3 minutes,
             highestBid: 0,
             bidder: payable(0),
             settled: false
@@ -53,10 +53,10 @@ contract BlindAuction is IERC721Receiver, Ownable {
         IERC721(nft).safeTransferFrom(msg.sender, address(this), tokenId);
     }
 
-    function revealBid(uint256 tokenId, bytes32 _blindBid) public payable {
+    function revealBid(uint256 tokenId, bytes32 blindBid) public payable {
         require(bids[tokenId][msg.sender].blindBid != 0, "You haven't placed a bid");
         require(bids[tokenId][msg.sender].revealed == false, "You already revealed your bid");
-        require(bids[tokenId][msg.sender].blindBid == _blindBid, "Your bid is invalid");
+        require(bids[tokenId][msg.sender].blindBid == blindBid, "Your bid is invalid");
 
         bids[tokenId][msg.sender].revealed = true;
 
@@ -74,12 +74,12 @@ contract BlindAuction is IERC721Receiver, Ownable {
         require(success, "Failed to send last bid amount");
     }
 
-    function createBid(uint256 tokenId, bytes32 _blindBid) public {
+    function createBid(uint256 tokenId, bytes32 blindBid) public {
         require(auction.tokenId == tokenId, "TokenId not up for auction");
         require(block.timestamp < auction.endTime, "Auction already ended");
         require(bids[tokenId][msg.sender].blindBid == 0, "You already placed a bid");
 
-        bids[tokenId][msg.sender].blindBid = _blindBid;
+        bids[tokenId][msg.sender].blindBid = blindBid;
         bids[tokenId][msg.sender].revealed = false;
     }
 
