@@ -570,7 +570,7 @@ function App(props) {
               tx={tx}
             ></Auction>
             <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <h2>Events:</h2>
+              <h2>Auction Settled Events:</h2>
               <List
                 bordered
                 dataSource={settledEvents}
@@ -584,6 +584,8 @@ function App(props) {
                   );
                 }}
               />
+
+              <h2>Reveal Events:</h2>
               <List
                 bordered
                 dataSource={revealEvents}
@@ -852,7 +854,7 @@ function Auction(props) {
       <div>
         <h2>Auction ended!</h2>
         <Input
-          style={{ width: "100px", marginRight: "10px" }}
+          style={{ width: "200px", marginRight: "10px" }}
           value={amountToBid}
           onChange={e => setAmountToBid(e.target.value)}
           placeholder="Enter amount to bid"
@@ -911,7 +913,7 @@ function Auction(props) {
         </div>
         <div style={{ margin: "10px" }}>
           <Input
-            style={{ width: "100px", marginRight: "10px" }}
+            style={{ width: "175px", marginRight: "10px" }}
             value={amountToBid}
             onChange={e => setAmountToBid(e.target.value)}
             placeholder="Enter amount to bid"
@@ -927,24 +929,6 @@ function Auction(props) {
             }}
           >
             Commit Bid!
-          </Button>
-          <Button
-            type="primary"
-            disabled={auctionEnded || !amountToBid}
-            onClick={async () => {
-              const data = ethers.utils.formatBytes32String(amountToBid);
-              const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
-              console.log(amountToBid);
-              console.log(ethers.utils.parseEther(amountToBid));
-              await props.tx(
-                props.writeContracts.BlindAuction.revealBid(auction.id, blindBid, {
-                  value: ethers.utils.parseEther(amountToBid),
-                }),
-              );
-              setAmountToBid(null);
-            }}
-          >
-            Reveal Bid!
           </Button>
         </div>
       </>
