@@ -25,7 +25,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "ropsten";
+const defaultNetwork = "localhost";
 
 const mainnetGwei = 21;
 
@@ -89,9 +89,9 @@ module.exports = {
     // },
 
     rinkeby: {
-      url: "https://rinkeby.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
+      url: "https://rinkeby.infura.io/v3/e87710128e304ecca5165ef54bb793d6", // <---- YOUR INFURA ID! (or it won't work)
 
-       //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
+      //    url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/eth/rinkeby", // <---- YOUR MORALIS ID! (not limited to infura)
 
       accounts: {
         mnemonic: mnemonic(),
@@ -111,7 +111,7 @@ module.exports = {
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
 
-      gasPrice: mainnetGwei*1000000000,
+      gasPrice: mainnetGwei * 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -120,7 +120,7 @@ module.exports = {
       url: "https://ropsten.infura.io/v3/e87710128e304ecca5165ef54bb793d6", // <---- YOUR INFURA ID! (or it won't work)
 
       //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/ropsten",// <---- YOUR MORALIS ID! (not limited to infura)
-      gasPrice: 30*10000000000,
+      gasPrice: 30 * 10000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
@@ -142,14 +142,14 @@ module.exports = {
       },
     },
     polygon: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
     polytest: {
-      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai",// <---- YOUR MORALIS ID! (not limited to infura)
+      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
