@@ -66,54 +66,26 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
-To start an auction, head over to the 'Admin' tab so you can mint a sweet NFT 🔥
-Press Mint, and wait a few seconds for it to show up in the list.
+To start an auction, head over to the 'Admin' tab so you can mint a 🔥 NFT. Press Mint, and wait a few seconds for it to show up in the list.
 
+![image](https://user-images.githubusercontent.com/23554636/138988783-cddee30b-9b3d-4aff-bc8c-42d33f8ec5eb.png)
 
-# 📚 Documentation
+Approve the transfer and start the auction. This will approve the BlindAuction contract to transfer the NFT from your address to the BlindAuction contract.
 
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
+Hop over to the Auction tab, and you should see the auction has started! 🧑‍⚖️
 
-# 🔭 Learning Solidity
+![image](https://user-images.githubusercontent.com/23554636/138987591-17085a4c-84e7-41f6-a28d-b197dfd0ce32.png)
 
-📕 Read the docs: https://docs.soliditylang.org
+Now try commiting a bid! You should open an incognito window too so you can simulate multiple people commiting bids. Just make sure you remember what amount you committed! You need to re-enter that same amount during the reveal phase.
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+After the auction is over, you should be able to reveal your bid. If you are the owner of the contract, you'll also see a button to settle.
 
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
+![image](https://user-images.githubusercontent.com/23554636/138987921-b95691c5-3a01-4023-b81a-523064668ab9.png)
 
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
+Go ahead and reveal your bids, you should see the reveal events pop in as you do. Settle the auction when you've revealed all of the bids.
 
-# 🛠 Buidl
+![image](https://user-images.githubusercontent.com/23554636/138988186-4af5f6fa-d797-4d38-a2df-5d6a57a70b7b.png)
 
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+You should see the high bid amount ETH tranferred to your account, and in the Admin tab of the address that was the winner, you should see the NFT! 💥💥💥
 
-
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
-
-
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
-
-# 💬 Support Chat
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
+During the reveal phase, you can play around and test out the commit/reveal requirements. Try revealing a bid amount higher than what you committed, or try revealing without committing a bid.
