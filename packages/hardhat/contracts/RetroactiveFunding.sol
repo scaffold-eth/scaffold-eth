@@ -40,8 +40,12 @@ contract RetroactiveFunding {
     }
 
     function executeSale(IERC721 _nft, address _whale, uint[] calldata _ids) external {
+        require(msg.sender != _whale, "RetroactiveFunding: _whale cannot be the caller");
+        require(_ids.length > 0, "RetroactiveFunding: _ids is empty");
+        
         FloorConfig storage floorConfig = whaleFloorRequest[address(_nft)][_whale];
         floorConfig.quantity = floorConfig.quantity - uint128(_ids.length);
+
         weth.transferFrom(_whale, msg.sender, floorConfig.floor * _ids.length);
         for(uint i = 0; i < _ids.length; i++){
             _nft.safeTransferFrom(msg.sender, address(0), _ids[i]);
