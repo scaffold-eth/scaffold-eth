@@ -351,12 +351,15 @@ function App(props) {
                   </div>
                   <div class="Column">
                     <h2>Lore of the Bufficorn</h2>
-                    <p>The Bufficorn (monocerus magicalis bisonae) are a rare and magical creature native to the Continental Divide region of Colorado’s Rocky Mountains. Although endangered, their population is making considerable resurgence as of 2018. Currently, there are around 10,000 known Bufficorns roaming the wild.</p>
-                    <p>Bufficorns were first discovered in the late 1850s, just outside of today’s ski town Breckenridge, Colorado by Casper Bunyan, a prominent silver prospector of his day. Bunyan, while prospecting the Mosquito Range, saw what he described as a “pink sparkling mass of brown fur” off in the distance, near the summit of Quandary Peak. In addition to their natural magesty, they are known as voraceous buidlers, with each having a unique personality, appearance, and skillset. Learn more about the Bufficorn in the <a href="" target="_blank" rel="noopener noreferrer">Medium post</a>.</p>
+                    <p>The unicorn may be a good representation of rarity and value for the VC community, but it isn’t a great representation of the ethos of Web3. After all, when was the last time anyone saw a unicorn with other unicorns (or any other animal for that matter)? Never. The trouble is the unicorn is a solitary creature basking in its mystery alone..</p>
+                    <p>Then there’s the buffalo, a herd animal that runs with its community, but it isn’t known for magic or majesty.</p>
+                    <p>Legend has it that centuries ago, in order to resolve a dispute between the unicorns and the buffalo, a treaty was formed to create a new species of community-oriented, magical, fantastical animals: the Bufficorn.</p>
+                    <p>The Bufficorn (monocerus magicalis bisonae) portrays the best of both worlds regarding personality traits. They #BUIDL for positive-sum outcomes and encourage the expression of unique creativity by each member of the community.</p>
+                    <p>The Bufficorn #BUIDL Brigade is an expression of what it means to “be a Bufficorn” and to be passionate about #BUIDLing the decentralized future.</p>
                   </div>
                 </div>
               </div>
-              <div class="Section Mint" id="Mint">
+              {/* <div class="Section Mint" id="Mint">
                 <div class="FlexRow Content">
                   <h2>Mint Bufficorns</h2>
                 </div>
@@ -413,7 +416,7 @@ function App(props) {
                     </div>
                   </div>
                 </div>
-              </div>
+                      </div> */}
 
               <div class="Section Trailmap">
                 <div class="Content">
@@ -427,13 +430,20 @@ function App(props) {
                       <div class="Point" />
                       <div class="Line" />
                       <div class="Point" />
+                      <div class="Line" />
+                      <div class="Point" />
                     </div>
                     <div class="Column">
-                      <div class="Stop"><h5>Halloween 2021</h5><h4>Launch of the Bufficorns</h4></div>
+                      <div class="Stop"><h5>Halloween 2021</h5><h4>Initial Drop</h4></div>
                       <div class="LineSpacer" />
-                      <div class="Stop"><h5>Q1 2022</h5><h4>Cool stuff</h4></div>
+                      <div class="Stop"><h5>Dec 2021</h5><h4>Signed Artist Print</h4></div>
                       <div class="LineSpacer" />
-                      <div class="Stop"><h5>Q2 2022</h5><h4>Cooler stuff</h4></div>
+                      <div class="Stop"><h5>Feb 2022</h5><h4>ETHDenver Random Drops: VIP Tickets & Exclusive Swag</h4></div>
+                      <div class="LineSpacer" />
+                      <div class="Stop"><h5>Beyond</h5><h4>Random $SPORK Airdrops</h4></div>
+                      <div class="Stop"><h4>Future NFT Pre-mint Access</h4></div>
+                      <div class="Stop"><h4>Exclusive Event Access</h4></div>
+                      <div class="Stop"><h4>Mystery Easter Eggs</h4></div>
                     </div>
                   </div>
                 </div>
@@ -476,58 +486,7 @@ function App(props) {
             <footer class="colorme Section">
               <div class="Content">
                 <h3>FAQ</h3>
-                <br />
-                <br />
-                <ul id="faq">
-                  <li>
-                    <p>
-                      <strong>🙋‍♂️ Why is the Maximum Supply 10000?</strong>
-                      <br />
-                      Because.
-                    </p>
-                  </li>
-                </ul>
-                <br />
-                <a
-                  style={{ padding: 8 }}
-                  href="https://github.com/austintgriffith/scaffold-eth/tree/moonshot-bots-with-curve"
-                >
-                  Github
-                </a>
-                |
-                <a style={{ padding: 8 }} href="https://gitcoin.co/l/moonshotbots_opensea">
-                  OpenSea
-                </a>
-                |
-                <a
-                  style={{ padding: 8 }}
-                  href="https://etherscan.io/token/0x8b13e88ead7ef8075b58c94a7eb18a89fd729b18"
-                >
-                  EtherScan
-                </a>
-                |
-                <a style={{ padding: 8 }} href="https://t.me/joinchat/v6N_GHY-8kU3ZmRh">
-                  Telegram
-                </a>
-                |
-                <a style={{ padding: 8 }} href="https://discord.gg/ACKb28pSSP">
-                  Discord
-                </a>
-                |
-                <a style={{ padding: 8 }} href="https://moonshotcollective.space">
-                  Moonshot Collective
-                </a>
-                | Art by{" "}
-                <a style={{ padding: 8 }} href="https://Gitcoin.co/theCydonian">
-                  @theCydonian
-                </a>
-                /
-                <a style={{ padding: 8 }} href="https://Gitcoin.co/nasehim7">
-                  @nasehim7
-                </a>
-                <br />
-                <img src="builtoneth.png" />
-                <br />
+                <p>Learn more in the launch article on <a href="medium.com" target="_blank" rel="noopener noreferrer">Medium.</a></p>
               </div>
             </footer>
           </Route>
