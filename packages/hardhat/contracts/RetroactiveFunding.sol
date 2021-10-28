@@ -13,7 +13,8 @@ contract RetroactiveFunding {
         uint128 quantity;
     }
 
-    mapping(address => mapping(address => FloorConfig)) public whaleFloorRequest;
+    mapping(address => mapping(address => FloorConfig))
+        public whaleFloorRequest;
 
     constructor(IERC20 _weth) {
         weth = _weth;
@@ -39,15 +40,28 @@ contract RetroactiveFunding {
         );
     }
 
-    function executeSale(IERC721 _nft, address _whale, uint[] calldata _ids) external {
-        require(msg.sender != _whale, "RetroactiveFunding: _whale cannot be the caller");
+    function executeSale(
+        IERC721 _nft,
+        address _whale,
+        uint256[] calldata _ids
+    ) external {
+        require(
+            msg.sender != _whale,
+            "RetroactiveFunding: _whale cannot be the caller"
+        );
         require(_ids.length > 0, "RetroactiveFunding: _ids is empty");
-        
-        FloorConfig storage floorConfig = whaleFloorRequest[address(_nft)][_whale];
+        FloorConfig storage floorConfig = whaleFloorRequest[address(_nft)][
+            _whale
+        ];
+        require(
+            _ids.length <= floorConfig.quantity,
+            "RetroactiveFunding: _ids exceed the floor request quantity"
+        );
+
         floorConfig.quantity = floorConfig.quantity - uint128(_ids.length);
 
         weth.transferFrom(_whale, msg.sender, floorConfig.floor * _ids.length);
-        for(uint i = 0; i < _ids.length; i++){
+        for (uint256 i = 0; i < _ids.length; i++) {
             _nft.safeTransferFrom(msg.sender, address(0), _ids[i]);
         }
     }
