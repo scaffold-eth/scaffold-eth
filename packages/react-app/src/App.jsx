@@ -423,7 +423,7 @@ function App(props) {
                   <div class="FlexRow" style={{width: '100%'}}>
                     <h2 style={{marginBottom: 50}}>Trail of the Bufficorns</h2>
                   </div>
-                  <div class="FlexRow">
+                  <div class="FlexRow" style={{justifyContent: 'flex-start', alignItems: 'flex-start'}}>
                     <div class="Column">
                       <div class="Point Filled" />
                       <div class="Line" />
@@ -485,8 +485,10 @@ function App(props) {
 
             <footer class="colorme Section">
               <div class="Content">
+                {/* 
                 <h3>FAQ</h3>
                 <p>Learn more in the launch article on <a href="medium.com" target="_blank" rel="noopener noreferrer">Medium.</a></p>
+                */}
               </div>
             </footer>
           </Route>
