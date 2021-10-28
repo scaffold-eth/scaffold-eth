@@ -26,6 +26,13 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  const eyelash = await deploy("Eyelash", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    //args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+  });
+
   const mustache = await deploy("Mustache", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
@@ -51,6 +58,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await FancyLoogie.addNft(mouth.address);
   await FancyLoogie.addNft(mustache.address);
   await FancyLoogie.addNft(contactLenses.address);
+  await FancyLoogie.addNft(eyelash.address);
 
   /*
     To take ownership of yourContract using the ownable library uncomment next line and add the

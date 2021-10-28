@@ -251,6 +251,9 @@ function App(props) {
   const mouthBalance = useContractReader(readContracts, "Mouth", "balanceOf", [address]);
   console.log("🤗 mouth balance:", mouthBalance);
 
+  const eyelashBalance = useContractReader(readContracts, "Eyelash", "balanceOf", [address]);
+  console.log("🤗 eyelash balance:", eyelashBalance);
+
   const mustacheBalance = useContractReader(readContracts, "Mustache", "balanceOf", [address]);
   console.log("🤗 mustache balance:", mustacheBalance);
 
@@ -281,6 +284,9 @@ function App(props) {
 
   const yourMouthBalance = mouthBalance && mouthBalance.toNumber && mouthBalance.toNumber();
   const [yourMouths, setYourMouths] = useState();
+
+  const yourEyelashBalance = eyelashBalance && eyelashBalance.toNumber && eyelashBalance.toNumber();
+  const [yourEyelashes, setYourEyelashes] = useState();
 
   const yourMustacheBalance = mustacheBalance && mustacheBalance.toNumber && mustacheBalance.toNumber();
   const [yourMustaches, setYourMustaches] = useState();
@@ -371,6 +377,29 @@ function App(props) {
       }
       setYourMouths(mouthUpdate.reverse());
 
+      const eyelashUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourEyelashBalance; tokenIndex++) {
+        try {
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.Eyelash.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.Eyelash.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29))
+          console.log("jsonManifestString", jsonManifestString);
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            console.log("jsonManifest", jsonManifest);
+            eyelashUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourEyelashes(eyelashUpdate.reverse());
+
       const mustacheUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourMustacheBalance; tokenIndex++) {
         try {
@@ -450,7 +479,7 @@ function App(props) {
       setFancyLoogiesNfts(fancyLoogiesNftsUpdate);
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourBowBalance, yourMustacheBalance, yourLensesBalance, yourMouthBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourBowBalance, yourMustacheBalance, yourLensesBalance, yourMouthBalance, yourEyelashBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -692,6 +721,16 @@ function App(props) {
               Mouth
             </Link>
           </Menu.Item>
+          <Menu.Item key="/eyelash">
+            <Link
+              onClick={() => {
+                setRoute("/eyelash");
+              }}
+              to="/eyelash"
+            >
+              Eyelash
+            </Link>
+          </Menu.Item>
           <Menu.Item key="/mustache">
             <Link
               onClick={() => {
@@ -740,6 +779,16 @@ function App(props) {
               to="/mintMouth"
             >
               Mint Mouth
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/mintEyelash">
+            <Link
+              onClick={() => {
+                setRoute("/mintEyelash");
+              }}
+              to="/mintEyelash"
+            >
+              Mint Eyelash
             </Link>
           </Menu.Item>
           <Menu.Item key="/mintMustache">
@@ -815,6 +864,16 @@ function App(props) {
           <Route exact path="/mouth">
             <Contract
               name="Mouth"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route exact path="/eyelash">
+            <Contract
+              name="Eyelash"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -1011,6 +1070,18 @@ function App(props) {
                               }}
                             >
                               Remove Mouth
+                            </Button>
+                          )}
+                        {fancyLoogiesNfts &&
+                          fancyLoogiesNfts[id] &&
+                          fancyLoogiesNfts[id][readContracts["Eyelash"].address] && (
+                            <Button
+                              className="action-button"
+                              onClick={() => {
+                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Eyelash"].address, id));
+                              }}
+                            >
+                              Remove Eyelash
                             </Button>
                           )}
                         {fancyLoogiesNfts &&
@@ -1220,6 +1291,98 @@ function App(props) {
                             console.log(tankIdInBytes);
 
                             tx(writeContracts.Mouth["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                          }}>
+                          Transfer
+                        </Button>
+                      </div>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          </Route>
+          <Route exact path="/mintEyelash">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"} onClick={() => {
+                tx(writeContracts.Eyelash.mintItem())
+              }}>MINT</Button>
+            </div>
+            {/* */}
+            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+              <List
+                bordered
+                dataSource={yourEyelashes}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  console.log("IMAGE",item.image);
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} />
+                        <div>{item.description}</div>
+                      </Card>
+
+                      <div>
+                        owner:{" "}
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            tx(writeContracts.Eyelash.transferFrom(address, transferToAddresses[id], id));
+                          }}
+                        >
+                          Transfer
+                        </Button>
+                        <br/><br/>
+                        Transfer to FancyLoogie:{" "}
+                        <Address
+                          address={readContracts.FancyLoogie.address}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                        <Input
+                          placeholder="FancyLoogie ID"
+                          // value={transferToTankId[id]}
+                          onChange={newValue => {
+                            console.log("newValue", newValue.target.value);
+                            const update = {};
+                            update[id] = newValue.target.value;
+                            setTransferToTankId({ ...transferToTankId, ...update});
+                          }}
+                        />
+                        <Button
+                          onClick={() => {
+                            console.log("writeContracts", writeContracts);
+                            console.log("transferToTankId[id]", transferToTankId[id]);
+                            console.log(parseInt(transferToTankId[id]));
+
+                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                            console.log(tankIdInBytes);
+
+                            tx(writeContracts.Eyelash["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
                           }}>
                           Transfer
                         </Button>
