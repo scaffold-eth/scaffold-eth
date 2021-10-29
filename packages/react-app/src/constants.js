@@ -657,15 +657,14 @@ export const BUILDS = [
 
 //--------------------------------------------------------------------------------------------------------------------------------------------
 
-<<<<<<< HEAD
 /*
 {
  name: ".eth",
- role: "fullstack",
+ role: "",
  address: "",
  github: "",
  builds: [ ],
- streamAddress: "",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+ streamAddress: "",
  streamUrl: "http://.buidlguidl.com"
 },
 
@@ -674,6 +673,61 @@ export const BUILDS = [
 
 
 export const BUILDERS = [
+  {
+   name: "zakgriffith.eth",
+   role: "",
+   address: "0x38f84e92b468a1885e73cedc9a4d5632de07eabb",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x664C54cF70797a69f82A4991Ea1Be343a03334e8",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://frogbaseball.buidlguidl.com"
+  },
+  {
+   name: "kijun.eth",
+   role: "",
+   address: "0x03d8DF325C8bFB8929414756E95023d2150C8881",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x8DaBdEf0259A8266234fcbDE4b12a59A66559239",
+   streamUrl: "https://kijun.buidlguidl.com/"
+  },
+  {
+   name: "huxwell.eth",
+   role: "",
+   address: "0xc9a238405ef9d753d55ec1eb8f7a7b17b8d83e63",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xE29ae83beF493eae7A6c07608C25C359d24989C3",
+   streamUrl: "http://huxwell.buidlguidl.com"
+  },
+  {
+   name: "grothe.eth",
+   role: "",
+   address: "0xacf16886efa51ff0957ef321b8510e53d67d1d7c",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xeAdc8bBB8717765429712C7BF5C9C5e55f0bCCd5",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://grothe.buidlguidl.com"
+  },
+
+  {
+   name: "cluda.eth",
+   role: "",
+   address: "0xEB0C4F040FF0e2278bB2c14B7CC9c357467C83e3",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xB34006e71Ac4cF8B05C56422B7Be3d7f14d934E8",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://cluda.buidlguidl.com"
+  },
+  {
+   name: "danielrees.eth",
+   role: "",
+   address: "0xE7A54673f2FfE41cf38dbA2014326064A958b709",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xA13966b1b4B66aC6670f0C14f8FA0a45FE219A09",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://danielrees.buidlguidl.com"
+  },
   {
    name: "stermi.eth",
    role: "fullstack",
@@ -728,7 +782,7 @@ export const BUILDERS = [
    builds: [ ],
    streamAddress: "0x4b5ed9760e5F5E87c50d9739BeFf5b13FB61cC2F",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
    streamUrl: "http://carletex.buidlguidl.com"
-  },
+ },/*
   {
    name: "trombone.eth",
    role: "support",
@@ -737,7 +791,7 @@ export const BUILDERS = [
    builds: [ ],
    streamAddress: "0x853E9d7036C48FA36CCCfF0e5b8907ae013ae8Eb",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
    streamUrl: "http://trombone.buidlguidl.com"
-  },
+ },*/
   {
    name: "ghostffcode.eth",
    role: "fullstack",
@@ -765,10 +819,6 @@ export const BUILDERS = [
    streamAddress: "0x446455ece8922a5C4CE8b205b74D06bD9706143b",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
    streamUrl: "http://captnseagraves.buidlguidl.com"
   },
-
-=======
-export const BUILDERS = [
->>>>>>> 7e2fdd3c697d72d7394911392d0c85fd43376bb8
   {
     name: "lekag.eth",
     role: "Full Stack",
@@ -820,8 +870,10 @@ export const BUILDERS = [
     address: "0xbE13CA20B7ff5fEf2D04f67aBf2A2a07feAfA102",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=shravansunder",
     builds: [],
-    streamAddress: "0x1FE0e66952b7eeB16dDb62B33CA62813c1c4FaA7", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-    streamUrl: "http://shravansunder.buidlguidl.com",
+    //streamAddress: "0x1FE0e66952b7eeB16dDb62B33CA62813c1c4FaA7", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    //streamUrl: "http://shravansunder.buidlguidl.com",
+    streamAddress: "0x262f56C901847261080e366eDAb27d454a1315cd", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "http://shravansunder2.buidlguidl.com",
   },
   {
     name: "powvt.eth",
@@ -840,7 +892,7 @@ export const BUILDERS = [
     builds: [],
     streamAddress: "0x21BD856523f62Dd2A6eDBa750E97bD106204D5f2", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     streamUrl: "http://isaacpatka.buidlguidl.com",
-  },
+  },/*
   {
     name: "pabloruiz.eth",
     role: "Full Stack | Community",
@@ -849,7 +901,7 @@ export const BUILDERS = [
     builds: [],
     streamAddress: "0xB3A51b63B7f1Bcb8600FF67E4a69C7B690994a89", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     streamUrl: "http://pabloruiz.buidlguidl.com",
-  },
+  },*/
   {
     name: "togzhan.eth",
     role: "Full Stack",
@@ -915,23 +967,13 @@ export const BUILDERS = [
     streamUrl: "http://ssteiger.buidlguidl.com",
   },
   {
-<<<<<<< HEAD
-    name: "rawcipher.eth",
-    role: "Community Support",
+    name: "pharo.eth",
+    role: "Maintainer | Full Stack",
     address: "0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=codenamejason",
     builds: [ "vrf" ],
     streamAddress: "0x3DC246459433aFc0360b83166A6Dd9B7697EaA4A",//"0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
     streamUrl: "http://rawcipher1.buidlguidl.com",//rawcipherstream.surge.sh
-=======
-    name: "pharo.eth",
-    role: "Maintainer | Full Stack",
-    address: "0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B",
-    github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=codenamejason",
-    builds: ["vrf"],
-    streamAddress: "0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4", //"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
-    streamUrl: "http://rawcipher.buidlguidl.com", //rawcipherstream.surge.sh
->>>>>>> 7e2fdd3c697d72d7394911392d0c85fd43376bb8
   },
   {
     name: "mrdee.eth",
