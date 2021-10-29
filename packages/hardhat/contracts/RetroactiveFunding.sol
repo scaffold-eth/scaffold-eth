@@ -8,11 +8,13 @@ contract RetroactiveFunding {
 
     IERC20 public immutable weth;
 
+    /// @dev struct containing details about the floor increase request, the new floor price and no of id's the whale is willing to pay for
     struct FloorConfig {
         uint128 floor;
         uint128 quantity;
     }
 
+    /// @dev mapping which tracks the te whale floor config with 2 keys the nft address and te whale address
     mapping(address => mapping(address => FloorConfig))
         public whaleFloorRequest;
 
@@ -20,6 +22,12 @@ contract RetroactiveFunding {
         weth = _weth;
     }
 
+    /**
+     * @notice Whale request a new floor price for a particular nft
+     * @param _nft nft address
+     * @param _floor new floor price
+     * @param _quantity no of id's the whale can pay for
+     */
     function requestToIncreaseFloor(
         IERC721 _nft,
         uint128 _floor,
@@ -40,6 +48,12 @@ contract RetroactiveFunding {
         );
     }
 
+    /**
+     * @notice Executes a sale after the nft holder sees the new floor request they can call this function burn the nft and get WETH
+     * @param _nft nft address
+     * @param _whale whale address
+     * @param _ids array of the nft id's the holder is burning
+     */
     function executeSale(
         IERC721 _nft,
         address _whale,
@@ -62,6 +76,7 @@ contract RetroactiveFunding {
 
         weth.transferFrom(_whale, msg.sender, floorConfig.floor * _ids.length);
         for (uint256 i = 0; i < _ids.length; i++) {
+            // burn the nft's approval required
             _nft.safeTransferFrom(msg.sender, address(0), _ids[i]);
         }
     }
