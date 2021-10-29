@@ -104,6 +104,49 @@ export default function QuadraticDiplomacyReward({
     return [votes, voteCount, sqrts, total];
   }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.votes).sort().join(), votingType]);
 
+  const votersInfo = useMemo(() => {
+    const voters = [];
+
+    if (!currentDistribution.id) {
+      return voters;
+    }
+
+    currentDistribution.members.forEach(member => {
+      const hasVoted = Object.keys(currentDistribution.votes).includes(member);
+      let totalVotes = 0;
+      let verifiedSignature = false;
+
+      if (hasVoted) {
+        const selectedContributors = currentDistribution.votes[member];
+
+        const sortedVotes = Object.keys(selectedContributors).sort();
+
+        const message =
+          "qdip-vote-" +
+          currentDistribution.id +
+          member +
+          sortedVotes.join() +
+          sortedVotes.map(voter => selectedContributors[voter]).join();
+
+        const recovered = ethers.utils.verifyMessage(message, currentDistribution.votesSignatures[member]);
+        verifiedSignature = recovered === member;
+
+        Object.entries(selectedContributors).forEach(voteInfo => {
+          totalVotes += voteInfo[1];
+        });
+      }
+
+      voters.push({
+        address: member,
+        vote: totalVotes,
+        hasVoted: hasVoted,
+        verifiedSignature: verifiedSignature,
+      });
+    });
+
+    return voters;
+  }, [currentDistribution.id, currentDistribution.id && Object.keys(currentDistribution.votes).sort().join()]);
+
   const columns = useMemo(
     () => [
       {
@@ -141,6 +184,24 @@ export default function QuadraticDiplomacyReward({
           </p>
         ),
       },
+    ],
+    [mainnetProvider, selectedToken],
+  );
+
+  const columnsVoters = useMemo(
+    () => [
+      {
+        title: "Address",
+        dataIndex: "address",
+        render: address => <Address address={address} fontSize={16} size="short" ensProvider={mainnetProvider} />,
+      },
+      {
+        title: "Nº of votes",
+        dataIndex: "vote",
+        defaultSortOrder: "descend",
+        align: "center",
+        sorter: (a, b) => a.vote - b.vote,
+      },
       {
         title: "Has Voted",
         dataIndex: "hasVoted",
@@ -166,7 +227,7 @@ export default function QuadraticDiplomacyReward({
           verifiedSignature ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="red" />,
       },
     ],
-    [mainnetProvider, selectedToken],
+    [mainnetProvider],
   );
 
   const dataSource = useMemo(
@@ -334,18 +395,22 @@ export default function QuadraticDiplomacyReward({
       </Space>
       <Divider />
       <Space direction="vertical" style={{ width: "100%" }}>
+        <Title level={4}>Voters</Title>
         {missingVotingMembers?.length > 0 && (
           <Alert
             showIcon
             type="warning"
-            message={<Title level={5}>{missingVotingMembers.length} members has not voted yet:</Title>}
-            description={missingVotingMembers.map(wallet => (
-              <p key={wallet}>
-                <Address address={wallet} fontSize={16} size="short" ensProvider={mainnetProvider} />
-              </p>
-            ))}
+            message={<Title level={5}>{missingVotingMembers.length} members has not voted yet.</Title>}
           />
         )}
+        <Table
+          bordered
+          dataSource={votersInfo}
+          columns={columnsVoters}
+          pagination={{ pageSize: 100, hideOnSinglePage: true }}
+        />
+        <Divider />
+        <Title level={4}>Candidates</Title>
         <Table
           bordered
           dataSource={dataSource}

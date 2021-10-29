@@ -21,7 +21,7 @@ export default function QuadraticDiplomacyVote({
 
   if (Object.keys(selectedContributors).length === 0 && currentDistribution.id) {
     setSelectedContributors(
-      currentDistribution.members.reduce((entries, current) => {
+      currentDistribution.candidates.reduce((entries, current) => {
         entries[current] = 0;
         return entries;
       }, {}),
@@ -31,7 +31,7 @@ export default function QuadraticDiplomacyVote({
   const contributors = useMemo(
     () =>
       currentDistribution.id &&
-      currentDistribution.members.reduce((entries, current) => {
+      currentDistribution.candidates.reduce((entries, current) => {
         entries[current] = 0;
         return entries;
       }, {}),
@@ -47,7 +47,7 @@ export default function QuadraticDiplomacyVote({
     return (
       <div style={{ border: "1px solid", padding: "40px", width: 800, margin: "auto", marginTop: 64, textAlign: "left" }}>
         <Title level={4} style={{ fontFamily: "Space Mono" }}>Access denied</Title>
-        <p>You are not part of the members of this election.</p>
+        <p>You are not part of the voters of this election.</p>
       </div>
     );
   }

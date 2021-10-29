@@ -110,12 +110,25 @@ app.post("/distributions", async function (request, response) {
     }
   });
 
+  let candidates = [];
+  request.body.candidates.forEach(voteAddress => {
+    try {
+      const voteAddressWithChecksum = ethers.utils.getAddress(voteAddress);
+      if (!candidates.includes(voteAddressWithChecksum)) {
+        candidates.push(voteAddressWithChecksum);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
   try {
     const resAdd = await db.createDistribution({
       owner: request.body.address,
       createdAt: Date.now(),
       voteAllocation: request.body.voteAllocation,
       members: members,
+      candidates: candidates,
       votes: {},
       votesSignatures: {},
       signature: request.body.signature,
@@ -227,12 +240,12 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     let votes = distribution.votes;
     let votesSignatures = distribution.votesSignatures;
 
-    // Check if all votes are to members
+    // Check if all votes are to candidates
     const allMembers = Object.keys(request.body.votes).every(voteAddress => {
-      return distribution.members.includes(voteAddress);
+      return distribution.candidates.includes(voteAddress);
     });
     if (!allMembers) {
-      return response.status(401).send('No member votes on voting data');
+      return response.status(401).send('Vote to a no candidate member');
     }
 
     // Check if the total votes are equal or less than the vote allocation

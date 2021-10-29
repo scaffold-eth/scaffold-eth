@@ -17,6 +17,7 @@ export default function QuadraticDiplomacyCreate({
   isAdmin,
 }) {
   const [voters, setVoters] = useState([""]);
+  const [candidates, setCandidates] = useState([""]);
   const [voteAllocation, setVoteAllocation] = useState(0);
   const [isSendingTx, setIsSendingTx] = useState(false);
   const [form] = Form.useForm();
@@ -40,10 +41,30 @@ export default function QuadraticDiplomacyCreate({
     });
   };
 
+  const handleAddCandidates = async () => {
+    const text = await navigator.clipboard.readText();
+    const addresses = text.split(",");
+    if (voters.length === 1 && voters[0] === "") {
+      setVoters([]);
+    }
+    addresses.forEach(candidateAddress => {
+      try {
+        const candidateAddressWithChecksum = ethers.utils.getAddress(candidateAddress);
+        if (!candidates.includes(candidateAddressWithChecksum)) {
+          setCandidates(prevCandidates => [...prevCandidates, candidateAddressWithChecksum]);
+        }
+      } catch (error) {
+        console.log("Error parsing address ", candidateAddress);
+        console.log(error);
+      }
+    });
+  };
+
   const handleSubmit = async () => {
     // ToDo. Check if addresses are valid.
     setIsSendingTx(true);
     const filteredVoters = voters.filter(voter => voter);
+    const filteredCandidates = candidates.filter(voter => voter);
 
     let message = "qdip-creation-" + address;
     console.log("Message:" + message);
@@ -55,6 +76,7 @@ export default function QuadraticDiplomacyCreate({
         address: address,
         voteAllocation: voteAllocation,
         members: filteredVoters,
+        candidates: filteredCandidates,
         signature: signature,
       })
       .then(response => {
@@ -100,11 +122,8 @@ export default function QuadraticDiplomacyCreate({
             onChange={event => setVoteAllocation(event.target.value)}
           />
         </Form.Item>
-        <Button
-          type="primary"
-          block
-          onClick={() => handleAddVoters()}
-        >
+        <Divider />
+        <Button type="primary" block onClick={() => handleAddVoters()}>
           Add Voters from Clipboard
         </Button>
         <Divider />
@@ -126,6 +145,31 @@ export default function QuadraticDiplomacyCreate({
             onClick={() => setVoters(prevVoters => [...prevVoters, ""])}
           >
             Add Voter
+          </Button>
+        </Form.Item>
+        <Divider />
+        <Button type="primary" block onClick={() => handleAddCandidates()}>
+          Add Candidates from Clipboard
+        </Button>
+        <Divider />
+        {candidates.map((_, index) => (
+          <VoterInput
+            key={index}
+            index={index}
+            setVoters={setCandidates}
+            voters={candidates}
+            mainnetProvider={mainnetProvider}
+          />
+        ))}
+        <Form.Item style={{ justifyContent: "center", marginTop: 24 }}>
+          {/*ToDo. Restart ant form state (the browser is keeping filled-removed elements)*/}
+          <Button
+            type="dashed"
+            block
+            icon={<PlusOutlined />}
+            onClick={() => setCandidates(prevCandidates => [...prevCandidates, ""])}
+          >
+            Add Candidate
           </Button>
         </Form.Item>
         <Divider />
