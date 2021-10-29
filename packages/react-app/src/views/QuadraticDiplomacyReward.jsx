@@ -61,11 +61,11 @@ export default function QuadraticDiplomacyReward({
           // Sum of the square root of the votes for each member.
           sqrtVote: 0,
           hasVoted: true,
-          verifiedSignature: recovered.toLowerCase() === votingAddress.toLowerCase(),
+          verifiedSignature: recovered === votingAddress,
         };
       } else {
         votes[votingAddress].hasVoted = true;
-        votes[votingAddress].verifiedSignature = recovered.toLowerCase() === votingAddress.toLowerCase();
+        votes[votingAddress].verifiedSignature = recovered === votingAddress;
       }
 
       Object.entries(selectedContributors).forEach(voteInfo => {

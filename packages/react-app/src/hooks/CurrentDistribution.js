@@ -13,7 +13,7 @@ export default function useCurrentDistribution(serverUrl, address) {
       .then(response => {
         console.log(response);
         setCurrentDistribution(response.data);
-        setIsVoter(response.data.members.includes(address.toLowerCase()));
+        setIsVoter(response.data.members.includes(address));
       })
       .catch(error => {
         console.log(error);

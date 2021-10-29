@@ -80,7 +80,7 @@ app.post("/distributions", async function (request, response) {
   console.log(request.body);
 
   // TODO: add some nonce to avoid replay attacks
-  const message = "qdip-creation-" + request.body.address + request.body.voteAllocation + request.body.members.join();
+  const message = "qdip-creation-" + request.body.address;
 
   const recovered = ethers.utils.verifyMessage(
     message,
@@ -98,12 +98,24 @@ app.post("/distributions", async function (request, response) {
     return response.status(401).send('No admin in contract');
   }
 
+  let members = [];
+  request.body.members.forEach(voteAddress => {
+    try {
+      const voteAddressWithChecksum = ethers.utils.getAddress(voteAddress);
+      if (!members.includes(voteAddressWithChecksum)) {
+        members.push(voteAddressWithChecksum);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  });
+
   try {
     const resAdd = await db.createDistribution({
       owner: request.body.address,
       createdAt: Date.now(),
       voteAllocation: request.body.voteAllocation,
-      members: request.body.members.map(voter => voter.toLowerCase()),
+      members: members,
       votes: {},
       votesSignatures: {},
       signature: request.body.signature,
@@ -187,7 +199,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
   const message =
     "qdip-vote-" +
     request.params.distributionId +
-    request.body.address.toLowerCase() +
+    request.body.address +
     sortedVotes.join() +
     sortedVotes.map(voter => request.body.votes[voter]).join();
 
@@ -196,7 +208,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
     request.body.signature
   );
 
-  if (recovered.toLowerCase() != request.body.address.toLowerCase()) {
+  if (recovered != request.body.address) {
     console.log('Wrong signature');
     return response.status(401).send('Wrong signature');
   }
@@ -208,9 +220,7 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
   } else {
     console.log(distribution);
 
-    const voter = recovered.toLowerCase();
-
-    if (!distribution.members.includes(voter)) {
+    if (!distribution.members.includes(recovered)) {
       return response.status(401).send('Voter not allowed');
     }
 
@@ -232,8 +242,8 @@ app.post("/distributions/:distributionId/vote", async function (request, respons
       return response.status(401).send('More total votes than allowed');
     }
 
-    votes[voter] = request.body.votes;
-    votesSignatures[voter] = request.body.signature;
+    votes[recovered] = request.body.votes;
+    votesSignatures[recovered] = request.body.signature;
 
     const res = await db.updateDistribution(distribution.id, { votes: votes, votesSignatures: votesSignatures });
 

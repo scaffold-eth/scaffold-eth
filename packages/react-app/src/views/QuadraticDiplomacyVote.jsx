@@ -75,7 +75,7 @@ export default function QuadraticDiplomacyVote({
     const message =
       "qdip-vote-" +
       currentDistribution.id +
-      address.toLowerCase() +
+      address +
       sortedVotes.join() +
       sortedVotes.map(voter => selectedContributors[voter]).join();
 
