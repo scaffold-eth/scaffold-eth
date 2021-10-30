@@ -1,8 +1,25 @@
-import { Skeleton, Typography } from "antd";
 import React from "react";
+import {
+  Skeleton,
+  Link,
+  Text,
+  Input,
+  InputGroup,
+  Editable,
+  EditableInput,
+  EditablePreview,
+  InputLeftElement,
+  Button,
+  SkeletonCircle,
+  SkeletonText,
+  IconButton,
+} from "@chakra-ui/react";
+import { useClipboard } from "@chakra-ui/hooks";
+import { Box, Flex, HStack } from "@chakra-ui/layout";
 import Blockies from "react-blockies";
-import { useThemeSwitcher } from "react-css-theme-switcher";
 import { useLookupAddress } from "eth-hooks/dapps/ens";
+import { MdContentCopy, MdCheckCircle } from "react-icons/md";
+import { RiExternalLinkFill } from "react-icons/ri";
 
 // changed value={address} to address={address}
 
@@ -29,23 +46,20 @@ import { useLookupAddress } from "eth-hooks/dapps/ens";
   - Provide fontSize={fontSize} to change the size of address text
 */
 
-const { Text } = Typography;
-
 const blockExplorerLink = (address, blockExplorer) =>
   `${blockExplorer || "https://etherscan.io/"}${"address/"}${address}`;
 
 export default function Address(props) {
   const address = props.value || props.address;
-
   const ens = useLookupAddress(props.ensProvider, address);
-
-  const { currentTheme } = useThemeSwitcher();
+  const { hasCopied, onCopy } = useClipboard(address);
 
   if (!address) {
     return (
-      <span>
-        <Skeleton avatar paragraph={{ rows: 1 }} />
-      </span>
+      <Box padding="6" as="span">
+        <SkeletonCircle size="10" />
+        <SkeletonText mt="4" noOfLines={1} spacing="4" />
+      </Box>
     );
   }
 
@@ -65,56 +79,54 @@ export default function Address(props) {
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
   if (props.minimized) {
     return (
-      <span style={{ verticalAlign: "middle" }}>
-        <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-          target="_blank"
-          href={etherscanLink}
-          rel="noopener noreferrer"
-        >
+      <Box as="span" verticalAlign="middle">
+        <Link target="_blank" href={etherscanLink} rel="noopener noreferrer">
           <Blockies seed={address.toLowerCase()} size={8} scale={2} />
-        </a>
-      </span>
+        </Link>
+      </Box>
     );
   }
 
   let text;
   if (props.onChange) {
     text = (
-      <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
-        <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-          target="_blank"
-          href={etherscanLink}
-          rel="noopener noreferrer"
-        >
-          {displayAddress}
+      <Editable placeholder={address}>
+        <EditablePreview width="100%" />
+        <a target="_blank" href={etherscanLink} rel="noopener noreferrer">
+          <EditableInput value={displayAddress} onChange={props.onChange} />
         </a>
-      </Text>
+      </Editable>
     );
   } else {
     text = (
-      <Text copyable={{ text: address }}>
-        <a
-          style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
-          target="_blank"
-          href={etherscanLink}
-          rel="noopener noreferrer"
-        >
-          {displayAddress}
-        </a>
-      </Text>
+      <Flex alignItems="center" justifyContent="center" flexGrow="1">
+        <InputGroup>
+          <InputLeftElement pointerEvents="none" children={<RiExternalLinkFill />} />
+          <Input
+            value={address}
+            isReadOnly
+            placeholder={address}
+            cursor="pointer"
+            onClick={() => window.open(etherscanLink, "_blank")}
+          />
+        </InputGroup>
+
+        <IconButton
+          onClick={onCopy}
+          aria-label="Copy Address"
+          fontSize="20px"
+          icon={hasCopied ? <MdCheckCircle /> : <MdContentCopy />}
+        />
+      </Flex>
     );
   }
 
   return (
-    <span>
-      <span style={{ verticalAlign: "middle" }}>
-        <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
-      </span>
-      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
-        {text}
-      </span>
-    </span>
+    <HStack fontSize={props.fontSize ? props.fontSize : 28} verticalAlign="middle">
+      {/* <span style={{ verticalAlign: "middle" }}>
+      </span> */}
+      <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
+      {text}
+    </HStack>
   );
 }

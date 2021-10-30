@@ -1,6 +1,6 @@
-import { Button } from "antd";
+import { Button } from "@chakra-ui/react";
+import { Flex, HStack } from "@chakra-ui/layout";
 import React from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
@@ -55,13 +55,7 @@ export default function Account({
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
-        <Button
-          key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          onClick={logoutOfWeb3Modal}
-        >
+        <Button key="logout-button" verticalAlign="top" ml="8" mt="4" rounded size="lg" onClick={logoutOfWeb3Modal}>
           logout
         </Button>,
       );
@@ -69,9 +63,11 @@ export default function Account({
       modalButtons.push(
         <Button
           key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
+          verticalAlign="top"
+          ml="8"
+          mt="4"
+          rounded
+          size="lg"
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
         >
@@ -81,12 +77,10 @@ export default function Account({
     }
   }
 
-  const { currentTheme } = useThemeSwitcher();
-
   const display = minimized ? (
     ""
   ) : (
-    <span>
+    <Flex flexDirection="row" alignItems="center" justifyContent="center">
       {address ? (
         <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
       ) : (
@@ -99,15 +93,14 @@ export default function Account({
         signer={userSigner}
         ensProvider={mainnetProvider}
         price={price}
-        color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
       />
-    </span>
+    </Flex>
   );
 
   return (
-    <div>
+    <HStack>
       {display}
       {modalButtons}
-    </div>
+    </HStack>
   );
 }
