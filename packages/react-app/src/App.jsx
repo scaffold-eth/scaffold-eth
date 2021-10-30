@@ -1,15 +1,16 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Menu, Row, List, Input } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, BytesStringInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
+import Countdown from "react-countdown";
 import {
   useBalance,
   useContractLoader,
@@ -21,6 +22,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import { Address } from "./components";
 
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -251,6 +253,12 @@ function App(props) {
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
 
+  // 📟 Listen for broadcast events
+  const setPurposeEvents = useEventListener(readContracts, "YourContract", "SetPurpose", localProvider, 1);
+
+  const settledEvents = useEventListener(readContracts, "BlindAuction", "AuctionSettled", localProvider, 1);
+  const revealEvents = useEventListener(readContracts, "BlindAuction", "BidRevealed", localProvider, 1);
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -455,7 +463,17 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Auction
+            </Link>
+          </Menu.Item>
+          <Menu.Item key="/admin">
+            <Link
+              onClick={() => {
+                setRoute("/admin");
+              }}
+              to="/admin"
+            >
+              Admin
             </Link>
           </Menu.Item>
           <Menu.Item key="/hints">
@@ -501,12 +519,22 @@ function App(props) {
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/admin">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
+
+            <div style={{ display: "flex", flexDirection: "column" }}>
+              <MintedItems
+                address={address}
+                mainnetProvider={mainnetProvider}
+                writeContracts={writeContracts}
+                readContracts={readContracts}
+                tx={tx}
+              ></MintedItems>
+            </div>
 
             <Contract
               name="YourContract"
@@ -517,6 +545,62 @@ function App(props) {
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
             />
+            <Contract
+              name="BlindAuction"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="YourCollectible"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+          <Route path="/">
+            <Auction
+              address={address}
+              mainnetProvider={mainnetProvider}
+              writeContracts={writeContracts}
+              readContracts={readContracts}
+              tx={tx}
+            ></Auction>
+            <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <h2>Auction Settled Events:</h2>
+              <List
+                bordered
+                dataSource={settledEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + "_" + item.blockHash}>
+                      Winner:
+                      <Address address={item.args[3]} ensProvider={mainnetProvider} fontSize={16} />
+                      {ethers.utils.formatEther(item.args[2])}
+                    </List.Item>
+                  );
+                }}
+              />
+
+              <h2>Reveal Events:</h2>
+              <List
+                bordered
+                dataSource={revealEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item.blockNumber + "_" + item.blockHash}>
+                      Revealed:
+                      <Address address={item.args[3]} ensProvider={mainnetProvider} fontSize={16} />
+                      {ethers.utils.formatEther(item.args[2])}
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           </Route>
           <Route path="/hints">
             <Hints
@@ -630,6 +714,230 @@ function App(props) {
           </Col>
         </Row>
       </div>
+    </div>
+  );
+}
+
+function MintedItems(props) {
+  const [mintedItems, setMintedItems] = useState([]);
+  const theBalance = useContractReader(props.readContracts, "YourCollectible", "balanceOf", [props.address]);
+
+  useOnBlock(props.mainnetProvider, () => {
+    const getItems = async () => {
+      const items = [];
+      for (let tokenIndex = 0; tokenIndex < theBalance; tokenIndex++) {
+        const tokenId = await props.readContracts.YourCollectible.tokenOfOwnerByIndex(props.address, tokenIndex);
+        const tokenURI = await props.readContracts.YourCollectible.tokenURI(tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64");
+
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          items.push({ id: tokenId, uri: tokenURI, owner: props.address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setMintedItems(items);
+    };
+    getItems();
+  });
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      <List
+        style={{ width: "400px" }}
+        bordered
+        dataSource={mintedItems}
+        renderItem={item => {
+          return (
+            <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+              <Card style={{ width: "400px", heigth: "200px" }}>
+                <List.Item key={item.uri}>
+                  <img src={item.image} />
+                </List.Item>
+                <Button
+                  style={{ marginTop: "24px" }}
+                  type="primary"
+                  onClick={async () => {
+                    await props.tx(
+                      props.writeContracts.YourCollectible.approve(props.readContracts.BlindAuction.address, item.id),
+                    );
+                    props.tx(
+                      props.writeContracts.BlindAuction.createAuction(
+                        props.readContracts.YourCollectible.address,
+                        item.id,
+                      ),
+                    );
+                  }}
+                >
+                  Approve transfer and start auction
+                </Button>
+              </Card>
+            </div>
+          );
+        }}
+      ></List>
+      <Button
+        type="primary"
+        onClick={() => {
+          props.tx(props.writeContracts.YourCollectible.mintItem());
+        }}
+      >
+        Mint!
+      </Button>
+    </div>
+  );
+}
+
+function Auction(props) {
+  const [amountToBid, setAmountToBid] = useState(null);
+  const [auction, setAuction] = useState(null);
+  const [auctionEnded, setAuctionEnded] = useState(false);
+  const [endTime, setEndTime] = useState(null);
+
+  useOnBlock(props.mainnetProvider, () => {
+    const getAuction = async () => {
+      const auction = await props.readContracts.BlindAuction?.currentAuction();
+
+      const endTime = new Date(auction?.endTime * 1000);
+      const ended = endTime < new Date();
+
+      setAuctionEnded(ended);
+
+      if (!ended) {
+        const endsAt = new Date(endTime - Date.now() + Date.now());
+        setEndTime(endsAt);
+
+        const tokenURI = await props.readContracts.YourCollectible.tokenURI(auction.tokenId);
+        const jsonManifestString = Buffer.from(tokenURI.substring(29), "base64");
+        try {
+          const jsonManifest = JSON.parse(jsonManifestString);
+          console.log("jsonManifest", jsonManifest);
+          setAuction({ id: auction.tokenId, uri: tokenURI, owner: props.address, ...jsonManifest });
+        } catch (e) {
+          console.log(e);
+        }
+      }
+    };
+    getAuction();
+  });
+
+  const [owner, setOwner] = useState(false);
+  useEffect(() => {
+    const getOwner = async () => {
+      const owner = await props.readContracts.BlindAuction?.owner();
+      setOwner(owner === props.address);
+    };
+    getOwner();
+  }, [props.address]);
+
+  let settleAuction = "";
+  if (owner) {
+    settleAuction = (
+      <Button
+        type="primary"
+        disabled={!auctionEnded}
+        onClick={async () => {
+          await props.tx(props.writeContracts.BlindAuction.settleAuction());
+        }}
+      >
+        {" "}
+        Settle Auction
+      </Button>
+    );
+  }
+
+  let auctionView = "";
+  if (auctionEnded) {
+    auctionView = (
+      <div>
+        <h2>Auction ended!</h2>
+        <Input
+          style={{ width: "200px", marginRight: "10px" }}
+          value={amountToBid}
+          onChange={e => setAmountToBid(e.target.value)}
+          placeholder="Enter amount to bid"
+        />
+        <Button
+          type="primary"
+          disabled={!amountToBid}
+          onClick={async () => {
+            const data = ethers.utils.formatBytes32String(amountToBid);
+            const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
+            console.log(amountToBid);
+            console.log(ethers.utils.parseEther(amountToBid));
+            await props.tx(
+              props.writeContracts.BlindAuction.revealBid(auction.id, blindBid, {
+                value: ethers.utils.parseEther(amountToBid),
+              }),
+            );
+            setAmountToBid(null);
+          }}
+        >
+          Reveal Bid!
+        </Button>
+        {settleAuction}
+      </div>
+    );
+  } else if (auction) {
+    auctionView = (
+      <>
+        <Countdown
+          date={endTime}
+          renderer={props => {
+            if (props.completed) {
+              return (
+                <div>
+                  <h2>Auction ended!</h2>
+                </div>
+              );
+            } else {
+              return (
+                <span style={{ display: "flex", alignItems: "baseline" }}>
+                  <h4 style={{ marginRight: "10px" }}>Ends in</h4>
+                  <h1>{props.hours}</h1>h<h1>{props.minutes}</h1>m<h1>{props.seconds}</h1>s
+                </span>
+              );
+            }
+          }}
+        />
+        <Card style={{ width: "400px", heigth: "200px" }}>
+          <List.Item key={auction.uri}>
+            <img src={auction.image} />
+          </List.Item>
+        </Card>
+        <div>
+          <span style={{ marginRight: "10px" }}>{auction.description}</span>
+          <span>{auction.name}</span>
+        </div>
+        <div style={{ margin: "10px" }}>
+          <Input
+            style={{ width: "175px", marginRight: "10px" }}
+            value={amountToBid}
+            onChange={e => setAmountToBid(e.target.value)}
+            placeholder="Enter amount to bid"
+          />
+          <Button
+            type="primary"
+            disabled={auctionEnded || !amountToBid}
+            onClick={async () => {
+              const data = ethers.utils.formatBytes32String(amountToBid);
+              const blindBid = ethers.utils.solidityKeccak256(["address", "bytes32"], [props.address, data]);
+              await props.tx(props.writeContracts.BlindAuction.createBid(auction.id, blindBid));
+              setAmountToBid(null);
+            }}
+          >
+            Commit Bid!
+          </Button>
+        </div>
+      </>
+    );
+  }
+
+  return (
+    <div style={{ display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
+      {auctionView}
     </div>
   );
 }
