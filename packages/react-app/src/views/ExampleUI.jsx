@@ -1,8 +1,20 @@
 import { SyncOutlined } from "@ant-design/icons";
 import { utils } from "ethers";
-import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
+import { DatePicker } from "antd";
+import {
+  Button,
+  Divider,
+  Input,
+  Progress,
+  Spinner,
+  Switch,
+  RangeSlider,
+  RangeSliderTrack,
+  RangeSliderFilledTrack,
+  RangeSliderThumb,
+} from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Address, Balance, Events } from "../components";
+import { Address, Balance, Events, Card } from "../components";
 
 export default function ExampleUI({
   purpose,
@@ -177,42 +189,27 @@ export default function ExampleUI({
         <Card style={{ marginTop: 32 }}>
           <div>
             There are tons of generic components included from{" "}
-            <a href="https://ant.design/components/overview/" target="_blank" rel="noopener noreferrer">
-              🐜 ant.design
+            <a href="https://chakra-ui.com/" target="_blank" rel="noopener noreferrer">
+              chakra-ui
             </a>{" "}
             too!
           </div>
-
-          <div style={{ marginTop: 8 }}>
-            <Button type="primary">Buttons</Button>
-          </div>
-
-          <div style={{ marginTop: 8 }}>
-            <SyncOutlined spin /> Icons
-          </div>
-
-          <div style={{ marginTop: 8 }}>
+          <Button type="primary">Buttons</Button>
+          <SyncOutlined spin /> Icons
+          <div style={{ marginTop: 2 }}>
             Date Pickers?
-            <div style={{ marginTop: 2 }}>
-              <DatePicker onChange={() => {}} />
-            </div>
+            <DatePicker onChange={() => {}} />
           </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Slider range defaultValue={[20, 50]} onChange={() => {}} />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Switch defaultChecked onChange={() => {}} />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Progress percent={50} status="active" />
-          </div>
-
-          <div style={{ marginTop: 32 }}>
-            <Spin />
-          </div>
+          <RangeSlider aria-label={["min", "max"]} defaultValue={[10, 30]}>
+            <RangeSliderTrack>
+              <RangeSliderFilledTrack />
+            </RangeSliderTrack>
+            <RangeSliderThumb index={0} />
+            <RangeSliderThumb index={1} />
+          </RangeSlider>
+          <Switch defaultChecked onChange={() => {}} />
+          <Progress value={80} />
+          <Spinner />
         </Card>
       </div>
     </div>
