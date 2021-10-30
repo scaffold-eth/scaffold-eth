@@ -1,15 +1,19 @@
+import React, { useState, useEffect } from "react";
 import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
-import { Button, Modal, Spin, Tooltip, Typography } from "antd";
+import { Modal, Spin, Typography } from "antd";
+import { Tooltip, IconButton, Button, Text, Icon } from "@chakra-ui/react";
+import { VStack, Box } from "@chakra-ui/layout";
+import { MdOutlineAccountBalanceWallet } from "react-icons/md";
 import { ethers } from "ethers";
 import QR from "qrcode.react";
-import React, { useState, useEffect } from "react";
+
 import { Transactor } from "../helpers";
 import Address from "./Address";
 import AddressInput from "./AddressInput";
 import Balance from "./Balance";
 import EtherInput from "./EtherInput";
 
-const { Text, Paragraph } = Typography;
+const { Paragraph } = Typography;
 
 /*
   ~ What it does? ~
@@ -50,6 +54,7 @@ export default function Wallet(props) {
     }
     getAddress();
   }, [props.signer]);
+  console.log(props.provider);
 
   const selectedAddress = props.address || signerAddress;
 
@@ -60,20 +65,31 @@ export default function Wallet(props) {
   const [pk, setPK] = useState();
 
   const providerSend = props.provider ? (
-    <Tooltip title="Wallet">
-      <WalletOutlined
+    <Tooltip label="Wallet" hasArrow>
+      <Button
         onClick={() => {
           setOpen(!open);
         }}
-        rotate={-90}
-        style={{
-          padding: 7,
-          color: props.color ? props.color : "",
-          cursor: "pointer",
-          fontSize: 28,
-          verticalAlign: "middle",
-        }}
-      />
+        display="flex"
+        size="lg"
+        flexDirection="column"
+        alignItems="center"
+        justifyContent="center"
+      >
+        <Icon
+          aria-label="Wallet"
+          as={MdOutlineAccountBalanceWallet}
+          color={props.color ? props.color : ""}
+          cursor="pointer"
+          fontSize="28"
+          verticalAlign="middle"
+        />
+        {props.targetNetwork && (
+          <Text fontSize="sm" color={props.targetNetwork.color}>
+            {props.targetNetwork.name}
+          </Text>
+        )}
+      </Button>
     </Tooltip>
   ) : (
     ""

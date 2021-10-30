@@ -50,12 +50,13 @@ export default function Account({
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
+  targetNetwork,
 }) {
   const modalButtons = [];
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
       modalButtons.push(
-        <Button key="logout-button" verticalAlign="top" ml="8" mt="4" rounded size="lg" onClick={logoutOfWeb3Modal}>
+        <Button key="logout-button" verticalAlign="top" ml="8" mt="4" size="lg" onClick={logoutOfWeb3Modal}>
           logout
         </Button>,
       );
@@ -66,7 +67,6 @@ export default function Account({
           verticalAlign="top"
           ml="8"
           mt="4"
-          rounded
           size="lg"
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
@@ -88,6 +88,7 @@ export default function Account({
       )}
       <Balance address={address} provider={localProvider} price={price} />
       <Wallet
+        targetNetwork={targetNetwork}
         address={address}
         provider={localProvider}
         signer={userSigner}

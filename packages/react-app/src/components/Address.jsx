@@ -67,7 +67,6 @@ export default function Address(props) {
 
   const ensSplit = ens && ens.split(".");
   const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === "eth";
-
   if (validEnsCheck) {
     displayAddress = ens;
   } else if (props.size === "short") {
@@ -92,31 +91,27 @@ export default function Address(props) {
     text = (
       <Editable placeholder={address}>
         <EditablePreview width="100%" />
-        <a target="_blank" href={etherscanLink} rel="noopener noreferrer">
+        <Link target="_blank" href={etherscanLink} rel="noopener noreferrer">
           <EditableInput value={displayAddress} onChange={props.onChange} />
-        </a>
+        </Link>
       </Editable>
     );
   } else {
     text = (
       <Flex alignItems="center" justifyContent="center" flexGrow="1">
-        <InputGroup>
-          <InputLeftElement pointerEvents="none" children={<RiExternalLinkFill />} />
-          <Input
-            value={address}
-            isReadOnly
-            placeholder={address}
-            cursor="pointer"
-            onClick={() => window.open(etherscanLink, "_blank")}
-          />
-        </InputGroup>
-
-        <IconButton
-          onClick={onCopy}
-          aria-label="Copy Address"
-          fontSize="20px"
-          icon={hasCopied ? <MdCheckCircle /> : <MdContentCopy />}
-        />
+        <Link
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          border="none"
+          textOverflow={displayAddress.startsWith("0x") ? "ellipsis" : "unset"}
+          href={etherscanLink}
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          <RiExternalLinkFill />
+          {displayAddress}
+        </Link>
       </Flex>
     );
   }
@@ -127,6 +122,12 @@ export default function Address(props) {
       </span> */}
       <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
       {text}
+      <IconButton
+        onClick={onCopy}
+        aria-label="Copy Address"
+        fontSize="20px"
+        icon={hasCopied ? <MdCheckCircle color="green" /> : <MdContentCopy />}
+      />
     </HStack>
   );
 }

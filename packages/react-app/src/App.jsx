@@ -371,12 +371,6 @@ function App(props) {
         </div>
       );
     }
-  } else {
-    networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
-      </div>
-    );
   }
 
   const loadWeb3Modal = useCallback(async () => {
@@ -581,6 +575,7 @@ function App(props) {
           userSigner={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
+          targetNetwork={targetNetwork}
           web3Modal={web3Modal}
           loadWeb3Modal={loadWeb3Modal}
           logoutOfWeb3Modal={logoutOfWeb3Modal}
