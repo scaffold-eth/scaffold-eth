@@ -19,7 +19,6 @@ import {
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
@@ -259,6 +258,7 @@ function App(props) {
 
   const settledEvents = useEventListener(readContracts, "BlindAuction", "AuctionSettled", localProvider, 1);
   const revealEvents = useEventListener(readContracts, "BlindAuction", "BidRevealed", localProvider, 1);
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -538,6 +538,7 @@ function App(props) {
 
             <Contract
               name="YourContract"
+              price={price}
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -621,7 +622,6 @@ function App(props) {
               writeContracts={writeContracts}
               readContracts={readContracts}
               purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
             />
           </Route>
           <Route path="/mainnetdai">
