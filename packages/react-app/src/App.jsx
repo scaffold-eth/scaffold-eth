@@ -22,7 +22,7 @@ import {
 import { useEventListener } from "./hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 // import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph, NewMerkler, ViewMerkler } from "./views";
+import { NewMerkler, ViewMerkler } from "./views";
 import { readString } from "react-papaparse";
 import { MerkleTree } from "merkletreejs";
 

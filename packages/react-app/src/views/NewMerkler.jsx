@@ -99,16 +99,6 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
     }
   }, [merkleJson]);
 
-  console.log(
-    !allowance,
-    ethers.utils.parseUnits(String(amountRequired | "0"), decimals),
-    allowance,
-    !allowance || ethers.utils.parseUnits(String(amountRequired | "0"), decimals) > allowance,
-    ethers.utils.parseUnits(String(amountRequired | "0"), decimals) > allowance,
-    amountRequired | "0",
-    amountRequired,
-  );
-
   return (
     <Card title="Make a merkler" style={{ maxWidth: 600, margin: "auto", marginTop: 10 }}>
       <Form layout="vertical" initialValues={{ type: assetType, deadline: moment.unix(deadline), owner: address }}>
@@ -186,7 +176,11 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
                   console.log({ newAmountRequired });
                   console.log({ invalidData });
 
-                  if (invalidData) throw "invalid data";
+                  if (invalidData) {
+                    setAmountRequired();
+                    setMerkleJson([]);
+                    throw "invalid data";
+                  }
 
                   setAmountRequired(newAmountRequired);
 
@@ -236,6 +230,7 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
         {assetType == "ETH" ? (
           <Button
             loading={deploying}
+            type="primary"
             disabled={!amountRequired || Number(ethers.utils.formatEther(ethBalance)) < amountRequired}
             onClick={() => {
               pinata
@@ -280,14 +275,11 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
               setDeploying(true);
               try {
                 let signingContract = erc20Contract.connect(userSigner);
-                tx(
-                  signingContract.approve(
-                    writeContracts.MerkleDeployer.address,
-                    ethers.utils.parseUnits(amountRequired.toString(), decimals),
-                  ),
-                ).then(result => {
-                  getAllowance();
-                });
+                tx(signingContract.approve(writeContracts.MerkleDeployer.address, ethers.constants.MaxUint256)).then(
+                  result => {
+                    getAllowance();
+                  },
+                );
               } catch (e) {
                 console.log(e);
               }
@@ -299,6 +291,7 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
         ) : (
           <Button
             loading={deploying}
+            type="primary"
             disabled={!tokenAddress || !amountRequired || (allowance.toString() | "0") == "0"}
             onClick={() => {
               setDeploying(true);
