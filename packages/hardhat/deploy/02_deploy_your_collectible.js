@@ -13,7 +13,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
 
   const yourCollectible = await ethers.getContract("YourCollectible", deployer);
-  await yourCollectible.transferOwnership("0x0606a0D4F33c78D992f20Cdde5d9F41031D6D7bb");
+  await yourCollectible.transferOwnership("Your Address");
   /*
     // Getting a previously deployed contract
     await YourContract.setPurpose("Hello");
