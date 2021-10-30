@@ -1,10 +1,8 @@
 import { utils } from "ethers";
-import { Select } from "antd";
+import { Box, Select } from "@chakra-ui/react";
 import React, { useState } from "react";
-import { Address, AddressInput } from "../components";
+import { Address, AddressInput, HighlightText, Card } from "../components";
 import { useTokenList } from "eth-hooks/dapps/dex";
-
-const { Option } = Select;
 
 export default function Hints({ yourLocalBalance, mainnetProvider, price, address }) {
   // Get a list of tokens from a tokenlist -> see tokenlists.org!
@@ -14,86 +12,43 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
   );
 
   return (
-    <div>
-      <div style={{ margin: 32 }}>
+    <Card>
+      <Box>
         <span style={{ marginRight: 8 }}>👷</span>
         Edit your <b>contract</b> in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
+        <HighlightText>packages/hardhat/contracts</HighlightText>
+      </Box>
 
-      <div style={{ margin: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🛰</span>
         <b>compile/deploy</b> with
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run deploy
-        </span>
-      </div>
+        <HighlightText>yarn run deploy</HighlightText>
+      </Box>
 
-      <div style={{ margin: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🚀</span>
         Your <b>contract artifacts</b> are automatically injected into your frontend at
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/contracts/
-        </span>
-      </div>
+        <HighlightText>packages/react-app/src/contracts/</HighlightText>
+      </Box>
 
-      <div style={{ margin: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🎛</span>
         Edit your <b>frontend</b> in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/reactapp/src/App.js
-        </span>
-      </div>
+        <HighlightText>packages/reactapp/src/App.js</HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🔭</span>
         explore the
-        <span
-          className="highlight"
-          style={{
-            marginLeft: 4,
-            marginRight: 4,
-            /* backgroundColor: "#f9f9f9", */
-            padding: 4,
-            borderRadius: 4,
-            fontWeight: "bolder",
-          }}
-        >
-          🖇 hooks
-        </span>
-        and
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          📦 components
-        </span>
-      </div>
+        <HighlightText>🖇 hooks</HighlightText> and
+        <HighlightText>📦 components</HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         for example, the
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          useBalance()
-        </span>{" "}
+        <HighlightText>useBalance()</HighlightText>
         hook keeps track of your balance: <b>{utils.formatEther(yourLocalBalance || 0)}</b>
-      </div>
+      </Box>
 
       <div style={{ margin: 8 }}>
         <div>
@@ -103,100 +58,57 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
           </a>
         </div>
         <Select
-          showSearch
           value={selectedToken}
           onChange={value => {
             console.log(`selected ${value}`);
             setSelectedToken(value);
           }}
-          filterOption={(input, option) => option.children.toLowerCase().indexOf(input.toLowerCase()) >= 0}
-          optionFilterProp="children"
         >
           {listOfTokens.map(token => (
-            <Option key={token.symbol} value={token.symbol}>
+            <option key={token.symbol} value={token.symbol}>
               {token.symbol}
-            </Option>
+            </option>
           ))}
         </Select>
       </div>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         as you build your app you&apos;ll need web3 specific components like an
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          {"<AddressInput/>"}
-        </span>
+        <HighlightText>{"<AddressInput/>"}</HighlightText>
         component:
         <div style={{ width: 350, padding: 16, margin: "auto" }}>
           <AddressInput ensProvider={mainnetProvider} />
         </div>
         <div>(try putting in your address, an ens address, or scanning a QR code)</div>
-      </div>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         this balance could be multiplied by
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          price
-        </span>{" "}
-        that is loaded with the
-        <span
-          className="highlight"
-          style={{ margin: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          usePrice
-        </span>{" "}
-        hook with the current value: <b>${price}</b>
-      </div>
+        <HighlightText>price</HighlightText> that is loaded with the
+        <HighlightText>usePrice</HighlightText> hook with the current value: <b>${price}</b>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>💧</span>
         use the <b>faucet</b> to send funds to
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
+        <HighlightText>
           <Address address={address} minimized /> {address}
-        </span>
-      </div>
+        </HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>📡</span>
         deploy to a testnet or mainnet by editing
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/hardhat.config.js
-        </span>
+        <HighlightText>packages/hardhat/hardhat.config.js</HighlightText>
         and running
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run deploy
-        </span>
-      </div>
+        <HighlightText>yarn run deploy</HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🔑</span>
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run generate
-        </span>
+        <HighlightText>yarn run generate</HighlightText>
         will create a deployer account in
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat
-        </span>
+        <HighlightText>packages/hardhat</HighlightText>
         <div style={{ marginTop: 8 }}>
           (use{" "}
           <span
@@ -212,59 +124,36 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
           </span>{" "}
           to display deployer address and balance)
         </div>
-      </div>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>⚙️</span>
         build your app with
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run build
-        </span>
-      </div>
+        <HighlightText>yarn run build</HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>🚢</span>
         ship it!
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run surge
-        </span>
+        <HighlightText>yarn run surge</HighlightText>
         or
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run s3
-        </span>
+        <HighlightText>yarn run s3</HighlightText>
         or
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f1f1f1", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn run ipfs
-        </span>
-      </div>
+        <HighlightText>yarn run ipfs</HighlightText>
+      </Box>
 
-      <div style={{ marginTop: 32 }}>
+      <Box>
         <span style={{ marginRight: 8 }}>💬</span>
         for support, join this
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
+        <HighlightText>
           <a target="_blank" rel="noopener noreferrer" href="https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA">
             Telegram Chat
           </a>
-        </span>
-      </div>
+        </HighlightText>
+      </Box>
       <div style={{ padding: 128 }}>
         🛠 Check out your browser&apos;s developer console for more... (inspect console) 🚀
       </div>
-    </div>
+    </Card>
   );
 }
