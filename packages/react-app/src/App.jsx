@@ -329,23 +329,16 @@ function App(props) {
                     <h1 class="Title" style={{marginBottom: 25}}>Bufficorn Buidl Brigade</h1>
                     <h2 style={{marginBottom: 25}}>An ETHDenver PFP (10000 max supply)</h2>
                     <h3 style={{marginBottom: 25}}>
-                      Created by EthDenver <a href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
+                      Created by EthDenver <a class="pink" href="https://twitter.com/EthereumDenver">@ethereumdenver</a>
                     </h3>
-
-                    {address ? (
-                        <Button class="Button" type="primary" href="#Mint">
-                          Mint a Bufficorn &darr;
-                        </Button>
-                    ) : (
-                      <Button class="Button" key="loginbutton" type="primary" onClick={loadWeb3Modal}>
-                        connect to mint
-                      </Button>
-                    )}
+                    <Button class="Button" type="primary" href="#Mint">
+                      Coming Nov 4
+                    </Button>
                   </div>
                 </div>
               </div>
               <div class="Section Lore">
-                <div class="FlexRow Block Content">
+                <div class="FlexRow Block Content" style={{alignItems: 'flex-start'}}>
                   <div class="Column">
                     <img class="img" src="bufficorns.png" />
                   </div>
@@ -434,12 +427,12 @@ function App(props) {
                       <div class="Point" />
                     </div>
                     <div class="Column">
-                      <div class="Stop"><h5>Halloween 2021</h5><h4>Initial Drop</h4></div>
+                      <div class="Stop"><h5>Nov 4 2021</h5><h4>Initial Drop</h4></div>
                       <div class="LineSpacer" />
                       <div class="Stop"><h5>Dec 2021</h5><h4>Signed Artist Print</h4></div>
                       <div class="LineSpacer" />
                       <div class="Stop"><h5>Feb 2022</h5><h4>ETHDenver Random Drops: VIP Tickets & Exclusive Swag</h4></div>
-                      <div class="LineSpacer" />
+                      <div class="LineSpacer FinalStop" />
                       <div class="Stop"><h5>Beyond</h5><h4>Random $SPORK Airdrops</h4></div>
                       <div class="Stop"><h4>Future NFT Pre-mint Access</h4></div>
                       <div class="Stop"><h4>Exclusive Event Access</h4></div>

@@ -25,11 +25,13 @@
 
 
     <style type="text/css">
+      @import url('https://fonts.googleapis.com/css2?family=Catamaran:wght@300;400;500;600;700;800;900&display=swap');
+
       body{
         color:  #c9b8ff;
         /* background: url('background_3.png') repeat; */
         text-align: left;
-        font-family: "Garamond",monospace;
+        font-family: "Catamaran", sans-serif;
         font-style: normal;
         font-variant-ligatures: normal;
         font-variant-caps: normal;
@@ -120,6 +122,9 @@
         background-color: #fc5090;
         border: 5px solid #B44878;
       }
+      .pink {
+        color: #fc5090;
+      }
       .colorme{
         padding: 0px 25px;
       }
@@ -138,8 +143,8 @@
 
       .Section {
         width: 100%;
-        padding-top: 150px;
-        padding-bottom: 150px;
+        padding-top: 75px;
+        padding-bottom: 75px;
       }
 
       .Content {
@@ -228,14 +233,15 @@
         opacity: 1;
       }
       .LineSpacer {
-        height: 60px;
+        height: 50px;
         width: 4px;
         background-color: rgba(255,255,255,0);
       }
       .Stop {
         display: flex;
-        align-items: center;
-        justify-content: start;
+        flex-direction: column;
+        align-items: flex-start;
+        justify-content: flex-start;
         margin: 0;
       }
       .Stop h4, .Stop h5 { margin: 0; margin-right: 15px; }
@@ -425,10 +431,24 @@ h1:before {
         font-size: 24px;
       }
 
+      @media all and (min-width: 1201px) {
+        .LineSpacer {
+          height: 38px;
+        }
+      }
+
       @media all and (max-width: 1200px) {
         .Column {
           width: 100%;
           margin-top: 40px;
+        }
+        .Trailmap h4 {
+          font-size: 0.75em;
+        }
+      }
+      @media all and (max-width: 700px) {
+        .LineSpacer.FinalStop {
+          height: 23px;
         }
       }
 
