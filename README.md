@@ -155,9 +155,9 @@ When a token Merkler is deployed, the Merkle Deployer checks for the token Symbo
 
 ## The App
 
-The frontend has two primary views:
-
 "New" lets you define and deploy Merklers.
+
+![image](https://user-images.githubusercontent.com/9612972/139580248-b01855fb-72f9-41c6-9aa8-a4406d0edf44.png)
 
 - Specify whether it is an ETH or ERC20 merkler
 - Enter the CSV of `address,amount` pairs (the index will be added automatically). This uses `react-papaparse` to parse CSV strings into a JSON, verifies the data structure and calculates the total amount to drop.
@@ -168,7 +168,11 @@ This uploads the JSON to IPFS using the [Pinata SDK](https://docs.pinata.cloud/p
 
 It then redirects to the resulting Merkler page, where you can view the claim rows and claim them, and withdraw if you are the owner. This page uses the "Deployed" event from the MerkleDeployer for meta-data, as well as fetching the source data from IPFS based on the hash (which powers the table). The claim status is also fetched performantly by using the packed array of booleans stored in the contract.
 
-Finally, all deployed Merklers can be viewed on the Merklers page, with some metadata that can be generated from the "Deployed" events from the MerkleDeployer contract.
+![image](https://user-images.githubusercontent.com/9612972/139580288-84c2ef00-1057-4046-9432-555e2869d865.png)
+
+Finally, all deployed Merklers can be viewed on the "Merklers" page, with some metadata that can be generated from the "Deployed" events from the MerkleDeployer contract.
+
+![image](https://user-images.githubusercontent.com/9612972/139579966-3cb86646-e346-4ea7-845a-9474a52232c0.png)
 
 > When developing locally with a Hardhat fork of mainnet, the "Snatch" tab is available, which can be used to send ERC20 tokens to a specified account to any other account.
 

@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Menu, Row, Input, Select, Table, Card, Space, Typography } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, Select, Table, Card, Space, Typography, Spin } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { useHistory, useParams } from "react-router-dom";
@@ -170,78 +170,82 @@ function ViewMerkler({ localProvider, userSigner, address, localChainId }) {
         </>
       )}
 
-      <Table
-        rowKey="id"
-        dataSource={merkleJson.map(row => {
-          return {
-            id: row[0],
-            address: row[1],
-            amount: ethers.utils.formatUnits(row[2], merklerMetadata ? merklerMetadata.args._decimals : 18),
-            rawAmount: row[2],
-          };
-        })}
-        columns={[
-          {
-            title: "ID",
-            dataIndex: "id",
-            key: "id",
-            sorter: (a, b) => a.id - b.id,
-          },
-          {
-            title: "Address",
-            dataIndex: "address",
-            key: "id",
-            onFilter: (value, record) => record.address.startsWith(value),
-            filters: [
-              {
-                text: "My address",
-                value: address,
-              },
-            ],
-          },
-          {
-            title: "Amount",
-            dataIndex: "amount",
-            key: "id",
-            sorter: (a, b) => a.amount - b.amount,
-          },
-          {
-            title: "Check",
-            key: "id",
-            fixed: "right",
-            width: 100,
-            render: (text, row) => {
-              try {
-                let claimedWordIndex = Math.floor(Number(row.id) / 256);
-                let claimedBitIndex = Number(row.id) % 256;
-                let claimedWord = claimLookup[claimedWordIndex];
-                let mask = ethers.BigNumber.from(1).shl(claimedBitIndex);
-                //console.log(claimedWordIndex, claimedBitIndex, claimedWord, mask, claimedWord.and(mask));
-
-                if (claimedWord.and(mask).eq(mask)) {
-                  return `Claimed`;
-                } else {
-                  return (
-                    <Button
-                      onClick={async () => {
-                        const proof = merkleTree.getHexProof(hashToken(row.id, row.address, row.rawAmount));
-                        console.log(row.id, row.address, row.rawAmount, proof);
-                        tx(writeContracts.Merkler.redeem(row.id, row.address, row.rawAmount, proof)).then(() => {
-                          getLookup();
-                        });
-                      }}
-                    >
-                      Claim
-                    </Button>
-                  );
-                }
-              } catch (e) {
-                console.log(e);
-              }
+      {merkleJson.length > 0 ? (
+        <Table
+          rowKey="id"
+          dataSource={merkleJson.map(row => {
+            return {
+              id: row[0],
+              address: row[1],
+              amount: ethers.utils.formatUnits(row[2], merklerMetadata ? merklerMetadata.args._decimals : 18),
+              rawAmount: row[2],
+            };
+          })}
+          columns={[
+            {
+              title: "ID",
+              dataIndex: "id",
+              key: "id",
+              sorter: (a, b) => a.id - b.id,
             },
-          },
-        ]}
-      />
+            {
+              title: "Address",
+              dataIndex: "address",
+              key: "id",
+              onFilter: (value, record) => record.address.startsWith(value),
+              filters: [
+                {
+                  text: "My address",
+                  value: address,
+                },
+              ],
+            },
+            {
+              title: "Amount",
+              dataIndex: "amount",
+              key: "id",
+              sorter: (a, b) => a.amount - b.amount,
+            },
+            {
+              title: "Check",
+              key: "id",
+              fixed: "right",
+              width: 100,
+              render: (text, row) => {
+                try {
+                  let claimedWordIndex = Math.floor(Number(row.id) / 256);
+                  let claimedBitIndex = Number(row.id) % 256;
+                  let claimedWord = claimLookup[claimedWordIndex];
+                  let mask = ethers.BigNumber.from(1).shl(claimedBitIndex);
+                  //console.log(claimedWordIndex, claimedBitIndex, claimedWord, mask, claimedWord.and(mask));
+
+                  if (claimedWord.and(mask).eq(mask)) {
+                    return `Claimed`;
+                  } else {
+                    return (
+                      <Button
+                        onClick={async () => {
+                          const proof = merkleTree.getHexProof(hashToken(row.id, row.address, row.rawAmount));
+                          console.log(row.id, row.address, row.rawAmount, proof);
+                          tx(writeContracts.Merkler.redeem(row.id, row.address, row.rawAmount, proof)).then(() => {
+                            getLookup();
+                          });
+                        }}
+                      >
+                        Claim
+                      </Button>
+                    );
+                  }
+                } catch (e) {
+                  console.log(e);
+                }
+              },
+            },
+          ]}
+        />
+      ) : (
+        <Spin size="large" />
+      )}
       {/*<Contract
         name="Merkler"
         signer={userSigner}

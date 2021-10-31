@@ -250,24 +250,26 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
                       console.log(result);
                       result.wait().then(receipt => {
                         console.log(receipt.events[0].args._address);
+                        setDeploying(false);
                         history.push(`/view/${receipt.events[0].args._address}`);
                       });
                     })
                     .catch(err => {
                       //handle error here
                       console.log(err);
+                      setDeploying(false);
                     });
                 })
                 .catch(err => {
                   //handle error here
                   console.log(err);
+                  setDeploying(false);
                 });
-              setDeploying(false);
             }}
           >
             {`Deploy ETH Merkler: ${amountRequired} ${symbol}`}
           </Button>
-        ) : ethers.utils.parseUnits(String(amountRequired || "0"), decimals) > allowance ? (
+        ) : ethers.utils.parseUnits(String(amountRequired || "0"), decimals).gt(allowance) ? (
           <Button
             loading={deploying}
             disabled={!allowance}
@@ -277,13 +279,14 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
                 let signingContract = erc20Contract.connect(userSigner);
                 tx(signingContract.approve(writeContracts.MerkleDeployer.address, ethers.constants.MaxUint256)).then(
                   result => {
+                    setDeploying(false);
                     getAllowance();
                   },
                 );
               } catch (e) {
                 console.log(e);
+                setDeploying(false);
               }
-              setDeploying(false);
             }}
           >
             {`Approve Merkle Deployer (${amountRequired} ${symbol})`}
@@ -292,7 +295,7 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
           <Button
             loading={deploying}
             type="primary"
-            disabled={!tokenAddress || !amountRequired || (allowance.toString() | "0") == "0"}
+            disabled={!tokenAddress || !amountRequired || !allowance || allowance.isZero()}
             onClick={() => {
               setDeploying(true);
               pinata
@@ -320,17 +323,18 @@ function NewMerkler({ readContracts, writeContracts, localProvider, userSigner, 
                         console.log(receipt);
                         history.push(`/view/${receipt.events[receipt.events.length - 1].args._address}`);
                       });
+                      setDeploying(false);
                     })
                     .catch(err => {
                       //handle error here
                       console.log(err);
+                      setDeploying(false);
                     });
                 })
                 .catch(err => {
                   //handle error here
                   console.log(err);
                 });
-              setDeploying(false);
             }}
           >
             {`Deploy Token Merkler: ${amountRequired} ${symbol}`}
