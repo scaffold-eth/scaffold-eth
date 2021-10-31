@@ -68,7 +68,7 @@ The Merkler is an end-to-end demonstration that lets you define, deploy and then
 
 There are two contracts, the Merkler, and the MerkleDeployer.
 
-### Merkler
+### Merkler.sol
 
 The Merkler is similar to the [Uniswap Merkle Distributor](https://github.com/Uniswap/merkle-distributor/blob/master/contracts/MerkleDistributor.sol).
 
@@ -133,7 +133,7 @@ Once the deadline is passed, the "dropper" address can claim any remaining ETH o
 
 One challenge with the Merkler is that there is no way to verify on-chain whether the amount in the initial deposit is enough to cover all the claims in the Merkle Tree. That validation must be done on the front-end.
 
-### MerkleDeployer
+### MerkleDeployer.sol
 
 The MerkleDeployer deploys Merklers and initializes them. This uses [OpenZeppelin Clones](https://docs.openzeppelin.com/contracts/4.x/api/proxy#Clones), which is an implementation of the [EIP-1167](https://eips.ethereum.org/EIPS/eip-1167) standard. Under this standard a new contract is deployed which delegates all calls to a specified `implementation` contract, which is very gas efficient for deployment. In the case of the MerkleDeployer, the reference implementation is a pre-deployed Merkler contract.
 
