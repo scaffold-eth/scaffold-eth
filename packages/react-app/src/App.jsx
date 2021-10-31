@@ -352,7 +352,15 @@ function App(props) {
                   </div>
                 </div>
               </div>
-              {/* <div class="Section Mint" id="Mint">
+              <div class="Section Mint" id="Mint">
+              <div class="Block Content">
+                  <h2>Mint on Nov 4</h2>
+                  <p>
+                    Learn more in the launch article on <a href="https://medium.com/ethdenver/introducing-the-bufficorn-buidl-brigade-149e69b98a98" target="_blank" rel="noopener noreferrer">Medium.</a>
+                  </p>
+                  <Button type="primary" href="https://opolis.typeform.com/bufficornbuidl" rel="noopener noreferrer" target="_blank">Get Whitelisted</Button>
+                </div>
+                {/* 
                 <div class="FlexRow Content">
                   <h2>Mint Bufficorns</h2>
                 </div>
@@ -407,9 +415,11 @@ function App(props) {
                         </Button>
                       )}
                     </div>
+                     
                   </div>
                 </div>
-                      </div> */}
+                */}
+              </div>
 
               <div class="Section Trailmap">
                 <div class="Content">
@@ -476,14 +486,15 @@ function App(props) {
               )}
             </div>
 
-            <footer class="colorme Section">
+            {/*<footer class="colorme Section">
               <div class="Content">
-                {/* 
                 <h3>FAQ</h3>
-                <p>Learn more in the launch article on <a href="medium.com" target="_blank" rel="noopener noreferrer">Medium.</a></p>
-                */}
+                <p>
+                  Learn more in the launch article on <a href="https://medium.com/ethdenver/introducing-the-bufficorn-buidl-brigade-149e69b98a98" target="_blank" rel="noopener noreferrer">Medium.</a>
+                </p>
               </div>
             </footer>
+              */}
           </Route>
 
           <Route path="/debugcontracts">
