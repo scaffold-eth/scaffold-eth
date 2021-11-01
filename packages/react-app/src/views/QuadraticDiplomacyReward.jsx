@@ -44,30 +44,6 @@ export default function QuadraticDiplomacyReward({
       const votingAddress = memberVotes[0];
       const selectedContributors = memberVotes[1];
 
-      const sortedVotes = Object.keys(selectedContributors).sort();
-
-      const message =
-        "qdip-vote-" +
-        currentDistribution.id +
-        votingAddress +
-        sortedVotes.join() +
-        sortedVotes.map(voter => selectedContributors[voter]).join();
-
-      const recovered = ethers.utils.verifyMessage(message, currentDistribution.votesSignatures[votingAddress]);
-
-      if (!votes[votingAddress]) {
-        votes[votingAddress] = {
-          vote: 0,
-          // Sum of the square root of the votes for each member.
-          sqrtVote: 0,
-          hasVoted: true,
-          verifiedSignature: recovered === votingAddress,
-        };
-      } else {
-        votes[votingAddress].hasVoted = true;
-        votes[votingAddress].verifiedSignature = recovered === votingAddress;
-      }
-
       Object.entries(selectedContributors).forEach(voteInfo => {
         const contributor = voteInfo[0];
         const vote = voteInfo[1];
