@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { LinkOutlined } from "@ant-design/icons";
 import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
@@ -7,27 +6,15 @@ import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import { utils } from "ethers";
-=======
-import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
-import "antd/dist/antd.css";
->>>>>>> master
 import React, { useCallback, useEffect, useState } from "react";
 import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
-<<<<<<< HEAD
 //import assets from "./assets.js";
 import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, TokenBalance } from "./components";
 import { DAI_ABI, DAI_ADDRESS, INFURA_ID, NETWORK, NETWORKS } from "./constants";
-=======
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
->>>>>>> master
 import { Transactor } from "./helpers";
 import {
   useBalance,
@@ -35,7 +22,6 @@ import {
   useContractReader,
   useGasPrice,
   useOnBlock,
-<<<<<<< HEAD
   useUserProvider,
 } from "./hooks";
 import { BlockPicker } from 'react-color'
@@ -48,25 +34,6 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 
 //console.log("📦 Assets: ", assets);
 
-=======
-  useUserProviderAndSigner,
-} from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
-import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
-
-// contracts
-import deployedContracts from "./contracts/hardhat_contracts.json";
-import externalContracts from "./contracts/external_contracts";
-
-import { useContractConfig } from "./hooks";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Authereum from "authereum";
-
-const { ethers } = require("ethers");
->>>>>>> master
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -296,11 +263,7 @@ function App(props) {
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
-<<<<<<< HEAD
   const isSigner = injectedProvider && injectedProvider.getSigner && injectedProvider.getSigner()._isSigner;
-=======
-  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
->>>>>>> master
 
   // If you want to call a function on a new block
   useOnBlock(mainnetProvider, () => {
@@ -308,12 +271,8 @@ function App(props) {
   });
 
   // Then read your DAI balance like:
-<<<<<<< HEAD
   /*
   const myMainnetDAIBalance = useContractReader({ DAI: mainnetDAIContract }, "DAI", "balanceOf", [
-=======
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
->>>>>>> master
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);*/
 
@@ -386,12 +345,7 @@ function App(props) {
       yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
-<<<<<<< HEAD
       writeContracts
-=======
-      writeContracts &&
-      mainnetContracts
->>>>>>> master
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -401,11 +355,6 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-<<<<<<< HEAD
-=======
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
->>>>>>> master
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -416,10 +365,6 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-<<<<<<< HEAD
-=======
-    mainnetContracts,
->>>>>>> master
   ]);
 
   let networkDisplay = "";
@@ -640,7 +585,6 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-<<<<<<< HEAD
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner?(
                 <Button type={"primary"} onClick={()=>{
@@ -736,68 +680,6 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
-=======
-            <Contract
-              name="YourContract"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-              setPurposeEvents={setPurposeEvents}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-              contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
->>>>>>> master
             />
           </Route>
 
