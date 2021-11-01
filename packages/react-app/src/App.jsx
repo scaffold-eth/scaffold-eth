@@ -1,6 +1,6 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Spin, Typography } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -24,6 +24,7 @@ import QuadraticDiplomacyReward from "./views/QuadraticDiplomacyReward";
 import QuadraticDiplomacyCreate from "./views/QuadraticDiplomacyCreate";
 
 const { ethers } = require("ethers");
+const { Title } = Typography;
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -155,6 +156,9 @@ function App() {
     }
     getAddress();
   }, [userSigner]);
+
+  const [currentDistribution, setCurrentDistribution] = useCurrentDistribution(serverUrl, address);
+  const isVoter = address && currentDistribution && currentDistribution.members && currentDistribution.members.includes(address);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
@@ -366,12 +370,9 @@ function App() {
     );
   }
 
-  return (
-    <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
-      {networkDisplay}
-      <BrowserRouter>
+  function pageContentForAdmin() {
+    return (
+      <div>
         <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link
@@ -460,7 +461,60 @@ function App() {
             />
           </Route>
         </Switch>
-      </BrowserRouter>
+      </div>
+    );
+  }
+
+  function pageContentForVoter() {
+    return (
+      <div>
+        <QuadraticDiplomacyVote
+          isVoter={isVoter}
+          mainnetProvider={mainnetProvider}
+          currentDistribution={currentDistribution}
+          address={address}
+          userSigner={userSigner}
+          serverUrl={serverUrl}
+        />
+      </div>
+    );
+  }
+
+  function pageContentForOthers() {
+    if (currentDistribution.id) {
+      return (
+        <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+          <Title level={4}>Voting in progress</Title>
+        </div>
+      );
+    } else {
+      return (
+        <div style={{ border: "1px solid #cccccc", padding: 16, width: 800, margin: "auto", marginTop: 64 }}>
+          <Title level={4}>No voting in progress</Title>
+        </div>
+      );
+    }
+  }
+
+  function pageContent() {
+    if (currentDistribution == null || isAdmin == null) {
+      return <Spin />;
+    }
+    if (isAdmin) {
+      return pageContentForAdmin();
+    }
+    if (currentDistribution && isVoter) {
+      return pageContentForVoter();
+    }
+    return pageContentForOthers();
+  }
+
+  return (
+    <div className="App">
+      {/* ✏️ Edit the header and change the title to your project name */}
+      <Header />
+      {networkDisplay}
+      <BrowserRouter>{pageContent()}</BrowserRouter>
 
       <ThemeSwitch />
 

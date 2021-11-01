@@ -208,10 +208,10 @@ export default function QuadraticDiplomacyVote({
             <p>The allocation to this workstream will be informed by your votes.</p>
             <Title level={5} style={{ marginTop: "24px" }}>Your votes:</Title>
             {Object.entries(selectedContributors).map(([contributorAddress, voteTokens]) => (
-              <p key={contributorAddress}>
+              <div key={contributorAddress}>
                 <Address address={contributorAddress} fontSize={16} size="short" ensProvider={mainnetProvider} /> (
                 <Text>{voteTokens}</Text>)
-              </p>
+              </div>
             ))}
           </>
         )
