@@ -293,6 +293,8 @@ function App(props) {
 
   const yourLensesBalance = lensesBalance && lensesBalance.toNumber && lensesBalance.toNumber();
   const [yourLenses, setYourLenses] = useState();
+  const [yourLensesPreview, setYourLensesPreview] = useState();
+  const [yourLensesPreviewSvg, setYourLensesPreviewSvg] = useState();
 
   const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
@@ -480,6 +482,30 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourBowBalance, yourMustacheBalance, yourLensesBalance, yourMouthBalance, yourEyelashBalance]);
+
+
+  useEffect(() => {
+    const updatePreviews = async () => {
+      const lensesUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourLensesBalance; tokenIndex++) {
+        try {
+          const tokenId = await readContracts.ContactLenses.tokenOfOwnerByIndex(address, tokenIndex);
+          if (yourLensesPreview[tokenId]) {
+            const loogieSvg = await readContracts.FancyLoogie.renderTokenById(yourLensesPreview[tokenId]);
+            const lensesSvg = await readContracts.ContactLenses.renderTokenById(tokenId);
+            const svg = '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">'+loogieSvg+lensesSvg+'</svg>';
+            lensesUpdate[tokenId] = svg;
+            console.log('SVG',svg);
+          }
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourLensesPreviewSvg(lensesUpdate);
+    };
+    updatePreviews();
+  }, [address, yourLensesPreview]);
+
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -1492,7 +1518,7 @@ function App(props) {
               }}>MINT</Button>
             </div>
             {/* */}
-            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+            <div style={{ width: 950, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
                 dataSource={yourLenses}
@@ -1501,76 +1527,105 @@ function App(props) {
 
                   console.log("IMAGE",item.image);
 
+                  let previewSvg = '';
+                  if (yourLensesPreviewSvg[id]) {
+                    previewSvg = yourLensesPreviewSvg[id];
+                    console.log('PREVIEW-SVG',previewSvg);
+                  }
+
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                       <Card
                         title={
-                          <div>
+                          <div style={{ height: 45 }}>
                             <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
                           </div>
                         }
                       >
                         <img src={item.image} />
-                        <div>{item.description}</div>
+                        <div style={{ height: 90 }}>{item.description}</div>
                       </Card>
 
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.ContactLenses.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                        <br/><br/>
-                        Transfer to FancyLoogie:{" "}
-                        <Address
-                          address={readContracts.FancyLoogie.address}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <Input
-                          placeholder="FancyLoogie ID"
-                          // value={transferToTankId[id]}
-                          onChange={newValue => {
-                            console.log("newValue", newValue.target.value);
-                            const update = {};
-                            update[id] = newValue.target.value;
-                            setTransferToTankId({ ...transferToTankId, ...update});
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            console.log("transferToTankId[id]", transferToTankId[id]);
-                            console.log(parseInt(transferToTankId[id]));
+                      <Card
+                        title={
+                          <div style={{ height: 45 }}>
+                            Transfer to:
+                            <Input
+                              style={{ width: 130, marginRight: 20, marginLeft: 10 }}
+                              placeholder="FancyLoogie ID"
+                              onChange={newValue => {
+                                const update = {};
+                                update[id] = newValue.target.value;
+                                setTransferToTankId({ ...transferToTankId, ...update});
+                              }}
+                            />
+                            <Button
+                              style={{ marginRight: 10 }}
+                              onClick={() => {
+                                console.log("transferToTankId[id]", transferToTankId[id]);
+                                console.log(parseInt(transferToTankId[id]));
 
-                            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
-                            console.log(tankIdInBytes);
+                                const preview = {};
+                                preview[id] = parseInt(transferToTankId[id]);
+                                setYourLensesPreview({ ...yourLensesPreview, ...preview});
 
-                            tx(writeContracts.ContactLenses["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
-                          }}>
-                          Transfer
-                        </Button>
-                      </div>
+                                console.log('lensesPreview',yourLensesPreview);
+                              }}>
+                              Preview
+                            </Button>
+                            <Button
+                              type="primary"
+                              onClick={() => {
+                                console.log("writeContracts", writeContracts);
+                                console.log("transferToTankId[id]", transferToTankId[id]);
+                                console.log(parseInt(transferToTankId[id]));
+
+                                const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
+                                console.log(tankIdInBytes);
+
+                                tx(writeContracts.ContactLenses["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.FancyLoogie.address, id, tankIdInBytes));
+                              }}>
+                              Transfer
+                            </Button>
+                          </div>
+                        }
+                      >
+                        {previewSvg && (
+                          <div dangerouslySetInnerHTML={{__html: previewSvg}}></div>
+                        )}
+                        {!previewSvg && (
+                          <img src={item.image} />
+                        )}
+                        <div style={{ height: 90 }}>
+                          owner:{" "}
+                          <Address
+                            address={item.owner}
+                            ensProvider={mainnetProvider}
+                            blockExplorer={blockExplorer}
+                            fontSize={16}
+                          />
+                          <AddressInput
+                            ensProvider={mainnetProvider}
+                            placeholder="transfer to address"
+                            value={transferToAddresses[id]}
+                            onChange={newValue => {
+                              const update = {};
+                              update[id] = newValue;
+                              setTransferToAddresses({ ...transferToAddresses, ...update });
+                            }}
+                          />
+                          <Button
+                            type="primary"
+                            style={{ marginTop: 10 }}
+                            onClick={() => {
+                              console.log("writeContracts", writeContracts);
+                              tx(writeContracts.ContactLenses.transferFrom(address, transferToAddresses[id], id));
+                            }}
+                          >
+                            Transfer
+                          </Button>
+                        </div>
+                      </Card>
                     </List.Item>
                   );
                 }}
