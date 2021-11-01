@@ -1,4 +1,4 @@
-import { Card } from "antd";
+import { Card } from "../index";
 import React, { useMemo, useState } from "react";
 import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
 import Account from "../Account";
@@ -114,8 +114,8 @@ export default function Contract({
 
   return (
     <div style={{ margin: "auto", width: "70vw" }}>
-      <Card
-        title={
+      <Card style={{ marginTop: 25, width: "100%" }} loading={contractDisplay && contractDisplay.length <= 0}>
+        <>
           <div>
             {name}
             <div style={{ float: "right" }}>
@@ -130,12 +130,8 @@ export default function Contract({
               {account}
             </div>
           </div>
-        }
-        size="large"
-        style={{ marginTop: 25, width: "100%" }}
-        loading={contractDisplay && contractDisplay.length <= 0}
-      >
-        {contractIsDeployed ? contractDisplay : noContractDisplay}
+          {contractIsDeployed ? contractDisplay : noContractDisplay}
+        </>
       </Card>
     </div>
   );
