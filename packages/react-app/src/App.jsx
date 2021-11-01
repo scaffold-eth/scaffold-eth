@@ -528,7 +528,9 @@ function App(props) {
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
+      
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
+        {/*
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
             <Ramp price={price} address={address} networks={NETWORKS} />
@@ -552,11 +554,12 @@ function App(props) {
             </Button>
           </Col>
         </Row>
-
+        */}
+        
+        {/*
         <Row align="middle" gutter={[4, 4]}>
           <Col span={24}>
             {
-              /*  if the local provider has a signer, let's show the faucet:  */
               faucetAvailable ? (
                 <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
               ) : (
@@ -565,7 +568,9 @@ function App(props) {
             }
           </Col>
         </Row>
+        */}
       </div>
+      
 
     </div>
   );
