@@ -227,12 +227,7 @@ export default function QuadraticDiplomacyReward({
     [voteResults, totalSquare, totalRewardAmount],
   );
 
-  const missingVotingMembers =
-    currentDistribution.id &&
-    currentDistribution.members
-      ?.filter(wallet => !voteResults[wallet]?.hasVoted)
-      // Remove duplicated.
-      .filter((item, pos, self) => self.indexOf(item) === pos);
+  const missingVotingMembers = votersInfo.filter(voter => !voter.hasVoted);
 
   const handleFinishDistribution = async finishDistribution => {
     const message = "qdip-finish-" + currentDistribution.id + address;
