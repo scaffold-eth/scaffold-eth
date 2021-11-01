@@ -3,7 +3,7 @@ import { usePoller } from "eth-hooks";
 import { useState } from "react";
 import { useEffect } from "react";
 
-export default function useCurrentDistribution(serverUrl, address) {
+export default function useCurrentDistribution(serverUrl) {
   const [currentDistribution, setCurrentDistribution] = useState({});
 
   const loadCurrentDistribution = async () => {
