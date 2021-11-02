@@ -1,30 +1,27 @@
-# 🏗 scaffold-eth - 🔵 Loogies SVG NFT
+# 🏗 scaffold-eth - 🟢 Loogies SVG NFT x Flemjamins 💦
 
+![image](https://scaffold-eth-readme-images.s3.amazonaws.com/Screenshot+2021-10-22+165946.jpg)
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git loogies-svg-nft
+git clone https://github.com/austintgriffith/scaffold-eth.git flemjamins-and-burnable-loogies
 
-cd loogies-svg-nft
+cd flemjamins-with-burnable-nfts
 
-git checkout loogies-svg-nft
+git checkout flemjamins-with-burnable-nfts
 ```
 
-```bash
+> install and start your 👷‍ Hardhat chain:
 
+```bash
+cd scaffold-eth
 yarn install
-
+yarn chain
 ```
 
-```bash
-
-yarn start
-
-```
-
-> in a second terminal window:
+> in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd loogies-svg-nft
+cd flemjamins-with-burnable-nfts
 
 yarn chain
 
@@ -34,13 +31,11 @@ yarn chain
 
 > in a third terminal window:
 
-
 ```bash
-cd loogies-svg-nft
+cd flemjamins-with-burnable-nfts
 
 yarn deploy
 
 ```
 
 📱 Open http://localhost:3000 to see the app
-
