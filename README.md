@@ -3,7 +3,7 @@
 ![image](https://scaffold-eth-readme-images.s3.amazonaws.com/Screenshot+2021-10-22+165946.jpg)
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git flemjamins-and-burnable-loogies
+git clone https://github.com/PowVT/scaffold-eth.git flemjamins-and-burnable-loogies
 
 cd flemjamins-with-burnable-nfts
 
