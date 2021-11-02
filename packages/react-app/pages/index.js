@@ -12,6 +12,8 @@ function Home() {
       <div className="text-center" style={{ margin: 64 }}>
         <span>This App is powered by Scaffold-eth & Next.js!</span>
         <br />
+        <span>Ceramic Starter Kit</span>
+        <br />
         <span>
           Added{" "}
           <a href="https://tailwindcomponents.com/cheatsheet/" target="_blank" rel="noreferrer">
