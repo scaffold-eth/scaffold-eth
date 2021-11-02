@@ -346,7 +346,7 @@ function App(props) {
                     <h2>Lore of the Bufficorn</h2>
                     <p>The unicorn may be a good representation of rarity and value for the VC community, but it isn’t a great representation of the ethos of Web3. After all, when was the last time anyone saw a unicorn with other unicorns (or any other animal for that matter)? Never. The trouble is the unicorn is a solitary creature basking in its mystery alone..</p>
                     <p>Then there’s the buffalo, a herd animal that runs with its community, but it isn’t known for magic or majesty.</p>
-                    <p>Legend has it that centuries ago, in order to resolve a dispute between the unicorns and the buffalo, a treaty was formed to create a new species of community-oriented, magical, fantastical animals: the Bufficorn.</p>
+                    <p><a href="https://medium.com/ethdenver/the-might-flight-of-the-bufficorn-an-origin-story-988c0f19f8c4" rel="noopener noreferrer" target="_blank">Legend has it</a> that centuries ago, in order to resolve a dispute between the unicorns and the buffalo, a treaty was formed to create a new species of community-oriented, magical, fantastical animals: the Bufficorn.</p>
                     <p>The Bufficorn (monocerus magicalis bisonae) portrays the best of both worlds regarding personality traits. They #BUIDL for positive-sum outcomes and encourage the expression of unique creativity by each member of the community.</p>
                     <p>The Bufficorn #BUIDL Brigade is an expression of what it means to “be a Bufficorn” and to be passionate about #BUIDLing the decentralized future.</p>
                   </div>
