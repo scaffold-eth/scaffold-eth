@@ -1,19 +1,22 @@
+import Portis from "@portis/web3";
+// Ceramic **
+import { EthereumAuthProvider, SelfID } from "@self.id/web";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
 import { Alert, Button } from "antd";
 import "antd/dist/antd.css";
-import React, { useCallback, useEffect, useState, useRef, useMemo } from "react";
+import Authereum from "authereum";
+import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import Fortmatic from "fortmatic";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
+//import Torus from "@toruslabs/torus-embed"
+import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import { INFURA_ID, NETWORK, NETWORKS } from "../constants";
 import { Transactor } from "../helpers";
-import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
-import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-
 import { useContractConfig } from "../hooks";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Authereum from "authereum";
+
+// **/ Ceramic
 
 const { ethers } = require("ethers");
 
@@ -30,6 +33,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
   // app states
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const [self, setSelf] = useState();
 
   /// 📡 What chain are your contracts deployed to?
   const targetNetwork = NETWORKS[network]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
@@ -345,7 +349,19 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
-    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    const ethersProvider = new ethers.providers.Web3Provider(provider);
+    setInjectedProvider(ethersProvider);
+    const signer = await ethersProvider.getSigner();
+    const account = await signer.getAddress();
+    console.log("***************************Account: ", account);
+    const myself = await SelfID.authenticate({
+      authProvider: new EthereumAuthProvider(window.ethereum, account), // new ethers.providers.Web3Provider(provider)
+      ceramic: "testnet-clay",
+      connectNetwork: "testnet-clay",
+    });
+
+    // Ceramic Call
+    setSelf(myself);
 
     provider.on("chainChanged", chainId => {
       console.log(`chain changed to ${chainId}! updating providers`);
@@ -421,6 +437,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     loadWeb3Modal,
     logoutOfWeb3Modal,
     contractConfig,
+    self,
   };
 
   return <Web3Context.Provider value={providerProps}>{children}</Web3Context.Provider>;

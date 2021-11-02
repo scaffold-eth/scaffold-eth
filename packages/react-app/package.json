@@ -20,6 +20,7 @@
     "@apollo/react-hooks": "^4.0.0",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
+    "@self.id/web": "^0.1.0",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.8",
