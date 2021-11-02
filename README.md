@@ -1,4 +1,4 @@
-# 🏗 scaffold-eth - 🟢 Loogies SVG NFT x Flemjamins 💦
+## 🏗 scaffold-eth - 🟢 Loogies SVG NFT x Flemjamins 💦
 
 ![image](https://scaffold-eth-readme-images.s3.amazonaws.com/Screenshot+2021-10-22+165946.jpg)
 
