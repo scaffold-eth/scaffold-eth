@@ -457,6 +457,9 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
+            <Home />
+          </Route>
+          <Route exact path="/debug">
             <Contract
               name="StakingGTC"
               signer={userSigner}

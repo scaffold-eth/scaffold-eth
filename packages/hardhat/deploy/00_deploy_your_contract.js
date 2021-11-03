@@ -41,12 +41,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     streamFactory: StakeGTCContract.address,
   });
 
-  // if (chainId !== "31337") {
-  //   await run("verify:verify", {
-  //     address: StakeGTCContract.address,
-  //     contract: "contracts/StakingGTC.sol:StakingGTC",
-  //     constructorArguments: [GTC.address],
-  //   });
-  // }
+  if (chainId !== "31337") {
+    await run("verify:verify", {
+      address: StakeGTCContract.address,
+      contract: "contracts/StakingGTC.sol:StakingGTC",
+      constructorArguments: [GTC.address],
+    });
+  }
 };
 module.exports.tags = ["YourContract"];
