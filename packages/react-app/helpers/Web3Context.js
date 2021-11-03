@@ -10,7 +10,10 @@ import { Transactor } from "../helpers";
 import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 
-import { useContractConfig } from "../hooks";
+// contracts
+import deployedContracts from "../contracts/hardhat_contracts.json";
+import externalContracts from "../contracts/external_contracts";
+
 import Portis from "@portis/web3";
 import Fortmatic from "fortmatic";
 import Authereum from "authereum";
@@ -199,7 +202,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  const contractConfig = useContractConfig();
+  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
