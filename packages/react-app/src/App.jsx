@@ -450,7 +450,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
+              Home
             </Link>
           </Menu.Item>
         </Menu>
@@ -459,19 +459,19 @@ function App(props) {
           <Route exact path="/">
             <Contract
               name="StakingGTC"
-              signer={web3.userSigner}
-              provider={web3.localProvider}
-              address={web3.address}
-              blockExplorer={web3.blockExplorer}
-              contractConfig={web3.contractConfig}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
             <Contract
               name="GTC"
-              signer={web3.userSigner}
-              provider={web3.localProvider}
-              address={web3.address}
-              blockExplorer={web3.blockExplorer}
-              contractConfig={web3.contractConfig}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
           </Route>
         </Switch>
