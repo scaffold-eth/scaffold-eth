@@ -238,11 +238,9 @@ module.exports = {
     },
     kovanOptimism: {
       url: "https://kovan.optimism.io",
-      gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
       },
-      ovm: true,
       companionNetworks: {
         l1: "kovan",
       },
