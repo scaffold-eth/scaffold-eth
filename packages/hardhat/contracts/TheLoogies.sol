@@ -15,13 +15,17 @@ abstract contract LoogiesInterface {
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
   function ownerOf(uint256 tokenId) external virtual view returns (address owner);
+  function _exists(uint256) external virtual view returns (bool);
 }
 
 abstract contract BlueLoogiesInterface {
-  mapping (uint256 => bytes1) public idToBlue;
+  mapping (uint256 => bytes1) public blue;
+  mapping (uint256 => address) public grants;
+  mapping (address => uint256) public grantPrice;
+  function _exists(uint256) external virtual view returns (bool);
 }
 
-contract PublicGoodLoogies is ERC721Enumerable, Ownable {
+contract TheLoogies is ERC721Enumerable, Ownable {
 
   using Strings for uint256;
   using HexStrings for uint160;
@@ -29,24 +33,30 @@ contract PublicGoodLoogies is ERC721Enumerable, Ownable {
   Counters.Counter private _tokenIds;
 
   address constant loogiesAddress = 0xE203cDC6011879CDe80c6a1DcF322489e4786eB3;
-  LoogiesInterface loogies = LoogiesInterface(loogiesAddress);
-  BlueLoogiesInterface blueLoogies;
-  constructor(address _blueLoogies) ERC721("Public Good Loogies", "PGLOOG") {
-    blueLoogies = BlueLoogiesInterface(_blueLoogies);
-  }
-
+  LoogiesInterface immutable loogies = LoogiesInterface(loogiesAddress);
+  BlueLoogiesInterface immutable blueLoogies;
   mapping(uint256 => bytes3) public color;
   mapping(uint256 => uint256) public chubbiness;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
+  constructor(address _blueLoogies) ERC721("The Loogies", "THELOOG") {
+    blueLoogies = BlueLoogiesInterface(_blueLoogies);
+  }
 
-  function mintItem(uint256 loogieId, uint256 blueLoogieId) public returns (uint256) {
+  function mintItem(uint256 loogieId, uint256 blueLoogieId) external payable returns (uint256) {
+      require(loogies._exists(loogieId) && blueLoogies._exists(blueLoogieId),
+        "Loogie and Blue loogies should already exist");
       require(msg.sender == loogies.ownerOf(loogieId), "You are not the loogie's owner");
+      require(msg.value >= blueLoogies.grantPrice(blueLoogies.grants(blueLoogieId)),
+        "Sent ETH not sufficient");
+
+      (bool sent, ) = blueLoogies.grants(blueLoogieId).call{value: msg.value}("");
+      require(sent, "ETH transfer to grant failed");
+
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
       
-      color[id] = loogies.color(loogieId) | (bytes3(blueLoogies.idToBlue(blueLoogieId)) >> 16);
+      color[id] = loogies.color(loogieId) | (bytes3(blueLoogies.blue(blueLoogieId)) >> 16);
       chubbiness[id] = loogies.chubbiness(loogieId);
       
       return id;
@@ -54,7 +64,7 @@ contract PublicGoodLoogies is ERC721Enumerable, Ownable {
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
-      string memory name = string(abi.encodePacked('Public Goods Loogie #',id.toString()));
+      string memory name = string(abi.encodePacked('The Loogie #',id.toString()));
       string memory description = string(abi.encodePacked('This Loogie is the color #', toColor(color[id]),' with a chubbiness of ', uint2str(chubbiness[id]),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 

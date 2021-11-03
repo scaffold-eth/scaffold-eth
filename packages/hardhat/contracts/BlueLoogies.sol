@@ -23,26 +23,27 @@ contract BlueLoogies is ERC721Enumerable, Ownable {
     // RELEASE THE LOOGIES!
   }
 
-  mapping(uint256 => bytes1) public idToBlue;
-  mapping(uint256 => address) public idToGrants;
-  mapping(address => uint256) public grantsToEther;
+  mapping(uint256 => bytes1) public blue;
+  mapping(uint256 => address) public grants;
+  mapping(address => uint256) public grantPrice;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
-
-  function mintItem(address _grant) public onlyOwner returns (uint256) {
+  function mintItem(address _grant) external onlyOwner returns (uint256) {
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _mint(address(this), id);
-      idToGrants[id] = _grant;
-      idToBlue[id] = bytes20(_grant)[0];
-
+      blue[id] = bytes20(_grant)[0];
+      grants[id] = _grant;
       return id;
+  }
+
+  function setGrantPrice(address _grant, uint256 price) external onlyOwner {
+    grantPrice[_grant] = price;
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
       string memory name = string(abi.encodePacked('Blue Loogie #',id.toString()));
-      string memory description = string(abi.encodePacked('This Loogie is the color #0000', toColor(idToBlue[id]),'!'));
+      string memory description = string(abi.encodePacked('This Loogie is the color #0000', toColor(blue[id]),'!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -59,9 +60,9 @@ contract BlueLoogies is ERC721Enumerable, Ownable {
                               '", "external_url":"https://burnyboys.com/token/',
                               id.toString(),
                               '", "attributes": [{"trait_type": "color", "value": "#0000',
-                              toColor(idToBlue[id]),
+                              toColor(blue[id]),
                               '"}], "grant":"',
-                              (uint160(idToGrants[id])).toHexString(20),
+                              (uint160(grants[id])).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
                               image,
@@ -93,7 +94,7 @@ contract BlueLoogies is ERC721Enumerable, Ownable {
         '</g>',
         '<g id="head">',
           '<circle fill="#0000',
-          toColor(idToBlue[id]),
+          toColor(blue[id]),
           '" stroke-width="3" cx="204.5" cy="211.80065" id="svg_5" r="50" stroke="#000"/>',
         '</g>',
         '<g id="eye2">',

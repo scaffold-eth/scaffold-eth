@@ -265,9 +265,9 @@ function App(props) {
   const [previewLoogie, setPreviewLoogie] = useState({});
   const [previewSVG, setPreviewSVG] = useState({});
 
-  const pGLoogieBalance = useContractReader(readContracts, "PublicGoodLoogies", "balanceOf", [address]);
-  const yourPGLoogieBalance = pGLoogieBalance && pGLoogieBalance.toNumber && pGLoogieBalance.toNumber();
-  const [yourPGLoogies, setYourPGLoogies] = useState();
+  const theLoogieBalance = useContractReader(readContracts, "TheLoogies", "balanceOf", [address]);
+  const yourTheLoogieBalance = theLoogieBalance && theLoogieBalance.toNumber && theLoogieBalance.toNumber();
+  const [yourTheLoogies, setYourTheLoogies] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   async function updateYourCollectibles(balance, svgContract, _address) {
@@ -306,11 +306,11 @@ function App(props) {
       var update = await updateYourCollectibles(yourLoogieBalance, readContracts.LOOG, address);
       console.log("update", update);
       setYourLoogies(update);
-      update = await updateYourCollectibles(yourPGLoogieBalance, readContracts.PublicGoodLoogies, address);
-      setYourPGLoogies(update);
+      update = await updateYourCollectibles(yourTheLoogieBalance, readContracts.TheLoogies, address);
+      setYourTheLoogies(update);
     };
     applyEffect();
-  }, [address, yourLoogieBalance, yourPGLoogieBalance]);
+  }, [address, yourLoogieBalance, yourTheLoogieBalance]);
 
   useEffect(() => {
     const applyEffect = async() => {
@@ -515,7 +515,7 @@ function App(props) {
     const chubbiness = await readContracts.LOOG.chubbiness(loogieId);
     const color = await readContracts.LOOG.color(loogieId);
 
-    const blue = await readContracts.BlueLoogies.idToBlue(blueLoogieId);
+    const blue = await readContracts.BlueLoogies.blue(blueLoogieId);
     // console.log("type(color)", color.toString());
 
     const svg = `<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">\
@@ -551,7 +551,7 @@ function App(props) {
               }}
               to="/"
             >
-              PG Loogies Debug
+              The Loogies Debug
             </Link>
           </Menu.Item>
           <Menu.Item key="/blueloogiesdebug">
@@ -594,14 +594,14 @@ function App(props) {
               Loogies
             </Link>
           </Menu.Item>
-          <Menu.Item key="/pgloogies">
+          <Menu.Item key="/theloogies">
             <Link
               onClick={() => {
-                setRoute("/pgloogies");
+                setRoute("/theloogies");
               }}
-              to="/pgloogies"
+              to="/theloogies"
             >
-              PG Loogies
+              The Loogies
             </Link>
           </Menu.Item>
         </Menu>
@@ -615,8 +615,8 @@ function App(props) {
             */}
 
             <Contract
-              name="PublicGoodLoogies"
-              customContract={writeContracts && writeContracts.Loogies}
+              name="TheLoogies"
+              customContract={writeContracts && writeContracts.TheLoogies}
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -708,9 +708,9 @@ function App(props) {
                         </Card>
                         <Button
                           onClick={() => {
-                            tx(writeContracts.PublicGoodLoogies.mintItem(previewLoogie[id], id));
+                            tx(writeContracts.TheLoogies.mintItem(previewLoogie[id], id));
                           }}>
-                          Buy Public Good Loogie
+                          Buy: <em>The Loogie</em>
                         </Button>
                       </div>
                     </List.Item>
@@ -758,11 +758,11 @@ function App(props) {
             </div>
           </Route>
 
-          <Route exact path="/pgloogies">
+          <Route exact path="/theloogies">
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
                 bordered
-                dataSource={yourPGLoogies}
+                dataSource={yourTheLoogies}
                 renderItem={item => {
                   const id = item.id.toNumber();
 
@@ -802,7 +802,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
-                            tx(writeContracts.PublicGoodLoogies.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.TheLoogies.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
