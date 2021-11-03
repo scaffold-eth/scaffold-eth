@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
-import "hardhat/console.sol";
 import './HexStrings.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
@@ -15,14 +14,12 @@ abstract contract LoogiesInterface {
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
   function ownerOf(uint256 tokenId) external virtual view returns (address owner);
-  function _exists(uint256) external virtual view returns (bool);
 }
 
 abstract contract BlueLoogiesInterface {
   mapping (uint256 => bytes1) public blue;
   mapping (uint256 => address) public grants;
   mapping (address => uint256) public grantPrice;
-  function _exists(uint256) external virtual view returns (bool);
 }
 
 contract TheLoogies is ERC721Enumerable, Ownable {
@@ -43,13 +40,12 @@ contract TheLoogies is ERC721Enumerable, Ownable {
   }
 
   function mintItem(uint256 loogieId, uint256 blueLoogieId) external payable returns (uint256) {
-      require(loogies._exists(loogieId) && blueLoogies._exists(blueLoogieId),
-        "Loogie and Blue loogies should already exist");
       require(msg.sender == loogies.ownerOf(loogieId), "You are not the loogie's owner");
+      require(address(0) != blueLoogies.grants(blueLoogieId), "Grant is not set for blue loogie");
       require(msg.value >= blueLoogies.grantPrice(blueLoogies.grants(blueLoogieId)),
         "Sent ETH not sufficient");
 
-      (bool sent, ) = blueLoogies.grants(blueLoogieId).call{value: msg.value}("");
+      (bool sent, ) = payable(blueLoogies.grants(blueLoogieId)).call{value: msg.value}("");
       require(sent, "ETH transfer to grant failed");
 
       _tokenIds.increment();

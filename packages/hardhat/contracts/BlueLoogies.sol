@@ -6,7 +6,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
-import "hardhat/console.sol";
 import './HexStrings.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 

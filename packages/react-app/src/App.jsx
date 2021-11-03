@@ -708,7 +708,9 @@ function App(props) {
                         </Card>
                         <Button
                           onClick={() => {
-                            tx(writeContracts.TheLoogies.mintItem(previewLoogie[id], id));
+                            tx(writeContracts.TheLoogies.mintItem(previewLoogie[id], id, {
+                              value: ethers.utils.parseEther("0.1")
+                            }));
                           }}>
                           Buy: <em>The Loogie</em>
                         </Button>
