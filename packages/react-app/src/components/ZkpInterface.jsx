@@ -88,22 +88,54 @@ export default function ZkpInterface({
   const fields = [];
   const inputFieldsKeys = Object.keys(inputFields);
   for (let i = 0; i < inputFieldsKeys.length; i++) {
-    fields.push(
-      <div style={{padding: "8px"}}>
-        <div style={{ float: "left" }}>
-          <h3>{inputFieldsKeys[i]}:</h3>
+    if (!Array.isArray(proofInputs[inputFieldsKeys[i]])) {
+      fields.push(
+        <div style={{padding: "8px"}}>
+          <div style={{ float: "left" }}>
+            <h3>{inputFieldsKeys[i]}:</h3>
+          </div>
+          <Input
+          defaultValue={proofInputs[inputFieldsKeys[i]]}
+          allowClear={true}
+          onChange={event => {
+            const inputUpdate = { ...proofInputs };
+            inputUpdate[inputFieldsKeys[i]] = event.target.value;
+            setProofInputs(inputUpdate);
+          }}
+          />
         </div>
-        <Input
-        defaultValue={proofInputs[inputFieldsKeys[i]]}
-        allowClear={true}
-        onChange={event => {
-          const inputUpdate = { ...proofInputs };
-          inputUpdate[inputFieldsKeys[i]] = event.target.value;
-          setProofInputs(inputUpdate);
-        }}
-        />
-      </div>
-    );
+      );
+    } else {
+      const arrElements = [];
+      for (let j = 0; j < proofInputs[inputFieldsKeys[i]].length; j++)
+      arrElements.push(
+        <div style={{padding: "4px"}}>
+          <div style={{ float: "left"}}>
+            <h4>index: {j}</h4>
+          </div>
+          <Input
+            defaultValue={proofInputs[inputFieldsKeys[i]][j]}
+            allowClear={true}
+            onChange={(event) => {
+              const inputUpdate = { ...proofInputs };
+              inputUpdate[inputFieldsKeys[i]][j] = event.target.value;
+              setProofInputs(inputUpdate);
+            }}
+          />
+        </div>
+      );
+      fields.push(
+        <div style={{padding: "8px"}}>
+          <div style={{ float: "left"}}>
+            <h3>{inputFieldsKeys[i]}:</h3>
+          </div>
+          <br/>
+          <div style={{padding: "2vw"}}>
+            {arrElements}
+          </div>
+        </div>
+      );
+    }
   }
 
   const proofDataDisp = (
