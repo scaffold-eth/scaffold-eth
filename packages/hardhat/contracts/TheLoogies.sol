@@ -2,6 +2,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
+import "@openzeppelin/contracts/token/ERC721/utils/ERC721Holder.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
@@ -10,19 +11,20 @@ import './HexStrings.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
-abstract contract LoogiesInterface {
+abstract contract ILoogies {
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
   function ownerOf(uint256 tokenId) external virtual view returns (address owner);
+  function safeTransferFrom(address from, address to, uint256 tokenId) external virtual;
 }
 
-abstract contract BlueLoogiesInterface {
+abstract contract IBlueLoogies {
   mapping (uint256 => bytes1) public blue;
   mapping (uint256 => address) public grants;
   mapping (address => uint256) public grantPrice;
 }
 
-contract TheLoogies is ERC721Enumerable, Ownable {
+contract TheLoogies is ERC721Enumerable, Ownable, ERC721Holder {
 
   using Strings for uint256;
   using HexStrings for uint160;
@@ -30,27 +32,28 @@ contract TheLoogies is ERC721Enumerable, Ownable {
   Counters.Counter private _tokenIds;
 
   address constant loogiesAddress = 0xE203cDC6011879CDe80c6a1DcF322489e4786eB3;
-  LoogiesInterface immutable loogies = LoogiesInterface(loogiesAddress);
-  BlueLoogiesInterface immutable blueLoogies;
+  ILoogies immutable loogies = ILoogies(loogiesAddress);
+  IBlueLoogies immutable blueLoogies;
   mapping(uint256 => bytes3) public color;
   mapping(uint256 => uint256) public chubbiness;
 
   constructor(address _blueLoogies) ERC721("The Loogies", "THELOOG") {
-    blueLoogies = BlueLoogiesInterface(_blueLoogies);
+    blueLoogies = IBlueLoogies(_blueLoogies);
   }
 
   function mintItem(uint256 loogieId, uint256 blueLoogieId) external payable returns (uint256) {
-      require(msg.sender == loogies.ownerOf(loogieId), "You are not the loogie's owner");
+      require(_msgSender() == loogies.ownerOf(loogieId), "You are not the loogie's owner");
       require(address(0) != blueLoogies.grants(blueLoogieId), "Grant is not set for blue loogie");
       require(msg.value >= blueLoogies.grantPrice(blueLoogies.grants(blueLoogieId)),
         "Sent ETH not sufficient");
 
+      loogies.safeTransferFrom(_msgSender(), address(this), loogieId);
       (bool sent, ) = payable(blueLoogies.grants(blueLoogieId)).call{value: msg.value}("");
       require(sent, "ETH transfer to grant failed");
 
       _tokenIds.increment();
       uint256 id = _tokenIds.current();
-      _mint(msg.sender, id);
+      _mint(_msgSender(), id);
       
       color[id] = loogies.color(loogieId) | (bytes3(blueLoogies.blue(blueLoogieId)) >> 16);
       chubbiness[id] = loogies.chubbiness(loogieId);

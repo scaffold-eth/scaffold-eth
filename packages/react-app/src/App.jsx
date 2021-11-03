@@ -708,11 +708,17 @@ function App(props) {
                         </Card>
                         <Button
                           onClick={() => {
+                            tx(writeContracts.LOOG.approve(readContracts.TheLoogies.address, previewLoogie[id]));
+                          }}>
+                          Approve
+                        </Button>
+                        <Button
+                          onClick={() => {
                             tx(writeContracts.TheLoogies.mintItem(previewLoogie[id], id, {
                               value: ethers.utils.parseEther("0.1")
                             }));
                           }}>
-                          Buy: <em>The Loogie</em>
+                          Upgrade Loogie
                         </Button>
                       </div>
                     </List.Item>
