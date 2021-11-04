@@ -10,6 +10,8 @@ import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
+const targetNetwork = "localhost";
+
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
   const prevTheme = useRef("light");
@@ -24,7 +26,7 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <Web3Provider network="localhost">
+    <Web3Provider network={targetNetwork}>
       <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme.current}>
         <>
           <Head>
