@@ -674,7 +674,16 @@ export const BUILDS = [
 
 export const BUILDERS = [
   {
-   name: "zakgriffith.eth",
+   name: "bboyle.eth",
+   role: "",
+   address: "0xdfcbf02520fdde9d8c46cc44dadcfc798029e5b4",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x684653eF9231e6142446053E4766027e6c6aAb15",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://bboyle.buidlguidl.com"
+  },
+  {
+   name: "frogbaseball.eth",
    role: "",
    address: "0x38f84e92b468a1885e73cedc9a4d5632de07eabb",
    github: "",
