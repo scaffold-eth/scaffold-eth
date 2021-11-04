@@ -1,98 +1,80 @@
 const fs = require("fs");
 const chalk = require("chalk");
-const bre = require("hardhat");
 
+const graphDir = "../subgraph";
+const deploymentsDir = "./deployments";
 const publishDir = "../react-app/src/contracts";
-const graphDir = "../subgraph"
 
-function publishContract(contractName) {
-  console.log(
-    " 💽 Publishing",
-    chalk.cyan(contractName),
-    "to",
-    chalk.gray(publishDir)
-  );
+function publishContract(contractName, networkName) {
   try {
     let contract = fs
-      .readFileSync(`${bre.config.paths.artifacts}/contracts/${contractName}.sol/${contractName}.json`)
-      .toString();
-    const address = fs
-      .readFileSync(`${bre.config.paths.artifacts}/${contractName}.address`)
+      .readFileSync(`${deploymentsDir}/${networkName}/${contractName}.json`)
       .toString();
     contract = JSON.parse(contract);
-    let graphConfigPath = `${graphDir}/config/config.json`
-    let graphConfig
+    const graphConfigPath = `${graphDir}/config/config.json`;
+    let graphConfig;
     try {
       if (fs.existsSync(graphConfigPath)) {
-        graphConfig = fs
-          .readFileSync(graphConfigPath)
-          .toString();
+        graphConfig = fs.readFileSync(graphConfigPath).toString();
       } else {
-        graphConfig = '{}'
+        graphConfig = "{}";
       }
-      } catch (e) {
-        console.log(e)
-      }
+    } catch (e) {
+      console.log(e);
+    }
 
-    graphConfig = JSON.parse(graphConfig)
-    graphConfig[contractName + "Address"] = address
-    fs.writeFileSync(
-      `${publishDir}/${contractName}.address.js`,
-      `module.exports = "${address}";`
-    );
-    fs.writeFileSync(
-      `${publishDir}/${contractName}.abi.js`,
-      `module.exports = ${JSON.stringify(contract.abi, null, 2)};`
-    );
-    fs.writeFileSync(
-      `${publishDir}/${contractName}.bytecode.js`,
-      `module.exports = "${contract.bytecode}";`
-    );
+    graphConfig = JSON.parse(graphConfig);
+    graphConfig[`${networkName}_${contractName}Address`] = contract.address;
 
-    const folderPath = graphConfigPath.replace("/config.json","")
-    if (!fs.existsSync(folderPath)){
+    const folderPath = graphConfigPath.replace("/config.json", "");
+    if (!fs.existsSync(folderPath)) {
       fs.mkdirSync(folderPath);
     }
+    fs.writeFileSync(graphConfigPath, JSON.stringify(graphConfig, null, 2));
+    if (!fs.existsSync(`${graphDir}/abis`)) fs.mkdirSync(`${graphDir}/abis`);
     fs.writeFileSync(
-      graphConfigPath,
-      JSON.stringify(graphConfig, null, 2)
-    );
-    fs.writeFileSync(
-      `${graphDir}/abis/${contractName}.json`,
+      `${graphDir}/abis/${networkName}_${contractName}.json`,
       JSON.stringify(contract.abi, null, 2)
     );
 
-    console.log(" 📠 Published "+chalk.green(contractName)+" to the frontend.")
+    //Hardhat Deploy writes a file with all ABIs in react-app/src/contracts/contracts.json
+    //If you need the bytecodes and/or you want one file per ABIs, un-comment the following block.
+    //Write the contracts ABI, address and bytecodes in case the front-end needs them
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.address.js`,
+    //   `module.exports = "${contract.address}";`
+    // );
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.abi.js`,
+    //   `module.exports = ${JSON.stringify(contract.abi, null, 2)};`
+    // );
+    // fs.writeFileSync(
+    //   `${publishDir}/${contractName}.bytecode.js`,
+    //   `module.exports = "${contract.bytecode}";`
+    // );
 
     return true;
   } catch (e) {
-    if(e.toString().indexOf("no such file or directory")>=0){
-      console.log(chalk.yellow(" ⚠️  Can't publish "+contractName+" yet (make sure it getting deployed)."))
-    }else{
-      console.log(e);
-      return false;
-    }
+    console.log(
+      "Failed to publish " + chalk.red(contractName) + " to the subgraph."
+    );
+    console.log(e);
+    return false;
   }
 }
 
 async function main() {
-  if (!fs.existsSync(publishDir)) {
-    fs.mkdirSync(publishDir);
-  }
-  const finalContractList = [];
-  fs.readdirSync(bre.config.paths.sources).forEach((file) => {
-    if (file.indexOf(".sol") >= 0) {
-      const contractName = file.replace(".sol", "");
-      // Add contract to list if publishing is successful
-      if (publishContract(contractName)) {
-        finalContractList.push(contractName);
+  const directories = fs.readdirSync(deploymentsDir);
+  directories.forEach(function (directory) {
+    const files = fs.readdirSync(`${deploymentsDir}/${directory}`);
+    files.forEach(function (file) {
+      if (file.indexOf(".json") >= 0) {
+        const contractName = file.replace(".json", "");
+        publishContract(contractName, directory);
       }
-    }
+    });
   });
-  fs.writeFileSync(
-    `${publishDir}/contracts.js`,
-    `module.exports = ${JSON.stringify(finalContractList)};`
-  );
+  console.log("✅  Published contracts to the subgraph package.");
 }
 main()
   .then(() => process.exit(0))
