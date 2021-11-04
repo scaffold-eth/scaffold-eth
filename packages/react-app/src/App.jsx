@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, Footer } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -27,6 +27,7 @@ import Fortmatic from "fortmatic";
 import Authereum from "authereum";
 
 const { ethers } = require("ethers");
+const { TabPane } = Tabs;
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -246,6 +247,61 @@ function App(props) {
   console.log("🤗 loogie balance:", loogieBalance);
 
   const nfts = ["Bow", "Mouth", "Eyelash", "Mustache", "ContactLenses"];
+
+  const nftsSvg = {
+    Bow: (
+      <g class="bow" transform="translate(0,0) scale(0.07 0.07)">
+        <path fill="#1890ff" d="M476.532,135.396c-12.584-7.796-29-7.356-46.248,1.228l-117.868,59.88c-10.048-9.7-23.728-14.452-38.816-14.452h-50.156c-15.204,0-28.992,4.828-39.064,14.652L66.1,137.256c-17.232-8.58-33.836-9.336-46.412-1.544C7.1,143.508,0,158.1,0,177.368v141.104c0,19.268,7.1,34.18,19.68,41.96c5.972,3.708,12.904,5.556,20.28,5.556c8.164,0,17.04-2.256,26.092-6.764l118.312-58.14c10.072,9.824,23.88,16.588,39.08,16.588H273.6c15.084,0,28.78-6.692,38.82-16.396l117.884,58.276c9.068,4.512,17.9,6.596,26.064,6.596c7.388,0,14.192-1.928,20.164-5.636C489.108,352.72,496,337.744,496,318.476V177.368C496,158.1,489.108,143.192,476.532,135.396z"/>
+      </g>
+    ),
+    Mouth: (
+      <g transform="translate(-32,-35) scale(0.25 0.25)">
+        <g id="head">
+          <ellipse fill="transparent" stroke-width="1" cx="204.5" cy="211.80065" id="svg_5" rx="65" ry="51.80065" stroke="gray"/>
+        </g>
+        <g class="mouth" transform="translate(24,0)">
+          <path d="M 130 240 Q 165 250 195 235" stroke="#1890ff" stroke-width="3" fill="transparent"/>
+        </g>
+      </g>
+    ),
+    Eyelash: (
+      <g class="eyelash" transform="translate(-60,-45) scale(0.4 0.4)">
+        <g id="eye1">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="gray" fill="#fff"/>
+        </g>
+        <g id="eye2">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="gray" fill="#fff"/>
+        </g>
+        <path d="M 164 130 Q 154 125 169 120" stroke-width="1" fill="transparent" stroke="#1890ff" />
+        <path d="M 171 127 Q 161 122 176 117" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 179 125 Q 169 120 184 115" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 186 126 Q 176 121 191 116" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 194 127 Q 184 122 199 117" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 196 142 Q 186 137 201 132" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 203 140 Q 193 135 208 130" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 211 139 Q 201 134 216 129" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 218 141 Q 208 136 223 131" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 226 143 Q 216 138 231 133" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+      </g>
+    ),
+    Mustache: (
+      <g class="mustache" transform="translate(0,0) scale(1.40 1.40)">,
+        <path fill="#1890ff" d="M21.455,13.025c-0.604-3.065-5.861-4.881-7.083-2.583c-1.22-2.299-6.477-0.483-7.081,2.583C6.501,16.229,2.321,17.11,0,15.439c0,3.622,3.901,3.669,6.315,3.9c5.718-0.25,7.525-2.889,8.057-4.093c0.532,1.205,2.34,3.843,8.058,4.093c2.416-0.231,6.315-0.278,6.315-3.9C26.423,17.11,22.244,16.229,21.455,13.025z"/>
+      </g>
+    ),
+    ContactLenses: (
+      <g class="contact-lenses" transform="translate(-60,-47) scale(0.4 0.4)">
+        <g id="eye1">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="gray" fill="#fff"/>
+          <ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#1890ff" fill="#000000"/>
+        </g>
+        <g id="eye2">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="gray" fill="#fff"/>
+          <ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#1890ff"/>
+        </g>
+      </g>
+    ),
+  };
 
   const nftBalance = {};
 
@@ -615,481 +671,477 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
-      <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Loogies
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/fancyLoogie">
-            <Link
-              onClick={() => {
-                setRoute("/fancyLoogie");
-              }}
-              to="/fancyLoogie"
-            >
-              FancyLoogies
-            </Link>
-          </Menu.Item>
-          {nfts.map(function (nft) {
-            return (
-              <Menu.Item key={nft}>
-                <Link
-                  onClick={() => {
-                    setRoute("/" + nft);
-                  }}
-                  to={"/" + nft}
-                >
-                  {nft}
-                </Link>
-              </Menu.Item>
-            );
-          })}
-          <Menu.Item key="/mintloogies">
-            <Link
-              onClick={() => {
-                setRoute("/mintloogies");
-              }}
-              to="/mintloogies"
-            >
-              Mint Loogies
-            </Link>
-          </Menu.Item>
-          {nfts.map(function (nft) {
-            return (
-              <Menu.Item key={"mint" + nft}>
-                <Link
-                  onClick={() => {
-                    setRoute("/mint" + nft);
-                  }}
-                  to={"/mint" + nft}
-                >
-                  Mint {nft}
-                </Link>
-              </Menu.Item>
-            );
-          })}
-          <Menu.Item key="/mintFancyLoogie">
-            <Link
-              onClick={() => {
-                setRoute("/mintFancyLoogie");
-              }}
-              to="/mintFancyLoogie"
-            >
-              FancyLoogies
-            </Link>
-          </Menu.Item>
-        </Menu>
 
-        <Switch>
-          <Route exact path="/">
-            {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
+      <Tabs defaultActiveKey="/" tabPosition="left">
+        <TabPane tab={
+            <div>
+              <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                <g transform="translate(-23,-22) scale(0.22 0.22)">
+                  <g id="eye1">
+                    <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>
+                    <ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#000" fill="#000000"/>
+                  </g>
+                  <g id="head">
+                    <ellipse fill="#4c2228" stroke-width="3" cx="204.5" cy="211.80065" id="svg_5" rx="57" ry="51.80065" stroke="#000"/>
+                  </g>
+                  <g id="eye2">
+                    <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="#000" fill="#fff"/>
+                    <ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#000"/>
+                  </g>
+                  <g class="bow" transform="translate(180,235) scale(0.10 0.10)">
+                    <path fill="#7a8c22" d="M476.532,135.396c-12.584-7.796-29-7.356-46.248,1.228l-117.868,59.88c-10.048-9.7-23.728-14.452-38.816-14.452h-50.156c-15.204,0-28.992,4.828-39.064,14.652L66.1,137.256c-17.232-8.58-33.836-9.336-46.412-1.544C7.1,143.508,0,158.1,0,177.368v141.104c0,19.268,7.1,34.18,19.68,41.96c5.972,3.708,12.904,5.556,20.28,5.556c8.164,0,17.04-2.256,26.092-6.764l118.312-58.14c10.072,9.824,23.88,16.588,39.08,16.588H273.6c15.084,0,28.78-6.692,38.82-16.396l117.884,58.276c9.068,4.512,17.9,6.596,26.064,6.596c7.388,0,14.192-1.928,20.164-5.636C489.108,352.72,496,337.744,496,318.476V177.368C496,158.1,489.108,143.192,476.532,135.396z"/>
+                  </g>
+                  <g class="mustache" transform="translate(140,195) scale(1.50 1.50)">
+                    <path fill="#ba27d3" d="M21.455,13.025c-0.604-3.065-5.861-4.881-7.083-2.583c-1.22-2.299-6.477-0.483-7.081,2.583C6.501,16.229,2.321,17.11,0,15.439c0,3.622,3.901,3.669,6.315,3.9c5.718-0.25,7.525-2.889,8.057-4.093c0.532,1.205,2.34,3.843,8.058,4.093c2.416-0.231,6.315-0.278,6.315-3.9C26.423,17.11,22.244,16.229,21.455,13.025z"/>
+                  </g>
+                  <path d="M 164 130 Q 154 125 169 110" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 171 127 Q 161 122 176 107" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 179 125 Q 169 120 184 105" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 186 126 Q 176 121 191 106" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 194 127 Q 184 122 199 107" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 196 142 Q 186 137 201 122" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 203 140 Q 193 135 208 120" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 211 139 Q 201 134 216 119" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 218 141 Q 208 136 223 121" stroke="black" stroke-width="1" fill="transparent"/>
+                  <path d="M 226 143 Q 216 138 231 123" stroke="black" stroke-width="1" fill="transparent"/>
 
-            <Contract
-              name="Loogies"
-              customContract={writeContracts && writeContracts.Loogies}
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-          </Route>
-          <Route exact path="/fancyLoogie">
-            <Contract
-              name="FancyLoogie"
-              signer={userSigner}
-              provider={localProvider}
-              address={address}
-              blockExplorer={blockExplorer}
-              contractConfig={contractConfig}
-            />
-          </Route>
-          {nfts.map(function (nft) {
-            return (
-              <Route exact path={"/" + nft}>
-                <Contract
-                  name={nft}
-                  signer={userSigner}
-                  provider={localProvider}
-                  address={address}
-                  blockExplorer={blockExplorer}
-                  contractConfig={contractConfig}
-                />
-              </Route>
-            );
-          })}
-          <Route exact path="/mintloogies">
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={() => {
-                tx(writeContracts.Loogies.mintItem())
-              }}>MINT</Button>
+                  <g class="mouth" transform="translate(27,0)">
+                    <path d="M 130 240 Q 165 250 190 235" stroke="black" stroke-width="3" fill="transparent"/>
+                  </g>
+                </g>
+              </svg>
+              <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>FancyLoogies</p>
             </div>
-            {/* */}
-            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
-              <List
-                bordered
-                dataSource={yourLoogies}
-                renderItem={item => {
-                  const id = item.id.toNumber();
+          }
+          key="/"
+        >
+          <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+            <List
+              bordered
+              dataSource={yourFancyLoogies}
+              renderItem={item => {
+                const id = item.id.toNumber();
 
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                          </div>
-                        }
-                      >
-                        <img src={item.image} />
-                        <div>{item.description}</div>
-                      </Card>
+                console.log("IMAGE",item.image);
 
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                        <br/><br/>
-                        Upgrade to FancyLoogie:{" "}
-                        <Address
-                          address={readContracts.FancyLoogie.address}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        { yourLoogiesApproved[id] != readContracts.FancyLoogie.address
-                        ? <Button
-                            onClick={ async () => {
-                              tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(_res => {
-                                //const newAddress = await readContracts.Loogies.getApproved(id)
-                                setYourLoogiesApproved(yourLoogiesApproved => ({
-                                  ...yourLoogiesApproved,
-                                  [id]: readContracts.FancyLoogie.address
-                                }));
-                              });
-                            }}>
-                            Approve
-                          </Button>
-                        :  <Button
-                            onClick={ async () => {
-                              tx(writeContracts.FancyLoogie.mintItem(id));
-                            }}>
-                            Upgrade
-                          </Button>
-                        }
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
-          </Route>
-           <Route exact path="/mintFancyLoogie">
-            <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
-              <List
-                bordered
-                dataSource={yourFancyLoogies}
-                renderItem={item => {
-                  const id = item.id.toNumber();
-
-                  console.log("IMAGE",item.image);
-
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                          </div>
-                        }
-                      >
-                        <img src={item.image} />
-                        <div>{item.description}</div>
-                      </Card>
-
-                      <div>
-                        owner:{" "}
-                        <Address
-                          address={item.owner}
-                          ensProvider={mainnetProvider}
-                          blockExplorer={blockExplorer}
-                          fontSize={16}
-                        />
-                        <AddressInput
-                          ensProvider={mainnetProvider}
-                          placeholder="transfer to address"
-                          value={transferToAddresses[id]}
-                          onChange={newValue => {
-                            const update = {};
-                            update[id] = newValue;
-                            setTransferToAddresses({ ...transferToAddresses, ...update });
-                          }}
-                        />
-                        <Button
-                          onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.FancyLoogie.transferFrom(address, transferToAddresses[id], id));
-                          }}
-                        >
-                          Transfer
-                        </Button>
-                        <br />
-                        <br />
-                        <Button
-                          className="action-button"
-                          onClick={() => {
-                            tx(writeContracts.FancyLoogie.downgradeLoogie(id));
-                          }}
-                        >
-                          Downgrade
-                        </Button>
-                        <br />
-                        {fancyLoogiesNfts &&
-                          fancyLoogiesNfts[id] &&
-                          fancyLoogiesNfts[id][readContracts["Bow"].address] && (
-                            <Button
-                              className="action-button"
-                              onClick={() => {
-                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Bow"].address, id));
-                              }}
-                            >
-                              Remove Bow
-                            </Button>
-                          )}
-                        {fancyLoogiesNfts &&
-                          fancyLoogiesNfts[id] &&
-                          fancyLoogiesNfts[id][readContracts["Mouth"].address] && (
-                            <Button
-                              className="action-button"
-                              onClick={() => {
-                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mouth"].address, id));
-                              }}
-                            >
-                              Remove Mouth
-                            </Button>
-                          )}
-                        {fancyLoogiesNfts &&
-                          fancyLoogiesNfts[id] &&
-                          fancyLoogiesNfts[id][readContracts["Eyelash"].address] && (
-                            <Button
-                              className="action-button"
-                              onClick={() => {
-                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Eyelash"].address, id));
-                              }}
-                            >
-                              Remove Eyelash
-                            </Button>
-                          )}
-                        {fancyLoogiesNfts &&
-                          fancyLoogiesNfts[id] &&
-                          fancyLoogiesNfts[id][readContracts["Mustache"].address] && (
-                            <Button
-                              className="action-button"
-                              onClick={() => {
-                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mustache"].address, id));
-                              }}
-                            >
-                              Remove Mustache
-                            </Button>
-                          )}
-                        {fancyLoogiesNfts &&
-                          fancyLoogiesNfts[id] &&
-                          fancyLoogiesNfts[id][readContracts["ContactLenses"].address] && (
-                            <Button
-                              className="action-button"
-                              onClick={() => {
-                                tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["ContactLenses"].address, id));
-                              }}
-                            >
-                              Remove ContactLenses
-                            </Button>
-                          )}
-                      </div>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
-
-            {/* */}
-          </Route>
-          {nfts.map(function (nft) {
-            return (
-              <Route exact path={"/mint" + nft}>
-                <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-                  <Button
-                    type={"primary"}
-                    onClick={() => {
-                      tx(writeContracts[nft].mintItem());
-                    }}
-                  >
-                    MINT
-                  </Button>
-                </div>
-                {/* */}
-                <div style={{ width: 950, margin: "auto", paddingBottom: 256 }}>
-                  <List
-                    bordered
-                    dataSource={yourNfts[nft]}
-                    renderItem={item => {
-                      const id = item.id.toNumber();
-
-                      console.log("IMAGE", item.image);
-
-                      let previewSvg = "";
-                      if (yourNftsPreviewSvg[nft][id]) {
-                        previewSvg = yourNftsPreviewSvg[nft][id];
-                        console.log("PREVIEW-SVG", previewSvg);
+                return (
+                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                    <Card
+                      title={
+                        <div>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                        </div>
                       }
+                    >
+                      <img src={item.image} />
+                      <div>{item.description}</div>
+                    </Card>
 
-                      return (
-                        <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                          <Card
-                            title={
-                              <div style={{ height: 45 }}>
-                                <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                              </div>
-                            }
+                    <div>
+                      owner:{" "}
+                      <Address
+                        address={item.owner}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                      <AddressInput
+                        ensProvider={mainnetProvider}
+                        placeholder="transfer to address"
+                        value={transferToAddresses[id]}
+                        onChange={newValue => {
+                          const update = {};
+                          update[id] = newValue;
+                          setTransferToAddresses({ ...transferToAddresses, ...update });
+                        }}
+                      />
+                      <Button
+                        onClick={() => {
+                          console.log("writeContracts", writeContracts);
+                          tx(writeContracts.FancyLoogie.transferFrom(address, transferToAddresses[id], id));
+                        }}
+                      >
+                        Transfer
+                      </Button>
+                      <br />
+                      <br />
+                      <Button
+                        className="action-button"
+                        onClick={() => {
+                          tx(writeContracts.FancyLoogie.downgradeLoogie(id));
+                        }}
+                      >
+                        Downgrade
+                      </Button>
+                      <br />
+                      {fancyLoogiesNfts &&
+                        fancyLoogiesNfts[id] &&
+                        fancyLoogiesNfts[id][readContracts["Bow"].address] && (
+                          <Button
+                            className="action-button"
+                            onClick={() => {
+                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Bow"].address, id));
+                            }}
                           >
-                            <img src={item.image} />
-                            <div style={{ height: 90 }}>{item.description}</div>
-                          </Card>
-
-                          <Card
-                            title={
-                              <div style={{ height: 45 }}>
-                                Transfer to:
-                                <Input
-                                  style={{ width: 130, marginRight: 20, marginLeft: 10 }}
-                                  placeholder="FancyLoogie ID"
-                                  onChange={newValue => {
-                                    const update = {};
-                                    update[id] = newValue.target.value;
-                                    setTransferToTankId({ ...transferToTankId, ...update });
-                                  }}
-                                />
-                                <Button
-                                  style={{ marginRight: 10 }}
-                                  onClick={() => {
-                                    console.log("transferToTankId[id]", transferToTankId[id]);
-                                    console.log(parseInt(transferToTankId[id]));
-
-                                    const preview = {};
-                                    preview[id] = parseInt(transferToTankId[id]);
-
-                                    setYourNftsPreview(prevState => ({
-                                      ...prevState,
-                                      [nft]: {
-                                        ...prevState[nft],
-                                        ...preview,
-                                      },
-                                    }));
-
-                                    console.log("nftsPreview", setYourNftsPreview);
-                                  }}
-                                >
-                                  Preview
-                                </Button>
-                                <Button
-                                  type="primary"
-                                  onClick={() => {
-                                    console.log("writeContracts", writeContracts);
-                                    console.log("transferToTankId[id]", transferToTankId[id]);
-                                    console.log(parseInt(transferToTankId[id]));
-
-                                    const tankIdInBytes =
-                                      "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64, "0");
-                                    console.log(tankIdInBytes);
-
-                                    tx(
-                                      writeContracts[nft]["safeTransferFrom(address,address,uint256,bytes)"](
-                                        address,
-                                        readContracts.FancyLoogie.address,
-                                        id,
-                                        tankIdInBytes,
-                                      ),
-                                    );
-                                  }}
-                                >
-                                  Transfer
-                                </Button>
-                              </div>
-                            }
+                            Remove Bow
+                          </Button>
+                        )}
+                      {fancyLoogiesNfts &&
+                        fancyLoogiesNfts[id] &&
+                        fancyLoogiesNfts[id][readContracts["Mouth"].address] && (
+                          <Button
+                            className="action-button"
+                            onClick={() => {
+                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mouth"].address, id));
+                            }}
                           >
-                            {previewSvg && <div dangerouslySetInnerHTML={{ __html: previewSvg }}></div>}
-                            {!previewSvg && <img src={item.image} />}
-                            <div style={{ height: 90 }}>
-                              owner:{" "}
-                              <Address
-                                address={item.owner}
-                                ensProvider={mainnetProvider}
-                                blockExplorer={blockExplorer}
-                                fontSize={16}
-                              />
-                              <AddressInput
-                                ensProvider={mainnetProvider}
-                                placeholder="transfer to address"
-                                value={transferToAddresses[id]}
+                            Remove Mouth
+                          </Button>
+                        )}
+                      {fancyLoogiesNfts &&
+                        fancyLoogiesNfts[id] &&
+                        fancyLoogiesNfts[id][readContracts["Eyelash"].address] && (
+                          <Button
+                            className="action-button"
+                            onClick={() => {
+                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Eyelash"].address, id));
+                            }}
+                          >
+                            Remove Eyelash
+                          </Button>
+                        )}
+                      {fancyLoogiesNfts &&
+                        fancyLoogiesNfts[id] &&
+                        fancyLoogiesNfts[id][readContracts["Mustache"].address] && (
+                          <Button
+                            className="action-button"
+                            onClick={() => {
+                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["Mustache"].address, id));
+                            }}
+                          >
+                            Remove Mustache
+                          </Button>
+                        )}
+                      {fancyLoogiesNfts &&
+                        fancyLoogiesNfts[id] &&
+                        fancyLoogiesNfts[id][readContracts["ContactLenses"].address] && (
+                          <Button
+                            className="action-button"
+                            onClick={() => {
+                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts["ContactLenses"].address, id));
+                            }}
+                          >
+                            Remove ContactLenses
+                          </Button>
+                        )}
+                    </div>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+        </TabPane>
+        <TabPane
+          tab={
+            <div>
+              <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                <g transform="translate(-20,-20) scale(0.2 0.2)">
+                  <g id="eye1">
+                    <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>
+                    <ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#000" fill="#000000"/>
+                  </g>
+                  <g id="head">
+                    <ellipse fill="#1890ff" stroke-width="3" cx="204.5" cy="211.80065" id="svg_5" rx="65" ry="51.80065" stroke="#000"/>
+                  </g>
+                  <g id="eye2">
+                    <ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="#000" fill="#fff"/>
+                    <ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#000"/>
+                  </g>
+                </g>
+              </svg>
+              <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Loogies</p>
+            </div>
+          }
+          key="loogies"
+        >
+          <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            <Button type={"primary"} onClick={() => {
+              tx(writeContracts.Loogies.mintItem())
+            }}>MINT</Button>
+          </div>
+          {/* */}
+          <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+            <List
+              bordered
+              dataSource={yourLoogies}
+              renderItem={item => {
+                const id = item.id.toNumber();
+
+                return (
+                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                    <Card
+                      title={
+                        <div>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                        </div>
+                      }
+                    >
+                      <img src={item.image} />
+                      <div>{item.description}</div>
+                    </Card>
+
+                    <div>
+                      owner:{" "}
+                      <Address
+                        address={item.owner}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                      <AddressInput
+                        ensProvider={mainnetProvider}
+                        placeholder="transfer to address"
+                        value={transferToAddresses[id]}
+                        onChange={newValue => {
+                          const update = {};
+                          update[id] = newValue;
+                          setTransferToAddresses({ ...transferToAddresses, ...update });
+                        }}
+                      />
+                      <Button
+                        onClick={() => {
+                          console.log("writeContracts", writeContracts);
+                          tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                        }}
+                      >
+                        Transfer
+                      </Button>
+                      <br/><br/>
+                      Upgrade to FancyLoogie:{" "}
+                      <Address
+                        address={readContracts.FancyLoogie.address}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                      { yourLoogiesApproved[id] != readContracts.FancyLoogie.address
+                      ? <Button
+                          onClick={ async () => {
+                            tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(_res => {
+                              //const newAddress = await readContracts.Loogies.getApproved(id)
+                              setYourLoogiesApproved(yourLoogiesApproved => ({
+                                ...yourLoogiesApproved,
+                                [id]: readContracts.FancyLoogie.address
+                              }));
+                            });
+                          }}>
+                          Approve
+                        </Button>
+                      :  <Button
+                          onClick={ async () => {
+                            tx(writeContracts.FancyLoogie.mintItem(id));
+                          }}>
+                          Upgrade
+                        </Button>
+                      }
+                    </div>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+        </TabPane>
+        {nfts.map(function (nft) {
+          return (
+            <TabPane tab={
+              <div>
+                <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                  { nftsSvg[nft] }
+                </svg>
+                <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
+              </div>
+              }
+              key={nft}
+            >
+              <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+                <Button
+                  type={"primary"}
+                  onClick={() => {
+                    tx(writeContracts[nft].mintItem());
+                  }}
+                >
+                  MINT
+                </Button>
+              </div>
+              {/* */}
+              <div style={{ width: 950, margin: "auto", paddingBottom: 256 }}>
+                <List
+                  bordered
+                  dataSource={yourNfts[nft]}
+                  renderItem={item => {
+                    const id = item.id.toNumber();
+
+                    console.log("IMAGE", item.image);
+
+                    let previewSvg = "";
+                    if (yourNftsPreviewSvg[nft][id]) {
+                      previewSvg = yourNftsPreviewSvg[nft][id];
+                      console.log("PREVIEW-SVG", previewSvg);
+                    }
+
+                    return (
+                      <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                        <Card
+                          title={
+                            <div style={{ height: 45 }}>
+                              <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                            </div>
+                          }
+                        >
+                          <img src={item.image} />
+                          <div style={{ height: 90 }}>{item.description}</div>
+                        </Card>
+
+                        <Card
+                          title={
+                            <div style={{ height: 45 }}>
+                              Transfer to:
+                              <Input
+                                style={{ width: 130, marginRight: 20, marginLeft: 10 }}
+                                placeholder="FancyLoogie ID"
                                 onChange={newValue => {
                                   const update = {};
-                                  update[id] = newValue;
-                                  setTransferToAddresses({ ...transferToAddresses, ...update });
+                                  update[id] = newValue.target.value;
+                                  setTransferToTankId({ ...transferToTankId, ...update });
                                 }}
                               />
                               <Button
+                                style={{ marginRight: 10 }}
+                                onClick={() => {
+                                  console.log("transferToTankId[id]", transferToTankId[id]);
+                                  console.log(parseInt(transferToTankId[id]));
+
+                                  const preview = {};
+                                  preview[id] = parseInt(transferToTankId[id]);
+
+                                  setYourNftsPreview(prevState => ({
+                                    ...prevState,
+                                    [nft]: {
+                                      ...prevState[nft],
+                                      ...preview,
+                                    },
+                                  }));
+
+                                  console.log("nftsPreview", setYourNftsPreview);
+                                }}
+                              >
+                                Preview
+                              </Button>
+                              <Button
                                 type="primary"
-                                style={{ marginTop: 10 }}
                                 onClick={() => {
                                   console.log("writeContracts", writeContracts);
-                                  tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id));
+                                  console.log("transferToTankId[id]", transferToTankId[id]);
+                                  console.log(parseInt(transferToTankId[id]));
+
+                                  const tankIdInBytes =
+                                    "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64, "0");
+                                  console.log(tankIdInBytes);
+
+                                  tx(
+                                    writeContracts[nft]["safeTransferFrom(address,address,uint256,bytes)"](
+                                      address,
+                                      readContracts.FancyLoogie.address,
+                                      id,
+                                      tankIdInBytes,
+                                    ),
+                                  );
                                 }}
                               >
                                 Transfer
                               </Button>
                             </div>
-                          </Card>
-                        </List.Item>
-                      );
-                    }}
+                          }
+                        >
+                          {previewSvg && <div dangerouslySetInnerHTML={{ __html: previewSvg }}></div>}
+                          {!previewSvg && <img src={item.image} />}
+                          <div style={{ height: 90 }}>
+                            owner:{" "}
+                            <Address
+                              address={item.owner}
+                              ensProvider={mainnetProvider}
+                              blockExplorer={blockExplorer}
+                              fontSize={16}
+                            />
+                            <AddressInput
+                              ensProvider={mainnetProvider}
+                              placeholder="transfer to address"
+                              value={transferToAddresses[id]}
+                              onChange={newValue => {
+                                const update = {};
+                                update[id] = newValue;
+                                setTransferToAddresses({ ...transferToAddresses, ...update });
+                              }}
+                            />
+                            <Button
+                              type="primary"
+                              style={{ marginTop: 10 }}
+                              onClick={() => {
+                                console.log("writeContracts", writeContracts);
+                                tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id));
+                              }}
+                            >
+                              Transfer
+                            </Button>
+                          </div>
+                        </Card>
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
+            </TabPane>
+          );
+        })}
+        <TabPane tab="Debug" key="debug">
+          <Tabs defaultActiveKey="debug-fancyloogies" tabPosition="top">
+            <TabPane tab="FancyLoogies" key="debug-fancyloogies">
+              <Contract
+                name="FancyLoogie"
+                signer={userSigner}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+                contractConfig={contractConfig}
+              />
+            </TabPane>
+            <TabPane tab="Loogies" key="debug-loogies">
+              <Contract
+                name="Loogies"
+                customContract={writeContracts && writeContracts.Loogies}
+                signer={userSigner}
+                provider={localProvider}
+                address={address}
+                blockExplorer={blockExplorer}
+                contractConfig={contractConfig}
+              />
+            </TabPane>
+            {nfts.map(function (nft) {
+              return (
+                <TabPane tab={nft} key={"debug-" + nft}>
+                  <Contract
+                    name={nft}
+                    signer={userSigner}
+                    provider={localProvider}
+                    address={address}
+                    blockExplorer={blockExplorer}
+                    contractConfig={contractConfig}
                   />
-                </div>
-              </Route>
-            );
-          })}
-        </Switch>
-      </BrowserRouter>
+                </TabPane>
+              );
+            })}
+          </Tabs>
+        </TabPane>
+      </Tabs>
 
       <ThemeSwitch />
 
@@ -1148,6 +1200,7 @@ function App(props) {
           </Col>
         </Row>
       </div>
+      <Footer mainnetProvider={mainnetProvider} />
     </div>
   );
 }

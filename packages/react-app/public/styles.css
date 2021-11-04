@@ -1,4 +1,36 @@
+@import url('https://fonts.googleapis.com/css2?family=Pacifico&display=swap');
+
 .action-button {
 	display:  block !important;
 	margin: 4px auto 4px;
+}
+
+.header {
+	padding-top: 50px;
+}
+
+.header h1 {
+	display: inline;
+	font-family: 'Pacifico', cursive;
+	font-size: 80px;
+	color: #2ea8af;
+	vertical-align: top;
+}
+
+.footer {
+	margin-top: 32px;
+	opacity: 0.5;
+	font-size:  20px;
+}
+
+.footer span {
+	margin: 5px;
+}
+
+.footer .address span {
+	margin: 0;
+}
+
+.footer .sub {
+	font-size: 14px;
 }
