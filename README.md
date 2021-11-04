@@ -93,7 +93,7 @@ If the balance is less than the `threshold`, you want to set a `openForWithdraw`
 
 ⏳ The time will only update if a transaction occurs. You can see the time update by getting funds from the faucet just to trigger a new block.
 
-> 👩‍💻 You can call `yarn deploy` any time you want a fresh contract
+> 👩‍💻 You can call `yarn deploy --reset` any time you want a fresh contract
 
 #### 🥅 Goals
 - [ ] Can you see `timeLeft` counting down in the `Staker UI` tab when you trigger a transaction with the faucet?
