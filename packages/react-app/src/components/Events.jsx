@@ -1,5 +1,5 @@
-import { useEventListener } from "eth-hooks/events/useEventListener";
 import { List } from "antd";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import { Address } from "../components";
 
 /*
@@ -19,8 +19,7 @@ import { Address } from "../components";
   />
 */
 
-export default function Events({ contracts, contractName, eventName, localProvider, mainnetProvider, startBlock}) {
-
+export default function Events({ contracts, contractName, eventName, localProvider, mainnetProvider, startBlock }) {
   // 📟 Listen for broadcast events
   const events = useEventListener(contracts, contractName, eventName, localProvider, startBlock);
 
