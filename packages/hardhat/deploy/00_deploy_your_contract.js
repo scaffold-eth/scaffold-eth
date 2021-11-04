@@ -7,16 +7,12 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  const admins = [];
-
-  //! prod GTC
+  //! prod GTC address
   let GTC = { address: "0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F" };
 
-  // todo: need a mock token
-  // mock token contract
+  // deploy mock token contract ~ if not on mainnet
   if (chainId !== "1") {
-    admins[0] = process.env.DEVELOPER;
-
+    // deploy mock GTC
     GTC = await deploy("GTC", {
       from: deployer,
       args: [admins[0]],
@@ -24,7 +20,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     });
   }
 
-  // Staking Contract
+  // deploy Staking Contract ~ any network
   await deploy("StakingGTC", {
     from: deployer,
     args: ["0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F"],
@@ -40,7 +36,9 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     streamFactory: StakeGTCContract.address,
   });
 
+  // make sure were not on the local chain...
   if (chainId !== "31337") {
+    // verigy the staking contract
     await run("verify:verify", {
       address: StakeGTCContract.address,
       contract: "contracts/StakingGTC.sol:StakingGTC",
