@@ -31,21 +31,21 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       console.log("network", network);
       var options = null;
       var notify = null;
-        options = {
-          dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
-          system: "ethereum",
-          networkId: network.chainId,
-          // darkMode: Boolean, // (default: false)
-          transactionHandler: txInformation => {
-            if (DEBUG) console.log("HANDLE TX", txInformation);
-            const possibleFunction = callbacks[txInformation.transaction.hash];
-            if (typeof possibleFunction === "function") {
-              possibleFunction(txInformation.transaction);
-            }
-          },
-        };
+      options = {
+        dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
+        system: "ethereum",
+        networkId: network.chainId,
+        // darkMode: Boolean, // (default: false)
+        transactionHandler: txInformation => {
+          if (DEBUG) console.log("HANDLE TX", txInformation);
+          const possibleFunction = callbacks[txInformation.transaction.hash];
+          if (typeof possibleFunction === "function") {
+            possibleFunction(txInformation.transaction);
+          }
+        },
+      };
 
-        notify = Notify(options);
+      notify = Notify(options);
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
