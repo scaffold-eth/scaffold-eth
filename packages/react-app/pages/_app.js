@@ -4,10 +4,14 @@ import React, { useEffect, useRef } from "react";
 import { Web3Provider } from "../helpers/Web3Context";
 import { Header } from "../components";
 import DevUI from "../components/DevUI";
+import { Menu } from "antd";
+import Link from "next/link";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import Head from "next/head";
+import { useRouter } from "next/router";
 
 function MyApp({ Component, pageProps }) {
+  const router = useRouter();
   const prevTheme = useRef("light");
 
   const themes = {
@@ -31,6 +35,33 @@ function MyApp({ Component, pageProps }) {
           </Head>
           <Header />
           <DevUI />
+          <Menu style={{ textAlign: "center" }} selectedKeys={[router.asPath]} mode="horizontal">
+            <Menu.Item key="/">
+              <Link href="/">
+                <a>YourCollectibles</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/transfers">
+              <Link href="/transfers">
+                <a>Transfers</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/ipfsup">
+              <Link href="/ipfsup">
+                <a>IPFS Upload</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/ipfsdown">
+              <Link href="/ipfsdown">
+                <a>IPFS Download</a>
+              </Link>
+            </Menu.Item>
+            <Menu.Item key="/debugcontracts">
+              <Link href="/debugcontracts">
+                <a>Debug Contracts</a>
+              </Link>
+            </Menu.Item>
+          </Menu>
           <Component {...pageProps} />
         </>
       </ThemeSwitcherProvider>
