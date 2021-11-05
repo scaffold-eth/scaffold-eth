@@ -66,7 +66,8 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
+      //gasPrice: 125000000000,//you can adjust gasPrice locally to see how much it will cost on production
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
       
@@ -126,6 +127,7 @@ module.exports = {
       accounts: {
         mnemonic: mnemonic(),
       },
+      gasPrice: 128000000000
     },
     ropsten: {
       url: "https://ropsten.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
@@ -274,11 +276,120 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "rinkeby",
+      },
+    },
+    localArbitrum: {
+      url: "http://localhost:8547",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "localArbitrumL1",
+      },
+    },
+    localArbitrumL1: {
+      url: "http://localhost:7545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localArbitrum",
+      },
+    },
+    kovanOptimism: {
+      url: "https://kovan.optimism.io",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "kovan",
+      },
+    },
+    localOptimism: {
+      url: "http://localhost:8545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      ovm: true,
+      companionNetworks: {
+        l1: "localOptimismL1",
+      },
+    },
+    localOptimismL1: {
+      url: "http://localhost:9545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localOptimism",
+      },
+    },
+    localAvalanche: {
+      url: "http://localhost:9650/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43112,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    fujiAvalanche: {
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43113,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetAvalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43114,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetHarmony: {
+      url: "https://api.s0.b.hmny.io",
+      gasPrice: 1000000000,
+      chainId: 1666700000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetHarmony: {
+      url: "https://api.harmony.one",
+      gasPrice: 1000000000,
+      chainId: 1666600000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
       {
         version: "0.8.4",
+        settings: {
+          optimizer: {
+            enabled: true,
+            runs: 200,
+          },
+        },
+      },
+      {
+        version: "0.7.6",
         settings: {
           optimizer: {
             enabled: true,
@@ -357,10 +468,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
       deployerWallet = deployerWallet.connect(ethers.provider);
       console.log(
         "💵 Sending " +
-          amount +
-          " ETH to " +
-          randomWallet.address +
-          " using deployer account"
+        amount +
+        " ETH to " +
+        randomWallet.address +
+        " using deployer account"
       );
       let sendresult = await deployerWallet.sendTransaction(tx);
       console.log("\n" + url + "/pk#" + privateKey + "\n");
@@ -368,10 +479,10 @@ task("fundedwallet", "Create a wallet (pk) link and fund it with deployer?")
     } else {
       console.log(
         "💵 Sending " +
-          amount +
-          " ETH to " +
-          randomWallet.address +
-          " using local node"
+        amount +
+        " ETH to " +
+        randomWallet.address +
+        " using local node"
       );
       console.log("\n" + url + "/pk#" + privateKey + "\n");
       return send(ethers.provider.getSigner(), tx);
@@ -401,8 +512,8 @@ task(
       "0x" + EthUtil.privateToAddress(wallet._privKey).toString("hex");
     console.log(
       "🔐 Account Generated as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
+      address +
+      " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
@@ -461,12 +572,12 @@ task(
 
     console.log(
       "⛏  Account Mined as " +
-        address +
-        " and set as mnemonic in packages/hardhat"
+      address +
+      " and set as mnemonic in packages/hardhat"
     );
     console.log(
       "📜 This will create the first contract: " +
-        chalk.magenta("0x" + contract_address)
+      chalk.magenta("0x" + contract_address)
     );
     console.log(
       "💬 Use 'yarn run account' to get more information about the deployment account."
