@@ -149,19 +149,19 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
           dataSource={withdrawEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.to}>
+              <List.Item key={item.blockNumber+"_"+item.args[0]}>
 
                 <Balance
-                  value={item.amount}
+                  value={item.args[1]}
                   price={price}
                 />
                 <span style={{fontSize:14}}>
                   <span style={{padding:4}}>
-                    {item.reason}
+                    {item.args[2]}
                   </span>
                   <Address
                       minimized={true}
-                      address={item.to}
+                      address={item.args[0]}
                   />
                 </span>
               </List.Item>
@@ -177,18 +177,18 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
           dataSource={depositEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.from}>
+              <List.Item key={item.blockNumber+"_"+item.args[0]}>
                 <Balance
-                  value={item.amount}
+                  value={item.args[1]}
                   price={price}
                 />
                 <span style={{fontSize:14}}>
                   <span style={{padding:4}}>
-                    {item.reason}
+                    {item.args[2]}
                   </span>
                   <Address
                       minimized={true}
-                      address={item.from}
+                      address={item.args[0]}
                   />
                 </span>
               </List.Item>
