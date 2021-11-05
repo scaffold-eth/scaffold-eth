@@ -25,6 +25,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
+import { Home } from "./views";
 
 const { ethers } = require("ethers");
 /*

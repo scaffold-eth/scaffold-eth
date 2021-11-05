@@ -15,7 +15,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     // deploy mock GTC
     GTC = await deploy("GTC", {
       from: deployer,
-      args: [admins[0]],
+      //front-end address
+      args: ["0x43aa5A6a8CB1Fec575583b7531b57bd79067309E"], 
       log: true,
     });
   }
