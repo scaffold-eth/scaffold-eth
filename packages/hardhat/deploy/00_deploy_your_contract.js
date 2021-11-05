@@ -1,17 +1,24 @@
 // deploy/00_deploy_your_contract.js
 
-// const { ethers } = require("hardhat");
+const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  await deploy("YourContract", {
+
+  await deploy("SimpleStream", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [  /* to address */ "0xF9A3bFCa745da892c31A368eF1b357cF01eA6D06",
+    /* cap */ ethers.utils.parseEther("0.5"),//ether
+    /* frequency */120, //1296000,//seconds //1296000,//15 days
+    /* starts full: */ false ],
     log: true,
   });
 
+  // add some local funds to the stream with a little message:
+  const simpleStream = await ethers.getContract("SimpleStream", deployer);
+  await simpleStream.streamDeposit("Do some science, plz!",{value:ethers.utils.parseEther("2")})
   /*
     // Getting a previously deployed contract
     const YourContract = await ethers.getContract("YourContract", deployer);
@@ -48,4 +55,4 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   });
   */
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["SimpleStream"];

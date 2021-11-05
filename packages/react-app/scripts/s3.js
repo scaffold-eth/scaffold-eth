@@ -3,11 +3,7 @@ const fs = require("fs");
 
 const directoryName = "build";
 
-<<<<<<< HEAD
-const BUCKETNAME = "SUBDOMAIN.buidlguidl.com"; // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
-=======
 const BUCKETNAME = "YOUR_BUCKET_NAME_HERE"; // <<---- SET YOUR BUCKET NAME AND CREATE aws.json ** see below vvvvvvvvvv
->>>>>>> cf4bad72018e6f1fda39ee19ecb3adb5409f61d0
 
 if (!BUCKETNAME) {
   console.log("☢️   Enter a bucket name in packages/react-app/scripts/s3.js ");

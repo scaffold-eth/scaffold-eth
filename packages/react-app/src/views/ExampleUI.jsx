@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import React, { useState, useEffect } from "react";
 import { message, Row, Col, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
@@ -72,7 +70,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       <div style={{padding:16, width:WIDTH, margin:"auto"}}>
         <div style={{padding:32}}>
           <div style={{padding:32}}>
-            <Balance address={readContracts && readContracts.SimpleStream.address} provider={localProvider} price={price}/>
+            <Balance address={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} provider={localProvider} price={price}/>
             <span style={{opacity:0.5}}> @ <Balance value={streamCap} price={price}/> / {streamfrequency&&pretty(streamfrequency.toNumber()*1000000000)}</span>
           </div>
           <div>
@@ -82,7 +80,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       </div>
 
       <div style={{marginTop:-32}}>
-        <Address value={readContracts && readContracts.SimpleStream.address} />
+        <Address value={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} />
       </div>
 
 

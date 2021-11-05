@@ -1,9 +1,8 @@
 import { Skeleton, Typography } from "antd";
 import React from "react";
 import Blockies from "react-blockies";
-import { useLookupAddress } from "../hooks";
+import { useLookupAddress } from "eth-hooks/dapps/ens";
 import { QRPunkBlockie } from ".";
-import { useThemeSwitcher } from "react-css-theme-switcher";
 import { useThemeSwitcher } from "react-css-theme-switcher";
 
 // changed value={address} to address={address}

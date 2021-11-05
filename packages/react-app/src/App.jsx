@@ -27,6 +27,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 
 const { ethers } = require("ethers");
 /*
@@ -50,7 +51,7 @@ const { ethers } = require("ethers");
 
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS['mainnet']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS['localhost']; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -242,14 +243,11 @@ function App(props) {
 
   // keep track of a variable from the contract in the local React state:
   const streamBalance = useContractReader(readContracts,"SimpleStream", "streamBalance")
-  console.log("streamBalance",streamBalance,streamBalance&&formatEther(streamBalance))
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
+  console.log("streamBalance",streamBalance,streamBalance&& ethers.utils.formatEther(streamBalance))
 
   // keep track of a variable from the contract in the local React state:
   const streamCap = useContractReader(readContracts,"SimpleStream", "cap")
-  console.log("streamCap",streamCap,streamCap&&formatEther(streamCap))
+  console.log("streamCap",streamCap,streamCap&& ethers.utils.formatEther(streamCap))
 
   const streamfrequency = useContractReader(readContracts,"SimpleStream", "frequency")
   console.log("streamfrequency",streamfrequency,streamfrequency&&streamfrequency.toNumber())
@@ -260,8 +258,8 @@ function App(props) {
 
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const totalStreamBalance = useBalance(localProvider, readContracts&&readContracts.SimpleStream.address);
-  console.log("totalStreamBalance",totalStreamBalance,totalStreamBalance&&formatEther(totalStreamBalance))
+  const totalStreamBalance = useBalance(localProvider, readContracts.SimpleStream && readContracts.SimpleStream.address ? readContracts.SimpleStream.address : 0);
+  console.log("totalStreamBalance",totalStreamBalance,totalStreamBalance&& ethers.utils.formatEther(totalStreamBalance))
 
   //📟 Listen for broadcast events
   const withdrawEvents = useEventListener(readContracts, "SimpleStream", "Withdraw", localProvider, 1);
@@ -285,8 +283,7 @@ function App(props) {
       yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
-      writeContracts &&
-      mainnetContracts
+      writeContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -296,8 +293,6 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -308,7 +303,6 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-    mainnetContracts,
   ]);
 
   let networkDisplay = "";
@@ -506,7 +500,7 @@ function App(props) {
           <Route path="/debug">
             <Contract
               name="SimpleStream"
-              signer={userProvider.getSigner()}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
