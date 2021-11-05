@@ -276,6 +276,106 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    rinkebyArbitrum: {
+      url: "https://rinkeby.arbitrum.io/rpc",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "rinkeby",
+      },
+    },
+    localArbitrum: {
+      url: "http://localhost:8547",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "localArbitrumL1",
+      },
+    },
+    localArbitrumL1: {
+      url: "http://localhost:7545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localArbitrum",
+      },
+    },
+    kovanOptimism: {
+      url: "https://kovan.optimism.io",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "kovan",
+      },
+    },
+    localOptimism: {
+      url: "http://localhost:8545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      ovm: true,
+      companionNetworks: {
+        l1: "localOptimismL1",
+      },
+    },
+    localOptimismL1: {
+      url: "http://localhost:9545",
+      gasPrice: 0,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l2: "localOptimism",
+      },
+    },
+    localAvalanche: {
+      url: "http://localhost:9650/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43112,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    fujiAvalanche: {
+      url: "https://api.avax-test.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43113,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetAvalanche: {
+      url: "https://api.avax.network/ext/bc/C/rpc",
+      gasPrice: 225000000000,
+      chainId: 43114,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetHarmony: {
+      url: "https://api.s0.b.hmny.io",
+      gasPrice: 1000000000,
+      chainId: 1666700000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetHarmony: {
+      url: "https://api.harmony.one",
+      gasPrice: 1000000000,
+      chainId: 1666600000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
