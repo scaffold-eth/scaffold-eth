@@ -1,48 +1,52 @@
 import { utils } from "ethers";
-import { Button, Input, Card, Row, Col, Select, Form } from "antd";
+import { Button, Input, Card, Row, Col, Select, Form, InputNumber } from "antd";
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
 import { useTokenList, useContractLoader, useContractReader } from "../hooks";
+import Events from "../components/Events";
+import { local } from "web3modal";
+import autoprefixer from "autoprefixer";
 
 const { Option } = Select;
 
-export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener }) {
-  // Get a list of tokens from a tokenlist -> see tokenlists.org!
+export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener, mainnetContracts }) {
   const [selectedToken, setSelectedToken] = useState("Pick a token!");
   const listOfTokens = useTokenList(
     "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
   );
   const readContracts = useContractLoader(localProvider);
-  const ogNFT = useContractReader(readContracts,"ConditionalNFT", "ogNFT")
+  const ogNFT = useContractReader(readContracts,"ConditionalEthBot", "ogNFT")
   const [tokenId, setTokenId] = useState("...");
-  const mintedEvents = useEventListener(readContracts, "ConditionalNFT", "Minted", localProvider, 1);
+  const botMinted = useEventListener(readContracts, "ConditionalEthBot", "botMinted", localProvider, 1);
 
+  const ethBotOwnerOf = useContractReader(mainnetContracts, "ETHBOT", "ownerOf", [
+   tokenId 
+  ]);
   
   function onFinish() {
-    tx(writeContracts.ConditionalNFT.mintNFT(tokenId));
+    tx(writeContracts.ConditionalEthBot.claim(tokenId));
   }
 
   return (
-    <div>
-      <Row justify="center">
-        <Col span="12">
-          <Card title="Conditional Minter">
-            <Row justify="center">
-              <Col span="8">
-                <Card title="Source Contract">
+      <div>
+          <Row justify='start' align='middle' style={{
+          backgroundImage:'url(./img/background.png',
+          backgroundSize:'cover',
+          backgroundPosition:'right top'
+          }}>
+            <Col xs={24} lg={8}>
+                <Card title="MINT YOUR 3d EthBot!">
+                <Card title="Source Contract:">
                  Address: <Address 
                   address={ogNFT}
                   fontSize={18} />
                 </Card>
-              </Col>
-              <Col span="8">
-                <Card title="NFT to be minted">
+                <Card title="NFT to be minted:">
                   <Form
                   title="tokenId"
-                  onFinish={onFinish}>
-                    <Form.Item
-                    label="TokenId"
-                    title="TokenId">
+                  onFinish={onFinish}
+                  >
+                    <Form.Item>
                       <Input onChange={(e) => setTokenId(e.target.value)} />
                     </Form.Item>
                     <Form.Item>
@@ -52,15 +56,14 @@ export default function Hints({ localProvider, yourLocalBalance, mainnetProvider
                     </Form.Item>
                   </Form>
                 </Card>
-              </Col>
-              <Col span="8">
-                <Card title="NFT MINTED">
+                <Card title="Owner of TOKEN ID:">
+                 Address: <Address 
+                  address={ethBotOwnerOf}
+                  fontSize={18} />
+                </Card>
                 </Card>
               </Col>
             </Row>
-          </Card>
-        </Col>
-      </Row>
-    </div>
+      </div>
   );
 }

@@ -13,7 +13,7 @@ export default function ThemeSwitcher() {
 
   const toggleTheme = isChecked => {
     setIsDarkMode(isChecked);
-    switcher({ theme: isChecked ? themes.dark : themes.light });
+    switcher({ theme: isChecked ? themes.light : themes.dark });
   };
 
   // Avoid theme change flicker
