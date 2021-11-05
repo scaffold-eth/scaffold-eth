@@ -14,7 +14,7 @@ import "./ToColor.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract YourCollectible is ERC721, Ownable {
+contract Loogies is ERC721, Ownable {
     using Strings for uint256;
     using HexStrings for uint160;
     using ToColor for bytes3;

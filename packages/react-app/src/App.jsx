@@ -23,7 +23,7 @@ import {
   useGasPrice,
   useOnBlock,
   useUserProvider,
-} from "./hooks";
+} from "./eth-hooks";
 import { BlockPicker } from 'react-color'
 
 
@@ -202,16 +202,6 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-
-  const logoutOfWeb3Modal = async () => {
-    await web3Modal.clearCachedProvider();
-    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
-      await injectedProvider.provider.disconnect();
-    }
-    setTimeout(() => {
-      window.location.reload();
-    }, 1);
-  };
 
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
@@ -642,6 +632,7 @@ function App(props) {
                         <Button
                           onClick={() => {
                             console.log("writeContracts", writeContracts);
+                            console.log("readContracts", readContracts);
                             tx(writeContracts.YourToken.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
@@ -649,8 +640,8 @@ function App(props) {
                         </Button>
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            tx(writeContracts.YourToken.burnLoogie(id));
+                            console.log("readContracts", readContracts);
+                            tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256)"](address, readContracts.Flemjamins.address, id));
                           }}
                         >
                           Burn
