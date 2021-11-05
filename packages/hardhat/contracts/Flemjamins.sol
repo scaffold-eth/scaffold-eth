@@ -1,25 +1,32 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
 
 abstract contract LoogiesContract {
-  mapping(uint256 => bytes32) public genes;
-  function renderTokenById(uint256 id) external virtual view returns (string memory);
-  function transferFrom(address from, address to, uint256 id) external virtual;
+    mapping(uint256 => uint256) public chubbiness;
+
+    function transferFrom(
+        address from,
+        address to,
+        uint256 id
+    ) external virtual;
 }
 
 contract Flemjamins is ERC20 {
-  
-    constructor() public ERC20("Flemjamins", "FLEM") {
-        _mint(msg.sender, 10000000000000000000);
+    event Received(address, uint256);
+
+    LoogiesContract loogies;
+
+    constructor(address _loogies) public ERC20("Flemjamins", "FLEM") {
+        loogies = LoogiesContract(_loogies);
     }
 
-    recieve(
-      // get chubbiness
-      uint256 cubbiness = getChubbiness()
-      // mint based on chubiness
-      _mint(msg.sender, (chubiness * 1*10**18)/10);
-    )
-
+    function recieveBurnLoogie(uint256 tokenId) external payable {
+        // get chubbiness
+        uint256 chubiness = loogies.chubbiness(tokenId);
+        // mint based on chubiness
+        _mint(msg.sender, (chubiness * 1 * 10**18) / 10);
+        emit Received(msg.sender, msg.value);
+    }
 }

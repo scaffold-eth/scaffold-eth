@@ -1,15 +1,10 @@
-import { LinkOutlined } from "@ant-design/icons";
-import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
-import { formatEther, parseEther } from "@ethersproject/units";
+
 import WalletConnectProvider from "@walletconnect/web3-provider";
+import WalletLink from "walletlink";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { useUserAddress } from "eth-hooks";
-import { utils } from "ethers";
 import React, { useCallback, useEffect, useState } from "react";
-import ReactJson from "react-json-view";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-import StackGrid from "react-stack-grid";
 import Web3Modal from "web3modal";
 import "./App.css";
 //import assets from "./assets.js";
@@ -21,11 +16,22 @@ import {
   useContractLoader,
   useContractReader,
   useGasPrice,
-  useOnBlock,
-  useUserProvider,
-} from "./eth-hooks";
-import { BlockPicker } from 'react-color'
+  usePoller,
+  useUserProviderAndSigner,
+  useOnBlock
+} from "eth-hooks";
+import { useEventListener } from "eth-hooks/events/useEventListener";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 
+import externalContracts from "./contracts/external_contracts";
+// contracts
+import deployedContracts from "./contracts/hardhat_contracts.json";
+
+import Portis from "@portis/web3";
+import Fortmatic from "fortmatic";
+import Authereum from "authereum";
+
+const { ethers } = require("ethers");
 
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
@@ -268,14 +274,14 @@ function App(props) {
   ]);*/
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   //console.log("🟢 Loogie balance:", balance);
 
-  const tokenBalance = useContractReader(readContracts, "YourToken", "TokenBalanceOf", [address]);
+  const tokenBalance = useContractReader(readContracts, "Flemjamins", "TokenBalanceOf", [address]);
   //console.log("💦 Flemjamin balance:", parseInt(tokenBalance));
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourToken", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
   //console.log("📟 Transfer events:", transferEvents);
 
   //
@@ -579,7 +585,7 @@ function App(props) {
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               {isSigner ? (
                 <Button type={"primary"} onClick={() => {
-                  tx(writeContracts.YourToken.mintItem())
+                  tx(writeContracts.Loogies.mintItem())
                 }}>MINT</Button>
               ) : (
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
@@ -668,7 +674,7 @@ function App(props) {
 
             <Contract
               name="YourToken"
-              signer={userProvider.getSigner()}
+              signer={userProviderAndSigner.signer}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
