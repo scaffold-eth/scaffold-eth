@@ -34,7 +34,10 @@ app.post("/signIn", async function (req, res) {
         throw new Error(null);
       }
 
-      const authToken = auth.signUserData({ address });
+      const authToken = auth.signUserData({
+        address,
+        video: process.env.VIDEO,
+      });
 
       // todo : use for same site requests
       // res.cookie("token", authToken, { httpOnly: true });
