@@ -16,6 +16,7 @@
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^4.3.2",
     "@tenderly/hardhat-tenderly": "^1.0.10",
+    "@nomiclabs/hardhat-etherscan": "^2.1.7",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",

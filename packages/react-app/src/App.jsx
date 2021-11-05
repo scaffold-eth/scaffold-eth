@@ -1,23 +1,8 @@
-
-import WalletLink from "walletlink";
-import "antd/dist/antd.css";
-import React, { useCallback, useEffect, useState } from "react";
-import { BrowserRouter, Switch, Route, Link } from "react-router-dom";
-import "antd/dist/antd.css";
-import "./App.css";
-import { Row, Col, Button, Menu, Alert, Switch as SwitchD } from "antd";
-import Web3Modal from "web3modal";
+import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { useGasPrice, useUserProvider, useContractLoader, useContractReader, useEventListener, useBalance, useExternalContractLoader, useOnBlock } from "./hooks";
-import { Header, Account, Faucet, Ramp, Contract, GasGauge, ThemeSwitch } from "./components";
-import { Transactor } from "./helpers";
-import { formatEther } from "@ethersproject/units";
-//import Hints from "./Hints";
-import {  ExampleUI, } from "./views"
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
-import { Transactor } from "./helpers";
+import { Alert, Button, Col, Menu, Row } from "antd";
+import "antd/dist/antd.css";
+import Authereum from "authereum";
 import {
   useBalance,
   useContractLoader,
@@ -27,16 +12,21 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI} from "./views";
-
+import Fortmatic from "fortmatic";
+import React, { useCallback, useEffect, useState } from "react";
+import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+//import Torus from "@toruslabs/torus-embed"
+import WalletLink from "walletlink";
+import Web3Modal from "web3modal";
+import "./App.css";
+import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import externalContracts from "./contracts/external_contracts";
-
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Authereum from "authereum";
+import { Transactor } from "./helpers";
+// import Hints from "./Hints";
+import { ExampleUI, Hints, Subgraph } from "./views";
 
 const { ethers } = require("ethers");
 /*
