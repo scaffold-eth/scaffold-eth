@@ -1,26 +1,31 @@
 @font-face {
   font-family: "Swiss721 BT W01 Regular";
-  src: url("assets/fonts/195b0c1b-165f-4bd1-b23f-cbb6a9a3aa24.woff2") format("woff2"), url("assets/fonts/89828f9b-7a7b-4e76-b757-541f47fe07a3.woff") format("woff");
+  src: url("assets/fonts/195b0c1b-165f-4bd1-b23f-cbb6a9a3aa24.woff2") format("woff2"),
+    url("assets/fonts/89828f9b-7a7b-4e76-b757-541f47fe07a3.woff") format("woff");
 }
 
 @font-face {
   font-family: "Swiss721 BT W01 Italic";
-  src: url("assets/fonts/2154979f-a808-40c8-aa10-73bc86ef42cc.woff2") format("woff2"), url("assets/fonts/ff291dd0-770e-4353-889f-36700ff19894.woff") format("woff");
+  src: url("assets/fonts/2154979f-a808-40c8-aa10-73bc86ef42cc.woff2") format("woff2"),
+    url("assets/fonts/ff291dd0-770e-4353-889f-36700ff19894.woff") format("woff");
 }
 
 @font-face {
   font-family: "Swiss721 BT W01 Heavy";
-  src: url("assets/fonts/ac883e1e-1e6b-4e7f-b1d7-f45b49b2cbe4.woff2") format("woff2"), url("assets/fonts/dd87a06f-d70b-4c75-8f26-b0ee3f5ba10c.woff") format("woff");
+  src: url("assets/fonts/ac883e1e-1e6b-4e7f-b1d7-f45b49b2cbe4.woff2") format("woff2"),
+    url("assets/fonts/dd87a06f-d70b-4c75-8f26-b0ee3f5ba10c.woff") format("woff");
 }
 
 @font-face {
   font-family: "Swiss721 BT W01 Condensed";
-  src: url("assets/fonts/b767dd3c-3627-465c-a20f-82b866d858ba.woff2") format("woff2"), url("assets/fonts/000d2647-cf0a-43d5-82bb-1c933c0d3850.woff") format("woff");
+  src: url("assets/fonts/b767dd3c-3627-465c-a20f-82b866d858ba.woff2") format("woff2"),
+    url("assets/fonts/000d2647-cf0a-43d5-82bb-1c933c0d3850.woff") format("woff");
 }
 
 @font-face {
   font-family: "Windsor W01 Roman";
-  src: url("assets/fonts/43a7e94f-0ff1-425c-bb72-2da078f9ba66.woff2") format("woff2"), url("assets/fonts/c3b0a3c4-8018-48ed-8707-ac140e5165c8.woff") format("woff");
+  src: url("assets/fonts/43a7e94f-0ff1-425c-bb72-2da078f9ba66.woff2") format("woff2"),
+    url("assets/fonts/c3b0a3c4-8018-48ed-8707-ac140e5165c8.woff") format("woff");
 }
 
 h1,
@@ -30,80 +35,89 @@ h4,
 h5,
 h6 {
   font-family: "Windsor W01 Roman";
-  color:#ffd942;
+  color: #ffd942;
 }
 
 p,
-span,a {
+span,
+a {
   font-family: "Swiss721 BT W01 Regular";
-  color:#ffd942;
+  color: #ffd942;
 }
 
-.ant-typography a, .ant-typography a:hover, .ant-typography-copy, .ant-typography-copy:hover{
+.ant-typography a,
+.ant-typography a:hover,
+.ant-typography-copy,
+.ant-typography-copy:hover {
   font-family: "Swiss721 BT W01 Regular";
-    color: #ffd942;
+  color: #ffd942;
 }
 
 .App {
   text-align: center;
-
 }
 
-button,button.ant-btn,button.ant-btn.ant-btn-round.ant-btn-lg{
+button,
+button.ant-btn,
+button.ant-btn.ant-btn-round.ant-btn-lg {
   font-family: "Swiss721 BT W01 Heavy";
   border-radius: 12px;
   background: none;
   border: solid 4px #ffd942;
-  padding:revert;
+  padding: revert;
 }
 
-button:hover,button.ant-btn:hover,button.ant-btn.ant-btn-round.ant-btn-lg:hover,button:focus,button.ant-btn:focus,button.ant-btn.ant-btn-round.ant-btn-lg:focus{
+button:hover,
+button.ant-btn:hover,
+button.ant-btn.ant-btn-round.ant-btn-lg:hover,
+button:focus,
+button.ant-btn:focus,
+button.ant-btn.ant-btn-round.ant-btn-lg:focus {
   border-radius: 12px;
   background: #ffd942;
   border-color: #ffd942;
 }
 
-button
-
-button span{
+button button span {
   font-family: "Swiss721 BT W01 Heavy";
 }
 
-button:hover span,button:focus span {
+button:hover span,
+button:focus span {
   color: #000; /* Fallback for older browsers */
   color: rgba(0, 0, 0, 1);
 }
 
 /*Header*/
-.main-header{
+.main-header {
   font-size: 64px;
-    text-align: left;
-    padding-top: 40px;
-    padding-left: 60px;
+  text-align: left;
+  padding-top: 40px;
+  padding-left: 60px;
 }
 
-.underlined{
-  border-bottom:solid #ffd942 5px;
+.underlined {
+  border-bottom: solid #ffd942 5px;
   font-family: "Windsor W01 Roman";
 }
 
 /*Home Page*/
-.home{
+.home {
   display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: -174px;
+  flex-direction: column;
+  align-items: center;
+  margin-top: -174px;
 }
 
-.arm{
+.arm {
   width: 20%;
   height: auto;
   z-index: -999;
 }
 
-.instruction{
-  margin-top:20px;
-  font-size:32px;
+.instruction {
+  margin-top: 20px;
+  font-size: 32px;
   line-height: 38px;
 }
 
@@ -112,40 +126,40 @@ button:hover span,button:focus span {
   line-height: 20px;
   padding: 10px 36px;
   margin: 50px;
-  height:50px;
+  height: 50px;
 }
 
 .play-film {
   width: 50%;
-  cursor:pointer;
+  cursor: pointer;
 }
 
-.earth-small:before{
+.earth-small:before {
   content: "";
-    display: block;
-    position: absolute;
-    left: 48.5%;
-    width: 48px;
-    height: 48px;
-    background-position: center;
-     z-index: -999;
+  display: block;
+  position: absolute;
+  left: 48.5%;
+  width: 48px;
+  height: 48px;
+  background-position: center;
+  z-index: -999;
   background-image: url(./assets/earth-small.png);
 }
 
 @media screen and (max-width: 600px) {
   .main-header {
-    font-size:48px;
+    font-size: 48px;
     text-align: center;
     padding-left: 0;
   }
   .home {
-    margin-top:-140px;
+    margin-top: -140px;
   }
-  .arm{
-    width:40%;
+  .arm {
+    width: 40%;
   }
-  .instruction{
-    font-size:24px;
+  .instruction {
+    font-size: 24px;
     line-height: 28px;
   }
   .play-film {
@@ -155,9 +169,29 @@ button:hover span,button:focus span {
 
 @media screen and (max-width: 360px) {
   .main-header {
-    font-size:42px;
+    font-size: 42px;
   }
   .home {
-    margin-top:-128px;
+    margin-top: -128px;
   }
+}
+
+/* Override some antd class */
+.ant-modal-content,
+.ant-modal-body {
+  padding: 0px !important;
+  background-color: transparent;
+}
+
+.ant-modal-close {
+  position: absolute;
+  top: -60px;
+  right: -60px;
+}
+
+.ant-modal-close,
+.ant-modal-close-x {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
