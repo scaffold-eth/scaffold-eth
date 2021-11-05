@@ -20,9 +20,6 @@ import {
   useBalance,
   useContractLoader,
   useContractReader,
-  useEventListener,
-  useExchangePrice,
-  useExternalContractLoader,
   useGasPrice,
   useOnBlock,
   useUserProvider,
@@ -42,7 +39,7 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
     Welcome to 🏗 scaffold-eth !
 
     Code:
-    https://github.com/austintgriffith/scaffold-eth
+    https://github.com/scaffold-eth/scaffold-eth
 
     Support:
     https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA
@@ -62,6 +59,7 @@ const targetNetwork = NETWORKS.localhost; // <------- select your target fronten
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
+const NETWORKCHECK = true;
 
 // helper function to "Get" from IPFS
 // you usually go content.toString() after this...
@@ -85,67 +83,164 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
-
+const scaffoldEthProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
+  : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+    "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+  )
+  : null;
+const mainnetInfura = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  : null;
+// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
 const localProviderUrlFromEnv = process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : localProviderUrl;
 if (DEBUG) console.log("🏠 Connecting to provider:", localProviderUrlFromEnv);
-const localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
+const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrlFromEnv);
 
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
+// Coinbase walletLink init
+const walletLink = new WalletLink({
+  appName: "coinbase",
+});
+
+// WalletLink provider
+const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
+
+// Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*
   Web3 modal helps us "connect" external wallets:
 */
 const web3Modal = new Web3Modal({
-  // network: "mainnet", // optional
+  network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
+  theme: "light", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
       options: {
+        bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
+        rpc: {
+          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          42: `https://kovan.infura.io/v3/${INFURA_ID}`,
+          100: "https://dai.poa.network", // xDai
+        },
       },
+    },
+    portis: {
+      display: {
+        logo: "https://user-images.githubusercontent.com/9419140/128913641-d025bc0c-e059-42de-a57b-422f196867ce.png",
+        name: "Portis",
+        description: "Connect to Portis App",
+      },
+      package: Portis,
+      options: {
+        id: "6255fb2b-58c8-433b-a2c9-62098c05ddc9",
+      },
+    },
+    fortmatic: {
+      package: Fortmatic, // required
+      options: {
+        key: "pk_live_5A7C91B2FC585A17", // required
+      },
+    },
+    // torus: {
+    //   package: Torus,
+    //   options: {
+    //     networkParams: {
+    //       host: "https://localhost:8545", // optional
+    //       chainId: 1337, // optional
+    //       networkId: 1337 // optional
+    //     },
+    //     config: {
+    //       buildEnv: "development" // optional
+    //     },
+    //   },
+    // },
+    "custom-walletlink": {
+      display: {
+        logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
+        name: "Coinbase",
+        description: "Connect to Coinbase Wallet (not Coinbase App)",
+      },
+      package: walletLinkProvider,
+      connector: async (provider, _options) => {
+        await provider.enable();
+        return provider;
+      },
+    },
+    authereum: {
+      package: Authereum, // required
     },
   },
 });
 
 function App(props) {
-  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider =
+    poktMainnetProvider && poktMainnetProvider._isProvider
+      ? poktMainnetProvider
+      : scaffoldEthProvider && scaffoldEthProvider._network
+        ? scaffoldEthProvider
+        : mainnetInfura;
 
   const logoutOfWeb3Modal = async () => {
-     await web3Modal.clearCachedProvider();
-     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
-       await injectedProvider.provider.disconnect();
-     }
-     setTimeout(() => {
-       window.location.reload();
-     }, 1);
+    await web3Modal.clearCachedProvider();
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
+      await injectedProvider.provider.disconnect();
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 1);
   };
 
   const [injectedProvider, setInjectedProvider] = useState();
+  const [address, setAddress] = useState();
+
+  const logoutOfWeb3Modal = async () => {
+    await web3Modal.clearCachedProvider();
+    if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
+      await injectedProvider.provider.disconnect();
+    }
+    setTimeout(() => {
+      window.location.reload();
+    }, 1);
+  };
+
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
-  const price = useExchangePrice(targetNetwork, mainnetProvider);
+  const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider);
-  const address = useUserAddress(userProvider);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
+  const userSigner = userProviderAndSigner.signer;
+
+  useEffect(() => {
+    async function getAddress() {
+      if (userSigner) {
+        const newAddress = await userSigner.getAddress();
+        setAddress(newAddress);
+      }
+    }
+    getAddress();
+  }, [userSigner]);
 
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId;
-  const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId;
+  const selectedChainId =
+    userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice);
+  const tx = Transactor(userSigner, gasPrice);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
@@ -156,11 +251,15 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider);
+  // const contractConfig = useContractConfig();
 
-  // If you want to make 🔐 write transactions to your contracts, use the userProvider:
-  const writeContracts = useContractLoader(userProvider);
+  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
+
+  // Load in your local 📝 contract and read a value from it:
+  const readContracts = useContractLoader(localProvider, contractConfig);
+
+  // If you want to make 🔐 write transactions to your contracts, use the userSigner:
+  const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   // EXTERNAL CONTRACT EXAMPLE:
   //
@@ -206,13 +305,13 @@ function App(props) {
           const tokenURI = await readContracts.YourToken.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
-/*
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-          console.log("ipfsHash", ipfsHash);
-
-          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
-        */
+          /*
+                    const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+                    console.log("ipfsHash", ipfsHash);
+          
+                    const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+          
+                  */
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             console.log("jsonManifest", jsonManifest);
@@ -254,8 +353,8 @@ function App(props) {
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? formatEther(yourMainnetBalance) : "...");
+      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
+      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🔐 writeContracts", writeContracts);
     }
@@ -270,7 +369,7 @@ function App(props) {
   ]);
 
   let networkDisplay = "";
-  if (localChainId && selectedChainId && localChainId !== selectedChainId) {
+  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
     const networkSelected = NETWORK(selectedChainId);
     const networkLocal = NETWORK(localChainId);
     if (selectedChainId === 1337 && localChainId === 31337) {
@@ -298,7 +397,46 @@ function App(props) {
             description={
               <div>
                 You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <b>{networkLocal && networkLocal.name}</b>.
+                <Button
+                  onClick={async () => {
+                    const ethereum = window.ethereum;
+                    const data = [
+                      {
+                        chainId: "0x" + targetNetwork.chainId.toString(16),
+                        chainName: targetNetwork.name,
+                        nativeCurrency: targetNetwork.nativeCurrency,
+                        rpcUrls: [targetNetwork.rpcUrl],
+                        blockExplorerUrls: [targetNetwork.blockExplorer],
+                      },
+                    ];
+                    console.log("data", data);
+
+                    let switchTx;
+                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+                    try {
+                      switchTx = await ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: data[0].chainId }],
+                      });
+                    } catch (switchError) {
+                      // not checking specific error code, because maybe we're not using MetaMask
+                      try {
+                        switchTx = await ethereum.request({
+                          method: "wallet_addEthereumChain",
+                          params: data,
+                        });
+                      } catch (addError) {
+                        // handle "add" error
+                      }
+                    }
+
+                    if (switchTx) {
+                      console.log(switchTx);
+                    }
+                  }}
+                >
+                  <b>{networkLocal && networkLocal.name}</b>
+                </Button>
               </div>
             }
             type="error"
@@ -317,7 +455,23 @@ function App(props) {
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
-    setInjectedProvider(new Web3Provider(provider));
+    setInjectedProvider(new ethers.providers.Web3Provider(provider));
+
+    provider.on("chainChanged", chainId => {
+      console.log(`chain changed to ${chainId}! updating providers`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    provider.on("accountsChanged", () => {
+      console.log(`account changed!`);
+      setInjectedProvider(new ethers.providers.Web3Provider(provider));
+    });
+
+    // Subscribe to session disconnection
+    provider.on("disconnect", (code, reason) => {
+      console.log(code, reason);
+      logoutOfWeb3Modal();
+    });
   }, [setInjectedProvider]);
 
   useEffect(() => {
@@ -332,7 +486,7 @@ function App(props) {
   }, [setRoute]);
 
   let faucetHint = "";
-  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name === "localhost";
+  const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   const [faucetClicked, setFaucetClicked] = useState(false);
   if (
@@ -341,7 +495,7 @@ function App(props) {
     localProvider._network &&
     localProvider._network.chainId === 31337 &&
     yourLocalBalance &&
-    formatEther(yourLocalBalance) <= 0
+    ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
     faucetHint = (
       <div style={{ padding: 16 }}>
@@ -350,7 +504,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: parseEther("0.01"),
+              value: ethers.utils.parseEther("0.01"),
             });
             setFaucetClicked(true);
           }}
@@ -433,11 +587,11 @@ function App(props) {
             */}
 
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              {isSigner?(
-                <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.YourToken.mintItem() )
+              {isSigner ? (
+                <Button type={"primary"} onClick={() => {
+                  tx(writeContracts.YourToken.mintItem())
                 }}>MINT</Button>
-              ):(
+              ) : (
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
               )}
 
@@ -450,7 +604,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id.toNumber();
 
-                  console.log("IMAGE",item.image)
+                  console.log("IMAGE", item.image)
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -461,8 +615,8 @@ function App(props) {
                           </div>
                         }
                       >
-                        <a href={"https://opensea.io/assets/"+(readContracts && readContracts.YourToken && readContracts.YourToken.address)+"/"+item.id} target="_blank">
-                        <img src={item.image} />
+                        <a href={"https://opensea.io/assets/" + (readContracts && readContracts.YourToken && readContracts.YourToken.address) + "/" + item.id} target="_blank">
+                          <img src={item.image} />
                         </a>
                         <div>{item.description}</div>
                       </Card>
@@ -517,7 +671,7 @@ function App(props) {
           </Route>
           <Route path="/debug">
 
-            <div style={{padding:32}}>
+            <div style={{ padding: 32 }}>
               <Address value={readContracts && readContracts.YourToken && readContracts.YourToken.address} />
             </div>
 
@@ -539,7 +693,7 @@ function App(props) {
         <Account
           address={address}
           localProvider={localProvider}
-          userProvider={userProvider}
+          userSigner={userSigner}
           mainnetProvider={mainnetProvider}
           price={price}
           web3Modal={web3Modal}
@@ -548,8 +702,8 @@ function App(props) {
           blockExplorer={blockExplorer}
           isSigner={isSigner}
         />
-        <div style={{margin:'25px', fontSize:'20px'}}>
-        Balance:{" "+(parseInt(tokenBalance)/10**18)+" FLEM 💦"}
+        <div style={{ margin: '25px', fontSize: '20px' }}>
+          Balance:{" " + (parseInt(tokenBalance) / 10 ** 18) + " FLEM 💦"}
         </div>
         {faucetHint}
       </div>
@@ -596,23 +750,5 @@ function App(props) {
     </div>
   );
 }
-
-/* eslint-disable */
-window.ethereum &&
-  window.ethereum.on("chainChanged", chainId => {
-    web3Modal.cachedProvider &&
-      setTimeout(() => {
-        window.location.reload();
-      }, 1);
-  });
-
-window.ethereum &&
-  window.ethereum.on("accountsChanged", accounts => {
-    web3Modal.cachedProvider &&
-      setTimeout(() => {
-        window.location.reload();
-      }, 1);
-  });
-/* eslint-enable */
 
 export default App;
