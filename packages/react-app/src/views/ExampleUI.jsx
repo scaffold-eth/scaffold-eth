@@ -1,5 +1,3 @@
-/* eslint-disable jsx-a11y/accessible-emoji */
-
 import React, { useState, useEffect } from "react";
 import { message, Row, Col, Button, List, Divider, Input, Card, DatePicker, Slider, Switch, Progress, Spin } from "antd";
 import { SyncOutlined } from '@ant-design/icons';
@@ -72,7 +70,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       <div style={{padding:16, width:WIDTH, margin:"auto"}}>
         <div style={{padding:32}}>
           <div style={{padding:32}}>
-            <Balance address={readContracts && readContracts.SimpleStream.address} provider={localProvider} price={price}/>
+            <Balance address={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} provider={localProvider} price={price}/>
             <span style={{opacity:0.5}}> @ <Balance value={streamCap} price={price}/> / {streamfrequency&&pretty(streamfrequency.toNumber()*1000000000)}</span>
           </div>
           <div>
@@ -82,7 +80,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       </div>
 
       <div style={{marginTop:-32}}>
-        <Address value={readContracts && readContracts.SimpleStream.address} />
+        <Address value={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} />
       </div>
 
 
@@ -151,19 +149,19 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
           dataSource={withdrawEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.to}>
+              <List.Item key={item.blockNumber+"_"+item.args[0]}>
 
                 <Balance
-                  value={item.amount}
+                  value={item.args[1]}
                   price={price}
                 />
                 <span style={{fontSize:14}}>
                   <span style={{padding:4}}>
-                    {item.reason}
+                    {item.args[2]}
                   </span>
                   <Address
                       minimized={true}
-                      address={item.to}
+                      address={item.args[0]}
                   />
                 </span>
               </List.Item>
@@ -179,18 +177,18 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
           dataSource={depositEvents}
           renderItem={(item) => {
             return (
-              <List.Item key={item.blockNumber+"_"+item.from}>
+              <List.Item key={item.blockNumber+"_"+item.args[0]}>
                 <Balance
-                  value={item.amount}
+                  value={item.args[1]}
                   price={price}
                 />
                 <span style={{fontSize:14}}>
                   <span style={{padding:4}}>
-                    {item.reason}
+                    {item.args[2]}
                   </span>
                   <Address
                       minimized={true}
-                      address={item.from}
+                      address={item.args[0]}
                   />
                 </span>
               </List.Item>
