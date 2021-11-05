@@ -18,3 +18,4 @@ export { default as TokenBalance } from "./TokenBalance";
 export { default as Wallet } from "./Wallet";
 export { default as L2Bridge } from "./L2Bridge";
 export { default as ImageToIPFS } from "./ImageToIPFS";
+export { default as Canvas } from "./Canvas";
