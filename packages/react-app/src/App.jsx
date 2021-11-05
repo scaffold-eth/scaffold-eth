@@ -277,7 +277,7 @@ function App(props) {
   const balance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   //console.log("🟢 Loogie balance:", balance);
 
-  const tokenBalance = useContractReader(readContracts, "Flemjamins", "TokenBalanceOf", [address]);
+  const tokenBalance = useContractReader(readContracts, "Loogies", "TokenBalanceOf", [address]);
   //console.log("💦 Flemjamin balance:", parseInt(tokenBalance));
 
   // 📟 Listen for broadcast events
@@ -296,9 +296,9 @@ function App(props) {
       for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourToken.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourToken.tokenURI(tokenId);
+          const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
           /*
@@ -611,7 +611,7 @@ function App(props) {
                           </div>
                         }
                       >
-                        <a href={"https://opensea.io/assets/" + (readContracts && readContracts.YourToken && readContracts.YourToken.address) + "/" + item.id} target="_blank">
+                        <a href={"https://opensea.io/assets/" + (readContracts && readContracts.Flemjamins && readContracts.Flemjamins.address) + "/" + item.id} target="_blank">
                           <img src={item.image} />
                         </a>
                         <div>{item.description}</div>
@@ -669,11 +669,11 @@ function App(props) {
           <Route path="/debug">
 
             <div style={{ padding: 32 }}>
-              <Address value={readContracts && readContracts.YourToken && readContracts.YourToken.address} />
+              <Address value={readContracts && readContracts.Flemjamins && readContracts.Flemjamins.address} />
             </div>
 
             <Contract
-              name="YourToken"
+              name="Flemjamins"
               signer={userProviderAndSigner.signer}
               provider={localProvider}
               address={address}

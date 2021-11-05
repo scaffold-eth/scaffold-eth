@@ -1,1 +1,1 @@
-module.exports = ["YourCollectible", "YourToken"];
+module.exports = ["Loogies", "Flemjamins"];
