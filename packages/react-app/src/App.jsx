@@ -513,7 +513,7 @@ function App(props) {
 
             <div style={{ padding: 8, marginTop: 32 }}>
               <div>Staker Contract:</div>
-              <Address value={readContracts && readContracts.Staker.address} />
+              <Address value={readContracts && readContracts.Staker && readContracts.Staker.address} />
             </div>
 
             <div style={{ padding: 8, marginTop: 32 }}>
