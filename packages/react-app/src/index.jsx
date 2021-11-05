@@ -2,8 +2,13 @@ import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
+import { MoralisProvider } from "react-moralis";
 import App from "./App";
 import "./index.css";
+
+// Kovan Server - Moralis
+const APP_ID = "pLlhmNVd8euy9wk78byphunxxGKYTHxeoKluHY5K";
+const SERVER_URL = "https://m8anui0ii7fz.usemoralis.com:2053/server";
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
@@ -20,10 +25,12 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <App subgraphUri={subgraphUri} />
-    </ThemeSwitcherProvider>
-  </ApolloProvider>,
+  <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
+    <ApolloProvider client={client}>
+      <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+        <App subgraphUri={subgraphUri} />
+      </ThemeSwitcherProvider>
+    </ApolloProvider>
+  </MoralisProvider>,
   document.getElementById("root"),
 );

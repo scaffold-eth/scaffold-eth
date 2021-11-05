@@ -14,6 +14,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import Fortmatic from "fortmatic";
 import React, { useCallback, useEffect, useState } from "react";
+import { useMoralis } from "react-moralis";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
@@ -162,6 +163,7 @@ const web3Modal = new Web3Modal({
 });
 
 function App(props) {
+  const { isAuthenticated } = useMoralis();
   const mainnetProvider =
     poktMainnetProvider && poktMainnetProvider._isProvider
       ? poktMainnetProvider
