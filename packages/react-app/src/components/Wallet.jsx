@@ -1,6 +1,11 @@
-import { KeyOutlined, QrcodeOutlined, SendOutlined, WalletOutlined } from "@ant-design/icons";
-import { Button, Modal, Spin, Tooltip, Typography } from "antd";
-import { ethers } from "ethers";
+import React, { useState } from "react";
+import {
+  WalletOutlined,
+  QrcodeOutlined,
+  SendOutlined,
+  KeyOutlined
+} from "@ant-design/icons";
+import { Tooltip, Spin, Modal, Button, Typography } from "antd";
 import QR from "qrcode.react";
 import React, { useState, useEffect } from "react";
 import { Transactor } from "../helpers";
@@ -71,7 +76,7 @@ export default function Wallet(props) {
           color: props.color ? props.color : "",
           cursor: "pointer",
           fontSize: 28,
-          verticalAlign: "middle",
+          verticalAlign: "middle"
         }}
       />
     </Tooltip>
@@ -120,8 +125,8 @@ export default function Wallet(props) {
       </Button>
     );
   } else if (pk) {
-    const pk = localStorage.getItem("metaPrivateKey");
-    const wallet = new ethers.Wallet(pk);
+    let pk = localStorage.getItem("metaPrivateKey");
+    let wallet = new ethers.Wallet(pk);
 
     if (wallet.address !== selectedAddress) {
       display = (
@@ -130,30 +135,43 @@ export default function Wallet(props) {
         </div>
       );
     } else {
-      const extraPkDisplayAdded = {};
-      const extraPkDisplay = [];
+      let extraPkDisplayAdded = {};
+      let extraPkDisplay = [];
       extraPkDisplayAdded[wallet.address] = true;
       extraPkDisplay.push(
         <div style={{ fontSize: 16, padding: 2, backgroundStyle: "#89e789" }}>
           <a href={"/pk#" + pk}>
-            <Address minimized address={wallet.address} ensProvider={props.ensProvider} /> {wallet.address.substr(0, 6)}
+            <Address
+              minimized={true}
+              address={wallet.address}
+              ensProvider={props.ensProvider}
+            />{" "}
+            {wallet.address.substr(0, 6)}
           </a>
-        </div>,
+        </div>
       );
-      for (const key in localStorage) {
+      for (var key in localStorage) {
         if (key.indexOf("metaPrivateKey_backup") >= 0) {
           console.log(key);
-          const pastpk = localStorage.getItem(key);
-          const pastwallet = new ethers.Wallet(pastpk);
-          if (!extraPkDisplayAdded[pastwallet.address] /* && selectedAddress!=pastwallet.address */) {
+          let pastpk = localStorage.getItem(key);
+          let pastwallet = new ethers.Wallet(pastpk);
+          if (
+            !extraPkDisplayAdded[
+              pastwallet.address
+            ] /*&& selectedAddress!=pastwallet.address*/
+          ) {
             extraPkDisplayAdded[pastwallet.address] = true;
             extraPkDisplay.push(
               <div style={{ fontSize: 16 }}>
                 <a href={"/pk#" + pastpk}>
-                  <Address minimized address={pastwallet.address} ensProvider={props.ensProvider} />{" "}
+                  <Address
+                    minimized={true}
+                    value={pastwallet.address}
+                    ensProvider={props.ensProvider}
+                  />{" "}
                   {pastwallet.address.substr(0, 6)}
                 </a>
-              </div>,
+              </div>
             );
           }
         }
@@ -171,17 +189,21 @@ export default function Wallet(props) {
 
           <i>
             Point your camera phone at qr code to open in
-            <a target="_blank" href={"https://xdai.io/" + pk} rel="noopener noreferrer">
+            <a
+              target="_blank"
+              href={"https://xdai.io/" + pk}
+              rel="noopener noreferrer"
+            >
               burner wallet
             </a>
             :
           </i>
           <QR
             value={"https://xdai.io/" + pk}
-            size="450"
-            level="H"
-            includeMargin
-            renderAs="svg"
+            size={"450"}
+            level={"H"}
+            includeMargin={true}
+            renderAs={"svg"}
             imageSettings={{ excavate: false }}
           />
 
@@ -195,9 +217,14 @@ export default function Wallet(props) {
               {extraPkDisplay}
               <Button
                 onClick={() => {
-                  const currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
+                  let currentPrivateKey = window.localStorage.getItem(
+                    "metaPrivateKey"
+                  );
                   if (currentPrivateKey) {
-                    window.localStorage.setItem("metaPrivateKey_backup" + Date.now(), currentPrivateKey);
+                    window.localStorage.setItem(
+                      "metaPrivateKey_backup" + Date.now(),
+                      currentPrivateKey
+                    );
                   }
                   const randomWallet = ethers.Wallet.createRandom();
                   const privateKey = randomWallet._signingKey().privateKey;
@@ -239,7 +266,7 @@ export default function Wallet(props) {
     );
   } else {
     const inputStyle = {
-      padding: 10,
+      padding: 10
     };
 
     display = (
@@ -295,9 +322,20 @@ export default function Wallet(props) {
         visible={open}
         title={
           <div>
-            {selectedAddress ? <Address address={selectedAddress} ensProvider={props.ensProvider} /> : <Spin />}
+            {selectedAddress ? (
+              <Address
+                address={selectedAddress}
+                ensProvider={props.ensProvider}
+              />
+            ) : (
+              <Spin />
+            )}
             <div style={{ float: "right", paddingRight: 25 }}>
-              <Balance address={selectedAddress} provider={props.provider} dollarMultiplier={props.price} />
+              <Balance
+                address={selectedAddress}
+                provider={props.provider}
+                dollarMultiplier={props.price}
+              />
             </div>
           </div>
         }
@@ -332,14 +370,14 @@ export default function Wallet(props) {
 
               tx({
                 to: toAddress,
-                value,
+                value
               });
               setOpen(!open);
               setQr();
             }}
           >
             <SendOutlined /> Send
-          </Button>,
+          </Button>
         ]}
       >
         {display}

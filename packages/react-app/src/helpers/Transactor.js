@@ -29,23 +29,16 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
       }
 
       console.log("network", network);
-      var options = null;
-      var notify = null;
-        options = {
-          dappId: BLOCKNATIVE_DAPPID, // GET YOUR OWN KEY AT https://account.blocknative.com
-          system: "ethereum",
-          networkId: network.chainId,
-          // darkMode: Boolean, // (default: false)
-          transactionHandler: txInformation => {
-            if (DEBUG) console.log("HANDLE TX", txInformation);
-            const possibleFunction = callbacks[txInformation.transaction.hash];
-            if (typeof possibleFunction === "function") {
-              possibleFunction(txInformation.transaction);
-            }
-          },
-        };
-
-        notify = Notify(options);
+      const options = {
+        dappId: "0b58206a-f3c0-4701-a62f-73c7243e8c77", // GET YOUR OWN KEY AT https://account.blocknative.com
+        system: "ethereum",
+        networkId: network.chainId,
+        // darkMode: Boolean, // (default: false)
+        transactionHandler: txInformation => {
+          console.log("HANDLE TX", txInformation);
+        }
+      };
+      const notify = Notify(options);
 
       let etherscanNetwork = "";
       if (network.name && network.chainId > 1) {
@@ -84,14 +77,15 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
           const { emitter } = notify.hash(result.hash);
           emitter.on("all", transaction => {
             return {
-              onclick: () => window.open((etherscan || etherscanTxUrl) + transaction.hash),
+              onclick: () =>
+                window.open((etherscan || etherscanTxUrl) + transaction.hash)
             };
           });
         } else {
           notification.info({
             message: "Local Transaction Sent",
             description: result.hash,
-            placement: "bottomRight",
+            placement: "bottomRight"
           });
           // on most networks BlockNative will update a transaction handler,
           // but locally we will set an interval to listen...
@@ -143,7 +137,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
 
         notification.error({
           message: "Transaction Error",
-          description: message,
+          description: e.message
         });
         if (callback && typeof callback === "function") {
           callback(e);

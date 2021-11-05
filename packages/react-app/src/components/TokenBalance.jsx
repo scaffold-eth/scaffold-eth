@@ -35,7 +35,7 @@ export default function TokenBalance(props) {
         verticalAlign: "middle",
         fontSize: 24,
         padding: 8,
-        cursor: "pointer",
+        cursor: "pointer"
       }}
       onClick={() => {
         setDollarMode(!dollarMode);

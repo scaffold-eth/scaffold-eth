@@ -73,7 +73,7 @@ export default function AddressInput(props) {
         }
       }
     },
-    [ensProvider, onChange],
+    [ensProvider, onChange]
   );
 
   const scanner = scan ? (
@@ -83,7 +83,7 @@ export default function AddressInput(props) {
         position: "absolute",
         left: 0,
         top: 0,
-        width: "100%",
+        width: "100%"
       }}
       onClick={() => {
         setScan(false);
@@ -101,7 +101,9 @@ export default function AddressInput(props) {
             console.log("SCAN VALUE", newValue);
             let possibleNewValue = newValue;
             if (possibleNewValue.indexOf("/") >= 0) {
-              possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
+              possibleNewValue = possibleNewValue.substr(
+                possibleNewValue.lastIndexOf("0x")
+              );
               console.log("CLEANED VALUE", possibleNewValue);
             }
             setScan(false);
@@ -119,8 +121,8 @@ export default function AddressInput(props) {
     <div>
       {scanner}
       <Input
-        id="0xAddress" // name it something other than address for auto fill doxxing
-        name="0xAddress" // name it something other than address for auto fill doxxing
+        id={"0xAddress"} //name it something other than address for auto fill doxxing
+        name={"0xAddress"} //name it something other than address for auto fill doxxing
         autoComplete="off"
         autoFocus={props.autoFocus}
         placeholder={props.placeholder ? props.placeholder : "address"}

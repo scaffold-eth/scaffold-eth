@@ -51,10 +51,7 @@ export default function Address(props) {
 
   let displayAddress = address.substr(0, 6);
 
-  const ensSplit = ens && ens.split(".");
-  const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === "eth";
-
-  if (validEnsCheck) {
+  if (ens && ens.indexOf("0x") < 0) {
     displayAddress = ens;
   } else if (props.size === "short") {
     displayAddress += "..." + address.substr(-4);
@@ -67,12 +64,21 @@ export default function Address(props) {
     return (
       <span style={{ verticalAlign: "middle" }}>
         <a
+<<<<<<< HEAD
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
           href={etherscanLink}
           rel="noopener noreferrer"
         >
           <Blockies seed={address.toLowerCase()} size={8} scale={2} />
+=======
+          style={{ color: "#222222" }}
+          target={"_blank"}
+          href={etherscanLink}
+          rel="noopener noreferrer"
+        >
+          <Blockies seed={props.address.toLowerCase()} size={8} scale={2} />
+>>>>>>> 203e7ef78411d7b95edfcaf815ff30fd18c3abee
         </a>
       </span>
     );
@@ -81,10 +87,20 @@ export default function Address(props) {
   let text;
   if (props.onChange) {
     text = (
+<<<<<<< HEAD
       <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
         <a
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
+=======
+      <Text
+        editable={{ onChange: props.onChange }}
+        copyable={{ text: props.address }}
+      >
+        <a
+          style={{ color: "#222222" }}
+          target={"_blank"}
+>>>>>>> 203e7ef78411d7b95edfcaf815ff30fd18c3abee
           href={etherscanLink}
           rel="noopener noreferrer"
         >
@@ -94,10 +110,17 @@ export default function Address(props) {
     );
   } else {
     text = (
+<<<<<<< HEAD
       <Text copyable={{ text: address }}>
         <a
           style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
           target="_blank"
+=======
+      <Text copyable={{ text: props.address }}>
+        <a
+          style={{ color: "#222222" }}
+          target={"_blank"}
+>>>>>>> 203e7ef78411d7b95edfcaf815ff30fd18c3abee
           href={etherscanLink}
           rel="noopener noreferrer"
         >
@@ -110,9 +133,25 @@ export default function Address(props) {
   return (
     <span>
       <span style={{ verticalAlign: "middle" }}>
+<<<<<<< HEAD
         <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
       </span>
       <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
+=======
+        <Blockies
+          seed={props.address.toLowerCase()}
+          size={8}
+          scale={props.fontSize ? props.fontSize / 7 : 4}
+        />
+      </span>
+      <span
+        style={{
+          verticalAlign: "middle",
+          paddingLeft: 5,
+          fontSize: props.fontSize ? props.fontSize : 28
+        }}
+      >
+>>>>>>> 203e7ef78411d7b95edfcaf815ff30fd18c3abee
         {text}
       </span>
     </span>

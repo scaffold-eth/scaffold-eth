@@ -30,9 +30,9 @@ export default function Ramp(props) {
 
   const type = "default";
 
-  const allFaucets = [];
-  for (const n in props.networks) {
-    if (props.networks[n].chainId !== 31337 && props.networks[n].chainId !== 1) {
+  let allFaucets = [];
+  for (let n in props.networks) {
+    if (props.networks[n].chainId != 31337 && props.networks[n].chainId != 1) {
       allFaucets.push(
         <p key={props.networks[n].chainId}>
           <Button
@@ -46,7 +46,7 @@ export default function Ramp(props) {
           >
             {props.networks[n].name}
           </Button>
-        </p>,
+        </p>
       );
     }
   }
@@ -61,7 +61,7 @@ export default function Ramp(props) {
         }}
       >
         <DollarCircleOutlined style={{ color: "#52c41a" }} />{" "}
-        {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
+        {props.price.toFixed(2)}
       </Button>
       <Modal
         title="Buy ETH"
@@ -77,7 +77,7 @@ export default function Ramp(props) {
             }}
           >
             cancel
-          </Button>,
+          </Button>
         ]}
       >
         <p>
@@ -86,7 +86,10 @@ export default function Ramp(props) {
             size="large"
             shape="round"
             onClick={() => {
-              window.open("https://pay.sendwyre.com/purchase?destCurrency=ETH&sourceAmount=25&dest=" + props.address);
+              window.open(
+                "https://pay.sendwyre.com/purchase?destCurrency=ETH&sourceAmount=25&dest=" +
+                  props.address
+              );
             }}
           >
             <span style={{ paddingRight: 15 }} role="img">
@@ -109,7 +112,7 @@ export default function Ramp(props) {
                 hostLogoUrl: "https://scaffoldeth.io/scaffold-eth.png",
                 swapAmount: "100000000000000000", // 0.1 ETH in wei  ?
                 swapAsset: "ETH",
-                userAddress: props.address,
+                userAddress: props.address
               })
                 .on("*", event => console.log(event))
                 .show();
