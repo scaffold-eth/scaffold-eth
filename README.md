@@ -88,7 +88,7 @@ If the `address(this).balance` of the contract is over the `threshold` by the `d
 
 If the balance is less than the `threshold`, you want to set a `openForWithdraw` bool to `true` and allow users to `withdraw(address payable)` their funds.
 
-(You'll have 30 seconds after deploying until the deadline is reached)
+(You'll have 30 seconds after deploying until the deadline is reached, you can adjust this in the contract.)
 
 > 👩‍💻 Create a `timeLeft()` function including ```public view returns (uint256)``` that returns how much time is left.
 
@@ -146,6 +146,10 @@ If the balance is less than the `threshold`, you want to set a `openForWithdraw`
  ---
 
 ### Checkpoint 6: 🎚 Frontend 🧘‍♀️
+
+ > 📝 Edit the `targetNetwork` in `app.jsx` (in `packages/ract-app/src`) to be the public network where you deployed your smart contract.
+
+> 💻 View your frontend at http://localhost:3000/
 
  👩‍🎤 Take time to craft your user experience...
 
