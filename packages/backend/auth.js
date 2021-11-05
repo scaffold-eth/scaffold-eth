@@ -15,7 +15,10 @@ const userHasToken = async (address) => {
 
   const balance = await tokenContract.balanceOf(address);
 
-  return balance.gt(0);
+  console.log({ balance: balance.toString(), address });
+
+  // require balance to be >= 2
+  return balance.gte(ethers.utils.parseEther("2"));
 };
 
 const signUserData = (data) => {
