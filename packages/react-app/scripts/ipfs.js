@@ -14,12 +14,15 @@ const ipfsGateway = "https://ipfs.io/ipfs/";
 const ipnsGateway = "https://ipfs.io/ipns/";
 
 const addOptions = {
-  pin: true,
+  pin: true
 };
 
 const pushDirectoryToIPFS = async path => {
   try {
-    const response = await ipfs.add(globSource(path, { recursive: true }), addOptions);
+    const response = await ipfs.add(
+      globSource(path, { recursive: true }),
+      addOptions
+    );
     return response;
   } catch (e) {
     return {};
@@ -50,14 +53,18 @@ const deploy = async () => {
     console.log(`📡 App deployment failed`);
     return false;
   }
-  console.log(`📡 App deployed to IPFS with hash: ${chalk.cyan(cid.toString())}`);
+  console.log(
+    `📡 App deployed to IPFS with hash: ${chalk.cyan(cid.toString())}`
+  );
 
   console.log();
 
   let ipnsName = "";
   if (nodeMayAllowPublish(ipfs)) {
     console.log(`✍️  Publishing /ipfs/${cid.toString()} to IPNS...`);
-    process.stdout.write("   Publishing to IPNS can take up to roughly two minutes.\r");
+    process.stdout.write(
+      "   Publishing to IPNS can take up to roughly two minutes.\r"
+    );
     ipnsName = (await publishHashToIPNS(cid.toString())).name;
     clearLine(process.stdout, 0);
     if (!ipnsName) {
@@ -76,10 +83,10 @@ const deploy = async () => {
     console.log(`   IPNS: ${chalk.cyan(`${ipnsGateway}${ipnsName}`)}`);
     console.log();
     console.log(
-      "Each new deployment will have a unique IPFS hash while the IPNS name will always point at the most recent deployment.",
+      "Each new deployment will have a unique IPFS hash while the IPNS name will always point at the most recent deployment."
     );
     console.log(
-      "It is recommended that you share the IPNS link so that people always see the newest version of your app.",
+      "It is recommended that you share the IPNS link so that people always see the newest version of your app."
     );
   }
   console.log();

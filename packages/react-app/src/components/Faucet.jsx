@@ -101,7 +101,7 @@ export default function Faucet(props) {
               onClick={() => {
                 tx({
                   to: address,
-                  value: utils.parseEther("0.01"),
+                  value: parseEther("0.01")
                 });
                 setAddress("");
               }}
@@ -110,10 +110,9 @@ export default function Faucet(props) {
             />
             <Wallet
               color="#888888"
-              provider={localProvider}
-              ensProvider={ensProvider}
-              price={price}
-              address={faucetAddress}
+              provider={props.localProvider}
+              ensProvider={props.ensProvider}
+              price={props.price}
             />
           </Tooltip>
         }

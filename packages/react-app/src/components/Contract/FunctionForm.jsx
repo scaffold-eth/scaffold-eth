@@ -4,22 +4,29 @@ import Blockies from "react-blockies";
 import { Transactor } from "../../helpers";
 import tryToDisplay from "./utils";
 
-const { utils, BigNumber } = require("ethers");
-
-const getFunctionInputKey = (functionInfo, input, inputIndex) => {
-  const name = input?.name ? input.name : "input_" + inputIndex + "_";
-  return functionInfo.name + "_" + name + "_" + input.type;
-};
-
-export default function FunctionForm({ contractFunction, functionInfo, provider, gasPrice, triggerRefresh }) {
+export default function FunctionForm({
+  contractFunction,
+  functionInfo,
+  provider,
+  gasPrice,
+  triggerRefresh
+}) {
   const [form, setForm] = useState({});
   const [txValue, setTxValue] = useState();
   const [returnValue, setReturnValue] = useState();
 
   const tx = Transactor(provider, gasPrice);
 
-  const inputs = functionInfo.inputs.map((input, inputIndex) => {
-    const key = getFunctionInputKey(functionInfo, input, inputIndex);
+  let inputIndex = 0;
+  const inputs = functionInfo.inputs.map(input => {
+    const key =
+      functionInfo.name +
+      "_" +
+      input.name +
+      "_" +
+      input.type +
+      "_" +
+      inputIndex++;
 
     let buttons = "";
     if (input.type === "bytes32") {
@@ -66,7 +73,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           </div>
         </Tooltip>
       );
-    } else if (input.type === "uint256") {
+    } else if (input.type == "uint256") {
       buttons = (
         <Tooltip placement="right" title="* 10 ** 18">
           <div
@@ -82,9 +89,10 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           </div>
         </Tooltip>
       );
-    } else if (input.type === "address") {
-      const possibleAddress = form[key] && form[key].toLowerCase && form[key].toLowerCase().trim();
-      if (possibleAddress && possibleAddress.length === 42) {
+    } else if (input.type == "address") {
+      const possibleAddress =
+        form[key] && form[key].toLowerCase && form[key].toLowerCase().trim();
+      if (possibleAddress && possibleAddress.length == 42) {
         buttons = (
           <Tooltip placement="right" title="blockie">
             <Blockies seed={possibleAddress} scale={3} />
@@ -127,7 +135,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                     type="dashed"
                     style={{ cursor: "pointer" }}
                     onClick={async () => {
-                      const floatValue = parseFloat(txValue);
+                      let floatValue = parseFloat(txValue);
                       if (floatValue) setTxValue("" + floatValue * 10 ** 18);
                     }}
                   >
@@ -178,13 +186,27 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             style={{ width: 50, height: 30, margin: 0 }}
             type="default"
             onClick={async () => {
-              const args = functionInfo.inputs.map((input, inputIndex) => {
-                const key = getFunctionInputKey(functionInfo, input, inputIndex);
+              let innerIndex = 0;
+              const args = functionInfo.inputs.map(input => {
+                const key =
+                  functionInfo.name +
+                  "_" +
+                  input.name +
+                  "_" +
+                  input.type +
+                  "_" +
+                  innerIndex++;
                 let value = form[key];
-                if (input.baseType === "array") {
+                if (input.baseType == "array") {
                   value = JSON.parse(value);
                 } else if (input.type === "bool") {
-                  if (value === "true" || value === "1" || value === "0x1" || value === "0x01" || value === "0x0001") {
+                  if (
+                    value === "true" ||
+                    value === "1" ||
+                    value === "0x1" ||
+                    value === "0x01" ||
+                    value === "0x0001"
+                  ) {
                     value = 1;
                   } else {
                     value = 0;
@@ -194,13 +216,12 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               });
 
               let result;
-              if (functionInfo.stateMutability === "view" || functionInfo.stateMutability === "pure") {
-                try {
-                  const returned = await contractFunction(...args);
-                  result = tryToDisplay(returned);
-                } catch (err) {
-                  console.error(err);
-                }
+              if (
+                functionInfo.stateMutability === "view" ||
+                functionInfo.stateMutability === "pure"
+              ) {
+                const returned = await contractFunction(...args);
+                result = tryToDisplay(returned);
               } else {
                 const overrides = {};
                 if (txValue) {
@@ -226,7 +247,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           </div>
         }
       />
-    </div>,
+    </div>
   );
 
   return (
@@ -238,7 +259,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
             textAlign: "right",
             opacity: 0.333,
             paddingRight: 6,
-            fontSize: 24,
+            fontSize: 24
           }}
         >
           {functionInfo.name}

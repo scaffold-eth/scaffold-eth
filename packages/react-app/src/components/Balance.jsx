@@ -31,10 +31,25 @@ const { utils } = require("ethers");
 
 export default function Balance(props) {
   const [dollarMode, setDollarMode] = useState(true);
+  const [balance, setBalance] = useState();
 
-  // const [listening, setListening] = useState(false);
+  const getBalance = async () => {
+    if (props.address && props.provider) {
+      try {
+        const newBalance = await props.provider.getBalance(props.address);
+        setBalance(newBalance);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  };
 
-  const balance = useBalance(props.provider, props.address);
+  usePoller(
+    () => {
+      getBalance();
+    },
+    props.pollTime ? props.pollTime : 1999
+  );
 
   let floatBalance = parseFloat("0.00");
 
@@ -67,7 +82,7 @@ export default function Balance(props) {
         verticalAlign: "middle",
         fontSize: props.size ? props.size : 24,
         padding: 8,
-        cursor: "pointer",
+        cursor: "pointer"
       }}
       onClick={() => {
         setDollarMode(!dollarMode);
