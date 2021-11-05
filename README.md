@@ -22,6 +22,7 @@ git clone https://github.com/austintgriffith/scaffold-eth.git
 ```txt
 PROVIDER='your eth provider (Infura etc)'
 SECRET='secret phrase for signing JWT tokens'
+VIDEO='Vimeo video ID'
 TOKEN='your NFT token address'
 ```
 
