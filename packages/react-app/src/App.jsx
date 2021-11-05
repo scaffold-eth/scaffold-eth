@@ -1,8 +1,5 @@
-import Portis from "@portis/web3";
-import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import Authereum from "authereum";
 import {
   useBalance,
   useContractLoader,
@@ -12,23 +9,19 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-import Fortmatic from "fortmatic";
 import React, { useCallback, useEffect, useState } from "react";
 import { useMoralis } from "react-moralis";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
-import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { web3Modal } from "./context";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
 import { ExampleUI, Hints, Subgraph } from "./views";
-import { web3Modal } from "./context";
 
 const { ethers } = require("ethers");
 /*
