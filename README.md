@@ -2,7 +2,7 @@
 
 ## 🚩 Challenge 1: 🥩 Decentralized Staking App
 
-> 🦸 A super power of Ethereum is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code. 
+> 🦸 A super power of Ethereum is allowing you, the builder, to create a simple set of rules that an adversarial group of players can use to work together. In this challenge, you create a decentralized application where users can coordinate a group funding effort. If the users cooperate, the money is collected in a second smart contract. If they defect, the worst that can happen is everyone gets their money back. The users only have to trust the code.
 
 > 🏦 Build a `Staker.sol` contract that collects **ETH** from numerous addresses using a payable `stake()` function and keeps track of `balances`. After some `deadline` if it has at least some `threshold` of ETH, it sends it to an `ExampleExternalContract` and triggers the `complete()` action sending the full balance. If not enough **ETH** is collected, allow users to `withdraw()`.
 
@@ -71,13 +71,16 @@ uint256 public constant threshold = 1 ether;
 
 ---
 
-### Checkpoint 3: 🔬 Testing ⏱
+### Checkpoint 3: 🔬 State Machine / Timing ⏱
 
+> ⚙️  Think of your smart contract like a *state machine*. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
 
 Set a `deadline` of ```now + 30 seconds```
 ```solidity
 uint256 public deadline = now + 30 seconds;
 ```
+
+👨‍🏫 Smart contracts can't execute automatically, you always need to have a transaction execute to change state. Because of this, you will need to have an `execute()` function that *anyone* can call, just once, after the `deadline` has expired.
 
 > 👩‍💻 Write your `execute()` function and test it with the `Debug Contracts` tab
 
@@ -100,19 +103,35 @@ If the balance is less than the `threshold`, you want to set a `openForWithdraw`
 - [ ] If you `stake()` enough ETH before the `deadline`, does it call `complete()`?
 - [ ] If you don't `stake()` enough can you `withdraw(address payable)` your funds?
 
-⚔️ Side Quests
-- [ ] Can execute get called more than once, and is that okay?
-- [ ] Can you deposit and withdraw freely after the `deadline`, and is that okay?
-- [ ] What are other implications of *anyone* being able to withdraw for someone?
-- [ ] Can you implement your own [modifier](https://solidity-by-example.org/function-modifier/) that checks whether `deadline` was passed or not? Where can you use it?
 
-🐸 It's a trap!
-- [ ] Make sure funds can't get trapped in the contract! Try sending funds after you have executed!
+---
+
+
+### Checkpoint 4: 💵 Receive Function / UX 🙎
+
+🎀 To improve the user experience, set your contract up so it accepts ETH sent to it and calls `stake()`. You will use what is called the `receive()` function.
+
+> Use the [receive()](https://docs.soliditylang.org/en/v0.8.9/contracts.html?highlight=receive#receive-ether-function) function in solidity to "catch" ETH sent to the contract and call `stake()` to update `balances`.
+
+#### 🥅 Goals
+- [ ] If you send ETH directly to the contract address does it update your `balance`?
+
+---
+
+## ⚔️ Side Quests
+- [ ] Can execute get called more than once, and is that okay?
+- [ ] Can you stake and withdraw freely after the `deadline`, and is that okay?
+- [ ] What are other implications of *anyone* being able to withdraw for someone?
+
+---
+
+## 🐸 It's a trap!
+- [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
 - [ ] Try to create a [modifier](https://solidity-by-example.org/function-modifier/) called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
 ---
 
-### Checkpoint 4: 🚢 Ship it 🚁
+### Checkpoint 5: 🚢 Ship it 🚁
 
 📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
 
@@ -120,17 +139,15 @@ If the balance is less than the `threshold`, you want to set a `openForWithdraw`
 
 🔐 If you don't have one, run `yarn generate` to create a mnemonic and save it locally for deploying.
 
-🛰 Use an [instantwallet.io](https://instantwallet.io) to fund your **deployer address** (run `yarn account` to view balances)
+⛽️ You will need to send ETH to your **deployer address** with your wallet.
 
- >  🚀 Run `yarn deploy` to deploy to your public network of choice (wherever you can get ⛽️ gas)
+ >  🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in hardhat.config.js)
 
  ---
 
-### Checkpoint 5: 🎚 Frontend 🧘‍♀️
+### Checkpoint 6: 🎚 Frontend 🧘‍♀️
 
- 👩‍🎤 Take time to craft your user experience.
-
- ...
+ 👩‍🎤 Take time to craft your user experience...
 
  📡 When you are ready to ship the frontend app...
 

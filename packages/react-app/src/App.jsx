@@ -512,6 +512,11 @@ function App(props) {
             {completeDisplay}
 
             <div style={{ padding: 8, marginTop: 32 }}>
+              <div>Staker Contract:</div>
+              <Address value={readContracts && readContracts.Staker.address} />
+            </div>
+
+            <div style={{ padding: 8, marginTop: 32 }}>
               <div>Timeleft:</div>
               {timeLeft && humanizeDuration(timeLeft.toNumber() * 1000)}
             </div>
@@ -541,7 +546,7 @@ function App(props) {
               <Button
                 type={"default"}
                 onClick={() => {
-                  tx(writeContracts.Staker.withdraw());
+                  tx(writeContracts.Staker.withdraw(address));
                 }}
               >
                 🏧 Withdraw

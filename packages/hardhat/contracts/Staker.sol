@@ -1,14 +1,14 @@
 pragma solidity >=0.6.0 <0.7.0;
 
 import "hardhat/console.sol";
-import "./ExampleExternalContract.sol"; //https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "./ExampleExternalContract.sol";
 
 contract Staker {
 
   ExampleExternalContract public exampleExternalContract;
 
   constructor(address exampleExternalContractAddress) public {
-    exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
+      exampleExternalContract = ExampleExternalContract(exampleExternalContractAddress);
   }
 
   // Collect funds in a payable `stake()` function and track individual `balances` with a mapping:
@@ -19,12 +19,13 @@ contract Staker {
   //  It should either call `exampleExternalContract.complete{value: address(this).balance}()` to send all the value
 
 
-
   // if the `threshold` was not met, allow everyone to call a `withdraw()` function
 
 
-
   // Add a `timeLeft()` view function that returns the time left before the deadline for the frontend
+
+
+  // Add the `receive()` special function that receives eth and calls stake()
 
 
 }
