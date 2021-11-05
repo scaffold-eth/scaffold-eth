@@ -80,7 +80,7 @@ const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUr
 const blockExplorer = targetNetwork.blockExplorer;
 
 function App(props) {
-  const { isAuthenticated } = useMoralis();
+  const { authenticate, isAuthenticated, user, logout } = useMoralis();
   const mainnetProvider =
     poktMainnetProvider && poktMainnetProvider._isProvider
       ? poktMainnetProvider
@@ -505,6 +505,13 @@ function App(props) {
           blockExplorer={blockExplorer}
         />
         {faucetHint}
+        <br />
+        {/* <div>
+          <button onClick={() => authenticate({ signingMessage: "Hello World!" })}>Authenticate</button>
+        </div>
+        <div>
+          <button onClick={() => logout()}>Logout</button>
+        </div> */}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}

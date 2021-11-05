@@ -7,8 +7,8 @@ import App from "./App";
 import "./index.css";
 
 // Kovan Server - Moralis
-const APP_ID = "pLlhmNVd8euy9wk78byphunxxGKYTHxeoKluHY5K";
-const SERVER_URL = "https://m8anui0ii7fz.usemoralis.com:2053/server";
+const APP_ID = "vuSHldvhCW1bxPzFVZBMsk205D3atbHQSAuAQ8pH";
+const SERVER_URL = "https://ajhkv0lxp8el.usemoralis.com:2053/server";
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
