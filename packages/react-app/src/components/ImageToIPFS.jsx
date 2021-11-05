@@ -201,11 +201,6 @@ export default function ImageToIPFS() {
                     <a href={"https://ipfs.io/ipfs/"+ipfsHash} target="blank">{ipfsHash}</a>
                 </Col>
             </Row>
-            <div style={{margin:'42px'}}>
-                <p style={{margin:'42px'}}>{"(Built using scaffold-eth and AWS s3.)"}</p>
-            </div>
-
         </div>
     );
-
 }

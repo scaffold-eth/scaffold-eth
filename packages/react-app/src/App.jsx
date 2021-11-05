@@ -1,13 +1,13 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, Divider } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, ImageToIPFS } from "./components";
+import { Account, Contract, Header, Canvas, ThemeSwitch, ImageToIPFS } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
 import {
@@ -444,63 +444,14 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/download">
-            <Link
-              onClick={() => {
-                setRoute("/download");
-              }}
-              to="/download"
-            >
               Image Downloader
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
-            </Link>
-          </Menu.Item>
+         
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/contracts">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -515,9 +466,16 @@ function App(props) {
               blockExplorer={blockExplorer}
             />
           </Route>
-          <Route path="/download">
+
+          <Route path="/">
             <ImageToIPFS/>
+            <Divider />
+            <Canvas width="500px" height="500px"/>
+            <div style={{margin:'42px'}}>
+                <p style={{margin:'42px'}}>{"(Built using scaffold-eth and AWS s3.)"}</p>
+            </div>
           </Route>
+
           <Route path="/hints">
             <Hints
               address={address}
