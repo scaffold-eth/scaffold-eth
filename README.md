@@ -1,6 +1,6 @@
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
-## 🚩 Challenge 2: Token Vendor
+## 🚩 Challenge 2: 🤖 Token Vendor
 
 > 🏵 Create `YourToken.sol` smart contract that inherits the **ERC20** token standard from OpenZeppelin. Set your token to `_mint()` **1000** (* 10 ** 18) tokens to the `msg.sender`. Then create a `Vendor.sol` contract that sells your token using a payable `buyTokens()` function.
 
@@ -39,7 +39,7 @@ You'll have three terminals up for:
 
 `yarn deploy` (to compile, deploy, and publish your contracts to the frontend)
 
-> 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend.
+> 👩‍💻 Rerun `yarn deploy --reset` whenever you want to deploy new contracts to the frontend.
 
 > ignore any warnings about the vendor deploy, we'll get to that.
 
