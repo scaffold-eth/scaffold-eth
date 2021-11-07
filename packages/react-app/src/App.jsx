@@ -1,4 +1,3 @@
-
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import WalletLink from "walletlink";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
@@ -274,31 +273,32 @@ function App(props) {
   ]);*/
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
-  //console.log("🟢 Loogie balance:", balance);
+  const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
+  console.log("🤗 loogie balance:", loogieBalance);
 
-  const tokenBalance = useContractReader(readContracts, "Loogies", "TokenBalanceOf", [address]);
-  //console.log("💦 Flemjamin balance:", parseInt(tokenBalance));
+  const tokenBalance = useContractReader(readContracts, "Flemjamins", "balanceOf", [address]);
+  console.log("💦 Flemjamin balance:", parseInt(tokenBalance));
 
   // 📟 Listen for broadcast events
   const transferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
-  //console.log("📟 Transfer events:", transferEvents);
+  console.log("📟 Transfer events:", transferEvents);
 
   //
   // 🧠 This effect will update yourTokens by polling when your balance changes
   //
-  const yourBalance = balance && balance.toNumber && balance.toNumber();
+  const yourBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourTokens, setYourTokens] = useState();
 
   useEffect(() => {
     const updateYourTokens = async () => {
+      console.log("Hi")
       const tokenUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
+      for (let tokenIndex = 0; tokenIndex < loogieBalance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
+          console.log("Getting token index", tokenIndex);
           const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
+          const tokenURI = await writeContracts.Loogies.tokenURI(tokenId);
           const jsonManifestString = atob(tokenURI.substring(29))
           console.log("jsonManifestString", jsonManifestString);
           /*
@@ -323,7 +323,7 @@ function App(props) {
       setYourTokens(tokenUpdate.reverse());
     };
     updateYourTokens();
-  }, [address, yourBalance]);
+  }, [address, loogieBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -637,9 +637,7 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            console.log("readContracts", readContracts);
-                            tx(writeContracts.YourToken.transferFrom(address, transferToAddresses[id], id));
+                            tx(writeContracts.Loogies.safetransferFrom(address, transferToAddresses[id], id));
                           }}
                         >
                           Transfer
@@ -669,16 +667,34 @@ function App(props) {
           <Route path="/debug">
 
             <div style={{ padding: 32 }}>
+              <Address value={readContracts && readContracts.Loogies && readContracts.Loogies.address} />
+            </div>
+
+            <Contract
+              name="Loogies"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+
+            <div style={{ padding: 32 }}>
               <Address value={readContracts && readContracts.Flemjamins && readContracts.Flemjamins.address} />
             </div>
 
             <Contract
               name="Flemjamins"
-              signer={userProviderAndSigner.signer}
+              price={price}
+              signer={userSigner}
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
+
+
           </Route>
         </Switch>
       </BrowserRouter>

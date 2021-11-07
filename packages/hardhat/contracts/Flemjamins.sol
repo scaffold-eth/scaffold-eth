@@ -2,11 +2,13 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "hardhat/console.sol";
 
 abstract contract LoogiesContract {
     mapping(uint256 => uint256) public chubbiness;
 
-    function transferFrom(
+    function safeTransferFrom(
         address from,
         address to,
         uint256 id
@@ -14,19 +16,25 @@ abstract contract LoogiesContract {
 }
 
 contract Flemjamins is ERC20 {
-    event Received(address, uint256);
-
     LoogiesContract loogies;
 
-    constructor(address _loogies) public ERC20("Flemjamins", "FLEM") {
+    constructor(address _loogies) ERC20("Flemjamins", "FLEM") {
         loogies = LoogiesContract(_loogies);
     }
 
-    function recieveBurnLoogie(uint256 tokenId) external payable {
+    function onERC721Received(
+        address operator,
+        address from,
+        uint256 loogieTokenId,
+        bytes memory
+    ) external payable returns (bytes4) {
         // get chubbiness
-        uint256 chubiness = loogies.chubbiness(tokenId);
+        uint256 chubiness = loogies.chubbiness(loogieTokenId);
+        console.log(from);
+        console.log(operator);
         // mint based on chubiness
-        _mint(msg.sender, (chubiness * 1 * 10**18) / 10);
-        emit Received(msg.sender, msg.value);
+        _mint(from, (chubiness * 1 * 10**18) / 10);
+
+        return this.onERC721Received.selector;
     }
 }
