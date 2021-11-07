@@ -1,10 +1,23 @@
+import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
 import { Alert, Button, Card, Col, Divider, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
+import Authereum from "authereum";
+import {
+  useBalance,
+  useContractLoader,
+  useContractReader,
+  useGasPrice,
+  useOnBlock,
+  useUserProviderAndSigner,
+} from "eth-hooks";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
+import Fortmatic from "fortmatic";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+//import Torus from "@toruslabs/torus-embed"
+import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
 import {
@@ -21,23 +34,7 @@ import {
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import {
-  useBalance,
-  useContractLoader,
-  useContractReader,
-  useGasPrice,
-  useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
-import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-import { ExampleUI, Hints, Subgraph } from "./views";
-
 import { useContractConfig } from "./hooks";
-import Portis from "@portis/web3";
-import Fortmatic from "fortmatic";
-import Authereum from "authereum";
 
 const { ethers } = require("ethers");
 /*
@@ -521,7 +518,9 @@ function App(props) {
             <Button
               type={"primary"}
               onClick={() => {
-                tx(writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)));
+                tx(
+                  writeContracts.YourToken.transfer(tokenSendToAddress, ethers.utils.parseEther("" + tokenSendAmount)),
+                );
               }}
             >
               Send Tokens
