@@ -14,7 +14,7 @@ contract RetroactiveFunding {
      */
     function increaseFloor(IERC721Enumerable _nft) external payable {
        uint totalSupply = _nft.totalSupply();
-       floor[address(_nft)] = msg.value / totalSupply + floor[address(_nft)];
+       floor[address(_nft)] = floor[address(_nft)] + (msg.value / totalSupply);
        (bool success, ) = msg.sender.call{value: msg.value}("");
        require(success);
     }
