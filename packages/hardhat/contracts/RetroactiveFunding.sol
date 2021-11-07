@@ -15,8 +15,8 @@ contract RetroactiveFunding {
     function increaseFloor(IERC721Enumerable _nft) external payable {
        uint totalSupply = _nft.totalSupply();
        floor[address(_nft)] = floor[address(_nft)] + (msg.value / totalSupply);
-       (bool success, ) = msg.sender.call{value: msg.value}("");
-       require(success);
+       // (bool success, ) = msg.sender.call{value: msg.value}("");
+       // require(success);
     }
 
     /**
@@ -35,7 +35,7 @@ contract RetroactiveFunding {
         require(floor[address(_nft)] > currentFloor / updatedTotalSupply, "RetroactiveFunding: sale cannot be made right now!");
         floor[address(_nft)] = floor[address(_nft)] - currentFloor / updatedTotalSupply; 
         (bool success, ) = msg.sender.call{value: currentFloor}("");
-        require(success);
+        require(success, "RetroactiveFunding: sending floor price failed");
         // burn the nft's approval required
         // _burn is an internal function which cannot be accessed so we transfer to address(1) instead since the transfer from has a check on transferring to address(0)
         _nft.safeTransferFrom(msg.sender, address(1), _id);

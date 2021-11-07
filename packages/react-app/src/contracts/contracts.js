@@ -1,1 +1,1 @@
-module.exports = ["MoonshotBot"];
+module.exports = ["MoonshotBot","RetroactiveFunding"];
