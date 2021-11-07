@@ -4,13 +4,14 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
+    "logs": "node logs.js",
     "server": "node index.js",
     "dev": "nodemon index.js"
   },
   "dependencies": {
     "@ethersproject/providers": "^5.4.5",
     "cors": "^2.8.5",
-    "ethers": "^5.4.7",
+    "ethers": "^5.5.1",
     "express": "^4.17.1",
     "web3": "^1.6.0"
   },
