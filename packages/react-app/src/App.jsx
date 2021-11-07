@@ -34,7 +34,10 @@ import {
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
 import { Transactor } from "./helpers";
-import { useContractConfig } from "./hooks";
+
+// contracts
+import externalContracts from "./contracts/external_contracts";
+import deployedContracts from "./contracts/hardhat_contracts.json";
 
 const { ethers } = require("ethers");
 /*
@@ -229,7 +232,7 @@ function App(props) {
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
 
-  const contractConfig = useContractConfig();
+  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
