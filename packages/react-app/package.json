@@ -54,6 +54,7 @@
     "react-router-dom": "^5.2.0",
     "react-scripts": "^3.4.3",
     "react-stack-grid": "^0.7.1",
+    "walletlink": "^2.2.6",
     "web3modal": "^1.9.1"
   },
   "devDependencies": {

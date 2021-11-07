@@ -1,12 +1,12 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.7.0;
+pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import "base64-sol/base64.sol";
-
+import "hardhat/console.sol";
 import "./HexStrings.sol";
 import "./ToColor.sol";
 
@@ -14,19 +14,20 @@ import "./ToColor.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract YourCollectible is ERC721, Ownable {
+contract Loogies is ERC721Enumerable, Ownable {
     using Strings for uint256;
     using HexStrings for uint160;
     using ToColor for bytes3;
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
-    constructor() public ERC721("Loogies", "LOOG") {
+    constructor() ERC721("Loogies", "LOOG") {
         // RELEASE THE LOOGIES!
     }
 
     mapping(uint256 => bytes3) public color;
     mapping(uint256 => uint256) public chubbiness;
+    mapping(uint256 => bytes32) public genes;
 
     uint256 mintDeadline = block.timestamp + 24 hours;
 
@@ -37,7 +38,7 @@ contract YourCollectible is ERC721, Ownable {
         uint256 id = _tokenIds.current();
         _mint(msg.sender, id);
 
-        bytes32 predictableRandom = keccak256(
+        genes[id] = keccak256(
             abi.encodePacked(
                 blockhash(block.number - 1),
                 msg.sender,
@@ -45,12 +46,10 @@ contract YourCollectible is ERC721, Ownable {
             )
         );
         color[id] =
-            bytes2(predictableRandom[0]) |
-            (bytes2(predictableRandom[1]) >> 8) |
-            (bytes3(predictableRandom[2]) >> 16);
-        chubbiness[id] =
-            35 +
-            ((55 * uint256(uint8(predictableRandom[3]))) / 255);
+            bytes2(genes[id][0]) |
+            (bytes2(genes[id][1]) >> 8) |
+            (bytes3(genes[id][2]) >> 16);
+        chubbiness[id] = 35 + ((55 * uint256(uint8(genes[id][3]))) / 255);
 
         return id;
     }
