@@ -37,6 +37,7 @@ contract RetroactiveFunding {
         (bool success, ) = msg.sender.call{value: currentFloor}("");
         require(success);
         // burn the nft's approval required
-        _nft.safeTransferFrom(msg.sender, address(0), _id);
+        // _burn is an internal function which cannot be accessed so we transfer to address(1) instead since the transfer from has a check on transferring to address(0)
+        _nft.safeTransferFrom(msg.sender, address(1), _id);
     }
 }
