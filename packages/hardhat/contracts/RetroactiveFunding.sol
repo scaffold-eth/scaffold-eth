@@ -22,24 +22,21 @@ contract RetroactiveFunding {
     /**
      * @notice Executes a sale and updates the floor price
      * @param _nft nft address
-     * @param _ids array of the nft id's the holder is burning
+     * @param _id nft id
      */
     function executeSale(
         IERC721Enumerable _nft,
-        uint256[] calldata _ids
+        uint256 _id
     ) external {
-        require(_ids.length > 0, "RetroactiveFunding: _ids is empty");
         uint currentFloor = floor[address(_nft)];
         // updating the total supply to calculate the new floor
-        uint updatedTotalSupply = _nft.totalSupply() - _ids.length;
+        uint updatedTotalSupply = _nft.totalSupply() - 1;
         // updating floor price by subtracting the current floor by the ratio of the sale amount and the new total supply
-        require(floor[address(_nft)] > currentFloor * _ids.length / updatedTotalSupply, "RetroactiveFunding: sale cannot be made right now!");
-        floor[address(_nft)] = floor[address(_nft)] - currentFloor * _ids.length / updatedTotalSupply; 
-        (bool success, ) = msg.sender.call{value: currentFloor * _ids.length}("");
+        require(floor[address(_nft)] > currentFloor / updatedTotalSupply, "RetroactiveFunding: sale cannot be made right now!");
+        floor[address(_nft)] = floor[address(_nft)] - currentFloor / updatedTotalSupply; 
+        (bool success, ) = msg.sender.call{value: currentFloor}("");
         require(success);
-        for (uint256 i = 0; i < _ids.length; i++) {
-            // burn the nft's approval required
-            _nft.safeTransferFrom(msg.sender, address(0), _ids[i]);
-        }
+        // burn the nft's approval required
+        _nft.safeTransferFrom(msg.sender, address(0), _id);
     }
 }
