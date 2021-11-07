@@ -43,7 +43,15 @@ There are two types of entities involved to start with the **Whales/Funders** fo
 
 So that's the overall architecture currently for this build and this process keeps continuing and currently, this supports only ERC721 and the contract is generic to support any ERC721 compliant NFT.
 
+## UI
 
+The first screen allows the user to mint NFTs, approve them for burning and burn them. Burning happens at the floor price and user gets some ETH for this.
+
+![](./assets/list.png)
+
+The second screen is intended for whales who can "raise the floor" by depositing some ETH into the contract.
+
+![](./assets/floor.png)
 
 ## Contact
 
