@@ -2,16 +2,22 @@
 
 # Local Development
 
-
-## Install Dependencies
-
-`yarn`
+```bash
+git clone https://github.com/scaffold-eth/scaffold-eth buidl-guidl-reporting
+cd buidl-guidl-reporting
+git checkout buidl-guidl-reporting
+yarn install
+```
 
 ## Get TX Activity Details
 
 - add your rpc [here](https://github.com/scaffold-eth/scaffold-eth/blob/buidl-guidl/reporting/index.js#L8)
-- run yarn dev
-- hit this endpoint http://localhost:8001/txActivity to test
+
+```bash
+yarn dev
+```
+
+- visit endpoint http://localhost:8001/txActivity to test
 
 ## Get Logs
 In `logs.js` set the url to your rpc endpoint and then run `yarn logs`. This will fetch the logs from all blocks that had a transaction that contained the multisig address, from the block where it was deployed up to the current block. The API only allows fetching a max of 10,000 blocks, so the requests will be made in batches.
