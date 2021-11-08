@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@eth-optimism/hardhat-ovm": "^0.2.2",
+    "@nomiclabs/hardhat-etherscan": "^2.1.7",
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
     "@nomiclabs/hardhat-waffle": "^2.0.0",
     "@openzeppelin/contracts": "^3.2.0",
