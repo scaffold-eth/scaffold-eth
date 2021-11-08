@@ -1,9 +1,17 @@
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
+import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import React from "react";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
+
+// Chakra theme config
+const theme = extendTheme({
+  config: {
+    initialColorMode: "light",
+  },
+});
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,
@@ -19,10 +27,13 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// Wrap the App component with Chakra UI
 ReactDOM.render(
   <ApolloProvider client={client}>
     <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <App subgraphUri={subgraphUri} />
+      <ChakraProvider theme={theme}>
+        <App subgraphUri={subgraphUri} />
+      </ChakraProvider>
     </ThemeSwitcherProvider>
   </ApolloProvider>,
   document.getElementById("root"),

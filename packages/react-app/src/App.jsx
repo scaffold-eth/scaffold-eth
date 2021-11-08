@@ -7,13 +7,14 @@ import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import ThemeSwitcher from "./components/ThemeSwitch";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { web3Modal } from "./context";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 import { Home, Subgraph } from "./views";
-import { web3Modal } from "./context";
 
 const { ethers } = require("ethers");
 
