@@ -94,7 +94,7 @@ await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 
 #### 🥅 Goals
 - [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?
-- [ ] Can you buy **10** tokens for **0.01** ETH?
+- [ ] Can you buy **10** tokens for **0.1** ETH?
 - [ ] Can you transfer tokens to a different account?
 - [ ] Can the `owner` withdraw the ETH from the `Vendor`?
 
