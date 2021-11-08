@@ -1,8 +1,7 @@
 pragma solidity >=0.8.0 <0.9.0;
 
-import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-
+import "./MoonshotBot.sol";
 contract RetroactiveFunding {
 
     /// @dev mapping which tracks the floor for each nft
@@ -12,11 +11,11 @@ contract RetroactiveFunding {
      * @notice Whale increasesfloor price for a particular nft by locking in a specific amount of eth and floor is calulated based on eth locked and nft's total supply
      * @param _nft nft address
      */
-    function increaseFloor(IERC721Enumerable _nft) external payable {
+    function increaseFloor(MoonshotBot _nft) external payable {
        uint totalSupply = _nft.totalSupply();
        floor[address(_nft)] = floor[address(_nft)] + (msg.value / totalSupply);
-       // (bool success, ) = msg.sender.call{value: msg.value}("");
-       // require(success);
+       (bool success, ) = msg.sender.call{value: msg.value}("");
+       require(success);
     }
 
     /**
@@ -25,7 +24,7 @@ contract RetroactiveFunding {
      * @param _id nft id
      */
     function executeSale(
-        IERC721Enumerable _nft,
+        MoonshotBot _nft,
         uint256 _id
     ) external {
         uint currentFloor = floor[address(_nft)];
@@ -38,6 +37,6 @@ contract RetroactiveFunding {
         require(success, "RetroactiveFunding: sending floor price failed");
         // burn the nft's approval required
         // _burn is an internal function which cannot be accessed so we transfer to address(1) instead since the transfer from has a check on transferring to address(0)
-        _nft.safeTransferFrom(msg.sender, address(1), _id);
+        _nft.burn(_id);
     }
 }

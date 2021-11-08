@@ -33,7 +33,7 @@ contract MoonshotBot is ERC721Enumerable {
 
     string[] private uris;
 
-    constructor() public ERC721("MoonShotBots", "MSB") {
+    constructor() ERC721("MoonShotBots", "MSB") {
         uris = [
             "Superior_Wiki.json",
             "Homely_Word_processor.json",
@@ -389,5 +389,9 @@ contract MoonshotBot is ERC721Enumerable {
 
     function totalSupply() public view virtual override returns (uint256) {
         return limit;
+    }
+
+    function burn(uint _id) external {
+        super._burn(_id);
     }
 }
