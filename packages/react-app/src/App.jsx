@@ -28,7 +28,6 @@ import { Transactor } from "./helpers";
 // import Hints from "./Hints";
 import { Hints, ExampleUI, Subgraph } from "./views";
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS } from "./constants";
-import assets from "./assets.js";
 import MainUI from "./views/MainUI";
 import WhalesUI from "./views/WhalesUI";
 
@@ -37,8 +36,6 @@ const { BufferList } = require("bl");
 const ipfsAPI = require("ipfs-http-client");
 
 const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" });
-
-console.log("📦 Assets: ", assets);
 
 /*
     Welcome to 🏗 scaffold-eth !
@@ -360,26 +357,26 @@ function App(props) {
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
   const [loadedAssets, setLoadedAssets] = useState();
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const assetUpdate = [];
-      for (const a in assets) {
-        try {
-          const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
-          let owner;
-          if (!forSale) {
-            const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
-            owner = await readContracts.YourCollectible.ownerOf(tokenId);
-          }
-          assetUpdate.push({ id: a, ...assets[a], forSale, owner });
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setLoadedAssets(assetUpdate);
-    };
-    if (readContracts && readContracts.YourCollectible) updateYourCollectibles();
-  }, [assets, readContracts, transferEvents]);
+  // useEffect(() => {
+  //   const updateYourCollectibles = async () => {
+  //     const assetUpdate = [];
+  //     for (const a in assets) {
+  //       try {
+  //         const forSale = await readContracts.YourCollectible.forSale(utils.id(a));
+  //         let owner;
+  //         if (!forSale) {
+  //           const tokenId = await readContracts.YourCollectible.uriToTokenId(utils.id(a));
+  //           owner = await readContracts.YourCollectible.ownerOf(tokenId);
+  //         }
+  //         assetUpdate.push({ id: a, ...assets[a], forSale, owner });
+  //       } catch (e) {
+  //         console.log(e);
+  //       }
+  //     }
+  //     setLoadedAssets(assetUpdate);
+  //   };
+  //   if (readContracts && readContracts.YourCollectible) updateYourCollectibles();
+  // }, [assets, readContracts, transferEvents]);
 
   const galleryList = [];
   for (const a in loadedAssets) {
