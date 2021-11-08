@@ -20,7 +20,7 @@ import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch, ZkpInterface } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { INFURA_ID, NETWORK, NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
@@ -71,11 +71,11 @@ const scaffoldEthProvider = navigator.onLine
   : null;
 const poktMainnetProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/61853c567335c80036054a2b",
     )
   : null;
 const mainnetInfura = navigator.onLine
-  ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+  ? new ethers.providers.StaticJsonRpcProvider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`)
   : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -94,7 +94,7 @@ const walletLink = new WalletLink({
 });
 
 // WalletLink provider
-const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
+const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, 1);
 
 // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
 /*
@@ -111,7 +111,7 @@ const web3Modal = new Web3Modal({
         bridge: "https://polygon.bridge.walletconnect.org",
         infuraId: INFURA_ID,
         rpc: {
-          1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+          1: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           42: `https://kovan.infura.io/v3/${INFURA_ID}`,
           100: "https://dai.poa.network", // xDai
         },
