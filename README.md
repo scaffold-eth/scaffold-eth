@@ -1,15 +1,11 @@
 # Buidlguidl MultiSig Tx Activity Generator
 
-# Local Development
-
 ```bash
 git clone https://github.com/scaffold-eth/scaffold-eth buidl-guidl-reporting
 cd buidl-guidl-reporting
 git checkout buidl-guidl-reporting
 yarn install
 ```
-
-## Get TX Activity Details
 
 - add your rpc [here](https://github.com/scaffold-eth/scaffold-eth/blob/buidl-guidl/reporting/index.js#L8)
 
