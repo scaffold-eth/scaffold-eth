@@ -3,11 +3,22 @@ import { Button } from "antd";
 import { ethers } from "ethers";
 import axios from "axios";
 
+import { formatEther } from "@ethersproject/units";
+import { usePoller } from "../hooks";
+
 const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeContracts }) => {
   const [collection, setCollection] = useState({
     loading: true,
     items: [],
   });
+  const [floor, setFloor] = useState("0.0");
+
+  usePoller(async () => {
+    if (readContracts && address) {
+      const floorPrice = await readContracts.RetroactiveFunding.floor(readContracts.MoonshotBot.address);
+      setFloor(formatEther(floorPrice));
+    }
+  }, 1500);
 
   const getTokenURI = async (ownerAddress, index) => {
     const id = await readContracts.MoonshotBot.tokenOfOwnerByIndex(ownerAddress, index);
@@ -92,6 +103,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                 </div>
               ))}
           </div>
+          <p style={{ textAlign: "center", marginTop: 15 }}>Current floor price = {floor.substr(0, 6)} ETH</p>
           <Button
             style={{ marginTop: 15 }}
             type="primary"
