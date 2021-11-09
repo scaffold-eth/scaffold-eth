@@ -5,6 +5,14 @@
 	margin: 4px auto 4px;
 }
 
+.fancy-loogie-action-button {
+	width: 250px;
+}
+
+.action-inline-button {
+	margin-left: 10px;
+}
+
 .header {
 	padding-top: 50px;
 }
@@ -33,4 +41,31 @@
 
 .footer .sub {
 	font-size: 14px;
+}
+
+.nft-image {
+	height: 200px;
+	overflow: hidden;
+}
+
+.nft-image img {
+	margin-top: -90px;
+}
+
+.fancy-loogie-preview {
+	position: sticky;
+	top: 60px;
+	margin-right: 20px;
+}
+
+#root .ant-tabs-tab {
+	margin: 16px 0 0 0;
+}
+
+#root .fancy-loogie-preview .ant-tabs-tab {
+	margin: 0 20px 0 0;
+}
+
+#root .tab-debug .ant-tabs-tab {
+	margin-right: 20px;
 }

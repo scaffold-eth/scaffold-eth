@@ -179,6 +179,12 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
     return (nftById[nft][id] != 0);
   }
 
+  function nftId(address nft, uint256 id) external view returns (uint256) {
+    require(nftContractsAvailables[nft], "the loogies can't wear this NFT");
+
+    return nftById[nft][id];
+  }
+
   // to receive ERC721 tokens
   function onERC721Received(
       address operator,
