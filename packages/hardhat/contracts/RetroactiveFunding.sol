@@ -22,8 +22,6 @@ contract RetroactiveFunding {
     function increaseFloor(MoonshotBot _nft) external payable {
         require(msg.value > 0, "RetroactiveFunding: zero payment");
         stake[address(_nft)] += msg.value;
-        // (bool success, ) = msg.sender.call{value: msg.value}("");
-        // require(success);
     }
 
     /**
