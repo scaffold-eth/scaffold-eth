@@ -69,3 +69,11 @@
 #root .tab-debug .ant-tabs-tab {
 	margin-right: 20px;
 }
+
+.tab-item .ant-badge-count {
+	background-color: #1890ff;
+}
+
+.tab-item .ant-badge {
+	margin-top: 6px;
+}

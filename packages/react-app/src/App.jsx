@@ -1,7 +1,7 @@
 import WalletConnectProvider from "@walletconnect/web3-provider";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown, Badge } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
@@ -672,7 +672,7 @@ function App(props) {
         <Col flex="auto">
           <Tabs defaultActiveKey="/" tabPosition="left">
             <TabPane tab={
-                <div>
+                <div class="tab-item">
                   <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
                     <g transform="translate(-23,-22) scale(0.22 0.22)">
                       <g id="eye1">
@@ -708,7 +708,9 @@ function App(props) {
                       </g>
                     </g>
                   </svg>
-                  <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>FancyLoogies</p>
+                  <Badge count={yourFancyLoogies && yourFancyLoogies.length}>
+                    <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>FancyLoogies</p>
+                  </Badge>
                 </div>
               }
               key="/"
@@ -819,7 +821,7 @@ function App(props) {
             </TabPane>
             <TabPane
               tab={
-                <div>
+                <div class="tab-item">
                   <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
                     <g transform="translate(-20,-20) scale(0.2 0.2)">
                       <g id="eye1">
@@ -835,7 +837,9 @@ function App(props) {
                       </g>
                     </g>
                   </svg>
-                  <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Loogies</p>
+                  <Badge count={yourLoogies && yourLoogies.length}>
+                    <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Loogies</p>
+                  </Badge>
                 </div>
               }
               key="loogies"
@@ -920,13 +924,16 @@ function App(props) {
             </TabPane>
             {nfts.map(function (nft) {
               return (
-                <TabPane tab={
-                  <div>
-                    <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
-                      { nftsSvg[nft] }
-                    </svg>
-                    <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
-                  </div>
+                <TabPane
+                  tab={
+                    <div class="tab-item">
+                      <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                        {nftsSvg[nft]}
+                      </svg>
+                      <Badge count={yourNfts[nft] && yourNfts[nft].length}>
+                        <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
+                      </Badge>
+                    </div>
                   }
                   key={nft}
                 >
