@@ -97,7 +97,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                     )}
                     {item.approved && (
                       <Button style={{ width: "100%", minWidth: 100 }} onClick={() => burn(item.id)}>
-                        Burn
+                        Redeem
                       </Button>
                     )}
                   </div>
