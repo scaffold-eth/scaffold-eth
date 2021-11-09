@@ -342,6 +342,7 @@ contract MoonshotBot is ERC721Enumerable {
     }
 
     uint256 public constant limit = 303;
+    uint256 public supply = 303;
     uint256 public price = 0.0033 ether;
 
     function mintItem(address to) private returns (uint256) {
@@ -388,10 +389,15 @@ contract MoonshotBot is ERC721Enumerable {
     }
 
     function totalSupply() public view virtual override returns (uint256) {
-        return limit;
+        return supply;
     }
 
-    function burn(uint _id) external {
+    function burn(uint256 _id) external {
+        require(
+            getApproved(_id) == msg.sender,
+            "MoonshotBot: no rights to burn NFT"
+        );
+        supply--;
         super._burn(_id);
     }
 }

@@ -3,11 +3,22 @@ import { Button } from "antd";
 import { ethers } from "ethers";
 import axios from "axios";
 
+import { formatEther } from "@ethersproject/units";
+import { usePoller } from "../hooks";
+
 const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeContracts }) => {
   const [collection, setCollection] = useState({
     loading: true,
     items: [],
   });
+  const [floor, setFloor] = useState("0.0");
+
+  usePoller(async () => {
+    if (readContracts && address) {
+      const floorPrice = await readContracts.RetroactiveFunding.floor(readContracts.MoonshotBot.address);
+      setFloor(formatEther(floorPrice));
+    }
+  }, 1500);
 
   const getTokenURI = async (ownerAddress, index) => {
     const id = await readContracts.MoonshotBot.tokenOfOwnerByIndex(ownerAddress, index);
@@ -36,14 +47,22 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   };
 
   const burn = async id => {
-    const burnTx = await tx(writeContracts.RetroactiveFunding.executeSale(readContracts.MoonshotBot.address, id));
-    await burnTx.wait();
+    try {
+      const burnTx = await tx(writeContracts.RetroactiveFunding.executeSale(readContracts.MoonshotBot.address, id));
+      await burnTx.wait();
+    } catch (e) {
+      console.log("Burn tx error:", e);
+    }
     loadCollection();
   };
 
   const approveForBurn = async id => {
-    const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.RetroactiveFunding.address, id));
-    await approveTx.wait();
+    try {
+      const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.RetroactiveFunding.address, id));
+      await approveTx.wait();
+    } catch (e) {
+      console.log("Approve tx error:", e);
+    }
     loadCollection();
   };
 
@@ -84,6 +103,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                 </div>
               ))}
           </div>
+          <p style={{ textAlign: "center", marginTop: 15 }}>Current floor price = {floor.substr(0, 6)} ETH</p>
           <Button
             style={{ marginTop: 15 }}
             type="primary"
