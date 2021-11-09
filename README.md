@@ -39,7 +39,7 @@ There are two types of entities involved to start with the **Whales/Funders** fo
 
 - Any Whale can send a specific ETH amount to the contract and specify the NFT Address they want to contribute to and the floor price is calculated automatically by ```ETH Sent / Total Supply of the NFT``` and as whales keep contributing to that particular NFT the floor keeps increasing.
 
-- As the floor price increases due to the contribution by the whales the NFT Holders have the option to burn their NFT off in exchange for the new floor price, and if they decide to do this the floor is then calculated again and there is a slight decrease seen in the floor price.
+- As the floor price increases due to the contribution by the whales the NFT Holders have the option to redeem their NFT off in exchange for the new floor price, and if they decide to do this the floor is then calculated again and there is a slight decrease seen in the floor price.
 
 So that's the overall architecture currently for this build and this process keeps continuing and currently, this supports only ERC721 and the contract is generic to support any ERC721 compliant NFT.
 

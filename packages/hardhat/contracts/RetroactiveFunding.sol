@@ -38,6 +38,6 @@ contract RetroactiveFunding {
         stake[address(_nft)] -= currentFloor;
         (bool success, ) = msg.sender.call{value: currentFloor}("");
         require(success, "RetroactiveFunding: sending floor price failed");
-        _nft.burn(_id);
+        _nft.redeem(_id);
     }
 }

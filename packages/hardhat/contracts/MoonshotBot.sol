@@ -392,10 +392,10 @@ contract MoonshotBot is ERC721Enumerable {
         return supply;
     }
 
-    function burn(uint256 _id) external {
+    function redeem(uint256 _id) external {
         require(
             getApproved(_id) == msg.sender,
-            "MoonshotBot: no rights to burn NFT"
+            "MoonshotBot: no rights to redeem NFT"
         );
         supply--;
         super._burn(_id);
