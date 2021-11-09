@@ -342,7 +342,7 @@ contract MoonshotBot is ERC721Enumerable {
     }
 
     uint256 public constant limit = 303;
-    uint256 public supply = 303;
+    uint256 public supply = 0;
     uint256 public price = 0.0033 ether;
 
     function mintItem(address to) private returns (uint256) {
@@ -385,6 +385,7 @@ contract MoonshotBot is ERC721Enumerable {
         price = (price * 1047) / 1000;
         (bool success, ) = gitcoin.call{value: msg.value}("");
         require(success, "could not send");
+        supply++;
         mintItem(to);
     }
 
