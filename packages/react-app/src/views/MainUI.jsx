@@ -30,6 +30,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   const loadCollection = async () => {
     if (!address || !readContracts || !writeContracts) return;
+    console.log("loading collection..");
     setCollection({
       loading: true,
       items: [],

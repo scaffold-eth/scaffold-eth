@@ -226,7 +226,7 @@ function App(props) {
       }
       setYourCollectibles(collectibleUpdate);
     };
-    updateYourCollectibles();
+    // updateYourCollectibles();
   }, [address, yourBalance]);
 
   //
@@ -261,7 +261,7 @@ function App(props) {
       }
       setLatestMintedBots(latestMintedBotsUpdate);
     };
-    getLatestMintedBots();
+    // getLatestMintedBots();
   }, [amountMintedAlready]);
 
   /*
