@@ -468,6 +468,7 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             <MainUI
+              loadWeb3Modal={loadWeb3Modal}
               address={address}
               tx={tx}
               writeContracts={writeContracts}
