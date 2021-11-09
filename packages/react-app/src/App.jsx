@@ -332,8 +332,6 @@ function App(props) {
 
   const yourNftBalance = {};
   const [yourNfts, setYourNfts] = useState({});
-  const [yourNftsPreview, setYourNftsPreview] = useState({});
-  const [yourNftsPreviewSvg, setYourNftsPreviewSvg] = useState({});
 
   let yourNftTotalBalance = 0;
 
@@ -449,34 +447,6 @@ function App(props) {
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance, yourFancyLoogieBalance, yourNftTotalBalance]);
-
-  useEffect(() => {
-    const updatePreviews = async () => {
-      let nftUpdate = {};
-
-      for (const nft of nfts) {
-        nftUpdate[nft] = [];
-        for (let tokenIndex = 0; tokenIndex < yourNftBalance[nft]; tokenIndex++) {
-          try {
-            const tokenId = await readContracts[nft].tokenOfOwnerByIndex(address, tokenIndex);
-            if (yourNftsPreview[nft][tokenId]) {
-              const loogieSvg = await readContracts.FancyLoogie.renderTokenById(yourNftsPreview[nft][tokenId]);
-              const nftSvg = await readContracts[nft].renderTokenById(tokenId);
-              const svg =
-                '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">' + loogieSvg + nftSvg + "</svg>";
-              nftUpdate[nft][tokenId] = svg;
-              console.log("SVG", svg);
-            }
-          } catch (e) {
-            console.log(e);
-          }
-        }
-      }
-
-      setYourNftsPreviewSvg(nftUpdate);
-    };
-    updatePreviews();
-  }, [address, yourNftsPreview]);
 
   useEffect(() => {
     const updatePreview = async () => {
@@ -976,15 +946,6 @@ function App(props) {
                       dataSource={yourNfts[nft]}
                       renderItem={item => {
                         const id = item.id.toNumber();
-
-                        console.log("IMAGE", item.image);
-
-                        let previewSvg = "";
-                        if (yourNftsPreviewSvg[nft][id]) {
-                          previewSvg = yourNftsPreviewSvg[nft][id];
-                          console.log("PREVIEW-SVG", previewSvg);
-                        }
-
                         return (
                           <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                             <Card
@@ -1044,7 +1005,6 @@ function App(props) {
                                 >
                                   Transfer
                                 </Button>
-                                {previewSvg && <div dangerouslySetInnerHTML={{ __html: previewSvg }}></div>}
                               </div>
                             </Card>
                           </List.Item>
