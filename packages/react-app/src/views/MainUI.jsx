@@ -36,14 +36,22 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   };
 
   const burn = async id => {
-    const burnTx = await tx(writeContracts.RetroactiveFunding.executeSale(readContracts.MoonshotBot.address, id));
-    await burnTx.wait();
+    try {
+      const burnTx = await tx(writeContracts.RetroactiveFunding.executeSale(readContracts.MoonshotBot.address, id));
+      await burnTx.wait();
+    } catch (e) {
+      console.log("Burn tx error:", e);
+    }
     loadCollection();
   };
 
   const approveForBurn = async id => {
-    const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.RetroactiveFunding.address, id));
-    await approveTx.wait();
+    try {
+      const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.RetroactiveFunding.address, id));
+      await approveTx.wait();
+    } catch (e) {
+      console.log("Approve tx error:", e);
+    }
     loadCollection();
   };
 
