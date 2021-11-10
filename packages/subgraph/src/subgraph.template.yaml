@@ -11,7 +11,7 @@ dataSources:
       startBlock: 1
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
         - Purpose

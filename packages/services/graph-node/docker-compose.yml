@@ -1,7 +1,7 @@
 version: "3"
 services:
   graph-node:
-    image: graphprotocol/graph-node:2c23cce
+    image: graphprotocol/graph-node:latest
     ports:
       - "8000:8000"
       - "8001:8001"

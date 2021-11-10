@@ -15,6 +15,7 @@
     "react-app:start": "yarn workspace @scaffold-eth/react-app start",
     "react-app:test": "yarn workspace @scaffold-eth/react-app test",
     "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
+    "prettier": "yarn workspace @scaffold-eth/react-app prettier",
     "chain": "yarn workspace @scaffold-eth/hardhat chain",
     "fork": "yarn workspace @scaffold-eth/hardhat fork",
     "node": "yarn workspace @scaffold-eth/hardhat chain",
@@ -22,7 +23,10 @@
     "start": "yarn workspace @scaffold-eth/react-app start",
     "compile": "yarn workspace @scaffold-eth/hardhat compile",
     "deploy": "yarn workspace @scaffold-eth/hardhat deploy",
+<<<<<<< HEAD
     "verify": "yarn workspace @scaffold-eth/hardhat etherscan-verify",
+=======
+>>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
     "watch": "yarn workspace @scaffold-eth/hardhat watch",
     "accounts": "yarn workspace @scaffold-eth/hardhat accounts",
     "balance": "yarn workspace @scaffold-eth/hardhat balance",
@@ -50,7 +54,8 @@
     "graph-ship-local": "yarn graph-prepare && yarn graph-codegen && yarn graph-deploy-local",
     "deploy-and-graph": "yarn deploy && yarn graph-ship-local",
     "theme": "yarn workspace @scaffold-eth/react-app theme",
-    "watch-theme": "yarn workspace @scaffold-eth/react-app watch"
+    "watch-theme": "yarn workspace @scaffold-eth/react-app watch",
+    "postinstall": "husky install"
   },
   "workspaces": {
     "packages": [
@@ -60,10 +65,18 @@
       "**/@graphprotocol/graph-ts",
       "**/@graphprotocol/graph-ts/**",
       "**/hardhat",
-      "**/hardhat/**"
+      "**/hardhat/**",
+      "**/hardhat-ts",
+      "**/hardhat-ts/**"
     ]
   },
+<<<<<<< HEAD
   "dependencies": {
     "@openzeppelin/contracts": "^4.3.2"
+=======
+  "dependencies": {},
+  "devDependencies": {
+    "husky": "^7.0.2"
+>>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
   }
 }

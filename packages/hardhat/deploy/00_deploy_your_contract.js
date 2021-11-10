@@ -1,6 +1,6 @@
 // deploy/00_deploy_your_contract.js
 
-//const { ethers } = require("hardhat");
+// const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
@@ -22,7 +22,11 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("ConditionalEthBot", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
+<<<<<<< HEAD
     args: []['3dEthBot', '3dBOT'],
+=======
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+>>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
     log: true,
   });
 
@@ -30,6 +34,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     // Getting a previously deployed contract
     const YourContract = await ethers.getContract("YourContract", deployer);
     await YourContract.setPurpose("Hello");
+  
+    To take ownership of yourContract using the ownable library uncomment next line and add the 
+    address you want to be the owner. 
+    // yourContract.transferOwnership(YOUR_ADDRESS_HERE);
 
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
   */

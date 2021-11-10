@@ -8,7 +8,6 @@ export default function useGasPrice(targetNetwork, speed) {
     if (targetNetwork.hasOwnProperty("gasPrice")) {
       setGasPrice(targetNetwork.gasPrice);
     } else {
-      if(navigator.onLine){
         axios
           .get("https://ethgasstation.info/json/ethgasAPI.json")
           .then(response => {
@@ -18,7 +17,6 @@ export default function useGasPrice(targetNetwork, speed) {
             }
           })
           .catch(error => console.log(error));
-      }
     }
   };
 
