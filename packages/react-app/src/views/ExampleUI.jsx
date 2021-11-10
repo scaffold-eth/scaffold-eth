@@ -70,7 +70,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       <div style={{padding:16, width:WIDTH, margin:"auto"}}>
         <div style={{padding:32}}>
           <div style={{padding:32}}>
-            <Balance address={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} provider={localProvider} price={price}/>
+            <Balance address={readContracts.SimpleStream && readContracts.SimpleStream && readContracts.SimpleStream.address} provider={localProvider} price={price}/>
             <span style={{opacity:0.5}}> @ <Balance value={streamCap} price={price}/> / {streamfrequency&&pretty(streamfrequency.toNumber()*1000000000)}</span>
           </div>
           <div>
@@ -80,7 +80,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
       </div>
 
       <div style={{marginTop:-32}}>
-        <Address value={readContracts.SimpleStream && readContracts.SimpleStream.address? readContracts.SimpleStream.address : 0} />
+        <Address value={readContracts.SimpleStream && readContracts.SimpleStream && readContracts.SimpleStream.address} />
       </div>
 
 
@@ -99,7 +99,7 @@ export default function ExampleUI({streamToAddress, streamfrequency, totalStream
 
       <div style={{border:"1px solid #cccccc", padding:16, width:WIDTH, margin:"auto",marginTop:64}}>
 
-        {/*<h4>stream balance: {streamBalance && formatEther(streamBalance)}</h4>*/}
+        {/* <h4>stream balance: {streamBalance && formatEther(streamBalance)}</h4> */}
 
         <Progress strokeLinecap="square" type="dashboard" percent={percent} format={()=>{
           return <Balance price={price} value={streamBalance} size={18}/>
