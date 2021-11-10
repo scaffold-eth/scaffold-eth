@@ -1,6 +1,6 @@
-# 🏗 Scaffold-ETH
+# 🏗👷🏾 Scaffold-ETH Challenges
 
-> everything you need to build on Ethereum! 🚀
+> challenges that help you become a builder on Ethereum! 🚀
 
 🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
 
@@ -11,10 +11,16 @@
 
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
+> clone/fork 🏗 scaffold-eth-challenges:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/scaffold-eth/scaffold-eth-challenges.git
+```
+
+> Switch to a challenge branch:
+
+```bash
+git checkout -b challenge-0-simple-nft
 ```
 
 > install and start your 👷‍ Hardhat chain:
