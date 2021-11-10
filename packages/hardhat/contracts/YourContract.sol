@@ -2,22 +2,43 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
+// import "@openzeppelin/contracts/access/Ownable.sol";
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract YourContract {
 
-  // event SetPurpose(address sender, string purpose);
+    uint256 private nonce = 0;
+    uint256 public prize = 0;
+    uint256 public lastRoll;
+    bool public prizeWon = false;
 
-  string public purpose = "Building Unstoppable Apps!!!";
+    event Winner(address winner, uint256 amount);
 
-  constructor() {
-    // what should we do on deploy?
-  }
+    constructor() {}
 
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      // emit SetPurpose(msg.sender, purpose);
-  }
+    function rollTheDice() public payable {
+        require (!prizeWon, "The prize has already been won");
+
+        prize += msg.value;
+        bytes32 prevHash = blockhash(block.number - 1);
+        bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
+        uint256 roll = numberRolled(hash);
+        lastRoll = roll;
+
+        if (roll != 0) {
+            nonce++;
+            return;
+        }
+
+        uint256 amount = prize;
+        prize = 0;
+        prizeWon = true;
+        (bool sent, ) = msg.sender.call{value: amount}("");
+        require(sent, "Failed to send Ether");
+        emit Winner(msg.sender, amount);
+    }
+
+    function numberRolled(bytes32 data) internal pure returns (uint256) {
+        return uint256(data) % 16;
+    }
 }
