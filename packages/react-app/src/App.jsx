@@ -258,7 +258,7 @@ function App(props) {
 
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const totalStreamBalance = useBalance(localProvider, readContracts.SimpleStream && readContracts.SimpleStream.address ? readContracts.SimpleStream.address : 0);
+  const totalStreamBalance = useBalance(localProvider, readContracts.SimpleStream && readContracts.SimpleStream && readContracts.SimpleStream.address);
   console.log("totalStreamBalance",totalStreamBalance,totalStreamBalance&& ethers.utils.formatEther(totalStreamBalance))
 
   //📟 Listen for broadcast events
@@ -484,7 +484,6 @@ function App(props) {
               streamCap={streamCap}
               withdrawEvents={withdrawEvents}
               depositEvents={depositEvents}
-
               address={address}
               userSigner={userSigner}
               mainnetProvider={mainnetProvider}
@@ -504,6 +503,7 @@ function App(props) {
               provider={localProvider}
               address={address}
               blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
             />
           </Route>
 
