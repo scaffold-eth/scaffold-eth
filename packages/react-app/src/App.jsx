@@ -233,20 +233,6 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
-
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
-  console.log("🤗 loogie balance:", loogieBalance);
-
   const nfts = ["Bow", "Mouth", "Eyelash", "Mustache", "ContactLenses"];
 
   const nftsSvg = {
@@ -304,56 +290,84 @@ function App(props) {
     ),
   };
 
-  const nftBalance = {};
-
-  nfts.forEach(function (nft) {
-    nftBalance[nft] = useContractReader(readContracts, nft, "balanceOf", [address]);
-    console.log("NFT: ", nft, " Balance: ", nftBalance[nft]);
-  });
-
-  const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogie", "balanceOf", [address]);
-  console.log("🤗 fancy loogie balance:", fancyLoogieBalance);
-
-  const fancyLoogieContracts = useContractReader(readContracts, "FancyLoogie", "getContractsAddress");
-  console.log("🤗 fancy loogie contracts:", fancyLoogieContracts);
-
-  // 📟 Listen for broadcast events
-  const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
-  console.log("📟 Loogie Transfer events:", loogieTransferEvents);
-
-  const fancyLoogieTransferEvents = useEventListener(readContracts, "FancyLoogie", "Transfer", localProvider, 1);
-  console.log("📟 Fancy Loogie Transfer events:", fancyLoogieTransferEvents);
- 
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
-  const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
+  const [updateBalances, setUpdateBalances] = useState(0);
+  const [nftBalance, setNftBalance] = useState({});
+  const [yourNftBalance, setYourNftBalance] = useState({});
+  const [loogieBalance, setLoogieBalance] = useState(0);
+  const [yourLoogieBalance, setYourLoogieBalance] = useState(0);
+  const [fancyLoogieBalance, setFancyLoogieBalance] = useState(0);
+  const [yourFancyLoogieBalance, setYourFancyLoogieBalance] = useState(0);
+  const [yourNftTotalBalance, setYourNftTotalBalance] = useState(0);
+  const [fancyLoogieContracts, setFancyLoogieContracts] = useState([]);
   const [yourLoogies, setYourLoogies] = useState();
-
-  const yourNftBalance = {};
   const [yourNfts, setYourNfts] = useState({});
-
-  let yourNftTotalBalance = 0;
-
-  nfts.forEach(function (nft) {
-    yourNftBalance[nft] = nftBalance[nft] && nftBalance[nft].toNumber && nftBalance[nft].toNumber();
-    if (yourNftBalance[nft] > 0) {
-      yourNftTotalBalance += yourNftBalance[nft];
-    }
-  });
-
-  console.log("Total NFTs balance: ", yourNftTotalBalance);
-
-  const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
-
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
-
   const [fancyLoogiesNfts, setFancyLoogiesNfts] = useState();
-
   const [selectedFancyLoogie, setSelectedFancyLoogie] = useState();
   const [selectedNfts, setSelectedNfts] = useState({});
   const [selectedFancyLoogiePreview, setSelectedFancyLoogiePreview] = useState({});
+
+  useEffect(() => {
+    const updateFancyLoogieContracts = async () => {
+      if (readContracts.FancyLoogie) {
+        if (DEBUG) console.log("Updating FancyLoogie contracts address...");
+        const fancyLoogieContractsAddress = await readContracts.FancyLoogie.getContractsAddress();
+        if (DEBUG) console.log("🤗 fancy loogie contracts:", fancyLoogieContractsAddress);
+        setFancyLoogieContracts(fancyLoogieContractsAddress);
+      }
+    };
+    updateFancyLoogieContracts();
+  }, [address, readContracts.FancyLoogie]);
+
+  useEffect(() => {
+    const updateBalances = async () => {
+      if (DEBUG) console.log("Updating balances...");
+      let contractsDefined = true;
+      if (!readContracts.Loogies || !readContracts.FancyLoogie) {
+        contractsDefined = false;
+      }
+      for (let nftIndex = 0; nftIndex < nfts.length; nftIndex++) {
+        const nft = nfts[nftIndex];
+        if (!readContracts[nft]) {
+          contractsDefined = false;
+        }
+      };
+      if (contractsDefined) {
+        const loogieNewBalance = await readContracts.Loogies.balanceOf(address);
+        const yourLoogieNewBalance = loogieNewBalance && loogieNewBalance.toNumber && loogieNewBalance.toNumber();
+        if (DEBUG) console.log("NFT: Loogie - Balance: ", loogieNewBalance);
+        const fancyLoogieNewBalance = await readContracts.FancyLoogie.balanceOf(address);
+        if (DEBUG) console.log("NFT: FancyLoogie - Balance: ", fancyLoogieNewBalance);
+        const yourFancyLoogieNewBalance = fancyLoogieNewBalance && fancyLoogieNewBalance.toNumber && fancyLoogieNewBalance.toNumber();
+        const nftNewBalance = {};
+        for (let nftIndex = 0; nftIndex < nfts.length; nftIndex++) {
+          const nft = nfts[nftIndex];
+          nftNewBalance[nft] = await readContracts[nft].balanceOf(address);
+          if (DEBUG) console.log("NFT: ", nft, " - Balance: ", nftNewBalance[nft]);
+        };
+        let yourNftTotalNewBalance = 0;
+        const yourNftNewBalance = {};
+        nfts.forEach(function (nft) {
+          yourNftNewBalance[nft] = nftNewBalance[nft] && nftNewBalance[nft].toNumber && nftNewBalance[nft].toNumber();
+          if (yourNftNewBalance[nft] > 0) {
+            yourNftTotalNewBalance += yourNftNewBalance[nft];
+          }
+        });
+        if (DEBUG) console.log("TOTAL NFT Balance: ", yourNftTotalNewBalance);
+        setNftBalance(nftNewBalance);
+        setYourNftBalance(yourNftNewBalance);
+        setLoogieBalance(loogieNewBalance);
+        setYourLoogieBalance(yourLoogieNewBalance);
+        setFancyLoogieBalance(fancyLoogieNewBalance);
+        setYourFancyLoogieBalance(yourFancyLoogieNewBalance);
+        setYourNftTotalBalance(yourNftTotalNewBalance);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updateBalances();
+  }, [address, readContracts, readContracts.length, updateBalances]);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -361,17 +375,14 @@ function App(props) {
       const loogieApproved = {};
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
           const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
+          if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
           const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
+          if (DEBUG) console.log("tokenURI: ", tokenURI);
+          const jsonManifestString = atob(tokenURI.substring(29));
 
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
             loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
             let approved = await readContracts.Loogies.getApproved(tokenId);
             loogieApproved[tokenId] = approved;
@@ -391,16 +402,14 @@ function App(props) {
         nftUpdate[nft] = [];
         for (let tokenIndex = 0; tokenIndex < yourNftBalance[nft]; tokenIndex++) {
           try {
-            console.log("GEtting token index", tokenIndex);
             const tokenId = await readContracts[nft].tokenOfOwnerByIndex(address, tokenIndex);
-            console.log("tokenId", tokenId);
+            if (DEBUG) console.log("Getting ", nft, " tokenId: ", tokenId);
             const tokenURI = await readContracts[nft].tokenURI(tokenId);
-            console.log("tokenURI", tokenURI);
-            const jsonManifestString = atob(tokenURI.substring(29))
-            console.log("jsonManifestString", jsonManifestString);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+
             try {
               const jsonManifest = JSON.parse(jsonManifestString);
-              console.log("jsonManifest", jsonManifest);
               nftUpdate[nft].unshift({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
             } catch (e) {
               console.log(e);
@@ -417,17 +426,14 @@ function App(props) {
       const fancyLoogiesNftsUpdate = {};
       for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
         try {
-          console.log("GEtting token index", tokenIndex);
           const tokenId = await readContracts.FancyLoogie.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
+          if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId);
           const tokenURI = await readContracts.FancyLoogie.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
+          if (DEBUG) console.log("tokenURI: ", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29));
-          console.log("jsonManifestString", jsonManifestString);
 
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
             fancyLoogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
             fancyLoogiesNftsUpdate[tokenId] = {};
             for (let contractIndex = 0; contractIndex < fancyLoogieContracts.length; contractIndex++) {
@@ -469,11 +475,6 @@ function App(props) {
     updatePreview();
   }, [address, selectedFancyLoogie, selectedNfts]);
 
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
-
   //
   // 🧫 DEBUG 👨🏻‍🔬
   //
@@ -498,7 +499,6 @@ function App(props) {
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -722,8 +722,6 @@ function App(props) {
                   renderItem={item => {
                     const id = item.id.toNumber();
 
-                    console.log("IMAGE",item.image);
-
                     return (
                       <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                         <Card
@@ -740,20 +738,21 @@ function App(props) {
                                   Select to wear
                                 </Button>
                               ) : (
-                                <Button
-                                  className="action-inline-button"
-                                  disabled
-                                >
+                                <Button className="action-inline-button" disabled>
                                   Selected
                                 </Button>
                               )}
                               <Dropdown overlay={
                                 <Menu>
-                                  <Menu.Item>
+                                  <Menu.Item key="downgrade">
                                     <Button
                                       className="fancy-loogie-action-button action-button"
                                       onClick={() => {
-                                        tx(writeContracts.FancyLoogie.downgradeLoogie(id));
+                                        tx(writeContracts.FancyLoogie.downgradeLoogie(id), function (transaction) {
+                                          if (transaction.status == "confirmed") {
+                                            setUpdateBalances(updateBalances + 1);
+                                          }
+                                        });
                                       }}
                                     >
                                       Downgrade
@@ -763,11 +762,15 @@ function App(props) {
                                     return fancyLoogiesNfts &&
                                       fancyLoogiesNfts[id] &&
                                       fancyLoogiesNfts[id][readContracts[nft].address] > 0 && (
-                                        <Menu.Item>
+                                        <Menu.Item key={"remove-"+nft}>
                                           <Button
                                             className="fancy-loogie-action-button action-button"
                                             onClick={() => {
-                                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, id));
+                                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, id), function (transaction) {
+                                                if (transaction.status == "confirmed") {
+                                                  setUpdateBalances(updateBalances + 1);
+                                                }
+                                              });
                                             }}
                                           >
                                             Remove {nft}
@@ -805,8 +808,11 @@ function App(props) {
                             />
                             <Button
                               onClick={() => {
-                                console.log("writeContracts", writeContracts);
-                                tx(writeContracts.FancyLoogie.transferFrom(address, transferToAddresses[id], id));
+                                tx(writeContracts.FancyLoogie.transferFrom(address, transferToAddresses[id], id), function (transaction) {
+                                  if (transaction.status == "confirmed") {
+                                    setUpdateBalances(updateBalances + 1);
+                                  }
+                                });
                               }}
                             >
                               Transfer
@@ -845,9 +851,18 @@ function App(props) {
               key="loogies"
             >
               <div style={{ maxWidth: 515, margin: "0 auto", paddingBottom: 32 }}>
-                <Button type={"primary"} onClick={() => {
-                  tx(writeContracts.Loogies.mintItem())
-                }}>MINT</Button>
+                <Button
+                  type={"primary"}
+                  onClick={() => {
+                    tx(writeContracts.Loogies.mintItem(), function (transaction) {
+                      if (transaction.status == "confirmed") {
+                        setUpdateBalances(updateBalances + 1);
+                      }
+                    });
+                  }}
+                >
+                  MINT
+                </Button>
               </div>
               {/* */}
               <div style={{ width: 515, margin: "0 auto", paddingBottom: 256 }}>
@@ -863,26 +878,34 @@ function App(props) {
                           title={
                             <div>
                               <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                              { yourLoogiesApproved[id] != readContracts.FancyLoogie.address
-                              ? <Button
-                                  onClick={ async () => {
-                                    tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(_res => {
-                                      //const newAddress = await readContracts.Loogies.getApproved(id)
-                                      setYourLoogiesApproved(yourLoogiesApproved => ({
-                                        ...yourLoogiesApproved,
-                                        [id]: readContracts.FancyLoogie.address
-                                      }));
-                                    });
-                                  }}>
+                              {yourLoogiesApproved[id] != readContracts.FancyLoogie.address ? (
+                                <Button
+                                  onClick={async () => {
+                                    tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(
+                                      res => {
+                                        setYourLoogiesApproved(yourLoogiesApproved => ({
+                                          ...yourLoogiesApproved,
+                                          [id]: readContracts.FancyLoogie.address,
+                                        }));
+                                      },
+                                    );
+                                  }}
+                                >
                                   Approve upgrade to FancyLoogie
                                 </Button>
-                              :  <Button
-                                  onClick={ async () => {
-                                    tx(writeContracts.FancyLoogie.mintItem(id));
-                                  }}>
+                              ) : (
+                                <Button
+                                  onClick={async () => {
+                                    tx(writeContracts.FancyLoogie.mintItem(id), function (transaction) {
+                                      if (transaction.status == "confirmed") {
+                                        setUpdateBalances(updateBalances + 1);
+                                      }
+                                    });
+                                  }}
+                                >
                                   Upgrade to FancyLoogie
                                 </Button>
-                              }
+                              )}
                             </div>
                           }
                         >
@@ -908,8 +931,11 @@ function App(props) {
                             />
                             <Button
                               onClick={() => {
-                                console.log("writeContracts", writeContracts);
-                                tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
+                                tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id), function (transaction) {
+                                  if (transaction.status == "confirmed") {
+                                    setUpdateBalances(updateBalances + 1);
+                                  }
+                                });
                               }}
                             >
                               Transfer
@@ -941,7 +967,11 @@ function App(props) {
                     <Button
                       type={"primary"}
                       onClick={() => {
-                        tx(writeContracts[nft].mintItem());
+                        tx(writeContracts[nft].mintItem(), function (transaction) {
+                          if (transaction.status == "confirmed") {
+                            setUpdateBalances(updateBalances + 1);
+                          }
+                        });
                       }}
                     >
                       Mint {nft}
@@ -1006,8 +1036,11 @@ function App(props) {
                                   type="primary"
                                   style={{ marginTop: 10 }}
                                   onClick={() => {
-                                    console.log("writeContracts", writeContracts);
-                                    tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id));
+                                    tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id), function (transaction) {
+                                      if (transaction.status == "confirmed") {
+                                        setUpdateBalances(updateBalances + 1);
+                                      }
+                                    });
                                   }}
                                 >
                                   Transfer
@@ -1095,7 +1128,11 @@ function App(props) {
                               <Button
                                 className="action-inline-button"
                                 onClick={() => {
-                                  tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, selectedFancyLoogie));
+                                  tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, selectedFancyLoogie), function (transaction) {
+                                    if (transaction.status == "confirmed") {
+                                      setUpdateBalances(updateBalances + 1);
+                                    }
+                                  });
                                 }}
                               >
                                 Remove {nft}
@@ -1123,6 +1160,11 @@ function App(props) {
                                             selectedNfts[nft],
                                             tankIdInBytes,
                                           ),
+                                          function (transaction) {
+                                            if (transaction.status == "confirmed") {
+                                              setUpdateBalances(updateBalances + 1);
+                                            }
+                                          },
                                         );
                                       }}
                                     >
