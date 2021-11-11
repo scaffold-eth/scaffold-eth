@@ -11,7 +11,7 @@ import { X } from "react-feather";
   - Signature, message and address is sent to the server for verification and custom JWT token
   - User can call /video route with JWT token attached to stream video
 */
-const server = "http://localhost:49832";
+const server = "https://scaffold-gated-backend.herokuapp.com";
 
 function Home({ userSigner, web3Modal, loadWeb3Modal }) {
   const [isSigning, setIsSigning] = useState(false);
