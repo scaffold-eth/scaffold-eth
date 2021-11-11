@@ -62,7 +62,7 @@ const result = await yourToken.transfer(
 
 #### 🥅 Goals
 
-- [ ] Can you check the `balanceOf()` your frontend address in the **YourContract** of the `Debug Contracts` tab?
+- [ ] Can you check the `balanceOf()` your frontend address in the **YourToken** of the `Debug Contracts` tab?
 - [ ] Can you `transfer()` your token to another account and check _that_ account's `balanceOf`?
 
 (Use an incognito window to create a new address and try sending to that new address. Use the `transfer()` function in the `Debug Contracts` tab.)
