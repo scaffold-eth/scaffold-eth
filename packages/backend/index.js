@@ -9,6 +9,8 @@ const app = express();
 const auth = require("./auth");
 const jwt = require("express-jwt");
 
+const PORT = process.env.PORT || 49832;
+
 app.use(cors());
 app.use(cookieParser());
 
@@ -93,6 +95,6 @@ app.get("/video", auth.verifyUser, function (req, res) {
   }
 });
 
-var server = app.listen(49832, function () {
+var server = app.listen(PORT, function () {
   console.log("HTTP Listening on port:", server.address().port);
 });
