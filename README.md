@@ -9,6 +9,8 @@
 
 # 🏄‍♂️ Quick Start
 
+### Manual setup
+
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 > clone/fork 🏗 scaffold-eth:
@@ -46,6 +48,12 @@ yarn deploy
 💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
+
+### Automated with Gitpod
+
+To deploy this project to Gitpod, click this button:
+
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
 
 # 📚 Documentation
 
