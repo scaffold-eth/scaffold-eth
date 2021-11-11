@@ -66,5 +66,6 @@
       "**/hardhat-ts/**"
     ]
   },
+  "heroku-run-build-script": false,
   "dependencies": {}
 }
