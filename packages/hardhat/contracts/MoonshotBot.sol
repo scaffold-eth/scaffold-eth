@@ -25,6 +25,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract MoonshotBot is ERC721Enumerable {
+
+    /// @dev helps to track floor
+    uint public stake = 0;
+
     address payable public constant gitcoin =
         payable(0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6);
 
@@ -392,12 +396,42 @@ contract MoonshotBot is ERC721Enumerable {
         return supply;
     }
 
-    function redeem(uint256 _id) external {
-        require(
-            getApproved(_id) == msg.sender,
-            "MoonshotBot: no rights to redeem NFT"
-        );
+    function redeem(uint256 _id) public {
+        require(ownerOf(_id) == msg.sender, "Not Owner");
+
         supply--;
         super._burn(_id);
+    }
+
+    function floor() public view returns (uint256) {
+        uint256 currentSupply = totalSupply();
+        if (currentSupply == 0) {
+            return stake;
+        }
+        return stake / currentSupply;
+    }
+
+    /**
+     * @notice Whale increasesfloor price for a particular nft by locking in a specific amount of eth and floor is calulated based on eth locked and nft's total supply
+     */
+    function increaseFloor() external payable {
+        require(msg.value > 0, "zero payment");
+        stake += msg.value;
+    }
+
+    /**
+     * @notice Executes a sale and updates the floor price
+     * @param _id nft id
+     */
+    function executeSale(uint256 _id) external {
+        uint256 currentFloor = floor();
+        require(
+            currentFloor > 0,
+            "sale cannot be made right now!"
+        );
+        stake -= currentFloor;
+        (bool success, ) = msg.sender.call{value: currentFloor}("");
+        require(success, "sending floor price failed");
+        redeem(_id);
     }
 }
