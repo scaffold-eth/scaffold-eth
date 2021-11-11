@@ -450,26 +450,10 @@ function App(props) {
   }
 
   const winnerEvents = useEventListener(readContracts, "YourContract", "Winner");
+  const prize = useContractReader(readContracts, "YourContract", "prize");
 
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
-
-  const lastRoll = useContractReader(readContracts, "YourContract", "lastRoll");
-  const prize = useContractReader(readContracts, "YourContract", "prize");
-
-  useEffect(() => {
-    if (diceRolled) {
-      setDiceRolled(false);
-    }
-  }, [lastRoll, prize]);
-
-  useEffect(() => {
-    if (diceRolled) {
-      setDiceRollImage("ROLL");
-    } else if (lastRoll) {
-      setDiceRollImage(lastRoll.toNumber().toString(16).toUpperCase());
-    }
-  });
 
   let diceRollImg = "";
   if (diceRollImage) {
@@ -558,10 +542,14 @@ function App(props) {
                   const result = await tx(
                     writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01") }),
                   );
+                  setDiceRolled(false);
                   if (!result) {
-                    setDiceRolled(false);
-                    setDiceRollImage(lastRoll);
+                    setDiceRollImage(null);
+                    return;
                   }
+                  const roll = await readContracts.YourContract.lastRoll();
+                  const numberRolled = roll.toNumber().toString(16).toUpperCase();
+                  setDiceRollImage(numberRolled);
                 }}
               >
                 Roll the dice!
