@@ -11,8 +11,6 @@ contract YourContract {
     uint256 public prize = 0;
     uint256 public lastRoll;
 
-    bytes32 public theHash;
-
     event Winner(address winner, uint256 amount);
 
     constructor() {}
