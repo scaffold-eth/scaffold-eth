@@ -1,6 +1,6 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
 import {
@@ -12,6 +12,7 @@ import {
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import Fortmatic from "fortmatic";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
@@ -19,7 +20,7 @@ import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import WalletLink from "walletlink";
 import Web3Modal from "web3modal";
 import "./App.css";
-import { Account, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { Address, Account, Balance, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
@@ -448,6 +449,8 @@ function App(props) {
     );
   }
 
+  const winnerEvents = useEventListener(readContracts, "YourContract", "Winner");
+
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
 
@@ -565,6 +568,20 @@ function App(props) {
               </Button>
             </div>
             {diceRollImg}
+            <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
+              <div>Winner Events:</div>
+              <List
+                dataSource={winnerEvents}
+                renderItem={item => {
+                  return (
+                    <List.Item key={item[0] + item[1] + item.blockNumber}>
+                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
+                      <Balance balance={item.args[1]} />
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
           </Route>
           <Route exact path="/debug">
             {/*
