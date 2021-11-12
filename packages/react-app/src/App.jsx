@@ -479,6 +479,7 @@ function App(props) {
               writeContracts={writeContracts}
               localProvider={localProvider}
               mainnetProvider={mainnetProvider}
+              injectedProvider={localProvider}
               readContracts={readContracts}
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}

@@ -5,6 +5,8 @@ export { default as Balance } from "./Balance";
 export { default as Blockie } from "./Blockie";
 export { default as BytesStringInput } from "./BytesStringInput";
 export { default as Contract } from "./Contract";
+export { default as Curve } from "./Curve";
+export { default as Dex } from "./DEX";
 export { default as EtherInput } from "./EtherInput";
 export { default as Faucet } from "./Faucet";
 export { default as GasGauge } from "./GasGauge";
