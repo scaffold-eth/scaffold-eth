@@ -488,6 +488,7 @@ function App(props) {
             <WhalesUI
               address={address}
               tx={tx}
+              userSigner={userSigner}
               writeContracts={writeContracts}
               readContracts={readContracts}
               priceToMint={priceToMint}

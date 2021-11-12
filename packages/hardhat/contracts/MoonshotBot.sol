@@ -25,10 +25,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract MoonshotBot is ERC721Enumerable {
-
-    /// @dev helps to track floor
-    uint public stake = 0;
-
     address payable public constant gitcoin =
         payable(0xde21F729137C5Af1b01d73aF1dC21eFfa2B8a0d6);
 
@@ -348,7 +344,7 @@ contract MoonshotBot is ERC721Enumerable {
     uint256 public constant limit = 303;
     uint256 public supply = 0;
     // mint price optional to have
-    uint256 public price = 0.0033 ether;
+    uint256 public constant price = 0.0033 ether;
 
     function mintItem(address to) private returns (uint256) {
         require(_tokenIds.current() < limit, "DONE MINTING");
@@ -360,11 +356,18 @@ contract MoonshotBot is ERC721Enumerable {
         return id;
     }
 
+    /**
+     * @notice Returns the baseURI
+     */
     function _baseURI() internal view virtual override returns (string memory) {
         return
             "https://gateway.pinata.cloud/ipfs/QmdRmZ1UPSALNVuXY2mYPb3T5exn9in1AL3tsema4rY2QF/json/";
     }
 
+    /**
+     * @notice Returns the token uri containing the metadata
+     * @param tokenId nft id
+     */
     function tokenURI(uint256 tokenId)
         public
         view
@@ -385,7 +388,11 @@ contract MoonshotBot is ERC721Enumerable {
                 : "";
     }
 
-    function requestMint(address to) public payable {
+    /**
+     * @notice Mints the NFT
+     * @param to user address
+     */
+    function requestMint(address to) external payable {
         require(msg.value >= price, "NOT ENOUGH");
         (bool success, ) = gitcoin.call{value: msg.value}("");
         require(success, "could not send");
@@ -393,31 +400,33 @@ contract MoonshotBot is ERC721Enumerable {
         mintItem(to);
     }
 
+    /**
+     * @notice Returns total supply
+     */
     function totalSupply() public view virtual override returns (uint256) {
         return supply;
     }
 
-    function redeem(uint256 _id) public {
+    /**
+     * @notice Internal method which burns the nft
+     * @param _id nft id
+     */
+    function redeem(uint256 _id) internal {
         require(ownerOf(_id) == msg.sender, "Not Owner");
 
         supply--;
         super._burn(_id);
     }
 
+    /**
+     * @notice Returns current floor value
+     */
     function floor() public view returns (uint256) {
         uint256 currentSupply = totalSupply();
         if (currentSupply == 0) {
-            return stake;
+            return address(this).balance;
         }
-        return stake / currentSupply;
-    }
-
-    /**
-     * @notice Whale increasesfloor price for a particular nft by locking in a specific amount of eth and floor is calulated based on eth locked and nft's total supply
-     */
-    function increaseFloor() external payable {
-        require(msg.value > 0, "zero payment");
-        stake += msg.value;
+        return address(this).balance / currentSupply;
     }
 
     /**
@@ -426,13 +435,14 @@ contract MoonshotBot is ERC721Enumerable {
      */
     function executeSale(uint256 _id) external {
         uint256 currentFloor = floor();
-        require(
-            currentFloor > 0,
-            "sale cannot be made right now!"
-        );
-        stake -= currentFloor;
+        require(currentFloor > 0, "sale cannot be made right now!");
         (bool success, ) = msg.sender.call{value: currentFloor}("");
         require(success, "sending floor price failed");
         redeem(_id);
     }
+
+    /**
+     * @notice For accepting eth
+     */
+    receive() external payable {}
 }

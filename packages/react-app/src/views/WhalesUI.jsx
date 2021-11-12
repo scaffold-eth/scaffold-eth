@@ -4,7 +4,7 @@ import { Button, Input } from "antd";
 import { formatEther, parseEther } from "@ethersproject/units";
 import { usePoller } from "eth-hooks";
 
-const WhalesUI = ({ readContracts, address, writeContracts }) => {
+const WhalesUI = ({ readContracts, address, writeContracts, tx, userSigner }) => {
   const [q, setQ] = useState("");
   const [floor, setFloor] = useState("0.0");
 
@@ -16,9 +16,12 @@ const WhalesUI = ({ readContracts, address, writeContracts }) => {
   }, 1500);
 
   const increaseFloor = async () => {
-    await writeContracts.MoonshotBot.increaseFloor({
-      value: parseEther(q),
-    });
+    tx(
+      userSigner.sendTransaction({
+        to: writeContracts.MoonshotBot.address,
+        value: parseEther(q),
+      }),
+    );
   };
 
   return (
