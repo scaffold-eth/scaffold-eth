@@ -347,6 +347,7 @@ contract MoonshotBot is ERC721Enumerable {
 
     uint256 public constant limit = 303;
     uint256 public supply = 0;
+    // mint price optional to have
     uint256 public price = 0.0033 ether;
 
     function mintItem(address to) private returns (uint256) {

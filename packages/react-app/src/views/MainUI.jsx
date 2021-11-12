@@ -86,19 +86,9 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                     alt="MoonshotBot"
                   />
                   <div style={{ marginLeft: "20px" }}>
-                    {!item.approved && (
-                      <Button
-                        style={{ display: "block", marginBottom: "10px", minWidth: 100 }}
-                        onClick={() => approveForBurn(item.id)}
-                      >
-                        Approve
-                      </Button>
-                    )}
-                    {item.approved && (
                       <Button style={{ width: "100%", minWidth: 100 }} onClick={() => burn(item.id)}>
                         Redeem
                       </Button>
-                    )}
                   </div>
                 </div>
               ))}
