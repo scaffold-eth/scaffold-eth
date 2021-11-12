@@ -1,11 +1,26 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH - Optimism Starter Kit
 
-> everything you need to build on Ethereum! 🚀
+> 🧫 Prototype frontend experiences to build on Optimistic Ethereum
+> (https://www.optimism.io)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+Learn more [here](https://gateway.optimism.io/welcome)
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+Grafana public [dashboard](https://public-grafana.optimism.io/d/9hkhMxn7z/public-dashboard?orgId=1&refresh=5m)
 
+
+### Installation 
+
+```sh
+git clone -b optimism-starter-kit https://github.com/austintgriffith/scaffold-eth.git optimism-starter-kit
+
+cd optimism-starter-kit
+
+yarn install
+
+yarn start
+```
+
+> 👉 Visit your frontend at http://localhost:3000
 
 # 🏄‍♂️ Quick Start
 
@@ -13,31 +28,11 @@
 
 Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
-```
-
-> install and start your 👷‍ Hardhat chain:
-
-```bash
-cd scaffold-eth
-yarn install
-yarn chain
-```
-
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd optimism-starter-kit
 yarn deploy
 ```
 
