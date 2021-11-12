@@ -214,7 +214,7 @@ module.exports = {
       },
     },
     kovanOptimism: {
-      url: "https://mainnet.optimism.io",
+      url: "https://kovan.optimism.io",
       accounts: {
         mnemonic: mnemonic(),
       },
