@@ -21,6 +21,8 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
 
+  const dex = await ethers.getContract("DEX", deployer);
+
   
   // paste in your address here to get 10 balloons on deploy:
   // await balloons.transfer("YOUR_ADDRESS",""+(10*10**18));
