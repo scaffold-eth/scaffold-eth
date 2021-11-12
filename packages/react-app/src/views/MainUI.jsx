@@ -15,7 +15,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   usePoller(async () => {
     if (readContracts && address) {
-      const floorPrice = await readContracts.RetroactiveFunding.floor(readContracts.MoonshotBot.address);
+      const floorPrice = await readContracts.MoonshotBot.floor();
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
@@ -25,7 +25,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     const tokenURI = await readContracts.MoonshotBot.tokenURI(id);
     const metadata = await axios.get(tokenURI);
     const approved = await readContracts.MoonshotBot.getApproved(id);
-    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.RetroactiveFunding.address };
+    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.MoonshotBot.address };
   };
 
   const loadCollection = async () => {
@@ -49,7 +49,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   const burn = async id => {
     try {
-      const burnTx = await tx(writeContracts.RetroactiveFunding.executeSale(readContracts.MoonshotBot.address, id));
+      const burnTx = await tx(writeContracts.MoonshotBot.executeSale(id));
       await burnTx.wait();
     } catch (e) {
       console.log("Burn tx error:", e);
@@ -59,7 +59,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   const approveForBurn = async id => {
     try {
-      const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.RetroactiveFunding.address, id));
+      const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.MoonshotBot.address, id));
       await approveTx.wait();
     } catch (e) {
       console.log("Approve tx error:", e);
@@ -110,8 +110,12 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
             type="primary"
             onClick={async () => {
               const priceRightNow = await readContracts.MoonshotBot.price();
-              const txCur = await tx(writeContracts.MoonshotBot.requestMint(address, { value: priceRightNow }));
-              await txCur.wait();
+              try {
+                const txCur = await tx(writeContracts.MoonshotBot.requestMint(address, { value: priceRightNow }));
+                await txCur.wait();
+              } catch (e) {
+                console.log("mint failed", e);
+              }
               loadCollection();
             }}
           >

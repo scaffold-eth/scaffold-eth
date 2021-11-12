@@ -10,13 +10,13 @@ const WhalesUI = ({ readContracts, address, writeContracts }) => {
 
   usePoller(async () => {
     if (readContracts && address) {
-      const floorPrice = await readContracts.RetroactiveFunding.floor(readContracts.MoonshotBot.address);
+      const floorPrice = await readContracts.MoonshotBot.floor();
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
 
   const increaseFloor = async () => {
-    await writeContracts.RetroactiveFunding.increaseFloor(readContracts.MoonshotBot.address, {
+    await writeContracts.MoonshotBot.increaseFloor({
       value: parseEther(q),
     });
   };
