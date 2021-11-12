@@ -1,104 +1,60 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - Retroactive Funding for NFT's
 
-> everything you need to build on Ethereum! 🚀
+> Fund different NFT based public goods by automatically updating the floor price
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+## 🏃‍♀️ Quick Start
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
 
-# 🏄‍♂️ Quick Start
-
-### Manual setup
-
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
-
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+1. Clone the repo first
+```sh
+git clone -b nft-retroactive-funding https://github.com/austintgriffith/scaffold-eth.git nft-retroactive-funding
+cd nft-retroactive-funding
 ```
 
-> install and start your 👷‍ Hardhat chain:
-
+2. Install dependencies
 ```bash
-cd scaffold-eth
 yarn install
+```
+
+3. Spin up local chain
+```sh
 yarn chain
 ```
 
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
-yarn start
-```
-
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
+4. Deploy Contracts
+```sh
 yarn deploy
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+5. Start React frontend
+```bash
+yarn start
+```
 
-📝 Edit your frontend `App.jsx` in `packages/react-app/src`
+## Introduction
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+There are two types of entities involved to start with the **Whales/Funders** for public goods and the **Holders** of the public goods which are **NFT's.**
 
-📱 Open http://localhost:3000 to see the app
+- Any Whale can send a specific ETH amount to the contract and specify the NFT Address they want to contribute to and the floor price is calculated automatically by ```ETH Sent / Total Supply of the NFT``` and as whales keep contributing to that particular NFT the floor keeps increasing.
 
-### Automated with Gitpod
+- As the floor price increases due to the contribution by the whales the NFT Holders have the option to redeem their NFT off in exchange for the new floor price, and if they decide to do this the floor is then calculated again and there is a slight decrease seen in the floor price.
 
-To deploy this project to Gitpod, click this button:
+So that's the overall architecture currently for this build and this process keeps continuing and currently, this supports only ERC721 and the contract is generic to support any ERC721 compliant NFT.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+## UI
 
-# 📚 Documentation
+The first screen allows the user to mint NFTs, approve them for burning and burn them. Burning happens at the floor price and user gets some ETH for this.
 
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
+![](./assets/list.png)
 
-# 🔭 Learning Solidity
+The second screen is intended for whales who can "raise the floor" by depositing some ETH into the contract.
 
-📕 Read the docs: https://docs.soliditylang.org
+![](./assets/floor.png)
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+## Contact
 
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
-
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
-
-# 🛠 Buidl
-
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
-
-  
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
+Join the [telegram support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
 
 
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
-
-# 💬 Support Chat
-
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
-
----
-
-🙏 Please check out our [Gitcoin grant](https://gitcoin.co/grants/2851/scaffold-eth) too!
