@@ -2,6 +2,12 @@
 
 > Deploy an NFT sale that has a mechanism where whales can yolo ETH to the NFT contract to raise the floor!
 
+
+[![preview_rapgfsk](https://user-images.githubusercontent.com/2653167/141536524-ee17c022-9012-4092-b2fb-db352849ae03.jpg)](https://youtu.be/q0CBVeagpyg)
+
+[https://youtu.be/q0CBVeagpyg](https://youtu.be/q0CBVeagpyg)
+
+
 ## 🏃‍♀️ Quick Start
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
