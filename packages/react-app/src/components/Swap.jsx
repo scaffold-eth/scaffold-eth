@@ -81,9 +81,7 @@ function Swap({ selectedProvider, tokenListURI }) {
   const [swapModalVisible, setSwapModalVisible] = useState(false);
 
   const [tokenList, setTokenList] = useState([]);
-
   const [tokens, setTokens] = useState();
-
   const [invertPrice, setInvertPrice] = useState(false);
 
   const blockNumber = useBlockNumber(selectedProvider, 3000);

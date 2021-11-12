@@ -16,11 +16,6 @@ export default function ThemeSwitcher() {
     switcher({ theme: isChecked ? themes.dark : themes.light });
   };
 
-  // Avoid theme change flicker
-  // if (status === "loading") {
-  //   return null;
-  // }
-
   return (
     <div className="main fade-in" style={{ position: "fixed", right: 8, bottom: 8 }}>
       <span style={{ padding: 8 }}>{currentTheme === "light" ? "☀️" : "🌜"}</span>
