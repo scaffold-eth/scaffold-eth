@@ -1,6 +1,6 @@
-# 🏗 scaffold-eth - Retroactive Funding for NFT's
+# 🏗 scaffold-eth - Retroactive Public Goods Funding Starter Kit
 
-> Fund different NFT based public goods by automatically updating the floor price
+> Deploy an NFT sale that has a mechanism where whales can yolo ETH to the NFT contract to raise the floor!
 
 ## 🏃‍♀️ Quick Start
 
@@ -35,13 +35,11 @@ yarn start
 
 ## Introduction
 
-There are two types of entities involved to start with the **Whales/Funders** for public goods and the **Holders** of the public goods which are **NFT's.**
+Mint an NFT with a price curve to raise a small amount of funding to a multisig. 
 
-- Any Whale can send a specific ETH amount to the contract and specify the NFT Address they want to contribute to and the floor price is calculated automatically by ```ETH Sent / Total Supply of the NFT``` and as whales keep contributing to that particular NFT the floor keeps increasing.
+Then, a whale can yolo ETH to the NFT contract to allow NFT holders to redeem for a floor price.
 
-- As the floor price increases due to the contribution by the whales the NFT Holders have the option to redeem their NFT off in exchange for the new floor price, and if they decide to do this the floor is then calculated again and there is a slight decrease seen in the floor price.
-
-So that's the overall architecture currently for this build and this process keeps continuing and currently, this supports only ERC721 and the contract is generic to support any ERC721 compliant NFT.
+The floor price is equal to the amount of ETH in the contract divided by the number of NFTs in circulation.
 
 ## UI
 
