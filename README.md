@@ -45,9 +45,9 @@ So that's the overall architecture currently for this build and this process kee
 
 ## UI
 
-The first screen allows the user to mint NFTs, approve them for burning and burn them. Burning happens at the floor price and user gets some ETH for this.
+The first screen allows the user to mint NFTs and burn them. Burning happens at the floor price and user gets some ETH for this.
 
-![](./assets/list.png)
+<img width="472" alt="Screenshot 2021-11-12 at 12 33 24 PM" src="https://user-images.githubusercontent.com/26670962/141425060-5d423763-c509-497a-972b-e409b2040c8b.png">
 
 The second screen is intended for whales who can "raise the floor" by depositing some ETH into the contract.
 
