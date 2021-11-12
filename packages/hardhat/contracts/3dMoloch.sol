@@ -1,4 +1,4 @@
-pragma solidity ^0.6.7;
+pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 //import "hardhat/console.sol";
@@ -8,11 +8,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 /*
-\_____  \   __| _/ \_   _____//  |_|  |__   \______   \ _____/  |_  ______
-  _(__  <  / __ |   |    __)_\   __\  |  \   |    |  _//  _ \   __\/  ___/
- /       \/ /_/ |   |        \|  | |   Y  \  |    |   (  <_> )  |  \___ \ 
-/______  /\____ |  /_______  /|__| |___|  /  |______  /\____/|__| /____  >
-       \/      \/          \/           \/          \/                 \/ 
 Collaboration Project for greatestlarp.com
 Art by @mettahead inspired by @lahcen_kha
 Audo by @AnnimusEdie
@@ -20,22 +15,22 @@ Contract by @Blind_nabler
 Built with scaffold-eth!
 */
 
-contract ConditionalEthBot is ERC721  {
+contract ConditionalMolochBot is ERC721  {
 
-  address public constant ogNFT = 0x82C7c02a52B75387DB14FA375938496cbb984388;
+  address public constant ogNFT = 0x42dCbA5dA33CDDB8202CC182A443a3e7b299dADb;
   mapping(uint256 => bool) hasMinted;
   bool public hasUpdatedURI;
   string public URI;
   address public uriUpdater = 0x807a1752402D21400D555e1CD7f175566088b955;
 
-  constructor() public ERC721("3dEthBot", "3dth") {
+  constructor() public ERC721("3dMoloch", "3dMOLC") {
   }
 
   function claim(uint256 _tokenId) public returns (uint256) {
       require(IERC721(ogNFT).ownerOf(_tokenId) == msg.sender, 'msg.sender not owner of this NFT');
       require(IERC721(ogNFT).ownerOf(_tokenId) != address(0), 'invalid tokenId');
       require(hasMinted[_tokenId] == false, 'nft already minted for this id!');
-      require(_tokenId <= 200, 'Only EthBots 1-200 are eligible for minting!');
+      require(_tokenId <= 200, 'Only MolochBots 1-200 are eligible for minting!');
       hasMinted[_tokenId] = true;
       _mint(msg.sender, _tokenId);
   }
@@ -74,7 +69,7 @@ contract ConditionalEthBot is ERC721  {
         if(hasUpdatedURI){
         return string(abi.encodePacked(URI,'/',uint2str(_tokenId),'.json'));
         } else {
-            return string('https://bonez.mypinata.cloud/ipfs/QmNwLca45dLgux7uuQWY9UakYEFNbRNkGetSTciS7GUqgJ');
+            return string('');
         }
 }
 
