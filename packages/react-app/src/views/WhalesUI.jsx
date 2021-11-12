@@ -10,7 +10,7 @@ const WhalesUI = ({ readContracts, address, writeContracts, tx, userSigner }) =>
 
   usePoller(async () => {
     if (readContracts && address) {
-      const floorPrice = await readContracts.MoonshotBot.floor();
+      const floorPrice = await readContracts.ExampleNFT.floor();
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
@@ -18,7 +18,7 @@ const WhalesUI = ({ readContracts, address, writeContracts, tx, userSigner }) =>
   const increaseFloor = async () => {
     tx(
       userSigner.sendTransaction({
-        to: writeContracts.MoonshotBot.address,
+        to: writeContracts.ExampleNFT.address,
         value: parseEther(q),
       }),
     );

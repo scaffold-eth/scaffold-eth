@@ -248,7 +248,7 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  const priceToMint = useContractReader(readContracts, "MoonshotBot", "price");
+  const priceToMint = useContractReader(readContracts, "ExampleNFT", "price");
   console.log("🤗 priceToMint:", priceToMint);
 
   // keep track of a variable from the contract in the local React state:

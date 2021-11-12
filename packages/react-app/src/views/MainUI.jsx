@@ -15,17 +15,17 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   usePoller(async () => {
     if (readContracts && address) {
-      const floorPrice = await readContracts.MoonshotBot.floor();
+      const floorPrice = await readContracts.ExampleNFT.floor();
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
 
   const getTokenURI = async (ownerAddress, index) => {
-    const id = await readContracts.MoonshotBot.tokenOfOwnerByIndex(ownerAddress, index);
-    const tokenURI = await readContracts.MoonshotBot.tokenURI(id);
+    const id = await readContracts.ExampleNFT.tokenOfOwnerByIndex(ownerAddress, index);
+    const tokenURI = await readContracts.ExampleNFT.tokenURI(id);
     const metadata = await axios.get(tokenURI);
-    const approved = await readContracts.MoonshotBot.getApproved(id);
-    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.MoonshotBot.address };
+    const approved = await readContracts.ExampleNFT.getApproved(id);
+    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.ExampleNFT.address };
   };
 
   const loadCollection = async () => {
@@ -34,7 +34,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
       loading: true,
       items: [],
     });
-    const balance = (await readContracts.MoonshotBot.balanceOf(address)).toNumber();
+    const balance = (await readContracts.ExampleNFT.balanceOf(address)).toNumber();
     const tokensPromises = [];
     for (let i = 0; i < balance; i += 1) {
       tokensPromises.push(getTokenURI(address, i));
@@ -46,19 +46,19 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
     });
   };
 
-  const burn = async id => {
+  const redeem = async id => {
     try {
-      const burnTx = await tx(writeContracts.MoonshotBot.executeSale(id));
-      await burnTx.wait();
+      const redeemTx = await tx(writeContracts.ExampleNFT.redeem(id));
+      await redeemTx.wait();
     } catch (e) {
-      console.log("Burn tx error:", e);
+      console.log("redeem tx error:", e);
     }
     loadCollection();
   };
 
   const approveForBurn = async id => {
     try {
-      const approveTx = await tx(writeContracts.MoonshotBot.approve(writeContracts.MoonshotBot.address, id));
+      const approveTx = await tx(writeContracts.ExampleNFT.approve(writeContracts.ExampleNFT.address, id));
       await approveTx.wait();
     } catch (e) {
       console.log("Approve tx error:", e);
@@ -67,7 +67,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   };
 
   useEffect(() => {
-    if (readContracts.MoonshotBot) loadCollection();
+    if (readContracts.ExampleNFT) loadCollection();
   }, [address, readContracts, writeContracts]);
 
   return (
@@ -83,10 +83,10 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                   <img
                     style={{ maxWidth: "150px", display: "block", margin: "0 auto", marginBottom: "20px" }}
                     src={item.image}
-                    alt="MoonshotBot"
+                    alt="ExampleNFT"
                   />
                   <div style={{ marginLeft: "20px" }}>
-                      <Button style={{ width: "100%", minWidth: 100 }} onClick={() => burn(item.id)}>
+                      <Button style={{ width: "100%", minWidth: 100 }} onClick={() => redeem(item.id)}>
                         Redeem
                       </Button>
                   </div>
@@ -98,9 +98,9 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
             style={{ marginTop: 15 }}
             type="primary"
             onClick={async () => {
-              const priceRightNow = await readContracts.MoonshotBot.price();
+              const priceRightNow = await readContracts.ExampleNFT.price();
               try {
-                const txCur = await tx(writeContracts.MoonshotBot.requestMint(address, { value: priceRightNow }));
+                const txCur = await tx(writeContracts.ExampleNFT.mintItem(address, { value: priceRightNow }));
                 await txCur.wait();
               } catch (e) {
                 console.log("mint failed", e);
