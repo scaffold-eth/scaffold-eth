@@ -1,6 +1,6 @@
-# 🤖 Conditional Mint NFT
+# ETH & MOLOCH BOTS! 
 
-An ERC721 contract that allows users to mint an NFT once and only once for an existing NFT they own. (IE allow a meebit owner to claim an NFT for their meebit)
+A conditionally minting NFT that allows owners of the first 200 EthBots and MolochBots to mint a free 3d version of their 2d NFT!
 
 >Built with scaffold-eth!
 
