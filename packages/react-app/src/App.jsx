@@ -1,9 +1,5 @@
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-<<<<<<< HEAD
-import WalletLink from "walletlink";
-=======
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import Authereum from "authereum";
@@ -30,11 +26,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
-<<<<<<< HEAD
 import { Landing, Hints } from "./views";
-=======
-import { ExampleUI, Hints, Subgraph } from "./views";
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
 
 const { ethers } = require("ethers");
 /*
@@ -70,12 +62,6 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 //
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
-<<<<<<< HEAD
-const scaffoldEthProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544") : null;
-const mainnetInfura = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID) : null;
-// ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I )
-
-=======
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
@@ -88,7 +74,6 @@ const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`)
   : null;
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_ID
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
 // 🏠 Your local provider is usually pointed at your local blockchain
 const localProviderUrl = targetNetwork.rpcUrl;
 // as you deploy to other networks you can set REACT_APP_PROVIDER=https://dai.poa.network in packages/react-app/.env
@@ -120,14 +105,6 @@ const web3Modal = new Web3Modal({
       options: {
         infuraId: INFURA_ID,
         rpc: {
-<<<<<<< HEAD
-          1:'https://mainnet.infura.io/v3/${INFURA_ID}', // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-          100:"https://dai.poa.network", // xDai
-        },
-      },
-    },
-    'custom-walletlink': {
-=======
           1: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
           42: `https://kovan.infura.io/v3/${INFURA_ID}`,
           100: "https://dai.poa.network", // xDai
@@ -165,7 +142,6 @@ const web3Modal = new Web3Modal({
     //   },
     // },
     "custom-walletlink": {
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
       display: {
         logo: "https://play-lh.googleusercontent.com/PjoJoG27miSglVBXoXrxBSLveV6e3EeBPpNY55aiUUBM9Q1RCETKCOqdOkX2ZydqVf0",
         name: "Coinbase",
@@ -177,23 +153,6 @@ const web3Modal = new Web3Modal({
         return provider;
       },
     },
-<<<<<<< HEAD
-  },
-});
-
-const logoutOfWeb3Modal = async () => {
-  await web3Modal.clearCachedProvider();
-  setTimeout(() => {
-    window.location.reload();
-  }, 1);
-};
-
-function App(props) {
-  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
-
-  const [injectedProvider, setInjectedProvider] = useState();
-  const [address, setAddress] = useState();
-=======
     authereum: {
       package: Authereum, // required
     },
@@ -221,7 +180,6 @@ function App(props) {
     }, 1);
   };
 
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangeEthPrice(targetNetwork, mainnetProvider);
 
@@ -281,18 +239,6 @@ function App(props) {
   useOnBlock(mainnetProvider, () => {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
-
-  // Then read your DAI balance like:
-<<<<<<< HEAD
-=======
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
-
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -496,12 +442,7 @@ function App(props) {
             */}
 
             <Contract
-<<<<<<< HEAD
               name="ConditionalEthBot"
-=======
-              name="YourContract"
-              price={price}
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -529,38 +470,6 @@ function App(props) {
               price={price}
               localProvider={localProvider}
               writeContracts={writeContracts}
-<<<<<<< HEAD
-=======
-              readContracts={readContracts}
-              purpose={purpose}
-            />
-          </Route>
-          <Route path="/mainnetdai">
-            <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-              contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
               tx={tx}
               useEventListener={useEventListener}
               mainnetContracts={mainnetContracts}

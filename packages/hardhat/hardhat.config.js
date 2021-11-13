@@ -120,14 +120,7 @@ module.exports = {
       },
     },
     mainnet: {
-<<<<<<< HEAD
       url: "https://mainnet.infura.io/v3/6ca2262a1e58493c9393d23684dfb65c", // <---- YOUR INFURA ID! (or it won't work)
-=======
-      url: "https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad", // <---- YOUR INFURA ID! (or it won't work)
-
-      //      url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXXXX/eth/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
-
->>>>>>> f5810e940be29fcca5e360239fd82c759bd1c21d
       gasPrice: mainnetGwei * 1000000000,
       accounts: {
         mnemonic: mnemonic(),

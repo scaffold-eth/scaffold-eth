@@ -8,6 +8,11 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 /*
+ _      ____  _     ____  ____  _       ____  ____  _____  ____ 
+/ \__/|/  _ \/ \   /  _ \/   _\/ \ /|  /  __\/  _ \/__ __\/ ___\
+| |\/||| / \|| |   | / \||  /  | |_||  | | //| / \|  / \  |    \
+| |  ||| \_/|| |_/\| \_/||  \__| | ||  | |_\\| \_/|  | |  \___ |
+\_/  \|\____/\____/\____/\____/\_/ \|  \____/\____/  \_/  \____/
 Collaboration Project for greatestlarp.com
 Art by @mettahead inspired by @lahcen_kha
 Audo by @AnnimusEdie
