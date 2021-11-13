@@ -1,5 +1,5 @@
 # Simple ERC-1155 NFT Example
-Full documentation andd tutorial here: https://docs.scaffoldeth.io/scaffold-eth/examples-and-tutorials/simple-erc-1155-nft
+Full documentation and tutorial here: https://docs.scaffoldeth.io/scaffold-eth/examples-and-tutorials/simple-erc-1155-nft
 
 # Welcome to Scaffold-eth
 Scaffold-eth is everything you need to get started building decentralized applications on Ethereum! 🚀
