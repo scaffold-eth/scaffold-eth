@@ -9,7 +9,6 @@ require("@tenderly/hardhat-tenderly");
 require("hardhat-deploy");
 require("hardhat-gas-reporter");
 
-require("@eth-optimism/hardhat-ovm");
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
 
@@ -205,6 +204,15 @@ module.exports = {
         l2: "localArbitrum",
       },
     },
+    optimism: {
+      url: "https://mainnet.optimism.io",
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+      companionNetworks: {
+        l1: "mainnet",
+      },
+    },
     kovanOptimism: {
       url: "https://kovan.optimism.io",
       accounts: {
@@ -216,11 +224,9 @@ module.exports = {
     },
     localOptimism: {
       url: "http://localhost:8545",
-      gasPrice: 0,
       accounts: {
         mnemonic: mnemonic(),
       },
-      ovm: true,
       companionNetworks: {
         l1: "localOptimismL1",
       },
