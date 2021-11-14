@@ -12,12 +12,13 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 
 ```bash
 git clone https://github.com/scaffold-eth/scaffold-eth.git abi-uploader
+cd abi-uploader
+git checkout abi-uploader
 ```
 
-> install and start your 👷‍ Hardhat chain:
+> install and start your 👷‍ front-end:
 
 ```bash
-cd abi-uploader
 yarn install
 yarn start
 ```
