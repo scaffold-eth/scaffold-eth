@@ -33,6 +33,8 @@ yarn deploy --network NETWORK_OF_CHOICE (localhost, kovan, rinkeby, mainnet)
 
 > ✏️ Edit the mint script mint.js in packages/hardhat/scripts and update the toAddress to your frontend address (wallet address in the top right or localhost:3000).
 
+> Note: `yarn deploy --reset` to get a fresh localost deployment anytime. 
+
 ![nft1](https://user-images.githubusercontent.com/526558/124386962-37e5dd00-dcb3-11eb-911e-0afce760d7ee.png)
 
 > in a terminal window run the mint script:
