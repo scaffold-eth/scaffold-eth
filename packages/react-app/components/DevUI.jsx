@@ -1,30 +1,26 @@
 import React from "react";
-import { Row, Col, Button } from "antd";
-import { Account, Ramp, GasGauge, Faucet, ThemeSwitch } from ".";
+import { Button, Row, Col } from "antd";
+import { Faucet, Ramp, GasGauge } from ".";
 import { NETWORKS } from "../constants";
 import { Web3Consumer } from "../helpers/Web3Context";
+
+// todo : Extend to include available contracts on current chain
 
 function DevUI({ web3 }) {
   return (
     <>
-      {web3.networkDisplay}
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <Account {...web3} />
-        {web3.faucetHint}
+      <div style={{ position: "absolute", textAlign: "right", right: 10, top: 50, padding: 10 }}>
+        <div>{web3.faucetHint}</div>
       </div>
 
-      <ThemeSwitch />
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 8, padding: 10 }}>
+      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
           <Col span={8}>
-            <Ramp {...web3} networks={NETWORKS} />
+            <Ramp price={web3.price} address={web3.address} networks={NETWORKS} />
           </Col>
 
           <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge {...web3} />
+            <GasGauge gasPrice={web3.gasPrice} />
           </Col>
           <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
             <Button
@@ -43,12 +39,7 @@ function DevUI({ web3 }) {
         </Row>
 
         <Row align="middle" style={{ marginTop: 10 }} gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              web3.faucetAvailable ? <Faucet {...web3} ensProvider={web3.mainnetProvider} /> : ""
-            }
-          </Col>
+          <Col span={24}>{web3.faucetAvailable ? <Faucet {...web3} ensProvider={web3.mainnetProvider} /> : ""}</Col>
         </Row>
       </div>
     </>
