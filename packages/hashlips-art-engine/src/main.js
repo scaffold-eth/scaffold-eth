@@ -16,18 +16,18 @@ const {
   rarityDelimiter,
 } = require(path.join(basePath, "/src/config.js"));
 const console = require("console");
+const { start } = require("repl");
 const canvas = createCanvas(format.width, format.height);
 const ctx = canvas.getContext("2d");
 var metadataList = [];
 var attributesList = [];
 var dnaList = [];
+var editionList = [];
 
 const buildSetup = () => {
-  // Delete the buildDir if it exists and clear out
   if (fs.existsSync(buildDir)) {
     fs.rmdirSync(buildDir, { recursive: true });
   }
-  // Make the new directory and subdirectories
   fs.mkdirSync(buildDir);
   fs.mkdirSync(`${buildDir}/json`);
   fs.mkdirSync(`${buildDir}/images`);
@@ -82,6 +82,7 @@ const layersSetup = (layersOrder) => {
   return layers;
 };
 
+// todo: update to be random _editionCount without reusing a number
 const saveImage = (_editionCount) => {
   fs.writeFileSync(
     `${buildDir}/images/${_editionCount}.png`,
@@ -100,12 +101,11 @@ const drawBackground = () => {
   ctx.fillRect(0, 0, format.width, format.height);
 };
 
-// Here you can update the metadata for each nft you create...
 const addMetadata = (_dna, _edition) => {
   let dateTime = Date.now();
   let tempMetadata = {
     dna: sha1(_dna.join("")),
-    name: `#${_edition}`,
+    name: `Pharo #${_edition}`,
     description: description,
     image: `${baseUri}/${_edition}.png`,
     edition: _edition,
@@ -117,7 +117,6 @@ const addMetadata = (_dna, _edition) => {
   attributesList = [];
 };
 
-// Adds the metadata attributes (each layer)
 const addAttributes = (_element) => {
   let selectedElement = _element.layer.selectedElement;
   attributesList.push({
@@ -160,6 +159,14 @@ const isDnaUnique = (_DnaList = [], _dna = []) => {
   return foundDna == undefined ? true : false;
 };
 
+// ? added this to check if the edition exists
+const isEditionUnique = (_EditionList = [], _editions = []) => {
+  let foundEdition = _EditionList.find(
+    (i) => i.join("") === _editions.join("")
+  );
+  return foundEdition == undefined ? true : false;
+};
+
 const createDna = (_layers) => {
   let randNum = [];
   _layers.forEach((layer) => {
@@ -182,12 +189,10 @@ const createDna = (_layers) => {
   return randNum;
 };
 
-// Add the metadata to the manifest
 const writeMetaData = (_data) => {
   fs.writeFileSync(`${buildDir}/json/_metadata.json`, _data);
 };
 
-// Create a single file of metadata for each nft
 const saveMetaDataSingleFile = (_editionCount) => {
   fs.writeFileSync(
     `${buildDir}/json/${_editionCount}.json`,
@@ -199,54 +204,81 @@ const saveMetaDataSingleFile = (_editionCount) => {
   );
 };
 
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  // The maximum is exclusive and the minimum is inclusive
+  return Math.floor(Math.random() * (max - min) + min);
+}
+
+const getEditionCount = () => {
+  let edtionCount = [];
+  const min = 1;
+  const max = 5040;
+  edtionCount.push(getRandomInt(min, max));
+
+  return edtionCount;
+};
+
+// Create the images and json files
 const startCreating = async () => {
   let layerConfigIndex = 0;
-  let editionCount = 1;
+  let count = 1;
+  let edition;
   let failedCount = 0;
+
   while (layerConfigIndex < layerConfigurations.length) {
+    console.log("Layer Configs: ", layerConfigurations.length);
     const layers = layersSetup(
       layerConfigurations[layerConfigIndex].layersOrder
     );
-    while (
-      editionCount <= layerConfigurations[layerConfigIndex].growEditionSizeTo
-    ) {
-      let newDna = createDna(layers);
-      if (isDnaUnique(dnaList, newDna)) {
-        let results = constructLayerToDna(newDna, layers);
-        let loadedElements = [];
+    console.log("Count: ", count);
+    while (count <= layerConfigurations[layerConfigIndex].growEditionSizeTo) {
+      start;
+      let newEdition = getEditionCount();
 
-        results.forEach((layer) => {
-          loadedElements.push(loadLayerImg(layer));
-        });
+      if (isEditionUnique(editionList, newEdition)) {
+        let newDna = createDna(layers);
+        if (isDnaUnique(dnaList, newDna)) {
+          let results = constructLayerToDna(newDna, layers);
+          let loadedElements = [];
 
-        await Promise.all(loadedElements).then((renderObjectArray) => {
-          ctx.clearRect(0, 0, format.width, format.height);
-          if (background.generate) {
-            drawBackground();
-          }
-          renderObjectArray.forEach((renderObject) => {
-            drawElement(renderObject);
+          results.forEach((layer) => {
+            loadedElements.push(loadLayerImg(layer));
           });
-          saveImage(editionCount);
-          addMetadata(newDna, editionCount);
-          saveMetaDataSingleFile(editionCount);
-          console.log(
-            `Created edition: ${editionCount}, with DNA: ${sha1(
-              newDna.join("")
-            )}`
-          );
-        });
-        dnaList.push(newDna);
-        editionCount++;
-      } else {
-        console.log("DNA exists!");
-        failedCount++;
-        if (failedCount >= uniqueDnaTorrance) {
-          console.log(
-            `You need more layers or elements to grow your edition to ${layerConfigurations[layerConfigIndex].growEditionSizeTo} artworks!`
-          );
-          process.exit();
+
+          await Promise.all(loadedElements).then((renderObjectArray) => {
+            ctx.clearRect(0, 0, format.width, format.height);
+            if (background.generate) {
+              drawBackground();
+            }
+            renderObjectArray.forEach((renderObject) => {
+              drawElement(renderObject);
+            });
+            saveImage(newEdition);
+            addMetadata(newDna, newEdition);
+            saveMetaDataSingleFile(newEdition);
+            console.log(
+              `Created edition: ${newEdition}, with DNA: ${sha1(
+                newDna.join("")
+              )}`
+            );
+          });
+          dnaList.push(newDna);
+          count++;
+        } else {
+          console.log("DNA exists!");
+          failedCount++;
+          if (failedCount >= uniqueDnaTorrance) {
+            console.log(
+              `You need more layers or elements to grow your edition to ${layerConfigurations[layerConfigIndex].growEditionSizeTo} artworks!`
+            );
+            process.exit();
+          }
         }
+        editionList.push(newEdition);
+      } else {
+        goto: start;
       }
     }
     layerConfigIndex++;

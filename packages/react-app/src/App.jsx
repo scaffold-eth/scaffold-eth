@@ -1,40 +1,34 @@
 import { LinkOutlined } from "@ant-design/icons";
-import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
+import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-//import Torus from "@toruslabs/torus-embed"
-import WalletLink from "walletlink";
 import { Alert, Button, Card, Col, Input, List, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import React, { useCallback, useEffect, useState } from "react";
-import ReactJson from "react-json-view";
-import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
-import StackGrid from "react-stack-grid";
-import Web3Modal from "web3modal";
-import "./App.css";
-import assets from "../../hashlips-art-engine/build/json/_metadata.json";
-import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
-import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
-import { Transactor } from "./helpers";
+import Authereum from "authereum";
 import {
   useBalance,
   useContractLoader,
   useContractReader,
   useGasPrice,
   useOnBlock,
-  useUserProviderAndSigner,
+  useUserProviderAndSigner
 } from "eth-hooks";
-import {
-  useEventListener,
-} from "eth-hooks/events/useEventListener";
-import {
-  useExchangeEthPrice,
-} from "eth-hooks/dapps/dex";
-// import Hints from "./Hints";
-
-import { useContractConfig } from "./hooks"
-import Portis from "@portis/web3";
+import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 import Fortmatic from "fortmatic";
-import Authereum from "authereum";
+import React, { useCallback, useEffect, useState } from "react";
+import ReactJson from "react-json-view";
+import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
+import StackGrid from "react-stack-grid";
+//import Torus from "@toruslabs/torus-embed"
+import WalletLink from "walletlink";
+import Web3Modal from "web3modal";
+import assets from "../../hashlips-art-engine/build/json/_metadata.json";
+import "./App.css";
+import { Account, Address, AddressInput, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
+import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
+import { Transactor } from "./helpers";
+// import Hints from "./Hints";
+import { useContractConfig } from "./hooks";
 
 const { ethers } = require("ethers");
 
@@ -114,7 +108,11 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 const scaffoldEthProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544")
   : null;
-const poktMainnetProvider = navigator.onLine ? new ethers.providers.StaticJsonRpcProvider("https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406") : null;
+const poktMainnetProvider = navigator.onLine
+  ? new ethers.providers.StaticJsonRpcProvider(
+      "https://eth-mainnet.gateway.pokt.network/v1/lb/611156b4a585a20035148406",
+    )
+  : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
   : null;
@@ -158,7 +156,6 @@ const web3Modal = new Web3Modal({
           100: "https://dai.poa.network", // xDai
         },
       },
-
     },
     portis: {
       display: {
@@ -463,8 +460,6 @@ function App(props) {
       </div>
     );
   }
-
-
 
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
