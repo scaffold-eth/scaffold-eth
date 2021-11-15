@@ -5,7 +5,7 @@ import { Alert, Button } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState, useRef, useMemo } from "react";
 import Web3Modal from "web3modal";
-import { INFURA_ID, NETWORK, NETWORKS } from "../constants";
+import { INFURA_ID, NETWORKS, ALCHEMY_KEY } from "../constants";
 import { Transactor } from "../helpers";
 import { useBalance, useContractLoader, useGasPrice, useOnBlock, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
@@ -24,11 +24,13 @@ const { ethers } = require("ethers");
 export const Web3Context = React.createContext({});
 
 // provider Component that wraps the entire app and provides context variables
-export function Web3Provider({ children, network = "localhost", DEBUG = true, NETWORKCHECK = true, ...props }) {
+export function Web3Provider({ children, ...props }) {
   // for Nextjs Builds, return null until "window" is available
   if (!global.window) {
     return null;
   }
+
+  const { network = "localhost", DEBUG = true, NETWORKCHECK = true } = props;
 
   // app states
   const [injectedProvider, setInjectedProvider] = useState();
@@ -51,7 +53,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
   const mainnetInfura = useMemo(() => {
     if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
     return navigator.onLine
-      ? new ethers.providers.StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID)
+      ? new ethers.providers.StaticJsonRpcProvider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`)
       : null;
   }, [navigator.onLine]);
   const localProvider = useMemo(() => {
@@ -78,7 +80,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     });
 
     // WalletLink provider
-    const walletLinkProvider = walletLink.makeWeb3Provider(`https://mainnet.infura.io/v3/${INFURA_ID}`, 1);
+    const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, 1);
 
     // Portis ID: 6255fb2b-58c8-433b-a2c9-62098c05ddc9
     return new Web3Modal({
@@ -92,7 +94,7 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
             bridge: "https://polygon.bridge.walletconnect.org",
             infuraId: INFURA_ID,
             rpc: {
-              1: `https://mainnet.infura.io/v3/${INFURA_ID}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
+              1: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
               42: `https://kovan.infura.io/v3/${INFURA_ID}`,
               100: "https://dai.poa.network", // xDai
             },
@@ -261,91 +263,6 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     mainnetContracts,
   ]);
 
-  let networkDisplay = "";
-  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
-    const networkSelected = NETWORK(selectedChainId);
-    const networkLocal = NETWORK(localChainId);
-    if (selectedChainId === 1337 && localChainId === 31337) {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network ID"
-            description={
-              <div>
-                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
-                HardHat.
-                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    } else {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network"
-            description={
-              <div>
-                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <Button
-                  onClick={async () => {
-                    const ethereum = window.ethereum;
-                    const data = [
-                      {
-                        chainId: "0x" + targetNetwork.chainId.toString(16),
-                        chainName: targetNetwork.name,
-                        nativeCurrency: targetNetwork.nativeCurrency,
-                        rpcUrls: [targetNetwork.rpcUrl],
-                        blockExplorerUrls: [targetNetwork.blockExplorer],
-                      },
-                    ];
-                    console.log("data", data);
-
-                    let switchTx;
-                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
-                    try {
-                      switchTx = await ethereum.request({
-                        method: "wallet_switchEthereumChain",
-                        params: [{ chainId: data[0].chainId }],
-                      });
-                    } catch (switchError) {
-                      // not checking specific error code, because maybe we're not using MetaMask
-                      try {
-                        switchTx = await ethereum.request({
-                          method: "wallet_addEthereumChain",
-                          params: data,
-                        });
-                      } catch (addError) {
-                        // handle "add" error
-                      }
-                    }
-
-                    if (switchTx) {
-                      console.log(switchTx);
-                    }
-                  }}
-                >
-                  <b>{networkLocal && networkLocal.name}</b>
-                </Button>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
-      );
-    }
-  } else {
-    networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
-      </div>
-    );
-  }
-
   const loadWeb3Modal = useCallback(async () => {
     const provider = await web3Modal.connect();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
@@ -405,9 +322,14 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
 
   // use props as a way to pass configuration values
   const providerProps = {
+    ...props,
+    network,
+    DEBUG,
+    NETWORKCHECK,
     tx,
     price,
     gasPrice,
+    selectedChainId,
     localChainId,
     localProvider,
     userSigner,
@@ -417,13 +339,13 @@ export function Web3Provider({ children, network = "localhost", DEBUG = true, NE
     yourMainnetBalance,
     address,
     blockExplorer,
-    networkDisplay,
     faucetHint,
     web3Modal,
     faucetAvailable,
     loadWeb3Modal,
     logoutOfWeb3Modal,
     contractConfig,
+    targetNetwork,
   };
 
   return <Web3Context.Provider value={providerProps}>{children}</Web3Context.Provider>;
