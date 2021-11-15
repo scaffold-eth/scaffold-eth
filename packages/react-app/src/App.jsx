@@ -460,6 +460,24 @@ function App(props) {
     diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
   }
 
+  const filter = readContracts.YourContract?.filters.Roll(address, null);
+  readContracts.YourContract?.on(filter, (_, value) => {
+    if (value) {
+      const numberRolled = value.toNumber().toString(16).toUpperCase();
+      setDiceRollImage(numberRolled);
+      setDiceRolled(false);
+    }
+  });
+
+  const rollTheDice = async () => {
+    tx(writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01") }), update => {
+      if (update?.status === "confirmed" || update?.status === 1) {
+        setDiceRolled(true);
+        setDiceRollImage("ROLL");
+      }
+    });
+  };
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -531,27 +549,9 @@ function App(props) {
 
         <Switch>
           <Route exact path="/">
-            Prize: <Balance balance={prize} fontSize={64} />
+            Prize: <Balance balance={prize} dollarMultiplier={price} fontSize={64} />
             <div style={{ padding: 16 }}>
-              <Button
-                type="primary"
-                disabled={diceRolled}
-                onClick={async () => {
-                  setDiceRollImage("ROLL");
-                  setDiceRolled(true);
-                  const result = await tx(
-                    writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01") }),
-                  );
-                  setDiceRolled(false);
-                  if (!result) {
-                    setDiceRollImage(null);
-                    return;
-                  }
-                  const roll = await readContracts.YourContract.lastRoll();
-                  const numberRolled = roll.toNumber().toString(16).toUpperCase();
-                  setDiceRollImage(numberRolled);
-                }}
-              >
+              <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                 Roll the dice!
               </Button>
             </div>

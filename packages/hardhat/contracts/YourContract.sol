@@ -11,6 +11,7 @@ contract YourContract {
     uint256 public prize = 0;
     uint256 public lastRoll;
 
+    event Roll(address indexed player, uint256 roll);
     event Winner(address winner, uint256 amount);
 
     constructor() {}
@@ -21,6 +22,8 @@ contract YourContract {
         bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
         uint256 roll = numberRolled(hash);
         lastRoll = roll;
+
+        emit Roll(msg.sender, roll);
 
         if (roll != 0) {
             nonce++;
