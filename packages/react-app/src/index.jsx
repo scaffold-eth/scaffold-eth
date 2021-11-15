@@ -5,6 +5,8 @@ import App from "./App";
 import "./index.css";
 import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 
+import { defaultTheme } from "./theme";
+
 const subgraphUri = "http://localhost:8000/subgraphs/name/scaffold-eth/your-contract";
 
 const client = new ApolloClient({
@@ -17,7 +19,7 @@ const config = {
   useSystemColorMode: false,
 };
 
-const theme = extendTheme({
+const theme = extendTheme(defaultTheme, {
   config,
 });
 
