@@ -471,17 +471,20 @@ function App(props) {
   });
 
   const rollTheDice = async () => {
-    tx(writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01") }), update => {
-      if (update?.status === "sent" || update?.status === 1) {
-        setDiceRolled(true);
-        setDiceRollImage("ROLL");
-      }
+    tx(
+      writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01"), gasLimit: 500000 }),
+      update => {
+        if (update?.status === "sent" || update?.status === 1) {
+          setDiceRolled(true);
+          setDiceRollImage("ROLL");
+        }
 
-      if (update?.status === "failed") {
-        setDiceRolled(false);
-        setDiceRollImage(null);
-      }
-    });
+        if (update?.status === "failed") {
+          setDiceRolled(false);
+          setDiceRollImage(null);
+        }
+      },
+    );
   };
 
   return (
@@ -556,20 +559,9 @@ function App(props) {
         <Switch>
           <Route exact path="/">
             Prize: <Balance balance={prize} dollarMultiplier={price} fontSize={64} />
-            <div style={{ padding: 16, display: "flex", gap: 5, "align-items": "center", "justify-content": "center" }}>
+            <div style={{ padding: 16 }}>
               <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                 Roll the dice!
-              </Button>
-              <Button
-                type="primary"
-                disabled={claiming}
-                onClick={async () => {
-                  setClaiming(true);
-                  await tx(writeContracts.YourContract.claimWinnings());
-                  setClaiming(false);
-                }}
-              >
-                Claim Winnings
               </Button>
             </div>
             {diceRollImg}

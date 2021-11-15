@@ -11,8 +11,6 @@ contract YourContract {
     uint256 public prize = 0;
     uint256 public lastRoll;
 
-    mapping (address => uint256) public winnings;
-
     event Roll(address indexed player, uint256 roll);
     event Winner(address winner, uint256 amount);
 
@@ -34,19 +32,12 @@ contract YourContract {
 
         uint256 amount = prize;
         prize = 0;
-        winnings[msg.sender] += amount;
+        (bool sent, ) = msg.sender.call{value: amount}("");
+        require(sent, "Failed to send Ether");
         emit Winner(msg.sender, amount);
     }
 
     function numberRolled(bytes32 data) internal pure returns (uint256) {
         return uint256(data) % 16;
-    }
-
-    function claimWinnings() public {
-        require(winnings[msg.sender] > 0, "You have no winnings to claim");
-        uint256 amount = winnings[msg.sender];
-        winnings[msg.sender] = 0;
-        (bool sent, ) = msg.sender.call{value: amount}("");
-        require(sent, "Failed to send Ether");
     }
 }
