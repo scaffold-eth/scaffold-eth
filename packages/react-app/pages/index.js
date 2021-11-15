@@ -1,81 +1,71 @@
 import React, { useState, useEffect } from "react";
 import { Address, AddressInput, Contract } from "../components";
 import { List, Card, Button } from "antd";
-// import { useContractReader } from "eth-hooks";
-// import { useEventListener } from "eth-hooks/events";
+import { useContractReader } from "eth-hooks";
+import { useEventListener } from "eth-hooks/events";
 import { Web3Consumer } from "../helpers/Web3Context";
 import { getFromIPFS } from "../helpers/ipfs";
 
 function Home({ web3 }) {
   const { address, readContracts, writeContracts, tx, localProvider, mainnetProvider, blockExplorer } = web3;
   const [yourCollectibles, setYourCollectibles] = useState();
-  const [balance, setBalance] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
-
-  // keep track of a variable from the contract in the local React state:
-  // const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const [yourBalance, setYourBalance] = useState(0);
 
   // 📟 Listen for broadcast events
-  // const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  console.log("📟 Transfer events:", transferEvents);
 
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
-  // const yourBalance = balance && balance.toNumber && balance.toNumber();
+  // updateBalance if it has changed
+  const updateBalance = async () => {
+    const balance = await readContracts.YourCollectible.balanceOf(address);
+    const _balanceNumber = balance && balance.toNumber && balance.toNumber();
 
-  // console.log({ address, balance, yourBalance });
+    console.log("CALLING:", balance);
 
-  const refreshBalance = async () => {
-    if (readContracts?.YourCollectible) {
-      const balance = await readContracts.YourCollectible.balanceOf(address);
-
-      setBalance(balance);
+    if (_balanceNumber != yourBalance) {
+      setYourBalance(_balanceNumber);
     }
   };
 
-  const handleTransfer = async id => {
-    console.log("writeContracts", writeContracts);
-    await tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
-    await refreshBalance();
-  };
+  // poll and update balance for every transferEvent change
+  useEffect(() => {
+    updateBalance();
+  }, [transferEvents]);
 
-  const updateYourCollectibles = async () => {
-    const collectibleUpdate = [];
-    console.log(`Checking again!`);
-    for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-      try {
-        console.log("GEtting token index", tokenIndex);
-        const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-        console.log("tokenId", tokenId);
-        const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-        console.log("tokenURI", tokenURI);
-
-        const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
-        console.log("ipfsHash", ipfsHash);
-
-        const jsonManifestBuffer = await getFromIPFS(ipfsHash);
-
+  // if balance or address has changed, validate user's NFT list
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      const collectibleUpdate = [];
+      console.log(`updateYourCollectibles: `, address, yourBalance);
+      for (let tokenIndex = 0; tokenIndex < yourBalance; tokenIndex++) {
         try {
-          const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
-          console.log("jsonManifest", jsonManifest);
-          collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          console.log("GEtting token index", tokenIndex);
+          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          console.log("tokenId", tokenId);
+          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          console.log("tokenURI", tokenURI);
+
+          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          console.log("ipfsHash", ipfsHash);
+
+          const jsonManifestBuffer = await getFromIPFS(ipfsHash);
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestBuffer.toString());
+            console.log("jsonManifest", jsonManifest);
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
         } catch (e) {
           console.log(e);
         }
-      } catch (e) {
-        console.log(e);
       }
-    }
-    setYourCollectibles(collectibleUpdate);
-  };
-
-  useEffect(() => {
-    refreshBalance();
-  }, [address]);
-
-  useEffect(() => {
+      setYourCollectibles(collectibleUpdate);
+    };
     updateYourCollectibles();
-  }, [balance]);
+  }, [address, yourBalance]);
 
   return (
     <div className="flex flex-1 flex-col h-screen w-full items-center">
@@ -118,7 +108,13 @@ function Home({ web3 }) {
                       setTransferToAddresses({ ...transferToAddresses, ...update });
                     }}
                   />
-                  <Button style={{ marginTop: 10 }} onClick={() => handleTransfer(id)}>
+                  <Button
+                    style={{ marginTop: 10 }}
+                    onClick={() => {
+                      console.log("writeContracts", writeContracts);
+                      tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                    }}
+                  >
                     Transfer
                   </Button>
                 </div>
