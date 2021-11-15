@@ -60,7 +60,7 @@ export default function Ramp(props) {
           setModalUp("up");
         }}
       >
-        <DollarCircleOutlined style={{ color: "#52c41a" }} />{" "}
+        <DollarCircleOutlined style={{ color: "#52c41a", position: "relative", top: -3 }} />{" "}
         {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
       </Button>
       <Modal
