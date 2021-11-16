@@ -20,7 +20,7 @@ export default function debugcontracts({ props }) {
       </div>
       <div className="text-center">
         <Contract
-          name="YourCollectible"
+          name="NextJSTicket"
           signer={web3.userSigner}
           provider={web3.localProvider}
           address={web3.address}
