@@ -1,30 +1,32 @@
 import React, { useState, useEffect } from "react";
 import { Address, AddressInput, Contract } from "../components";
 import { List, Card, Button } from "antd";
-import { useContractReader } from "eth-hooks";
 import { useEventListener } from "eth-hooks/events";
 import { Web3Consumer } from "../helpers/Web3Context";
 import { getFromIPFS } from "../helpers/ipfs";
 
 function Home({ web3 }) {
   const { address, readContracts, writeContracts, tx, localProvider, mainnetProvider, blockExplorer } = web3;
-  const [yourCollectibles, setYourCollectibles] = useState();
+  const [NextJSTickets, setNextJSTickets] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [yourBalance, setYourBalance] = useState(0);
+  const [minting, setMinting] = useState(false);
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "NextJSTicket", "Transfer", localProvider, 1);
   console.log("📟 Transfer events:", transferEvents);
 
   // updateBalance if it has changed
   const updateBalance = async () => {
-    const balance = await readContracts.YourCollectible.balanceOf(address);
-    const _balanceNumber = balance && balance.toNumber && balance.toNumber();
+    if (readContracts?.NextJSTicket) {
+      const balance = await readContracts.NextJSTicket.balanceOf(address);
+      const _balanceNumber = balance && balance.toNumber && balance.toNumber();
 
-    console.log("CALLING:", balance);
+      console.log("CALLING:", balance);
 
-    if (_balanceNumber != yourBalance) {
-      setYourBalance(_balanceNumber);
+      if (_balanceNumber != yourBalance) {
+        setYourBalance(_balanceNumber);
+      }
     }
   };
 
@@ -33,20 +35,42 @@ function Home({ web3 }) {
     updateBalance();
   }, [transferEvents]);
 
+  const requestMint = async () => {
+    setMinting(true);
+    const result = tx(writeContracts.NextJSTicket.mintItem(), update => {
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        setMinting(false);
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+        );
+      }
+    });
+    console.log("awaiting metamask/web3 confirm result...", result);
+    console.log(await result);
+  };
+
   // if balance or address has changed, validate user's NFT list
   useEffect(() => {
-    const updateYourCollectibles = async () => {
+    const updateNextJSTickets = async () => {
       const collectibleUpdate = [];
-      console.log(`updateYourCollectibles: `, address, yourBalance);
+      console.log(`updateNextJSTickets: `, address, yourBalance);
       for (let tokenIndex = 0; tokenIndex < yourBalance; tokenIndex++) {
         try {
           console.log("GEtting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.NextJSTicket.tokenOfOwnerByIndex(address, tokenIndex);
           console.log("tokenId", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+          const tokenURI = await readContracts.NextJSTicket.tokenURI(tokenId);
           console.log("tokenURI", tokenURI);
 
-          const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
+          const ipfsHash = tokenURI.replace("https://gateway.pinata.cloud/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
 
           const jsonManifestBuffer = await getFromIPFS(ipfsHash);
@@ -62,35 +86,42 @@ function Home({ web3 }) {
           console.log(e);
         }
       }
-      setYourCollectibles(collectibleUpdate);
+      setNextJSTickets(collectibleUpdate);
     };
-    updateYourCollectibles();
+    updateNextJSTickets();
   }, [address, yourBalance]);
 
   return (
     <div className="flex flex-1 flex-col h-screen w-full items-center">
-      <div style={{ width: 640, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      <div style={{ width: 700, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <div style={{ marginBottom: 50, display: "flex", justifyContent: "center" }}>
+          <Button type="primary" onClick={requestMint} loading={minting} disabled={minting}>
+            Request To Mint Ticket
+          </Button>
+        </div>
         <List
           bordered
-          dataSource={yourCollectibles}
+          header="Your List of Guillermo’s NFT Tickets"
+          dataSource={NextJSTickets}
           renderItem={item => {
             const id = item.id.toNumber();
             return (
               <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                 <Card
+                  style={{ width: 400 }}
                   title={
                     <div>
                       <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
                     </div>
                   }
                 >
-                  <div>
-                    <img src={item.image} alt={item.name} style={{ maxWidth: 150 }} />
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <img src={item.image} alt={item.name} style={{ maxWidth: 300 }} />
                   </div>
-                  <div>{item.description}</div>
+                  <div style={{ width: "100%", textAlign: "center", marginTop: "10px" }}>{item.description}</div>
                 </Card>
 
-                <div>
+                <div style={{ marginLeft: "5px" }}>
                   owner:{" "}
                   <Address
                     address={item.owner}
@@ -112,7 +143,7 @@ function Home({ web3 }) {
                     style={{ marginTop: 10 }}
                     onClick={() => {
                       console.log("writeContracts", writeContracts);
-                      tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                      tx(writeContracts.NextJSTicket.transferFrom(address, transferToAddresses[id], id));
                     }}
                   >
                     Transfer

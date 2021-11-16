@@ -40,7 +40,7 @@ function MyApp({ Component, pageProps }) {
           <Menu style={{ textAlign: "center" }} selectedKeys={[router.asPath]} mode="horizontal">
             <Menu.Item key="/">
               <Link href="/">
-                <a>YourCollectibles</a>
+                <a>Guillermo’s Ticket NFT App</a>
               </Link>
             </Menu.Item>
             <Menu.Item key="/transfers">
