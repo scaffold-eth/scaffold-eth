@@ -1,3 +1,4 @@
+import { Center, Container, Spinner, Heading } from "@chakra-ui/react";
 import { Alert, Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import { useBalance, useContractLoader, useContractReader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
@@ -60,7 +61,8 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const { isAuthenticated } = useMoralis();
+  const { isAuthenticated, authenticate, isAuthenticating, authError, logout, login, isInitializing, isInitialized } =
+    useMoralis();
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -333,6 +335,22 @@ function App(props) {
     );
   }
 
+  // if (isInitializing) {
+  //   return (
+  //     <Container my={8} pt={8} maxW="container.lg">
+  //       <Center>
+  //         <Spinner thickness="4px" emptyColor="whiteAlpha.400" color="blue.400" speed="0.65s" size="xl" />
+  //       </Center>
+  //     </Container>
+  //   );
+  // }
+  if (!isInitialized) {
+    <Container my={8} maxW="container.lg">
+      <Heading as="h1" size="4xl">
+        Failed to initialize
+      </Heading>
+    </Container>;
+  }
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
