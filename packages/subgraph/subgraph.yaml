@@ -1,0 +1,1044 @@
+specVersion: 0.0.2
+schema:
+  file: ./src/schema.graphql
+dataSources:
+  - kind: ethereum/contract
+    name: bboyle.eth
+    network: mainnet
+    source:
+      address: "0x684653eF9231e6142446053E4766027e6c6aAb15"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: frogbaseball.eth
+    network: mainnet
+    source:
+      address: "0x664C54cF70797a69f82A4991Ea1Be343a03334e8"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: kijun.eth
+    network: mainnet
+    source:
+      address: "0x8DaBdEf0259A8266234fcbDE4b12a59A66559239"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: huxwell.eth
+    network: mainnet
+    source:
+      address: "0xE29ae83beF493eae7A6c07608C25C359d24989C3"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: grothe.eth
+    network: mainnet
+    source:
+      address: "0xeAdc8bBB8717765429712C7BF5C9C5e55f0bCCd5"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: cluda.eth
+    network: mainnet
+    source:
+      address: "0xB34006e71Ac4cF8B05C56422B7Be3d7f14d934E8"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: danielrees.eth
+    network: mainnet
+    source:
+      address: "0xA13966b1b4B66aC6670f0C14f8FA0a45FE219A09"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: stermi.eth
+    network: mainnet
+    source:
+      address: "0x3B2ca03Bae949bA2C72C78D2f331b5Ebd155c735"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: damianmarti.eth
+    network: mainnet
+    source:
+      address: "0x8FE72B655b54f4a900b1A0e6FD9957a6a3779209"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: mridul.eth
+    network: mainnet
+    source:
+      address: "0x4cc7976d1b0784808E838CD89e0A4dF957B0f652"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: developermarwan.eth
+    network: mainnet
+    source:
+      address: "0x52864De6545554437999FA20374AFf409B4F52b7"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: dgrcode.eth
+    network: mainnet
+    source:
+      address: "0xE5C281c470AcedD6f15d41C640988822594bf69A"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: carletex.eth
+    network: mainnet
+    source:
+      address: "0x4b5ed9760e5F5E87c50d9739BeFf5b13FB61cC2F"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: trombone.eth
+    network: mainnet
+    source:
+      address: "0x853E9d7036C48FA36CCCfF0e5b8907ae013ae8Eb"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ghostffcode.eth
+    network: mainnet
+    source:
+      address: "0x0e185D75A3658De186fCef13Ae01e816cCCE599a"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ryanpetroff.eth
+    network: mainnet
+    source:
+      address: "0x6459ED3063E1267B9c22E6410076d328E4B971a6"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: captnseagraves.eth
+    network: mainnet
+    source:
+      address: "0x446455ece8922a5C4CE8b205b74D06bD9706143b"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: lekag.eth
+    network: mainnet
+    source:
+      address: "0xc3c9ff28Ffa2BB65E5827C5Fdc309FFC41e5017e"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: nook.eth
+    network: mainnet
+    source:
+      address: "0xbD0944bb3aE59952E772A65661C1a51BBbF1ea92"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: blindnabler.eth
+    network: mainnet
+    source:
+      address: "0x619ACcbE6E5C4E5Cc71a29a05eE7228867c9733c"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: 0xsama.eth
+    network: mainnet
+    source:
+      address: "0x538d822559Eb7A2D594E7D68dCdf29b3296830D3"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: xiangan.eth
+    network: mainnet
+    source:
+      address: "0xb32270518664C77a09E44f6DA59aD2dd3470299C"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: shravansunder.eth
+    network: mainnet
+    source:
+      address: "0x262f56C901847261080e366eDAb27d454a1315cd"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: powvt.eth
+    network: mainnet
+    source:
+      address: "0xc80bfd26B102991E2D96CE583B5eFA2E4Db0733d"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: isaacpatka.eth
+    network: mainnet
+    source:
+      address: "0x21BD856523f62Dd2A6eDBa750E97bD106204D5f2"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: pabloruiz.eth
+    network: mainnet
+    source:
+      address: "0xB3A51b63B7f1Bcb8600FF67E4a69C7B690994a89"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: togzhan.eth
+    network: mainnet
+    source:
+      address: "0x3B60b34Aa5dEAFF586D3841AD62b4aa730e11ceC"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ironsoul.eth
+    network: mainnet
+    source:
+      address: "0xDbcD66b510191cD0539F7FAe8cD981B82Ee2006f"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: viraz.eth
+    network: mainnet
+    source:
+      address: "0x974a061A8cE5a2b07cB3f1D356Bb01Daaa9eC31d"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: sadda11asm.eth
+    network: mainnet
+    source:
+      address: "0x1eB6Da6F03B6D3C0d8da0B127388Add4d78Eb652"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: amogh.eth
+    network: mainnet
+    source:
+      address: "0xA267be6eF185f7563354e90882c1d3332455B8F8"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: calvinquin.argent.xyz
+    network: mainnet
+    source:
+      address: "0x864Fa2F20e414c9534B1DE567a30a77436c7a745"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: ssteiger.eth
+    network: mainnet
+    source:
+      address: "0x24aAc13141DbE8946433215bfdc793C2B71398c8"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: pharo.eth
+    network: mainnet
+    source:
+      address: "0x3DC246459433aFc0360b83166A6Dd9B7697EaA4A"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: mrdee.eth
+    network: mainnet
+    source:
+      address: "0xD31aDDE3c6659653f5BdCb237afB353155db1567"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: pileofscraps.eth
+    network: mainnet
+    source:
+      address: "0x0A9eDE9A66683F23d369FC6bAAA9D1fa7198Ebf2"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: hunterchang.eth
+    network: mainnet
+    source:
+      address: "0x560Dd59ED235446d04da7C907289E3f88e685447"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: hipsterhelpdesk.eth
+    network: mainnet
+    source:
+      address: "0x04e9245892391FB290D11D5deB0bB8C2A325B629"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: adamfuller.eth
+    network: mainnet
+    source:
+      address: "0x754A8a09Eae2FFEFbDE706a6ed40C0f0F3c58d7e"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts
+  - kind: ethereum/contract
+    name: austingriffith.eth
+    network: mainnet
+    source:
+      address: "0x518Af5F20bf07C882e17731207761C174AB4F9c4"
+      abi: SimpleStream
+      startBlock: 12470442
+    mapping:
+      kind: ethereum/events
+      apiVersion: 0.0.5
+      language: wasm/assemblyscript
+      entities:
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
+      abis:
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
+      eventHandlers:
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
+      file: ./src/mapping.ts

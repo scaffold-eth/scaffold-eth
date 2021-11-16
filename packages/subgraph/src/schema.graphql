@@ -1,15 +1,43 @@
-type Purpose @entity {
+type Stream @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
-  createdAt: BigInt!
-  transactionHash: String!
+  builder: Builder!
+  createdAt: BigInt
+  deposits: [Deposit!] @derivedFrom(field: "stream")
+  withdrawals: [Withdrawal!] @derivedFrom(field: "stream")
+  totalDeposited: BigInt!
+  totalWithdrawn: BigInt!
 }
 
-type Sender @entity {
+type Builder @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
-  createdAt: BigInt!
-  purposeCount: BigInt!
+  streams: [Stream!] @derivedFrom(field: "builder")
+  withdrawals: [Withdrawal!] @derivedFrom(field: "builder")
+  totalWithdrawn: BigInt!
+}
+
+type Funder @entity {
+  id: ID!
+  createdAt: BigInt
+  deposits: [Deposit!] @derivedFrom(field: "funder")
+  totalDeposited: BigInt!
+}
+
+type Deposit @entity {
+  id: ID!
+  stream: Stream!
+  funder: Funder!
+  createdAt: BigInt
+  amount: BigInt
+  reason: String
+  transactionHash: String
+}
+
+type Withdrawal @entity {
+  id: ID!
+  stream: Stream!
+  builder: Builder!
+  createdAt: BigInt
+  amount: BigInt
+  reason: String
+  transactionHash: String
 }

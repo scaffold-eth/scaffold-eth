@@ -2,24 +2,31 @@ specVersion: 0.0.2
 schema:
   file: ./src/schema.graphql
 dataSources:
+  {{#streams}}
   - kind: ethereum/contract
-    name: YourContract
-    network: localhost
+    name: {{name}}
+    network: mainnet
     source:
-      address: '{{YourContractAddress}}'
-      abi: YourContract
-      startBlock: 1
+      address: "{{streamAddress}}"
+      abi: SimpleStream
+      startBlock: 12470442
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.4
+      apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - Stream
+        - Builder
+        - Funder
+        - Deposit
+        - Withdrawal
       abis:
-        - name: YourContract
-          file: ./abis/YourContract.json
+        - name: SimpleStream
+          file: ./abis/SimpleStream.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: Deposit(indexed address,uint256,string)
+          handler: handleDeposit
+        - event: Withdraw(indexed address,uint256,string)
+          handler: handleWithdrawal
       file: ./src/mapping.ts
+  {{/streams}}
