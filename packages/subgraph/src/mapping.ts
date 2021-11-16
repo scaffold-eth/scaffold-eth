@@ -70,11 +70,13 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
   let builder = Builder.load(event.params.to.toHexString());
   if (builder !== null) {
     builder.totalWithdrawn = builder.totalWithdrawn.plus(event.params.amount);
+    builder.save();
   }
 
   let stream = Stream.load(streamAddress.toHexString());
   if (stream !== null) {
     stream.totalWithdrawn = stream.totalWithdrawn.plus(event.params.amount);
+    stream.save();
   }
 
   let withdrawal = new Withdrawal(
@@ -87,4 +89,6 @@ export function handleWithdrawal(event: WithdrawalEvent): void {
   withdrawal.createdAt = event.block.timestamp;
   withdrawal.reason = event.params.reason;
   withdrawal.transactionHash = event.transaction.hash.toHex();
+
+  withdrawal.save();
 }
