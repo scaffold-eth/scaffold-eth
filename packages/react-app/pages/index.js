@@ -121,6 +121,15 @@ function Home({ web3 }) {
                     </a>
                   </div>
                   <div style={{ width: "100%", textAlign: "center", marginTop: "10px" }}>{item.description}</div>
+                  <div className="mt-2">
+                    <Button
+                      type="primary"
+                      target="_blank"
+                      href={`https://opensea.io/assets/0x08263614cf6fbdedaffe03a708ac5243811232a6/${id}`}
+                    >
+                      View On OpenSea
+                    </Button>
+                  </div>
                 </Card>
 
                 <div className="ml-2 flex flex-col items-center">
