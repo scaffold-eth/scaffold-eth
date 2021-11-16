@@ -93,7 +93,7 @@ function Home({ web3 }) {
 
   return (
     <div className="flex flex-1 flex-col h-screen w-full items-center">
-      <div style={{ width: 700, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      <div style={{ width: 800, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ marginBottom: 50, display: "flex", justifyContent: "center" }}>
           <Button type="primary" onClick={requestMint} loading={minting} disabled={minting}>
             Request To Mint Ticket
@@ -108,7 +108,7 @@ function Home({ web3 }) {
             return (
               <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                 <Card
-                  style={{ width: 400 }}
+                  style={{ width: 450 }}
                   title={
                     <div>
                       <span style={{ fontSize: 16, marginRight: 8 }}>#{id}</span> {item.name}
@@ -116,19 +116,23 @@ function Home({ web3 }) {
                   }
                 >
                   <div style={{ display: "flex", justifyContent: "center" }}>
-                    <img src={item.image} alt={item.name} style={{ maxWidth: 300 }} />
+                    <a href={item.external_url}>
+                      <img src={item.image} alt={item.name} style={{ maxWidth: 300 }} />
+                    </a>
                   </div>
                   <div style={{ width: "100%", textAlign: "center", marginTop: "10px" }}>{item.description}</div>
                 </Card>
 
-                <div style={{ marginLeft: "5px" }}>
-                  owner:{" "}
-                  <Address
-                    address={item.owner}
-                    ensProvider={mainnetProvider}
-                    blockExplorer={blockExplorer}
-                    fontSize={16}
-                  />
+                <div className="ml-2 flex flex-col items-center">
+                  <div className="flex flex-1 items-center justify-center mb-2">
+                    owner:{" "}
+                    <Address
+                      address={item.owner}
+                      ensProvider={mainnetProvider}
+                      blockExplorer={blockExplorer}
+                      fontSize={16}
+                    />
+                  </div>
                   <AddressInput
                     ensProvider={mainnetProvider}
                     placeholder="transfer to address"
@@ -139,15 +143,17 @@ function Home({ web3 }) {
                       setTransferToAddresses({ ...transferToAddresses, ...update });
                     }}
                   />
-                  <Button
-                    style={{ marginTop: 10 }}
-                    onClick={() => {
-                      console.log("writeContracts", writeContracts);
-                      tx(writeContracts.NextJSTicket.transferFrom(address, transferToAddresses[id], id));
-                    }}
-                  >
-                    Transfer
-                  </Button>
+                  <div style={{ display: "flex", justifyContent: "center" }}>
+                    <Button
+                      style={{ marginTop: 10 }}
+                      onClick={() => {
+                        console.log("writeContracts", writeContracts);
+                        tx(writeContracts.NextJSTicket.transferFrom(address, transferToAddresses[id], id));
+                      }}
+                    >
+                      Transfer
+                    </Button>
+                  </div>
                 </div>
               </List.Item>
             );
