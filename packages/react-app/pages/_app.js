@@ -48,16 +48,6 @@ function MyApp({ Component, pageProps }) {
                 <a>Transfers</a>
               </Link>
             </Menu.Item>
-            <Menu.Item key="/ipfsup">
-              <Link href="/ipfsup">
-                <a>IPFS Upload</a>
-              </Link>
-            </Menu.Item>
-            <Menu.Item key="/ipfsdown">
-              <Link href="/ipfsdown">
-                <a>IPFS Download</a>
-              </Link>
-            </Menu.Item>
             <Menu.Item key="/debugcontracts">
               <Link href="/debugcontracts">
                 <a>Debug Contracts</a>

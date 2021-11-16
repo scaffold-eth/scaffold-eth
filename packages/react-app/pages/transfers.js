@@ -8,7 +8,7 @@ function Transfers({ web3 }) {
   const { readContracts, localProvider, mainnetProvider } = web3;
 
   // 📟 Listen for broadcast events
-  const transferEvents = useEventListener(readContracts, "YourCollectible", "Transfer", localProvider, 1);
+  const transferEvents = useEventListener(readContracts, "NextJSTicket", "Transfer", localProvider, 1);
 
   return (
     <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
