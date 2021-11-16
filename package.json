@@ -10,6 +10,7 @@
   ],
   "private": true,
   "scripts": {
+    "next:build": "yarn workspace @scaffold-eth/react-app next:build",
     "react-app:build": "yarn workspace @scaffold-eth/react-app build",
     "react-app:eject": "yarn workspace @scaffold-eth/react-app eject",
     "react-app:start": "yarn workspace @scaffold-eth/react-app dev",
