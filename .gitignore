@@ -9,8 +9,6 @@ packages/hardhat/*.txt
 
 packages/hardhat/artifacts*
 packages/hardhat/deployments
-packages/react-app/contracts/*
-!packages/react-app/contracts/external_contracts.js
 packages/hardhat/cache*
 packages/**/data
 !packages/react-app/contracts/contracts.js
