@@ -3,6 +3,7 @@ import { ChakraProvider, extendTheme } from "@chakra-ui/react";
 import React from "react";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import ReactDOM from "react-dom";
+import { MoralisProvider } from "react-moralis";
 import App from "./App";
 import "./index.css";
 
@@ -27,14 +28,20 @@ const client = new ApolloClient({
   cache: new InMemoryCache(),
 });
 
+// Kovan Server - Moralis
+const APP_ID = "pLlhmNVd8euy9wk78byphunxxGKYTHxeoKluHY5K";
+const SERVER_URL = "https://m8anui0ii7fz.usemoralis.com:2053/server";
+
 // Wrap the App component with Chakra UI
 ReactDOM.render(
-  <ApolloProvider client={client}>
-    <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <ChakraProvider theme={theme}>
-        <App subgraphUri={subgraphUri} />
-      </ChakraProvider>
-    </ThemeSwitcherProvider>
-  </ApolloProvider>,
+  <MoralisProvider appId={APP_ID} serverUrl={SERVER_URL}>
+    <ApolloProvider client={client}>
+      <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+        <ChakraProvider theme={theme}>
+          <App subgraphUri={subgraphUri} />
+        </ChakraProvider>
+      </ThemeSwitcherProvider>
+    </ApolloProvider>
+  </MoralisProvider>,
   document.getElementById("root"),
 );

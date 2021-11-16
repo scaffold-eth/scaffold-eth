@@ -4,6 +4,7 @@ import { useBalance, useContractLoader, useContractReader, useGasPrice, useUserP
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import React, { useCallback, useEffect, useState } from "react";
+import { useMoralis } from "react-moralis";
 import { BrowserRouter, Link, Route, Switch } from "react-router-dom";
 import "./App.css";
 import { Account, Contract, Faucet, GasGauge, Header, Ramp, ThemeSwitch } from "./components";
@@ -59,6 +60,7 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
+  const { isAuthenticated } = useMoralis();
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
