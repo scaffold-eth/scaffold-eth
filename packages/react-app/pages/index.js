@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Address, AddressInput, Contract } from "../components";
 import { List, Card, Button } from "antd";
+import { ForkOutlined } from "@ant-design/icons";
 import { useEventListener } from "eth-hooks/events";
 import { Web3Consumer } from "../helpers/Web3Context";
 import { getFromIPFS } from "../helpers/ipfs";
@@ -96,12 +97,11 @@ function Home({ web3 }) {
       <div style={{ width: 800, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ marginBottom: 50, display: "flex", justifyContent: "center" }}>
           <Button type="primary" onClick={requestMint} loading={minting} disabled={minting}>
-            Request To Mint Ticket
+            Mint Ticket
           </Button>
         </div>
         <List
           bordered
-          header="Your List of Guillermo’s NFT Tickets"
           dataSource={NextJSTickets}
           renderItem={item => {
             const id = item.id.toNumber();
@@ -159,6 +159,13 @@ function Home({ web3 }) {
             );
           }}
         />
+
+        <div className="mt-4 flex flex-1 justify-center">
+          <Button href="https://github.com/scaffold-eth/scaffold-eth/tree/Ticket-NFT" target="_blank">
+            <ForkOutlined />
+            <span className="ml-2">Fork Code</span>
+          </Button>
+        </div>
       </div>
     </div>
   );
