@@ -21,21 +21,34 @@ contract YourCollectible is ERC721, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  constructor() public ERC721("OptimisticLoogies", "OPLOOG") {
-    // RELEASE THE OPTIMISTIC LOOGIES!
-  }
+  // all funds go to buidlguidl.eth
+  address payable public constant recipient =
+    payable(0x97843608a00e2bbc75ab0C1911387E002565DEDE);
+
+  uint256 public constant limit = 1864;
+  uint256 public constant curve = 1005; // price increase 0,5% with each purchase
+  uint256 public price = 0.001 ether;
+  // the 463th optimistic loogies cost 0.01 ETH, the 925th cost 0.1ETH, the 1387th cost 1 ETH and the last ones cost 10 ETH
+
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;
   mapping (uint256 => uint256) public mouthLength;
 
-  uint256 mintDeadline = block.timestamp + 24 hours;
+  constructor() public ERC721("OptimisticLoogies", "OPLOOG") {
+    // RELEASE THE OPTIMISTIC LOOGIES!
+  }
 
   function mintItem()
       public
+      payable
       returns (uint256)
   {
-      require( block.timestamp < mintDeadline, "DONE MINTING");
+      require(_tokenIds.current() < limit, "DONE MINTING");
+      require(msg.value >= price, "NOT ENOUGH");
+
+      price = (price * curve) / 1000;
+
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
@@ -46,6 +59,9 @@ contract YourCollectible is ERC721, Ownable {
       chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
       // small chubiness loogies have small mouth
       mouthLength[id] = 180+((uint256(chubbiness[id]/4)*uint256(uint8(predictableRandom[4])))/255);
+
+      (bool success, ) = recipient.call{value: msg.value}("");
+      require(success, "could not send");
 
       return id;
   }
