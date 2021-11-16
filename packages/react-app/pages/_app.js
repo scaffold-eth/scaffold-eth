@@ -10,7 +10,7 @@ import { ThemeSwitcherProvider } from "react-css-theme-switcher";
 import Head from "next/head";
 import { useRouter } from "next/router";
 
-const targetNetwork = "localhost";
+const targetNetwork = "mainnet";
 
 function MyApp({ Component, pageProps }) {
   const router = useRouter();
