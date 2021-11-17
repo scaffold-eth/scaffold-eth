@@ -50,7 +50,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -226,9 +226,10 @@ function App(props) {
   });
 
   // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
+  const someRandomRinkebyDAIBalance = useContractReader(readContracts, "DAI", "balanceOf", [
+    "0x206DA619F41c702895742444B17db92ac12d1a03",
   ]);
+  console.log("someRandomRinkebyDAIBalance",someRandomRinkebyDAIBalance)
 
   // keep track of a variable from the contract in the local React state:
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
@@ -262,7 +263,6 @@ function App(props) {
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -435,27 +435,7 @@ function App(props) {
               }}
               to="/"
             >
-              YourContract
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
+              Rinkeby DAI
             </Link>
           </Menu.Item>
           <Menu.Item key="/mainnetdai">
@@ -466,16 +446,6 @@ function App(props) {
               to="/mainnetdai"
             >
               Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
             </Link>
           </Menu.Item>
         </Menu>
@@ -489,7 +459,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="DAI"
               price={price}
               signer={userSigner}
               provider={localProvider}
