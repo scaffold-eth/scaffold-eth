@@ -185,15 +185,32 @@ function App() {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, { chainId: localChainId });
 
-  // keep track of a variable from the contract in the local React state:
-  const currentElectionStartBlock = useContractReader(
-    readContracts,
-    "QuadraticDiplomacyContract",
-    "currentElectionStartBlock",
-  );
+  const [adminRole, setAdminRole] = useState();
+  const [isAdmin, setIsAdmin] = useState(false);
 
-  const adminRole = useContractReader(readContracts, "QuadraticDiplomacyContract", "DEFAULT_ADMIN_ROLE");
-  const isAdmin = useContractReader(readContracts, "QuadraticDiplomacyContract", "hasRole", [adminRole, address]);
+  useEffect(() => {
+    const updateRoleAdmin = async () => {
+      if (DEBUG) console.log("Updating admin role...");
+      if (readContracts && readContracts.QuadraticDiplomacyContract) {
+        const adminRoleFromContract = await readContracts.QuadraticDiplomacyContract.DEFAULT_ADMIN_ROLE();
+        setAdminRole(adminRoleFromContract);
+        if (DEBUG) console.log("Admin role updated!");
+      }
+    };
+    updateRoleAdmin();
+  }, [address, readContracts]);
+
+  useEffect(() => {
+    const updateAdmin = async () => {
+      if (DEBUG) console.log("Updating admin...");
+      if (readContracts && readContracts.QuadraticDiplomacyContract && adminRole) {
+        const isAdminFromContract = await readContracts.QuadraticDiplomacyContract.hasRole(adminRole, address);
+        setIsAdmin(isAdminFromContract);
+        if (DEBUG) console.log("Admin updated!");
+      }
+    };
+    updateAdmin();
+  }, [address, readContracts, adminRole]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
