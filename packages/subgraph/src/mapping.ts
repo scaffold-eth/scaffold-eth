@@ -22,8 +22,12 @@ export function handleDeposit(event: DepositEvent): void {
 
     let contract = SimpleStream.bind(streamAddress);
     let builderAddress = contract.toAddress();
+    let cap = contract.cap();
+    let frequency = contract.frequency();
 
     stream.builder = builderAddress.toHexString();
+    stream.cap = cap;
+    stream.frequency = frequency;
     stream.createdAt = event.block.timestamp;
     stream.totalDeposited = event.params.amount;
     stream.totalWithdrawn = BigInt.fromI32(0);

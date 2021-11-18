@@ -1,7 +1,9 @@
 type Stream @entity {
   id: ID!
   builder: Builder!
-  createdAt: BigInt
+  cap: BigInt
+  frequency: BigInt
+  createdAt: BigInt!
   deposits: [Deposit!] @derivedFrom(field: "stream")
   withdrawals: [Withdrawal!] @derivedFrom(field: "stream")
   totalDeposited: BigInt!
