@@ -53,8 +53,6 @@ export default function Account({
 }) {
   const { currentTheme } = useThemeSwitcher();
 
-  console.log({ web3Modal });
-
   return (
     <div>
       {minimized ? (
