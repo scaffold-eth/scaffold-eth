@@ -1,6 +1,6 @@
 # 🏗👷🏾 Scaffold-ETH Challenges
 
-> challenges that help you become a builder on Ethereum! 🚀
+> learn how to use 🏗 scaffold-eth to create decentralized applications on Ethereum. 🚀
 
 ---
 
