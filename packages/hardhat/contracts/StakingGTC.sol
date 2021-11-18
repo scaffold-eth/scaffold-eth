@@ -27,6 +27,13 @@ contract StakingGTC is Ownable {
     uint256 poolid;
     address asset;
     uint256 balance;
+    mapping(uint256 => Project) projects;
+  }
+
+  struct Project {
+    uint256 id;
+    address wallet;
+    uint256 poolBalance;
   }
 
   // mappings
