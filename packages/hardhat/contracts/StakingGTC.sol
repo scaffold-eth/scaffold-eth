@@ -18,6 +18,7 @@ contract StakingGTC is Ownable {
   using Counters for Counters.Counter;
 
   Counters.Counter private _poolIds;
+  Counters.Counter private _projectIds;
 
   // state
   address public gtcAddress;// 0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F;
@@ -32,15 +33,18 @@ contract StakingGTC is Ownable {
 
   struct Project {
     uint256 id;
+    string name;
+    string description;
     address wallet;
     uint256 poolBalance;
   }
 
   // mappings
   // track poolInfo from its id
-  mapping(uint256 => PoolInfo) public poolInfo;
+  mapping(uint256 => PoolInfo) public poolInfos;
   // track user balance for each pool they belong to
   mapping(address => mapping(uint256 => PoolInfo)) public userPoolInfos;
+  mapping(uint256 => Project) public projects;
 
   // events
   event Stake(address indexed user, uint256 amount, uint256 timestamp);
@@ -53,44 +57,75 @@ contract StakingGTC is Ownable {
     gtcAddress = _gtcAddress;
 
     // for testing, create a pool on construction with 0 balance
-    createPool(gtcAddress, 0);
+    createPool(gtcAddress);
   }
 
   // get pool balance
   function poolBalance(uint256 poolId) public view returns(uint256) {
-    return poolInfo[poolId].balance;
+    return poolInfos[poolId].balance;
   }
 
   // get pool details
+  // todo: need to add the projects under this pool
   function poolDetails(uint256 poolId) public view returns(address, uint256) {
     return (
-      poolInfo[poolId].asset,
-      poolInfo[poolId].balance
+      poolInfos[poolId].asset,
+      poolInfos[poolId].balance
     );
   }
 
-  // create pool
-  function createPool(address asset, uint256 amount) public returns(uint256) {
+  // get the project details
+  function projectDetails(uint256 projectId) public view returns(uint256, string memory, string memory, address, uint256) {
+    return (
+      projects[projectId].id,
+      projects[projectId].name,
+      projects[projectId].description,
+      projects[projectId].wallet,
+      projects[projectId].poolBalance
+    );
+  }
+
+  /// @dev create pool for the GTC asset
+  ///      ability to add other tokens
+  /// @param asset the pool token
+  function createPool(address asset) public returns(uint256) {
     _poolIds.increment();
     uint256 id = _poolIds.current();
 
-    PoolInfo storage pool = poolInfo[id];
+    PoolInfo storage pool = poolInfos[id];
     pool.asset = asset;
-    pool.balance = amount;
+    pool.balance = 0;
     pool.poolid = id;
 
     pool = userPoolInfos[msg.sender][id];
 
-    emit PoolCreated(id, asset, amount, block.timestamp);
+    emit PoolCreated(id, asset, 0, block.timestamp);
 
     return id;
   }
 
 
-  // deposit/stake
-  function stake(address asset, uint256 amount, uint256 poolId) public {
-    PoolInfo storage pool = poolInfo[poolId];
+  /// @dev deposit/stake for a project with a wallet/owner of the project
+  /// @param asset the asset the user is staking, GTC for now
+  /// @param amount the amount the user is staking on a project
+  /// @param poolId the poolId we are using for GTC which is pool 1
+  /// @param projectWallet the projects wallet address for receiving funds
+  /// @param name the name of the project
+  /// @param description the desctiption of the project
+  function stakeForProject(address asset, uint256 amount, uint256 poolId, address projectWallet, string memory name, string memory description) public {
+    PoolInfo storage pool = poolInfos[poolId];
+    _projectIds.increment();
+    uint projectId = _projectIds.current();
+    Project storage project = projects[projectId];
+    
+    project.wallet = projectWallet;
+    project.description = description;
+    project.name = name;
+    project.poolBalance = project.poolBalance.add(amount);
+    project.id = projectId;
+
     pool.balance = pool.balance.add(amount);
+    pool.projects[projectId] = project;
 
     IERC20(pool.asset).safeTransferFrom(msg.sender, address(this), amount);
     pool = userPoolInfos[msg.sender][poolId];
@@ -99,9 +134,11 @@ contract StakingGTC is Ownable {
   }
 
 
-  // withdrawl/unstake
-  function unstake(uint256 poolId) public {
-    PoolInfo storage pool = poolInfo[poolId];
+  /// @dev withdrawl/unstake from a project and claim rewards
+  /// @param poolId the pool id
+  /// @param projectId the project id
+  function unstakeFromProject(uint256 poolId, uint256 projectId) public {
+    PoolInfo storage pool = poolInfos[poolId];
 
     require(IERC20(pool.asset).balanceOf(address(this)) >= pool.balance, "Cannot withdraw more that the contract holds ser");
     pool.balance = pool.balance.sub(IERC20(pool.asset).balanceOf(address(this)));
@@ -110,8 +147,13 @@ contract StakingGTC is Ownable {
 
     pool = userPoolInfos[msg.sender][poolId];
 
+    claimRewards();
+
     emit Unstake(msg.sender, pool.balance, block.timestamp);
   }
 
-  
+  /// @dev Claims the users rewards for staking on a project
+  function claimRewards() internal {
+
+  }
 }
