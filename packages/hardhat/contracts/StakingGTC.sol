@@ -19,6 +19,7 @@ contract StakingGTC is Ownable {
 
   Counters.Counter private _poolIds;
   Counters.Counter private _projectIds;
+  Counters.Counter private _donorIds;
 
   // state
   address public gtcAddress;// 0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F;
@@ -37,26 +38,39 @@ contract StakingGTC is Ownable {
     string description;
     address wallet;
     uint256 poolBalance;
+    mapping(address => Donor) donors;
+  }
+
+  struct Donor {
+    address wallet;
+    uint256 stakedAmt;
+    uint256 timestamp;
+    uint256 projectId;
   }
 
   // mappings
   // track poolInfo from its id
   mapping(uint256 => PoolInfo) public poolInfos;
+
+  mapping(uint256 => Project) public projects;
+  mapping(address => Donor) public donors;
+
   // track user balance for each pool they belong to
   mapping(address => mapping(uint256 => PoolInfo)) public userPoolInfos;
-  mapping(uint256 => Project) public projects;
-
+  
   // events
-  event Stake(address indexed user, uint256 amount, uint256 timestamp);
-  event Unstake(address indexed user, uint256 amount,uint256 timestamp);
-  event PoolCreated(uint256 poolId, address asset, uint256 initialBalance, uint256 timestamp);
+  event Stake(address indexed user, uint256 amount, uint256 timestamp, uint256 projectId);
+  event Unstake(address indexed user, uint256 amount,uint256 timestamp, uint256 projectId);
+  event PoolCreated(uint256 indexed poolId, address asset, uint256 initialBalance, uint256 timestamp);
+  event ProjectAdded(uint256 indexed projectId);
+  event ProjectFunded(uint256 indexed projectId, uint256 amount);
 
   // For now we are passing in the gtc address for testing and different networks
   // On mainnet we will remove this parameter from the constructor
   constructor(address _gtcAddress) {
     gtcAddress = _gtcAddress;
 
-    // for testing, create a pool on construction with 0 balance
+    // create a pool on construction with 0 balance for GTC staking on projects
     createPool(gtcAddress);
   }
 
@@ -65,7 +79,7 @@ contract StakingGTC is Ownable {
     return poolInfos[poolId].balance;
   }
 
-  // get pool details
+  /// @dev get pool details
   // todo: need to add the projects under this pool
   function poolDetails(uint256 poolId) public view returns(address, uint256) {
     return (
@@ -74,7 +88,7 @@ contract StakingGTC is Ownable {
     );
   }
 
-  // get the project details
+  /// @dev get the project details
   function projectDetails(uint256 projectId) public view returns(uint256, string memory, string memory, address, uint256) {
     return (
       projects[projectId].id,
@@ -82,6 +96,16 @@ contract StakingGTC is Ownable {
       projects[projectId].description,
       projects[projectId].wallet,
       projects[projectId].poolBalance
+    );
+  }
+
+  /// @dev get the donor details
+  function donorDetails(address donorWallet) public view returns(address, uint256, uint256, uint256) {
+    return (
+      donors[donorWallet].wallet,
+      donors[donorWallet].stakedAmt,
+      donors[donorWallet].timestamp,
+      donors[donorWallet].projectId
     );
   }
 
@@ -124,15 +148,17 @@ contract StakingGTC is Ownable {
     project.poolBalance = project.poolBalance.add(amount);
     project.id = projectId;
 
+    emit ProjectAdded(projectId);
+    emit ProjectFunded(projectId, amount);
+
     pool.balance = pool.balance.add(amount);
-    pool.projects[projectId] = project;
+    project = pool.projects[projectId];
 
     IERC20(pool.asset).safeTransferFrom(msg.sender, address(this), amount);
     pool = userPoolInfos[msg.sender][poolId];
 
-    emit Stake(msg.sender, amount, block.timestamp);
+    emit Stake(msg.sender, amount, block.timestamp, projectId);
   }
-
 
   /// @dev withdrawl/unstake from a project and claim rewards
   /// @param poolId the pool id
@@ -149,7 +175,7 @@ contract StakingGTC is Ownable {
 
     claimRewards();
 
-    emit Unstake(msg.sender, pool.balance, block.timestamp);
+    emit Unstake(msg.sender, pool.balance, block.timestamp, projectId);
   }
 
   /// @dev Claims the users rewards for staking on a project
