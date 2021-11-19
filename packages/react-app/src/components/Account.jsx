@@ -76,7 +76,7 @@ export default function Account({
         </span>
       )}
       {web3Modal &&
-        (web3Modal?.cachedProvider ? (
+        (web3Modal?.cachedProvider || web3Modal?.provider?.safe ? (
           <Button
             key="logoutbutton"
             style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
