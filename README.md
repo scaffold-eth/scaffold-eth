@@ -1,4 +1,4 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH - 🔒 Gnosis Safe App Starter Kit
 
 > everything you need to build on Ethereum! 🚀
 
