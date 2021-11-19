@@ -1,6 +1,6 @@
 import Fortmatic from "fortmatic";
 import WalletLink from "walletlink";
-import Web3Modal from "web3modal";
+import { SafeAppWeb3Modal } from "@gnosis.pm/safe-apps-web3modal";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Authereum from "authereum";
@@ -19,7 +19,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alch
   Web3 modal helps us "connect" external wallets:
 */
 const web3ModalSetup = () =>
-  new Web3Modal({
+  new SafeAppWeb3Modal({
     network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
     cacheProvider: true, // optional
     theme: "light", // optional. Change to "dark" for a dark theme.

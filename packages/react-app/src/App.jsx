@@ -75,7 +75,6 @@ const providers = [
 
 function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
-  const [faucetClicked, setFaucetClicked] = useState(false);
   const [route, setRoute] = useState();
   const [address, setAddress] = useState();
 
@@ -202,7 +201,7 @@ function App(props) {
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
-    const provider = await web3Modal.connect();
+    const provider = await web3Modal.requestProvider();
     setInjectedProvider(new ethers.providers.Web3Provider(provider));
 
     provider.on("chainChanged", chainId => {

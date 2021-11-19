@@ -18,6 +18,8 @@
     "@ant-design/icons": "^4.2.2",
     "@apollo/client": "^3.3.21",
     "@apollo/react-hooks": "^4.0.0",
+    "@gnosis.pm/safe-apps-sdk": "^6.0.0",
+    "@gnosis.pm/safe-apps-web3modal": "^5.0.0",
     "@portis/web3": "^4.0.5",
     "@ramp-network/ramp-instant-sdk": "^2.2.0",
     "@testing-library/jest-dom": "^5.11.4",
