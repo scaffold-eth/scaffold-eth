@@ -1,7 +1,8 @@
 {
   "short_name": "🏗 Scaffold-Eth App",
-  "start_url": ".",
   "name": "🏗 Scaffold-Eth App",
+  "description": "Gnosis Starter Apps Starter Kit",
+  "iconPath": "favicon.ico",
   "icons": [
     {
       "src": "favicon.ico",
