@@ -3,7 +3,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 //import Torus from "@toruslabs/torus-embed"
 import WalletLink from "walletlink";
-import { Alert, Button, Col, Menu, Row, Input } from "antd";
+import { Alert, Button, Col, Menu, Row, Input, Select } from "antd";
 import "antd/dist/antd.css";
 import React, { useCallback, useEffect, useState } from "react";
 import { BrowserRouter, Link, Route, Switch, useParams } from "react-router-dom";
@@ -55,7 +55,11 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.ropsten; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const cachedNetwork = window.localStorage.getItem("network");
+let targetNetwork = NETWORKS[cachedNetwork || NETWORKS.ropsten]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+if (!targetNetwork) {
+  targetNetwork = NETWORKS.xdai;
+}
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -183,11 +187,6 @@ function App(props) {
   const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -362,9 +361,6 @@ function App(props) {
   if (contractAddress && contractABI) {
     externalContractDisplay = (
       <div>
-        <div style={{ padding: 32, backgroundColor: "#eeffef", fontWeight: "bolder" }}>
-          🚀 🎖 👩‍🚀 - External contract data entered -- PROCEED -- 🎉 🍾 🎊
-        </div>
         <Contract
           customContract={theExternalContract}
           signer={userSigner}
@@ -380,15 +376,9 @@ function App(props) {
   function AddressFromURL() {
     let { addr, abi } = useParams();
     let theExternalContractFromURL = useExternalContractLoader(injectedProvider, addr, abi);
-    // setContractAddress(addr);
-    // setContractABI(abi);
 
     return (
       <div>
-        {/*externalContractDisplay*/}
-        <div style={{ padding: 32, backgroundColor: "#eeffef", fontWeight: "bolder" }}>
-          🚀 🎖 👩‍🚀 - External contract data entered -- PROCEED -- 🎉 🍾 🎊
-        </div>
         <Contract
           customContract={theExternalContractFromURL}
           signer={userSigner}
@@ -407,11 +397,42 @@ function App(props) {
   console.log("==-- selectedChainId: ", selectedChainId);
   console.log("==-- theExternalContract: ", theExternalContract);
 
+  const options = [];
+  for (const id in NETWORKS) {
+    options.push(
+      <Select.Option key={id} value={NETWORKS[id].name}>
+        <span style={{ color: NETWORKS[id].color, fontSize: 24 }}>{NETWORKS[id].name}</span>
+      </Select.Option>,
+    );
+  }
+
+  const networkSelect = (
+    <Select
+      size="large"
+      defaultValue={targetNetwork.name}
+      style={{ textAlign: "left", width: "15%", fontSize: 30 }}
+      onChange={value => {
+        if (targetNetwork.chainId != NETWORKS[value].chainId) {
+          window.localStorage.setItem("network", value);
+          setTimeout(() => {
+            window.location.reload();
+          }, 1);
+        }
+      }}
+    >
+      {options}
+    </Select>
+  );
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
       {networkDisplay}
+      <span style={{ verticalAlign: "middle" }}>
+          {networkSelect}
+          {/*faucetHint*/}
+      </span>
       <BrowserRouter>
         <Switch>
           <Route path="/contract/:addr/:abi">
@@ -438,7 +459,6 @@ function App(props) {
                   }}
                 />
               </div>
-              {/*externalContractDisplay*/}
             </div>
             <div>
               {externalContractDisplay}
