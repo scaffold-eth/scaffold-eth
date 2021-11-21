@@ -24,9 +24,6 @@ contract ConditionalMolochBot is ERC721  {
 
   address public constant ogNFT = 0x42dCbA5dA33CDDB8202CC182A443a3e7b299dADb;
   mapping(uint256 => bool) hasMinted;
-  bool public hasUpdatedURI;
-  string public URI;
-  address public uriUpdater = 0x807a1752402D21400D555e1CD7f175566088b955;
 
   constructor() public ERC721("3dMoloch", "3dMOLC") {
   }
@@ -35,17 +32,9 @@ contract ConditionalMolochBot is ERC721  {
       require(IERC721(ogNFT).ownerOf(_tokenId) == msg.sender, 'msg.sender not owner of this NFT');
       require(IERC721(ogNFT).ownerOf(_tokenId) != address(0), 'invalid tokenId');
       require(hasMinted[_tokenId] == false, 'nft already minted for this id!');
-      require(_tokenId <= 200, 'Only MolochBots 1-200 are eligible for minting!');
       hasMinted[_tokenId] = true;
       _mint(msg.sender, _tokenId);
   }
-
-    function updateURI(string memory _URI) public {
-        require(hasUpdatedURI == false, 'URI HAS ALREADY BEEN UPDATED!');
-        require(msg.sender == uriUpdater, 'msg.sender not cleared to update uri');
-        URI = _URI;
-        hasUpdatedURI=true;
-    }
 
   function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
           if (_i == 0) {
@@ -71,11 +60,8 @@ contract ConditionalMolochBot is ERC721  {
 
 
   function tokenURI(uint256 _tokenId) public view override returns (string memory) {
-        if(hasUpdatedURI){
+        string memory URI = _baseURI();
         return string(abi.encodePacked(URI,'/',uint2str(_tokenId),'.json'));
-        } else {
-            return string('');
-        }
 }
 
 }
