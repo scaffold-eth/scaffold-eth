@@ -8,6 +8,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
+// Todo: abstract name and description away from contract storage
+
 /// @title A title that should describe the contract/interface
 /// @author jaxcoder
 /// @notice Explain to an end user what this does
@@ -51,7 +53,6 @@ contract StakingGTC is Ownable {
   // mappings
   // track poolInfo from its id
   mapping(uint256 => PoolInfo) public poolInfos;
-
   mapping(uint256 => Project) public projects;
   mapping(address => Donor) public donors;
 
@@ -127,6 +128,8 @@ contract StakingGTC is Ownable {
 
     return id;
   }
+
+  // Todo: register project/create project
 
 
   /// @dev deposit/stake for a project with a wallet/owner of the project
