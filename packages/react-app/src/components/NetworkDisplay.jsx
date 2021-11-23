@@ -1,4 +1,6 @@
 import React from "react";
+import { NETWORK } from "../constants";
+import { Alert, Button } from "antd";
 
 function NetworkDisplay({ NETWORKCHECK, localChainId, selectedChainId, targetNetwork }) {
   let networkDisplay = "";
