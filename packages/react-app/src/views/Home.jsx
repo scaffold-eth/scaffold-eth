@@ -1,63 +1,86 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useContractReader } from "eth-hooks";
+import { Button, Card, List } from "antd";
+import {
+  Address,
+  AddressInput,
+} from "../components";
 import { ethers } from "ethers";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- */
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
+function Home({ readContracts, writeContracts, priceToMint, yourCollectibles, tx, mainnetProvider, blockExplorer, transferToAddresses, setTransferToAddresses }) {
   return (
     <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <Button
+          type="primary"
+          onClick={async () => {
+            const priceRightNow = await readContracts.YourCollectible.price();
+            try {
+              const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow }));
+              await txCur.wait();
+            } catch (e) {
+              console.log("mint failed", e);
+            }
+          }}
         >
-          packages/react-app/views/Home.jsx
-        </span>
+          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+        </Button>
       </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤓</span>
-        The "purpose" variable from our contract is{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          {purpose}
-        </span>
+
+      <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+        <List
+          bordered
+          dataSource={yourCollectibles}
+          renderItem={item => {
+            const id = item.id.toNumber();
+
+            return (
+              <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                <Card
+                  title={
+                    <div>
+                      <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                    </div>
+                  }
+                >
+                  <img src={item.image} alt={"Loogie #" + id} />
+                  <div>{item.description}</div>
+                </Card>
+
+                <div>
+                  owner:{" "}
+                  <Address
+                    address={item.owner}
+                    ensProvider={mainnetProvider}
+                    blockExplorer={blockExplorer}
+                    fontSize={16}
+                  />
+                  <AddressInput
+                    ensProvider={mainnetProvider}
+                    placeholder="transfer to address"
+                    value={transferToAddresses[id]}
+                    onChange={newValue => {
+                      const update = {};
+                      update[id] = newValue;
+                      setTransferToAddresses({ ...transferToAddresses, ...update });
+                    }}
+                  />
+                  <Button
+                    onClick={() => {
+                      tx(writeContracts.YourCollectible.transferFrom(address, transferToAddresses[id], id));
+                    }}
+                  >
+                    Transfer
+                  </Button>
+                </div>
+              </List.Item>
+            );
+          }}
+        />
       </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
+        🛠 built with <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">🏗 scaffold-eth</a>
+        🍴 <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
       </div>
     </div>
   );
