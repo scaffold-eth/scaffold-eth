@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { YourLoogies, Loogies } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -269,16 +269,44 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">Your Loogies</Link>
+          <Link to="/">Home</Link>
+        </Menu.Item>
+        <Menu.Item key="/yourLoogies">
+          <Link to="/yourLoogies">Your Optimistic Loogies</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
       </Menu>
 
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <Button
+          type="primary"
+          onClick={async () => {
+            const priceRightNow = await readContracts.YourCollectible.price();
+            try {
+              const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow }));
+              await txCur.wait();
+            } catch (e) {
+              console.log("mint failed", e);
+            }
+          }}
+        >
+          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+        </Button>
+      </div>
+
       <Switch>
         <Route exact path="/">
-          <Home
+          <Loogies
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            DEBUG={DEBUG}
+          />
+        </Route>
+        <Route exact path="/yourLoogies">
+          <YourLoogies
             readContracts={readContracts}
             writeContracts={writeContracts}
             priceToMint={priceToMint}
@@ -305,6 +333,11 @@ function App(props) {
           />
         </Route>
       </Switch>
+
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32 }}>
+        🛠 built with <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">🏗 scaffold-eth</a>
+        🍴 <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
+      </div>
 
       <ThemeSwitch />
 
