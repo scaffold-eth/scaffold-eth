@@ -40,7 +40,7 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
       }
     };
     updateAllLoogies();
-  }, [readContracts.YourCollectible, page]);
+  }, [readContracts.YourCollectible, (totalSupply || "0").toString(), page]);
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
