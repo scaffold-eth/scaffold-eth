@@ -25,7 +25,7 @@ export default function DEX(props) {
   const contractAddress = props.readContracts?props.readContracts[contractName].address:""
   const contractBalance = useBalance(props.injectedProvider, contractAddress)
 
-  const tokenBalance = useTokenBalance(props.readContracts, contractAddress)
+  const tokenBalance = useTokenBalance(props.readContracts[tokenName], contractAddress)
   const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance))
   const ethBalance = useBalance(props.localProvider, contractAddress )
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(ethBalance))
