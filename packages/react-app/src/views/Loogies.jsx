@@ -12,11 +12,11 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
 
   useEffect(() => {
     const updateAllLoogies = async () => {
-      if (readContracts.YourCollectible) {
+      if (readContracts.YourCollectible && totalSupply) {
         setLoadingLoogies(true);
         const collectibleUpdate = [];
-        let startIndex = perPage * (page - 1);
-        for (let tokenIndex = startIndex; tokenIndex < startIndex + perPage && tokenIndex < totalSupply; tokenIndex++) {
+        let startIndex = totalSupply - 1 - perPage * (page - 1);
+        for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
           try {
             if (DEBUG) console.log("Getting token index", tokenIndex);
             const tokenId = await readContracts.YourCollectible.tokenByIndex(tokenIndex);
