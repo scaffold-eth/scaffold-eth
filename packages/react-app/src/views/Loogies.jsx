@@ -4,22 +4,11 @@ import { Button, Card, List, Spin } from "antd";
 import { Address } from "../components";
 import { ethers } from "ethers";
 
-function Loogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) {
-  const [totalSupply, setTotalSupply] = useState(0);
+function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG }) {
   const [allLoogies, setAllLoogies] = useState();
   const [page, setPage] = useState(1);
   const [loadingLoogies, setLoadingLoogies] = useState(true);
   const perPage = 8;
-
-  useEffect(() => {
-    const updateTotalSupply = async () => {
-      if (readContracts.YourCollectible) {
-        const supply = await readContracts.YourCollectible.totalSupply();
-        setTotalSupply(supply);
-      }
-    };
-    updateTotalSupply();
-  }, [readContracts.YourCollectible]);
 
   useEffect(() => {
     const updateAllLoogies = async () => {
@@ -51,7 +40,7 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) {
       }
     };
     updateAllLoogies();
-  }, [readContracts.YourCollectible, totalSupply, page]);
+  }, [readContracts.YourCollectible, page]);
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>

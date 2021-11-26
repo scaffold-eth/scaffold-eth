@@ -153,6 +153,10 @@ function App(props) {
   const priceToMint = useContractReader(readContracts, "YourCollectible", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
+  const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply");
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const loogiesLeft = 1864 - totalSupply;
+
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
   if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
@@ -280,6 +284,13 @@ function App(props) {
       </Menu>
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <div style={{ fontSize: 16 }}>
+          <p>
+            Only <strong>1864 Optimistic Loogies</strong> available (one for each <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogie</a>) on a price curve <strong>increasing 0.5%</strong> with each new mint.
+          </p>
+          <p>All Ether from sales goes to public goods!!</p>
+        </div>
+
         <Button
           type="primary"
           onClick={async () => {
@@ -294,6 +305,10 @@ function App(props) {
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
+
+        <p style={{ fontWeight: "bold" }}>
+          { loogiesLeft } left
+        </p>
       </div>
 
       <Switch>
@@ -302,6 +317,7 @@ function App(props) {
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
+            totalSupply={totalSupply}
             DEBUG={DEBUG}
           />
         </Route>
