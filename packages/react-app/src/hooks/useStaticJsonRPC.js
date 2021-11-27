@@ -14,7 +14,7 @@ export default function useStaticJsonRPC(urlArray) {
 
   const handleProviders = useCallback(async () => {
     try {
-      const p = await Promise.any(urlArray.map(createProvider));
+      const p = await Promise.race(urlArray.map(createProvider));
       const _p = await p;
 
       setProvider(_p);
@@ -26,7 +26,7 @@ export default function useStaticJsonRPC(urlArray) {
 
   useEffect(() => {
     handleProviders();
-  }, []);
+  }, [JSON.stringify(urlArray)]);
 
   return provider;
 }
