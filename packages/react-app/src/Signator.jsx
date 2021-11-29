@@ -168,8 +168,6 @@ function Signator({ injectedProvider, address, loadWeb3Modal, chainList, mainnet
     }
   };
 
-  console.log(manualAddress, manualSignature);
-
   return (
     <div className="container">
       <Card>

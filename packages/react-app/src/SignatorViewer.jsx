@@ -65,7 +65,7 @@ const checkEip1271 = async (provider, address, message, signature) => {
       ],
     };
 
-    const _addressCode = provider.getCode(address);
+    const _addressCode = await provider.getCode(address);
     if (_addressCode === "0x") {
       return "MISMATCH";
     }
@@ -88,8 +88,9 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
   const searchParams = useSearchParams();
   const history = useHistory();
 
-  const [message] = useState(searchParams.get("message"));
+  const [message, setMessage] = useState(searchParams.get("message"));
   const [compressedTypedData] = useState(searchParams.get("typedData"));
+  const [ipfsHash] = useState(searchParams.get("ipfs"));
   const [typedData, setTypedData] = useState();
   const [signatures, setSignatures] = useState(
     searchParams.get("signatures") ? searchParams.get("signatures").split(",") : [],
@@ -109,7 +110,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
     messageToCheck = ethers.utils.isBytesLike(message) ? ethers.utils.arrayify(message) : message;
   }
 
-  if (!message && !compressedTypedData) {
+  if (!message && !compressedTypedData && !ipfsHash) {
     console.log(searchParams.get("message"), searchParams.get("typedData"));
     history.push(`/`);
   }
@@ -124,6 +125,46 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
 
     decompressTypedData();
   }, [compressedTypedData]);
+
+  useEffect(() => {
+    const fetchFromIpfs = async () => {
+      try {
+        if (ipfsHash) {
+          const response = await fetch("https://cloudflare-ipfs.com/ipfs/" + ipfsHash);
+          const _data = await response.json();
+          console.log("ipfsData:", _data);
+
+          if (_data.msg || _data.data) {
+            if (_data.msg) {
+              setMessage(_data.msg);
+              searchParams.set("message", _data.msg);
+            }
+            if (_data.data) {
+              const _compressedData = await codec.compress(_data.data);
+              searchParams.set("typedData", _compressedData);
+              setTypedData(_data.data);
+            }
+
+            if (_data.address && _data.sig) {
+              setSignatures([_data.sig]);
+              searchParams.set("signatures", _data.sig);
+              setAddresses([_data.address]);
+              searchParams.set("addresses", _data.address);
+            }
+
+            history.push(`${location.pathname}?${searchParams.toString()}`);
+          } else {
+            history.push(`/`);
+          }
+        }
+      } catch (e) {
+        console.log(e);
+        history.push(`/`);
+      }
+    };
+
+    fetchFromIpfs();
+  }, [ipfsHash]);
 
   useEffect(() => {
     const _signatures = searchParams.get("signatures") ? searchParams.get("signatures").split(",") : [];
@@ -149,7 +190,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
           if (typedData)
             _signingAddress = ethers.utils.verifyTypedData(typedData.domain, typedData.types, typedData.message, sig);
 
-          if (_signingAddress === addresses[i]) {
+          if (_signingAddress.toLowerCase() === addresses[i].toLowerCase()) {
             return "MATCH";
           }
 
