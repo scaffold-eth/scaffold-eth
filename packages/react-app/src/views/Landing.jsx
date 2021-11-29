@@ -9,7 +9,7 @@ import { local } from "web3modal";
 
 const { Option } = Select;
 
-export default function Landing({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener, mainnetContracts }) {
+export default function Landing({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener, mainnetContracts, readContracts }) {
   
   return (
     <div>
@@ -66,6 +66,7 @@ export default function Landing({ localProvider, yourLocalBalance, mainnetProvid
               tx={tx}
               useEventListener={useEventListener}
               mainnetContracts={mainnetContracts}
+              readContracts={readContracts}
               style={{
                 margin:'20px'
               }}

@@ -2,23 +2,16 @@ import { utils } from "ethers";
 import { Button, Input, Card, Row, Col, Select, Form, InputNumber } from "antd";
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
-<<<<<<< HEAD
-import { useTokenList, useContractLoader, useContractReader } from "../hooks";
+import { useContractLoader, useContractReader } from "eth-hooks";
 import Events from "../components/Events";
 import { local } from "web3modal";
 import autoprefixer from "autoprefixer";
 
 const { Option } = Select;
 
-export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts, useEventListener, mainnetContracts }) {
-  const [selectedToken, setSelectedToken] = useState("Pick a token!");
-  const listOfTokens = useTokenList(
-    "https://raw.githubusercontent.com/SetProtocol/uniswap-tokenlist/main/set.tokenlist.json",
-  );
-  const readContracts = useContractLoader(localProvider);
-  const ogNFT = useContractReader(readContracts,"ConditionalEthBot", "ogNFT")
+export default function Hints({ localProvider, yourLocalBalance, mainnetProvider, price, address, tx, writeContracts,  mainnetContracts, readContracts}) {
+  const ogNFT = useContractReader(readContracts,"ConditionalEthBot", "ogNFT");
   const [tokenId, setTokenId] = useState("...");
-  const botMinted = useEventListener(readContracts, "ConditionalEthBot", "botMinted", localProvider, 1);
 
   const ethBotOwnerOf = useContractReader(mainnetContracts, "ETHBOT", "ownerOf", [
    tokenId 

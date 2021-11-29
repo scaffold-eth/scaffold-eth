@@ -8,7 +8,6 @@ import {
   useContractLoader,
   useContractReader,
   useGasPrice,
-  useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
@@ -26,7 +25,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 // import Hints from "./Hints";
-import { Landing, Hints } from "./views";
+import { Landing, MolochLanding } from "./views";
 
 const { ethers } = require("ethers");
 /*
@@ -67,8 +66,8 @@ const scaffoldEthProvider = navigator.onLine
   : null;
 const poktMainnetProvider = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(
-      "https://eth-mainnet.gateway.pokt.network/v1/lb/61853c567335c80036054a2b",
-    )
+    "https://eth-mainnet.gateway.pokt.network/v1/lb/61853c567335c80036054a2b",
+  )
   : null;
 const mainnetInfura = navigator.onLine
   ? new ethers.providers.StaticJsonRpcProvider(`https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`)
@@ -98,7 +97,7 @@ const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alch
 const web3Modal = new Web3Modal({
   network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
   cacheProvider: true, // optional
-  theme: "light", // optional. Change to "dark" for a dark theme.
+  theme: "dark", // optional. Change to "dark" for a dark theme.
   providerOptions: {
     walletconnect: {
       package: WalletConnectProvider, // required
@@ -164,8 +163,8 @@ function App(props) {
     poktMainnetProvider && poktMainnetProvider._isProvider
       ? poktMainnetProvider
       : scaffoldEthProvider && scaffoldEthProvider._network
-      ? scaffoldEthProvider
-      : mainnetInfura;
+        ? scaffoldEthProvider
+        : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -228,17 +227,11 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
-  const transferEvent = useEventListener(readContracts, "ConditionalNFT", "Transfer", localProvider, 1);
-
   // EXTERNAL CONTRACT EXAMPLE:
   //
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -433,6 +426,15 @@ function App(props) {
       <Header />
       {networkDisplay}
       <BrowserRouter>
+        <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
+          <Menu.Item key="/">
+            <Link to="/">3d Eth Bot Minter</Link>
+          </Menu.Item>
+          <Menu.Item key="/moloch">
+            <Link to="/moloch">3d Moloch Minter</Link>
+          </Menu.Item>
+        </Menu>
+
         <Switch>
           <Route exact path="/contract">
             {/*
@@ -440,9 +442,8 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
             <Contract
-              name="ConditionalEthBot"
+              name="ConditionalMolochBot"
               signer={userSigner}
               provider={localProvider}
               address={address}
@@ -450,19 +451,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-              localProvider={localProvider}
-              writeContracts={writeContracts}
-              tx={tx}
-              useEventListener={useEventListener}
-            />
-          </Route>
-          <Route path="/">
+          <Route exact path="/">
             <Landing
               address={address}
               yourLocalBalance={yourLocalBalance}
@@ -471,8 +460,21 @@ function App(props) {
               localProvider={localProvider}
               writeContracts={writeContracts}
               tx={tx}
-              useEventListener={useEventListener}
               mainnetContracts={mainnetContracts}
+              readContracts={readContracts}
+            />
+          </Route>
+          <Route path="/moloch">
+            <MolochLanding
+              address={address}
+              yourLocalBalance={yourLocalBalance}
+              mainnetProvider={mainnetProvider}
+              price={price}
+              localProvider={localProvider}
+              writeContracts={writeContracts}
+              tx={tx}
+              mainnetContracts={mainnetContracts}
+              readContracts={readContracts}
             />
           </Route>
         </Switch>

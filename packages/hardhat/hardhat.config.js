@@ -26,9 +26,9 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "rinkeby";
+const defaultNetwork = "mainnet";
 
-const mainnetGwei = 131;
+const mainnetGwei = 110;
 
 function mnemonic() {
   try {
