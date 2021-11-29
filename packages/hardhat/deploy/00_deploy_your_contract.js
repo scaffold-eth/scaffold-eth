@@ -16,7 +16,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     GTC = await deploy("GTC", {
       from: deployer,
       // front-end address vvvvvvvvvvvvvvv replace with args: [admins[0]], for deploy
-      args: ["0x3f15B8c6F9939879Cb030D6dd935348E57109637"],
+      args: [process.env.DEVELOPER],
       log: true,
     });
   }
@@ -30,6 +30,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Getting a previously deployed contract
   const StakeGTCContract = await ethers.getContract("StakingGTC", deployer);
+
+  // create sample pool
+  if (chainId === "31337") {
+    const stakeDemo = await StakeGTCContract.createPool(
+      "QmUfQaJQuqQZNhyKDmgxFtqo6oEdo8s9peXjTenz9cPm4m"
+    );
+    await stakeDemo.wait(1);
+  }
 
   // log the GTC and StreamFactory addresses
   console.log({
