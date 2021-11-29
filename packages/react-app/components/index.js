@@ -19,4 +19,5 @@ export { default as Wallet } from "./Wallet";
 export { default as L2Bridge } from "./L2Bridge";
 export { default as NetworkDisplay } from "./NetworkDisplay";
 export { default as ETHStats } from "./ETHStats";
+export { default as StakingPool } from "./StakingPool";
 export { default as DevUI } from "./DevUI";

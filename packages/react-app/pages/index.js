@@ -1,5 +1,6 @@
+import { Button } from "antd";
 import React, { useContext } from "react";
-import { Contract, Account, Header } from "../components";
+import { Contract, Account, Header, AddressInput, StakingPool } from "../components";
 import { Web3Consumer } from "../helpers/Web3Context";
 
 function Home({ web3 }) {
@@ -16,27 +17,18 @@ function Home({ web3 }) {
       </div>
       {/* Page Header end */}
 
-      {/* Main Page Content start */}
-      <div className="flex flex-1 flex-col h-screen w-full items-center">
-        <div className="text-center" style={{ margin: 64 }}>
-          <span>This App is powered by Scaffold-eth & Next.js!</span>
-          <br />
-          <span>
-            Added{" "}
-            <a href="https://tailwindcomponents.com/cheatsheet/" target="_blank" rel="noreferrer">
-              TailwindCSS
-            </a>{" "}
-            for easier styling.
-          </span>
+      <div className="container mx-auto">
+        <div className="flex flex-1 justify-end items-center mt-16">
+          <Button>Add Project</Button>
         </div>
-        <div className="text-center">
-          <Contract
-            name="YourContract"
-            signer={web3.userSigner}
-            provider={web3.localProvider}
+
+        <div className="mt-16">
+          <StakingPool
+            id={1}
             address={web3.address}
-            blockExplorer={web3.blockExplorer}
-            contractConfig={web3.contractConfig}
+            tx={web3.tx}
+            writeContracts={web3.writeContracts}
+            readContracts={web3.readContracts}
           />
         </div>
       </div>
