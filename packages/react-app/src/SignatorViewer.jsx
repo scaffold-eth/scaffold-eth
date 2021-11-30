@@ -218,7 +218,7 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
       return Promise.all(_addressChecks);
     };
 
-    if ((message || typedData) && signatures) {
+    if ((message || typedData) && signatures && addresses.length > 0) {
       checkAddresses().then(data => {
         setAddressChecks(data);
       });
@@ -407,6 +407,8 @@ function SignatorViewer({ injectedProvider, mainnetProvider, address, loadWeb3Mo
                 _indicator = <CheckCircleTwoTone style={{ fontSize: 24 }} twoToneColor="#52c41a" />;
               } else if (addressChecks[index] === "MISMATCH") {
                 _indicator = <CloseCircleTwoTone style={{ fontSize: 24 }} twoToneColor="#ff4d4f" />;
+              } else if (!addressChecks[index]) {
+                _indicator = <Alert message="Verifying" type="warning" />;
               } else {
                 _indicator = <Alert message="Invalid" type="error" />;
               }
