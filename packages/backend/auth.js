@@ -6,19 +6,21 @@ const getProvider = () => {
 };
 
 const userHasToken = async (address) => {
-  const tokenAddress = process.env.TOKEN;
+  const GODSTokenAddress = process.env.TOKEN;
+  const EARTHTokenAddress = process.env.TOKEN2;
+  const expectedBalance = ethers.utils.parseEther("1");
   const abi = [
     "function balanceOf(address _owner) external view returns (uint256)",
   ];
 
-  const tokenContract = new ethers.Contract(tokenAddress, abi, getProvider());
+  const GODSToken = new ethers.Contract(GODSTokenAddress, abi, getProvider());
+  const EARTHToken = new ethers.Contract(EARTHTokenAddress, abi, getProvider());
 
-  const balance = await tokenContract.balanceOf(address);
-
-  console.log({ balance: balance.toString(), address });
+  const GODSBalance = await GODSToken.balanceOf(address);
+  const EARTHBalance = await EARTHToken.balanceOf(address);
 
   // require balance to be >= 2
-  return balance.gte(ethers.utils.parseEther("2"));
+  return GODSBalance.gte(expectedBalance) || EARTHBalance.gte(expectedBalance);
 };
 
 const signUserData = (data) => {
