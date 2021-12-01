@@ -460,6 +460,7 @@ function App(props) {
 
               let result = tx({
                 to: toAddress,
+                chainId: selectedChainId,
                 value,
                 gasPrice,
                 gasLimit: 21000,
