@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
   */
-  await deploy("ConditionalMolochBot", {
+  await deploy("UpgradedEthBot", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     args: []['3dMolochBot', '3DMOLC'],
