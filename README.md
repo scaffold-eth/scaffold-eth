@@ -9,9 +9,9 @@ This challenge will provide a tutorial to help you build/understand a simple dec
 ### Checkpoint 0: 📦 install 📚
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git challenge-3-dex
-cd challenge-3-dex
-git checkout challenge-3-dex
+git clone https://github.com/austintgriffith/scaffold-eth.git challenge-5-dex
+cd challenge-5-dex
+git checkout challenge-5-dex
 yarn install
 ```
 
