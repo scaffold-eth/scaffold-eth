@@ -168,7 +168,7 @@ Uncomment the Dex Component and the slimmed down Baloons component to load the t
 📠 You can verify on etherscan by updating the etherscan-verify command in the hardhat package with your api key. 
 
 
-### Checkpoint 5: 🚢 Ship it! 🚁
+### Checkpoint 8: 🚢 Ship it! 🚁
 
  📦 Run `yarn build` to package up your frontend.
 
