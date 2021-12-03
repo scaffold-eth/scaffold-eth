@@ -66,7 +66,7 @@ We can see that the DEX starts empty. We want to be able to call init() to start
   // await balloons.transfer("YOUR_ADDRESS",""+(10*10**18));
 ```
 
-Run `yarn deploy`. The front end should show you you have balloon tokens. We can’t just call init() yet because the DEX contract isn’t allowed to transfer tokens from our account. We need to approve() the DEX contract with the Balloons UI. Copy and paste the DEX address and then set the amount to 5000000000000000000 (5 * 10¹⁸). You can confirm this worked using the allowance() function. Now we are ready to call init() on the DEX. We will tell it to take (5 *10¹⁸) of our tokens and we will also send 0.01 ETH with the transaction. You can see the DEX contract's value update and you can check the DEX token balance using the balanceOf function on the Balloons UI. 
+Run `yarn deploy`. The front end should show you you have balloon tokens. We can’t just call init() yet because the DEX contract isn’t allowed to transfer tokens from our account. We need to approve() the DEX contract with the Balloons UI. Copy and paste the DEX address and then set the amount to 3000000000000000000 (3 * 10¹⁸). You can confirm this worked using the allowance() function. Now we are ready to call init() on the DEX. We will tell it to take (3 *10¹⁸) of our tokens and we will also send 0.01 ETH with the transaction. You can see the DEX contract's value update and you can check the DEX token balance using the balanceOf function on the Balloons UI. 
 
 This works pretty well, but it will be a lot easier if we just call the init() function as we deploy the contract. In the `00_deploy_your_conract.js` script try uncommenting the init section so our DEX will start with 3 ETH and 3 Balloons of liquidity:
 
