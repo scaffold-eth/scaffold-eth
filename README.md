@@ -79,7 +79,7 @@ This works pretty well, but it will be a lot easier if we just call the init() f
   // await dex.init(""+(3*10**18),{value:ethers.utils.parseEther('3'),gasLimit:200000})
 ```
 
-Now when we `yarn deploy` reset our contract should be initialized as soon as it deploys and we should have equal reserves of ETH and tokens.
+Now when we `yarn deploy --reset` and our contract should be initialized as soon as it deploys and we should have equal reserves of ETH and tokens.
 
 ### Checkpoint 3: Price
 
