@@ -1,0 +1,12 @@
+{
+  "name": "@scaffold-eth/truffle",
+  "version": "1.0.0",
+  "description": "",
+  "main": "truffle-config.js",
+  "scripts": {
+    "test": "truffle test",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate"
+  },
+  "license": "MIT"
+}

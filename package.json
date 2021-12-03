@@ -16,6 +16,10 @@
     "react-app:test": "yarn workspace @scaffold-eth/react-app test",
     "build": "yarn workspace @scaffold-eth/react-app build --max-old-space-size=12288",
     "prettier": "yarn workspace @scaffold-eth/react-app prettier",
+    "ganache": "ganache",
+    "truffle:compile": "yarn workspace @scaffold-eth/truffle compile",
+    "truffle:deploy": "yarn workspace @scaffold-eth/truffle migrate",
+    "truffle:test": "yarn workspace @scaffold-eth/truffle test",
     "chain": "yarn workspace @scaffold-eth/hardhat chain",
     "fork": "yarn workspace @scaffold-eth/hardhat fork",
     "node": "yarn workspace @scaffold-eth/hardhat chain",
@@ -66,7 +70,9 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "ganache": "^7.0.0-beta.0"
+  },
   "devDependencies": {
     "husky": "^7.0.2"
   }
