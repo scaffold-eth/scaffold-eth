@@ -20,7 +20,7 @@ if [ "$1" = "start" ]; then
   docker exec -dt SCAFFOLD_ETH bash -c "yarn start"
 else
   if [ "$1" = "deploy" ]; then
-    [ -z "$DOCKER_IMAGE" ] && echo "Container does not exist. Run the script with 'start' before runing it with the 'deploy' option." \
+    [ -z "$DOCKER_IMAGE" ] && echo "Container does not exist. Run the script with 'start' before running it with the 'deploy' option." \
       || docker exec -ti SCAFFOLD_ETH bash -c "yarn deploy"
   else
     echo "Invalid command. Choose 'start' or 'deploy'."
