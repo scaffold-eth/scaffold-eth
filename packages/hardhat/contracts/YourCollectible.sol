@@ -23,13 +23,12 @@ contract YourCollectible is ERC721Enumerable, Ownable {
 
   // all funds go to buidlguidl.eth
   address payable public constant recipient =
-    payable(0x97843608a00e2bbc75ab0C1911387E002565DEDE);
+    payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
 
-  uint256 public constant limit = 1864;
-  uint256 public constant curve = 1005; // price increase 0,5% with each purchase
+  uint256 public constant limit = 3728;
+  uint256 public constant curve = 1002; // price increase 0,4% with each purchase
   uint256 public price = 0.001 ether;
-  // the 463th optimistic loogies cost 0.01 ETH, the 925th cost 0.1ETH, the 1387th cost 1 ETH and the last ones cost 10 ETH
-
+  // the 1154th optimistic loogies cost 0.01 ETH, the 2306th cost 0.1ETH, the 3459th cost 1 ETH and the last ones cost 1.7 ETH
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => uint256) public chubbiness;

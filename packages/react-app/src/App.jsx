@@ -155,7 +155,7 @@ function App(props) {
 
   const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const loogiesLeft = 1864 - totalSupply;
+  const loogiesLeft = 3728 - totalSupply;
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
@@ -286,7 +286,7 @@ function App(props) {
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
-            Only <strong>1864 Optimistic Loogies</strong> available (one for each <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogie</a>) on a price curve <strong>increasing 0.5%</strong> with each new mint.
+            Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogies</a>) on a price curve <strong>increasing 0.2%</strong> with each new mint.
           </p>
           <p>All Ether from sales goes to public goods!!</p>
         </div>
