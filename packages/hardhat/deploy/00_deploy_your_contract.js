@@ -26,6 +26,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   // await balloons.transfer("YOUR_ADDRESS",""+(10*10**18));
 
   // uncomment to init DEX on deploy:
+  // const dex = await ethers.getContract("DEX", deployer);
   // console.log("Approving DEX ("+dex.address+") to take Balloons from main account...")
   // If you are going to the testnet make sure your deployer account has enough ETH
   // await balloons.approve(dex.address,ethers.utils.parseEther('100'));
