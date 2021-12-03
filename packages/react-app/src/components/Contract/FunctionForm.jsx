@@ -2,7 +2,7 @@ import { Button, Col, Divider, Input, Row, Tooltip } from "antd";
 import React, { useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../../helpers";
-import tryToDisplay from "./utils";
+import { tryToDisplay, tryToDisplayAsText } from "./utils";
 
 const { utils, BigNumber } = require("ethers");
 
@@ -204,7 +204,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                 try {
                   const returned = await contractFunction(...args);
                   handleForm(returned);
-                  result = tryToDisplay(returned);
+                  result = tryToDisplayAsText(returned);
                 } catch (err) {
                   console.error(err);
                 }
