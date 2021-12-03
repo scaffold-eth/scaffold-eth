@@ -14,7 +14,7 @@ const tryToDisplay = thing => {
   if (thing && thing.indexOf && thing.indexOf("0x") === 0 && thing.length === 42) {
     return <Address address={thing} fontSize={22} />;
   }
-  if (thing.constructor.name == "Array") {
+  if (thing && thing.constructor && thing.constructor.name == "Array") {
     const mostReadable = v => (["number", "boolean"].includes(typeof v) ? v : tryToDisplay(v));
     return JSON.stringify(thing.map(mostReadable));
   }
