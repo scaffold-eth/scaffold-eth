@@ -278,6 +278,9 @@ function App(props) {
         <Menu.Item key="/yourLoogies">
           <Link to="/yourLoogies">Your Optimistic Loogies</Link>
         </Menu.Item>
+        <Menu.Item key="/howto">
+          <Link to="/howto">How To Use Optimistic Network</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -333,6 +336,29 @@ function App(props) {
             transferToAddresses={transferToAddresses}
             setTransferToAddresses={setTransferToAddresses}
           />
+        </Route>
+        <Route exact path="/howto">
+          <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
+            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
+            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
+              <ul>
+                <li>
+                  Go to <a target="_blank" href="https://chainid.link/?network=optimism">https://chainid.link/?network=optimism</a>
+                </li>
+                <li>
+                  Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in <strong>MetaMask</strong>.
+                </li>
+              </ul>
+            </div>
+            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add funds to your wallet on Optimistic Ethereum network</h2>
+            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
+              <ul>
+                <li><a href="https://portr.xyz/" target="_blank">The Teleporter</a>: the cheaper option, but with a 0.05 ether limit per transfer.</li>
+                <li><a href="https://gateway.optimism.io/" target="_blank">The Optimism Gateway</a>: larger transfers and cost more.</li>
+                <li><a href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism" target="_blank">Hop.Exchange</a>: where you can send from/to Ethereum mainnet and other L2 networks.</li>
+              </ul>
+            </div>
+          </div>
         </Route>
         <Route exact path="/debug">
           <div style={{ padding: 32 }}>
