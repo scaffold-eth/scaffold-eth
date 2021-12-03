@@ -5634,6 +5634,13 @@ big.js@^5.2.2:
   resolved "https://registry.yarnpkg.com/big.js/-/big.js-5.2.2.tgz#65f0af382f578bcdc742bd9c281e9cb2d7768328"
   integrity sha512-vyL2OymJxmarO8gxMr0mhChsO9QGwhynfuu4+MHTAW6czfq9humCB7rKpUjDd9YUiDPU4mzpyupFSvOClAwbmQ==
 
+bigint-buffer@1.1.5:
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/bigint-buffer/-/bigint-buffer-1.1.5.tgz#d038f31c8e4534c1f8d0015209bf34b4fa6dd442"
+  integrity sha512-trfYco6AoZ+rKhKnxA0hgX0HAbVP/s808/EuDSe2JDzUnCp/xAsli35Orvk67UrTEcwuxZqYZDmfA2RXJgxVvA==
+  dependencies:
+    bindings "^1.3.0"
+
 bignumber.js@^9.0.0, bignumber.js@^9.0.1:
   version "9.0.1"
   resolved "https://registry.yarnpkg.com/bignumber.js/-/bignumber.js-9.0.1.tgz#8d7ba124c882bfd8e43260c67475518d0689e4e5"
@@ -5668,7 +5675,7 @@ bind-decorator@^1.0.11:
   resolved "https://registry.yarnpkg.com/bind-decorator/-/bind-decorator-1.0.11.tgz#e41bc06a1f65dd9cec476c91c5daf3978488252f"
   integrity sha1-5BvAah9l3ZzsR2yRxdrzl4SIJS8=
 
-bindings@^1.2.1, bindings@^1.5.0:
+bindings@^1.2.1, bindings@^1.3.0, bindings@^1.5.0:
   version "1.5.0"
   resolved "https://registry.yarnpkg.com/bindings/-/bindings-1.5.0.tgz#10353c9e945334bc0511a6d90b38fbc7c9c504df"
   integrity sha512-p2q/t/mhvuOj/UeLlV6566GD/guowlr0hHxClI0W9m7MWYkL1F0hLo+0Aexs9HSPCtR1SXQ0TD3MMKrXZajbiQ==
@@ -8718,10 +8725,10 @@ eth-gas-reporter@^0.2.20:
     sha1 "^1.1.1"
     sync-request "^6.0.0"
 
-eth-hooks@2.3.8:
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.8.tgz#419246a1f37efd8822813b0f7298399c16f4bba1"
-  integrity sha512-MnmW2LDaUWjdQbHoR1wEHAMu6L9vaRse2Ofs6O43Wu27tn6fZuNPAZVlYSC6D4aD9JYxKZXR7Uz/bkCczJO0pQ==
+eth-hooks@2.3.14:
+  version "2.3.14"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.14.tgz#b1cc495fc36410f67b4b661b5396da4877c50410"
+  integrity sha512-TXADvpC+IwOYy3hQIoeoi8Pxf1Uodqiuz3MCjI06mJcxXrOx8a72mUmaX/XnX+DiuFGbajnlNkbtYj4dZeDa/g==
   dependencies:
     "@ethersproject/address" "^5.4.0"
     "@ethersproject/bignumber" "^5.4.0"
@@ -10329,6 +10336,16 @@ ganache-core@^2.13.2:
   optionalDependencies:
     ethereumjs-wallet "0.6.5"
     web3 "1.2.11"
+
+ganache@^7.0.0-beta.0:
+  version "7.0.0-internal.1341"
+  resolved "https://registry.yarnpkg.com/ganache/-/ganache-7.0.0-internal.1341.tgz#ee5f44b18de95f928b0216e410206ab9f2a45b83"
+  integrity sha512-mq44h7i4qXHWfzz1iVtLC/vZogBqqH6pPEfKMLqvMBETw5gcIHUZ8+J9+pgFwmtIUXnAPqw5MYP7Wic0ioBXYQ==
+  dependencies:
+    bigint-buffer "1.1.5"
+    keccak "3.0.1"
+    leveldown "5.6.0"
+    secp256k1 "4.0.2"
 
 gensync@^1.0.0-beta.1, gensync@^1.0.0-beta.2:
   version "1.0.0-beta.2"
@@ -13684,6 +13701,15 @@ level-ws@^2.0.0:
     readable-stream "^3.1.0"
     xtend "^4.0.1"
 
+leveldown@5.6.0:
+  version "5.6.0"
+  resolved "https://registry.yarnpkg.com/leveldown/-/leveldown-5.6.0.tgz#16ba937bb2991c6094e13ac5a6898ee66d3eee98"
+  integrity sha512-iB8O/7Db9lPaITU1aA2txU/cBEXAt4vWwKQRrrWuS6XDgbP4QZGj9BL2aNbwb002atoQ/lIotJkfyzz+ygQnUQ==
+  dependencies:
+    abstract-leveldown "~6.2.1"
+    napi-macros "~2.0.0"
+    node-gyp-build "~4.1.0"
+
 levelup@3.1.1, levelup@^3.0.0:
   version "3.1.1"
   resolved "https://registry.yarnpkg.com/levelup/-/levelup-3.1.1.tgz#c2c0b3be2b4dc316647c53b42e2f559e232d2189"
@@ -14980,6 +15006,11 @@ nanomatch@^1.2.9:
     snapdragon "^0.8.1"
     to-regex "^3.0.1"
 
+napi-macros@~2.0.0:
+  version "2.0.0"
+  resolved "https://registry.yarnpkg.com/napi-macros/-/napi-macros-2.0.0.tgz#2b6bae421e7b96eb687aa6c77a7858640670001b"
+  integrity sha512-A0xLykHtARfueITVDernsAWdtIMbOJgKgcluwENp3AlsKN/PloyO10HtmoqnFAQAcxPkgZN7wdfPfEd0zNGxbg==
+
 native-request@^1.0.5:
   version "1.0.8"
   resolved "https://registry.yarnpkg.com/native-request/-/native-request-1.0.8.tgz#8f66bf606e0f7ea27c0e5995eb2f5d03e33ae6fb"
@@ -15079,6 +15110,11 @@ node-gyp-build@^4.2.0:
   version "4.2.3"
   resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.2.3.tgz#ce6277f853835f718829efb47db20f3e4d9c4739"
   integrity sha512-MN6ZpzmfNCRM+3t57PTJHgHyw/h4OWnZ6mR8P5j/uZtqQr46RRuDE/P+g3n0YR/AiYXeWixZZzaip77gdICfRg==
+
+node-gyp-build@~4.1.0:
+  version "4.1.1"
+  resolved "https://registry.yarnpkg.com/node-gyp-build/-/node-gyp-build-4.1.1.tgz#d7270b5d86717068d114cc57fff352f96d745feb"
+  integrity sha512-dSq1xmcPDKPZ2EED2S6zw/b9NKsqzXRE6dVr8TVQnI3FJOTteUMuqF3Qqs6LZg+mLGYJWqQzMbIjMtJqTv87nQ==
 
 node-int64@^0.4.0:
   version "0.4.0"
@@ -18832,6 +18868,15 @@ sdp@^2.12.0, sdp@^2.6.0:
   resolved "https://registry.yarnpkg.com/sdp/-/sdp-2.12.0.tgz#338a106af7560c86e4523f858349680350d53b22"
   integrity sha512-jhXqQAQVM+8Xj5EjJGVweuEzgtGWb3tmEEpl3CLP3cStInSbVHSg0QWOGQzNq8pSID4JkpeV2mPqlMDLrm0/Vw==
 
+secp256k1@4.0.2, secp256k1@^4.0.1:
+  version "4.0.2"
+  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
+  integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
+  dependencies:
+    elliptic "^6.5.2"
+    node-addon-api "^2.0.0"
+    node-gyp-build "^4.2.0"
+
 secp256k1@^3.0.1, secp256k1@^3.6.2, secp256k1@^3.7.1:
   version "3.8.0"
   resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-3.8.0.tgz#28f59f4b01dbee9575f56a47034b7d2e3b3b352d"
@@ -18845,15 +18890,6 @@ secp256k1@^3.0.1, secp256k1@^3.6.2, secp256k1@^3.7.1:
     elliptic "^6.5.2"
     nan "^2.14.0"
     safe-buffer "^5.1.2"
-
-secp256k1@^4.0.1:
-  version "4.0.2"
-  resolved "https://registry.yarnpkg.com/secp256k1/-/secp256k1-4.0.2.tgz#15dd57d0f0b9fdb54ac1fa1694f40e5e9a54f4a1"
-  integrity sha512-UDar4sKvWAksIlfX3xIaQReADn+WFnHvbVujpcbr+9Sf/69odMwy2MUsz5CKLQgX9nsIyrjuxL2imVyoNHa3fg==
-  dependencies:
-    elliptic "^6.5.2"
-    node-addon-api "^2.0.0"
-    node-gyp-build "^4.2.0"
 
 seedrandom@3.0.1:
   version "3.0.1"

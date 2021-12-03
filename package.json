@@ -70,10 +70,8 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {
-    "ganache": "^7.0.0-beta.0"
-  },
   "devDependencies": {
-    "husky": "^7.0.2"
+    "husky": "^7.0.2",
+    "ganache": "^7.0.0-beta.0"
   }
 }
