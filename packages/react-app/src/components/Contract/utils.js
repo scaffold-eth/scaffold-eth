@@ -23,4 +23,4 @@ const tryToDisplay = (thing, asText = false) => {
 
 const tryToDisplayAsText = thing => tryToDisplay(thing, true);
 
-export default { tryToDisplay, tryToDisplayAsText };
+export { tryToDisplay, tryToDisplayAsText };
