@@ -252,6 +252,7 @@ function App(props) {
         localChainId={localChainId}
         selectedChainId={selectedChainId}
         targetNetwork={targetNetwork}
+        logoutOfWeb3Modal={logoutOfWeb3Modal}
       />
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">

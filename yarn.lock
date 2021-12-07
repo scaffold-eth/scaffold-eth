@@ -8718,10 +8718,10 @@ eth-gas-reporter@^0.2.20:
     sha1 "^1.1.1"
     sync-request "^6.0.0"
 
-eth-hooks@2.3.8:
-  version "2.3.8"
-  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.8.tgz#419246a1f37efd8822813b0f7298399c16f4bba1"
-  integrity sha512-MnmW2LDaUWjdQbHoR1wEHAMu6L9vaRse2Ofs6O43Wu27tn6fZuNPAZVlYSC6D4aD9JYxKZXR7Uz/bkCczJO0pQ==
+eth-hooks@2.3.14:
+  version "2.3.14"
+  resolved "https://registry.yarnpkg.com/eth-hooks/-/eth-hooks-2.3.14.tgz#b1cc495fc36410f67b4b661b5396da4877c50410"
+  integrity sha512-TXADvpC+IwOYy3hQIoeoi8Pxf1Uodqiuz3MCjI06mJcxXrOx8a72mUmaX/XnX+DiuFGbajnlNkbtYj4dZeDa/g==
   dependencies:
     "@ethersproject/address" "^5.4.0"
     "@ethersproject/bignumber" "^5.4.0"
