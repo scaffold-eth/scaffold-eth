@@ -53,7 +53,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const defaultTargetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -75,7 +75,10 @@ function App(props) {
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  const selectedNetworkOption = networkOptions.includes(defaultTargetNetwork.name)
+    ? defaultTargetNetwork.name
+    : networkOptions[0];
+  const [selectedNetwork, setSelectedNetwork] = useState(selectedNetworkOption);
   const location = useLocation();
 
   /// 📡 What chain are your contracts deployed to?
