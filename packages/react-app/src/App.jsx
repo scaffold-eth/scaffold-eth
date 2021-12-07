@@ -335,6 +335,7 @@ function App(props) {
             blockExplorer={blockExplorer}
             transferToAddresses={transferToAddresses}
             setTransferToAddresses={setTransferToAddresses}
+            address={address}
           />
         </Route>
         <Route exact path="/howto">

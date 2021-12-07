@@ -1,13 +1,21 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, List } from "antd";
-import {
-  Address,
-  AddressInput,
-} from "../components";
+import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 
-function Home({ readContracts, writeContracts, priceToMint, yourCollectibles, tx, mainnetProvider, blockExplorer, transferToAddresses, setTransferToAddresses }) {
+function Home({
+  readContracts,
+  writeContracts,
+  priceToMint,
+  yourCollectibles,
+  tx,
+  mainnetProvider,
+  blockExplorer,
+  transferToAddresses,
+  setTransferToAddresses,
+  address,
+}) {
   return (
     <div>
       <div style={{ width: 600, margin: "auto", paddingBottom: 25 }}>
