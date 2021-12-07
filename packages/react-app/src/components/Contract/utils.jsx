@@ -1,5 +1,5 @@
 import React from "react";
-import { Address } from "..";
+import Address from "../Address";
 
 const { utils } = require("ethers");
 
@@ -8,7 +8,10 @@ const tryToDisplay = (thing, asText = false) => {
     try {
       return thing.toNumber();
     } catch (e) {
-      return "Ξ" + utils.formatUnits(thing, "ether");
+      const displayable = "Ξ" + utils.formatUnits(thing, "ether");
+      return asText ? displayable : (
+        <span style={{ overflowWrap: "break-word", width: "100%" }}>{displayable}</span>
+      );
     }
   }
   if (thing && thing.indexOf && thing.indexOf("0x") === 0 && thing.length === 42) {
