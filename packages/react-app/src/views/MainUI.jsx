@@ -15,17 +15,17 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   usePoller(async () => {
     if (readContracts && address) {
-      const floorPrice = await readContracts.ExampleNFT.floor();
+      const floorPrice = await readContracts.GigaNFT.floor();
       setFloor(formatEther(floorPrice));
     }
   }, 1500);
 
   const getTokenURI = async (ownerAddress, index) => {
-    const id = await readContracts.ExampleNFT.tokenOfOwnerByIndex(ownerAddress, index);
-    const tokenURI = await readContracts.ExampleNFT.tokenURI(id);
+    const id = await readContracts.GigaNFT.tokenOfOwnerByIndex(ownerAddress, index);
+    const tokenURI = await readContracts.GigaNFT.tokenURI(id);
     const metadata = await axios.get(tokenURI);
-    const approved = await readContracts.ExampleNFT.getApproved(id);
-    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.ExampleNFT.address };
+    const approved = await readContracts.GigaNFT.getApproved(id);
+    return { ...metadata.data, id, tokenURI, approved: approved === writeContracts.GigaNFT.address };
   };
 
   const loadCollection = async () => {
@@ -34,7 +34,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
       loading: true,
       items: [],
     });
-    const balance = (await readContracts.ExampleNFT.balanceOf(address)).toNumber();
+    const balance = (await readContracts.GigaNFT.balanceOf(address)).toNumber();
     const tokensPromises = [];
     for (let i = 0; i < balance; i += 1) {
       tokensPromises.push(getTokenURI(address, i));
@@ -48,7 +48,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   const redeem = async id => {
     try {
-      const redeemTx = await tx(writeContracts.ExampleNFT.redeem(id));
+      const redeemTx = await tx(writeContracts.GigaNFT.redeem(id));
       await redeemTx.wait();
     } catch (e) {
       console.log("redeem tx error:", e);
@@ -58,7 +58,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
 
   const approveForBurn = async id => {
     try {
-      const approveTx = await tx(writeContracts.ExampleNFT.approve(writeContracts.ExampleNFT.address, id));
+      const approveTx = await tx(writeContracts.GigaNFT.approve(writeContracts.GigaNFT.address, id));
       await approveTx.wait();
     } catch (e) {
       console.log("Approve tx error:", e);
@@ -67,7 +67,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
   };
 
   useEffect(() => {
-    if (readContracts.ExampleNFT) loadCollection();
+    if (readContracts.GigaNFT) loadCollection();
   }, [address, readContracts, writeContracts]);
 
   return (
@@ -83,7 +83,7 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
                   <img
                     style={{ maxWidth: "150px", display: "block", margin: "0 auto", marginBottom: "20px" }}
                     src={item.image}
-                    alt="ExampleNFT"
+                    alt="GigaNFT"
                   />
                   <div style={{ marginLeft: "20px" }}>
                       <Button style={{ width: "100%", minWidth: 100 }} onClick={() => redeem(item.id)}>
@@ -98,9 +98,9 @@ const MainUI = ({ loadWeb3Modal, address, tx, priceToMint, readContracts, writeC
             style={{ marginTop: 15 }}
             type="primary"
             onClick={async () => {
-              const priceRightNow = await readContracts.ExampleNFT.price();
+              const priceRightNow = await readContracts.GigaNFT.price();
               try {
-                const txCur = await tx(writeContracts.ExampleNFT.mintItem(address, { value: priceRightNow }));
+                const txCur = await tx(writeContracts.GigaNFT.mintItem(address, { value: priceRightNow }));
                 await txCur.wait();
               } catch (e) {
                 console.log("mint failed", e);

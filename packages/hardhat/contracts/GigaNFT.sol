@@ -11,14 +11,14 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract ExampleNFT is ERC721Enumerable {
+contract GigaNFT is ERC721Enumerable {
 
     address payable public constant recipient =
         payable(0x72Dc1B4d61A477782506186339eE7a897ba7d00A);
 
     uint256 public constant limit = 21;
-    uint256 public constant curve = 1030; // price increase 3% with each purchase
-    uint256 public price = 0.0033 ether;
+    uint256 public constant curve = 1050; // price increase 3% with each purchase
+    uint256 public price = 0.0099 ether;
 
 
     uint256 public currentSupply = 0;
@@ -28,31 +28,17 @@ contract ExampleNFT is ERC721Enumerable {
 
     string[] private uris;
 
-    constructor() ERC721("MoonShotBots", "MSB") {
-        uris = [
-            "Superior_Wiki.json",
-            "Homely_Word_processor.json",
-            "Abrupt_Paste.json",
-            "Hungry_Inbox.json",
-            "Acidic_Digital.json",
-            "Hungry_Windows.json",
-            "Adorable_Malware.json",
-            "Hurt_App.json",
-            "Adorable_Platform.json",
-            "Hurt_Bug.json",
-            "Adventurous_Hack.json",
-            "Hurt_Byte.json",
-            "Aggressive_Kernel.json",
-            "Hurt_Spyware.json",
-            "Alert_Flash.json",
-            "Icy_Hyperlink.json",
-            "Alert_Privacy.json",
-            "Ideal_Captcha.json",
-            "Alert_Status_bar.json",
-            "Ideal_Node.json",
-            "Aloof_Data.json"
-        ];
-    }
+    constructor() ERC721("GigaNFT", "GGA") {
+      uris = [
+          "52.json",
+          "184.json",
+          "218.json",
+          "255.json",
+          "612.json",
+          "800.json",
+          "914.json"
+      ];
+  }
 
     function mintItem(address to) public payable returns (uint256) {
         require(_tokenIds.current() < limit, "DONE MINTING");
@@ -77,7 +63,7 @@ contract ExampleNFT is ERC721Enumerable {
      */
     function _baseURI() internal view virtual override returns (string memory) {
         return
-            "https://gateway.pinata.cloud/ipfs/QmdRmZ1UPSALNVuXY2mYPb3T5exn9in1AL3tsema4rY2QF/json/";
+            "https://kag.mypinata.cloud/ipfs/QmYxQCbgu85NsebFLGHGGkCxVejCE4jAVSZhsZ3ebjpAux/json/";
     }
 
     /**
