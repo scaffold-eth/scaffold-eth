@@ -18,7 +18,7 @@ const tryToDisplay = (thing, asText = false) => {
     return asText ? thing : <Address address={thing} fontSize={22} />;
   }
   if (thing && thing.constructor && thing.constructor.name == "Array") {
-    const mostReadable = v => (["number", "boolean"].includes(typeof v) ? v : tryToDisplay(v));
+    const mostReadable = v => (["number", "boolean"].includes(typeof v) ? v : tryToDisplayAsText(v));
     return JSON.stringify(thing.map(mostReadable));
   }
   return JSON.stringify(thing);
