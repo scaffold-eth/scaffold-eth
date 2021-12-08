@@ -1,3 +1,5 @@
+# ⚠️⚠️⚠️⚠️⚠️ Repository has been moved [HERE](https://github.com/scaffold-eth/scaffold-eth-examples) ⚠️⚠️⚠️⚠️⚠️
+
 # ✍️ signator.io
 
 > A simple app that lets you sign a message with an Ethereum account & generate shareable proof-of-signature links
