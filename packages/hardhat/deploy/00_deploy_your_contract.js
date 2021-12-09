@@ -1,6 +1,6 @@
 // deploy/00_deploy_your_contract.js
 
-// const { ethers } = require("hardhat");
+const { ethers } = require("hardhat");
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
@@ -19,12 +19,41 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
     log: true,
   });
   */
+
+  // await deploy("DummyBot", { from: deployer });
+  // const dummyBot = await ethers.getContract("DummyBot", deployer);
+
+  // const mint1 = await dummyBot.mint();
+  // console.log(`Minted`);
+
+  // mint1.wait(1);
+
+  // const uri = await dummyBot.tokenURI(1);
+
+  // console.log({ uri });
+
   await deploy("UpgradedEthBot", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: []['3dMolochBot', '3DMOLC'],
+    // args: [dummyBot.address],
+    args: ["0x1e4749d61990CA7F1aAf229DE91075ddC6cAf493"],
     log: true,
   });
+
+  // const upgrade = await ethers.getContract("UpgradedEthBot", deployer);
+
+  // await dummyBot.setApprovalForAll(upgrade.address, true);
+  // console.log(`Approved`);
+
+  // const claim = await upgrade.claim(1);
+  // console.log(`Claimed`);
+
+  // claim.wait(1);
+
+  // const url = await upgrade.tokenURI(1);
+  // console.log(`fetched URL`);
+
+  // console.log({ url });
 
   /*
     // Getting a previously deployed contract
