@@ -16,7 +16,7 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 Collaboration Project for greatestlarp.com
 Art by @mettahead inspired by @lahcen_kha
 Audo by @AnnimusEdie
-Contract by @Blind_nabler
+Contract by @Blind_nabler and @ghostffcode
 Built with scaffold-eth!
 */
 
