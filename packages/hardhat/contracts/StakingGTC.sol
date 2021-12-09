@@ -10,8 +10,8 @@ import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 
 // Todo: abstract name and description away from contract storage
 
-/// @title A title that should describe the contract/interface
-/// @author jaxcoder
+/// @title GTC Staking Contract
+/// @author jaxcoder, ghostffcode
 /// @notice Explain to an end user what this does
 /// @dev Explain to a developer any extra details
 contract StakingGTC is Ownable {
@@ -72,6 +72,8 @@ contract StakingGTC is Ownable {
     }
 
     /// @dev create pool for the GTC asset
+    /// @param detailsCID the CID for the details
+    /// @return the pool id
     function createPool(string memory detailsCID) public returns (uint256) {
         _poolIds.increment();
         uint256 id = _poolIds.current();
@@ -86,6 +88,9 @@ contract StakingGTC is Ownable {
         return id;
     }
 
+    /// @dev stakes your GTC into a pool
+    /// @param id the pool id
+    /// @param amount amount to stake in GTChow
     function stakePool(uint256 id, uint256 amount) public {
         // checks
         require(id > 0, "This pool does not exist");
