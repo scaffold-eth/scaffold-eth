@@ -1,6 +1,6 @@
+import { Alert, Button } from "antd";
 import React from "react";
 import { NETWORK } from "../constants";
-import { Alert, Button } from "antd";
 
 function NetworkDisplay({ NETWORKCHECK, localChainId, selectedChainId, targetNetwork, logoutOfWeb3Modal }) {
   let networkDisplay = "";
@@ -31,15 +31,6 @@ function NetworkDisplay({ NETWORKCHECK, localChainId, selectedChainId, targetNet
           <Alert
             message="⚠️ Wrong Network"
             description={
-              showLogout
-              ? <div>
-                  You are <b>logged in</b> via Metamask to an external network.
-                  <br/>For local development it is recommended to{" "}
-                  <Button onClick={
-                    logoutOfWeb3Modal
-                  }>logout</Button>
-              </div>
-              :
               <div>
                 You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
                 <Button
