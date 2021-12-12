@@ -27,29 +27,7 @@ import React, { useState } from "react";
 
 export default function Ramp(props) {
   const [modalUp, setModalUp] = useState("down");
-
   const type = "default";
-
-  const allFaucets = [];
-  for (const n in props.networks) {
-    if (props.networks[n].chainId !== 31337 && props.networks[n].chainId !== 1) {
-      allFaucets.push(
-        <p key={props.networks[n].chainId}>
-          <Button
-            style={{ color: props.networks[n].color }}
-            type={type}
-            size="large"
-            shape="round"
-            onClick={() => {
-              window.open(props.networks[n].faucet);
-            }}
-          >
-            {props.networks[n].name}
-          </Button>
-        </p>,
-      );
-    }
-  }
 
   return (
     <div>
@@ -144,7 +122,25 @@ export default function Ramp(props) {
 
         <h2>Testnet ETH</h2>
 
-        {allFaucets}
+        {Object.keys(props?.networks).map(n => {
+          if (props.networks[n].chainId !== 31337 && props.networks[n].chainId !== 1) {
+            return (
+              <p key={props.networks[n].chainId}>
+                <Button
+                  style={{ color: props.networks[n].color }}
+                  type={type}
+                  size="large"
+                  shape="round"
+                  onClick={() => {
+                    window.open(props.networks[n].faucet);
+                  }}
+                >
+                  {props.networks[n].name}
+                </Button>
+              </p>
+            );
+          }
+        })}
       </Modal>
     </div>
   );
