@@ -53,8 +53,9 @@ export default function AddressInput(props) {
             if (possibleAddress) {
               address = possibleAddress;
             }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
+          } catch (e) {
+            console.log("Error updating address in AddressInput component", e);
+          }
         }
         setValue(address);
         if (typeof onChange === "function") {
@@ -67,7 +68,7 @@ export default function AddressInput(props) {
 
   return (
     <div>
-      {scan ? (
+      {scan && (
         <div
           style={{
             zIndex: 256,
@@ -102,8 +103,6 @@ export default function AddressInput(props) {
             style={{ width: "100%" }}
           />
         </div>
-      ) : (
-        ""
       )}
       <Input
         id="0xAddress" // name it something other than address for auto fill doxxing
