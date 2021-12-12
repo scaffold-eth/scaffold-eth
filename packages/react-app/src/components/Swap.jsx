@@ -98,7 +98,6 @@ function Swap({ selectedProvider, tokenListURI }) {
 
   useEffect(() => {
     const getTokenList = async () => {
-      console.log(_tokenListUri);
       try {
         const tokenListResponse = await fetch(_tokenListUri);
         const tokenListJson = await tokenListResponse.json();
@@ -115,7 +114,7 @@ function Swap({ selectedProvider, tokenListURI }) {
         const _tokens = tokenListToObject(_tokenList);
         setTokens(_tokens);
       } catch (e) {
-        console.log(e);
+        console.log("Swap component error", e);
       }
     };
     getTokenList();
@@ -173,8 +172,6 @@ function Swap({ selectedProvider, tokenListURI }) {
       }
 
       setTrades(bestTrade);
-
-      console.log(bestTrade);
     }
   };
 
@@ -213,9 +210,8 @@ function Swap({ selectedProvider, tokenListURI }) {
 
         let allowance;
 
-        if (tokenIn === "ETH") {
-          setRouterAllowance();
-        } else {
+        if (tokenIn === "ETH") setRouterAllowance();
+        else {
           allowance = await makeCall("allowance", tempContractIn, [accountList[0], ROUTER_ADDRESS]);
           setRouterAllowance(allowance);
         }
@@ -229,15 +225,21 @@ function Swap({ selectedProvider, tokenListURI }) {
     }
   };
 
+  const getRoute = trades => {
+    if (trades) {
+      if (trades.length > 0)
+        return trades[0].route.path.map(item => {
+          return item.symbol;
+        });
+      return [];
+    } else {
+      return [];
+    }
+  };
+
   usePoller(getAccountInfo, 6000);
 
-  const route = trades
-    ? trades.length > 0
-      ? trades[0].route.path.map(function (item) {
-          return item.symbol;
-        })
-      : []
-    : [];
+  const route = getRoute(trades);
 
   const updateRouterAllowance = async newAllowance => {
     setApproving(true);
@@ -260,7 +262,6 @@ function Swap({ selectedProvider, tokenListURI }) {
       exact === "in"
         ? ethers.utils.hexlify(ethers.utils.parseUnits(amountIn.toString(), tokens[tokenIn].decimals))
         : amountInMax.raw.toString();
-    console.log(approvalAmount);
     const approval = updateRouterAllowance(approvalAmount);
     if (approval) {
       notification.open({
@@ -272,7 +273,6 @@ function Swap({ selectedProvider, tokenListURI }) {
 
   const removeRouterAllowance = async () => {
     const approvalAmount = ethers.utils.hexlify(0);
-    console.log(approvalAmount);
     const removal = updateRouterAllowance(approvalAmount);
     if (removal) {
       notification.open({
@@ -293,7 +293,6 @@ function Swap({ selectedProvider, tokenListURI }) {
       const path = trades[0].route.path.map(function (item) {
         return item.address;
       });
-      console.log(path);
       const accountList = await selectedProvider.listAccounts();
       const address = accountList[0];
 
@@ -322,9 +321,7 @@ function Swap({ selectedProvider, tokenListURI }) {
           args = [_amountOut, _amountInMax, path, address, deadline];
         }
       }
-      console.log(call, args, metadata);
       const result = await makeCall(call, routerContract, args, metadata);
-      console.log(result);
       notification.open({
         message: "Swap complete 🦄",
         description: (
@@ -336,7 +333,7 @@ function Swap({ selectedProvider, tokenListURI }) {
       });
       setSwapping(false);
     } catch (e) {
-      console.log(e);
+      console.log("Error in Swap component in executeSwap", e);
       setSwapping(false);
       notification.open({
         message: "Swap unsuccessful",
