@@ -51,7 +51,7 @@ const { ethers } = require("ethers");
 const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = false;
+const DEBUG = true;
 const NETWORKCHECK = true;
 
 // 🛰 providers
@@ -232,6 +232,7 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -409,7 +410,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: ethers.utils.parseEther("0.01"),
+              value: ethers.utils.parseEther("1.00"),
             });
             setFaucetClicked(true);
           }}
@@ -444,6 +445,14 @@ function App(props) {
             */}
             <Contract
               name="UpgradedEthBot"
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="DummyBot"
               signer={userSigner}
               provider={localProvider}
               address={address}

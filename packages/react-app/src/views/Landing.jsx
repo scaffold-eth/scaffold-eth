@@ -3,7 +3,7 @@ import { Button, Input, Card, Row, Col, Select, Form, InputNumber, Divider } fro
 import React, { useState } from "react";
 import { Address, AddressInput } from "../components";
 import { useTokenList, useContractLoader, useContractReader } from "../hooks";
-import { Hints } from '../views';
+import { V2Hints } from '../views';
 import Events from "../components/Events";
 import { local } from "web3modal";
 
@@ -56,7 +56,7 @@ export default function Landing({ localProvider, yourLocalBalance, mainnetProvid
           </Row>
         </Col>
       </Row>
-            <Hints
+            <V2Hints
               address={address}
               yourLocalBalance={yourLocalBalance}
               mainnetProvider={mainnetProvider}

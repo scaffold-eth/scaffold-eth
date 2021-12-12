@@ -36,7 +36,7 @@ contract UpgradedEthBot is ERC721 {
     function claim(uint256 _tokenId) public returns (uint256) {
         require(
             ogNFT.ownerOf(_tokenId) == msg.sender,
-            "msg.sender not owner of this NFT"
+            "msg.sender not owner of this kNFT"
         );
         require(
             _tokenId <= 200,
