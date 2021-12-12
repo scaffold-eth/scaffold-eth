@@ -16,18 +16,15 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
-
-  let faucetHint = "";
-
-  if (
+  const faucetHintShown =
     !faucetClicked &&
-    localProvider &&
-    localProvider._network &&
-    localProvider._network.chainId === 31337 &&
+    localProvider?._network &&
+    localProvider?._network?.chainId === 31337 &&
     yourLocalBalance &&
-    ethers.utils.formatEther(yourLocalBalance) <= 0
-  ) {
-    faucetHint = (
+    ethers.utils.formatEther(yourLocalBalance) <= 0;
+
+  if (faucetHintShown) {
+    return (
       <div style={{ padding: 16 }}>
         <Button
           type="primary"
@@ -44,8 +41,7 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
       </div>
     );
   }
-
-  return faucetHint;
+  return null;
 }
 
 export default FaucetHint;
