@@ -55,9 +55,7 @@ export default function Account({
 
   return (
     <div>
-      {minimized ? (
-        ""
-      ) : (
+      {!minimized && (
         <span>
           {address ? (
             <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
@@ -75,29 +73,28 @@ export default function Account({
           />
         </span>
       )}
-      {web3Modal &&
-        (web3Modal?.cachedProvider ? (
-          <Button
-            key="logoutbutton"
-            style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-            shape="round"
-            size="large"
-            onClick={logoutOfWeb3Modal}
-          >
-            logout
-          </Button>
-        ) : (
-          <Button
-            key="loginbutton"
-            style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-            shape="round"
-            size="large"
-            /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
-            onClick={loadWeb3Modal}
-          >
-            connect
-          </Button>
-        ))}
+      {web3Modal?.cachedProvider ? (
+        <Button
+          key="logoutbutton"
+          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
+          shape="round"
+          size="large"
+          onClick={logoutOfWeb3Modal}
+        >
+          logout
+        </Button>
+      ) : (
+        <Button
+          key="loginbutton"
+          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
+          shape="round"
+          size="large"
+          /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
+          onClick={loadWeb3Modal}
+        >
+          connect
+        </Button>
+      )}
     </div>
   );
 }
