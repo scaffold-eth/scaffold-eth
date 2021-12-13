@@ -80,7 +80,7 @@ export default function Transactor(providerOrSigner, gasPrice, etherscan) {
         }
 
         // if it is a valid Notify.js network, use that, if not, just send a default notification
-        if (notify && [1, 3, 4, 5, 10, 42, 69, 100].indexOf(network.chainId) >= 0) {
+        if (notify && [1, 3, 4, 5, 42, 100].indexOf(network.chainId) >= 0) {
           const { emitter } = notify.hash(result.hash);
           emitter.on("all", transaction => {
             return {

@@ -1,10 +1,8 @@
-# 🏗 Scaffold-ETH
+# 🏗 Flashbotscaffold
 
-> everything you need to build on Ethereum! 🚀
+> everything you need to build on Flashbots! 🚀
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+> this repo uses the Flashbots API on the Goerli testnet.
 
 
 # 🏄‍♂️ Quick Start
@@ -40,8 +38,6 @@ yarn start
 cd scaffold-eth
 yarn deploy
 ```
-
-🌍 You need an RPC key for production deployments/Apps, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js`
 
 🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
 
