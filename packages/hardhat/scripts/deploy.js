@@ -4,6 +4,7 @@ const chalk = require("chalk");
 const { config, ethers, tenderly, run } = require("hardhat");
 const { utils } = require("ethers");
 const R = require("ramda");
+const SuperfluidSDK = require("@superfluid-finance/js-sdk");
 
 /*
 
@@ -26,7 +27,23 @@ And learn more here: https://www.npmjs.com/package/hardhat-deploy
 const main = async () => {
   console.log("\n\n 📡 Deploying...\n");
 
-  const yourContract = await deploy("YourContract"); // <-- add in constructor args like line 19 vvvv
+  const sf = new SuperfluidSDK.Framework({
+    ethers: ethers.provider,
+    tokens: ["fDAI"],
+  });
+
+  await sf.initialize();
+
+  const Asset = await ethers.getContractFactory("Asset");
+  const asset = await Asset.deploy(
+    "Asset Token",
+    "AST",
+    sf.host.address,
+    sf.agreements.cfa.address,
+    sf.tokens.fDAIx.address
+  );
+
+  console.log("Contract address: ", asset.address);
   // use for local token bridging
   // const mockToken = await deploy("MockERC20") // <-- add in constructor args like line 19 vvvv
 

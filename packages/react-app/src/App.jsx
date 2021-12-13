@@ -33,6 +33,114 @@ import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
+const SuperfluidSDK = require("@superfluid-finance/js-sdk");
+
+//initialize superfluid
+
+await sf.initialize()
+
+class App extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      account: "",
+      network: "",
+      balance: "",
+      available: [],
+      rented: [],
+      loading: true,
+      newURI: "",
+    };
+
+    this.mintAsset = this.mintAsset.bind(this);
+    this.rentAsset = this.rentAsset.bind(this);
+    this.returnAsset = this.returnAsset.bind(this);
+  }
+
+    componentDidMount() {
+    this.loadData();
+  }
+
+  async mintAsset(e) {
+    this.setState({
+      loading: true,
+    });
+
+    let tokenURI = this.state.newURI;
+    this.setState({ loading: true });
+
+    const result = await this.state.NFT.methods
+      .createAsset(tokenURI)
+      .send({ from: this.state.account });
+    console.log(result);
+    const available = await this.state.NFT.methods.getAvailableTokens().call();
+    console.log(available);
+
+    this.setState({
+      available: available,
+      loading: false,
+    });
+  }
+
+  async rentAsset(e) {
+    this.setState({
+      loading: true,
+    });
+
+    let tokenURI = e.target.getAttribute("data-token");
+    let contract = this.state.NFT._address;
+    let sf = this.state.sf;
+    console.log(contract);
+
+    let flowRate = toWad("1").div(toBN(3600));
+
+    await sf.cfa.createFlow({
+      flowRate: flowRate.toString(),
+      receiver: contract,
+      sender: this.state.user.address,
+      superToken: DAIxAddress,
+      userData: this.state.web3.eth.abi.encodeParameter("uint256", tokenURI),
+    });
+
+    const available = await this.state.NFT.methods.getAvailableTokens().call();
+    const rented = await this.state.NFT.methods.getRentedTokens().call();
+
+    this.setState({
+      available: available,
+      rented: rented,
+      loading: false,
+    });
+  }
+
+  async returnAsset(e) {
+    this.setState({
+      loading: true,
+    });
+
+    let tokenURI = e.target.getAttribute("data-token");
+    let contract = this.state.NFT._address;
+    let sf = this.state.sf;
+    console.log(contract);
+
+    await sf.cfa.deleteFlow({
+      by: this.state.user.address,
+      receiver: contract,
+      sender: this.state.user.address,
+      superToken: DAIxAddress,
+      userData: this.state.web3.eth.abi.encodeParameter("uint256", tokenURI),
+    });
+
+    const available = await this.state.NFT.methods.getAvailableTokens().call();
+    const rented = await this.state.NFT.methods.getRentedTokens().call();
+
+    this.setState({
+      available: available,
+      rented: rented,
+      loading: false,
+    });
+  }
+
+
 /*
     Welcome to 🏗 scaffold-eth !
 
@@ -53,7 +161,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mumbai; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -240,182 +348,66 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  return (
-    <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
-      <NetworkDisplay
-        NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
-        targetNetwork={targetNetwork}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
-      />
-      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
+  render() {
+    return (
+      <Container>
+        {this.state.loading ? (
+          <div></div>
+        ) : (
+          <Container>
+            <Row>
+              <h1>Stream Rent</h1>
+            </Row>
+            <Row>
+              <p> Account address : {this.state.account} </p>
+            </Row>
+            <Row>
+              <p> Account Balance : {this.state.balance} </p>
+            </Row>
+            <Row>
+              <Form onSubmit={this.mintAsset}>
+                <Form.Group>
+                  <Form.Control
+                    type="text"
+                    placeholder="Asset URI"
+                    value={this.state.newURI}
+                    onChange={(e) => this.setState({ newURI: e.target.value })}
+                  />
+                </Form.Group>
+                <Button type="submit">Create Asset</Button>
+              </Form>
+            </Row>
+            <br></br>
+            <Row>
+              <Col>
+                <h3>Available Tokens</h3>
+                {this.state.available.map((item, index) => (
+                  <div>
+                    <li>{item}</li>
+                    <Button data-token={item} onClick={this.rentAsset}>
+                      Rent
+                    </Button>
+                  </div>
+                ))}
+              </Col>
+              <Col>
+                <h3>Rented Tokens</h3>
 
-      <Switch>
-        <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
-        </Route>
-      </Switch>
-
-      <ThemeSwitch />
-
-      {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
-          <div style={{ marginRight: 20 }}>
-            <NetworkSwitch
-              networkOptions={networkOptions}
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
-            />
-          </div>
-          <Account
-            address={address}
-            localProvider={localProvider}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            price={price}
-            web3Modal={web3Modal}
-            loadWeb3Modal={loadWeb3Modal}
-            logoutOfWeb3Modal={logoutOfWeb3Modal}
-            blockExplorer={blockExplorer}
-          />
-        </div>
-        <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
-      </div>
-
-      {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
-      <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
-            <Ramp price={price} address={address} networks={NETWORKS} />
-          </Col>
-
-          <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
-            <GasGauge gasPrice={gasPrice} />
-          </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
-        </Row>
-
-        <Row align="middle" gutter={[4, 4]}>
-          <Col span={24}>
-            {
-              /*  if the local provider has a signer, let's show the faucet:  */
-              faucetAvailable ? (
-                <Faucet localProvider={localProvider} price={price} ensProvider={mainnetProvider} />
-              ) : (
-                ""
-              )
-            }
-          </Col>
-        </Row>
-      </div>
-    </div>
-  );
+                {this.state.rented.map((item, index) => (
+                  <div>
+                    <li>{item}</li>
+                    <Button data-token={item} onClick={this.returnAsset}>
+                      Return
+                    </Button>
+                  </div>
+                ))}
+              </Col>
+            </Row>
+          </Container>
+        )}
+      </Container>
+    );
+  }
 }
 
 export default App;
