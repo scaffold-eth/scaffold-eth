@@ -1,4 +1,5 @@
-pragma solidity >=0.6.0 <0.7.0;
+pragma solidity >=0.6.0 <0.9.0;
+pragma experimental ABIEncoderV2;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
@@ -25,8 +26,10 @@ contract YourCollectible is ERC721, Ownable {
     // RELEASE THE LOOGIES!
   }
 
-  mapping (uint256 => bytes3) public color;
+  mapping (uint256 => bytes3) public color1;
+  mapping (uint256 => bytes3) public color2;
   mapping (uint256 => uint256) public chubbiness;
+  mapping (uint256 => uint256) public maxdepth;
 
   uint256 mintDeadline = block.timestamp + 24 hours;
 
@@ -41,16 +44,18 @@ contract YourCollectible is ERC721, Ownable {
       _mint(msg.sender, id);
 
       bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), id ));
-      color[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
-      chubbiness[id] = 35+((55*uint256(uint8(predictableRandom[3])))/255);
-
+      bytes32 predictableRandom2 = keccak256(abi.encodePacked(predictableRandom));
+      color1[id] = bytes2(predictableRandom[0]) | ( bytes2(predictableRandom[1]) >> 8 ) | ( bytes3(predictableRandom[2]) >> 16 );
+      color2[id] = bytes2(predictableRandom2[0]) | ( bytes2(predictableRandom2[1]) >> 8 ) | ( bytes3(predictableRandom2[2]) >> 16 );
+      chubbiness[id] = 80+((55*uint256(uint8(predictableRandom[3])))/255);
+      maxdepth[id] = (chubbiness[id] % 4) + 4;
       return id;
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
-      string memory name = string(abi.encodePacked('Loogie #',id.toString()));
-      string memory description = string(abi.encodePacked('This Loogie is the color #',color[id].toColor(),' with a chubbiness of ',uint2str(chubbiness[id]),'!!!'));
+      string memory name = string(abi.encodePacked('Fractal #',id.toString()));
+      string memory description = string(abi.encodePacked('This fractal is the color #',color1[id].toColor(),' and #',color2[id].toColor(),' with a recursion depth of ',maxdepth[id].toString(),'!!!'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -66,10 +71,12 @@ contract YourCollectible is ERC721, Ownable {
                               description,
                               '", "external_url":"https://burnyboys.com/token/',
                               id.toString(),
-                              '", "attributes": [{"trait_type": "color", "value": "#',
-                              color[id].toColor(),
-                              '"},{"trait_type": "chubbiness", "value": ',
-                              uint2str(chubbiness[id]),
+                              '", "attributes": [{"trait_type": "color1", "value": "#',
+                              color1[id].toColor(),
+                              '"},{"trait_type": "color2", "value": "#',
+                              color2[id].toColor(),
+                              '"},{"trait_type": "baselength", "value": ',
+                              chubbiness[id].toString(),
                               '}], "owner":"',
                               (uint160(ownerOf(id))).toHexString(20),
                               '", "image": "',
@@ -84,9 +91,8 @@ contract YourCollectible is ERC721, Ownable {
   }
 
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
-
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="500" height="500" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -95,47 +101,45 @@ contract YourCollectible is ERC721, Ownable {
   }
 
   // Visibility is `public` to enable it being called by other contracts for composition.
-  function renderTokenById(uint256 id) public view returns (string memory) {
-    string memory render = string(abi.encodePacked(
-      '<g id="eye1">',
-          '<ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="#000" fill="#fff"/>',
-          '<ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#000" fill="#000000"/>',
-        '</g>',
-        '<g id="head">',
-          '<ellipse fill="#',
-          color[id].toColor(),
-          '" stroke-width="3" cx="204.5" cy="211.80065" id="svg_5" rx="',
-          chubbiness[id].toString(),
-          '" ry="51.80065" stroke="#000"/>',
-        '</g>',
-        '<g id="eye2">',
-          '<ellipse stroke-width="3" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="#000" fill="#fff"/>',
-          '<ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#000"/>',
-        '</g>'
-      ));
-
+  function renderTokenById(uint256 id) public view returns (string memory) { 
+    uint baselength = chubbiness[id];
+    string memory color1 = color1[id].toColor();
+    string memory color2 = color2[id].toColor();
+    uint maxdepth = maxdepth[id];
+    string memory render = fractal("",250,500,baselength,0, maxdepth, color1, color2);
     return render;
   }
 
-  function uint2str(uint _i) internal pure returns (string memory _uintAsString) {
-      if (_i == 0) {
-          return "0";
-      }
-      uint j = _i;
-      uint len;
-      while (j != 0) {
-          len++;
-          j /= 10;
-      }
-      bytes memory bstr = new bytes(len);
-      uint k = len;
-      while (_i != 0) {
-          k = k-1;
-          uint8 temp = (48 + uint8(_i - _i / 10 * 10));
-          bytes1 b1 = bytes1(temp);
-          bstr[k] = b1;
-          _i /= 10;
-      }
-      return string(bstr);
+  function fork(uint256 Ax, uint256 Ay, uint256 baselength) public pure returns (string[6] memory) {
+        uint256 Bx = Ax - baselength;
+        uint256 By = Ay - baselength;
+        uint256 Cx = Ax + baselength;
+        //output array returns as such (Ax, Ay, Bx, By, Cx, Cy)
+        return[Ax.toString(), Ay.toString(), Bx.toString(), By.toString(), Cx.toString(), By.toString()];
   }
+
+  function fractal(string memory input, uint x, uint y, uint baselength, uint depth, uint maxdepth, string memory color1, string memory color2) public view returns (string memory) {
+    if(depth == maxdepth){return input;}
+    input = string(abi.encodePacked(drawFork(x,y,baselength, color1, color2)));
+    uint x1 = x - baselength;
+    uint x2 = x + baselength;
+    y = y - baselength;
+    baselength = baselength / 2;
+    string memory branch1 = string(abi.encodePacked(fractal(input, x1, y, baselength, depth+1, maxdepth, color1, color2)));
+    string memory branch2 = string(abi.encodePacked(fractal(input, x2, y, baselength, depth+1, maxdepth, color1, color2)));
+    return string(abi.encodePacked(input,branch1,branch2));
+  }
+
+  function drawFork(uint _x1, uint _y1, uint baselength, string memory color1, string memory color2) public view returns (string memory) {
+      string[6] memory coords = fork(_x1,_y1, baselength);
+      return string(abi.encodePacked(
+      '<g id="branch">',
+          //A2B
+          '<line x1="',coords[0],'" y1="',coords[1],'" x2="',coords[2],'" y2="',coords[3],'" stroke="#',color1,'" stroke-width="2" />',
+          //A2C
+          '<line x1="',coords[0],'" y1="',coords[1],'" x2="',coords[4],'" y2="',coords[5],'" stroke="#',color2,'" stroke-width="2" />',
+        '</g>'
+      ));
+  }
+
 }

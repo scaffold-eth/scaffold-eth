@@ -175,12 +175,153 @@
         "type": "uint256"
       }
     ],
-    "name": "color",
+    "name": "color1",
     "outputs": [
       {
         "internalType": "bytes3",
         "name": "",
         "type": "bytes3"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "color2",
+    "outputs": [
+      {
+        "internalType": "bytes3",
+        "name": "",
+        "type": "bytes3"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "_x1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "_y1",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "baselength",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "color1",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "color2",
+        "type": "string"
+      }
+    ],
+    "name": "drawFork",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "Ax",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "Ay",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "baselength",
+        "type": "uint256"
+      }
+    ],
+    "name": "fork",
+    "outputs": [
+      {
+        "internalType": "string[6]",
+        "name": "",
+        "type": "string[6]"
+      }
+    ],
+    "stateMutability": "pure",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "input",
+        "type": "string"
+      },
+      {
+        "internalType": "uint256",
+        "name": "x",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "y",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "baselength",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "depth",
+        "type": "uint256"
+      },
+      {
+        "internalType": "uint256",
+        "name": "maxdepth",
+        "type": "uint256"
+      },
+      {
+        "internalType": "string",
+        "name": "color1",
+        "type": "string"
+      },
+      {
+        "internalType": "string",
+        "name": "color2",
+        "type": "string"
+      }
+    ],
+    "name": "fractal",
+    "outputs": [
+      {
+        "internalType": "string",
+        "name": "",
+        "type": "string"
       }
     ],
     "stateMutability": "view",
@@ -224,6 +365,25 @@
         "internalType": "bool",
         "name": "",
         "type": "bool"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "maxdepth",
+    "outputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
       }
     ],
     "stateMutability": "view",
