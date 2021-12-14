@@ -5,3 +5,42 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+.footer {
+  margin-top: 32px;
+  opacity: 0.8;
+  font-size:  20px;
+}
+
+.footer span {
+  margin: 5px;
+}
+
+.footer .address span {
+  margin: 0;
+}
+
+.fancy-loogie-preview {
+  position: sticky;
+  top: 60px;
+  margin-right: 20px;
+  margin-top:  20px;
+  float: right;
+}
+
+#tabs-accesories > .ant-tabs-nav .ant-tabs-tab {
+  margin: 16px 0 0 0;
+}
+
+.action-inline-button {
+  margin-left: 10px;
+}
+
+.fancy-loogie-action-button {
+  width: 250px;
+}
+
+.your-fancy-loogies .ant-dropdown-trigger {
+  margin-left: 10px;
+}
+

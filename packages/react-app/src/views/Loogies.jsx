@@ -43,62 +43,72 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
   }, [readContracts.YourCollectible, (totalSupply || "0").toString(), page]);
 
   return (
-    <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
-      {false ? (
-        <Spin style={{ marginTop: 100 }} />
-      ) : (
-        <div>
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 2,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
-            }}
-            pagination={{
-              total: totalSupply,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage);
-              },
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
-            }}
-            loading={loadingLoogies}
-            dataSource={allLoogies}
-            renderItem={item => {
-              const id = item.id.toNumber();
-
-              return (
-                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                  <Card
-                    title={
-                      <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                      </div>
-                    }
-                  >
-                    <img src={item.image} alt={"Loogie #" + id} width="200" />
-                    <div>{item.description}</div>
-                    <div>
-                      <Address
-                        address={item.owner}
-                        ensProvider={mainnetProvider}
-                        blockExplorer={blockExplorer}
-                        fontSize={16}
-                      />
-                    </div>
-                  </Card>
-                </List.Item>
-              );
-            }}
-          />
+    <>
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <div style={{ fontSize: 16 }}>
+          <p>
+            Fancy Loogies are upgraded <strong>Optimistic Loogies</strong> with <strong>NFTs accesories</strong>.
+          </p>
         </div>
-      )}
-    </div>
+      </div>
+
+      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+        {false ? (
+          <Spin style={{ marginTop: 100 }} />
+        ) : (
+          <div>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 3,
+                xl: 4,
+                xxl: 4,
+              }}
+              pagination={{
+                total: totalSupply,
+                defaultPageSize: perPage,
+                defaultCurrent: page,
+                onChange: currentPage => {
+                  setPage(currentPage);
+                },
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
+              }}
+              loading={loadingLoogies}
+              dataSource={allLoogies}
+              renderItem={item => {
+                const id = item.id.toNumber();
+
+                return (
+                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                    <Card
+                      title={
+                        <div>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                        </div>
+                      }
+                    >
+                      <img src={item.image} alt={"Loogie #" + id} width="200" />
+                      <div>{item.description}</div>
+                      <div>
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                      </div>
+                    </Card>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
+        )}
+      </div>
+    </>
   );
 }
 

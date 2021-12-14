@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown, Badge } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -23,14 +23,16 @@ import {
   ThemeSwitch,
   NetworkDisplay,
   FaucetHint,
+  Footer,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { YourLoogies, Loogies } from "./views";
+import { YourLoogies, YourFancyLoogies, YourAccesories, FancyLoogiePreview, Loogies } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+const { TabPane } = Tabs;
 
 const { ethers } = require("ethers");
 /*
@@ -150,50 +152,13 @@ function App(props) {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
-  const priceToMint = useContractReader(readContracts, "YourCollectible", "price");
+  const priceToMint = useContractReader(readContracts, "Loogies", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
-  const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply");
+  const totalSupply = useContractReader(readContracts, "Loogies", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const loogiesLeft = 3728 - totalSupply;
 
-  // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
-  if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
-
-  //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
-  //
-  const yourBalance = balance && balance.toNumber && balance.toNumber();
-  const [yourCollectibles, setYourCollectibles] = useState();
-  const [transferToAddresses, setTransferToAddresses] = useState({});
-
-  useEffect(() => {
-    const updateYourCollectibles = async () => {
-      const collectibleUpdate = [];
-      for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
-        try {
-          if (DEBUG) console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenOfOwnerByIndex(address, tokenIndex);
-          if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          if (DEBUG) console.log("tokenURI: ", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29));
-
-          try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-          } catch (e) {
-            console.log(e);
-          }
-        } catch (e) {
-          console.log(e);
-        }
-      }
-      setYourCollectibles(collectibleUpdate.reverse());
-    };
-    updateYourCollectibles();
-  }, [address, yourBalance]);
+  const [updateBalances, setUpdateBalances] = useState(0);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -261,6 +226,82 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+  const nfts = ["Bow", "Eyelash", "Mustache", "ContactLenses"];
+
+  const nftsSvg = {
+    Bow: (
+      <g class="bow" transform="translate(0,0) scale(0.07 0.07)">
+        <path fill="#1890ff" d="M476.532,135.396c-12.584-7.796-29-7.356-46.248,1.228l-117.868,59.88c-10.048-9.7-23.728-14.452-38.816-14.452h-50.156c-15.204,0-28.992,4.828-39.064,14.652L66.1,137.256c-17.232-8.58-33.836-9.336-46.412-1.544C7.1,143.508,0,158.1,0,177.368v141.104c0,19.268,7.1,34.18,19.68,41.96c5.972,3.708,12.904,5.556,20.28,5.556c8.164,0,17.04-2.256,26.092-6.764l118.312-58.14c10.072,9.824,23.88,16.588,39.08,16.588H273.6c15.084,0,28.78-6.692,38.82-16.396l117.884,58.276c9.068,4.512,17.9,6.596,26.064,6.596c7.388,0,14.192-1.928,20.164-5.636C489.108,352.72,496,337.744,496,318.476V177.368C496,158.1,489.108,143.192,476.532,135.396z"/>
+      </g>
+    ),
+    Eyelash: (
+      <g class="eyelash" transform="translate(-60,-45) scale(0.4 0.4)">
+        <g id="eye1">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="gray" fill="#fff"/>
+        </g>
+        <g id="eye2">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="gray" fill="#fff"/>
+        </g>
+        <path d="M 164 130 Q 154 125 169 120" stroke-width="1" fill="transparent" stroke="#1890ff" />
+        <path d="M 171 127 Q 161 122 176 117" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 179 125 Q 169 120 184 115" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 186 126 Q 176 121 191 116" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 194 127 Q 184 122 199 117" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 196 142 Q 186 137 201 132" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 203 140 Q 193 135 208 130" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 211 139 Q 201 134 216 129" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 218 141 Q 208 136 223 131" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+        <path d="M 226 143 Q 216 138 231 133" stroke="#1890ff" stroke-width="1" fill="transparent"/>
+      </g>
+    ),
+    Mustache: (
+      <g class="mustache" transform="translate(0,0) scale(1.40 1.40)">,
+        <path fill="#1890ff" d="M21.455,13.025c-0.604-3.065-5.861-4.881-7.083-2.583c-1.22-2.299-6.477-0.483-7.081,2.583C6.501,16.229,2.321,17.11,0,15.439c0,3.622,3.901,3.669,6.315,3.9c5.718-0.25,7.525-2.889,8.057-4.093c0.532,1.205,2.34,3.843,8.058,4.093c2.416-0.231,6.315-0.278,6.315-3.9C26.423,17.11,22.244,16.229,21.455,13.025z"/>
+      </g>
+    ),
+    ContactLenses: (
+      <g class="contact-lenses" transform="translate(-60,-47) scale(0.4 0.4)">
+        <g id="eye1">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_1" cy="154.5" cx="181.5" stroke="gray" fill="#fff"/>
+          <ellipse ry="3.5" rx="2.5" id="svg_3" cy="154.5" cx="173.5" stroke-width="3" stroke="#1890ff" fill="#000000"/>
+        </g>
+        <g id="eye2">
+          <ellipse stroke-width="1" ry="29.5" rx="29.5" id="svg_2" cy="168.5" cx="209.5" stroke="gray" fill="#fff"/>
+          <ellipse ry="3.5" rx="3" id="svg_4" cy="169.5" cx="208" stroke-width="3" fill="#000000" stroke="#1890ff"/>
+        </g>
+      </g>
+    ),
+  };
+
+  const [fancyLoogieContracts, setFancyLoogieContracts] = useState([]);
+  const [fancyLoogiesNfts, setFancyLoogiesNfts] = useState();
+  const [selectedFancyLoogie, setSelectedFancyLoogie] = useState();
+  const [selectedNfts, setSelectedNfts] = useState({});
+  const [selectedFancyLoogiePreview, setSelectedFancyLoogiePreview] = useState({});
+
+  const initCount = {
+    Bow: 0,
+    Eyelash: 0,
+    Mustache: 0,
+    ContactLenses: 0,
+  };
+
+  const [yourNftsCount, setYourNftsCount] = useState(initCount);
+
+  useEffect(() => {
+    const updateFancyLoogieContracts = async () => {
+      if (readContracts.FancyLoogie) {
+        if (DEBUG) console.log("Updating FancyLoogie contracts address...");
+        const fancyLoogieContractsAddress = await readContracts.FancyLoogie.getContractsAddress();
+        if (DEBUG) console.log("🤗 fancy loogie contracts:", fancyLoogieContractsAddress);
+        setFancyLoogieContracts(fancyLoogieContractsAddress);
+      }
+    };
+    updateFancyLoogieContracts();
+  }, [address, readContracts.FancyLoogie]);
+
+
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -278,41 +319,16 @@ function App(props) {
         <Menu.Item key="/yourLoogies">
           <Link to="/yourLoogies">Your Optimistic Loogies</Link>
         </Menu.Item>
+        <Menu.Item key="/yourFancyLoogies">
+          <Link to="/yourFancyLoogies">Your Fancy Loogies</Link>
+        </Menu.Item>
+        <Menu.Item key="/yourAccesories">
+          <Link to="/yourAccesories">Your Accesories</Link>
+        </Menu.Item>
         <Menu.Item key="/howto">
           <Link to="/howto">How To Use Optimistic Network</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
       </Menu>
-
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16 }}>
-          <p>
-            Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogies</a>) on a price curve <strong>increasing 0.2%</strong> with each new mint.
-          </p>
-          <p>All Ether from sales goes to public goods!!</p>
-        </div>
-
-        <Button
-          type="primary"
-          onClick={async () => {
-            const priceRightNow = await readContracts.YourCollectible.price();
-            try {
-              const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow }));
-              await txCur.wait();
-            } catch (e) {
-              console.log("mint failed", e);
-            }
-          }}
-        >
-          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-        </Button>
-
-        <p style={{ fontWeight: "bold" }}>
-          { loogiesLeft } left
-        </p>
-      </div>
 
       <Switch>
         <Route exact path="/">
@@ -326,17 +342,94 @@ function App(props) {
         </Route>
         <Route exact path="/yourLoogies">
           <YourLoogies
+            DEBUG={DEBUG}
             readContracts={readContracts}
             writeContracts={writeContracts}
-            priceToMint={priceToMint}
-            yourCollectibles={yourCollectibles}
             tx={tx}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
-            transferToAddresses={transferToAddresses}
-            setTransferToAddresses={setTransferToAddresses}
             address={address}
+            updateBalances={updateBalances}
+            setUpdateBalances={setUpdateBalances}
+            priceToMint={priceToMint}
           />
+        </Route>
+        <Route exact path="/yourFancyLoogies">
+          <YourFancyLoogies
+            DEBUG={DEBUG}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            address={address}
+            updateBalances={updateBalances}
+            setUpdateBalances={setUpdateBalances}
+            priceToMint={priceToMint}
+            fancyLoogieContracts={fancyLoogieContracts}
+            fancyLoogiesNfts={fancyLoogiesNfts}
+            setFancyLoogiesNfts={setFancyLoogiesNfts}
+            selectedFancyLoogie={selectedFancyLoogie}
+            setSelectedFancyLoogie={setSelectedFancyLoogie}
+            selectedNfts={selectedNfts}
+            setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
+            nfts={nfts}
+          />
+        </Route>
+        <Route exact path="/yourAccesories">
+          <FancyLoogiePreview
+            DEBUG={DEBUG}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            address={address}
+            updateBalances={updateBalances}
+            setUpdateBalances={setUpdateBalances}
+            nfts={nfts}
+            nftsSvg={nftsSvg}
+            fancyLoogiesNfts={fancyLoogiesNfts}
+            selectedFancyLoogie={selectedFancyLoogie}
+            selectedFancyLoogiePreview={selectedFancyLoogiePreview}
+            setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
+            selectedNfts={selectedNfts}
+          />
+          <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories">
+            {nfts.map(function (nft) {
+              return (
+                <TabPane
+                  tab={
+                    <div class="tab-item">
+                      <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                        {nftsSvg[nft]}
+                      </svg>
+                      <Badge count={yourNftsCount[nft]}>
+                        <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
+                      </Badge>
+                    </div>
+                  }
+                  key={nft}
+                >
+                  <YourAccesories
+                    DEBUG={DEBUG}
+                    readContracts={readContracts}
+                    writeContracts={writeContracts}
+                    tx={tx}
+                    mainnetProvider={mainnetProvider}
+                    blockExplorer={blockExplorer}
+                    address={address}
+                    updateBalances={updateBalances}
+                    setUpdateBalances={setUpdateBalances}
+                    priceToMint={priceToMint}
+                    nft={nft}
+                    fancyLoogiesNfts={fancyLoogiesNfts}
+                    selectedFancyLoogie={selectedFancyLoogie}
+                    selectedNfts={selectedNfts}
+                    setSelectedNfts={setSelectedNfts}
+                  />
+                </TabPane>
+              );
+            })}
+          </Tabs>
         </Route>
         <Route exact path="/howto">
           <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
@@ -363,10 +456,10 @@ function App(props) {
         </Route>
         <Route exact path="/debug">
           <div style={{ padding: 32 }}>
-            <Address value={readContracts && readContracts.YourCollectible && readContracts.YourCollectible.address} />
+            <Address value={readContracts && readContracts.FancyLoogie && readContracts.FancyLoogie.address} />
           </div>
           <Contract
-            name="YourCollectible"
+            name="FancyLoogie"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -377,10 +470,7 @@ function App(props) {
         </Route>
       </Switch>
 
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32 }}>
-        🛠 built with <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">🏗 scaffold-eth</a>
-        🍴 <a href="https://github.com/scaffold-eth/scaffold-eth" target="_blank">Fork this repo</a> and build a cool SVG NFT!
-      </div>
+      <Footer />
 
       <ThemeSwitch />
 
