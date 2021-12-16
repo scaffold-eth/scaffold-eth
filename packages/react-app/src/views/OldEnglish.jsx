@@ -5,7 +5,7 @@ import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 
-function Loogies({
+function OldEnglish({
   readContracts,
   mainnetProvider,
   blockExplorer,
@@ -16,31 +16,33 @@ function Loogies({
   address,
   localProvider,
 }) {
-  const [allLoogies, setAllLoogies] = useState({});
+  const [allOldEnglish, setAllOldEnglish] = useState({});
   const [page, setPage] = useState(1);
-  const [loadingLoogies, setLoadingLoogies] = useState(true);
+  const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
   const perPage = 8;
 
-  const receives = useEventListener(readContracts, "YourCollectible", "Receive", localProvider, 1);
+  const receives = useEventListener(readContracts, "OldEnglish", "Receive", localProvider, 1);
 
-  const updateAllLoogies = async () => {
-    if (readContracts.YourCollectible && totalSupply && totalSupply <= receives.length) {
-      setLoadingLoogies(true);
-      const collectibleUpdate = {};
-      for (const oe of receives) {
+  const updateAllOldEnglish = async () => {
+    if (readContracts.OldEnglish && totalSupply && totalSupply <= receives.length) {
+      setLoadingOldEnglish(true);
+      receives.forEach(async oe => {
         console.log(oe);
         if (oe.args.tokenId > 0) {
           try {
             //if (DEBUG) console.log("Getting token index", tokenIndex);
-            //const tokenId = await readContracts.YourCollectible.tokenByIndex(tokenIndex);
-            //if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-            const tokenURI = await readContracts.YourCollectible.tokenURI(oe.args.tokenId);
+            //const tokenId = await readContracts.OldEnglish.tokenByIndex(tokenIndex);
+            //if (DEBUG) console.log("Getting OldEnglish tokenId: ", tokenId);
+            const tokenURI = await readContracts.OldEnglish.tokenURI(oe.args.tokenId);
             //if (DEBUG) console.log("tokenURI: ", tokenURI);
             const jsonManifestString = atob(tokenURI.substring(29));
 
             try {
               const jsonManifest = JSON.parse(jsonManifestString);
+              const collectibleUpdate = {};
               collectibleUpdate[oe.args.tokenId] = { id: oe.args.tokenId, uri: tokenURI, ...jsonManifest };
+
+              setAllOldEnglish(i => ({ ...i, ...collectibleUpdate }));
             } catch (e) {
               console.log(e);
             }
@@ -48,17 +50,16 @@ function Loogies({
             console.log(e);
           }
         }
-      }
-      setAllLoogies(collectibleUpdate);
-      setLoadingLoogies(false);
+      });
+      setLoadingOldEnglish(false);
     }
   };
 
-  const updateOneLoogie = async id => {
-    if (readContracts.YourCollectible && totalSupply) {
-      const collectibleUpdate = Object.assign({}, allLoogies);
+  const updateOneOldEnglish = async id => {
+    if (readContracts.OldEnglish && totalSupply) {
+      const collectibleUpdate = Object.assign({}, allOldEnglish);
       try {
-        const tokenURI = await readContracts.YourCollectible.tokenURI(id);
+        const tokenURI = await readContracts.OldEnglish.tokenURI(id);
         if (DEBUG) console.log("tokenURI: ", tokenURI);
         const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -71,21 +72,22 @@ function Loogies({
       } catch (e) {
         console.log(e);
       }
-      setAllLoogies(collectibleUpdate);
+      setAllOldEnglish(collectibleUpdate);
     }
   };
 
   useEffect(() => {
-    updateAllLoogies();
-  }, [readContracts.YourCollectible, (totalSupply || "0").toString(), receives]);
+    updateAllOldEnglish();
+  }, [readContracts.OldEnglish, (totalSupply || "0").toString(), receives]);
+
+  const onFinishFailed = errorInfo => {
+    console.log("Failed:", errorInfo);
+  };
 
   const [form] = Form.useForm();
   const sendForm = id => {
     const [sending, setSending] = useState(false);
 
-    const onFinishFailed = errorInfo => {
-      console.log("Failed:", errorInfo);
-    };
     return (
       <div>
         <Form
@@ -94,15 +96,17 @@ function Loogies({
           name="sendOE"
           initialValues={{ tokenId: id }}
           onFinish={async values => {
-            console.log(writeContracts.YourCollectible);
+            setSending(true);
             try {
               const txCur = await tx(
-                writeContracts.YourCollectible["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
+                writeContracts.OldEnglish["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
               );
               await txCur.wait();
-              updateOneLoogie(id);
+              updateOneOldEnglish(id);
+              setSending(false);
             } catch (e) {
-              console.log("recycle failed", e);
+              console.log("send failed", e);
+              setSending(false);
             }
           }}
           onFinishFailed={onFinishFailed}
@@ -129,7 +133,54 @@ function Loogies({
     );
   };
 
-  let filteredOEs = Object.values(allLoogies).sort((a, b) => b.id - a.id);
+  const [pourForm] = Form.useForm();
+  const pour = id => {
+    const [pouring, setPouring] = useState(false);
+
+    return (
+      <div>
+        <Form
+          form={pourForm}
+          layout={"inline"}
+          name="pourOE"
+          initialValues={{ tokenId: id }}
+          onFinish={async values => {
+            setPouring(true);
+            try {
+              const txCur = await tx(writeContracts.OldEnglish["pour"](id, values["to"]));
+              await txCur.wait();
+              updateOneOldEnglish(id);
+              setPouring(false);
+            } catch (e) {
+              console.log("pour failed", e);
+              setPouring(false);
+            }
+          }}
+          onFinishFailed={onFinishFailed}
+        >
+          <Form.Item
+            name="to"
+            rules={[
+              {
+                required: true,
+                message: "Who's getting a pour?",
+              },
+            ]}
+          >
+            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={pouring}>
+              Pour
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  let filteredOEs = Object.values(allOldEnglish).sort((a, b) => b.id - a.id);
   const [mine, setMine] = useState(false);
   if (mine == true && address && filteredOEs) {
     console.log(mine, address, filteredOEs);
@@ -145,9 +196,9 @@ function Loogies({
       ) : (
         <div>
           <div style={{ marginBottom: 5 }}>
-            <Button onClick={updateAllLoogies}>Refresh</Button>
+            <Button onClick={updateAllOldEnglish}>Refresh</Button>
             <Switch
-              disabled={loadingLoogies}
+              disabled={loadingOldEnglish}
               style={{ marginLeft: 5 }}
               value={mine}
               onChange={() => {
@@ -176,7 +227,7 @@ function Loogies({
               },
               showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
             }}
-            loading={loadingLoogies}
+            loading={loadingOldEnglish}
             dataSource={filteredOEs}
             renderItem={item => {
               const id = item.id;
@@ -190,7 +241,7 @@ function Loogies({
                       </div>
                     }
                   >
-                    <img src={item.image} alt={"Loogie #" + id} width="200" />
+                    <img src={item.image} alt={"OldEnglish #" + id} width="200" />
                     <div>{item.description}</div>
                     <div>
                       <Address
@@ -208,9 +259,9 @@ function Loogies({
                               type="primary"
                               onClick={async () => {
                                 try {
-                                  const txCur = await tx(writeContracts.YourCollectible.sip(id));
+                                  const txCur = await tx(writeContracts.OldEnglish.sip(id));
                                   await txCur.wait();
-                                  updateOneLoogie(id);
+                                  updateOneOldEnglish(id);
                                 } catch (e) {
                                   console.log("sip failed", e);
                                 }
@@ -218,29 +269,23 @@ function Loogies({
                             >
                               Sip
                             </Button>
-                            <Button
-                              type="primary"
-                              onClick={async () => {
-                                try {
-                                  const txCur = await tx(writeContracts.YourCollectible.pour(id));
-                                  await txCur.wait();
-                                  updateOneLoogie(id);
-                                } catch (e) {
-                                  console.log("pour failed", e);
-                                }
+                            <Popover
+                              content={() => {
+                                return pour(id);
                               }}
+                              title="Pour OE"
                             >
-                              Pour
-                            </Button>
+                              <Button type="primary">Pour</Button>
+                            </Popover>
                           </>
                         ) : (
                           <Button
                             type="primary"
                             onClick={async () => {
                               try {
-                                const txCur = await tx(writeContracts.YourCollectible.recycle(id));
+                                const txCur = await tx(writeContracts.OldEnglish.recycle(id));
                                 await txCur.wait();
-                                updateOneLoogie(id);
+                                updateOneOldEnglish(id);
                               } catch (e) {
                                 console.log("recycle failed", e);
                               }
@@ -253,9 +298,9 @@ function Loogies({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts.YourCollectible.wrap(id));
+                              const txCur = await tx(writeContracts.OldEnglish.wrap(id));
                               await txCur.wait();
-                              updateOneLoogie(id);
+                              updateOneOldEnglish(id);
                             } catch (e) {
                               console.log("wrap failed", e);
                             }
@@ -284,4 +329,4 @@ function Loogies({
   );
 }
 
-export default Loogies;
+export default OldEnglish;
