@@ -10,7 +10,7 @@ import './HexStrings.sol';
 
 
 abstract contract LoogiesContract {
-  mapping(uint256 => bytes32) public genes;
+  mapping(uint256 => uint256) public chubbiness;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
   function transferFrom(address from, address to, uint256 id) external virtual;
 }
@@ -108,8 +108,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
     for (uint8 i = 0; i < loogiesById[_id].length; i++) {
       uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
-      int8 speedX = int8(uint8(loogies.genes(loogiesById[_id][i])[0]));
-      int8 speedY = int8(uint8(loogies.genes(loogiesById[_id][i])[1]));
+      int8 speedX = int8(uint8(keccak256(abi.encodePacked(loogies.chubbiness(loogiesById[_id][i])))[0]));
+      int8 speedY = int8(uint8(keccak256(abi.encodePacked(loogies.chubbiness(loogiesById[_id][i])))[1]));
       uint8 newX;
       uint8 newY;
 

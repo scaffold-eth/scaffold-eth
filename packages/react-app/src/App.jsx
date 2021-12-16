@@ -56,10 +56,10 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.kovanOptimism; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 
 const web3Modal = Web3ModalSetup();
@@ -74,7 +74,7 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["localhost", "mainnet", "rinkeby"];
+  const networkOptions = ["kovanOptimism", "localhost", "mainnet", "rinkeby"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -148,7 +148,7 @@ function App(props) {
   const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
 
   // Load in your local 📝 contract and read a value from it:
-  const readContracts = useContractLoader(localProvider, contractConfig);
+  const readContracts = useContractLoader(localProvider, contractConfig, localChainId);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -375,19 +375,21 @@ function App(props) {
           <Route exact path="/loogietank">
             <Contract
               name="LoogieTank"
+              customContract={writeContracts && writeContracts.LoogieTank}
               signer={userSigner}
               provider={localProvider}
               address={address}
+              chainId="69"
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
             />
           </Route>
          <Route exact path="/mintloogies">
-            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+            {/* <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
               <Button type={"primary"} onClick={() => {
                 tx(writeContracts.Loogies.mintItem())
               }}>MINT</Button>
-            </div>
+            </div> */}
             {/* */}
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
