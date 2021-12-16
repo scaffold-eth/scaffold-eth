@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
-import { YourLoogies, Loogies } from "./views";
+import { OldEnglish } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -156,18 +156,20 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  const priceToMint = useContractReader(readContracts, "YourCollectible", "price");
+  const priceToMint = useContractReader(readContracts, "OldEnglish", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
-  const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply");
+  const totalSupply = useContractReader(readContracts, "OldEnglish", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, "OldEnglish", "balanceOf", [address]);
   if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
 
+  const buzzBalance = useContractReader(readContracts, "Buzz", "balanceOf", [address]);
+
   //
-  // 🧠 This effect will update yourCollectibles by polling when your balance changes
+  // 🧠 This effect will update OldEnglishs by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
 
@@ -236,10 +238,11 @@ function App(props) {
 
         <Button
           type="primary"
+          size="large"
           onClick={async () => {
-            const priceRightNow = await readContracts.YourCollectible.price();
+            const priceRightNow = await readContracts.OldEnglish.price();
             try {
-              const txCur = await tx(writeContracts.YourCollectible.mintItem({ value: priceRightNow }));
+              const txCur = await tx(writeContracts.OldEnglish.mintItem({ value: priceRightNow }));
               await txCur.wait();
             } catch (e) {
               console.log("mint failed", e);
@@ -248,11 +251,12 @@ function App(props) {
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
+        <h2 style={{ marginTop: 12 }}>{`Your BUZZ: ${buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."}`}</h2>
       </div>
 
       <Switch>
         <Route exact path="/">
-          <Loogies
+          <OldEnglish
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
@@ -272,7 +276,17 @@ function App(props) {
             */}
 
           <Contract
-            name="YourCollectible"
+            name="Buzz"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+
+          <Contract
+            name="OldEnglish"
             price={price}
             signer={userSigner}
             provider={localProvider}

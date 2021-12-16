@@ -8,22 +8,22 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
 
 import './HexStrings.sol';
+import './Buzz.sol';
 
-contract YourCollectible is ERC721Enumerable, Ownable {
+contract OldEnglish is ERC721Enumerable, Ownable {
 
   using Strings for uint256;
   using HexStrings for uint160;
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  uint256 public constant limit = 420;
-  uint256 public constant curve = 1002; // price increase 0,4% with each purchase
+  uint256 public constant limit = 4269;
+  uint256 public constant curve = 1002;
   uint256 public price = 0.001 ether;
 
   uint256 public sipsPerForty = 13;
   mapping (uint256 => uint256) public sips;
   mapping (uint256 => bool) public wrapped;
-  mapping (address => uint256) public senderSips;
 
   event Sip(uint256 id, address sender);
   event Pour(uint256 id, address sender, uint256 sipCount);
@@ -31,7 +31,13 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   event Recycle(uint256 id, address sender, uint256 amount);
   event Receive(address sender, uint256 amount, uint256 tokenId);
 
+  address buzz;
+
   constructor() ERC721("OldEnglish", "OE") {
+  }
+
+  function setBuzz(address _buzz) public onlyOwner {
+    buzz = _buzz;
   }
 
   function mintItem()
@@ -58,7 +64,7 @@ contract YourCollectible is ERC721Enumerable, Ownable {
     require(ownerOf(id) == msg.sender, "only owner can sip!");
     require(sips[id] < sipsPerForty, "this drink is done!");
     sips[id] += 1;
-    senderSips[msg.sender] += 1;
+    Buzz(buzz).mint(msg.sender);
     emit Sip(id, msg.sender);
   }
 
@@ -99,10 +105,6 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   receive() external payable {
     require(_tokenIds.current() > recycled() || _tokenIds.current() < limit, "no bottles left!");
     emit Receive(msg.sender, msg.value, 0);
-  }
-
-  function isDrunk(address sipper) public view returns (bool) {
-    return senderSips[sipper] >= sipsPerForty;
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
