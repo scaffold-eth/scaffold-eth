@@ -20,7 +20,7 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   address payable public constant recipient =
     payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
 
-  uint256 public constant limit = 69;
+  uint256 public constant limit = 420;
   uint256 public constant curve = 1002; // price increase 0,4% with each purchase
   uint256 public price = 0.001 ether;
 
@@ -50,14 +50,11 @@ contract YourCollectible is ERC721Enumerable, Ownable {
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
 
-      (bool success, ) = recipient.call{value: msg.value}("");
-      require(success, "could not send");
-
       return id;
   }
 
   function sip(uint256 id) public {
-    require(ownerOf(id) == msg.sender, "only sender can sip!");
+    require(ownerOf(id) == msg.sender, "only owner can sip!");
     require(sips[id] < sipsPerForty, "this drink is done!");
     sips[id] += 1;
     senderSips[msg.sender] += 1;
@@ -65,17 +62,38 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   }
 
   function wrap(uint256 id) public {
-    require(ownerOf(id) == msg.sender, "only sender can wrap!");
+    require(ownerOf(id) == msg.sender, "only owner can wrap!");
     require(wrapped[id] == false, "wrapped already!");
     wrapped[id] = true;
     emit Wrap(id, msg.sender, true);
   }
 
   function unwrap(uint256 id) public {
-    require(ownerOf(id) == msg.sender, "only sender can wrap!");
+    require(ownerOf(id) == msg.sender, "only owner can wrap!");
     require(wrapped[id], "not wrapped!");
     wrapped[id] = false;
     emit Wrap(id, msg.sender, false);
+  }
+
+  function recycled() public view returns(uint256) {
+    return balanceOf(address(this)) + balanceOf(0x000000000000000000000000000000000000dEaD);
+  }
+
+  function recycle(uint256 id) public {
+    require(ownerOf(id) == msg.sender, "only owner can recycle!");
+
+    uint supply = _tokenIds.current();
+
+    uint amount = address(this).balance / (supply - recycled());
+
+    _transfer(msg.sender, address(this), id);
+
+    (bool success, ) = msg.sender.call{value: amount}("");
+    require(success, "could not send");
+  }
+
+  receive() external payable {
+    require(_tokenIds.current() > recycled() || _tokenIds.current() < limit, "no bottles left!");
   }
 
   function isDrunk(address sipper) public view returns (bool) {
