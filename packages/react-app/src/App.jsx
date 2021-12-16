@@ -54,7 +54,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.kovanOptimism; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -72,7 +72,7 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["localhost", "mainnet", "rinkeby"];
+  const networkOptions = ["kovanOptimism"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -161,7 +161,6 @@ function App(props) {
 
   const totalSupply = useContractReader(readContracts, "YourCollectible", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const loogiesLeft = 3728 - totalSupply;
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
@@ -253,24 +252,15 @@ function App(props) {
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
       </Menu>
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
             <strong>Get yourself a nice bottle of OE</strong> on a price curve <strong>increasing 0.2%</strong> with
-            each new mint.
+            each new mint. Take a sip. Wrap it up. Pour one out.
           </p>
-          <p>All Ether from sales goes to public goods!!</p>
+          <p>Recycle your OE to get your share!!</p>
         </div>
 
         <Button
@@ -287,8 +277,6 @@ function App(props) {
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
-
-        <p style={{ fontWeight: "bold" }}>{loogiesLeft} left</p>
       </div>
 
       <Switch>
@@ -298,6 +286,9 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
             totalSupply={totalSupply}
+            writeContracts={writeContracts}
+            tx={tx}
+            address={address}
             DEBUG={DEBUG}
           />
           <Contract
@@ -326,36 +317,6 @@ function App(props) {
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
           />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
         </Route>
       </Switch>
 

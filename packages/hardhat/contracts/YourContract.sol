@@ -72,16 +72,8 @@ contract YourCollectible is ERC721Enumerable, Ownable {
 
   function wrap(uint256 id) public {
     require(ownerOf(id) == msg.sender, "only owner can wrap!");
-    require(wrapped[id] == false, "wrapped already!");
-    wrapped[id] = true;
-    emit Wrap(id, msg.sender, true);
-  }
-
-  function unwrap(uint256 id) public {
-    require(ownerOf(id) == msg.sender, "only owner can wrap!");
-    require(wrapped[id], "not wrapped!");
-    wrapped[id] = false;
-    emit Wrap(id, msg.sender, false);
+    wrapped[id] = !wrapped[id];
+    emit Wrap(id, msg.sender, wrapped[id]);
   }
 
   function recycled() public view returns(uint256) {
