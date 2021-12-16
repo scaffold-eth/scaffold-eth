@@ -8,9 +8,6 @@ import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
 
 import './HexStrings.sol';
-//learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
-
-// GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
 contract YourCollectible is ERC721Enumerable, Ownable {
 
@@ -26,14 +23,16 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   uint256 public constant limit = 69;
   uint256 public constant curve = 1002; // price increase 0,4% with each purchase
   uint256 public price = 0.001 ether;
-  // the 1154th optimistic loogies cost 0.01 ETH, the 2306th cost 0.1ETH, the 3459th cost 1 ETH and the last ones cost 1.7 ETH
 
   uint256 public sipsPerForty = 13;
   mapping (uint256 => uint256) public sips;
+  mapping (uint256 => bool) public wrapped;
   mapping (address => uint256) public senderSips;
 
+  event Sip(uint256 id, address sender);
+  event Wrap(uint256 id, address sender, bool wrapped);
+
   constructor() ERC721("OldEnglish", "OE") {
-    // RELEASE THE OPTIMISTIC LOOGIES!
   }
 
   function mintItem()
@@ -58,11 +57,25 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   }
 
   function sip(uint256 id) public {
-    require(_exists(id), "not exist");
     require(ownerOf(id) == msg.sender, "only sender can sip!");
     require(sips[id] < sipsPerForty, "this drink is done!");
     sips[id] += 1;
     senderSips[msg.sender] += 1;
+    emit Sip(id, msg.sender);
+  }
+
+  function wrap(uint256 id) public {
+    require(ownerOf(id) == msg.sender, "only sender can wrap!");
+    require(wrapped[id] == false, "wrapped already!");
+    wrapped[id] = true;
+    emit Wrap(id, msg.sender, true);
+  }
+
+  function unwrap(uint256 id) public {
+    require(ownerOf(id) == msg.sender, "only sender can wrap!");
+    require(wrapped[id], "not wrapped!");
+    wrapped[id] = false;
+    emit Wrap(id, msg.sender, false);
   }
 
   function isDrunk(address sipper) public view returns (bool) {
@@ -72,7 +85,6 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
       string memory name = string(abi.encodePacked('OE #',id.toString()));
-      string memory description = string(abi.encodePacked('OE number ',id.toString()));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -84,13 +96,11 @@ contract YourCollectible is ERC721Enumerable, Ownable {
                           abi.encodePacked(
                               '{"name":"',
                               name,
-                              '", "description":"',
-                              description,
-                              '", "external_url":"https://drinkin-oe.com/token/',
+                              '", "description":"Just a forty of OE to sip", "external_url":"https://drinkin-oe.com/token/',
                               id.toString(),
-                              '", "attributes": [{"trait_type": "sips", "value": ',
-                              uint2str(sips[id]),
-                              '}], "owner":"',
+                              '", "attributes": ',
+                              getAttributesForToken(id),
+                              '"owner":"',
                               (uint160(ownerOf(id))).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
@@ -103,10 +113,20 @@ contract YourCollectible is ERC721Enumerable, Ownable {
           );
   }
 
+  function getAttributesForToken(uint256 id) internal view returns (string memory) {
+    return string(abi.encodePacked(
+      '[{"trait_type": "sips", "value": ',
+      uint2str(sips[id]),
+      '}, {"trait_type": "wrapped", "value": "',
+      wrapped[id] ? "wrapped" : "unwrapped",
+      '"}],'
+      ));
+  }
+
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg xmlns="http://www.w3.org/2000/svg" width="206.05" height="649.95">',
+      '<svg xmlns="http://www.w3.org/2000/svg" width="216.18" height="653.57">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -116,6 +136,10 @@ contract YourCollectible is ERC721Enumerable, Ownable {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
+
+    if(wrapped[id]) {
+      return '<defs><style>.cls-1,.cls-5{fill:#fff}.cls-1,.cls-10,.cls-11,.cls-12,.cls-13,.cls-2,.cls-3,.cls-4,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10}.cls-2,.cls-6{fill:#8a1300}.cls-3{fill:#ffdd74}.cls-4{fill:#bfa100}.cls-5,.cls-7{font-size:31.38px;letter-spacing:.02em;font-family:Arial-Black,Arial Black;font-weight:800}.cls-7{font-size:78px;fill:#ffede9;letter-spacing:.01em}.cls-8{fill:#c97700}.cls-10,.cls-9{fill:#ffc44a}.cls-9{opacity:.17}.cls-11{fill:#c7b299}.cls-12,.cls-13{fill:#998675}.cls-13{opacity:.39}</style></defs><path class="cls-1" d="M7 522S5 631 29 636c0 0 0 13 80 13h56s24-9 31-22c0 0 9-15 12-42v-63l4-176V242S166 93 136 49a58 58 0 0 0-6-7c-25-26-39-9-43-3a22 22 0 0 0-2 3S9 200 11 242c0 0-4 37-4 58Z"/><path class="cls-4" d="M78 5c-2 4-6 18 0 33 0 0 21 11 60 0 0 0 8-27-4-33 0 0-19 11-56 0Z"/><path class="cls-4" d="M107 1S76 2 80 5c0 0 32 9 56 0 0 0 5-3-29-4ZM75 14s14 9 48 4M75 29s8 6 48 0"/><path class="cls-9" d="M29 636s122-19 148-5"/><path class="cls-11" d="M50 82s-10 1-9 6l1 5s5 3 9 3-3 3-3 3 0 4 4 5c0 0-9-3-11 0s-4 10 0 11-15-4-13 3c0 0-6 3 3 6 0 0 0 13-5 21 0 0-14 43-16 57 0 0-8 88-9 120s0 251 6 267c0 0-5 48 27 57 0 0 128 12 143 5 0 0 39 2 35-38 0 0 6-36 3-43l1-328s-40-128-45-130c0 0 10-6 5-9 0 0-3-8-7-5 0 0 16-7 8-10 0 0-5-7-8-2 0 0-5-11-10-7 0 0-9 2-8 5s-23 5-23 5a84 84 0 0 1-37-1s-33 3-41-3v-3Z"/><path class="cls-12" d="M68 79H57s-8-1-7 6 6 7 6 7l2 1 60 2 36-6 5-10s10-9 0-8h-10l3 8s-11 26-87 7Z"/><path class="cls-13" d="m157 124 40 120s9 346 4 361c0 0-8 28-38 23"/>';
+    }
 
     string memory fluid = string(abi.encodePacked('<path class="cls-2" d="M639.54 142.77s20.72 14.18 90.38 0c0 0 53.66 141.6 56.66 156.71l-3.86 342.64s2.54 47.62-43.3 63.54c0 0-111.84 5.92-135.84-13.08 0 0-18.08 2.61-22-87.19l.14-256.28s3.28-52.72 5.05-64.11c0 0 26.73-97 52.77-142.23Z" transform="translate(-581.04 -57.08)"/>',
     '<path class="cls-6" d="M639.54 142.77s36.72-14.82 90.38 0c0 0-62.42 15.23-90.38 0Z" transform="translate(-581.04 -57.08)"/>'
