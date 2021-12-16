@@ -1,37 +1,52 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, List, Spin } from "antd";
-import { Address } from "../components";
+import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
+import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
+import { useEventListener } from "eth-hooks/events/useEventListener";
 
-function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG, writeContracts, tx, address }) {
+function Loogies({
+  readContracts,
+  mainnetProvider,
+  blockExplorer,
+  totalSupply,
+  DEBUG,
+  writeContracts,
+  tx,
+  address,
+  localProvider,
+}) {
   const [allLoogies, setAllLoogies] = useState({});
   const [page, setPage] = useState(1);
   const [loadingLoogies, setLoadingLoogies] = useState(true);
   const perPage = 8;
 
+  const receives = useEventListener(readContracts, "YourCollectible", "Receive", localProvider, 1);
+
   const updateAllLoogies = async () => {
-    if (readContracts.YourCollectible && totalSupply) {
+    if (readContracts.YourCollectible && totalSupply && totalSupply <= receives.length) {
       setLoadingLoogies(true);
       const collectibleUpdate = {};
-      let startIndex = totalSupply - 1 - perPage * (page - 1);
-      for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
-        try {
-          if (DEBUG) console.log("Getting token index", tokenIndex);
-          const tokenId = await readContracts.YourCollectible.tokenByIndex(tokenIndex);
-          if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-          const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
-          if (DEBUG) console.log("tokenURI: ", tokenURI);
-          const jsonManifestString = atob(tokenURI.substring(29));
-
+      for (const oe of receives) {
+        console.log(oe);
+        if (oe.args.tokenId > 0) {
           try {
-            const jsonManifest = JSON.parse(jsonManifestString);
-            collectibleUpdate[tokenId] = { id: tokenId, uri: tokenURI, ...jsonManifest };
+            //if (DEBUG) console.log("Getting token index", tokenIndex);
+            //const tokenId = await readContracts.YourCollectible.tokenByIndex(tokenIndex);
+            //if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
+            const tokenURI = await readContracts.YourCollectible.tokenURI(oe.args.tokenId);
+            //if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              collectibleUpdate[oe.args.tokenId] = { id: oe.args.tokenId, uri: tokenURI, ...jsonManifest };
+            } catch (e) {
+              console.log(e);
+            }
           } catch (e) {
             console.log(e);
           }
-        } catch (e) {
-          console.log(e);
         }
       }
       setAllLoogies(collectibleUpdate);
@@ -62,7 +77,66 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
 
   useEffect(() => {
     updateAllLoogies();
-  }, [readContracts.YourCollectible, (totalSupply || "0").toString(), page]);
+  }, [readContracts.YourCollectible, (totalSupply || "0").toString(), receives]);
+
+  const [form] = Form.useForm();
+  const sendForm = id => {
+    const [sending, setSending] = useState(false);
+
+    const onFinishFailed = errorInfo => {
+      console.log("Failed:", errorInfo);
+    };
+    return (
+      <div>
+        <Form
+          form={form}
+          layout={"inline"}
+          name="sendOE"
+          initialValues={{ tokenId: id }}
+          onFinish={async values => {
+            console.log(writeContracts.YourCollectible);
+            try {
+              const txCur = await tx(
+                writeContracts.YourCollectible["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
+              );
+              await txCur.wait();
+              updateOneLoogie(id);
+            } catch (e) {
+              console.log("recycle failed", e);
+            }
+          }}
+          onFinishFailed={onFinishFailed}
+        >
+          <Form.Item
+            name="to"
+            rules={[
+              {
+                required: true,
+                message: "Which address should receive this OE?",
+              },
+            ]}
+          >
+            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={sending}>
+              Send
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  let filteredOEs = Object.values(allLoogies).sort((a, b) => b.id - a.id);
+  const [mine, setMine] = useState(false);
+  if (mine == true && address && filteredOEs) {
+    console.log(mine, address, filteredOEs);
+    filteredOEs = filteredOEs.filter(function (el) {
+      return el.owner == address.toLowerCase();
+    });
+  }
 
   return (
     <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
@@ -70,7 +144,19 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
         <Spin style={{ marginTop: 100 }} />
       ) : (
         <div>
-          <Button onClick={updateAllLoogies}>Refresh</Button>
+          <div style={{ marginBottom: 5 }}>
+            <Button onClick={updateAllLoogies}>Refresh</Button>
+            <Switch
+              disabled={loadingLoogies}
+              style={{ marginLeft: 5 }}
+              value={mine}
+              onChange={() => {
+                setMine(!mine);
+              }}
+              checkedChildren="mine"
+              unCheckedChildren="all"
+            />
+          </div>
           <List
             grid={{
               gutter: 16,
@@ -91,7 +177,7 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
               showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
             }}
             loading={loadingLoogies}
-            dataSource={Object.values(allLoogies)}
+            dataSource={filteredOEs}
             renderItem={item => {
               const id = item.id;
 
@@ -177,6 +263,14 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
                         >
                           Wrap
                         </Button>
+                        <Popover
+                          content={() => {
+                            return sendForm(id);
+                          }}
+                          title="Send OE"
+                        >
+                          <Button type="primary">Send</Button>
+                        </Popover>
                       </>
                     )}
                   </Card>

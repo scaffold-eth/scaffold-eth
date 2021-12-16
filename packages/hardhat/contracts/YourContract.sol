@@ -119,7 +119,9 @@ contract YourCollectible is ERC721Enumerable, Ownable {
                           abi.encodePacked(
                               '{"name":"',
                               name,
-                              '", "description":"Just a forty of OE to sip", "external_url":"https://drinkin-oe.com/token/',
+                              '", "description":"',
+                              ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Just a forty of OE to sip",
+                              '", "external_url":"https://sippin-oe.com/token/',
                               id.toString(),
                               '", "attributes": ',
                               getAttributesForToken(id),
@@ -142,6 +144,8 @@ contract YourCollectible is ERC721Enumerable, Ownable {
       uint2str(sips[id]),
       '}, {"trait_type": "wrapped", "value": "',
       wrapped[id] ? "wrapped" : "unwrapped",
+      '"}, {"trait_type": "state", "value": "',
+      ownerOf(id) == address(this) ? "recycled" : "still OE",
       '"}],'
       ));
   }
