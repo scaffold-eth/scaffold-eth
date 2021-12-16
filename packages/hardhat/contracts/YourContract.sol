@@ -30,7 +30,10 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   mapping (address => uint256) public senderSips;
 
   event Sip(uint256 id, address sender);
+  event Pour(uint256 id, address sender, uint256 sipCount);
   event Wrap(uint256 id, address sender, bool wrapped);
+  event Recycle(uint256 id, address sender, uint256 amount);
+  event Receive(address sender, uint256 amount, uint256 tokenId);
 
   constructor() ERC721("OldEnglish", "OE") {
   }
@@ -50,6 +53,8 @@ contract YourCollectible is ERC721Enumerable, Ownable {
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
 
+      emit Receive(msg.sender, msg.value, id);
+
       return id;
   }
 
@@ -59,6 +64,14 @@ contract YourCollectible is ERC721Enumerable, Ownable {
     sips[id] += 1;
     senderSips[msg.sender] += 1;
     emit Sip(id, msg.sender);
+  }
+
+  function pour(uint256 id) public {
+    require(ownerOf(id) == msg.sender, "only owner can sip!");
+    require(sips[id] < sipsPerForty, "this drink is done!");
+    uint256 sipCount = 13 - sips[id];
+    sips[id] = 13;
+    emit Pour(id, msg.sender, sipCount);
   }
 
   function wrap(uint256 id) public {
@@ -81,6 +94,7 @@ contract YourCollectible is ERC721Enumerable, Ownable {
 
   function recycle(uint256 id) public {
     require(ownerOf(id) == msg.sender, "only owner can recycle!");
+    require(sips[id] == sipsPerForty, "still drink left!");
 
     uint supply = _tokenIds.current();
 
@@ -90,10 +104,13 @@ contract YourCollectible is ERC721Enumerable, Ownable {
 
     (bool success, ) = msg.sender.call{value: amount}("");
     require(success, "could not send");
+
+    emit Recycle(id, msg.sender, amount);
   }
 
   receive() external payable {
     require(_tokenIds.current() > recycled() || _tokenIds.current() < limit, "no bottles left!");
+    emit Receive(msg.sender, msg.value, 0);
   }
 
   function isDrunk(address sipper) public view returns (bool) {
