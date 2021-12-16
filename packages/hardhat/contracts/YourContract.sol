@@ -60,6 +60,7 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   function sip(uint256 id) public {
     require(_exists(id), "not exist");
     require(ownerOf(id) == msg.sender, "only sender can sip!");
+    require(sips[id] < sipsPerForty, "this drink is done!");
     sips[id] += 1;
     senderSips[msg.sender] += 1;
   }
