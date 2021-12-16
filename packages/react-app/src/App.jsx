@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Alert, Button, Col, Menu, Row, notification } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -54,7 +54,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+//const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -70,9 +70,10 @@ const providers = [
 ];
 
 function App(props) {
+  const oldEnglishContract = "EightPack";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["localhost", "kovanOptimism", "optimism"];
+  const networkOptions = ["kovanOptimism", "optimism"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -156,18 +157,21 @@ function App(props) {
   // If you want to bring in the mainnet DAI contract it would look like:
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
-  const priceToMint = useContractReader(readContracts, "OldEnglish", "price");
+  const priceToMint = useContractReader(readContracts, oldEnglishContract, "price");
 
-  const totalSupply = useContractReader(readContracts, "OldEnglish", "totalSupply");
+  const totalSupply = useContractReader(readContracts, oldEnglishContract, "totalSupply");
+  const limit = useContractReader(readContracts, oldEnglishContract, "limit");
 
   // keep track of a variable from the contract in the local React state:
-  const balance = useContractReader(readContracts, "OldEnglish", "balanceOf", [address]);
+  const balance = useContractReader(readContracts, oldEnglishContract, "balanceOf", [address]);
 
   const buzzBalance = useContractReader(readContracts, "Buzz", "balanceOf", [address]);
   //
   // 🧠 This effect will update OldEnglishs by polling when your balance changes
   //
   const yourBalance = balance && balance.toNumber && balance.toNumber();
+
+  const [minting, setMinting] = useState(false);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -226,27 +230,33 @@ function App(props) {
         </Menu.Item>
       </Menu>
 
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 12, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
-          <p>
-            <strong>Get yourself a nice bottle of OE</strong> on a price curve <strong>increasing 0.2%</strong> with
-            each new mint. Take a sip. Wrap it up. Pour one out.
-          </p>
-          <p>Recycle your OE to get your share!!</p>
+          <h2>Get yourself an oe40</h2>
+          <p>Take a sip. Wrap it up. Pour one out. Recycle an empty to get your share!!</p>
         </div>
 
         <Button
           type="primary"
           size="large"
+          loading={minting}
           onClick={async () => {
-            const priceRightNow = await readContracts.OldEnglish.price();
+            setMinting(true);
+            const priceRightNow = await readContracts[oldEnglishContract].price();
             try {
-              const txCur = await tx(writeContracts.OldEnglish.mintItem({ value: priceRightNow }));
+              const txCur = await tx(writeContracts[oldEnglishContract].mintItem({ value: priceRightNow }));
               await txCur.wait();
+              setMinting(false);
+              notification.open({
+                message: "🍻 Minted an OE 🍻",
+                description: "Sip, wrap, pour and recycle!",
+              });
             } catch (e) {
               console.log("mint failed", e);
+              setMinting(false);
             }
           }}
+          disabled={limit == totalSupply}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
@@ -265,6 +275,7 @@ function App(props) {
             tx={tx}
             address={address}
             DEBUG={DEBUG}
+            oldEnglishContract={oldEnglishContract}
           />
         </Route>
         <Route exact path="/drinks">
@@ -278,6 +289,7 @@ function App(props) {
             tx={tx}
             address={address}
             DEBUG={DEBUG}
+            oldEnglishContract={oldEnglishContract}
           />
         </Route>
         <Route exact path="/debug">
@@ -298,7 +310,7 @@ function App(props) {
           />
 
           <Contract
-            name="OldEnglish"
+            name={oldEnglishContract}
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -314,13 +326,13 @@ function App(props) {
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
-          <div style={{ marginRight: 20 }}>
+          {/*<div style={{ marginRight: 20 }}>
             <NetworkSwitch
               networkOptions={networkOptions}
               selectedNetwork={selectedNetwork}
               setSelectedNetwork={setSelectedNetwork}
             />
-          </div>
+          </div>*/}
           <Account
             address={address}
             localProvider={localProvider}
