@@ -4,7 +4,19 @@
 
 This forks the Loogies branch and brings in a drinkable NFT...
 
-OE!
+---
+
+sip()
+
+![40 mov](https://user-images.githubusercontent.com/2653167/146295000-80a561f8-6b6c-4c6e-9e3b-fc29cb398019.gif)
+
+---
+
+wrap()
+
+ ![image](https://user-images.githubusercontent.com/2653167/146295077-ad7fcd07-2c90-4942-af2f-9782442e3192.png)
+
+---
 
 1. Mint OE NFTs (not sure if we want this to be free? Currently priced, on a curve)
 2. You can sip from your OE NFT (only the owner can sip)
