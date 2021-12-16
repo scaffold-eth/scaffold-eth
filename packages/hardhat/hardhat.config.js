@@ -159,7 +159,7 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    polytest: {
+    mumbai: {
       url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
