@@ -58,7 +58,7 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.mainnet; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -398,29 +398,6 @@ function App(props) {
       {networkDisplay}
 
       <BrowserRouter>
-        <Menu style={{ textAlign: "center" }} selectedKeys={[route]} mode="horizontal">
-          <Menu.Item key="/">
-            <Link
-              onClick={() => {
-                setRoute("/");
-              }}
-              to="/"
-            >
-              Your Loogies
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/debug">
-            <Link
-              onClick={() => {
-                setRoute("/debug");
-              }}
-              to="/debug"
-            >
-              Smart Contract
-            </Link>
-          </Menu.Item>
-        </Menu>
-
         <Switch>
           <Route exact path="/">
             {/*
@@ -428,16 +405,22 @@ function App(props) {
                 this <Contract/> component will automatically parse your ABI
                 and give you a form to interact with it locally
             */}
-
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <h1>On Chain Fractals!</h1>
+              <img src="./samplefractal.svg" alt="test" />
+              <br />
+              <br />
+              <h3>A project built by @blind_nabler with scaffold-eth! A collection of randomly generated fractal SVG NFTs! Each NFT's image data is stored completely on chain in the form of SVG instructions, so no need for external image hosting with IPFS or any of that nonsense. Hence the name ;) Feel free to mint one and feel even more free to fork this project and make your own SVG NFT!</h3>
+              <br />
+              <h3>Price to mint: 0.0420 ETH</h3>
+              <h3>Max Supply: 1000</h3>
               {isSigner?(
                 <Button type={"primary"} onClick={()=>{
-                  tx( writeContracts.YourCollectible.mintItem() )
-                }}>MINT</Button>
+                  tx( writeContracts.YourCollectible.mintItem({value: parseEther("0.0420")}) )
+                }}>MINT for 0.0420 ETH</Button>
               ):(
                 <Button type={"primary"} onClick={loadWeb3Modal}>CONNECT WALLET</Button>
               )}
-
             </div>
 
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>

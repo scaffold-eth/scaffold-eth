@@ -149,6 +149,19 @@
     "type": "function"
   },
   {
+    "inputs": [],
+    "name": "blindnabler",
+    "outputs": [
+      {
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
     "inputs": [
       {
         "internalType": "uint256",
@@ -209,6 +222,44 @@
     "inputs": [
       {
         "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "color3",
+    "outputs": [
+      {
+        "internalType": "bytes3",
+        "name": "",
+        "type": "bytes3"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }
+    ],
+    "name": "color4",
+    "outputs": [
+      {
+        "internalType": "bytes3",
+        "name": "",
+        "type": "bytes3"
+      }
+    ],
+    "stateMutability": "view",
+    "type": "function"
+  },
+  {
+    "inputs": [
+      {
+        "internalType": "uint256",
         "name": "_x1",
         "type": "uint256"
       },
@@ -224,12 +275,12 @@
       },
       {
         "internalType": "string",
-        "name": "color1",
+        "name": "_color1",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "color2",
+        "name": "_color2",
         "type": "string"
       }
     ],
@@ -241,7 +292,7 @@
         "type": "string"
       }
     ],
-    "stateMutability": "view",
+    "stateMutability": "pure",
     "type": "function"
   },
   {
@@ -302,17 +353,17 @@
       },
       {
         "internalType": "uint256",
-        "name": "maxdepth",
+        "name": "_maxdepth",
         "type": "uint256"
       },
       {
         "internalType": "string",
-        "name": "color1",
+        "name": "_color1",
         "type": "string"
       },
       {
         "internalType": "string",
-        "name": "color2",
+        "name": "_color2",
         "type": "string"
       }
     ],
@@ -399,7 +450,7 @@
         "type": "uint256"
       }
     ],
-    "stateMutability": "nonpayable",
+    "stateMutability": "payable",
     "type": "function"
   },
   {
