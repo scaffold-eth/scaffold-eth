@@ -29,11 +29,17 @@ wrap()
 The usual jazz...
 
 ```
+git clone -b sipping-oe https://github.com/scaffold-eth/scaffold-eth sipping-oe
+```
+
+```
+cd sipping-oe
 yarn install
 yarn chain
 ```
 
 ```
+cd sipping-oe
 yarn start
 ```
 
