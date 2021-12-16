@@ -80,13 +80,14 @@ function OldEnglish({
     updateAllOldEnglish();
   }, [readContracts.OldEnglish, (totalSupply || "0").toString(), receives]);
 
+  const onFinishFailed = errorInfo => {
+    console.log("Failed:", errorInfo);
+  };
+
   const [form] = Form.useForm();
   const sendForm = id => {
     const [sending, setSending] = useState(false);
 
-    const onFinishFailed = errorInfo => {
-      console.log("Failed:", errorInfo);
-    };
     return (
       <div>
         <Form
@@ -95,15 +96,17 @@ function OldEnglish({
           name="sendOE"
           initialValues={{ tokenId: id }}
           onFinish={async values => {
-            console.log(writeContracts.OldEnglish);
+            setSending(true);
             try {
               const txCur = await tx(
                 writeContracts.OldEnglish["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
               );
               await txCur.wait();
               updateOneOldEnglish(id);
+              setSending(false);
             } catch (e) {
-              console.log("recycle failed", e);
+              console.log("send failed", e);
+              setSending(false);
             }
           }}
           onFinishFailed={onFinishFailed}
@@ -123,6 +126,53 @@ function OldEnglish({
           <Form.Item>
             <Button type="primary" htmlType="submit" loading={sending}>
               Send
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
+    );
+  };
+
+  const [pourForm] = Form.useForm();
+  const pour = id => {
+    const [pouring, setPouring] = useState(false);
+
+    return (
+      <div>
+        <Form
+          form={pourForm}
+          layout={"inline"}
+          name="pourOE"
+          initialValues={{ tokenId: id }}
+          onFinish={async values => {
+            setPouring(true);
+            try {
+              const txCur = await tx(writeContracts.OldEnglish["pour"](id, values["to"]));
+              await txCur.wait();
+              updateOneOldEnglish(id);
+              setPouring(false);
+            } catch (e) {
+              console.log("pour failed", e);
+              setPouring(false);
+            }
+          }}
+          onFinishFailed={onFinishFailed}
+        >
+          <Form.Item
+            name="to"
+            rules={[
+              {
+                required: true,
+                message: "Who's getting a pour?",
+              },
+            ]}
+          >
+            <AddressInput ensProvider={mainnetProvider} placeholder={"to address"} />
+          </Form.Item>
+
+          <Form.Item>
+            <Button type="primary" htmlType="submit" loading={pouring}>
+              Pour
             </Button>
           </Form.Item>
         </Form>
@@ -219,20 +269,14 @@ function OldEnglish({
                             >
                               Sip
                             </Button>
-                            <Button
-                              type="primary"
-                              onClick={async () => {
-                                try {
-                                  const txCur = await tx(writeContracts.OldEnglish.pour(id));
-                                  await txCur.wait();
-                                  updateOneOldEnglish(id);
-                                } catch (e) {
-                                  console.log("pour failed", e);
-                                }
+                            <Popover
+                              content={() => {
+                                return pour(id);
                               }}
+                              title="Pour OE"
                             >
-                              Pour
-                            </Button>
+                              <Button type="primary">Pour</Button>
+                            </Popover>
                           </>
                         ) : (
                           <Button

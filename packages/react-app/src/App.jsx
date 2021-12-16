@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
-import { OldEnglish } from "./views";
+import { OldEnglish, Drinks } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -157,17 +157,13 @@ function App(props) {
   const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
 
   const priceToMint = useContractReader(readContracts, "OldEnglish", "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
   const totalSupply = useContractReader(readContracts, "OldEnglish", "totalSupply");
-  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
 
   // keep track of a variable from the contract in the local React state:
   const balance = useContractReader(readContracts, "OldEnglish", "balanceOf", [address]);
-  if (DEBUG) console.log("🤗 address: ", address, " balance:", balance);
 
   const buzzBalance = useContractReader(readContracts, "Buzz", "balanceOf", [address]);
-
   //
   // 🧠 This effect will update OldEnglishs by polling when your balance changes
   //
@@ -220,7 +216,10 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Old English</Link>
+        </Menu.Item>
+        <Menu.Item key="/drinks">
+          <Link to="/drinks">Drinks</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -257,6 +256,19 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           <OldEnglish
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            totalSupply={totalSupply}
+            writeContracts={writeContracts}
+            localProvider={localProvider}
+            tx={tx}
+            address={address}
+            DEBUG={DEBUG}
+          />
+        </Route>
+        <Route exact path="/drinks">
+          <Drinks
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}

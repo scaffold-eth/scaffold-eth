@@ -25,8 +25,7 @@ contract OldEnglish is ERC721Enumerable, Ownable {
   mapping (uint256 => uint256) public sips;
   mapping (uint256 => bool) public wrapped;
 
-  event Sip(uint256 id, address sender);
-  event Pour(uint256 id, address sender, uint256 sipCount);
+  event Drink(uint256 id, address sender, address drinker);
   event Wrap(uint256 id, address sender, bool wrapped);
   event Recycle(uint256 id, address sender, uint256 amount);
   event Receive(address sender, uint256 amount, uint256 tokenId);
@@ -65,15 +64,15 @@ contract OldEnglish is ERC721Enumerable, Ownable {
     require(sips[id] < sipsPerForty, "this drink is done!");
     sips[id] += 1;
     Buzz(buzz).mint(msg.sender);
-    emit Sip(id, msg.sender);
+    emit Drink(id, msg.sender, msg.sender);
   }
 
-  function pour(uint256 id) public {
-    require(ownerOf(id) == msg.sender, "only owner can sip!");
+  function pour(uint256 id, address drinker) public {
+    require(ownerOf(id) == msg.sender, "only owner can pour!");
     require(sips[id] < sipsPerForty, "this drink is done!");
-    uint256 sipCount = 13 - sips[id];
-    sips[id] = 13;
-    emit Pour(id, msg.sender, sipCount);
+    sips[id] += 1;
+    Buzz(buzz).mint(drinker);
+    emit Drink(id, msg.sender, drinker);
   }
 
   function wrap(uint256 id) public {

@@ -4,3 +4,4 @@ export { default as Hints } from "./Hints";
 export { default as Subgraph } from "./Subgraph";
 export { default as YourLoogies } from "./YourLoogies";
 export { default as OldEnglish } from "./OldEnglish";
+export { default as Drinks } from "./Drinks";
