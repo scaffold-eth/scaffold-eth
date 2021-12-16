@@ -58,6 +58,7 @@ const targetNetwork = NETWORKS.localhost; // <------- select your target fronten
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
+const USE_BURNER_WALLET = true; // toggle burner wallet feature
 
 const web3Modal = Web3ModalSetup();
 
@@ -111,7 +112,7 @@ function App(props) {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   const gasPrice = useGasPrice(targetNetwork, "fast");
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider);
+  const userProviderAndSigner = useUserProviderAndSigner(injectedProvider, localProvider, USE_BURNER_WALLET);
   const userSigner = userProviderAndSigner.signer;
 
   useEffect(() => {
@@ -361,6 +362,7 @@ function App(props) {
             />
           </div>
           <Account
+            useBurner={USE_BURNER_WALLET}
             address={address}
             localProvider={localProvider}
             userSigner={userSigner}
@@ -372,7 +374,9 @@ function App(props) {
             blockExplorer={blockExplorer}
           />
         </div>
-        <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
+        {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
+          <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
+        )}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
