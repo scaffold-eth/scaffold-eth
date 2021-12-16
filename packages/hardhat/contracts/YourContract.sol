@@ -16,10 +16,6 @@ contract YourCollectible is ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  // all funds go to buidlguidl.eth
-  address payable public constant recipient =
-    payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
-
   uint256 public constant limit = 420;
   uint256 public constant curve = 1002; // price increase 0,4% with each purchase
   uint256 public price = 0.001 ether;
