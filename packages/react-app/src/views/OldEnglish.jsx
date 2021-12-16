@@ -15,16 +15,17 @@ function OldEnglish({
   tx,
   address,
   localProvider,
+  oldEnglishContract,
 }) {
   const [allOldEnglish, setAllOldEnglish] = useState({});
   const [page, setPage] = useState(1);
   const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
   const perPage = 8;
 
-  const receives = useEventListener(readContracts, "OldEnglish", "Receive", localProvider, 1);
+  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
 
   const updateAllOldEnglish = async () => {
-    if (readContracts.OldEnglish && totalSupply && totalSupply <= receives.length) {
+    if (readContracts[oldEnglishContract] && totalSupply && totalSupply <= receives.length) {
       setLoadingOldEnglish(true);
       receives.forEach(async oe => {
         console.log(oe);
@@ -33,7 +34,7 @@ function OldEnglish({
             //if (DEBUG) console.log("Getting token index", tokenIndex);
             //const tokenId = await readContracts.OldEnglish.tokenByIndex(tokenIndex);
             //if (DEBUG) console.log("Getting OldEnglish tokenId: ", tokenId);
-            const tokenURI = await readContracts.OldEnglish.tokenURI(oe.args.tokenId);
+            const tokenURI = await readContracts[oldEnglishContract].tokenURI(oe.args.tokenId);
             //if (DEBUG) console.log("tokenURI: ", tokenURI);
             const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -56,10 +57,10 @@ function OldEnglish({
   };
 
   const updateOneOldEnglish = async id => {
-    if (readContracts.OldEnglish && totalSupply) {
+    if (readContracts[oldEnglishContract] && totalSupply) {
       const collectibleUpdate = Object.assign({}, allOldEnglish);
       try {
-        const tokenURI = await readContracts.OldEnglish.tokenURI(id);
+        const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
         if (DEBUG) console.log("tokenURI: ", tokenURI);
         const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -78,7 +79,7 @@ function OldEnglish({
 
   useEffect(() => {
     updateAllOldEnglish();
-  }, [readContracts.OldEnglish, (totalSupply || "0").toString(), receives]);
+  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), receives]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -99,7 +100,11 @@ function OldEnglish({
             setSending(true);
             try {
               const txCur = await tx(
-                writeContracts.OldEnglish["safeTransferFrom(address,address,uint256)"](address, values["to"], id),
+                writeContracts[oldEnglishContract]["safeTransferFrom(address,address,uint256)"](
+                  address,
+                  values["to"],
+                  id,
+                ),
               );
               await txCur.wait();
               updateOneOldEnglish(id);
@@ -147,7 +152,7 @@ function OldEnglish({
           onFinish={async values => {
             setPouring(true);
             try {
-              const txCur = await tx(writeContracts.OldEnglish["pour"](id, values["to"]));
+              const txCur = await tx(writeContracts[oldEnglishContract]["pour"](id, values["to"]));
               await txCur.wait();
               updateOneOldEnglish(id);
               setPouring(false);
@@ -259,7 +264,7 @@ function OldEnglish({
                               type="primary"
                               onClick={async () => {
                                 try {
-                                  const txCur = await tx(writeContracts.OldEnglish.sip(id));
+                                  const txCur = await tx(writeContracts[oldEnglishContract].sip(id));
                                   await txCur.wait();
                                   updateOneOldEnglish(id);
                                 } catch (e) {
@@ -283,7 +288,7 @@ function OldEnglish({
                             type="primary"
                             onClick={async () => {
                               try {
-                                const txCur = await tx(writeContracts.OldEnglish.recycle(id));
+                                const txCur = await tx(writeContracts[oldEnglishContract].recycle(id));
                                 await txCur.wait();
                                 updateOneOldEnglish(id);
                               } catch (e) {
@@ -298,7 +303,7 @@ function OldEnglish({
                           type="primary"
                           onClick={async () => {
                             try {
-                              const txCur = await tx(writeContracts.OldEnglish.wrap(id));
+                              const txCur = await tx(writeContracts[oldEnglishContract].wrap(id));
                               await txCur.wait();
                               updateOneOldEnglish(id);
                             } catch (e) {

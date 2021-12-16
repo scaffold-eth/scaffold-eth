@@ -17,9 +17,9 @@ contract OldEnglish is ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  uint256 public constant limit = 4269;
-  uint256 public constant curve = 1002;
-  uint256 public price = 0.001 ether;
+  uint256 public immutable limit;
+  uint256 public immutable curve;
+  uint256 public price;
 
   uint256 public sipsPerForty = 13;
   mapping (uint256 => uint256) public sips;
@@ -32,7 +32,10 @@ contract OldEnglish is ERC721Enumerable, Ownable {
 
   address buzz;
 
-  constructor() ERC721("OldEnglish", "OE") {
+  constructor(uint256 _limit, uint256 _curve, uint256 _price) ERC721("OldEnglish", "OE") {
+    limit = _limit;
+    curve = _curve;
+    price = _price;
   }
 
   function setBuzz(address _buzz) public onlyOwner {
@@ -122,9 +125,7 @@ contract OldEnglish is ERC721Enumerable, Ownable {
                               name,
                               '", "description":"',
                               ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Just a forty of OE to sip",
-                              '", "external_url":"https://sippin-oe.com/token/',
-                              id.toString(),
-                              '", "attributes": ',
+                              '", "external_url":"https://oe40.me", "attributes": ',
                               getAttributesForToken(id),
                               '"owner":"',
                               (uint160(ownerOf(id))).toHexString(20),

@@ -2,20 +2,25 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract Buzz is ERC20 {
+contract Buzz is ERC20Burnable, Ownable {
 
-    address oldEnglish;
     uint256 hit = 420_000_000_000_000_000_000;
     uint256 drunk = 6969_000_000_000_000_000_000;
 
-    constructor(address _oldEnglish) ERC20("Buzz", "BUZZ") {
-        oldEnglish = _oldEnglish;
+    mapping (address => bool) public minters;
+
+    constructor() ERC20("Buzz", "BUZZ") {
+    }
+
+    function setMinter(address _minter) public onlyOwner {
+      minters[_minter] = !minters[_minter];
     }
 
     function mint(address _recipient) public {
-      require(msg.sender == oldEnglish, "only OldEnglish can mint");
+      require(minters[msg.sender], "only minters can mint");
       _mint(_recipient, hit);
     }
 
