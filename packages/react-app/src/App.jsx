@@ -73,7 +73,7 @@ function App(props) {
   const oldEnglishContract = "EightPack";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["localhost", "kovanOptimism", "optimism"];
+  const networkOptions = ["kovanOptimism", "optimism"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
