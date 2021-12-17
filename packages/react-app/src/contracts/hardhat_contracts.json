@@ -3172,7 +3172,7 @@
           ]
         },
         "EightPack": {
-          "address": "0xdbC43Ba45381e02825b14322cDdd15eC4B3164E6",
+          "address": "0x21dF544947ba3E8b3c32561399E88B52Dc8b2823",
           "abi": [
             {
               "anonymous": false,
@@ -3228,19 +3228,19 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "id",
                   "type": "uint256"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "address",
                   "name": "sender",
                   "type": "address"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "address",
                   "name": "drinker",
                   "type": "address"
@@ -3272,19 +3272,19 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "address",
                   "name": "sender",
                   "type": "address"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "amount",
                   "type": "uint256"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "tokenId",
                   "type": "uint256"
@@ -3297,19 +3297,19 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "id",
                   "type": "uint256"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "address",
                   "name": "sender",
                   "type": "address"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "amount",
                   "type": "uint256"
@@ -3347,13 +3347,13 @@
               "anonymous": false,
               "inputs": [
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "uint256",
                   "name": "id",
                   "type": "uint256"
                 },
                 {
-                  "indexed": false,
+                  "indexed": true,
                   "internalType": "address",
                   "name": "sender",
                   "type": "address"

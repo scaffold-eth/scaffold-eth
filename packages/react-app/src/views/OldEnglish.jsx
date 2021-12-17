@@ -23,6 +23,10 @@ function OldEnglish({
   const perPage = 8;
 
   const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
+  //const filtered =
+  //  readContracts[oldEnglishContract] &&
+  //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
+  //console.log(filtered);
 
   const updateAllOldEnglish = async () => {
     if (readContracts[oldEnglishContract] && totalSupply && totalSupply <= receives.length) {
