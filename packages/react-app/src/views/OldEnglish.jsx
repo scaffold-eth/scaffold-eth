@@ -317,9 +317,9 @@ function OldEnglish({
                           content={() => {
                             return sendForm(id);
                           }}
-                          title="Send OE"
+                          title="Pass it:"
                         >
-                          <Button type="primary">Send</Button>
+                          <Button type="primary">Pass it!</Button>
                         </Popover>
                       </>
                     )}
