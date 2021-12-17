@@ -1,17 +1,15 @@
 packages/subgraph/subgraph.yaml
 packages/subgraph/generated
 packages/subgraph/abis/*
-packages/hardhat/*.txt
+packages/truffle/*.txt
 **/aws.json
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
 **/node_modules
 
-packages/hardhat/artifacts*
-packages/hardhat/deployments
+packages/truffle/build/*
 packages/react-app/src/contracts/*
 !packages/react-app/src/contracts/external_contracts.js
-packages/hardhat/cache*
 packages/**/data
 !packages/react-app/src/contracts/contracts.js
 
@@ -44,10 +42,6 @@ coverage
 
 # production
 build
-
-# Hardhat files
-cache
-artifacts
 
 # misc
 .DS_Store
