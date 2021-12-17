@@ -124,7 +124,7 @@ contract OldEnglish is ERC721Enumerable, Ownable {
                               '{"name":"',
                               name,
                               '", "description":"',
-                              ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Just a forty of OE to sip",
+                              ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Sipping on cool, crisp OE 40s!",
                               '", "external_url":"https://oe40.me", "attributes": ',
                               getAttributesForToken(id),
                               '"owner":"',

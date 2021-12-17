@@ -232,7 +232,7 @@ function App(props) {
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 12, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
-          <h2>Get yourself an oe40</h2>
+          <h2>{`Get yourself an oe40 (${totalSupply}/${limit})`}</h2>
           <p>Take a sip. Wrap it up. Pour one out. Recycle an empty to get your share!!</p>
         </div>
 
@@ -256,7 +256,7 @@ function App(props) {
               setMinting(false);
             }
           }}
-          disabled={limit == totalSupply}
+          disabled={limit >= totalSupply}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
