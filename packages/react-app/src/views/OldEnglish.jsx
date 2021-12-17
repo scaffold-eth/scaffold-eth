@@ -1,6 +1,7 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
+import { RedoOutlined } from "@ant-design/icons";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 import { useEventListener } from "eth-hooks/events/useEventListener";
@@ -16,11 +17,12 @@ function OldEnglish({
   address,
   localProvider,
   oldEnglishContract,
+  balance,
 }) {
   const [allOldEnglish, setAllOldEnglish] = useState({});
-  const [page, setPage] = useState(1);
   const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
   const perPage = 8;
+  const [page, setPage] = useState(0);
 
   const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
   //const filtered =
@@ -28,62 +30,65 @@ function OldEnglish({
   //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
   //console.log(filtered);
 
-  const updateAllOldEnglish = async () => {
+  const fetchMetadataAndUpdate = async id => {
+    try {
+      const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
+      const jsonManifestString = atob(tokenURI.substring(29));
+
+      try {
+        const jsonManifest = JSON.parse(jsonManifestString);
+        const collectibleUpdate = {};
+        collectibleUpdate[id] = { id: id, uri: tokenURI, ...jsonManifest };
+
+        setAllOldEnglish(i => ({ ...i, ...collectibleUpdate }));
+      } catch (e) {
+        console.log(e);
+      }
+    } catch (e) {
+      console.log(e);
+    }
+  };
+
+  const updateAllOldEnglish = async fetchAll => {
     if (readContracts[oldEnglishContract] && totalSupply && totalSupply <= receives.length) {
       setLoadingOldEnglish(true);
-      receives.forEach(async oe => {
-        console.log(oe);
-        if (oe.args.tokenId > 0) {
-          try {
-            //if (DEBUG) console.log("Getting token index", tokenIndex);
-            //const tokenId = await readContracts.OldEnglish.tokenByIndex(tokenIndex);
-            //if (DEBUG) console.log("Getting OldEnglish tokenId: ", tokenId);
-            const tokenURI = await readContracts[oldEnglishContract].tokenURI(oe.args.tokenId);
-            //if (DEBUG) console.log("tokenURI: ", tokenURI);
-            const jsonManifestString = atob(tokenURI.substring(29));
-
-            try {
-              const jsonManifest = JSON.parse(jsonManifestString);
-              const collectibleUpdate = {};
-              collectibleUpdate[oe.args.tokenId] = { id: oe.args.tokenId, uri: tokenURI, ...jsonManifest };
-
-              setAllOldEnglish(i => ({ ...i, ...collectibleUpdate }));
-            } catch (e) {
-              console.log(e);
-            }
-          } catch (e) {
-            console.log(e);
-          }
+      let reversed = [...receives]
+        .reverse()
+        .filter(function (el) {
+          return el.args.tokenId > 0;
+        })
+        .slice(0, page * perPage + perPage);
+      console.log(reversed);
+      reversed.forEach(async oe => {
+        if (oe.args.tokenId > 0 && (fetchAll || !allOldEnglish[oe.args.tokenId])) {
+          fetchMetadataAndUpdate(oe.args.tokenId);
         }
       });
       setLoadingOldEnglish(false);
     }
   };
 
-  const updateOneOldEnglish = async id => {
-    if (readContracts[oldEnglishContract] && totalSupply) {
-      const collectibleUpdate = Object.assign({}, allOldEnglish);
+  const updateYourOldEnglish = async () => {
+    for (let tokenIndex = 0; tokenIndex < balance; tokenIndex++) {
       try {
-        const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
-        if (DEBUG) console.log("tokenURI: ", tokenURI);
-        const jsonManifestString = atob(tokenURI.substring(29));
-
-        try {
-          const jsonManifest = JSON.parse(jsonManifestString);
-          collectibleUpdate[id.toString()] = { id: id.toString(), uri: tokenURI, ...jsonManifest };
-        } catch (e) {
-          console.log(e);
-        }
+        const tokenId = await readContracts[oldEnglishContract].tokenOfOwnerByIndex(address, tokenIndex);
+        fetchMetadataAndUpdate(tokenId);
       } catch (e) {
         console.log(e);
       }
-      setAllOldEnglish(collectibleUpdate);
+    }
+  };
+
+  const updateOneOldEnglish = async id => {
+    if (readContracts[oldEnglishContract] && totalSupply) {
+      fetchMetadataAndUpdate(id);
     }
   };
 
   useEffect(() => {
-    updateAllOldEnglish();
-  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), receives]);
+    console.log("updating all");
+    updateAllOldEnglish(false, page);
+  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), receives, page]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -205,13 +210,20 @@ function OldEnglish({
       ) : (
         <div>
           <div style={{ marginBottom: 5 }}>
-            <Button onClick={updateAllOldEnglish}>Refresh</Button>
+            <Button
+              onClick={() => {
+                return updateAllOldEnglish(true);
+              }}
+            >
+              Refresh
+            </Button>
             <Switch
               disabled={loadingOldEnglish}
               style={{ marginLeft: 5 }}
               value={mine}
               onChange={() => {
                 setMine(!mine);
+                updateYourOldEnglish();
               }}
               checkedChildren="mine"
               unCheckedChildren="all"
@@ -232,7 +244,8 @@ function OldEnglish({
               defaultPageSize: perPage,
               defaultCurrent: page,
               onChange: currentPage => {
-                setPage(currentPage);
+                setPage(currentPage - 1);
+                console.log(currentPage);
               },
               showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
             }}
@@ -247,6 +260,13 @@ function OldEnglish({
                     title={
                       <div>
                         <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                        <Button
+                          shape="circle"
+                          onClick={() => {
+                            updateOneOldEnglish(id);
+                          }}
+                          icon={<RedoOutlined />}
+                        />
                       </div>
                     }
                   >

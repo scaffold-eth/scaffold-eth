@@ -73,7 +73,7 @@ function App(props) {
   const oldEnglishContract = "EightPack";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["kovanOptimism", "optimism"];
+  const networkOptions = ["localhost", "kovanOptimism", "optimism"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -138,9 +138,6 @@ function App(props) {
 
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
-
-  // Just plug in different 🛰 providers to get your balance on different chains:
-  const yourMainnetBalance = useBalance(mainnetProvider, address);
 
   // const contractConfig = useContractConfig();
 
@@ -245,7 +242,7 @@ function App(props) {
               setMinting(false);
             }
           }}
-          disabled={limit && limit.lt(totalSupply)}
+          disabled={limit && totalSupply && limit.lt(totalSupply)}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
@@ -289,6 +286,7 @@ function App(props) {
               address={address}
               DEBUG={DEBUG}
               oldEnglishContract={oldEnglishContract}
+              balance={balance}
             />
           </div>
         </Route>
