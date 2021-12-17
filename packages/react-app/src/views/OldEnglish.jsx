@@ -25,7 +25,7 @@ function OldEnglish({
   const perPage = 8;
   const [page, setPage] = useState(0);
 
-  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 5000);
+  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
   //const filtered =
   //  readContracts[oldEnglishContract] &&
   //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
