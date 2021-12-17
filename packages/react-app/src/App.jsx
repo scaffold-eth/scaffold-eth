@@ -229,7 +229,11 @@ function App(props) {
           <p>Take a sip. Wrap it up. Pour one out. </p>
         </div>
 
-        <Button
+        {totalSupply>=limit?<div>
+          <h2> All 40s have been minted! </h2>
+
+        <h3> Fork <a href="https://github.com/scaffold-eth/scaffold-eth/tree/sipping-oe" target="_blank">the repo</a>, follow the readme, and deploy your own to optimism! </h3>
+        </div>:<Button
           type="primary"
           size="large"
           loading={minting}
@@ -252,7 +256,8 @@ function App(props) {
           disabled={limit && totalSupply && limit.lt(totalSupply)}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-        </Button>
+        </Button>}
+
 
         <div style={{ fontSize: 16, marginTop: 32 }}>
           <p>Recycle an empty to get your Ξ0.001 back!!</p>
