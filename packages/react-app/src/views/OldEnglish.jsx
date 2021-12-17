@@ -271,7 +271,14 @@ function OldEnglish({
                       </div>
                     }
                   >
-                    <img src={item.image && item.image} alt={"OldEnglish #" + id} width="200" />
+                    <a
+                      href={`${blockExplorer}token/${
+                        readContracts[oldEnglishContract] && readContracts[oldEnglishContract].address
+                      }?a=${id}`}
+                      target="_blank"
+                    >
+                      <img src={item.image && item.image} alt={"OldEnglish #" + id} width="200" />
+                    </a>
                     {item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
                       <div>{item.description}</div>
                     ) : (

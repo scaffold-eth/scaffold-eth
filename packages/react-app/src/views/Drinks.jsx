@@ -32,14 +32,29 @@ function OldEnglish({
               {item.args.sender == item.args.drinker ? (
                 <Typography.Text style={{ fontSize: 28 }}>
                   {`🍻🍻🍻 `}
-                  <Address address={item.args.sender} ensProvider={mainnetProvider} style={{ fontSize: 24 }} />
+                  <Address
+                    blockExplorer={blockExplorer}
+                    address={item.args.sender}
+                    ensProvider={mainnetProvider}
+                    style={{ fontSize: 24 }}
+                  />
                 </Typography.Text>
               ) : (
                 <Typography.Text style={{ fontSize: 28 }}>
                   {`🍻🍻🍻 `}
-                  <Address address={item.args.sender} ensProvider={mainnetProvider} fontSize={24} />
+                  <Address
+                    blockExplorer={blockExplorer}
+                    address={item.args.sender}
+                    ensProvider={mainnetProvider}
+                    fontSize={24}
+                  />
                   {` => `}
-                  <Address address={item.args.drinker} ensProvider={mainnetProvider} fontSize={24} />
+                  <Address
+                    blockExplorer={blockExplorer}
+                    address={item.args.drinker}
+                    ensProvider={mainnetProvider}
+                    fontSize={24}
+                  />
                 </Typography.Text>
               )}
             </List.Item>

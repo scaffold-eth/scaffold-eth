@@ -31,7 +31,7 @@ import { useLookupAddress } from "eth-hooks/dapps/ens";
 
 const { Text } = Typography;
 
-const blockExplorerLink = (address, blockExplorer) => blockExplorer || `https://etherscan.io/address/${address}`;
+const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}address/${address}`;
 
 export default function Address(props) {
   const { currentTheme } = useThemeSwitcher();
