@@ -1,6 +1,6 @@
 # 🏄‍♂️ Using Docker
 
-Prerequisites: 
+Prerequisites:
 - [Docker](https://docs.docker.com/engine/install/)
 - [Git](https://git-scm.com/)
 - Bash Shell: available in macOS by default and the vast majority of Linux distros
@@ -11,8 +11,7 @@ Prerequisites:
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/scaffold-eth/scaffold-eth.git
-```
+git clone https://github.com/rufflesuite/scaffold-eth.git
 
 > [basic] run the script that sets the stack up and that's it (takes some minutes to finish):
 
@@ -61,10 +60,10 @@ docker run \
   -ti node:16
 ```
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `YourContract.sol` in `packages/truffle/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+💼 Edit your deployment scripts in `packages/truffle/deploy`
 
 📱 Open http://localhost:3000 to see the app
