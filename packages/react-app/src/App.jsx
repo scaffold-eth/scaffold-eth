@@ -53,12 +53,13 @@ const { ethers } = require("ethers");
     (and then use the `useExternalContractLoader()` hook!)
 */
 
-/// 📡 What chain are your contracts deployed to?
-//const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
+
+const targetNetworkString = "optimism" // <------ change this as you deploy do other networks
 
 const web3Modal = Web3ModalSetup();
 
@@ -73,11 +74,11 @@ function App(props) {
   const oldEnglishContract = "EightPack";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["kovanOptimism", "optimism"];
+
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  const [selectedNetwork, setSelectedNetwork] = useState(targetNetworkString);
   const location = useLocation();
 
   /// 📡 What chain are your contracts deployed to?

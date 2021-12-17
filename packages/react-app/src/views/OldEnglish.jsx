@@ -24,7 +24,10 @@ function OldEnglish({
   const perPage = 8;
   const [page, setPage] = useState(0);
 
+  console.log("=-========================")
+
   const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
+  console.log("receives",receives)
   //const filtered =
   //  readContracts[oldEnglishContract] &&
   //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
@@ -50,7 +53,7 @@ function OldEnglish({
   };
 
   const updateAllOldEnglish = async fetchAll => {
-    if (readContracts[oldEnglishContract] && totalSupply && totalSupply <= receives.length) {
+    if (readContracts[oldEnglishContract] && totalSupply /*&& totalSupply <= receives.length*/) {
       setLoadingOldEnglish(true);
       let reversed = [...receives]
         .reverse()
