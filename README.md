@@ -16,10 +16,10 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone git@github.com:trufflesuite/scaffold-eth.git
 ```
 
-> install and start your 👷‍ Hardhat chain:
+> install and start your Ganache chain:
 
 ```bash
 cd scaffold-eth
@@ -43,11 +43,11 @@ yarn deploy
 
 🌍 You need an RPC key for production deployments/Apps, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js`
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contract `YourContract.sol` in `packages/truffle/contracts`
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
+💼 Edit your deployment scripts in `packages/truffle/migrations`
 
 📱 Open http://localhost:3000 to see the app
 
@@ -55,7 +55,7 @@ yarn deploy
 
 To deploy this project to Gitpod, click this button:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com:trufflesuite/scaffold-eth.git)
 
 # 📚 Documentation
 
@@ -82,7 +82,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
 
-  
+
  - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
 
 
