@@ -92,11 +92,6 @@ function App(props) {
   ]);
   const mainnetProvider = useStaticJsonRPC(providers);
 
-  if (DEBUG) console.log(`Using ${selectedNetwork} network`);
-
-  // 🛰 providers
-  if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
-
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
     if (injectedProvider && injectedProvider.provider && typeof injectedProvider.provider.disconnect == "function") {
@@ -169,6 +164,17 @@ function App(props) {
   const yourBalance = balance && balance.toNumber && balance.toNumber();
 
   const [minting, setMinting] = useState(false);
+  const [startBlock, setStartBlock] = useState();
+
+  useEffect(() => {
+    if (startBlock == undefined && localProvider) {
+      const updateStartBlock = async () => {
+        let latestBlock = await localProvider.getBlock();
+        setStartBlock(latestBlock.number);
+      };
+      updateStartBlock();
+    }
+  }, [localProvider]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -287,6 +293,7 @@ function App(props) {
               DEBUG={DEBUG}
               oldEnglishContract={oldEnglishContract}
               balance={balance}
+              startBlock={startBlock}
             />
           </div>
         </Route>
@@ -303,6 +310,7 @@ function App(props) {
               address={address}
               DEBUG={DEBUG}
               oldEnglishContract={oldEnglishContract}
+              startBlock={startBlock}
             />
           </div>
         </Route>

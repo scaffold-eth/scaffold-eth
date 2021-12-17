@@ -16,8 +16,9 @@ function OldEnglish({
   address,
   localProvider,
   oldEnglishContract,
+  startBlock,
 }) {
-  const drinks = useEventListener(readContracts, oldEnglishContract, "Drink", localProvider, 1);
+  const drinks = useEventListener(readContracts, oldEnglishContract, "Drink", localProvider, startBlock);
   console.log(drinks);
 
   return (
