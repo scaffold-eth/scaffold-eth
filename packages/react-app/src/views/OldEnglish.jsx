@@ -26,13 +26,6 @@ function OldEnglish({
   const perPage = 12;
   const [page, setPage] = useState(0);
 
-  const rawReceives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
-  const receives = useDebounce(rawReceives, 1000);
-  //const filtered =
-  //  readContracts[oldEnglishContract] &&
-  //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
-  //console.log(filtered);
-
   const fetchMetadataAndUpdate = async id => {
     try {
       const tokenURI = await readContracts[oldEnglishContract].tokenURI(id);
@@ -55,19 +48,21 @@ function OldEnglish({
   const updateAllOldEnglish = async fetchAll => {
     if (readContracts[oldEnglishContract] && totalSupply /*&& totalSupply <= receives.length*/) {
       setLoadingOldEnglish(true);
-      let reversed = [...receives]
-        .reverse()
-        .filter(function (el) {
-          return el.args.tokenId > 0;
-        })
-        .slice(page, page * perPage + perPage);
+      let numberSupply = totalSupply.toNumber();
 
-      console.log(reversed);
-      reversed.forEach(async oe => {
-        if (oe.args.tokenId > 0 && (fetchAll || !allOldEnglish[oe.args.tokenId])) {
-          fetchMetadataAndUpdate(oe.args.tokenId);
+      let tokenList = Array(numberSupply).fill(0);
+
+      tokenList.forEach((_, i) => {
+        let tokenId = i + 1;
+        if (tokenId <= numberSupply - page * perPage && tokenId >= numberSupply - page * perPage - perPage) {
+          fetchMetadataAndUpdate(tokenId);
+        } else if (!allOldEnglish[tokenId]) {
+          const simpleUpdate = {};
+          simpleUpdate[tokenId] = { id: tokenId };
+          setAllOldEnglish(i => ({ ...i, ...simpleUpdate }));
         }
       });
+
       setLoadingOldEnglish(false);
     }
   };
@@ -90,8 +85,8 @@ function OldEnglish({
   };
 
   useEffect(() => {
-    updateAllOldEnglish(false);
-  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), receives, page]);
+    if (totalSupply && totalSupply.toNumber() > 0) updateAllOldEnglish(false);
+  }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), page]);
 
   const onFinishFailed = errorInfo => {
     console.log("Failed:", errorInfo);
@@ -200,7 +195,6 @@ function OldEnglish({
   let filteredOEs = Object.values(allOldEnglish).sort((a, b) => b.id - a.id);
   const [mine, setMine] = useState(false);
   if (mine == true && address && filteredOEs) {
-    console.log(mine, address, filteredOEs);
     filteredOEs = filteredOEs.filter(function (el) {
       return el.owner == address.toLowerCase();
     });
@@ -255,7 +249,7 @@ function OldEnglish({
                 `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
             }}
             loading={loadingOldEnglish}
-            dataSource={filteredOEs}
+            dataSource={filteredOEs ? filteredOEs : []}
             renderItem={item => {
               const id = item.id;
 
@@ -283,7 +277,8 @@ function OldEnglish({
                     >
                       <img src={item.image && item.image} alt={"OldEnglish #" + id} width="100" />
                     </a>
-                    {item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
+                    {item.owner &&
+                    item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
                       <div>{item.description}</div>
                     ) : (
                       <div>
