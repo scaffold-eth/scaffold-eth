@@ -24,16 +24,18 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   Counters.Counter private _tokenIds;
 
-  LoogiesContract loogies;
+  uint256 constant price = 500000000000000; // 0.0005 eth
+  LoogiesContract immutable loogies;
   mapping(uint256 => uint256[]) loogiesById;
 
   constructor(address _loogies) ERC721("Loogie Tank", "LOOGTANK") {
     loogies = LoogiesContract(_loogies);
   }
 
-  function mintItem() public returns (uint256) {
-      _tokenIds.increment();
+  function mintItem() public payable returns (uint256) {
+      require(msg.value >= price, "Sent eth not enough");
 
+      _tokenIds.increment();
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
 
@@ -50,7 +52,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
-      require(_exists(id), "not exist");
+      require(_exists(id), "token doesn not exist");
       string memory name = string(abi.encodePacked('Loogie Tank #',id.toString()));
       string memory description = string(abi.encodePacked('Loogie Tank'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
@@ -196,8 +198,9 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       bytes calldata tankIdData) external override returns (bytes4) {
 
       uint256 tankId = toUint256(tankIdData);
-      require(ownerOf(tankId) == from, "you can only add loogies to a tank you own.");
-      require(loogiesById[tankId].length < 256, "tank has reached the max limit of 255 loogies.");
+      require(msg.sender == address(loogies), "only loogies can be added to the tank");
+      require(ownerOf(tankId) == from, "you can only add loogies to a tank you own");
+      require(loogiesById[tankId].length < 256, "tank has reached the max limit of 255 loogies");
 
       loogiesById[tankId].push(loogieTokenId);
 
