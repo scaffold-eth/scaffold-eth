@@ -218,22 +218,12 @@ function App(props) {
         targetNetwork={targetNetwork}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
       />
-      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">Old English</Link>
-        </Menu.Item>
-        <Menu.Item key="/drinks">
-          <Link to="/drinks">Drinks</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-      </Menu>
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 12, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16 }}>
-          <h2>{`Get yourself an oe40 (${totalSupply}/${limit})`}</h2>
-          <p>Take a sip. Wrap it up. Pour one out. Recycle an empty to get your share!!</p>
+        <div style={{ fontSize: 16, marginTop:32 }}>
+          {/*}<h2>{`Get yourself an oe40 `}</h2>*/}
+          <p>Take a sip. Wrap it up. Pour one out. </p>
+
         </div>
 
         <Button
@@ -260,11 +250,34 @@ function App(props) {
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
-        <h2 style={{ marginTop: 12 }}>{`Your BUZZ: ${buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."}`}</h2>
+
+        <div style={{ fontSize: 16, marginTop:32 }}>
+        <p>Recycle an empty to get your Ξ0.001 back!!</p>
+        <p>  {""+totalSupply} / {""+limit} minted</p>
+        </div>
+
+
+        <h2 style={{ marginTop: 12 }}>{`Your $BUZZ: ${buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."}`}</h2>
       </div>
+
+
+      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
+        <Menu.Item key="/">
+          <Link to="/">Gallery</Link>
+        </Menu.Item>
+        <Menu.Item key="/activity">
+          <Link to="/activity">Activity</Link>
+        </Menu.Item>
+        <Menu.Item key="/debug">
+          <Link to="/debug">Contracts</Link>
+        </Menu.Item>
+      </Menu>
+
+
 
       <Switch>
         <Route exact path="/">
+          <div style={{ fontSize: 16, marginTop:32 }}>
           <OldEnglish
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
@@ -277,8 +290,10 @@ function App(props) {
             DEBUG={DEBUG}
             oldEnglishContract={oldEnglishContract}
           />
+          </div>
         </Route>
-        <Route exact path="/drinks">
+        <Route exact path="/activity">
+          <div style={{ fontSize: 16, marginTop:32 }}>
           <Drinks
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
@@ -291,6 +306,7 @@ function App(props) {
             DEBUG={DEBUG}
             oldEnglishContract={oldEnglishContract}
           />
+          </div>
         </Route>
         <Route exact path="/debug">
           {/*
