@@ -25,10 +25,10 @@ contract OldEnglish is ERC721Enumerable, Ownable {
   mapping (uint256 => uint256) public sips;
   mapping (uint256 => bool) public wrapped;
 
-  event Drink(uint256 id, address sender, address drinker);
-  event Wrap(uint256 id, address sender, bool wrapped);
-  event Recycle(uint256 id, address sender, uint256 amount);
-  event Receive(address sender, uint256 amount, uint256 tokenId);
+  event Drink(uint256 indexed id, address indexed sender, address indexed drinker);
+  event Wrap(uint256 indexed id, address indexed sender, bool wrapped);
+  event Recycle(uint256 indexed id, address indexed sender, uint256 indexed amount);
+  event Receive(address indexed sender, uint256 indexed amount, uint256 indexed tokenId);
 
   address buzz;
 
@@ -124,7 +124,7 @@ contract OldEnglish is ERC721Enumerable, Ownable {
                               '{"name":"',
                               name,
                               '", "description":"',
-                              ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Just a forty of OE to sip",
+                              ownerOf(id) == address(this) ? "A recycled bottle of OE" : "Sipping on cool, crisp OE 40s!",
                               '", "external_url":"https://oe40.me", "attributes": ',
                               getAttributesForToken(id),
                               '"owner":"',

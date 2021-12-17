@@ -23,6 +23,10 @@ function OldEnglish({
   const perPage = 8;
 
   const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
+  //const filtered =
+  //  readContracts[oldEnglishContract] &&
+  //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
+  //console.log(filtered);
 
   const updateAllOldEnglish = async () => {
     if (readContracts[oldEnglishContract] && totalSupply && totalSupply <= receives.length) {
@@ -247,15 +251,18 @@ function OldEnglish({
                     }
                   >
                     <img src={item.image} alt={"OldEnglish #" + id} width="200" />
-                    <div>{item.description}</div>
-                    <div>
-                      <Address
-                        address={item.owner}
-                        ensProvider={mainnetProvider}
-                        blockExplorer={blockExplorer}
-                        fontSize={16}
-                      />
-                    </div>
+                    {item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
+                      <div>{item.description}</div>
+                    ) : (
+                      <div>
+                        <Address
+                          address={item.owner}
+                          ensProvider={mainnetProvider}
+                          blockExplorer={blockExplorer}
+                          fontSize={16}
+                        />
+                      </div>
+                    )}
                     {address && item.owner == address.toLowerCase() && (
                       <>
                         {item.attributes[0].value < 13 ? (
