@@ -57,7 +57,8 @@ function OldEnglish({
         .filter(function (el) {
           return el.args.tokenId > 0;
         })
-        .slice(0, page * perPage + perPage);
+        .slice(page, page * perPage + perPage);
+
       console.log(reversed);
       reversed.forEach(async oe => {
         if (oe.args.tokenId > 0 && (fetchAll || !allOldEnglish[oe.args.tokenId])) {
@@ -86,8 +87,7 @@ function OldEnglish({
   };
 
   useEffect(() => {
-    console.log("updating all");
-    updateAllOldEnglish(false, page);
+    updateAllOldEnglish(false);
   }, [readContracts[oldEnglishContract], (totalSupply || "0").toString(), receives, page]);
 
   const onFinishFailed = errorInfo => {
@@ -240,14 +240,15 @@ function OldEnglish({
               xxl: 4,
             }}
             pagination={{
-              total: totalSupply,
+              total: mine ? filteredOEs.length : totalSupply,
               defaultPageSize: perPage,
               defaultCurrent: page,
               onChange: currentPage => {
                 setPage(currentPage - 1);
                 console.log(currentPage);
               },
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
+              showTotal: (total, range) =>
+                `${range[0]}-${range[1]} of ${mine ? filteredOEs.length : totalSupply} items`,
             }}
             loading={loadingOldEnglish}
             dataSource={filteredOEs}
@@ -255,11 +256,11 @@ function OldEnglish({
               const id = item.id;
 
               return (
-                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                <List.Item key={id}>
                   <Card
                     title={
                       <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name ? item.name : `OE #${id}`}</span>
                         <Button
                           shape="circle"
                           onClick={() => {
@@ -270,7 +271,7 @@ function OldEnglish({
                       </div>
                     }
                   >
-                    <img src={item.image} alt={"OldEnglish #" + id} width="200" />
+                    <img src={item.image && item.image} alt={"OldEnglish #" + id} width="200" />
                     {item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
                       <div>{item.description}</div>
                     ) : (
