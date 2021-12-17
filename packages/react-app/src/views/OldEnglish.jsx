@@ -18,16 +18,14 @@ function OldEnglish({
   localProvider,
   oldEnglishContract,
   balance,
+  startBlock,
 }) {
   const [allOldEnglish, setAllOldEnglish] = useState({});
   const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
   const perPage = 8;
   const [page, setPage] = useState(0);
 
-  console.log("=-========================")
-
-  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, 1);
-  console.log("receives",receives)
+  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
   //const filtered =
   //  readContracts[oldEnglishContract] &&
   //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));
