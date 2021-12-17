@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, List, Spin, Popover, Form, Switch } from "antd";
 import { RedoOutlined } from "@ant-design/icons";
 import { Address, AddressInput } from "../components";
+import { useDebounce } from "../hooks";
 import { ethers } from "ethers";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 
@@ -25,7 +26,8 @@ function OldEnglish({
   const perPage = 8;
   const [page, setPage] = useState(0);
 
-  const receives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
+  const rawReceives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
+  const receives = useDebounce(rawReceives, 1000);
   //const filtered =
   //  readContracts[oldEnglishContract] &&
   //  readContracts[oldEnglishContract].queryFilter(readContracts[oldEnglishContract].filters.Transfer(null, address));

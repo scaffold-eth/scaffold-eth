@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, List, Spin, Popover, Form, Switch, Typography } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
+import { useDebounce } from "../hooks";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 
 function OldEnglish({
@@ -18,8 +19,8 @@ function OldEnglish({
   oldEnglishContract,
   startBlock,
 }) {
-  const drinks = useEventListener(readContracts, oldEnglishContract, "Drink", localProvider, startBlock - 9000);
-  console.log(drinks);
+  const rawDrinks = useEventListener(readContracts, oldEnglishContract, "Drink", localProvider, startBlock - 9000);
+  const drinks = useDebounce(rawDrinks, 1000);
 
   return (
     <div style={{ margin: "auto", paddingBottom: 32 }}>
