@@ -5,8 +5,8 @@ import React from "react";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
-      <PageHeader title="🔴 oe40" subTitle="Sipping on cool, crisp OΞ 40s!" style={{ cursor: "pointer" }} />
+    <a href="https://oe40.me" target="_blank" rel="noopener noreferrer">
+      <PageHeader title="🍻 oe40.me" subTitle="Sipping on cool, crisp OΞ 40s!" style={{ cursor: "pointer" }} />
     </a>
   );
 }
