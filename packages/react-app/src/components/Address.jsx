@@ -40,7 +40,7 @@ export default function Address(props) {
   const ensSplit = ens && ens.split(".");
   const validEnsCheck = ensSplit && ensSplit[ensSplit.length - 1] === "eth";
   const etherscanLink = blockExplorerLink(address, props.blockExplorer);
-  let displayAddress = address?.substr(0, 6);
+  let displayAddress = address?.substr(0, 5) + "..." + address?.substr(-4);
 
   if (validEnsCheck) {
     displayAddress = ens;

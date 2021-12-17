@@ -59,6 +59,10 @@ function Home({ yourLocalBalance, readContracts }) {
         <span style={{ marginRight: 8 }}>💭</span>
         Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
       </div>
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>🛠</span>
+        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
+      </div>
     </div>
   );
 }
