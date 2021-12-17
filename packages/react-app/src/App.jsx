@@ -220,10 +220,9 @@ function App(props) {
       />
 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 12, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16, marginTop:32 }}>
+        <div style={{ fontSize: 16, marginTop: 32 }}>
           {/*}<h2>{`Get yourself an oe40 `}</h2>*/}
           <p>Take a sip. Wrap it up. Pour one out. </p>
-
         </div>
 
         <Button
@@ -246,20 +245,23 @@ function App(props) {
               setMinting(false);
             }
           }}
-          disabled={limit >= totalSupply}
+          disabled={limit && limit.lt(totalSupply)}
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
 
-        <div style={{ fontSize: 16, marginTop:32 }}>
-        <p>Recycle an empty to get your Ξ0.001 back!!</p>
-        <p>  {""+totalSupply} / {""+limit} minted</p>
+        <div style={{ fontSize: 16, marginTop: 32 }}>
+          <p>Recycle an empty to get your Ξ0.001 back!!</p>
+          <p>
+            {" "}
+            {"" + totalSupply} / {"" + limit} minted
+          </p>
         </div>
 
-
-        <h2 style={{ marginTop: 12 }}>{`Your $BUZZ: ${buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."}`}</h2>
+        <h2 style={{ marginTop: 12 }}>{`Your $BUZZ: ${
+          buzzBalance ? ethers.utils.formatEther(buzzBalance) : "..."
+        }`}</h2>
       </div>
-
 
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
@@ -273,39 +275,37 @@ function App(props) {
         </Menu.Item>
       </Menu>
 
-
-
       <Switch>
         <Route exact path="/">
-          <div style={{ fontSize: 16, marginTop:32 }}>
-          <OldEnglish
-            readContracts={readContracts}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            totalSupply={totalSupply}
-            writeContracts={writeContracts}
-            localProvider={localProvider}
-            tx={tx}
-            address={address}
-            DEBUG={DEBUG}
-            oldEnglishContract={oldEnglishContract}
-          />
+          <div style={{ fontSize: 16, marginTop: 32 }}>
+            <OldEnglish
+              readContracts={readContracts}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              totalSupply={totalSupply}
+              writeContracts={writeContracts}
+              localProvider={localProvider}
+              tx={tx}
+              address={address}
+              DEBUG={DEBUG}
+              oldEnglishContract={oldEnglishContract}
+            />
           </div>
         </Route>
         <Route exact path="/activity">
-          <div style={{ fontSize: 16, marginTop:32 }}>
-          <Drinks
-            readContracts={readContracts}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            totalSupply={totalSupply}
-            writeContracts={writeContracts}
-            localProvider={localProvider}
-            tx={tx}
-            address={address}
-            DEBUG={DEBUG}
-            oldEnglishContract={oldEnglishContract}
-          />
+          <div style={{ fontSize: 16, marginTop: 32 }}>
+            <Drinks
+              readContracts={readContracts}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              totalSupply={totalSupply}
+              writeContracts={writeContracts}
+              localProvider={localProvider}
+              tx={tx}
+              address={address}
+              DEBUG={DEBUG}
+              oldEnglishContract={oldEnglishContract}
+            />
           </div>
         </Route>
         <Route exact path="/debug">
