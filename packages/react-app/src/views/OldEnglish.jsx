@@ -23,7 +23,7 @@ function OldEnglish({
 }) {
   const [allOldEnglish, setAllOldEnglish] = useState({});
   const [loadingOldEnglish, setLoadingOldEnglish] = useState(true);
-  const perPage = 8;
+  const perPage = 12;
   const [page, setPage] = useState(0);
 
   const rawReceives = useEventListener(readContracts, oldEnglishContract, "Receive", localProvider, startBlock - 9000);
@@ -237,11 +237,12 @@ function OldEnglish({
               gutter: 16,
               xs: 1,
               sm: 2,
-              md: 2,
-              lg: 3,
-              xl: 4,
+              md: 4,
+              lg: 4,
+              xl: 6,
               xxl: 4,
             }}
+            locale={{ emptyText: `waiting for OEs...` }}
             pagination={{
               total: mine ? filteredOEs.length : totalSupply,
               defaultPageSize: perPage,
@@ -280,7 +281,7 @@ function OldEnglish({
                       }?a=${id}`}
                       target="_blank"
                     >
-                      <img src={item.image && item.image} alt={"OldEnglish #" + id} width="200" />
+                      <img src={item.image && item.image} alt={"OldEnglish #" + id} width="100" />
                     </a>
                     {item.owner.toLowerCase() == readContracts[oldEnglishContract].address.toLowerCase() ? (
                       <div>{item.description}</div>
