@@ -45,6 +45,8 @@ yarn deploy
 ```
 (Note: You can change your deploy network in `hardhat.config.js` in `packages/hardhat/`.)
 
+(Note: If you change your deploy network, don't forget to change your `targetNetwork` in `App.jsx`!)
+
 > You can run `yarn deploy` multiple times and it will cache deployed contracts and try again for failed ones.
 
 ---
