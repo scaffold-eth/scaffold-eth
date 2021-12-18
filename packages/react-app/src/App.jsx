@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
-import { OldEnglish, Drinks } from "./views";
+import { OldEnglish, Drinks, Leaderboard } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -53,13 +53,11 @@ const { ethers } = require("ethers");
     (and then use the `useExternalContractLoader()` hook!)
 */
 
-
-
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
 
-const targetNetworkString = "optimism" // <------ change this as you deploy do other networks
+const targetNetworkString = "optimism"; // <------ change this as you deploy do other networks
 
 const web3Modal = Web3ModalSetup();
 
@@ -74,7 +72,6 @@ function App(props) {
   const oldEnglishContract = "EightPack";
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -277,6 +274,9 @@ function App(props) {
         <Menu.Item key="/debug">
           <Link to="/debug">Contracts</Link>
         </Menu.Item>
+        <Menu.Item>
+          <Link to="leaderboard">HeavyWeights</Link>
+        </Menu.Item>
       </Menu>
 
       <Switch>
@@ -297,6 +297,14 @@ function App(props) {
               startBlock={startBlock}
             />
           </div>
+        </Route>
+        <Route exact path="/leaderboard">
+          <Leaderboard
+            address={address}
+            readContracts={readContracts}
+            name={oldEnglishContract}
+            mainnetProvider={mainnetProvider}
+          />
         </Route>
         <Route exact path="/activity">
           <div style={{ fontSize: 16, marginTop: 32 }}>
