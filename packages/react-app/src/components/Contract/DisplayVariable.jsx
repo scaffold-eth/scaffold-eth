@@ -1,5 +1,6 @@
 import { Col, Divider, Row } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
+
 import { tryToDisplay } from "./utils";
 
 const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh }) => {
