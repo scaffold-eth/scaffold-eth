@@ -53,12 +53,13 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
+const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
 
@@ -72,15 +73,14 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["localhost", "mainnet", "rinkeby"];
+  const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
   const location = useLocation();
 
-  /// 📡 What chain are your contracts deployed to?
-  const targetNetwork = NETWORKS[selectedNetwork]; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+  const targetNetwork = NETWORKS[selectedNetwork];
 
   // 🔭 block explorer URL
   const blockExplorer = targetNetwork.blockExplorer;
@@ -251,8 +251,9 @@ function App(props) {
         selectedChainId={selectedChainId}
         targetNetwork={targetNetwork}
         logoutOfWeb3Modal={logoutOfWeb3Modal}
+        USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
+      <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
@@ -354,13 +355,15 @@ function App(props) {
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
         <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
-          <div style={{ marginRight: 20 }}>
-            <NetworkSwitch
-              networkOptions={networkOptions}
-              selectedNetwork={selectedNetwork}
-              setSelectedNetwork={setSelectedNetwork}
-            />
-          </div>
+          {USE_NETWORK_SELECTOR && (
+            <div style={{ marginRight: 20 }}>
+              <NetworkSwitch
+                networkOptions={networkOptions}
+                selectedNetwork={selectedNetwork}
+                setSelectedNetwork={setSelectedNetwork}
+              />
+            </div>
+          )}
           <Account
             useBurner={USE_BURNER_WALLET}
             address={address}

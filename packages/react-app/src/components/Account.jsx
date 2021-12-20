@@ -117,7 +117,7 @@ export default function Account({
       ) : (
         ""
       )}
-      {useBurner ? (
+      {useBurner && web3Modal && !web3Modal.cachedProvider ? (
         <>
           <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
           <Balance address={address} provider={localProvider} price={price} />
