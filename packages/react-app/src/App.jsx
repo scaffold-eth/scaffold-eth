@@ -172,8 +172,13 @@ function App(props) {
   const loogieBalance = useContractReader(readContracts, "Loogies", "balanceOf", [address]);
   console.log("🤗 loogie balance:", loogieBalance);
 
+  const loogiePrice = useContractReader(readContracts, "Loogies", "price");
+  if (DEBUG) console.log("🤗 priceToMint:", loogiePrice);
+
   const loogieTankBalance = useContractReader(readContracts, "LoogieTank", "balanceOf", [address]);
   console.log("🤗 loogie tank balance:", loogieTankBalance);
+
+  const loogieTankPrice = useContractReader(readContracts, "LoogieTank", "price");
 
   // 📟 Listen for broadcast events
   const loogieTransferEvents = useEventListener(readContracts, "Loogies", "Transfer", localProvider, 1);
@@ -181,7 +186,7 @@ function App(props) {
 
   const loogieTankTransferEvents = useEventListener(readContracts, "LoogieTank", "Transfer", localProvider, 1);
   console.log("📟 Loogie Tank Transfer events:", loogieTankTransferEvents);
- 
+
   //
   // 🧠 This effect will update yourCollectibles by polling when your balance changes
   //
@@ -195,17 +200,17 @@ function App(props) {
     const loogieTankUpdate = [];
     for (let tokenIndex = 0; tokenIndex < yourLoogieTankBalance; tokenIndex++) {
       try {
-        console.log("Getting token index", tokenIndex);
+        if (DEBUG) console.log("Getting token index", tokenIndex);
         const tokenId = await readContracts.LoogieTank.tokenOfOwnerByIndex(address, tokenIndex);
-        console.log("tokenId", tokenId);
+        if (DEBUG) console.log("tokenId", tokenId);
         const tokenURI = await readContracts.LoogieTank.tokenURI(tokenId);
-        console.log("tokenURI", tokenURI);
+        if (DEBUG) console.log("tokenURI", tokenURI);
         const jsonManifestString = atob(tokenURI.substring(29))
-        console.log("jsonManifestString", jsonManifestString);
+        if (DEBUG) console.log("jsonManifestString", jsonManifestString);
 
         try {
           const jsonManifest = JSON.parse(jsonManifestString);
-          console.log("jsonManifest", jsonManifest);
+          if (DEBUG) console.log("jsonManifest", jsonManifest);
           loogieTankUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
         } catch (e) {
           console.log(e);
@@ -223,13 +228,13 @@ function App(props) {
       const loogieUpdate = [];
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          console.log("Getting token index", tokenIndex);
+          if (DEBUG) console.log("Getting token index", tokenIndex);
           const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
-          console.log("tokenId", tokenId);
+          if (DEBUG) console.log("tokenId", tokenId);
           const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
-          console.log("tokenURI", tokenURI);
+          if (DEBUG) console.log("tokenURI", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29))
-          console.log("jsonManifestString", jsonManifestString);
+          if (DEBUG) console.log("jsonManifestString", jsonManifestString);
 /*
           const ipfsHash = tokenURI.replace("https://ipfs.io/ipfs/", "");
           console.log("ipfsHash", ipfsHash);
@@ -237,7 +242,7 @@ function App(props) {
         */
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
-            console.log("jsonManifest", jsonManifest);
+            if (DEBUG) console.log("jsonManifest", jsonManifest);
             loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
             console.log(e);
@@ -341,21 +346,21 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
           <Menu.Item key="/">
-            <Link to="/">Loogies</Link>
+            <Link to="/">Mint Loogie Tank</Link>
           </Menu.Item>
-          <Menu.Item key="/loogietank">
-            <Link to="/loogietank">Loogie Tank</Link>
+          <Menu.Item key="/mint-loogies">
+            <Link to="/mint-loogies">Mint Loogies</Link>
           </Menu.Item>
-          <Menu.Item key="/mintloogies">
-            <Link to="/mintloogies">Mint Loogies</Link>
+          <Menu.Item key="/debug-loogie-tank">
+            <Link to="/debug-loogie-tank">Debug Loogie Tank</Link>
           </Menu.Item>
-          <Menu.Item key="/mintloogietank">
-            <Link to="/mintloogietank">Mint Loogie Tank</Link>
+          <Menu.Item key="/debug-loogie">
+            <Link to="/debug-loogie">Debug Loogies</Link>
           </Menu.Item>
         </Menu>
 
         <Switch>
-          <Route exact path="/">
+          <Route exact path="/debug-loogie">
             {/*
                 🎛 this scaffolding is full of commonly used components
                 this <Contract/> component will automatically parse your ABI
@@ -372,7 +377,7 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-          <Route exact path="/loogietank">
+          <Route exact path="/debug-loogie-tank">
             <Contract
               name="LoogieTank"
               customContract={writeContracts && writeContracts.LoogieTank}
@@ -384,12 +389,19 @@ function App(props) {
               contractConfig={contractConfig}
             />
           </Route>
-         <Route exact path="/mintloogies">
-            {/* <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={() => {
-                tx(writeContracts.Loogies.mintItem())
-              }}>MINT</Button>
-            </div> */}
+         <Route exact path="/mint-loogies">
+            <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+              <Button type={"primary"}
+               onClick={async () => {
+                const priceRightNow = await readContracts.Loogies.price();
+                try {
+                  const txCur = await tx(writeContracts.Loogies.mintItem({ value: priceRightNow }));
+                  await txCur.wait();
+                } catch (e) {
+                  console.log("mint failed", e);
+                }
+              }}>MINT for Ξ{loogiePrice && (+ethers.utils.formatEther(loogiePrice)).toFixed(4)}</Button>
+            </div>
             {/* */}
             <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
               <List
@@ -398,7 +410,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id.toNumber();
 
-                  console.log("IMAGE",item.image);
+                  if (DEBUG) console.log("IMAGE",item.image);
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -433,7 +445,7 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
+                            if (DEBUG) console.log("writeContracts", writeContracts);
                             tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
@@ -450,7 +462,7 @@ function App(props) {
                           placeholder="Tank ID"
                           // value={transferToTankId[id]}
                           onChange={newValue => {
-                            console.log("newValue", newValue.target.value);
+                            if (DEBUG) console.log("newValue", newValue.target.value);
                             const update = {};
                             update[id] = newValue.target.value;
                             setTransferToTankId({ ...transferToTankId, ...update});
@@ -458,12 +470,12 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
-                            console.log("transferToTankId[id]", transferToTankId[id]);
-                            console.log(parseInt(transferToTankId[id]));
+                            if (DEBUG) console.log("writeContracts", writeContracts);
+                            if (DEBUG) console.log("transferToTankId[id]", transferToTankId[id]);
+                            if (DEBUG) console.log(parseInt(transferToTankId[id]));
 
                             const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64,'0');
-                            console.log(tankIdInBytes);
+                            if (DEBUG) console.log(tankIdInBytes);
 
                             tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, id, tankIdInBytes));
                           }}>
@@ -477,13 +489,19 @@ function App(props) {
             </div>
             {/* */}
 
-            
+
           </Route>
-           <Route exact path="/mintloogietank">
+           <Route exact path="/">
             <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-              <Button type={"primary"} onClick={() => {
-                tx(writeContracts.LoogieTank.mintItem())
-              }}>MINT</Button>
+              <Button type={"primary"} onClick={async () => {
+                const priceRightNow = await readContracts.LoogieTank.price();
+                try {
+                  const txCur = await tx(writeContracts.LoogieTank.mintItem({ value: priceRightNow }));
+                  await txCur.wait();
+                } catch (e) {
+                  console.log("mint failed", e);
+                }
+              }}>MINT for Ξ{loogieTankPrice && (+ethers.utils.formatEther(loogieTankPrice)).toFixed(4)}</Button>
               <Button onClick={() => updateLoogieTanks()}>Refresh</Button>
             </div>
             {/* */}
@@ -495,7 +513,7 @@ function App(props) {
                 renderItem={item => {
                   const id = item.id.toNumber();
 
-                  console.log("IMAGE",item.image);
+                  if (DEBUG) console.log("IMAGE",item.image);
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -530,7 +548,7 @@ function App(props) {
                         />
                         <Button
                           onClick={() => {
-                            console.log("writeContracts", writeContracts);
+                            if (DEBUG) console.log("writeContracts", writeContracts);
                             tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id));
                           }}
                         >
