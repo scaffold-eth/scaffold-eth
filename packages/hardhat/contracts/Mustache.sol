@@ -3,17 +3,15 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
-import "hardhat/console.sol";
 import './HexStrings.sol';
 import './ToColor.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
 // GET LISTED ON OPENSEA: https://testnets.opensea.io/get-listed/step-two
 
-contract Mustache is ERC721Enumerable, Ownable {
+contract Mustache is ERC721Enumerable {
 
   using Strings for uint256;
   using HexStrings for uint160;
@@ -21,13 +19,26 @@ contract Mustache is ERC721Enumerable, Ownable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
+  // all funds go to buidlguidl.eth
+  address payable public constant recipient =
+    payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
+
+  uint256 public constant limit = 1000;
+  uint256 public constant curve = 1002; // price increase 0,2% with each purchase
+  uint256 public price = 0.001 ether;
+
+  mapping (uint256 => bytes3) public color;
+
   constructor() ERC721("Loogie Mustaches", "LOOGMUS") {
     // RELEASE THE LOOGIE MUSTACHES!
   }
 
-  mapping (uint256 => bytes3) public color;
+  function mintItem() public payable returns (uint256) {
+      require(_tokenIds.current() < limit, "DONE MINTING");
+      require(msg.value >= price, "NOT ENOUGH");
 
-  function mintItem() public returns (uint256) {
+      price = (price * curve) / 1000;
+
       _tokenIds.increment();
 
       uint256 id = _tokenIds.current();
@@ -35,6 +46,9 @@ contract Mustache is ERC721Enumerable, Ownable {
 
       bytes32 genes = keccak256(abi.encodePacked( id, blockhash(block.number-1), msg.sender, address(this) ));
       color[id] = bytes2(genes[0]) | ( bytes2(genes[1]) >> 8 ) | ( bytes3(genes[2]) >> 16 );
+
+      (bool success, ) = recipient.call{value: msg.value}("");
+      require(success, "could not send");
 
       return id;
   }
