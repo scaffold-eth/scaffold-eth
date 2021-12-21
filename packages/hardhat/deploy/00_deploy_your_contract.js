@@ -9,11 +9,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("PurposeContract", {
-    from: deployer,
-    log: true,
-  });
-
   const loogies = await deploy("Loogies", {
     from: deployer,
     log: true,
