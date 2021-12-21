@@ -23,6 +23,7 @@ function YourFancyLoogies({
   selectedFancyLoogie,
   setSelectedFancyLoogie,
   nfts,
+  setSelectedNfts,
 }) {
   const [fancyLoogieBalance, setFancyLoogieBalance] = useState(0);
   const [yourFancyLoogieBalance, setYourFancyLoogieBalance] = useState(0);
@@ -110,6 +111,7 @@ function YourFancyLoogies({
                           className="action-inline-button"
                           onClick={() => {
                             setSelectedFancyLoogie(id);
+                            setSelectedNfts({});
                           }}
                         >
                           Select to wear

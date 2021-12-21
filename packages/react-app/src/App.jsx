@@ -152,12 +152,6 @@ function App(props) {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
-  const priceToMint = useContractReader(readContracts, "Loogies", "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
-
-  const totalSupply = useContractReader(readContracts, "Loogies", "totalSupply");
-  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-
   const [updateBalances, setUpdateBalances] = useState(0);
 
   //
@@ -336,7 +330,6 @@ function App(props) {
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
-            totalSupply={totalSupply}
             DEBUG={DEBUG}
           />
         </Route>
@@ -351,7 +344,6 @@ function App(props) {
             address={address}
             updateBalances={updateBalances}
             setUpdateBalances={setUpdateBalances}
-            priceToMint={priceToMint}
           />
         </Route>
         <Route exact path="/yourFancyLoogies">
@@ -365,7 +357,6 @@ function App(props) {
             address={address}
             updateBalances={updateBalances}
             setUpdateBalances={setUpdateBalances}
-            priceToMint={priceToMint}
             fancyLoogieContracts={fancyLoogieContracts}
             fancyLoogiesNfts={fancyLoogiesNfts}
             setFancyLoogiesNfts={setFancyLoogiesNfts}
@@ -374,6 +365,7 @@ function App(props) {
             selectedNfts={selectedNfts}
             setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
             nfts={nfts}
+            setSelectedNfts={setSelectedNfts}
           />
         </Route>
         <Route exact path="/yourAccesories">
@@ -392,6 +384,8 @@ function App(props) {
             selectedFancyLoogiePreview={selectedFancyLoogiePreview}
             setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
             selectedNfts={selectedNfts}
+            setSelectedNfts={setSelectedNfts}
+            setFancyLoogiesNfts={setFancyLoogiesNfts}
           />
           <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories">
             {nfts.map(function (nft) {
@@ -419,7 +413,6 @@ function App(props) {
                     address={address}
                     updateBalances={updateBalances}
                     setUpdateBalances={setUpdateBalances}
-                    priceToMint={priceToMint}
                     nft={nft}
                     fancyLoogiesNfts={fancyLoogiesNfts}
                     selectedFancyLoogie={selectedFancyLoogie}

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, List } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
+import { useContractReader } from "eth-hooks";
 
 function YourLoogies({
   DEBUG,
@@ -14,13 +15,19 @@ function YourLoogies({
   address,
   updateBalances,
   setUpdateBalances,
-  priceToMint,
 }) {
   const [loogieBalance, setLoogieBalance] = useState(0);
   const [yourLoogieBalance, setYourLoogieBalance] = useState(0);
   const [yourLoogies, setYourLoogies] = useState();
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
+
+  const priceToMint = useContractReader(readContracts, "Loogies", "price");
+  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+
+  const totalSupply = useContractReader(readContracts, "Loogies", "totalSupply");
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const loogiesLeft = 3728 - totalSupply;
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -98,6 +105,9 @@ function YourLoogies({
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
+        <p style={{ fontWeight: "bold" }}>
+          { loogiesLeft } left
+        </p>
       </div>
       <div style={{ width: 515, margin: "0 auto", paddingBottom: 256 }}>
         <List

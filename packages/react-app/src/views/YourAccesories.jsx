@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { Button, Card, List } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
+import { useContractReader } from "eth-hooks";
 
 function YourAccesories({
   DEBUG,
@@ -14,7 +15,6 @@ function YourAccesories({
   address,
   updateBalances,
   setUpdateBalances,
-  priceToMint,
   nft,
   fancyLoogiesNfts,
   selectedFancyLoogie,
@@ -25,6 +25,20 @@ function YourAccesories({
   const [yourNftBalance, setYourNftBalance] = useState(0);
   const [yourNfts, setYourNfts] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
+
+  const nftsText = {
+    Bow: '<p>Only <strong>1000 Bows</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Bow have a random color and, if you are lucky, the bow will rotate!</p>',
+    Eyelash: '<p>Only <strong>1000 Eyelashes</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Eyelashes have a random color, a random length and, if you are lucky, you can get another random color for the middle eyelashes!</p>',
+    Mustache: '<p>Only <strong>1000 Mustaches</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Mustache have a random color.</p>',
+    ContactLenses: '<p>Only <strong>1000 Contact Lenses</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Contact Lenses have a random color and, if you are lucky, you can get a crazy one!</p>',
+  };
+
+  const priceToMint = useContractReader(readContracts, nft, "price");
+  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+
+  const totalSupply = useContractReader(readContracts, nft, "totalSupply");
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const nftLeft = 1000 - totalSupply;
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -55,6 +69,7 @@ function YourAccesories({
           const jsonManifestString = atob(tokenURI.substring(29));
 
           try {
+            if (DEBUG) console.log("JSON: ", jsonManifestString);
             const jsonManifest = JSON.parse(jsonManifestString);
             nftUpdate.unshift({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
           } catch (e) {
@@ -90,16 +105,26 @@ function YourAccesories({
 
       <div style={{ width: 515, paddingBottom: 32 }}>
         <Button
-          type={"primary"}
-          onClick={() => {
-            tx(writeContracts[nft].mintItem(), function (transaction) {
-              setUpdateBalances(updateBalances + 1);
-            });
+          type="primary"
+          onClick={async () => {
+            const priceRightNow = await readContracts[nft].price();
+            try {
+              tx(writeContracts[nft].mintItem({ value: priceRightNow }), function (transaction) {
+                setUpdateBalances(updateBalances + 1);
+              });
+            } catch (e) {
+              console.log("mint failed", e);
+            }
           }}
         >
-          Mint {nft}
+          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
+        <p style={{ fontWeight: "bold" }}>
+          { nftLeft } left
+        </p>
+        <div dangerouslySetInnerHTML={{ __html: nftsText[nft] }}></div>
       </div>
+
       <div style={{ width: 515, paddingBottom: 256 }}>
         <List
           bordered

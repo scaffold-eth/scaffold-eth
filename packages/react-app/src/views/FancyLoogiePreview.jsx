@@ -21,6 +21,8 @@ function FancyLoogiePreview({
   selectedFancyLoogiePreview,
   setSelectedFancyLoogiePreview,
   selectedNfts,
+  setSelectedNfts,
+  setFancyLoogiesNfts,
 }) {
   useEffect(() => {
     const updatePreview = async () => {
@@ -42,7 +44,7 @@ function FancyLoogiePreview({
       }
     };
     updatePreview();
-  }, [address, selectedFancyLoogie, selectedNfts]);
+  }, [address, selectedFancyLoogie, selectedNfts, updateBalances]);
 
   return (
     <>
@@ -78,6 +80,13 @@ function FancyLoogiePreview({
                             className="action-inline-button"
                             onClick={() => {
                               tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, selectedFancyLoogie), function (transaction) {
+                                setFancyLoogiesNfts(prevState => ({
+                                  ...prevState,
+                                  [selectedFancyLoogie]: {
+                                    ...prevState[selectedFancyLoogie],
+                                    [readContracts[nft].address]: 0
+                                  }
+                                }));
                                 setUpdateBalances(updateBalances + 1);
                               });
                             }}
@@ -108,6 +117,17 @@ function FancyLoogiePreview({
                                         tankIdInBytes,
                                       ),
                                       function (transaction) {
+                                        setSelectedNfts(prevState => ({
+                                          ...prevState,
+                                          [nft]: null,
+                                        }));
+                                        setFancyLoogiesNfts(prevState => ({
+                                          ...prevState,
+                                          [selectedFancyLoogie]: {
+                                            ...prevState[selectedFancyLoogie],
+                                            [readContracts[nft].address]: selectedNfts[nft]
+                                          }
+                                        }));
                                         setUpdateBalances(updateBalances + 1);
                                       },
                                     );
