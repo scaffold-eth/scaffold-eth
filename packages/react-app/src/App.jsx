@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { YourLoogies, YourFancyLoogies, YourAccesories, FancyLoogiePreview, Loogies } from "./views";
+import { YourLoogies, YourFancyLoogies, YourAccesories, FancyLoogiePreview, FancyLoogies } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 const { TabPane } = Tabs;
 
@@ -294,8 +294,6 @@ function App(props) {
     updateFancyLoogieContracts();
   }, [address, readContracts.FancyLoogie]);
 
-
-
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
@@ -326,7 +324,7 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-          <Loogies
+          <FancyLoogies
             readContracts={readContracts}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}

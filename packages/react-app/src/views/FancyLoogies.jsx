@@ -3,25 +3,28 @@ import { Link } from "react-router-dom";
 import { Button, Card, List, Spin } from "antd";
 import { Address } from "../components";
 import { ethers } from "ethers";
+import { useContractReader } from "eth-hooks";
 
-function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, DEBUG }) {
+function FancyLoogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) {
   const [allLoogies, setAllLoogies] = useState();
   const [page, setPage] = useState(1);
   const [loadingLoogies, setLoadingLoogies] = useState(true);
   const perPage = 8;
 
+  const totalSupply = useContractReader(readContracts, "FancyLoogie", "totalSupply");
+
   useEffect(() => {
     const updateAllLoogies = async () => {
-      if (readContracts.YourCollectible && totalSupply) {
+      if (readContracts.FancyLoogie && totalSupply) {
         setLoadingLoogies(true);
         const collectibleUpdate = [];
         let startIndex = totalSupply - 1 - perPage * (page - 1);
         for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
           try {
             if (DEBUG) console.log("Getting token index", tokenIndex);
-            const tokenId = await readContracts.YourCollectible.tokenByIndex(tokenIndex);
-            if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-            const tokenURI = await readContracts.YourCollectible.tokenURI(tokenId);
+            const tokenId = await readContracts.FancyLoogie.tokenByIndex(tokenIndex);
+            if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId);
+            const tokenURI = await readContracts.FancyLoogie.tokenURI(tokenId);
             if (DEBUG) console.log("tokenURI: ", tokenURI);
             const jsonManifestString = atob(tokenURI.substring(29));
 
@@ -47,7 +50,10 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
-            Fancy Loogies are upgraded <strong>Optimistic Loogies</strong> with <strong>NFTs accesories</strong>.
+            FancyLoogies are upgraded <strong>Optimistic Loogies</strong> with <strong>NFTs accesories</strong>.
+          </p>
+          <p>
+            Upgrate <Link to="/yourLoogies">Your Optimistic Loogies</Link>!
           </p>
         </div>
       </div>
@@ -112,4 +118,4 @@ function Loogies({ readContracts, mainnetProvider, blockExplorer, totalSupply, D
   );
 }
 
-export default Loogies;
+export default FancyLoogies;
