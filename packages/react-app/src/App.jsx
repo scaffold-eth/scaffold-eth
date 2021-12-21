@@ -385,7 +385,22 @@ function App(props) {
             setSelectedNfts={setSelectedNfts}
             setFancyLoogiesNfts={setFancyLoogiesNfts}
           />
-          <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories">
+          <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories" tabBarExtraContent={
+            <Alert
+              message="Choose an accesory type and mint a new NFT."
+              description={
+                <p>
+                  If:
+                  <ul>
+                    <li>You have a <strong>FancyLoogie selected to wear</strong> and</li>
+                    <li>The loogie <strong>doesn't have this kind of accesory</strong>,</li>
+                  </ul>
+                  Then, you will be able to preview the accesory on your <strong>FancyLoogie</strong>.
+                </p>
+              }
+              type="info"
+            />
+          }>
             {nfts.map(function (nft) {
               return (
                 <TabPane

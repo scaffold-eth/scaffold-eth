@@ -44,3 +44,17 @@ code {
   margin-left: 10px;
 }
 
+.ant-tabs-extra-content {
+  flex: 1 1 auto;
+  width:  220px;
+  text-align: left;
+}
+
+#tabs-accesories .ant-tabs-nav {
+  justify-content: flex-start;
+}
+
+#tabs-accesories .ant-tabs-nav .ant-tabs-nav-wrap {
+  flex:  0 0 auto;
+}
+

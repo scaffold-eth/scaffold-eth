@@ -88,22 +88,7 @@ function YourAccesories({
   return (
     <>
       <div style={{ width: 515, marginTop: 32, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16, textAlign: "left", margin: "0 auto", width: 500}}>
-          <p>
-            Choose a <strong>accesory type</strong> and mint a new NFT.
-          </p>
-          <p>
-            If:
-            <ul>
-              <li>You have a <strong>FancyLoogie selected to wear</strong> and</li>
-              <li>The loogie <strong>doesn't have this kind of accesory</strong>,</li>
-            </ul>
-            Then, you will be able to preview the accesory on your <strong>FancyLoogie</strong>.
-          </p>
-        </div>
-      </div>
-
-      <div style={{ width: 515, paddingBottom: 32 }}>
+        <div dangerouslySetInnerHTML={{ __html: nftsText[nft] }}></div>
         <Button
           type="primary"
           onClick={async () => {
@@ -122,7 +107,6 @@ function YourAccesories({
         <p style={{ fontWeight: "bold" }}>
           { nftLeft } left
         </p>
-        <div dangerouslySetInnerHTML={{ __html: nftsText[nft] }}></div>
       </div>
 
       <div style={{ width: 515, paddingBottom: 256 }}>
