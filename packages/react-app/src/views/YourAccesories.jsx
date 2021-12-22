@@ -25,6 +25,8 @@ function YourAccesories({
   const [yourNftBalance, setYourNftBalance] = useState(0);
   const [yourNfts, setYourNfts] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
+  const [updateNftBalance, setUpdateNftBalance] = useState(0);
+  const [loadingNfts, setLoadingNfts] = useState(true);
 
   const nftsText = {
     Bow: '<p>Only <strong>1000 Bows</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Bow have a random color and, if you are lucky, the bow will rotate!</p>',
@@ -54,11 +56,13 @@ function YourAccesories({
       }
     };
     updateBalances();
-  }, [address, readContracts[nft], updateBalances]);
+  }, [address, readContracts[nft], updateNftBalance]);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
       const nftUpdate = [];
+
+      setLoadingNfts(true);
 
       for (let tokenIndex = 0; tokenIndex < yourNftBalance; tokenIndex++) {
         try {
@@ -81,6 +85,8 @@ function YourAccesories({
       }
 
       setYourNfts(nftUpdate);
+
+      setLoadingNfts(false);
     };
     updateYourCollectibles();
   }, [address, yourNftBalance]);
@@ -95,7 +101,7 @@ function YourAccesories({
             const priceRightNow = await readContracts[nft].price();
             try {
               tx(writeContracts[nft].mintItem({ value: priceRightNow }), function (transaction) {
-                setUpdateBalances(updateBalances + 1);
+                setUpdateNftBalance(updateNftBalance + 1);
               });
             } catch (e) {
               console.log("mint failed", e);
@@ -112,6 +118,7 @@ function YourAccesories({
       <div style={{ width: 515, paddingBottom: 256 }}>
         <List
           bordered
+          loading={loadingNfts}
           dataSource={yourNfts}
           renderItem={item => {
             const id = item.id.toNumber();
@@ -169,7 +176,7 @@ function YourAccesories({
                       style={{ marginTop: 10 }}
                       onClick={() => {
                         tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id), function (transaction) {
-                          setUpdateBalances(updateBalances + 1);
+                          setUpdateNftBalance(updateNftBalance + 1);
                         });
                       }}
                     >

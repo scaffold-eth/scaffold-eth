@@ -29,6 +29,7 @@ function YourFancyLoogies({
   const [yourFancyLoogieBalance, setYourFancyLoogieBalance] = useState(0);
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
+  const [loadingFancyLoogies, setLoadingFancyLoogies] = useState(true);
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -48,6 +49,7 @@ function YourFancyLoogies({
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
+      setLoadingFancyLoogies(true);
       const fancyLoogieUpdate = [];
       const fancyLoogiesNftsUpdate = {};
       for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
@@ -76,6 +78,7 @@ function YourFancyLoogies({
       }
       setYourFancyLoogies(fancyLoogieUpdate.reverse());
       setFancyLoogiesNfts(fancyLoogiesNftsUpdate);
+      setLoadingFancyLoogies(false);
     };
     updateYourCollectibles();
   }, [address, yourFancyLoogieBalance]);
@@ -96,6 +99,7 @@ function YourFancyLoogies({
       <div className="your-fancy-loogies" style={{ width: 515, margin: "0 auto", paddingBottom: 256 }}>
         <List
           bordered
+          loading={loadingFancyLoogies}
           dataSource={yourFancyLoogies}
           renderItem={item => {
             const id = item.id.toNumber();

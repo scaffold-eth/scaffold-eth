@@ -21,6 +21,7 @@ function YourLoogies({
   const [yourLoogies, setYourLoogies] = useState();
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
+  const [loadingOptimisticLoogies, setLoadingOptimisticLoogies] = useState(true);
 
   const priceToMint = useContractReader(readContracts, "Loogies", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
@@ -47,6 +48,7 @@ function YourLoogies({
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
+      setLoadingOptimisticLoogies(true);
       const loogieUpdate = [];
       const loogieApproved = {};
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
@@ -71,6 +73,7 @@ function YourLoogies({
       }
       setYourLoogies(loogieUpdate.reverse());
       setYourLoogiesApproved(loogieApproved);
+      setLoadingOptimisticLoogies(false);
     };
     updateYourCollectibles();
   }, [address, yourLoogieBalance]);
@@ -112,6 +115,7 @@ function YourLoogies({
       <div style={{ width: 515, margin: "0 auto", paddingBottom: 256 }}>
         <List
           bordered
+          loading={loadingOptimisticLoogies}
           dataSource={yourLoogies}
           renderItem={item => {
             const id = item.id.toNumber();
@@ -139,7 +143,8 @@ function YourLoogies({
                         </Button>
                       ) : (
                         <Button
-                          onClick={async () => {
+                          onClick={async (event) => {
+                            event.target.parentElement.disabled = true;
                             tx(writeContracts.FancyLoogie.mintItem(id), function (transaction) {
                               setUpdateBalances(updateBalances + 1);
                             });
