@@ -57,20 +57,26 @@ export default function AddressInput(props) {
   const updateAddress = useCallback(
     async newValue => {
       if (typeof newValue !== "undefined") {
-        let address = newValue;
-        setValue(address);
-        if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
-          try {
-            const possibleAddress = await ensProvider.resolveName(address);
-            if (possibleAddress) {
-              address = possibleAddress;
-            }
-            // eslint-disable-next-line no-empty
-          } catch (e) {}
-        }
-        setValue(address);
-        if (typeof onChange === "function") {
-          onChange(address);
+
+        console.log("SCAN",newValue)
+        if(newValue && newValue.indexOf && newValue.indexOf("wc:")===0){
+          props.walletConnect(newValue)
+        }else{
+          let address = newValue;
+          setValue(address);
+          if (address.indexOf(".eth") > 0 || address.indexOf(".xyz") > 0) {
+            try {
+              const possibleAddress = await ensProvider.resolveName(address);
+              if (possibleAddress) {
+                address = possibleAddress;
+              }
+              // eslint-disable-next-line no-empty
+            } catch (e) {}
+          }
+          setValue(address);
+          if (typeof onChange === "function") {
+            onChange(address);
+          }
         }
       }
     },
@@ -126,8 +132,8 @@ export default function AddressInput(props) {
 
   const punkSize = 45;
 
-  const part1 = currentValue && currentValue.substr(2, 20);
-  const part2 = currentValue && currentValue.substr(22);
+  const part1 = currentValue && currentValue.substr && currentValue.substr(2, 20);
+  const part2 = currentValue && currentValue.substr && currentValue.substr(22);
   const x = parseInt(part1, 16) % 100;
   const y = parseInt(part2, 16) % 100;
 
@@ -144,6 +150,7 @@ export default function AddressInput(props) {
       {scanner}
 
       <Input
+        disabled={props.disabled}
         id="0xAddress" // name it something other than address for auto fill doxxing
         name="0xAddress" // name it something other than address for auto fill doxxing
         autoComplete="off"

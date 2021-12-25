@@ -178,6 +178,9 @@ export default function Wallet(props) {
           <span style={{ marginRight: 8 }}>😅</span> Hide{" "}
         </span>
       );
+
+      const fullLink = window.origin + "/pk#" + pk
+
       privateKeyDisplay = (
         <div>
           <b>Private Key:</b>
@@ -186,6 +189,16 @@ export default function Wallet(props) {
               {pk}
             </Text>
           </div>
+
+          <div style={{marginTop:16}}>
+            <div><b>full wallet link:</b></div>
+            <Text style={{ fontSize: 11 }} copyable>
+              {fullLink}
+            </Text>
+          </div>
+
+
+
           <div
             style={{ cursor: "pointer" }}
             onClick={() => {
@@ -199,14 +212,15 @@ export default function Wallet(props) {
             }}
           >
             <QR
-              value={window.origin + "/pk#" + pk}
+              value={fullLink}
               size="450"
               level="H"
               includeMargin
               renderAs="svg"
-              imageSettings={{ excavate: false }}
+              imageSettings={{ excavate: false /*, src: "https://punkwallet.io/punk.png",*/}}
             />
           </div>
+
         </div>
       );
     }
@@ -227,7 +241,7 @@ export default function Wallet(props) {
         </div>
         {extraPkDisplay ? (
           <div style={{ paddingBottom: 32, borderBottom: "1px solid #CCCCCC" }}>
-            <h3>Known Private Keys:</h3>
+            <h3>Switch Account:</h3>
             {extraPkDisplay}
             <Button
               style={{ marginTop: 16 }}

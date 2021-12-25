@@ -12,7 +12,9 @@ export default function Header( props ) {
             {window.innerWidth<600?"🧑‍🎤":"🧑‍🎤  PunkWallet.io"}
           </a>
         )}
-        subTitle=""
+        subTitle=<a href="https://github.com/scaffold-eth/scaffold-eth/tree/punk-wallet">
+          (fork me)
+        </a>
         style={{ cursor: "pointer",fontSize:32 }}
         extra={props.extra}
       />
