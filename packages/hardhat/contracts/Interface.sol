@@ -44,9 +44,9 @@ interface UniswapV2Pair {
 }
 
 contract UniswapExample {
-  address private factory = XYZ;
-  address private dai = XYZ;
-  address private weth = XYZ;
+  address private factory = 0x0000000000000000000000000000000000000000;
+  address private dai = 0x0000000000000000000000000000000000000000;
+  address private weth = 0x0000000000000000000000000000000000000000;
 
   function getTokenReserves() external view returns (uint, uint) {
     address pair = UniswapV2Factory(factory).getPair(dai, weth);
