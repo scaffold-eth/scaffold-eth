@@ -1,0 +1,18 @@
+<svg id="Layer_1" data-name="Layer 1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 1080 1080">
+  <defs>
+    <linearGradient id="linear-gradient" x2="1080" y2="1080" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#ffd400" />
+      <stop offset="1" stop-color="#ff6700" />
+    </linearGradient>
+  </defs>
+  <title>Untitled-3</title>
+  <rect width="1080" height="1080" fill="url(#linear-gradient)" />
+  <path d="M806.25,804.25h-34V446.75c0-126.75-102.75-229.5-229.5-229.5h0c-126.75,0-229.5,102.75-229.5,229.5v357.5h-38a29,29,0,0,0-29,29h0a29,29,0,0,0,29,29h531a29,29,0,0,0,29-29h0A29,29,0,0,0,806.25,804.25Z" fill="#abbbff" stroke="#000" stroke-miterlimit="10" stroke-width="10" />
+  <path d="M772.25,804.25h34a29,29,0,0,1,29,29h0a29,29,0,0,1-29,29h-531a29,29,0,0,1-29-29h0a29,29,0,0,1,29-29h38" fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="10" />
+  <circle cx="454.88" cy="446.25" r="26" fill="#fff" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="10" />
+  <circle cx="714.88" cy="446.25" r="26" fill="#fff" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="10" />
+  <line x1="545.38" y1="511" x2="624.38" y2="511" fill="none" stroke="#000" stroke-linecap="round" stroke-miterlimit="10" stroke-width="10" />
+  <rect x="664" y="901" width="77" height="51" rx="25.5" fill="#abbbff" stroke="#000" stroke-miterlimit="10" stroke-width="10" />
+  <rect x="155" y="854.88" width="50" height="33.12" rx="16.56" fill="#abbbff" stroke="#000" stroke-miterlimit="10" stroke-width="10" />
+  <rect x="870" y="837.88" width="50" height="33.12" rx="16.56" fill="#abbbff" stroke="#000" stroke-miterlimit="10" stroke-width="10" />
+</svg>
