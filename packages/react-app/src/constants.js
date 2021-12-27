@@ -305,6 +305,14 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
     blockExplorer: "https://etherscan.io/",
   },
+  optimism: {
+    name: "optimism",
+    color: "#f01a37",
+    chainId: 10,
+    blockExplorer: "https://optimistic.etherscan.io/",
+    rpcUrl: `https://mainnet.optimism.io`,
+    gasPrice: 0,
+  },
   xdai: {
     name: "xdai",
     color: "#48a9a6",
@@ -320,14 +328,6 @@ export const NETWORKS = {
     faucet: "https://xdai-faucet.top/",
     blockExplorer: "https://blockscout.com/poa/xdai/",
   },
-  optimism: {
-    name: "optimism",
-    color: "#f01a37",
-    chainId: 10,
-    blockExplorer: "https://optimistic.etherscan.io/",
-    rpcUrl: `https://mainnet.optimism.io`,
-    gasPrice: 0,
-  },
   matic: {
     name: "matic",
     color: "#2bbdf7",
@@ -337,14 +337,6 @@ export const NETWORKS = {
     rpcUrl: "https://polygon-rpc.com ",
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://explorer-mainnet.maticvigil.com//",
-  },
-  localhost: {
-    name: "localhost",
-    color: "#666666",
-    price: "uniswap", // use mainnet eth price for localhost
-    chainId: 31337,
-    blockExplorer: "",
-    rpcUrl: "http://localhost:8545",
   },
   kovan: {
     name: "kovan",
@@ -377,6 +369,14 @@ export const NETWORKS = {
     faucet: "https://goerli-faucet.slock.it/",
     blockExplorer: "https://goerli.etherscan.io/",
     rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
+  },
+  localhost: {
+    name: "localhost",
+    color: "#666666",
+    price: "uniswap", // use mainnet eth price for localhost
+    chainId: 31337,
+    blockExplorer: "",
+    rpcUrl: "http://localhost:8545",
   },
   L1localArbitrum: {
     name: "L1localArbitrum",

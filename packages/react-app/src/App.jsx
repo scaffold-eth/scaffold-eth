@@ -844,8 +844,29 @@ function App(props) {
       </BrowserRouter>
 */}
 
+      <div style={{ zIndex: -1, paddingTop: 128, opacity: 0.5, fontSize: 12 }}>
+        <Button
+          style={{ margin:8, marginTop: 16 }}
+          onClick={() => {
+            window.open("https://zapper.fi/account/"+address+"/transactions");
+          }}
+        >
+          <span style={{ marginRight: 8 }}>📜</span>History
+        </Button>
 
-      <div style={{ zIndex: -1, padding: 128, opacity: 0.5, fontSize: 12 }}>
+        <Button
+          style={{  margin:8, marginTop: 16, }}
+          onClick={() => {
+            window.open("https://zapper.fi/account/"+address);
+          }}
+        >
+          <span style={{ marginRight: 8 }}>👛</span> Inventory
+        </Button>
+
+
+      </div>
+
+      <div style={{ zIndex: -1, padding: 64, opacity: 0.5, fontSize: 12 }}>
         created with <span style={{ marginRight: 4 }}>🏗</span>
         <a href="https://github.com/austintgriffith/scaffold-eth#-scaffold-eth" target="_blank">
           scaffold-eth
