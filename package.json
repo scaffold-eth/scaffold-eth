@@ -66,7 +66,13 @@
       "**/hardhat-ts/**"
     ]
   },
-  "dependencies": {},
+  "dependencies": {
+    "@emotion/react": "^11.7.1",
+    "@emotion/styled": "^11.6.0",
+    "@ensdomains/react-ens-address": "0.0.30",
+    "@mui/material": "^5.2.5",
+    "react-toastify": "^8.1.0"
+  },
   "devDependencies": {
     "husky": "^7.0.2"
   }
