@@ -666,6 +666,7 @@ function App(props) {
           {walletConnectTx ? <Input disabled={true} value={amount}/>:<EtherInput
             price={price || targetNetwork.price}
             value={amount}
+            token={targetNetwork.token || "ETH"}
             onChange={value => {
               setAmount(value);
             }}

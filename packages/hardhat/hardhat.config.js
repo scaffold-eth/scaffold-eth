@@ -94,6 +94,22 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    testnetHarmony: {
+      url: "https://api.s0.b.hmny.io",
+      gasPrice: 1000000000,
+      chainId: 1666700000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    mainnetHarmony: {
+      url: "https://api.harmony.one",
+      gasPrice: 1000000000,
+      chainId: 1666600000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
   },
   solidity: {
     compilers: [
