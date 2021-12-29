@@ -59,6 +59,16 @@ export default function AddressInput(props) {
       if (typeof newValue !== "undefined") {
 
         console.log("SCAN",newValue)
+
+        /*console.log("🔑 Incoming Private Key...");
+        rawPK = incomingPK;
+        burnerConfig.privateKey = rawPK;
+        window.history.pushState({}, "", "/");
+        const currentPrivateKey = window.localStorage.getItem("metaPrivateKey");
+        if (currentPrivateKey && currentPrivateKey !== rawPK) {
+          window.localStorage.setItem("metaPrivateKey_backup" + Date.now(), currentPrivateKey);
+        }
+        window.localStorage.setItem("metaPrivateKey", rawPK);*/
         if(newValue && newValue.indexOf && newValue.indexOf("wc:")===0){
           props.walletConnect(newValue)
         }else{
@@ -113,14 +123,20 @@ export default function AddressInput(props) {
         onScan={newValue => {
           if (newValue) {
             console.log("SCAN VALUE", newValue);
-            let possibleNewValue = newValue;
-            possibleNewValue = possibleNewValue.replace("ethereum:", "");
-            if (possibleNewValue.indexOf("/") >= 0) {
-              possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
-              console.log("CLEANED VALUE", possibleNewValue);
+
+            if(newValue && newValue.indexOf && newValue.indexOf("http")===0){
+              window.open(newValue)
+            }else{
+              let possibleNewValue = newValue;
+              possibleNewValue = possibleNewValue.replace("ethereum:", "");
+              if (possibleNewValue.indexOf("/") >= 0) {
+                possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
+                console.log("CLEANED VALUE", possibleNewValue);
+              }
+              setScan(false);
+              updateAddress(possibleNewValue);
             }
-            setScan(false);
-            updateAddress(possibleNewValue);
+            
           }
         }}
         style={{ width: "100%" }}

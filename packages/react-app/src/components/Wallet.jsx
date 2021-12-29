@@ -259,7 +259,7 @@ export default function Wallet(props) {
           </div>
 
           <div style={{marginTop:16}}>
-            <div><b>full wallet link:</b></div>
+            <div><b>Punk Wallet:</b></div>
             <Text style={{ fontSize: 11 }} copyable>
               {fullLink}
             </Text>
@@ -277,14 +277,30 @@ export default function Wallet(props) {
               message.success(<span style={{ position: "relative" }}>Copied Private Key Link</span>);
             }}
           >
+            <div style={{position:"relative",top:34,left:-11}}>
+              <QRPunkBlockie withQr={false} address={selectedAddress} />
+            </div>
+
             <QR
               value={fullLink}
               size="450"
               level="H"
               includeMargin
               renderAs="svg"
-              imageSettings={{ excavate: false /*, src: "https://punkwallet.io/punk.png",*/}}
+              imageSettings={{ excavate: true,width:105,height:105 /*, src: "https://punkwallet.io/punk.png",*/}}
             />
+            <div style={{position:"relative",top:-285,left:172}}>
+              🔑
+            </div>
+            <div style={{position:"relative",top:-305,left:266}}>
+              🔑
+            </div>
+            <div style={{position:"relative",top:-244,left:172}}>
+              🔑
+            </div>
+            <div style={{position:"relative",top:-265,left:262}}>
+              🔑
+            </div>
           </div>
 
         </div>
@@ -361,18 +377,22 @@ export default function Wallet(props) {
     } else if(showImport){
       display = (
         <div>
+              <div style={{marginTop:21, width:420}}><h2>IMPORT</h2></div>
 
-
-              <Input.Password style={{width:380}} size="large" placeholder="mnemonic (word word word)" onChange={async (e)=>{
+              <div style={{opacity:0.5}}>mnemonic</div>
+              <Input.Password  style={{width:380}} size="large" placeholder="word1 word2 word3" onChange={async (e)=>{
                 setImportMnemonic(e.target.value)
               }}/>
+
+
               <Input style={{ width:69 }} value={importMnemonicIndex} onChange={(e)=>{
                 setImportMnemonicIndex(e.target.value)
               }}size="large" />
 
-              <div style={{marginTop:21, width:420}}><h2>OR</h2></div>
+              <div style={{marginTop:21, width:420}}><h4>OR</h4></div>
 
-              <Input.Password disabled={importMnemonic}  style={{marginTop:21, width:420}} size="large" value={importPrivatekey} placeholder="private key (0x...)" onChange={(e)=>{
+              <div style={{ opacity:0.5}}>private key</div>
+              <Input.Password disabled={importMnemonic}  style={{width:420}} size="large" value={importPrivatekey} placeholder="0x..." onChange={(e)=>{
                 setImportPrivatekey(e.target.value)
               }}/>
 
@@ -419,7 +439,7 @@ export default function Wallet(props) {
                   setShowImport(false)
                 }}
               >
-                <span style={{ marginRight: 8 }}>🅇</span>Cancel
+                <span style={{ marginRight: 8 }}>⏪</span>Cancel
               </Button>
         </div>
       );
@@ -546,7 +566,6 @@ export default function Wallet(props) {
           <Button
             key="submit"
             type="primary"
-            disabled={!amount || !toAddress || qr}
             loading={false}
             onClick={() => {
               setOpen(!open);

@@ -410,6 +410,7 @@ function App(props) {
                 You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
                 <b>{networkLocal && networkLocal.name}</b>.
                 <Button
+                  style={{marginTop:4}}
                   onClick={async () => {
                     const ethereum = window.ethereum;
                     const data = [
@@ -422,15 +423,34 @@ function App(props) {
                       },
                     ];
                     console.log("data", data);
-                    const tx = await ethereum.request({ method: "wallet_addEthereumChain", params: data }).catch();
-                    if (tx) {
-                      console.log(tx);
+
+                    let switchTx;
+                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+                    try {
+                      switchTx = await ethereum.request({
+                        method: "wallet_switchEthereumChain",
+                        params: [{ chainId: data[0].chainId }],
+                      });
+                    } catch (switchError) {
+                      // not checking specific error code, because maybe we're not using MetaMask
+                      try {
+                        switchTx = await ethereum.request({
+                          method: "wallet_addEthereumChain",
+                          params: data,
+                        });
+                      } catch (addError) {
+                        // handle "add" error
+                      }
+                    }
+
+                    if (switchTx) {
+                      console.log(switchTx);
                     }
                   }}
                 >
-                  {NETWORK(localChainId).name}
+                  <span style={{paddingRight:4}}>switch to</span>  <b>{NETWORK(localChainId).name}</b>
                 </Button>
-                .
+
               </div>
             }
             type="error"
@@ -684,7 +704,7 @@ function App(props) {
           />
           </div>
           */}
-        <div style={{ position: "relative", top: 40, left:40 }}> {networkDisplay} </div>
+        <div style={{ position: "relative", top: 10, left:40 }}> {networkDisplay} </div>
         <div style={{ padding: 10 }}>
           <Button
             key="submit"
