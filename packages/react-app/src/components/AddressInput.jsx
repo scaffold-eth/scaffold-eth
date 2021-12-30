@@ -122,13 +122,40 @@ export default function AddressInput(props) {
         }}
         onScan={newValue => {
           if (newValue) {
-            console.log("SCAN VALUE", newValue);
+            console.log("SCAN VALUE",newValue);
 
-            if(newValue && newValue.indexOf && newValue.indexOf("http")===0){
-              window.open(newValue)
+            if(newValue && newValue.length==66 && newValue.indexOf("0x")===0){
+              console.log("This might be a PK...",newValue)
+              setTimeout(()=>{
+                console.log("opening...")
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                a.href = "https://punkwallet.io/pk#"+newValue;
+                a.click();
+                document.body.removeChild(a);
+              },250)
+              setScan(false);
+              updateAddress();
+            }else if(newValue && newValue.indexOf && newValue.indexOf("http")===0){
+              console.log("this is a link, following...")
+              setTimeout(()=>{
+                console.log("opening...")
+                let a = document.createElement("a");
+                document.body.appendChild(a);
+                a.style = "display: none";
+                a.href = newValue;
+                a.click();
+                document.body.removeChild(a);
+              },250)
+
+              setScan(false);
+              updateAddress();
             }else{
               let possibleNewValue = newValue;
               possibleNewValue = possibleNewValue.replace("ethereum:", "");
+              possibleNewValue = possibleNewValue.replace("eth:", "");
+              console.log("possibleNewValue",possibleNewValue)
               if (possibleNewValue.indexOf("/") >= 0) {
                 possibleNewValue = possibleNewValue.substr(possibleNewValue.lastIndexOf("0x"));
                 console.log("CLEANED VALUE", possibleNewValue);
@@ -136,7 +163,7 @@ export default function AddressInput(props) {
               setScan(false);
               updateAddress(possibleNewValue);
             }
-            
+
           }
         }}
         style={{ width: "100%" }}

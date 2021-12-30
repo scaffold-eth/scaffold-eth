@@ -2,7 +2,7 @@ import { CaretUpOutlined, ScanOutlined, SendOutlined } from "@ant-design/icons";
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
-import { Alert, Button, Col, Row, Select, Input, Modal } from "antd";
+import { Alert, Button, Col, Row, Select, Input, Modal, notification } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
 import React, { useCallback, useEffect, useState } from "react";
@@ -26,6 +26,8 @@ import { Transactor } from "./helpers";
 import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, useUserProvider } from "./hooks";
 
 import WalletConnect from "@walletconnect/client";
+
+const { confirm } = Modal;
 
 const { ethers } = require("ethers");
 /*
@@ -119,8 +121,8 @@ const web3Modal = new Web3Modal({
 
 function App(props) {
 
-  const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
-  const [walletModalData, setWalletModalData] = useState();
+  //const [isWalletModalVisible, setIsWalletModalVisible] = useState(false);
+  //const [walletModalData, setWalletModalData] = useState();
 
   //
   // TRYING SOMETHING HERE...
@@ -154,7 +156,17 @@ function App(props) {
       window.location.reload();
     }, 1);
   };
-
+/*
+  // track an extra eth price to display USD for Optimism?
+  const ethprice = useExchangePrice({
+    name: "ethereum",
+    color: "#ceb0fa",
+    chainId: 1,
+    price: "uniswap",
+    rpcUrl: `https://mainnet.infura.io/v3/${INFURA_ID}`,
+    blockExplorer: "https://etherscan.io/",
+  }, mainnetProvider);
+  console.log("ethprice",ethprice)*/
 
   /* 💵 This hook will get the price of ETH from 🦄 Uniswap: */
   const price = useExchangePrice(targetNetwork, mainnetProvider);
@@ -183,13 +195,14 @@ function App(props) {
   const balance = yourLocalBalance && formatEther(yourLocalBalance);
 
   // if you don't have any money, scan the other networks for money
-  usePoller(() => {
+  // lol this poller is a bad idea why does it keep
+  /*usePoller(() => {
     if (!cachedNetwork) {
       if (balance == 0) {
         checkBalances(address);
       }
     }
-  }, 7777);
+  }, 7777);*/
 
 
   const [ walletConnectUrl, setWalletConnectUrl ] = useState()
@@ -303,8 +316,45 @@ function App(props) {
         }
         */
 
-        setWalletModalData({payload:payload,connector: connector})
-        setIsWalletModalVisible(true)
+        //setWalletModalData({payload:payload,connector: connector})
+
+        confirm({
+            width: "90%",
+            size: "large",
+            title: 'Send Transaction?',
+            icon: <SendOutlined/>,
+            content: <pre>{payload && JSON.stringify(payload.params, null, 2)}</pre>,
+            onOk:async ()=>{
+
+              let result = await userProvider.send(payload.method, payload.params)
+
+              //console.log("MSG:",ethers.utils.toUtf8Bytes(msg).toString())
+
+              //console.log("payload.params[0]:",payload.params[1])
+              //console.log("address:",address)
+
+              //let userSigner = userProvider.getSigner()
+              //let result = await userSigner.signMessage(msg)
+              console.log("RESULT:",result)
+
+
+              connector.approveRequest({
+                id: payload.id,
+                result: result
+              });
+
+              notification.info({
+                message: "Wallet Connect Transaction Sent",
+                description: result.hash,
+                placement: "bottomRight",
+              });
+            },
+            onCancel: ()=>{
+              console.log('Cancel');
+            },
+          });
+
+        //setIsWalletModalVisible(true)
 
         //if(payload.method == "personal_sign"){
         //  console.log("SIGNING A MESSAGE!!!")
@@ -425,23 +475,29 @@ function App(props) {
                     console.log("data", data);
 
                     let switchTx;
-                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+
                     try {
+                      console.log("first trying to add...")
                       switchTx = await ethereum.request({
-                        method: "wallet_switchEthereumChain",
-                        params: [{ chainId: data[0].chainId }],
+                        method: "wallet_addEthereumChain",
+                        params: data,
                       });
-                    } catch (switchError) {
-                      // not checking specific error code, because maybe we're not using MetaMask
+                    } catch (addError) {
+                      // handle "add" error
+                      console.log("error adding, trying to switch")
                       try {
+                        console.log("Trying a switch...")
                         switchTx = await ethereum.request({
-                          method: "wallet_addEthereumChain",
-                          params: data,
+                          method: "wallet_switchEthereumChain",
+                          params: [{ chainId: data[0].chainId }],
                         });
-                      } catch (addError) {
-                        // handle "add" error
+                      } catch (switchError) {
+                        // not checking specific error code, because maybe we're not using MetaMask
+
                       }
                     }
+                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
+
 
                     if (switchTx) {
                       console.log(switchTx);
@@ -574,7 +630,7 @@ function App(props) {
 
   const [loading, setLoading] = useState(false);
 
-
+/*
   const handleOk = async () => {
     setIsWalletModalVisible(false);
 
@@ -594,13 +650,19 @@ function App(props) {
       id: walletModalData.payload.id,
       result: result
     });
+
+    notification.info({
+      message: "Wallet Connect Transaction Sent",
+      description: result.hash,
+      placement: "bottomRight",
+    });
   };
 
   const handleCancel = () => {
     setIsWalletModalVisible(false);
   };
 
-
+*/
 
   const walletDisplay =
     web3Modal && web3Modal.cachedProvider ? (
@@ -646,19 +708,6 @@ function App(props) {
           {networkSelect}
           {faucetHint}
         </span>
-      </div>
-
-      <div style={{ clear: "both", width: 500, margin: "auto" }}>
-        {connected?"✅":""}
-        <Input
-          style={{width:"70%"}}
-          placeholder={"wallet connect url"}
-          value={walletConnectUrl}
-          disabled={connected}
-          onChange={(e)=>{
-            setWalletConnectUrl(e.target.value)
-          }}
-        />{connected?<span onClick={()=>{setConnected(false);wallectConnectConnector.killSession()}}>X</span>:""}
       </div>
 
       <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
@@ -886,6 +935,19 @@ function App(props) {
 
       </div>
 
+      <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32}}>
+        {connected?"✅":""}
+        <Input
+          style={{width:"70%"}}
+          placeholder={"wallet connect url"}
+          value={walletConnectUrl}
+          disabled={connected}
+          onChange={(e)=>{
+            setWalletConnectUrl(e.target.value)
+          }}
+        />{connected?<span onClick={()=>{setConnected(false);wallectConnectConnector.killSession()}}>X</span>:""}
+      </div>
+
       <div style={{ zIndex: -1, padding: 64, opacity: 0.5, fontSize: 12 }}>
         created with <span style={{ marginRight: 4 }}>🏗</span>
         <a href="https://github.com/austintgriffith/scaffold-eth#-scaffold-eth" target="_blank">
@@ -917,12 +979,14 @@ function App(props) {
         </Button>
       </div>
 
+{/*
 
       <Modal title={walletModalData && walletModalData.payload && walletModalData.payload.method} visible={isWalletModalVisible} onOk={handleOk} onCancel={handleCancel}>
        <pre>
         {walletModalData && walletModalData.payload && JSON.stringify(walletModalData.payload.params, null, 2)}
        </pre>
      </Modal>
+  */}
 
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
