@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown, Badge } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { Address, AddressInput } from "../components";
@@ -30,6 +30,7 @@ function YourFancyLoogies({
   const [yourFancyLoogies, setYourFancyLoogies] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [loadingFancyLoogies, setLoadingFancyLoogies] = useState(true);
+  const history = useHistory();
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -116,6 +117,7 @@ function YourFancyLoogies({
                           onClick={() => {
                             setSelectedFancyLoogie(id);
                             setSelectedNfts({});
+                            history.push("/yourAccesories");
                           }}
                         >
                           Select to wear
