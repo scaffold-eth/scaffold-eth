@@ -23,7 +23,7 @@ function Home({ yourLocalBalance, readContracts }) {
           className="highlight"
           style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
         >
-          packages/react-app/views/Home.jsx
+          packages/react-app/src/views/Home.jsx
         </span>
       </div>
       <div style={{ margin: 32 }}>
