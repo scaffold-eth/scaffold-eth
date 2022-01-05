@@ -401,4 +401,22 @@ export const NETWORKS = {
     faucet: "https://faucet.matic.network/",
     blockExplorer: "https://mumbai-explorer.matic.today/",
   },
+  testnetHarmony: {
+    name: "testnetHarmony",
+    color: "#00b0ef",
+    chainId: 1666700000,
+    blockExplorer: "https://explorer.pops.one/",
+    rpcUrl: `https://api.s0.b.hmny.io`,
+    gasPrice: 1000000000,
+    token: "ONE",
+  },
+  harmony: {
+    name: "harmony",
+    color: "#00b0ef",
+    chainId: 1666600000,
+    blockExplorer: "https://explorer.harmony.one/",
+    rpcUrl: `https://api.harmony.one`,
+    gasPrice: 1000000000,
+    token: "ONE",
+  },
 };

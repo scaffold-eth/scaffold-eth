@@ -29,7 +29,7 @@ import React, { useEffect, useState } from "react";
 */
 
 export default function EtherInput(props) {
-  const [mode, setMode] = useState(props.price ? "USD" : "ETH");
+  const [mode, setMode] = useState(props.price ? "USD" : props.token);
   const [display, setDisplay] = useState();
   const [value, setValue] = useState();
 
@@ -42,7 +42,7 @@ export default function EtherInput(props) {
         style={{ cursor: "pointer" }}
         onClick={() => {
           if (mode === "USD") {
-            setMode("ETH");
+            setMode(props.token);
             setDisplay(currentValue);
           } else {
             setMode("USD");
@@ -67,7 +67,7 @@ export default function EtherInput(props) {
     addonAfter = option("USD 🔀");
   } else {
     prefix = "Ξ";
-    addonAfter = option("ETH 🔀");
+    addonAfter = option(props.token + " 🔀");
   }
 
   useEffect(() => {
