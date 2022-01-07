@@ -32,7 +32,6 @@ function NetworkDisplay({
         </div>
       );
     } else {
-      const showLogout = networkSelected && networkSelected.name !== "localhost";
       networkDisplay = (
         <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
           <Alert

@@ -1,4 +1,4 @@
-import { Alert, Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
