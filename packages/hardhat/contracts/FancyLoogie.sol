@@ -7,8 +7,6 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
-import "hardhat/console.sol";
-
 
 abstract contract LoogiesContract {
   function renderTokenById(uint256 id) external virtual view returns (string memory);
@@ -89,7 +87,7 @@ contract FancyLoogie is ERC721Enumerable, IERC721Receiver, Ownable {
                     name,
                     '", "description":"',
                     description,
-                    '", "external_url":"https://burnyboys.com/token/',
+                    '", "external_url":"https://www.fancyloogies.com/fancyloogie/',
                     id.toString(),
                     '", "owner":"',
                     (uint160(ownerOf(id))).toHexString(20),

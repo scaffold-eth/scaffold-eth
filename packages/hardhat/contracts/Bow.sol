@@ -19,13 +19,12 @@ contract Bow is ERC721Enumerable {
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
-  // all funds go to buidlguidl.eth
   address payable public constant recipient =
-    payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
+    payable(0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC);
 
   uint256 public constant limit = 1000;
-  uint256 public constant curve = 1002; // price increase 0,2% with each purchase
-  uint256 public price = 0.001 ether;
+  uint256 public constant curve = 1005; // price increase 0,5% with each purchase
+  uint256 public price = 0.002 ether;
 
   mapping (uint256 => bytes3) public color;
   mapping (uint256 => bool) public crazy;
@@ -78,7 +77,7 @@ contract Bow is ERC721Enumerable {
                               name,
                               '", "description":"',
                               description,
-                              '", "external_url":"https://burnyboys.com/token/',
+                              '", "external_url":"https://www.fancyloogies.com/bow/',
                               id.toString(),
                               '", "attributes": [{"trait_type": "color", "value": "#',
                               color[id].toColor(),
