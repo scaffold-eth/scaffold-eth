@@ -56,7 +56,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
       setL2EthBalance("...");
     }
     setProviders();
-  }, [rollup]);
+  }, [rollup, activeConfig.L1, activeConfig.L2]);
 
   const contracts = useContractLoader(userSigner, { externalContracts: L1BridgeMetadata, hardhatContracts: {} });
 
