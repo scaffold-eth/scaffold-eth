@@ -50,10 +50,10 @@ function FancyLoogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) 
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
-            FancyLoogies are upgraded <strong>Optimistic Loogies</strong> with <strong>NFTs accesories</strong>.
+            FancyLoogies are upgraded <strong>Optimistic Loogies</strong> with <strong>NFTs accessories</strong>.
           </p>
           <p>
-            Upgrate <Link to="/yourLoogies">Your Optimistic Loogies</Link>!
+            Upgrade <Link to="/yourLoogies">Your Optimistic Loogies</Link>!
           </p>
         </div>
       </div>

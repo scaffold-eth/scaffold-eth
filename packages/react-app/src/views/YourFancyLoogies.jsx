@@ -150,6 +150,13 @@ function YourFancyLoogies({
                                     className="fancy-loogie-action-button action-button"
                                     onClick={() => {
                                       tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, id), function (transaction) {
+                                        setFancyLoogiesNfts(prevState => ({
+                                          ...prevState,
+                                          [id]: {
+                                            ...prevState[id],
+                                            [readContracts[nft].address]: 0
+                                          }
+                                        }));
                                         setUpdateBalances(updateBalances + 1);
                                       });
                                     }}
