@@ -58,3 +58,6 @@ code {
   flex:  0 0 auto;
 }
 
+.fancy-loogie-preview .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
+  background-color: #e6f7ff;
+}

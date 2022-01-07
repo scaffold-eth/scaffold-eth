@@ -272,6 +272,7 @@ function App(props) {
   const [selectedFancyLoogie, setSelectedFancyLoogie] = useState();
   const [selectedNfts, setSelectedNfts] = useState({});
   const [selectedFancyLoogiePreview, setSelectedFancyLoogiePreview] = useState({});
+  const [fancyLoogiePreviewActiveTab, setFancyLoogiePreviewActiveTab] = useState("preview-Bow");
 
   const initCount = {
     Bow: 0,
@@ -384,6 +385,8 @@ function App(props) {
             selectedNfts={selectedNfts}
             setSelectedNfts={setSelectedNfts}
             setFancyLoogiesNfts={setFancyLoogiesNfts}
+            fancyLoogiePreviewActiveTab={fancyLoogiePreviewActiveTab}
+            setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
           />
           <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories" tabBarExtraContent={
             <Alert
@@ -431,6 +434,7 @@ function App(props) {
                     selectedFancyLoogie={selectedFancyLoogie}
                     selectedNfts={selectedNfts}
                     setSelectedNfts={setSelectedNfts}
+                    setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
                   />
                 </TabPane>
               );

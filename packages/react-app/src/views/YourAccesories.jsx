@@ -20,6 +20,7 @@ function YourAccesories({
   selectedFancyLoogie,
   selectedNfts,
   setSelectedNfts,
+  setFancyLoogiePreviewActiveTab,
 }) {
   const [nftBalance, setNftBalance] = useState(0);
   const [yourNftBalance, setYourNftBalance] = useState(0);
@@ -29,10 +30,10 @@ function YourAccesories({
   const [loadingNfts, setLoadingNfts] = useState(true);
 
   const nftsText = {
-    Bow: '<p>Only <strong>1000 Bows</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Bow have a random color and, if you are lucky, the bow will rotate!</p>',
-    Eyelash: '<p>Only <strong>1000 Eyelashes</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Eyelashes have a random color, a random length and, if you are lucky, you can get another random color for the middle eyelashes!</p>',
-    Mustache: '<p>Only <strong>1000 Mustaches</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Mustache have a random color.</p>',
-    ContactLenses: '<p>Only <strong>1000 Contact Lenses</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Contact Lenses have a random color and, if you are lucky, you can get a crazy one!</p>',
+    Bow: '<p>Only <strong>1000 Bows</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Bow have a <strong>random color</strong> and, if you are lucky, the bow will <strong>rotate</strong>!</p>',
+    Eyelash: '<p>Only <strong>1000 Eyelashes</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Eyelashes have a <strong>random color</strong>, a <strong>random length</strong> and, if you are lucky, you can get <strong>another random color for the middle eyelashes</strong>!</p>',
+    Mustache: '<p>Only <strong>1000 Mustaches</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Mustache have a <strong>random color</strong>.</p>',
+    ContactLenses: '<p>Only <strong>1000 Contact Lenses</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Contact Lenses have a <strong>random color</strong> and, if you are lucky, you can get a <strong>crazy one</strong>!</p>',
   };
 
   const priceToMint = useContractReader(readContracts, nft, "price");
@@ -140,6 +141,7 @@ function YourAccesories({
                                 ...prevState,
                                 [nft]: id,
                               }));
+                              setFancyLoogiePreviewActiveTab("preview-"+nft);
                             }}
                           >
                             { selectedNfts[nft] == id ? "Previewing" : "Preview" }

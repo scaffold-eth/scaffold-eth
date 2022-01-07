@@ -23,6 +23,8 @@ function FancyLoogiePreview({
   selectedNfts,
   setSelectedNfts,
   setFancyLoogiesNfts,
+  fancyLoogiePreviewActiveTab,
+  setFancyLoogiePreviewActiveTab,
 }) {
   useEffect(() => {
     const updatePreview = async () => {
@@ -59,7 +61,11 @@ function FancyLoogiePreview({
             }
           >
             <div dangerouslySetInnerHTML={{ __html: selectedFancyLoogiePreview }}></div>
-            <Tabs defaultActiveKey="preview-Bow">
+            <Tabs
+              activeKey={fancyLoogiePreviewActiveTab}
+              onChange={tab => setFancyLoogiePreviewActiveTab(tab)}
+              type="card"
+            >
               {nfts.map(function (nft) {
                 return (
                   <TabPane tab={
