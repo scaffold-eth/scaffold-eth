@@ -101,7 +101,7 @@ function YourAccesories({
           onClick={async () => {
             const priceRightNow = await readContracts[nft].price();
             try {
-              tx(writeContracts[nft].mintItem({ value: priceRightNow }), function (transaction) {
+              tx(writeContracts[nft].mintItem({ value: priceRightNow, gasLimit: 300000 }), function (transaction) {
                 setUpdateNftBalance(updateNftBalance + 1);
               });
             } catch (e) {
