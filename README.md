@@ -1,28 +1,34 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - Fancy Loogie - Loogie Mashup SVG NFT
 
-> everything you need to build on Ethereum! 🚀
+![www fancyloogies com_fancy-loogie svg](https://user-images.githubusercontent.com/466652/148587212-d6b113b0-2ca1-448a-b6d4-2ecea0a99ad6.png)
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+> Demonstration showing how SVG NFTs can be composed on top of each other.
 
 
 # 🏄‍♂️ Quick Start
 
+## Prerequisites
+
+This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch (watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it) and [composable-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/composable-svg-nft) branch.
+
+[Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
+## Getting Started
+
+### Installation
+
 ### Manual setup
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+> clone/fork 🏗 scaffold-eth fancy-loogies branch:
 
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+```
+git clone -b fancy-loogies https://github.com/scaffold-eth/scaffold-eth.git fancy-loogies
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd fancy-loogies
 yarn install
 yarn chain
 ```
@@ -30,20 +36,20 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd fancy-loogies
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd fancy-loogies
 yarn deploy
 ```
 
 🌍 You need an RPC key for production deployments/Apps, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js`
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contracts `packages/hardhat/contracts`.
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -51,11 +57,31 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+
+## Introduction
+
+This branch shows how to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
+
+Take a look at `Loogies.sol` at `packages/hardhat/contracts`. It describes an SVG NFT that is defined by two parameters: `color` and `chubbiness` randomly generated at mint. It exposes a function:
+```
+function renderTokenById(uint256 id) public view returns (string memory)
+```
+
+It returns the relevant SVG that be embedded in other SVG code for rendering.
+
+Then, you can mint a FancyLoogie from a Loogie and then send another NFTs (Bow, Mustache, ContactLenses and Eyelashes for now) to that Loogie, to be rendered as one SVG.
+
+Take a look at `FancyLoogie.sol` at `packages/hardhat/contracts`:
+
+* The `mintItem` function receive the loogieId to upgrade, call a transfer from the Loogies contract transfering the Loogie to the FancyLoogie contract. Then the `onERC721Received` function get called when the Loogie is received (see `_safeTransfer` function at `ERC721.sol` from `OpenZeppelin`).
+* Its `renderTokenById` function calls the method `renderTokenById` from the other contracts  to include the SVG in its own SVG code.
+* The FancyLoogie contract is ready to add new NFTs contract addresses to be able to add new accessories to the Loogies. Take a look to `addNft` function.
+
 ### Automated with Gitpod
 
 To deploy this project to Gitpod, click this button:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies)
 
 # 📚 Documentation
 
