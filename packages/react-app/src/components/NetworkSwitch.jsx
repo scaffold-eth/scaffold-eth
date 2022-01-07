@@ -1,5 +1,5 @@
 import React from "react";
-import { Dropdown, Menu } from "antd";
+import { Button, Dropdown, Menu } from "antd";
 
 function NetworkSwitch({ networkOptions, selectedNetwork, setSelectedNetwork }) {
   const menu = (
@@ -8,9 +8,9 @@ function NetworkSwitch({ networkOptions, selectedNetwork, setSelectedNetwork }) 
         .filter(i => i !== selectedNetwork)
         .map(i => (
           <Menu.Item key={i}>
-            <a onClick={() => setSelectedNetwork(i)}>
+            <Button type="text" onClick={() => setSelectedNetwork(i)}>
               <span style={{ textTransform: "capitalize" }}>{i}</span>
-            </a>
+            </Button>
           </Menu.Item>
         ))}
     </Menu>
