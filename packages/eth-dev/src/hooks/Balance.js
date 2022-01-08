@@ -36,13 +36,16 @@ export default function useBalance(provider, address, pollTime = 0) {
   )
 
   // Only pass a provider to watch on a block if there is no pollTime
+  /*
   useOnBlock(pollTime === 0 && provider, () => {
     if (provider && address && pollTime === 0) {
       pollBalance(provider, address)
     }
   })
+  */
 
   // Use a poller if a pollTime is provided
+  /*
   usePoller(
     async () => {
       if (provider && address && pollTime > 0) {
@@ -53,6 +56,7 @@ export default function useBalance(provider, address, pollTime = 0) {
     pollTime,
     provider && address
   )
+  */
 
   return balance
 }

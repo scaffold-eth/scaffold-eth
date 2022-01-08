@@ -78,6 +78,7 @@ export default function useContractReader(
     }
   }
 
+  /*
   // Only pass a provider to watch on a block if we have a contract and no PollTime
   useOnBlock(
     contracts &&
@@ -90,8 +91,10 @@ export default function useContractReader(
       }
     }
   )
+  */
 
   // Use a poller if a pollTime is provided
+  /*
   usePoller(
     async () => {
       if (contracts && contracts[contractName] && adjustPollTime > 0) {
@@ -102,6 +105,7 @@ export default function useContractReader(
     adjustPollTime,
     contracts && contracts[contractName]
   )
+  */
 
   return value
 }

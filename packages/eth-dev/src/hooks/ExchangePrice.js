@@ -11,7 +11,7 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
         const DAI = new Token(
           mainnetProvider.network ? mainnetProvider.network.chainId : 1,
           '0x6B175474E89094C44Da98b954EedeAC495271d0F',
-          18,
+          18
         )
         const pair = await Fetcher.fetchPairData(DAI, WETH[DAI.chainId], mainnetProvider)
         const route = new Route([pair], WETH[DAI.chainId])
@@ -19,7 +19,11 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
         let contractAddress = targetNetwork.price.replace('uniswap', '')
         contractAddress = contractAddress.replace(':', '')
         if (contractAddress) {
-          const TOKEN = new Token(mainnetProvider.network ? mainnetProvider.network.chainId : 1, contractAddress, 18)
+          const TOKEN = new Token(
+            mainnetProvider.network ? mainnetProvider.network.chainId : 1,
+            contractAddress,
+            18
+          )
           const pair = await Fetcher.fetchPairData(WETH[TOKEN.chainId], TOKEN, mainnetProvider)
           const route = new Route([pair], TOKEN)
           const price = parseFloat(route.midPrice.toSignificant(6) * priceOfETHinDAI)
@@ -39,7 +43,7 @@ export default function useExchangePrice(targetNetwork, mainnetProvider, pollTim
       getPrice()
     }
   }
-  usePoller(pollPrice, pollTime || 37777)
+  // usePoller(pollPrice, pollTime || 37777)
 
   return price
 }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import { ApolloClient, ApolloProvider, InMemoryCache } from '@apollo/client'
 import './index.css'
 import { ThemeSwitcherProvider } from 'react-css-theme-switcher'
-import App from './components/App'
+import App from './App'
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,

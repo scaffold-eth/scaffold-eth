@@ -1,4 +1,4 @@
-import { JsonRpcProvider } from '@ethersproject/providers'
+import { JsonRpcProvider, StaticJsonRpcProvider } from '@ethersproject/providers'
 import getTargetNetwork from './getTargetNetwork'
 
 export default function getLocalProvider() {
