@@ -1,4 +1,5 @@
 import Background from './Background'
+import MonologWindow from './MonologWindow'
 import Terminal from './Terminal'
 import Wallet from './Wallet/index'
 import WalletBare from './WalletBare'
@@ -30,16 +31,15 @@ import QRPunkBlockie from './QRPunkBlockie'
 
 export {
   Background,
+  MonologWindow,
   Terminal,
   Wallet,
   WalletBare,
   Toolbelt,
   Dish,
   SpeechBubble,
-
   WindowModal,
   WindowModalClassic,
-
   Address,
   AddressInput,
   Button,

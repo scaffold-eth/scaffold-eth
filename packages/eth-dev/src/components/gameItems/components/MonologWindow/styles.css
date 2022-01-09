@@ -1,0 +1,4 @@
+/* remove draggable element from minimimze and close buttons */
+.flexible-modal-drag-area {
+  right: 60px;
+}

@@ -1,13 +1,18 @@
 import React from 'react'
-import { Intro, City, CityOutskirts, CitySkylineInsideNight, Workstation, CityAtWar } from './backgrounds'
+import {
+  Intro,
+  City,
+  CityOutskirts,
+  CitySkylineInsideNight,
+  Workstation,
+  CityAtWar
+} from './backgrounds'
 
-const backgroundMap = {
+export default {
   intro: <Intro />,
-  city: <City />,
   cityOutskirts: <CityOutskirts />,
+  city: <City />,
   citySkylineInsideNight: <CitySkylineInsideNight />,
   workstation: <Workstation />,
   cityAtWar: <CityAtWar />
 }
-
-export default background => backgroundMap[background]

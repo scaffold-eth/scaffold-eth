@@ -8,6 +8,7 @@ const styles = {
   fontSize: '12px'
 }
 
+// className = [ is-primary is-warning is-success is-error is-disabled ]
 export default function Button({ className, id, onClick, styles: _styles, children }) {
   return (
     <button

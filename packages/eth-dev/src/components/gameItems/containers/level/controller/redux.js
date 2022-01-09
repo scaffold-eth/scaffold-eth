@@ -1,6 +1,6 @@
 import dotProp from 'dot-prop-immutable'
 
-const initialLevel = 'setup-local-network'
+const initialLevel = 'intro'
 
 const stateContainerId = 'levelContainer'
 
@@ -23,6 +23,7 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case SET_CURRENT_LEVEL:
+        console.log('setting currentLevel to: ' + payload.levelId)
         return dotProp.set(state, 'currentLevel', payload.levelId)
       default:
         return state

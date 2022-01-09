@@ -7,11 +7,11 @@ import Dialog from './Dialog'
 
 const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   useEffect(() => {
-    actions.background.setCurrentBackground({ background: 'city' })
+    actions.background.setCurrentBackground({ background: 'cityOutskirts' })
   }, [])
 
   const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(
-    false
+    true
   )
   const [sessionKey, setSessionKey] = useState(true)
 

@@ -43,9 +43,7 @@ const Dialog = ({ actions, dialog }) => {
               dialogPart.component({ dialog, isLastVisibleDialog, actions })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
-              <div style={{ padding: 32, marginTop: 96 }}>
-                <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
-              </div>
+              <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
             )}
           </>
         )

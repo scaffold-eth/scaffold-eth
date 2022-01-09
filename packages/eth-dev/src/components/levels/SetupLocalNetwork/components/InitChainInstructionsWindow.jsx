@@ -31,7 +31,7 @@ $ yarn
 $ yarn chain
 
 # in second terminal:
-# deploys some smart contracts that will be used throughout the game
+# deploys some smart contracts that we'll use throughout the game
 $ yarn deploy`}
       </CodeContainer>
 

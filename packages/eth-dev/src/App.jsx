@@ -122,15 +122,9 @@ const App = props => {
     mainnetProvider = getMainnetProvider()
     */
     // TODO: get target network when user starts a local network
-    if (false) {
-      localProvider = getLocalProvider()
-    }
-
-    console.log({ targetNetwork })
-    console.log({ localProvider })
-  } catch (e) {
-    console.log('caught an error:')
-    console.log({ e })
+    localProvider = getLocalProvider()
+  } catch (error) {
+    console.error({ error })
   }
 
   const [injectedProvider, setInjectedProvider] = useState()
@@ -145,8 +139,6 @@ const App = props => {
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId
   const selectedChainId = userProvider && userProvider._network && userProvider._network.chainId
 
-  console.log({ targetNetwork })
-  console.log({ localProvider })
   // If you want to call a function on a new block
   /*
   useOnBlock(mainnetProvider, () => {
@@ -202,8 +194,6 @@ const App = props => {
       <div id='app'>
         <LevelContainer>
           <Levels />
-
-          {/* <Terminal /> */}
 
           {/*
           <WalletView

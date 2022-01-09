@@ -1,18 +1,43 @@
-import React, { useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
+import React, { useEffect, useState } from 'react'
+import { MonologWindow, Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
+
+import { NewWindow, WelcomeWindow, IncomingCallBubble } from './components'
 import Dialog from './Dialog'
 
 const IntroLevel = ({ dialog, actions }) => {
   useEffect(() => {
-    actions.background.setCurrentBackground({ background: 'city' })
+    actions.background.setCurrentBackground({ background: 'intro' })
   }, [])
+
+  const [didEnterGame, setDidEnterGame] = useState(false)
+  const enterGame = () => setDidEnterGame(true)
+
+  const [didFinishMonolog, setDidFinishMonolog] = useState(false)
+  const finishMonolog = () => setDidFinishMonolog(true)
+
+  const [didPickUpCall, setDidPickUpCall] = useState(false)
+  const pickUpCall = () => setDidPickUpCall(true)
 
   return (
     <div id='introLevel'>
-      <Terminal>
-        <Dialog dialog={dialog} actions={{ ...actions }} />
-      </Terminal>
+      {!didEnterGame && <WelcomeWindow isOpen enterGame={enterGame} />}
+
+      {didEnterGame && !didFinishMonolog && (
+        <MonologWindow isOpen dialog={dialog}>
+          <Dialog dialog={dialog} actions={actions} finishMonolog={finishMonolog} />
+        </MonologWindow>
+      )}
+
+      {didFinishMonolog && !didPickUpCall && (
+        <IncomingCallBubble actions={actions} pickUpCall={pickUpCall} />
+      )}
+
+      {didEnterGame && didFinishMonolog && didPickUpCall && (
+        <Terminal isOpen dialog={dialog}>
+          <Dialog dialog={dialog} actions={actions} finishMonolog={finishMonolog} />
+        </Terminal>
+      )}
     </div>
   )
 }

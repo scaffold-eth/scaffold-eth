@@ -17,7 +17,7 @@ const style = {
 const Background = ({ currentBackground, children }) => {
   return (
     <div className='background-image' style={style}>
-      {backgroundsMap(currentBackground)}
+      {backgroundsMap[currentBackground]}
       {children}
     </div>
   )

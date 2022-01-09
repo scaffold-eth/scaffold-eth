@@ -20,9 +20,9 @@ const SpeakerRight = ({ text, pathToAvatar }) => {
         style={{
           position: 'absolute',
           right: 0,
-          top: -18,
+          bottom: 8,
           minWidth: '80px',
-          transform: 'scaleX(-1)'
+          transform: 'scaleX(1)'
         }}
       />
       <SpeechBubble direction='right'>

@@ -10,36 +10,43 @@ export const DIALOG_PATH_ID = 'setup-local-network/start'
 
 const _dialog = [
   {
+    hasChoices: true,
     component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
-      <SpeakerLeft
-        text='Welcome to eth.dev, a game for developers learning Ethereum.'
-        pathToAvatar='./assets/punk5950.png'
-      />
+      <>
+        {isLastVisibleDialog && (
+          <Button
+            onClick={() => {
+              actions.dialog.continueDialog()
+            }}
+          >
+            {`<waiting for network connection>`}
+          </Button>
+        )}
+      </>
     )
   },
   {
     component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
-      <SpeakerLeft
-        text="I'm *Punk#5950* and I'm in charge of **onbaoarding** around here..."
-        pathToAvatar='./assets/punk5950.png'
-      />
+      <>
+        <SpeakerRight text='Great! Seems like you still now your stuff ...' />
+      </>
     )
   },
   {
     hasChoices: true,
     component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
       <>
-        <SpeakerLeft
-          text='To begin the game, please start by setting up a local Ethereum network on your machine.'
-          pathToAvatar='./assets/punk5950.png'
+        <SpeakerRight
+          text={`Let's head into the city, I've arranged a meating with some of my old friends...`}
         />
         {isLastVisibleDialog && (
           <Button
+            className='is-warning'
             onClick={() => {
-              actions.setInitChainInstructionsWindowVisibility(true)
+              actions.level.setCurrentLevel({ levelId: 'city-at-war' })
             }}
           >
-            Setup local ethereum network
+            Drive into city
           </Button>
         )}
       </>

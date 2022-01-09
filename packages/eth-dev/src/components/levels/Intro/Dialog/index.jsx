@@ -2,12 +2,12 @@ import React, { useEffect } from 'react'
 import { Button } from '../../../gameItems/components'
 import dialogArray from './dialogArray'
 
-const Dialog = ({ actions, dialog }) => {
+const Dialog = ({ actions, dialog, finishMonolog }) => {
   const { currentDialogIndex, dialogPathsVisibleToUser } = dialog
 
   useEffect(() => {
     actions.dialog.initDialog({
-      initialDialogPathId: 'template-level/start',
+      initialDialogPathId: 'intro/start',
       currentDialog: dialogArray
     })
   }, [])
@@ -38,7 +38,12 @@ const Dialog = ({ actions, dialog }) => {
         return (
           <>
             {dialogPart.isVisibleToUser &&
-              dialogPart.component({ dialog, isLastVisibleDialog, actions })}
+              dialogPart.component({
+                dialog,
+                isLastVisibleDialog,
+                actions,
+                finishMonolog
+              })}
 
             {isLastVisibleDialog && !dialogPart.hasChoices && !isFinalDialog && (
               <Button onClick={() => actions.dialog.continueDialog()}>Continue</Button>
