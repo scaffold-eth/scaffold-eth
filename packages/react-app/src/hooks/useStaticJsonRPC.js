@@ -22,10 +22,11 @@ export default function useStaticJsonRPC(urlArray) {
       // todo: show notification error about provider issues
       console.log(error);
     }
-  });
+  }, [urlArray]);
 
   useEffect(() => {
     handleProviders();
+    // eslint-disable-next-line
   }, [JSON.stringify(urlArray)]);
 
   return provider;

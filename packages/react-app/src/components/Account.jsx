@@ -57,10 +57,6 @@ export default function Account({
 }) {
   const { currentTheme } = useThemeSwitcher();
 
-  function isValidAddress(address) {
-    return address && address !== "0x0000000000000000000000000000000000000000";
-  }
-
   const modalButtons = [];
   if (web3Modal) {
     if (web3Modal.cachedProvider) {
