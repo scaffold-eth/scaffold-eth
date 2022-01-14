@@ -1,62 +1,71 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { Button } from '../../../../gameItems/components'
-import { SpeakerLeft } from '../components'
+import { SpeakerLeft, SpeakerRight } from '../components'
 
 import { DIALOG_PATH_ID as FIRST_CONTACT } from './first-contact'
 import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
 import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
-export const DIALOG_PATH_ID = 'intro/start'
+export const DIALOG_PATH_ID = 'intro/start-monolog'
 
 const _dialog = [
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerLeft text='Ah what a view!' />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight text='Ah what a view!' />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerLeft text='Ethereum City!' />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight text='Ethereum City!' />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerLeft text='Feels good to be back ...' />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight text='Feels good to be back.' />
+      ),
+      choices: null
     }
   },
   {
-    hasChoices: true,
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions, finishMonolog }) => {
-      return (
-        <>
-          <SpeakerLeft text='Feels good to be home ...' />
-          <Button
-            onClick={() => {
-              finishMonolog()
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight text='Feels good to be home ...' />
+      ),
+      choices: ({
+        dialog: { currentDialog },
+        isLastVisibleDialog,
+        globalGameActions,
+        finishMonolog
+      }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <Button
+                onClick={() => {
+                  if (finishMonolog) {
+                    finishMonolog()
+                  }
 
-              actions.dialog.jumpToDialogPath({
-                currentDialog,
-                dialogPathId: FIRST_CONTACT
-              })
-            }}
-          >
-            Continue
-          </Button>
-        </>
-      )
+                  globalGameActions.dialog.jumpToDialogPath({
+                    currentDialog,
+                    dialogPathId: FIRST_CONTACT
+                  })
+                }}
+              >
+                Continue
+              </Button>
+            )}
+          </>
+        )
+      }
     }
   }
 ]

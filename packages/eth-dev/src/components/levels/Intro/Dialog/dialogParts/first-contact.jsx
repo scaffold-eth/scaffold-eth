@@ -10,100 +10,110 @@ export const DIALOG_PATH_ID = 'intro/first-contact'
 
 const _dialog = [
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight pathToAvatar='./assets/punk_anon.png' text='Hello old friend.' />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Hello old friend.' />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight
-            pathToAvatar='./assets/punk_anon.png'
-            text='Nice to see that you have not given up on this city!'
-          />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='Nice to see that you have not given up on this city!'
+        />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight
-            pathToAvatar='./assets/punk_anon.png'
-            text='What have you been up to all this time?'
-          />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='What have you been up to all this time?'
+        />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight pathToAvatar='./assets/punk_anon.png' text='...' />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='...' />
+      ),
+      choices: null
     }
   },
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight
-            pathToAvatar='./assets/punk_anon.png'
-            text='Nevermind! We have more important things to deal with at the moment!'
-          />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='Nevermind! We have more important things to deal with at the moment!'
+        />
+      ),
+      choices: null
     }
   },
   {
-    hasChoices: true,
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerRight pathToAvatar='./assets/punk_anon.png' text='Can you help us?' />
-          {isLastVisibleDialog && (
-            <Button className='is-warning' onClick={() => actions.dialog.continueDialog()}>
-              Sure! What do you need?
-            </Button>
-          )}
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Can you help us?' />
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <Button
+                className='is-warning'
+                onClick={() => globalGameActions.dialog.continueDialog()}
+              >
+                Sure! What do you need?
+              </Button>
+            )}
+          </>
+        )
+      }
     }
   },
   {
-    hasChoices: true,
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
-      <>
-        <SpeakerRight
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
           text='I need you to connect to the cities network!'
-          pathToAvatar='./assets/punk_anon.png'
         />
-        {isLastVisibleDialog && (
-          <Button onClick={() => actions.level.setCurrentLevel({ levelId: 'setup-local-network' })}>
-            Continue
-          </Button>
-        )}
-      </>
-    )
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <Button
+                onClick={() =>
+                  globalGameActions.level.setCurrentLevel({ levelId: 'setup-local-network' })
+                }
+              >
+                Continue
+              </Button>
+            )}
+          </>
+        )
+      }
+    }
   },
   {
-    hasChoices: true,
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
-      <>
-        <SpeakerRight
-          text='Here, follow these instructions ...'
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
+        <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
+          text='Here: Can you follow these instructions?'
         />
-      </>
-    )
+      ),
+      choices: null
+    }
   }
 ]
 

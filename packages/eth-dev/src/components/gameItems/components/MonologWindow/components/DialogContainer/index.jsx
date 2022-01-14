@@ -7,19 +7,18 @@ import './styles.css'
 import { Button } from '../../..'
 
 const DialogContainer = ({
-  terminalVisible,
+  isOpen,
   currentLevel,
   dialog,
-  globalGameActions,
   actions,
+  globalGameActions,
   parentProps
 }) => {
   // TODO: move this into redux
   const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
 
   const scrollToBottom = _elementSelector => {
-    console.log('-> scrollToBottom()')
-    let elementSelector = `#terminalDialogContainer .flexible-modal .content`
+    let elementSelector = `#monologDialogContainer .flexible-modal .content`
     if (_elementSelector) elementSelector = _elementSelector
     const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
@@ -43,13 +42,13 @@ const DialogContainer = ({
   })
 
   return (
-    <span id='terminalDialogContainer'>
-      {terminalVisible && (
+    <span id='monologDialogContainer'>
+      {true && (
         <ReactModal
           className={uniqueWindowId}
-          top={10}
-          left='0'
-          initHeight={700}
+          top={0}
+          left={0}
+          initHeight={300}
           initWidth={450}
           isOpen
         >
@@ -59,7 +58,7 @@ const DialogContainer = ({
               style={{
                 height: '100%',
                 overflowY: 'scroll',
-                background: 'url(./assets/trimmed/terminal_trimmed.png)',
+                // background: 'url(./assets/trimmed/terminal_trimmed.png)',
                 backgroundSize: '100% 100%'
               }}
             />
@@ -70,14 +69,10 @@ const DialogContainer = ({
                 right: 0,
                 width: '100%',
                 // height: '600px',
-                height: '63%',
+                height: '100%',
                 display: 'flex',
                 flexDirection: 'column',
-                alignContent: 'flex-end',
-
-                marginTop: '50%',
-                paddingLeft: '10%',
-                paddingRight: '20%'
+                alignContent: 'flex-end'
               }}
             >
               <div

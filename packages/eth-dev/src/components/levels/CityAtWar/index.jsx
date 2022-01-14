@@ -3,31 +3,32 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { ExampleGameActionsWindow, GenerateWallet } from './components'
-import Dialog from './Dialog'
+import dialogArray from './dialog/dialogArray'
 
 const CityAtWar = ({ dialog, actions }) => {
   useEffect(() => {
+    // set background
     actions.background.setCurrentBackground({ background: 'cityAtWar' })
+    // set dialog
+    actions.dialog.initDialog({
+      initialDialogPathId: 'city-at-war/start',
+      currentDialog: dialogArray
+    })
   }, [])
 
   const [walletGeneratorVisibility, setWalletGeneratorVisibility] = useState(false)
-  const [sessionKey, setSessionKey] = useState(true)
-
-  const allActions = {
-    ...actions,
-    setSessionKey,
-    setWalletGeneratorVisibility
-  }
 
   return (
     <div id='cityAtWar'>
-      <Terminal>
-        <Dialog dialog={dialog} actions={allActions} />
-      </Terminal>
+      <Terminal
+        isOpen
+        globalGameActions={actions}
+        setWalletGeneratorVisibility={setWalletGeneratorVisibility}
+      />
 
       <ExampleGameActionsWindow isOpen={false} />
 
-      <GenerateWallet isOpen={walletGeneratorVisibility} actions={allActions} dialog={dialog} />
+      <GenerateWallet isOpen={walletGeneratorVisibility} globalGameActions={actions} />
     </div>
   )
 }

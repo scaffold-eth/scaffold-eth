@@ -7,12 +7,14 @@ export const DIALOG_PATH_ID = 'create-wallet/does-not-know-wallets'
 
 const _dialog = [
   {
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerLeft text={`So you don't know what a wallet is. No problem, no problem.`} />
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`So you don't know what a wallet is. No problem, no problem.`}
+        />
+      ),
+      choices: null
     }
   }
 ]

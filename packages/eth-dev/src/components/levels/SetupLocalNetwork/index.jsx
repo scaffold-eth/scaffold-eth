@@ -3,31 +3,32 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
-import Dialog from './Dialog'
+import dialogArray from './dialog/dialogArray'
 
 const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   useEffect(() => {
+    // set background
     actions.background.setCurrentBackground({ background: 'cityOutskirts' })
+    // set dialog
+    actions.dialog.initDialog({
+      initialDialogPathId: 'setup-local-network/start',
+      currentDialog: dialogArray
+    })
   }, [])
 
-  const [initialInstructionsWindowVisible, setInitChainInstructionsWindowVisibility] = useState(
-    true
+  const [initialInstructionsWindowIsVisible, setInitChainInstructionsWindowVisibility] = useState(
+    false
   )
-  const [sessionKey, setSessionKey] = useState(true)
-
-  const levelActions = {
-    ...actions,
-    setSessionKey,
-    setInitChainInstructionsWindowVisibility
-  }
 
   return (
     <div id='setupLocalNetworkLevel'>
-      <Terminal>
-        <Dialog dialog={dialog} actions={levelActions} />
-      </Terminal>
+      <Terminal
+        isOpen
+        globalGameActions={actions}
+        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
+      />
 
-      <InitChainInstructionsWindow isOpen={initialInstructionsWindowVisible} />
+      <InitChainInstructionsWindow isOpen={initialInstructionsWindowIsVisible} />
 
       <ExampleGameActionsWindow isOpen={false} />
     </div>

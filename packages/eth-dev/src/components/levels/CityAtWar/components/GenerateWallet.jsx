@@ -146,11 +146,6 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
                 onClick={() => {
                   actions.setWalletGeneratorVisibility(false)
 
-                  actions.dialog.jumpToDialogPath({
-                    currentDialog: dialog.currentDialog,
-                    dialogPathId: 'city-at-war/beginner-dev'
-                  })
-
                   // dialog.dialogPathsVisibleToUser
                   // actions.level.setCurrentLevel({ levelId: 'create-wallet' })
                   // actions.dialog.continueDialog()

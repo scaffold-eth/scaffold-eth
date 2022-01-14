@@ -7,23 +7,34 @@ export const DIALOG_PATH_ID = 'create-wallet/knows-wallets'
 
 const _dialog = [
   {
-    hasChoices: true,
-    component: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => {
-      return (
-        <>
-          <SpeakerLeft text={`Great! Let's generate one for you.`} />
-          {isLastVisibleDialog && (
-            <Button
-              onClick={() => {
-                actions.setCreateWalletWindowVisibility(true)
-                actions.dialog.continueDialog()
-              }}
-            >
-              Setup Wallet
-            </Button>
-          )}
-        </>
-      )
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`Great! Let's generate one for you.`}
+        />
+      ),
+      choices: ({
+        dialog: { currentDialog },
+        isLastVisibleDialog,
+        globalGameActions,
+        setCreateWalletWindowVisibility
+      }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <Button
+                onClick={() => {
+                  setCreateWalletWindowVisibility(true)
+                  globalGameActions.dialog.continueDialog()
+                }}
+              >
+                Setup Wallet
+              </Button>
+            )}
+          </>
+        )
+      }
     }
   }
 ]
