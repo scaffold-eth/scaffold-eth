@@ -9,16 +9,40 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  const loogies = await deploy("Loogies", {
+  const battery = await deploy("RobotoBattery", {
     from: deployer,
     log: true,
   });
 
-  const bow = await deploy("Bow", {
+  const antennas = await deploy("Antennas", {
     from: deployer,
     log: true,
   });
 
+  const ears = await deploy("Ears", {
+    from: deployer,
+    log: true,
+  });
+
+  const glasses = await deploy("Glasses", {
+    from: deployer,
+    log: true,
+  });
+
+  const metadata = await deploy("RobotoMetadata", {
+    from: deployer,
+    log: true,
+  });
+
+
+  const roboto = await deploy("Roboto", {
+    from: deployer,
+    args: [battery.address, antennas.address, ears.address, glasses.address],
+    libraries: { RobotoMetadata: metadata.address },
+    log: true,
+  });
+
+/*
   const eyelash = await deploy("Eyelash", {
     from: deployer,
     log: true,
@@ -45,7 +69,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   await FancyLoogie.addNft(mustache.address);
   await FancyLoogie.addNft(contactLenses.address);
   await FancyLoogie.addNft(eyelash.address);
-
+*/
   /*
     To take ownership of yourContract using the ownable library uncomment next line and add the 
     address you want to be the owner. 

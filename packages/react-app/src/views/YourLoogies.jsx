@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { Button, Card, List } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
@@ -15,6 +15,11 @@ function YourLoogies({
   address,
   updateBalances,
   setUpdateBalances,
+  selectedFancyLoogie,
+  setSelectedFancyLoogie,
+  setSelectedNfts,
+  fancyLoogiesNfts,
+  setFancyLoogiesNfts,
 }) {
   const [loogieBalance, setLoogieBalance] = useState(0);
   const [yourLoogieBalance, setYourLoogieBalance] = useState(0);
@@ -22,19 +27,20 @@ function YourLoogies({
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [loadingOptimisticLoogies, setLoadingOptimisticLoogies] = useState(true);
+  const history = useHistory();
 
-  const priceToMint = useContractReader(readContracts, "Loogies", "price");
+  const priceToMint = useContractReader(readContracts, "Roboto", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
-  const totalSupply = useContractReader(readContracts, "Loogies", "totalSupply");
+  const totalSupply = useContractReader(readContracts, "Roboto", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
   const loogiesLeft = 3728 - totalSupply;
 
   useEffect(() => {
     const updateBalances = async () => {
       if (DEBUG) console.log("Updating balances...");
-      if (readContracts.Loogies) {
-        const loogieNewBalance = await readContracts.Loogies.balanceOf(address);
+      if (readContracts.Roboto) {
+        const loogieNewBalance = await readContracts.Roboto.balanceOf(address);
         const yourLoogieNewBalance = loogieNewBalance && loogieNewBalance.toNumber && loogieNewBalance.toNumber();
         if (DEBUG) console.log("NFT: Loogie - Balance: ", loogieNewBalance);
         setLoogieBalance(loogieNewBalance);
@@ -44,26 +50,38 @@ function YourLoogies({
       }
     };
     updateBalances();
-  }, [address, readContracts.Loogies, updateBalances]);
+  }, [address, readContracts.Roboto, updateBalances]);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
       setLoadingOptimisticLoogies(true);
       const loogieUpdate = [];
       const loogieApproved = {};
+      const fancyLoogiesNftsUpdate = {};
       for (let tokenIndex = 0; tokenIndex < yourLoogieBalance; tokenIndex++) {
         try {
-          const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenId = await readContracts.Roboto.tokenOfOwnerByIndex(address, tokenIndex);
           if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
-          const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
+          if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId.toNumber());
+          const tokenURI = await readContracts.Roboto.tokenURI(tokenId);
           if (DEBUG) console.log("tokenURI: ", tokenURI);
           const jsonManifestString = atob(tokenURI.substring(29));
 
           try {
             const jsonManifest = JSON.parse(jsonManifestString);
             loogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-            let approved = await readContracts.Loogies.getApproved(tokenId);
+
+            // TODO: sacar
+            let approved = await readContracts.Roboto.getApproved(tokenId);
             loogieApproved[tokenId] = approved;
+
+            fancyLoogiesNftsUpdate[tokenId] = {};
+            const antennasId = await readContracts.Roboto.nftId(readContracts.Antennas.address, tokenId);
+            fancyLoogiesNftsUpdate[tokenId][readContracts.Antennas.address] = antennasId.toString();
+            const earsId = await readContracts.Roboto.nftId(readContracts.Ears.address, tokenId);
+            fancyLoogiesNftsUpdate[tokenId][readContracts.Ears.address] = earsId.toString();
+            const glassesId = await readContracts.Roboto.nftId(readContracts.Glasses.address, tokenId);
+            fancyLoogiesNftsUpdate[tokenId][readContracts.Glasses.address] = glassesId.toString();
           } catch (e) {
             console.log(e);
           }
@@ -73,6 +91,8 @@ function YourLoogies({
       }
       setYourLoogies(loogieUpdate.reverse());
       setYourLoogiesApproved(loogieApproved);
+      console.log("fancyLoogiesNftsUpdate: ", fancyLoogiesNftsUpdate);
+      setFancyLoogiesNfts(fancyLoogiesNftsUpdate);
       setLoadingOptimisticLoogies(false);
     };
     updateYourCollectibles();
@@ -83,7 +103,7 @@ function YourLoogies({
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
-            Only <strong>3728 Optimistic Loogies</strong> available (2X the supply of the <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogies</a>) on a price curve <strong>increasing 0.2%</strong> with each new mint.
+            Only <strong>3728 Robotos</strong> available (2X the supply of the <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogies</a>) on a price curve <strong>increasing 0.2%</strong> with each new mint.
           </p>
           <p>All Ether from sales goes to public goods!!</p>
           <p>
@@ -96,9 +116,9 @@ function YourLoogies({
         <Button
           type="primary"
           onClick={async () => {
-            const priceRightNow = await readContracts.Loogies.price();
+            const priceRightNow = await readContracts.Roboto.price();
             try {
-              tx(writeContracts.Loogies.mintItem({ value: priceRightNow }), function (transaction) {
+              tx(writeContracts.Roboto.mintItem({ value: priceRightNow }), function (transaction) {
                 setUpdateBalances(updateBalances + 1);
               });
             } catch (e) {
@@ -126,31 +146,20 @@ function YourLoogies({
                   title={
                     <div>
                       <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                      {yourLoogiesApproved[id] != readContracts.FancyLoogie.address ? (
+                      {selectedFancyLoogie != id ? (
                         <Button
-                          onClick={async () => {
-                            tx(writeContracts.Loogies.approve(readContracts.FancyLoogie.address, id)).then(
-                              res => {
-                                setYourLoogiesApproved(yourLoogiesApproved => ({
-                                  ...yourLoogiesApproved,
-                                  [id]: readContracts.FancyLoogie.address,
-                                }));
-                              },
-                            );
+                          className="action-inline-button"
+                          onClick={() => {
+                            setSelectedFancyLoogie(id);
+                            setSelectedNfts({});
+                            history.push("/yourAccesories");
                           }}
                         >
-                          Approve upgrade to FancyLoogie
+                          Select to wear
                         </Button>
                       ) : (
-                        <Button
-                          onClick={async (event) => {
-                            event.target.parentElement.disabled = true;
-                            tx(writeContracts.FancyLoogie.mintItem(id), function (transaction) {
-                              setUpdateBalances(updateBalances + 1);
-                            });
-                          }}
-                        >
-                          Upgrade to FancyLoogie
+                        <Button className="action-inline-button" disabled>
+                          Selected
                         </Button>
                       )}
                     </div>
@@ -178,7 +187,7 @@ function YourLoogies({
                     />
                     <Button
                       onClick={() => {
-                        tx(writeContracts.Loogies.transferFrom(address, transferToAddresses[id], id), function (transaction) {
+                        tx(writeContracts.Roboto.transferFrom(address, transferToAddresses[id], id), function (transaction) {
                           setUpdateBalances(updateBalances + 1);
                         });
                       }}

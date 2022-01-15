@@ -31,7 +31,7 @@ function FancyLoogiePreview({
       if (DEBUG) console.log("Updating preview...");
       if (selectedFancyLoogie) {
         let nftUpdate = {};
-        const loogieSvg = await readContracts.FancyLoogie.renderTokenById(selectedFancyLoogie);
+        const loogieSvg = await readContracts.Roboto.renderTokenById(selectedFancyLoogie);
         let nftsSvg = "";
         for (const nft of nfts) {
           if (selectedNfts[nft]) {
@@ -57,6 +57,20 @@ function FancyLoogiePreview({
             title={
               <div style={{ height: 45 }}>
                 <span style={{ fontSize: 18, marginRight: 8 }}>Selected FancyLoogie #{selectedFancyLoogie}</span>
+                <Button
+                  style={{ marginRight: 10 }}
+                  onClick={async () => {
+                    try {
+                      tx(writeContracts.Roboto.recharge(selectedFancyLoogie), function (transaction) {
+                        //setUpdateBatteryBalance(updateBatteryBalance + 1);
+                      });
+                    } catch (e) {
+                      console.log("recharge failed", e);
+                    }
+                  }}
+                >
+                  { "Recharge" }
+                </Button>
               </div>
             }
           >
@@ -85,7 +99,7 @@ function FancyLoogiePreview({
                           <Button
                             className="action-inline-button"
                             onClick={() => {
-                              tx(writeContracts.FancyLoogie.removeNftFromLoogie(readContracts[nft].address, selectedFancyLoogie), function (transaction) {
+                              tx(writeContracts.Roboto.removeNftFromLoogie(readContracts[nft].address, selectedFancyLoogie), function (transaction) {
                                 setFancyLoogiesNfts(prevState => ({
                                   ...prevState,
                                   [selectedFancyLoogie]: {
@@ -118,7 +132,7 @@ function FancyLoogiePreview({
                                     tx(
                                       writeContracts[nft]["safeTransferFrom(address,address,uint256,bytes)"](
                                         address,
-                                        readContracts.FancyLoogie.address,
+                                        readContracts.Roboto.address,
                                         selectedNfts[nft],
                                         tankIdInBytes,
                                       ),

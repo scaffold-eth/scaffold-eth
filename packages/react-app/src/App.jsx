@@ -30,7 +30,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { YourLoogies, YourFancyLoogies, YourAccesories, FancyLoogiePreview, FancyLoogies } from "./views";
+import { YourLoogies, YourFancyLoogies, YourAccesories, FancyLoogiePreview, FancyLoogies, YourBatteries } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 const { TabPane } = Tabs;
 
@@ -220,7 +220,9 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
-  const nfts = ["Bow", "Eyelash", "Mustache", "ContactLenses"];
+  //const nfts = ["Bow", "Eyelash", "Mustache", "ContactLenses"];
+
+  const nfts = ["Antennas", "Ears", "Glasses"];
 
   const nftsSvg = {
     Bow: (
@@ -312,6 +314,9 @@ function App(props) {
         <Menu.Item key="/yourLoogies">
           <Link to="/yourLoogies">Your Optimistic Loogies</Link>
         </Menu.Item>
+        <Menu.Item key="/yourBatteries">
+          <Link to="/yourBatteries">Your Batteries</Link>
+        </Menu.Item>
         <Menu.Item key="/yourFancyLoogies">
           <Link to="/yourFancyLoogies">Your Fancy Loogies</Link>
         </Menu.Item>
@@ -332,6 +337,15 @@ function App(props) {
             DEBUG={DEBUG}
           />
         </Route>
+        <Route exact path="/yourBatteries">
+          <YourBatteries
+            DEBUG={DEBUG}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            tx={tx}
+            address={address}
+          />
+        </Route>
         <Route exact path="/yourLoogies">
           <YourLoogies
             DEBUG={DEBUG}
@@ -343,6 +357,11 @@ function App(props) {
             address={address}
             updateBalances={updateBalances}
             setUpdateBalances={setUpdateBalances}
+            selectedFancyLoogie={selectedFancyLoogie}
+            setSelectedFancyLoogie={setSelectedFancyLoogie}
+            setSelectedNfts={setSelectedNfts}
+            fancyLoogiesNfts={fancyLoogiesNfts}
+            setFancyLoogiesNfts={setFancyLoogiesNfts}
           />
         </Route>
         <Route exact path="/yourFancyLoogies">
@@ -469,7 +488,7 @@ function App(props) {
             <Address value={readContracts && readContracts.FancyLoogie && readContracts.FancyLoogie.address} />
           </div>
           <Contract
-            name="FancyLoogie"
+            name="Roboto"
             price={price}
             signer={userSigner}
             provider={localProvider}
