@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link, useHistory } from "react-router-dom";
-import { Button, Card, List } from "antd";
+import { Button, Card, List, Popover } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 import { useContractReader } from "eth-hooks";
@@ -34,7 +34,7 @@ function YourLoogies({
 
   const totalSupply = useContractReader(readContracts, "Roboto", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const loogiesLeft = 3728 - totalSupply;
+  const loogiesLeft = 1000 - totalSupply;
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -82,6 +82,9 @@ function YourLoogies({
             fancyLoogiesNftsUpdate[tokenId][readContracts.Ears.address] = earsId.toString();
             const glassesId = await readContracts.Roboto.nftId(readContracts.Glasses.address, tokenId);
             fancyLoogiesNftsUpdate[tokenId][readContracts.Glasses.address] = glassesId.toString();
+
+            const batteryStatus = await readContracts.Roboto.batteryStatus(tokenId);
+            fancyLoogiesNftsUpdate[tokenId][readContracts.RobotoBattery.address] = batteryStatus;
           } catch (e) {
             console.log(e);
           }
@@ -100,19 +103,7 @@ function YourLoogies({
 
   return (
     <>
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16 }}>
-          <p>
-            Only <strong>3728 Robotos</strong> available (2X the supply of the <a href="https://loogies.io" target="_blank">Original Ethereum Mainnet Loogies</a>) on a price curve <strong>increasing 0.2%</strong> with each new mint.
-          </p>
-          <p>All Ether from sales goes to public goods!!</p>
-          <p>
-            You can upgrade your <strong>Optimistic Loogie</strong>, mint some accesories and add the accesories to your <strong>FancyLoogie</strong>.
-          </p>
-        </div>
-      </div>
-
-      <div style={{ maxWidth: 515, margin: "0 auto", paddingBottom: 32 }}>
+      <div style={{ maxWidth: 515, margin: "0 auto", marginTop: 10 }}>
         <Button
           type="primary"
           onClick={async () => {
@@ -132,9 +123,17 @@ function YourLoogies({
           { loogiesLeft } left
         </p>
       </div>
-      <div style={{ width: 515, margin: "0 auto", paddingBottom: 256 }}>
+      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
         <List
-          bordered
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 2,
+            lg: 3,
+            xl: 4,
+            xxl: 6,
+          }}
           loading={loadingOptimisticLoogies}
           dataSource={yourLoogies}
           renderItem={item => {
@@ -145,28 +144,33 @@ function YourLoogies({
                 <Card
                   title={
                     <div>
-                      <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                      {selectedFancyLoogie != id ? (
-                        <Button
-                          className="action-inline-button"
-                          onClick={() => {
-                            setSelectedFancyLoogie(id);
-                            setSelectedNfts({});
-                            history.push("/yourAccesories");
-                          }}
-                        >
-                          Select to wear
-                        </Button>
-                      ) : (
-                        <Button className="action-inline-button" disabled>
-                          Selected
-                        </Button>
-                      )}
+                      <Popover content={item.description} title="Roboto Description">
+                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                      </Popover>
                     </div>
                   }
+                  className={selectedFancyLoogie != id ? "nonselected-roboto" : "selected-roboto"}
                 >
-                  <img src={item.image} />
-                  <div style={{ height: 90 }}>{item.description}</div>
+                  {selectedFancyLoogie != id ? (
+                    <img
+                      class="select-roboto"
+                      src={item.image}
+                      title="Select to wear"
+                      onClick={() => {
+                        setSelectedFancyLoogie(id);
+                        setSelectedNfts({});
+                        history.push("/yourAccesories");
+                      }}
+                    />
+                  ) : (
+                    <img
+                      src={item.image}
+                      title="Selected"
+                      onClick={() => {
+                        history.push("/yourAccesories");
+                      }}
+                    />
+                  )}
                   <div style={{ height: 90 }}>
                     owner:{" "}
                     <Address
@@ -175,25 +179,6 @@ function YourLoogies({
                       blockExplorer={blockExplorer}
                       fontSize={16}
                     />
-                    <AddressInput
-                      ensProvider={mainnetProvider}
-                      placeholder="transfer to address"
-                      value={transferToAddresses[id]}
-                      onChange={newValue => {
-                        const update = {};
-                        update[id] = newValue;
-                        setTransferToAddresses({ ...transferToAddresses, ...update });
-                      }}
-                    />
-                    <Button
-                      onClick={() => {
-                        tx(writeContracts.Roboto.transferFrom(address, transferToAddresses[id], id), function (transaction) {
-                          setUpdateBalances(updateBalances + 1);
-                        });
-                      }}
-                    >
-                      Transfer
-                    </Button>
                   </div>
                 </Card>
               </List.Item>

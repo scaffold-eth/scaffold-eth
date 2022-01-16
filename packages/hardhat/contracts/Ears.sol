@@ -86,7 +86,7 @@ contract Ears is ERC721Enumerable {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" transform="translate(0,0) scale(1 1)" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -97,7 +97,7 @@ contract Ears is ERC721Enumerable {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-      '<g transform="translate(-495, -1150) scale(3 3)">',
+      '<g transform="translate(-601, -1265) scale(3 3)">',
         '<linearGradient id="a" gradientUnits="userSpaceOnUse" x1="220.464" y1="444.928" x2="211.179" y2="444.928"><stop offset="0" style="stop-color:#97999c"/><stop offset="1" style="stop-color:#',color[id].toColor(),'"/></linearGradient><path d="M220.5 453.2c0 .6-.6 1.1-1.1.9-1.4-.5-1.3-2-1.3-4V447h-2.2c-.5 0-1-.4-1.2-.9l-3.5-9.4c-.1-.4.2-.8.4-.9.2-.1.8.1.9.4l3.1 8.3h2.7c.2-.9.3-1.7.5-2.4.3-1 1.8-.8 1.8.2l-.1 10.9z" style="fill:url(#a)"/><linearGradient id="b" gradientUnits="userSpaceOnUse" x1="357.885" y1="444.928" x2="348.599" y2="444.928" gradientTransform="matrix(-1 0 0 1 605.832 0)"><stop offset="0" style="stop-color:#97999c"/><stop offset="1" style="stop-color:#',color[id].toColor(),'"/></linearGradient><path d="M247.9 453.2c0 .6.6 1.1 1.1.9 1.4-.5 1.3-2 1.3-4V447h2.2c.5 0 1-.4 1.2-.9l3.4-9.4c.1-.4-.2-.8-.4-.9-.2-.1-.8.1-.9.4l-3.1 8.3H250c-.2-.9-.3-1.7-.5-2.4-.3-1-1.8-.8-1.8.2l.2 10.9z" style="fill:url(#b)"/>',
       '</g>'
     ));

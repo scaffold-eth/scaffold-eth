@@ -307,24 +307,12 @@ function App(props) {
         selectedChainId={selectedChainId}
         targetNetwork={targetNetwork}
       />
-      <Menu style={{ textAlign: "center" }} selectedKeys={[location.pathname]} mode="horizontal">
+      <Menu style={{ textAlign: "center", fontSize: 26, fontWeight: "bold"}} selectedKeys={[location.pathname]} mode="horizontal" className="main-menu">
         <Menu.Item key="/">
           <Link to="/">Home</Link>
         </Menu.Item>
         <Menu.Item key="/yourLoogies">
-          <Link to="/yourLoogies">Your Optimistic Loogies</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourBatteries">
-          <Link to="/yourBatteries">Your Batteries</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourFancyLoogies">
-          <Link to="/yourFancyLoogies">Your Fancy Loogies</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourAccesories">
-          <Link to="/yourAccesories">Your Accesories</Link>
-        </Menu.Item>
-        <Menu.Item key="/howto">
-          <Link to="/howto">How To Use Optimistic Network</Link>
+          <Link to="/yourLoogies">Your Robotos</Link>
         </Menu.Item>
       </Menu>
 
@@ -407,22 +395,7 @@ function App(props) {
             fancyLoogiePreviewActiveTab={fancyLoogiePreviewActiveTab}
             setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
           />
-          <Tabs defaultActiveKey="/" tabPosition="left" id="tabs-accesories" tabBarExtraContent={
-            <Alert
-              message="Choose an accesory type and mint a new NFT."
-              description={
-                <p>
-                  If:
-                  <ul>
-                    <li>You have a <strong>FancyLoogie selected to wear</strong> and</li>
-                    <li>The loogie <strong>doesn't have this kind of accesory</strong>,</li>
-                  </ul>
-                  Then, you will be able to preview the accesory on your <strong>FancyLoogie</strong>.
-                </p>
-              }
-              type="info"
-            />
-          }>
+          <Tabs defaultActiveKey="/" id="tabs-accesories" centered>
             {nfts.map(function (nft) {
               return (
                 <TabPane
@@ -458,6 +431,27 @@ function App(props) {
                 </TabPane>
               );
             })}
+            <TabPane
+              tab={
+                <div class="tab-item">
+                  <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                    {nftsSvg['Batteries']}
+                  </svg>
+                  <Badge count={yourNftsCount['Batteries']}>
+                    <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Batteries</p>
+                  </Badge>
+                </div>
+              }
+              key="batteries"
+            >
+              <YourBatteries
+                DEBUG={DEBUG}
+                readContracts={readContracts}
+                writeContracts={writeContracts}
+                tx={tx}
+                address={address}
+              />
+            </TabPane>
           </Tabs>
         </Route>
         <Route exact path="/howto">

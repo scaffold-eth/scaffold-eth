@@ -93,7 +93,7 @@ library RobotoMetadata {
     }
 
     string memory render = string(abi.encodePacked(
-      '<g transform="translate(-720, -950) scale(3 3)">',
+      '<g transform="translate(-826, -1065) scale(3 3)">',
         '<style>',
           '.st0{fill:#848383}.st1{fill:#',earColor.toColor(),'}.st5{fill:#',eyeColor.toColor(),'}.st6{fill:#',colors[0],'}',
         '</style>',

@@ -21,11 +21,19 @@ code {
 }
 
 .fancy-loogie-preview {
-  position: sticky;
-  top: 60px;
-  margin-right: 20px;
-  margin-top:  20px;
-  float: right;
+  margin: 0 auto;
+}
+
+.fancy-loogie-preview .ant-card {
+  margin: 0 auto;
+}
+
+.fancy-loogie-preview .ant-card-body {
+  display: flex;
+}
+
+.fancy-loogie-preview .ant-alert {
+  text-align: left;
 }
 
 #tabs-accesories > .ant-tabs-nav .ant-tabs-tab {
@@ -50,14 +58,18 @@ code {
   text-align: left;
 }
 
-#tabs-accesories .ant-tabs-nav {
-  justify-content: flex-start;
-}
-
-#tabs-accesories .ant-tabs-nav .ant-tabs-nav-wrap {
-  flex:  0 0 auto;
-}
-
 .fancy-loogie-preview .ant-tabs-card > .ant-tabs-nav .ant-tabs-tab-active {
   background-color: #e6f7ff;
+}
+
+.nft-image img.preview:hover {
+  cursor: pointer;
+}
+
+.nonselected-roboto img:hover, .selected-roboto img:hover {
+  cursor: pointer;
+}
+
+.selected-roboto {
+  background-color: lightyellow;
 }

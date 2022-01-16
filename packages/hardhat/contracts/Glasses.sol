@@ -86,7 +86,7 @@ contract Glasses is ERC721Enumerable {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" transform="translate(0,0) scale(1 1)" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -97,7 +97,7 @@ contract Glasses is ERC721Enumerable {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-      '<g transform="translate(-888, -734) scale(3 3)">',
+      '<g transform="translate(-994, -849) scale(3 3)">',
         '<style type="text/css">',
           '.st10{fill:url(#XMLID_222_);stroke:#',color[id].toColor(),';stroke-miterlimit:10;}',
         '</style>',

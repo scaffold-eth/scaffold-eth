@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-import { Button, Card, List } from "antd";
+import { Button, Card, List, Popover } from "antd";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 import { useContractReader } from "eth-hooks";
@@ -94,8 +94,8 @@ function YourAccesories({
 
   return (
     <>
-      <div style={{ width: 515, marginTop: 32, paddingBottom: 32 }}>
-        <div dangerouslySetInnerHTML={{ __html: nftsText[nft] }}></div>
+      <div style={{ textAlign: "right", marginTop: 0, paddingBottom: 0, marginRight: 50 }}>
+        <span style={{ fontWeight: "bold", marginRight: 10 }}>{ nftLeft } left</span>
         <Button
           type="primary"
           onClick={async () => {
@@ -111,79 +111,48 @@ function YourAccesories({
         >
           MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
         </Button>
-        <p style={{ fontWeight: "bold" }}>
-          { nftLeft } left
-        </p>
       </div>
 
-      <div style={{ width: 515, paddingBottom: 256 }}>
+      <div style={{ paddingBottom: 256 }}>
         <List
-          bordered
+          grid={{
+            gutter: 16,
+            xs: 1,
+            sm: 2,
+            md: 2,
+            lg: 3,
+            xl: 4,
+            xxl: 6,
+          }}
           loading={loadingNfts}
           dataSource={yourNfts}
           renderItem={item => {
             const id = item.id.toNumber();
             return (
               <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                <Card
-                  title={
-                    <div>
-                      <div style={{ height: 45 }}>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                        { fancyLoogiesNfts &&
-                          fancyLoogiesNfts[selectedFancyLoogie] &&
-                          fancyLoogiesNfts[selectedFancyLoogie][readContracts[nft].address] == 0 && (
-                          <Button
-                            style={{ marginRight: 10 }}
-                            disabled={ selectedNfts[nft] == id }
-                            onClick={() => {
-                              setSelectedNfts(prevState => ({
-                                ...prevState,
-                                [nft]: id,
-                              }));
-                              setFancyLoogiePreviewActiveTab("preview-"+nft);
-                            }}
-                          >
-                            { selectedNfts[nft] == id ? "Previewing" : "Preview" }
-                          </Button>
-                        )}
-                      </div>
-                    </div>
-                  }
-                >
+                <Card>
                   <div class="nft-image">
-                    <img src={item.image} />
-                  </div>
-                  <div style={{ height: 90 }}>{item.description}</div>
-                  <div style={{ height: 90 }}>
-                    owner:{" "}
-                    <Address
-                      address={item.owner}
-                      ensProvider={mainnetProvider}
-                      blockExplorer={blockExplorer}
-                      fontSize={16}
-                    />
-                    <AddressInput
-                      ensProvider={mainnetProvider}
-                      placeholder="transfer to address"
-                      value={transferToAddresses[id]}
-                      onChange={newValue => {
-                        const update = {};
-                        update[id] = newValue;
-                        setTransferToAddresses({ ...transferToAddresses, ...update });
-                      }}
-                    />
-                    <Button
-                      type="primary"
-                      style={{ marginTop: 10 }}
-                      onClick={() => {
-                        tx(writeContracts[nft].transferFrom(address, transferToAddresses[id], id), function (transaction) {
-                          setUpdateNftBalance(updateNftBalance + 1);
-                        });
-                      }}
-                    >
-                      Transfer
-                    </Button>
+                    { fancyLoogiesNfts &&
+                      fancyLoogiesNfts[selectedFancyLoogie] &&
+                      fancyLoogiesNfts[selectedFancyLoogie][readContracts[nft].address] == 0 ? (
+                      <img
+                        class="preview"
+                        src={item.image}
+                        title={(selectedNfts[nft] == id ? "Previewing" : "Preview") + item.name.replace("Roboto", "")}
+                        onClick={() => {
+                          setSelectedNfts(prevState => ({
+                            ...prevState,
+                            [nft]: id,
+                          }));
+                          setFancyLoogiePreviewActiveTab("preview-"+nft);
+                        }}
+                      />
+                      ) : (
+                      <img
+                        src={item.image}
+                        title={item.name.replace("Roboto", "")}
+                      />
+                      )}
                   </div>
                 </Card>
               </List.Item>

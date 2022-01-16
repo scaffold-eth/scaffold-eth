@@ -37,7 +37,24 @@ function YourBatteries({
 
   return (
     <>
-      <div style={{ width: 515, marginTop: 32, paddingBottom: 32 }}>
+      <div style={{ textAlign: "right", marginTop: 0, paddingBottom: 0, marginRight: 50 }}>
+        <Button
+          type="primary"
+          onClick={async () => {
+            try {
+              tx(writeContracts.RobotoBattery.mint({ value: priceToMint, gasLimit: 300000 }), function (transaction) {
+                setUpdateBatteryBalance(updateBatteryBalance + 1);
+              });
+            } catch (e) {
+              console.log("mint failed", e);
+            }
+          }}
+        >
+          MINT Battery Pack for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+        </Button>
+      </div>
+
+      <div style={{ width: 515, marginTop: 32, paddingBottom: 32, margin: "0 auto" }}>
         {batteryAllowance < 10 && (
           <Button
             type="primary"
@@ -54,21 +71,10 @@ function YourBatteries({
             Enable Battery Recharge
           </Button>
         )}
-        You have {yourBatteryBalance} batteries
-        <Button
-          type="primary"
-          onClick={async () => {
-            try {
-              tx(writeContracts.RobotoBattery.mint({ value: priceToMint, gasLimit: 300000 }), function (transaction) {
-                setUpdateBatteryBalance(updateBatteryBalance + 1);
-              });
-            } catch (e) {
-              console.log("mint failed", e);
-            }
-          }}
-        >
-          MINT Battery Pack for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
-        </Button>
+        <div style={{ width: 300, margin: "0 auto" }}>
+          <p style={{ fontSize: 20, fontWeight: "bold", marginBottom: 0 }}>You have {yourBatteryBalance} batteries</p>
+          <img src="battery.svg" width="200" height="100" alt="Roboto Battery" />
+        </div>
       </div>
     </>
   );

@@ -64,7 +64,7 @@ contract Roboto is ERC721Enumerable, IERC721Receiver {
       bytes32 genes = keccak256(abi.encodePacked( id, blockhash(block.number-1), msg.sender, address(this) ));
       eyeColor[id] = bytes2(genes[0]) | ( bytes2(genes[1]) >> 8 ) | ( bytes3(genes[2]) >> 16 );
       earColor[id] = bytes2(genes[3]) | ( bytes2(genes[4]) >> 8 ) | ( bytes3(genes[5]) >> 16 );
-      gold[id] = uint8(genes[6]) > 100;
+      gold[id] = uint8(genes[6]) > 200;
       batteryRecharged[id] = block.number;
 
       (bool success, ) = recipient.call{value: msg.value}("");
@@ -103,7 +103,7 @@ contract Roboto is ERC721Enumerable, IERC721Receiver {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="200" height="200" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
