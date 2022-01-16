@@ -630,6 +630,9 @@ function App(props) {
 
   const [loading, setLoading] = useState(false);
 
+  const [depositing, setDepositing] = useState();
+  const [depositAmount, setDepositAmount] = useState();
+
 /*
   const handleOk = async () => {
     setIsWalletModalVisible(false);
@@ -934,6 +937,7 @@ function App(props) {
         </Button>
 
 
+
       </div>
 
       <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32}}>
@@ -948,6 +952,57 @@ function App(props) {
           }}
         />{connected?<span onClick={()=>{setConnected(false);wallectConnectConnector.killSession()}}>X</span>:""}
       </div>
+
+
+
+      { targetNetwork.name=="ethereum" ? <div style={{ zIndex: -1, padding: 64, opacity: 0.5, fontSize: 12 }}>
+        {
+          depositing ? <div style={{width:200,margin:"auto"}}>
+            <EtherInput
+              /*price={price || targetNetwork.price}*/
+              value={depositAmount}
+              token={targetNetwork.token || "ETH"}
+              onChange={value => {
+                setDepositAmount(value);
+              }}
+            />
+            <Button
+              style={{ margin:8, marginTop: 16 }}
+              onClick={() => {
+                console.log("DEPOSITING",depositAmount)
+                tx({
+                  to: "0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1",
+                  value: ethers.utils.parseEther(depositAmount),
+                  gasLimit: 175000,
+                  gasPrice: gasPrice,
+                  data: "0xb1a1a882000000000000000000000000000000000000000000000000000000000013d62000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+                })
+                setDepositAmount()
+                setDepositing()
+              }}
+            >
+              <span style={{ marginRight: 8 }}>🔴</span>Deposit
+            </Button>
+          </div>:<div>
+            <Button
+              style={{ margin:8, marginTop: 16 }}
+              onClick={() => {
+                setDepositing(true)
+                /*tx({
+                  to: "0x99C9fc46f92E8a1c0deC1b1747d010903E884bE1",
+                  value: ethers.utils.parseEther("0.01"),
+                  gasLimit: 175000,
+                  gasPrice: gasPrice,
+                  data: "0xb1a1a882000000000000000000000000000000000000000000000000000000000013d62000000000000000000000000000000000000000000000000000000000000000400000000000000000000000000000000000000000000000000000000000000000"
+                })*/
+              }}
+            >
+              <span style={{ marginRight: 8 }}>🔴</span>Deposit to OE
+            </Button>
+          </div>
+        }
+      </div> : ""}
+
 
       <div style={{ zIndex: -1, padding: 64, opacity: 0.5, fontSize: 12 }}>
         created with <span style={{ marginRight: 4 }}>🏗</span>
