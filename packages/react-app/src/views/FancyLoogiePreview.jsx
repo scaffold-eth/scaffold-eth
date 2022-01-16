@@ -5,6 +5,7 @@ import { DownOutlined } from "@ant-design/icons";
 import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 const { TabPane } = Tabs;
+import { useContractReader } from "eth-hooks";
 
 function FancyLoogiePreview({
   DEBUG,
@@ -48,6 +49,8 @@ function FancyLoogiePreview({
     updatePreview();
   }, [address, selectedFancyLoogie, selectedNfts, updateBalances]);
 
+  const batteryStatus = useContractReader(readContracts, "Roboto", "batteryStatus", [selectedFancyLoogie]);
+
   return (
     <>
       {selectedFancyLoogiePreview ? (
@@ -58,10 +61,10 @@ function FancyLoogiePreview({
           >
             <div dangerouslySetInnerHTML={{ __html: selectedFancyLoogiePreview }}></div>
             <Alert message={
-              <List size="large" header={<div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16 }}>Selected FancyLoogie #{selectedFancyLoogie}</div>}>
+              <List size="large" header={<div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16 }}>Selected Roboto #{selectedFancyLoogie}</div>}>
                 {nfts.map(function (nft) {
                   return (
-                    <List.Item>
+                    <List.Item key={nft}>
                       { fancyLoogiesNfts &&
                         fancyLoogiesNfts[selectedFancyLoogie] &&
                         fancyLoogiesNfts[selectedFancyLoogie][readContracts[nft].address] > 0 ? (
@@ -137,8 +140,8 @@ function FancyLoogiePreview({
                     </List.Item>
                   )
                 })}
-                <List.Item>
-                  Battery Charge: {fancyLoogiesNfts[selectedFancyLoogie][readContracts.RobotoBattery.address] * 10}%
+                <List.Item key="battery">
+                  Battery Charge: {batteryStatus * 1}%
                   <Button
                     type="primary"
                     className="action-inline-button"
