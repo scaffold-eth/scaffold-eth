@@ -98,8 +98,8 @@ contract Antennas is ERC721Enumerable {
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
       '<g transform="translate(-658, -1000) scale(3 3)">',
-        '<style>.st0{fill:#',color[id].toColor(),'}</style>',
-        '<path id="XMLID_42_" class="st0" d="m251.5 348.7-.9.5-2.8-4.6h-3.4l2.2-2.4h-2.1l-1.2-1.9c-.1.1-.3.1-.5.1-1 0-1.8-.8-1.8-1.8s.8-1.9 1.8-1.9 1.8.8 1.8 1.9c0 .5-.2.9-.5 1.3l.9 1.4h3.8l-2.2 2.4h1.6l3.3 5z"/><path id="XMLID_20_" class="st0" d="m254.9 348.7.9.5 2.8-4.6h3.4l-2.2-2.4h2.1l1.2-1.9c.1.1.3.1.5.1 1 0 1.8-.8 1.8-1.8s-.8-1.9-1.8-1.9-1.8.8-1.8 1.9c0 .5.2.9.5 1.3l-.9 1.4h-3.8l2.2 2.4H258l-3.1 5z"/>',
+        '<style>.st00{fill:#',color[id].toColor(),'}</style>',
+        '<path id="XMLID_42_" class="st00" d="m251.5 348.7-.9.5-2.8-4.6h-3.4l2.2-2.4h-2.1l-1.2-1.9c-.1.1-.3.1-.5.1-1 0-1.8-.8-1.8-1.8s.8-1.9 1.8-1.9 1.8.8 1.8 1.9c0 .5-.2.9-.5 1.3l.9 1.4h3.8l-2.2 2.4h1.6l3.3 5z"/><path id="XMLID_20_" class="st00" d="m254.9 348.7.9.5 2.8-4.6h3.4l-2.2-2.4h2.1l1.2-1.9c.1.1.3.1.5.1 1 0 1.8-.8 1.8-1.8s-.8-1.9-1.8-1.9-1.8.8-1.8 1.9c0 .5.2.9.5 1.3l-.9 1.4h-3.8l2.2 2.4H258l-3.1 5z"/>',
       '</g>'
     ));
 

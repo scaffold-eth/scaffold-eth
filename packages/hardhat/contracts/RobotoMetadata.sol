@@ -12,7 +12,7 @@ library RobotoMetadata {
   using HexStrings for uint160;
   using ToColor for bytes3;
 
-  function tokenURI(uint id, address owner, bytes3 eyeColor, bytes3 earColor, string memory svg) public view returns (string memory) {
+  function tokenURI(uint id, address owner, bytes3 eyeColor, bytes3 earColor, string memory svg) public pure returns (string memory) {
     string memory name = string(abi.encodePacked('Roboto #',id.toString()));
     string memory description = string(abi.encodePacked('This Roboto has eyes with color #',eyeColor.toColor(),' and ears with color #',earColor.toColor(),'!!!'));
     string memory image = Base64.encode(bytes(svg));
@@ -47,20 +47,20 @@ library RobotoMetadata {
       );
   }
 
-  function robotColors(bool gold) public view returns (string[6] memory) {
+  function robotColors(bool gold) public pure returns (string[6] memory) {
     if (gold) {
       return ['ffdf00', 'ffdc01', 'fed205', 'fcc20c', 'faac16', 'f8961f'];
     }
     return ['EEEEEE', 'ECECEC', 'E5E5E5', 'DADADA', 'C9C9C9', 'ACACAC'];
   }
 
-  function renderRobotoById(bytes3 eyeColor, bytes3 earColor, bool gold, uint batteryStatus) public view returns (string memory) {
+  function renderRobotoById(bytes3 eyeColor, bytes3 earColor, bool gold, uint batteryStatus) public pure returns (string memory) {
 
     string[6] memory colors = robotColors(gold);
 
     string memory batteryStatusText;
 
-    if (batteryStatus == 10) {
+    if (batteryStatus == 100) {
       batteryStatusText = '1';
     } else {
       batteryStatusText = string(abi.encodePacked('0.',batteryStatus.toString()));
@@ -68,7 +68,7 @@ library RobotoMetadata {
 
     string memory batteryColor;
 
-    if (batteryStatus <= 2) {
+    if (batteryStatus <= 20) {
       batteryColor = 'red' ;
     } else {
       batteryColor = '#00e90f';

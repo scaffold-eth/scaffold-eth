@@ -4,8 +4,6 @@ pragma solidity >=0.8.0 <0.9.0;
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import 'base64-sol/base64.sol';
-import './ToColor.sol';
 import './RobotoMetadata.sol';
 //learn more: https://docs.openzeppelin.com/contracts/3.x/erc721
 
@@ -22,7 +20,6 @@ abstract contract BatteryContract {
 
 contract Roboto is ERC721Enumerable, IERC721Receiver {
 
-  using ToColor for bytes3;
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
@@ -81,16 +78,15 @@ contract Roboto is ERC721Enumerable, IERC721Receiver {
   function batteryStatus(uint256 id) public view returns (uint256) {
     require(_exists(id), "not exist");
 
-    if (block.number > (batteryRecharged[id] + 10)) {
+    if (block.number > (batteryRecharged[id] + 100)) {
       return 0;
     }
 
-    return (batteryRecharged[id] + 10 - block.number);
+    return (batteryRecharged[id] + 100 - block.number);
   }
 
   function nftId(address nft, uint256 id) external view returns (uint256) {
     require(_exists(id), "not exist");
-    //require(nftContractsAvailables[nft], "the loogies can't wear this NFT");
 
     return nftById[nft][id];
   }
@@ -160,15 +156,15 @@ contract Roboto is ERC721Enumerable, IERC721Receiver {
       address operator,
       address from,
       uint256 tokenId,
-      bytes calldata fancyIdData) external override returns (bytes4) {
+      bytes calldata robotoIdData) external override returns (bytes4) {
 
-      uint256 fancyId = _toUint256(fancyIdData);
+      uint256 robotoId = _toUint256(robotoIdData);
 
-      require(ownerOf(fancyId) == from, "you can only add stuff to a fancy loogie you own.");
-      //require(nftContractsAvailables[msg.sender], "the loogies can't wear this NFT");
-      //require(nftById[msg.sender][fancyId] == 0, "the loogie already has this NFT!");
+      require(ownerOf(robotoId) == from, "you can only add stuff to a fancy loogie you own.");
+      require(msg.sender == address(antennasContract) || msg.sender == address(earsContract) || msg.sender == address(glassesContract), "invalid accessory NFT");
+      require(nftById[msg.sender][robotoId] == 0, "the roboto already has this kind of accessory!");
 
-      nftById[msg.sender][fancyId] = tokenId;
+      nftById[msg.sender][robotoId] = tokenId;
 
       return this.onERC721Received.selector;
     }
