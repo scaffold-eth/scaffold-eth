@@ -20,4 +20,8 @@ contract YourContract {
       console.log(msg.sender,"set purpose to",purpose);
       // emit SetPurpose(msg.sender, purpose);
   }
+
+  receive() external payable {
+      // allows the contract to receive ether like a regular EOA
+  }
 }
