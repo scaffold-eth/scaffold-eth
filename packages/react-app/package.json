@@ -35,10 +35,10 @@
     "axios": "^0.21.4",
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
-    "eth-hooks": "2.3.8",
+    "eth-hooks": "2.3.16",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
-    "graphiql": "^1.0.5",
+    "graphiql": "^1.4.7",
     "graphql": "^15.3.0",
     "isomorphic-fetch": "^3.0.0",
     "node-watch": "^0.7.1",
@@ -60,15 +60,8 @@
     "@types/react": "^16.9.19",
     "autoprefixer": "^10.2.4",
     "chalk": "^4.1.0",
-    "eslint": "^7.5.0",
-    "eslint-config-airbnb": "^18.2.0",
     "eslint-config-prettier": "^8.3.0",
-    "eslint-plugin-babel": "^5.3.1",
-    "eslint-plugin-import": "^2.23.4",
-    "eslint-plugin-jsx-a11y": "^6.4.1",
-    "eslint-plugin-prettier": "^3.4.0",
-    "eslint-plugin-react": "^7.22.0",
-    "eslint-plugin-react-hooks": "^4.2.0",
+    "eslint-plugin-prettier": "^4.0.0",
     "gulp": "^4.0.2",
     "gulp-csso": "^4.0.1",
     "gulp-debug": "^4.0.0",
@@ -81,7 +74,13 @@
     "surge": "^0.21.5"
   },
   "eslintConfig": {
-    "extends": "react-app"
+    "extends": [
+      "react-app",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "prettier/prettier": "warn"
+    }
   },
   "scripts": {
     "build": "react-scripts build",

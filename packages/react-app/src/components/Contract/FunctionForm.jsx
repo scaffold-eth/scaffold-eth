@@ -2,7 +2,7 @@ import { Button, Col, Divider, Input, Row, Tooltip } from "antd";
 import React, { useState } from "react";
 import Blockies from "react-blockies";
 import { Transactor } from "../../helpers";
-import tryToDisplay from "./utils";
+import { tryToDisplay, tryToDisplayAsText } from "./utils";
 
 const { utils, BigNumber } = require("ethers");
 
@@ -159,6 +159,12 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     inputs.push(txValueInput);
   }
 
+  const handleForm = returned => {
+    if (returned) {
+      setForm({});
+    }
+  };
+
   const buttonIcon =
     functionInfo.type === "call" ? (
       <Button style={{ marginLeft: -32 }}>Read📡</Button>
@@ -197,7 +203,8 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               if (functionInfo.stateMutability === "view" || functionInfo.stateMutability === "pure") {
                 try {
                   const returned = await contractFunction(...args);
-                  result = tryToDisplay(returned);
+                  handleForm(returned);
+                  result = tryToDisplayAsText(returned);
                 } catch (err) {
                   console.error(err);
                 }
@@ -214,6 +221,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
                 // console.log("Running with extras",extras)
                 const returned = await tx(contractFunction(...args, overrides));
+                handleForm(returned);
                 result = tryToDisplay(returned);
               }
 

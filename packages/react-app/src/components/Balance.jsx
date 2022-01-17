@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useBalance } from "eth-hooks";
-import { useLocalStorage } from "../hooks"
 
 const { utils } = require("ethers");
 
@@ -31,22 +30,14 @@ const { utils } = require("ethers");
 */
 
 export default function Balance(props) {
-  const [dollarMode, setDollarMode] = useLocalStorage("dollarMode", true);
-
-  // const [listening, setListening] = useState(false);
+  const [dollarMode, setDollarMode] = useState(true);
 
   const balance = useBalance(props.provider, props.address);
-
   let floatBalance = parseFloat("0.00");
-
   let usingBalance = balance;
 
-  if (typeof props.balance !== "undefined") {
-    usingBalance = props.balance;
-  }
-  if (typeof props.value !== "undefined") {
-    usingBalance = props.value;
-  }
+  if (typeof props.balance !== "undefined") usingBalance = props.balance;
+  if (typeof props.value !== "undefined") usingBalance = props.value;
 
   if (usingBalance) {
     const etherBalance = utils.formatEther(usingBalance);
@@ -56,9 +47,9 @@ export default function Balance(props) {
 
   let displayBalance = floatBalance.toFixed(4);
 
-  const price = props.price || props.dollarMultiplier;
+  const price = props.price || props.dollarMultiplier || 1;
 
-  if (price && dollarMode) {
+  if (dollarMode) {
     displayBalance = "$" + (floatBalance * price).toFixed(2);
   }
 
