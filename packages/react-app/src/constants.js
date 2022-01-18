@@ -188,7 +188,7 @@ export const NETWORKS = {
   fantom: {
     name: "fantom",
     color: "#1969ff",
-    chainId: 4002,
+    chainId: 250,
     blockExplorer: "https://ftmscan.com/",
     rpcUrl: `https://rpcapi.fantom.network`,
     gasPrice: 1000000000,
