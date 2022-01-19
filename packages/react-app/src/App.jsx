@@ -175,6 +175,12 @@ function App(props) {
   const loogiePrice = useContractReader(readContracts, "Loogies", "price");
   if (DEBUG) console.log("🤗 priceToMint:", loogiePrice);
 
+  const fancyLoogieBalance = useContractReader(readContracts, "FancyLoogies", "balanceOf", [address]);
+  console.log("🤗 loogie balance:", loogieBalance);
+
+  const fancyLoogiePrice = useContractReader(readContracts, "FancyLoogies", "price");
+  if (DEBUG) console.log("🤗 priceToMint:", fancyLoogiePrice);
+
   const loogieTankBalance = useContractReader(readContracts, "LoogieTank", "balanceOf", [address]);
   console.log("🤗 loogie tank balance:", loogieTankBalance);
 
@@ -192,6 +198,9 @@ function App(props) {
   //
   const yourLoogieBalance = loogieBalance && loogieBalance.toNumber && loogieBalance.toNumber();
   const [yourLoogies, setYourLoogies] = useState();
+
+  const yourFancyLoogieBalance = fancyLoogieBalance && fancyLoogieBalance.toNumber && fancyLoogieBalance.toNumber();
+  const [yourFancyLoogies, setYourFancyLoogies] = useState();
 
   const yourLoogieTankBalance = loogieTankBalance && loogieTankBalance.toNumber && loogieTankBalance.toNumber();
   const [yourLoogieTanks, setYourLoogieTanks] = useState();
@@ -253,10 +262,30 @@ function App(props) {
         }
       }
       setYourLoogies(loogieUpdate.reverse());
+
+      const fancyLoogieUpdate = [];
+      for (let tokenIndex = 0; tokenIndex < yourFancyLoogieBalance; tokenIndex++) {
+        try {
+          const tokenId = await readContracts.FancyLoogies.tokenOfOwnerByIndex(address, tokenIndex);
+          const tokenURI = await readContracts.FancyLoogies.tokenURI(tokenId);
+          const jsonManifestString = atob(tokenURI.substring(29))
+
+          try {
+            const jsonManifest = JSON.parse(jsonManifestString);
+            fancyLoogieUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+
+        } catch (e) {
+          console.log(e);
+        }
+      }
+      setYourFancyLoogies(fancyLoogieUpdate.reverse());
       updateLoogieTanks();
     };
     updateYourCollectibles();
-  }, [address, yourLoogieBalance, yourLoogieTankBalance]);
+  }, [address, yourLoogieBalance, yourFancyLoogieBalance ,yourLoogieTankBalance]);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -401,10 +430,46 @@ function App(props) {
     )
   }
 
+  function transferNFTToLoogieTankComponent(readContract, writeContract, id) {
+    return (
+      <div>
+        Transfer to Loogie Tank:{" "}
+        <Address
+          address={readContract.address}
+          blockExplorer={blockExplorer}
+          fontSize={16}
+        />
+        <Input
+          placeholder="Tank ID"
+          // value={transferToTankId[id]}
+          onChange={newValue => {
+            if (DEBUG) console.log("newValue", newValue.target.value);
+            const update = {};
+            update[id] = newValue.target.value;
+            setTransferToTankId({ ...transferToTankId, ...update });
+          }}
+        />
+        <Button
+          onClick={() => {
+            if (DEBUG) console.log("transferToTankId[id]", transferToTankId[id]);
+            if (DEBUG) console.log(parseInt(transferToTankId[id]));
+
+            const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64, '0');
+            if (DEBUG) console.log(tankIdInBytes);
+
+            tx(writeContract["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, id, tankIdInBytes));
+          }}>
+          Transfer
+              </Button>
+
+      </div>
+    )
+  }
+
   function renderLoogies() {
     return (
       <div>
-        {mintHeader(readContracts.Loogies, readContracts.Loogies, loogiePrice)}
+        {mintHeader(readContracts.Loogies, writeContracts.Loogies, loogiePrice)}
 
         <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
           <List
@@ -422,35 +487,40 @@ function App(props) {
                   <div>
                     {transferNFTComponent(item, id, writeContracts.Loogies)}
                     <br /><br />
-              Transfer to Loogie Tank:{" "}
-                    <Address
-                      address={readContracts.LoogieTank.address}
-                      blockExplorer={blockExplorer}
-                      fontSize={16}
-                    />
-                    <Input
-                      placeholder="Tank ID"
-                      // value={transferToTankId[id]}
-                      onChange={newValue => {
-                        if (DEBUG) console.log("newValue", newValue.target.value);
-                        const update = {};
-                        update[id] = newValue.target.value;
-                        setTransferToTankId({ ...transferToTankId, ...update });
-                      }}
-                    />
-                    <Button
-                      onClick={() => {
-                        if (DEBUG) console.log("writeContracts", writeContracts);
-                        if (DEBUG) console.log("transferToTankId[id]", transferToTankId[id]);
-                        if (DEBUG) console.log(parseInt(transferToTankId[id]));
+                    {transferNFTToLoogieTankComponent(readContracts.Loogies, writeContracts.Loogies, id)}
+                  </div>
+                </List.Item>
+              );
+            }}
+          />
+        </div>
+      </div>
+    );
+  }
 
-                        const tankIdInBytes = "0x" + parseInt(transferToTankId[id]).toString(16).padStart(64, '0');
-                        if (DEBUG) console.log(tankIdInBytes);
+  function renderFancyLoogies() {
+    return (
+      <div>
+        <br /><br />
+        <a href="https://www.fancyloogies.com/">Mint Fancy loogies</a> and then they will show up here!
+        <br /><br />
+        <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
+          <List
+            bordered
+            dataSource={yourFancyLoogies}
+            renderItem={item => {
+              const id = item.id.toNumber();
 
-                        tx(writeContracts.Loogies["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, id, tankIdInBytes));
-                      }}>
-                      Transfer
-              </Button>
+              if (DEBUG) console.log("IMAGE", item.image);
+
+              return (
+                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                {renderCard(item)}
+
+                  <div>
+                    {transferNFTComponent(item, id, writeContracts.FancyLoogies)}
+                    <br /><br />
+                    {transferNFTToLoogieTankComponent(readContracts.FancyLoogies, writeContracts.FancyLoogies, id)}
                   </div>
                 </List.Item>
               );
@@ -513,14 +583,20 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Mint Loogie Tank</Link>
         </Menu.Item>
-        <Menu.Item key="/mint-loogies">
-          <Link to="/mint-loogies">Mint Loogies</Link>
+        <Menu.Item key="/loogies">
+          <Link to="/loogies">Mint Loogies</Link>
+        </Menu.Item>
+        <Menu.Item key="/fancy-loogies">
+          <Link to="/fancy-loogies">Mint Fancy Loogies</Link>
         </Menu.Item>
         <Menu.Item key="/debug-loogie-tank">
           <Link to="/debug-loogie-tank">Debug Loogie Tank</Link>
         </Menu.Item>
         <Menu.Item key="/debug-loogie">
           <Link to="/debug-loogie">Debug Loogies</Link>
+        </Menu.Item>
+        <Menu.Item key="/debug-fancy-loogie">
+          <Link to="/debug-fancy-loogie">Debug Fancy Loogies</Link>
         </Menu.Item>
       </Menu>
 
@@ -542,6 +618,17 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
+        <Route exact path="/debug-fancy-loogie">
+          <Contract
+            name="FancyLoogie"
+            customContract={writeContracts && writeContracts.FancyLoogies}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+        </Route>
         <Route exact path="/debug-loogie-tank">
           <Contract
             name="LoogieTank"
@@ -554,8 +641,11 @@ function App(props) {
             contractConfig={contractConfig}
           />
         </Route>
-        <Route exact path="/mint-loogies">
+        <Route exact path="/loogies">
           {renderLoogies()}
+        </Route>
+        <Route exact path="/fancy-loogies">
+          {renderFancyLoogies()}
         </Route>
         <Route exact path="/">
           {renderLoogieTank()}
