@@ -32,7 +32,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Home, ExampleUI, Hints, Subgraph, About } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -584,10 +584,10 @@ function App(props) {
           <Link to="/">Mint Loogie Tank</Link>
         </Menu.Item>
         <Menu.Item key="/loogies">
-          <Link to="/loogies">Mint Loogies</Link>
+          <Link to="/loogies">Transfer Loogies</Link>
         </Menu.Item>
         <Menu.Item key="/fancy-loogies">
-          <Link to="/fancy-loogies">Mint Fancy Loogies</Link>
+          <Link to="/fancy-loogies">Transfer Fancy Loogies</Link>
         </Menu.Item>
         <Menu.Item key="/debug-loogie-tank">
           <Link to="/debug-loogie-tank">Debug Loogie Tank</Link>
@@ -597,6 +597,9 @@ function App(props) {
         </Menu.Item>
         <Menu.Item key="/debug-fancy-loogie">
           <Link to="/debug-fancy-loogie">Debug Fancy Loogies</Link>
+        </Menu.Item>
+        <Menu.Item>
+          <Link to="/about">About</Link>
         </Menu.Item>
       </Menu>
 
@@ -649,6 +652,9 @@ function App(props) {
         </Route>
         <Route exact path="/">
           {renderLoogieTank()}
+        </Route>
+        <Route exact path="/about">
+          <About />
         </Route>
       </Switch>
       <ThemeSwitch />
