@@ -55,9 +55,6 @@ const { ethers } = require("ethers");
     (and then use the `useExternalContractLoader()` hook!)
 */
 
-/// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.kovanOptimism; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-
 // 😬 Sorry for all the console logging
 const DEBUG = false;
 const NETWORKCHECK = true;
@@ -74,11 +71,11 @@ const providers = [
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
-  const networkOptions = ["kovanOptimism", "localhost", "mainnet", "rinkeby"];
+  const networkOptions = ["localhost", "kovanOptimism", "mainnet", "rinkeby"];
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
-  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
+  const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[1]);
   const location = useLocation();
 
   /// 📡 What chain are your contracts deployed to?
@@ -430,12 +427,12 @@ function App(props) {
     )
   }
 
-  function transferNFTToLoogieTankComponent(readContract, writeContract, id) {
+  function transferNFTToLoogieTankComponent(writeContract, id) {
     return (
       <div>
         Transfer to Loogie Tank:{" "}
         <Address
-          address={readContract.address}
+          address={readContracts.LoogieTank.address}
           blockExplorer={blockExplorer}
           fontSize={16}
         />
@@ -487,7 +484,7 @@ function App(props) {
                   <div>
                     {transferNFTComponent(item, id, writeContracts.Loogies)}
                     <br /><br />
-                    {transferNFTToLoogieTankComponent(readContracts.Loogies, writeContracts.Loogies, id)}
+                    {transferNFTToLoogieTankComponent(writeContracts.Loogies, id)}
                   </div>
                 </List.Item>
               );
@@ -502,7 +499,7 @@ function App(props) {
     return (
       <div>
         <br /><br />
-        <a href="https://www.fancyloogies.com/">Mint Fancy loogies</a> and then they will show up here!
+        <a href="https://fancyloogies-kovan.surge.sh/">Mint Fancy loogies</a> and then they will show up here!
         <br /><br />
         <div style={{ width: 820, margin: "auto", paddingBottom: 256 }}>
           <List
@@ -520,7 +517,7 @@ function App(props) {
                   <div>
                     {transferNFTComponent(item, id, writeContracts.FancyLoogies)}
                     <br /><br />
-                    {transferNFTToLoogieTankComponent(readContracts.FancyLoogies, writeContracts.FancyLoogies, id)}
+                    {transferNFTToLoogieTankComponent(writeContracts.FancyLoogies, id)}
                   </div>
                 </List.Item>
               );

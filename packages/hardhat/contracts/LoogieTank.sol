@@ -10,11 +10,11 @@ import './HexStrings.sol';
 
 
 abstract contract LoogiesContract {
-  mapping(uint256 => uint256) public chubbiness;
   function renderTokenById(uint256 id) external virtual view returns (string memory);
   function transferFrom(address from, address to, uint256 id) external virtual;
 }
 
+// in variable names, prefix "f" means they are related to fancy loogies.
 contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
@@ -24,14 +24,19 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   Counters.Counter private _tokenIds;
 
+  // all funds go to buidlguidl.eth
+  // address payable public immutable recipient = payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
+  address payable public immutable recipient;
   uint256 constant public price = 500000000000000; // 0.0005 eth
   LoogiesContract immutable loogies;
-  LoogiesContract immutable fancyLoogies;
-  mapping(uint256 => uint256[]) loogiesById;
+  LoogiesContract immutable floogies;
+  mapping(uint256 => uint256[]) loogiesByTankId;
+  mapping(uint256 => uint256[]) floogiesByTankId;
 
-  constructor(address _loogies, address _fancyLoogies) ERC721("Loogie Tank", "LOOGTANK") {
+  constructor(address _loogies, address _floogies) ERC721("Loogie Tank", "LOOGTANK") {
     loogies = LoogiesContract(_loogies);
-    fancyLoogies = LoogiesContract(_fancyLoogies);
+    floogies = LoogiesContract(_floogies);
+    recipient = payable(msg.sender); // remove this for mainnet launch.
   }
 
   function mintItem() public payable returns (uint256) {
@@ -46,11 +51,15 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   function returnAllLoogies(uint256 _id) external {
     require(msg.sender == ownerOf(_id), "only tank owner can return the loogies");
-    for (uint256 i = 0; i < loogiesById[_id].length; i++) {
-      loogies.transferFrom(address(this), ownerOf(_id), loogiesById[_id][i]);
+    for (uint256 i = 0; i < loogiesByTankId[_id].length; i++) {
+      loogies.transferFrom(address(this), ownerOf(_id), loogiesByTankId[_id][i]);
+    }
+    for (uint256 i = 0; i < floogiesByTankId[_id].length; i++) {
+      floogies.transferFrom(address(this), ownerOf(_id), floogiesByTankId[_id][i]);
     }
 
-    delete loogiesById[_id];
+    delete loogiesByTankId[_id];
+    delete floogiesByTankId[_id];
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
@@ -101,6 +110,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
        // Without this, the loogies move in rectangle translated towards bottom-right.
        '<g transform="translate(-60 -62)">',
        renderLoogies(id),
+       renderfLoogies(id),
        '</g>'
     ));
 
@@ -110,22 +120,20 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function renderLoogies(uint256 _id) internal view returns (string memory) {
     string memory loogieSVG = "";
 
-    for (uint8 i = 0; i < loogiesById[_id].length; i++) {
-      uint16 blocksTraveled = uint16((block.number-blockAdded[loogiesById[_id][i]])%256);
-      int8 speedX = int8(uint8(keccak256(abi.encodePacked(loogies.chubbiness(loogiesById[_id][i])))[0]));
-      int8 speedY = int8(uint8(keccak256(abi.encodePacked(loogies.chubbiness(loogiesById[_id][i])))[1]));
+    for (uint8 i = 0; i < loogiesByTankId[_id].length; i++) {
+      uint8 blocksTraveled = uint8((block.number-blockAdded[loogiesByTankId[_id][i]])%256);
       uint8 newX;
       uint8 newY;
 
       newX = newPos(
-        speedX,
+        dx[loogiesByTankId[_id][i]],
         blocksTraveled,
-        x[loogiesById[_id][i]]);
+        x[loogiesByTankId[_id][i]]);
 
       newY = newPos(
-        speedY,
+        dy[loogiesByTankId[_id][i]],
         blocksTraveled,
-        y[loogiesById[_id][i]]);
+        y[loogiesByTankId[_id][i]]);
 
       loogieSVG = string(abi.encodePacked(
         loogieSVG,
@@ -134,8 +142,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         'values="', newX.toString(), ' ', newY.toString(), ';'));
 
       for (uint8 j = 0; j < 100; j++) {
-        newX = newPos(speedX, 1, newX);
-        newY = newPos(speedY, 1, newY);
+        newX = newPos(dx[loogiesByTankId[_id][i]], 1, newX);
+        newY = newPos(dy[loogiesByTankId[_id][i]], 1, newY);
 
         loogieSVG = string(abi.encodePacked(
           loogieSVG,
@@ -146,32 +154,73 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         loogieSVG,
         '"/>',
         '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
-        loogies.renderTokenById(loogiesById[_id][i]),
+        loogies.renderTokenById(loogiesByTankId[_id][i]),
         '</g>'));
     }
 
     return loogieSVG;
   }
 
-  function newPos(int8 speed, uint16 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
-      uint16 traveled;
-      uint16 start;
+  function renderfLoogies(uint256 _id) internal view returns (string memory) {
+    string memory loogieSVG = "";
+
+    for (uint8 i = 0; i < floogiesByTankId[_id].length; i++) {
+      uint8 blocksTraveled = uint8((block.number-fblockAdded[floogiesByTankId[_id][i]])%256);
+      uint8 newX;
+      uint8 newY;
+
+      newX = newPos(
+        fdx[floogiesByTankId[_id][i]],
+        blocksTraveled,
+        fx[floogiesByTankId[_id][i]]);
+
+      newY = newPos(
+        fdy[floogiesByTankId[_id][i]],
+        blocksTraveled,
+        fy[floogiesByTankId[_id][i]]);
+
+      loogieSVG = string(abi.encodePacked(
+        loogieSVG,
+        '<g>',
+        '<animateTransform attributeName="transform" dur="1500s" fill="freeze" type="translate" additive="sum" ',
+        'values="', newX.toString(), ' ', newY.toString(), ';'));
+
+      for (uint8 j = 0; j < 100; j++) {
+        newX = newPos(fdx[floogiesByTankId[_id][i]], 1, newX);
+        newY = newPos(fdy[floogiesByTankId[_id][i]], 1, newY);
+
+        loogieSVG = string(abi.encodePacked(
+          loogieSVG,
+          newX.toString(), ' ', newY.toString(), ';'));
+      }
+
+      loogieSVG = string(abi.encodePacked(
+        loogieSVG,
+        '"/>',
+        '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
+        floogies.renderTokenById(floogiesByTankId[_id][i]),
+        '</g>'));
+    }
+
+    return loogieSVG;
+  }
+
+  function newPos(int8 speed, uint8 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
+      uint8 traveled;
+      uint8 start;
 
       if (speed >= 0) {
-        // console.log("speed", uint8(speed).toString());
-        traveled = uint16((blocksTraveled * uint8(speed)) % 256);
-        start = (initPos + traveled) % 256;
-        // console.log("start", start.toString());
-        // console.log("end", end.toString());
-        return uint8(start);
+        unchecked {
+          traveled = blocksTraveled * uint8(speed);
+          start = initPos + traveled;
+        }
+        return start;
       } else {
-        // console.log("speed", uint8(-speed).toString());
-        traveled = uint16((blocksTraveled * uint8(-speed)) % 256);
-        start = (255 - traveled + initPos)%256;
-
-        // console.log("start", start.toString());
-        // console.log("end", end.toString());
-        return uint8(start);
+        unchecked {
+          traveled = blocksTraveled * uint8(-speed);
+          start = initPos - traveled;
+        }
+        return start;
       }
   }
 
@@ -187,10 +236,23 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         return tempUint;
   }
 
+  function sendEthToRecipient() external {
+    (bool success, ) = recipient.call{value: address(this).balance}("");
+    require(success, "could not send ether");
+  }
+
   mapping(uint256 => uint8) x;
   mapping(uint256 => uint8) y;
+  mapping(uint256 => uint8) fx;
+  mapping(uint256 => uint8) fy;
+
+  mapping(uint256 => int8) dx;
+  mapping(uint256 => int8) dy;
+  mapping(uint256 => int8) fdx;
+  mapping(uint256 => int8) fdy;
 
   mapping(uint256 => uint256) blockAdded;
+  mapping(uint256 => uint256) fblockAdded;
 
   // to receive ERC721 tokens
   function onERC721Received(
@@ -200,16 +262,32 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       bytes calldata tankIdData) external override returns (bytes4) {
 
       uint256 tankId = toUint256(tankIdData);
-      require(msg.sender == address(loogies), "only loogies can be added to the tank");
       require(ownerOf(tankId) == from, "you can only add loogies to a tank you own");
-      require(loogiesById[tankId].length < 256, "tank has reached the max limit of 255 loogies");
 
-      loogiesById[tankId].push(loogieTokenId);
+      if (msg.sender == address(loogies)) {
+        require(loogiesByTankId[tankId].length < 256, "tank has reached the max limit of 255 loogies");
+        bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
+        loogiesByTankId[tankId].push(loogieTokenId);
 
-      bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
-      x[loogieTokenId] = uint8(randish[0]);
-      y[loogieTokenId] = uint8(randish[1]);
-      blockAdded[loogieTokenId] = block.number;
+        x[loogieTokenId] = uint8(randish[0]);
+        y[loogieTokenId] = uint8(randish[1]);
+        dx[loogieTokenId] = int8(uint8(randish[2]));
+        dy[loogieTokenId] = int8(uint8(randish[3]));
+        blockAdded[loogieTokenId] = block.number;
+
+      } else if (msg.sender == address(floogies)) {
+        require(floogiesByTankId[tankId].length < 256, "tank has reached the max limit of 255 fancy loogies");
+        bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
+        floogiesByTankId[tankId].push(loogieTokenId);
+
+        fx[loogieTokenId] = uint8(randish[0]);
+        fy[loogieTokenId] = uint8(randish[1]);
+        fdx[loogieTokenId] = int8(uint8(randish[2]));
+        fdy[loogieTokenId] = int8(uint8(randish[3]));
+        fblockAdded[loogieTokenId] = block.number;
+      } else {
+        revert("only loogies can be added to the tank");
+      }
 
       return this.onERC721Received.selector;
     }
