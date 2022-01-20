@@ -5,20 +5,51 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
+  const initWidth = window.innerWidth / 2
+  const initHeight = initWidth
+
   return (
     <WindowModal
-      initTop={60}
-      initLeft={400}
-      initHeight={460}
-      initWidth={830}
+      // place window in center of screen
+      initTop={0}
+      initLeft={0}
+      initHeight={700}
+      initWidth={525}
+      //
       backgroundPath='./assets/trimmed/window_trimmed.png'
-      dragAreaHeightPercent={20}
+      dragAreaHeightPercent={10}
       onRequestClose={() => console.log('onRequestClose')}
-      isOpen={isOpen}
+      isOpen
       contentContainerStyle={{ marginTop: '5%', paddingLeft: 20, paddingRight: 20 }}
     >
-      <CodeContainer language='bash'>
-        {`# follow these steps to setup a local etherem network
+      <div
+        className='windowTitle'
+        style={{
+          position: 'absolute',
+          top: '4%',
+          left: '54%',
+          width: '31%',
+          height: '3%',
+          fontSize: '61%',
+          color: '#16DC8C'
+        }}
+      >
+        SETUP INSTRUCTIONS
+      </div>
+      <div
+        className='content'
+        style={{
+          float: 'left',
+          width: '100%',
+          height: '85%',
+          marginTop: '12%',
+          marginBottom: initHeight * 0.05,
+          overflowY: 'scroll',
+          color: '#fff'
+        }}
+      >
+        <CodeContainer language='bash'>
+          {`# follow these steps to setup a local etherem network
 
 # clone the eth-dev branch
 $ git clone -b eth-dev https://github.com/austintgriffith/scaffold-eth.git eth-dev
@@ -33,17 +64,18 @@ $ yarn chain
 # in second terminal:
 # deploys some smart contracts that we'll use throughout the game
 $ yarn deploy`}
-      </CodeContainer>
+        </CodeContainer>
 
-      <div
-        style={{
-          padding: '10px 50px',
-          color: '#16DC8C'
-        }}
-      >
-        <Typist cursor={{ show: false }} avgTypingDelay={50} loop>
-          Scanning for local network ...
-        </Typist>
+        <div
+          style={{
+            padding: '10px 50px',
+            color: '#16DC8C'
+          }}
+        >
+          <Typist cursor={{ show: false }} avgTypingDelay={50} loop>
+            Scanning for local network ...
+          </Typist>
+        </div>
       </div>
     </WindowModal>
   )

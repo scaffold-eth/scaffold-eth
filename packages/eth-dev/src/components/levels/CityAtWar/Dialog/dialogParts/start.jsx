@@ -1,7 +1,6 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
-import { Button } from '../../../../gameItems/components'
-import { SpeakerLeft, SpeakerRight } from '../components'
+import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PATH_ID = 'city-at-war/start'
 

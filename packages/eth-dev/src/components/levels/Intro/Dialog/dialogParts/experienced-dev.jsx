@@ -1,8 +1,7 @@
 import React from 'react'
 import Typist from 'react-typist'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
-import { Button } from '../../../../gameItems/components'
-import { SpeakerLeft } from '../components'
+import { SpeakerLeft, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PATH_ID = 'intro/experienced-dev'
 

@@ -5,7 +5,7 @@ import Wallet from './Wallet/index'
 import WalletBare from './WalletBare'
 import Toolbelt from './Toolbelt'
 import Dish from './Dish'
-import SpeechBubble from './SpeechBubble'
+import { SpeechBubble, SpeakerRight, SpeakerLeft } from './dialog'
 
 import WindowModal from './WindowModal'
 import WindowModalClassic from './WindowModalClassic'
@@ -38,6 +38,8 @@ export {
   Toolbelt,
   Dish,
   SpeechBubble,
+  SpeakerRight,
+  SpeakerLeft,
   WindowModal,
   WindowModalClassic,
   Address,

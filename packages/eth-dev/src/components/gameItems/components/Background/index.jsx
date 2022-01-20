@@ -11,7 +11,8 @@ const style = {
   pointerEvents: 'none',
   backgroundColor: '#221F34',
   // background: `url(${pathToCurrentBackground}) no-repeat center center fixed`,
-  backgroundSize: 'cover'
+  backgroundSize: 'cover',
+  zIndex: -1
 }
 
 const Background = ({ currentBackground, children }) => {

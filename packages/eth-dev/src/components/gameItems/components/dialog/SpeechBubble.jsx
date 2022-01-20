@@ -11,10 +11,10 @@ export default function SpeechBubble({ children, direction }) {
     <div
       className={`nes-balloon ${alignmentClass}`}
       style={{
-        width: 'calc(100% - 60px)',
+        width: 'calc(100% - 15px)',
         padding: '6px',
-        fontSize: '12px',
-        lineHeight: '25px',
+        fontSize: '8px',
+        lineHeight: '18px',
         color: '#212529'
       }}
     >

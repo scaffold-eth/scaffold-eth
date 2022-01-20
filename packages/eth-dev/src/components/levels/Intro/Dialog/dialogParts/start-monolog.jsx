@@ -1,7 +1,6 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
-import { Button } from '../../../../gameItems/components'
-import { SpeakerLeft, SpeakerRight } from '../components'
+import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PATH_ID as FIRST_CONTACT } from './first-contact'
 import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'

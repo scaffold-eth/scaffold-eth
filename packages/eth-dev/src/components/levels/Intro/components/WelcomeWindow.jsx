@@ -5,8 +5,11 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, CodeContainer, Button } from '../../../gameItems/components'
 
 const WelcomeWindow = ({ dialog, actions, isOpen, enterGame }) => {
-  const initHeight = 380
-  const initWidth = window.innerWidth / 2
+  // const initWidth = window.innerWidth / 3
+  // const initHeight = initWidth
+
+  const initWidth = 420
+  const initHeight = 430
 
   return (
     <WindowModal
