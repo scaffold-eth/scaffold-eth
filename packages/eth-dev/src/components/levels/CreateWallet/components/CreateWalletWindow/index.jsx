@@ -24,7 +24,6 @@ const localProvider = getLocalProvider()
 const targetNetwork = getTargetNetwork()
 
 const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
-  console.log('in CreateWalletWindow comp')
   const injectedProvider = null // TODO:
   const userProvider = useUserProvider(injectedProvider, localProvider)
   const mainnetProvider = getMainnetProvider()
@@ -59,6 +58,7 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={10}
       onRequestClose={() => console.log('onRequestClose')}
+      onFocus={() => console.log('Modal is clicked')}
       isOpen={isOpen}
       contentContainerStyle={{ marginTop: 0, paddingLeft: 20, paddingRight: 20 }}
     >

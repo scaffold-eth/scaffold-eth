@@ -15,18 +15,16 @@ const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
       initLeft={0}
       initHeight={700}
       initWidth={525}
-      //
       backgroundPath='./assets/trimmed/window_trimmed.png'
-      dragAreaHeightPercent={10}
-      onRequestClose={() => console.log('onRequestClose')}
+      dragAreaHeightPercent={12}
       isOpen
-      contentContainerStyle={{ marginTop: '5%', paddingLeft: 20, paddingRight: 20 }}
+      contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
         className='windowTitle'
         style={{
           position: 'absolute',
-          top: '4%',
+          top: '8%',
           left: '54%',
           width: '31%',
           height: '3%',
@@ -42,7 +40,7 @@ const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
           float: 'left',
           width: '100%',
           height: '85%',
-          marginTop: '12%',
+          marginTop: '2%',
           marginBottom: initHeight * 0.05,
           overflowY: 'scroll',
           color: '#fff'

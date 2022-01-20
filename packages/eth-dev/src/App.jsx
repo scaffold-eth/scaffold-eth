@@ -2,6 +2,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import { Provider as ReduxProvider } from 'react-redux'
 import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
+import { Rnd } from 'react-rnd'
 import 'antd/dist/antd.css'
 import { StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import Web3Modal from 'web3modal'
@@ -210,7 +211,7 @@ const App = props => {
 
           {/* <Dish /> */}
 
-          {/* <Toolbelt /> */}
+          {/* <Toolbelt />
 
           {/*
           {networkSelectWarning}

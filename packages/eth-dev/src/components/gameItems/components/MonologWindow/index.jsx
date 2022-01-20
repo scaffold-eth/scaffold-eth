@@ -1,10 +1,10 @@
 import React from 'react'
 import { connectController } from './controller'
 import { DialogContainer } from './components'
-import './styles.css'
+import { WindowModal } from '..'
 
 const MonologWindow = ({
-  monologVisible,
+  isVisible,
   levelContainer: { currentLevel },
   dialog,
   actions,
@@ -12,14 +12,23 @@ const MonologWindow = ({
   ...props
 }) => {
   return (
-    <DialogContainer
-      monologVisible={monologVisible}
-      currentLevel={currentLevel}
-      dialog={dialog}
-      actions={actions}
-      globalGameActions={globalGameActions}
-      parentProps={{ ...props }}
-    />
+    <WindowModal
+      initTop={0}
+      initLeft={0}
+      initHeight={300}
+      initWidth={450}
+      backgroundPath=''
+      dragAreaHeightPercent={25}
+      isOpen={isVisible}
+    >
+      <DialogContainer
+        currentLevel={currentLevel}
+        dialog={dialog}
+        actions={actions}
+        globalGameActions={globalGameActions}
+        parentProps={{ ...props }}
+      />
+    </WindowModal>
   )
 }
 

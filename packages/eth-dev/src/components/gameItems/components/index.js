@@ -8,7 +8,6 @@ import Dish from './Dish'
 import { SpeechBubble, SpeakerRight, SpeakerLeft } from './dialog'
 
 import WindowModal from './WindowModal'
-import WindowModalClassic from './WindowModalClassic'
 
 import Address from './Address'
 import AddressInput from './AddressInput'
@@ -41,7 +40,6 @@ export {
   SpeakerRight,
   SpeakerLeft,
   WindowModal,
-  WindowModalClassic,
   Address,
   AddressInput,
   Button,

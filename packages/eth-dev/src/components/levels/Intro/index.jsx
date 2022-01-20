@@ -1,13 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { Layout, Row, Col } from 'antd'
 import ReactMarkdown from 'react-markdown'
 import { WindowModal, MonologWindow, Terminal, Button } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-
 import { NewWindow, WelcomeWindow, IncomingCallBubble } from './components'
 import dialogArray from './dialog/dialogArray'
-
-const { Header, Content, Footer } = Layout
 
 const IntroLevel = ({ dialog, actions }) => {
   useEffect(() => {
@@ -138,34 +134,31 @@ To deploy the contracts on ropsten, first set the ACTIVE_NETWORK variable in con
   return (
     <div id='introLevel'>
       <WindowModal
-        // place window in center of screen
         initTop={0}
         initLeft={0}
-        initHeight={700}
-        initWidth={525}
-        //
+        initHeight={initHeight}
+        initWidth={initWidth}
         backgroundPath='./assets/trimmed/window_trimmed.png'
-        dragAreaHeightPercent={10}
-        onRequestClose={() => console.log('onRequestClose')}
+        dragAreaHeightPercent={12}
         isOpen
-        contentContainerStyle={{ marginTop: '5%', paddingLeft: 20, paddingRight: 20 }}
+        contentContainerStyle={{}}
       >
         <div
-          className='content'
+          className='windowTitle'
           style={{
-            float: 'left',
-            width: '100%',
-            height: '85%',
-            marginTop: '12%',
-            marginBottom: initHeight * 0.05,
-            padding: '5%',
-            overflowY: 'scroll',
-            color: '#fff'
+            position: 'absolute',
+            top: '7.3%',
+            left: '54%',
+            width: '31%',
+            height: '3%',
+            fontSize: '61%',
+            color: '#16DC8C'
           }}
         >
-          <ReactMarkdown>{markdown}</ReactMarkdown>
-          <Button>Continue</Button>
+          INSTRUCTIONS
         </div>
+        <ReactMarkdown>{markdown}</ReactMarkdown>
+        <Button>Continue</Button>
       </WindowModal>
 
       {!didEnterGame && <WelcomeWindow isOpen enterGame={enterGame} />}

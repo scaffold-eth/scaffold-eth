@@ -1,63 +1,100 @@
 import React, { useState, useEffect } from 'react'
-import ReactModal from 'react-modal-resizable-draggable'
-import shortid from 'shortid'
+// https://github.com/bokuweb/react-rnd
+import { Rnd } from 'react-rnd'
 import $ from 'jquery'
-import './styles.css'
 
 export default function WindowModal({
-  uniqueWindowId = shortid(),
   backgroundPath,
   initTop,
   initLeft,
   initWidth,
   initHeight,
   dragAreaHeightPercent,
-  onFocus,
-  onRequestClose,
   isOpen,
+  enableResizing = true,
+  onDrag = () => {},
+  onDragStop = () => {},
+  onResizeStop = () => {},
   containerStyle,
   contentContainerStyle,
   children
 }) {
-  useEffect(() => {
-    $('.flexible-modal-drag-area').css('height', `${dragAreaHeightPercent}%`)
-  }, [dragAreaHeightPercent])
+  const [windowProps, setWindowProps] = useState({
+    width: initWidth,
+    height: initHeight,
+    x: initLeft,
+    y: initTop
+  })
 
   return (
-    <ReactModal
-      className={uniqueWindowId}
-      top={initTop}
-      left={initLeft}
-      initHeight={initHeight}
-      initWidth={initWidth}
-      onFocus={onFocus}
-      onRequestClose={onRequestClose}
-      isOpen={isOpen}
-    >
-      <div
-        className='background-image'
-        style={{
-          height: '100%',
-          overflowY: 'scroll',
-          background: `url(${backgroundPath})`,
-          backgroundSize: '100% 100%'
-        }}
-      />
-
-      <div
-        className='content'
-        style={{
-          position: 'absolute',
-          top: 0,
-          right: 0,
-          height: '100%',
-          width: '100%',
-          overflow: 'scroll',
-          ...contentContainerStyle
-        }}
-      >
-        {children}
-      </div>
-    </ReactModal>
+    <>
+      {/* dont remove this! */}
+      {isOpen && (
+        <Rnd
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            visible: isOpen
+          }}
+          size={{ width: windowProps.width, height: windowProps.height }}
+          position={{ x: windowProps.x, y: windowProps.y }}
+          dragHandleClassName='draggable-header'
+          onDrag={(e, direction) => {
+            onDrag()
+          }}
+          onDragStop={(e, direction) => {
+            setWindowProps({ x: direction.x, y: direction.y })
+            onDragStop()
+          }}
+          enableResizing={enableResizing}
+          onResizeStop={(e, direction, ref, delta, position) => {
+            setWindowProps({
+              width: ref.style.width,
+              height: ref.style.height,
+              ...position
+            })
+            onResizeStop()
+          }}
+          lockAspectRatio
+        >
+          <div
+            style={{
+              float: 'left',
+              width: '100%',
+              height: '100%',
+              background: `url(${backgroundPath})`,
+              backgroundSize: '100% 100%',
+              ...containerStyle
+            }}
+          >
+            <div
+              className='draggable-header'
+              style={{
+                float: 'left',
+                width: '100%',
+                height: `${dragAreaHeightPercent}%`,
+                cursor: 'move'
+              }}
+            />
+            <div
+              className='content'
+              style={{
+                float: 'left',
+                width: '100%',
+                height: `calc(100% - ${dragAreaHeightPercent}%)`,
+                // marginBottom: windowProps.height * 0.06,
+                padding: '5%',
+                overflowY: 'scroll',
+                color: '#fff',
+                ...contentContainerStyle
+              }}
+            >
+              {children}
+            </div>
+          </div>
+        </Rnd>
+      )}
+    </>
   )
 }

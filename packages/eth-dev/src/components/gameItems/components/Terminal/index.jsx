@@ -1,28 +1,34 @@
 import React from 'react'
 import { connectController } from './controller'
 import { DialogContainer } from './components'
-import './styles.css'
+import { WindowModal } from '..'
 
 const Terminal = ({
-  terminalVisible,
+  isVisible,
   levelContainer: { currentLevel },
   dialog,
   actions,
   globalGameActions,
   ...props
 }) => {
-  console.log('in Terminal:')
-  console.log({ dialog })
-
   return (
-    <DialogContainer
-      terminalVisible={terminalVisible}
-      currentLevel={currentLevel}
-      dialog={dialog}
-      actions={actions}
-      globalGameActions={globalGameActions}
-      parentProps={{ ...props }}
-    />
+    <WindowModal
+      initTop={0}
+      initLeft={0}
+      initHeight={700}
+      initWidth={450}
+      backgroundPath='./assets/trimmed/terminal_trimmed.png'
+      dragAreaHeightPercent={25}
+      isOpen={isVisible}
+    >
+      <DialogContainer
+        currentLevel={currentLevel}
+        dialog={dialog}
+        actions={actions}
+        globalGameActions={globalGameActions}
+        parentProps={{ ...props }}
+      />
+    </WindowModal>
   )
 }
 

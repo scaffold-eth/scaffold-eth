@@ -1,15 +1,11 @@
 /* eslint-disable no-underscore-dangle */
 /* eslint-disable jsx-a11y/no-static-element-interactions */
 /* eslint-disable jsx-a11y/click-events-have-key-events */
-import React, { useState, useEffect } from 'react'
-import { connect } from 'react-redux'
-import ReactModal from 'react-modal-resizable-draggable'
-import Typist from 'react-typist'
-import Typewriter from 'typewriter-effect/dist/core'
-import shortid from 'shortid'
+import React, { useState } from 'react'
+
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
-import $ from 'jquery'
+import { WindowModal } from '..'
 import {
   INFURA_ID,
   DAI_ADDRESS,
@@ -39,7 +35,6 @@ import {
   FaucetHint
 } from './components'
 import { connectController } from './controller'
-import './styles.css'
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem('network')
@@ -149,27 +144,17 @@ const Wallet = ({
     !process.env.REACT_APP_PROVIDER &&
     price > 1
 
-  const [uniqueWindowId, setUniqueWindowIdentifier] = useState(shortid.generate())
-
   return (
     <div id='wallet'>
-      <ReactModal
-        className={uniqueWindowId}
-        top={160}
-        left={430}
+      <WindowModal
+        initTop={160}
+        initLeft={430}
         initHeight={500}
         initWidth={290}
+        backgroundPath='./assets/trimmed/wallet_trimmed.png'
+        dragAreaHeightPercent={25}
         isOpen={walletVisible}
       >
-        <div
-          className='background-image'
-          style={{
-            height: '100%',
-            overflowY: 'scroll',
-            background: 'url(./assets/trimmed/wallet_trimmed.png)',
-            backgroundSize: '100% 100%'
-          }}
-        />
         <div
           className='content'
           style={{
@@ -233,7 +218,7 @@ const Wallet = ({
             </div>
           )}
         </div>
-      </ReactModal>
+      </WindowModal>
     </div>
   )
 }
