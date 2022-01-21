@@ -23,12 +23,17 @@ contract Glasses is ERC721Enumerable {
     payable(0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC);
 
   uint256 public constant limit = 1000;
-  uint256 public price = 0.005 ether;
+  uint256 public price = 5 ether;
 
   mapping (uint256 => bytes3) public color;
+  mapping (uint256 => bool) public animated;
 
   constructor() ERC721("Roboto Glasses", "ROBOTOGLAS") {
     // RELEASE THE ROBOTO GLASSES!
+  }
+
+  function contractURI() public pure returns (string memory) {
+      return "https://www.roboto-svg.com/glasses-metadata.json";
   }
 
   function mintItem() public payable returns (uint256) {
@@ -42,6 +47,7 @@ contract Glasses is ERC721Enumerable {
 
       bytes32 genes = keccak256(abi.encodePacked( id, blockhash(block.number-1), msg.sender, address(this) ));
       color[id] = bytes2(genes[0]) | ( bytes2(genes[1]) >> 8 ) | ( bytes3(genes[2]) >> 16 );
+      animated[id] = uint8(genes[3]) > 200;
 
       (bool success, ) = recipient.call{value: msg.value}("");
       require(success, "could not send");
@@ -52,7 +58,13 @@ contract Glasses is ERC721Enumerable {
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
       string memory name = string(abi.encodePacked('Roboto Glasses #',id.toString()));
-      string memory description = string(abi.encodePacked('These Roboto Glasses are color #',color[id].toColor(),'!!!'));
+      string memory animateText = '';
+      string memory animateBoolean = 'false';
+      if (animated[id]) {
+        animateText = ' and glass reflection';
+        animateBoolean = 'true';
+      }
+      string memory description = string(abi.encodePacked('Roboto Glasses with color #',color[id].toColor(),animateText,'.'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -66,11 +78,13 @@ contract Glasses is ERC721Enumerable {
                               name,
                               '", "description":"',
                               description,
-                              '", "external_url":"https://www.roboto-nft.com/glasses/',
+                              '", "external_url":"https://www.roboto-svg.com/glasses/',
                               id.toString(),
-                              '", "attributes": [{"trait_type": "color", "value": "#',
+                              '", "attributes": [{"trait_type": "Color", "value": "#',
                               color[id].toColor(),
-                              '"}], "owner":"',
+                              '"},{"trait_type": "Glass Reflection", "value": ',
+                              animateBoolean,
+                              '}], "owner":"',
                               (uint160(ownerOf(id))).toHexString(20),
                               '", "image": "',
                               'data:image/svg+xml;base64,',
@@ -96,14 +110,20 @@ contract Glasses is ERC721Enumerable {
 
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
+    string memory animateText = '';
+    if (animated[id]) {
+      animateText = '<animate attributeName="offset" values="0;0;0;0;0;0;0.3;0.5;0.8;0.9;0.8;0.5;0.3;0;0;0;0;0;0" dur="7s" repeatCount="indefinite" />';
+    }
     string memory render = string(abi.encodePacked(
       '<g transform="translate(-994, -849) scale(3 3)">',
         '<style type="text/css">',
           '.st10{fill:url(#XMLID_222_);stroke:#',color[id].toColor(),';stroke-miterlimit:10;}',
         '</style>',
         '<linearGradient id="XMLID_222_" gradientUnits="userSpaceOnUse" x1="377.8606" y1="307.8719" x2="352.5506" y2="307.8719">',
-          '<stop  offset="0" style="stop-color:#FFFFFF;stop-opacity:0.3"/>',
-          '<stop  offset="1" style="stop-color:#8DD4E0"/>',
+          '<stop  offset="0" stop-color="#FFFFFF" stop-opacity="0.3"/>',
+          '<stop  offset="1" stop-color="#8DD4E0" stop-opacity="0.9">',
+          animateText,
+          '</stop>',
         '</linearGradient>',
         '<path id="XMLID_39_" class="st10" d="M377.9,305.3v6.9h-9l-3.7-3.5l-3.7,3.5h-9v-6.9c0-1,0.8-1.8,1.8-1.8h21.7C377.1,303.5,377.9,304.3,377.9,305.3z"/>',
       '</g>'

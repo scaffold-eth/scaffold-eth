@@ -3,18 +3,19 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/utils/Strings.sol";
 import 'base64-sol/base64.sol';
-import './HexStrings.sol';
 import './ToColor.sol';
 
 library RobotoMetadata {
 
   using Strings for uint256;
-  using HexStrings for uint160;
   using ToColor for bytes3;
 
-  function tokenURI(uint id, address owner, bytes3 eyeColor, bytes3 earColor, string memory svg) public pure returns (string memory) {
+  function tokenURI(uint id, bytes3 eyeColor, bytes3 earColor, bool gold, string memory svg) public pure returns (string memory) {
     string memory name = string(abi.encodePacked('Roboto #',id.toString()));
-    string memory description = string(abi.encodePacked('This Roboto has eyes with color #',eyeColor.toColor(),' and ears with color #',earColor.toColor(),'!!!'));
+    string memory goldBoolean = 'false';
+    if (gold) {
+      goldBoolean = 'true';
+    }
     string memory image = Base64.encode(bytes(svg));
 
     return
@@ -27,16 +28,16 @@ library RobotoMetadata {
                           '{"name":"',
                           name,
                           '", "description":"',
-                          description,
-                          '", "external_url":"https://www.roboto-nft.com/',
+                          description(eyeColor, earColor, gold),
+                          '", "external_url":"https://www.roboto-svg.com/roboto/',
                           id.toString(),
-                          '", "attributes": [{"trait_type": "eyesColor", "value": "#',
+                          '", "attributes": [{"trait_type": "Eyes Color", "value": "#',
                           eyeColor.toColor(),
-                          '"},{"trait_type": "earsColor", "value": "#',
+                          '"},{"trait_type": "Ears Color", "value": "#',
                           earColor.toColor(),
-                          '"}], "owner":"',
-                          (uint160(owner)).toHexString(20),
-                          '", "image": "',
+                          '"},{"trait_type": "Gold", "value": ',
+                          goldBoolean,
+                          '}], "image": "',
                           'data:image/svg+xml;base64,',
                           image,
                           '"}'
@@ -45,6 +46,14 @@ library RobotoMetadata {
                 )
           )
       );
+  }
+
+  function description(bytes3 eyeColor, bytes3 earColor, bool gold) public pure returns (string memory) {
+    string memory goldText = '';
+    if (gold) {
+      goldText = 'Gold ';
+    }
+    return string(abi.encodePacked(goldText,'Roboto with eyes color #',eyeColor.toColor(),' and ears color #',earColor.toColor(),'.'));
   }
 
   function robotColors(bool gold) public pure returns (string[6] memory) {
@@ -60,7 +69,7 @@ library RobotoMetadata {
 
     string memory batteryStatusText;
 
-    if (batteryStatus == 100) {
+    if (batteryStatus == 100000) {
       batteryStatusText = '1';
     } else {
       batteryStatusText = string(abi.encodePacked('0.',batteryStatus.toString()));
@@ -68,7 +77,7 @@ library RobotoMetadata {
 
     string memory batteryColor;
 
-    if (batteryStatus <= 20) {
+    if (batteryStatus <= 20000) {
       batteryColor = 'red' ;
     } else {
       batteryColor = '#00e90f';

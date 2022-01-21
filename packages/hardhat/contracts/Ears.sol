@@ -23,12 +23,16 @@ contract Ears is ERC721Enumerable {
     payable(0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC);
 
   uint256 public constant limit = 1000;
-  uint256 public price = 0.005 ether;
+  uint256 public price = 5 ether;
 
   mapping (uint256 => bytes3) public color;
 
   constructor() ERC721("Roboto Ears", "ROBOTOEARS") {
     // RELEASE THE ROBOTO EARS!
+  }
+
+  function contractURI() public pure returns (string memory) {
+      return "https://www.roboto-svg.com/ears-metadata.json";
   }
 
   function mintItem() public payable returns (uint256) {
@@ -52,7 +56,7 @@ contract Ears is ERC721Enumerable {
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "not exist");
       string memory name = string(abi.encodePacked('Roboto Ears #',id.toString()));
-      string memory description = string(abi.encodePacked('These Roboto Ears are color #',color[id].toColor(),'!!!'));
+      string memory description = string(abi.encodePacked('Roboto Ears with color #',color[id].toColor(),'.'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
       return
@@ -66,9 +70,9 @@ contract Ears is ERC721Enumerable {
                               name,
                               '", "description":"',
                               description,
-                              '", "external_url":"https://www.roboto-nft.com/ears/',
+                              '", "external_url":"https://www.roboto-svg.com/ears/',
                               id.toString(),
-                              '", "attributes": [{"trait_type": "color", "value": "#',
+                              '", "attributes": [{"trait_type": "Color", "value": "#',
                               color[id].toColor(),
                               '"}], "owner":"',
                               (uint160(ownerOf(id))).toHexString(20),

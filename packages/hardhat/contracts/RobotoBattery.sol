@@ -8,16 +8,16 @@ contract RobotoBattery is ERC20 {
   address payable public constant recipient =
     payable(0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC);
 
-  uint256 public price = 0.01 ether;
+  uint256 public price = 10 ether;
 
-  constructor() public ERC20("RobotoBattery", "ROBOTOBAT") {
+  constructor() ERC20("RobotoBattery", "ROBOTOBAT") {
   }
 
-  function decimals() public view override returns (uint8) {
+  function decimals() public pure override returns (uint8) {
     return 0;
   }
 
-  function mint() public payable returns (uint256) {
+  function mint() public payable {
     require(msg.value >= price, "NOT ENOUGH");
 
     _mint(msg.sender, 10);
