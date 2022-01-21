@@ -28,6 +28,8 @@ function YourAccesories({
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [updateNftBalance, setUpdateNftBalance] = useState(0);
   const [loadingNfts, setLoadingNfts] = useState(true);
+  const [priceToMint, setPriceToMint] = useState(0);
+  const [nftLeft, setNftLeft] = useState(0);
 
   const nftsText = {
     Bow: '<p>Only <strong>1000 Bows</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>Each Bow has a <strong>random color</strong> and, if you are lucky, the bow will <strong>rotate</strong>!</p>',
@@ -36,12 +38,33 @@ function YourAccesories({
     ContactLenses: '<p>Only <strong>1000 Contact Lenses</strong> available on a price curve <strong>increasing 0.2%</strong> with each new mint.</p><p>The Contact Lenses have a <strong>random color</strong> and, if you are lucky, you can get a <strong>crazy one</strong>!</p>',
   };
 
-  const priceToMint = useContractReader(readContracts, nft, "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+  useEffect(() => {
+    const updatePrice = async () => {
+      if (DEBUG) console.log("Updating price...");
+      if (readContracts.Roboto) {
+        const newPriceToMint = await readContracts[nft].price();
+        if (DEBUG) console.log("newPriceToMint: ", newPriceToMint);
+        setPriceToMint(newPriceToMint);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updatePrice();
+  }, [address, readContracts[nft]]);
 
-  const totalSupply = useContractReader(readContracts, nft, "totalSupply");
-  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const nftLeft = 1000 - totalSupply;
+  useEffect(() => {
+    const updateSupply = async () => {
+      if (DEBUG) console.log("Updating supply...");
+      if (readContracts.Roboto) {
+        const newTotalSupply = await readContracts[nft].totalSupply();
+        if (DEBUG) console.log("newTotalSupply: ", newTotalSupply);
+        setNftLeft(1000 - newTotalSupply);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updateSupply();
+  }, [address, readContracts[nft], updateNftBalance]);
 
   useEffect(() => {
     const updateBalances = async () => {

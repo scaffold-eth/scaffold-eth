@@ -16,9 +16,21 @@ function YourBatteries({
   const [yourBatteryBalance, setYourBatteryBalance] = useState(0);
   const [updateBatteryBalance, setUpdateBatteryBalance] = useState(0);
   const [batteryAllowance, setBatteryAllowance] = useState(0);
+  const [priceToMint, setPriceToMint] = useState(0);
 
-  const priceToMint = useContractReader(readContracts, 'RobotoBattery', "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+  useEffect(() => {
+    const updatePrice = async () => {
+      if (DEBUG) console.log("Updating price...");
+      if (readContracts.Roboto) {
+        const newPriceToMint = await readContracts.RobotoBattery.price();
+        if (DEBUG) console.log("newPriceToMint: ", newPriceToMint);
+        setPriceToMint(newPriceToMint);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updatePrice();
+  }, [address, readContracts.RobotoBattery]);
 
   useEffect(() => {
     const updateBalances = async () => {

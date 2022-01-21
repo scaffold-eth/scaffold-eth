@@ -27,14 +27,37 @@ function YourLoogies({
   const [yourLoogiesApproved, setYourLoogiesApproved] = useState({});
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [loadingOptimisticLoogies, setLoadingOptimisticLoogies] = useState(true);
+  const [priceToMint, setPriceToMint] = useState(0);
+  const [loogiesLeft, setLoogiesLeft] = useState(0);
   const history = useHistory();
 
-  const priceToMint = useContractReader(readContracts, "Roboto", "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+  useEffect(() => {
+    const updatePrice = async () => {
+      if (DEBUG) console.log("Updating price...");
+      if (readContracts.Roboto) {
+        const newPriceToMint = await readContracts.Roboto.price();
+        if (DEBUG) console.log("newPriceToMint: ", newPriceToMint);
+        setPriceToMint(newPriceToMint);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updatePrice();
+  }, [address, readContracts.Roboto]);
 
-  const totalSupply = useContractReader(readContracts, "Roboto", "totalSupply");
-  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
-  const loogiesLeft = 1000 - totalSupply;
+  useEffect(() => {
+    const updateSupply = async () => {
+      if (DEBUG) console.log("Updating supply...");
+      if (readContracts.Roboto) {
+        const newTotalSupply = await readContracts.Roboto.totalSupply();
+        if (DEBUG) console.log("newTotalSupply: ", newTotalSupply);
+        setLoogiesLeft(1000 - newTotalSupply);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updateSupply();
+  }, [address, readContracts.Roboto, updateBalances]);
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -107,9 +130,8 @@ function YourLoogies({
         <Button
           type="primary"
           onClick={async () => {
-            const priceRightNow = await readContracts.Roboto.price();
             try {
-              tx(writeContracts.Roboto.mintItem({ value: priceRightNow, gasLimit: 400000 }), function (transaction) {
+              tx(writeContracts.Roboto.mintItem({ value: priceToMint, gasLimit: 400000 }), function (transaction) {
                 setUpdateBalances(updateBalances + 1);
               });
             } catch (e) {
