@@ -1,0 +1,106 @@
+/* Website template by freewebsitetemplates.com */
+/*------------------------------ HEADER ------------------------------*/
+#header {
+	background-color: #eee;
+	border-bottom: 1px solid #e6e6e6;
+	padding: 0;
+	padding-top: 10px;
+}
+#header > div, #footer > div {
+	margin: 0 auto;
+	margin-left: 95px;
+	padding: 0 20px;
+}
+/** Logo **/
+#header .logo {
+	float: left;
+	margin-right: 20px;
+}
+#header .logo a {
+	color: #000;
+	display: block;
+	height: 20px;
+	width: 76px;
+	padding-top: 68px;
+}
+#header .info {
+	float: left;
+	margin-left: 20px;
+	margin-top: 30px;
+	text-align: left;
+	color: #818181;
+	font-weight: bold;
+	font-size: 16px;
+	margin-right: 143px;
+}
+/** Navigation **/
+#navigation {
+	list-style: none;
+	line-height: 60px;
+	margin: 0;
+	padding: 0;
+	background: none;
+	padding-top: 110px;
+}
+#navigation ul {
+	display: inline-block;
+	list-style: none;
+	margin: 0;
+	padding: 0;
+}
+#navigation li {
+	float: left;
+	width: 160px;
+	text-align: center;
+}
+#navigation li a {
+	color: #818181;
+	font-size: 24px;
+	line-height: 30px;
+	text-decoration: none;
+}
+#navigation li a:hover {
+	color: #000;
+}
+#navigation li.active a {
+	color: #f99600;
+}
+/*------------------------------ CONTENTS ------------------------------*/
+#contents {
+	margin: 0 auto;
+	padding: 40px 40px;
+}
+h1 {
+	color: #3e3e3e;
+	font-size: 30px;
+	font-weight: normal;
+	line-height: 30px;
+	margin: 0 0 30px;
+}
+h2 {
+	color: #2c2c2c;
+	font-size: 24px;
+	font-weight: normal;
+	line-height: 24px;
+	margin: 0 0 12px;
+}
+p {
+	color: #585858;
+	font-size: 16px;
+	line-height: 24px;
+	margin: 0 0 30px;
+}
+p a {
+	color: #585858;
+}
+/*------------------------------ FOOTER ------------------------------*/
+#footer {
+	background-color: #eee;
+	border-top: 1px solid #d8d8d8;
+	padding: 30px 0;
+}
+#footer p {
+	font-size: 12px;
+	line-height: 30px;
+	padding-left: 10px;
+}
