@@ -50,7 +50,7 @@ function YourBatteries({
             }
           }}
         >
-          MINT Battery Pack for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+          MINT Battery Pack for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(0)} MATIC
         </Button>
       </div>
 

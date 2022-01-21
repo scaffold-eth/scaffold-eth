@@ -9,7 +9,7 @@ function FancyLoogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) 
   const [allLoogies, setAllLoogies] = useState();
   const [page, setPage] = useState(1);
   const [loadingLoogies, setLoadingLoogies] = useState(true);
-  const perPage = 8;
+  const perPage = 12;
 
   const totalSupply = useContractReader(readContracts, "Roboto", "totalSupply");
 
@@ -26,11 +26,13 @@ function FancyLoogies({ readContracts, mainnetProvider, blockExplorer, DEBUG }) 
             if (DEBUG) console.log("Getting FancyLoogie tokenId: ", tokenId);
             const tokenURI = await readContracts.Roboto.tokenURI(tokenId);
             if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const owner = await readContracts.Roboto.ownerOf(tokenId);
+            if (DEBUG) console.log("owner: ", owner);
             const jsonManifestString = atob(tokenURI.substring(29));
 
             try {
               const jsonManifest = JSON.parse(jsonManifestString);
-              collectibleUpdate.push({ id: tokenId, uri: tokenURI, ...jsonManifest });
+              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: owner, ...jsonManifest });
             } catch (e) {
               console.log(e);
             }

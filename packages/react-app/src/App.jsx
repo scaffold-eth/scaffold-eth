@@ -300,202 +300,251 @@ function App(props) {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
-      <Header />
-      <NetworkDisplay
-        NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
-        targetNetwork={targetNetwork}
-      />
-      <Menu style={{ textAlign: "center", fontSize: 26, fontWeight: "bold"}} selectedKeys={[location.pathname]} mode="horizontal" className="main-menu">
-        <Menu.Item key="/">
-          <Link to="/">Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourLoogies">
-          <Link to="/yourLoogies">Your Robotos</Link>
-        </Menu.Item>
-      </Menu>
+      <div id="header">
+        <div>
+          <Header />
+          <div class="info">
+            <ul>
+              <li>Mint a Roboto</li>
+              <li>Add Antennas, Ears and Glasses</li>
+              <li>Buy Batteries</li>
+              <li>Keep the Roboto charged!</li>
+            </ul>
+          </div>
+          <NetworkDisplay
+            NETWORKCHECK={NETWORKCHECK}
+            localChainId={localChainId}
+            selectedChainId={selectedChainId}
+            targetNetwork={targetNetwork}
+          />
+          <Menu style={{ textAlign: "center", fontSize: 26, fontWeight: "bold"}} id="navigation" selectedKeys={[location.pathname]} mode="horizontal" className="main-menu">
+            <Menu.Item key="/">
+              <Link to="/">Home</Link>
+            </Menu.Item>
+            <Menu.Item key="/yourRobotos">
+              <Link to="/yourRobotos">Your Robotos</Link>
+            </Menu.Item>
+          </Menu>
+        </div>
+      </div>
 
-      <Switch>
-        <Route exact path="/">
-          <FancyLoogies
-            readContracts={readContracts}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            DEBUG={DEBUG}
-          />
-        </Route>
-        <Route exact path="/yourBatteries">
-          <YourBatteries
-            DEBUG={DEBUG}
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            address={address}
-          />
-        </Route>
-        <Route exact path="/yourLoogies">
-          <YourLoogies
-            DEBUG={DEBUG}
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            address={address}
-            updateBalances={updateBalances}
-            setUpdateBalances={setUpdateBalances}
-            selectedFancyLoogie={selectedFancyLoogie}
-            setSelectedFancyLoogie={setSelectedFancyLoogie}
-            setSelectedNfts={setSelectedNfts}
-            fancyLoogiesNfts={fancyLoogiesNfts}
-            setFancyLoogiesNfts={setFancyLoogiesNfts}
-          />
-        </Route>
-        <Route exact path="/yourFancyLoogies">
-          <YourFancyLoogies
-            DEBUG={DEBUG}
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            mainnetProvider={mainnetProvider}
-            blockExplorer={blockExplorer}
-            address={address}
-            updateBalances={updateBalances}
-            setUpdateBalances={setUpdateBalances}
-            fancyLoogieContracts={fancyLoogieContracts}
-            fancyLoogiesNfts={fancyLoogiesNfts}
-            setFancyLoogiesNfts={setFancyLoogiesNfts}
-            selectedFancyLoogie={selectedFancyLoogie}
-            setSelectedFancyLoogie={setSelectedFancyLoogie}
-            selectedNfts={selectedNfts}
-            setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
-            nfts={nfts}
-            setSelectedNfts={setSelectedNfts}
-          />
-        </Route>
-        <Route exact path="/yourAccesories">
-          <FancyLoogiePreview
-            DEBUG={DEBUG}
-            readContracts={readContracts}
-            writeContracts={writeContracts}
-            tx={tx}
-            address={address}
-            updateBalances={updateBalances}
-            setUpdateBalances={setUpdateBalances}
-            nfts={nfts}
-            nftsSvg={nftsSvg}
-            fancyLoogiesNfts={fancyLoogiesNfts}
-            selectedFancyLoogie={selectedFancyLoogie}
-            selectedFancyLoogiePreview={selectedFancyLoogiePreview}
-            setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
-            selectedNfts={selectedNfts}
-            setSelectedNfts={setSelectedNfts}
-            setFancyLoogiesNfts={setFancyLoogiesNfts}
-            fancyLoogiePreviewActiveTab={fancyLoogiePreviewActiveTab}
-            setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
-          />
-          <Tabs defaultActiveKey="/" id="tabs-accesories" centered>
-            {nfts.map(function (nft) {
-              return (
-                <TabPane
-                  tab={
-                    <div class="tab-item">
-                      <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
-                        {nftsSvg[nft]}
-                      </svg>
-                      <Badge count={yourNftsCount[nft]}>
-                        <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
-                      </Badge>
-                    </div>
-                  }
-                  key={nft}
-                >
-                  <YourAccesories
-                    DEBUG={DEBUG}
-                    readContracts={readContracts}
-                    writeContracts={writeContracts}
-                    tx={tx}
-                    mainnetProvider={mainnetProvider}
-                    blockExplorer={blockExplorer}
-                    address={address}
-                    updateBalances={updateBalances}
-                    setUpdateBalances={setUpdateBalances}
-                    nft={nft}
-                    fancyLoogiesNfts={fancyLoogiesNfts}
-                    selectedFancyLoogie={selectedFancyLoogie}
-                    selectedNfts={selectedNfts}
-                    setSelectedNfts={setSelectedNfts}
-                    setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
-                  />
-                </TabPane>
-              );
-            })}
-            <TabPane
-              tab={
-                <div class="tab-item">
-                  <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
-                    {nftsSvg['Batteries']}
-                  </svg>
-                  <Badge count={yourNftsCount['Batteries']}>
-                    <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Batteries</p>
-                  </Badge>
-                </div>
-              }
-              key="batteries"
-            >
-              <YourBatteries
-                DEBUG={DEBUG}
-                readContracts={readContracts}
-                writeContracts={writeContracts}
-                tx={tx}
-                address={address}
-              />
-            </TabPane>
-          </Tabs>
-        </Route>
-        <Route exact path="/howto">
-          <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
-            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
-            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
-              <ul>
-                <li>
-                  Go to <a target="_blank" href="https://chainid.link/?network=optimism">https://chainid.link/?network=optimism</a>
-                </li>
-                <li>
-                  Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in <strong>MetaMask</strong>.
-                </li>
-              </ul>
+      <div id="contents">
+        <Switch>
+          <Route exact path="/">
+            <FancyLoogies
+              readContracts={readContracts}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              DEBUG={DEBUG}
+            />
+          </Route>
+          <Route exact path="/yourBatteries">
+            <YourBatteries
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              address={address}
+            />
+          </Route>
+          <Route exact path="/yourRobotos">
+            <YourLoogies
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address}
+              updateBalances={updateBalances}
+              setUpdateBalances={setUpdateBalances}
+              selectedFancyLoogie={selectedFancyLoogie}
+              setSelectedFancyLoogie={setSelectedFancyLoogie}
+              setSelectedNfts={setSelectedNfts}
+              fancyLoogiesNfts={fancyLoogiesNfts}
+              setFancyLoogiesNfts={setFancyLoogiesNfts}
+            />
+          </Route>
+          <Route exact path="/yourFancyLoogies">
+            <YourFancyLoogies
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address}
+              updateBalances={updateBalances}
+              setUpdateBalances={setUpdateBalances}
+              fancyLoogieContracts={fancyLoogieContracts}
+              fancyLoogiesNfts={fancyLoogiesNfts}
+              setFancyLoogiesNfts={setFancyLoogiesNfts}
+              selectedFancyLoogie={selectedFancyLoogie}
+              setSelectedFancyLoogie={setSelectedFancyLoogie}
+              selectedNfts={selectedNfts}
+              setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
+              nfts={nfts}
+              setSelectedNfts={setSelectedNfts}
+            />
+          </Route>
+          <Route exact path="/yourAccesories">
+            <FancyLoogiePreview
+              DEBUG={DEBUG}
+              readContracts={readContracts}
+              writeContracts={writeContracts}
+              tx={tx}
+              address={address}
+              updateBalances={updateBalances}
+              setUpdateBalances={setUpdateBalances}
+              nfts={nfts}
+              nftsSvg={nftsSvg}
+              fancyLoogiesNfts={fancyLoogiesNfts}
+              selectedFancyLoogie={selectedFancyLoogie}
+              selectedFancyLoogiePreview={selectedFancyLoogiePreview}
+              setSelectedFancyLoogiePreview={setSelectedFancyLoogiePreview}
+              selectedNfts={selectedNfts}
+              setSelectedNfts={setSelectedNfts}
+              setFancyLoogiesNfts={setFancyLoogiesNfts}
+              fancyLoogiePreviewActiveTab={fancyLoogiePreviewActiveTab}
+              setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
+            />
+            <Tabs defaultActiveKey="/" id="tabs-accesories" centered>
+              {nfts.map(function (nft) {
+                return (
+                  <TabPane
+                    tab={
+                      <div class="tab-item">
+                        <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                          {nftsSvg[nft]}
+                        </svg>
+                        <Badge count={yourNftsCount[nft]}>
+                          <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>{nft}</p>
+                        </Badge>
+                      </div>
+                    }
+                    key={nft}
+                  >
+                    <YourAccesories
+                      DEBUG={DEBUG}
+                      readContracts={readContracts}
+                      writeContracts={writeContracts}
+                      tx={tx}
+                      mainnetProvider={mainnetProvider}
+                      blockExplorer={blockExplorer}
+                      address={address}
+                      updateBalances={updateBalances}
+                      setUpdateBalances={setUpdateBalances}
+                      nft={nft}
+                      fancyLoogiesNfts={fancyLoogiesNfts}
+                      selectedFancyLoogie={selectedFancyLoogie}
+                      selectedNfts={selectedNfts}
+                      setSelectedNfts={setSelectedNfts}
+                      setFancyLoogiePreviewActiveTab={setFancyLoogiePreviewActiveTab}
+                    />
+                  </TabPane>
+                );
+              })}
+              <TabPane
+                tab={
+                  <div class="tab-item">
+                    <svg width="40" height="40" xmlns="http://www.w3.org/2000/svg" style={{ float: "left" }}>
+                      {nftsSvg['Batteries']}
+                    </svg>
+                    <Badge count={yourNftsCount['Batteries']}>
+                      <p style={{ float: "left", marginBottom: 0, fontSize: 24, fontWeight: "bold", marginLeft: 5 }}>Batteries</p>
+                    </Badge>
+                  </div>
+                }
+                key="batteries"
+              >
+                <YourBatteries
+                  DEBUG={DEBUG}
+                  readContracts={readContracts}
+                  writeContracts={writeContracts}
+                  tx={tx}
+                  address={address}
+                />
+              </TabPane>
+            </Tabs>
+          </Route>
+          <Route exact path="/howto">
+            <div style={{ fontSize: 18, width: 820, margin: "auto" }}>
+              <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add Optimistic Ethereum network on MetaMask</h2>
+              <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 50 }}>
+                <ul>
+                  <li>
+                    Go to <a target="_blank" href="https://chainid.link/?network=optimism">https://chainid.link/?network=optimism</a>
+                  </li>
+                  <li>
+                    Click on <strong>connect</strong> to add the <strong>Optimistic Ethereum</strong> network in <strong>MetaMask</strong>.
+                  </li>
+                </ul>
+              </div>
+              <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add funds to your wallet on Optimistic Ethereum network</h2>
+              <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
+                <ul>
+                  <li><a href="https://portr.xyz/" target="_blank">The Teleporter</a>: the cheaper option, but with a 0.05 ether limit per transfer.</li>
+                  <li><a href="https://gateway.optimism.io/" target="_blank">The Optimism Gateway</a>: larger transfers and cost more.</li>
+                  <li><a href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism" target="_blank">Hop.Exchange</a>: where you can send from/to Ethereum mainnet and other L2 networks.</li>
+                </ul>
+              </div>
             </div>
-            <h2 style={{ fontSize: "2em", fontWeight: "bold" }}>How to add funds to your wallet on Optimistic Ethereum network</h2>
-            <div style={{ textAlign: "left", marginLeft: 50, marginBottom: 100 }}>
-              <ul>
-                <li><a href="https://portr.xyz/" target="_blank">The Teleporter</a>: the cheaper option, but with a 0.05 ether limit per transfer.</li>
-                <li><a href="https://gateway.optimism.io/" target="_blank">The Optimism Gateway</a>: larger transfers and cost more.</li>
-                <li><a href="https://app.hop.exchange/send?token=ETH&sourceNetwork=ethereum&destNetwork=optimism" target="_blank">Hop.Exchange</a>: where you can send from/to Ethereum mainnet and other L2 networks.</li>
-              </ul>
+          </Route>
+          <Route exact path="/debug">
+            <div style={{ padding: 32 }}>
+              <Address value={readContracts && readContracts.FancyLoogie && readContracts.FancyLoogie.address} />
             </div>
-          </div>
-        </Route>
-        <Route exact path="/debug">
-          <div style={{ padding: 32 }}>
-            <Address value={readContracts && readContracts.FancyLoogie && readContracts.FancyLoogie.address} />
-          </div>
-          <Contract
-            name="Roboto"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
-      </Switch>
+            <Contract
+              name="Roboto"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="Antennas"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="Ears"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="Glasses"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+            <Contract
+              name="RobotoBattery"
+              price={price}
+              signer={userSigner}
+              provider={localProvider}
+              address={address}
+              blockExplorer={blockExplorer}
+              contractConfig={contractConfig}
+            />
+          </Route>
+        </Switch>
+      </div>
 
       <Footer />
 
-      <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>

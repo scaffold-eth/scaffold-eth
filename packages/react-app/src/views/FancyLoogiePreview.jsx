@@ -34,12 +34,16 @@ function FancyLoogiePreview({
         let nftUpdate = {};
         const loogieSvg = await readContracts.Roboto.renderTokenById(selectedFancyLoogie);
         let nftsSvg = "";
+        let antennasSvg = "";
         for (const nft of nfts) {
-          if (selectedNfts[nft]) {
+          if (selectedNfts[nft] && nft != "Antennas") {
             nftsSvg += await readContracts[nft].renderTokenById(selectedNfts[nft]);
           }
+          if (selectedNfts["Antennas"]) {
+            antennasSvg += await readContracts["Antennas"].renderTokenById(selectedNfts["Antennas"]);
+          }
           const svg =
-            '<svg width="300" height="300" transform="translate(50, 50) scale(1.5 1.5)" xmlns="http://www.w3.org/2000/svg">' + loogieSvg + nftsSvg + "</svg>";
+            '<svg width="300" height="300" transform="translate(50, 50) scale(1.5 1.5)" xmlns="http://www.w3.org/2000/svg">' + antennasSvg + loogieSvg + nftsSvg + "</svg>";
           setSelectedFancyLoogiePreview(svg);
         }
       } else {
@@ -141,7 +145,7 @@ function FancyLoogiePreview({
                   )
                 })}
                 <List.Item key="battery">
-                  Battery Charge: {batteryStatus * 1}%
+                  Battery Charge: {(batteryStatus / 1000).toFixed(2)}%
                   <Button
                     type="primary"
                     className="action-inline-button"

@@ -5,7 +5,7 @@ import React from "react";
 
 export default function Footer({ mainnetProvider }) {
   return (
-    <div class="footer">
+    <div id="footer">
       <p>
         <span>🛠 Created by</span>
         <span class="address">
@@ -16,6 +16,7 @@ export default function Footer({ mainnetProvider }) {
           🏗 scaffold-eth
         </a>
       </p>
+      <p>✍ Digital Art designed by Dhia Houaidi</p>
       <p>
         🍴 <a href="https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies" target="_blank">Fork this repo</a> and build a cool SVG NFT!
       </p>

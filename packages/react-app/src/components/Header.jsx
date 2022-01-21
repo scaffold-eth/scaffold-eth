@@ -6,13 +6,10 @@ import React from "react";
 export default function Header() {
   return (
     <a href="/">
-      <div style={{ position: "absolute" }}>
+      <div class="logo">
         <img src="roboto-logo.svg" width="130" height="130" alt="Roboto" />
+        <p style={{ fontFamily: "Pacifico", fontSize: 36, marginBottom: 0 }}>Roboto</p>
       </div>
-      <PageHeader
-        title={<div style={{ marginLeft: 100, marginTop: 30, fontFamily: "Pacifico", fontSize: 36 }}>Roboto</div>}
-        style={{ cursor: "pointer" }}
-      />
     </a>
   );
 }

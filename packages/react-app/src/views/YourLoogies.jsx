@@ -103,13 +103,13 @@ function YourLoogies({
 
   return (
     <>
-      <div style={{ maxWidth: 515, margin: "0 auto", marginTop: 10 }}>
+      <div style={{ maxWidth: 515, margin: "0 auto" }}>
         <Button
           type="primary"
           onClick={async () => {
             const priceRightNow = await readContracts.Roboto.price();
             try {
-              tx(writeContracts.Roboto.mintItem({ value: priceRightNow }), function (transaction) {
+              tx(writeContracts.Roboto.mintItem({ value: priceRightNow, gasLimit: 400000 }), function (transaction) {
                 setUpdateBalances(updateBalances + 1);
               });
             } catch (e) {
@@ -117,7 +117,7 @@ function YourLoogies({
             }
           }}
         >
-          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+          MINT for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(0)} MATIC
         </Button>
         <p style={{ fontWeight: "bold" }}>
           { loogiesLeft } left

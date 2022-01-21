@@ -94,7 +94,7 @@ function YourAccesories({
 
   return (
     <>
-      <div style={{ textAlign: "right", marginTop: 0, paddingBottom: 0, marginRight: 50 }}>
+      <div style={{ textAlign: "right", marginTop: 0, paddingBottom: 15, marginRight: 50 }}>
         <span style={{ fontWeight: "bold", marginRight: 10 }}>{ nftLeft } left</span>
         <Button
           type="primary"
@@ -109,11 +109,11 @@ function YourAccesories({
             }
           }}
         >
-          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+          MINT for {priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(0)} MATIC
         </Button>
       </div>
 
-      <div style={{ paddingBottom: 256 }}>
+      <div style={{ paddingBottom: 25 }}>
         <List
           grid={{
             gutter: 16,

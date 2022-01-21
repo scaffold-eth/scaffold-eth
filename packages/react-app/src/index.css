@@ -12,11 +12,11 @@ code {
   font-size:  20px;
 }
 
-.footer span {
+#footer span {
   margin: 5px;
 }
 
-.footer .address span {
+#footer .address span {
   margin: 0;
 }
 
