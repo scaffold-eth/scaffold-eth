@@ -184,6 +184,23 @@ export const NETWORKS = {
     rpcUrl: `https://api.harmony.one`,
     gasPrice: 1000000000,
   },
+  fantom: {
+    name: "fantom",
+    color: "#1969ff",
+    chainId: 250,
+    blockExplorer: "https://ftmscan.com/",
+    rpcUrl: `https://rpcapi.fantom.network`,
+    gasPrice: 1000000000,
+  },
+  testnetFantom: {
+    name: "testnetFantom",
+    color: "#1969ff",
+    chainId: 4002,
+    blockExplorer: "https://testnet.ftmscan.com/",
+    rpcUrl: `https://rpc.testnet.fantom.network`,
+    gasPrice: 1000000000,
+    faucet: "https://faucet.fantom.network/",
+  },
 };
 
 export const NETWORK = chainId => {
