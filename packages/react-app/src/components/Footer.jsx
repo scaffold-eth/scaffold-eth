@@ -18,7 +18,7 @@ export default function Footer({ mainnetProvider }) {
       </p>
       <p>✍ Digital Art designed by Dhia Houaidi</p>
       <p>
-        🍴 <a href="https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies" target="_blank">Fork this repo</a> and build a cool SVG NFT!
+        🍴 <a href="https://github.com/scaffold-eth/scaffold-eth/tree/roboto" target="_blank">Fork this repo</a> and build a cool SVG NFT!
       </p>
     </div>
   );
