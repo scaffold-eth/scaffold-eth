@@ -4,8 +4,7 @@ import { useContractExistsAtAddress, useContractLoader } from "eth-hooks";
 import Account from "../Account";
 import DisplayVariable from "./DisplayVariable";
 import FunctionForm from "./FunctionForm";
-import Address from "../Address";
-import Balance from "../Balance";
+import { Address, Balance } from "eth-components/ant";
 
 const noContractDisplay = (
   <div>

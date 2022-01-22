@@ -1,10 +1,9 @@
 import { Select } from "antd";
-import { useLookupAddress } from "eth-hooks/dapps/ens";
-import React, { useCallback, useState } from "react";
-import QrReader from "react-qr-reader";
-import Blockie from "./Blockie";
 import { ethers } from "ethers";
-import { useMemo } from "react";
+// import { useResolveEnsAddress, useResolveEnsName } from "eth-hooks/dapps";
+import React, { useCallback, useMemo, useState } from "react";
+// import QrReader from "react-qr-reader";
+import Blockie from "./Blockie";
 
 // probably we need to change value={toAddress} to address={toAddress}
 
@@ -57,9 +56,6 @@ export default function MultiAddressInput(props) {
       </Select.Option>
     ));
   }, [searchResults.length]);
-
-  // const currentValue = typeof props.value !== "undefined" ? props.value : value;
-  // const ens = useLookupAddress(props.ensProvider, currentValue);
 
   const manageSearch = useCallback(
     async newValue => {

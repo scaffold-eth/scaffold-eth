@@ -1,7 +1,7 @@
 import { Button } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
-import Address from "./Address";
+import { Address } from "eth-components/ant";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
 

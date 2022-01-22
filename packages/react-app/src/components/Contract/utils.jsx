@@ -1,5 +1,5 @@
 import React from "react";
-import Address from "../Address";
+import { Address } from "eth-components/ant";
 
 const { utils } = require("ethers");
 
