@@ -1,7 +1,6 @@
 export { default as BytesStringInput } from "./BytesStringInput";
 export { default as EtherInput } from "./EtherInput";
 export { default as Header } from "./Header";
-export { default as Provider } from "./Provider";
 export { default as Ramp } from "./Ramp";
 export { default as Swap } from "./Swap";
 export { default as ThemeSwitch } from "./ThemeSwitch";

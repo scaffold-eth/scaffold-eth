@@ -4,7 +4,9 @@ import Web3Modal from "web3modal";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Authereum from "authereum";
-import { INFURA_ID, ALCHEMY_KEY } from "../constants";
+import { INFURA_ID, ALCHEMY_KEY, NETWORKS } from "../constants";
+import { StaticJsonRpcProvider } from '@ethersproject/providers';
+import { ConnectToStaticJsonRpcProvider } from "eth-hooks/context";
 
 // Coinbase walletLink init
 const walletLink = new WalletLink({
@@ -20,6 +22,21 @@ const walletLinkProvider = walletLink.makeWeb3Provider(`https://eth-mainnet.alch
 */
 const web3ModalSetup = () =>
   new Web3Modal({
+    "custom-localhost": {
+      display: {
+        logo: 'https://avatars.githubusercontent.com/u/56928858?s=200&v=4',
+        name: 'BurnerWallet',
+        description: '🔥 Connect to localhost with a burner wallet 🔥',
+      },
+      package: StaticJsonRpcProvider,
+      connector: ConnectToStaticJsonRpcProvider,
+      options: {
+        chainId: NETWORKS.localhost.chainId,
+        rpc: {
+          [NETWORKS.localhost.chainId]: NETWORKS.localhost.rpcUrl,
+        },
+      },
+    },
     network: "mainnet", // Optional. If using WalletConnect on xDai, change network to "xdai" and add RPC info below for xDai chain.
     cacheProvider: true, // optional
     theme: "light", // optional. Change to "dark" for a dark theme.

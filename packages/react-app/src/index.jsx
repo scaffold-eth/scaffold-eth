@@ -5,7 +5,7 @@ import { BrowserRouter } from "react-router-dom";
 import ReactDOM from "react-dom";
 import App from "./App";
 import "./index.css";
-import { EthersAppContext } from "eth-hooks";
+import { EthersAppContext } from "eth-hooks/context";
 
 const themes = {
   dark: `${process.env.PUBLIC_URL}/dark-theme.css`,

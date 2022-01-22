@@ -1,16 +1,17 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { Account } from "eth-components/ant";
+import { Account, GenericContract, GasGauge, Faucet } from "eth-components/ant";
 import {
   useBalance,
   useContractLoader,
+  useContractReaderUntyped,
   useEthersAdaptorFromProviderOrSigners,
-  useEthersContext,
   useGasPrice,
 } from "eth-hooks";
+import { useEthersContext, EthersModalConnector } from "eth-hooks/context";
 import { useDexEthPrice } from "eth-hooks/dapps";
 import { ethers } from "ethers";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import { FaucetHint, Header, NetworkDisplay, NetworkSwitch, Ramp, ThemeSwitch } from "./components";
@@ -20,6 +21,8 @@ import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
+import { useThemeSwitcher } from "react-css-theme-switcher";
+import web3ModalSetup from "./helpers/Web3ModalSetup";
 // import { ExampleUI, Hints, Home, Subgraph } from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -46,10 +49,7 @@ const initialNetwork = NETWORKS.localhost; // <------- select your target fronte
 // 😬 Sorry for all the console logging
 const DEBUG = true;
 const NETWORKCHECK = true;
-const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
-
-const web3Modal = Web3ModalSetup();
 
 // 🛰 providers
 const providers = [
@@ -57,6 +57,8 @@ const providers = [
   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
+
+
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
@@ -79,6 +81,22 @@ function App(props) {
     process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
   ]);
   const mainnetProvider = useStaticJsonRPC(providers);
+  const { currentTheme } = useThemeSwitcher();
+
+  const createLoginConnector = useCallback(
+    (id) => {
+      if (web3ModalSetup) {
+        const config = web3ModalSetup();
+        let connector = new EthersModalConnector(
+          { ...config, theme: currentTheme },
+          { reloadOnNetworkChange: false, immutableProvider: false },
+          id
+        );
+        return connector;
+      }
+    },
+    [web3ModalSetup, currentTheme]
+  );
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
 
@@ -114,7 +132,7 @@ function App(props) {
 
   // const contractConfig = useContractConfig();
 
-  const contractConfig = { deployedContracts: deployedContracts || {}, externalContracts: externalContracts || {} };
+  const contractConfig = { deployedContractsJson: deployedContracts ?? {}, externalContractsJson: externalContracts ?? {} };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
@@ -138,7 +156,7 @@ function App(props) {
   // ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const purpose = useContractReaderUntyped(readContracts, "YourContract", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -167,7 +185,7 @@ function App(props) {
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
+      // console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -180,7 +198,7 @@ function App(props) {
     writeContracts,
     mainnetContracts,
     localChainId,
-    myMainnetDAIBalance,
+    // myMainnetDAIBalance,
   ]);
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
@@ -230,7 +248,7 @@ function App(props) {
                 and give you a form to interact with it locally
             */}
 
-          <Contract
+          <GenericContract
             name="YourContract"
             price={price}
             signer={userSigner}
@@ -309,15 +327,11 @@ function App(props) {
             </div>
           )}
           <Account
-            useBurner={USE_BURNER_WALLET}
             address={address}
             localProvider={localProvider}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
+            signer={userSigner}
+            ensProvider={mainnetProvider}
             price={price}
-            web3Modal={web3Modal}
-            loadWeb3Modal={loadWeb3Modal}
-            logoutOfWeb3Modal={logoutOfWeb3Modal}
             blockExplorer={blockExplorer}
           />
         </div>

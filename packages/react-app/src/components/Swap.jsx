@@ -1,6 +1,6 @@
 import { RetweetOutlined, SettingOutlined } from "@ant-design/icons";
 import { ChainId, Fetcher, Percent, Token, TokenAmount, Trade, WETH } from "@uniswap/sdk";
-import { abi as IUniswapV2Router02ABI } from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
+import IUniswapV2Router02ABI from "@uniswap/v2-periphery/build/IUniswapV2Router02.json";
 import {
   Button,
   Card,
@@ -16,10 +16,11 @@ import {
   Tooltip,
   Typography,
 } from "antd";
-import { useBlockNumber, usePoller } from "eth-hooks";
+import { useBlockNumber } from "eth-hooks";
 import { ethers } from "ethers";
 import React, { useEffect, useState } from "react";
 import { useDebounce } from "../hooks";
+import { useEthersContext } from "eth-hooks/context";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -229,8 +230,8 @@ function Swap({ selectedProvider, tokenListURI }) {
       }
     }
   };
-
-  usePoller(getAccountInfo, 6000);
+  const ethersContext = useEthersContext();
+  useBlockNumber(ethersContext?.provider, getAccountInfo);
 
   const route = trades
     ? trades.length > 0
