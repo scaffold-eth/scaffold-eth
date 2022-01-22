@@ -1,6 +1,6 @@
 import { Button, Col, Menu, Row } from "antd";
 import "antd/dist/antd.css";
-import { Account, GenericContract, GasGauge, Faucet } from "eth-components/ant";
+import { Account, Faucet, GasGauge, GenericContract } from "eth-components/ant";
 import {
   useBalance,
   useContractLoader,
@@ -8,10 +8,11 @@ import {
   useEthersAdaptorFromProviderOrSigners,
   useGasPrice,
 } from "eth-hooks";
-import { useEthersContext, EthersModalConnector } from "eth-hooks/context";
+import { EthersModalConnector, useEthersContext } from "eth-hooks/context";
 import { useDexEthPrice } from "eth-hooks/dapps";
 import { ethers } from "ethers";
-import React, { useEffect, useState, useCallback } from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import { useThemeSwitcher } from "react-css-theme-switcher";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import { FaucetHint, Header, NetworkDisplay, NetworkSwitch, Ramp, ThemeSwitch } from "./components";
@@ -19,10 +20,9 @@ import { ALCHEMY_KEY, NETWORKS } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
-import { useStaticJsonRPC } from "./hooks";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import { Transactor } from "./helpers";
 import web3ModalSetup from "./helpers/Web3ModalSetup";
+import { useStaticJsonRPC } from "./hooks";
 // import { ExampleUI, Hints, Home, Subgraph } from "./views";
 /*
     Welcome to 🏗 scaffold-eth !
@@ -36,7 +36,6 @@ import web3ModalSetup from "./helpers/Web3ModalSetup";
 
     You should get your own Alchemy.com & Infura.io ID and put it in `constants.js`
     (this is your connection to the main Ethereum network for ENS etc.)
-
 
     🌏 EXTERNAL CONTRACTS:
     You can also bring in contract artifacts in `constants.js`
@@ -57,8 +56,6 @@ const providers = [
   `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`,
   "https://rpc.scaffoldeth.io:48544",
 ];
-
-
 
 function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
@@ -84,18 +81,18 @@ function App(props) {
   const { currentTheme } = useThemeSwitcher();
 
   const createLoginConnector = useCallback(
-    (id) => {
+    id => {
       if (web3ModalSetup) {
         const config = web3ModalSetup();
         let connector = new EthersModalConnector(
           { ...config, theme: currentTheme },
           { reloadOnNetworkChange: false, immutableProvider: false },
-          id
+          id,
         );
         return connector;
       }
     },
-    [web3ModalSetup, currentTheme]
+    [web3ModalSetup, currentTheme],
   );
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
@@ -132,7 +129,10 @@ function App(props) {
 
   // const contractConfig = useContractConfig();
 
-  const contractConfig = { deployedContractsJson: deployedContracts ?? {}, externalContractsJson: externalContracts ?? {} };
+  const contractConfig = {
+    deployedContractsJson: deployedContracts ?? {},
+    externalContractsJson: externalContracts ?? {},
+  };
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
