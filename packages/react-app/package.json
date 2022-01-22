@@ -9,9 +9,9 @@
       "not op_mini all"
     ],
     "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
+      "last 10 chrome version",
+      "last 10 firefox version",
+      "last 10 safari version"
     ]
   },
   "dependencies": {
@@ -35,8 +35,8 @@
     "axios": "^0.21.4",
     "bnc-notify": "^1.5.0",
     "dotenv": "^8.2.0",
-    "eth-hooks": "^4.0.18",
     "eth-components": "^3.0.19",
+    "eth-hooks": "^4.0.18",
     "ethers": "^5.4.1",
     "fortmatic": "^2.2.1",
     "graphiql": "^1.4.7",
@@ -51,7 +51,6 @@
     "react-dom": "^17.0.2",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
-    "react-scripts": "^5.0.0",
     "walletlink": "^2.1.5"
   },
   "devDependencies": {
@@ -70,6 +69,8 @@
     "ipfs-http-client": "^45.0.0",
     "less-plugin-npm-import": "^2.1.0",
     "prettier": "^2.0.5",
+    "react-app-polyfill": "^3.0.0",
+    "react-scripts": "^4.0.2",
     "s3-folder-upload": "^2.3.1",
     "surge": "^0.21.5"
   },

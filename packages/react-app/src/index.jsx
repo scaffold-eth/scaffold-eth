@@ -1,3 +1,4 @@
+import 'react-app-polyfill/stable';
 import { ApolloClient, ApolloProvider, InMemoryCache } from "@apollo/client";
 import React from "react";
 import { ThemeSwitcherProvider } from "react-css-theme-switcher";
@@ -24,11 +25,11 @@ const client = new ApolloClient({
 ReactDOM.render(
   <ApolloProvider client={client}>
     <EthersAppContext>
-    <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-      <BrowserRouter>
-        <App subgraphUri={subgraphUri} />
-      </BrowserRouter>
-    </ThemeSwitcherProvider>
+      <ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+        <BrowserRouter>
+          <App subgraphUri={subgraphUri} />
+        </BrowserRouter>
+      </ThemeSwitcherProvider>
     </EthersAppContext>
   </ApolloProvider>,
   document.getElementById("root"),
