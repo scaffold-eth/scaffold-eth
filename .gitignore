@@ -67,3 +67,5 @@ yarn-error.log*
 
 # doc directory
 /doc
+.yalc
+yalc.lock
