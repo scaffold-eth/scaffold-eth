@@ -3,8 +3,6 @@ import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PATH_ID as FIRST_CONTACT } from './first-contact'
-import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
-import { DIALOG_PATH_ID as EXPERIENCED_DIALOG_PATH_ID } from './experienced-dev'
 
 export const DIALOG_PATH_ID = 'intro/start-monolog'
 

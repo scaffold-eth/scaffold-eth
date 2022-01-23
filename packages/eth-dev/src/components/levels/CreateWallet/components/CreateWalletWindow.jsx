@@ -11,14 +11,14 @@ import {
   useEventListener,
   // useBalance,
   useExternalContractLoader
-} from '../../../../../hooks'
+} from '../../../../hooks'
 import {
   getLocalProvider,
   getMainnetProvider,
   getTargetNetwork,
   Transactor
-} from '../../../../../helpers'
-import { WindowModal, WalletBare } from '../../../../gameItems/components'
+} from '../../../../helpers'
+import { WindowModal, WalletBare } from '../../../gameItems/components'
 
 const localProvider = getLocalProvider()
 const targetNetwork = getTargetNetwork()
@@ -56,7 +56,7 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
       initHeight={700}
       initWidth={730}
       backgroundPath='./assets/trimmed/window_trimmed.png'
-      dragAreaHeightPercent={10}
+      dragAreaHeightPercent={12}
       onRequestClose={() => console.log('onRequestClose')}
       onFocus={() => console.log('Modal is clicked')}
       isOpen={isOpen}

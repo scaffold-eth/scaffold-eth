@@ -11,14 +11,17 @@ const Terminal = ({
   globalGameActions,
   ...props
 }) => {
+  const initHeight = 700
+  const initWidth = 450
+
   return (
     <WindowModal
-      initTop={0}
+      initTop={window.innerHeight - (initHeight + 10)}
       initLeft={0}
-      initHeight={700}
-      initWidth={450}
+      initHeight={initHeight}
+      initWidth={initWidth}
       backgroundPath='./assets/trimmed/terminal_trimmed.png'
-      dragAreaHeightPercent={25}
+      dragAreaHeightPercent={32}
       isOpen={isVisible}
     >
       <DialogContainer

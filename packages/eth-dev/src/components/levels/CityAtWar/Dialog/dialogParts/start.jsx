@@ -38,6 +38,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID, [])
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
 
 export default enrichedDialog

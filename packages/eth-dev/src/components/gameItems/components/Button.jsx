@@ -1,22 +1,19 @@
 import React from 'react'
 
-const styles = {
-  float: 'left',
-  width: '96%',
-  marginLeft: '2%',
-  marginRight: '5%',
-  fontSize: '12px'
-}
-
 // className = [ is-primary is-warning is-success is-error is-disabled ]
-export default function Button({ className, id, onClick, styles: _styles, children }) {
+export default function Button({ className, id, onClick, style, children }) {
   return (
     <button
       type='button'
       id={id || null}
       className={`nes-btn ${className}`}
       onClick={onClick || function () {}}
-      style={{ ...styles, ..._styles }}
+      style={{
+        float: 'left',
+        width: '100%',
+        fontSize: '12px',
+        ...style
+      }}
     >
       {children}
     </button>

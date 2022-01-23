@@ -15,6 +15,32 @@ const _dialog = [
       ),
       choices: null
     }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='May I suggest that you head over to our friends at cryptozombies.io?'
+          />
+        </>
+      ),
+      choices: ({
+        dialog: { currentDialog },
+        isLastVisibleDialog,
+        globalGameActions,
+        setInitChainInstructionsWindowVisibility
+      }) => (
+        <>
+          {isLastVisibleDialog && (
+            <a href='https://cryptozombies.io' target='_blank' rel='noreferrer'>
+              <Button className='is-warning'>Check out cryptozombies.io</Button>
+            </a>
+          )}
+        </>
+      )
+    }
   }
 ]
 

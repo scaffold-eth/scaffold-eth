@@ -2,22 +2,26 @@ import React from 'react'
 import Typist from 'react-typist'
 
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { CodeContainer, WindowModal } from '../../../gameItems/components'
+import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
+const InitChainInstructionsWindow = ({
+  isOpen,
+  dialog,
+  globalGameActions,
+  setInitChainInstructionsWindowVisibility
+}) => {
   const initWidth = window.innerWidth / 2
-  const initHeight = initWidth
+  const initHeight = window.innerHeight * 0.95
 
   return (
     <WindowModal
-      // place window in center of screen
-      initTop={0}
-      initLeft={0}
-      initHeight={700}
-      initWidth={525}
+      initTop={window.innerHeight * 0.02}
+      initLeft={window.innerWidth / 2}
+      initHeight={initHeight}
+      initWidth={initWidth}
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={12}
-      isOpen
+      isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
@@ -39,17 +43,27 @@ const InitChainInstructionsWindow = ({ dialog, actions, isOpen }) => {
         style={{
           float: 'left',
           width: '100%',
-          height: '85%',
-          marginTop: '2%',
-          marginBottom: initHeight * 0.05,
-          overflowY: 'scroll',
-          color: '#fff'
+          height: '100%',
+          marginTop: '1%',
+          overflowY: 'scroll'
         }}
       >
+        <div style={{ marginTop: '1%', marginBottom: '5%', color: '#16DC8C' }}>
+          By following the steps below you will setup an ethereum network on your local machine.
+          <br />
+          <br />
+          This will allow you to deploy smart contracts and execute transactions localy without
+          having to spend real (expensive) Ether.
+          <br />
+          <br />
+          Apart from the transaction fees there is no difference between your local ethereum chain
+          and the 'real' live ethereum network.
+          <br />
+          If you wanted to, you could run all levels on the ethereum main chain (or any other
+          network that runs the EVM).
+        </div>
         <CodeContainer language='bash'>
-          {`# follow these steps to setup a local etherem network
-
-# clone the eth-dev branch
+          {`# clone the eth-dev branch
 $ git clone -b eth-dev https://github.com/austintgriffith/scaffold-eth.git eth-dev
 $ cd eth-dev
 
@@ -74,6 +88,15 @@ $ yarn deploy`}
             Scanning for local network ...
           </Typist>
         </div>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            globalGameActions.dialog.continueDialog()
+            setInitChainInstructionsWindowVisibility(false)
+          }}
+        >
+          Done
+        </Button>
       </div>
     </WindowModal>
   )

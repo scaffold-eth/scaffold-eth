@@ -3,11 +3,11 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { ExampleGameActionsWindow, GenerateWallet } from './components'
-import dialogArray from './dialog/dialogArray'
+import dialogArray from './dialog'
 
 const CityAtWar = ({ dialog, actions }) => {
   useEffect(() => {
-    // set background
+    // set initial level background
     actions.background.setCurrentBackground({ background: 'cityAtWar' })
     // set dialog
     actions.dialog.initDialog({

@@ -15,6 +15,7 @@ export default function WindowModal({
   onDrag = () => {},
   onDragStop = () => {},
   onResizeStop = () => {},
+  style = {},
   containerStyle,
   contentContainerStyle,
   children
@@ -35,6 +36,7 @@ export default function WindowModal({
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
+            ...style,
             visible: isOpen
           }}
           size={{ width: windowProps.width, height: windowProps.height }}
@@ -65,6 +67,7 @@ export default function WindowModal({
               height: '100%',
               background: `url(${backgroundPath})`,
               backgroundSize: '100% 100%',
+              imageRendering: 'pixelated',
               ...containerStyle
             }}
           >

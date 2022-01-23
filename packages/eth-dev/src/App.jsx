@@ -196,22 +196,20 @@ const App = props => {
         <LevelContainer>
           <Levels />
 
-          {/*
           <WalletView
             web3Modal={web3Modal}
             address={address}
             localProvider={localProvider}
             userProvider={userProvider}
             ensProvider={mainnetProvider}
-            price={price}
+            // price={price}
             loadWeb3Modal={loadWeb3Modal}
             logoutOfWeb3Modal={logoutOfWeb3Modal}
           />
-          */}
 
           {/* <Dish /> */}
 
-          {/* <Toolbelt />
+          {/* <Toolbelt /> */}
 
           {/*
           {networkSelectWarning}

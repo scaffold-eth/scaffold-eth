@@ -23,8 +23,10 @@ const _dialog = [
           <>
             {isLastVisibleDialog && (
               <Button
+                className='is-warning'
                 onClick={() => {
                   setCreateWalletWindowVisibility(true)
+                  globalGameActions.wallet.showWallet()
                   globalGameActions.dialog.continueDialog()
                 }}
               >

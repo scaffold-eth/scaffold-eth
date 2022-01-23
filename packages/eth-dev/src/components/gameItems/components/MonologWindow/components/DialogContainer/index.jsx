@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react'
 import $ from 'jquery'
 import { connectController } from '../../controller'
-import { WindowModal, Button } from '../../..'
+import { Button } from '../../..'
 
-const DialogContainer = ({ currentLevel, dialog, actions, globalGameActions, parentProps }) => {
+const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, parentProps }) => {
   const scrollToBottom = _elementSelector => {
     let elementSelector = `#monologDialogContainer .content`
     if (_elementSelector) elementSelector = _elementSelector
-    const { scrollHeight } = $(elementSelector)[0] || {}
+    const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
   }
 
@@ -58,7 +58,6 @@ const DialogContainer = ({ currentLevel, dialog, actions, globalGameActions, par
           style={{
             float: 'left',
             width: '100%',
-            marginTop: '15px',
             overflowY: 'scroll'
           }}
         >
@@ -91,7 +90,8 @@ const DialogContainer = ({ currentLevel, dialog, actions, globalGameActions, par
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          padding: 10
         }}
       >
         {filteredDialog.map((dialogStep, index) => {

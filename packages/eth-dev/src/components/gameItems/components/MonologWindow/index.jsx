@@ -11,15 +11,19 @@ const MonologWindow = ({
   globalGameActions,
   ...props
 }) => {
+  const initHeight = 250
+  const initWidth = 450
+
   return (
     <WindowModal
       initTop={0}
-      initLeft={0}
-      initHeight={300}
-      initWidth={450}
-      backgroundPath=''
-      dragAreaHeightPercent={25}
+      initLeft={window.innerWidth - initWidth}
+      initHeight={initHeight}
+      initWidth={initWidth}
+      // backgroundPath=''
+      dragAreaHeightPercent={5}
       isOpen={isVisible}
+      style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
     >
       <DialogContainer
         currentLevel={currentLevel}

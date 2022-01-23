@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import dialogArray from './dialog/dialogArray'
-import { CreateWalletWindow } from './components'
+import dialogArray from './dialog'
+import { DetailsOnWalletsWindow, CreateWalletWindow } from './components'
 
 const CreateWalletLevel = ({ dialog, actions }) => {
   useEffect(() => {
-    // set background
-    actions.background.setCurrentBackground({ background: 'workstation' })
+    // set initial level background
+    actions.background.setCurrentBackground({ background: 'city' })
     // set dialog
     actions.dialog.initDialog({
       initialDialogPathId: 'create-wallet/start',
@@ -16,6 +16,7 @@ const CreateWalletLevel = ({ dialog, actions }) => {
   }, [])
 
   const [createWalletWindowVisible, setCreateWalletWindowVisibility] = useState(false)
+  const [detailsOnWalletsWindowVisible, setDetailsOnWalletsWindowVisibility] = useState(false)
 
   return (
     <div id='createWalletLevel'>
@@ -23,8 +24,10 @@ const CreateWalletLevel = ({ dialog, actions }) => {
         isOpen
         globalGameActions={actions}
         setCreateWalletWindowVisibility={setCreateWalletWindowVisibility}
+        setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
       />
 
+      <DetailsOnWalletsWindow isOpen={detailsOnWalletsWindowVisible} />
       <CreateWalletWindow isOpen={createWalletWindowVisible} />
     </div>
   )

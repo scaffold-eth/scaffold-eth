@@ -5,13 +5,14 @@ import { Background, QRPunkBlockie } from '../gameItems/components'
 
 import TemplateLevel from './TemplateLevel'
 import Intro from './Intro'
+import UnderflowBug from './UnderflowBug'
 import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
 import CityAtWar from './CityAtWar'
 
 const Levels = ({ levelContainer: { currentLevel }, actions }) => {
   const setInitialLevel = levelId => {
-    console.log('setting level to ' + levelId)
+    console.log(`setting initial level to: ${levelId}`)
     actions.level.setCurrentLevel({ levelId })
   }
 
@@ -19,21 +20,10 @@ const Levels = ({ levelContainer: { currentLevel }, actions }) => {
 
   const loadActiveLevel = () => {
     setInitialLevel('intro')
-    /*
-    const generatedWallet = window.localStorage.getItem('mnemonic')
-    if (!generatedWallet) {
-      setInitialLevel('create-wallet')
-    } else {
-      // if they have an identity we send them on to the first level
-      const newWallet = ethers.Wallet.fromMnemonic(generatedWallet)
-      setWallet(newWallet)
-      setInitialLevel('setup-local-network')
-    }
-    */
+    // setInitialLevel('create-wallet')
   }
 
   useEffect(() => {
-    // window.localStorage.setItem('mnemonic', null)
     loadActiveLevel()
   }, [])
 
@@ -48,7 +38,9 @@ const Levels = ({ levelContainer: { currentLevel }, actions }) => {
       )}
 
       {currentLevel === 'template' && <TemplateLevel />}
+
       {currentLevel === 'intro' && <Intro />}
+      {currentLevel === 'underflow-bug' && <UnderflowBug />}
       {currentLevel === 'setup-local-network' && <SetupLocalNetwork />}
       {currentLevel === 'create-wallet' && <CreateWallet />}
       {currentLevel === 'city-at-war' && <CityAtWar />}

@@ -62,7 +62,6 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
           style={{
             float: 'left',
             width: '100%',
-            marginTop: '15px',
             overflowY: 'scroll'
           }}
         >
@@ -95,7 +94,8 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column'
+          flexDirection: 'column',
+          padding: 10
         }}
       >
         {filteredDialog.map((dialogStep, index) => {

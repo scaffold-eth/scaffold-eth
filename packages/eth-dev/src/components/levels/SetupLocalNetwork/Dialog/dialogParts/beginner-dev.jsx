@@ -25,7 +25,9 @@ const _dialog = [
         <>
           {isLastVisibleDialog && (
             <a href='https://cryptozombies.io'>
-              <Button id='cryptozombies-io'>Check out cryptozombies.io</Button>
+              <Button className='is-warning' id='cryptozombies-io'>
+                Check out cryptozombies.io
+              </Button>
             </a>
           )}
         </>

@@ -1,3 +1,4 @@
 import CreateWalletWindow from './CreateWalletWindow'
+import DetailsOnWalletsWindow from './DetailsOnWalletsWindow'
 
-export { CreateWalletWindow }
+export { DetailsOnWalletsWindow, CreateWalletWindow }

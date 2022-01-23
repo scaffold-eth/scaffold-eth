@@ -3,11 +3,11 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
-import dialogArray from './dialog/dialogArray'
+import dialogArray from './dialog'
 
 const SetupLocalNetworkLevel = ({ dialog, actions }) => {
   useEffect(() => {
-    // set background
+    // set initial level background
     actions.background.setCurrentBackground({ background: 'cityOutskirts' })
     // set dialog
     actions.dialog.initDialog({
@@ -28,7 +28,11 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
         setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
       />
 
-      <InitChainInstructionsWindow isOpen={initialInstructionsWindowIsVisible} />
+      <InitChainInstructionsWindow
+        isOpen={initialInstructionsWindowIsVisible}
+        globalGameActions={actions}
+        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
+      />
 
       <ExampleGameActionsWindow isOpen={false} />
     </div>
