@@ -289,15 +289,13 @@ function App(props) {
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           {readContracts && readContracts.DEX && address && localProvider ? (
             <Dex
-              title={"DEX"}
-              name="DEX"
               tx={tx}
               writeContracts={writeContracts}
               localProvider={localProvider}
               mainnetProvider={mainnetProvider}
               blockExplorer={blockExplorer}
-              // address={address} //this is causing issues
-              // readContracts={readContracts} //this is causing issues
+              address={address} //this is causing issues
+              readContracts={readContracts} //this is causing issues
               contractConfig={contractConfig}
               signer={userSigner}
               price={price}
@@ -305,14 +303,6 @@ function App(props) {
           ) : (
             ""
           )}
-          <Contract
-            title={"🎈 Balloons"}
-            name={"Balloons"}
-            show={["balanceOf", "approve"]}
-            provider={localProvider}
-            address={address}
-            contractConfig={contractConfig}
-          />
         </Route>
 
         <Route exact path="/debug">

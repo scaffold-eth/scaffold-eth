@@ -177,6 +177,11 @@ The withdraw() function lets a user take both ETH and tokens out at the correct 
 
 ### Checkpoint 6: UI
 
+TODO: <details markdown='1'><summary>Context for people newer to ReactJS</summary> For those that are really new to anything front-end development, there are many resources out there to possibly use. This one was particularly helpful from minutes 15 to 20 describing the typical folder structure within a ReactJS project.
+https://www.youtube.com/watch?v=w7ejDZ8SWv8&ab_channel=TraversyMedia
+
+ </details>
+
 TODO:
 \*From a fresh master branch off of scaffold-eth repo, we found the following was needed to get things hooked up with the front-end:
 
@@ -210,6 +215,61 @@ In 00_deploy_your_contracts.js, you'll have to write in the necessary code to ge
 As well, make sure that the tags are updated to your contract names, it should be something like `module.exports.tags = ["YourContract"];` and you'll want to change it to:
 
 `module.exports.tags = ["Balloons", "DEX"];`
+
+**Further Check-Ups between DEX in Ch-3 and Ch-5**
+
+TODO: CLEAN THIS DOC UP
+
+What's in Ch-5 but not Ch-3
+_Imports_
+Blockies
+Missing Button and List
+DownloadOutlined and UploadOutlined
+
+```
+import { Card, Col, Divider, Input, Row } from "antd"; 😎
+import { useBalance, useContractReader, useBlockNumber } from "eth-hooks"; 😎
+.
+.
+.
+importing Address, TokenBalance are coming from their respectively named subdirectories: "./Address;," and "./TokenBalance;" 😎
+.
+.
+.
+export default function DEX(props) {etc.} <-- this line may have the wrong name, be careful because you are likely exporting Dex, not DEX. --> challnege 3 has Dex, ch5 has DEX
+.
+.
+.
+  const ethBalance = useBalance(contractAddress, props.localProvider);
+😭 breaks challenge 3 code!
+.
+const tx = Transactor(props.injectedProvider...) is different than challenge 3 set up for const tx... in ch3 it is set up so we do not use injectedProvider 😎
+.
+.
+.
+const contractAddress = ternary operators in challenge5, whereas in challenge3 it is just direct, no ternary.
+.
+.
+.
+const tokenBalance = useTokenBalance --> this is different but we think it isn't breaking changes.
+.
+.
+.
+nonce is in challenge 5 and not challenge 3.
+.
+.
+let swapTx differs just cause of nonce showing up.
+.
+.
+consolelogging extras
+.
+.
+let addingEth = 0 is in challenge 5.
+.
+.
+Balloons button is in Challenge 3 DEX not Challenge 5 DEX
+
+```
 
 ### Front-End (without the debug tab)
 
