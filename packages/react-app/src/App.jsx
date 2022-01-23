@@ -23,6 +23,8 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  TokenBalance,
+  Dex,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -167,7 +169,7 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const purpose = useContractReader(readContracts, "Balloons", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -242,6 +244,11 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
+  // const [route, setRoute] = useState();
+  // useEffect(() => {
+  //   setRoute(window.location.pathname);
+  // }, [setRoute]);
+
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
@@ -258,7 +265,7 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Home</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -280,8 +287,24 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
+          {readContracts && readContracts.DEX && address && localProvider ? (
+            <Dex
+              tx={tx}
+              writeContracts={writeContracts}
+              localProvider={localProvider}
+              mainnetProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+              address={address} //this is causing issues
+              readContracts={readContracts} //this is causing issues
+              contractConfig={contractConfig}
+              signer={userSigner}
+              price={price}
+            />
+          ) : (
+            ""
+          )}
         </Route>
+
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -290,7 +313,17 @@ function App(props) {
             */}
 
           <Contract
-            name="YourContract"
+            name="DEX"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+
+          <Contract
+            name="Balloons"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -380,9 +413,13 @@ function App(props) {
             blockExplorer={blockExplorer}
           />
         </div>
+
         {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
           <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
         )}
+
+        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        {FaucetHint}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
