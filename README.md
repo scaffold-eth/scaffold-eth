@@ -6,24 +6,11 @@ This challenge will provide a tutorial to help you build/understand a simple dec
 
 This branch was heavily based off of this branch: https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-5-dex.
 
-### Checking Gear ⚒️
-
-Prior to the past challenges, only a small precursor was necessary. As more complicated challenges are presented, it is a good idea to tackle the high-level structure first. Further along your web3 coding journey, using design specs, etc. will become normal when kicking-off a project!
-
-So firstly, try your hand at thinking through and stubbing out the `DEX.sol` contract functions. Simply comment out the function details (implementation code). See the "Feature Details" write-ups for each of the Checkpoints below to start off writing your plan out.
-
-### 🥅 Goals TODO
-
-- [ ] Can you check the `balanceOf()` your frontend address in the **YourToken** of the `Debug Contracts` tab?
-- [ ] Can you `transfer()` your token to another account and check _that_ account's `balanceOf`?
-
-(Use an incognito window to create a new address and try sending to that new address. Use the `transfer()` function in the `Debug Contracts` tab.)
-
-<details markdown='1'><summary>**Solution (don't look until you have tried!)** </summary> INSERT LINK TO INTERFACE STUBBED OUT ARCHITECTURE </details>
-
 ---
 
 ### Checkpoint 0: 📦 install 📚
+
+_TODO: Update this with appropriate links_
 
 ```bash
 git clone https://github.com/scaffold-eth/scaffold-eth-challenges.git challenge-5-dex
@@ -107,10 +94,10 @@ Now when we `yarn deploy --reset` then our contract should be initialized as soo
 
 ### 🥅 Goals TODO
 
-- [ ] Do you understand how the x\*y=k price curve actually work? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
+- [ ] Do you understand how the x\*y=k price curve actually works? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
 - [ ] You should be able to go through the price section of this tutorial with the sample numbers and generate the same outputChange variable.
 
-> TODO: Hints: See this link, solve for the change in the Output Reserve. Also, don't forget to think about how to implement the trading fee. Solidity doesn't allow for decimals, so one way that contracts are written to implement percentage is using whole uints (997 and 1000) as numerator and denominator factors, respectively.
+> Hints: See this link (https://hackernoon.com/formulas-of-uniswap-a-deep-dive), solve for the change in the Output Reserve. Also, don't forget to think about how to implement the trading fee. Solidity doesn't allow for decimals, so one way that contracts are written to implement percentage is using whole uints (997 and 1000) as numerator and denominator factors, respectively.
 
 ---
 

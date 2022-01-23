@@ -244,6 +244,11 @@ function App(props) {
     }
   }, [loadWeb3Modal]);
 
+  // const [route, setRoute] = useState();
+  // useEffect(() => {
+  //   setRoute(window.location.pathname);
+  // }, [setRoute]);
+
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
   return (
@@ -282,17 +287,17 @@ function App(props) {
       <Switch>
         <Route exact path="/">
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          {address && readContracts.DEX && readContracts && localProvider ? (
-            <Contract
+          {readContracts && readContracts.DEX && address && localProvider ? (
+            <Dex
               title={"DEX"}
-              name={"Dex"}
-              address={address}
+              name="DEX"
               tx={tx}
               writeContracts={writeContracts}
               localProvider={localProvider}
               mainnetProvider={mainnetProvider}
-              readContracts={readContracts}
               blockExplorer={blockExplorer}
+              // address={address} //this is causing issues
+              // readContracts={readContracts} //this is causing issues
               contractConfig={contractConfig}
               signer={userSigner}
               price={price}
@@ -418,9 +423,13 @@ function App(props) {
             blockExplorer={blockExplorer}
           />
         </div>
+
         {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
           <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
         )}
+
+        <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        {FaucetHint}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
