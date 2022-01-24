@@ -1,17 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { Toolbelt, WindowModal, MonologWindow, Terminal, Button } from '../../gameItems/components'
+import { Toolbelt, MonologWindow, Terminal, Button } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { WelcomeWindow, IncomingCallBubble } from './components'
-import dialogArray from './dialog'
+import levelDialog from './dialog'
 
-const IntroLevel = ({ dialog, actions }) => {
+export const LEVEL_ID = 'Intro'
+
+const IntroLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'intro' })
+    globalGameActions.background.setCurrentBackground({ background: 'Intro' })
     // set dialog
-    actions.dialog.initDialog({
-      initialDialogPathId: 'intro/start-monolog',
-      currentDialog: dialogArray
+    globalGameActions.dialog.initDialog({
+      initialDialogPathId: `${LEVEL_ID}/StartMonolog`,
+      currentDialog: levelDialog
     })
   }, [])
 
@@ -27,24 +29,24 @@ const IntroLevel = ({ dialog, actions }) => {
   const pickUpCall = () => setDidPickUpCall(true)
 
   // TODO: abstract this into the dialog redux wrapper
-  const removeMonologFromDialog = _dialogArray => {
-    const dialogWithoutMonolog = _dialogArray.filter(
-      part => part.dialogPathId !== 'intro/start-monolog'
+  const removeMonologFromDialog = _levelDialog => {
+    const dialogWithoutMonolog = _levelDialog.filter(
+      part => part.dialogPathId !== `${LEVEL_ID}/StartMonolog`
     )
     return dialogWithoutMonolog
   }
 
   useEffect(() => {
     if (didFinishMonolog) {
-      actions.dialog.initDialog({
-        initialDialogPathId: 'intro/first-contact',
-        currentDialog: removeMonologFromDialog(dialogArray)
+      globalGameActions.dialog.initDialog({
+        initialDialogPathId: `${LEVEL_ID}/FirstContact`,
+        currentDialog: removeMonologFromDialog(levelDialog)
       })
     }
   }, [didFinishMonolog])
 
   return (
-    <div id='introLevel'>
+    <div id={`level${LEVEL_ID}`}>
       {!didEnterGame && !showWelcomeWindow && (
         <div style={{ margin: '25% 30%' }}>
           <Button
@@ -63,17 +65,17 @@ const IntroLevel = ({ dialog, actions }) => {
       {didEnterGame && !didFinishMonolog && (
         <MonologWindow
           isOpen={!didFinishMonolog}
-          globalGameActions={actions}
+          globalGameActions={globalGameActions}
           finishMonolog={finishMonolog}
         />
       )}
 
       {didFinishMonolog && !didPickUpCall && (
-        <IncomingCallBubble actions={actions} pickUpCall={pickUpCall} />
+        <IncomingCallBubble globalGameActions={globalGameActions} pickUpCall={pickUpCall} />
       )}
 
       {didEnterGame && didFinishMonolog && didPickUpCall && (
-        <Terminal isOpen globalGameActions={actions} />
+        <Terminal isOpen globalGameActions={globalGameActions} />
       )}
     </div>
   )

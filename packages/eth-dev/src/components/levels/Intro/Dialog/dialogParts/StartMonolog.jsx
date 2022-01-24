@@ -1,10 +1,10 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
+import { DIALOG_PART_ID as FIRST_CONTACT } from './FirstContact'
 
-import { DIALOG_PATH_ID as FIRST_CONTACT } from './first-contact'
-
-export const DIALOG_PATH_ID = 'intro/start-monolog'
+export const LEVEL_ID = 'Intro'
+export const DIALOG_PART_ID = `${LEVEL_ID}/StartMonolog`
 
 const _dialog = [
   {
@@ -67,6 +67,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

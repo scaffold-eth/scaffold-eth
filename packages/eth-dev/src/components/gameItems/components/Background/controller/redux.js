@@ -1,11 +1,13 @@
 import dotProp from 'dot-prop-immutable'
 
 const stateContainerId = 'background'
-
 export const SET_CURRENT_BACKGROUND = `${stateContainerId}/SET_CURRENT_BACKGROUND`
 
+const initialBackground = 'Intro'
+console.log(`setting initialBackground: ${initialBackground}`)
+
 const initialState = {
-  currentBackground: 'intro'
+  currentBackground: initialBackground
 }
 
 const mapStateToProps = state => {

@@ -3,16 +3,18 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { ExampleGameActionsWindow, GenerateWallet } from './components'
-import dialogArray from './dialog'
+import levelDialog from './dialog'
 
-const CityAtWar = ({ dialog, actions }) => {
+export const LEVEL_ID = 'CityAtWar'
+
+const CityAtWar = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'cityChaos' })
+    globalGameActions.background.setCurrentBackground({ background: 'CityChaos' })
     // set dialog
-    actions.dialog.initDialog({
-      initialDialogPathId: 'city-at-war/start',
-      currentDialog: dialogArray
+    globalGameActions.dialog.initDialog({
+      initialDialogPathId: `${LEVEL_ID}/Start`,
+      currentDialog: levelDialog
     })
   }, [])
 
@@ -22,13 +24,13 @@ const CityAtWar = ({ dialog, actions }) => {
     <div id='cityAtWar'>
       <Terminal
         isOpen
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setWalletGeneratorVisibility={setWalletGeneratorVisibility}
       />
 
       <ExampleGameActionsWindow isOpen={false} />
 
-      <GenerateWallet isOpen={walletGeneratorVisibility} globalGameActions={actions} />
+      <GenerateWallet isOpen={walletGeneratorVisibility} globalGameActions={globalGameActions} />
     </div>
   )
 }

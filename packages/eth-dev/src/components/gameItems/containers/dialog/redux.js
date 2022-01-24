@@ -11,7 +11,7 @@ export const RESET_DIALOG = `${stateContainerId}/RESET_DIALOG`
 
 const initialState = {
   dialogIndexMap: {},
-  currentDialog: null,
+  currentDialog: [],
   currentDialogIndex: 0,
   dialogPathsVisibleToUser: []
 }

@@ -1,5 +1,5 @@
-import start from './dialogParts/start'
-import knowsWallets from './dialogParts/knows-wallets'
-import doesNotKnowWallets from './dialogParts/does-not-know-wallets'
+import Start from './dialogParts/Start'
+import KnowsWallets from './dialogParts/KnowsWallets'
+import DoesNotKnowWallets from './dialogParts/DoesNotKnowWallets'
 
-export default [...start, ...knowsWallets, ...doesNotKnowWallets]
+export default [...Start, ...KnowsWallets, ...DoesNotKnowWallets]

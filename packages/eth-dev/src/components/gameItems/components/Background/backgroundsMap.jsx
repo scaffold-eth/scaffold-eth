@@ -1,4 +1,5 @@
 import React from 'react'
+
 import {
   Intro,
   City,
@@ -11,14 +12,16 @@ import {
   Workstation
 } from './backgrounds'
 
-export default {
-  intro: <Intro />,
-  city: <City />,
-  cityChaos: <CityChaos />,
-  cityOutskirts: <CityOutskirts />,
-  citySkylineInsideNight: <CitySkylineInsideNight />,
-  diceGame: <DiceGame />,
-  niftyShop: <NiftyShop />,
-  roofSatellite: <RoofSatellite />,
-  workstation: <Workstation />
+const backgrounds = {
+  Intro: <Intro />,
+  City: <City />,
+  CityChaos: <CityChaos />,
+  CityOutskirts: <CityOutskirts />,
+  CitySkylineInsideNight: <CitySkylineInsideNight />,
+  DiceGame: <DiceGame />,
+  NiftyShop: <NiftyShop />,
+  RoofSatellite: <RoofSatellite />,
+  Workstation: <Workstation />
 }
+
+export default backgrounds

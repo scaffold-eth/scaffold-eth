@@ -2,7 +2,8 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PATH_ID = 'intro/first-contact'
+export const LEVEL_ID = 'Intro'
+export const DIALOG_PART_ID = `${LEVEL_ID}/FirstContact`
 
 const _dialog = [
   {
@@ -89,7 +90,7 @@ const _dialog = [
             {isLastVisibleDialog && (
               <Button
                 onClick={() =>
-                  globalGameActions.level.setCurrentLevel({ levelId: 'setup-local-network' })
+                  globalGameActions.level.setCurrentLevel({ levelId: 'SetupLocalNetwork' })
                 }
               >
                 Continue
@@ -105,7 +106,7 @@ const _dialog = [
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text='Here: Can you follow these instructions?'
+          text='Here, can you follow these instructions?'
         />
       ),
       choices: null
@@ -113,6 +114,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

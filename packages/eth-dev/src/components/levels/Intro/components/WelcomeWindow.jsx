@@ -3,7 +3,7 @@ import React from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, CodeContainer, Button } from '../../../gameItems/components'
 
-const WelcomeWindow = ({ dialog, actions, isOpen, enterGame }) => {
+const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
   const initWidth = window.innerWidth * 0.8
   const initHeight = window.innerHeight * 0.9
 
@@ -75,7 +75,7 @@ const WelcomeWindow = ({ dialog, actions, isOpen, enterGame }) => {
           style={{ marginTop: 20 }}
           className='is-warning'
           onClick={() => {
-            actions.background.setCurrentBackground({ background: 'cityOutskirts' })
+            globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
             enterGame()
           }}
         >

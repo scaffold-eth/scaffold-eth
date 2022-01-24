@@ -1,3 +1,3 @@
-import start from './dialogParts/start'
+import Start from './dialogParts/Start'
 
-export default [...start]
+export default [...Start]

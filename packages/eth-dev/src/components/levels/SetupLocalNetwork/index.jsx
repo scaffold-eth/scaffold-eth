@@ -2,17 +2,20 @@ import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
-import { InitChainInstructionsWindow, ExampleGameActionsWindow } from './components'
-import dialogArray from './dialog'
+import { InitChainInstructionsWindow } from './components'
+import levelDialog from './dialog'
 
-const SetupLocalNetworkLevel = ({ dialog, actions }) => {
+export const LEVEL_ID = 'SetupLocalNetworkLevel'
+
+const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'cityOutskirts' })
+    globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
     // set dialog
-    actions.dialog.initDialog({
-      initialDialogPathId: 'setup-local-network/start',
-      currentDialog: dialogArray
+    console.log({ levelDialog })
+    globalGameActions.dialog.initDialog({
+      initialDialogPathId: `${LEVEL_ID}/Start`,
+      currentDialog: levelDialog
     })
   }, [])
 
@@ -24,17 +27,15 @@ const SetupLocalNetworkLevel = ({ dialog, actions }) => {
     <div id='setupLocalNetworkLevel'>
       <Terminal
         isOpen
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
       />
 
       <InitChainInstructionsWindow
         isOpen={initialInstructionsWindowIsVisible}
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
       />
-
-      <ExampleGameActionsWindow isOpen={false} />
     </div>
   )
 }

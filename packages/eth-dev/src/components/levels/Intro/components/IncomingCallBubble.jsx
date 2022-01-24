@@ -6,7 +6,7 @@ import Typist from 'react-typist'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { SpeechBubble } from '../../../gameItems/components'
 
-const IncomingCallBubble = ({ actions, pickUpCall }) => {
+const IncomingCallBubble = ({ globalGameActions, pickUpCall }) => {
   return (
     <div
       style={{

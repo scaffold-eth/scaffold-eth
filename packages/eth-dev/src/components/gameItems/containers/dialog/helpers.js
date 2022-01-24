@@ -1,7 +1,7 @@
-const enrichDialog = (dialog, DIALOG_PATH_ID) => {
+const enrichDialog = (dialog, DIALOG_PART_ID) => {
   return dialog.map(dialogStep => {
     return {
-      dialogPathId: DIALOG_PATH_ID,
+      dialogPathId: DIALOG_PART_ID,
       ...dialogStep
     }
   })

@@ -1,17 +1,17 @@
 import React, { useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import Dialog from './Dialog'
+import Dialog from './dialog'
 
-const TemplateLevel = ({ dialog, actions }) => {
+const TemplateLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
-    actions.background.setCurrentBackground({ background: 'city' })
+    globalGameActions.background.setCurrentBackground({ background: 'City' })
   }, [])
 
   return (
     <div id='templateLevel'>
       <Terminal>
-        <Dialog dialog={dialog} actions={{ ...actions }} />
+        <Dialog dialog={dialog} globalGameActions={globalGameActions} />
       </Terminal>
     </div>
   )

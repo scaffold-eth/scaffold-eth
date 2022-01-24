@@ -3,7 +3,7 @@ import React from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, WindowModal } from '../../../gameItems/components'
 
-const ExampleGameActionsWindow = ({ actions, isOpen }) => {
+const ExampleGameActionsWindow = ({ globalGameActions, isOpen }) => {
   const backgrounds = ['intro', 'city', 'cityOutskirts', 'citySkylineInsideNight', 'workstation']
 
   return (
@@ -19,32 +19,32 @@ const ExampleGameActionsWindow = ({ actions, isOpen }) => {
       contentContainerStyle={{ marginTop: '20%', paddingLeft: 20, paddingRight: 20 }}
     >
       <div style={{ color: 'white' }}>
-        <p style={{ fontSize: 11, textAlign: 'center' }}>Available Game Actions</p>
-        <Button block onClick={() => actions.dialog.continueDialog()}>
+        <p style={{ fontSize: 11, textAlign: 'center' }}>Global Game Actions</p>
+        <Button block onClick={() => globalGameActions.dialog.continueDialog()}>
           Advance Dialog
         </Button>
-        <Button block onClick={() => actions.wallet.showWallet()}>
+        <Button block onClick={() => globalGameActions.wallet.showWallet()}>
           Show Wallet
         </Button>
-        <Button block onClick={() => actions.wallet.hideWallet()}>
+        <Button block onClick={() => globalGameActions.wallet.hideWallet()}>
           Hide Wallet
         </Button>
-        <Button block onClick={() => actions.wallet.toggleWalletVisibility()}>
+        <Button block onClick={() => globalGameActions.wallet.toggleWalletVisibility()}>
           Toggle Wallet
         </Button>
-        <Button block onClick={() => actions.terminal.showTerminal()}>
+        <Button block onClick={() => globalGameActions.terminal.showTerminal()}>
           Show Terminal
         </Button>
-        <Button block onClick={() => actions.terminal.hideTerminal()}>
+        <Button block onClick={() => globalGameActions.terminal.hideTerminal()}>
           Hide Terminal
         </Button>
-        <Button block onClick={() => actions.terminal.toggleTerminalVisibility()}>
+        <Button block onClick={() => globalGameActions.terminal.toggleTerminalVisibility()}>
           Toggle Terminal
         </Button>
         <Button
           block
           onClick={() =>
-            actions.background.setCurrentBackground({
+            globalGameActions.background.setCurrentBackground({
               background: backgrounds[Math.floor(Math.random() * backgrounds.length)]
             })
           }

@@ -2,7 +2,8 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PATH_ID = 'city-at-war/start'
+export const LEVEL_ID = 'CityAtWar'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
@@ -38,6 +39,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

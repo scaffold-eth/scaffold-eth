@@ -2,7 +2,8 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PATH_ID = 'connect-to-metamask/start'
+export const LEVEL_ID = 'ConnectToMetamask'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
@@ -57,7 +58,7 @@ const _dialog = [
             <Button
               className='is-warning'
               onClick={() => {
-                // globalGameActions.level.setCurrentLevel({ levelId: 'create-wallet' })
+                // globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
                 console.log('TODO:')
               }}
             >
@@ -70,6 +71,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

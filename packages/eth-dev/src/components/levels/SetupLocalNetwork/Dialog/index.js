@@ -1,5 +1,4 @@
-/* eslint-disable react/no-unescaped-entities */
-import start from './dialogParts/start'
-import beginnerDev from './dialogParts/beginner-dev'
+import Start from './dialogParts/Start'
+import BeginnerDev from './dialogParts/BeginnerDev'
 
-export default [...start, ...beginnerDev]
+export default [...Start, ...BeginnerDev]

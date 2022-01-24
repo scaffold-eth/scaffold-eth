@@ -11,21 +11,21 @@ import CreateWallet from './CreateWallet'
 import CityAtWar from './CityAtWar'
 import ConnectToMetamask from './ConnectToMetamask'
 
-const Levels = ({ levelContainer: { currentLevel }, actions }) => {
+const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
   const setInitialLevel = levelId => {
     console.log(`setting initial level to: ${levelId}`)
-    actions.level.setCurrentLevel({ levelId })
+    globalGameActions.level.setCurrentLevel({ levelId })
   }
 
+  // TODO:
   const [wallet, setWallet] = useState()
 
-  const loadActiveLevel = () => {
-    setInitialLevel('intro')
-    // setInitialLevel('create-wallet')
+  const setupGame = () => {
+    setInitialLevel('Intro')
   }
 
   useEffect(() => {
-    loadActiveLevel()
+    setupGame()
   }, [])
 
   return (
@@ -38,14 +38,14 @@ const Levels = ({ levelContainer: { currentLevel }, actions }) => {
         </div>
       )}
 
-      {currentLevel === 'template' && <TemplateLevel />}
+      {currentLevel === 'TemplateLevel' && <TemplateLevel />}
 
-      {currentLevel === 'intro' && <Intro />}
-      {currentLevel === 'underflow-bug' && <UnderflowBug />}
-      {currentLevel === 'setup-local-network' && <SetupLocalNetwork />}
-      {currentLevel === 'create-wallet' && <CreateWallet />}
-      {currentLevel === 'city-at-war' && <CityAtWar />}
-      {currentLevel === 'connect-to-metamask' && <ConnectToMetamask />}
+      {currentLevel === 'Intro' && <Intro />}
+      {currentLevel === 'UnderflowBug' && <UnderflowBug />}
+      {currentLevel === 'SetupLocalNetwork' && <SetupLocalNetwork />}
+      {currentLevel === 'CreateWallet' && <CreateWallet />}
+      {currentLevel === 'CityAtWar' && <CityAtWar />}
+      {currentLevel === 'ConnectToMetamask' && <ConnectToMetamask />}
     </>
   )
 }

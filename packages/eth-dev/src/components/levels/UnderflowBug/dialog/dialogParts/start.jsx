@@ -2,10 +2,9 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PATH_ID = 'underflow-bug/start'
+export const DIALOG_PART_ID = 'UnderflowBug/Start'
 
 const _dialog = [
-  /*
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
@@ -143,7 +142,6 @@ const _dialog = [
       choices: null
     }
   },
-  */
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
@@ -180,6 +178,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

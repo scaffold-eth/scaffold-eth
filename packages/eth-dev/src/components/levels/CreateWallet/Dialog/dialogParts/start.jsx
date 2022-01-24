@@ -2,10 +2,11 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-import { DIALOG_PATH_ID as DOES_KNOW_WALLETS_PATH_ID } from './knows-wallets'
-import { DIALOG_PATH_ID as DOES_NOT_KNOW_WALLETS_PATH_ID } from './does-not-know-wallets'
+import { DIALOG_PART_ID as DOES_KNOW_WALLETS_PATH_ID } from './KnowsWallets'
+import { DIALOG_PART_ID as DOES_NOT_KNOW_WALLETS_PATH_ID } from './DoesNotKnowWallets'
 
-export const DIALOG_PATH_ID = 'create-wallet/start'
+export const LEVEL_ID = 'CreateWallet'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
@@ -40,7 +41,7 @@ const _dialog = [
                 <Button
                   onClick={() => {
                     globalGameActions.dialog.continueDialog()
-                    globalGameActions.background.setCurrentBackground({ background: 'workstation' })
+                    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
                   }}
                 >
                   Continue
@@ -117,6 +118,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog

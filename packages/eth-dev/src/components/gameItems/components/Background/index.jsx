@@ -1,25 +1,43 @@
 import React from 'react'
 import { connectController } from './controller'
 import backgroundsMap from './backgroundsMap'
+import {
+  Intro,
+  City,
+  CityChaos,
+  CityOutskirts,
+  CitySkylineInsideNight,
+  DiceGame,
+  NiftyShop,
+  RoofSatellite,
+  Workstation
+} from './backgrounds'
 
-const style = {
+const styles = {
   position: 'fixed',
   top: 0,
   left: 0,
   height: '100%',
   width: '100%',
   pointerEvents: 'none',
-  backgroundColor: '#221F34',
   // background: `url(${pathToCurrentBackground}) no-repeat center center fixed`,
   backgroundSize: 'cover',
   zIndex: -1
 }
 
-const Background = ({ currentBackground, children }) => {
+const Background = ({ currentBackground }) => {
+  console.log({ backgroundsMap })
+  console.log({ currentBackground })
+
   return (
-    <div className='background-image' style={style}>
+    <div
+      id='Background'
+      className='background-image'
+      style={{
+        ...styles
+      }}
+    >
       {backgroundsMap[currentBackground]}
-      {children}
     </div>
   )
 }

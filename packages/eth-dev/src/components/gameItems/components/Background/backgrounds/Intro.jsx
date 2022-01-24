@@ -10,6 +10,7 @@ const styles = {
     pointerEvents: 'none'
   },
   background: {
+    // background: 'url(./assets/backgrounds/dice_game.png) no-repeat center center fixed',
     backgroundColor: '#221F34',
     backgroundSize: 'cover'
   },
@@ -25,7 +26,7 @@ const styles = {
   }
 }
 
-const BackgroundIntro = () => {
+const Intro = () => {
   return (
     <>
       <div
@@ -43,4 +44,4 @@ const BackgroundIntro = () => {
   )
 }
 
-export default BackgroundIntro
+export default Intro

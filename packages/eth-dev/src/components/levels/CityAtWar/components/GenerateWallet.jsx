@@ -147,7 +147,7 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
                   actions.setWalletGeneratorVisibility(false)
 
                   // dialog.dialogPathsVisibleToUser
-                  // actions.level.setCurrentLevel({ levelId: 'create-wallet' })
+                  // actions.level.setCurrentLevel({ levelId: 'CreateWallet' })
                   // actions.dialog.continueDialog()
                 }}
               >

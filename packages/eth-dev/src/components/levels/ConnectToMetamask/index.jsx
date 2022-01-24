@@ -3,16 +3,18 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { InstructionsWindow } from './components'
-import dialogArray from './dialog'
+import levelDialog from './dialog'
 
-const ConnectToMetamaskLevel = ({ dialog, actions }) => {
+export const LEVEL_ID = 'ConnectToMetamask'
+
+const ConnectToMetamaskLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'roofSatellite' })
+    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
     // set dialog
-    actions.dialog.initDialog({
-      initialDialogPathId: 'connect-to-metamask/start',
-      currentDialog: dialogArray
+    globalGameActions.dialog.initDialog({
+      initialDialogPathId: `${LEVEL_ID}/Start`,
+      currentDialog: levelDialog
     })
   }, [])
 
@@ -22,13 +24,13 @@ const ConnectToMetamaskLevel = ({ dialog, actions }) => {
     <div id='connectToMetamask'>
       <Terminal
         isOpen
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setInstructionsWindowVisibility={setInstructionsWindowVisibility}
       />
 
       <InstructionsWindow
         isOpen={initialInstructionsWindowIsVisible}
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setInstructionsWindowVisibility={setInstructionsWindowVisibility}
       />
     </div>

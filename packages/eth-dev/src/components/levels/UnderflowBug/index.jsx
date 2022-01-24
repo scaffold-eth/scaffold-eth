@@ -3,16 +3,18 @@ import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { ContractWindow, ExplanationWindow } from './components'
-import dialogArray from './dialog'
+import levelDialog from './dialog'
 
-const UnderflowBug = ({ dialog, actions }) => {
+export const LEVEL_ID = 'UnderflowBug'
+
+const UnderflowBug = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'cityOutskirts' })
+    globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
     // set dialog
-    actions.dialog.initDialog({
-      initialDialogPathId: 'underflow-bug/start',
-      currentDialog: dialogArray
+    globalGameActions.dialog.initDialog({
+      initialDialogPathId: `${LEVEL_ID}/Start`,
+      currentDialog: levelDialog
     })
   }, [])
 
@@ -23,7 +25,7 @@ const UnderflowBug = ({ dialog, actions }) => {
     <div id='underflowBug'>
       <Terminal
         isOpen
-        globalGameActions={actions}
+        globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
       />

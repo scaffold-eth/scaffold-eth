@@ -20,7 +20,7 @@ const mapStateToProps = state => {
 }
 
 const mapDispatchToProps = dispatch => ({
-  actions: {
+  globalGameActions: {
     level: _level(dispatch).actions,
     background: _background(dispatch).actions,
     dialog: _dialog(dispatch).actions,

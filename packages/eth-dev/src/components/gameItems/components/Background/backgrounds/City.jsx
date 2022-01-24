@@ -51,7 +51,7 @@ const styles = {
   }
 }
 
-const BackgroundCity = () => {
+const City = () => {
   return (
     <>
       <div
@@ -114,4 +114,4 @@ const BackgroundCity = () => {
   )
 }
 
-export default BackgroundCity
+export default City

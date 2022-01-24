@@ -1,4 +1,4 @@
-import startMonolog from './dialogParts/start-monolog'
-import firstContact from './dialogParts/first-contact'
+import StartMonolog from './dialogParts/StartMonolog'
+import FirstContact from './dialogParts/FirstContact'
 
-export default [...startMonolog, ...firstContact]
+export default [...StartMonolog, ...FirstContact]

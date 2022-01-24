@@ -1,10 +1,10 @@
 import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
+import { DIALOG_PART_ID as BEGINNER_DIALOG_PART_ID } from './BeginnerDev'
 
-import { DIALOG_PATH_ID as BEGINNER_DIALOG_PATH_ID } from './beginner-dev'
-
-export const DIALOG_PATH_ID = 'setup-local-network/start'
+export const LEVEL_ID = 'SetupLocalNetwork'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
@@ -40,7 +40,7 @@ const _dialog = [
                 onClick={() =>
                   globalGameActions.dialog.jumpToDialogPath({
                     currentDialog,
-                    dialogPathId: BEGINNER_DIALOG_PATH_ID
+                    dialogPathId: BEGINNER_DIALOG_PART_ID
                   })
                 }
               >
@@ -120,7 +120,7 @@ const _dialog = [
             <Button
               className='is-warning'
               onClick={() => {
-                globalGameActions.level.setCurrentLevel({ levelId: 'create-wallet' })
+                globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
               }}
             >
               Drive into city
@@ -132,6 +132,6 @@ const _dialog = [
   }
 ]
 
-const enrichedDialog = enrichDialog(_dialog, DIALOG_PATH_ID)
+const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
 
 export default enrichedDialog
