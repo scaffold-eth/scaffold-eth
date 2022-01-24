@@ -9,6 +9,7 @@ import UnderflowBug from './UnderflowBug'
 import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
 import CityAtWar from './CityAtWar'
+import ConnectToMetamask from './ConnectToMetamask'
 
 const Levels = ({ levelContainer: { currentLevel }, actions }) => {
   const setInitialLevel = levelId => {
@@ -44,6 +45,7 @@ const Levels = ({ levelContainer: { currentLevel }, actions }) => {
       {currentLevel === 'setup-local-network' && <SetupLocalNetwork />}
       {currentLevel === 'create-wallet' && <CreateWallet />}
       {currentLevel === 'city-at-war' && <CityAtWar />}
+      {currentLevel === 'connect-to-metamask' && <ConnectToMetamask />}
     </>
   )
 }
