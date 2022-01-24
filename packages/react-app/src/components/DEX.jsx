@@ -1,5 +1,5 @@
 import { Card, Col, Divider, Input, Row } from "antd";
-import { useBalance, useContractReader, useBlockNumber} from "eth-hooks";
+import { useBalance, useContractReader, useBlockNumber } from "eth-hooks";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useTokenBalance } from "eth-hooks/erc/erc-20/useTokenBalance";
 import { ethers } from "ethers";
@@ -9,8 +9,6 @@ import Contract from "./Contract";
 import Curve from "./Curve";
 import TokenBalance from "./TokenBalance";
 import Blockies from "react-blockies";
-
-
 
 const contractName = "DEX";
 const tokenName = "Balloons";
