@@ -8,7 +8,7 @@ import dialogArray from './dialog'
 const CityAtWar = ({ dialog, actions }) => {
   useEffect(() => {
     // set initial level background
-    actions.background.setCurrentBackground({ background: 'cityAtWar' })
+    actions.background.setCurrentBackground({ background: 'cityChaos' })
     // set dialog
     actions.dialog.initDialog({
       initialDialogPathId: 'city-at-war/start',

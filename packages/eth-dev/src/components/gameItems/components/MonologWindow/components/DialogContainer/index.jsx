@@ -33,13 +33,14 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
       id='monologDialogContainer'
       style={{
         position: 'absolute',
-        top: '0',
+        top: 0,
         right: 0,
-        width: '100%',
-        height: '100%',
         display: 'flex',
         flexDirection: 'column',
-        alignContent: 'flex-end'
+        alignContent: 'flex-end',
+        width: '100%',
+        height: '100%',
+        padding: 10
       }}
     >
       <div
@@ -90,8 +91,7 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
       <div
         style={{
           display: 'flex',
-          flexDirection: 'column',
-          padding: 10
+          flexDirection: 'column'
         }}
       >
         {filteredDialog.map((dialogStep, index) => {

@@ -10,12 +10,12 @@ const styles = {
     pointerEvents: 'none'
   },
   background: {
-    background: 'url(./assets/backgrounds/city_chaos.png) no-repeat center center fixed',
+    background: 'url(./assets/backgrounds/roof_satellite.png) no-repeat center center fixed',
     backgroundSize: 'cover'
   }
 }
 
-const CityAtWar = () => {
+const RoofSatellite = () => {
   return (
     <div
       className='background-image'
@@ -27,4 +27,4 @@ const CityAtWar = () => {
   )
 }
 
-export default CityAtWar
+export default RoofSatellite

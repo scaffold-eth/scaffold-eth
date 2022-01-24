@@ -5,7 +5,8 @@ import {
   CityOutskirts,
   CitySkylineInsideNight,
   Workstation,
-  CityAtWar
+  CityChaos,
+  NiftyShop
 } from './backgrounds'
 
 export default {
@@ -14,5 +15,6 @@ export default {
   city: <City />,
   citySkylineInsideNight: <CitySkylineInsideNight />,
   workstation: <Workstation />,
-  cityAtWar: <CityAtWar />
+  cityChaos: <CityChaos />,
+  niftyShop: <NiftyShop />
 }
