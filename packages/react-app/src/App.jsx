@@ -449,6 +449,7 @@ function App(props) {
         )}
 
         <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        {/* <Dex name={"liquidity"} img={"💦"} address={address} contracts={readContracts} /> */}
         {FaucetHint}
       </div>
 

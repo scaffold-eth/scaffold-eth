@@ -1,14 +1,16 @@
 # 🏗 scaffold-eth | 🏰 BuidlGuidl
 
-## 🚩 Challenge 5: Minimum Viable Exchange
+## 🚩 **Challenge 4: Minimum Viable Exchange**
 
-This challenge will provide a tutorial to help you build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS ($BAL) and ETH). This readme is an upated version of the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90). Please read the intro for a background on what we are building! There is also a Youtube video that may help you understand the concepts covered within this challenge too: https://www.youtube.com/watch?v=eP5w6Ger1EQ&t=364s&ab_channel=SimplyExplained.
+This challenge will provide a tutorial to help you build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS ($BAL) and ETH). This repo is an updated version of the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90). Please read the intro for a background on what we are building first! **This repo has solutions in it for now, but the challenge is to write the smart contracts yourself of course!**
 
-This branch was heavily based off of this branch: https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-5-dex.
+There is also a [Youtube video](https://www.youtube.com/watch?v=eP5w6Ger1EQ&t=364s&ab_channel=SimplyExplained). that may help you understand the concepts covered within this challenge too:
+
+This branch was heavily based off of this [archived feature branch](https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-5-dex).
 
 ---
 
-### Checkpoint 0: 📦 install 📚
+### **⛳️ Checkpoint 0: 📦 install 📚**
 
 _TODO: Update this with appropriate links_
 
@@ -19,7 +21,9 @@ git checkout challenge-5-dex
 yarn install
 ```
 
-### Checkpoint 1: 🔭 Environment 📺
+---
+
+### ⛳️ **Checkpoint 1: 🔭 Environment 📺**
 
 You'll have three terminals up for:
 
@@ -33,24 +37,38 @@ Navigate to the Debug Contracts tab and you should see two smart contracts displ
 
 > 👩‍💻 Rerun `yarn deploy` whenever you want to deploy new contracts to the frontend (run `yarn deploy --reset` for a completely fresh deploy if you have made no contract changes).
 
-`Balloons.sol` is just an example ERC20 contract that mints 1000 to whatever address deploys it.
-`DEX.sol` is what we will build in this tutorial and you can see it starts with a SafeMath library to help us prevent overflows and underflows and also tracks a token (ERC20 interface) that we set in the constructor (on deploy).
+`Balloons.sol` is just an example ERC20 contract that mints 1000 $BAL to whatever address deploys it.
+`DEX.sol` is what we will build in this challenge and you can see it starts with a SafeMath library to help us prevent overflows and underflows and also tracks a token (ERC20 interface) that we set in the constructor (on deploy).
+
+**TODO: ADD IN IMAGE OF FRONT END THAT THE USER SHOULD SEE WITH BLANK SMART CONTRACTS**
+
+> 🎉 You've made it this far in Scaffold-Eth Challenges 👏🏼 . As things get more complex, it might be good to review the design requirements of the challenge first! Check out the empty DEXTemplate.sol file to see aspects of each function. If you can explain how each function will work with one another, that's great! 😎
+
+> 🚨 🚨 🦖 **The code blobs within the toggles are some examples of what you can use, but try writing the implementation code for the functions first!**
 
 ---
 
-### Checkpoint 2: Reserves
+### ⛳️ **Checkpoint 2: Reserves** 🧱
 
-**Feature Details:** We want to create an automatic market where our contract will hold reserves of both ETH and 🎈 Balloons. These reserves will provide liquidity that allows anyone to swap between the assets.
+We want to create an automatic market where our contract will hold reserves of both ETH and 🎈 Balloons. These reserves will provide liquidity that allows anyone to swap between the assets.
 
-Let’s add a couple new variables to `DEX.sol`:
+Add a couple new variables to `DEX.sol` for `totalLiquidity` and `liquidity`:
+**TODO: make sure the code is right**
+
+<details markdown='1'><summary>👩🏽‍🏫 Solution Code</summary>
 
 ```
 uint256 public totalLiquidity;
 mapping (address => uint256) public liquidity;
 ```
 
+</details>
+
 These variables track the total liquidity, but also by individual addresses too.
-Then, let’s create an init() function in `DEX.sol` that is payable and then we can define an amount of tokens that it will transfer to itself:
+Now, let's create an init() function in `DEX.sol` that is payable and then we can define an amount of tokens that it will transfer to itself.
+**TODO: make sure the code is right**
+
+<details markdown='1'><summary> 👨🏻‍🏫 Solution Code</summary>
 
 ```
 function init(uint256 tokens) public payable returns (uint256) {
@@ -62,18 +80,26 @@ function init(uint256 tokens) public payable returns (uint256) {
 }
 ```
 
-Calling init() will load our contract up with both ETH and 🎈 Balloons.
+</details>
 
-We can see that the DEX starts empty. We want to be able to call init() to start it off with liquidity, but we don’t have any funds or tokens yet. Add some ETH to your local account using the faucet and then find the `00_deploy_your_contract.js` file. Uncomment the line below and add your address:
+Calling `init()` will load our contract up with both ETH and 🎈 Balloons.
+
+We can see that the DEX starts empty. We want to be able to call init() to start it off with liquidity, but we don’t have any funds or tokens yet. Add some ETH to your local account using the faucet and then find the `00_deploy_your_contract.js` file. Find and uncomment the line below and add your address:
+
+**TODO: STEVE create a fork of this repo. Then start commenting everything out and making a challenge-ready repo for Austin.**
 
 ```
   // // paste in your address here to get 10 balloons on deploy:
   // await balloons.transfer("YOUR_ADDRESS","" + (10 * 10 ** 18));
 ```
 
-Run `yarn deploy`. The front end should show you that you have balloon tokens. We can’t just call init() yet because the DEX contract isn’t allowed to transfer tokens from our account. We need to approve() the DEX contract with the Balloons UI. Copy and paste the DEX address and then set the amount to 5000000000000000000 (5 _ 10¹⁸). You can confirm this worked using the allowance() function. Now we are ready to call init() on the DEX. We will tell it to take (5 _ 10¹⁸) of our tokens and we will also send 0.01 ETH with the transaction. You can see the DEX contract's value update and you can check the DEX token balance using the balanceOf function on the Balloons UI.
+Run `yarn deploy`. The front end should show you that you have balloon tokens. We can’t just call init() yet because the DEX contract isn’t allowed to transfer tokens from our account. We need to approve() the DEX contract with the Balloons UI.
 
-This works pretty well, but it will be a lot easier if we just call the init() function as we deploy the contract. In the `00_deploy_your_contract.js` script try uncommenting the init section so our DEX will start with 3 ETH and 3 Balloons of liquidity:
+🤓 Copy and paste the DEX address and then set the amount to 5000000000000000000 (5 _ 10¹⁸). You can confirm this worked using the allowance() function. Now we are ready to call init() on the DEX. We will tell it to take (5 _ 10¹⁸) of our tokens and we will also send 0.01 ETH with the transaction. You can see the DEX contract's value update and you can check the DEX token balance using the balanceOf function on the Balloons UI.
+
+This works pretty well, but it will be a lot easier if we just call the `init()` function as we deploy the contract. In the `00_deploy_your_contract.js` script try uncommenting the init section so our DEX will start with 3 ETH and 3 Balloons of liquidity:
+
+**TODO: make sure the code is right**
 
 ```
   // // uncomment to init DEX on deploy:
@@ -86,26 +112,34 @@ This works pretty well, but it will be a lot easier if we just call the init() f
 
 Now when we `yarn deploy --reset` then our contract should be initialized as soon as it deploys and we should have equal reserves of ETH and tokens.
 
----
+### 🥅 Goals / Checks
 
-### Checkpoint 3: Price
-
-**Feature Details:** Follow along with the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90) Price section for an understanding of the DEX's pricing model and for a price function to add to your contract. You may need to update the Solidity syntax (e.g. use + instead of .add, \* instead of .mul, etc). Deploy when you are done.
-
-### 🥅 Goals TODO
-
-- [ ] Do you understand how the x\*y=k price curve actually works? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
-- [ ] You should be able to go through the price section of this tutorial with the sample numbers and generate the same outputChange variable.
-
-> Hints: See this link (https://hackernoon.com/formulas-of-uniswap-a-deep-dive), solve for the change in the Output Reserve. Also, don't forget to think about how to implement the trading fee. Solidity doesn't allow for decimals, so one way that contracts are written to implement percentage is using whole uints (997 and 1000) as numerator and denominator factors, respectively.
+- [ ] Under the debug tab, does your DEX show 3 ETH and 3 Balloons of liquidity?
 
 ---
 
-### Checkpoint 4: Trading
+### ⛳️ **Checkpoint 3: Price** 🤑
 
-**Feature Details:** Let’s edit the DEX.sol smart contract and add two new functions for swapping from each asset to the other.
+Follow along with the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90) Price section for an understanding of the DEX's pricing model and for a price function to add to your contract. You may need to update the Solidity syntax (e.g. use + instead of .add, \* instead of .mul, etc). Deploy when you are done.
 
-<details markdown='1'><summary>**Solution Code (don't look until you have tried!)** </summary>
+**TODO: Maybe add code instead of pointing to past blog post?**
+
+### 🥅 Goals / Checks
+
+- [ ] 🤔 Do you understand how the x\*y=k price curve actually works? Write down a clear explanation for yourself and derive the formula for price. You might have to shake off some old algebra skills!
+- [ ] 💃 You should be able to go through the price section of this tutorial with the sample numbers and generate the same outputChange variable.
+
+> 💡 _Hints:_ See this [link](https://hackernoon.com/formulas-of-uniswap-a-deep-dive), solve for the change in the Output Reserve. Also, don't forget to think about how to implement the trading fee. Solidity doesn't allow for decimals, so one way that contracts are written to implement percentage is using whole uints (997 and 1000) as numerator and denominator factors, respectively.
+
+---
+
+### ⛳️ **Checkpoint 4: Trading** 🤝
+
+Let’s edit the DEX.sol smart contract and add two new functions for swapping from each asset to the other, `ethToToken()` and `tokenToEth()`!
+
+**TODO: make sure the code is right**
+
+<details markdown='1'><summary>👨🏻‍🏫 Solution Code </summary>
 
 ```
 function ethToToken() public payable returns (uint256) {
@@ -127,16 +161,23 @@ function tokenToEth(uint256 tokens) public returns (uint256) {
 
 </details>
 
-Each of these functions calculate the resulting amount of output asset using our price function that looks at the ratio of the reserves vs the input asset. We can call tokenToEth and it will take our tokens and send us ETH or we can call ethToToken with some ETH in the transaction and it will send us tokens. Let’s deploy our contract then move over to the frontend. Exchange some ETH for tokens and some tokens for ETH!
+> 💡 Each of these functions calculate the resulting amount of output asset using our price function that looks at the ratio of the reserves vs the input asset. We can call tokenToEth and it will take our tokens and send us ETH or we can call ethToToken with some ETH in the transaction and it will send us tokens. Deploy it and try it out!
 
 ---
 
-### Checkpoint 5: Liquidity
+### ⛳️ **Checkpoint 5: Liquidity** 🌊
 
-**Feature Details:** So far, only the init() function controls liquidity. To make this more decentralized, it would be better if anyone could add to the liquidity pool by sending the DEX both ETH and tokens at the correct ratio.
+So far, only the init() function controls liquidity. To make this more decentralized, it would be better if anyone could add to the liquidity pool by sending the DEX both ETH and tokens at the correct ratio.
+
 Let’s create two new functions that let us deposit and withdraw liquidity. How would you write this function out? Try before taking a peak!
 
-<details markdown='1'><summary>**Solution Code (don't look until you have tried!)** </summary>
+> 💡 _Hints:_
+> The deposit() function receives ETH and also transfers tokens from the caller to the contract at the right ratio. The contract also tracks the amount of liquidity the depositing address owns vs the totalLiquidity.
+> The withdraw() function lets a user take both ETH and tokens out at the correct ratio. The actual amount of ETH and tokens a liquidity provider withdraws will be higher than what they deposited because of the 0.3% fees collected from each trade. This incentivizes third parties to provide liquidity.
+
+**TODO: make sure the code is right**
+
+<details markdown='1'><summary>👩🏽‍🏫 Solution Code </summary>
 
 ```
 function deposit() public payable returns (uint256) {
@@ -164,18 +205,28 @@ return (eth_amount, token_amount);
 
 ```
 
-Take a second to understand what these functions are doing after you paste them into DEX.sol in packages/hardhat/contracts:
-The deposit() function receives ETH and also transfers tokens from the caller to the contract at the right ratio. The contract also tracks the amount of liquidity the depositing address owns vs the totalLiquidity.
-The withdraw() function lets a user take both ETH and tokens out at the correct ratio. The actual amount of ETH and tokens a liquidity provider withdraws will be higher than what they deposited because of the 0.3% fees collected from each trade. This incentivizes third parties to provide liquidity. </details>
+ </details>
 
-### 🥅 Goals TODO
+🚨 Take a second to understand what these functions are doing if you pasted them into DEX.sol in packages/hardhat/contracts:
 
-- [ ] Deposit liquidity, and then check your liquidity amount through the mapping. Has it changed properly? Did the right amount of assets get deposited?
-- [ ] What happens if you deposit(), then another user starts swapping out for most of the balloons, and then you try to withdraw your position as a liquidity provider? Answer: you should get the amount of liquidity proportional to the ratio of assets within the isolated liquidity pool.
+### 🥅 Goals / Checks
+
+- [ ] 💧 Deposit liquidity, and then check your liquidity amount through the mapping in the debug tab. Has it changed properly? Did the right amount of assets get deposited?
+- [ ] 🧐 What happens if you deposit(), then another user starts swapping out for most of the balloons, and then you try to withdraw your position as a liquidity provider? Answer: you should get the amount of liquidity proportional to the ratio of assets within the isolated liquidity pool.
 
 ---
 
-### Checkpoint 6: UI
+### ⛳️ **Checkpoint 6: UI** 🖼
+
+Cool beans! Your front-end should be showing the below at this point!
+
+<img src="images/ui-screenshot-final.png" width = "700">
+
+TODO: MAKE SURE THIS IS RIGHT In App.jsx, look at line 460 onwards at the Dex component, and then the Contracts for DEX and Balloons. This is where they are loaded onto the main UI. With these, the user can enter the amount of ETH or tokens they want to swap, and the chart will display how the price is calculated. You can also visualize how larger swaps result in more slippage and less output asset. You can also deposit and withdraw from the liquidity pool, earning fees.
+
+<details markdown='1'><summary> 🚨 If you're using the master branch, and not the DEX challenge feature branch, then click this toggle to see how to hook things up for your front end. 🚨 </summary>
+
+**TODO: THIS IS IF THE USER IS GOING OFF OF THE MASTER BRANCH... ALTHOUGH WHEN THEY READ THIS I'M GUESSING THAT THEY ARE USING OUR REPO WHICH WILL HAVE THE STUFF ALL READY TO GO, THEY JUST GOTTA UNCOMMENT OR WHATEVER**
 
 TODO: <details markdown='1'><summary>Context for people newer to ReactJS</summary> For those that are really new to anything front-end development, there are many resources out there to possibly use. This one was particularly helpful from minutes 15 to 20 describing the typical folder structure within a ReactJS project.
 https://www.youtube.com/watch?v=w7ejDZ8SWv8&ab_channel=TraversyMedia
@@ -305,13 +356,19 @@ There you will see the debug code blob below it, it is here where you will outli
 
 Your front-end should now load accordingly!
 
-In App.jsx, look at line 460 onwards at the Dex component, and then the Contracts for DEX and Balloons. This is where they are loaded onto the main UI. With these, the user can enter the amount of ETH or tokens they want to swap, and the chart will display how the price is calculated. You can also visualize how larger swaps result in more slippage and less output asset. You can also deposit and withdraw from the liquidity pool, earning fees.
+</details>
 
 ---
 
-### Checkpoint 7: 💾 Deploy it! 🛰
+### **Checkpoint 7: 💾 Deploy it!** 🛰
 
 📡 Edit the `defaultNetwork` in `packages/hardhat/hardhat.config.js`, as well as `targetNetwork` in `packages/react-app/src/App.jsx`, to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/)
+
+## 🔶 Infura
+
+> You will need to get a key from infura.io and paste it into constants.js in packages/react-app/src:
+
+![nft13](https://user-images.githubusercontent.com/526558/124387174-d83c0180-dcb3-11eb-989e-d58ba15d26db.png)
 
 👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**
 
@@ -325,7 +382,9 @@ In App.jsx, look at line 460 onwards at the Dex component, and then the Contract
 
 👮 Your token contract source needs to be **verified**... (source code publicly available on the block explorer)
 
-### Checkpoint 8: 📜 Contract Verification
+---
+
+### **Checkpoint 8: 📜 Contract Verification**
 
 Update the api-key in packages/hardhat/package.json file. You can get your key [here](https://etherscan.io/myapikey).
 
@@ -337,7 +396,7 @@ This will be the URL you submit to [SpeedRun](https://speedrunethereum.com).
 
 ---
 
-### Checkpoint 9: 🚢 Ship it! 🚁
+### **Checkpoint 9: 🚢 Ship it! 🚁**
 
 📦 Run `yarn build` to package up your frontend.
 
@@ -348,11 +407,3 @@ This will be the URL you submit to [SpeedRun](https://speedrunethereum.com).
 ---
 
 > 💬 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-eth developers chat](https://t.me/joinchat/F7nCRK3kI93PoCOk)
-
-```
-
-```
-
-```
-
-```
