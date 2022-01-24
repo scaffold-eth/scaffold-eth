@@ -10,7 +10,8 @@ const styles = {
     pointerEvents: 'none'
   },
   background: {
-    background: 'url(./assets/city_skyline_inisde_night.png) no-repeat center center fixed',
+    background:
+      'url(./assets/backgrounds/city_skyline_inisde_night.png) no-repeat center center fixed',
     backgroundSize: 'cover'
   }
 }

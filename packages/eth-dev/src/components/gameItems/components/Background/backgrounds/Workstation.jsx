@@ -10,7 +10,7 @@ const styles = {
     pointerEvents: 'none'
   },
   background: {
-    background: 'url(./assets/workstation.png) no-repeat center center fixed',
+    background: 'url(./assets/backgrounds/workstation.png) no-repeat center center fixed',
     backgroundSize: 'cover'
   }
 }
