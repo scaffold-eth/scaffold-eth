@@ -5,7 +5,7 @@ import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { InitChainInstructionsWindow } from './components'
 import levelDialog from './dialog'
 
-export const LEVEL_ID = 'SetupLocalNetworkLevel'
+export const LEVEL_ID = 'SetupLocalNetwork'
 
 const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
