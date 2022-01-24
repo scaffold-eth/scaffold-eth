@@ -2,19 +2,23 @@ import React from 'react'
 import {
   Intro,
   City,
+  CityChaos,
   CityOutskirts,
   CitySkylineInsideNight,
-  Workstation,
-  CityChaos,
-  NiftyShop
+  DiceGame,
+  NiftyShop,
+  RoofSatellite,
+  Workstation
 } from './backgrounds'
 
 export default {
   intro: <Intro />,
-  cityOutskirts: <CityOutskirts />,
   city: <City />,
-  citySkylineInsideNight: <CitySkylineInsideNight />,
-  workstation: <Workstation />,
   cityChaos: <CityChaos />,
-  niftyShop: <NiftyShop />
+  cityOutskirts: <CityOutskirts />,
+  citySkylineInsideNight: <CitySkylineInsideNight />,
+  diceGame: <DiceGame />,
+  niftyShop: <NiftyShop />,
+  roofSatellite: <RoofSatellite />,
+  workstation: <Workstation />
 }
