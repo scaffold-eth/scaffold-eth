@@ -15,30 +15,18 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
       initWidth={initWidth}
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={12}
+      windowTitle='WALLETS'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
-      <div
-        className='windowTitle'
-        style={{
-          position: 'absolute',
-          top: '8%',
-          left: '54%',
-          width: '31%',
-          height: '3%',
-          fontSize: '61%',
-          color: '#16DC8C'
-        }}
-      >
-        Wallets
-      </div>
       <div
         className='content'
         style={{
           float: 'left',
           width: '100%',
           height: '100%',
-          overflowY: 'scroll'
+          overflowY: 'scroll',
+          overflowX: 'hidden'
         }}
       >
         <br />

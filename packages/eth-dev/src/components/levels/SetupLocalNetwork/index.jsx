@@ -12,7 +12,6 @@ const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
     // set dialog
-    console.log({ levelDialog })
     globalGameActions.dialog.initDialog({
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog

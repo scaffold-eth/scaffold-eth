@@ -21,31 +21,18 @@ const InitChainInstructionsWindow = ({
       initWidth={initWidth}
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={12}
+      windowTitle='SETUP INSTRUCTIONS'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
-      <div
-        className='windowTitle'
-        style={{
-          position: 'absolute',
-          top: '8%',
-          left: '54%',
-          width: '31%',
-          height: '3%',
-          fontSize: '61%',
-          color: '#16DC8C'
-        }}
-      >
-        SETUP INSTRUCTIONS
-      </div>
       <div
         className='content'
         style={{
           float: 'left',
           width: '100%',
           height: '100%',
-          marginTop: '1%',
-          overflowY: 'scroll'
+          overflowY: 'scroll',
+          overflowX: 'hidden'
         }}
       >
         <div
@@ -57,15 +44,15 @@ const InitChainInstructionsWindow = ({
             fontSize: 16
           }}
         >
-          By following the steps below you will setup an ethereum network on your local machine.
+          By following the steps below, you will set up an Ethereum network on your local machine.
           <br />
-          This will allow you to deploy smart contracts and execute transactions localy without
+          This will allow you to deploy smart contracts and execute transactions locally without
           having to spend real (expensive) Ether.
           <br />
-          Apart from the transaction fees there is no difference between your local ethereum chain
-          and the 'real' live ethereum network.
+          Apart from the transaction fees, there is no difference between your local Ethereum chain
+          and the 'real' live Ethereum network.
           <br />
-          If you wanted to, you could run all levels on the ethereum main chain (or any other
+          If you wanted to, you could run all levels on the Ethereum main chain (or any other
           network that runs the EVM).
         </div>
         <CodeContainer language='bash'>

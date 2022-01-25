@@ -49,7 +49,7 @@ const _dialog = [
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text='Nevermind! We have more important things to deal with at the moment!'
+          text='Never mind! We have more important things to deal with at the moment!'
         />
       ),
       choices: null

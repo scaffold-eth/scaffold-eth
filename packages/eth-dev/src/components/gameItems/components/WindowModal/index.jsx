@@ -15,6 +15,7 @@ export default function WindowModal({
   onDrag = () => {},
   onDragStop = () => {},
   onResizeStop = () => {},
+  windowTitle = '',
   style = {},
   containerStyle,
   contentContainerStyle,
@@ -81,6 +82,20 @@ export default function WindowModal({
               }}
             />
             <div
+              className='windowTitle'
+              style={{
+                position: 'absolute',
+                top: '8%',
+                left: '54%',
+                width: '31%',
+                height: '3%',
+                fontSize: '61%',
+                color: '#16DC8C'
+              }}
+            >
+              {windowTitle}
+            </div>
+            <div
               className='content'
               style={{
                 float: 'left',
@@ -88,6 +103,8 @@ export default function WindowModal({
                 height: `calc(100% - ${dragAreaHeightPercent}%)`,
                 // marginBottom: windowProps.height * 0.06,
                 padding: '5%',
+                paddingBottom: '4%',
+                overflowX: 'hidden',
                 overflowY: 'scroll',
                 color: '#fff',
                 ...contentContainerStyle
