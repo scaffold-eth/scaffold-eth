@@ -12,7 +12,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Welcome home!' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ahhh...' />
       ),
       choices: null
     }

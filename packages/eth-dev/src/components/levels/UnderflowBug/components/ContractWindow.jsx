@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ContractWindow = ({ dialog, actions, isOpen }) => {
+const ContractWindow = ({ isOpen }) => {
   const initWidth = window.innerWidth / 2
   const initHeight = window.innerHeight * 0.95
 

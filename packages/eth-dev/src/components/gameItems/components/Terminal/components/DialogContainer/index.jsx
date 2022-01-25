@@ -62,7 +62,8 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
           style={{
             float: 'left',
             width: '100%',
-            overflowY: 'scroll'
+            overflowY: 'scroll',
+            overflowX: 'hidden'
           }}
         >
           {filteredDialog.map((dialogStep, index) => {

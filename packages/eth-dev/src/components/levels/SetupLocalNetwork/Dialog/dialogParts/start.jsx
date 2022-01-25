@@ -37,12 +37,14 @@ const _dialog = [
               </Button>
               <Button
                 className='is-warning'
+                /*
                 onClick={() =>
                   globalGameActions.dialog.jumpToDialogPath({
                     currentDialog,
                     dialogPathId: BEGINNER_DIALOG_PART_ID
                   })
                 }
+                */
               >
                 I think I need some more training
               </Button>
@@ -76,54 +78,16 @@ const _dialog = [
           text='Nice! Seems like you still now your stuff!'
         />
       ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Next we need to get you a wallet.'
-        />
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`Let's head into the city! I've arranged a meating with some of our friends.`}
-        />
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Well ...' />
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Maybe not friends ...' />
-      ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <Button
-              className='is-warning'
+              // className='is-warning'
               onClick={() => {
-                globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
+                globalGameActions.level.setCurrentLevel({ levelId: 'UnderflowBug' })
               }}
             >
-              Drive into city
+              Continue
             </Button>
           )}
         </>

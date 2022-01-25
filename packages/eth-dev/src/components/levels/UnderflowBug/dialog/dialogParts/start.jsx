@@ -175,6 +175,78 @@ const _dialog = [
         </>
       )
     }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Awesome!' />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='Im sure these will come in handy ...'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='I knew you still had it in you!'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`Let's head into the city! I've arranged a meating with some of our friends.`}
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Well ...' />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Maybe not friends ...' />
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
+              }}
+            >
+              Drive into City
+            </Button>
+          )}
+        </>
+      )
+    }
   }
 ]
 

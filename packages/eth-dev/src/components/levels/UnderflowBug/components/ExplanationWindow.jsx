@@ -3,7 +3,12 @@ import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({ dialog, actions, isOpen }) => {
+const ExplanationWindow = ({
+  isOpen,
+  globalGameActions,
+  setContractWindowVisibility,
+  setExplanationWindowVisibility
+}) => {
   const initWidth = window.innerWidth / 2
   const initHeight = window.innerHeight * 0.95
 
@@ -56,6 +61,17 @@ const ExplanationWindow = ({ dialog, actions, isOpen }) => {
           <Markdown>{fileContent}</Markdown>
 
           <div style={{ marginTop: 25 }}>
+            Read about the hack{' '}
+            <a
+              href='https://medium.com/@blockchain101/beautychain-erc20-integer-overflow-bug-explained-c583adcd847e'
+              target='_blank'
+              rel='noreferrer'
+            >
+              here
+            </a>{' '}
+            and see if you can apply the information to help Anon Punk.
+            <br />
+            <br />
             Further reading:
             <br />
             <br />
@@ -78,15 +94,7 @@ const ExplanationWindow = ({ dialog, actions, isOpen }) => {
                   A disastrous vulnerability found in smart contracts of BeautyChain (BEC)
                 </a>
               </li>
-              <li>
-                <a
-                  href='https://medium.com/@blockchain101/beautychain-erc20-integer-overflow-bug-explained-c583adcd847e'
-                  target='_blank'
-                  rel='noreferrer'
-                >
-                  ERC20 Integer Overflow Bug Explained
-                </a>
-              </li>
+
               <li>
                 <a
                   href='https://cryptoslate.com/batchoverflow-exploit-creates-trillions-of-ethereum-tokens/'
@@ -108,7 +116,16 @@ const ExplanationWindow = ({ dialog, actions, isOpen }) => {
             </ul>
           </div>
         </div>
-        <Button className='is-warning'>Done</Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            globalGameActions.dialog.continueDialog()
+            setContractWindowVisibility(false)
+            setExplanationWindowVisibility(false)
+          }}
+        >
+          Done
+        </Button>
       </div>
     </WindowModal>
   )

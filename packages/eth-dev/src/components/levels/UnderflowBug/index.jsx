@@ -31,7 +31,13 @@ const UnderflowBug = ({ dialog, globalGameActions }) => {
       />
 
       <ContractWindow isOpen={contractWindowIsVisible} />
-      <ExplanationWindow isOpen={explanationWindowIsVisible} />
+
+      <ExplanationWindow
+        isOpen={explanationWindowIsVisible}
+        globalGameActions={globalGameActions}
+        setContractWindowVisibility={setContractWindowVisibility}
+        setExplanationWindowVisibility={setExplanationWindowVisibility}
+      />
     </div>
   )
 }
