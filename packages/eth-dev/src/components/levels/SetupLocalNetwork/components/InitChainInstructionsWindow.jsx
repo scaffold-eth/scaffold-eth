@@ -48,13 +48,19 @@ const InitChainInstructionsWindow = ({
           overflowY: 'scroll'
         }}
       >
-        <div style={{ marginTop: '1%', marginBottom: '5%', color: '#16DC8C' }}>
+        <div
+          style={{
+            marginTop: '1%',
+            marginBottom: '5%',
+            color: '#16DC8C',
+            fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
+            fontSize: 16
+          }}
+        >
           By following the steps below you will setup an ethereum network on your local machine.
-          <br />
           <br />
           This will allow you to deploy smart contracts and execute transactions localy without
           having to spend real (expensive) Ether.
-          <br />
           <br />
           Apart from the transaction fees there is no difference between your local ethereum chain
           and the 'real' live ethereum network.
