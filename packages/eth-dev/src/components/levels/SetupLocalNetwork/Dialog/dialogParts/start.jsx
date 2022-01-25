@@ -13,7 +13,7 @@ const _dialog = [
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
-            text='Do you know how to setup and connect to a local ethereum environment or do you need some more training?'
+            text='Do you know how to set up and connect to a local ethereum environment or do you need some more training?'
           />
         </>
       ),

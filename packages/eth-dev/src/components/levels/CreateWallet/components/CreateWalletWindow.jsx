@@ -59,32 +59,18 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
       dragAreaHeightPercent={12}
       onRequestClose={() => console.log('onRequestClose')}
       onFocus={() => console.log('Modal is clicked')}
+      windowTitle='GENERATE WALLET'
       isOpen={isOpen}
       contentContainerStyle={{ marginTop: 0, paddingLeft: 20, paddingRight: 20 }}
     >
       <div
-        className='windowTitle'
-        style={{
-          position: 'absolute',
-          top: '7.2%',
-          left: '54%',
-          width: '31%',
-          height: '3%',
-          fontSize: '61%',
-          color: '#16DC8C'
-        }}
-      >
-        GENERATE WALLET
-      </div>
-      <div
         className='content'
         style={{
-          position: 'absolute',
-          top: '12%',
-          left: '4%',
-          width: '92%',
-          height: '85%',
-          overflow: 'scroll'
+          float: 'left',
+          width: '100%',
+          height: '100%',
+          overflowY: 'scroll',
+          overflowX: 'hidden'
         }}
       >
         <div

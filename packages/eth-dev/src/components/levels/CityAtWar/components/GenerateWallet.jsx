@@ -86,32 +86,18 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
       backgroundPath='./assets/trimmed/window_trimmed.png'
       dragAreaHeightPercent={10}
       onRequestClose={() => console.log('onRequestClose')}
+      windowTitle='WALLET GENERATOR'
       isOpen={isOpen}
       contentContainerStyle={{ marginTop: 0, paddingLeft: 20, paddingRight: 20 }}
     >
       <div
-        className='windowTitle'
-        style={{
-          position: 'absolute',
-          top: '7.2%',
-          left: '58%',
-          width: '31%',
-          height: '3%',
-          fontSize: '61%',
-          color: '#16DC8C'
-        }}
-      >
-        wallet generator
-      </div>
-      <div
         className='content'
         style={{
-          position: 'absolute',
-          top: '12%',
-          left: '4%',
-          width: '92%',
-          height: '85%',
-          overflow: 'scroll'
+          float: 'left',
+          width: '100%',
+          height: '100%',
+          overflowY: 'scroll',
+          overflowX: 'hidden'
         }}
       >
         <div
