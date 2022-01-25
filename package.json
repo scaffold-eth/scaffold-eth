@@ -31,7 +31,7 @@
     "balance": "yarn workspace @scaffold-eth/hardhat balance",
     "send": "yarn workspace @scaffold-eth/hardhat send",
     "ipfs": "yarn workspace @scaffold-eth/react-app ipfs",
-    "surge": "yarn workspace @scaffold-eth/react-app surge",
+    "surge": "yarn workspace @scaffold-eth/eth-dev surge",
     "s3": "yarn workspace @scaffold-eth/react-app s3",
     "ship": "yarn workspace @scaffold-eth/react-app ship",
     "generate": "yarn workspace @scaffold-eth/hardhat generate",
