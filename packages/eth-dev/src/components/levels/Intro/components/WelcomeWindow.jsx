@@ -34,23 +34,21 @@ const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
           Welcome to eth.dev!
         </h2>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
-          You are about to enter a game which aims to prepare teach you how to navigate the Ethereum
+          You are about to enter a game which aims to prepare you to navigate the Ethereum
           Blockchain space as a developer.
           <br />
           You will take the role of a tech-savvy cryptopunk that skirts the very edge of web3
           hacking.
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
-          Most of the coding challenges are taken from real-world examples.
-          <br />
-          From apps and protocols that are live on the Ethereum main chain handling hundreds of
-          millions of $$$.
+          Most of the coding challenges are taken from real-world examples. From apps and protocols
+          that are live on the Ethereum main chain and handle hundreds of millions of $$$.
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
-          This is not a game for beginners!
+          However, this is not a game for beginners!
           <br />
           This game is targeted towards more experienced developers that are proficient in
-          JavaScript, NodeJS and the basics of solidity.
+          JavaScript, NodeJS and the basics of Solidity.
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           If you are looking to learn solidity basics, may we suggest that you head over to our
