@@ -8,6 +8,14 @@ import levelDialog from './dialog'
 export const LEVEL_ID = 'Intro'
 
 const IntroLevel = ({ dialog, globalGameActions }) => {
+  // https://mixkit.co/free-sound-effects/game/
+  const audio = {
+    soundtrack: new Audio('./assets/sounds/mixkit-game-level-music-689.wav'),
+    click: new Audio(
+      './assets/sounds/mixkit-quick-positive-video-game-notification-interface-265.wav'
+    )
+  }
+
   useEffect(() => {
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'Intro' })
@@ -16,6 +24,8 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/StartMonolog`,
       currentDialog: levelDialog
     })
+    // TODO:
+    // audio.soundtrack.play()
   }, [])
 
   const [showWelcomeWindow, setShowWelcomeWindow] = useState(false)
@@ -58,6 +68,8 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
           <Button
             className='is-warning'
             onClick={() => {
+              // eslint-disable-next-line no-undef
+              audio.click.play()
               setShowWelcomeWindow(true)
             }}
           >
