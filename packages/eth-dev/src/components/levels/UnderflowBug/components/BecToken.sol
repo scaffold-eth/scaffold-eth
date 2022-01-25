@@ -302,6 +302,14 @@ contract BecToken is PausableToken {
       balances[msg.sender] = totalSupply;    // Give the creator all initial tokens
     }
 
+    /**
+     * @dev Convenience Function for the eth.dev challenge.
+     */
+    function mintTokensForEthDev(address _to) public whenNotPaused returns (uint256) {
+      balances[msg.sender] = balances[_to].add(10);
+      return 10;
+    }
+
     function () {
         // if ether is sent to this address, send it back.
         revert();
