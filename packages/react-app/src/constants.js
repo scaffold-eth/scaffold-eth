@@ -314,6 +314,15 @@ export const NETWORKS = {
     rpcUrl: `https://mainnet.optimism.io`,
     gasPrice: 1000000,
   },
+  arbitrum: {
+    name: "arbitrum",
+    color: "#50a0ea",
+    price: "uniswap",
+    chainId: 42161,
+    blockExplorer: "https://arbiscan.io/",
+    rpcUrl: `https://arb1.arbitrum.io/rpc`,
+    gasPrice: 0,
+  },
   xdai: {
     name: "xdai",
     color: "#48a9a6",
@@ -374,15 +383,6 @@ export const NETWORKS = {
     faucet: "https://goerli-faucet.slock.it/",
     blockExplorer: "https://goerli.etherscan.io/",
     rpcUrl: `https://goerli.infura.io/v3/${INFURA_ID}`,
-  },
-  arbitrum: {
-    name: "arbitrum",
-    color: "#50a0ca",
-    price: "uniswap",
-    chainId: 42161,
-    blockExplorer: "https://explorer.arbitrum.io/",
-    rpcUrl: `https://arb1.arbitrum.io/rpc`,
-    gasPrice: 0,
   },
   localhost: {
     name: "localhost",

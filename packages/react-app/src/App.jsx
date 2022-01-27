@@ -5,7 +5,7 @@ import WalletConnectProvider from "@walletconnect/web3-provider";
 import { Alert, Button, Col, Row, Select, Input, Modal, notification } from "antd";
 import "antd/dist/antd.css";
 import { useUserAddress } from "eth-hooks";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState, useMemo } from "react";
 import Web3Modal from "web3modal";
 import "./App.css";
 import {
@@ -205,8 +205,11 @@ function App(props) {
   }, 7777);*/
 
 
+
+
   const [ walletConnectUrl, setWalletConnectUrl ] = useState()
   const [ connected, setConnected ] = useState()
+
 
   const [ wallectConnectConnector, setWallectConnectConnector ] = useState()
 
@@ -383,6 +386,18 @@ function App(props) {
       });
     }
   },[ walletConnectUrl ])
+
+  useMemo(() => {
+    if (window.location.pathname) {
+      if (window.location.pathname.indexOf("/wc") >= 0) {
+        console.log("WALLET CONNECT!!!!!",window.location.search)
+        let uri = window.location.search.replace("?uri=","")
+        console.log("WC URI:",uri)
+        setWalletConnectUrl(uri)
+      }
+    }
+  }, [injectedProvider, localProvider]);
+
 
   /*
   setTimeout(()=>{
