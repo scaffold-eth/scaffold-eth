@@ -1,4 +1,4 @@
-import { Button, Col, Menu, Row } from "antd";
+import { Button, Col, Menu, Row, List, Card } from "antd";
 import "antd/dist/antd.css";
 import {
   useBalance,
@@ -31,6 +31,7 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+const axios = require("axios");
 
 const { ethers } = require("ethers");
 /*
@@ -54,6 +55,8 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+
+const serverUrl = "http://localhost:8080/";
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -92,9 +95,6 @@ function App(props) {
   const mainnetProvider = useStaticJsonRPC(providers);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
-
-  // 🛰 providers
-  if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 
   const logoutOfWeb3Modal = async () => {
     await web3Modal.clearCachedProvider();
@@ -151,28 +151,40 @@ function App(props) {
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
-  // EXTERNAL CONTRACT EXAMPLE:
-  //
-  // If you want to bring in the mainnet DAI contract it would look like:
-  const mainnetContracts = useContractLoader(mainnetProvider, contractConfig);
+  const [yourCollectibles, setYourCollectibles] = useState();
+  const [isSendingTx, setIsSendingTx] = useState(false);
 
-  // If you want to call a function on a new block
-  useOnBlock(mainnetProvider, () => {
-    console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
-  });
+  useEffect(() => {
+    const updateYourCollectibles = async () => {
+      if (readContracts["Loogies"]) {
+        const balance = await readContracts.Loogies.balanceOf(address);
+        if (DEBUG) console.log("Balance: ", balance);
+        const balanceNumber = balance && balance.toNumber && balance.toNumber();
+        const collectibleUpdate = [];
+        for (let tokenIndex = 0; tokenIndex < balanceNumber; tokenIndex++) {
+          try {
+            if (DEBUG) console.log("Getting token index", tokenIndex);
+            const tokenId = await readContracts.Loogies.tokenOfOwnerByIndex(address, tokenIndex);
+            if (DEBUG) console.log("Getting Loogie tokenId: ", tokenId);
+            const tokenURI = await readContracts.Loogies.tokenURI(tokenId);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
 
-  // Then read your DAI balance like:
-  const myMainnetDAIBalance = useContractReader(mainnetContracts, "DAI", "balanceOf", [
-    "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-  ]);
-
-  // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
-
-  /*
-  const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
-  console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
-  */
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        setYourCollectibles(collectibleUpdate.reverse());
+      }
+    };
+    updateYourCollectibles();
+  }, [address, readContracts]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -186,8 +198,7 @@ function App(props) {
       yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
-      writeContracts &&
-      mainnetContracts
+      writeContracts
     ) {
       console.log("_____________________________________ 🏗 scaffold-eth _____________________________________");
       console.log("🌎 mainnetProvider", mainnetProvider);
@@ -197,8 +208,6 @@ function App(props) {
       console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -209,9 +218,7 @@ function App(props) {
     yourMainnetBalance,
     readContracts,
     writeContracts,
-    mainnetContracts,
     localChainId,
-    myMainnetDAIBalance,
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
@@ -256,100 +263,89 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
 
-          <Contract
-            name="YourContract"
-            price={price}
-            signer={userSigner}
-            provider={localProvider}
-            address={address}
-            blockExplorer={blockExplorer}
-            contractConfig={contractConfig}
-          />
-        </Route>
-        <Route path="/hints">
-          <Hints
-            address={address}
-            yourLocalBalance={yourLocalBalance}
-            mainnetProvider={mainnetProvider}
-            price={price}
-          />
-        </Route>
-        <Route path="/exampleui">
-          <ExampleUI
-            address={address}
-            userSigner={userSigner}
-            mainnetProvider={mainnetProvider}
-            localProvider={localProvider}
-            yourLocalBalance={yourLocalBalance}
-            price={price}
-            tx={tx}
-            writeContracts={writeContracts}
-            readContracts={readContracts}
-            purpose={purpose}
-          />
-        </Route>
-        <Route path="/mainnetdai">
-          <Contract
-            name="DAI"
-            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
-            signer={userSigner}
-            provider={mainnetProvider}
-            address={address}
-            blockExplorer="https://etherscan.io/"
-            contractConfig={contractConfig}
-            chainId={1}
-          />
-          {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-        </Route>
-        <Route path="/subgraph">
-          <Subgraph
-            subgraphUri={props.subgraphUri}
-            tx={tx}
-            writeContracts={writeContracts}
-            mainnetProvider={mainnetProvider}
-          />
+          <div style={{ fontSize: 20 }}>
+            <p>
+              We are giving away free <a href="https://optimistic.loogies.io">OptimisticLoogies</a> to all the <a href="https://loogies.io">Mainnet Loogies</a>!!!
+            </p>
+            <p>
+              If you own some <strong>Mainnet Loogies</strong> you can claim now your <strong>OptimisticLoogies</strong>!
+            </p>
+          </div>
+
+          {yourCollectibles && yourCollectibles.length > 0 ? (
+            <div style={{ margin: "auto", paddingBottom: 25 }}>
+              <h2>You have {yourCollectibles.length} <strong>Mainnet Loogies</strong></h2>
+              <Button
+                type="primary"
+                style={{ marginBottom: 20 }}
+                disabled={isSendingTx}
+                onClick={async () => {
+                  try {
+                    const message = "loogie-claim-" + address;
+
+                    const signature = await userSigner.signMessage(message);
+
+                    setIsSendingTx(true);
+
+                    axios
+                      .post(serverUrl + "claim/", {
+                        address: address,
+                        signature: signature,
+                      })
+                      .then(response => {
+                        console.log(response);
+                        setIsSendingTx(false);
+                      })
+                      .catch(e => {
+                        console.log("Error on claim");
+                        setIsSendingTx(false);
+                      });
+                  } catch (e) {
+                    console.log("Claim failed", e);
+                  }
+                }}
+              >
+                Claim
+              </Button>
+              <List
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 2,
+                  lg: 3,
+                  xl: 4,
+                  xxl: 6,
+                }}
+                dataSource={yourCollectibles}
+                renderItem={item => {
+                  const id = item.id.toNumber();
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} width="200" alt={"Loogie #" + id} />
+                      </Card>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <div>
+              You don't have any Loogie
+            </div>
+          )}
         </Route>
       </Switch>
 

@@ -1,0 +1,85 @@
+{
+  "1": {
+    "owner": "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+    "createdAt": 1635519160093,
+    "voteAllocation": "10",
+    "members": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
+    ],
+    "candidates": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B"
+    ],
+    "votes": {},
+    "votesSignatures": {},
+    "signature": "0xbd1de0d69d6f9fda1e55a7b883d066b073f52ded0a560d385db6e21c3d3080c57bcebe5088acf2213e6d50965ee74e075091cbe97e3e0c009e65041bfa4e06891b",
+    "status": "finished"
+  },
+  "2": {
+    "id": "2",
+    "owner": "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+    "createdAt": 1635519360183,
+    "voteAllocation": "10",
+    "members": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC"
+    ],
+    "candidates": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
+    ],
+    "votes": {
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": {
+        "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": 1,
+        "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93": 3
+      }
+    },
+    "votesSignatures": {
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": "0xa9e51288d5fa245f0dd3d4aa1c7298a9fd014852178606b8c02852fc1f54dffb7cee5bc94049d2c4566dbff170d328de7a2945b9ca911b41e605d44d231d655d1c"
+    },
+    "signature": "0xbd1de0d69d6f9fda1e55a7b883d066b073f52ded0a560d385db6e21c3d3080c57bcebe5088acf2213e6d50965ee74e075091cbe97e3e0c009e65041bfa4e06891b",
+    "status": "finished"
+  },
+  "3": {
+    "id": "3",
+    "owner": "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+    "createdAt": 1635551753136,
+    "voteAllocation": "10",
+    "members": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC"
+    ],
+    "candidates": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
+    ],
+    "votes": {
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": {
+        "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": 0,
+        "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93": 3
+      }
+    },
+    "votesSignatures": {
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B": "0x918d88380f2a90d025b6858a598fdf5529a10bf1dead24d72ce5dac773630b1a03be9ece6fd2caf23010568fc98389303be25d56dc46871cfc4760c71a3452551b"
+    },
+    "signature": "0xbd1de0d69d6f9fda1e55a7b883d066b073f52ded0a560d385db6e21c3d3080c57bcebe5088acf2213e6d50965ee74e075091cbe97e3e0c009e65041bfa4e06891b",
+    "status": "finished"
+  },
+  "4": {
+    "owner": "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+    "createdAt": 1635788689021,
+    "voteAllocation": "10",
+    "members": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x8faC8383Bb69A8Ca43461AB99aE26834fd6D8DeC"
+    ],
+    "candidates": [
+      "0xFAeD87BC8A4721442d501bb190bd767a0d34C84B",
+      "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93"
+    ],
+    "votes": {},
+    "votesSignatures": {},
+    "signature": "0xbd1de0d69d6f9fda1e55a7b883d066b073f52ded0a560d385db6e21c3d3080c57bcebe5088acf2213e6d50965ee74e075091cbe97e3e0c009e65041bfa4e06891b",
+    "status": "started"
+  }
+}
