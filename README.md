@@ -1,12 +1,21 @@
 # 🏗 scaffold-eth - 🧑‍🎤 [PunkWallet.io](https://PunkWallet.io)
 
-> A quick web wallet for demonstrating identity of keypairs and sending around ETH
+> An open source Ethereum web wallet.
 
-![image](https://user-images.githubusercontent.com/2653167/111859677-3234d900-8908-11eb-9614-815f5b945705.png)
+> It's a forkable burner wallet with Wallet Connect up front. 
+
+
+![image](https://user-images.githubusercontent.com/2653167/151641532-7b046bb9-0c4d-4580-9243-cfd685e69e46.png)
+
+
+> It's easy to send ETH an many different networks:
+
+![image](https://user-images.githubusercontent.com/2653167/151641029-d8e2fb9c-7afa-4866-a4eb-3ee0685994c7.png)
+
 
 ---
 
-# 🏃‍♀️ Quick Start
+# 🏃‍♀️ Fork the code and make your own wallet or on your own network!!!
 
 required: [Node](https://nodejs.org/dist/latest-v12.x/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
 
