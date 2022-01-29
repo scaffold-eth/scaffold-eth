@@ -74,6 +74,9 @@ export default function QRPunkBlockie(props) {
         imageSettings={{width:105,height:105,excavate:true}}
       /> : ""}
 
+
+      {!props.scale ? <div style={{fontWeight:"bolder",letterSpacing:-0.8,color:"#666666",fontSize:14.8}}>{props.address}</div>: ""}
+
     </div>
   );
 }

@@ -745,6 +745,7 @@ function App(props) {
             }}
             walletConnect={(wcLink)=>{
               setWalletConnectUrl(wcLink)
+              //window.location.replace('/wc?uri='+wcLink);
             }}
           />
         </div>
@@ -1041,6 +1042,7 @@ function App(props) {
         <Button
           type="primary"
           shape="circle"
+          style={{backgroundColor:targetNetwork.color,borderColor:targetNetwork.color}}
           size="large"
           onClick={() => {
             scanner(true);
