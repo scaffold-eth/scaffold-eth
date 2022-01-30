@@ -16,55 +16,48 @@ const persist = () => {
   fs.closeSync(file);
 };
 
-const countDistributions = () => {
+const countClaims = () => {
   return Object.entries(database).length;
 };
 
-const createDistribution = (data) => {
-  const id = countDistributions() + 1;
+const createClaim = (data) => {
+  const id = countClaims() + 1;
   database[id] = data;
   persist();
   return { id: id, ...data };
 };
 
-const finishDistribution = async (id) => {
-  database[id].status = 'finished';
-
-  persist();
-
-  return getDistribution(id);
-};
-
-const currentDistribution = () => {
-  const current = Object.entries(database).find(([id, data]) => data.status === 'started');
-  if (current) {
-    return { id: current[0], ...current[1] };
+const claimByTokenId = (tokenId) => {
+  const claim = Object.entries(database).find(([id, data]) => data.tokenId === tokenId);
+  if (claim) {
+    return { id: claim[0], ...claim[1] };
   }
   return false;
 };
 
-const findAllDistributions = () => {
-  console.log(database);
-  return Object.entries(database).map(([id, data]) => ({ id, ...data }));
-};
+const getClaimedByTokenId = (tokenId) => {
+  const { id, ...existingData } = claimByTokenId(tokenId)
 
-const getDistribution = (id) => {
+  if (id) {
+    return existingData.claimed;
+  }
+
+  return true;
+}
+
+const getClaim = (id) => {
   if (database[id]) {
     return { id: id, ...database[id] };
   }
   return false;
 };
 
-const votingDistributions = (voter) => {
-  return Object.entries(database).filter(([id, data]) => data.members.includes(voter)).map(([id, data]) => ({ id, ...data }));
+const claimsByAddress = (address) => {
+  return Object.entries(database).filter(([id, data]) => data.address === address).map(([id, data]) => ({ id, ...data }));
 };
 
-const ownedDistributions = (owner) => {
-  return Object.entries(database).filter(([id, data]) => data.owner === owner).map(([id, data]) => ({ id, ...data }));
-};
-
-const updateDistribution = (id, data) => {
-  const { _id, ...existingData } = getDistribution(id)
+const updateClaimByTokenId = (tokenId, data) => {
+  const { id, ...existingData } = claimByTokenId(tokenId)
 
   database[id] = {
     ...existingData,
@@ -73,16 +66,29 @@ const updateDistribution = (id, data) => {
 
   persist();
 
-  return getDistribution(id);
+  return getClaim(id);
+};
+
+const updateClaim = (id, data) => {
+  const { _id, ...existingData } = getClaim(id)
+
+  database[id] = {
+    ...existingData,
+    ...data,
+  };
+
+  persist();
+
+  return getClaim(id);
 };
 
 module.exports = {
-  createDistribution,
-  finishDistribution,
-  currentDistribution,
-  findAllDistributions,
-  votingDistributions,
-  ownedDistributions,
-  getDistribution,
-  updateDistribution,
+  countClaims,
+  createClaim,
+  claimByTokenId,
+  updateClaim,
+  getClaim,
+  updateClaimByTokenId,
+  getClaimedByTokenId,
+  claimsByAddress,
 };

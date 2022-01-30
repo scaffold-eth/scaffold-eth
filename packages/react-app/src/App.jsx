@@ -1,20 +1,12 @@
-import { Button, Col, Menu, Row, List, Card } from "antd";
+import { Button, Col, Row, List, Card, Spin } from "antd";
 import "antd/dist/antd.css";
-import {
-  useBalance,
-  useContractLoader,
-  useContractReader,
-  useGasPrice,
-  useOnBlock,
-  useUserProviderAndSigner,
-} from "eth-hooks";
+import { useBalance, useContractLoader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
-import { Link, Route, Switch, useLocation } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import {
   Account,
-  Contract,
   Faucet,
   GasGauge,
   Header,
@@ -28,8 +20,7 @@ import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
-import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, ExampleUI, Hints, Subgraph } from "./views";
+import { Web3ModalSetup } from "./helpers";
 import { useStaticJsonRPC } from "./hooks";
 const axios = require("axios");
 
@@ -56,6 +47,8 @@ const { ethers } = require("ethers");
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
+const targetClaimNetwork = NETWORKS.kovanOptimism;
+
 const serverUrl = "http://localhost:8080/";
 
 // 😬 Sorry for all the console logging
@@ -81,7 +74,6 @@ function App(props) {
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
   const [selectedNetwork, setSelectedNetwork] = useState(networkOptions[0]);
-  const location = useLocation();
 
   const targetNetwork = NETWORKS[selectedNetwork];
 
@@ -92,6 +84,7 @@ function App(props) {
   const localProvider = useStaticJsonRPC([
     process.env.REACT_APP_PROVIDER ? process.env.REACT_APP_PROVIDER : targetNetwork.rpcUrl,
   ]);
+  const targetProvider = useStaticJsonRPC([targetClaimNetwork.rpcUrl]);
   const mainnetProvider = useStaticJsonRPC(providers);
 
   if (DEBUG) console.log(`Using ${selectedNetwork} network`);
@@ -132,9 +125,6 @@ function App(props) {
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
-  // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userSigner, gasPrice);
-
   // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
   const yourLocalBalance = useBalance(localProvider, address);
 
@@ -147,12 +137,18 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  const targetReadContracts = useContractLoader(targetProvider, contractConfig);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
 
   const [yourCollectibles, setYourCollectibles] = useState();
   const [isSendingTx, setIsSendingTx] = useState(false);
+  const [isLoadingClaims, setIsLoadingClaims] = useState(true);
+  const [claims, setClaims] = useState([]);
+  const [yourClaims, setYourClaims] = useState([]);
+  const [anyUnclaimed, setAnyUnclaimed] = useState(false);
+  const [updateLoogies, setUpdateLoogies] = useState(0);
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -161,6 +157,7 @@ function App(props) {
         if (DEBUG) console.log("Balance: ", balance);
         const balanceNumber = balance && balance.toNumber && balance.toNumber();
         const collectibleUpdate = [];
+        setAnyUnclaimed(false);
         for (let tokenIndex = 0; tokenIndex < balanceNumber; tokenIndex++) {
           try {
             if (DEBUG) console.log("Getting token index", tokenIndex);
@@ -170,12 +167,27 @@ function App(props) {
             if (DEBUG) console.log("tokenURI: ", tokenURI);
             const jsonManifestString = atob(tokenURI.substring(29));
 
-            try {
-              const jsonManifest = JSON.parse(jsonManifestString);
-              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
-            } catch (e) {
-              console.log(e);
-            }
+            const jsonManifest = JSON.parse(jsonManifestString);
+
+            await axios
+              .get(serverUrl + "claim/" + tokenId.toNumber())
+              .then(response => {
+                console.log("claimData: ", response);
+                if (!response.data.claimed) {
+                  setAnyUnclaimed(true);
+                }
+                collectibleUpdate.push({
+                  id: tokenId,
+                  claim: response.data,
+                  uri: tokenURI,
+                  owner: address,
+                  ...jsonManifest,
+                });
+              })
+              .catch(e => {
+                console.log("Error on getting claim data: ", e);
+                collectibleUpdate.push({ id: tokenId, claim: false, uri: tokenURI, owner: address, ...jsonManifest });
+              });
           } catch (e) {
             console.log(e);
           }
@@ -184,7 +196,53 @@ function App(props) {
       }
     };
     updateYourCollectibles();
-  }, [address, readContracts]);
+  }, [address, readContracts, updateLoogies]);
+
+  useEffect(() => {
+    const updateClaims = async () => {
+      if (targetReadContracts["Loogies"]) {
+        setIsLoadingClaims(true);
+        axios
+          .get(serverUrl + "claims/" + address)
+          .then(response => {
+            console.log("claimsData: ", response);
+            setClaims(response.data);
+          })
+          .catch(e => {
+            console.log("Error on getting claims data: ", e);
+            setClaims([]);
+          });
+        setIsLoadingClaims(false);
+      }
+    };
+    updateClaims();
+  }, [address, targetReadContracts]);
+
+  useEffect(() => {
+    const updateYourClaims = async () => {
+      if (targetReadContracts["Loogies"]) {
+        const collectibleUpdate = [];
+        for (let i = 0; i < claims.length; i++) {
+          try {
+            if (DEBUG) console.log("Getting claim index", i);
+            const tokenId = claims[i].optimisticTokenId;
+            if (DEBUG) console.log("Getting Optimistic Loogie tokenId: ", tokenId);
+            const tokenURI = await targetReadContracts.Loogies.tokenURI(tokenId);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+
+            const jsonManifest = JSON.parse(jsonManifestString);
+
+            collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: address, ...jsonManifest });
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        setYourClaims(collectibleUpdate.reverse());
+      }
+    };
+    updateYourClaims();
+  }, [address, claims, targetReadContracts]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -266,51 +324,22 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
-
           <div style={{ fontSize: 20 }}>
             <p>
-              We are giving away free <a href="https://optimistic.loogies.io">OptimisticLoogies</a> to all the <a href="https://loogies.io">Mainnet Loogies</a>!!!
+              We are giving away free <a href="https://optimistic.loogies.io">OptimisticLoogies</a> to all the
+              <a href="https://loogies.io">Mainnet Loogies</a> owners!!!
             </p>
             <p>
-              If you own some <strong>Mainnet Loogies</strong> you can claim now your <strong>OptimisticLoogies</strong>!
+              If you own some <strong>Mainnet Loogies</strong> you can claim now your <strong>OptimisticLoogies</strong>
+              !
             </p>
           </div>
 
-          {yourCollectibles && yourCollectibles.length > 0 ? (
+          {claims.length > 0 ? (
             <div style={{ margin: "auto", paddingBottom: 25 }}>
-              <h2>You have {yourCollectibles.length} <strong>Mainnet Loogies</strong></h2>
-              <Button
-                type="primary"
-                style={{ marginBottom: 20 }}
-                disabled={isSendingTx}
-                onClick={async () => {
-                  try {
-                    const message = "loogie-claim-" + address;
-
-                    const signature = await userSigner.signMessage(message);
-
-                    setIsSendingTx(true);
-
-                    axios
-                      .post(serverUrl + "claim/", {
-                        address: address,
-                        signature: signature,
-                      })
-                      .then(response => {
-                        console.log(response);
-                        setIsSendingTx(false);
-                      })
-                      .catch(e => {
-                        console.log("Error on claim");
-                        setIsSendingTx(false);
-                      });
-                  } catch (e) {
-                    console.log("Claim failed", e);
-                  }
-                }}
-              >
-                Claim
-              </Button>
+              <h2>
+                You have claimed {claims.length} <strong>Optimistic Loogies</strong>
+              </h2>
               <List
                 grid={{
                   gutter: 16,
@@ -321,9 +350,11 @@ function App(props) {
                   xl: 4,
                   xxl: 6,
                 }}
-                dataSource={yourCollectibles}
+                loading={isLoadingClaims}
+                dataSource={yourClaims}
                 renderItem={item => {
-                  const id = item.id.toNumber();
+                  console.log("item: ", item);
+                  const id = item.id;
 
                   return (
                     <List.Item key={id + "_" + item.uri + "_" + item.owner}>
@@ -343,8 +374,96 @@ function App(props) {
             </div>
           ) : (
             <div>
-              You don't have any Loogie
+              You didn't claimed any <strong>Optmistic Loogie</strong> yet
             </div>
+          )}
+
+          {yourCollectibles && yourCollectibles.length > 0 && anyUnclaimed && (
+            <>
+              <Button
+                type="primary"
+                style={{ marginBottom: 20 }}
+                disabled={isSendingTx}
+                onClick={async () => {
+                  try {
+                    const message = "loogie-claim-" + address;
+
+                    const signature = await userSigner.signMessage(message);
+
+                    setIsSendingTx(true);
+
+                    axios
+                      .post(serverUrl + "claim/", {
+                        address: address,
+                        signature: signature,
+                      })
+                      .then(response => {
+                        console.log(response);
+                        setClaims(response.data);
+                        setIsSendingTx(false);
+                        setUpdateLoogies(updateLoogies + 1);
+                      })
+                      .catch(e => {
+                        console.log("Error on claim");
+                        setIsSendingTx(false);
+                      });
+                  } catch (e) {
+                    console.log("Claim failed", e);
+                  }
+                }}
+              >
+                Claim
+              </Button>
+              {isSendingTx && <Spin />}
+            </>
+          )}
+
+          {yourCollectibles && yourCollectibles.length > 0 ? (
+            <div style={{ margin: "auto", paddingBottom: 25 }}>
+              <h2>
+                You have {yourCollectibles.length} <strong>Mainnet Loogies</strong>
+              </h2>
+
+              <List
+                grid={{
+                  gutter: 16,
+                  xs: 1,
+                  sm: 2,
+                  md: 2,
+                  lg: 3,
+                  xl: 4,
+                  xxl: 6,
+                }}
+                dataSource={yourCollectibles}
+                renderItem={item => {
+                  console.log("item: ", item);
+                  const id = item.id.toNumber();
+
+                  return (
+                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                      <Card
+                        title={
+                          <div>
+                            <span style={{ fontSize: 18, marginRight: 8 }}>
+                              {item.name} -
+                              {item.claim && item.claim.claimed ? (
+                                <span style={{ color: "green" }}>Claimed!</span>
+                              ) : (
+                                <span style={{ color: "orange" }}>Pending Claim</span>
+                              )}
+                            </span>
+                          </div>
+                        }
+                      >
+                        <img src={item.image} width="200" alt={"Loogie #" + id} />
+                      </Card>
+                    </List.Item>
+                  );
+                }}
+              />
+            </div>
+          ) : (
+            <div>You don't have any Loogie</div>
           )}
         </Route>
       </Switch>

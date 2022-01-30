@@ -7,17 +7,27 @@ const bodyParser = require("body-parser");
 const app = express();
 const db = require("./services/db");
 
+//const { useContractLoader } = require("eth-hooks");
+
 // MY INFURA_ID, SWAP IN YOURS FROM https://infura.io/dashboard/ethereum
 const INFURA_ID = "946e2c899ec14ac1b94ef098d2d3a9be";
 
 /// 📡 What chain are your contracts deployed to?
 
-const targetNetwork = {
+const sourceNetwork = {
     name: "localhost",
     color: "#666666",
     chainId: 31337,
     blockExplorer: "",
     rpcUrl: "http://localhost:8545",
+  };
+
+const targetNetwork = {
+    name: "kovanOptimism",
+    color: "#666666",
+    chainId: 69,
+    blockExplorer: "",
+    rpcUrl: "https://kovan.optimism.io",
   };
 /*
 const targetNetwork = {
@@ -37,24 +47,135 @@ const targetNetwork = {
     blockExplorer: "https://rinkeby.etherscan.io/",
   };
 */
-// 🏠 Your local provider is usually pointed at your local blockchain
-const localProviderUrl = targetNetwork.rpcUrl;
-console.log("🏠 Connecting to provider:", localProviderUrl);
-const localProvider = new ethers.providers.StaticJsonRpcProvider(localProviderUrl);
 
-const isAdmin = async (address) => {
-  const providerNetwork = await localProvider.getNetwork();
-  const _chainId = providerNetwork.chainId;
+const sourceProviderUrl = sourceNetwork.rpcUrl;
+console.log("🏠 Connecting to provider:", sourceProviderUrl);
+const sourceProvider = new ethers.providers.StaticJsonRpcProvider(sourceProviderUrl);
 
-  contractList = require("./hardhat_contracts.json");
+contractList = require("./hardhat_contracts.json");
 
-  const contractData = contractList[_chainId][targetNetwork.name].contracts.QuadraticDiplomacyContract;
-  const contract = new ethers.Contract(contractData.address, contractData.abi, localProvider);
+const sourceContractData = contractList[sourceNetwork.chainId][sourceNetwork.name].contracts.Loogies;
+const sourceContract = new ethers.Contract(sourceContractData.address, sourceContractData.abi, sourceProvider);
 
-  const adminRole = await contract.DEFAULT_ADMIN_ROLE();
-  const isAdmin = await contract.hasRole(adminRole, address);
+const targetProviderUrl = targetNetwork.rpcUrl;
+const targetProvider = new ethers.providers.StaticJsonRpcProvider(targetProviderUrl);
+const account = ethers.Wallet.fromMnemonic("juice thought toilet net voice fan column gallery wing fiscal bus moon");
+const signer = account.connect(targetProvider);
 
-  return isAdmin;
+const targetContractData = contractList[targetNetwork.chainId][targetNetwork.name].contracts.Loogies;
+const targetContract = new ethers.Contract(targetContractData.address, targetContractData.abi, signer);
+
+
+
+const loogiesIds = async (address) => {
+  console.log("LoogiesIds: ", address);
+
+  const balance = await sourceContract.balanceOf(address);
+  console.log("Balance: ", balance);
+  const balanceNumber = balance && balance.toNumber && balance.toNumber();
+  const ids = [];
+  for (let tokenIndex = 0; tokenIndex < balanceNumber; tokenIndex++) {
+      console.log("Getting token index", tokenIndex);
+      const tokenId = await sourceContract.tokenOfOwnerByIndex(address, tokenIndex);
+      console.log("Loogie tokenId: ", tokenId);
+      ids.push(tokenId.toNumber());
+  }
+
+  return ids;
+}
+
+const claim = async (address, tokenId) => {
+  console.log("Claim tokenId: ", tokenId, " from address: ", address);
+
+  const owner = await sourceContract.ownerOf(tokenId);
+
+  const claimed = await db.getClaimedByTokenId(tokenId);
+
+  if (owner == address && !claimed) {
+    await mint(address, tokenId);
+  }
+}
+
+const mint = async (address, tokenId) => {
+  console.log("Mint tokenId: ", tokenId, " from address: ", address);
+
+  await db.updateClaimByTokenId(tokenId, {
+    claimed: true,
+    address: address,
+    claimedTimestamp: Date.now(),
+    minted: false,
+  })
+
+  const price = await targetContract.price();
+
+  console.log("price: ", price);
+
+  const response = await targetContract.mintItem({ value: price, gasLimit: 300000 });
+
+  //console.log("response: ", response);
+
+  const receipt = await response.wait();
+
+  //console.log("receipt: ", receipt);
+
+/*
+  let mintConfirmations = 0;
+  let receipt;
+  while (mintConfirmations < 4) {
+    receipt = await response.wait();
+
+    console.log("receipt: ", receipt);
+
+    mintConfirmations = receipt.confirmations;
+  }
+*/
+
+  const transactionHash = receipt.transactionHash;
+
+  console.log("transactionHash: ", transactionHash);
+
+  await db.updateClaimByTokenId(tokenId, {
+    transactionHash: transactionHash,
+  })
+
+  const optimisticTokenId = receipt.events[0].args[2].toNumber();
+
+  console.log("optimisticTokenId: ", optimisticTokenId);
+
+  await db.updateClaimByTokenId(tokenId, {
+    optimisticTokenId: optimisticTokenId,
+  })
+
+  const responseTransfer = await targetContract.transferFrom(signer.address, address, optimisticTokenId, { gasLimit: 200000 });
+
+  //console.log("responseTransfer: ", responseTransfer);
+
+  const receiptTransfer = await response.wait();
+
+  //console.log("receiptTransfer: ", receiptTransfer);
+
+/*
+  let transferConfirmations = 0;
+  let receiptTransfer;
+  while (transferConfirmations < 4) {
+    receiptTransfer = await response.wait();
+
+    console.log("receiptTransfer: ", receiptTransfer);
+
+    transferConfirmations = receiptTransfer.confirmations;
+  }
+*/
+
+  const transactionHashTransfer = receiptTransfer.transactionHash;
+
+  console.log("transactionHashTransfer: ", transactionHashTransfer);
+
+  await db.updateClaimByTokenId(tokenId, {
+    transactionHashTransfer: transactionHashTransfer,
+    minted: true,
+  })
+
+  return;
 }
 
 //Uncomment this if you want to create a wallet to send ETH or something...
@@ -73,17 +194,26 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async function (request, response) {
+
+
+  for (let tokenId = 1; tokenId < 8; tokenId++) {
+    await db.createClaim({
+      tokenId: tokenId,
+      claimed: false
+    })
+  }
+
+
   response.send('OptimisticLoogiesClaim');
 });
 
-app.post("/distributions", async function (request, response) {
+app.post("/claim", async function (request, response) {
   const ip =
     request.headers["x-forwarded-for"] || request.connection.remoteAddress;
   console.log("POST from ip address:", ip);
   console.log(request.body);
 
-  // TODO: add some nonce to avoid replay attacks
-  const message = "qdip-creation-" + request.body.address;
+  const message = "loogie-claim-" + request.body.address;
 
   const recovered = ethers.utils.verifyMessage(
     message,
@@ -95,204 +225,43 @@ app.post("/distributions", async function (request, response) {
     return response.status(401).send('Wrong signature');
   }
 
-  const isAdminInContract = await isAdmin(recovered);
-  if (!isAdminInContract) {
-    console.log('No admin in contract');
-    return response.status(401).send('No admin in contract');
+  const ids = await loogiesIds(recovered);
+  console.log("IDS: ", ids);
+
+  let responseData = [];
+
+  for (let i = 0; i < ids.length; i++) {
+    await claim(recovered, ids[i]);
+    const claimData = await db.claimByTokenId(ids[i]);
+    responseData.push(claimData);
   }
 
-  let members = [];
-  request.body.members.forEach(voteAddress => {
-    try {
-      const voteAddressWithChecksum = ethers.utils.getAddress(voteAddress);
-      if (!members.includes(voteAddressWithChecksum)) {
-        members.push(voteAddressWithChecksum);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
+  return response.status(201).send(responseData);
+});
 
-  let candidates = [];
-  request.body.candidates.forEach(voteAddress => {
-    try {
-      const voteAddressWithChecksum = ethers.utils.getAddress(voteAddress);
-      if (!candidates.includes(voteAddressWithChecksum)) {
-        candidates.push(voteAddressWithChecksum);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  });
+app.get("/claim/:tokenId", async function (request, response) {
+  console.log("Get Claim tokenId: ", request.params.tokenId);
 
   try {
-    const resAdd = await db.createDistribution({
-      owner: request.body.address,
-      createdAt: Date.now(),
-      voteAllocation: request.body.voteAllocation,
-      members: members,
-      candidates: candidates,
-      votes: {},
-      votesSignatures: {},
-      signature: request.body.signature,
-      status: 'started'
-    });
+    const claim = await db.claimByTokenId(parseInt(request.params.tokenId));
 
-    console.log(resAdd.id);
-    return response.status(201).send(resAdd);
+    response.send(claim);
   } catch (exception) {
     console.log(exception);
-    return response.status(500).send('Error creating distribution');
+    response.status(500).send('Error retrieving claim');
   }
 });
 
-app.get("/distributions", async function (request, response) {
+app.get("/claims/:address", async function (request, response) {
+  console.log("Get Claims address: ", request.params.address);
 
   try {
-    const distributions = await db.findAllDistributions();
+    const claims = await db.claimsByAddress(request.params.address);
 
-    response.send(distributions);
+    response.send(claims);
   } catch (exception) {
     console.log(exception);
-    response.status(500).send('Error retrieving distributions');
-  }
-});
-
-app.get("/currentDistribution", async function (request, response) {
-
-  try {
-    const distribution = await db.currentDistribution();
-    if(distribution) {
-      console.log(distribution);
-      response.send(distribution);
-    } else {
-      response.status(404).send('No current distribution');
-    }
-  } catch (exception) {
-    console.log(exception);
-    response.status(500).send('Error retrieving current distribution');
-  }
-});
-
-
-app.get("/ownedDistributions/:owner", async function (request, response) {
-
-  try {
-    const distributions = await db.ownedDistributions(request.params.owner);
-
-    response.send(distributions);
-  } catch (exception) {
-    console.log(exception);
-    response.status(500).send('Error retrieving distributions');
-  }
-});
-
-app.get("/votingDistributions/:voter", async function (request, response) {
-
-  try {
-    const distributions = await db.votingDistributions(request.params.voter);
-
-    response.send(distributions);
-  } catch (exception) {
-    console.log(exception);
-    response.status(500).send('Error retrieving distributions');
-  }
-});
-
-app.get("/distributions/:distributionId", async function (request, response) {
-  const distribution = await db.getDistribution(request.params.distributionId);
-
-  if (!distribution) {
-    response.status(404).send('Distribution not found');
-  } else {
-    response.send(distribution);
-  }
-});
-
-app.post("/distributions/:distributionId/vote", async function (request, response) {
-  const sortedVotes = Object.keys(request.body.votes).sort();
-
-  const message =
-    "qdip-vote-" +
-    request.params.distributionId +
-    request.body.address +
-    sortedVotes.join() +
-    sortedVotes.map(voter => request.body.votes[voter]).join();
-
-  const recovered = ethers.utils.verifyMessage(
-    message,
-    request.body.signature
-  );
-
-  if (recovered != request.body.address) {
-    console.log('Wrong signature');
-    return response.status(401).send('Wrong signature');
-  }
-
-  const distribution = await db.getDistribution(request.params.distributionId);
-
-  if (!distribution) {
-    return response.status(404).send('Distribution not found');
-  } else {
-    console.log(distribution);
-
-    if (!distribution.members.includes(recovered)) {
-      return response.status(401).send('Voter not allowed');
-    }
-
-    let votes = distribution.votes;
-    let votesSignatures = distribution.votesSignatures;
-
-    // Check if all votes are to candidates
-    const allMembers = Object.keys(request.body.votes).every(voteAddress => {
-      return distribution.candidates.includes(voteAddress);
-    });
-    if (!allMembers) {
-      return response.status(401).send('Vote to a no candidate member');
-    }
-
-    // Check if the total votes are equal or less than the vote allocation
-    const reducer = (previousValue, currentValue) => previousValue + currentValue;
-    const totalVotes = Object.values(request.body.votes).reduce(reducer);
-    if (totalVotes > distribution.voteAllocation) {
-      return response.status(401).send('More total votes than allowed');
-    }
-
-    votes[recovered] = request.body.votes;
-    votesSignatures[recovered] = request.body.signature;
-
-    const res = await db.updateDistribution(distribution.id, { votes: votes, votesSignatures: votesSignatures });
-
-    return response.send(res);
-  }
-});
-
-app.post("/distributions/:distributionId/finish", async function (request, response) {
-  const message = "qdip-finish-" + request.params.distributionId + request.body.address;
-
-  const recovered = ethers.utils.verifyMessage(
-    message,
-    request.body.signature
-  );
-
-  if (recovered != request.body.address) {
-    console.log('Wrong signature');
-    return response.status(401).send('Wrong signature');
-  }
-
-  const isAdminInContract = await isAdmin(recovered);
-  if (!isAdminInContract) {
-    console.log('No admin in contract');
-    return response.status(401).send('No admin in contract');
-  }
-
-  const distribution = await db.getDistribution(request.params.distributionId);
-
-  if (!distribution) {
-    return response.status(404).send('Distribution not found');
-  } else {
-    const res = await db.finishDistribution(request.params.distributionId);
-    return response.send(res);
+    response.status(500).send('Error retrieving claim');
   }
 });
 
