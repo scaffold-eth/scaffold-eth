@@ -16,10 +16,6 @@ const persist = () => {
   fs.closeSync(file);
 };
 
-const countClaims = () => {
-  return Object.entries(database).length;
-};
-
 const createClaim = (data) => {
   const id = countClaims() + 1;
   database[id] = data;
@@ -82,8 +78,11 @@ const updateClaim = (id, data) => {
   return getClaim(id);
 };
 
+const findAllClaims = () => {
+  return Object.entries(database).map(([id, data]) => ({ id, ...data }));
+};
+
 module.exports = {
-  countClaims,
   createClaim,
   claimByTokenId,
   updateClaim,
@@ -91,4 +90,5 @@ module.exports = {
   updateClaimByTokenId,
   getClaimedByTokenId,
   claimsByAddress,
+  findAllClaims,
 };

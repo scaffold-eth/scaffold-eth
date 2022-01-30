@@ -1,8 +1,6 @@
 const firebaseAdmin = require("firebase-admin");
 
-const firebaseServiceAccount = require("../quadraticdiplomacy-325519-c172562cd6fe.json");
-
-//const firebaseServiceAccount = require("../quadratic-210b0-904671cd1184.json");
+const firebaseServiceAccount = require("../optimisticloogiesclaim-1ec34476e878.json");
 
 firebaseAdmin.initializeApp({
   credential: firebaseAdmin.credential.cert(firebaseServiceAccount),
@@ -17,18 +15,13 @@ firebaseAdmin.initializeApp({
 // Docs: https://firebase.google.com/docs/firestore/quickstart#node.js_1
 const database = firebaseAdmin.firestore();
 
-const createDistribution = async (data) => {
-  return await database.collection('distributions').add(data);
+const createClaim = async (data) => {
+  return await database.collection('claims').add(data);
 };
 
-const finishDistribution = async (id) => {
-  const distributionRef = database.collection('distributions').doc(id);
-  return distributionRef.update({status: 'finished'});
-};
-
-const currentDistribution = async () => {
-  const snapshot = await database.collection('distributions')
-    .where('status', '==', 'started')
+const claimByTokenId = async (tokenId) => {
+  const snapshot = await database.collection('claims')
+    .where('tokenId', '==', tokenId)
     .get();
 
   if(!snapshot.empty) {
@@ -38,46 +31,56 @@ const currentDistribution = async () => {
   }
 };
 
-const findAllDistributions = async () => {
-  const snapshot = await database.collection('distributions').get();
+const getClaimedByTokenId = async (tokenId) => {
+  const { id, ...existingData } = await claimByTokenId(tokenId)
+
+  if (id) {
+    return existingData.claimed;
+  }
+
+  return true;
+}
+
+const findAllClaims = async () => {
+  const snapshot = await database.collection('claims').get();
 
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-const getDistribution = async (id) => {
-  const distributionRef = database.collection('distributions').doc(id);
-  const distribution = await distributionRef.get();
+const getClaim = async (id) => {
+  const claimRef = database.collection('claims').doc(id);
+  const claim = await claimRef.get();
 
-  if (!distribution.exists) {
+  if (!claim.exists) {
     return false;
   }
-  return { id: distribution.id, ...distribution.data() };
+  return { id: claim.id, ...claim.data() };
 };
 
-const votingDistributions = async (voter) => {
-  const snapshot = await database.collection('distributions').where('members', 'array-contains', voter).get();
+const claimsByAddress = async (address) => {
+  const snapshot = await database.collection('claims').where('address', '==', address).get();
 
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
-const ownedDistributions = async (owner) => {
-  const snapshot = await database.collection('distributions').where('owner', '==', owner).get();
+const updateClaimByTokenId = async (tokenId, data) => {
+  const { id, ..._existingData } = await claimByTokenId(tokenId)
 
-  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+  return updateClaim(id, data);
 };
 
-const updateDistribution = async (id, data) => {
-  const distributionRef = database.collection('distributions').doc(id);
-  return distributionRef.update(data);
+const updateClaim = async (id, data) => {
+  const claimRef = database.collection('claims').doc(id);
+  return claimRef.update(data);
 };
 
 module.exports = {
-  createDistribution,
-  finishDistribution,
-  currentDistribution,
-  findAllDistributions,
-  votingDistributions,
-  ownedDistributions,
-  getDistribution,
-  updateDistribution,
+  createClaim,
+  claimByTokenId,
+  updateClaim,
+  getClaim,
+  updateClaimByTokenId,
+  getClaimedByTokenId,
+  claimsByAddress,
+  findAllClaims,
 };
