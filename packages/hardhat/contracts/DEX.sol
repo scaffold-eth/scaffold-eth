@@ -15,42 +15,31 @@ contract DEX {
 
     using SafeMath for uint256; //outlines use of SafeMath for uint256 variables
     IERC20 token; //instantiates the imported contract
-
+    event tokenbought(address ballbought, string swap, uint256 tokens_in, uint256 tokens_out);
+    event tokensold(address ballsell, string swap, uint256 tokens_iny, uint256 tokens_outy);
+    event liqdeposited(address depos, uint256 famountOfliq, uint256 etin, uint256 tokens_inyy);
+    event liqwithdraw(address withdrawn, uint256 qdamountOfliq, uint256 etout, uint256 tokens_outyy);
     /* ========== EVENTS ========== */
 
     /**
      * @notice Emitted when ethToToken() swap transacted
      */
-    event EthToTokenSwap(address _swapper, uint256 tokenOutput, uint256 ethInput);
+   
 
     /**
      * @notice Emitted when tokenToEth() swap transacted
      */
-    event TokenToEthSwap(address _swapper, uint256 ethOutput, uint256 tokensInput);
+    
 
     /**
      * @notice Emitted when liquidity provided to DEX
      */
-    event LiquidityProvided(
-        address _liquidityProvider,
-        uint256 ethInput,
-        uint256 tokensInput,
-        uint256 newLiquidityPosition,
-        uint256 liquidityMinted,
-        uint256 totalLiquidity
-    );
+ 
 
     /**
      * @notice Emitted when liquidity removed from DEX
      */
-    event LiquidityRemoved(
-        address _liquidityRemover,
-        uint256 ethOutput,
-        uint256 tokensOutput,
-        uint256 newLiquidityPosition,
-        uint256 liquidityWithdrawn,
-        uint256 totalLiquidity
-    );
+
 
     /* ========== CONSTRUCTOR ========== */
 
@@ -89,6 +78,13 @@ contract DEX {
     }
 
     /**
+     * @notice returns liquidity for a user
+     */
+    function getLiquidity(address lp) public view returns(uint256) {
+    return liquidity[lp];
+  }
+
+    /**
      * @notice sends Ether to DEX in exchange for $BAL
      */
     function ethToToken() public payable returns (uint256 tokenOutput) {
@@ -99,8 +95,9 @@ contract DEX {
 
         //  totalLiquidity = totalLiquidity.sub(tokenOutput); //update totalLiquidity? I guess you don't because even though liquidity is changing... it isn't in a macro-scale? We still have the same amount of liquidity in "total" but just different asset ratios.
         require(token.transfer(msg.sender, tokenOutput), "ethToToken(): reverted swap.");
+        emit tokenbought(msg.sender, "Eth to Balloons", msg.value, tokenOutput);
         return tokenOutput;
-        emit EthToTokenSwap(msg.sender, tokenOutput, msg.value);
+        
     }
 
     /**
@@ -116,8 +113,9 @@ contract DEX {
         require(token.transferFrom(msg.sender, address(this), tokenInput), "tokenToEth(): reverted swap.");
         (bool sent, ) = msg.sender.call{ value: ethOutput }("");
         require(sent, "tokenToEth: revert in transferring eth to you!");
+        emit tokensold(msg.sender, "Balloons to ETH", ethOutput, tokenInput);
         return ethOutput;
-        emit TokenToEthSwap(msg.sender, ethOutput, tokenInput);
+        
     }
 
     /**
@@ -135,15 +133,9 @@ contract DEX {
         totalLiquidity = totalLiquidity.add(liquidityMinted);
 
         require(token.transferFrom(msg.sender, address(this), tokenDeposit));
+        emit liqdeposited(msg.sender, liquidityMinted, msg.value, tokenDeposit);
         return tokenDeposit;
-        emit LiquidityProvided(
-            msg.sender,
-            msg.value,
-            tokenDeposit,
-            liquidity[msg.sender],
-            liquidityMinted,
-            totalLiquidity
-        );
+        
     }
 
     /**
@@ -162,15 +154,8 @@ contract DEX {
         (bool sent, ) = msg.sender.call{ value: ethWithdrawn }("");
         require(sent, "withdraw(): revert in transferring eth to you!");
         require(token.transfer(msg.sender, tokenAmount));
-
+        emit liqwithdraw(msg.sender, amount, ethWithdrawn, tokenAmount);
         return (ethWithdrawn, tokenAmount);
-        emit LiquidityRemoved(
-            msg.sender,
-            ethWithdrawn,
-            tokenAmount,
-            liquidity[msg.sender],
-            ethWithdrawn,
-            totalLiquidity
-        );
+        
     }
 }

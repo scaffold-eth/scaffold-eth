@@ -29,7 +29,7 @@ export default function Dex(props) {
   const tokenBalance = useTokenBalance(props.readContracts[tokenName], contractAddress, props.localProvider);
   const tokenBalanceFloat = parseFloat(ethers.utils.formatEther(tokenBalance));
   const ethBalanceFloat = parseFloat(ethers.utils.formatEther(contractBalance));
-  const liquidity = useContractReader(props.readContracts, contractName, "liquidity", [props.address]);
+  const liquidity = useContractReader(props.readContracts, contractName, "totalLiquidity");
 
   const rowForm = (title, icon, onClick) => {
     return (

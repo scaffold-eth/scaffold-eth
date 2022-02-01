@@ -27,6 +27,7 @@ import {
   Dex,
   Address,
   Balance,
+  Events,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -152,6 +153,7 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  const liquidity = useContractReader(readContracts, "DEX", "getLiquidity", [address]);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -281,6 +283,9 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Home</Link>
         </Menu.Item>
+                <Menu.Item key="/Events">
+          <Link to="/Events">Eventlist 📜</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -334,6 +339,52 @@ function App(props) {
             />
           </div>
         </Route>
+
+        <Route path="/Events">
+
+
+
+<Events
+ contracts={readContracts}
+ contractName="DEX"
+ eventName="tokenbought"
+ localProvider={localProvider}
+ mainnetProvider={mainnetProvider}
+ startBlock={1}
+/>
+
+
+<Events
+ contracts={readContracts}
+ contractName="DEX"
+ eventName="tokensold"
+ localProvider={localProvider}
+ mainnetProvider={mainnetProvider}
+ startBlock={1}
+/>
+
+
+<Events
+ contracts={readContracts}
+ contractName="DEX"
+ eventName="liqdeposited"
+ localProvider={localProvider}
+ mainnetProvider={mainnetProvider}
+ startBlock={1}
+/>
+
+
+<Events
+ contracts={readContracts}
+ contractName="DEX"
+ eventName="liqwithdraw"
+ localProvider={localProvider}
+ mainnetProvider={mainnetProvider}
+ startBlock={1}
+/>
+
+</Route>
+}
 
         <Route exact path="/debug">
           {/*
@@ -449,7 +500,7 @@ function App(props) {
         )}
 
         <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
-        {/* <Dex name={"liquidity"} img={"💦"} address={address} contracts={readContracts} /> */}
+        <h3>💦💦: <TokenBalance balance={liquidity} /></h3>
         {FaucetHint}
       </div>
 
