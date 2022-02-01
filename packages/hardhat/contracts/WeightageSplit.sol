@@ -1,10 +1,3 @@
-// Sources flattened with hardhat v2.6.0 https://hardhat.org
-
-// File @openzeppelin/contracts/token/ERC20/IERC20.sol@v4.4.0
-
-
-// OpenZeppelin Contracts v4.4.0 (token/ERC20/IERC20.sol)
-
 pragma solidity ^0.8.0;
 
 /**
@@ -765,22 +758,25 @@ interface IUniswapV3Factory {
     ) external view returns (address pool);
 }
 
-contract RetroactiveFunding is ERC20 {
+contract PublicGoodToken is ERC20 {
     uint256 public constant mintAmount = 100 ether;
     uint256 public tokenId;
 
     address public constant weth = 0xc778417E063141139Fce010982780140Aa0cD5Ab;
-    // 1% fee
+    // 1% feexq
     uint24 public constant fee = 10000;
 
     address public pool;
+
+    mapping(address =>  mapping (address => uint)) stakeAmount;
+
     // initial price used to initialize pool is project token / eth
     uint160 public constant initialPrice = 1;
     IUniswapV3Factory constant factory = IUniswapV3Factory(0x1F98431c8aD98523631AE4a59f267346ea31F984);
     INonfungiblePositionManager constant positionManager = INonfungiblePositionManager(0xC36442b4a4522E871399CD717aBDD847Ab11FE88);
     ISwapRouter constant swapRouter = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
-    constructor() ERC20("RetroPGF", "RetroPGF") {
+    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
         _mint(msg.sender, mintAmount);
         pool = factory.createPool(address(this), weth, fee);
         // initialize pool
@@ -832,8 +828,6 @@ contract RetroactiveFunding is ERC20 {
         return IUniswapV3Pool(pool).token1();
     }
 
-
-
     /**
      * @notice Gets sq root of a number
      * @param x no to get the sq root of
@@ -845,6 +839,17 @@ contract RetroactiveFunding is ERC20 {
             y = z;
             z = (x / z + z) / 2;
         }
+    }
+
+    function stake(IERC20 _stakeToken, address _user, uint _amount) external {
+        stakeAmount[_user][address(_stakeToken)] += _amount;
+        _mint(_user, _amount);
+    }
+
+    function unstake(IERC20 _stakeToken, address _user , uint _amount) external{
+        stakeAmount[_user][address(_stakeToken)]  -= _amount;
+        _burn(_user, _amount);
+        _stakeToken.transfer(_user, _amount);
     }
 
     /**
@@ -915,4 +920,45 @@ contract RetroactiveFunding is ERC20 {
         (bool success, ) = msg.sender.call{value: address(this).balance}("");
         require(success, "sending eth failed");
     }
+}
+
+
+// File contracts/WeightageSplit.sol
+
+pragma solidity ^0.8.7;
+
+
+contract Weightage {
+
+uint256 public constant MULTIPLIER = 10**5;
+
+PublicGoodToken[] publicGoods;
+
+IERC20 public stakeToken;
+
+constructor(PublicGoodToken[] memory _publicGoods, IERC20 _stakeToken) {
+    stakeToken = _stakeToken;
+    for (uint i = 0; i < _publicGoods.length; i++) {
+        publicGoods.push(_publicGoods[i]);
+    }
+}
+
+function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
+   uint sum = computePriceSum(_publicGoods);
+   for (uint i = 0; i < _publicGoods.length; i++) {
+       uint percentage = (_publicGoods[i].getPrice() * 100) / sum;
+       uint individualProjectAmount = (_amount * percentage) / 100;
+       stakeToken.transferFrom(msg.sender, address(_publicGoods[i]), individualProjectAmount);
+       _publicGoods[i].stake(stakeToken, msg.sender, individualProjectAmount);
+   }
+
+}
+
+function computePriceSum(PublicGoodToken[] memory _publicGoods) internal view returns(uint) {
+    uint sum = 0;
+    for (uint i = 0; i < _publicGoods.length; i++) {
+      sum += _publicGoods[i].getPrice();
+    }
+    return sum;
+}
 }
