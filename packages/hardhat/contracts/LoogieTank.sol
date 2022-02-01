@@ -3,18 +3,18 @@ pragma solidity >=0.8.0 <0.9.0;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
+import "@openzeppelin/contracts/interfaces/IERC2981.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 // import "hardhat/console.sol";
 
 
-abstract contract LoogiesContract {
-  function renderTokenById(uint256 id) external virtual view returns (string memory);
-  function transferFrom(address from, address to, uint256 id) external virtual;
+interface SvgNftApi {
+  function renderTokenById(uint256 id) external view returns (string memory);
+  function transferFrom(address from, address to, uint256 id) external;
 }
 
-// in variable names, prefix "f" means they are related to fancy loogies.
 contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   using Strings for uint256;
@@ -24,19 +24,25 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
 
   Counters.Counter private _tokenIds;
 
+  bytes4 private constant INTERFACE_ERC721 = 0x80ac58cd;
   // all funds go to buidlguidl.eth
-  // address payable public immutable recipient = payable(0xa81a6a910FeD20374361B35C451a4a44F86CeD46);
-  address payable public immutable recipient;
-  uint256 constant public price = 500000000000000; // 0.0005 eth
-  LoogiesContract immutable loogies;
-  LoogiesContract immutable floogies;
-  mapping(uint256 => uint256[]) loogiesByTankId;
-  mapping(uint256 => uint256[]) floogiesByTankId;
+  address payable public constant recipient = payable(0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d);
+  // address payable public immutable recipient;
+  uint256 constant public price = 50000000000000; // 0.005 eth
 
-  constructor(address _loogies, address _floogies) ERC721("Loogie Tank", "LOOGTANK") {
-    loogies = LoogiesContract(_loogies);
-    floogies = LoogiesContract(_floogies);
-    recipient = payable(msg.sender); // remove this for mainnet launch.
+  struct Component {
+    uint256 blockAdded;
+    uint256 id;   // token id of the ERC721 contract at `addr`
+    address addr; // address of the ERC721 contract
+    uint8 x;
+    uint8 y;
+    int8 dx;
+    int8 dy;
+  }
+
+  mapping(uint256 => Component[]) componentByTankId;
+
+  constructor() ERC721("Tank", "TANK") {
   }
 
   function mintItem() public payable returns (uint256) {
@@ -49,22 +55,20 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       return id;
   }
 
-  function returnAllLoogies(uint256 _id) external {
-    require(msg.sender == ownerOf(_id), "only tank owner can return the loogies");
-    for (uint256 i = 0; i < loogiesByTankId[_id].length; i++) {
-      loogies.transferFrom(address(this), ownerOf(_id), loogiesByTankId[_id][i]);
-    }
-    for (uint256 i = 0; i < floogiesByTankId[_id].length; i++) {
-      floogies.transferFrom(address(this), ownerOf(_id), floogiesByTankId[_id][i]);
+  function returnAll(uint256 _id) external {
+    require(msg.sender == ownerOf(_id), "only tank owner can return the NFTs");
+    for (uint256 i = 0; i < componentByTankId[_id].length; i++) {
+      // if transferFrom fails, it will ignore and continue
+      try SvgNftApi(componentByTankId[_id][i].addr).transferFrom(address(this), ownerOf(_id), componentByTankId[_id][i].id) {}
+      catch {}
     }
 
-    delete loogiesByTankId[_id];
-    delete floogiesByTankId[_id];
+    delete componentByTankId[_id];
   }
 
   function tokenURI(uint256 id) public view override returns (string memory) {
       require(_exists(id), "token doesn not exist");
-      string memory name = string(abi.encodePacked('Loogie Tank #',id.toString()));
+      string memory _name = string(abi.encodePacked('Loogie Tank #',id.toString()));
       string memory description = string(abi.encodePacked('Loogie Tank'));
       string memory image = Base64.encode(bytes(generateSVGofTokenById(id)));
 
@@ -74,7 +78,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
             bytes(
                 abi.encodePacked(
                     '{"name":"',
-                    name,
+                    _name,
                     '", "description":"',
                     description,
                     '", "external_url":"https://burnyboys.com/token/',
@@ -109,100 +113,52 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
        // - (0.3, the scaling factor) * loogie head's (cx, cy).
        // Without this, the loogies move in rectangle translated towards bottom-right.
        '<g transform="translate(-60 -62)">',
-       renderLoogies(id),
-       renderfLoogies(id),
+        renderComponent(id),
        '</g>'
     ));
-
     return render;
   }
 
-  function renderLoogies(uint256 _id) internal view returns (string memory) {
-    string memory loogieSVG = "";
+  function renderComponent(uint256 _id) internal view returns (string memory) {
+    string memory svg = "";
 
-    for (uint8 i = 0; i < loogiesByTankId[_id].length; i++) {
-      uint8 blocksTraveled = uint8((block.number-blockAdded[loogiesByTankId[_id][i]])%256);
+    for (uint8 i = 0; i < componentByTankId[_id].length; i++) {
+      Component memory c = componentByTankId[_id][i];
+      uint8 blocksTravelled = uint8((block.number - c.blockAdded)%256);
       uint8 newX;
       uint8 newY;
 
-      newX = newPos(
-        dx[loogiesByTankId[_id][i]],
-        blocksTraveled,
-        x[loogiesByTankId[_id][i]]);
+      newX = newPos(c.dx, blocksTravelled, c.x);
+      newY = newPos(c.dy, blocksTravelled, c.y);
 
-      newY = newPos(
-        dy[loogiesByTankId[_id][i]],
-        blocksTraveled,
-        y[loogiesByTankId[_id][i]]);
-
-      loogieSVG = string(abi.encodePacked(
-        loogieSVG,
+      svg = string(abi.encodePacked(
+        svg,
         '<g>',
         '<animateTransform attributeName="transform" dur="1500s" fill="freeze" type="translate" additive="sum" ',
         'values="', newX.toString(), ' ', newY.toString(), ';'));
 
       for (uint8 j = 0; j < 100; j++) {
-        newX = newPos(dx[loogiesByTankId[_id][i]], 1, newX);
-        newY = newPos(dy[loogiesByTankId[_id][i]], 1, newY);
+        newX = newPos(c.dx, 1, newX);
+        newY = newPos(c.dy, 1, newY);
 
-        loogieSVG = string(abi.encodePacked(
-          loogieSVG,
+        svg = string(abi.encodePacked(
+          svg,
           newX.toString(), ' ', newY.toString(), ';'));
       }
 
-      loogieSVG = string(abi.encodePacked(
-        loogieSVG,
+      string memory _svg;
+      try SvgNftApi(c.addr).renderTokenById(c.id) returns (string memory __svg) {
+        _svg = __svg;
+      } catch { return ""; }
+      svg = string(abi.encodePacked(
+        svg,
         '"/>',
         '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
-        loogies.renderTokenById(loogiesByTankId[_id][i]),
+        _svg,
         '</g>'));
     }
 
-    return loogieSVG;
-  }
-
-  function renderfLoogies(uint256 _id) internal view returns (string memory) {
-    string memory loogieSVG = "";
-
-    for (uint8 i = 0; i < floogiesByTankId[_id].length; i++) {
-      uint8 blocksTraveled = uint8((block.number-fblockAdded[floogiesByTankId[_id][i]])%256);
-      uint8 newX;
-      uint8 newY;
-
-      newX = newPos(
-        fdx[floogiesByTankId[_id][i]],
-        blocksTraveled,
-        fx[floogiesByTankId[_id][i]]);
-
-      newY = newPos(
-        fdy[floogiesByTankId[_id][i]],
-        blocksTraveled,
-        fy[floogiesByTankId[_id][i]]);
-
-      loogieSVG = string(abi.encodePacked(
-        loogieSVG,
-        '<g>',
-        '<animateTransform attributeName="transform" dur="1500s" fill="freeze" type="translate" additive="sum" ',
-        'values="', newX.toString(), ' ', newY.toString(), ';'));
-
-      for (uint8 j = 0; j < 100; j++) {
-        newX = newPos(fdx[floogiesByTankId[_id][i]], 1, newX);
-        newY = newPos(fdy[floogiesByTankId[_id][i]], 1, newY);
-
-        loogieSVG = string(abi.encodePacked(
-          loogieSVG,
-          newX.toString(), ' ', newY.toString(), ';'));
-      }
-
-      loogieSVG = string(abi.encodePacked(
-        loogieSVG,
-        '"/>',
-        '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
-        floogies.renderTokenById(floogiesByTankId[_id][i]),
-        '</g>'));
-    }
-
-    return loogieSVG;
+    return svg;
   }
 
   function newPos(int8 speed, uint8 blocksTraveled, uint8 initPos) internal pure returns (uint8) {
@@ -241,54 +197,32 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     require(success, "could not send ether");
   }
 
-  mapping(uint256 => uint8) x;
-  mapping(uint256 => uint8) y;
-  mapping(uint256 => uint8) fx;
-  mapping(uint256 => uint8) fy;
-
-  mapping(uint256 => int8) dx;
-  mapping(uint256 => int8) dy;
-  mapping(uint256 => int8) fdx;
-  mapping(uint256 => int8) fdy;
-
-  mapping(uint256 => uint256) blockAdded;
-  mapping(uint256 => uint256) fblockAdded;
-
   // to receive ERC721 tokens
   function onERC721Received(
-      address operator,
+      address,
       address from,
-      uint256 loogieTokenId,
+      uint256 tokenId,
       bytes calldata tankIdData) external override returns (bytes4) {
 
       uint256 tankId = toUint256(tankIdData);
-      require(ownerOf(tankId) == from, "you can only add loogies to a tank you own");
-
-      if (msg.sender == address(loogies)) {
-        require(loogiesByTankId[tankId].length < 256, "tank has reached the max limit of 255 loogies");
-        bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
-        loogiesByTankId[tankId].push(loogieTokenId);
-
-        x[loogieTokenId] = uint8(randish[0]);
-        y[loogieTokenId] = uint8(randish[1]);
-        dx[loogieTokenId] = int8(uint8(randish[2]));
-        dy[loogieTokenId] = int8(uint8(randish[3]));
-        blockAdded[loogieTokenId] = block.number;
-
-      } else if (msg.sender == address(floogies)) {
-        require(floogiesByTankId[tankId].length < 256, "tank has reached the max limit of 255 fancy loogies");
-        bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), loogieTokenId, tankIdData  ));
-        floogiesByTankId[tankId].push(loogieTokenId);
-
-        fx[loogieTokenId] = uint8(randish[0]);
-        fy[loogieTokenId] = uint8(randish[1]);
-        fdx[loogieTokenId] = int8(uint8(randish[2]));
-        fdy[loogieTokenId] = int8(uint8(randish[3]));
-        fblockAdded[loogieTokenId] = block.number;
-      } else {
-        revert("only loogies can be added to the tank");
+      require(ownerOf(tankId) == from, "you can only add to a tank you own");
+      require(componentByTankId[tankId].length < 256, "tank has reached the max limit of 255 components");
+      if (!IERC165(msg.sender).supportsInterface(INTERFACE_ERC721)) {
+        revert("ERC721 Interface only");
       }
+      try SvgNftApi(msg.sender).renderTokenById(tokenId) {}
+      catch { revert("NFT not compatible"); }
+
+      bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), tokenId, tankIdData  ));
+      componentByTankId[tankId].push(Component(
+        block.number,
+        tokenId,
+        msg.sender,
+        uint8(randish[0]),
+        uint8(randish[1]),
+        int8(uint8(randish[2])),
+        int8(uint8(randish[3]))));
 
       return this.onERC721Received.selector;
-    }
+  }
 }
