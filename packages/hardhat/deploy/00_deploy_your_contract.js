@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const LoogieTank = await deploy("LoogieTank",  {
     from: deployer,
-    args: [`0xF16b5c4232a2D0C9b0e01257a7F79bCcca958d3F`, `0x43693eeC62666D621ba33095090BE60d4aF6D6FA`],
+    args: [],
     log: true,
   });
 

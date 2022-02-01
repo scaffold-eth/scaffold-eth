@@ -28,7 +28,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   // all funds go to buidlguidl.eth
   address payable public constant recipient = payable(0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d);
   // address payable public immutable recipient;
-  uint256 constant public price = 50000000000000; // 0.005 eth
+  uint256 constant public price = 5000000000000000; // 0.005 eth
 
   struct Component {
     uint256 blockAdded;
@@ -40,7 +40,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     int8 dy;
   }
 
-  mapping(uint256 => Component[]) componentByTankId;
+  mapping(uint256 => Component[]) public componentByTankId;
 
   constructor() ERC721("Tank", "TANK") {
   }
@@ -80,10 +80,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
                     '{"name":"',
                     _name,
                     '", "description":"',
-                    description,
-                    '", "external_url":"https://burnyboys.com/token/',
-                    id.toString(),
-                    '", "owner":"',
+                    description, '",',
+                    '"owner":"',
                     (uint160(ownerOf(id))).toHexString(20),
                     '", "image": "',
                     'data:image/svg+xml;base64,',
