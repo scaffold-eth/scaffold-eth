@@ -30,9 +30,12 @@ const web3ModalSetup = () =>
           bridge: "https://polygon.bridge.walletconnect.org",
           infuraId: INFURA_ID,
           rpc: {
-            1: `https://eth-mainnet.alchemyapi.io/v2/${ALCHEMY_KEY}`, // mainnet // For more WalletConnect providers: https://docs.walletconnect.org/quick-start/dapps/web3-provider#required
-            42: `https://kovan.infura.io/v3/${INFURA_ID}`,
-            100: "https://dai.poa.network", // xDai
+            10: "https://mainnet.optimism.io", // xDai
+            100: "https://rpc.gnosischain.com", // xDai
+            137: "https://polygon-rpc.com",
+            31337: "http://localhost:8545",
+            42161: "https://arb1.arbitrum.io/rpc",
+            80001: "https://rpc-mumbai.maticvigil.com"
           },
         },
       },

@@ -11,7 +11,7 @@ contract YourContract {
 
   string public purpose = "Building Unstoppable Apps!!!";
 
-  constructor() {
+  constructor() payable {
     // what should we do on deploy?
   }
 
@@ -21,7 +21,7 @@ contract YourContract {
       // emit SetPurpose(msg.sender, purpose);
   }
 
-  receive() external payable {
-      // allows the contract to receive ether like a regular EOA
-  }
+  // to support receiving ETH by default
+  receive() external payable {}
+  fallback() external payable {}
 }
