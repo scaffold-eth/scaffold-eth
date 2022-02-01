@@ -36,6 +36,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
     address addr; // address of the ERC721 contract
     uint8 x;
     uint8 y;
+    uint8 scale;
     int8 dx;
     int8 dy;
   }
@@ -96,7 +97,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="270" height="270" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="310" height="310" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));
@@ -107,12 +108,8 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   // Visibility is `public` to enable it being called by other contracts for composition.
   function renderTokenById(uint256 id) public view returns (string memory) {
     string memory render = string(abi.encodePacked(
-       '<rect x="0" y="0" width="270" height="270" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
-       // - (0.3, the scaling factor) * loogie head's (cx, cy).
-       // Without this, the loogies move in rectangle translated towards bottom-right.
-       '<g transform="translate(-60 -62)">',
-        renderComponent(id),
-       '</g>'
+       '<rect x="0" y="0" width="310" height="310" stroke="black" fill="#8FB9EB" stroke-width="5"/>',
+        renderComponent(id)
     ));
     return render;
   }
@@ -144,6 +141,12 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
           newX.toString(), ' ', newY.toString(), ';'));
       }
 
+      uint8 scale = c.scale;
+      string memory scaleString="";
+      if (scale != 0) {
+        scaleString = string(abi.encodePacked('values="0.',scale.toString(),' 0.', scale.toString(), '"'));
+      }
+
       string memory _svg;
       try SvgNftApi(c.addr).renderTokenById(c.id) returns (string memory __svg) {
         _svg = __svg;
@@ -151,7 +154,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       svg = string(abi.encodePacked(
         svg,
         '"/>',
-        '<animateTransform attributeName="transform" type="scale" additive="sum" values="0.3 0.3"/>',
+        '<animateTransform attributeName="transform" type="scale" additive="sum" ', scaleString, '/>',
         _svg,
         '</g>'));
     }
@@ -179,15 +182,21 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   }
 
   // https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol#L374
-  function toUint256(bytes memory _bytes) internal pure returns (uint256) {
-        require(_bytes.length >= 32, "toUint256_outOfBounds");
+  function toUint256(bytes calldata _bytes) internal pure returns (uint256, uint8) {
+        bytes memory tankIdInBytes = _bytes[:32];
+        bytes memory scaleInBytes = _bytes[32:];
+        require(scaleInBytes.length >= 1, "toUint8_outOfBounds");
         uint256 tempUint;
+        uint8 scaleUint8;
 
         assembly {
-            tempUint := mload(add(_bytes, 0x20))
+            tempUint := mload(add(tankIdInBytes, 0x20))
+            scaleUint8 := mload(add(scaleInBytes, 0x1))
         }
-
-        return tempUint;
+        if(scaleUint8 > 9) {
+          revert("scale must be <= 9");
+        }
+        return (tempUint, scaleUint8);
   }
 
   function sendEthToRecipient() external {
@@ -202,12 +211,13 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       uint256 tokenId,
       bytes calldata tankIdData) external override returns (bytes4) {
 
-      uint256 tankId = toUint256(tankIdData);
+      (uint256 tankId, uint8 scale) = toUint256(tankIdData);
       require(ownerOf(tankId) == from, "you can only add to a tank you own");
       require(componentByTankId[tankId].length < 256, "tank has reached the max limit of 255 components");
       if (!IERC165(msg.sender).supportsInterface(INTERFACE_ERC721)) {
         revert("ERC721 Interface only");
       }
+      // NOTE: can be gas expensive. is it required?
       try SvgNftApi(msg.sender).renderTokenById(tokenId) {}
       catch { revert("NFT not compatible"); }
 
@@ -218,6 +228,7 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
         msg.sender,
         uint8(randish[0]),
         uint8(randish[1]),
+        scale,
         int8(uint8(randish[2])),
         int8(uint8(randish[3]))));
 
