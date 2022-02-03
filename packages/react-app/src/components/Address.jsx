@@ -6,10 +6,7 @@ import { useLookupAddress } from "eth-hooks/dapps/ens";
 
 // changed value={address} to address={address}
 
-
 const { Text } = Typography;
-
-const blockExplorerLink = (address, blockExplorer) => blockExplorer || `https://etherscan.io/address/${address}`;
 
 /** 
   ~ What it does? ~
@@ -33,6 +30,9 @@ const blockExplorerLink = (address, blockExplorer) => blockExplorer || `https://
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
   - Provide fontSize={fontSize} to change the size of address text
 **/
+
+const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}address/${address}`;
+
 export default function Address(props) {
   const { currentTheme } = useThemeSwitcher();
   const address = props.value || props.address;

@@ -152,6 +152,20 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    fantom: {
+      url: "https://rpcapi.fantom.network",
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    testnetFantom: {
+      url: "https://rpc.testnet.fantom.network",
+      gasPrice: 1000000000,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
     polygon: {
       url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXx/polygon/mainnet", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
@@ -159,14 +173,13 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    polytest: {
+    mumbai: {
       url: "https://speedy-nodes-nyc.moralis.io/XXXXXXXXXXXXXXXXXXXXXXX/polygon/mumbai", // <---- YOUR MORALIS ID! (not limited to infura)
       gasPrice: 1000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
     },
-
     matic: {
       url: "https://rpc-mainnet.maticvigil.com/",
       gasPrice: 1000000000,

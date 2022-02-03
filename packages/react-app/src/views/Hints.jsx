@@ -114,7 +114,7 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
           optionFilterProp="children"
         >
           {listOfTokens.map(token => (
-            <Option key={token.symbol} value={token.symbol}>
+            <Option key={token.address + "_" + token.symbol} value={token.symbol}>
               {token.symbol}
             </Option>
           ))}

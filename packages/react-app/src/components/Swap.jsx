@@ -45,8 +45,8 @@ const makeCall = async (callName, contract, args, metadata = {}) => {
     }
     return result;
   }
-  return undefined;
   console.log("no call of that name!");
+  return undefined;
 };
 
 const defaultToken = "ETH";
@@ -120,7 +120,7 @@ function Swap({ selectedProvider, tokenListURI }) {
       }
     };
     getTokenList();
-  }, [tokenListURI]);
+  }, [tokenListURI, _tokenListUri, activeChainId]);
 
   const getTrades = async () => {
     if (tokenIn && tokenOut && (amountIn || amountOut)) {
@@ -181,6 +181,7 @@ function Swap({ selectedProvider, tokenListURI }) {
 
   useEffect(() => {
     getTrades();
+    // eslint-disable-next-line
   }, [tokenIn, tokenOut, debouncedAmountIn, debouncedAmountOut, slippageTolerance, selectedProvider]);
 
   useEffect(() => {
@@ -191,7 +192,7 @@ function Swap({ selectedProvider, tokenListURI }) {
         setAmountInMax(trades[0].maximumAmountIn(slippageTolerance));
       }
     }
-  }, [slippageTolerance, amountIn, amountOut, trades]);
+  }, [slippageTolerance, amountIn, amountOut, trades, exact]);
 
   const getBalance = async (_token, _account, _contract) => {
     let newBalance;

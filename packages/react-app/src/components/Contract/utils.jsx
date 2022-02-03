@@ -4,7 +4,7 @@ import Address from "../Address";
 
 const { utils } = require("ethers");
 
-const tryToDisplay = (thing, asText = false) => {
+const tryToDisplay = (thing, asText = false, blockExplorer) => {
   if (thing && thing.toNumber) {
     try {
       return thing.toNumber();
@@ -14,9 +14,9 @@ const tryToDisplay = (thing, asText = false) => {
     }
   }
   if (thing && thing.indexOf && thing.indexOf("0x") === 0 && thing.length === 42) {
-    return asText ? thing : <Address address={thing} fontSize={22} />;
+    return asText ? thing : <Address address={thing} fontSize={22} blockExplorer={blockExplorer} />;
   }
-  if (thing && thing.constructor && thing.constructor.name == "Array") {
+  if (thing && thing.constructor && thing.constructor.name === "Array") {
     const mostReadable = v => (["number", "boolean"].includes(typeof v) ? v : tryToDisplayAsText(v));
     const displayable = JSON.stringify(thing.map(mostReadable));
     return asText ? (
