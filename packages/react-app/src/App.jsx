@@ -11,7 +11,7 @@ import {
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
-// import "./App.css";
+import "./App.css";
 import {
   Account,
   Contract,
