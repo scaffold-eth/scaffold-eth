@@ -1,12 +1,14 @@
 import { Skeleton, Typography } from "antd";
 import React from "react";
-import Blockies from "react-blockies";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+import Blockies from "react-blockies";
 import { useLookupAddress } from "eth-hooks/dapps/ens";
 
 // changed value={address} to address={address}
 
-/*
+const { Text } = Typography;
+
+/** 
   ~ What it does? ~
 
   Displays an address with a blockie image and option to copy address
@@ -27,9 +29,7 @@ import { useLookupAddress } from "eth-hooks/dapps/ens";
   - Provide blockExplorer={blockExplorer}, click on address and get the link
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
   - Provide fontSize={fontSize} to change the size of address text
-*/
-
-const { Text } = Typography;
+**/
 
 const blockExplorerLink = (address, blockExplorer) => `${blockExplorer || "https://etherscan.io/"}address/${address}`;
 

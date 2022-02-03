@@ -1,7 +1,8 @@
-import { SyncOutlined } from "@ant-design/icons";
-import { utils } from "ethers";
 import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
 import React, { useState } from "react";
+import { utils } from "ethers";
+import { SyncOutlined } from "@ant-design/icons";
+
 import { Address, Balance, Events } from "../components";
 
 export default function ExampleUI({
