@@ -200,7 +200,9 @@ function App(props) {
 
   useEffect(() => {
     const updateClaims = async () => {
+      if (DEBUG) console.log("updateClaims...");
       if (targetReadContracts["Loogies"]) {
+        if (DEBUG) console.log("started...")
         setIsLoadingClaims(true);
         axios
           .get(serverUrl + "claims/" + address)
@@ -326,12 +328,10 @@ function App(props) {
         <Route exact path="/">
           <div style={{ fontSize: 20 }}>
             <p>
-              We are giving away free <a href="https://optimistic.loogies.io">OptimisticLoogies</a> to all the
-              <a href="https://loogies.io">Mainnet Loogies</a> owners!!!
+              We are giving away free <a href="https://optimistic.loogies.io">OptimisticLoogies</a> to <a href="https://loogies.io">Mainnet Loogies</a> owners!!!
             </p>
             <p>
-              If you own some <strong>Mainnet Loogies</strong> you can claim now your <strong>OptimisticLoogies</strong>
-              !
+              If you own some <strong>Mainnet Loogies</strong> you can claim now your <strong>OptimisticLoogies</strong>!
             </p>
           </div>
 
