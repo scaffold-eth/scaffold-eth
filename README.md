@@ -1,11 +1,8 @@
-# 🏗 Scaffold-ETH
+# 🏗 Scaffold-ETH - ABI Uploader
 
-> everything you need to build on Ethereum! 🚀
+🧪 Interact with Solidity contracts - call methods visually
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
-
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
-
+Given a constract's address and ABI, generates a dynamic form that allows the user to interact with the contract and call its methods
 
 # 🏄‍♂️ Quick Start
 
@@ -14,82 +11,51 @@ Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://class
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/scaffold-eth/scaffold-eth.git abi-uploader
+cd abi-uploader
+git checkout abi-uploader
 ```
 
-> install and start your 👷‍ Hardhat chain:
+> install and start your 👷‍ front-end:
 
 ```bash
-cd scaffold-eth
 yarn install
-yarn chain
-```
-
-> in a second terminal window, start your 📱 frontend:
-
-```bash
-cd scaffold-eth
 yarn start
 ```
 
-> in a third terminal window, 🛰 deploy your contract:
-
-```bash
-cd scaffold-eth
-yarn deploy
-```
-
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
-
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
-
-💼 Edit your deployment scripts in `packages/hardhat/deploy`
 
 📱 Open http://localhost:3000 to see the app
 
 # 📚 Documentation
 
-Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
+The application supports two modes of operation.
 
-# 🔭 Learning Solidity
+First, an interactive mode where the user can enter the contract's address and ABI. The second mode is the URL parameters mode where the contract's address and ABI are passed as URL parameters.
 
-📕 Read the docs: https://docs.soliditylang.org
+## Interactive Mode:
 
-📚 Go through each topic from [solidity by example](https://solidity-by-example.org) editing `YourContract.sol` in **🏗 scaffold-eth**
+In this mode the user can input the contract's address and ABI. See the image below
 
-- [Primitive Data Types](https://solidity-by-example.org/primitives/)
-- [Mappings](https://solidity-by-example.org/mapping/)
-- [Structs](https://solidity-by-example.org/structs/)
-- [Modifiers](https://solidity-by-example.org/function-modifier/)
-- [Events](https://solidity-by-example.org/events/)
-- [Inheritance](https://solidity-by-example.org/inheritance/)
-- [Payable](https://solidity-by-example.org/payable/)
-- [Fallback](https://solidity-by-example.org/fallback/)
+<img width="862" alt="ABI-Uploader-Interactive-Input" src="https://user-images.githubusercontent.com/17074344/142741685-3fe47a91-063b-41ef-8865-ae887b7c3600.png">
 
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
+Use the network selector at the top of the page to change the target network
 
-# 🛠 Buidl
+<img width="280" alt="ABI-Uploader-Interactive-Input-NetworkSelector" src="https://user-images.githubusercontent.com/17074344/142741692-d4d0db8a-7c47-4553-929c-77534816f51e.png">
 
-Check out all the [active branches](https://github.com/austintgriffith/scaffold-eth/branches/active), [open issues](https://github.com/austintgriffith/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
+If a valid address and ABI are entered, the application will build a form that contains the contract's functions. Please see the image below for a sample output.
 
-  
- - 🚤  [Follow the full Ethereum Speed Run](https://medium.com/@austin_48503/%EF%B8%8Fethereum-dev-speed-run-bd72bcba6a4c)
+<img width="1206" alt="ABI-Uploader-Interactve-Output" src="https://user-images.githubusercontent.com/17074344/142741696-c9e0e85a-0635-47ee-b8da-45989c31e9ff.png">
 
+## URL Parameters Mode:
 
- - 🎟  [Create your first NFT](https://github.com/austintgriffith/scaffold-eth/tree/simple-nft-example)
- - 🥩  [Build a staking smart contract](https://github.com/austintgriffith/scaffold-eth/tree/challenge-1-decentralized-staking)
- - 🏵  [Deploy a token and vendor](https://github.com/austintgriffith/scaffold-eth/tree/challenge-2-token-vendor)
- - 🎫  [Extend the NFT example to make a "buyer mints" marketplace](https://github.com/austintgriffith/scaffold-eth/tree/buyer-mints-nft)
- - 🎲  [Learn about commit/reveal](https://github.com/austintgriffith/scaffold-eth/tree/commit-reveal-with-frontend)
- - ✍️  [Learn how ecrecover works](https://github.com/austintgriffith/scaffold-eth/tree/signature-recover)
- - 👩‍👩‍👧‍👧  [Build a multi-sig that uses off-chain signatures](https://github.com/austintgriffith/scaffold-eth/tree/meta-multi-sig)
- - ⏳  [Extend the multi-sig to stream ETH](https://github.com/austintgriffith/scaffold-eth/tree/streaming-meta-multi-sig)
- - ⚖️  [Learn how a simple DEX works](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90)
- - 🦍  [Ape into learning!](https://github.com/austintgriffith/scaffold-eth/tree/aave-ape)
+In this mode, the URL will contain the contract's address and ABI. The URL should follow the pattern below:
 
-# 💬 Support Chat
+```
+/cantract/CONTRACT_ADDRESS/CONTRACT_ABI
+```
 
-Join the telegram [support chat 💬](https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA) to ask questions and find others building with 🏗 scaffold-eth!
+This mode allows the user to create a URL that can be passed to other users. Once opened, the user will have a form ready to interact with the contract.
 
 ---
 
