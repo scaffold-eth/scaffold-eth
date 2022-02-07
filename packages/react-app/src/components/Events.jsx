@@ -25,15 +25,16 @@ export default function Events({ contracts, contractName, eventName, localProvid
 
   return (
     <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-      <h2>{eventName} Events<br/>
-        {eventName === "tokenbought" ?
-          " ⟠ -->🎈 Address | Trade | AmountIn | AmountOut" :   
-         eventName === "tokensold" ?
-         "🎈-->⟠ Address | Trade | AmountOut | AmountIn" : 
-          eventName === "liqdeposited" ?
-            "➕ Address | Liquidity Minted | Eth In | Balloons In" :
-            "➖ Address | Liquidity Withdrawn | ETH out | Balloons Out "
-        }
+      <h2>
+        {eventName} Events
+        <br />
+        {eventName === "EthToTokenSwap"
+          ? " ⟠ -->🎈 Address | Trade | AmountIn | AmountOut"
+          : eventName === "TokenToEthSwap"
+          ? "🎈-->⟠ Address | Trade | AmountOut | AmountIn"
+          : eventName === "LiquidityProvided"
+          ? "➕ Address | Liquidity Minted | Eth In | Balloons In"
+          : "➖ Address | Liquidity Withdrawn | ETH out | Balloons Out "}
       </h2>
       <List
         bordered
@@ -42,7 +43,11 @@ export default function Events({ contracts, contractName, eventName, localProvid
           return (
             <List.Item key={item.blockNumber + "_" + item.args[0].toString()}>
               <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              { item.args[1].toString().indexOf("E") == -1 ? <TokenBalance balance={item.args[1]} provider={localProvider} /> : `${item.args[1].toString()}` }
+              {item.args[1].toString().indexOf("E") == -1 ? (
+                <TokenBalance balance={item.args[1]} provider={localProvider} />
+              ) : (
+                `${item.args[1].toString()}`
+              )}
               <TokenBalance balance={item.args[2]} provider={localProvider} />
               <TokenBalance balance={item.args[3]} provider={localProvider} />
             </List.Item>

@@ -283,7 +283,7 @@ function App(props) {
         <Menu.Item key="/">
           <Link to="/">Home</Link>
         </Menu.Item>
-                <Menu.Item key="/Events">
+        <Menu.Item key="/Events">
           <Link to="/Events">Eventlist 📜</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
@@ -339,53 +339,44 @@ function App(props) {
             />
           </div>
         </Route>
-
         <Route path="/Events">
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="EthToTokenSwap"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
 
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="TokenToEthSwap"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
 
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="LiquidityProvided"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
 
-<Events
- contracts={readContracts}
- contractName="DEX"
- eventName="tokenbought"
- localProvider={localProvider}
- mainnetProvider={mainnetProvider}
- startBlock={1}
-/>
-
-
-<Events
- contracts={readContracts}
- contractName="DEX"
- eventName="tokensold"
- localProvider={localProvider}
- mainnetProvider={mainnetProvider}
- startBlock={1}
-/>
-
-
-<Events
- contracts={readContracts}
- contractName="DEX"
- eventName="liqdeposited"
- localProvider={localProvider}
- mainnetProvider={mainnetProvider}
- startBlock={1}
-/>
-
-
-<Events
- contracts={readContracts}
- contractName="DEX"
- eventName="liqwithdraw"
- localProvider={localProvider}
- mainnetProvider={mainnetProvider}
- startBlock={1}
-/>
-
-</Route>
-}
-
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="LiquidityRemoved"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+        </Route>
+        }
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -500,7 +491,9 @@ function App(props) {
         )}
 
         <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
-        <h3>💦💦: <TokenBalance balance={liquidity} /></h3>
+        <h3>
+          💦💦: <TokenBalance balance={liquidity} />
+        </h3>
         {FaucetHint}
       </div>
 

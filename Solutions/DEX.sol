@@ -15,10 +15,10 @@ contract DEX {
 
     using SafeMath for uint256; //outlines use of SafeMath for uint256 variables
     IERC20 token; //instantiates the imported contract
-    event tokenbought(address ballbought, string swap, uint256 tokens_in, uint256 tokens_out);
-    event tokensold(address ballsell, string swap, uint256 tokens_iny, uint256 tokens_outy);
-    event liqdeposited(address depos, uint256 famountOfliq, uint256 etin, uint256 tokens_inyy);
-    event liqwithdraw(address withdrawn, uint256 qdamountOfliq, uint256 etout, uint256 tokens_outyy);
+    event EthToTokenSwap(address swapper, string txDetails, uint256 ethInput, uint256 tokenOutput);
+    event TokenToEthSwap(address swapper, string txDetails, uint256 tokensInput, uint256 ethOutput);
+    event LiquidityProvided(address liquidityProvider, uint256 tokensInput, uint256 ethInput, uint256 liquidityMinted);
+    event LiquidityRemoved(address liquidityRemover, uint256 tokensOutput, uint256 ethOutput, uint256 liquidityWithdrawn);
     /* ========== EVENTS ========== */
 
     /**
@@ -95,25 +95,22 @@ contract DEX {
 
         //  totalLiquidity = totalLiquidity.sub(tokenOutput); //update totalLiquidity? I guess you don't because even though liquidity is changing... it isn't in a macro-scale? We still have the same amount of liquidity in "total" but just different asset ratios.
         require(token.transfer(msg.sender, tokenOutput), "ethToToken(): reverted swap.");
-        emit tokenbought(msg.sender, "Eth to Balloons", msg.value, tokenOutput);
+        emit EthToTokenSwap(msg.sender, "Eth to Balloons", msg.value, tokenOutput);
         return tokenOutput;
         
     }
 
     /**
      * @notice sends $BAL tokens to DEX in exchange for Ether
+     * NOTE: if you try putting in 0 tokens, it will revert either due to erc20, or due to price() returning 0.
      */
     function tokenToEth(uint256 tokenInput) public returns (uint256 ethOutput) {
-        //  require(tokenInput > 0, "tokenToEth: can't trade 0");
         uint256 token_reserve = token.balanceOf(address(this));
-
         uint256 ethOutput = price(tokenInput, token_reserve, address(this).balance);
-
-        //  totalLiquidity = totalLiquidity.add(tokenInput); //update totalLiquidity
         require(token.transferFrom(msg.sender, address(this), tokenInput), "tokenToEth(): reverted swap.");
         (bool sent, ) = msg.sender.call{ value: ethOutput }("");
         require(sent, "tokenToEth: revert in transferring eth to you!");
-        emit tokensold(msg.sender, "Balloons to ETH", ethOutput, tokenInput);
+        emit TokenToEthSwap(msg.sender, "Balloons to ETH", ethOutput, tokenInput);
         return ethOutput;
         
     }
@@ -133,28 +130,31 @@ contract DEX {
         totalLiquidity = totalLiquidity.add(liquidityMinted);
 
         require(token.transferFrom(msg.sender, address(this), tokenDeposit));
-        emit liqdeposited(msg.sender, liquidityMinted, msg.value, tokenDeposit);
+        emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, tokenDeposit);
         return tokenDeposit;
         
     }
 
+
     /**
      * @notice allows withdrawal of $BAL and $ETH from liquidity pool
+     * NOTE: with this current code, the msg caller could end up getting very little back if the liquidity is super low in the pool. I guess they could see that with the UI.
      */
     function withdraw(uint256 amount) public returns (uint256 eth_amount, uint256 token_amount) {
+        require(liquidity[msg.sender]>= amount, "withdraw: sender does not have enough liquidity to withdraw.");
         uint256 ethReserve = address(this).balance;
         uint256 tokenReserve = token.balanceOf(address(this));
         uint256 ethWithdrawn;
 
-        ethWithdrawn = amount.mul((ethReserve / totalLiquidity));
+        ethWithdrawn = amount.mul((address(this).balance)/ totalLiquidity);
 
         uint256 tokenAmount = amount.mul(tokenReserve) / totalLiquidity;
-        liquidity[msg.sender] = liquidity[msg.sender].sub(ethWithdrawn);
-        totalLiquidity = totalLiquidity.sub(ethWithdrawn);
+        liquidity[msg.sender] = liquidity[msg.sender].sub(amount);
+        totalLiquidity = totalLiquidity.sub(amount);
         (bool sent, ) = msg.sender.call{ value: ethWithdrawn }("");
         require(sent, "withdraw(): revert in transferring eth to you!");
         require(token.transfer(msg.sender, tokenAmount));
-        emit liqwithdraw(msg.sender, amount, ethWithdrawn, tokenAmount);
+        emit LiquidityRemoved(msg.sender, amount, ethWithdrawn, tokenAmount);
         return (ethWithdrawn, tokenAmount);
         
     }
