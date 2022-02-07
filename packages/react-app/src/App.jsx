@@ -323,7 +323,7 @@ function App(props) {
             ""
           )}
           {/* TODO: The DEX.jsx file actually logs a bunch of the results so we think that instead of creating completely new event components (or whatever), we would figure out how to work with the txs that are happening as a result of EthersJS calling the respective functions in DEX.jsx. 😵 Lines 321-335 are an example of attempting to place emitted events on the front-page UI. It is not working though for now! */}
-          <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
+          {/* <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
             <div>👀 DEX Events:</div>
             <List
               dataSource={EthToTokenSwapEvents}
@@ -337,7 +337,7 @@ function App(props) {
                 );
               }}
             />
-          </div>
+          </div> */}
         </Route>
         <Route path="/Events">
           <Events

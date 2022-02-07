@@ -124,11 +124,12 @@ contract DEX {
         uint256 tokenReserve = token.balanceOf(address(this));
         uint256 tokenDeposit;
 
-        tokenDeposit = msg.value.mul((tokenReserve / ethReserve)).add(1);
+        tokenDeposit = ((msg.value.mul(tokenReserve)) / ethReserve).add(1);
         uint256 liquidityMinted = msg.value.mul(totalLiquidity / ethReserve);
         liquidity[msg.sender] = liquidity[msg.sender].add(liquidityMinted);
         totalLiquidity = totalLiquidity.add(liquidityMinted);
 
+        require(token.approve(address(this), (tokenDeposit.add(1)))); // probably a better way to ensure that approve covers the tx amount.
         require(token.transferFrom(msg.sender, address(this), tokenDeposit));
         emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, tokenDeposit);
         return tokenDeposit;
@@ -146,12 +147,12 @@ contract DEX {
         uint256 tokenReserve = token.balanceOf(address(this));
         uint256 ethWithdrawn;
 
-        ethWithdrawn = amount.mul((address(this).balance)/ totalLiquidity);
+        ethWithdrawn = amount.mul(ethReserve)/ totalLiquidity;
 
         uint256 tokenAmount = amount.mul(tokenReserve) / totalLiquidity;
         liquidity[msg.sender] = liquidity[msg.sender].sub(amount);
         totalLiquidity = totalLiquidity.sub(amount);
-        (bool sent, ) = msg.sender.call{ value: ethWithdrawn }("");
+        (bool sent, ) = payable(msg.sender).call{ value: ethWithdrawn }("");
         require(sent, "withdraw(): revert in transferring eth to you!");
         require(token.transfer(msg.sender, tokenAmount));
         emit LiquidityRemoved(msg.sender, amount, ethWithdrawn, tokenAmount);
