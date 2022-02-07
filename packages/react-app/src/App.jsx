@@ -53,8 +53,8 @@ const serverUrl = "http://localhost:8080/";
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
-const NETWORKCHECK = true;
-const USE_BURNER_WALLET = true; // toggle burner wallet feature
+const NETWORKCHECK = false;
+const USE_BURNER_WALLET = false; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
 
 const web3Modal = Web3ModalSetup();
@@ -124,9 +124,6 @@ function App(props) {
     userSigner && userSigner.provider && userSigner.provider._network && userSigner.provider._network.chainId;
 
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
-
-  // 🏗 scaffold-eth is full of handy hooks like this one to get your balance:
-  const yourLocalBalance = useBalance(localProvider, address);
 
   // Just plug in different 🛰 providers to get your balance on different chains:
   const yourMainnetBalance = useBalance(mainnetProvider, address);
@@ -255,7 +252,6 @@ function App(props) {
       mainnetProvider &&
       address &&
       selectedChainId &&
-      yourLocalBalance &&
       yourMainnetBalance &&
       readContracts &&
       writeContracts
@@ -265,7 +261,6 @@ function App(props) {
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
       console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
       console.log("🔐 writeContracts", writeContracts);
@@ -274,7 +269,6 @@ function App(props) {
     mainnetProvider,
     address,
     selectedChainId,
-    yourLocalBalance,
     yourMainnetBalance,
     readContracts,
     writeContracts,
@@ -315,14 +309,6 @@ function App(props) {
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
-      <NetworkDisplay
-        NETWORKCHECK={NETWORKCHECK}
-        localChainId={localChainId}
-        selectedChainId={selectedChainId}
-        targetNetwork={targetNetwork}
-        logoutOfWeb3Modal={logoutOfWeb3Modal}
-        USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
-      />
 
       <Switch>
         <Route exact path="/">
@@ -335,135 +321,152 @@ function App(props) {
             </p>
           </div>
 
-          {claims.length > 0 ? (
-            <div style={{ margin: "auto", paddingBottom: 25 }}>
-              <h2>
-                You have claimed {claims.length} <strong>Optimistic Loogies</strong>
-              </h2>
-              <List
-                grid={{
-                  gutter: 16,
-                  xs: 1,
-                  sm: 2,
-                  md: 2,
-                  lg: 3,
-                  xl: 4,
-                  xxl: 6,
-                }}
-                loading={isLoadingClaims}
-                dataSource={yourClaims}
-                renderItem={item => {
-                  console.log("item: ", item);
-                  const id = item.id;
-
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                          </div>
-                        }
-                      >
-                        <img src={item.image} width="200" alt={"Loogie #" + id} />
-                      </Card>
-                    </List.Item>
-                  );
-                }}
-              />
-            </div>
-          ) : (
-            <div>
-              You didn't claimed any <strong>Optmistic Loogie</strong> yet
-            </div>
-          )}
-
-          {yourCollectibles && yourCollectibles.length > 0 && anyUnclaimed && (
-            <>
+          {!address ? (
+            <div class="main-connect">
               <Button
+                key="loginbutton"
+                style={{ fontSize: 30, width: 600, padding: 30 }}
+                shape="round"
+                size="large"
                 type="primary"
-                style={{ marginBottom: 20 }}
-                disabled={isSendingTx}
-                onClick={async () => {
-                  try {
-                    const message = "loogie-claim-" + address;
-
-                    const signature = await userSigner.signMessage(message);
-
-                    setIsSendingTx(true);
-
-                    axios
-                      .post(serverUrl + "claim/", {
-                        address: address,
-                        signature: signature,
-                      })
-                      .then(response => {
-                        console.log(response);
-                        setClaims(response.data);
-                        setIsSendingTx(false);
-                        setUpdateLoogies(updateLoogies + 1);
-                      })
-                      .catch(e => {
-                        console.log("Error on claim");
-                        setIsSendingTx(false);
-                      });
-                  } catch (e) {
-                    console.log("Claim failed", e);
-                  }
-                }}
+                onClick={loadWeb3Modal}
               >
-                Claim
+                Connect Wallet
               </Button>
-              {isSendingTx && <Spin />}
-            </>
-          )}
-
-          {yourCollectibles && yourCollectibles.length > 0 ? (
-            <div style={{ margin: "auto", paddingBottom: 25 }}>
-              <h2>
-                You have {yourCollectibles.length} <strong>Mainnet Loogies</strong>
-              </h2>
-
-              <List
-                grid={{
-                  gutter: 16,
-                  xs: 1,
-                  sm: 2,
-                  md: 2,
-                  lg: 3,
-                  xl: 4,
-                  xxl: 6,
-                }}
-                dataSource={yourCollectibles}
-                renderItem={item => {
-                  console.log("item: ", item);
-                  const id = item.id.toNumber();
-
-                  return (
-                    <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                      <Card
-                        title={
-                          <div>
-                            <span style={{ fontSize: 18, marginRight: 8 }}>
-                              {item.name} -
-                              {item.claim && item.claim.claimed ? (
-                                <span style={{ color: "green" }}>Claimed!</span>
-                              ) : (
-                                <span style={{ color: "orange" }}>Pending Claim</span>
-                              )}
-                            </span>
-                          </div>
-                        }
-                      >
-                        <img src={item.image} width="200" alt={"Loogie #" + id} />
-                      </Card>
-                    </List.Item>
-                  );
-                }}
-              />
             </div>
           ) : (
-            <div>You don't have any Loogie</div>
+            <>
+            {claims.length > 0 ? (
+              <div style={{ margin: "auto", paddingBottom: 25 }}>
+                <h2>
+                  You have claimed {claims.length} <strong>Optimistic Loogies</strong>
+                </h2>
+                <List
+                  grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 3,
+                    xl: 4,
+                    xxl: 6,
+                  }}
+                  loading={isLoadingClaims}
+                  dataSource={yourClaims}
+                  renderItem={item => {
+                    console.log("item: ", item);
+                    const id = item.id;
+
+                    return (
+                      <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                        <Card
+                          title={
+                            <div>
+                              <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                            </div>
+                          }
+                        >
+                          <img src={item.image} width="200" alt={"Loogie #" + id} />
+                        </Card>
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
+            ) : (
+              <div>
+                You didn't claimed any <strong>Optmistic Loogie</strong> yet
+              </div>
+            )}
+
+            {yourCollectibles && yourCollectibles.length > 0 && anyUnclaimed && (
+              <>
+                <Button
+                  type="primary"
+                  style={{ marginBottom: 20 }}
+                  disabled={isSendingTx}
+                  onClick={async () => {
+                    try {
+                      const message = "loogie-claim-" + address;
+
+                      const signature = await userSigner.signMessage(message);
+
+                      setIsSendingTx(true);
+
+                      axios
+                        .post(serverUrl + "claim/", {
+                          address: address,
+                          signature: signature,
+                        })
+                        .then(response => {
+                          console.log(response);
+                          setClaims(response.data);
+                          setIsSendingTx(false);
+                          setUpdateLoogies(updateLoogies + 1);
+                        })
+                        .catch(e => {
+                          console.log("Error on claim");
+                          setIsSendingTx(false);
+                        });
+                    } catch (e) {
+                      console.log("Claim failed", e);
+                    }
+                  }}
+                >
+                  Claim
+                </Button>
+                {isSendingTx && <Spin />}
+              </>
+            )}
+
+            {yourCollectibles && yourCollectibles.length > 0 ? (
+              <div style={{ margin: "auto", paddingBottom: 25 }}>
+                <h2>
+                  You have {yourCollectibles.length} <strong>Mainnet Loogies</strong>
+                </h2>
+
+                <List
+                  grid={{
+                    gutter: 16,
+                    xs: 1,
+                    sm: 2,
+                    md: 2,
+                    lg: 3,
+                    xl: 4,
+                    xxl: 6,
+                  }}
+                  dataSource={yourCollectibles}
+                  renderItem={item => {
+                    console.log("item: ", item);
+                    const id = item.id.toNumber();
+
+                    return (
+                      <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                        <Card
+                          title={
+                            <div>
+                              <span style={{ fontSize: 18, marginRight: 8 }}>
+                                {item.name} -
+                                {item.claim && item.claim.claimed ? (
+                                  <span style={{ color: "green" }}>Claimed!</span>
+                                ) : (
+                                  <span style={{ color: "orange" }}>Pending Claim</span>
+                                )}
+                              </span>
+                            </div>
+                          }
+                        >
+                          <img src={item.image} width="200" alt={"Loogie #" + id} />
+                        </Card>
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
+            ) : (
+              <div>You don't have any Loogie</div>
+            )}
+            </>
           )}
         </Route>
       </Switch>
@@ -495,9 +498,6 @@ function App(props) {
             blockExplorer={blockExplorer}
           />
         </div>
-        {yourLocalBalance.lte(ethers.BigNumber.from("0")) && (
-          <FaucetHint localProvider={localProvider} targetNetwork={targetNetwork} address={address} />
-        )}
       </div>
 
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}

@@ -5,3 +5,8 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+.main-connect span {
+  margin-top: -20px;
+  vertical-align: top;
+}
