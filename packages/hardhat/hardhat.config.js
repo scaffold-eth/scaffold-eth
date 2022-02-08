@@ -26,7 +26,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "kovanOptimism";
+const defaultNetwork = "optimism";
 
 const mainnetGwei = 21;
 
@@ -215,9 +215,6 @@ module.exports = {
     },
     kovanOptimism: {
       url: "https://kovan.optimism.io",
-      // accounts: {
-      //   mnemonic: mnemonic(),
-      // },
       accounts: {
         mnemonic: mnemonic(),
       },

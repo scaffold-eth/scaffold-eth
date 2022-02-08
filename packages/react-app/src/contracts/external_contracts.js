@@ -2163,8 +2163,8 @@ module.exports = {
   31337: {
     contracts: {
       Loogies: {
-        address: "0xF16b5c4232a2D0C9b0e01257a7F79bCcca958d3F",
-        // address: "0xE203cDC6011879CDe80c6a1DcF322489e4786eB3",
+        // address: "0xF16b5c4232a2D0C9b0e01257a7F79bCcca958d3F",
+        address: "0xE203cDC6011879CDe80c6a1DcF322489e4786eB3",
         abi: LOOGIEABI
       },
     }
