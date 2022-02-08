@@ -4,7 +4,7 @@
 
 This challenge will help you build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS ($BAL) and ETH). This repo is an updated version of the [original tutorial](https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90) and challenge repos before it. Please read the intro for a background on what we are building first!
 
-**There is a DEXTemplate.sol file for your use if you want. As well, this repo has solutions (👮🏻 try not to peak!) in it (in root directory, there's a solutions sub-directory) for now, but the challenge is to write the smart contracts yourself of course!**
+**There is a `DEXTemplate.sol` file for your use if you want (rename it to `DEX.sol`). As well, this repo has solutions (👮🏻 try not to peak!) in it (in root directory, there's a solutions sub-directory) for now, but the challenge is to write the smart contracts yourself of course!**
 
 > ❗️ NOTE: functions outlined within the `DEXTemplate.sol` are what works with the front end of this branch/repo. Also return variable names may need to be specified exactly as outlined within the `Solutions/DEX.sol` file. If you are confused, see solutions folder in this repo and/or cross reference with front-end code.
 
