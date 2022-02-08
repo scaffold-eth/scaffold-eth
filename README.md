@@ -140,7 +140,7 @@ Now that our contract holds reserves of both ETH and tokens, we want to use a si
 Let’s start with the formula `x * y = k` where `x` and `y` are the reserves:
 
 ```
-amount of ETH in DEX ) _ ( amount of tokens in DEX ) = k
+(amount of ETH in DEX ) * ( amount of tokens in DEX ) = k
 ```
 
 The `k` is called an invariant because it doesn’t change during trades. (The `k` only changes as liquidity is added.) If we plot this formula, we’ll get a curve that looks something like:
