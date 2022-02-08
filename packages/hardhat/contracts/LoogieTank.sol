@@ -2,9 +2,8 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "@openzeppelin/contracts/token/ERC721/extensions/ERC721Enumerable.sol";
-import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
-import "@openzeppelin/contracts/interfaces/IERC2981.sol";
-import "@openzeppelin/contracts/utils/Counters.sol";
+import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 import 'base64-sol/base64.sol';
 import './HexStrings.sol';
 // import "hardhat/console.sol";
@@ -15,20 +14,16 @@ interface SvgNftApi {
   function transferFrom(address from, address to, uint256 id) external;
 }
 
-contract LoogieTank is ERC721Enumerable, IERC721Receiver {
+contract LoogieTank is ERC721Enumerable, Ownable, ReentrancyGuard {
 
   using Strings for uint256;
   using Strings for uint8;
   using HexStrings for uint160;
-  using Counters for Counters.Counter;
 
-  Counters.Counter private _tokenIds;
+  uint256 public _tokenIds;
 
-  bytes4 private constant INTERFACE_ERC721 = 0x80ac58cd;
-  // all funds go to buidlguidl.eth
-  address payable public constant recipient = payable(0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d);
-  // address payable public immutable recipient;
   uint256 constant public price = 5000000000000000; // 0.005 eth
+  // uint256 constant public price = 1; // 0.005 eth
 
   struct Component {
     uint256 blockAdded;
@@ -46,18 +41,17 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
   constructor() ERC721("Tank", "TANK") {
   }
 
-  function mintItem() public payable returns (uint256) {
+  function mintItem() public payable nonReentrant returns (uint256) {
       require(msg.value >= price, "Sent eth not enough");
 
-      _tokenIds.increment();
-      uint256 id = _tokenIds.current();
-      _mint(msg.sender, id);
+      _tokenIds++;
+      _mint(_msgSender(), _tokenIds);
 
-      return id;
+      return _tokenIds;
   }
 
-  function returnAll(uint256 _id) external {
-    require(msg.sender == ownerOf(_id), "only tank owner can return the NFTs");
+  function returnAll(uint256 _id) external nonReentrant {
+    require(_isApprovedOrOwner(_msgSender(), _id), "only tank owner or approved can return the NFTs");
     for (uint256 i = 0; i < componentByTankId[_id].length; i++) {
       // if transferFrom fails, it will ignore and continue
       try SvgNftApi(componentByTankId[_id][i].addr).transferFrom(address(this), ownerOf(_id), componentByTankId[_id][i].id) {}
@@ -181,57 +175,29 @@ contract LoogieTank is ERC721Enumerable, IERC721Receiver {
       }
   }
 
-  // https://github.com/GNSPS/solidity-bytes-utils/blob/master/contracts/BytesLib.sol#L374
-  function toUint256(bytes calldata _bytes) internal pure returns (uint256, uint8) {
-        bytes memory tankIdInBytes = _bytes[:32];
-        bytes memory scaleInBytes = _bytes[32:];
-        require(scaleInBytes.length >= 1, "toUint8_outOfBounds");
-        uint256 tempUint;
-        uint8 scaleUint8;
-
-        assembly {
-            tempUint := mload(add(tankIdInBytes, 0x20))
-            scaleUint8 := mload(add(scaleInBytes, 0x1))
-        }
-        if(scaleUint8 > 9) {
-          revert("scale must be <= 9");
-        }
-        return (tempUint, scaleUint8);
-  }
-
-  function sendEthToRecipient() external {
-    (bool success, ) = recipient.call{value: address(this).balance}("");
+  function senEthToOwner() external {
+    (bool success, ) = owner().call{value: address(this).balance}("");
     require(success, "could not send ether");
   }
 
-  // to receive ERC721 tokens
-  function onERC721Received(
-      address,
-      address from,
-      uint256 tokenId,
-      bytes calldata tankIdData) external override returns (bytes4) {
+  function transferNFT(address nftAddr, uint256 tokenId, uint256 tankId, uint8 scale) external nonReentrant {
+    ERC721 nft = ERC721(nftAddr);
+    require(_isApprovedOrOwner(_msgSender(), tankId), "you need to own the tank");
+    require(nftAddr != address(this), "nice try!");
+    require(componentByTankId[tankId].length < 255, "tank has reached the max limit of 255 components");
 
-      (uint256 tankId, uint8 scale) = toUint256(tankIdData);
-      require(ownerOf(tankId) == from, "you can only add to a tank you own");
-      require(componentByTankId[tankId].length < 256, "tank has reached the max limit of 255 components");
-      if (!IERC165(msg.sender).supportsInterface(INTERFACE_ERC721)) {
-        revert("ERC721 Interface only");
-      }
-      // NOTE: can be gas expensive. is it required?
-      try SvgNftApi(msg.sender).renderTokenById(tokenId) {}
-      catch { revert("NFT not compatible"); }
+    nft.transferFrom(_msgSender(), address(this), tokenId);
+    require(nft.ownerOf(tokenId) == address(this), "NFT not transferred");
 
-      bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), from, address(this), tokenId, tankIdData  ));
-      componentByTankId[tankId].push(Component(
-        block.number,
-        tokenId,
-        msg.sender,
-        uint8(randish[0]),
-        uint8(randish[1]),
-        scale,
-        int8(uint8(randish[2])),
-        int8(uint8(randish[3]))));
-
-      return this.onERC721Received.selector;
+    bytes32 randish = keccak256(abi.encodePacked( blockhash(block.number-1), _msgSender(), address(this), tokenId, tankId  ));
+    componentByTankId[tankId].push(Component(
+      block.number,
+      tokenId,
+      nftAddr,
+      uint8(randish[0]),
+      uint8(randish[1]),
+      scale,
+      int8(uint8(randish[2])),
+      int8(uint8(randish[3]))));
   }
 }

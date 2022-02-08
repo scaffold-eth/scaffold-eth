@@ -425,9 +425,6 @@ function App(props) {
         />
         <Button
           onClick={async () => {
-            const tankIdInBytes = "0x" + id.toString(16).padStart(64, '0');
-            if (DEBUG) console.log(tankIdInBytes);
-
             let abi = ["function renderTokenById(uint256) public view returns (string memory)"];
             if (DEBUG) console.log(transferNFTFromAddress[id]);
             let nftContract = new ethers.Contract(transferNFTFromAddress[id], abi, localProvider);
@@ -448,16 +445,23 @@ function App(props) {
           }}>
           Preview
         </Button>
+        <br />
         <Button
           onClick={() => {
-            const tankIdInBytes = "0x" + id.toString(16).padStart(64, '0') + scale[id].padStart(2, '0');
-            if (DEBUG) console.log(tankIdInBytes);
-
-            let abi = ["function safeTransferFrom(address,address,uint256,bytes) public"];
+            let abi = ["function approve(address,uint256) public"];
             if (DEBUG) console.log(transferNFTFromAddress[id]);
             let nftContract = new ethers.Contract(transferNFTFromAddress[id], abi, userSigner);
 
-            tx(nftContract["safeTransferFrom(address,address,uint256,bytes)"](address, readContracts.LoogieTank.address, transferIdToTank[id], tankIdInBytes));
+            tx(nftContract["approve(address,uint256)"](readContracts.LoogieTank.address, transferIdToTank[id]));
+          }}
+        >
+          Approve
+        </Button>
+        <Button
+          onClick={() => {
+            console.log(transferNFTFromAddress[id], transferIdToTank[id], id, scale[id]);
+
+            tx(writeContracts.LoogieTank.transferNFT(transferNFTFromAddress[id], transferIdToTank[id], id, scale[id], {gasLimit: 1000000}));
           }}>
           Transfer
         </Button>
@@ -467,7 +471,7 @@ function App(props) {
   }
 
   function renderCard(name, image, description) {
-    console.log(image);
+    // console.log(image);
     return (
       <div>
         <Card
