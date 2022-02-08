@@ -9,6 +9,7 @@ use(solidity);
  * Stages of testing are as follows: set up global test variables, test contract deployment, deploy contracts in beforeEach(), then actually test out each separate function.
  * @dev this is still a rough WIP. See TODO: scattered throughout.'
  * @dev additional TODO: Write edge cases; putting in zero as inputs, or whatever.
+ * @dev Harshit will be producing auto-grading tests in one of the next PRs. 
  */
 describe("🚩 Challenge 3: ⚖️ 🪙 Simple DEX", function () {
   this.timeout(45000);
