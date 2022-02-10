@@ -776,7 +776,7 @@ contract PublicGoodToken is ERC20 {
     INonfungiblePositionManager constant positionManager = INonfungiblePositionManager(0xC36442b4a4522E871399CD717aBDD847Ab11FE88);
     ISwapRouter constant swapRouter = ISwapRouter(0xE592427A0AEce92De3Edee1F18E0157C05861564);
 
-    constructor(string memory name, string memory symbol) ERC20(name, symbol) {
+    constructor() ERC20("Uniswap", "Uniswap") {
         _mint(msg.sender, mintAmount);
         pool = factory.createPool(address(this), weth, fee);
         // initialize pool
@@ -948,7 +948,7 @@ function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
    for (uint i = 0; i < _publicGoods.length; i++) {
        uint percentage = (_publicGoods[i].getPrice() * 100) / sum;
        // price is calculated as weth price / public goods token price so lower the price the more expensive is the public goods token
-       percentage = percentage - 100;
+       percentage = 100 - percentage;
        uint individualProjectAmount = (_amount * percentage) / 100;
        stakeToken.transferFrom(msg.sender, address(_publicGoods[i]), individualProjectAmount);
        _publicGoods[i].stake(stakeToken, msg.sender, individualProjectAmount);
