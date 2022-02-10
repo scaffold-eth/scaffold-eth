@@ -1,12 +1,12 @@
-# 🏗 scaffold-eth - 🔵 Loogies SVG NFT
+# 🏗 scaffold-eth - 🔵 On Chain Fractals!
 
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git loogies-svg-nft
+git clone https://github.com/austintgriffith/scaffold-eth.git svg-fractals
 
-cd loogies-svg-nft
+cd svg-fractals
 
-git checkout loogies-svg-nft
+git checkout svg-fractals
 ```
 
 ```bash
@@ -24,7 +24,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd loogies-svg-nft
+cd svg-fractals
 
 yarn chain
 
@@ -36,7 +36,7 @@ yarn chain
 
 
 ```bash
-cd loogies-svg-nft
+cd svg-fractals
 
 yarn deploy
 
