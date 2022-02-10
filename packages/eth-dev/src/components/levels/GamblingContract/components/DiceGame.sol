@@ -21,18 +21,17 @@ contract DiceGame {
     return randomNumber;
   }
 
-  function bet(uint256 _guess) public returns (bool) {
-    uint256 blockValue = uint256(blockhash(block.number.sub(1)));
-    require(_guess >= MIN_NUMBER && _guess <= MAX_NUMBER);
+  function bet(uint256 _guess) public payable returns (bool) {
+    require(_guess >= MIN_NUMBER && _guess <= MAX_NUMBER, "guess must be between 1 and 6");
+    require(msg.value >= (0.1 ether), "Not enough ether to attack");
 
-    if (lastHash == blockValue) {
-      revert();
-    }
+    uint256 blockValue = uint256(blockhash(block.number.sub(1)));
+    require(lastHash != blockValue, "lastHash must not equal blockValue");
 
     uint256 roll = getRandomNumber();
 
     if (roll == _guess) {
-      (bool sent, bytes memory data) = msg.sender.call{value: 0.1 ether}("");
+      (bool sent, bytes memory data) = msg.sender.call{value: 0.2 ether}("");
       emit BetExecuted(_guess, roll, true);
       return true;
     }
