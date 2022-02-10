@@ -10,6 +10,7 @@ import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
 import CityAtWar from './CityAtWar'
 import ConnectToMetamask from './ConnectToMetamask'
+import GamblingContract from './GamblingContract'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
   const setInitialLevel = levelId => {
@@ -46,6 +47,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'CreateWallet' && <CreateWallet />}
       {currentLevel === 'CityAtWar' && <CityAtWar />}
       {currentLevel === 'ConnectToMetamask' && <ConnectToMetamask />}
+      {currentLevel === 'GamblingContract' && <GamblingContract />}
     </>
   )
 }

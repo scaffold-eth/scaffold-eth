@@ -9,6 +9,8 @@ const Terminal = ({
   dialog,
   actions,
   globalGameActions,
+  initTop,
+  initLeft,
   ...props
 }) => {
   const initHeight = 700
@@ -16,8 +18,8 @@ const Terminal = ({
 
   return (
     <WindowModal
-      initTop={window.innerHeight - (initHeight + 10)}
-      initLeft={0}
+      initTop={initTop || window.innerHeight - (initHeight + 10)}
+      initLeft={initLeft || 0}
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/trimmed/terminal_trimmed.png'
