@@ -47,6 +47,12 @@ const findAllClaims = async () => {
   return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
 };
 
+const findAllClaimed = async () => {
+  const snapshot = await database.collection('claims').where('claimed', '==', true).get();
+
+  return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+};
+
 const getClaim = async (id) => {
   const claimRef = database.collection('claims').doc(id);
   const claim = await claimRef.get();
@@ -83,4 +89,5 @@ module.exports = {
   getClaimedByTokenId,
   claimsByAddress,
   findAllClaims,
+  findAllClaimed,
 };

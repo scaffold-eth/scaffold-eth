@@ -82,6 +82,10 @@ const findAllClaims = () => {
   return Object.entries(database).map(([id, data]) => ({ id, ...data }));
 };
 
+const findAllClaimed = () => {
+  return Object.entries(database).filter(([id, data]) => data.claimed === true).map(([id, data]) => ({ id, ...data }));
+};
+
 module.exports = {
   createClaim,
   claimByTokenId,
@@ -91,4 +95,5 @@ module.exports = {
   getClaimedByTokenId,
   claimsByAddress,
   findAllClaims,
+  findAllClaimed,
 };

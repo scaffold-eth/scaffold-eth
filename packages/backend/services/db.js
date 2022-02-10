@@ -9,6 +9,7 @@ const updateClaimByTokenId = db.updateClaimByTokenId;
 const getClaimedByTokenId = db.getClaimedByTokenId;
 const claimsByAddress = db.claimsByAddress;
 const findAllClaims = db.findAllClaims;
+const findAllClaimed = db.findAllClaimed;
 
 module.exports = {
   createClaim,
@@ -19,4 +20,5 @@ module.exports = {
   getClaimedByTokenId,
   claimsByAddress,
   findAllClaims,
+  findAllClaimed,
 };

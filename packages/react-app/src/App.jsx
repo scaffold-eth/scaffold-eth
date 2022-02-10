@@ -1,4 +1,4 @@
-import { Button, Col, Row, List, Card, Spin } from "antd";
+import { Button, Col, Row, List, Card, Spin, Table } from "antd";
 import "antd/dist/antd.css";
 import { useBalance, useContractLoader, useGasPrice, useUserProviderAndSigner } from "eth-hooks";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
@@ -146,6 +146,61 @@ function App(props) {
   const [yourClaims, setYourClaims] = useState([]);
   const [anyUnclaimed, setAnyUnclaimed] = useState(false);
   const [updateLoogies, setUpdateLoogies] = useState(0);
+  const [claimedLogs, setClaimedLogs] = useState([]);
+
+  const logColumns = [
+    { 
+      dataIndex: 'id', 
+      title: 'ID', 
+      key: 'id' 
+    },
+    { 
+      dataIndex: 'address', 
+      title: 'Address', 
+      key: 'address',
+      render: address => <a target="_blank" href={targetClaimNetwork.blockExplorer + "address/" + address}>{address}</a>,
+    },
+    { 
+      dataIndex: 'tokenId', 
+      title: 'TokenId', 
+      key: 'tokenId' 
+    },    
+    { 
+      dataIndex: 'claimed', 
+      title: 'Claimed', 
+      key: 'claimed', 
+      render: boolean =>  boolean ? "✓" : "✖",
+    },
+    { 
+      dataIndex: 'claimedTimestamp', 
+      title: 'ClaimedTimestamp', 
+      key: 'claimedTimestamp',
+      render: timestamp => (new Date(timestamp)).toUTCString(),
+    },
+    { 
+      dataIndex: 'minted', 
+      title: 'Minted', 
+      key: 'minted', 
+      render: boolean =>  boolean ? "✓" : "✖",
+    },
+    { 
+      dataIndex: 'optimisticTokenId', 
+      title: 'OptimisticTokenId', 
+      key: 'optimisticTokenId' 
+    },
+    { 
+      dataIndex: 'transactionHash', 
+      title: 'TransactionHash', 
+      key: 'transactionHash',
+      render: hash => <a target="_blank" href={targetClaimNetwork.blockExplorer + "tx/" + hash}>{hash}</a>, 
+    },
+    { 
+      dataIndex: 'transactionHashTransfer', 
+      title: 'TransactionHashTransfer', 
+      key: 'transactionHashTransfer',
+      render: hash => <a target="_blank" href={targetClaimNetwork.blockExplorer + "tx/" + hash}>{hash}</a>,
+    },
+  ];
 
   useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -466,6 +521,46 @@ function App(props) {
             ) : (
               <div>You don't have any Loogie</div>
             )}
+            </>
+          )}
+        </Route>
+        <Route exact path="/logs">
+          {address && (
+            <>
+              <Button
+                type="primary"
+                style={{ marginBottom: 20 }}
+                disabled={isSendingTx}
+                onClick={async () => {
+                  try {
+                    const message = "loogie-claim-logs-" + address;
+
+                    const signature = await userSigner.signMessage(message);
+
+                    setIsSendingTx(true);
+
+                    axios
+                      .post(serverUrl + "logs", {
+                        address: address,
+                        signature: signature,
+                      })
+                      .then(response => {
+                        console.log(response);
+                        setClaimedLogs(response.data);
+                        setIsSendingTx(false);
+                      })
+                      .catch(e => {
+                        console.log("Error getting logs");
+                        setIsSendingTx(false);
+                      });
+                  } catch (e) {
+                    console.log("Logs get failed", e);
+                  }
+                }}
+              >
+                Show Logs
+              </Button>
+              <Table dataSource={claimedLogs} columns={logColumns} rowKey="id" />
             </>
           )}
         </Route>

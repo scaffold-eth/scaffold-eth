@@ -195,14 +195,14 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 app.get("/", async function (request, response) {
 
-
-  for (let tokenId = 1; tokenId < 8; tokenId++) {
+/*
+  for (let tokenId = 1; tokenId < 1864; tokenId++) {
     await db.createClaim({
       tokenId: tokenId,
       claimed: false
     })
   }
-
+*/
 
   response.send('OptimisticLoogiesClaim');
 });
@@ -263,6 +263,34 @@ app.get("/claims/:address", async function (request, response) {
     console.log(exception);
     response.status(500).send('Error retrieving claim');
   }
+});
+
+app.post("/logs", async function (request, response) {
+  console.log("Get logs address: ", request.params.address);
+
+  const ip =
+    request.headers["x-forwarded-for"] || request.connection.remoteAddress;
+  console.log("POST from ip address:", ip);
+  console.log(request.body);
+
+  const message = "loogie-claim-logs-" + request.body.address;
+
+  const recovered = ethers.utils.verifyMessage(
+    message,
+    request.body.signature
+  );
+
+  if (recovered != request.body.address) {
+    console.log('Wrong signature');
+    return response.status(401).send('Wrong signature');
+  }
+
+  if (recovered == '0x34aA3F359A9D614239015126635CE7732c18fDF3' || recovered == '0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93') {
+    const claims = await db.findAllClaimed();
+    return response.send(claims);
+  }
+
+  response.status(401).send('Unauthorized address');
 });
 
 /*
