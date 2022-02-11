@@ -1,28 +1,37 @@
-# 🏗 Scaffold-ETH
+# 🏗 scaffold-eth - OptimisticLoogies
 
-> everything you need to build on Ethereum! 🚀
+Loogies with a smile on Optimism network.
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+![optimisticloogie](https://optimistic.loogies.io/optimistic-loogie.svg)
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+Demo Video: https://youtu.be/PiwJsoURECg?t=542
 
+https://optimistic.loogies.io/
 
 # 🏄‍♂️ Quick Start
 
+## Prerequisites
+
+This branch is an extension of [loogie-svg-nft](https://github.com/scaffold-eth/scaffold-eth/tree/loogies-svg-nft) branch (watch its [demo](https://www.youtube.com/watch?v=m0bwE5UelEo) to understand more about it).
+
+[Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+
+## Getting Started
+
+### Installation
+
 ### Manual setup
 
-Prerequisites: [Node](https://nodejs.org/en/download/) plus [Yarn](https://classic.yarnpkg.com/en/docs/install/) and [Git](https://git-scm.com/downloads)
+> clone/fork 🏗 scaffold-eth optimistic-loogies-master branch:
 
-> clone/fork 🏗 scaffold-eth:
-
-```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+```
+git clone -b optimistic-loogies-master https://github.com/scaffold-eth/scaffold-eth.git optimistic-loogies-master
 ```
 
 > install and start your 👷‍ Hardhat chain:
 
 ```bash
-cd scaffold-eth
+cd optimistic-loogies-master
 yarn install
 yarn chain
 ```
@@ -30,20 +39,20 @@ yarn chain
 > in a second terminal window, start your 📱 frontend:
 
 ```bash
-cd scaffold-eth
+cd optimistic-loogies-master
 yarn start
 ```
 
 > in a third terminal window, 🛰 deploy your contract:
 
 ```bash
-cd scaffold-eth
+cd optimistic-loogies-master
 yarn deploy
 ```
 
 🌍 You need an RPC key for production deployments/Apps, create an [Alchemy](https://www.alchemy.com/) account and replace the value of `ALCHEMY_KEY = xxx` in `packages/react-app/src/constants.js`
 
-🔏 Edit your smart contract `YourContract.sol` in `packages/hardhat/contracts`
+🔏 Edit your smart contracts `packages/hardhat/contracts`.
 
 📝 Edit your frontend `App.jsx` in `packages/react-app/src`
 
@@ -51,11 +60,23 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+
+## Introduction
+
+This branch shows how to set up an SVG NFT contract so that other NFTs can use it in their SVG code. This leads to an easy composition of SVG NFTs.
+
+Take a look at `Loogies.sol` at `packages/hardhat/contracts`. It describes an SVG NFT that is defined by two parameters: `color` and `chubbiness` randomly generated at mint. It exposes a function:
+```
+function renderTokenById(uint256 id) public view returns (string memory)
+```
+
+It returns the relevant SVG that be embedded in other SVG code for rendering.
+
 ### Automated with Gitpod
 
 To deploy this project to Gitpod, click this button:
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#github.com/scaffold-eth/scaffold-eth)
+[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://github.com/scaffold-eth/scaffold-eth/tree/fancy-loogies)
 
 # 📚 Documentation
 
