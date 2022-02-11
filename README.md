@@ -2,6 +2,8 @@
 
 A semi-decentralized & effective way of distributing rewards to workstream contributors.
 
+http://feast.buidlguidl.surge.sh/
+
 With one list for the voters and another list for the candidates.
 
 ![qdip-create](https://user-images.githubusercontent.com/466652/139717035-12cfc65a-7234-40f7-a8c9-5722337201c0.png)
