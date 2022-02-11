@@ -2,7 +2,11 @@
 
 > An open source Ethereum web wallet.
 
-> It's a forkable burner wallet with Wallet Connect up front. 
+🎥 [watch this 10m demo](https://youtu.be/lYRd1k1RBAQ)
+
+---
+
+> PunkWallet.io is a forkable burner wallet with Wallet Connect up front. 
 
 
 ![image](https://user-images.githubusercontent.com/2653167/151641532-7b046bb9-0c4d-4580-9243-cfd685e69e46.png)
