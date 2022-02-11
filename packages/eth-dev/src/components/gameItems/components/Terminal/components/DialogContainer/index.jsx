@@ -96,7 +96,8 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
         style={{
           display: 'flex',
           flexDirection: 'column',
-          padding: 10
+          padding: 10,
+          paddingTop: 0
         }}
       >
         {filteredDialog.map((dialogStep, index) => {
