@@ -323,8 +323,8 @@ export const NETWORKS = {
     rpcUrl: `https://arb1.arbitrum.io/rpc`,
     gasPrice: 0,
   },
-  xdai: {
-    name: "xdai",
+  gnosis: {
+    name: "gnosischain",
     color: "#48a9a6",
     chainId: 100,
     price: 1,
@@ -334,12 +334,12 @@ export const NETWORKS = {
       decimals: 18,
     },
     gasPrice: 1000000000,
-    rpcUrl: "https://dai.poa.network",
+    rpcUrl: "https://rpc.gnosischain.com/",
     faucet: "https://xdai-faucet.top/",
     blockExplorer: "https://blockscout.com/poa/xdai/",
   },
-  matic: {
-    name: "matic",
+  polygon: {
+    name: "polygon",
     color: "#2bbdf7",
     price: "uniswap:0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0",
     chainId: 137,

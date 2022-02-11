@@ -110,8 +110,12 @@ const web3Modal = new Web3Modal({
       options: {
         infuraId: INFURA_ID,
         rpc: {
-          100: "https://dai.poa.network", // xDai
-          31337: "http://localhost:8545"
+          10: "https://mainnet.optimism.io", // xDai
+          100: "https://rpc.gnosischain.com", // xDai
+          137: "https://polygon-rpc.com",
+          31337: "http://localhost:8545",
+          42161: "https://arb1.arbitrum.io/rpc",
+          80001: "https://rpc-mumbai.maticvigil.com"
         },
       },
     },
@@ -729,7 +733,7 @@ function App(props) {
       </div>
 
       <div style={{ padding: 16, cursor: "pointer", backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <QRPunkBlockie withQr address={address} />
+        <QRPunkBlockie withQr address={address} showAddress={true} />
       </div>
 
       <div style={{ position: "relative", width: 320, margin: "auto", textAlign: "center", marginTop: 32 }}>
@@ -937,7 +941,7 @@ function App(props) {
         <Button
           style={{ margin:8, marginTop: 16 }}
           onClick={() => {
-            window.open("https://zapper.fi/account/"+address+"/transactions");
+            window.open("https://zapper.fi/account/"+address+"?tab=history");
           }}
         >
           <span style={{ marginRight: 8 }}>📜</span>History
