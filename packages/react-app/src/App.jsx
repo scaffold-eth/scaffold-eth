@@ -136,9 +136,13 @@ function App(props) {
   const checkBalances = async address => {
     if(!checkingBalances){
       setCheckingBalances(true)
+      setTimeout(()=>{
+        setCheckingBalances(false)
+      },5000)
       //getting current balance
       const currentBalance = await localProvider.getBalance(address);
-      if(currentBalance.toNumber()===0){
+      if(currentBalance && ethers.utils.formatEther(currentBalance)){
+        console.log("No balance found... searching...")
         for (const n in NETWORKS) {
           try{
             const tempProvider = new JsonRpcProvider(NETWORKS[n].rpcUrl);
@@ -153,7 +157,6 @@ function App(props) {
             }
           }catch(e){console.log(e)}
         }
-        setCheckingBalances(false)
       }else{
         window.location.reload(true);
       }
