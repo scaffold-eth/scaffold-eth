@@ -13,7 +13,7 @@ export default function Header( props ) {
           </a>
         )}
         subTitle=<a href="https://github.com/scaffold-eth/scaffold-eth/tree/punk-wallet">
-          {window.innerWidth<600?"":"code/info"}
+          {window.innerWidth<600?"":"info/code"}
         </a>
         style={{ cursor: "pointer",fontSize:32 }}
         extra={props.extra}
