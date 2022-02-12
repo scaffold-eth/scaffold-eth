@@ -80,22 +80,6 @@ let localProvider = new StaticJsonRpcProvider(localProviderUrlFromEnv);
 // 🔭 block explorer URL
 const blockExplorer = targetNetwork.blockExplorer;
 
-// a function to check your balance on every network and switch networks if found...
-const checkBalances = async address => {
-  for (const n in NETWORKS) {
-    const tempProvider = new JsonRpcProvider(NETWORKS[n].rpcUrl);
-    const tempBalance = await tempProvider.getBalance(address);
-    const result = tempBalance && formatEther(tempBalance);
-    if (result != 0) {
-      console.log("Found a balance in ", n);
-      window.localStorage.setItem("network", n);
-      setTimeout(() => {
-        window.location.reload();
-      }, 1500);
-    }
-  }
-};
-
 let scanner;
 
 /*
@@ -146,6 +130,37 @@ function App(props) {
     }
     waitForNetwork()
   },[ localProvider ])*/
+
+  const [checkingBalances, setCheckingBalances] = useState();
+  // a function to check your balance on every network and switch networks if found...
+  const checkBalances = async address => {
+    if(!checkingBalances){
+      setCheckingBalances(true)
+      //getting current balance
+      const currentBalance = await localProvider.getBalance(address);
+      if(currentBalance.toNumber()===0){
+        for (const n in NETWORKS) {
+          try{
+            const tempProvider = new JsonRpcProvider(NETWORKS[n].rpcUrl);
+            const tempBalance = await tempProvider.getBalance(address);
+            const result = tempBalance && formatEther(tempBalance);
+            if (result != 0) {
+              console.log("Found a balance in ", n);
+              window.localStorage.setItem("network", n);
+              setTimeout(() => {
+                window.location.reload(true);
+              }, 500);
+            }
+          }catch(e){console.log(e)}
+        }
+        setCheckingBalances(false)
+      }else{
+        window.location.reload(true);
+      }
+    }
+
+
+  };
 
   const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
 
@@ -208,186 +223,182 @@ function App(props) {
     }
   }, 7777);*/
 
+  const connectWallet = (sessionDetails)=>{
+    console.log(" 📡 Connecting to Wallet Connect....",sessionDetails)
+
+    const connector = new WalletConnect(sessionDetails);
+
+    setWallectConnectConnector(connector)
+
+    // Subscribe to session requests
+    connector.on("session_request", (error, payload) => {
+      if (error) {
+        throw error;
+      }
+
+      console.log("SESSION REQUEST")
+      // Handle Session Request
+
+      connector.approveSession({
+        accounts: [                 // required
+          address
+        ],
+        chainId: targetNetwork.chainId               // required
+      })
+
+      setConnected(true)
+      setWallectConnectConnectorSession(connector.session)
+
+      /* payload:
+      {
+        id: 1,
+        jsonrpc: '2.0'.
+        method: 'session_request',
+        params: [{
+          peerId: '15d8b6a3-15bd-493e-9358-111e3a4e6ee4',
+          peerMeta: {
+            name: "WalletConnect Example",
+            description: "Try out WalletConnect v1.0",
+            icons: ["https://example.walletconnect.org/favicon.ico"],
+            url: "https://example.walletconnect.org"
+          }
+        }]
+      }
+      */
+    });
+
+    // Subscribe to call requests
+    connector.on("call_request", async (error, payload) => {
+      if (error) {
+        throw error;
+      }
+
+      console.log("REQUEST PERMISSION TO:",payload,payload.params[0])
+      // Handle Call Request
+      //console.log("SETTING TO",payload.params[0].to)
+
+      //setWalletConnectTx(true)
+
+      //setToAddress(payload.params[0].to)
+      //setData(payload.params[0].data?payload.params[0].data:"0x0000")
+
+      //let bigNumber = ethers.BigNumber.from(payload.params[0].value)
+      //console.log("bigNumber",bigNumber)
+
+      //let newAmount = ethers.utils.formatEther(bigNumber)
+      //console.log("newAmount",newAmount)
+      //if(props.price){
+      //  newAmount = newAmount.div(props.price)
+      //}
+      //setAmount(newAmount)
+
+      /* payload:
+      {
+        id: 1,
+        jsonrpc: '2.0'.
+        method: 'eth_sign',
+        params: [
+          "0xbc28ea04101f03ea7a94c1379bc3ab32e65e62d3",
+          "My email is john@doe.com - 1537836206101"
+        ]
+      }
+      */
+
+      //setWalletModalData({payload:payload,connector: connector})
+
+      confirm({
+          width: "90%",
+          size: "large",
+          title: 'Send Transaction?',
+          icon: <SendOutlined/>,
+          content: <pre>{payload && JSON.stringify(payload.params, null, 2)}</pre>,
+          onOk:async ()=>{
+
+            let result = await userProvider.send(payload.method, payload.params)
+
+            //console.log("MSG:",ethers.utils.toUtf8Bytes(msg).toString())
+
+            //console.log("payload.params[0]:",payload.params[1])
+            //console.log("address:",address)
+
+            //let userSigner = userProvider.getSigner()
+            //let result = await userSigner.signMessage(msg)
+            console.log("RESULT:",result)
 
 
+            connector.approveRequest({
+              id: payload.id,
+              result: result
+            });
 
-  const [ walletConnectUrl, setWalletConnectUrl ] = useState()
+            notification.info({
+              message: "Wallet Connect Transaction Sent",
+              description: result.hash,
+              placement: "bottomRight",
+            });
+          },
+          onCancel: ()=>{
+            console.log('Cancel');
+          },
+        });
+      //setIsWalletModalVisible(true)
+      //if(payload.method == "personal_sign"){
+      //  console.log("SIGNING A MESSAGE!!!")
+        //const msg = payload.params[0]
+      //}
+    });
+
+    connector.on("disconnect", (error, payload) => {
+      if (error) {
+        throw error;
+      }
+      console.log("disconnect")
+
+      setTimeout(() => {
+        window.location.reload();
+      }, 1);
+
+      // Delete connector
+    });
+  }
+
+  const [ walletConnectUrl, setWalletConnectUrl ] = useLocalStorage("walletConnectUrl")
   const [ connected, setConnected ] = useState()
 
-
   const [ wallectConnectConnector, setWallectConnectConnector ] = useState()
+  //store the connector session in local storage so sessions persist through page loads ( thanks Pedro <3 )
+  const [ wallectConnectConnectorSession, setWallectConnectConnectorSession ] = useLocalStorage("wallectConnectConnectorSession")
 
   useEffect(()=>{
-    //walletConnectUrl
-    if(walletConnectUrl){
-
-      //CLEAR LOCAL STORAGE?!?
-      localStorage.removeItem("walletconnect") // lololol
-
-      console.log(" 📡 Connecting to Wallet Connect....",walletConnectUrl)
-      const connector = new WalletConnect(
-        {
-          // Required
-          uri: walletConnectUrl,
-          // Required
-          clientMeta: {
-            description: "Forkable web wallet for small/quick transactions.",
-            url: "https://punkwallet.io",
-            icons: ["https://punkwallet.io/punk.png"],
-            name: "🧑‍🎤 PunkWallet.io",
-          },
-        }/*,
-        {
-          // Optional
-          url: "<YOUR_PUSH_SERVER_URL>",
-          type: "fcm",
-          token: token,
-          peerMeta: true,
-          language: language,
-        }*/
-      );
-
-      setWallectConnectConnector(connector)
-
-      // Subscribe to session requests
-      connector.on("session_request", (error, payload) => {
-        if (error) {
-          throw error;
-        }
-
-        console.log("SESSION REQUEST")
-        // Handle Session Request
-
-        connector.approveSession({
-          accounts: [                 // required
-            address
-          ],
-          chainId: targetNetwork.chainId               // required
-        })
-
+    if(!connected){
+      if(wallectConnectConnectorSession){
+        console.log("NOT CONNECTED AND wallectConnectConnectorSession",wallectConnectConnectorSession)
+        connectWallet( wallectConnectConnectorSession )
         setConnected(true)
-
-
-        /* payload:
-        {
-          id: 1,
-          jsonrpc: '2.0'.
-          method: 'session_request',
-          params: [{
-            peerId: '15d8b6a3-15bd-493e-9358-111e3a4e6ee4',
-            peerMeta: {
-              name: "WalletConnect Example",
-              description: "Try out WalletConnect v1.0",
-              icons: ["https://example.walletconnect.org/favicon.ico"],
-              url: "https://example.walletconnect.org"
-            }
-          }]
-        }
-        */
-      });
-
-      // Subscribe to call requests
-      connector.on("call_request", async (error, payload) => {
-        if (error) {
-          throw error;
-        }
-
-        console.log("REQUEST PERMISSION TO:",payload,payload.params[0])
-        // Handle Call Request
-        //console.log("SETTING TO",payload.params[0].to)
-
-        //setWalletConnectTx(true)
-
-        //setToAddress(payload.params[0].to)
-        //setData(payload.params[0].data?payload.params[0].data:"0x0000")
-
-        //let bigNumber = ethers.BigNumber.from(payload.params[0].value)
-        //console.log("bigNumber",bigNumber)
-
-        //let newAmount = ethers.utils.formatEther(bigNumber)
-        //console.log("newAmount",newAmount)
-        //if(props.price){
-        //  newAmount = newAmount.div(props.price)
-        //}
-        //setAmount(newAmount)
-
-        /* payload:
-        {
-          id: 1,
-          jsonrpc: '2.0'.
-          method: 'eth_sign',
-          params: [
-            "0xbc28ea04101f03ea7a94c1379bc3ab32e65e62d3",
-            "My email is john@doe.com - 1537836206101"
-          ]
-        }
-        */
-
-        //setWalletModalData({payload:payload,connector: connector})
-
-        confirm({
-            width: "90%",
-            size: "large",
-            title: 'Send Transaction?',
-            icon: <SendOutlined/>,
-            content: <pre>{payload && JSON.stringify(payload.params, null, 2)}</pre>,
-            onOk:async ()=>{
-
-              let result = await userProvider.send(payload.method, payload.params)
-
-              //console.log("MSG:",ethers.utils.toUtf8Bytes(msg).toString())
-
-              //console.log("payload.params[0]:",payload.params[1])
-              //console.log("address:",address)
-
-              //let userSigner = userProvider.getSigner()
-              //let result = await userSigner.signMessage(msg)
-              console.log("RESULT:",result)
-
-
-              connector.approveRequest({
-                id: payload.id,
-                result: result
-              });
-
-              notification.info({
-                message: "Wallet Connect Transaction Sent",
-                description: result.hash,
-                placement: "bottomRight",
-              });
-            },
-            onCancel: ()=>{
-              console.log('Cancel');
-            },
-          });
-
-        //setIsWalletModalVisible(true)
-
-        //if(payload.method == "personal_sign"){
-        //  console.log("SIGNING A MESSAGE!!!")
-
-          //const msg = payload.params[0]
-
-
-        //}
-
-
-
-
-      });
-
-      connector.on("disconnect", (error, payload) => {
-        if (error) {
-          throw error;
-        }
-        console.log("disconnect")
-
-        setTimeout(() => {
-          window.location.reload();
-        }, 1);
-
-        // Delete connector
-      });
+      }else if(walletConnectUrl/*&&!walletConnectUrlSaved*/){
+        //CLEAR LOCAL STORAGE?!?
+        console.log("clear local storage and connect...")
+        localStorage.removeItem("walletconnect") // lololol
+        connectWallet(      {
+                // Required
+                uri: walletConnectUrl,
+                // Required
+                clientMeta: {
+                  description: "Forkable web wallet for small/quick transactions.",
+                  url: "https://punkwallet.io",
+                  icons: ["https://punkwallet.io/punk.png"],
+                  name: "🧑‍🎤 PunkWallet.io",
+                },
+              }/*,
+              {
+                // Optional
+                url: "<YOUR_PUSH_SERVER_URL>",
+                type: "fcm",
+                token: token,
+                peerMeta: true,
+                language: language,
+              }*/)
+      }
     }
   },[ walletConnectUrl ])
 
@@ -724,8 +735,9 @@ function App(props) {
 
       {/* ✏️ Edit the header and change the title to your project name */}
 
-      <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto" }}>
+      <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
         <Balance value={yourLocalBalance} size={52} price={price} />
+        <span style={{cursor:"pointer",fontSize:30,opacity:checkingBalances?0.1:0.5,padding:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}>🔄</span>
         <span style={{ verticalAlign: "middle" }}>
           {networkSelect}
           {faucetHint}
@@ -960,19 +972,18 @@ function App(props) {
 
       </div>
 
-      <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32}}>
-        {connected?"✅":""}
+      <div style={{ clear: "both", width: 500, margin: "auto" ,marginTop:32, position:"relative"}}>
+        {connected?<span style={{cursor:"pointer",padding:8,fontSize:30,position:"absolute",top:-16,left:28}}>✅</span>:""}
         <Input
           style={{width:"70%"}}
-          placeholder={"wallet connect url"}
+          placeholder={"wallet connect url (or use the scanner-->)"}
           value={walletConnectUrl}
           disabled={connected}
           onChange={(e)=>{
             setWalletConnectUrl(e.target.value)
           }}
-        />{connected?<span onClick={()=>{setConnected(false);wallectConnectConnector.killSession()}}>X</span>:""}
+        />{connected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{setConnected(false);wallectConnectConnector.killSession();setWallectConnectConnectorSession();setWalletConnectUrl();}}>🗑</span>:""}
       </div>
-
 
 
       { targetNetwork.name=="ethereum" ? <div style={{ zIndex: -1, padding: 64, opacity: 0.5, fontSize: 12 }}>
