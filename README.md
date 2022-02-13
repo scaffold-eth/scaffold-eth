@@ -20,6 +20,7 @@ git clone https://github.com/scaffold-eth/scaffold-eth.git
 
 ```bash
 cd scaffold-eth
+git checkout nft-royalties
 yarn install
 yarn chain
 ```
