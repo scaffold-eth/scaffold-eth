@@ -1,4 +1,4 @@
-//SPDX-License-Identifier: Unlicense
+//SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
@@ -6,13 +6,10 @@ import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./IERC721Royalty.sol";
-//import "./IERC20.sol";
 
-import "hardhat/console.sol";
+//import "hardhat/console.sol";
 
 contract Marketplace is ReentrancyGuard, Ownable {
-    //IERC20 private erc20;
-
     // * Utils
     using Counters for Counters.Counter;
     Counters.Counter private listingIds;
@@ -50,12 +47,10 @@ contract Marketplace is ReentrancyGuard, Ownable {
     );
 
     event Purchase(uint256 indexed itemId, address buyer, uint256 price);
-
     event updatedPrice(uint256 indexed itemId, address owner, uint256 price);
-
     event newBid(address buyer, Listing listing, uint256 bid);
 
-    // * Modifiers
+    // * Owner modifier
     modifier Owned(uint256 listingId) {
         Listing memory item = listings[listingId];
         address ownerOfToken = IERC721(item.nftContract).ownerOf(item.nftId);
@@ -66,7 +61,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     constructor() {}
 
-    //////////////////////// Create Listing ///////////////////////////
+    // * Create Listing
     function createListing(
         address nftContract,
         uint256 nftId,
@@ -77,7 +72,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         address nftOwner = IERC721(nftContract).ownerOf(nftId);
         (address to, uint256 baseAmount) = IERC721Royalty(nftContract)
             .royaltyInfo(nftId, 1 * 10**18);
-        console.log(to, baseAmount);
+        //console.log(to, baseAmount);
 
         require(price > 0, "Price must be greater than 0.");
         require(nftOwner == msg.sender, "You can't sell an NFT you don't own!");
@@ -130,7 +125,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
             "Please submit asking price in order to complete purchase"
         );
 
-        console.log((price * baseRoyalty) / 10000); //just royalty amount
+        //console.log((price * baseRoyalty) / 10000); //just royalty amount
         payable(nftSeller).transfer(price - ((price * baseRoyalty) / 10000)); // price - royalty
         payable(royaltyReciever).transfer((price * baseRoyalty) / 10000); //just royalty
 
@@ -153,7 +148,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     }
 
     // * Add new bid and return funds to previous bidder.
-    function bid(uint256 listingId) public payable {
+    function bid(uint256 listingId) public payable nonReentrant {
         Listing storage listing = listings[listingId];
 
         require(listing.isAuction, "This listing is not an auction");
@@ -181,7 +176,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     }
 
     // * Transfer current bid to seller and NFT to winner
-    function withdraw(uint256 listingId) public {
+    function withdraw(uint256 listingId) public nonReentrant {
         Listing storage listing = listings[listingId];
         address nftContract = listing.nftContract;
         uint256 nftId = listing.nftId;
@@ -205,7 +200,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     }
 
     // * Manual early cancellation by seller
-    function auctionCancel(uint256 listingId) public {
+    function auctionCancel(uint256 listingId) public nonReentrant {
         Listing storage listing = listings[listingId];
         require(listing.seller == msg.sender, "You do not own this listing.");
         require(block.timestamp < listing.date, "Auction has already ended");

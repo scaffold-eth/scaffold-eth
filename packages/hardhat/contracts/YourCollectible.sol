@@ -16,14 +16,14 @@ contract YourCollectible is
     ERC721URIStorage,
     ERC721Royalty
 {
-    //this lets you look up a token by the uri (assuming there is only one of each uri for now)
+    //this lets you look up a token by the uri (assuming there is only one of each uri)
     mapping(string => uint256) public uriToTokenId;
 
     using Counters for Counters.Counter;
     Counters.Counter private _tokenIds;
 
     constructor(uint96 _feeNumerator) ERC721("RoyaltiesTest", "RT") {
-        // set default royalty fee
+        // set default royalty fee in deploy script
         //_setDefaultRoyalty(msg.sender, _feeNumerator);
     }
 
