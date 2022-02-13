@@ -51,9 +51,10 @@ yarn deploy
 ## Steps:
 
 1. Deploy contracts
-2. Mint NFT using account A
-3. Send NFT to account B
+2. Mint NFT using account A. When minting be sure to enter the `_royaltyNumerator` in the following manner ( for 5.00% enter as 500). Solidity doesnt work well with decimals.
+3. Send NFT to account B.
 4. List NFT using account B
 5. Approve the Marketplace to take the NFT using account B
 6. Using account C buy the NFT from account B. (If using ERC20 as payment, must approve.)
 7. Notice Royalty sent to account A after transaction between accounts B and C.
+
