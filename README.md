@@ -1,6 +1,6 @@
 # 🏗 Scaffold-ETH
 
-> NFT contract with built in royalty cache using OpenZeppelin ERC721Royalty extension. 
+> NFT contract with built in royalty cache using OpenZeppelin [ERC721Royalty](https://docs.openzeppelin.com/contracts/4.x/api/token/erc721#ERC721Royalty) extension. 
 
 > Marketplace contract with ERC721Rotalty interface to transacting using royalty functionality.
 
