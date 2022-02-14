@@ -14,9 +14,9 @@ tasks:
     openMode: split-right
 ports:
   - port: 3000
-    onOpen: open-preview
+    onOpen: open-browser
   - port: 8545
-    onOpen: ignore
+    onOpen: open-browser
 github:
   prebuilds:
     pullRequestsFromForks: true
