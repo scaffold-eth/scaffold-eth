@@ -2,6 +2,7 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -220,5 +221,26 @@ contract Marketplace is ReentrancyGuard, Ownable {
         );
 
         delete listings[listingId];
+    }
+
+    // * Get ERC721Royalty compliance from external contract
+    // Checks to see if the contract being interacted with supports royaltyInfo function
+    function supportERC721Royalty(address _nftContract)
+        public
+        view
+        returns (bool)
+    {
+        // check first NFT is minted.
+        IERC721(_nftContract).ownerOf(1);
+        // call interface to double check
+        (address _to, uint256 _amount) = IERC721Royalty(_nftContract)
+            .royaltyInfo(1, 1 * 10**18);
+        //console.log(_to, _amount);
+
+        if (_amount > 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 }
