@@ -11,24 +11,28 @@
     "eslint-plugin-prettier": "^3.1.4"
   },
   "dependencies": {
-    "@nomiclabs/hardhat-ethers": "^2.0.0",
-    "@nomiclabs/hardhat-etherscan": "^2.1.1",
-    "@nomiclabs/hardhat-waffle": "^2.0.0",
-    "@openzeppelin/contracts": "^3.2.0",
-    "@tenderly/hardhat-tenderly": "^1.0.10",
+    "@eth-optimism/hardhat-ovm": "^0.2.4",
+    "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
+    "@nomiclabs/hardhat-etherscan": "^2.1.8",
+    "@nomiclabs/hardhat-waffle": "^2.0.1",
+    "@openzeppelin/contracts": "^4.4.1",
+    "@openzeppelin/contracts-upgradeable": "^4.4.1",
+    "@tenderly/hardhat-tenderly": "^1.0.13",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
+    "dotenv": "^8.2.0",
     "ethereum-waffle": "^3.1.1",
-    "ethers": "^5.0.17",
-    "hardhat": "^2.0.11",
+    "ethers": "^5.4.4",
+    "hardhat": "2.8.0",
+    "hardhat-deploy": "^0.9.24",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
   },
   "scripts": {
     "chain": "hardhat node",
-    "fork": "hardhat node --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",
-    "test": "hardhat test --network hardhat",
+    "fork": "hardhat node --no-deploy --network hardhat --fork https://mainnet.infura.io/v3/460f40a260564ac4a4f4b3fffb032dad",
+    "test": "hardhat test",
     "compile": "hardhat compile",
     "deploy": "hardhat run scripts/deploy.js",
     "postdeploy": "hardhat run scripts/publish.js",
@@ -38,6 +42,8 @@
     "send": "hardhat send",
     "generate": "hardhat generate",
     "account": "hardhat account",
+    "mint": "hardhat run scripts/mint.js",
+    "verify": "hardhat etherscan-verify --api-key PSW8C433Q667DVEX5BCRMGNAH9FSGFZ7Q8",
     "upload": "hardhat run scripts/upload.js"
   }
 }
