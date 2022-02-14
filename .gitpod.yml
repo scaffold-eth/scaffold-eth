@@ -17,6 +17,7 @@ ports:
     onOpen: open-preview
   - port: 8545
     onOpen: ignore
+    visibility: public
 github:
   prebuilds:
     pullRequestsFromForks: true
