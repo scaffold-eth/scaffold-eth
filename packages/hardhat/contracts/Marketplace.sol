@@ -2,10 +2,6 @@
 pragma solidity ^0.8.0;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
-<<<<<<< HEAD
-import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
-=======
->>>>>>> f40f433d7adb2124aa41864128c90c5942189995
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
@@ -225,7 +221,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
         delete listings[listingId];
     }
-<<<<<<< HEAD
 
     // * Get ERC721Royalty compliance from external contract
     // Checks to see if the contract being interacted with supports royaltyInfo function
@@ -247,6 +242,4 @@ contract Marketplace is ReentrancyGuard, Ownable {
             return false;
         }
     }
-=======
->>>>>>> f40f433d7adb2124aa41864128c90c5942189995
 }
