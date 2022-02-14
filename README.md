@@ -49,6 +49,13 @@ yarn deploy
 
 📱 Open http://localhost:3000 to see the app
 
+# 🧪 Testing
+
+A simple Token contract is availble in contracts/Token.sol. There are a fair number of tests for it available in tests/Token.js.
+Thanks to [nomic lab's hardhat boilerplate](https://github.com/nomiclabs/hardhat-hackathon-boilerplate) for these!
+
+🧪 Run the tests `(cd packages/hardhat && npx hardhat --network hardhat test test/Token.js)`
+
 # 📚 Documentation
 
 Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)

@@ -58,6 +58,11 @@ module.exports = {
   // Follow the directions, and uncomment the network you wish to deploy to.
 
   networks: {
+    // Use this network to get console.logs to show up in the test output in when running tests
+    // npx hardhat --network hardhat test
+    hardhat: {
+      chainId: 31337,
+    },
     localhost: {
       url: "http://localhost:8545",
       /*
