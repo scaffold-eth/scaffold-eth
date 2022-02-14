@@ -51,7 +51,11 @@ yarn deploy
 ## Steps:
 
 1. Deploy contracts
+<<<<<<< HEAD
 2. Mint NFT using account A
+=======
+2. Mint NFT using account A. When entering `_royaltyNumerator`, use the scheme (5.00% --> entered as 500). Solidity does not like decimals.
+>>>>>>> f40f433d7adb2124aa41864128c90c5942189995
 3. Send NFT to account B
 4. List NFT using account B
 5. Approve the Marketplace to take the NFT using account B

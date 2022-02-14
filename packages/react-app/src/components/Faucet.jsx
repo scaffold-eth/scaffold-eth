@@ -1,7 +1,7 @@
-import { SendOutlined } from "@ant-design/icons";
 import { Button, Input, Tooltip } from "antd";
 import React, { useState, useEffect } from "react";
 import Blockies from "react-blockies";
+import { SendOutlined } from "@ant-design/icons";
 import { Transactor } from "../helpers";
 import Wallet from "./Wallet";
 
@@ -11,7 +11,7 @@ const { utils } = require("ethers");
 // added option to directly input ens name
 // added placeholder option
 
-/*
+/**
   ~ What it does? ~
 
   Displays a local faucet to send ETH to given address, also wallet is provided
@@ -33,7 +33,7 @@ const { utils } = require("ethers");
               (ex. "0xa870" => "user.eth") or you can enter directly ENS name instead of address
               works both in input field & wallet
   - Provide placeholder="Send local faucet" value for the input
-*/
+**/
 
 export default function Faucet(props) {
   const [address, setAddress] = useState();

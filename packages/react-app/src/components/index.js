@@ -21,3 +21,5 @@ export { default as L2Bridge } from "./L2Bridge";
 export { default as NetworkDisplay } from "./NetworkDisplay";
 export { default as FaucetHint } from "./FaucetHint";
 export { default as NetworkSwitch } from "./NetworkSwitch";
+export { default as MultiAddressInput } from "./MultiAddressInput";
+export { default as TokenSelect } from "./TokenSelect";

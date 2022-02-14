@@ -1,11 +1,12 @@
 import { Button } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
+
 import Address from "./Address";
 import Balance from "./Balance";
 import Wallet from "./Wallet";
 
-/*
+/** 
   ~ What it does? ~
 
   Displays an Address, Balance, and Wallet as one Account component,
@@ -39,7 +40,7 @@ import Wallet from "./Wallet";
               to be able to log in/log out to/from existing accounts
   - Provide blockExplorer={blockExplorer}, click on address and get the link
               (ex. by default "https://etherscan.io/" or for xdai "https://blockscout.com/poa/xdai/")
-*/
+**/
 
 export default function Account({
   useBurner,
