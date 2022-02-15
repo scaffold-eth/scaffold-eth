@@ -12,6 +12,7 @@ import CityAtWar from './CityAtWar'
 import ConnectToMetamask from './ConnectToMetamask'
 import GamblingContract from './GamblingContract'
 import Multisig from './Multisig'
+import DecentralizedExchange from './DecentralizedExchange'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
   const setInitialLevel = levelId => {
@@ -50,6 +51,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'ConnectToMetamask' && <ConnectToMetamask />}
       {currentLevel === 'GamblingContract' && <GamblingContract />}
       {currentLevel === 'Multisig' && <Multisig />}
+      {currentLevel === 'DecentralizedExchange' && <DecentralizedExchange />}
     </>
   )
 }
