@@ -430,7 +430,7 @@ function App(props) {
               </div>
             ) : (
               <div>
-                You didn't claimed any <strong>Optmistic Loogie</strong> yet
+                You didn't claimed any <strong>OptimisticLoogies</strong> yet
               </div>
             )}
 
@@ -519,7 +519,7 @@ function App(props) {
                 />
               </div>
             ) : (
-              <div>You don't have any Loogie</div>
+              <div>You don't have any Loogies</div>
             )}
             </>
           )}
