@@ -324,7 +324,7 @@ export const NETWORKS = {
     gasPrice: 0,
   },
   gnosis: {
-    name: "gnosischain",
+    name: "gnosis",
     color: "#48a9a6",
     chainId: 100,
     price: 1,

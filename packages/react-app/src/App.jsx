@@ -141,7 +141,7 @@ function App(props) {
       },5000)
       //getting current balance
       const currentBalance = await localProvider.getBalance(address);
-      if(currentBalance && ethers.utils.formatEther(currentBalance)){
+      if(currentBalance && ethers.utils.formatEther(currentBalance)=="0.0"){
         console.log("No balance found... searching...")
         for (const n in NETWORKS) {
           try{
@@ -739,7 +739,7 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
-        <Balance value={yourLocalBalance} size={52} price={price} />
+        <Balance value={yourLocalBalance} size={12+window.innerWidth/16} price={price} />
         <span style={{cursor:"pointer",fontSize:30,opacity:checkingBalances?0.1:0.5,padding:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}>🔄</span>
         <span style={{ verticalAlign: "middle" }}>
           {networkSelect}
@@ -763,8 +763,23 @@ function App(props) {
               scanner = toggle;
             }}
             walletConnect={(wcLink)=>{
-              setWalletConnectUrl(wcLink)
-              //window.location.replace('/wc?uri='+wcLink);
+              if(walletConnectUrl){
+                try{
+                  //setConnected(false);
+                  //setWalletConnectUrl();
+                  //if(wallectConnectConnector) wallectConnectConnector.killSession();
+                  //if(wallectConnectConnectorSession) setWallectConnectConnectorSession("");
+                  setConnected(false);
+                  //if(wallectConnectConnector) wallectConnectConnector.killSession();
+                  localStorage.removeItem("walletConnectUrl")
+                  localStorage.removeItem("wallectConnectConnectorSession")
+                }catch(e){console.log(e)}
+              }
+
+              setTimeout(()=>{
+                window.location.replace('/wc?uri='+wcLink);
+              },500)
+
             }}
           />
         </div>
@@ -985,7 +1000,12 @@ function App(props) {
           onChange={(e)=>{
             setWalletConnectUrl(e.target.value)
           }}
-        />{connected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{setConnected(false);wallectConnectConnector.killSession();setWallectConnectConnectorSession();setWalletConnectUrl();}}>🗑</span>:""}
+        />{connected?<span style={{cursor:"pointer",padding:10,fontSize:30,position:"absolute", top:-18}} onClick={()=>{
+          setConnected(false);
+          if(wallectConnectConnector) wallectConnectConnector.killSession();
+          localStorage.removeItem("walletConnectUrl")
+          localStorage.removeItem("wallectConnectConnectorSession")
+        }}>🗑</span>:""}
       </div>
 
 
