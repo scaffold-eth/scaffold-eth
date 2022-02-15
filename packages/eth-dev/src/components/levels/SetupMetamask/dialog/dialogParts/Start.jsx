@@ -2,14 +2,14 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const LEVEL_ID = 'ConnectToMetamask'
+export const LEVEL_ID = 'SetupMetamask'
 export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What a view, am I right?' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ok ...' />
       ),
       choices: null
     }
@@ -20,7 +20,7 @@ const _dialog = [
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
-            text={`Let's get you hooked you up.`}
+            text={`Let's get you hooked you up!`}
           />
         </>
       ),
@@ -36,6 +36,7 @@ const _dialog = [
               <Button
                 className='is-warning'
                 onClick={() => {
+                  globalGameActions.dialog.continueDialog()
                   setInstructionsWindowVisibility(true)
                 }}
               >
@@ -45,6 +46,12 @@ const _dialog = [
           )}
         </>
       )
+    }
+  },
+  {
+    components: {
+      dialog: () => <></>,
+      choices: () => <></>
     }
   },
   {
@@ -62,7 +69,7 @@ const _dialog = [
                 console.log('TODO:')
               }}
             >
-              Follow
+              Follow Anon
             </Button>
           )}
         </>

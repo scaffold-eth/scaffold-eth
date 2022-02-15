@@ -33,11 +33,8 @@ const SelectLevelWindow = ({ actions, isOpen }) => {
         <Button block onClick={() => actions.level.setCurrentLevel({ levelId: 'CityAtWar' })}>
           CityAtWar
         </Button>
-        <Button
-          block
-          onClick={() => actions.level.setCurrentLevel({ levelId: 'ConnectToMetamask' })}
-        >
-          ConnectToMetamask
+        <Button block onClick={() => actions.level.setCurrentLevel({ levelId: 'SetupMetamask' })}>
+          SetupMetamask
         </Button>
       </div>
     </WindowModal>

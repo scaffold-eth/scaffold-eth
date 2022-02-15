@@ -5,9 +5,9 @@ import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { InstructionsWindow } from './components'
 import levelDialog from './dialog'
 
-export const LEVEL_ID = 'ConnectToMetamask'
+export const LEVEL_ID = 'SetupMetamask'
 
-const ConnectToMetamaskLevel = ({ dialog, globalGameActions }) => {
+const SetupMetamaskLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
@@ -21,9 +21,11 @@ const ConnectToMetamaskLevel = ({ dialog, globalGameActions }) => {
   const [initialInstructionsWindowIsVisible, setInstructionsWindowVisibility] = useState(false)
 
   return (
-    <div id='connectToMetamask'>
+    <div id='setupMetamask'>
       <Terminal
         isOpen
+        initTop={100}
+        initLeft={100}
         globalGameActions={globalGameActions}
         setInstructionsWindowVisibility={setInstructionsWindowVisibility}
       />
@@ -37,4 +39,4 @@ const ConnectToMetamaskLevel = ({ dialog, globalGameActions }) => {
   )
 }
 
-export default wrapGlobalGameData(ConnectToMetamaskLevel)
+export default wrapGlobalGameData(SetupMetamaskLevel)
