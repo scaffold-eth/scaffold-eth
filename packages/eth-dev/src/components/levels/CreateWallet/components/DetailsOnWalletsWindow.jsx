@@ -25,7 +25,7 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
           float: 'left',
           width: '100%',
           height: '100%',
-          overflowY: 'scroll',
+          overflowY: 'auto',
           overflowX: 'hidden'
         }}
       >

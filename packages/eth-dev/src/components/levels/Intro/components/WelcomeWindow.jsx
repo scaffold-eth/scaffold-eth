@@ -26,7 +26,7 @@ const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
           float: 'left',
           width: '100%',
           height: '100%',
-          overflowY: 'scroll',
+          overflowY: 'auto',
           overflowX: 'hidden'
         }}
       >

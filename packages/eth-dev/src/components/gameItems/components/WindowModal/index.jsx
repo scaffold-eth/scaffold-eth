@@ -105,7 +105,7 @@ export default function WindowModal({
                 padding: '5%',
                 paddingBottom: '4%',
                 overflowX: 'hidden',
-                overflowY: 'scroll',
+                overflowY: 'auto',
                 color: '#fff',
                 ...contentContainerStyle
               }}
