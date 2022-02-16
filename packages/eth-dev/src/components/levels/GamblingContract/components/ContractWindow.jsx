@@ -3,9 +3,6 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ContractWindow = ({ isOpen }) => {
-  const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.95
-
   const contentFileName = 'DiceGame.sol'
   const [fileContent, setFileContent] = useState('')
 
@@ -22,16 +19,15 @@ const ContractWindow = ({ isOpen }) => {
 
   return (
     <WindowModal
-      initTop={window.innerHeight * 0.02}
-      //initLeft={window.innerWidth / 2}
-      initLeft={0}
-      initHeight={initHeight}
-      initWidth={initWidth}
-      backgroundPath='./assets/items/window.png'
-      dragAreaHeightPercent={12}
-      windowTitle='DiceGame.sol'
+      initTop={window.innerHeight * 0.1}
+      initLeft={window.innerWidth * 0.05}
+      initHeight={window.innerHeight * 0.7}
+      initWidth={window.innerWidth * 0.4}
+      backgroundPath='./assets/items/dice_game_window.png'
+      dragAreaHeightPercent={17}
+      //windowTitle='DiceGame.sol'
       isOpen={isOpen}
-      contentContainerStyle={{ paddingTop: 0 }}
+      contentContainerStyle={{ paddingTop: 0, paddingBottom: '7%' }}
     >
       <div
         className='content'
@@ -39,6 +35,8 @@ const ContractWindow = ({ isOpen }) => {
           float: 'left',
           width: '100%',
           height: '100%',
+          paddingLeft: '2%',
+          paddingRight: '2%',
           overflowY: 'auto',
           overflowX: 'hidden'
         }}
