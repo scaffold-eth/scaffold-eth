@@ -12,7 +12,6 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
     'UnderflowBug',
     'SetupLocalNetwork',
     'CreateWallet',
-    'CityAtWar',
     'SetupMetamask',
     'GamblingContract',
     'Multisig',

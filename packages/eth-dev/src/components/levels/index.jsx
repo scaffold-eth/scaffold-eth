@@ -8,7 +8,6 @@ import Intro from './Intro'
 import UnderflowBug from './UnderflowBug'
 import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
-import CityAtWar from './CityAtWar'
 import SetupMetamask from './SetupMetamask'
 import GamblingContract from './GamblingContract'
 import Multisig from './Multisig'
@@ -49,7 +48,6 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'UnderflowBug' && <UnderflowBug />}
       {currentLevel === 'SetupLocalNetwork' && <SetupLocalNetwork />}
       {currentLevel === 'CreateWallet' && <CreateWallet />}
-      {currentLevel === 'CityAtWar' && <CityAtWar />}
       {currentLevel === 'SetupMetamask' && <SetupMetamask />}
       {currentLevel === 'GamblingContract' && <GamblingContract />}
       {currentLevel === 'Multisig' && <Multisig />}
