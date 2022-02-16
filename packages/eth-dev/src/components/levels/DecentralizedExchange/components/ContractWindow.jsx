@@ -3,10 +3,7 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ContractWindow = ({ isOpen }) => {
-  const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.95
-
-  const contentFileName = 'TODO.sol'
+  const contentFileName = 'DEX.sol'
   const [fileContent, setFileContent] = useState('')
 
   useEffect(() => {
@@ -23,12 +20,12 @@ const ContractWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
-      initLeft={window.innerWidth / 2}
-      initHeight={initHeight}
-      initWidth={initWidth}
+      initLeft={window.innerWidth / 2 - window.innerWidth * 0.05}
+      initHeight={window.innerHeight * 0.90}
+      initWidth={window.innerWidth / 2}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='TODO.sol'
+      windowTitle={contentFileName}
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >

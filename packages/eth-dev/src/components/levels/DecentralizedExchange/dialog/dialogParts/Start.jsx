@@ -9,7 +9,7 @@ const _dialog = [
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ok. Lets get started.' />
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Ok. Let's get started.`} />
         </>
       ),
       choices: null
@@ -47,7 +47,6 @@ const _dialog = [
             <Button
               className='is-warning'
               onClick={() => {
-                // setContractWindowVisibility(true)
                 setExplanationWindowVisibility(true)
                 globalGameActions.dialog.continueDialog()
               }}
