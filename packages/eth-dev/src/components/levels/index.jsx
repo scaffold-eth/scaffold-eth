@@ -14,6 +14,7 @@ import Multisig from './Multisig'
 import DecentralizedExchange from './DecentralizedExchange'
 import NFTStore from './NFTStore'
 import DAOHack from './DAOHack'
+import FlashLoans from './FlashLoans'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
   const setInitialLevel = levelId => {
@@ -54,6 +55,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'DecentralizedExchange' && <DecentralizedExchange />}
       {currentLevel === 'NFTStore' && <NFTStore />}
       {currentLevel === 'DAOHack' && <DAOHack />}
+      {currentLevel === 'FlashLoans' && <FlashLoans />}
     </>
   )
 }

@@ -17,7 +17,8 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
     'Multisig',
     'DecentralizedExchange',
     'NFTStore',
-    'DAOHack'
+    'DAOHack',
+    'FlashLoans'
   ]
 
   return (
