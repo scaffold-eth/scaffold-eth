@@ -55,7 +55,7 @@ const CreateWalletWindow = ({ dialog, actions, isOpen }) => {
       initLeft={500}
       initHeight={700}
       initWidth={730}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       onRequestClose={() => console.log('onRequestClose')}
       onFocus={() => console.log('Modal is clicked')}

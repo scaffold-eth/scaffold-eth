@@ -12,7 +12,7 @@ const ExampleGameActionsWindow = ({ globalGameActions, isOpen }) => {
       initLeft={0}
       initHeight={250}
       initWidth={312}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={20}
       onRequestClose={() => console.log('onRequestClose')}
       isOpen={isOpen}

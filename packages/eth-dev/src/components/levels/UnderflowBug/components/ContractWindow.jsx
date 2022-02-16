@@ -26,7 +26,7 @@ const ContractWindow = ({ isOpen }) => {
       initLeft={window.innerWidth / 2}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='BUGGY ERC20 CONTRACT'
       isOpen={isOpen}

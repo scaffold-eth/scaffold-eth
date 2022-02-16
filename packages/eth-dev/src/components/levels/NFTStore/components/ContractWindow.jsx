@@ -4,7 +4,7 @@ import { Button, CodeContainer, WindowModal } from '../../../gameItems/component
 
 const ContractWindow = ({ isOpen }) => {
   const initWidth = window.innerWidth * 0.35
-  const initHeight = window.innerHeight * 0.80
+  const initHeight = window.innerHeight * 0.35
 
   const contentFileName = 'NFToken.sol'
   const [fileContent, setFileContent] = useState('')
@@ -26,7 +26,7 @@ const ContractWindow = ({ isOpen }) => {
       initLeft={window.innerWidth * 0.02}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='NFToken.sol'
       isOpen={isOpen}

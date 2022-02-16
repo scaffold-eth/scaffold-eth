@@ -47,31 +47,31 @@ const styles = {
     height: '68px',
     width: '60px',
     marginLeft: '20px',
-    background: 'url(./assets/trimmed/icons/com_icon_trimmed.png) no-repeat bottom left',
+    background: 'url(./assets/items/icons/com_icon.png) no-repeat bottom left',
     backgroundSize: 'cover'
   },
   terminalIcon: {
     height: '61px',
     width: '78px',
-    background: 'url(./assets/trimmed/icons/terminal_icon_trimmed.png) no-repeat bottom left',
+    background: 'url(./assets/items/icons/terminal_icon.png) no-repeat bottom left',
     backgroundSize: 'cover'
   },
   walletIcon: {
     height: '60px',
     width: '99px',
-    background: 'url(./assets/trimmed/icons/wallet_icon_trimmed.png) no-repeat bottom left',
+    background: 'url(./assets/items/icons/wallet_icon.png) no-repeat bottom left',
     backgroundSize: 'cover'
   },
   musicIcon: {
     height: '57px',
     width: '88px',
-    background: 'url(./assets/trimmed/icons/music_icon_trimmed.png) no-repeat bottom left',
+    background: 'url(./assets/items/icons/music_icon.png) no-repeat bottom left',
     backgroundSize: 'cover'
   },
   dishIcon: {
     height: '57px',
     width: '61px',
-    background: 'url(./assets/trimmed/icons/dish_icon_trimmed.png) no-repeat bottom left',
+    background: 'url(./assets/items/icons/dish_icon.png) no-repeat bottom left',
     backgroundSize: 'cover'
   }
 }

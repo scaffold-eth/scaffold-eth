@@ -27,7 +27,7 @@ const ContractWindow = ({ isOpen }) => {
       initLeft={0}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='MultiSigWallet.sol'
       isOpen={isOpen}

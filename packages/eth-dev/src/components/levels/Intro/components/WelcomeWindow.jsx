@@ -14,7 +14,7 @@ const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
       initLeft={window.innerWidth / 2 - initWidth / 2}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='ETH.DEV'
       isOpen={isOpen}

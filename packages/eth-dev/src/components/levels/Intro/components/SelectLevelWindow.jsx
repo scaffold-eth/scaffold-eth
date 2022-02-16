@@ -26,7 +26,7 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
       initLeft={window.innerWidth * 0.1}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='Decentralized Exchanges'
       isOpen={isOpen}

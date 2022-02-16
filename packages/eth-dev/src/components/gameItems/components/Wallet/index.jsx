@@ -151,7 +151,7 @@ const Wallet = ({
         initLeft={430}
         initHeight={500}
         initWidth={290}
-        backgroundPath='./assets/trimmed/wallet_trimmed.png'
+        backgroundPath='./assets/items/wallet.png'
         dragAreaHeightPercent={25}
         isOpen={walletVisible}
       >

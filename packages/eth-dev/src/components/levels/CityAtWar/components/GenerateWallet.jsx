@@ -83,7 +83,7 @@ const GenerateWallet = ({ dialog, actions, isOpen }) => {
       initLeft={500}
       initHeight={700}
       initWidth={730}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={10}
       onRequestClose={() => console.log('onRequestClose')}
       windowTitle='WALLET GENERATOR'

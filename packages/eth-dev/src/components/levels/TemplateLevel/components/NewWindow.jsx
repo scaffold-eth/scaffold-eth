@@ -10,7 +10,7 @@ const NewWindow = ({ dialog, actions, isOpen }) => {
       initLeft={400}
       initHeight={300}
       initWidth={730}
-      backgroundPath='./assets/trimmed/window_trimmed.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={20}
       onRequestClose={() => console.log('onRequestClose')}
       isOpen={isOpen}
