@@ -13,6 +13,7 @@ import SetupMetamask from './SetupMetamask'
 import GamblingContract from './GamblingContract'
 import Multisig from './Multisig'
 import DecentralizedExchange from './DecentralizedExchange'
+import NFTStore from './NFTStore'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
   const setInitialLevel = levelId => {
@@ -52,6 +53,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'GamblingContract' && <GamblingContract />}
       {currentLevel === 'Multisig' && <Multisig />}
       {currentLevel === 'DecentralizedExchange' && <DecentralizedExchange />}
+      {currentLevel === 'NFTStore' && <NFTStore />}
     </>
   )
 }
