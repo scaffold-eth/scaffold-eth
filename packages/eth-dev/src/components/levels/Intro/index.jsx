@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Toolbelt, MonologWindow, Terminal, Button } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { WelcomeWindow, IncomingCallBubble } from './components'
+import { WelcomeWindow, IncomingCallBubble, SelectLevelWindow } from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'Intro'
@@ -95,6 +95,8 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
       {didEnterGame && didFinishMonolog && didPickUpCall && (
         <Terminal isOpen globalGameActions={globalGameActions} />
       )}
+
+      <SelectLevelWindow isOpen globalGameActions={globalGameActions} />
     </div>
   )
 }
