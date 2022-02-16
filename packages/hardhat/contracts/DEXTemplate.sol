@@ -48,13 +48,24 @@ contract DEX {
 
     /* ========== MUTATIVE FUNCTIONS ========== */
 
-    /**
+    /*
      * @notice initializes amount of tokens that will be transferred to the DEX itself from the erc20 contract mintee (and only them based on how Balloons.sol is written). Loads contract up with both ETH and Balloons.
      * @param tokens amount to be transferred to DEX
      * @return totalLiquidity is the number of LPTs minting as a result of deposits made to DEX contract
      * NOTE: since ratio is 1:1, this is fine to initialize the totalLiquidity (wrt to balloons) as equal to eth balance of contract.
      */
-    function init(uint256 tokens) public payable returns (uint256) {}
+
+    
+    uint256 public totalLiquidity;
+    mapping (address => uint256) public liquidity;
+
+    function init(uint256 tokens) public payable returns (uint256) {
+        require(totalLiquidity==0,"DEX:init - already has liquidity");
+        totalLiquidity = address(this).balance;
+        liquidity[msg.sender] = totalLiquidity;
+        require(token.transferFrom(msg.sender, address(this), tokens));
+        return totalLiquidity;       
+    }
 
     /**
      * @notice returns yOutput, or yDelta for xInput (or xDelta)
@@ -69,9 +80,9 @@ contract DEX {
     /**
      * @notice returns liquidity for a user. Note this is not needed typically due to the `liquidity()` mapping variable being public and having a getter as a result. This is left though as it is used within the front end code (App.jsx).
      */
-    function getLiquidity(address lp) public view returns (uint256) {
-        return liquidity[lp];
-    }
+    // function getLiquidity(address lp) public view returns (uint256) {
+    //     return liquidity[lp];
+    // }
 
     /**
      * @notice sends Ether to DEX in exchange for $BAL
