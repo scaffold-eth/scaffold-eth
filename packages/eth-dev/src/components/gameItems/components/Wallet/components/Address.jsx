@@ -60,7 +60,7 @@ export default function Address(props) {
   if (props.minimized) {
     return (
       <span style={{ verticalAlign: 'middle' }}>
-        <a target='_blank' href={etherscanLink} rel='noopener noreferrer'>
+        <a target='_blank' rel='noreferrer' href={etherscanLink} rel='noopener noreferrer'>
           <Blockies seed={address.toLowerCase()} size={8} scale={2} />
         </a>
       </span>
@@ -75,7 +75,7 @@ export default function Address(props) {
         copyable={{ text: address }}
         style={{ fontSize: '12px' }}
       >
-        <a target='_blank' href={etherscanLink} rel='noopener noreferrer'>
+        <a target='_blank' rel='noreferrer' href={etherscanLink} rel='noopener noreferrer'>
           {displayAddress}
         </a>
       </Text>
@@ -86,6 +86,7 @@ export default function Address(props) {
         <a
           style={{ color: 'white' }}
           target='_blank'
+          rel='noreferrer'
           href={etherscanLink}
           rel='noopener noreferrer'
         >

@@ -66,6 +66,7 @@ export default function Address(props) {
         <a
           style={{ color: '#16DC8C' }}
           target='_blank'
+          rel='noreferrer'
           href={etherscanLink}
           rel='noopener noreferrer'
         >
@@ -82,6 +83,7 @@ export default function Address(props) {
         <a
           style={{ color: '#16DC8C' }}
           target='_blank'
+          rel='noreferrer'
           href={etherscanLink}
           rel='noopener noreferrer'
         >
@@ -95,6 +97,7 @@ export default function Address(props) {
         <a
           style={{ color: '#16DC8C' }}
           target='_blank'
+          rel='noreferrer'
           href={etherscanLink}
           rel='noopener noreferrer'
         >

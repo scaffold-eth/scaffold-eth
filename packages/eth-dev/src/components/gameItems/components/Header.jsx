@@ -6,7 +6,7 @@ export default function Header({ extra }) {
     <PageHeader
       title={
         <div style={{ zIndex: -1, opacity: 0.5, fontSize: 12 }}>
-          <a href='https://eth.dev' target='_blank' rel='noreferrer'>
+          <a href='https://eth.dev' target='_blank' rel='noreferrer' rel='noreferrer'>
             {window.innerWidth < 600 ? '👨‍💻' : '👨‍💻  eth.dev'}
           </a>
         </div>

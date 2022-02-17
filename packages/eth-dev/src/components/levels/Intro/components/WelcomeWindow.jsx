@@ -53,7 +53,7 @@ const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           If you are looking to learn solidity basics, may we suggest that you head over to our
           friends at{' '}
-          <a href='https://cryptozombies.io' target='_blank' rel='noreferrer'>
+          <a href='https://cryptozombies.io' target='_blank' rel='noreferrer' rel='noreferrer'>
             cryptozombies.io
           </a>
           ?
