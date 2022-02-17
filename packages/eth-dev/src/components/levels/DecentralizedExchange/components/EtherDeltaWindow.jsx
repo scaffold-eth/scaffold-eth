@@ -6,7 +6,7 @@ const EtherDeltaWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.1}
-      initLeft={window.innerWidth / 2 - window.innerWidth * 0.05}
+      initLeft={window.innerWidth / 2 + window.innerWidth * 0.02 + window.innerWidth * 0.05}
       initHeight={510}
       initWidth={900}
       backgroundPath='./assets/items/window.png'

@@ -14,15 +14,20 @@ const ExplanationWindow = ({
 
   return (
     <WindowModal
-      initTop={10}
-      initLeft={10}
-      initHeight={window.innerHeight * 0.9}
-      initWidth={window.innerWidth * 0.4}
-      backgroundPath='./assets/items/window.png'
-      dragAreaHeightPercent={12}
-      windowTitle='Decentralized Exchanges'
+      initTop={window.innerHeight * 0.02}
+      initLeft={window.innerWidth * 0.02}
+      initHeight={window.innerHeight * 0.96}
+      initWidth={window.innerWidth / 2}
+      // backgroundPath='./assets/items/window.png'
+      dragAreaHeightPercent={4}
+      // windowTitle=''
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
+      // style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
+      style={{
+        backgroundColor: '#222336',
+        boxShadow: '5px 5px 15px 5px rgba(0,0,0,0)'
+      }}
     >
       <div
         className='content'
@@ -31,13 +36,13 @@ const ExplanationWindow = ({
           width: '100%',
           height: '100%',
           overflowY: 'auto',
-          overflowX: 'hidden',
-          backgroundColor: '#161B22'
+          overflowX: 'hidden'
         }}
       >
+        <h2>Decentralized Exchanges</h2>
         <div
           style={{
-            marginTop: '1%',
+            marginTop: '5%',
             marginBottom: '5%',
             // color: '#16DC8C',
             color: '#C9D1D9',
@@ -61,7 +66,7 @@ const ExplanationWindow = ({
               <br />
               One of the first DEX's that got some notable traction within the community was an
               exchange known as{' '}
-              <a href='https://etherdelta.com' _target='blank'>
+              <a href='https://etherdelta.com' target='_blank' rel='noreferrer'>
                 EtherDelta
               </a>
               .
@@ -73,7 +78,8 @@ const ExplanationWindow = ({
               The original code and the smart contracts used to run this DEX can be found{' '}
               <a
                 href='https://github.com/etherdelta/smart_contract/blob/master/etherdelta.sol'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 here
               </a>
@@ -87,17 +93,19 @@ const ExplanationWindow = ({
               Some time in early 2017 Vitalik Buterin{' '}
               <a
                 href='https://www.reddit.com/r/ethereum/comments/55m04x/lets_run_onchain_decentralized_exchanges_the_way/'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 proposed
-              </a>
+              </a>{' '}
               a way to run a decentralized exchange on Ethereum. He later{' '}
               <a
                 href='https://ethresear.ch/t/improving-front-running-resistance-of-x-y-k-market-makers/1281'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 expanded
-              </a>
+              </a>{' '}
               on the original idea by introducing the now famouse x*y=k formula.
               <br />
               <br />
@@ -106,15 +114,19 @@ const ExplanationWindow = ({
           {currentStep > 4 && (
             <>
               One of the people that stumbled accrosse Buterins post was{' '}
-              <a href='https://twitter.com/haydenzadams' _target='blank'>
+              <a href='https://twitter.com/haydenzadams' target='_blank' rel='noreferrer'>
                 Hayden Adams
               </a>
               , founder of Uniswap. He promptly coded up a{' '}
-              <a href='https://github.com/Uniswap/old-solidity-contracts' _target='blank'>
+              <a
+                href='https://github.com/Uniswap/old-solidity-contracts'
+                target='_blank'
+                rel='noreferrer'
+              >
                 MVP
               </a>{' '}
               which eventually grew into what{' '}
-              <a href='https://app.uniswap.org' _target='blank'>
+              <a href='https://app.uniswap.org' target='_blank' rel='noreferrer'>
                 Uniswap
               </a>{' '}
               is today.
@@ -129,7 +141,8 @@ const ExplanationWindow = ({
               <br />
               <a
                 href='https://github.com/squirtleDevs/scaffold-eth/tree/challenge-3-single-pool-dex'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 https://github.com/squirtleDevs/scaffold-eth/tree/challenge-3-single-pool-dex
               </a>
@@ -143,10 +156,11 @@ const ExplanationWindow = ({
               This repo is an updated version of the{' '}
               <a
                 href='https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 original
-              </a>
+              </a>{' '}
               and challenge repos before it. Please read the intro for a background on what we are
               building first! There is a `DEXTemplate.sol` file for your use if you want (rename it
               to `DEX.sol`). As well, this repo has solutions (👮🏻 try not to peak!) in it (in root
@@ -161,7 +175,8 @@ const ExplanationWindow = ({
               a{' '}
               <a
                 href='https://www.youtube.com/watch?v=eP5w6Ger1EQ&t=364s&ab_channel=SimplyExplained'
-                _target='blank'
+                target='_blank'
+                rel='noreferrer'
               >
                 Youtube
               </a>{' '}

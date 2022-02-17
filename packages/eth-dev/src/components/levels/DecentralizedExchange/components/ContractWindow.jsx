@@ -20,9 +20,9 @@ const ContractWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
-      initLeft={window.innerWidth / 2 - window.innerWidth * 0.05}
-      initHeight={window.innerHeight * 0.90}
-      initWidth={window.innerWidth / 2}
+      initLeft={window.innerWidth / 2 + window.innerWidth * 0.02 + window.innerWidth * 0.05}
+      initHeight={window.innerHeight * 0.8}
+      initWidth={window.innerWidth * 0.4}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle={contentFileName}
