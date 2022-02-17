@@ -1,3 +1,7 @@
+// https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
+
+// after making changes to this file run: yarn theme
+
 @import "~antd/lib/style/color/colorPalette.less";
 @import "~antd/dist/antd.less";
 @import "~antd/lib/style/themes/dark.less";
@@ -16,7 +20,15 @@
 @skeleton-color: #424242;
 @table-header-sort-active-bg: #424242;
 
-@link-color: @text-color;
+// LINK
+@link-color: @primary-color;
+@link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
+@link-active-color: color(~`colorPalette('@{link-color}', 7) `);
+@link-decoration: none;
+@link-hover-decoration: none;
+@link-focus-decoration: none;
+@link-focus-outline: 0;
+
 @icon-color: @primary-color;
 
 .highlight {
