@@ -26,7 +26,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "moonbaseAlpha";
 
 const mainnetGwei = 21;
 
@@ -35,9 +35,9 @@ function mnemonic() {
     return fs.readFileSync("./mnemonic.txt").toString().trim();
   } catch (e) {
     if (defaultNetwork !== "localhost") {
-      console.log(
-        "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
-      );
+      //console.log(
+      //  "☢️ WARNING: No mnemonic file created for a deploy account. Try `yarn run generate` and then `yarn run account`."
+      //);
     }
   }
   return "";
@@ -64,6 +64,12 @@ module.exports = {
   // Follow the directions, and uncomment the network you wish to deploy to.
 
   networks: {
+    // Moonbase Alpha TestNet
+    moonbaseAlpha: {
+      url: 'https://rpc.api.moonbase.moonbeam.network',
+      chainId: 1287,  // 0x507 in hex,
+      accounts: ["5c43b4579a435d810fcad92742bde52cecd209575930a18fdc0dff4458638c7f"]
+    },
     localhost: {
       url: "http://localhost:8545",
       /*      
@@ -291,9 +297,9 @@ module.exports = {
     },
   },
   etherscan: {
+    //apiKey: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
     apiKey:{
-      mainnet: "DNXJA8RX2Q3VZ4URQIWP7Z68CJXQZSC6AW",
-      //add other network's API key here
+      moonbaseAlpha: "ZE967AVN2YMEF95ADAJQK78AD114YG94WE"
     }
   },
 };
