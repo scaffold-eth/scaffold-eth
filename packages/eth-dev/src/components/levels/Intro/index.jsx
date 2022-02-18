@@ -33,7 +33,7 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
     // audio.soundtrack.play()
   }, [])
 
-  const [showWelcomeWindow, setShowWelcomeWindow] = useState(true)
+  const [showWelcomeWindow, setShowWelcomeWindow] = useState(false)
   const [showFactionSupportOverviewWindow, setShowFactionSupportOverviewWindow] = useState(false)
 
   const [didEnterGame, setDidEnterGame] = useState(false)
@@ -74,7 +74,6 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
           <Button
             className='is-warning'
             onClick={() => {
-              // eslint-disable-next-line no-undef
               audio.click.play()
               setShowWelcomeWindow(true)
             }}

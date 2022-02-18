@@ -11,8 +11,17 @@ const WelcomeWindow = ({
   setShowWelcomeWindow,
   setShowFactionSupportOverviewWindow
 }) => {
-  const initWidth = window.innerWidth * 0.8
-  const initHeight = window.innerHeight * 0.9
+  // const initWidth = window.innerWidth * 0.8
+  // const initHeight = window.innerHeight * 0.9
+  const initWidth = 1000
+  const initHeight = window.innerHeight * 0.6
+
+  const audio = {
+    soundtrack: new Audio('./assets/sounds/mixkit-game-level-music-689.wav'),
+    click: new Audio(
+      './assets/sounds/mixkit-quick-positive-video-game-notification-interface-265.wav'
+    )
+  }
 
   return (
     <WindowModal
@@ -37,7 +46,7 @@ const WelcomeWindow = ({
           overflowX: 'hidden'
         }}
       >
-        <h2 style={{ textAlign: 'center', marginBottom: 20, color: '#16DC8C' }}>
+        <h2 style={{ textAlign: 'center', marginTop: 20, marginBottom: 20, color: '#16DC8C' }}>
           Welcome to eth.dev!
         </h2>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
@@ -70,6 +79,7 @@ const WelcomeWindow = ({
             style={{ marginTop: 20 }}
             className='is-warning'
             onClick={() => {
+              audio.click.play()
               globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
               enterGame()
             }}
@@ -90,6 +100,7 @@ const WelcomeWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
+              audio.click.play()
               enterGame(true)
               globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
               // setShowWelcomeWindow(false)
