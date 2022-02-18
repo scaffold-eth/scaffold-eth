@@ -58,17 +58,6 @@ const ExplanationWindow = ({
           }}
         >
           <Markdown>{fileContent}</Markdown>
-
-          <div style={{ marginTop: 25 }}>
-            You can read about "The Ins & Outs of Smart Contract Gambling"{' '}
-            <a
-              href='https://eth.casino/ethereum-guides/ins-outs-smart-contract-gambling/'
-              target='_blank'rel='noreferrer'
-              rel='noreferrer'
-            >
-              here
-            </a>.
-          </div>
         </div>
         <Button
           className='is-warning'

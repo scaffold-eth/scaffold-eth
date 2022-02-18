@@ -3,7 +3,14 @@ import React from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, CodeContainer, Button } from '../../../gameItems/components'
 
-const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
+const WelcomeWindow = ({
+  dialog,
+  globalGameActions,
+  isOpen,
+  enterGame,
+  setShowWelcomeWindow,
+  setShowFactionSupportOverviewWindow
+}) => {
   const initWidth = window.innerWidth * 0.8
   const initHeight = window.innerHeight * 0.9
 
@@ -58,17 +65,40 @@ const WelcomeWindow = ({ dialog, globalGameActions, isOpen, enterGame }) => {
           </a>
           ?
         </p>
-
-        <Button
-          style={{ marginTop: 20 }}
-          className='is-warning'
-          onClick={() => {
-            globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
-            enterGame()
-          }}
-        >
-          Start Journey
-        </Button>
+        <div style={{ float: 'left', width: '100%', padding: '0 20%' }}>
+          <Button
+            style={{ marginTop: 20 }}
+            className='is-warning'
+            onClick={() => {
+              globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
+              enterGame()
+            }}
+          >
+            Start Journey
+          </Button>
+          <div
+            style={{
+              float: 'left',
+              width: '100%',
+              marginTop: 15,
+              marginBottom: 15,
+              textAlign: 'center'
+            }}
+          >
+            or
+          </div>
+          <Button
+            className='is-warning'
+            onClick={() => {
+              enterGame(true)
+              globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
+              // setShowWelcomeWindow(false)
+              setShowFactionSupportOverviewWindow(true)
+            }}
+          >
+            Pick Level
+          </Button>
+        </div>
       </div>
     </WindowModal>
   )

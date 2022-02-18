@@ -2,7 +2,12 @@ import React, { useEffect, useState } from 'react'
 
 import { Toolbelt, MonologWindow, Terminal, Button } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { WelcomeWindow, IncomingCallBubble, SelectLevelWindow } from './components'
+import {
+  WelcomeWindow,
+  IncomingCallBubble,
+  SelectLevelWindow,
+  FactionSupportOverview
+} from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'Intro'
@@ -28,7 +33,8 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
     // audio.soundtrack.play()
   }, [])
 
-  const [showWelcomeWindow, setShowWelcomeWindow] = useState(false)
+  const [showWelcomeWindow, setShowWelcomeWindow] = useState(true)
+  const [showFactionSupportOverviewWindow, setShowFactionSupportOverviewWindow] = useState(false)
 
   const [didEnterGame, setDidEnterGame] = useState(false)
   const enterGame = () => setDidEnterGame(true)
@@ -78,13 +84,27 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
         </div>
       )}
 
-      {!didEnterGame && showWelcomeWindow && <WelcomeWindow isOpen enterGame={enterGame} />}
+      {!didEnterGame && showWelcomeWindow && (
+        <WelcomeWindow
+          isOpen={showWelcomeWindow}
+          enterGame={enterGame}
+          setShowWelcomeWindow={setShowWelcomeWindow}
+          setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
+        />
+      )}
 
-      {didEnterGame && !didFinishMonolog && (
+      {didEnterGame && !didFinishMonolog && !showFactionSupportOverviewWindow && (
         <MonologWindow
           isOpen={!didFinishMonolog}
           globalGameActions={globalGameActions}
           finishMonolog={finishMonolog}
+        />
+      )}
+
+      {didEnterGame && (
+        <FactionSupportOverview
+          isOpen={showFactionSupportOverviewWindow}
+          globalGameActions={globalGameActions}
         />
       )}
 
@@ -96,7 +116,7 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
         <Terminal isOpen globalGameActions={globalGameActions} />
       )}
 
-      <SelectLevelWindow isOpen globalGameActions={globalGameActions} />
+      <SelectLevelWindow isOpen={false} globalGameActions={globalGameActions} />
     </div>
   )
 }
