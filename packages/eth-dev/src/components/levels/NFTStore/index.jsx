@@ -35,8 +35,7 @@ const NFTStore = ({ dialog, globalGameActions }) => {
       <ContractWindow isOpen={contractWindowIsVisible} />
 
       <ExplanationWindow
-        // isOpen={explanationWindowIsVisible}
-        isOpen
+        isOpen={explanationWindowIsVisible}
         globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}

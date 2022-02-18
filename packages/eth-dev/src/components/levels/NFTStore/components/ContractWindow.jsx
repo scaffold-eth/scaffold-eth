@@ -3,9 +3,6 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ContractWindow = ({ isOpen }) => {
-  const initWidth = window.innerWidth * 0.35
-  const initHeight = window.innerHeight * 0.35
-
   const contentFileName = 'NFToken.sol'
   const [fileContent, setFileContent] = useState('')
 
@@ -23,9 +20,9 @@ const ContractWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.1}
-      initLeft={window.innerWidth * 0.02}
-      initHeight={initHeight}
-      initWidth={initWidth}
+      initLeft={window.innerWidth * 0.5}
+      initHeight={window.innerHeight * 0.95}
+      initWidth={window.innerWidth * 0.45}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='NFToken.sol'

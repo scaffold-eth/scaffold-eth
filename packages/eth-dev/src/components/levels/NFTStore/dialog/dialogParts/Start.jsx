@@ -25,81 +25,23 @@ const _dialog = [
           />
         </>
       ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='Can you figure out what happened?'
-          />
-        </>
-      ),
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setContractWindowVisibility,
-        setExplanationWindowVisibility
+        setExplanationWindowVisibility,
+        setContractWindowVisibility
       }) => (
         <>
           {isLastVisibleDialog && (
             <Button
               className='is-warning'
               onClick={() => {
-                setContractWindowVisibility(true)
-                globalGameActions.dialog.continueDialog()
-                // setExplanationWindowVisibility(true)
-                // globalGameActions.dialog.continueDialog()
-              }}
-            >
-              Show Contract
-            </Button>
-          )}
-        </>
-      )
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What do you think?' />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='We have some more documentation that goes with this. Here, take a look.'
-          />
-        </>
-      ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setContractWindowVisibility,
-        setExplanationWindowVisibility
-      }) => (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                // setContractWindowVisibility(true)
                 setExplanationWindowVisibility(true)
+                globalGameActions.dialog.continueDialog()
               }}
             >
-              Open Documentation
+              Show Instructions
             </Button>
           )}
         </>
@@ -109,22 +51,11 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Great!' />
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
-              }}
-            >
-              Drive into City
-            </Button>
-          )}
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Greate job!' />
         </>
-      )
+      ),
+      choices: null
     }
   }
 ]
