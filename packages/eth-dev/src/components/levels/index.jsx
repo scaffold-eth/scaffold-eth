@@ -15,6 +15,7 @@ import DecentralizedExchange from './DecentralizedExchange'
 import NFTStore from './NFTStore'
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
+import ERC20 from './ERC20'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
   const setInitialLevel = levelId => {
@@ -56,6 +57,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
       {currentLevel === 'NFTStore' && <NFTStore />}
       {currentLevel === 'DAOHack' && <DAOHack />}
       {currentLevel === 'FlashLoans' && <FlashLoans />}
+      {currentLevel === 'ERC20' && <ERC20 />}
     </>
   )
 }

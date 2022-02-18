@@ -15,7 +15,8 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
     'DecentralizedExchange',
     'NFTStore',
     'DAOHack',
-    'FlashLoans'
+    'FlashLoans',
+    'ERC20'
   ]
 
   const factionProgressComp = ({ factionName, progress, levels }) => {
@@ -127,7 +128,7 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
               factionName: 'Smart Contract Ninjas',
               progress: 0,
               levels: [
-                { levelId: null, name: 'ERC20' },
+                { levelId: 'ERC20', name: 'ERC20' },
                 { levelId: 'Multisig', name: 'MultiSig' },
                 { levelId: null, name: 'Minimal DAO' },
                 { levelId: null, name: 'ENS' }
