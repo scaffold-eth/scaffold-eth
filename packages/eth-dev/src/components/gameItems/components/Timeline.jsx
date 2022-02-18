@@ -109,12 +109,7 @@ export default function TimelineDisplay(props) {
         <Text>
           Build something awesome with 🏗{' '}
           <a href='https://github.com/austintgriffith/scaffold-eth'>scaffold-eth</a> and{' '}
-          <a
-            target='_blank'
-            rel='noreferrer'
-            rel='noopener noreferrer'
-            href='https://twitter.com/austingriffith'
-          >
+          <a target='_blank' rel='noopener noreferrer' href='https://twitter.com/austingriffith'>
             @ me
           </a>
           !
@@ -124,30 +119,19 @@ export default function TimelineDisplay(props) {
       <Timeline.Item dot='📖'>
         <Text>
           Read more about{' '}
-          <a
-            target='_blank'
-            rel='noreferrer'
-            rel='noopener noreferrer'
-            href='https://ethereum.org/developers'
-          >
+          <a target='_blank' rel='noopener noreferrer' href='https://ethereum.org/developers'>
             Ethereum
           </a>
           ,{' '}
           <a
             target='_blank'
-            rel='noreferrer'
             rel='noopener noreferrer'
             href='https://solidity.readthedocs.io/en/develop/contracts.html'
           >
             Solidity
           </a>
           , and{' '}
-          <a
-            target='_blank'
-            rel='noreferrer'
-            rel='noopener noreferrer'
-            href='https://buidler.dev/tutorial'
-          >
+          <a target='_blank' rel='noopener noreferrer' href='https://buidler.dev/tutorial'>
             Buidler
           </a>
         </Text>

@@ -63,7 +63,7 @@ const ExplanationWindow = ({
             You can read about "The Ins & Outs of Smart Contract Gambling"{' '}
             <a
               href='https://eth.casino/ethereum-guides/ins-outs-smart-contract-gambling/'
-              target='_blank'rel='noreferrer'
+              target='_blank'
               rel='noreferrer'
             >
               here

@@ -33,12 +33,7 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
         The ethereum.org website has some fantastic guides on what Ethereum wallets are: <br />
         <br />
         {'->'}{' '}
-        <a
-          href='https://ethereum.org/en/wallets/'
-          target='_blank'
-          rel='noreferrer'
-          rel='noreferrer'
-        >
+        <a href='https://ethereum.org/en/wallets/' target='_blank' rel='noreferrer'>
           Visit ethereum.org/en/wallets
         </a>
         <br />
@@ -47,7 +42,6 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
         <a
           href='https://medium.com/building-blocks-on-the-chain/how-to-build-a-react-dapp-with-hardhat-and-metamask-9cec8f6410d3#7c9f'
           target='_blank'
-          rel='noreferrer'
           rel='noreferrer'
         >
           Setup Metamask

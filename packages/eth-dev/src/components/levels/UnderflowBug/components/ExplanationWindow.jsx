@@ -64,7 +64,7 @@ const ExplanationWindow = ({
             Read about the hack{' '}
             <a
               href='https://medium.com/@blockchain101/beautychain-erc20-integer-overflow-bug-explained-c583adcd847e'
-              target='_blank'rel='noreferrer'
+              target='_blank'
               rel='noreferrer'
             >
               here
@@ -79,7 +79,7 @@ const ExplanationWindow = ({
               <li>
                 <a
                   href='https://etherscan.io/tx/0xad89ff16fd1ebe3a0a7cf4ed282302c06626c1af33221ebe0d3a470aba4a660f'
-                  target='_blank'rel='noreferrer'
+                  target='_blank'
                   rel='noreferrer'
                 >
                   Actual Exploit Transaction
@@ -88,7 +88,7 @@ const ExplanationWindow = ({
               <li>
                 <a
                   href='https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e'
-                  target='_blank'rel='noreferrer'
+                  target='_blank'
                   rel='noreferrer'
                 >
                   A disastrous vulnerability found in smart contracts of BeautyChain (BEC)
@@ -98,7 +98,7 @@ const ExplanationWindow = ({
               <li>
                 <a
                   href='https://cryptoslate.com/batchoverflow-exploit-creates-trillions-of-ethereum-tokens/'
-                  target='_blank'rel='noreferrer'
+                  target='_blank'
                   rel='noreferrer'
                 >
                   BatchOverflow Exploit Creates Trillions of Ethereum Tokens, Major Exchanges Halt ERC20 Deposits
@@ -107,7 +107,7 @@ const ExplanationWindow = ({
               <li>
                 <a
                   href='https://github.com/sec-bit/awesome-buggy-erc20-tokens'
-                  target='_blank'rel='noreferrer'
+                  target='_blank'
                   rel='noreferrer'
                 >
                   Awesome buggy ERC20 Tokens
