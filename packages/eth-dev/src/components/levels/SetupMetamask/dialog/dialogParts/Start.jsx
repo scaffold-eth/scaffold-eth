@@ -28,6 +28,7 @@ const _dialog = [
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
+        loadWeb3Modal,
         setInstructionsWindowVisibility
       }) => (
         <>
@@ -37,10 +38,20 @@ const _dialog = [
                 className='is-warning'
                 onClick={() => {
                   globalGameActions.dialog.continueDialog()
+                  loadWeb3Modal()
+                  console.log('TODO: connect to metamask')
+                }}
+              >
+                Connect to Wallet
+              </Button>
+              <Button
+                className='is-warning'
+                onClick={() => {
+                  globalGameActions.dialog.continueDialog()
                   setInstructionsWindowVisibility(true)
                 }}
               >
-                Show Instructions
+                Setup Metamask
               </Button>
             </>
           )}

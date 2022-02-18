@@ -103,7 +103,7 @@ const _dialog = [
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text='I have some information on them here.'
+          text='I have some information on them here. Take a look.'
         />
       ),
       choices: ({

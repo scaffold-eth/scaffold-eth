@@ -30,7 +30,7 @@ const CreateWalletLevel = ({ dialog, globalGameActions }) => {
       />
 
       <DetailsOnWalletsWindow isOpen={detailsOnWalletsWindowVisible} />
-      <CreateWalletWindow isOpen={createWalletWindowVisible} />
+      {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
     </div>
   )
 }

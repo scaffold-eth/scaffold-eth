@@ -134,7 +134,9 @@ const App = props => {
   /* 🔥 This hook will get the price of Gas from ⛽️ EtherGasStation */
   // const gasPrice = useGasPrice(targetNetwork, 'fast')
   // Use your injected provider from 🦊 Metamask or if you don't have it then instantly generate a 🔥 burner wallet.
-  const userProvider = useUserProvider(injectedProvider, localProvider)
+  // const userProvider = useUserProvider(injectedProvider, localProvider)
+  // deactivate 🔥 burner wallet.
+  const userProvider = useUserProvider(injectedProvider)
   const address = useUserAddress(userProvider)
   // You can warn the user if you would like them to be on a specific network
   const localChainId = localProvider && localProvider._network && localProvider._network.chainId
@@ -189,12 +191,13 @@ const App = props => {
     }
   }
   console.log('startingAddress', startingAddress)
+  console.log('loadWeb3Modal', loadWeb3Modal)
 
   return (
     <ReduxProvider store={store} key='reduxProvider'>
       <div id='app'>
         <LevelContainer>
-          <Levels />
+          <Levels loadWeb3Modal={loadWeb3Modal} />
 
           <WalletView
             web3Modal={web3Modal}
@@ -205,6 +208,7 @@ const App = props => {
             // price={price}
             loadWeb3Modal={loadWeb3Modal}
             logoutOfWeb3Modal={logoutOfWeb3Modal}
+            networkSelect={networkSelect}
           />
 
           {/* <Dish /> */}

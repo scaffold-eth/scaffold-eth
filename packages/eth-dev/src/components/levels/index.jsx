@@ -16,7 +16,7 @@ import NFTStore from './NFTStore'
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 
-const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
+const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
   const setInitialLevel = levelId => {
     console.log(`setting initial level to: ${levelId}`)
     globalGameActions.level.setCurrentLevel({ levelId })
@@ -49,7 +49,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions }) => {
       {currentLevel === 'UnderflowBug' && <UnderflowBug />}
       {currentLevel === 'SetupLocalNetwork' && <SetupLocalNetwork />}
       {currentLevel === 'CreateWallet' && <CreateWallet />}
-      {currentLevel === 'SetupMetamask' && <SetupMetamask />}
+      {currentLevel === 'SetupMetamask' && <SetupMetamask loadWeb3Modal={loadWeb3Modal} />}
       {currentLevel === 'GamblingContract' && <GamblingContract />}
       {currentLevel === 'Multisig' && <Multisig />}
       {currentLevel === 'DecentralizedExchange' && <DecentralizedExchange />}
