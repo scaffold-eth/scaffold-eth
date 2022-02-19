@@ -17,7 +17,6 @@ const ProjectOwnerUI = ({ readContracts, writeContracts, localProvider, targetNe
     return new Contract(contractAddress, publicGoodABI, localProvider);
   }, [contractAddress, localProvider]);
 
-  const fundingAddress = readContracts.PublicGoodToken && readContracts.PublicGoodToken.address;
   const poolAddress = useMyReader(contract, "getPool");
   const erc20Balance = useMyReader(contract, "balanceOf", JSON.stringify([address]));
   const allowance = useMyReader(contract, "allowance", JSON.stringify([address, contractAddress]));
@@ -37,7 +36,7 @@ const ProjectOwnerUI = ({ readContracts, writeContracts, localProvider, targetNe
   const [tokens, setTokens] = useState(["", ""]);
 
   const approveTokens = () => {
-    tx(contract.approve(fundingAddress, ethers.utils.parseEther(sell)));
+    tx(contract.approve(contractAddress, ethers.utils.parseEther(sell)));
   };
 
   const sellTokens = () => {
