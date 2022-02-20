@@ -21,6 +21,7 @@ contract DEX {
   event EthToTokenSwap(address, uint);
   event TokenToEthSwap(address, uint);
   event LiquidityProvided(address, uint, uint, uint);
+  event LiquidityRemoved(address, uint);
 
   function init(uint256 tokens) public payable returns (uint256) {
     require(totalLiquidity==0,"DEX:init - already has liquidity");
@@ -84,9 +85,11 @@ contract DEX {
         uint256 ethAmount = _amount.mul(address(this).balance) / totalLiquidity;
         uint256 tokenAmount = _amount.mul(tokenReserve) / totalLiquidity;
         
+        
 // I made changes to below two lines. Instead of eth_amount I used liquidity amount requested by sender.
         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
         totalLiquidity = totalLiquidity.sub(_amount);
+        emit LiquidityRemoved(msg.sender, liquidity[msg.sender]);
       
   (bool sent, ) = payable(msg.sender).call{value: ethAmount}("");
         require(sent, "Eth transfer failed");
