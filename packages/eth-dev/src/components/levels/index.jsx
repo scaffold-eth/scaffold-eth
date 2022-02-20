@@ -18,6 +18,7 @@ import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 import ERC20 from './ERC20'
 import BondingCurves from './BondingCurves'
+import UpgradableContracts from './UpgradableContracts'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
   const setInitialLevel = levelId => {
@@ -86,6 +87,9 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           </Route>
           <Route path='/bonding-curves'>
             <BondingCurves />
+          </Route>
+          <Route path='/upgradable-contracts'>
+            <UpgradableContracts />
           </Route>
         </Switch>
       </BrowserRouter>
