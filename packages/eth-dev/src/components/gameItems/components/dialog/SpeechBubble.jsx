@@ -13,8 +13,8 @@ export default function SpeechBubble({ children, direction }) {
       style={{
         width: 'calc(100% - 15px)',
         padding: '6px',
-        fontSize: '8px',
-        lineHeight: '18px',
+        fontSize: '12px',
+        lineHeight: '25px',
         color: '#212529'
       }}
     >
