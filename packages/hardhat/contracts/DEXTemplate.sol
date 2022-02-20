@@ -18,6 +18,10 @@ contract DEX {
   uint256 public totalLiquidity;
   mapping (address => uint256) public liquidity;
 
+  event EthToTokenSwap(address, uint);
+  event TokenToEthSwap(address, uint);
+  event LiquidityProvided(address, uint, uint, uint);
+
   function init(uint256 tokens) public payable returns (uint256) {
     require(totalLiquidity==0,"DEX:init - already has liquidity");
     totalLiquidity = address(this).balance;
@@ -33,16 +37,33 @@ contract DEX {
   }
 
   function ethToToken() public payable returns (uint256) {
+    uint256 ethReserve = address(this).balance.sub(msg.value);
     uint256 token_reserve = token.balanceOf(address(this));
-    uint256 tokens_bought = price(msg.value, address(this).balance.sub(msg.value), token_reserve);
+    uint256 tokens_bought = price(msg.value, ethReserve, token_reserve);
     require(token.transfer(msg.sender, tokens_bought));
+    emit EthToTokenSwap(msg.sender,  msg.value);
     return tokens_bought;
+
   }
-  function tokenToEth(uint256 tokens) public returns (uint256) {
+
+    // function ethToToken() public payable returns (uint256) {
+    //     require(msg.value > 0, "cannot swap 0 ETH");
+    //     uint256 ethReserve = address(this).balance.sub(msg.value);
+    //     uint256 token_reserve = token.balanceOf(address(this));
+    //     uint256 tokenOutput = price(msg.value, ethReserve, token_reserve);
+
+    //     require(token.transfer(msg.sender, tokenOutput), "ethToToken(): reverted swap.");
+    //     emit EthToTokenSwap(msg.sender, "Eth to Balloons", msg.value, tokenOutput);
+    //     return tokenOutput;
+    // }
+
+
+  function tokenToEth(uint256 tokens) public payable returns (uint256) {
     uint256 token_reserve = token.balanceOf(address(this));
     uint256 eth_bought = price(tokens, token_reserve, address(this).balance);
     payable(msg.sender).transfer(eth_bought);
     require(token.transferFrom(msg.sender, address(this), tokens));
+    emit TokenToEthSwap(msg.sender, msg.value);
     return eth_bought;
   }
 
@@ -54,6 +75,7 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
     totalLiquidity = totalLiquidity.add(liquidity_minted);
     require(token.transferFrom(msg.sender, address(this), token_amount));
+    emit LiquidityProvided(msg.sender, liquidity_minted, msg.value, token_amount);
     return liquidity_minted;
   }
 
