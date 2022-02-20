@@ -23,6 +23,16 @@ export default function ExampleUI({
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
+
+      <Events
+        contracts={readContracts}
+        contractName="YourContract"
+        eventName="Moves"
+        localProvider={localProvider}
+        mainnetProvider={mainnetProvider}
+        startBlock={1}
+      />
+
       <Events
         contracts={readContracts}
         contractName="YourContract"
