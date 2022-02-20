@@ -58,7 +58,8 @@ const WelcomeWindow = ({
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           Most of the coding challenges are taken from real-world examples. From apps and protocols
-          that are live on the Ethereum main chain and handle hundreds of millions of $$$.
+          that are live on the Ethereum main chain and in some cases handle hundreds of millions of
+          $$$.
         </p>
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           However, this is not a game for beginners!
@@ -69,7 +70,7 @@ const WelcomeWindow = ({
         <p style={{ lineHeight: '30px', color: '#16DC8C' }}>
           If you are looking to learn solidity basics, may we suggest that you head over to our
           friends at{' '}
-          <a href='https://cryptozombies.io' target='_blank' rel='noreferrer' rel='noreferrer'>
+          <a href='https://cryptozombies.io' target='_blank' rel='noreferrer'>
             cryptozombies.io
           </a>
           ?

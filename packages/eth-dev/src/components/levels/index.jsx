@@ -6,6 +6,7 @@ import { Background, QRPunkBlockie } from '../gameItems/components'
 
 import TemplateLevel from './TemplateLevel'
 import Intro from './Intro'
+import ScaffoldEthOverview from './ScaffoldEthOverview'
 import UnderflowBug from './UnderflowBug'
 import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
@@ -51,6 +52,9 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
         <Switch>
           <Route exact path='/'>
             <Intro />
+          </Route>
+          <Route path='/scaffold-eth-overview'>
+            <ScaffoldEthOverview />
           </Route>
           <Route path='/underflow-bug'>
             <UnderflowBug />

@@ -102,6 +102,11 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
                 },
                 { levelId: 'SetupMetamask', name: 'Setup Metamask', path: '/setup-metamask' },
                 { levelId: 'CreateWallet', name: 'Create Wallet', path: '/create-wallet' },
+                {
+                  levelId: 'ScaffoldEthOverview',
+                  name: 'scaffold-eth Overview',
+                  path: '/scaffold-eth-overview'
+                },
                 { levelId: null, name: 'General Solidity Syntax' }
               ]
             })}
