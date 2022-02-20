@@ -17,11 +17,11 @@ contract DEX {
 
   uint256 public totalLiquidity;
   mapping (address => uint256) public liquidity;
-
-  event EthToTokenSwap(address, uint, uint, uint);
-  event TokenToEthSwap(address, uint, uint, uint);
-  event LiquidityProvided(address, uint, uint, uint);
-  event LiquidityRemoved(address, uint);
+  
+  event EthToTokenSwap(address swapper, string txDetails, uint256 ethInput, uint256 tokenOutput);
+  event TokenToEthSwap(address swapper, string txDetails, uint256 tokensInput, uint256 ethOutput);
+  event LiquidityProvided(address liquidityProvider, uint256 tokensInput, uint256 ethInput, uint256 liquidityMinted);
+  event LiquidityRemoved( address liquidityRemover, uint256 tokensOutput, uint256 ethOutput, uint256 liquidityWithdrawn);
 
   function init(uint256 tokens) public payable returns (uint256) {
     require(totalLiquidity==0,"DEX:init - already has liquidity");
@@ -65,7 +65,7 @@ contract DEX {
     //uint256 tokens_sold = eth_bought;
     payable(msg.sender).transfer(eth_bought);
     require(token.transferFrom(msg.sender, address(this), tokens));
-    emit TokenToEthSwap(msg.sender, msg.value, msg.value, eth_bought);
+    emit TokenToEthSwap(msg.sender, "Balloons to ETH", ethOutput, tokenInput);
     //Address | Trade | AmountIn | AmountOut
     return eth_bought;
   }
@@ -78,7 +78,7 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
     totalLiquidity = totalLiquidity.add(liquidity_minted);
     require(token.transferFrom(msg.sender, address(this), token_amount));
-    emit LiquidityProvided(msg.sender, liquidity_minted, msg.value, token_amount);
+    emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, tokenDeposit);
     return liquidity_minted;
   }
 
@@ -91,7 +91,7 @@ contract DEX {
 // I made changes to below two lines. Instead of eth_amount I used liquidity amount requested by sender.
         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
         totalLiquidity = totalLiquidity.sub(_amount);
-        emit LiquidityRemoved(msg.sender, liquidity[msg.sender]);
+        emit LiquidityRemoved(msg.sender, amount, ethWithdrawn, tokenAmount);
       
   (bool sent, ) = payable(msg.sender).call{value: ethAmount}("");
         require(sent, "Eth transfer failed");
