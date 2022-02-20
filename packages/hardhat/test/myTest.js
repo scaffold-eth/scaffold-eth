@@ -15,6 +15,7 @@ describe("My Dapp", function () {
   describe("YourContract", function () {
     it("Should deploy YourContract", async function () {
       const YourContract = await ethers.getContractFactory("YourContract");
+      const MyContract = await ethers.getContractFactory("MyContract");
 
       myContract = await YourContract.deploy();
     });
