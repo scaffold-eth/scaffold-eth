@@ -13,8 +13,8 @@ const Terminal = ({
   initLeft,
   ...props
 }) => {
-  const initHeight = 700
-  const initWidth = 450
+  const initHeight = 800
+  const initWidth = initHeight * 0.65
 
   return (
     <WindowModal
