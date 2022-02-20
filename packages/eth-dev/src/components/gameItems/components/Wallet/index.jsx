@@ -161,7 +161,7 @@ const Wallet = ({
             height: '86%',
             marginLeft: '9%',
             marginRight: '9%',
-            overflow: 'scroll'
+            overflow: 'auto'
           }}
         >
           {/*
