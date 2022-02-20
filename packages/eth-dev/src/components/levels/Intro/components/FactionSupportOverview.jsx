@@ -5,22 +5,6 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
-  const LEVELS_IDS = [
-    'TemplateLevel',
-    'Intro',
-    'UnderflowBug',
-    'SetupLocalNetwork',
-    'CreateWallet',
-    'SetupMetamask',
-    'GamblingContract',
-    'Multisig',
-    'DecentralizedExchange',
-    'NFTStore',
-    'DAOHack',
-    'FlashLoans',
-    'ERC20'
-  ]
-
   const factionProgressComp = ({ factionName, progress, levels }) => {
     return (
       <>
@@ -163,6 +147,7 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
                   name: 'DEX/Uniswap',
                   path: '/decentralized-exchange'
                 },
+                { levelId: 'BondingCurves', name: 'Bonding Curves', path: '/bonding-curves' },
                 { levelId: 'FlashLoans', name: 'Flash loans' },
                 { levelId: null, name: 'Aave/Lend' },
                 { levelId: null, name: 'Compound' },

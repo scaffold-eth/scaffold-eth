@@ -17,6 +17,7 @@ import NFTStore from './NFTStore'
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 import ERC20 from './ERC20'
+import BondingCurves from './BondingCurves'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
   const setInitialLevel = levelId => {
@@ -82,6 +83,9 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           </Route>
           <Route path='/erc20'>
             <ERC20 />
+          </Route>
+          <Route path='/bonding-curves'>
+            <BondingCurves />
           </Route>
         </Switch>
       </BrowserRouter>
