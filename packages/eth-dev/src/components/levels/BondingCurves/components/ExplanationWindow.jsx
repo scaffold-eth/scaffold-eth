@@ -3,28 +3,8 @@ import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({
-  isOpen,
-  globalGameActions,
-  setExplanationWindowVisibility,
-  setDaoContractWindowVisibility,
-  setDarkDaoContractWindowVisibility
-}) => {
+const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisibility }) => {
   const [currentStep, setCurrentStep] = useState(0)
-
-  const contentFileName = 'ExplanationWindow.md'
-  const [fileContent, setFileContent] = useState('')
-
-  useEffect(() => {
-    import(`./${contentFileName}`)
-        .then(res => {
-            fetch(res.default)
-                .then(res => res.text())
-                .then(res => setFileContent(res))
-                .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-  })
 
   return (
     <WindowModal
@@ -80,7 +60,6 @@ $ yarn
 # deploy contracts
 $ yarn deploy`}
           </CodeContainer>
-           {currentStep > 0 && (<Markdown>{fileContent}</Markdown>)}
         </div>
 
         {currentStep === 0 && (
@@ -104,7 +83,6 @@ $ yarn deploy`}
             Done
           </Button>
         )}
-
       </div>
     </WindowModal>
   )
