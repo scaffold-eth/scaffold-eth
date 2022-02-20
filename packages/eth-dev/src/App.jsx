@@ -9,6 +9,7 @@ import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
 import { formatEther } from '@ethersproject/units'
+import './App.less'
 
 import {
   // usePoller,
