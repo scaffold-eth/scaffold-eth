@@ -18,8 +18,8 @@ contract DEX {
   uint256 public totalLiquidity;
   mapping (address => uint256) public liquidity;
 
-  event EthToTokenSwap(address, uint);
-  event TokenToEthSwap(address, uint);
+  event EthToTokenSwap(address, uint, uint, uint);
+  event TokenToEthSwap(address, uint, uint, uint);
   event LiquidityProvided(address, uint, uint, uint);
   event LiquidityRemoved(address, uint);
 
@@ -42,7 +42,7 @@ contract DEX {
     uint256 token_reserve = token.balanceOf(address(this));
     uint256 tokens_bought = price(msg.value, ethReserve, token_reserve);
     require(token.transfer(msg.sender, tokens_bought));
-    emit EthToTokenSwap(msg.sender,  msg.value);
+    emit EthToTokenSwap(msg.sender,  msg.value, msg.value, tokens_bought);
     return tokens_bought;
 
   }
@@ -62,9 +62,11 @@ contract DEX {
   function tokenToEth(uint256 tokens) public payable returns (uint256) {
     uint256 token_reserve = token.balanceOf(address(this));
     uint256 eth_bought = price(tokens, token_reserve, address(this).balance);
+    //uint256 tokens_sold = eth_bought;
     payable(msg.sender).transfer(eth_bought);
     require(token.transferFrom(msg.sender, address(this), tokens));
-    emit TokenToEthSwap(msg.sender, msg.value);
+    emit TokenToEthSwap(msg.sender, msg.value, msg.value, eth_bought);
+    //Address | Trade | AmountIn | AmountOut
     return eth_bought;
   }
 
