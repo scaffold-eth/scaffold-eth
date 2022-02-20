@@ -1,13 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
-import levelDialog from './dialog'
+
 import { DetailsOnWalletsWindow, CreateWalletWindow } from './components'
+import levelDialog from './dialog'
 
 export const LEVEL_ID = 'CreateWallet'
 
 const CreateWalletLevel = ({ dialog, globalGameActions }) => {
   useEffect(() => {
+    // load level
+    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'City' })
     // set dialog

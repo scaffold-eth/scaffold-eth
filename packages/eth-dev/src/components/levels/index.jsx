@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react'
+import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
 import { ethers } from 'ethers'
 import { connectController as wrapGlobalGameData } from '../gameItems'
 import { Background, QRPunkBlockie } from '../gameItems/components'
@@ -44,20 +45,46 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
         </div>
       )}
 
-      {currentLevel === 'TemplateLevel' && <TemplateLevel />}
-
-      {currentLevel === 'Intro' && <Intro />}
-      {currentLevel === 'UnderflowBug' && <UnderflowBug />}
-      {currentLevel === 'SetupLocalNetwork' && <SetupLocalNetwork />}
-      {currentLevel === 'CreateWallet' && <CreateWallet />}
-      {currentLevel === 'SetupMetamask' && <SetupMetamask loadWeb3Modal={loadWeb3Modal} />}
-      {currentLevel === 'GamblingContract' && <GamblingContract />}
-      {currentLevel === 'Multisig' && <Multisig />}
-      {currentLevel === 'DecentralizedExchange' && <DecentralizedExchange />}
-      {currentLevel === 'NFTStore' && <NFTStore />}
-      {currentLevel === 'DAOHack' && <DAOHack />}
-      {currentLevel === 'FlashLoans' && <FlashLoans />}
-      {currentLevel === 'ERC20' && <ERC20 />}
+      <BrowserRouter>
+        <Switch>
+          <Route exact path='/'>
+            <Intro />
+          </Route>
+          <Route path='/underflow-bug'>
+            <UnderflowBug />
+          </Route>
+          <Route path='/setup-local-network'>
+            <SetupLocalNetwork />
+          </Route>
+          <Route path='/create-wallet'>
+            <CreateWallet />
+          </Route>
+          <Route path='/setup-metamask'>
+            <SetupMetamask />
+          </Route>
+          <Route path='/insecure-gambling-contract'>
+            <GamblingContract />
+          </Route>
+          <Route path='/multisig'>
+            <Multisig />
+          </Route>
+          <Route path='/decentralized-exchange'>
+            <DecentralizedExchange />
+          </Route>
+          <Route path='/nft-store'>
+            <NFTStore />
+          </Route>
+          <Route path='/dao-hack'>
+            <DAOHack />
+          </Route>
+          <Route path='/flash-loans'>
+            <FlashLoans />
+          </Route>
+          <Route path='/erc20'>
+            <ERC20 />
+          </Route>
+        </Switch>
+      </BrowserRouter>
     </>
   )
 }

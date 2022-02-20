@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
@@ -42,13 +44,13 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
         <div style={{ padding: 20 }}>
           <div style={{ marginBottom: 15 }}>Levels:</div>
           <ol style={{ marginLeft: 25 }}>
-            {levels.map(({ levelId, name }) => {
+            {levels.map(({ levelId, name, path }) => {
               return (
                 <li style={{ color: levelId ? '#fff' : '#ccc' }}>
                   {levelId && (
-                    <a onClick={() => globalGameActions.level.setCurrentLevel({ levelId })}>
+                    <Link to={path} style={{ color: levelId ? '#fff' : '#ccc' }}>
                       {name}
-                    </a>
+                    </Link>
                   )}
                   {!levelId && <span style={{ color: '#ccc' }}>{name}</span>}
                 </li>
@@ -109,9 +111,13 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
               factionName: 'Basics',
               progress: 0,
               levels: [
-                { levelId: 'SetupLocalNetwork', name: 'Setup local Ethereum Network' },
-                { levelId: 'SetupMetamask', name: 'Setup Metamask' },
-                { levelId: 'CreateWallet', name: 'Create Wallet' },
+                {
+                  levelId: 'SetupLocalNetwork',
+                  name: 'Setup local Ethereum Network',
+                  path: '/setup-local-network'
+                },
+                { levelId: 'SetupMetamask', name: 'Setup Metamask', path: '/setup-metamask' },
+                { levelId: 'CreateWallet', name: 'Create Wallet', path: '/create-wallet' },
                 { levelId: null, name: 'General Solidity Syntax' }
               ]
             })}
@@ -119,32 +125,44 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
               factionName: 'Hacker/Security Anons',
               progress: 0,
               levels: [
-                { levelId: 'UnderflowBug', name: 'ER20 Underflow Hack' },
-                { levelId: 'GamblingContract', name: 'Hackable Dice Game' },
-                { levelId: 'DAOHack', name: 'DAO Hack History' }
+                {
+                  levelId: 'UnderflowBug',
+                  name: 'ER20 Underflow Hack',
+                  path: '/underflow-bug'
+                },
+                {
+                  levelId: 'GamblingContract',
+                  name: 'Hackable Dice Game',
+                  path: '/insecure-gambling-contract'
+                },
+                { levelId: 'DAOHack', name: 'DAO Hack History', path: '/dao-hack' }
               ]
             })}
             {factionProgressComp({
               factionName: 'Smart Contract Ninjas',
               progress: 0,
               levels: [
-                { levelId: 'ERC20', name: 'ERC20' },
-                { levelId: 'Multisig', name: 'MultiSig' },
-                { levelId: null, name: 'Minimal DAO' },
-                { levelId: null, name: 'ENS' }
+                { levelId: 'ERC20', name: 'ERC20', path: '/erc20' },
+                { levelId: 'Multisig', name: 'MultiSig', path: '/multisig' },
+                { levelId: null, name: 'Minimal DAO', path: null },
+                { levelId: null, name: 'ENS', path: null }
               ]
             })}
             {factionProgressComp({
               factionName: 'DAPP Buidlers',
               progress: 0,
-              levels: [{ levelId: 'NFTStore', name: 'NFT Store' }]
+              levels: [{ levelId: 'NFTStore', name: 'NFT Store', path: '/nft-store' }]
             })}
             {factionProgressComp({
               factionName: 'DEFI Degens',
               progress: 0,
               levels: [
                 { levelId: null, name: 'Tokeneconomics' },
-                { levelId: 'DecentralizedExchange', name: 'DEX/Uniswap' },
+                {
+                  levelId: 'DecentralizedExchange',
+                  name: 'DEX/Uniswap',
+                  path: '/decentralized-exchange'
+                },
                 { levelId: 'FlashLoans', name: 'Flash loans' },
                 { levelId: null, name: 'Aave/Lend' },
                 { levelId: null, name: 'Compound' },

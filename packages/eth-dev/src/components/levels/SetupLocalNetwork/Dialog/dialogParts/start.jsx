@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 import { DIALOG_PART_ID as BEGINNER_DIALOG_PART_ID } from './BeginnerDev'
@@ -81,14 +83,9 @@ const _dialog = [
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Button
-              // className='is-warning'
-              onClick={() => {
-                globalGameActions.level.setCurrentLevel({ levelId: 'UnderflowBug' })
-              }}
-            >
-              Continue
-            </Button>
+            <Link to='/underflow-bug'>
+              <Button>Continue</Button>
+            </Link>
           )}
         </>
       )

@@ -9,6 +9,8 @@ export const LEVEL_ID = 'SetupMetamask'
 
 const SetupMetamaskLevel = ({ dialog, globalGameActions, loadWeb3Modal }) => {
   useEffect(() => {
+    // load level
+    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
     // set dialog

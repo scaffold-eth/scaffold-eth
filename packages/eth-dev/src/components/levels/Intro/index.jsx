@@ -22,6 +22,8 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
   }
 
   useEffect(() => {
+    // load level
+    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'Intro' })
     // set dialog

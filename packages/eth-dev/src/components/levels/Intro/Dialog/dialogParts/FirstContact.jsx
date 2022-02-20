@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -88,13 +90,9 @@ const _dialog = [
         return (
           <>
             {isLastVisibleDialog && (
-              <Button
-                onClick={() =>
-                  globalGameActions.level.setCurrentLevel({ levelId: 'SetupLocalNetwork' })
-                }
-              >
-                Continue
-              </Button>
+              <Link to='/setup-local-network'>
+                <Button className='is-warning'>Continue</Button>
+              </Link>
             )}
           </>
         )

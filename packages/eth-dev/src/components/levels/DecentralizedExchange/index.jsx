@@ -9,6 +9,8 @@ export const LEVEL_ID = 'DecentralizedExchange'
 
 const DecentralizedExchange = ({ dialog, globalGameActions }) => {
   useEffect(() => {
+    // load level
+    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'CitySkylineInsideNight' })
     // set dialog

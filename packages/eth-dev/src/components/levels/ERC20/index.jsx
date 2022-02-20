@@ -9,6 +9,8 @@ export const LEVEL_ID = 'ERC20'
 
 const ERC20 = ({ dialog, globalGameActions }) => {
   useEffect(() => {
+    // load level
+    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
     // set dialog

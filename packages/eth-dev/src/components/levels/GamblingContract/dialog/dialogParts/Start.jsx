@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -114,14 +116,9 @@ const _dialog = [
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                globalGameActions.level.setCurrentLevel({ levelId: 'CreateWallet' })
-              }}
-            >
-              Drive into City
-            </Button>
+            <Link to='/create-wallet'>
+              <Button className='is-warning'>Drive into City</Button>
+            </Link>
           )}
         </>
       )

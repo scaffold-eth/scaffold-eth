@@ -1,4 +1,5 @@
 import React from 'react'
+
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
@@ -53,6 +54,7 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
         >
           <div style={{ color: 'white' }}>
             <p style={{ fontSize: 11, textAlign: 'center' }}>Levels</p>
+            {/* TODO: need to update this to use <Link> */}
             {LEVELS_IDS.map(levelId => (
               <Button
                 block
