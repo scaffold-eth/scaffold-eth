@@ -5,7 +5,9 @@ import "hardhat/console.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract YourContract is Ownable{
+contract YourContract {
+
+  address owner = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
 
   event Register(address origin, address yourContract);
   event Move(address origin, string move);
@@ -22,13 +24,12 @@ contract YourContract is Ownable{
     emit Register(tx.origin,msg.sender);
   }
 
-  function start() public onlyOwner {
+  function start() public {
+    require(msg.sender==owner,"BACK OFF!");
     gameOn=true;
   }
 
-
   mapping(address => string) public moves;
-  mapping(address => uint256) public last;
 
 
   function move(string calldata yourMove) public {
