@@ -25,13 +25,17 @@ contract YourContract is Ownable{
     gameOn=true;
   }
 
+
   mapping(address => string) public moves;
+  mapping(address => uint256) public last;
 
 
   function move(string calldata yourMove) public {
     require(gameOn, "NOT YET");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     require(msg.sender==yourContract[tx.origin], "STOP LARPING");
+    require(last<block.timestamp+60,"YOU CANT THO");
+    require(last>block.timestamp-120,"YOU OUT THO");
     moves[tx.origin]=yourMove;
     emit Move(tx.origin, yourMove);
   }
