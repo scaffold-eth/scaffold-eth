@@ -66,10 +66,10 @@ module.exports = {
   networks: {
     localhost: {
       url: "http://localhost:8545",
-      /*      
+      /*
         notice no mnemonic here? it will just use account 0 of the hardhat node to deploy
         (you can put in a mnemonic here to set the deployer locally)
-      
+
       */
     },
     rinkeby: {
@@ -288,6 +288,12 @@ module.exports = {
   namedAccounts: {
     deployer: {
       default: 0, // here this will by default take the first account as deployer
+    },
+    registry: {
+      default: "0x3b76386DCa7516bD9da2Eb7A63ABADc18B0a1665",
+    },
+    adamLocal: {
+      default: "0xE09750abE36beA8B2236E48C84BB9da7Ef5aA07c",
     },
   },
   etherscan: {
