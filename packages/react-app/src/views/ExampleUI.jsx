@@ -27,7 +27,7 @@ export default function ExampleUI({
       <Events
         contracts={readContracts}
         contractName="YourContract"
-        eventName="Moves"
+        eventName="Move"
         localProvider={localProvider}
         mainnetProvider={mainnetProvider}
         startBlock={1}

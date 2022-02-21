@@ -1,6 +1,6 @@
 import { List } from "antd";
 import { useEventListener } from "eth-hooks/events/useEventListener";
-
+import { ethers } from 'ethers'
 import  Address from "./Address";
 
 /**
@@ -32,9 +32,9 @@ export default function Events({ contracts, contractName, eventName, localProvid
         dataSource={events}
         renderItem={item => {
           return (
-            <List.Item key={item.blockNumber + "_" + item.args.origin + "_" + item.args.yourContract}>
+            <List.Item style={{ display: 'flex', justifyContent: 'space-between' }} key={item.blockNumber + "_" + item.args.origin + "_" + item.args.yourContract}>
               <Address address={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
-              <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} />
+              {ethers.utils.isAddress(item.args[1]) ? <Address address={item.args[1]} ensProvider={mainnetProvider} fontSize={16} /> : item.args[1]}
             </List.Item>
           );
         }}

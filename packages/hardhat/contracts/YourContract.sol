@@ -18,7 +18,7 @@ contract YourContract {
 
   function register() public {
     require(!gameOn, "TOO LATE");
-    require(yourContract[tx.origin]!=address(0), "NO MORE PLZ");
+    require(yourContract[tx.origin]==address(0), "NO MORE PLZ");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     yourContract[tx.origin] = msg.sender;
     emit Register(tx.origin,msg.sender);

@@ -7,8 +7,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   await deploy("YourContract", {
     from: deployer,
     log: true,
-    waitConfirmations: 5,
-    proxy: true,
+    waitConfirmations: 5
   });
 };
 module.exports.tags = ["YourContract"];
