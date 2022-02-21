@@ -7,7 +7,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 
 contract YourContract {
 
-  address owner = 0xE09750abE36beA8B2236E48C84BB9da7Ef5aA07c;
+  address owner = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
 
   event Register(address origin, address yourContract);
   event Move(address origin, string move);
@@ -35,6 +35,8 @@ contract YourContract {
     require(gameOn, "NOT YET");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     require(msg.sender==yourContract[tx.origin], "STOP LARPING");
+    require(last<block.timestamp+60,"YOU CANT THO");
+    require(last>block.timestamp-120,"YOU OUT THO");
     moves[tx.origin]=yourMove;
     emit Move(tx.origin, yourMove);
   }
