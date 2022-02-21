@@ -10,9 +10,10 @@ contract YourContract {
   address owner = 0x34aA3F359A9D614239015126635CE7732c18fDF3;
 
   event Register(address origin, address yourContract);
-  event Move(address origin, string move);
+  event Move(address origin, string move, uint256 healthLeft);
 
   mapping(address => address) public yourContract;
+  mapping(address => uint256) public health;
 
   bool public gameOn;
 
@@ -22,6 +23,7 @@ contract YourContract {
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     yourContract[tx.origin] = msg.sender;
     emit Register(tx.origin,msg.sender);
+    health[tx.origin] = 5000;
   }
 
   function start() public {
@@ -34,13 +36,18 @@ contract YourContract {
 
   function move(string calldata yourMove) public {
     require(gameOn, "NOT YET");
+    require(  health[tx.origin] >0, "YOU DED");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     require(msg.sender==yourContract[tx.origin], "STOP LARPING");
-    require(last[tx.origin]==0 || last[tx.origin]<block.timestamp+60,"YOU CANT THO");
-    //require(last[tx.origin]==0 || last[tx.origin]>block.timestamp-120,"YOU OUT THO");
+    require(last[tx.origin]==0 || block.timestamp > last[tx.origin]+10,"YOU CANT THO");
+    require(last[tx.origin]==0 || block.timestamp < last[tx.origin]+60,"YOU OUT THO");
+
+    bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), last[tx.origin] ));
+    health[tx.origin] -= uint8(predictableRandom[0]);
+
     moves[tx.origin]=yourMove;
     last[tx.origin]=block.timestamp;
-    emit Move(tx.origin, yourMove);
+    emit Move(tx.origin, yourMove, health[tx.origin] );
   }
 
 }
