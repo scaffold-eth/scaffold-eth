@@ -21,12 +21,12 @@ contract YourContract is Ownable{
     emit Register(tx.origin,msg.sender);
   }
 
-  function start() public {
+  function start() public onlyOwner {
     gameOn=true;
   }
 
   mapping(address => string) public moves;
-  
+
 
   function move(string calldata yourMove) public {
     require(gameOn, "NOT YET");
