@@ -26,9 +26,12 @@ contract YourContract {
     health[tx.origin] = 5000;
   }
 
+  uint256 startTime;
+
   function start() public {
     require(msg.sender==owner,"BACK OFF!");
     gameOn=true;
+    startTime = block.timestamp;
   }
 
   mapping(address => string) public moves;
@@ -39,8 +42,8 @@ contract YourContract {
     require(  health[tx.origin] >0, "YOU DED");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     require(msg.sender==yourContract[tx.origin], "STOP LARPING");
-    require(last[tx.origin]==0 || block.timestamp > last[tx.origin]+10,"YOU CANT THO");
-    require(last[tx.origin]==0 || block.timestamp < last[tx.origin]+60,"YOU OUT THO");
+    require((block.timestamp<startTime+120 && last[tx.origin]==0) || block.timestamp > last[tx.origin]+10,"YOU CANT THO");
+    require((block.timestamp<startTime+120 && last[tx.origin]==0) || block.timestamp < last[tx.origin]+60,"YOU OUT THO");
 
     bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this), last[tx.origin] ));
     health[tx.origin] -= uint8(predictableRandom[0]);
