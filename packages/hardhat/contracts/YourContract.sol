@@ -16,6 +16,7 @@ contract YourContract is Ownable{
 
   function register() public {
     require(!gameOn, "TOO LATE");
+    require(yourContract[tx.origin]!=address(0), "NO MORE PLZ");
     require(tx.origin!=msg.sender, "NOT A CONTRACT");
     yourContract[tx.origin] = msg.sender;
     emit Register(tx.origin,msg.sender);
@@ -37,6 +38,7 @@ contract YourContract is Ownable{
     require(last<block.timestamp+60,"YOU CANT THO");
     require(last>block.timestamp-120,"YOU OUT THO");
     moves[tx.origin]=yourMove;
+    last[tx.origin]=block.timestamp;
     emit Move(tx.origin, yourMove);
   }
 
