@@ -70,22 +70,41 @@ contract DEX {
     return eth_bought;
   }
 
-  function deposit() public payable returns (uint256 liquidity_minted) {
-    uint256 eth_reserve = address(this).balance.sub(msg.value);
-    uint256 token_reserve = token.balanceOf(address(this));
-    uint256 token_amount = (msg.value.mul(token_reserve) / eth_reserve).add(1);
-    liquidity_minted = msg.value.mul(totalLiquidity) / eth_reserve;
-    liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
-    totalLiquidity = totalLiquidity.add(liquidity_minted);
-    require(token.transferFrom(msg.sender, address(this), token_amount));
-    emit LiquidityProvided(msg.sender, token_amount, msg.value, liquidity_minted);
-    return liquidity_minted;
-  }
+  // function deposit() public payable returns (uint256 liquidity_minted) {
+  //   uint256 eth_reserve = address(this).balance.sub(msg.value);
+  //   uint256 token_reserve = token.balanceOf(address(this));
+  //   uint256 token_amount = (msg.value.mul(token_reserve) / eth_reserve).add(1);
+  //   liquidity_minted = msg.value.mul(totalLiquidity) / eth_reserve;
+  //   liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
+  //   totalLiquidity = totalLiquidity.add(liquidity_minted);
+  //   require(token.transferFrom(msg.sender, address(this), token_amount));
+  //   emit LiquidityProvided(msg.sender, token_amount, msg.value, liquidity_minted);
+  //   return liquidity_minted;
+  // }
+
+
+    function deposit() public payable returns (uint256 tokensDeposited) {
+        uint256 ethReserve = address(this).balance.sub(msg.value);
+        uint256 tokenReserve = token.balanceOf(address(this));
+        uint256 tokenDeposit;
+
+        tokenDeposit = (msg.value.mul(tokenReserve) / ethReserve).add(1);
+        uint256 liquidityMinted = msg.value.mul(totalLiquidity) / ethReserve;
+        liquidity[msg.sender] = liquidity[msg.sender].add(liquidityMinted);
+        totalLiquidity = totalLiquidity.add(liquidityMinted);
+
+        require(token.transferFrom(msg.sender, address(this), tokenDeposit));
+        emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, tokenDeposit);
+        return tokenDeposit;
+    }
 
 //   function withdraw(uint256 _amount) public returns (uint256 eth_amount, uint256 token_amount) {
+//         require(liquidity[msg.sender] >= amount, "withdraw: sender does not have enough liquidity to withdraw.");
+//         uint256 ethReserve = address(this).balance;
 //         uint256 tokenReserve = token.balanceOf(address(this));
-//         uint256 ethAmount = _amount.mul(address(this).balance) / totalLiquidity;
+//         uint256 ethAmount = _amount.mul(ethReserve) / totalLiquidity;
 //         uint256 tokenAmount = _amount.mul(tokenReserve) / totalLiquidity;
+
         
 // // I made changes to below two lines. Instead of eth_amount I used liquidity amount requested by sender.
 //         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
