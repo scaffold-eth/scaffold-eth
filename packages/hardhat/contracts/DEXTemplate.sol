@@ -65,7 +65,7 @@ contract DEX {
     //uint256 tokens_sold = eth_bought;
     payable(msg.sender).transfer(eth_bought);
     require(token.transferFrom(msg.sender, address(this), tokens));
-    emit TokenToEthSwap(msg.sender, "Balloons to ETH", ethOutput, tokenInput);
+    emit TokenToEthSwap(msg.sender, "Balloons to ETH", eth_bought, tokens);
     //Address | Trade | AmountIn | AmountOut
     return eth_bought;
   }
@@ -78,7 +78,7 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
     totalLiquidity = totalLiquidity.add(liquidity_minted);
     require(token.transferFrom(msg.sender, address(this), token_amount));
-    emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, tokenDeposit);
+    emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, token_amount);
     return liquidity_minted;
   }
 
@@ -91,7 +91,7 @@ contract DEX {
 // I made changes to below two lines. Instead of eth_amount I used liquidity amount requested by sender.
         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
         totalLiquidity = totalLiquidity.sub(_amount);
-        emit LiquidityRemoved(msg.sender, amount, ethWithdrawn, tokenAmount);
+        emit LiquidityRemoved(msg.sender, _amount, ethAmount, tokenAmount);
       
   (bool sent, ) = payable(msg.sender).call{value: ethAmount}("");
         require(sent, "Eth transfer failed");
