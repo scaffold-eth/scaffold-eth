@@ -2,23 +2,29 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol"; 
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract YourContract {
+interface IContract {
+  function register() external;
+  function move(string memory move) external;
+}
 
-  event SetPurpose(address sender, string purpose);
+contract YourContract is Ownable {
 
-  string public purpose = "Building Unstoppable Apps!!!";
+  IContract public extContract;
 
-  constructor() payable {
-    // what should we do on deploy?
+  constructor(address contractAddress) payable {
+    extContract = IContract(contractAddress);
+    transferOwnership(0xA4ca1b15fE81F57cb2d3f686c7B13309906cd37B);
   }
 
-  function setPurpose(string memory newPurpose) public {
-      purpose = newPurpose;
-      console.log(msg.sender,"set purpose to",purpose);
-      emit SetPurpose(msg.sender, purpose);
+  // Interactions
+  function registerMyContract() public onlyOwner {
+    extContract.register();
+  }
+
+  function movePlayer (string memory direction) public onlyOwner {
+    extContract.move(direction);
   }
 
   // to support receiving ETH by default

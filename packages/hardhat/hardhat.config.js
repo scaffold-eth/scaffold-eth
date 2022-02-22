@@ -26,7 +26,7 @@ const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 //
 // Select the network you want to deploy to here:
 //
-const defaultNetwork = "localhost";
+const defaultNetwork = "xdai";
 
 const mainnetGwei = 21;
 
@@ -110,7 +110,7 @@ module.exports = {
     },
     xdai: {
       url: "https://rpc.xdaichain.com/",
-      gasPrice: 1000000000,
+      gasPrice: 10000000000,
       accounts: {
         mnemonic: mnemonic(),
       },
