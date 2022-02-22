@@ -90,7 +90,7 @@ contract DEX {
 // I made changes to below two lines. Instead of eth_amount I used liquidity amount requested by sender.
         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
         totalLiquidity = totalLiquidity.sub(_amount);
-        emit LiquidityRemoved(msg.sender, _amount, ethAmount, tokenAmount);
+        emit LiquidityRemoved(msg.sender, tokenAmount, ethAmount, _amount);
       
   (bool sent, ) = payable(msg.sender).call{value: ethAmount}("");
         require(sent, "Eth transfer failed");
