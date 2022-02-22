@@ -65,7 +65,11 @@ contract DEX {
     //uint256 tokens_sold = eth_bought;
     payable(msg.sender).transfer(eth_bought);
     require(token.transferFrom(msg.sender, address(this), tokens));
+<<<<<<< HEAD
     emit TokenToEthSwap(msg.sender, "Balloons to ETH", msg.value, eth_bought);
+=======
+    emit TokenToEthSwap(msg.sender, "Balloons to ETH", eth_bought, tokens);
+>>>>>>> e51b881518090e0c18cab1e320b461111faa88e7
     //Address | Trade | AmountIn | AmountOut
     return eth_bought;
   }
@@ -78,7 +82,11 @@ contract DEX {
     liquidity[msg.sender] = liquidity[msg.sender].add(liquidity_minted);
     totalLiquidity = totalLiquidity.add(liquidity_minted);
     require(token.transferFrom(msg.sender, address(this), token_amount));
+<<<<<<< HEAD
     emit LiquidityProvided(msg.sender, token_amount, msg.value, liquidity_minted);
+=======
+    emit LiquidityProvided(msg.sender, liquidityMinted, msg.value, token_amount);
+>>>>>>> e51b881518090e0c18cab1e320b461111faa88e7
     return liquidity_minted;
   }
 
@@ -91,8 +99,11 @@ contract DEX {
         liquidity[msg.sender] = liquidity[msg.sender].sub(_amount);
         totalLiquidity = totalLiquidity.sub(_amount);
         emit LiquidityRemoved(msg.sender, _amount, ethAmount, tokenAmount);
+<<<<<<< HEAD
         //event LiquidityRemoved( address liquidityRemover, uint256 tokensOutput, uint256 ethOutput, uint256 liquidityWithdrawn);
 
+=======
+>>>>>>> e51b881518090e0c18cab1e320b461111faa88e7
       
   (bool sent, ) = payable(msg.sender).call{value: ethAmount}("");
         require(sent, "Eth transfer failed");
