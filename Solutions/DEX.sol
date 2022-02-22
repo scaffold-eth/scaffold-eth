@@ -34,7 +34,6 @@ contract DEX {
      */
     event LiquidityProvided(address liquidityProvider, uint256 liquidityMinted, uint256 tokensInput, uint256 ethInput);
 
-  event LiquidityRemoved( address liquidityRemover, uint256 liquidityWithdrawn, uint256 ethOutput, uint256 tokensOutput);
     /**
      * @notice Emitted when liquidity removed from DEX and decreases LPT count within DEX.
      */
