@@ -1,10 +1,10 @@
-import Fortmatic from "fortmatic";
-import WalletLink from "walletlink";
-import Web3Modal from "web3modal";
 import Portis from "@portis/web3";
 import WalletConnectProvider from "@walletconnect/web3-provider";
 import Authereum from "authereum";
-import { INFURA_ID, ALCHEMY_KEY } from "../constants";
+import Fortmatic from "fortmatic";
+import WalletLink from "walletlink";
+import Web3Modal from "web3modal";
+import { ALCHEMY_KEY, INFURA_ID } from "../constants";
 
 // Coinbase walletLink init
 const walletLink = new WalletLink({
@@ -35,7 +35,7 @@ const web3ModalSetup = () =>
             137: "https://polygon-rpc.com",
             31337: "http://localhost:8545",
             42161: "https://arb1.arbitrum.io/rpc",
-            80001: "https://rpc-mumbai.maticvigil.com"
+            80001: "https://rpc-mumbai.maticvigil.com",
           },
         },
       },

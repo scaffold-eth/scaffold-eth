@@ -1,10 +1,8 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Select } from "antd";
-import { useLookupAddress } from "eth-hooks/dapps/ens";
-import React, { useCallback, useState } from "react";
-import QrReader from "react-qr-reader";
-import Blockie from "./Blockie";
 import { ethers } from "ethers";
-import { useMemo } from "react";
+import React, { useCallback, useMemo, useState } from "react";
+import Blockie from "./Blockie";
 
 // probably we need to change value={toAddress} to address={toAddress}
 
