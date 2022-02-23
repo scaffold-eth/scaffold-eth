@@ -32,10 +32,10 @@ const useTokenList = (tokenListUri, chainId) => {
               return t.chainId === chainId;
             });
           } else {
-            _tokenList = tokenListJson;
+            _tokenList = tokenListJson.tokens;
           }
 
-          setTokenList(_tokenList.tokens);
+          setTokenList(_tokenList);
         } catch (e) {
           console.log(e);
         }
