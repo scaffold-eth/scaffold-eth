@@ -27,6 +27,7 @@ import {
   Dex,
   Address,
   Balance,
+  Events,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -152,6 +153,7 @@ function App(props) {
 
   // Load in your local 📝 contract and read a value from it:
   const readContracts = useContractLoader(localProvider, contractConfig);
+  const liquidity = useContractReader(readContracts, "DEX", "getLiquidity", [address]);
 
   // If you want to make 🔐 write transactions to your contracts, use the userSigner:
   const writeContracts = useContractLoader(userSigner, contractConfig, localChainId);
@@ -279,7 +281,10 @@ function App(props) {
       />
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">Home</Link>
+          <Link to="/">Dexterity</Link>
+        </Menu.Item>
+        <Menu.Item key="/Events">
+          <Link to="/Events">Eventlist 📜</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
@@ -318,7 +323,7 @@ function App(props) {
             ""
           )}
           {/* TODO: The DEX.jsx file actually logs a bunch of the results so we think that instead of creating completely new event components (or whatever), we would figure out how to work with the txs that are happening as a result of EthersJS calling the respective functions in DEX.jsx. 😵 Lines 321-335 are an example of attempting to place emitted events on the front-page UI. It is not working though for now! */}
-          <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
+          {/* <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
             <div>👀 DEX Events:</div>
             <List
               dataSource={EthToTokenSwapEvents}
@@ -332,9 +337,46 @@ function App(props) {
                 );
               }}
             />
-          </div>
+          </div> */}
         </Route>
+        <Route path="/Events">
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="EthToTokenSwap"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
 
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="TokenToEthSwap"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="LiquidityProvided"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+
+          <Events
+            contracts={readContracts}
+            contractName="DEX"
+            eventName="LiquidityRemoved"
+            localProvider={localProvider}
+            mainnetProvider={mainnetProvider}
+            startBlock={1}
+          />
+        </Route>
+        }
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -449,6 +491,9 @@ function App(props) {
         )}
 
         <TokenBalance name={"Balloons"} img={"🎈"} address={address} contracts={readContracts} />
+        <h3>
+          💦💦: <TokenBalance balance={liquidity} />
+        </h3>
         {FaucetHint}
       </div>
 
