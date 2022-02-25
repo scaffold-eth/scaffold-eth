@@ -7,7 +7,7 @@ export default function Header() {
   return (
     <a href="/">
       <PageHeader
-        title="🟢 Loogies"
+        title="👨‍🎨 Dyanmic SVG NFT Example"
         subTitle=""
         style={{ cursor: "pointer" }}
       />

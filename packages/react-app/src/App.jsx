@@ -29,7 +29,7 @@ import {
 } from "./hooks";
 import { BlockPicker } from 'react-color'
 
-
+const { TextArea } = Input;
 const { BufferList } = require("bl");
 // https://www.npmjs.com/package/ipfs-http-client
 const ipfsAPI = require("ipfs-http-client");
@@ -58,7 +58,7 @@ const ipfs = ipfsAPI({ host: "ipfs.infura.io", port: "5001", protocol: "https" }
 */
 
 /// 📡 What chain are your contracts deployed to?
-const targetNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const targetNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -367,6 +367,8 @@ function App(props) {
 
   const [transferToAddresses, setTransferToAddresses] = useState({});
 
+  const [saveSvgData, setSaveSvgData] = useState({});
+
   const [loadedAssets, setLoadedAssets] = useState();
   /*useEffect(() => {
     const updateYourCollectibles = async () => {
@@ -490,7 +492,25 @@ function App(props) {
                         >
                           Transfer
                         </Button>
+                        <div style={{paddingTop:32}}>
+                          <b>edit:</b>{" "}
+
+                          <TextArea rows={4} onChange={(e)=>{
+                            let temp = saveSvgData
+                            temp[id] = e.target.value
+                            setSaveSvgData(temp)
+                          }} placeholder={'<circle cx=\"50\" cy=\"50\" r=\"40\" fill=\"red\" />'}/>
+                          <Button
+                            onClick={() => {
+                              console.log("writeContracts", writeContracts);
+                              tx(writeContracts.YourCollectible.edit(id,saveSvgData[id]));
+                            }}
+                          >
+                            Save
+                          </Button>
+                        </div>
                       </div>
+
                     </List.Item>
                   );
                 }}
