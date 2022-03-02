@@ -50,9 +50,11 @@ const PublicGoodsList = ({
       const name = await contract.name();
       const symbol = await contract.symbol();
       const uniswapPrice = await contract.getPrice();
+      const userStake = await contract.stakeAmount(address, publicGoods[i])
       console.log("uniswapPrice", uniswapPrice);
       const price = (uniswapPrice && utils.formatEther(uniswapPrice)) || "0.0";
-      info.push({ name, symbol, price, address: publicGoods[i] });
+      const formattedStake = (userStake && utils.formatEther(userStake)) || "0.0";
+      info.push({ name, symbol, price, address: publicGoods[i], stake: formattedStake });
     }
 
     setTokensInfo(info);
@@ -97,6 +99,10 @@ const PublicGoodsList = ({
                 <b>Price: </b>
                 {t.price}
               </p>
+              <p style={{ margin: 0 }}>
+                <b>Stake: </b>
+                {t.stake}
+              </p>
               <div>
                 <Button
                   style={{ marginTop: 10, marginRight: 15 }}
@@ -110,7 +116,6 @@ const PublicGoodsList = ({
                 </Button>
               </div>
               <Checkbox style={{ marginTop: 10 }} onChange={() => toggleToken(t.address)}>
-                Donate
               </Checkbox>
             </div>
           ))}
@@ -129,7 +134,7 @@ const PublicGoodsList = ({
             </Button>
           ) : (
             <Button disabled={!fund || !fundTokens.length} onClick={sendTokens}>
-              Send tokens
+              Stake Tokens
             </Button>
           )}
         </div>
