@@ -1137,9 +1137,9 @@ function App(props) {
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
 
-          <Col span={12} style={{ textAlign: "center", opacity: 0.8 }}>
+          {targetNetwork.name=="arbitrum"||targetNetwork.name=="gnosis"||targetNetwork.name=="optimism"||targetNetwork.name=="polygon"?"":<Col span={12} style={{ textAlign: "center", opacity: 0.8 }}>
             <GasGauge gasPrice={gasPrice} />
-          </Col>
+          </Col>}
         </Row>
 
         <Row align="middle" gutter={[4, 4]}>
