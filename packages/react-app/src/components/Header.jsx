@@ -5,10 +5,10 @@ import React from "react";
 
 export default function Header() {
   return (
-    <a href="https://github.com/austintgriffith/scaffold-eth" target="_blank" rel="noopener noreferrer">
+    <a href="https://dao.buidlguidl.com">
       <PageHeader
-        title="🏰 BuidlGuidl DAO LLC 🤠"
-        subTitle=""
+        title="🏰 BuidlGuidl DAO LLC "
+        subTitle="(🤠 Registered Wyoming DAO LLC 2021-001041159)"
         style={{ cursor: "pointer" }}
       />
     </a>

@@ -1,4 +1,4 @@
-import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, notification } from "antd";
+import { Button, Card, DatePicker, Divider, Input, List, Progress, Slider, Spin, Switch, Typography, notification } from "antd";
 import React, { useState, useEffect, useCallback } from "react";
 import { ethers } from "ethers";
 import SafeServiceClient from '@gnosis.pm/safe-service-client'
@@ -7,6 +7,7 @@ import { usePoller, useLocalStorage, useBalance, useSafeSdk } from "../hooks";
 import { EthSignSignature } from './EthSignSignature'
 import WalletConnect from "@walletconnect/client";
 
+const { Text } = Typography;
 const serviceClient = new SafeServiceClient('https://safe-transaction.mainnet.gnosis.io')
 
 export default function GnosisStarterView({
@@ -265,20 +266,31 @@ export default function GnosisStarterView({
   if(safeAddress){
     safeInfo = (
       <div>
+        <div style={{padding:64}}>
+        <Text copyable={{ text: safeAddress }}>
+          <a
+            target="_blank"
+            href={blockExplorer+"address/"+safeAddress}
+            rel="noopener noreferrer"
+          >
+            <h2>DAO.BuidlGuidl.ETH</h2>
+          </a>
+        </Text>
+        </div>
         <Address value={safeAddress} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
         <Balance value={safeBalance} price={price} />
 
-        <div style={{padding:8}}>
+        <div style={{padding:8,fontSize:22,marginTop:32}}>
         {owners&&owners.length>0?(
           <>
-            <b>Signers:</b>
+            <b>Members:</b>
             <List
               bordered
               dataSource={owners}
               renderItem={item => {
                 return (
                   <List.Item key={item + "_ownerEntry"}>
-                    <Address address={item} ensProvider={mainnetProvider} fontSize={12} />
+                    <Address address={item} size={20}  ensProvider={mainnetProvider} fontSize={12} />
                   </List.Item>
                 );
               }}
@@ -428,11 +440,41 @@ export default function GnosisStarterView({
   return (
     <div>
 
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "1px solid #cccccc", fontSize:16, padding: 16, width: 650, margin: "auto", marginTop: 64 }}>
+
+        <p>
+        BuidlGuidl DAO LLC Constitution & Governance
+        </p>
+
+        <p>
+        BuidlGuidl DAO (LLC) exists to fund developers building generic tutorials, components, and prototypes to improve the 🏗 scaffold-eth and greater Ethereum ecosystem.
+        </p>
+
+        <p>
+        The BuidlGuidl DAO is member managed, utilizing a Gnosis Safe smart contract at address <Address fontSize={14} value={"0x0eb2AB241210900Aeac2fbA054dD605355fe2490"} /> where members vote to send funds to 🏰 BuidlGuidl developers. All voting for funding allotment will take place in the Gnosis Safe.
+        </p>
+
+        <p>
+        Proposals to change the Constitution, Governance, or update the DAO in any way may only be introduced by current members.  There are no fees associated with being a member, and any members who leave the DAO are not entitled to any funding in the smart contract.
+        </p>
+
+        <p>
+        A majority vote (4/7) is required to add or remove members or pass an active proposal.
+        </p>
+
+        <p>
+        DAO members all have equal voting rights.
+        </p>
+
+        <p>
+        The DAO will do its best to keep developers' ETH streams on <a href="https://buidlguidl.com">BuidlGuidl.com</a> full and flowing.
+        </p>
+
+        <b>Keep 🛠 Buidling</b>
 
       </div>
 
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 750, margin: "auto", marginTop: 64 }}>
         {safeAddress?<div style={{float:"right", padding:4, cursor:"pointer", fontSize:28}} onClick={()=>{
           setSafeAddress("")
           setTransactions([])
