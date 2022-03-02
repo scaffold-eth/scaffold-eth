@@ -5,6 +5,8 @@ import { Contract, utils } from "ethers";
 import { publicGoodABI } from "../contracts/external_contracts";
 import { Input, Button, Spin } from "antd";
 import { useHistory } from "react-router-dom";
+import { Checkbox } from "antd";
+
 import useMyReader from "../hooks/useMyReader";
 
 const PublicGoodsList = ({
@@ -27,6 +29,7 @@ const PublicGoodsList = ({
   }, [stakeToken, injectedProvider]);
   const myBalance = useMyReader(contract, "balanceOf", JSON.stringify([address]));
   const allowance = useMyReader(contract, "allowance", JSON.stringify([address, contractAddress]));
+  const [fundTokens, setFundTokens] = useState([]);
 
   const history = useHistory();
   const tokenName = useMyReader(contract, "symbol");
@@ -46,7 +49,10 @@ const PublicGoodsList = ({
       const contract = new Contract(publicGoods[i], publicGoodABI, localProvider);
       const name = await contract.name();
       const symbol = await contract.symbol();
-      info.push({ name, symbol, address: publicGoods[i] });
+      const uniswapPrice = await contract.getPrice();
+      console.log("uniswapPrice", uniswapPrice);
+      const price = (uniswapPrice && utils.formatEther(uniswapPrice)) || "0.0";
+      info.push({ name, symbol, price, address: publicGoods[i] });
     }
 
     setTokensInfo(info);
@@ -57,7 +63,14 @@ const PublicGoodsList = ({
   };
 
   const sendTokens = () => {
-    tx(writeContracts.Weightage.stake(utils.parseEther(fund), publicGoods));
+    tx(writeContracts.Weightage.stake(utils.parseEther(fund), fundTokens));
+  };
+
+  const toggleToken = tokenAddress => {
+    setFundTokens(tokens => {
+      if (tokens.includes(tokenAddress)) return tokens.filter(token => token !== tokenAddress);
+      return [...tokens, tokenAddress];
+    });
   };
 
   useEffect(() => {
@@ -80,6 +93,10 @@ const PublicGoodsList = ({
                 <b>Symbol: </b>
                 {t.symbol}
               </p>
+              <p style={{ margin: 0 }}>
+                <b>Price: </b>
+                {t.price}
+              </p>
               <div>
                 <Button
                   style={{ marginTop: 10, marginRight: 15 }}
@@ -92,6 +109,9 @@ const PublicGoodsList = ({
                   Sell tokens
                 </Button>
               </div>
+              <Checkbox style={{ marginTop: 10 }} onChange={() => toggleToken(t.address)}>
+                Donate
+              </Checkbox>
             </div>
           ))}
           <h3>Fund projects with {tokenName}</h3>
@@ -108,7 +128,7 @@ const PublicGoodsList = ({
               Approve tokens
             </Button>
           ) : (
-            <Button disabled={!fund} onClick={sendTokens}>
+            <Button disabled={!fund || !fundTokens.length} onClick={sendTokens}>
               Send tokens
             </Button>
           )}
