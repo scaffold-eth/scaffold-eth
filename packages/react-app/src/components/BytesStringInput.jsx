@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 const { utils, constants } = require("ethers");
 
-/*
+/** 
   ~ What it does? ~
 
   Displays input field with options to convert between STRING and BYTES32
@@ -25,7 +25,7 @@ const { utils, constants } = require("ethers");
   - Provide placeholder="Enter value..." value for the input
   - Control input change by onChange={value => { setValue(value);}}
 
-*/
+**/
 
 export default function BytesStringInput(props) {
   const [mode, setMode] = useState("STRING");

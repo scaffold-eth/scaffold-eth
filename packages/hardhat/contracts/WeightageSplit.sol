@@ -929,6 +929,7 @@ pragma solidity ^0.8.7;
 
 
 contract Weightage {
+<<<<<<< HEAD
 
 uint256 public constant MULTIPLIER = 10**5;
 
@@ -963,4 +964,43 @@ function computePriceSum(PublicGoodToken[] memory _publicGoods) internal view re
     }
     return sum;
 }
+=======
+    uint256 public constant MULTIPLIER = 10**5;
+
+    PublicGoodToken[] public publicGoods;
+
+    IERC20 public stakeToken;
+
+    constructor(PublicGoodToken[] memory _publicGoods, IERC20 _stakeToken) {
+        stakeToken = _stakeToken;
+        for (uint i = 0; i < _publicGoods.length; i++) {
+            publicGoods.push(_publicGoods[i]);
+        }
+    }
+
+    function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
+    uint sum = computePriceSum(_publicGoods);
+    for (uint i = 0; i < _publicGoods.length; i++) {
+        uint percentage = (_publicGoods[i].getPrice() * 100) / sum;
+        // price is calculated as weth price / public goods token price so lower the price the more expensive is the public goods token
+        percentage = 100 - percentage;
+        uint individualProjectAmount = (_amount * percentage) / 100;
+        stakeToken.transferFrom(msg.sender, address(_publicGoods[i]), individualProjectAmount);
+        _publicGoods[i].stake(stakeToken, msg.sender, individualProjectAmount);
+    }
+
+    }
+
+    function computePriceSum(PublicGoodToken[] memory _publicGoods) internal view returns(uint) {
+        uint sum = 0;
+        for (uint i = 0; i < _publicGoods.length; i++) {
+        sum += _publicGoods[i].getPrice();
+        }
+        return sum;
+    }
+
+    function getPublicGoods() public view returns (PublicGoodToken[] memory) {
+        return publicGoods;
+    }
+>>>>>>> f5c29fccaf1ff7fc8cd96a94e29f7b72da7dc731
 }

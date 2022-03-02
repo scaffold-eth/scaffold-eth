@@ -8,6 +8,7 @@ import {
   useOnBlock,
   useUserProviderAndSigner,
 } from "eth-hooks";
+import { useHistory } from "react-router-dom";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
 import React, { useCallback, useEffect, useState } from "react";
 import { Link, Route, Switch, useLocation } from "react-router-dom";
@@ -31,6 +32,9 @@ import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
 import { Home, ExampleUI, Hints, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
+import PublicGoodsList from "./views/PublicGoodsList";
+import ProjectOwnerUI from "./views/ProjectOwnerUI";
+import WhaleUI from "./views/WhaleUI";
 
 const { ethers } = require("ethers");
 /*
@@ -53,7 +57,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -74,6 +78,7 @@ function App(props) {
   // specify all the chains your app is available on. Eg: ['localhost', 'mainnet', ...otherNetworks ]
   // reference './constants.js' for other networks
   const networkOptions = [initialNetwork.name, "mainnet", "rinkeby"];
+  const history = useHistory();
 
   const [injectedProvider, setInjectedProvider] = useState();
   const [address, setAddress] = useState();
@@ -256,47 +261,80 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
+      {/* <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
-          <Link to="/">App Home</Link>
+          <Link to="/">Token List</Link>
         </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+        <Menu.Item key="/whale">
+          <Link to="/whale">Whales UI</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
+        <Menu.Item key="/owner">
+          <Link to="/owner">Project Owner</Link>
         </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
+      </Menu> */}
 
       <Switch>
         <Route exact path="/">
-          {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
-          <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
-        </Route>
-        <Route exact path="/debug">
-          {/*
-                🎛 this scaffolding is full of commonly used components
-                this <Contract/> component will automatically parse your ABI
-                and give you a form to interact with it locally
-            */}
-
-          <Contract
-            name="YourContract"
+          <PublicGoodsList
+            name="PublicGoodsList"
             price={price}
             signer={userSigner}
             provider={localProvider}
             address={address}
             blockExplorer={blockExplorer}
             contractConfig={contractConfig}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            localProvider={localProvider}
+            injectedProvider={injectedProvider}
+            tx={tx}
+            targetNetwork={targetNetwork}
+          />
+        </Route>
+        <Route exact path="/whale/:address">
+          {/*
+              🎛 this scaffolding is full of commonly used components
+              this <Contract/> component will automatically parse your ABI
+              and give you a form to interact with it locally
+          */}
+
+          <WhaleUI
+            name="RetroactiveFunding"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            localProvider={localProvider}
+            injectedProvider={injectedProvider}
+            tx={tx}
+            targetNetwork={targetNetwork}
+          />
+        </Route>
+        <Route exact path="/sell/:address">
+          {/*
+              🎛 this scaffolding is full of commonly used components
+              this <Contract/> component will automatically parse your ABI
+              and give you a form to interact with it locally
+          */}
+
+          <ProjectOwnerUI
+            name="RetroactiveFunding"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+            readContracts={readContracts}
+            writeContracts={writeContracts}
+            localProvider={localProvider}
+            injectedProvider={injectedProvider}
+            tx={tx}
+            targetNetwork={targetNetwork}
           />
         </Route>
         <Route path="/hints">
@@ -333,15 +371,15 @@ function App(props) {
             chainId={1}
           />
           {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
+          <Contract
+            name="UNI"
+            customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
+            signer={userSigner}
+            provider={mainnetProvider}
+            address={address}
+            blockExplorer="https://etherscan.io/"
+          />
+          */}
         </Route>
         <Route path="/subgraph">
           <Subgraph

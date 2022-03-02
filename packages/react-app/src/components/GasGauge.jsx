@@ -1,9 +1,9 @@
-import { Button } from "antd";
 import React from "react";
+import { Button } from "antd";
 
 // added display of 0 instead of NaN if gas price is not provided
 
-/*
+/**
   ~ What it does? ~
 
   Displays gas gauge
@@ -17,7 +17,7 @@ import React from "react";
   ~ Features ~
 
   - Provide gasPrice={gasPrice} and get current gas gauge
-*/
+**/
 
 export default function GasGauge(props) {
   return (
