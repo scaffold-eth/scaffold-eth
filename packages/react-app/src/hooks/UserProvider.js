@@ -1,7 +1,7 @@
 import { Web3Provider } from "@ethersproject/providers";
 import BurnerProvider from "burner-provider";
 import { useMemo } from "react";
-import { INFURA_ID } from "../constants";
+//import { INFURA_ID } from "../constants";
 
 /*
   ~ What it does? ~
@@ -56,7 +56,7 @@ const useUserProvider = (injectedProvider, localProvider) =>
     }
     // eslint-disable-next-line no-underscore-dangle
     const networkName = localProvider._network && localProvider._network.name;
-    burnerConfig.rpcUrl = `https://${networkName || "mainnet"}.infura.io/v3/${INFURA_ID}`;
+    burnerConfig.rpcUrl = `https://rpc.scaffoldeth.io:48544`;
     return new Web3Provider(new BurnerProvider(burnerConfig));
   }, [injectedProvider, localProvider]);
 

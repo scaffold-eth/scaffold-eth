@@ -312,7 +312,7 @@ export const NETWORKS = {
     chainId: 10,
     blockExplorer: "https://optimistic.etherscan.io/",
     rpcUrl: `https://mainnet.optimism.io`,
-    gasPrice: 1000000,
+    //gasPrice: 1000000,
   },
   arbitrum: {
     name: "arbitrum",
@@ -321,7 +321,7 @@ export const NETWORKS = {
     chainId: 42161,
     blockExplorer: "https://arbiscan.io/",
     rpcUrl: `https://arb1.arbitrum.io/rpc`,
-    gasPrice: 0,
+    //gasPrice: 1000000000,// TODO ASK RPC
   },
   gnosis: {
     name: "gnosis",

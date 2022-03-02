@@ -1,4 +1,4 @@
-import { CaretUpOutlined, ScanOutlined, SendOutlined } from "@ant-design/icons";
+import { CaretUpOutlined, ScanOutlined, SendOutlined, ReloadOutlined } from "@ant-design/icons";
 import { JsonRpcProvider, StaticJsonRpcProvider, Web3Provider } from "@ethersproject/providers";
 import { formatEther, parseEther } from "@ethersproject/units";
 import WalletConnectProvider from "@walletconnect/web3-provider";
@@ -66,7 +66,7 @@ if (DEBUG) console.log("📡 Connecting to Mainnet Ethereum");
 // attempt to connect to our own scaffold eth rpc and if that fails fall back to infura...
 // Using StaticJsonRpcProvider as the chainId won't change see https://github.com/ethers-io/ethers.js/issues/901
 const scaffoldEthProvider = new StaticJsonRpcProvider("https://rpc.scaffoldeth.io:48544");
-const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
+//const mainnetInfura = new StaticJsonRpcProvider("https://mainnet.infura.io/v3/" + INFURA_ID);
 // ( ⚠️ Getting "failed to meet quorum" errors? Check your INFURA_I
 
 // 🏠 Your local provider is usually pointed at your local blockchain
@@ -165,7 +165,7 @@ function App(props) {
 
   };
 
-  const mainnetProvider = scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura;
+  const mainnetProvider = scaffoldEthProvider //scaffoldEthProvider && scaffoldEthProvider._network ?  : mainnetInfura;
 
   const [injectedProvider, setInjectedProvider] = useState();
 
@@ -374,7 +374,12 @@ function App(props) {
 
   useEffect(()=>{
     if(!connected){
-      if(wallectConnectConnectorSession){
+      let nextSession = localStorage.getItem("wallectConnectNextSession")
+      if(nextSession){
+        localStorage.removeItem("wallectConnectNextSession")
+        console.log("FOUND A NEXT SESSION IN CACHE")
+        setWalletConnectUrl(nextSession)
+      }else if(wallectConnectConnectorSession){
         console.log("NOT CONNECTED AND wallectConnectConnectorSession",wallectConnectConnectorSession)
         connectWallet( wallectConnectConnectorSession )
         setConnected(true)
@@ -721,6 +726,8 @@ function App(props) {
               </Tooltip>
             </span>, */
             walletDisplay,
+
+            <span style={{color: "#1890ff",cursor:"pointer",fontSize:30,opacity:checkingBalances?0.2:1,paddingLeft:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}><ReloadOutlined /></span>,
             <Account
               address={address}
               localProvider={localProvider}
@@ -740,7 +747,6 @@ function App(props) {
 
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
         <Balance value={yourLocalBalance} size={12+window.innerWidth/16} price={price} />
-        <span style={{cursor:"pointer",fontSize:30,opacity:checkingBalances?0.1:0.5,padding:16,verticalAlign:"middle"}} onClick={()=>{checkBalances(address)}}>🔄</span>
         <span style={{ verticalAlign: "middle" }}>
           {networkSelect}
           {faucetHint}
@@ -763,8 +769,8 @@ function App(props) {
               scanner = toggle;
             }}
             walletConnect={(wcLink)=>{
-              if(walletConnectUrl){
-                try{
+              //if(walletConnectUrl){
+                /*try{
                   //setConnected(false);
                   //setWalletConnectUrl();
                   //if(wallectConnectConnector) wallectConnectConnector.killSession();
@@ -778,7 +784,18 @@ function App(props) {
 
               setTimeout(()=>{
                 window.location.replace('/wc?uri='+wcLink);
-              },500)
+              },500)*/
+
+              if(walletConnectUrl){
+                //existing session... need to kill it and then connect new one....
+                setConnected(false);
+                if(wallectConnectConnector) wallectConnectConnector.killSession();
+                localStorage.removeItem("walletConnectUrl")
+                localStorage.removeItem("wallectConnectConnectorSession")
+                localStorage.setItem("wallectConnectNextSession",wcLink)
+              }else{
+                setWalletConnectUrl(wcLink)
+              }
 
             }}
           />
@@ -832,14 +849,27 @@ function App(props) {
                 console.log("PARSEDfloatVALUE",value)
               }
 
-
-              let result = tx({
+              let txConfig = {
                 to: toAddress,
                 chainId: selectedChainId,
                 value,
-                gasPrice,
-                gasLimit: 21000,
-              });
+              }
+
+              if(targetNetwork.name=="arbitrum"){
+                txConfig.gasLimit = 480000;
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="optimism"){
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="gnosis"){
+                //ask rpc for gas price
+              }else if(targetNetwork.name=="polygon"){
+                  //ask rpc for gas price
+              }else{
+                txConfig.gasPrice = gasPrice
+              }
+
+              console.log("SEND AND NETWORK",targetNetwork)
+              let result = tx(txConfig);
               // setToAddress("")
               setAmount("");
               setData("");
@@ -1132,7 +1162,7 @@ window.ethereum &&
     web3Modal.cachedProvider &&
       setTimeout(() => {
         window.location.reload();
-      }, 1);
+      }, 3000);
   });
 
 window.ethereum &&

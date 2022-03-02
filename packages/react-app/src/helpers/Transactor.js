@@ -42,12 +42,12 @@ export default function Transactor(provider, gasPrice, etherscan) {
           console.log("AWAITING TX", tx);
           result = await tx;
         } else {
-          if (!tx.gasPrice) {
-            tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
-          }
-          if (!tx.gasLimit) {
-            tx.gasLimit = hexlify(120000);
-          }
+          //if (!tx.gasPrice) {
+          //  tx.gasPrice = gasPrice || parseUnits("4.1", "gwei");
+          //}
+          //if (!tx.gasLimit) {
+          //  tx.gasLimit = hexlify(120000);
+          //}
           console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
         }
