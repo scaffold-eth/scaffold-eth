@@ -367,7 +367,157 @@ function App(props) {
 
   }
 
+  const filterBuilders = (BUILDERS,filterBy) => {
+    let newList = []
+    for(let b in BUILDERS){
+      //console.log("BUILDERS",BUILDERS[b])
+      if(BUILDERS[b].role==filterBy){
+        newList.push(BUILDERS[b])
+      }
+    }
+    return newList
+  }
 
+
+  const builderRender = (item) => {
+
+    let extraLink = ""
+    if(item.github){
+      extraLink = (
+        <a
+          href={item.github}
+          target="_blank"
+          style={{marginLeft:8}}
+        >
+          <ExportOutlined />
+        </a>
+      )
+    }
+
+
+    const STREAMWIDTH = "calc(min(80vw,620px))"
+    const stream = builderStreams && builderStreams[item.name]
+    if(stream){
+
+      // console.log("STREAM DISPLAY",stream)
+
+      let streamNetPercentSeconds = stream.totalBalance && stream.cap && stream.totalBalance.mul(100).div(stream.cap)
+      // console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds.toNumber())
+
+      const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
+      // console.log("numberOfTimesFull",numberOfTimesFull)
+
+      const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
+      // console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
+
+      let totalProgress = []
+
+      const totalSeconds = streamNetPercentSeconds && stream.frequency && streamNetPercentSeconds.mul(stream.frequency)
+
+      const percent = stream.cap && stream.balance && (stream.balance.mul(100).div(stream.cap)).toNumber()
+
+
+      const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
+
+      for(let c=0;c<numberOfTimesFull;c++){
+        totalProgress.push(
+          <Progress percent={100} showInfo={false} style={{width:widthOfStacks,padding:4}}/>
+        )
+      }
+      if(streamNetPercent && streamNetPercent.toNumber()>0){
+        totalProgress.push(
+          <Progress percent={streamNetPercent&&streamNetPercent.toNumber()} showInfo={false} status="active" style={{width:widthOfStacks,padding:4}}/>
+        )
+      }
+
+
+      return (
+        <List.Item
+          key={item.name}
+          style={{padding:32}}
+          extra={
+            <div style={{marginRight:-128,marginTop:64}}>
+
+            </div>
+          }
+        >
+          <div style={{textAlign:"left",position:"relative"}}>
+            <div style={{float:"right",marginTop:16,width:100}}>
+              <Button size="large" style={{zIndex:1}} onClick={()=>{
+                  //window.open(item.branch)
+                  //message.success("Coming soon!")
+                  let copy = {...item}
+                  copy.id = Math.floor(Math.random()*100000000000)
+                  console.log("copy",copy)
+                  setCart([...cart,copy])
+                  notification.success({
+                    style:{marginBottom:64},
+                    message: 'Added to cart!',
+                    placement: "bottomRight",
+                    description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+                        <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                      </ThemeSwitcherProvider>
+                    )
+                  });
+                }}>
+                  <ExperimentOutlined /> Fund
+              </Button>
+              <div style={{float:"right",marginRight:-148,marginTop:-32}}>
+                <Button style={{marginTop:32,zIndex:1}} size="large" onClick={()=>{
+                    window.open(item.streamUrl)
+                    //message.success("Coming soon!")
+                  }}>
+                    <ReconciliationOutlined /> View Work
+                </Button>
+              </div>
+            </div>
+            {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
+              <div style={{padding:8}}>
+                <div style={{padding:4, fontSize:14}}>
+                  Ξ<Balance value={stream.totalBalance} provider={localProvider} price={false} size={14}/>
+                  <span style={{opacity:0.5}}> @ Ξ<Balance value={stream.cap} price={false} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
+                </div>
+                <div>
+                  {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
+                </div>
+                <div style={{position:'absolute',left:-45,top:24}}>
+                <Progress style={{marginTop:4}} strokeLinecap="square" type="dashboard" percent={percent} width={50}  format={()=>{
+                    return <Balance value={stream.balance} size={9}/>
+                }} />
+                </div>
+              </div>
+            </div>:""}
+
+            <div style={{position:"absolute",left:-216,top:-100}}>
+              <QRPunkBlockie withQr={false} address={item.address} scale={0.7} />
+            </div>
+
+            <div style={{marginLeft:32, marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}</div>
+            <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.role}</div>
+            {/*<div style={{marginLeft:-32,marginTop:32, fontSize:26,fontWeight:"bold"}}>{stream.badges}</div>*/}
+
+
+          </div>
+        </List.Item>
+      )
+    }
+
+  }
+
+  const streamWidth = 750
+
+  const headerImage = (title, image)=>{
+    return (
+      <div style={{position:"relative",margin:"auto",marginTop:512,paddingBottom:0}}>
+        <div style={{position:'absolute',left:"15%", top:-200, fontSize:64, letterSpacing:-3, opacity:0.9}}>
+          <img src={"./"+image+".png"}/>
+        </div>
+        <div style={{position:'absolute',left:"50%", top:-180, fontSize:64, letterSpacing:-3, opacity:0.9}}>
+          {title}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="App">
@@ -381,7 +531,7 @@ function App(props) {
           <ShoppingCartOutlined /> Checkout [{cart.length} item{cart.length==1?"":"s"}]
         </div>
       </Link>:""}
-
+        {/*
         <Menu style={{ textAlign:"center", fontSize: 22 }} selectedKeys={[route]} mode="horizontal">
           <Menu.Item key="/">
             <Link onClick={()=>{setRoute("/")}} to="/">🛠 Builds</Link>
@@ -399,6 +549,7 @@ function App(props) {
             <Link onClick={()=>{setRoute("/debug")}} to="/debug">👨🏻‍🔬 Debug</Link>
           </Menu.Item>:<></>}
         </Menu>
+        */}
 
         <Switch>
           <Route exact path="/">
@@ -416,16 +567,32 @@ function App(props) {
               blockExplorer={blockExplorer}
             />*/}
 
+
+
+            <div style={{marginTop:256,paddingBottom:256}}>
+
+              <div style={{fontSize:64, fontWeight:"bolder", letterSpacing:-3, opacity:0.9}}>
+                  <img style={{marginTop:-48}} src="./bgv3.png"/> BuidlGuidl<span style={{paddingLeft:8,opacity:0.222}}>v3</span>
+              </div>
+            </div>
+
+
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
               <div style={{fontSize:24,opacity:0.777,fontWeight:"normal"}}>
                 <div style={{marginTop:64}}>
                   The <b>🏰 BuidlGuidl</b> is a curated group of <b>Ethereum</b> builders
                 </div>
+
                 <div>
-                  creating <i>products</i>, <i>prototypes</i>, and <i>tutorials</i> with <b><a href="https://github.com/austintgriffith/scaffold-eth" target="_blank">🏗 scaffold-eth</a></b>
+                  creating <i>prototypes</i> and <i>tutorials</i> to enrich the ecosystem.
                 </div>
 
-                <div style={{opacity:0.77,fontSize:14,marginBottom:32,marginTop:64,borderBottom:"1px solid #dfdfdf"}}>
+                <div style={{marginTop:32}}>
+                  🔧 We actively maintain <b><a href="https://github.com/scaffold-eth" target="_blank">🏗 scaffold-eth</a></b> and it's our tool of choice.
+                </div>
+
+
+                { /*<div style={{opacity:0.77,fontSize:14,marginBottom:32,marginTop:64,borderBottom:"1px solid #dfdfdf"}}>
                 <Input
                   bordered={false}
                   placeholder={"search everything we have built so far..."}
@@ -436,6 +603,162 @@ function App(props) {
                 </div>
                 <div>
                   {filterExplanation}
+                </div>*/ }
+
+              </div>
+            </div>
+
+
+
+
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+              <div style={{fontSize:24,opacity:0.777,fontWeight:"normal"}}>
+
+                <div style={{marginTop:256}}>
+                  👋 Are you a <b>developer</b> onboarding into web3?
+                </div>
+
+                <div style={{marginTop:32}}>
+                ⚔️  Take on the challenges over at <a href="https://SpeedRunEthereum.com" target="_blank">SpeedRunEthereum.com</a>!
+                </div>
+
+
+                <div style={{marginTop:256}}>
+                  🏭 So you can crush Solidity and you're looking for <a href="https://twitter.com/austingriffith/status/1478760479275175940?s=20&t=0zGF8M_7Hoeuy-D6LDoFpA" target="_blank">next steps</a>?
+                </div>
+
+                <div style={{marginTop:32}}>
+                  🧫 Filter by <a href="https://github.com/scaffold-eth/scaffold-eth-examples/branches/active" target="_blank">active</a> in the <a href="https://github.com/scaffold-eth/scaffold-eth-examples" target="_blank">scaffold-eth-examples</a> branch...
+                </div>
+
+                <div style={{marginTop:32}}>
+                  🧑‍🚀 contribute to an interesting build or <a href="https://github.com/scaffold-eth/scaffold-eth#-scaffold-eth" target="_blank">fork</a> something new!
+                </div>
+
+
+
+                <div style={{marginTop:256}}>
+                  🏹 Are you <b>building</b> forkable components with 🏗 scaffold-eth?
+                </div>
+
+                <div style={{marginTop:32}}>
+                  💬 Shill your wares at the <a target="_blank" href="http://stage.buidlguidl.com">🏰 BuidlGuidl 🏤 Bazaar</a>
+                </div>
+
+
+
+
+
+
+                <div style={{marginTop:256}}>
+                ❤️ We are an Ethereum public good.
+                </div>
+
+                <div style={{marginTop:32}}>
+                💰 a <a href="/funding" target="_blank">yolo</a> to 🏰<b>BuidlGuidl.eth</b> is a <a href="/funding" target="_blank">yolo</a> to high leverage web3 devs.
+                </div>
+
+
+                <div style={{marginTop:256}}>
+                🔮 Will the retroactive gods favor <a href="/funders" target="_blank">funders</a> of the 🏰<b>BuidlGuidl</b>?
+                </div>
+
+                <div style={{marginTop:32}}>
+                🧙‍♂️ Only time will tell...
+                </div>
+
+                {/*<div style={{marginTop:64}}>
+                👉  <a href="https://medium.com/@austin_48503/buidlguidl-v3-634d1d28f948" target="_blank">Read more about the BuidlGuidl v3</a>.
+                </div>*/}
+              </div>
+            </div>
+
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto",marginTop:512, marginBottom:256}}>
+              <div style={{opacity:0.25}}>
+                active 🏰 BuidlGuidl members:
+              </div>
+            </div>
+
+
+            {headerImage("Pikemen","pikemen")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"pikemen")}
+                renderItem={builderRender}
+              />
+            </div>
+
+
+            {headerImage("Archers","archer")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"archer")}
+                renderItem={builderRender}
+              />
+            </div>
+
+            {headerImage("Knights","knight")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"knight")}
+                renderItem={builderRender}
+              />
+            </div>
+
+            {headerImage("Clerics","cleric")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"cleric")}
+                renderItem={builderRender}
+              />
+            </div>
+
+
+            {headerImage("Warlocks","warlock_new")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"warlock")}
+                renderItem={builderRender}
+              />
+            </div>
+
+
+
+            {headerImage("Monks","monk")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(BUILDERS,"monk")}
+                renderItem={builderRender}
+              />
+            </div>
+
+
+            <div style={{padding:256}}>
+            <a href="/builders">view all builders</a>
+            </div>
+
+            <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto"}}>
+              <div style={{fontSize:24,opacity:0.777,fontWeight:"normal"}}>
+                <div style={{marginTop:256}}>
+                🏰<b>BuidlGuidl</b> is a registered 🤠 <a href="https://dao.buidlguidl.com/" target="_blank">Wyoming DAO LLC</a>.
                 </div>
               </div>
             </div>
@@ -443,21 +766,15 @@ function App(props) {
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto", paddingBottom: 256}}>
             {/*
               <Input placeholder="search builds" bordered={false} style={{textAlign:"center",borderBottom:"1px solid #efefef"}} />
-            */}
+
+
+
               <List
-                /*bordered*/
                 itemLayout="vertical"
                 size="large"
                 dataSource={randomizedBuilds}
 
                 renderItem={(item) => {
-                  /*{
-                    name: "",
-                    desc: "",
-                    branch: "",
-                    readMore: "",
-                    image: ""
-                  }*/
                   if(!filter ||
                     item.name.toLowerCase().indexOf(filter.toLowerCase())>=0 ||
                     item.desc.toLowerCase().indexOf(filter.toLowerCase())>=0
@@ -530,7 +847,7 @@ function App(props) {
                   }
 
                 }}
-              />
+              />*/}
             </div>
           </Route>
           <Route path="/funders">
@@ -610,129 +927,7 @@ function App(props) {
                   itemLayout="vertical"
                   size="large"
                   dataSource={BUILDERS}
-
-                  renderItem={(item) => {
-
-                    let extraLink = ""
-                    if(item.github){
-                      extraLink = (
-                        <a
-                          href={item.github}
-                          target="_blank"
-                          style={{marginLeft:8}}
-                        >
-                          <ExportOutlined />
-                        </a>
-                      )
-                    }
-
-
-                    const STREAMWIDTH = "calc(min(80vw,620px))"
-                    const stream = builderStreams && builderStreams[item.name]
-                    if(stream){
-
-                      // console.log("STREAM DISPLAY",stream)
-
-                      let streamNetPercentSeconds = stream.totalBalance && stream.cap && stream.totalBalance.mul(100).div(stream.cap)
-                      // console.log("streamNetPercentSeconds",streamNetPercentSeconds,streamNetPercentSeconds.toNumber())
-
-                      const numberOfTimesFull = streamNetPercentSeconds && Math.floor(streamNetPercentSeconds.div(100))
-                      // console.log("numberOfTimesFull",numberOfTimesFull)
-
-                      const streamNetPercent = streamNetPercentSeconds && streamNetPercentSeconds.mod(100)
-                      // console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
-
-                      let totalProgress = []
-
-                      const totalSeconds = streamNetPercentSeconds && stream.frequency && streamNetPercentSeconds.mul(stream.frequency)
-
-                      const percent = stream.cap && stream.balance && (stream.balance.mul(100).div(stream.cap)).toNumber()
-
-
-                      const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
-
-                      for(let c=0;c<numberOfTimesFull;c++){
-                        totalProgress.push(
-                          <Progress percent={100} showInfo={false} style={{width:widthOfStacks,padding:4}}/>
-                        )
-                      }
-                      if(streamNetPercent && streamNetPercent.toNumber()>0){
-                        totalProgress.push(
-                          <Progress percent={streamNetPercent&&streamNetPercent.toNumber()} showInfo={false} status="active" style={{width:widthOfStacks,padding:4}}/>
-                        )
-                      }
-
-
-                      return (
-                        <List.Item
-                          key={item.name}
-                          style={{padding:32}}
-                          extra={
-                            <div style={{marginRight:-128,marginTop:64}}>
-
-                            </div>
-                          }
-                        >
-                          <div style={{textAlign:"left",position:"relative"}}>
-                            <div style={{float:"right",marginTop:16,width:100}}>
-                              <Button size="large" style={{zIndex:1}} onClick={()=>{
-                                  //window.open(item.branch)
-                                  //message.success("Coming soon!")
-                                  let copy = {...item}
-                                  copy.id = Math.floor(Math.random()*100000000000)
-                                  console.log("copy",copy)
-                                  setCart([...cart,copy])
-                                  notification.success({
-                                    style:{marginBottom:64},
-                                    message: 'Added to cart!',
-                                    placement: "bottomRight",
-                                    description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-                                        <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-                                      </ThemeSwitcherProvider>
-                                    )
-                                  });
-                                }}>
-                                  <ExperimentOutlined /> Fund
-                              </Button>
-                              <Button style={{marginTop:32,zIndex:1}} size="large" onClick={()=>{
-                                  window.open(item.streamUrl)
-                                  //message.success("Coming soon!")
-                                }}>
-                                  <ReconciliationOutlined /> Work
-                              </Button>
-                            </div>
-                            {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
-                              <div style={{padding:8}}>
-                                <div style={{padding:4, fontSize:14}}>
-                                  Ξ<Balance value={stream.totalBalance} provider={localProvider} price={false} size={14}/>
-                                  <span style={{opacity:0.5}}> @ Ξ<Balance value={stream.cap} price={false} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
-                                </div>
-                                <div>
-                                  {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
-                                </div>
-                                <div style={{position:'absolute',left:-45,top:24}}>
-                                <Progress style={{marginTop:4}} strokeLinecap="square" type="dashboard" percent={percent} width={50}  format={()=>{
-                                    return <Balance value={stream.balance} size={9}/>
-                                }} />
-                                </div>
-                              </div>
-                            </div>:""}
-
-                            <div style={{position:"absolute",left:-216,top:-100}}>
-                              <QRPunkBlockie withQr={false} address={item.address} scale={0.7} />
-                            </div>
-
-                            <div style={{marginLeft:32, marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}</div>
-                            <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.role}</div>
-                            <div style={{marginLeft:-32,marginTop:32, fontSize:26,fontWeight:"bold"}}>{stream.badges}</div>
-
-
-                          </div>
-                        </List.Item>
-                      )
-                    }
-
-                  }}
+                  renderItem={builderRender}
                 />
 
                 <div style={{marginTop:64, borderTop:"1px solid #eeeeee",paddingTop:64,marginBottom:64}}>
@@ -762,16 +957,9 @@ function App(props) {
           <div style={{marginTop:64, borderBottom:"1px solid #eeeeee",paddingBottom:64,marginBottom:64}}>
             <div style={{fontSize:20,opacity:0.777,fontWeight:"normal"}}>
 
-              <div style={{marginTop:8,marginBottom:16}}>
-                The <b>🏰 BuidlGuidl</b> is an Ethereum <b>public good</b>.
-              </div>
-              <div style={{marginTop:8,marginBottom:16}}>
-                We build <i>generic web3 components</i> to make creating web3 <b>products</b> easier.
-              </div>
-
               <hr style={{opacity:0.1,marginBottom:64}}/>
               <div style={{marginTop:8,marginBottom:64}}>
-                Support the <b>🏰 BuidlGuidl</b>:
+                Fund the <b>🏰 BuidlGuidl</b>:
               </div>
 
 
@@ -785,7 +973,7 @@ function App(props) {
                 mainnetProvider={mainnetProvider}
               />
 
-
+              {/*
               <hr style={{opacity:0.1,marginTop:64}}/>
 
 
@@ -805,6 +993,7 @@ function App(props) {
                   <i>Think what we could do with <b>your</b> support!</i>
                 </div>
               </div>
+                    */}
             </div>
           </div>
 
@@ -852,27 +1041,16 @@ function App(props) {
       {/* 🗺 Extra UI like gas price, eth price, faucet, and support: */}
       <div style={{ position: "fixed", textAlign: "left", left: 0, bottom: 20, padding: 10 }}>
         <Row align="middle" gutter={[4, 4]}>
-          <Col span={8}>
+          <Col span={12}>
             <Ramp price={price} address={address} networks={NETWORKS} />
           </Col>
 
+          <Col span={2} style={{ textAlign: "center", opacity: 0.8 }}>
+          </Col>
           <Col span={8} style={{ textAlign: "center", opacity: 0.8 }}>
             <GasGauge gasPrice={gasPrice} />
           </Col>
-          <Col span={8} style={{ textAlign: "center", opacity: 1 }}>
-            <Button
-              onClick={() => {
-                window.open("https://t.me/joinchat/KByvmRe5wkR-8F_zz6AjpA");
-              }}
-              size="large"
-              shape="round"
-            >
-              <span style={{ marginRight: 8 }} role="img" aria-label="support">
-                💬
-              </span>
-              Support
-            </Button>
-          </Col>
+
         </Row>
 
         <Row align="middle" gutter={[4, 4]}>

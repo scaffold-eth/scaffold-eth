@@ -674,8 +674,134 @@ export const BUILDS = [
 
 export const BUILDERS = [
   {
+   name: "sabbirahmed.eth",
+   role: "pikemen",
+   address: "0x07d503a5eada1d5741307ce085f5ecb8d950558f",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xA6E9462adf5419195c85e81fb130c3E053348873",
+   streamUrl: "http://sabbirahmed.buidlguidl.com"
+  },
+  {
+   name: "mikeryan.eth",
+   role: "pikemen",
+   address: "0x3262951140d9984d68e0613af69e9344dc28eb28",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x18643bd918b26936161099c0C668a8bb394B38B9",
+   streamUrl: "http://mikeryan.buidlguidl.com"
+  },
+  {
+   name: "danielsheldon.eth",
+   role: "warlock",
+   address: "0xd6ff63e080a8eef554ba928af1d2f1a3e228b1da",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x61d7De768468451888A110Db7b27F12B9423b6a6",
+   streamUrl: "http://danielsheldon.buidlguidl.com"
+  },
+  {
+   name: "acuna.eth",
+   role: "pikemen",
+   address: "0x40f9bf922c23c43acdad71ab4425280c0ffbd697",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xc44D235DbfD790bFAedaFdad5EA2C533cA7551Fe",
+   streamUrl: "http://acuna.buidlguidl.com"
+  },
+  {
+   name: "m00npapi.eth",
+   role: "pikemen",
+   address: "0x38b2bac6431604dffec17a1e6adc649a9ea0efba",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xfa43D87DD4Ed679c9aEd282d7901DAF182C748F8",
+   streamUrl: "http://m00npapi.buidlguidl.com"
+  },
+  {
+   name: "stevepham.eth",
+   role: "pikemen",
+   address: "0x2c538df2338342037339965c4a97f07a95e4cf38",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x6D6A108C742509Dd6B1019347f0f4ADCeE040358",
+   streamUrl: "http://stevepham.buidlguidl.com"
+  },
+  {
+   name: "domkelly.eth",
+   role: "pikemen",
+   address: "0x8ed3886fbb315ea0c504e0f7534e42517ccc4dd5",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x748Ae3c9bC2fcb16F017e24b0C2135491c2ED098",
+   streamUrl: "http://domkelly.buidlguidl.com"
+  },
+  {
+   name: "jadenkore.eth",
+   role: "pikemen",
+   address: "0x6C9ea5ab34b32b71358C46D13Db5eE29d76F039f",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x169F5CAd54c43415401e606DaEae95dF493a970a",
+   streamUrl: "http://jadenkore.buidlguidl.com"
+  },
+  {
+   name: "txbias.eth",
+   role: "pikemen",
+   address: "0x62769593D8d0A682eBE17935aF40dF57185EC169",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x139c9689D8d778157eCb63EE907C6e4428015ea3",
+   streamUrl: "http://txbias.buidlguidl.com"
+  },
+  {
+   name: "dvinubius.eth",
+   role: "knight",
+   address: "0xe3e8411c6ad96e3f08ea5351e2f6f5dde51190b0",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x42BDA3178b162A586E6e864747C90189996ceFFd",//"0xD2A4B1e4eFb5Bb65a5152f3Bca7eBC48e3CFF5a1",
+   streamUrl: "http://dvinubius2.buidlguidl.com"
+  },
+  {
+   name: "spencerfaber.eth",
+   role: "monk",
+   address: "0x38c772B96D73733F425746bd368B4B4435A37967",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xe4a422eEF16bd605B8B065b59d175799A9DC2c71",
+   streamUrl: "http://spencerfaber.buidlguidl.com"
+  },
+  {
+   name: "seanpaterson.eth",
+   role: "inactive",
+   address: "0xb2A522c65b142e047991B2804c21C53D30A11De0",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x58eA476e698F4aCFAB5Eb121Fa2B3a3f2E84a3af",
+   streamUrl: "http://seanpaterson.buidlguidl.com"
+  },
+  {
+   name: "elliottalexander.eth",
+   role: "archer",
+   address: "0x1c80D2A677c4a7756cf7D00fbb1c1766321333c3Z",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x86c6C2c9699bE74278E0d73065fF12249221Bd30",
+   streamUrl: "http://elliottalexander.buidlguidl.com"
+  },
+  {
+   name: "justn.eth",
+   role: "pikemen",
+   address: "0xb010ca9be09c382a9f31b79493bb232bcc319f01",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x949876f01D9Bcc6fbE0889073e3B66B7A0a1290d",
+   streamUrl: "http://justn.buidlguidl.com"
+  },
+  {
    name: "bboyle.eth",
-   role: "",
+   role: "pikemen",
    address: "0xdfcbf02520fdde9d8c46cc44dadcfc798029e5b4",
    github: "",
    builds: [ ],
@@ -684,16 +810,16 @@ export const BUILDERS = [
   },
   {
    name: "frogbaseball.eth",
-   role: "",
-   address: "0x38f84e92b468a1885e73cedc9a4d5632de07eabb",
+   role: "monk",
+   address: "0x53e90aa7eddedb58a2da1698028501c56c53978f",
    github: "",
    builds: [ ],
-   streamAddress: "0x664C54cF70797a69f82A4991Ea1Be343a03334e8",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://frogbaseball.buidlguidl.com"
+   streamAddress: "0x130A49071284a770fD07d6aDACA8b23d4aFBAdd0",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://frogbaseball2.buidlguidl.com/"
   },
   {
    name: "kijun.eth",
-   role: "",
+   role: "pikemen",
    address: "0x03d8DF325C8bFB8929414756E95023d2150C8881",
    github: "",
    builds: [ ],
@@ -702,7 +828,7 @@ export const BUILDERS = [
   },
   {
    name: "huxwell.eth",
-   role: "",
+   role: "inactive",
    address: "0xc9a238405ef9d753d55ec1eb8f7a7b17b8d83e63",
    github: "",
    builds: [ ],
@@ -711,17 +837,17 @@ export const BUILDERS = [
   },
   {
    name: "grothe.eth",
-   role: "",
-   address: "0xacf16886efa51ff0957ef321b8510e53d67d1d7c",
+   role: "knight",
+   address: "0xaCF16886eFa51FF0957EF321B8510e53D67d1D7c",
    github: "",
    builds: [ ],
-   streamAddress: "0xeAdc8bBB8717765429712C7BF5C9C5e55f0bCCd5",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://grothe.buidlguidl.com"
+   streamAddress: "0x7d5a72B17C1aC153C50E11cCBe756859782e3A49",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://grothe2.buidlguidl.com"
   },
 
   {
    name: "cluda.eth",
-   role: "",
+   role: "pikemen",
    address: "0xEB0C4F040FF0e2278bB2c14B7CC9c357467C83e3",
    github: "",
    builds: [ ],
@@ -730,7 +856,7 @@ export const BUILDERS = [
   },
   {
    name: "danielrees.eth",
-   role: "",
+   role: "pikemen",
    address: "0xE7A54673f2FfE41cf38dbA2014326064A958b709",
    github: "",
    builds: [ ],
@@ -739,7 +865,7 @@ export const BUILDERS = [
   },
   {
    name: "stermi.eth",
-   role: "fullstack",
+   role: "pikemen",
    address: "0x67960c0c99498AfF880D1bd68FE596C9443528ae",
    github: "",
    builds: [ ],
@@ -748,16 +874,16 @@ export const BUILDERS = [
   },
   {
    name: "damianmarti.eth",
-   role: "fullstack",
+   role: "knight",
    address: "0x5dCb5f4F39Caa6Ca25380cfc42280330b49d3c93",
    github: "",
    builds: [ ],
-   streamAddress: "0x8FE72B655b54f4a900b1A0e6FD9957a6a3779209",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://damianmarti.buidlguidl.com"
+   streamAddress: "0x8429191DA3946f6B5775149e08267B3458431423",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://damianmarti2.buidlguidl.com"
   },
   {
    name: "mridul.eth",
-   role: "fullstack",
+   role: "pikemen",
    address: "0x5AbB06DC717cbe8112eFf232a6dfc98cB521511d",
    github: "",
    builds: [ ],
@@ -767,7 +893,7 @@ export const BUILDERS = [
 
   {
    name: "developermarwan.eth",
-   role: "fullstack",
+   role: "pikemen",
    address: "0x53E7f107F3037Df2A03C79Fa9750908c67B55CD3",
    github: "",
    builds: [ ],
@@ -776,7 +902,7 @@ export const BUILDERS = [
   },
   {
    name: "dgrcode.eth",
-   role: "fullstack",
+   role: "pikemen",
    address: "0x0D0f9Ebd254e510AA6F3788ecb6E6fC8bf78188F",
    github: "",
    builds: [ ],
@@ -785,12 +911,12 @@ export const BUILDERS = [
   },
   {
    name: "carletex.eth",
-   role: "fullstack",
+   role: "knight",
    address: "0x60583563D5879C2E59973E5718c7DE2147971807",
    github: "",
    builds: [ ],
-   streamAddress: "0x4b5ed9760e5F5E87c50d9739BeFf5b13FB61cC2F",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://carletex.buidlguidl.com"
+   streamAddress: "0x61f7e4A14CFc78A6f6B2Ac46219328b76214A712", //"0xdB0c858FfADAACAa957865659AB5cdEf69B45402",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://carletex2.buidlguidl.com"
  },/*
   {
    name: "trombone.eth",
@@ -803,25 +929,16 @@ export const BUILDERS = [
  },*/
   {
    name: "ghostffcode.eth",
-   role: "fullstack",
+   role: "knight",
    address: "0xbF7877303B90297E7489AA1C067106331DfF7288",
    github: "",
    builds: [ ],
-   streamAddress: "0x0e185D75A3658De186fCef13Ae01e816cCCE599a",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://ghostffcode.buidlguidl.com"
-  },
-  {
-   name: "ryanpetroff.eth",
-   role: "gardener",
-   address: "0x00555dC77a343E205CB1C7755407c93470DB3F91",
-   github: "",
-   builds: [ ],
-   streamAddress: "0x6459ED3063E1267B9c22E6410076d328E4B971a6",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-   streamUrl: "http://ryanpetroff.buidlguidl.com"
+   streamAddress: "0x707a07A65A466A89A9815027D79B2F30359D6A02", //"0x6739d7cbDfDcD558818819A57F4F3Ed2D92a198C",//"0x0e185D75A3658De186fCef13Ae01e816cCCE599a",//"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+   streamUrl: "http://ghostffcode3.buidlguidl.com"
   },
   {
    name: "captnseagraves.eth",
-   role: "fullstack",
+   role: "inactive",
    address: "0x5Ad3b55625553CEf54D7561cD256658537d54AAd",
    github: "https://github.com/austintgriffith/scaffold-eth/commits?author=captnseagraves",
    builds: [ ],
@@ -830,7 +947,7 @@ export const BUILDERS = [
   },
   {
     name: "lekag.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x7C2F9E77CFB36Fc90bc8296C0cebbcd89E8D1981",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=le-kag",
     builds: [],
@@ -839,7 +956,7 @@ export const BUILDERS = [
   },
   {
     name: "nook.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x50c57894C3b9bf022D10B94B9D940a48A93cd8c0",
     github: "",
     builds: [],
@@ -848,7 +965,7 @@ export const BUILDERS = [
   },
   {
     name: "blindnabler.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x807a1752402D21400D555e1CD7f175566088b955",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=MercuricChloride",
     builds: [],
@@ -857,7 +974,7 @@ export const BUILDERS = [
   },
   {
     name: "0xsama.eth",
-    role: "Full Stack",
+    role: "inactive",
     address: "0x411381D227AF243E9383fDbB77313352E622D72f",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=ososco",
     builds: [],
@@ -866,7 +983,7 @@ export const BUILDERS = [
   },
   {
     name: "xiangan.eth",
-    role: "Support",
+    role: "monk",
     address: "0x26Ad3416e70bD055Dbc5E34c91D17d72AdBe1478",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=shravansunder",
     builds: [],
@@ -875,18 +992,18 @@ export const BUILDERS = [
   },
   {
     name: "shravansunder.eth",
-    role: "Full Stack",
+    role: "knight",
     address: "0xbE13CA20B7ff5fEf2D04f67aBf2A2a07feAfA102",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=shravansunder",
     builds: [],
     //streamAddress: "0x1FE0e66952b7eeB16dDb62B33CA62813c1c4FaA7", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     //streamUrl: "http://shravansunder.buidlguidl.com",
-    streamAddress: "0x262f56C901847261080e366eDAb27d454a1315cd", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-    streamUrl: "http://shravansunder2.buidlguidl.com",
+    streamAddress: "0xED9FdAE176d2254a43A61ab5635d21b920384E13", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
+    streamUrl: "shravansunder3.buidlguidl.com",//"http://shravansunder2.buidlguidl.com",
   },
   {
     name: "powvt.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x9E67029403675Ee18777Ed38F9C1C5c75F7B34f2",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=powvt",
     builds: [],
@@ -895,7 +1012,7 @@ export const BUILDERS = [
   },
   {
     name: "isaacpatka.eth",
-    role: "Full Stack",
+    role: "cleric",
     address: "0x775aF9b7c214Fe8792aB5f5da61a8708591d517E",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=ipatka",
     builds: [],
@@ -913,7 +1030,7 @@ export const BUILDERS = [
   },*/
   {
     name: "togzhan.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x50ECcad809D553335a8eB7bfEC2CeE5A6f2cdE43",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=btogzhan2000",
     builds: [],
@@ -922,7 +1039,7 @@ export const BUILDERS = [
   },
   {
     name: "ironsoul.eth",
-    role: "React | Full Stack",
+    role: "archer",
     address: "0x1e2Ce012b27d0c0d3e717e943EF6e62717CEc4ea",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=ironsoul0",
     builds: ["xnft", "honeypot", "dos", "flash", "highestbid", "merklenft", "paymentchannel"],
@@ -931,16 +1048,16 @@ export const BUILDERS = [
   },
   {
     name: "viraz.eth",
-    role: "Full Stack",
+    role: "knight",
     address: "0x2DdA8dc2f67f1eB94b250CaEFAc9De16f70c5A51",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=viraj124",
     builds: ["xnft", "proxy", "diamond", "highestbid", "merklenft", "paymentchannel", "bondingcurve"],
-    streamAddress: "0x974a061A8cE5a2b07cB3f1D356Bb01Daaa9eC31d", //"0x21e18260357D33d2e18482584a8F39D532fb71cC",
-    streamUrl: "http://viraz.buidlguidl.com",
+    streamAddress: "0x3759fD32297f20F1e1E778479d935cC940C05E5c",//"0x8bEC98b7dcA7dFf10C2499d1e2A9d97D96456742", //"0x21e18260357D33d2e18482584a8F39D532fb71cC",
+    streamUrl: "http://viraz2.buidlguidl.com",
   },
   {
     name: "sadda11asm.eth",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x7b945ffE9725D8e05343bEC36c0eced294097f78",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=ironsoul0",
     builds: ["xnft", "rokens", "highestbid", "merklenft", "paymentchannel"],
@@ -949,7 +1066,7 @@ export const BUILDERS = [
   },
   {
     name: "amogh.eth",
-    role: "Full Stack",
+    role: "inactive",
     address: "0x1245e96fe32B43dDEc930D662B5d20239282b876",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=amogh-jrules",
     builds: ["smms", "push", "metamultisig"],
@@ -958,7 +1075,7 @@ export const BUILDERS = [
   },
   {
     name: "calvinquin.argent.xyz",
-    role: "Full Stack",
+    role: "pikemen",
     address: "0x614Ae4C6Eb91cEC9e6e178549c0745A827212B24",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=calvbore",
     builds: [],
@@ -968,7 +1085,7 @@ export const BUILDERS = [
 
   {
     name: "ssteiger.eth",
-    role: "React",
+    role: "pikemen",
     address: "0x4ceb8dC70813fFbB2d8d6DC0755086698F977613",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=ssteiger",
     builds: ["ethdev"],
@@ -977,25 +1094,25 @@ export const BUILDERS = [
   },
   {
     name: "pharo.eth",
-    role: "Maintainer | Full Stack",
+    role: "monk",
     address: "0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b",
     github: "https://github.com/austintgriffith/scaffold-eth/commits?author=codenamejason",
     builds: [ "vrf" ],
-    streamAddress: "0x3DC246459433aFc0360b83166A6Dd9B7697EaA4A",//"0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
-    streamUrl: "http://rawcipher1.buidlguidl.com",//rawcipherstream.surge.sh
+    streamAddress: "0xfB85B0F69178c4bFDbeAe802B06ca0c0485870ED", //"0x3DC246459433aFc0360b83166A6Dd9B7697EaA4A",//"0x733F7E1aEdC49c7c777c29C4bE2eB772666552F4",//"0x1B8bB82bF08D69bDFb0287F6C16Fa739Aa6e95f2",//"0x45283840c879DBA341170FaFA62542F7714BFE8f",
+    streamUrl: "http://rawcipher2.buidlguidl.com",//rawcipherstream.surge.sh
   },
   {
     name: "mrdee.eth",
-    role: "Artwork",
+    role: "warlock",
     address: "0xd2f016809969b4105978fDD5b112CD95bFDd6814",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=azf20",
     builds: [],
-    streamAddress: "0xD31aDDE3c6659653f5BdCb237afB353155db1567", //"0xF48BECEa4C65F0c2F3841ed00E813298C8B327ab",
-    streamUrl: "http://mrdee.buidlguidl.com",
+    streamAddress: "0x85bDD3FFac4e02a884F05423A3C2b02d004E57aB", //"0xD31aDDE3c6659653f5BdCb237afB353155db1567", //"0xF48BECEa4C65F0c2F3841ed00E813298C8B327ab",
+    streamUrl: "http://mrdee2.buidlguidl.com",
   },
   {
     name: "pileofscraps.eth",
-    role: "Full Stack",
+    role: "cleric",
     address: "0x5c43B1eD97e52d009611D89b74fA829FE4ac56b1",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=pileofscraps",
     builds: [],
@@ -1004,9 +1121,9 @@ export const BUILDERS = [
   },
   {
     name: "hunterchang.eth",
-    role: "React",
+    role: "cleric",
     address: "0xf7e89E45502890381F9242403eA8661fad89Ca79",
-    github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=azf20",
+    github: "",
     builds: ["xnft"],
     streamAddress: "0x560Dd59ED235446d04da7C907289E3f88e685447", //dup"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f"//"0x2eC099fE9547A1Ac760Bd1C9bBE710218624Bf3f",
     streamUrl: "http://hunterchang.buidlguidl.com",
@@ -1014,7 +1131,7 @@ export const BUILDERS = [
 
   {
     name: "hipsterhelpdesk.eth",
-    role: "eth.build",
+    role: "inactive",
     address: "0x84946f14B092A0b32B21dd10E742C02AE3710aDd",
     github: "https://github.com/scaffold-eth/eth.build/commits?author=grahamtallen",
     builds: [],
@@ -1024,7 +1141,7 @@ export const BUILDERS = [
 
   {
     name: "adamfuller.eth",
-    role: "Solidity + React",
+    role: "cleric",
     address: "0x60Ca282757BA67f3aDbF21F3ba2eBe4Ab3eb01fc",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=azf20",
     builds: ["niftyink", "uniswapper", "lender", "ape", "op", "signatorio", "burnyBoys"],
@@ -1034,22 +1151,10 @@ export const BUILDERS = [
 
   {
     name: "austingriffith.eth",
-    role: "Mentor",
+    role: "cleric",
     address: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
     github: "https://github.com/scaffold-eth/scaffold-eth/commits?author=austintgriffith",
-    builds: [
-      "niftyink",
-      "simplestream",
-      "niftyview",
-      "opnfts",
-      "smms",
-      "allocator",
-      "radwallet",
-      "punkwallet",
-      "simplenft",
-      "randomimage",
-      "gtgs",
-    ],
+    builds: [],
     streamAddress: "0x518Af5F20bf07C882e17731207761C174AB4F9c4", //"0xb0D25772CB076cb4cE90a0c4dfdba6Cad07921a1",
     streamUrl: "http://austingriffith.buidlguidl.com",
   },
