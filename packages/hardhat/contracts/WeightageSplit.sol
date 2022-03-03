@@ -946,9 +946,12 @@ constructor(PublicGoodToken[] memory _publicGoods, IERC20 _stakeToken) {
 function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
    uint sum = computePriceSum(_publicGoods);
    for (uint i = 0; i < _publicGoods.length; i++) {
-       uint percentage = (_publicGoods[i].getPrice() * 100) / sum;
+       uint percentage = 100;
+       if (_publicGoods.length > 1) {
+       percentage = (_publicGoods[i].getPrice() * 100) / sum;
        // price is calculated as weth price / public goods token price so lower the price the more expensive is the public goods token
        percentage = 100 - percentage;
+       }
        uint individualProjectAmount = (_amount * percentage) / 100;
        stakeToken.transferFrom(msg.sender, address(_publicGoods[i]), individualProjectAmount);
        _publicGoods[i].stake(stakeToken, msg.sender, individualProjectAmount);

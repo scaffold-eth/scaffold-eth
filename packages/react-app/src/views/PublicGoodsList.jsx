@@ -52,7 +52,7 @@ const PublicGoodsList = ({
       const name = await contract.name();
       const symbol = await contract.symbol();
       const uniswapPrice = await contract.getPrice();
-      const userStake = await contract.stakeAmount(address, publicGoods[i]);
+      const userStake = await contract.stakeAmount(address, stakeToken.toLowerCase());
       console.log("uniswapPrice", uniswapPrice);
       const price = (uniswapPrice && utils.formatEther(uniswapPrice)) || "0.0";
       const formattedStake = (userStake && utils.formatEther(userStake)) || "0.0";
