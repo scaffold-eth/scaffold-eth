@@ -2,7 +2,7 @@
 
 const { ethers } = require("hardhat");
 
-const RINKEBY_DAI_ADDRESS = "0xc3dbf84abb494ce5199d5d4d815b10ec29529ff8";
+const RINKEBY_DAI_ADDRESS = "0x5592EC0cfb4dbc12D3aB100b257153436a1f0FEa";
 
 module.exports = async ({ getNamedAccounts, deployments }) => {
   const { deploy } = deployments;
@@ -11,7 +11,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("PublicGoodToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [ "Uniswap", "UNI" ],
+    args: ["Uniswap", "UNI"],
     log: true,
     waitConfirmations: 5,
   });
@@ -22,7 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("PublicGoodToken", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    args: [ "Gitcoin", "GTC" ],
+    args: ["Gitcoin", "GTC"],
     log: true,
     waitConfirmations: 5,
   });
@@ -32,7 +32,10 @@ module.exports = async ({ getNamedAccounts, deployments }) => {
   await deploy("Weightage", {
     from: deployer,
     log: true,
-    args: [[uniswapInstance.address, gitcoinInstance.address], RINKEBY_DAI_ADDRESS],
+    args: [
+      [uniswapInstance.address, gitcoinInstance.address],
+      RINKEBY_DAI_ADDRESS,
+    ],
   });
 
   // const TokenAsOwner = await ethers.getContract("PublicGoodToken", deployer);

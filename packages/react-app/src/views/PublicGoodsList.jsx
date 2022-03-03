@@ -28,6 +28,7 @@ const PublicGoodsList = ({
     return new Contract(stakeToken, publicGoodABI, injectedProvider.getSigner());
   }, [stakeToken, injectedProvider]);
   const myBalance = useMyReader(contract, "balanceOf", JSON.stringify([address]));
+  console.log("myBalance", myBalance);
   const allowance = useMyReader(contract, "allowance", JSON.stringify([address, contractAddress]));
   const [fundTokens, setFundTokens] = useState([]);
 
@@ -47,10 +48,11 @@ const PublicGoodsList = ({
     const info = [];
     for (let i = 0; i < publicGoods.length; i++) {
       const contract = new Contract(publicGoods[i], publicGoodABI, localProvider);
+      console.log("token contract", contract);
       const name = await contract.name();
       const symbol = await contract.symbol();
       const uniswapPrice = await contract.getPrice();
-      const userStake = await contract.stakeAmount(address, publicGoods[i])
+      const userStake = await contract.stakeAmount(address, publicGoods[i]);
       console.log("uniswapPrice", uniswapPrice);
       const price = (uniswapPrice && utils.formatEther(uniswapPrice)) || "0.0";
       const formattedStake = (userStake && utils.formatEther(userStake)) || "0.0";
@@ -115,8 +117,7 @@ const PublicGoodsList = ({
                   Sell tokens
                 </Button>
               </div>
-              <Checkbox style={{ marginTop: 10 }} onChange={() => toggleToken(t.address)}>
-              </Checkbox>
+              <Checkbox style={{ marginTop: 10 }} onChange={() => toggleToken(t.address)}></Checkbox>
             </div>
           ))}
           <h3>Fund projects with {tokenName}</h3>

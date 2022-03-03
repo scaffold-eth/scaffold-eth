@@ -956,6 +956,10 @@ function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
 
 }
 
+function getPublicGoods() public view returns (PublicGoodToken[] memory) {
+    return publicGoods;
+}
+
 function computePriceSum(PublicGoodToken[] memory _publicGoods) internal view returns(uint) {
     uint sum = 0;
     for (uint i = 0; i < _publicGoods.length; i++) {
