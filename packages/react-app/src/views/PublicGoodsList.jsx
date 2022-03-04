@@ -8,6 +8,7 @@ import { useHistory } from "react-router-dom";
 import { Checkbox } from "antd";
 
 import useMyReader from "../hooks/useMyReader";
+import { StaticJsonRpcProvider } from "@ethersproject/providers";
 
 const PublicGoodsList = ({
   readContracts,
@@ -24,11 +25,10 @@ const PublicGoodsList = ({
   const stakeToken = useContractReader(readContracts, "Weightage", "stakeToken");
   const contractAddress = readContracts && readContracts.Weightage && readContracts.Weightage.address;
   const contract = useMemo(() => {
-    if (!injectedProvider || !stakeToken) return null;
+    if (!stakeToken || !injectedProvider) return null;
     return new Contract(stakeToken, publicGoodABI, injectedProvider.getSigner());
   }, [stakeToken, injectedProvider]);
   const myBalance = useMyReader(contract, "balanceOf", JSON.stringify([address]));
-  console.log("myBalance", myBalance);
   const allowance = useMyReader(contract, "allowance", JSON.stringify([address, contractAddress]));
   const [fundTokens, setFundTokens] = useState([]);
 
@@ -48,19 +48,19 @@ const PublicGoodsList = ({
     const info = [];
     for (let i = 0; i < publicGoods.length; i++) {
       const contract = new Contract(publicGoods[i], publicGoodABI, localProvider);
-      console.log("token contract", contract);
       const name = await contract.name();
       const symbol = await contract.symbol();
       const uniswapPrice = await contract.getPrice();
+
       const userStake = await contract.stakeAmount(address, stakeToken.toLowerCase());
-      console.log("uniswapPrice", uniswapPrice);
       const price = (uniswapPrice && utils.formatEther(uniswapPrice)) || "0.0";
       const formattedStake = (userStake && utils.formatEther(userStake)) || "0.0";
+
       info.push({ name, symbol, price, address: publicGoods[i], stake: formattedStake });
     }
 
     setTokensInfo(info);
-  }, [publicGoods, localProvider]);
+  }, [publicGoods, localProvider, address, stakeToken]);
 
   const approveTokens = () => {
     tx(contract.approve(contractAddress, utils.parseEther(fund)));
@@ -80,6 +80,14 @@ const PublicGoodsList = ({
   useEffect(() => {
     fetchTokensInfo();
   }, [publicGoods, fetchTokensInfo]);
+
+  if (!injectedProvider) {
+    return (
+      <div style={{ margin: "0 auto", maxWidth: 560, paddingTop: 20, textAlign: "left" }}>
+        <h2>Please connect your wallet</h2>
+      </div>
+    );
+  }
 
   return (
     <div style={{ margin: "0 auto", maxWidth: 560, paddingTop: 20, textAlign: "left" }}>
