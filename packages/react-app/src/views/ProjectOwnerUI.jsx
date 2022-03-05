@@ -10,12 +10,20 @@ import { useParams } from "react-router-dom";
 import { erc20, publicGoodABI } from "../contracts/external_contracts";
 import useMyReader from "../hooks/useMyReader";
 
-const ProjectOwnerUI = ({ readContracts, writeContracts, localProvider, targetNetwork, tx, address }) => {
+const ProjectOwnerUI = ({
+  readContracts,
+  writeContracts,
+  localProvider,
+  targetNetwork,
+  tx,
+  address,
+  injectedProvider,
+}) => {
   const { address: contractAddress } = useParams();
   const contract = useMemo(() => {
-    if (!localProvider || !contractAddress) return null;
-    return new Contract(contractAddress, publicGoodABI, localProvider);
-  }, [contractAddress, localProvider]);
+    if (!injectedProvider || !contractAddress) return null;
+    return new Contract(contractAddress, publicGoodABI, injectedProvider.getSigner());
+  }, [contractAddress, injectedProvider]);
 
   const poolAddress = useMyReader(contract, "getPool");
   const erc20Balance = useMyReader(contract, "balanceOf", JSON.stringify([address]));

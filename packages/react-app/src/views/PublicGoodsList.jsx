@@ -43,7 +43,7 @@ const PublicGoodsList = ({
   }, [allowance, fund]);
 
   const fetchTokensInfo = useCallback(async () => {
-    if (!publicGoods) return;
+    if (!publicGoods || !stakeToken) return;
 
     const info = [];
     for (let i = 0; i < publicGoods.length; i++) {
