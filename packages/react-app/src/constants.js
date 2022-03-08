@@ -999,7 +999,7 @@ export const BUILDERS = [
     //streamAddress: "0x1FE0e66952b7eeB16dDb62B33CA62813c1c4FaA7", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
     //streamUrl: "http://shravansunder.buidlguidl.com",
     streamAddress: "0xED9FdAE176d2254a43A61ab5635d21b920384E13", //"0x90FC815Fe9338BB3323bAC84b82B9016ED021e70",
-    streamUrl: "shravansunder3.buidlguidl.com",//"http://shravansunder2.buidlguidl.com",
+    streamUrl: "http://shravansunder3.buidlguidl.com",//"http://shravansunder2.buidlguidl.com",
   },
   {
     name: "powvt.eth",

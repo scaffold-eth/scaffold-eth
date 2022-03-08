@@ -258,9 +258,7 @@ function App(props) {
     )
   }else{
     networkDisplay = (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
-      </div>
+      ""
     );
   }
 
@@ -508,11 +506,11 @@ function App(props) {
 
   const headerImage = (title, image)=>{
     return (
-      <div style={{position:"relative",margin:"auto",marginTop:512,paddingBottom:0}}>
+      <div style={{position:"relative",margin:"auto",marginTop:512,paddingBottom:32,width:700}}>
         <div style={{position:'absolute',left:"15%", top:-200, fontSize:64, letterSpacing:-3, opacity:0.9}}>
-          <img src={"./"+image+".png"}/>
+          <img src={"./"+image+"_thumb.png"}/>
         </div>
-        <div style={{position:'absolute',left:"50%", top:-180, fontSize:64, letterSpacing:-3, opacity:0.9}}>
+        <div style={{position:'absolute',left:"50%", fontWeight: "bolder", top:-132, fontSize:64, letterSpacing:-3, opacity:0.7}}>
           {title}
         </div>
       </div>
@@ -572,7 +570,7 @@ function App(props) {
             <div style={{marginTop:256,paddingBottom:256}}>
 
               <div style={{fontSize:64, fontWeight:"bolder", letterSpacing:-3, opacity:0.9}}>
-                  <img style={{marginTop:-48}} src="./bgv3.png"/> BuidlGuidl<span style={{paddingLeft:8,opacity:0.222}}>v3</span>
+                  <img style={{marginTop:-48}} src="./bg.png"/> BuidlGuidl<span style={{paddingLeft:8,opacity:0.222}}>v3</span>
               </div>
             </div>
 
@@ -642,9 +640,12 @@ function App(props) {
                 </div>
 
                 <div style={{marginTop:32}}>
-                  💬 Shill your wares at the <a target="_blank" href="http://stage.buidlguidl.com">🏰 BuidlGuidl 🏤 Bazaar</a>
+                  ⚖️ Shill your wares at the <a target="_blank" href="https://bazaar.buidlguidl.com">🏰 BuidlGuidl 🏤 Bazaar</a>
                 </div>
 
+                <div style={{marginTop:256}}>
+                  💬 Chat with fellow builders in the <a target="_blank" href="https://t.me/+PXu_P6pps5I5ZmUx">🏰 BuidlGuidl 📣 Townhall</a> telegram!
+                </div>
 
 
 
@@ -674,8 +675,8 @@ function App(props) {
             </div>
 
             <div style={{width:"calc(max(min(80vw,720px),320px))", margin:"auto",marginTop:512, marginBottom:256}}>
-              <div style={{opacity:0.25}}>
-                active 🏰 BuidlGuidl members:
+              <div style={{fontSize:20, opacity:0.25}}>
+                Active 🏰 BuidlGuidl members:
               </div>
             </div>
 
@@ -726,7 +727,7 @@ function App(props) {
             </div>
 
 
-            {headerImage("Warlocks","warlock_new")}
+            {headerImage("Warlocks","warlock")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
