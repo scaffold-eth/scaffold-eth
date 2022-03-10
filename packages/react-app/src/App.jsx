@@ -856,7 +856,7 @@ function App(props) {
               }
 
               if(targetNetwork.name=="arbitrum"){
-                txConfig.gasLimit = 480000;
+                //txConfig.gasLimit = 21000;
                 //ask rpc for gas price
               }else if(targetNetwork.name=="optimism"){
                 //ask rpc for gas price
