@@ -1,12 +1,12 @@
-# 🏗 scaffold-eth - 🔵 Loogies SVG NFT
+# 🏗 scaffold-eth - 🎈 BuidlGuidl Balloons
 
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git loogies-svg-nft
+git clone https://github.com/austintgriffith/scaffold-eth.git bg-balloons
 
-cd loogies-svg-nft
+cd bg-balloons
 
-git checkout loogies-svg-nft
+git checkout bg-balloons
 ```
 
 ```bash
@@ -24,7 +24,7 @@ yarn start
 > in a second terminal window:
 
 ```bash
-cd loogies-svg-nft
+cd bg-balloons
 
 yarn chain
 
@@ -36,11 +36,14 @@ yarn chain
 
 
 ```bash
-cd loogies-svg-nft
+cd bg-balloons
 
 yarn deploy
 
 ```
 
 📱 Open http://localhost:3000 to see the app
+
+
+![image](https://user-images.githubusercontent.com/2653167/157897381-5ea98e78-7a16-4667-93af-58eaa603a533.png)
 
