@@ -17,7 +17,22 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+
+  await deploy("YourToken", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+    waitConfirmations: 5,
+  });
+  await deploy("YourCollectible", {
+    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+    from: deployer,
+    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    log: true,
+    waitConfirmations: 5,
+  });
+  await deploy("Marketplace", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -26,11 +41,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   });
 
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
-  /*  await YourContract.setPurpose("Hello");
-  
-    To take ownership of yourContract using the ownable library uncomment next line and add the 
-    address you want to be the owner. 
+  const YourCollectible = await ethers.getContract("YourCollectible", deployer);
+  await YourCollectible.safeMint("0x980B7aD36055942B2074C2804c6C0BfA548ac9E1", "QmT3qnz3BfZZwJb5afxkoK6JxzJfQoYV7qGjARVnLsXHgX");
+  const YourToken = await ethers.getContract("YourToken", deployer);
+  await YourToken.mint("0x980B7aD36055942B2074C2804c6C0BfA548ac9E1", ethers.utils.parseEther("100"));
+  const Marketplace = await ethers.getContract("Marketplace", deployer);
+  console.log("DEPLOYER: ", deployer)
+  await Marketplace.createCollection(YourCollectible.address, 1000);
+  await Marketplace.getCollectionProperties(YourCollectible.address)
+
+  /*
+    To take ownership of yourContract using the ownable library uncomment next line and add the
+    address you want to be the owner.
     // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
 
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
