@@ -406,7 +406,7 @@ function App(props) {
               }}
               to="/"
             >
-              Your Loogies
+              Your Balloons
             </Link>
           </Menu.Item>
           <Menu.Item key="/debug">
