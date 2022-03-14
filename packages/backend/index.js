@@ -150,7 +150,7 @@ const mint = async (address, tokenId) => {
 
   //console.log("responseTransfer: ", responseTransfer);
 
-  const receiptTransfer = await response.wait();
+  const receiptTransfer = await responseTransfer.wait();
 
   //console.log("receiptTransfer: ", receiptTransfer);
 
