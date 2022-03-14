@@ -1,10 +1,16 @@
-# 🏗 Scaffold-ETH
+# 🏗 OptimisticLoogies Claim
 
-> everything you need to build on Ethereum! 🚀
+> Mainnet Loogies owners can claim OptimisticLoogies 🚀
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+https://claim.loogies.io/
 
-![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
+All the magic is on the backend package. This is a server that keep track of the loogies claimed and mint new OptimiticLoogies when a mainnet Loogie owner claim your OptimisticLoogies.
+
+You need to configure the sourceNetwork and the targetNetwork on the backend and on the react app.
+
+The claim data is saved on a local file or on Google Firebase.
+
+At https://claim.loogies.io/logs you can see all the claimed log if you have the proper credentials.
 
 
 # 🏄‍♂️ Quick Start
