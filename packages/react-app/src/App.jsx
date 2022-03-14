@@ -560,6 +560,9 @@ function App(props) {
               >
                 Show Logs
               </Button>
+              {claimedLogs && (
+                <h2>{claimedLogs.length} Claims - {claimedLogs.filter((log) => log.minted).length} Minted</h2>
+              )}
               <Table dataSource={claimedLogs} columns={logColumns} rowKey="id" />
             </>
           )}
