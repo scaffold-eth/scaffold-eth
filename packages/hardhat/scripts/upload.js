@@ -6,6 +6,11 @@ const { utils } = require("ethers");
 const R = require("ramda");
 const ipfsAPI = require('ipfs-http-client');
 const ipfs = ipfsAPI({host: 'ipfs.infura.io', port: '5001', protocol: 'https' })
+const DELAY = 5000;
+
+function timeout(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const main = async () => {
 
@@ -17,7 +22,10 @@ const main = async () => {
   for(let a in artwork){
     console.log("  Uploading "+artwork[a].name+"...")
     const stringJSON = JSON.stringify(artwork[a])
-    const uploaded = await ipfs.add(stringJSON)
+    const [uploaded] = await Promise.all([
+      ipfs.add(stringJSON),
+      timeout(DELAY)
+    ]);
     console.log("   "+artwork[a].name+" ipfs:",uploaded.path)
     allAssets[uploaded.path] = artwork[a]
   }
