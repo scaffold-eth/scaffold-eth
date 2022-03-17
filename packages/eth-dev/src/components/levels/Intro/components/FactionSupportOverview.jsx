@@ -134,7 +134,7 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
                 { levelId: 'ERC20', name: 'ERC20', path: '/erc20' },
                 { levelId: 'Multisig', name: 'MultiSig', path: '/multisig' },
                 { levelId: null, name: 'Minimal DAO', path: null },
-                { levelId: null, name: 'ENS', path: null },
+                { levelId: 'ENS', name: 'ENS', path: '/ens' },
                 {
                   levelId: 'UpgradableContracts',
                   name: 'Upgradable Contracts',

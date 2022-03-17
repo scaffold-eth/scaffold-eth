@@ -1,17 +1,6 @@
 import React from 'react'
 import { connectController } from './controller'
 import backgroundsMap from './backgroundsMap'
-import {
-  Intro,
-  City,
-  CityChaos,
-  CityOutskirts,
-  CitySkylineInsideNight,
-  DiceGame,
-  NiftyShop,
-  RoofSatellite,
-  Workstation
-} from './backgrounds'
 
 const styles = {
   position: 'fixed',

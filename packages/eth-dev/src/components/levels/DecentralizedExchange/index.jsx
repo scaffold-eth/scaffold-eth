@@ -20,9 +20,9 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
     })
   }, [])
 
-  const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
   const [etherDeltaWindowIsVisible, setEtherDeltaWindowVisibility] = useState(false)
+  const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
 
   return (
     <div id='decentralizedExchange'>
@@ -37,10 +37,6 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
         setExplanationWindowVisibility={setExplanationWindowVisibility}
       />
 
-      <EtherDeltaWindow isOpen={etherDeltaWindowIsVisible} />
-
-      <ContractWindow isOpen={contractWindowIsVisible} />
-
       <ExplanationWindow
         isOpen={explanationWindowIsVisible}
         initTop={10}
@@ -50,6 +46,10 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
         setExplanationWindowVisibility={setExplanationWindowVisibility}
         setEtherDeltaWindowVisibility={setEtherDeltaWindowVisibility}
       />
+
+      <EtherDeltaWindow isOpen={etherDeltaWindowIsVisible} />
+
+      <ContractWindow isOpen={contractWindowIsVisible} />
     </div>
   )
 }
