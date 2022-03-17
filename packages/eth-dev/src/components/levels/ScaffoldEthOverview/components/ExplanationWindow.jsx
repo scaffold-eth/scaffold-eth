@@ -10,11 +10,11 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
     <WindowModal
       initTop={10}
       initLeft={10}
-      initHeight={window.innerHeight * 0.9}
-      initWidth={window.innerWidth * 0.4}
+      initHeight={window.innerHeight * 0.6}
+      initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='Introduction to scaffold-eth'
+      windowTitle='scaffold-eth'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
@@ -28,42 +28,77 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
           overflowX: 'hidden'
         }}
       >
-        <h1>Scaffold-eth</h1>
         <div
           style={{
             marginTop: '1%',
             marginBottom: '5%',
-            // color: '#16DC8C',
-            color: '#C9D1D9',
+            color: '#16DC8C',
+            // color: '#C9D1D9',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
-            fontSize: '16px'
+            fontSize: 16
           }}
         >
-          Many eth.dev challenges use scaffold-eth as a boilerplate.
-          <br />
-          Scaffold-eth provides an off-the-shelf stack for rapid prototyping on Ethereum, giving
-          developers access to state-of-the-art tools to quickly learn and ship an Ethereum-based
-          DAPP.
-          <br />
-          <br />
-          We suggest that you familiarize yourself with the high level structure and tool
-          scaffold-eth uses before continuing with the game.
-          <br />
-          {'-> '}
-          <a href='https://docs.scaffoldeth.io/scaffold-eth/' target='_blank' rel='noreferrer'>
-            scaffold-eth docs
-          </a>
+          <>
+            Many eth.dev challenges were built using{' '}
+            <a href='https://github.com/scaffold-eth/scaffold-eth' target='_blank' rel='noreferrer'>
+              scaffold-eth
+            </a>{' '}
+            as a boilerplate.
+          </>
+          {currentStep > 0 && (
+            <>
+              <br />
+              <br />
+              Scaffold-eth provides an off-the-shelf stack for rapid prototyping on Ethereum, giving
+              developers access to state-of-the-art tools to quickly learn and ship an
+              Ethereum-based DApp.
+            </>
+          )}
+          {currentStep > 1 && (
+            <>
+              <br />
+              <br />I was created and is still maintained by
+              <a href='https://twitter.com/austingriffith' target='_blank' rel='noreferrer'>
+                Austin Griffith
+              </a>
+              .
+            </>
+          )}
+          {currentStep > 2 && (
+            <>
+              <br />
+              <br />
+              We suggest that you familiarize yourself with the high level structure and tools
+              scaffold-eth uses before continuing with the game.
+              <br />
+              {'-> '}
+              <a href='https://docs.scaffoldeth.io/scaffold-eth/' target='_blank' rel='noreferrer'>
+                scaffold-eth docs
+              </a>
+            </>
+          )}
         </div>
-
-        <Button
-          className='is-warning'
-          onClick={() => {
-            globalGameActions.dialog.continueDialog()
-            setExplanationWindowVisibility(false)
-          }}
-        >
-          Done
-        </Button>
+        {currentStep <= 2 && (
+          <Button
+            onClick={() => {
+              setCurrentStep(currentStep + 1)
+            }}
+          >
+            Continue
+          </Button>
+        )}
+        {currentStep > 2 && (
+          <Button
+            className='is-warning'
+            onClick={() => {
+              globalGameActions.dialog.continueDialog()
+              setExplanationWindowVisibility(false)
+              setCurrentStep(currentStep + 1)
+            }}
+          >
+            Done
+          </Button>
+        )}
       </div>
     </WindowModal>
   )
