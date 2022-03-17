@@ -27,11 +27,11 @@ const ExplanationWindow = ({
 
   return (
     <WindowModal
-      initTop={window.innerHeight * 0.02}
+      initTop={10}
       initLeft={10}
-      initHeight={window.innerHeight * 0.5}
-      initWidth={window.innerWidth / 4}
-      backgroundPath='./assets/items/window.png'
+      initHeight={window.innerHeight}
+      initWidth={window.innerWidth * 0.5}
+      backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={12}
       windowTitle={`NFT's`}
       isOpen={isOpen}
@@ -77,7 +77,7 @@ const ExplanationWindow = ({
           <a href='http://erc721.org' target='_blank' rel='noreferrer'>
             ERC721 standard
           </a>{' '}
-          which was introduced and then continuously developed{' '}
+          which was first introduced and then continuously developed{' '}
           <a href='https://github.com/ethereum/EIPs/issues/721' target='_blank' rel='noreferrer'>
             here
           </a>
@@ -103,8 +103,8 @@ $ yarn
 $ yarn deploy`}
           </CodeContainer>
           <br />
-          NOTE: There are a lot of different styles of NFT's. You can take a look at some of them
-          over at{' '}
+          NOTE: There are a lot of different styles when it comes to NFT contracts. You can take a
+          look at some of them over at{' '}
           <a
             href='https://docs.openzeppelin.com/contracts/2.x/api/token/erc721'
             target='_blank'
