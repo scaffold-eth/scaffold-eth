@@ -18,16 +18,11 @@ const ExplanationWindow = ({
       initLeft={window.innerWidth * 0.02}
       initHeight={window.innerHeight * 0.96}
       initWidth={window.innerWidth / 2}
-      // backgroundPath='./assets/items/window.png'
-      dragAreaHeightPercent={4}
-      // windowTitle=''
+      backgroundPath='./assets/items/window_large.png'
+      dragAreaHeightPercent={6}
+      windowTitle='DEX'
       isOpen={isOpen}
-      contentContainerStyle={{ paddingTop: 0 }}
-      // style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
-      style={{
-        backgroundColor: '#222336',
-        boxShadow: '5px 5px 15px 5px rgba(0,0,0,0)'
-      }}
+      // contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
         className='content'

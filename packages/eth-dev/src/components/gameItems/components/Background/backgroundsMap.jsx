@@ -9,7 +9,9 @@ import {
   DiceGame,
   NiftyShop,
   RoofSatellite,
-  Workstation
+  Workstation,
+  ExchangeStonks,
+  ExchangeRed
 } from './backgrounds'
 
 const backgrounds = {
@@ -21,7 +23,9 @@ const backgrounds = {
   DiceGame: <DiceGame />,
   NiftyShop: <NiftyShop />,
   RoofSatellite: <RoofSatellite />,
-  Workstation: <Workstation />
+  Workstation: <Workstation />,
+  ExchangeStonks: <ExchangeStonks />,
+  ExchangeRed: <ExchangeRed />
 }
 
 export default backgrounds

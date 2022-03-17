@@ -25,8 +25,7 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
           width: '100%',
           height: '100%',
           overflowY: 'auto',
-          overflowX: 'hidden',
-          backgroundColor: '#161B22'
+          overflowX: 'hidden'
         }}
       >
         <h1>Scaffold-eth</h1>

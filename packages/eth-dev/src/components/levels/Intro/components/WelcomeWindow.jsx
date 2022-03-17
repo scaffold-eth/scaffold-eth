@@ -43,7 +43,9 @@ const WelcomeWindow = ({
           width: '100%',
           height: '100%',
           overflowY: 'auto',
-          overflowX: 'hidden'
+          overflowX: 'hidden',
+          fontSize: '12px',
+          lineHeight: '25px'
         }}
       >
         <h2 style={{ textAlign: 'center', marginTop: 20, marginBottom: 20, color: '#16DC8C' }}>
