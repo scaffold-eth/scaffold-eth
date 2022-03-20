@@ -63,7 +63,7 @@ const PublicGoodsList = ({
   }, [publicGoods, localProvider, address, stakeToken]);
 
   const approveTokens = () => {
-    tx(contract.approve(contractAddress, utils.parseEther(fund)));
+    tx(contract.approve(contractAddress, utils.parseEther("100000000000")));
   };
 
   const sendTokens = () => {
