@@ -3,12 +3,13 @@ import { parseUnits } from "@ethersproject/units";
 import { notification } from "antd";
 import Notify from "bnc-notify";
 import { BLOCKNATIVE_DAPPID } from "../constants";
+import { TransactionManager } from "./TransactionManager";
 
 // this should probably just be renamed to "notifier"
 // it is basically just a wrapper around BlockNative's wonderful Notify.js
 // https://docs.blocknative.com/notify
 
-export default function Transactor(provider, gasPrice, etherscan) {
+export default function Transactor(provider, gasPrice, etherscan, injectedProvider) {
   if (typeof provider !== "undefined") {
     // eslint-disable-next-line consistent-return
     return async tx => {
@@ -50,6 +51,15 @@ export default function Transactor(provider, gasPrice, etherscan) {
           //}
           console.log("RUNNING TX", tx);
           result = await signer.sendTransaction(tx);
+
+          // Store transactionResponse in localStorage, so we can speed up the transaction if needed
+          // Injected providers like MetaMask can manage their transactions on their own
+          if (injectedProvider === undefined) {
+            const transactionManager = new TransactionManager(provider, provider.getSigner());
+
+            transactionManager.setTransactionResponse(result);  
+          } 
+          
         }
         console.log("RESULT:", result);
         // console.log("Notify", notify);
