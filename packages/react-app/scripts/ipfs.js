@@ -1,27 +1,31 @@
-const ipfsAPI = require("ipfs-http-client");
+const {create, globSource} = require("ipfs-http-client");
 const chalk = require("chalk");
 const { clearLine } = require("readline");
-
-const { globSource } = ipfsAPI;
 
 const infura = { host: "ipfs.infura.io", port: "5001", protocol: "https" };
 // run your own ipfs daemon: https://docs.ipfs.io/how-to/command-line-quick-start/#install-ipfs
 // const localhost = { host: "localhost", port: "5001", protocol: "http" };
 
-const ipfs = ipfsAPI(infura);
+const ipfs =  create(infura);
 
 const ipfsGateway = "https://ipfs.io/ipfs/";
 const ipnsGateway = "https://ipfs.io/ipns/";
 
 const addOptions = {
   pin: true,
+  wrapWithDirectory: true
 };
 
 const pushDirectoryToIPFS = async path => {
   try {
-    const response = await ipfs.add(globSource(path, { recursive: true }), addOptions);
-    return response;
+    const file = ipfs.addAll(globSource(path, '**/*'), addOptions)
+    let lastRes;
+    for await (const f of file) {
+      lastRes = f
+    }
+    return lastRes
   } catch (e) {
+    console.log(e)
     return {};
   }
 };
@@ -29,6 +33,7 @@ const pushDirectoryToIPFS = async path => {
 const publishHashToIPNS = async ipfsHash => {
   try {
     const response = await ipfs.name.publish(`/ipfs/${ipfsHash}`);
+    console.log(response)
     return response;
   } catch (e) {
     return {};
