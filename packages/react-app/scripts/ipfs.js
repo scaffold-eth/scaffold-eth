@@ -25,7 +25,6 @@ const pushDirectoryToIPFS = async path => {
     }
     return lastRes
   } catch (e) {
-    console.log(e)
     return {};
   }
 };
@@ -33,7 +32,6 @@ const pushDirectoryToIPFS = async path => {
 const publishHashToIPNS = async ipfsHash => {
   try {
     const response = await ipfs.name.publish(`/ipfs/${ipfsHash}`);
-    console.log(response)
     return response;
   } catch (e) {
     return {};
