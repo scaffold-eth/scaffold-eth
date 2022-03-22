@@ -9,32 +9,20 @@ const ExplanationWindow = ({
   setContractWindowVisibility,
   setExplanationWindowVisibility
 }) => {
-  /*
-  const contentFileName = 'ExplanationWindow.md'
-  const [fileContent, setFileContent] = useState('')
-
-  useEffect(() => {
-    import(`./${contentFileName}`)
-        .then(res => {
-            fetch(res.default)
-                .then(res => res.text())
-                .then(res => setFileContent(res))
-                .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-  })
-  */
-
   return (
     <WindowModal
       initTop={10}
       initLeft={10}
-      initHeight={window.innerHeight}
+      initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={12}
       windowTitle={`NFT's`}
       isOpen={isOpen}
+      windowTiteleStyle={{
+        top: '3%',
+        left: '56%'
+      }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
@@ -49,7 +37,7 @@ const ExplanationWindow = ({
       >
         <div
           style={{
-            marginTop: '1%',
+            // marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
@@ -84,9 +72,7 @@ const ExplanationWindow = ({
           .
           <br />
           <br />
-          Scaffold-ETH has a boilerplate for building your own NFT.
-          <br />
-          Try it out:
+          Scaffold-ETH has a boilerplate for building your own NFT. Try it out:
           <CodeContainer language='bash'>
             {`# fetch code
 $ git clone https://github.com/scaffold-eth/scaffold-eth.git

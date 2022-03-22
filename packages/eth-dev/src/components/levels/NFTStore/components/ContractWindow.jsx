@@ -24,9 +24,10 @@ const ContractWindow = ({ isOpen }) => {
       initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.45}
       backgroundPath='./assets/items/window.png'
-      dragAreaHeightPercent={12}
+      dragAreaHeightPercent={6}
       windowTitle='NFToken.sol'
       isOpen={isOpen}
+      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div

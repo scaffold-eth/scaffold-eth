@@ -57,7 +57,7 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
           {currentStep > 1 && (
             <>
               <br />
-              <br />I was created and is still maintained by
+              <br />I was created and is still maintained by{' '}
               <a href='https://twitter.com/austingriffith' target='_blank' rel='noreferrer'>
                 Austin Griffith
               </a>

@@ -161,7 +161,6 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
                 { levelId: 'FlashLoans', name: 'Flash loans' },
                 { levelId: null, name: 'Aave/Lend' },
                 { levelId: null, name: 'Compound' },
-                { levelId: null, name: 'Bonding Curves' },
                 { levelId: null, name: 'Curve.fi' }
               ]
             })}
