@@ -26,8 +26,8 @@ const ScaffoldEthOverview = ({ dialog, globalGameActions }) => {
     <div id='scaffoldEthOverview'>
       <Terminal
         isOpen
-        initTop={window.innerHeight - (700 + 10)}
-        initLeft={window.innerWidth - (450 + 10)}
+        initTop={window.innerHeight - 840}
+        initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
       />

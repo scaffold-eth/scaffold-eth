@@ -30,8 +30,6 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
         isOpen
         initTop={window.innerHeight * 0.1}
         initLeft={window.innerWidth * 0.95 - (450 + 10)}
-        // initTop={window.innerHeight - (700 + 10)}
-        // initLeft={window.innerWidth - (450 + 10)}
         globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
