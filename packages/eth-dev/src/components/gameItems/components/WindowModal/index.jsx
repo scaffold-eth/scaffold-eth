@@ -29,6 +29,24 @@ export default function WindowModal({
     y: initTop
   })
 
+  const sortByZIndex = (a, b) => a.style.zIndex - b.style.zIndex
+
+  // move clicked window to top layer
+  const updateWindowCSSIndex = e => {
+    const windowsSelector = '.react-draggable'
+    const windowElements = $(windowsSelector)
+    const clickedWindow = $(e.target).closest(windowsSelector)
+
+    const numberOfWindows = windowElements.length
+    const windowsSortedByZIndex = windowElements.sort(sortByZIndex)
+
+    windowsSortedByZIndex.each(function (index) {
+      $(this).closest(windowsSelector).css('z-index', index)
+    })
+
+    clickedWindow.css('z-index', numberOfWindows)
+  }
+
   return (
     <>
       {/* dont remove this! */}
@@ -61,6 +79,9 @@ export default function WindowModal({
             onResizeStop()
           }}
           lockAspectRatio
+          onClick={e => {
+            updateWindowCSSIndex(e)
+          }}
         >
           <div
             style={{
