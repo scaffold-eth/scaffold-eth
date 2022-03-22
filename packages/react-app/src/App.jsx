@@ -747,7 +747,13 @@ function App(props) {
       {/* ✏️ Edit the header and change the title to your project name */}
 
       <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
-        <SpeedUpTransactions provider={userProvider} signer={userProvider.getSigner()} injectedProvider={injectedProvider} />
+        <SpeedUpTransactions
+           provider={userProvider}
+           signer={userProvider.getSigner()}
+           injectedProvider={injectedProvider}
+           address={address} 
+           chainId={targetNetwork.chainId}
+         />
       </div>
 
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
