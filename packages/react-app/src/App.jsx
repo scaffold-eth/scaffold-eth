@@ -19,6 +19,7 @@ import {
   Header,
   QRPunkBlockie,
   Ramp,
+  SpeedUpTransactions,
   Wallet,
 } from "./components";
 import { INFURA_ID, NETWORK, NETWORKS } from "./constants";
@@ -206,7 +207,7 @@ function App(props) {
   // For more hooks, check out 🔗eth-hooks at: https://www.npmjs.com/package/eth-hooks
 
   // The transactor wraps transactions and provides notificiations
-  const tx = Transactor(userProvider, gasPrice);
+  const tx = Transactor(userProvider, gasPrice, undefined, injectedProvider);
 
   // Faucet Tx can be used to send funds from the faucet
   const faucetTx = Transactor(localProvider, gasPrice);
@@ -744,6 +745,10 @@ function App(props) {
       </div>
 
       {/* ✏️ Edit the header and change the title to your project name */}
+
+      <div style={{ padding: 16, backgroundColor: "#FFFFFF", width: 420, margin: "auto" }}>
+        <SpeedUpTransactions provider={userProvider} signer={userProvider.getSigner()} injectedProvider={injectedProvider} />
+      </div>
 
       <div style={{ clear: "both", opacity: yourLocalBalance ? 1 : 0.2, width: 500, margin: "auto",position:"relative" }}>
         <Balance value={yourLocalBalance} size={12+window.innerWidth/16} price={price} />
