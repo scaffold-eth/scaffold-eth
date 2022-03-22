@@ -1,5 +1,4 @@
-import React, { useState, useEffect } from 'react'
-import Markdown from 'markdown-to-jsx'
+import React, { useState } from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
@@ -12,24 +11,12 @@ const ExplanationWindow = ({
   const initWidth = window.innerWidth / 2
   const initHeight = window.innerHeight * 0.95
 
-  const contentFileName = 'ExplanationWindow.md'
-  const [fileContent, setFileContent] = useState('')
-
-  useEffect(() => {
-    import(`./${contentFileName}`)
-        .then(res => {
-            fetch(res.default)
-                .then(res => res.text())
-                .then(res => setFileContent(res))
-                .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-  })
+  const [currentStep, setCurrentStep] = useState(0)
 
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
-      initLeft={window.innerWidth / 2}
+      initLeft={window.innerWidth * 0.1}
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/items/window.png'
@@ -50,15 +37,21 @@ const ExplanationWindow = ({
       >
         <div
           style={{
-            marginTop: '1%',
+            // marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
             fontSize: 16
           }}
         >
-          <Markdown>{fileContent}</Markdown>
-
+          Creating provably fair and secure gambling contracts is quite the challenge.
+          {currentStep > 0 && (
+            <>
+              <br />
+              See if you can find a way to dupe the contract and win 10 times in a row.
+            </>
+          )}
+          <br />A boilerplate has been prepared for you that you can fetch here:
           <div style={{ marginTop: 25 }}>
             You can read about "The Ins & Outs of Smart Contract Gambling"{' '}
             <a
@@ -67,7 +60,8 @@ const ExplanationWindow = ({
               rel='noreferrer'
             >
               here
-            </a>.
+            </a>
+            .
           </div>
         </div>
         <Button

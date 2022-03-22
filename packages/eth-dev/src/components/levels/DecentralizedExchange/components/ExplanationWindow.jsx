@@ -22,6 +22,7 @@ const ExplanationWindow = ({
       dragAreaHeightPercent={6}
       windowTitle='DEX'
       isOpen={isOpen}
+      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
       // contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
@@ -39,10 +40,10 @@ const ExplanationWindow = ({
           style={{
             marginTop: '5%',
             marginBottom: '5%',
-            // color: '#16DC8C',
-            color: '#C9D1D9',
+            color: '#16DC8C',
+            // color: '#C9D1D9',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
-            fontSize: '16px'
+            fontSize: 16
           }}
         >
           {/* <Markdown>{fileContent}</Markdown> */}
@@ -131,43 +132,28 @@ const ExplanationWindow = ({
           )}
           {currentStep > 5 && (
             <>
-              A boilerplate has been prepared for you that you can fetch here:
-              <br />
-              <br />
+              Use{' '}
               <a
-                href='https://github.com/squirtleDevs/scaffold-eth/tree/challenge-3-single-pool-dex'
+                href='https://docs.scaffoldeth.io/scaffold-eth/challenges/minimum-viable-dex'
                 target='_blank'
                 rel='noreferrer'
               >
-                https://github.com/squirtleDevs/scaffold-eth/tree/challenge-3-single-pool-dex
-              </a>
+                these
+              </a>{' '}
+              resources to help Anon Punk build the DEX.
               <br />
               <br />
-              Follow the README.md to complete the challenge. This challenge will help you
-              build/understand a simple decentralized exchange, with one token-pair (ERC20 BALLOONS
-              ($BAL) and ETH).
-              <br />
-              <br />
-              This repo is an updated version of the{' '}
-              <a
+              {/*
+                This repo is an updated version of the{' '}
+                <a
                 href='https://medium.com/@austin_48503/%EF%B8%8F-minimum-viable-exchange-d84f30bd0c90'
                 target='_blank'
                 rel='noreferrer'
               >
                 original
               </a>{' '}
-              and challenge repos before it. Please read the intro for a background on what we are
-              building first! There is a `DEXTemplate.sol` file for your use if you want (rename it
-              to `DEX.sol`). As well, this repo has solutions (👮🏻 try not to peak!) in it (in root
-              directory, there's a solutions sub-directory) for now, but the challenge is to write
-              the smart contracts yourself of course!
-              <br />
-              <br />
-              ❗️ NOTE: functions outlined within the `DEXTemplate.sol` are what works with the
-              frontend of this branch/repo. Also return variable names may need to be specified
-              exactly as outlined within the `Solutions/DEX.sol` file. If you are confused, see
-              solutions folder in this repo and/or cross reference with frontend code. There is also
-              a{' '}
+               */}
+              There is also a{' '}
               <a
                 href='https://www.youtube.com/watch?v=eP5w6Ger1EQ&t=364s&ab_channel=SimplyExplained'
                 target='_blank'
@@ -204,6 +190,7 @@ const ExplanationWindow = ({
               globalGameActions.dialog.continueDialog()
               setContractWindowVisibility(false)
               setExplanationWindowVisibility(false)
+              globalGameActions.background.setCurrentBackground({ background: 'ExchangeStonks' })
             }}
           >
             Done

@@ -12,6 +12,7 @@ const styles = {
 }
 
 const ExchangeStonks = () => {
+  console.log('in ExchangeStonks')
   return (
     <div
       className='background-image'

@@ -7,7 +7,7 @@ const styles = {
   height: '100%',
   width: '100%',
   pointerEvents: 'none',
-  background: 'url(./assets/backgrounds/exchange/exchange_red.png) no-repeat center center fixed',
+  background: 'url(./assets/backgrounds/exchange_red.png) no-repeat center center fixed',
   backgroundSize: 'cover'
 }
 
