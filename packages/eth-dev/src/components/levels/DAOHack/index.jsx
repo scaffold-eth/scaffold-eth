@@ -2,7 +2,12 @@ import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
-import { DAOContractWindow, DarkDAOContractWindow, ExplanationWindow } from './components'
+import {
+  DAOContractWindow,
+  DarkDAOContractWindow,
+  ExplanationWindow,
+  FetchIntructionsWindow
+} from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'DAOHack'
@@ -22,7 +27,8 @@ const DAOHack = ({ dialog, globalGameActions }) => {
 
   const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useState(false)
   const [darkDaoContractWindowIsVisible, setDarkDaoContractWindowVisibility] = useState(false)
-  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
+  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(true)
+  const [fetchIntructionsWindowIsVisible, setFetchIntructionsWindowVisibility] = useState(true)
 
   return (
     <div id='DAOHack'>
@@ -38,6 +44,7 @@ const DAOHack = ({ dialog, globalGameActions }) => {
 
       <DAOContractWindow isOpen={daoContractWindowIsVisible} />
       <DarkDAOContractWindow isOpen={darkDaoContractWindowIsVisible} />
+      <FetchIntructionsWindow isOpen={fetchIntructionsWindowIsVisible} />
 
       <ExplanationWindow
         isOpen={explanationWindowIsVisible}
@@ -47,6 +54,7 @@ const DAOHack = ({ dialog, globalGameActions }) => {
         setDaoContractWindowVisibility={setDaoContractWindowVisibility}
         setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
+        setFetchIntructionsWindowVisibility={setFetchIntructionsWindowVisibility}
       />
     </div>
   )

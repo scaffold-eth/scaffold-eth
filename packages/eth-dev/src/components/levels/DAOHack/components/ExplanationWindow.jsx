@@ -8,7 +8,8 @@ const ExplanationWindow = ({
   globalGameActions,
   setExplanationWindowVisibility,
   setDaoContractWindowVisibility,
-  setDarkDaoContractWindowVisibility
+  setDarkDaoContractWindowVisibility,
+  setFetchIntructionsWindowVisibility
 }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
@@ -37,39 +38,114 @@ const ExplanationWindow = ({
       >
         <div
           style={{
-            marginTop: '1%',
+            // marginTop: '1%',
             marginBottom: '5%',
-            // color: '#16DC8C',
-            color: '#C9D1D9',
+            color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
-            fontSize: '16px'
+            fontSize: 16
           }}
         >
           Have you ever wondered why there are two Ethereums listed on most exchanges and token
           lists, Ethereum and Ethereum Classic?
-          <br />
-          Well, back in 2016 ... TODO
-          <CodeContainer language='bash'>
-            {`# fetch code
-$ git clone -b eth-dev https://github.com/ssteiger/eth-dev-challenges
-$ cd eth-dev-challenges
-# switch branch
-$ git checkout dao-hack
-
-# install dependencies
-$ yarn
-
-# start a local ethereum network
-# $ yarn chain
-
-# in second terminal:
-# deploy DAO
-$ yarn deploy`}
-          </CodeContainer>
+          {currentStep > 0 && (
+            <>
+              <br />
+              <br />
+              Well, back in 2016 the German company slock.it created one of the first DAO contracts
+              on Ethereum. The contract quickly gained in popularity, collecting almost 15% of the
+              total ETH supply.
+            </>
+          )}
+          {currentStep > 1 && (
+            <>
+              <br />
+              <br />
+              Then on 19th of June, Martin Koeppelman (CEO of Gnosis) submitted a post on
+              r/ethereum: "
+              <a
+                target='_blank'
+                rel='noreferrer'
+                href='https://www.reddit.com/r/ethereum/comments/4oi2ta/i_think_thedao_is_getting_drained_right_now/'
+              >
+                I think TheDAO is getting drained right now
+              </a>
+              " alerting the community that a hack was happening.
+              <br />
+              <br />
+              Read up on the full event{' '}
+              <a
+                target='_blank'
+                rel='noreferrer'
+                href='https://github.com/ethereumbook/ethereumbook/blob/develop/appdx-forks-history.asciidoc'
+              >
+                here
+              </a>
+              .
+            </>
+          )}
+          {currentStep > 2 && (
+            <>
+              <br />
+              <br />
+              Further reading:
+              <br />
+              <br />
+              <ul>
+                <li>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
+                    href='https://blog.ethereum.org/2016/06/17/critical-update-re-dao-vulnerability/'
+                  >
+                    Ethereum Foundation statement
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
+                    href='https://www.reddit.com/r/ethereum/comments/4os7l5/the_big_thedao_heist_faq/'
+                  >
+                    Martin Koeppelman DAO FAQ
+                  </a>
+                </li>
+                <li>
+                  <a
+                    target='_blank'
+                    rel='noreferrer'
+                    href='https://medium.com/@oaeee/the-rise-of-the-dark-dao-72b21a2212e3#.rnb1n01h8'
+                  >
+                    Overview of relevant transactions of the hack
+                  </a>
+                </li>
+              </ul>
+            </>
+          )}
+          {currentStep > 3 && <>Help Anon Punk hack the factions DAO.</>}
+          {currentStep > 4 && (
+            <>
+              <br />
+              Here is the contract we used to deploy their DAO.
+            </>
+          )}
+          {currentStep > 5 && (
+            <>
+              <br />
+              Additionally my people have collected the following resources for you. Focus on the
+              contracts in /packages/hardhat/contracts/ .
+            </>
+          )}
         </div>
         <Button
           onClick={() => {
-            setDaoContractWindowVisibility(true)
+            if (currentStep === 3) {
+              setDaoContractWindowVisibility(true)
+            }
+
+            if (currentStep === 6) {
+              setFetchIntructionsWindowVisibility(true)
+            }
+            setCurrentStep(currentStep + 1)
           }}
         >
           Continue

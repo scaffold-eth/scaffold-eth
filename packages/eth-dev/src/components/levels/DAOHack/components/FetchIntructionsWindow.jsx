@@ -2,31 +2,16 @@ import React, { useState, useEffect } from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const DarkDAOContractWindow = ({ isOpen }) => {
-  const contentFileName = 'DarkDAO.sol'
-  const [fileContent, setFileContent] = useState('')
-
-
-  useEffect(() => {
-    import(`./${contentFileName}`)
-        .then(res => {
-            fetch(res.default)
-                .then(res => res.text())
-                .then(res => setFileContent(res))
-                .catch(err => console.log(err));
-        })
-        .catch(err => console.log(err));
-  })
-
+const FetchIntructionsWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
       initLeft={window.innerWidth / 2 - window.innerWidth * 0.05}
-      initHeight={window.innerHeight * 0.90}
-      initWidth={window.innerWidth / 2}
+      initHeight={400}
+      initWidth={750}
       backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={6}
-      windowTitle={contentFileName}
+      windowTitle='Resources'
       isOpen={isOpen}
       windowTiteleStyle={{ top: '2.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
@@ -41,12 +26,26 @@ const DarkDAOContractWindow = ({ isOpen }) => {
           overflowX: 'hidden'
         }}
       >
-        <CodeContainer language='solidity'>
-          {fileContent}
+        <CodeContainer language='bash'>
+          {`# fetch code
+$ git clone https://github.com/ssteiger/eth-dev-challenges.git
+
+$ cd eth-dev-challenges
+
+$ git checkout dao-hack
+
+# install dependencies
+$ yarn
+
+# deploy contracts
+$ yarn deploy
+
+# start app - when asked to use a different port, hit yes
+$ yarn start`}
         </CodeContainer>
       </div>
     </WindowModal>
   )
 }
 
-export default wrapGlobalGameData(DarkDAOContractWindow)
+export default wrapGlobalGameData(FetchIntructionsWindow)
