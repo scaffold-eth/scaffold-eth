@@ -18,6 +18,7 @@ export default function WindowModal({
   windowTitle = '',
   style = {},
   containerStyle,
+  windowTiteleStyle,
   contentContainerStyle,
   children
 }) {
@@ -90,7 +91,8 @@ export default function WindowModal({
                 width: '31%',
                 height: '3%',
                 fontSize: '61%',
-                color: '#16DC8C'
+                color: '#16DC8C',
+                ...windowTiteleStyle
               }}
             >
               {windowTitle}
