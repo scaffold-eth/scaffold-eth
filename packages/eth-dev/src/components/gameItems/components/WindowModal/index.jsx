@@ -63,6 +63,7 @@ export default function WindowModal({
           position={{ x: windowProps.x, y: windowProps.y }}
           dragHandleClassName='draggable-header'
           onDrag={(e, direction) => {
+            updateWindowCSSIndex(e)
             onDrag()
           }}
           onDragStop={(e, direction) => {
