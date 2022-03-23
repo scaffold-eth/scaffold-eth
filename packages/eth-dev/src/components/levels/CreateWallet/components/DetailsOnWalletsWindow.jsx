@@ -5,7 +5,7 @@ import { Button, CodeContainer, WindowModal } from '../../../gameItems/component
 
 const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
   const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.95
+  const initHeight = window.innerHeight * 0.5
 
   return (
     <WindowModal
@@ -13,10 +13,11 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
       initLeft={window.innerWidth / 2}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/items/window.png'
+      backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={12}
-      windowTitle='WALLETS'
+      windowTitle='Ethereum Wallets'
       isOpen={isOpen}
+      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
@@ -29,26 +30,36 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
           overflowX: 'hidden'
         }}
       >
-        <br />
-        The ethereum.org website has some fantastic guides on what Ethereum wallets are: <br />
-        <br />
-        {'->'}{' '}
-        <a href='https://ethereum.org/en/wallets/' target='_blank' rel='noreferrer'>
-          Visit ethereum.org/en/wallets
-        </a>
-        <br />
-        <br />
-        {'->'}{' '}
-        <a
-          href='https://medium.com/building-blocks-on-the-chain/how-to-build-a-react-dapp-with-hardhat-and-metamask-9cec8f6410d3#7c9f'
-          target='_blank'
-          rel='noreferrer'
+        <div
+          style={{
+            // marginTop: '1%',
+            marginBottom: '5%',
+            color: '#16DC8C',
+            fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
+            fontSize: 16
+          }}
         >
-          Setup Metamask
-        </a>
-        <br />
-        <br />
-        <Button onClick={() => console.log('click')}>Continue</Button>
+          The ethereum.org website has some fantastic guides on what Ethereum wallets are:
+          <br />
+          <br />
+          {'-> '}
+          <a href='https://ethereum.org/en/wallets/' target='_blank' rel='noreferrer'>
+            ethereum.org/en/wallets
+          </a>
+          <br />
+          <br />
+          {'-> '}
+          <a
+            href='https://medium.com/building-blocks-on-the-chain/how-to-build-a-react-dapp-with-hardhat-and-metamask-9cec8f6410d3#7c9f'
+            target='_blank'
+            rel='noreferrer'
+          >
+            Setup Metamask
+          </a>
+          <br />
+          <br />
+        </div>
+        <Button onClick={() => console.log('click')}>Close</Button>
       </div>
     </WindowModal>
   )
