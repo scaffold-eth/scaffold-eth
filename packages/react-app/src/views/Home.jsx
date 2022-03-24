@@ -1,121 +1,133 @@
 import { useContractReader } from "eth-hooks";
+import React, { useEffect, useState } from "react";
 import { ethers } from "ethers";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Button, List, Card, Spin } from "antd";
+import { Address } from "../components";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- **/
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer }) {
+  const priceToMint = useContractReader(readContracts, "LoogieShip", "price");
+  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+
+  const totalSupply = useContractReader(readContracts, "LoogieShip", "totalSupply");
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const shipsLeft = 1000 - totalSupply;
+
+  const [allShips, setAllShips] = useState();
+  const [page, setPage] = useState(1);
+  const [loadingShips, setLoadingShips] = useState(true);
+  const perPage = 8;
+
+  useEffect(() => {
+    const updateAllShips = async () => {
+      if (readContracts.LoogieShip && totalSupply) {
+        setLoadingShips(true);
+        const collectibleUpdate = [];
+        let startIndex = totalSupply - 1 - perPage * (page - 1);
+        for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex >= 0; tokenIndex--) {
+          try {
+            if (DEBUG) console.log("Getting token index", tokenIndex);
+            const tokenId = await readContracts.LoogieShip.tokenByIndex(tokenIndex);
+            if (DEBUG) console.log("Getting Ship tokenId: ", tokenId);
+            const tokenURI = await readContracts.LoogieShip.tokenURI(tokenId);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+            const jsonManifestString = atob(tokenURI.substring(29));
+            const owner = await readContracts.LoogieShip.ownerOf(tokenId);
+            if (DEBUG) console.log("owner: ", owner);
+
+            try {
+              const jsonManifest = JSON.parse(jsonManifestString);
+              collectibleUpdate.push({ id: tokenId, uri: tokenURI, owner: owner, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        setAllShips(collectibleUpdate);
+        setLoadingShips(false);
+      }
+    };
+    updateAllShips();
+  }, [DEBUG, readContracts.LoogieShip, (totalSupply || "0").toString(), page]);
 
   return (
     <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/views/Home.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          YourContract.sol
-        </span>{" "}
-        in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-      {!purpose ? (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>👷‍♀️</span>
-          You haven't deployed your contract yet, run
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn chain
-          </span>{" "}
-          and{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn deploy
-          </span>{" "}
-          to deploy your first contract!
+      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
+        <div style={{ fontSize: 16 }}>
+          <p>
+            Only <strong>1000 Loogie Ships</strong> available.
+          </p>
         </div>
-      ) : (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>🤓</span>
-          The "purpose" variable from your contract is{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            {purpose}
-          </span>
-        </div>
-      )}
 
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        <Button
+          type="primary"
+          onClick={async () => {
+            const priceRightNow = await readContracts.LoogieShip.price();
+            try {
+              const txCur = await tx(writeContracts.LoogieShip.mintItem({ value: priceRightNow, gasLimit: 30000000 }));
+              await txCur.wait();
+            } catch (e) {
+              console.log("mint failed", e);
+            }
+          }}
         >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
+          MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+        </Button>
+
+        <p style={{ fontWeight: "bold" }}>{shipsLeft} left</p>
       </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛠</span>
-        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
+
+      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+        <div>
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 2,
+              lg: 3,
+              xl: 4,
+              xxl: 4,
+            }}
+            pagination={{
+              total: totalSupply,
+              defaultPageSize: perPage,
+              defaultCurrent: page,
+              onChange: currentPage => {
+                setPage(currentPage);
+              },
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
+            }}
+            loading={loadingShips}
+            dataSource={allShips}
+            renderItem={item => {
+              const id = item.id.toNumber();
+
+              return (
+                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                  <Card
+                    title={
+                      <div>
+                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                      </div>
+                    }
+                  >
+                    <img src={item.image} alt={"Loogie Ship #" + id} width="400" />
+                    <div>
+                      <Address
+                        address={item.owner}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                    </div>
+                  </Card>
+                </List.Item>
+              );
+            }}
+          />
+        </div>
       </div>
     </div>
   );

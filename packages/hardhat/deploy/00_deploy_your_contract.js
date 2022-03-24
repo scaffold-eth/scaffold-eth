@@ -17,18 +17,33 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
+  const metadata = await deploy("LoogieShipMetadata", {
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
-    waitConfirmations: 5,
   });
 
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
-  /*  await YourContract.setPurpose("Hello");
-  
+  const render = await deploy("LoogieShipRender", {
+    from: deployer,
+    log: true,
+  });
+
+  await deploy("LoogieShip", {
+    from: deployer,
+    args: [
+      "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+    ],
+    libraries: {
+      LoogieShipMetadata: metadata.address,
+      LoogieShipRender: render.address,
+    },
+    log: true,
+  });
+
+  /*
     To take ownership of yourContract using the ownable library uncomment next line and add the 
     address you want to be the owner. 
     // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
@@ -76,4 +91,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //   console.error(error);
   // }
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["LoogieShip"];

@@ -10,3 +10,64 @@ body {
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+.ship-preview {
+  margin: 0 auto;
+}
+
+.ship-preview .ant-card {
+  margin: 0 auto;
+}
+
+.ship-preview .ant-card-body {
+  display: flex;
+}
+
+.ship-preview .ant-alert {
+  width: 300px;
+}
+
+.ship-preview .ant-alert .ant-list-item {
+  justify-content: center;
+}
+
+.promote-button {
+  width: 200px;
+}
+
+.transfer {
+  margin-top: 40px;
+}
+
+.transfer div {
+  display: inline;
+}
+
+.transfer .ant-input-group-wrapper {
+  width: 290px;
+}
+
+.transfer button {
+  margin-left: 10px;
+}
+
+.crew-member {
+  display: flex;
+  vertical-align: middle;
+  align-items: center;
+}
+
+.crew-member div {
+  display: flex;
+  flex-direction: column;
+  text-align: center;
+}
+
+.crew-member div span {
+  margin-top: -25px;
+  margin-bottom: -15px;
+}
+
+.crew-member img {
+  margin-top: -25px;
+}
