@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown, Badge } from "antd";
-import { DownOutlined } from "@ant-design/icons";
-import { Address, AddressInput } from "../components";
-import { ethers } from "ethers";
+import { useHistory } from "react-router-dom";
+import { Button, Card, List } from "antd";
+import { CheckOutlined } from "@ant-design/icons";
+import { AddressInput } from "../components";
 
 function YourShips({
   DEBUG,
@@ -69,6 +68,7 @@ function YourShips({
             shipCrewUpdate[tokenId]["Deck Officer"] = officerId.toString();
             const seamanId = await readContracts.LoogieShip.crewById(3, tokenId);
             shipCrewUpdate[tokenId]["Seaman"] = seamanId.toString();
+            shipCrewUpdate[tokenId]["ready"] = captainId > 0 && engineerId > 0 && officerId > 0 && seamanId > 0;
           } catch (e) {
             console.log(e);
           }
@@ -113,6 +113,9 @@ function YourShips({
               return (
                 <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                   <Card
+                    headStyle={{
+                      backgroundColor: shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "#60f479" : "none",
+                    }}
                     title={
                       <div>
                         <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
@@ -125,6 +128,18 @@ function YourShips({
                         >
                           Add Crew
                         </Button>
+                        {shipCrew && shipCrew[id] && shipCrew[id]["ready"] && (
+                          <CheckOutlined
+                            title="Ready to go fishing!"
+                            style={{
+                              cursor: "pointer",
+                              float: "right",
+                              fontSize: 30,
+                              fontWeight: "bold",
+                              color: "green",
+                            }}
+                          />
+                        )}
                       </div>
                     }
                   >

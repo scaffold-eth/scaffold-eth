@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
-import { Alert, Button, Card, Col, Input, List, Menu, Row, Tabs, Dropdown, Badge } from "antd";
+import { Alert, Button, Card, List, Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
-import { Address, AddressInput } from "../components";
 import { ethers } from "ethers";
 
 function AddCrew({
@@ -24,7 +22,6 @@ function AddCrew({
   const [selectedShipPreview, setSelectedShipPreview] = useState("");
   const [updateBalances, setUpdateBalances] = useState(0);
   const [selectedCrew, setSelectedCrew] = useState();
-  const history = useHistory();
   const [page, setPage] = useState(1);
   const perPage = 4;
   const crew = [
@@ -174,7 +171,13 @@ function AddCrew({
         </div>
 
         {selectedShipPreview ? (
-          <div class="ship-preview">
+          <div
+            className={`ship-preview ${
+              selectedCrew && selectedCrew[0] && selectedCrew[1] && selectedCrew[2] && selectedCrew[3]
+                ? "ready-to-fishing"
+                : ""
+            }`}
+          >
             <Card style={{ width: 900 }} bordered={false}>
               <img style={{ height: 450 }} src={selectedShipPreview} alt={selectedShip} />
 
@@ -183,9 +186,17 @@ function AddCrew({
                   <List
                     size="large"
                     header={
-                      <div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16 }}>
-                        Add Crew to <strong>LoogieShip</strong>
-                      </div>
+                      <>
+                        {selectedCrew && selectedCrew[0] && selectedCrew[1] && selectedCrew[2] && selectedCrew[3] ? (
+                          <div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16, color: "green" }}>
+                            Ready to go fishing!
+                          </div>
+                        ) : (
+                          <div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16 }}>
+                            Add Crew to <strong>LoogieShip</strong>
+                          </div>
+                        )}
+                      </>
                     }
                   >
                     {crew.map(function (member) {

@@ -27,6 +27,11 @@ code {
   width: 300px;
 }
 
+.ready-to-fishing .ant-alert {
+  background-color: #e4f5e8;
+  border-color: #c1f5cf;
+}
+
 .ship-preview .ant-alert .ant-list-item {
   justify-content: center;
 }
