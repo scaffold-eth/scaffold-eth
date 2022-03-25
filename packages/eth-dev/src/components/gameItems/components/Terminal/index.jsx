@@ -22,7 +22,8 @@ const Terminal = ({
       initLeft={initLeft || 0}
       initHeight={initHeight}
       initWidth={initWidth}
-      backgroundPath='./assets/items/terminal.png'
+      backgroundPath='./assets/items/terminal_medium.png'
+      // backgroundPath='./assets/items/terminal_big.png'
       dragAreaHeightPercent={32}
       isOpen={isVisible}
     >
