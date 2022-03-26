@@ -2,7 +2,7 @@
 
 > everything you need to build on Ethereum! 🚀
 
-🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contract:
+🧪 Quickly experiment with Solidity using a frontend that adapts to your smart contracts:
 
 ![image](https://user-images.githubusercontent.com/2653167/124158108-c14ca380-da56-11eb-967e-69cde37ca8eb.png)
 
@@ -68,7 +68,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
 
-# 🛠 Buidl
+# 🛠 Build
 
 Check out all the [active branches](https://github.com/scaffold-eth/scaffold-eth/branches/active), [open issues](https://github.com/scaffold-eth/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
 
