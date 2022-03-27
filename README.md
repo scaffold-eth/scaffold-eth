@@ -66,7 +66,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 - [Payable](https://solidity-by-example.org/payable/)
 - [Fallback](https://solidity-by-example.org/fallback/)
 
-📧 Learn the [Solidity globals and units](https://solidity.readthedocs.io/en/v0.6.6/units-and-global-variables.html)
+📧 Learn the [Solidity globals and units](https://docs.soliditylang.org/en/latest/units-and-global-variables.html)
 
 # 🛠 Buidl
 
