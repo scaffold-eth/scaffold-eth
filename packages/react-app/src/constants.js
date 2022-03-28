@@ -172,6 +172,35 @@ export const NETWORKS = {
     gasPrice: 1000000000,
     faucet: "https://faucet.fantom.network/",
   },
+  moonbeam: {
+    name: "moonbeam",
+    color: "#53CBC9",
+    chainId: 1284,
+    blockExplorer: "https://moonscan.io",
+    rpcUrl: "https://rpc.api.moonbeam.network", 
+  },
+  moonriver: {
+    name: "moonriver",
+    color: "#53CBC9",
+    chainId: 1285,
+    blockExplorer: "https://moonriver.moonscan.io/",
+    rpcUrl: "https://rpc.api.moonriver.moonbeam.network",
+  },
+  moonbaseAlpha: {
+    name: "moonbaseAlpha",
+    color: "#53CBC9",
+    chainId: 1287,
+    blockExplorer: "https://moonbase.moonscan.io/",
+    rpcUrl: "https://rpc.api.moonbase.moonbeam.network",
+    faucet: "https://discord.gg/SZNP8bWHZq",
+  },
+  moonbeamDevNode: {
+    name: "moonbeamDevNode",
+    color: "#53CBC9",
+    chainId: 1281,
+    blockExplorer: "https://moonbeam-explorer.netlify.app/",
+    rpcUrl: "http://127.0.0.1:9933",
+  }
 };
 
 export const NETWORK = chainId => {
