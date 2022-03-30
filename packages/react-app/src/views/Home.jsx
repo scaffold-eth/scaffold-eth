@@ -1,122 +1,100 @@
-import { useContractReader } from "eth-hooks";
-import { ethers } from "ethers";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import { Button, Card, List, Spin } from "antd";
+import { Address } from "../components";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- **/
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+function Home({ DEBUG, readContracts, mainnetProvider, blockExplorer, totalSupply }) {
+  const [allNfts, setAllNfts] = useState();
+  const [page, setPage] = useState(1);
+  const [loadingNfts, setLoadingNfts] = useState(true);
+  const perPage = 8;
+
+  useEffect(() => {
+    const updateAllNfts = async () => {
+      if (readContracts.Phoenix && totalSupply) {
+        setLoadingNfts(true);
+        const collectibleUpdate = [];
+        let startIndex = totalSupply - perPage * (page - 1);
+        for (let tokenIndex = startIndex; tokenIndex > startIndex - perPage && tokenIndex > 0; tokenIndex--) {
+          try {
+            if (DEBUG) console.log("Getting Loogie tokenId: ", tokenIndex);
+            const tokenURI = await readContracts.Phoenix.tokenURI(tokenIndex);
+            if (DEBUG) console.log("tokenURI: ", tokenURI);
+
+            const owner = await readContracts.Phoenix.ownerOf(tokenIndex);
+            if (DEBUG) console.log("owner: ", owner);
+
+            try {
+              const jsonManifest = JSON.parse(tokenURI);
+              collectibleUpdate.push({ id: tokenIndex, uri: tokenURI, owner: owner, ...jsonManifest });
+            } catch (e) {
+              console.log(e);
+            }
+          } catch (e) {
+            console.log(e);
+          }
+        }
+        setAllNfts(collectibleUpdate);
+        setLoadingNfts(false);
+      }
+    };
+    updateAllNfts();
+  }, [readContracts.Phoenix, (totalSupply || "0").toString(), page]);
 
   return (
-    <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/views/Home.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          YourContract.sol
-        </span>{" "}
-        in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-      {!purpose ? (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>👷‍♀️</span>
-          You haven't deployed your contract yet, run
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn chain
-          </span>{" "}
-          and{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn deploy
-          </span>{" "}
-          to deploy your first contract!
-        </div>
+    <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+      {false ? (
+        <Spin style={{ marginTop: 100 }} />
       ) : (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>🤓</span>
-          The "purpose" variable from your contract is{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
+        <div>
+          <List
+            grid={{
+              gutter: 16,
+              xs: 1,
+              sm: 2,
+              md: 2,
+              lg: 3,
+              xl: 4,
+              xxl: 4,
             }}
-          >
-            {purpose}
-          </span>
+            pagination={{
+              total: totalSupply,
+              defaultPageSize: perPage,
+              defaultCurrent: page,
+              onChange: currentPage => {
+                setPage(currentPage);
+              },
+              showTotal: (total, range) => `${range[0]}-${range[1]} of ${totalSupply} items`,
+            }}
+            loading={loadingNfts}
+            dataSource={allNfts}
+            renderItem={item => {
+              return (
+                <List.Item key={item.id + "_" + item.uri + "_" + item.owner}>
+                  <Card
+                    title={
+                      <div>
+                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                      </div>
+                    }
+                  >
+                    <img src={item.image} alt={item.name} width="200" />
+                    <div>{item.description}</div>
+                    <div>
+                      <Address
+                        address={item.owner}
+                        ensProvider={mainnetProvider}
+                        blockExplorer={blockExplorer}
+                        fontSize={16}
+                      />
+                    </div>
+                  </Card>
+                </List.Item>
+              );
+            }}
+          />
         </div>
       )}
-
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛠</span>
-        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
-      </div>
     </div>
   );
 }
