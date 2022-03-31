@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+/* eslint-disable import/no-cycle */
+import React from 'react'
 
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
@@ -22,6 +23,7 @@ import {
   useExternalContractLoader
 } from '../../../../hooks'
 import { Transactor, checkBalancesAndSwitchNetwork } from '../../../../helpers'
+import NetworkSelectDropdown from '../NetworkSelectDropdown'
 import {
   Wallet as WalletView,
   Account,
@@ -61,24 +63,6 @@ const Wallet = ({
   loadWeb3Modal,
   logoutOfWeb3Modal
 }) => {
-  /*
-  const activateConnectionSearchAnimation = () => {
-    // eslint-disable-next-line no-new
-    new Typewriter('#wallet .content > .message', {
-      strings: ['Searching for network ...'],
-      cursor: '',
-      autoStart: true,
-      loop: true,
-      delay: 90, // delay between each key when typing
-      deleteSpeed: 10
-    })
-  }
-
-  useEffect(() => {
-    activateConnectionSearchAnimation()
-  }, [])
-  */
-
   const gotWeb3Provider = web3Modal && web3Modal.cachedProvider
 
   let walletDisplay = ''
@@ -146,22 +130,19 @@ const Wallet = ({
       <WindowModal
         initTop={160}
         initLeft={430}
-        initHeight={500}
-        initWidth={290}
+        initHeight={585}
+        initWidth={340}
         backgroundPath='./assets/items/wallet.png'
-        dragAreaHeightPercent={25}
+        dragAreaHeightPercent={10}
         isOpen={walletVisible}
+        contentContainerStyle={{
+          padding: '4% 8% 9%'
+        }}
       >
         <div
           className='content'
           style={{
-            position: 'absolute',
-            top: '13%',
-            right: 0,
-            height: '86%',
-            marginLeft: '9%',
-            marginRight: '9%',
-            overflow: 'auto'
+            width: '100%'
           }}
         >
           {/*
@@ -172,8 +153,9 @@ const Wallet = ({
 
           {walletDisplay}
 
-          <Balance value={yourLocalBalance} fontSize={20} price={price} />
+          {address && <Balance value={yourLocalBalance} fontSize={20} price={price} />}
 
+          {/*
           <div style={{ float: 'left', width: '100%' }}>
             <Address
               fontSize={20}
@@ -184,8 +166,9 @@ const Wallet = ({
               blockExplorer={blockExplorer}
             />
           </div>
+          */}
 
-          <div style={{ float: 'right' }}>
+          <div style={{ float: 'right', width: '100%' }}>
             <Account
               address={address}
               localProvider={localProvider}
@@ -199,14 +182,16 @@ const Wallet = ({
             />
           </div>
 
-          <div style={{ position: 'absolute', bottom: 0, marginBottom: 70 }}>
-            <GasGauge gasPrice={gasPrice} />
+          <div style={{ position: 'absolute', bottom: 0, marginBottom: '10%', padding: 10 }}>
+            <div style={{ marginBottom: 10 }}>Network:</div>
+            <NetworkSelectDropdown networkOptions={NETWORKS} targetNetwork={targetNetwork} />
+            <span style={{ marginLeft: 12 }}>
+              <GasGauge gasPrice={gasPrice} />
+            </span>
           </div>
 
           {faucetHint && (
-            <div style={{ position: 'absolute', bottom: 120, marginRight: '29px' }}>
-              {faucetHint}
-            </div>
+            <div style={{ position: 'absolute', bottom: 120, marginRight: 29 }}>{faucetHint}</div>
           )}
 
           {faucetAvailable && (

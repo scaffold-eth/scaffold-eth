@@ -19,7 +19,7 @@ const NetworkSelectDropdown = ({ networkOptions, targetNetwork }) => {
   return (
     <Select
       defaultValue={targetNetwork.name}
-      style={{ textAlign: 'left', width: 200 }}
+      style={{ textAlign: 'left', width: 181 }}
       onChange={value => {
         if (targetNetwork.chainId !== networkOptions[value].chainId) {
           window.localStorage.setItem('network', value)

@@ -36,12 +36,12 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
         top: 0,
         right: 0,
         width: '100%',
-        height: '63%',
+        height: '66%',
         display: 'flex',
         flexDirection: 'column',
         alignContent: 'flex-end',
 
-        marginTop: '50%',
+        marginTop: '46.5%',
         paddingLeft: '10%',
         paddingRight: '20%'
       }}

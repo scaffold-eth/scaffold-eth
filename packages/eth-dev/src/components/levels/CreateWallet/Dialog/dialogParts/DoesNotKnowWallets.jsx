@@ -35,7 +35,7 @@ const _dialog = [
       }) => (
         <>
           {isLastVisibleDialog && (
-            <a href='https://cryptozombies.io' target='_blank' rel='noreferrer' rel='noreferrer'>
+            <a href='https://cryptozombies.io' target='_blank' rel='noreferrer'>
               <Button className='is-warning'>Check out cryptozombies.io</Button>
             </a>
           )}

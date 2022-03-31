@@ -20,7 +20,7 @@ const CreateWalletLevel = ({ dialog, globalGameActions }) => {
     })
   }, [])
 
-  const [createWalletWindowVisible, setCreateWalletWindowVisibility] = useState(false)
+  // const [createWalletWindowVisible, setCreateWalletWindowVisibility] = useState(false)
   const [detailsOnWalletsWindowVisible, setDetailsOnWalletsWindowVisibility] = useState(false)
 
   return (
@@ -28,11 +28,13 @@ const CreateWalletLevel = ({ dialog, globalGameActions }) => {
       <Terminal
         isOpen
         globalGameActions={globalGameActions}
-        setCreateWalletWindowVisibility={setCreateWalletWindowVisibility}
         setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
       />
 
-      <DetailsOnWalletsWindow isOpen={detailsOnWalletsWindowVisible} />
+      <DetailsOnWalletsWindow
+        isOpen={detailsOnWalletsWindowVisible}
+        globalGameActions={globalGameActions}
+      />
       {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
     </div>
   )

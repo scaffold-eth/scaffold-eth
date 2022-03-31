@@ -30,7 +30,7 @@ const _dialog = [
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text={`We should probably head to my base. I've got everything we need setup there.`}
+          text={`We should probably head to my base. I've got everything we need there.`}
         />
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
@@ -95,24 +95,6 @@ const _dialog = [
             )}
           </>
         )
-      }
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='I have some information on them here. Take a look.'
-        />
-      ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setDetailsOnWalletsWindowVisibility
-      }) => {
-        return <></>
       }
     }
   }

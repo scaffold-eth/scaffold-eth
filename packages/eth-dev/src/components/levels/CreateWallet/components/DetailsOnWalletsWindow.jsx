@@ -3,9 +3,9 @@ import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
+const DetailsOnWalletsWindow = ({ globalGameActions, isOpen }) => {
   const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.5
+  const initHeight = initWidth
 
   return (
     <WindowModal
@@ -14,7 +14,7 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/items/window_large.png'
-      dragAreaHeightPercent={12}
+      dragAreaHeightPercent={8}
       windowTitle='Ethereum Wallets'
       isOpen={isOpen}
       windowTiteleStyle={{ top: '2.5%', left: '56%' }}
@@ -32,14 +32,13 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
       >
         <div
           style={{
-            // marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
             fontSize: 16
           }}
         >
-          The ethereum.org website has some fantastic guides on what Ethereum wallets are:
+          The ethereum.org website has some fantastic guides on what wallets are:
           <br />
           <br />
           {'-> '}
@@ -59,7 +58,14 @@ const DetailsOnWalletsWindow = ({ dialog, actions, isOpen }) => {
           <br />
           <br />
         </div>
-        <Button onClick={() => console.log('click')}>Close</Button>
+        <Button
+          onClick={() => {
+            globalGameActions.wallet.showWallet()
+            globalGameActions.dialog.continueDialog()
+          }}
+        >
+          Done
+        </Button>
       </div>
     </WindowModal>
   )

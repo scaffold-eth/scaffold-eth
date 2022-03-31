@@ -1,4 +1,5 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -11,28 +12,40 @@ const _dialog = [
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text={`Great! Let's generate one for you.`}
+          text={`Great! Let's get you connected.`}
         />
       ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setCreateWalletWindowVisibility
-      }) => {
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
         return (
           <>
             {isLastVisibleDialog && (
               <Button
                 className='is-warning'
                 onClick={() => {
-                  setCreateWalletWindowVisibility(true)
                   globalGameActions.wallet.showWallet()
                   globalGameActions.dialog.continueDialog()
                 }}
               >
                 Setup Wallet
               </Button>
+            )}
+          </>
+        )
+      }
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ok, I have a first job for you.' />
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <Link to='/insecure-gambling-contract'>
+                <Button className='is-warning'>Follow Anon</Button>
+              </Link>
             )}
           </>
         )

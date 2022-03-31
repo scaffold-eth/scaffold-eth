@@ -24,7 +24,7 @@ const Terminal = ({
       initWidth={initWidth}
       backgroundPath='./assets/items/terminal_medium.png'
       // backgroundPath='./assets/items/terminal_big.png'
-      dragAreaHeightPercent={32}
+      dragAreaHeightPercent={30}
       isOpen={isVisible}
     >
       <DialogContainer
