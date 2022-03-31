@@ -140,6 +140,7 @@ const ExplanationWindow = ({
           onClick={() => {
             if (currentStep === 3) {
               setDaoContractWindowVisibility(true)
+              setFetchIntructionsWindowVisibility(true)
             }
 
             if (currentStep === 6) {

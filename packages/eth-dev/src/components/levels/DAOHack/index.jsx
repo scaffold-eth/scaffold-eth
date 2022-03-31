@@ -27,8 +27,8 @@ const DAOHack = ({ dialog, globalGameActions }) => {
 
   const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useState(false)
   const [darkDaoContractWindowIsVisible, setDarkDaoContractWindowVisibility] = useState(false)
-  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(true)
-  const [fetchIntructionsWindowIsVisible, setFetchIntructionsWindowVisibility] = useState(true)
+  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
+  const [fetchIntructionsWindowIsVisible, setFetchIntructionsWindowVisibility] = useState(false)
 
   return (
     <div id='DAOHack'>
