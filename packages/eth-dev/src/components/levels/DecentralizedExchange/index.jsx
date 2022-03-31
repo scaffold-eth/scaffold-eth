@@ -12,7 +12,8 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
     // load level
     globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'ExchangeRed' })
+    globalGameActions.background.setCurrentBackground({ background: 'RoofSatellite' })
+    // globalGameActions.background.setCurrentBackground({ background: 'ExchangeRed' })
     // set dialog
     globalGameActions.dialog.initDialog({
       initialDialogPathId: `${LEVEL_ID}/Start`,

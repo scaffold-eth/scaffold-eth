@@ -11,7 +11,7 @@ const _dialog = [
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Ok. Let's get started.`} />
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I wanted you to see this.' />
         </>
       ),
       choices: null
@@ -23,7 +23,20 @@ const _dialog = [
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
-            text={`We've already got some ideas on how to get this up and running.`}
+            text='This dish is connected to you nodes in the cellars.'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='But before I show you what we are planning to use them for I want to introduce you to someone.'
           />
         </>
       ),

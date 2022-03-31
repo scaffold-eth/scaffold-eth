@@ -97,7 +97,7 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
           <br />
           <br />
           <h2>Challenge</h2>
-          Help Anon Punk by using the
+          Help Anon Punk by using the{' '}
           <a
             target='_blank'
             rel='noreferrer'

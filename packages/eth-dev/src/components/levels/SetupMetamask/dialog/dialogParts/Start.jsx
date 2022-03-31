@@ -20,10 +20,7 @@ const _dialog = [
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text={`Let's get you hooked you up!`}
-          />
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Let's get you hooked up!`} />
         </>
       ),
       choices: ({

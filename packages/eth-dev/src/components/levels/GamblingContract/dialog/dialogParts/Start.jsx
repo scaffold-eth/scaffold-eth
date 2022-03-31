@@ -1,6 +1,5 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
-
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -116,7 +115,7 @@ const _dialog = [
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/create-wallet'>
+            <Link to='/dao-hack'>
               <Button className='is-warning'>Drive into City</Button>
             </Link>
           )}

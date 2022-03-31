@@ -10,7 +10,7 @@ const ExplanationWindow = ({
   setExplanationWindowVisibility,
   setEtherDeltaWindowVisibility
 }) => {
-    const contentFileName = 'ExplanationWindow.md'
+  const contentFileName = 'ExplanationWindow.md'
   const [fileContent, setFileContent] = useState('')
 
   useEffect(() => {

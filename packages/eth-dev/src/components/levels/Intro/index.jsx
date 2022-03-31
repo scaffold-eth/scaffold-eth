@@ -25,7 +25,7 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
     // load level
     globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'Intro' })
+    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
     // set dialog
     globalGameActions.dialog.initDialog({
       initialDialogPathId: `${LEVEL_ID}/StartMonolog`,
@@ -66,7 +66,7 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
 
   return (
     <div id={`level${LEVEL_ID}`} style={{ height: '100vh', overflow: 'hidden' }}>
-      {!didEnterGame && !showWelcomeWindow && (
+      {/* !didEnterGame && !showWelcomeWindow && (
         <div style={{ margin: '20% 30%' }}>
           <div style={{ textAlign: 'center', marginBottom: 15 }}>
             <i id='coin1' className='nes-icon coin is-medium' />
@@ -83,8 +83,25 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
             <span style={{ marginLeft: 5, marginRight: 5 }}>Insert Coin</span>
           </Button>
         </div>
-      )}
+          ) */}
 
+      {!showWelcomeWindow && (
+        <Button
+          className='is-warning'
+          style={{
+            position: 'absolute',
+            top: '28%',
+            right: '4%',
+            width: '17%'
+          }}
+          onClick={() => {
+            audio.click.play()
+            setShowWelcomeWindow(true)
+          }}
+        >
+          <span style={{ marginLeft: 5, marginRight: 5 }}>Enter Game</span>
+        </Button>
+      )}
       {!didEnterGame && showWelcomeWindow && (
         <WelcomeWindow
           isOpen={showWelcomeWindow}

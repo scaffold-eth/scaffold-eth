@@ -37,19 +37,11 @@ const _dialog = [
               >
                 I know what to do
               </Button>
-              <Button
-                className='is-warning'
-                /*
-                onClick={() =>
-                  globalGameActions.dialog.jumpToDialogPath({
-                    currentDialog,
-                    dialogPathId: BEGINNER_DIALOG_PART_ID
-                  })
-                }
-                */
-              >
-                I think I need some more training
-              </Button>
+              {isLastVisibleDialog && (
+                <Link to='/create-wallet'>
+                  <Button className='is-warning'>I think I need some more training</Button>
+                </Link>
+              )}
             </>
           )}
         </>
