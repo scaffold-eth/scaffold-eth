@@ -3,26 +3,23 @@ import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({
+const HistoryWindow = ({
   isOpen,
   globalGameActions,
+  setHistoryWindowVisibility,
   setContractWindowVisibility,
-  setExplanationWindowVisibility
+  setChallengeWindowVisibility
 }) => {
   return (
     <WindowModal
-      initTop={10}
-      initLeft={10}
+      initTop={20}
+      initLeft={window.innerWidth * 0.1}
       initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.5}
-      backgroundPath='./assets/items/window_large.png'
+      backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle={`NFT's`}
+      windowTitle='NFT History'
       isOpen={isOpen}
-      windowTiteleStyle={{
-        top: '3%',
-        left: '56%'
-      }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div
@@ -106,21 +103,21 @@ $ yarn deploy`}
             setContractWindowVisibility(true)
           }}
         >
-          Show example contract
+          Show example NFT contract
         </Button>
         <Button
           className='is-warning'
           onClick={() => {
-            globalGameActions.dialog.continueDialog()
+            setHistoryWindowVisibility(false)
             setContractWindowVisibility(false)
-            setExplanationWindowVisibility(false)
+            setChallengeWindowVisibility(true)
           }}
         >
-          Done
+          Start Challenge
         </Button>
       </div>
     </WindowModal>
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default wrapGlobalGameData(HistoryWindow)

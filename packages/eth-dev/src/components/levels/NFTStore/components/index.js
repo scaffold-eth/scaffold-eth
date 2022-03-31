@@ -1,4 +1,5 @@
 import ContractWindow from './ContractWindow'
-import ExplanationWindow from './ExplanationWindow'
+import HistoryWindow from './HistoryWindow'
+import ChallengeWindow from './ChallengeWindow'
 
-export { ContractWindow, ExplanationWindow }
+export { ContractWindow, HistoryWindow, ChallengeWindow }

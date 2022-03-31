@@ -2,7 +2,8 @@ import React from 'react'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PART_ID = 'NFTStore/Start'
+export const LEVEL_ID = 'NFTStore'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
@@ -21,7 +22,20 @@ const _dialog = [
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
-            text={`We need you to create the contracts that keep track on who is part of the gang and who isn't.`}
+            text={`As you can see, we've already setup.`}
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='What is missing now is, an interface for our members to obtain their membership badges.'
           />
         </>
       ),
@@ -29,23 +43,30 @@ const _dialog = [
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setExplanationWindowVisibility,
-        setContractWindowVisibility
+        setHistoryWindowVisibility,
+        setContractWindowVisibility,
+        setChallengeWindowVisibility
       }) => (
         <>
           {isLastVisibleDialog && (
             <Button
               className='is-warning'
               onClick={() => {
-                setExplanationWindowVisibility(true)
+                setHistoryWindowVisibility(true)
                 globalGameActions.dialog.continueDialog()
               }}
             >
-              Show Instructions
+              Show Documentation
             </Button>
           )}
         </>
       )
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => <></>,
+      choices: () => <></>
     }
   },
   {
@@ -56,6 +77,88 @@ const _dialog = [
         </>
       ),
       choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='Such an elegant solution to our problem!'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text={`I'll advise my people to pick up their Tokens right away.`}
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`It's late.`} />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='You can stay at one of my apartments for now.'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text={`I'll see you there tomorrow!`}
+          />
+        </>
+      ),
+      choices: ({
+        dialog: { currentDialog },
+        isLastVisibleDialog,
+        globalGameActions,
+        setHistoryWindowVisibility,
+        setContractWindowVisibility,
+        setChallengeWindowVisibility
+      }) => (
+        <>
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.levels.setCurrentLevel({ levelId: LEVEL_ID })
+              }}
+            >
+              Go to apartment
+            </Button>
+          )}
+        </>
+      )
     }
   }
 ]

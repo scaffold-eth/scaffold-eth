@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
-import { ContractWindow, ExplanationWindow } from './components'
+import { HistoryWindow, ContractWindow, ChallengeWindow } from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'NFTStore'
@@ -20,8 +20,9 @@ const NFTStore = ({ dialog, globalGameActions }) => {
     })
   }, [])
 
+  const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)
   const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
-  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
+  const [challengeWindowIsVisible, setChallengeWindowVisibility] = useState(false)
 
   return (
     <div id='NFTStore'>
@@ -30,17 +31,24 @@ const NFTStore = ({ dialog, globalGameActions }) => {
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
+        setHistoryWindowVisibility={setHistoryWindowVisibility}
         setContractWindowVisibility={setContractWindowVisibility}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
+      />
+
+      <HistoryWindow
+        isOpen={historyWindowIsVisible}
+        globalGameActions={globalGameActions}
+        setHistoryWindowVisibility={setHistoryWindowVisibility}
+        setContractWindowVisibility={setContractWindowVisibility}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
       />
 
       <ContractWindow isOpen={contractWindowIsVisible} />
 
-      <ExplanationWindow
-        isOpen={explanationWindowIsVisible}
-        globalGameActions={globalGameActions}
-        setContractWindowVisibility={setContractWindowVisibility}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
+      <ChallengeWindow
+        isOpen={challengeWindowIsVisible}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
       />
     </div>
   )
