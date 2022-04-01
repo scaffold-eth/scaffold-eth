@@ -99,8 +99,8 @@ const ChallengeWindow = ({
   return (
     <WindowModal
       initTop={10}
-      initLeft={10}
-      initHeight={window.innerHeight * 0.90}
+      initLeft={window.innerWidth * 0.05}
+      initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
@@ -119,7 +119,6 @@ const ChallengeWindow = ({
           lineHeight: 2.2
         }}
       >
-        <h2>🥩 Decentralized Staking App</h2>
         <Markdown>{fileContentIntro}</Markdown>
         <Markdown>{fileContent0}</Markdown>
         {currentStep >= 1 && <Markdown>{fileContent1}</Markdown>}

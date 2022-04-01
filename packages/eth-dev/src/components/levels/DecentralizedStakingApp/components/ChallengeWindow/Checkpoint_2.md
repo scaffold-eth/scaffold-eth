@@ -1,16 +1,22 @@
-# Checkpoint 2: 🏵Your Token 💵
+## Checkpoint 2: 🥩 Staking 💵
 
-> 👩‍💻 Edit `YourToken.sol` to inherit the **ERC20** token standard from OpenZeppelin
+You'll need to track individual `balances` using a mapping:
+```solidity
+mapping ( address => uint256 ) public balances;
+```
 
-> Mint **1000** (\* 10 \*\* 18) to your frontend address using the `constructor()`.
+And also track a constant `threshold` at ```1 ether```
+```solidity
+uint256 public constant threshold = 1 ether;
+```
 
-(Your frontend address is the address in the top right of http://localhost:3000)
+> 👩‍💻 Write your `stake()` function and test it with the `Debug Contracts` tab in the frontend
 
-> You can `yarn deploy --reset` to deploy your contract until you get it right.
+💸 Need more funds from the faucet?  Enter your frontend address into the wallet to get as much as you need!
+![Wallet_Medium](https://user-images.githubusercontent.com/12072395/159990402-d5535875-f1eb-4c75-86a7-6fbd5e6cbe5f.png)
 
 #### 🥅 Goals
 
-- [ ] Can you check the `balanceOf()` your frontend address in the **YourToken** of the `Debug Contracts` tab?
-- [ ] Can you `transfer()` your token to another account and check _that_ account's `balanceOf`?
-
-(Use an incognito window to create a new address and try sending to that new address. Use the `transfer()` function in the `Debug Contracts` tab.)
+- [ ] Do you see the balance of the `Staker` contract go up when you `stake()`?
+- [ ] Is your `balance` correctly tracked?
+- [ ] Do you see the events in the `Staker UI` tab?

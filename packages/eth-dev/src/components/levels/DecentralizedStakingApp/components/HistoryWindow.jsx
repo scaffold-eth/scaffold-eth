@@ -13,7 +13,7 @@ const HistoryWindow = ({
   return (
     <WindowModal
       initTop={20}
-      initLeft={window.innerWidth * 0.1}
+      initLeft={window.innerWidth * 0.05}
       initHeight={window.innerHeight * 0.9}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'

@@ -1,13 +1,12 @@
-# Checkpoint 5: 💾 Deploy it! 🛰
+## Checkpoint 5: 🚢 Ship it 🚁
 
-📡 Edit the `defaultNetwork` in `packages/hardhat/hardhat.config.js`, as well as `targetNetwork` in `packages/react-app/src/App.jsx`, to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/)
+📡 Edit the `defaultNetwork` to [your choice of public EVM networks](https://ethereum.org/en/developers/docs/networks/) in `packages/hardhat/hardhat.config.js`
 
-👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**.
+👩‍🚀 You will want to run `yarn account` to see if you have a **deployer address**
 
 🔐 If you don't have one, run `yarn generate` to create a mnemonic and save it locally for deploying.
 
-🛰 Use a faucet like [faucet.paradigm.xyz](https://faucet.paradigm.xyz/) to fund your **deployer address** (run `yarn account` again to view balances)
+⛽️ You will need to send ETH to your **deployer address** with your wallet.
 
-> 🚀 Run `yarn deploy` to deploy to your public network of choice (😅 wherever you can get ⛽️ gas)
-
-🔬 Inspect the block explorer for the network you deployed to... make sure your contract is there.
+> 📝 If you plan on submitting this challenge, be sure to set your ```deadline``` to at least ```block.timestamp + 72 hours```
+>  🚀 Run `yarn deploy` to deploy your smart contract to a public network (selected in hardhat.config.js)

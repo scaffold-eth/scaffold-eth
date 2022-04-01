@@ -1,67 +1,31 @@
-# Checkpoint 3: ⚖️ Vendor 🤖
+## Checkpoint 3: 🔬 State Machine / Timing ⏱
 
-> 👩‍💻 Edit the `Vendor.sol` contract with a **payable** `buyTokens()` function
+> ⚙️  Think of your smart contract like a *state machine*. First, there is a **stake** period. Then, if you have gathered the `threshold` worth of ETH, there is a **success** state. Or, we go into a **withdraw** state to let users withdraw their funds.
 
-Use a price variable named `tokensPerEth` set to **100**:
-
+Set a `deadline` of ```block.timestamp + 30 seconds```
 ```solidity
-uint256 public constant tokensPerEth = 100;
+uint256 public deadline = block.timestamp + 30 seconds;
 ```
 
-> 📝 The `buyTokens()` function in `Vendor.sol` should use `msg.value` and `tokensPerEth` to calculate an amount of tokens to `yourToken.transfer()` to `msg.sender`.
+👨‍🏫 Smart contracts can't execute automatically, you always need to have a transaction execute to change state. Because of this, you will need to have an `execute()` function that *anyone* can call, just once, after the `deadline` has expired.
 
-> 📟 Emit **event** `BuyTokens(address buyer, uint256 amountOfETH, uint256 amountOfTokens)` when tokens are purchased.
+> 👩‍💻 Write your `execute()` function and test it with the `Debug Contracts` tab
 
-Edit `deploy/01_deploy_vendor.js` to deploy the `Vendor` (uncomment Vendor deploy lines).
+If the `address(this).balance` of the contract is over the `threshold` by the `deadline`, you will want to call: ```exampleExternalContract.complete{value: address(this).balance}()```
 
-#### 🥅 Goals
+If the balance is less than the `threshold`, you want to set a `openForWithdraw` bool to `true` and allow users to `withdraw()` their funds.
 
-- [ ] When you try to buy tokens from the vendor, you should get an error: **'ERC20: transfer amount exceeds balance'**
+(You'll have 30 seconds after deploying until the deadline is reached, you can adjust this in the contract.)
 
-⚠️ this is because the Vendor contract doesn't have any YourTokens yet!
+> 👩‍💻 Create a `timeLeft()` function including ```public view returns (uint256)``` that returns how much time is left.
 
-⚔️ Side Quest: send tokens from your frontend address to the Vendor contract address and *then* try to buy them.
+⚠️ Be careful! if `block.timestamp >= deadline` you want to ```return 0;```
 
-> ✏️ We can't hard code the vendor address like we did above when deploying to the network because we won't know the vender address at the time we create the token contract.
+⏳ The time will only update if a transaction occurs. You can see the time update by getting funds from the faucet just to trigger a new block.
 
-> ✏️ So instead, edit `YourToken.sol` to transfer the tokens to the `msg.sender` (deployer) in the **constructor()**.
-
-> ✏️ Then, edit `deploy/01_deploy_vendor.js` to transfer 1000 tokens to `vendor.address`.
-
-```js
-await yourToken.transfer( vendor.address, ethers.utils.parseEther("1000") );
-```
-
-> You can `yarn deploy --reset` to deploy your contract until you get it right.
-
-(You will use the `YourToken` UI tab and the frontend for most of your testing. Most of the UI is already built for you for this challenge.)
+> 👩‍💻 You can call `yarn deploy --reset` any time you want a fresh contract
 
 #### 🥅 Goals
-
-- [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?
-- [ ] Can you buy **10** tokens for **0.1** ETH?
-- [ ] Can you transfer tokens to a different account?
-
-
-> 📝 Edit `Vendor.sol` to inherit *Ownable*.
-
-In `deploy/01_deploy_vendor.js` you will need to call `transferOwnership()` on the `Vendor` to make *your frontend address* the `owner`:
-
-```js
-await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
-```
-
-#### 🥅 Goals
-
-- [ ] Is your frontend address the `owner` of the `Vendor`?
-
-> 📝 Finally, add a `withdraw()` function in `Vendor.sol` that lets the owner withdraw ETH from the vendor.
-
-#### 🥅 Goals
-
-- [ ] Can **only** the `owner` withdraw the ETH from the `Vendor`?
-
-#### ⚔️ Side Quests
-
-- [ ] Can _anyone_ withdraw? Test _everything_!
-- [ ] What if you minted **2000** and only sent **1000** to the `Vendor`?
+- [ ] Can you see `timeLeft` counting down in the `Staker UI` tab when you trigger a transaction with the faucet?
+- [ ] If you `stake()` enough ETH before the `deadline`, does it call `complete()`?
+- [ ] If you don't `stake()` enough can you `withdraw()` your funds?
