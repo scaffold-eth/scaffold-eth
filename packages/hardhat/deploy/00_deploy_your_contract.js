@@ -69,7 +69,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //     await run("verify:verify", {
   //       address: YourContract.address,
   //       contract: "contracts/YourContract.sol:YourContract",
-  //       contractArguments: [],
+  //       constructorArguments: [],
   //     });
   //   }
   // } catch (error) {
