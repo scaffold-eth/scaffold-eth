@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
-import { ethers } from 'ethers'
+import { BrowserRouter, Switch, Route } from 'react-router-dom'
 import { connectController as wrapGlobalGameData } from '../gameItems'
 import { Background, QRPunkBlockie } from '../gameItems/components'
 
@@ -16,6 +15,7 @@ import Multisig from './Multisig'
 import DecentralizedExchange from './DecentralizedExchange'
 import NFTStore from './NFTStore'
 import DecentralizedStakingApp from './DecentralizedStakingApp'
+import TokenVendor from './TokenVendor'
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 import ERC20 from './ERC20'
@@ -84,6 +84,9 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           </Route>
           <Route path='/decentralized-staking-app'>
             <DecentralizedStakingApp />
+          </Route>
+          <Route path='/token-vendor'>
+            <TokenVendor />
           </Route>
           <Route path='/dao-hack'>
             <DAOHack />
