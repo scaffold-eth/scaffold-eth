@@ -21,7 +21,7 @@ const SpeakerLeft = ({ text, pathToAvatar }) => {
           position: 'absolute',
           left: 0,
           bottom: 8,
-          minWidth: '60px',
+          minWidth: 60,
           transform: 'scaleX(1)'
         }}
       />

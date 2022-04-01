@@ -1,4 +1,6 @@
 import React from 'react'
+import { Link } from 'react-router-dom'
+
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -148,14 +150,9 @@ const _dialog = [
       }) => (
         <>
           {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                globalGameActions.levels.setCurrentLevel({ levelId: LEVEL_ID })
-              }}
-            >
-              Go to apartment
-            </Button>
+            <Link to='/decentralized-staking-app'>
+              <Button className='is-warning'>Go to apartment</Button>
+            </Link>
           )}
         </>
       )

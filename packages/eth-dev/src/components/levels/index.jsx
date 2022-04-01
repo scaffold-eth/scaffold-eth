@@ -15,6 +15,7 @@ import GamblingContract from './GamblingContract'
 import Multisig from './Multisig'
 import DecentralizedExchange from './DecentralizedExchange'
 import NFTStore from './NFTStore'
+import DecentralizedStakingApp from './DecentralizedStakingApp'
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 import ERC20 from './ERC20'
@@ -80,6 +81,9 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           </Route>
           <Route path='/nft-store'>
             <NFTStore />
+          </Route>
+          <Route path='/decentralized-staking-app'>
+            <DecentralizedStakingApp />
           </Route>
           <Route path='/dao-hack'>
             <DAOHack />

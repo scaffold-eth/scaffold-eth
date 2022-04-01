@@ -153,6 +153,11 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
               levels: [
                 { levelId: null, name: 'Tokeneconomics' },
                 {
+                  levelId: 'DecentralizedStakingApp',
+                  name: 'DecentralizedStakingApp',
+                  path: '/decentralized-staking-app'
+                },
+                {
                   levelId: 'DecentralizedExchange',
                   name: 'DEX/Uniswap',
                   path: '/decentralized-exchange'
