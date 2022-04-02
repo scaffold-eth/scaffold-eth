@@ -27,8 +27,8 @@ const Multisig = ({ dialog, globalGameActions }) => {
     <div id='multisig'>
       <Terminal
         isOpen
-        initTop={window.innerHeight - 840}
-        initLeft={window.innerWidth - 530}
+        // initTop={window.innerHeight - 840}
+        // initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}

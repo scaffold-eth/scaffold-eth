@@ -111,7 +111,7 @@ const ChallengeWindow = ({
 
         {currentStep < 6 && (
           <Button
-            style={{ marginBottom: 40 }}
+            style={{ marginTop: 20, marginBottom: 40 }}
             onClick={() => {
               setCurrentStep(currentStep + 1)
             }}
@@ -125,6 +125,7 @@ const ChallengeWindow = ({
             onClick={() => {
               globalGameActions.dialog.continueDialog()
               setChallengeWindowVisibility(false)
+              setContractWindowVisibility(false)
             }}
           >
             Done

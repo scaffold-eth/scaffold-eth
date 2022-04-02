@@ -25,3 +25,5 @@
 💼 Take a quick look at your deploy script `00_deploy_your_contract.js` in `packages/hardhat/deploy`.
 
 📝 If you want to make frontend edits, open `App.jsx` in `packages/react-app/src`.
+<br/>
+<br/>

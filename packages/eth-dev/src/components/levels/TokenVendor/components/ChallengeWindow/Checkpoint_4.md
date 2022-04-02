@@ -31,3 +31,5 @@
 #### ⚠️ Test it!
 
 -  Now is a good time to run `yarn test` to run the automated testing function. It will test that you hit the core checkpoints.  You are looking for all green checkmarks and passing tests!
+<br/>
+<br/>

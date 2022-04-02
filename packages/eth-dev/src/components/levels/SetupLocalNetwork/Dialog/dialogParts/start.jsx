@@ -1,9 +1,10 @@
 import React from 'react'
-import { Link } from 'react-router-dom'
 
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
-import { DIALOG_PART_ID as BEGINNER_DIALOG_PART_ID } from './BeginnerDev'
+
+import { DIALOG_PART_ID as SETUP_NETWORK_PATH_ID } from './SetupNetwork'
+import { DIALOG_PART_ID as BEGINNER_DEV_PATH_ID } from './BeginnerDev'
 
 export const LEVEL_ID = 'SetupLocalNetwork'
 export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
@@ -11,73 +12,38 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='Do you know how to set up and connect to a local ethereum environment or do you need some more training?'
-          />
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Can you work with this?' />
         </>
       ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setInitChainInstructionsWindowVisibility
-      }) => (
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <>
               <Button
                 className='is-warning'
                 onClick={() => {
-                  setInitChainInstructionsWindowVisibility(true)
-                  globalGameActions.dialog.continueDialog()
+                  globalGameActions.dialog.jumpToDialogPath({
+                    currentDialog,
+                    dialogPathId: SETUP_NETWORK_PATH_ID
+                  })
                 }}
               >
                 I know what to do
               </Button>
-              {isLastVisibleDialog && (
-                <Link to='/create-wallet'>
-                  <Button className='is-warning'>I think I need some more training</Button>
-                </Link>
-              )}
+              <Button
+                className='is-warning'
+                onClick={() => {
+                  globalGameActions.dialog.jumpToDialogPath({
+                    currentDialog,
+                    dialogPathId: BEGINNER_DEV_PATH_ID
+                  })
+                }}
+              >
+                I think I need some more training
+              </Button>
             </>
-          )}
-        </>
-      )
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`Great! For the game to run smoothly you'll need to do the following ...`}
-        />
-      ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setInitChainInstructionsWindowVisibility
-      }) => <></>
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Nice! Seems like you still now your stuff!'
-        />
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          {isLastVisibleDialog && (
-            <Link to='/underflow-bug'>
-              <Button>Continue</Button>
-            </Link>
           )}
         </>
       )

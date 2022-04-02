@@ -13,7 +13,7 @@ const _dialog = [
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What a view right?' />
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Hello there' />
         </>
       ),
       choices: null
@@ -21,21 +21,11 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Especially at night.' />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text={`I dont know why, but I've always preferrd working in the dark ...`}
+            pathToAvatar='./assets/punk4551.png'
+            text={`I believe we haven't had the pleasure`}
           />
         </>
       ),
@@ -44,9 +34,35 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='How about you?' />
+          <SpeakerLeft
+            pathToAvatar='./assets/punk4551.png'
+            text={`What a beautiful night, don't you think?`}
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk4551.png'
+            text={`I dont know why, but I've always preferred working in the dark ...`}
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='How about you?' />
         </>
       ),
       choices: ({

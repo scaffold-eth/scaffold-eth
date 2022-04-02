@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
+import { DIALOG_PART_ID as BUILD_DAPPS } from './BuildDapps'
+import { DIALOG_PART_ID as LEARN_ABOUT_SC_SECURITY } from './LearnAboutScSecurity'
+
 export const LEVEL_ID = 'Intro'
 export const DIALOG_PART_ID = `${LEVEL_ID}/FirstContact`
 
@@ -41,11 +44,43 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='...' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Why have you come back?' />
       ),
-      choices: null
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
+        return (
+          <>
+            {isLastVisibleDialog && (
+              <>
+                <Button
+                  className='is-warning'
+                  onClick={() =>
+                    globalGameActions.dialog.jumpToDialogPath({
+                      currentDialog,
+                      dialogPathId: BUILD_DAPPS
+                    })
+                  }
+                >
+                  Build dApps
+                </Button>
+                <Button
+                  className='is-warning'
+                  onClick={() =>
+                    globalGameActions.dialog.jumpToDialogPath({
+                      currentDialog,
+                      dialogPathId: LEARN_ABOUT_SC_SECURITY
+                    })
+                  }
+                >
+                  Learn about Smart Contract security
+                </Button>
+              </>
+            )}
+          </>
+        )
+      }
     }
-  },
+  }
+  /*
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
@@ -110,6 +145,7 @@ const _dialog = [
       choices: null
     }
   }
+  */
 ]
 
 const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)

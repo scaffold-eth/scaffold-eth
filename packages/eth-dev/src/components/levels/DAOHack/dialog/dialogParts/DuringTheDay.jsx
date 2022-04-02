@@ -10,9 +10,9 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/DuringTheDay`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Hmmm ...' />
+          <SpeakerRight pathToAvatar='./assets/punk5950.png' text='During the day' />
         </>
       ),
       choices: null
@@ -20,10 +20,20 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Hmmm ...' />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
         <>
           <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
+            pathToAvatar='./assets/punk4551.png'
             text={`I've heard about people like you.`}
           />
         </>
@@ -33,10 +43,10 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
+            pathToAvatar='./assets/punk4551.png'
             text='We are different and yet alike.'
           />
         </>

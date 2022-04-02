@@ -14,7 +14,7 @@ const SpeakerLeft = ({ text, pathToAvatar }) => {
       }}
     >
       <img
-        src={pathToAvatar || './assets/punk5950.png'}
+        src={pathToAvatar}
         alt='avatar'
         className='background-image'
         style={{
@@ -26,7 +26,7 @@ const SpeakerLeft = ({ text, pathToAvatar }) => {
         }}
       />
       <SpeechBubble direction='left'>
-        <div style={{ paddingLeft: 8 }}>
+        <div style={{ paddingLeft: 8, overflowWrap: 'break-word' }}>
           <ReactMarkdown>{text}</ReactMarkdown>
         </div>
       </SpeechBubble>

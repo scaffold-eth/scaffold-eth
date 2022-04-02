@@ -9,6 +9,7 @@
 # ⚔️ Side Quests
 
 ## 🐟 Open Sea
+
 > Add your contract to OpenSea
 > 1. hover over your profile photo in the top right and navigate to `Collections` or go to `https://opensea.io/collections`
 > ![my_collections](https://user-images.githubusercontent.com/46639943/150223014-92a2e32d-d2a2-4fd4-ac3b-bd2d0fcb5840.png)
@@ -24,6 +25,7 @@
 https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
 
 ## 🔶 Infura
+
 > You will need to get a key from infura.io and paste it into constants.js in packages/react-app/src:
 
 ![nft13](https://user-images.githubusercontent.com/526558/124387174-d83c0180-dcb3-11eb-989e-d58ba15d26db.png)
@@ -31,7 +33,7 @@ https://testnets.opensea.io/assets/0xc2839329166d3d004aaedb94dde4173651babccf/1
 ---
 
 > 🏃 Head to your next challenge [here](https://speedrunethereum.com).
-
 > 💬 Meet other builders working on this challenge in the [Challenge 0 telegram channel](https://t.me/+Y2vqXZZ_pEFhMGMx)!!!
-
 > 👉 Problems, questions, comments on the stack? Post them to the [🏗 scaffold-eth developers chat](https://t.me/joinchat/F7nCRK3kI93PoCOk)
+<br/>
+<br/>

@@ -6,12 +6,12 @@ import { Button, CodeContainer, WindowModal } from '../../../../gameItems/compon
 const ChallengeWindow = ({
   isOpen,
   globalGameActions,
+  setHistoryWindowVisibility,
   setContractWindowVisibility,
   setChallengeWindowVisibility
 }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
-  const [fileContentIntro, setFileContentIntro] = useState('')
   const [fileContent0, setFileContent0] = useState('')
   const [fileContent1, setFileContent1] = useState('')
   const [fileContent2, setFileContent2] = useState('')
@@ -22,14 +22,6 @@ const ChallengeWindow = ({
   const [fileContent7, setFileContent7] = useState('')
 
   useEffect(() => {
-  import(`./Introduction.md`)
-    .then(res => {
-      fetch(res.default)
-        .then(res => res.text())
-        .then(res => setFileContentIntro(res))
-        .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
     import(`./Checkpoint_0.md`)
       .then(res => {
         fetch(res.default)
@@ -104,7 +96,7 @@ const ChallengeWindow = ({
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='Decentralized Staking'
+      windowTitle='Decentralized Staking App'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
@@ -119,7 +111,6 @@ const ChallengeWindow = ({
           lineHeight: 2.2
         }}
       >
-        <Markdown>{fileContentIntro}</Markdown>
         <Markdown>{fileContent0}</Markdown>
         {currentStep >= 1 && <Markdown>{fileContent1}</Markdown>}
         {currentStep >= 2 && <Markdown>{fileContent2}</Markdown>}
@@ -131,7 +122,7 @@ const ChallengeWindow = ({
 
         {currentStep < 7 && (
           <Button
-            style={{ marginBottom: 40 }}
+            style={{ marginTop: 30,  marginBottom: 40 }}
             onClick={() => {
               setCurrentStep(currentStep + 1)
             }}
@@ -145,6 +136,7 @@ const ChallengeWindow = ({
             onClick={() => {
               globalGameActions.dialog.continueDialog()
               setChallengeWindowVisibility(false)
+              setHistoryWindowVisibility(false)
             }}
           >
             Done

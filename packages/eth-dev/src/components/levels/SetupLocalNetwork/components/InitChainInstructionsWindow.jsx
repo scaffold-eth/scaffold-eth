@@ -10,15 +10,12 @@ const InitChainInstructionsWindow = ({
   globalGameActions,
   setInitChainInstructionsWindowVisibility
 }) => {
-  const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.95
-
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
       initLeft={window.innerWidth / 2}
-      initHeight={initHeight}
-      initWidth={initWidth}
+      initHeight={window.innerHeight * 0.8}
+      initWidth={(window.innerWidth / 2) * 0.95}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
       windowTitle='SETUP INSTRUCTIONS'
@@ -81,6 +78,7 @@ $ yarn deploy`}
             Scanning for local network ...
           </Typist>
         </div>
+        {/*
         <Button
           className='is-warning'
           onClick={() => {
@@ -90,6 +88,7 @@ $ yarn deploy`}
         >
           Done
         </Button>
+        */}
       </div>
     </WindowModal>
   )

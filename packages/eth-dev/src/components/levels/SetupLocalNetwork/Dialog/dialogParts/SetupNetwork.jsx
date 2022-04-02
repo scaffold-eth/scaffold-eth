@@ -5,14 +5,12 @@ import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'SetupLocalNetwork'
-export const DIALOG_PART_ID = `${LEVEL_ID}/BeginnerDev`
+export const DIALOG_PART_ID = `${LEVEL_ID}/SetupNetwork`
 
 const _dialog = [
   {
     components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Not to worry, not to worry!' />
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='ofc you do' />,
       choices: null
     }
   },
@@ -21,25 +19,15 @@ const _dialog = [
       dialog: () => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
-          text={`We've recently brokered a truce with on of the other gangs`}
+          text='Great to see that you still now your stuff'
         />
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I can introduce you' />
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <a href='https://cryptozombies.io'>
-              <Button className='is-warning' id='cryptozombies-io'>
-                Check out cryptozombies.io
-              </Button>
-            </a>
+            <Link to='/underflow-bug'>
+              <Button>Continue</Button>
+            </Link>
           )}
         </>
       )

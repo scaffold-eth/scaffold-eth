@@ -9,52 +9,128 @@ export const DIALOG_PART_ID = 'DecentralizedExchange/Start'
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I wanted you to see this.' />
-        </>
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I wanted you to see this.' />
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='This dish is connected to you nodes in the cellars.'
-          />
-        </>
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='This dish you see here has a very important role to play.'
+        />
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='But before I show you what we are planning to use them for I want to introduce you to someone.'
-          />
-        </>
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='It gives us a strong connection to the city network.'
+        />
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='A connection we need for what we are working on in the cellars underneath this building.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`I've but you on the whitelist. You should are now able to access it.`}
+        />
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Here, take a look:' />
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.background.setCurrentBackground({
+                  background: 'ExchangeRed'
+                })
+                globalGameActions.dialog.continueDialog()
+              }}
+            >
+              Go downstairs
+            </Button>
+          )}
         </>
+      )
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='What do you think? pretty impressive huh?'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='We are planning to give the whole city access to it.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='In the future I believe running this will almost tripple our income.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='But as you can see it is not working yet ...'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`I've already sent you the project files`}
+        />
       ),
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setContractWindowVisibility,
         setExplanationWindowVisibility
       }) => (
         <>
@@ -81,14 +157,12 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Great!' />
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Great!' />,
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/create-wallet'>
-              <Button className='is-warning'>Drive into City</Button>
+            <Link to='/multisig'>
+              <Button className='is-warning'>Go home</Button>
             </Link>
           )}
         </>

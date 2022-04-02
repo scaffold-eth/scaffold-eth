@@ -12,7 +12,7 @@ const NFTStore = ({ dialog, globalGameActions }) => {
     // load level
     globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'NiftyShop' })
+    globalGameActions.background.setCurrentBackground({ background: 'City' })
     // set dialog
     globalGameActions.dialog.initDialog({
       initialDialogPathId: `${LEVEL_ID}/Start`,
@@ -48,6 +48,7 @@ const NFTStore = ({ dialog, globalGameActions }) => {
 
       <ChallengeWindow
         isOpen={challengeWindowIsVisible}
+        setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
       />
     </div>

@@ -2,9 +2,8 @@
 
 Want a fresh cloud environment? Click this to open a gitpod workspace, then skip to Checkpoint 1 after the tasks are complete.
 
-[![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/scaffold-eth/scaffold-eth-challenges/tree/challenge-0-simple-nft)
-
 Required:
+
 * [Git](https://git-scm.com/downloads)
 * [Node](https://nodejs.org/dist/latest-v16.x/)  (🧨 Use Node v16 or a previous version as v17 may cause errors 🧨)
 * [Yarn](https://classic.yarnpkg.com/en/docs/install/#mac-stable)
@@ -38,3 +37,5 @@ yarn deploy
 > You can `yarn deploy --reset` to deploy a new contract any time.
 
 📱 Open http://localhost:3000 to see the app
+<br/>
+<br/>

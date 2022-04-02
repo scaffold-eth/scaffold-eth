@@ -10,7 +10,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='U up?' />
           <div style={{ marginLeft: 65, marginBottom: 10 }}>
@@ -67,13 +67,64 @@ const _dialog = [
       )
     }
   },
-
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />,
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='I want to tell you about one of my projects and I would like you to have a view while we discuss it'
+        />
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.background.setCurrentBackground({
+                  background: 'RoofSatellite'
+                })
+                globalGameActions.dialog.continueDialog()
+              }}
+            >
+              Head to the roof
+            </Button>
+          )}
         </>
+      )
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ahh the sun is rising' />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='I would like to show you some of my plans me an the gang have been working on'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`I'm sending you the files now`} />
       ),
       choices: ({
         dialog: { currentDialog },
@@ -92,7 +143,7 @@ const _dialog = [
                 globalGameActions.dialog.continueDialog()
               }}
             >
-              Show Documentation
+              Open Files
             </Button>
           )}
         </>
@@ -101,21 +152,17 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => <></>,
+      dialog: () => <></>,
       choices: () => <></>
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Thanks!' />
-        </>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Thanks!' />,
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/intro'>
+            <Link to='/token-vendor'>
               <Button className='is-warning'>Next level</Button>
             </Link>
           )}

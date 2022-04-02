@@ -6,12 +6,12 @@ import { Button, CodeContainer, WindowModal } from '../../../../gameItems/compon
 const ChallengeWindow = ({
   isOpen,
   globalGameActions,
-  setContractWindowVisibility,
-  setChallengeWindowVisibility
+  setHistoryWindowVisibility,
+  setChallengeWindowVisibility,
+  setContractWindowVisibility
 }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
-  const [fileContentIntro, setFileContentIntro] = useState('')
   const [fileContent0, setFileContent0] = useState('')
   const [fileContent1, setFileContent1] = useState('')
   const [fileContent2, setFileContent2] = useState('')
@@ -22,14 +22,6 @@ const ChallengeWindow = ({
   const [fileContent7, setFileContent7] = useState('')
 
   useEffect(() => {
-  import(`./Introduction.md`)
-    .then(res => {
-      fetch(res.default)
-        .then(res => res.text())
-        .then(res => setFileContentIntro(res))
-        .catch(err => console.log(err));
-    })
-    .catch(err => console.log(err));
     import(`./Checkpoint_0.md`)
       .then(res => {
         fetch(res.default)
@@ -100,7 +92,7 @@ const ChallengeWindow = ({
     <WindowModal
       initTop={10}
       initLeft={window.innerWidth * 0.05}
-      initHeight={window.innerHeight * 0.90}
+      initHeight={window.innerHeight * 0.95}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
@@ -120,7 +112,6 @@ const ChallengeWindow = ({
         }}
       >
         <h2>🏵 Token Vendor 🤖</h2>
-        <Markdown>{fileContentIntro}</Markdown>
         <Markdown>{fileContent0}</Markdown>
         {currentStep >= 1 && <Markdown>{fileContent1}</Markdown>}
         {currentStep >= 2 && <Markdown>{fileContent2}</Markdown>}
@@ -132,7 +123,7 @@ const ChallengeWindow = ({
 
         {currentStep < 7 && (
           <Button
-            style={{ marginBottom: 40 }}
+            style={{ marginTop: 30,  marginBottom: 40 }}
             onClick={() => {
               setCurrentStep(currentStep + 1)
             }}
@@ -145,7 +136,9 @@ const ChallengeWindow = ({
             className='is-warning'
             onClick={() => {
               globalGameActions.dialog.continueDialog()
+              setHistoryWindowVisibility(false)
               setChallengeWindowVisibility(false)
+              setContractWindowVisibility(false)
             }}
           >
             Done

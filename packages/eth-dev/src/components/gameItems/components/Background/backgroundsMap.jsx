@@ -2,30 +2,30 @@ import React from 'react'
 
 import {
   Intro,
+  CityOutskirts,
   City,
   CityChaos,
-  CityOutskirts,
   CitySkylineInsideNight,
   DiceGame,
   NiftyShop,
   RoofSatellite,
   Workstation,
-  ExchangeStonks,
-  ExchangeRed
+  ExchangeRed,
+  ExchangeStonks
 } from './backgrounds'
 
 const backgrounds = {
   Intro: <Intro />,
+  CityOutskirts: <CityOutskirts />,
   City: <City />,
   CityChaos: <CityChaos />,
-  CityOutskirts: <CityOutskirts />,
   CitySkylineInsideNight: <CitySkylineInsideNight />,
   DiceGame: <DiceGame />,
   NiftyShop: <NiftyShop />,
   RoofSatellite: <RoofSatellite />,
   Workstation: <Workstation />,
-  ExchangeStonks: <ExchangeStonks />,
-  ExchangeRed: <ExchangeRed />
+  ExchangeRed: <ExchangeRed />,
+  ExchangeStonks: <ExchangeStonks />
 }
 
 export default backgrounds

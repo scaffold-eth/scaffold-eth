@@ -9,10 +9,112 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/PresentTask`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk4551.png'
+          text='As faith would have it, I have something of a situation my hands'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk4551.png'
+          text='One of my previous partners helped me setup an organiztion.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk4551.png'
+          text='It turns out that even though he said so hed dit not know what he was doing.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk4551.png'
+          text='I need someone to help me get out of this mess.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk4551.png'
+          text='Someone with a specific set of skills'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Maybe someone like you?' />
+      ),
+      choices: ({
+        dialog: { currentDialog },
+        isLastVisibleDialog,
+        globalGameActions,
+        setDaoContractWindowVisibility
+      }) => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What do you make of this?' />
+          {isLastVisibleDialog && (
+            <Button
+              onClick={() => {
+                setDaoContractWindowVisibility(true)
+                globalGameActions.dialog.continueDialog()
+              }}
+            >
+              Continue
+            </Button>
+          )}
         </>
+      )
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='What do you make of this?' />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk4551.png'
+            text='We have some funds stuck in here.'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Can you help us rescue them?' />
       ),
       choices: ({
         dialog: { currentDialog },
@@ -23,13 +125,12 @@ const _dialog = [
         <>
           {isLastVisibleDialog && (
             <Button
-              className='is-warning'
               onClick={() => {
                 setExplanationWindowVisibility(true)
                 globalGameActions.dialog.continueDialog()
               }}
             >
-              Look at files
+              Continue
             </Button>
           )}
         </>
@@ -38,9 +139,15 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => <></>,
+      choices: () => <></>
+    }
+  },
+  {
+    components: {
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Good, good ...' />
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Good, good ...' />
         </>
       ),
       choices: null
@@ -48,9 +155,9 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Let's hit the roof.`} />
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text={`Let's hit the roof.`} />
         </>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (

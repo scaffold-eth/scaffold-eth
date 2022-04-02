@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { Toolbelt, MonologWindow, Terminal, Button } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
+import { InitChainInstructionsWindow } from '../SetupLocalNetwork/components'
 import {
   WelcomeWindow,
   IncomingCallBubble,
@@ -64,6 +65,10 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
     }
   }, [didFinishMonolog])
 
+  const [initialInstructionsWindowIsVisible, setInitChainInstructionsWindowVisibility] = useState(
+    false
+  )
+
   return (
     <div id={`level${LEVEL_ID}`} style={{ height: '100vh', overflow: 'hidden' }}>
       {/* !didEnterGame && !showWelcomeWindow && (
@@ -119,19 +124,29 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
         />
       )}
 
-      {didEnterGame && (
-        <FactionSupportOverview
-          isOpen={showFactionSupportOverviewWindow}
-          globalGameActions={globalGameActions}
-        />
-      )}
-
       {didFinishMonolog && !didPickUpCall && (
         <IncomingCallBubble globalGameActions={globalGameActions} pickUpCall={pickUpCall} />
       )}
 
       {didEnterGame && didFinishMonolog && didPickUpCall && (
-        <Terminal isOpen globalGameActions={globalGameActions} />
+        <Terminal
+          isOpen
+          globalGameActions={globalGameActions}
+          setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
+        />
+      )}
+
+      <InitChainInstructionsWindow
+        isOpen={initialInstructionsWindowIsVisible}
+        globalGameActions={globalGameActions}
+        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
+      />
+
+      {didEnterGame && (
+        <FactionSupportOverview
+          isOpen={showFactionSupportOverviewWindow}
+          globalGameActions={globalGameActions}
+        />
       )}
 
       <SelectLevelWindow isOpen={false} globalGameActions={globalGameActions} />

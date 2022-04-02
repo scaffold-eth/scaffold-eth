@@ -32,23 +32,25 @@ const TokenVendor = ({ dialog, globalGameActions }) => {
         initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
         setHistoryWindowVisibility={setHistoryWindowVisibility}
-        setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
+        setContractWindowVisibility={setContractWindowVisibility}
       />
 
       <HistoryWindow
         isOpen={historyWindowIsVisible}
         globalGameActions={globalGameActions}
         setHistoryWindowVisibility={setHistoryWindowVisibility}
-        setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
+        setContractWindowVisibility={setContractWindowVisibility}
       />
 
       <ContractWindow isOpen={contractWindowIsVisible} />
 
       <ChallengeWindow
         isOpen={challengeWindowIsVisible}
+        setHistoryWindowVisibility={setHistoryWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
+        setContractWindowVisibility={setContractWindowVisibility}
       />
     </div>
   )

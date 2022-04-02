@@ -70,11 +70,7 @@ const _dialog = [
 
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />
-        </>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />,
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,
@@ -101,21 +97,17 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => <></>,
+      dialog: () => <></>,
       choices: () => <></>
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Thanks!' />
-        </>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Thanks!' />,
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/intro'>
+            <Link to='/decentralized-staking-app'>
               <Button className='is-warning'>Next level</Button>
             </Link>
           )}

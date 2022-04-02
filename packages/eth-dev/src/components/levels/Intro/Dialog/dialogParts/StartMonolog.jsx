@@ -10,7 +10,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight text='Ah what a view!' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ah what a view!' />
       ),
       choices: null
     }
@@ -18,7 +18,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight text='Ethereum City!' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ethereum City!' />
       ),
       choices: null
     }
@@ -26,7 +26,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight text='Feels good to be back.' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be back.' />
       ),
       choices: null
     }
@@ -34,7 +34,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight text='Feels good to be home ...' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be home ...' />
       ),
       choices: ({
         dialog: { currentDialog },
@@ -47,9 +47,7 @@ const _dialog = [
             {isLastVisibleDialog && (
               <Button
                 onClick={() => {
-                  if (finishMonolog) {
-                    finishMonolog()
-                  }
+                  if (finishMonolog) finishMonolog()
 
                   globalGameActions.dialog.jumpToDialogPath({
                     currentDialog,

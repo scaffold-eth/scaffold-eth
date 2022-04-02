@@ -10,10 +10,24 @@ const HistoryWindow = ({
   setContractWindowVisibility,
   setChallengeWindowVisibility
 }) => {
+  const [fileContentIntro, setFileContentIntro] = useState('')
+  const [showStartButton, setShowStartButton] = useState(true)
+
+  useEffect(() => {
+    import(`./Introduction.md`)
+      .then(res => {
+        fetch(res.default)
+          .then(res => res.text())
+          .then(res => setFileContentIntro(res))
+          .catch(err => console.log(err));
+      })
+      .catch(err => console.log(err));
+  }, [])
+
   return (
     <WindowModal
       initTop={20}
-      initLeft={window.innerWidth * 0.05}
+      initLeft={window.innerWidth * 0.2}
       initHeight={window.innerHeight * 0.9}
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
@@ -41,16 +55,18 @@ const HistoryWindow = ({
           }}
         />
 
-        <Button
-          className='is-warning'
-          onClick={() => {
-            setHistoryWindowVisibility(false)
-            setContractWindowVisibility(false)
-            setChallengeWindowVisibility(true)
-          }}
-        >
-          Start Challenge
-        </Button>
+        <Markdown>{fileContentIntro}</Markdown>
+        {showStartButton && (
+          <Button
+            className='is-warning'
+            onClick={() => {
+              setChallengeWindowVisibility(true)
+              setShowStartButton(false)
+            }}
+          >
+            Start Challenge
+          </Button>
+        )}
       </div>
     </WindowModal>
   )

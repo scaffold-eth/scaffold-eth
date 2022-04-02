@@ -10,7 +10,47 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text={`I'm sending you some coordinates now. I'll call you again when you're there.`}
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
+          />
+        </>
+      ),
+      choices: ({ isLastVisibleDialog, globalGameActions }) => (
+        <>
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.background.setCurrentBackground({ background: 'NiftyShop' })
+                globalGameActions.dialog.continueDialog()
+              }}
+            >
+              Go to coordinates
+            </Button>
+          )}
+        </>
+      )
+    }
+  },
+  {
+    components: {
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Welcome to the shop!' />
         </>
@@ -20,11 +60,11 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
-            text={`As you can see, we've already setup.`}
+            text='As you can see, some parts are already setup.'
           />
         </>
       ),
@@ -33,7 +73,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -45,9 +85,7 @@ const _dialog = [
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setHistoryWindowVisibility,
-        setContractWindowVisibility,
-        setChallengeWindowVisibility
+        setHistoryWindowVisibility
       }) => (
         <>
           {isLastVisibleDialog && (
@@ -67,13 +105,13 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => <></>,
+      dialog: () => <></>,
       choices: () => <></>
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Greate job!' />
         </>
@@ -83,7 +121,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -96,7 +134,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -109,7 +147,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`It's late.`} />
         </>
@@ -119,7 +157,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -132,22 +170,12 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text={`I'll see you there tomorrow!`}
-          />
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`I'll ping you tomorrow`} />
         </>
       ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setHistoryWindowVisibility,
-        setContractWindowVisibility,
-        setChallengeWindowVisibility
-      }) => (
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <Link to='/decentralized-staking-app'>

@@ -3,9 +3,6 @@ import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ContractWindow = ({ isOpen }) => {
-  const initWidth = window.innerWidth / 2
-  const initHeight = window.innerHeight * 0.95
-
   const contentFileName = 'MultiSigWallet.sol'
   const [fileContent, setFileContent] = useState('')
 
@@ -25,11 +22,11 @@ const ContractWindow = ({ isOpen }) => {
       initTop={window.innerHeight * 0.02}
       //initLeft={window.innerWidth / 2}
       initLeft={0}
-      initHeight={initHeight}
-      initWidth={initWidth}
+      initHeight={window.innerHeight * 0.95}
+      initWidth={window.innerWidth / 2}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='MultiSigWallet.sol'
+      windowTitle={contentFileName}
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >

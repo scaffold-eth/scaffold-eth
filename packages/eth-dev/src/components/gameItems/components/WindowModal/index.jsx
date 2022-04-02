@@ -34,8 +34,8 @@ export default function WindowModal({
   // move clicked window to top layer
   const updateWindowCSSIndex = e => {
     const windowsSelector = '.react-draggable'
-    const windowElements = $(windowsSelector)
-    const clickedWindow = $(e.target).closest(windowsSelector)
+    const windowElements = $(windowsSelector) || []
+    const clickedWindow = $(e?.target).closest(windowsSelector)
 
     const numberOfWindows = windowElements.length
     const windowsSortedByZIndex = windowElements.sort(sortByZIndex)
@@ -46,6 +46,10 @@ export default function WindowModal({
 
     clickedWindow.css('z-index', numberOfWindows)
   }
+
+  useEffect(() => {
+    updateWindowCSSIndex()
+  }, [])
 
   return (
     <>
@@ -112,6 +116,7 @@ export default function WindowModal({
                 left: '54%',
                 width: '31%',
                 height: '3%',
+                pointerEvents: 'none',
                 fontSize: '61%',
                 color: '#16DC8C',
                 ...windowTiteleStyle

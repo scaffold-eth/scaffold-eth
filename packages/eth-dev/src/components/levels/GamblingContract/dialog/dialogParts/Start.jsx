@@ -8,7 +8,7 @@ export const DIALOG_PART_ID = 'GamblingContract/Start'
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -21,7 +21,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='And this is the code.' />
         </>
@@ -31,7 +31,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -66,7 +66,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What do you think?' />
         </>
@@ -76,7 +76,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
             pathToAvatar='./assets/punk_anon.png'
@@ -109,14 +109,40 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Great!' />
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Nice!' />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='Running these should yield us some juicy profits'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`I think it's time to onboard you to some of my more ambitiuse plans ...`}
+        />
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <Link to='/dao-hack'>
-              <Button className='is-warning'>Drive into City</Button>
+              <Button>Continue</Button>
             </Link>
           )}
         </>

@@ -9,7 +9,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/KnowsWallets`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <SpeakerLeft
           pathToAvatar='./assets/punk_anon.png'
           text={`Great! Let's get you connected.`}
@@ -36,20 +36,48 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ok, I have a first job for you.' />
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Greast!' />,
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I have a first job for you.' />
       ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
-        return (
-          <>
-            {isLastVisibleDialog && (
-              <Link to='/insecure-gambling-contract'>
-                <Button className='is-warning'>Follow Anon</Button>
-              </Link>
-            )}
-          </>
-        )
-      }
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={`I'm sending you the coordinates now`}
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae'
+          />
+        </>
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          {isLastVisibleDialog && (
+            <Link to='/insecure-gambling-contract'>
+              <Button className='is-warning'>Go to coordinates</Button>
+            </Link>
+          )}
+        </>
+      )
     }
   }
 ]

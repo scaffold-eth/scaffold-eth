@@ -64,3 +64,5 @@ await vendor.transferOwnership("**YOUR FRONTEND ADDRESS**");
 
 - [ ] Can _anyone_ withdraw? Test _everything_!
 - [ ] What if you minted **2000** and only sent **1000** to the `Vendor`?
+<br/>
+<br/>

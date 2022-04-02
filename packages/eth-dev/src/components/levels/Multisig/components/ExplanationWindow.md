@@ -3,8 +3,10 @@ The problem that you and Anon punk are facing is a common one in the Blockchain 
 How to securely handle large amounts of funds when collaborators/members are anonymous?
 <br />
 <br />
-What most projects end up doing is using something called a MultiSig.<br />
-A MultiSig is a Smart Contract that can hold Ether and other tokens. And can execute arbitrary smart contract functions (e.g. functions of other smart contracts like Uniswap, Opensea, Curve.fi, etc.).<br />
+What most projects end up doing is using something called a MultiSig.
+<br />
+A MultiSig is a Smart Contract that can hold Ether and other tokens. And can execute arbitrary smart contract functions (e.g. functions of other smart contracts like Uniswap, Opensea, Curve.fi, etc.).
+<br />
 Typically, the MultiSig Contract incorporates some form of voting, where members of the MultiSig vote by proposing what functions to execute and then collectively vote yay or nay on whether the function should actually be executed.
 <br />
 <br />

@@ -10,9 +10,9 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/AtNight`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ahhh yes ...' />
+          <SpeakerRight pathToAvatar='./assets/punk5950.png' text='I also prefer the dark' />
         </>
       ),
       choices: null
@@ -20,11 +20,21 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
+        <>
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Ahhh yes ...' />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
         <>
           <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text={`I've always felt that you and me were much alike.`}
+            pathToAvatar='./assets/punk4551.png'
+            text='I sensed that you and me are much alike.'
           />
         </>
       ),
@@ -33,11 +43,11 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text={`Together we can achieve great things, wouldn't you agree?`}
+            pathToAvatar='./assets/punk4551.png'
+            text={`If the DEFI gods are staking on our side then I believe we may a achieve great things together, wouldn't you agree?`}
           />
         </>
       ),
@@ -46,9 +56,9 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='But more on that later.' />
+          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='But more on that later.' />
         </>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (

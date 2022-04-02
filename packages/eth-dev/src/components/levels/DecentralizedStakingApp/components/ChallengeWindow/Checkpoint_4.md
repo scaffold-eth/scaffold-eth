@@ -4,24 +4,28 @@
 
 > Use the [receive()](https://docs.soliditylang.org/en/v0.8.9/contracts.html?highlight=receive#receive-ether-function) function in solidity to "catch" ETH sent to the contract and call `stake()` to update `balances`.
 
----
 #### 🥅 Goals
 - [ ] If you send ETH directly to the contract address does it update your `balance`?
 
----
+<br/>
+<br/>
 
-## ⚔️ Side Quests
+### ⚔️ Side Quests
 - [ ] Can execute get called more than once, and is that okay?
 - [ ] Can you stake and withdraw freely after the `deadline`, and is that okay?
 - [ ] What are other implications of *anyone* being able to withdraw for someone?
 
----
+<br/>
+<br/>
 
-## 🐸 It's a trap!
+### 🐸 It's a trap!
 - [ ] Make sure funds can't get trapped in the contract! **Try sending funds after you have executed! What happens?**
 - [ ] Try to create a [modifier](https://solidity-by-example.org/function-modifier/) called `notCompleted`. It will check that `ExampleExternalContract` is not completed yet. Use it to protect your `execute` and `withdraw` functions.
 
----
+<br/>
+<br/>
 
 #### ⚠️ Test it!
 -  Now is a good time to run `yarn test` to run the automated testing function. It will test that you hit the core checkpoints.  You are looking for all green checkmarks and passing tests!
+<br/>
+<br/>

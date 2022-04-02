@@ -21,7 +21,7 @@ const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
   }, [])
 
   const [initialInstructionsWindowIsVisible, setInitChainInstructionsWindowVisibility] = useState(
-    false
+    true
   )
 
   return (
