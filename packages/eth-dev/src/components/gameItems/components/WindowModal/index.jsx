@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 // https://github.com/bokuweb/react-rnd
 import { Rnd } from 'react-rnd'
 import $ from 'jquery'
+import shortid from 'shortid'
 
 export default function WindowModal({
   backgroundPath,
@@ -28,28 +29,36 @@ export default function WindowModal({
     x: initLeft,
     y: initTop
   })
+  const [windowId, setWindowId] = useState(shortid.generate())
 
   const sortByZIndex = (a, b) => a.style.zIndex - b.style.zIndex
 
-  // move clicked window to top layer
+  // move clicked window in front of others
   const updateWindowCSSIndex = e => {
     const windowsSelector = '.react-draggable'
     const windowElements = $(windowsSelector) || []
-    const clickedWindow = $(e?.target).closest(windowsSelector)
+    if (e) {
+      const clickedWindow = $(e.target).closest(windowsSelector)
 
-    const numberOfWindows = windowElements.length
-    const windowsSortedByZIndex = windowElements.sort(sortByZIndex)
+      const numberOfWindows = windowElements.length
+      const windowsSortedByZIndex = windowElements.sort(sortByZIndex)
 
-    windowsSortedByZIndex.each(function (index) {
-      $(this).closest(windowsSelector).css('z-index', index)
-    })
+      windowsSortedByZIndex.each(function (index) {
+        $(this).closest(windowsSelector).css('z-index', index)
+      })
 
-    clickedWindow.css('z-index', numberOfWindows)
+      clickedWindow.css('z-index', numberOfWindows)
+    }
   }
 
+  // always place newly opened windows in front of others
   useEffect(() => {
-    updateWindowCSSIndex()
-  }, [])
+    const windowsSelector = '.react-draggable'
+    const windowElements = $(windowsSelector) || []
+    const numberOfWindows = windowElements.length
+
+    $(`.${windowId}`).css('z-index', numberOfWindows)
+  }, [isOpen])
 
   return (
     <>
@@ -87,6 +96,7 @@ export default function WindowModal({
           onClick={e => {
             updateWindowCSSIndex(e)
           }}
+          className={windowId}
         >
           <div
             style={{
