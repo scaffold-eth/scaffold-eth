@@ -949,8 +949,6 @@ function stake(uint _amount, PublicGoodToken[] memory _publicGoods) external {
        uint percentage = 100;
        if (_publicGoods.length > 1) {
        percentage = (_publicGoods[i].getPrice() * 100) / sum;
-       // price is calculated as weth price / public goods token price so lower the price the more expensive is the public goods token
-       percentage = 100 - percentage;
        }
        uint individualProjectAmount = (_amount * percentage) / 100;
        stakeToken.transferFrom(msg.sender, address(_publicGoods[i]), individualProjectAmount);
