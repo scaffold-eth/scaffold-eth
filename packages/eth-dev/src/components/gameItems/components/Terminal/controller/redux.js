@@ -5,9 +5,13 @@ const stateContainerId = 'terminal'
 export const TOGGLE_VISIBLITY = `${stateContainerId}/TOGGLE_VISIBLITY`
 export const TERMINAL_SHOW = `${stateContainerId}/TERMINAL_SHOW`
 export const TERMINAL_HIDE = `${stateContainerId}/TERMINAL_HIDE`
+export const SHOW_NOTIFICATION_DELAYED = `${stateContainerId}/SHOW_NOTIFICATION_DELAYED`
 
 const initialState = {
-  isOpen: false
+  isOpen: false,
+  showMessageNotification: {
+    delayInSeconds: null
+  }
 }
 
 const mapStateToProps = state => {
@@ -30,6 +34,8 @@ const reducer = (state = initialState, action) => {
         return dotProp.set(state, 'isOpen', true)
       case TERMINAL_HIDE:
         return dotProp.set(state, 'isOpen', false)
+      case SHOW_NOTIFICATION_DELAYED:
+        return dotProp.set(state, 'showMessageNotification', payload)
       default:
         return state
     }
@@ -46,6 +52,10 @@ const actionCreators = {
   }),
   hideTerminal: () => ({
     type: TERMINAL_HIDE
+  }),
+  showMessageNotification: payload => ({
+    type: SHOW_NOTIFICATION_DELAYED,
+    payload
   })
 }
 
@@ -58,6 +68,9 @@ const dispatchers = {
   },
   hideTerminal: () => {
     return actionCreators.hideTerminal()
+  },
+  showMessageNotification: payload => {
+    return actionCreators.showMessageNotification(payload)
   }
 }
 
@@ -71,6 +84,9 @@ const mapDispatchToProps = dispatch => ({
     },
     hideTerminal() {
       dispatch(actionCreators.hideTerminal())
+    },
+    showMessageNotification(payload) {
+      dispatch(actionCreators.showMessageNotification(payload))
     }
   }
 })

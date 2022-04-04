@@ -40,6 +40,19 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
     setupGame()
   }, [])
 
+  const [showMessageNotification, setShowMessageNotification] = useState(false)
+  const [_showMessageNotificationInXSeconds, showMessageNotificationInXSeconds] = useState(null)
+
+  const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000))
+
+  useEffect(() => {
+    async function exec() {
+      await sleep(showMessageNotificationInXSeconds)
+      setShowMessageNotification(true)
+    }
+    exec()
+  }, [_showMessageNotificationInXSeconds])
+
   return (
     <>
       <Background />

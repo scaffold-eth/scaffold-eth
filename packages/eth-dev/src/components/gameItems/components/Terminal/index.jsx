@@ -1,12 +1,13 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import { connectController } from './controller'
 import { DialogContainer } from './components'
-import { WindowModal } from '..'
+import { WindowModal, UnreadMessagesNotification } from '..'
 
 const Terminal = ({
   isOpen,
   levelContainer: { currentLevel },
   dialog,
+  showMessageNotification,
   actions,
   globalGameActions,
   initTop,
@@ -16,27 +17,50 @@ const Terminal = ({
   const initHeight = 800
   const initWidth = initHeight * 0.65
 
-  console.log('in Terminal:')
-  console.log({ isOpen })
+  const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000))
+
+  const [_showMessageNotification, setShowMessageNotification] = useState(false)
+
+  useEffect(() => {
+    async function exec() {
+      if (showMessageNotification && showMessageNotification.delayInSeconds) {
+        console.log('now waiting ' + showMessageNotification.delayInSeconds + ' seconds')
+        await sleep(showMessageNotification.delayInSeconds)
+        console.log('now show notification')
+        setShowMessageNotification(true)
+        actions.showMessageNotification({ delayInSeconds: null })
+      }
+    }
+    exec()
+  }, [showMessageNotification?.delayInSeconds])
+
+  useEffect(() => {
+    setShowMessageNotification(false)
+  }, [isOpen])
+
   return (
-    <WindowModal
-      initTop={initTop || window.innerHeight - (initHeight + 10)}
-      initLeft={initLeft || 0}
-      initHeight={initHeight}
-      initWidth={initWidth}
-      backgroundPath='./assets/items/terminal_medium.png'
-      // backgroundPath='./assets/items/terminal_big.png'
-      dragAreaHeightPercent={30}
-      isOpen={isOpen}
-    >
-      <DialogContainer
-        currentLevel={currentLevel}
-        dialog={dialog}
-        actions={actions}
-        globalGameActions={globalGameActions}
-        parentProps={{ ...props }}
-      />
-    </WindowModal>
+    <>
+      {_showMessageNotification && <UnreadMessagesNotification />}
+
+      <WindowModal
+        initTop={initTop || window.innerHeight - (initHeight + 10)}
+        initLeft={initLeft || 0}
+        initHeight={initHeight}
+        initWidth={initWidth}
+        backgroundPath='./assets/items/terminal_medium.png'
+        // backgroundPath='./assets/items/terminal_big.png'
+        dragAreaHeightPercent={30}
+        isOpen={isOpen}
+      >
+        <DialogContainer
+          currentLevel={currentLevel}
+          dialog={dialog}
+          actions={actions}
+          globalGameActions={globalGameActions}
+          parentProps={{ ...props }}
+        />
+      </WindowModal>
+    </>
   )
 }
 

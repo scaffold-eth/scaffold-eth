@@ -60,7 +60,6 @@ export default function WindowModal({
     $(`.${windowId}`).css('z-index', numberOfWindows)
   }, [isOpen])
 
-  console.log({ isOpen })
   return (
     <>
       {/* dont remove this! */}

@@ -30,9 +30,7 @@ const _dialog = [
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setHistoryWindowVisibility,
-        setContractWindowVisibility,
-        setChallengeWindowVisibility
+        setUserPickedPositiveResponse
       }) => (
         <>
           {isLastVisibleDialog && (
@@ -40,6 +38,7 @@ const _dialog = [
               <Button
                 className='is-warning'
                 onClick={() => {
+                  setUserPickedPositiveResponse(true)
                   globalGameActions.dialog.continueDialog()
                 }}
               >
@@ -48,6 +47,7 @@ const _dialog = [
               <Button
                 className='is-warning'
                 onClick={() => {
+                  setUserPickedPositiveResponse(false)
                   globalGameActions.dialog.continueDialog()
                 }}
               >
@@ -56,6 +56,7 @@ const _dialog = [
               <Button
                 className='is-warning'
                 onClick={() => {
+                  setUserPickedPositiveResponse(false)
                   globalGameActions.dialog.continueDialog()
                 }}
               >
@@ -69,7 +70,16 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />,
+      dialog: ({ userPickedPositiveResponse }) => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text={
+            userPickedPositiveResponse
+              ? `Always ready for action! I think we'll get along great`
+              : 'Grumpy, humpy!'
+          }
+        />
+      ),
       choices: null
     }
   },

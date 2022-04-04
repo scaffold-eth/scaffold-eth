@@ -28,8 +28,6 @@ const TokenVendor = ({ dialog, globalGameActions }) => {
 
   return (
     <div id='TokenVendor'>
-      <UnreadMessagesNotification />
-
       <Terminal
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}

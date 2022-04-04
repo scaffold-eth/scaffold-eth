@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ContractWindow = ({ isOpen }) => {
   const contentFileName = 'TODO'
   const [fileContent, setFileContent] = useState('')
 
   useEffect(() => {
+    /*
     import(`./${contentFileName}`)
         .then(res => {
             fetch(res.default)
@@ -15,6 +16,7 @@ const ContractWindow = ({ isOpen }) => {
                 .catch(err => console.log(err));
         })
         .catch(err => console.log(err));
+    */
   })
 
   return (
@@ -40,9 +42,7 @@ const ContractWindow = ({ isOpen }) => {
           overflowX: 'hidden'
         }}
       >
-        <CodeContainer language='solidity'>
-          {fileContent}
-        </CodeContainer>
+        <CodeContainer language='solidity'>{fileContent}</CodeContainer>
       </div>
     </WindowModal>
   )

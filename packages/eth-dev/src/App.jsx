@@ -191,8 +191,6 @@ const App = props => {
       window.history.pushState({}, '', '/')
     }
   }
-  console.log('startingAddress', startingAddress)
-  console.log('loadWeb3Modal', loadWeb3Modal)
 
   return (
     <ReduxProvider store={store} key='reduxProvider'>

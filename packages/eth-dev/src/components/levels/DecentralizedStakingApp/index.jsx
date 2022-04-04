@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Terminal, UnreadMessagesNotification } from '../../gameItems/components'
+import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { HistoryWindow, ContractWindow, ChallengeWindow } from './components'
@@ -18,18 +18,17 @@ const DecentralizedStakingApp = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
-    // hide terminal
-    globalGameActions.terminal.hideTerminal()
+    // wait 4 seconds then show unread message notification
+    globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
   }, [])
 
   const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)
   const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
   const [challengeWindowIsVisible, setChallengeWindowVisibility] = useState(false)
+  const [userPickedPositiveResponse, setUserPickedPositiveResponse] = useState(false)
 
   return (
     <div id='DecentralizedStakingApp'>
-      <UnreadMessagesNotification />
-
       <Terminal
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}
@@ -37,6 +36,8 @@ const DecentralizedStakingApp = ({ dialog, globalGameActions }) => {
         setHistoryWindowVisibility={setHistoryWindowVisibility}
         setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
+        userPickedPositiveResponse={userPickedPositiveResponse}
+        setUserPickedPositiveResponse={setUserPickedPositiveResponse}
       />
 
       <HistoryWindow

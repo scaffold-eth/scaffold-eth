@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
+import { Terminal, UnreadMessagesNotification } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { HistoryWindow, ContractWindow, ChallengeWindow } from './components'
@@ -18,8 +18,6 @@ const NFTStore = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
-    // show terminal
-    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)

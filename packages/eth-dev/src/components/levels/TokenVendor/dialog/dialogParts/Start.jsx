@@ -12,58 +12,69 @@ const _dialog = [
     components: {
       dialog: () => (
         <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='U up?' />
-          <div style={{ marginLeft: 65, marginBottom: 10 }}>
-            [
-            <a
-              target='_blank'
-              rel='noreferrer'
-              href='https://medium.com/immunefi/the-u-up-files-with-samczsun-1a9116cf6e74'
-            >
-              {'->'} Ethereum lore
-            </a>
-            ]
-          </div>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='Come! I want to show you something.'
+          />
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='0x7D1AfA7B718fb893dB30A3aBc0Cfc608AaCfeBB0'
+          />
         </>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  globalGameActions.dialog.continueDialog()
-                }}
-              >
-                Yes
-              </Button>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  globalGameActions.dialog.continueDialog()
-                }}
-              >
-                No, let me sleep!
-              </Button>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  globalGameActions.dialog.continueDialog()
-                }}
-              >
-                Let me sleep! God damn it!
-              </Button>
-            </>
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.background.setCurrentBackground({
+                  background: 'CitySkylineInsideNight'
+                })
+                globalGameActions.terminal.hideTerminal()
+                globalGameActions.dialog.continueDialog()
+                globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
+              }}
+            >
+              Go to location
+            </Button>
           )}
         </>
       )
     }
   },
-
   {
     components: {
-      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Meh' />,
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='Welcome to one of our district offices.'
+        />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <>
+          <SpeakerLeft
+            pathToAvatar='./assets/punk_anon.png'
+            text='I brought you here because I wanted to discuss our next venture.'
+          />
+        </>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='Now that we have our exchange we need a quick way to issues new tokens for different ventures we are currently exploring.'
+        />
+      ),
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,
