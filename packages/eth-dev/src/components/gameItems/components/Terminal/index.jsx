@@ -43,8 +43,8 @@ const Terminal = ({
       {_showMessageNotification && <UnreadMessagesNotification />}
 
       <WindowModal
-        initTop={initTop || window.innerHeight - (initHeight + 10)}
-        initLeft={initLeft || 0}
+        initTop={initTop || window.innerHeight - (initHeight + window.innerHeight * 0.05)}
+        initLeft={initLeft ||  window.innerWidth * 0.05}
         initHeight={initHeight}
         initWidth={initWidth}
         backgroundPath='./assets/items/terminal_medium.png'

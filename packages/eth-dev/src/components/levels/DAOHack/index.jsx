@@ -25,7 +25,10 @@ const DAOHack = ({ dialog, globalGameActions }) => {
       currentDialog: levelDialog
     })
     // show terminal
-    globalGameActions.terminal.showTerminal()
+    // hide terminal
+    globalGameActions.terminal.hideTerminal()
+    // wait 4 seconds then show unread message notification
+    globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
   }, [])
 
   const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useState(false)
@@ -36,8 +39,8 @@ const DAOHack = ({ dialog, globalGameActions }) => {
   return (
     <div id='DAOHack'>
       <Terminal
-        initTop={window.innerHeight - 840}
-        initLeft={window.innerWidth - 530}
+        // initTop={window.innerHeight - 840}
+        // initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
         setDaoContractWindowVisibility={setDaoContractWindowVisibility}
         setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}

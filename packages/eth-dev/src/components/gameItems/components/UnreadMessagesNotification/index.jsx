@@ -38,7 +38,7 @@ const UnreadMessagesNotification = ({ globalGameActions }) => {
           <div style={{ float: 'left', marginRight: '10px' }}>
             <MailOutlined style={{ color: '#212529', fontSize: 20 }} />
           </div>
-          <div style={{ float: 'left', width: 'calc(100% - 35px)' }}>You have 1 unread message</div>
+          <div style={{ float: 'left', width: 'calc(100% - 35px)' }}>You have 1 new message</div>
         </button>
       )}
     </>

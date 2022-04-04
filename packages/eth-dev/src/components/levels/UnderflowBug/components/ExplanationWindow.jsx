@@ -29,7 +29,7 @@ const ExplanationWindow = ({
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
-      initLeft={0}
+      initLeft={window.innerWidth * 0.1}
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/items/window.png'

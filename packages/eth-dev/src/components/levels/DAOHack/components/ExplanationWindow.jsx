@@ -136,21 +136,23 @@ const ExplanationWindow = ({
             </>
           )}
         </div>
-        <Button
-          onClick={() => {
-            if (currentStep === 3) {
-              setDaoContractWindowVisibility(true)
-              setFetchIntructionsWindowVisibility(true)
-            }
+        {currentStep <= 5 && (
+          <Button
+            onClick={() => {
+              if (currentStep === 3) {
+                setDaoContractWindowVisibility(true)
+                setFetchIntructionsWindowVisibility(true)
+              }
 
-            if (currentStep === 6) {
-              setFetchIntructionsWindowVisibility(true)
-            }
-            setCurrentStep(currentStep + 1)
-          }}
-        >
-          Continue
-        </Button>
+              if (currentStep === 6) {
+                setFetchIntructionsWindowVisibility(true)
+              }
+              setCurrentStep(currentStep + 1)
+            }}
+          >
+            Continue
+          </Button>
+        )}
         {currentStep > 5 && (
           <Button
             className='is-warning'

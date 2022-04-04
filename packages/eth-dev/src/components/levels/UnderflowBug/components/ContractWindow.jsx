@@ -23,7 +23,7 @@ const ContractWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
-      initLeft={window.innerWidth / 2}
+      initLeft={(window.innerWidth / 2) - (window.innerWidth * 0.1)}
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/items/window_large.png'
