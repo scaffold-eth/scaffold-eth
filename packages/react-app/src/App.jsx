@@ -429,6 +429,44 @@ function App(props) {
       }
 
 
+      let adminButton = ""
+      let adminDisplay = ""
+
+      if(address=="0x34aA3F359A9D614239015126635CE7732c18fDF3"||address=="0x0eb2AB241210900Aeac2fbA054dD605355fe2490"||address=="0x97843608a00e2bbc75ab0C1911387E002565DEDE"){
+        adminButton = (
+          <div><Button size="large" style={{zIndex:1}} onClick={()=>{
+              //window.open(item.branch)
+              //message.success("Coming soon!")
+              let copy = {...item}
+              copy.id = Math.floor(Math.random()*100000000000)
+              console.log("copy",copy)
+              setCart([...cart,copy])
+              notification.success({
+                style:{marginBottom:64},
+                message: 'Added to cart!',
+                placement: "bottomRight",
+                description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+                    <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                  </ThemeSwitcherProvider>
+                )
+              });
+            }}>
+              <ExperimentOutlined /> Fund
+          </Button></div>
+        )
+        adminDisplay = (
+          <div style={{position:"relative",marginTop:10}}>
+            <div style={{float:"right",fontSize:18}}>{totalSeconds&&pretty(totalSeconds.toNumber()*10000000)}</div>
+            <div style={{position:"absolute",left:100, width:250}}>
+              {totalProgress}
+            </div>
+          </div>
+        )
+      }
+
+
+
+
       return (
         <List.Item
           key={item.name}
@@ -441,33 +479,20 @@ function App(props) {
         >
           <div style={{textAlign:"left",position:"relative"}}>
             <div style={{float:"right",marginTop:16,width:100}}>
-              <Button size="large" style={{zIndex:1}} onClick={()=>{
-                  //window.open(item.branch)
+              <Button style={{marginTop:0,zIndex:1}} size="large" onClick={()=>{
+                  window.open(item.streamUrl)
                   //message.success("Coming soon!")
-                  let copy = {...item}
-                  copy.id = Math.floor(Math.random()*100000000000)
-                  console.log("copy",copy)
-                  setCart([...cart,copy])
-                  notification.success({
-                    style:{marginBottom:64},
-                    message: 'Added to cart!',
-                    placement: "bottomRight",
-                    description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-                        <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-                      </ThemeSwitcherProvider>
-                    )
-                  });
                 }}>
-                  <ExperimentOutlined /> Fund
+                  <ReconciliationOutlined /> View Work
               </Button>
-              <div style={{float:"right",marginRight:-148,marginTop:-32}}>
-                <Button style={{marginTop:32,zIndex:1}} size="large" onClick={()=>{
-                    window.open(item.streamUrl)
-                    //message.success("Coming soon!")
-                  }}>
-                    <ReconciliationOutlined /> View Work
-                </Button>
+
+              <div style={{float:"right",marginRight:-148,marginTop:-40}}>
+                  {adminButton}
               </div>
+              <div style={{float:"right",marginRight:-248,marginTop:-44}}>
+                  {adminDisplay}
+              </div>
+
             </div>
             {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
               <div style={{padding:8}}>
@@ -475,13 +500,10 @@ function App(props) {
                   Ξ<Balance value={stream.totalBalance} provider={localProvider} price={false} size={14}/>
                   <span style={{opacity:0.5}}> @ Ξ<Balance value={stream.cap} price={false} size={14}/> / {stream.frequency&&pretty(stream.frequency.toNumber()*1000000000)}</span>
                 </div>
-                <div>
-                  {totalProgress} ({totalSeconds&&pretty(totalSeconds.toNumber()*10000000)})
-                </div>
-                <div style={{position:'absolute',left:-45,top:24}}>
-                <Progress style={{marginTop:4}} strokeLinecap="square" type="dashboard" percent={percent} width={50}  format={()=>{
-                    return <Balance value={stream.balance} size={9}/>
-                }} />
+                <div style={{position:'absolute',left:85,top:32}}>
+                  <Progress style={{marginTop:4}} strokeLinecap="square" type="dashboard" percent={percent} width={50}  format={()=>{
+                      return <Balance value={stream.balance} size={9}/>
+                  }} />
                 </div>
               </div>
             </div>:""}
