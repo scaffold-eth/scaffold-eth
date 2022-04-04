@@ -23,7 +23,7 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
   useEffect(() => {
     updateConfirmations();
-  },[transactionResponse]);
+  },[transactionResponse, transactionManager]);
 
   useEffect(() => {
     const interval = setInterval(() => {
