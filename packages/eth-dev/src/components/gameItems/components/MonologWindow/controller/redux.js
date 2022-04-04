@@ -7,7 +7,7 @@ export const MONOLOG_WINDOW_SHOW = `${stateContainerId}/MONOLOG_WINDOW_SHOW`
 export const MONOLOG_WINDOW_HIDE = `${stateContainerId}/MONOLOG_WINDOW_HIDE`
 
 const initialState = {
-  isVisible: true
+  isOpen: true
 }
 
 const mapStateToProps = state => {
@@ -25,11 +25,11 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case TOGGLE_VISIBLITY:
-        return dotProp.set(state, 'isVisible', !state.isVisible)
+        return dotProp.set(state, 'isOpen', !state.isOpen)
       case MONOLOG_WINDOW_SHOW:
-        return dotProp.set(state, 'isVisible', true)
+        return dotProp.set(state, 'isOpen', true)
       case MONOLOG_WINDOW_HIDE:
-        return dotProp.set(state, 'isVisible', false)
+        return dotProp.set(state, 'isOpen', false)
       default:
         return state
     }

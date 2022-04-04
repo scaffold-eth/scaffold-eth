@@ -6,8 +6,8 @@ const EtherDeltaWindow = ({ isOpen }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.1}
-      initLeft={window.innerWidth / 2 + window.innerWidth * 0.02 + window.innerWidth * 0.05}
-      initHeight={510}
+      initLeft={window.innerWidth / 4}
+      initHeight={600}
       initWidth={900}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
@@ -25,7 +25,7 @@ const EtherDeltaWindow = ({ isOpen }) => {
           overflowX: 'hidden'
         }}
       >
-        <img src='https://i.imgur.com/VqGivni.jpeg' alt='Ether Delta' />
+        <img src='https://i.imgur.com/VqGivni.jpeg' style={{ marginTop: 30 }} alt='Ether Delta' />
       </div>
     </WindowModal>
   )

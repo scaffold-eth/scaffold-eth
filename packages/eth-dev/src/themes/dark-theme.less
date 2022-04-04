@@ -1,4 +1,6 @@
-// NOTE: after making changes to this file run: yarn theme
+// NOTE: after making changes to this file run:
+// cd /eth-dev/packages/eth-dev
+// yarn theme
 
 // https://github.com/ant-design/ant-design/blob/master/components/style/themes/default.less
 
@@ -22,8 +24,8 @@
 
 // LINK
 @link-color: @primary-color;
-@link-hover-color: color(~`colorPalette('@{link-color}', 5) `);
-@link-active-color: color(~`colorPalette('@{link-color}', 7) `);
+@link-hover-color: color(~`colorPalette('@{link-color}', 5)`);
+@link-active-color: color(~`colorPalette('@{link-color}', 7)`);
 @link-decoration: none;
 @link-hover-decoration: none;
 @link-focus-decoration: none;
@@ -35,8 +37,10 @@
   background-color: #3f3f3f;
 }
 
+h1, h2, h3, h4, h5, h6 {
+  color: #ffffff;
+}
+
 p {
-  margin-bottom: 0px;
-  font-size: 12px;
-  line-height: 25px;
+  line-height: 2.2;
 }

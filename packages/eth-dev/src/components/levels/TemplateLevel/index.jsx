@@ -11,6 +11,8 @@ const TemplateLevel = ({ dialog, globalGameActions }) => {
     globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
     // set initial level background
     globalGameActions.background.setCurrentBackground({ background: 'City' })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   return (

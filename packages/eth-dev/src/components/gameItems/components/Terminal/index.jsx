@@ -4,7 +4,7 @@ import { DialogContainer } from './components'
 import { WindowModal } from '..'
 
 const Terminal = ({
-  isVisible,
+  isOpen,
   levelContainer: { currentLevel },
   dialog,
   actions,
@@ -16,6 +16,8 @@ const Terminal = ({
   const initHeight = 800
   const initWidth = initHeight * 0.65
 
+  console.log('in Terminal:')
+  console.log({ isOpen })
   return (
     <WindowModal
       initTop={initTop || window.innerHeight - (initHeight + 10)}
@@ -25,7 +27,7 @@ const Terminal = ({
       backgroundPath='./assets/items/terminal_medium.png'
       // backgroundPath='./assets/items/terminal_big.png'
       dragAreaHeightPercent={30}
-      isOpen={isVisible}
+      isOpen={isOpen}
     >
       <DialogContainer
         currentLevel={currentLevel}

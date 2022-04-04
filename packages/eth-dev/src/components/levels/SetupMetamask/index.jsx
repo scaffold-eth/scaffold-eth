@@ -18,6 +18,8 @@ const SetupMetamaskLevel = ({ dialog, globalGameActions, loadWeb3Modal }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [initialInstructionsWindowIsVisible, setInstructionsWindowVisibility] = useState(false)
@@ -25,7 +27,6 @@ const SetupMetamaskLevel = ({ dialog, globalGameActions, loadWeb3Modal }) => {
   return (
     <div id='setupMetamask'>
       <Terminal
-        isOpen
         initTop={100}
         initLeft={100}
         globalGameActions={globalGameActions}

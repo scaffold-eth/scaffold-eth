@@ -1,6 +1,7 @@
 import Background from './Background'
 import MonologWindow from './MonologWindow'
 import Terminal from './Terminal'
+import UnreadMessagesNotification from './UnreadMessagesNotification'
 import Wallet from './Wallet/index'
 import WalletBare from './WalletBare'
 import Toolbelt from './Toolbelt'
@@ -32,6 +33,7 @@ export {
   Background,
   MonologWindow,
   Terminal,
+  UnreadMessagesNotification,
   Wallet,
   WalletBare,
   Toolbelt,

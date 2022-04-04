@@ -27,7 +27,7 @@ const ContractWindow = ({ isOpen }) => {
       dragAreaHeightPercent={7}
       windowTitle='NFToken.sol'
       isOpen={isOpen}
-      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
+      windowTiteleStyle={{ top: '3.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div

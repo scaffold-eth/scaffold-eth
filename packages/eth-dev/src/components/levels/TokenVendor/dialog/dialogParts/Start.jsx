@@ -10,11 +10,11 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='U up?' />
           <div style={{ marginLeft: 65, marginBottom: 10 }}>
-            (
+            [
             <a
               target='_blank'
               rel='noreferrer'
@@ -22,18 +22,11 @@ const _dialog = [
             >
               {'->'} Ethereum lore
             </a>
-            )
+            ]
           </div>
         </>
       ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setHistoryWindowVisibility,
-        setContractWindowVisibility,
-        setChallengeWindowVisibility
-      }) => (
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <>

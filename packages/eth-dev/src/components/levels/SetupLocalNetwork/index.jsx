@@ -18,6 +18,8 @@ const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [initialInstructionsWindowIsVisible, setInitChainInstructionsWindowVisibility] = useState(
@@ -27,7 +29,6 @@ const SetupLocalNetworkLevel = ({ dialog, globalGameActions }) => {
   return (
     <div id='setupLocalNetworkLevel'>
       <Terminal
-        isOpen
         globalGameActions={globalGameActions}
         setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
       />

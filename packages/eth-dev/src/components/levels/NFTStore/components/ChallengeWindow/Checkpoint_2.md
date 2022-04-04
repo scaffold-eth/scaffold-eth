@@ -2,17 +2,35 @@
 
 > ✏️ Mint some NFTs!  Click the `MINT NFT` button in the YourCollectables tab.
 
+<br/>
+<br/>
+
 ![MintNFT](https://user-images.githubusercontent.com/12072395/145692116-bebcb514-e4f0-4492-bd10-11e658abaf75.PNG)
+
+<br/>
+<br/>
 
 👀 You should see your collectibles start to show up:
 
+<br/>
+<br/>
+
 ![nft3](https://user-images.githubusercontent.com/526558/124386983-48965300-dcb3-11eb-88a7-e88ad6307976.png)
+
+<br/>
+<br/>
 
 👛 Open an **incognito** window and navigate to http://localhost:3000
 
 🎟 Transfer an NFT to the incognito window address using the UI:
 
+<br/>
+<br/>
+
 ![nft5](https://user-images.githubusercontent.com/526558/124387008-58ae3280-dcb3-11eb-920d-07b6118f1ab2.png)
+
+<br/>
+<br/>
 
 👛 Try to mint an NFT from the incognito window.
 
@@ -25,5 +43,6 @@
 💼 Take a quick look at your deploy script `00_deploy_your_contract.js` in `packages/hardhat/deploy`.
 
 📝 If you want to make frontend edits, open `App.jsx` in `packages/react-app/src`.
+
 <br/>
 <br/>

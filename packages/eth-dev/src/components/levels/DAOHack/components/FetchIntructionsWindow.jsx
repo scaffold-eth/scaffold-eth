@@ -13,7 +13,7 @@ const FetchIntructionsWindow = ({ isOpen }) => {
       dragAreaHeightPercent={6}
       windowTitle='Resources'
       isOpen={isOpen}
-      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
+      windowTiteleStyle={{ top: '3.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div

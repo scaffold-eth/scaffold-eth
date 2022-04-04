@@ -18,6 +18,8 @@ const CreateWalletLevel = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   // const [createWalletWindowVisible, setCreateWalletWindowVisibility] = useState(false)
@@ -26,7 +28,6 @@ const CreateWalletLevel = ({ dialog, globalGameActions }) => {
   return (
     <div id='createWalletLevel'>
       <Terminal
-        isOpen
         globalGameActions={globalGameActions}
         setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
       />

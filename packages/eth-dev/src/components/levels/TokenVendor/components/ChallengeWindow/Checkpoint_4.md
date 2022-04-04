@@ -18,7 +18,9 @@
 
 🔍 Look in the `App.jsx` for the extra approve/sell UI to uncomment!
 
-#### 🥅 Goal
+<br/>
+
+#### 🥅 Goals
 
 - [ ] Can you sell tokens back to the vendor?
 - [ ] Do you receive the right amount of ETH for the tokens?

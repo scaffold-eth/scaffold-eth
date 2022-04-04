@@ -14,7 +14,7 @@ const _dialog = [
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='U up?' />
           <div style={{ marginLeft: 65, marginBottom: 10 }}>
-            (
+            [
             <a
               target='_blank'
               rel='noreferrer'
@@ -22,7 +22,7 @@ const _dialog = [
             >
               {'->'} Ethereum lore
             </a>
-            )
+            ]
           </div>
         </>
       ),

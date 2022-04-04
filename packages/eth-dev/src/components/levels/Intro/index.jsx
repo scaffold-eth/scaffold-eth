@@ -1,14 +1,15 @@
 import React, { useEffect, useState } from 'react'
 
-import { Toolbelt, MonologWindow, Terminal, Button } from '../../gameItems/components'
+import {
+  Toolbelt,
+  MonologWindow,
+  Terminal,
+  UnreadMessagesNotification,
+  Button
+} from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 import { InitChainInstructionsWindow } from '../SetupLocalNetwork/components'
-import {
-  WelcomeWindow,
-  IncomingCallBubble,
-  SelectLevelWindow,
-  FactionSupportOverview
-} from './components'
+import { WelcomeWindow, SelectLevelWindow, FactionSupportOverview } from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'Intro'
@@ -44,9 +45,6 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
 
   const [didFinishMonolog, setDidFinishMonolog] = useState(false)
   const finishMonolog = () => setDidFinishMonolog(true)
-
-  const [didPickUpCall, setDidPickUpCall] = useState(false)
-  const pickUpCall = () => setDidPickUpCall(true)
 
   // TODO: abstract this into the dialog redux wrapper
   const removeMonologFromDialog = _levelDialog => {
@@ -124,17 +122,12 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
         />
       )}
 
-      {didFinishMonolog && !didPickUpCall && (
-        <IncomingCallBubble globalGameActions={globalGameActions} pickUpCall={pickUpCall} />
-      )}
+      {didFinishMonolog && <UnreadMessagesNotification />}
 
-      {didEnterGame && didFinishMonolog && didPickUpCall && (
-        <Terminal
-          isOpen
-          globalGameActions={globalGameActions}
-          setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
-        />
-      )}
+      <Terminal
+        globalGameActions={globalGameActions}
+        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
+      />
 
       <InitChainInstructionsWindow
         isOpen={initialInstructionsWindowIsVisible}

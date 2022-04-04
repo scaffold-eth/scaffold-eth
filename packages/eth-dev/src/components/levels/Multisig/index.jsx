@@ -18,6 +18,8 @@ const Multisig = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
@@ -26,7 +28,6 @@ const Multisig = ({ dialog, globalGameActions }) => {
   return (
     <div id='multisig'>
       <Terminal
-        isOpen
         // initTop={window.innerHeight - 840}
         // initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}

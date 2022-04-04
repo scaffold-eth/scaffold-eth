@@ -2,15 +2,33 @@
 
 > ✏️ Edit your frontend `App.jsx` in `packages/react-app/src` to change the `targetNetwork` to `NETWORKS.rinkeby`:
 
+<br/>
+<br/>
+
 ![image](https://user-images.githubusercontent.com/2653167/142491593-a032ebf2-38c7-4d1c-a4c5-5e02485e21b4.png)
+
+<br/>
+<br/>
 
 You should see the correct network in the frontend (http://localhost:3000):
 
+<br/>
+<br/>
+
 ![nft10](https://user-images.githubusercontent.com/526558/124387099-9a3edd80-dcb3-11eb-9a57-54a7d370589a.png)
+
+<br/>
+<br/>
 
 🎫 Ready to mint a batch of NFTs for reals?  Use the `MINT NFT` button.
 
+<br/>
+<br/>
+
 ![MintNFT2](https://user-images.githubusercontent.com/12072395/145692572-d61c971d-7452-4218-9c66-d675bb78a9dc.PNG)
+
+<br/>
+<br/>
 
 📦 Build your frontend:
 

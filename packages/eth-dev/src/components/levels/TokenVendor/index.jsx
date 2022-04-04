@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
+import { Terminal, UnreadMessagesNotification } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
 import { HistoryWindow, ContractWindow, ChallengeWindow } from './components'
@@ -18,6 +18,8 @@ const TokenVendor = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // hide terminal
+    globalGameActions.terminal.hideTerminal()
   }, [])
 
   const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)
@@ -26,8 +28,9 @@ const TokenVendor = ({ dialog, globalGameActions }) => {
 
   return (
     <div id='TokenVendor'>
+      <UnreadMessagesNotification />
+
       <Terminal
-        isOpen
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}

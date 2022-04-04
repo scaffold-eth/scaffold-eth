@@ -48,7 +48,7 @@ const ExplanationWindow = ({
           overflowX: 'hidden'
         }}
       >
-        <h1 style={{ marginTop: 15}}>Welcome</h1>
+        <h1 style={{ marginTop: 15 }}>Welcome</h1>
         <div
           style={{
             marginTop: '1%',

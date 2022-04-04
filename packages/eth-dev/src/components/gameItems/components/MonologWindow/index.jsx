@@ -4,7 +4,7 @@ import { DialogContainer } from './components'
 import { WindowModal } from '..'
 
 const MonologWindow = ({
-  isVisible,
+  isOpen,
   levelContainer: { currentLevel },
   dialog,
   actions,
@@ -22,7 +22,7 @@ const MonologWindow = ({
       initWidth={initWidth}
       // backgroundPath=''
       dragAreaHeightPercent={5}
-      isOpen={isVisible}
+      isOpen={isOpen}
       style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
     >
       <DialogContainer

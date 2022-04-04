@@ -17,7 +17,7 @@ const DetailsOnWalletsWindow = ({ globalGameActions, isOpen }) => {
       dragAreaHeightPercent={8}
       windowTitle='Ethereum Wallets'
       isOpen={isOpen}
-      windowTiteleStyle={{ top: '2.5%', left: '56%' }}
+      windowTiteleStyle={{ top: '3.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div

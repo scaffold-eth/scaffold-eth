@@ -7,7 +7,7 @@ export const TERMINAL_SHOW = `${stateContainerId}/TERMINAL_SHOW`
 export const TERMINAL_HIDE = `${stateContainerId}/TERMINAL_HIDE`
 
 const initialState = {
-  isVisible: true
+  isOpen: false
 }
 
 const mapStateToProps = state => {
@@ -25,11 +25,11 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case TOGGLE_VISIBLITY:
-        return dotProp.set(state, 'isVisible', !state.isVisible)
+        return dotProp.set(state, 'isOpen', !state.isOpen)
       case TERMINAL_SHOW:
-        return dotProp.set(state, 'isVisible', true)
+        return dotProp.set(state, 'isOpen', true)
       case TERMINAL_HIDE:
-        return dotProp.set(state, 'isVisible', false)
+        return dotProp.set(state, 'isOpen', false)
       default:
         return state
     }

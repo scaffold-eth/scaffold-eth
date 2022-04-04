@@ -23,10 +23,11 @@ const ContractWindow = ({ isOpen }) => {
       initLeft={window.innerWidth / 2 + window.innerWidth * 0.02 + window.innerWidth * 0.05}
       initHeight={window.innerHeight * 0.8}
       initWidth={window.innerWidth * 0.4}
-      backgroundPath='./assets/items/window.png'
-      dragAreaHeightPercent={12}
+      backgroundPath='./assets/items/window_large.png'
+      dragAreaHeightPercent={8}
       windowTitle={contentFileName}
       isOpen={isOpen}
+      windowTiteleStyle={{ top: '3.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
     >
       <div

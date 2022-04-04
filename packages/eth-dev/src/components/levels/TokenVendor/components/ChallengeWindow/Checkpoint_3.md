@@ -36,6 +36,8 @@ await yourToken.transfer( vendor.address, ethers.utils.parseEther("1000") );
 
 (You will use the `YourToken` UI tab and the frontend for most of your testing. Most of the UI is already built for you for this challenge.)
 
+<br/>
+
 #### 🥅 Goals
 
 - [ ] Does the `Vendor` address start with a `balanceOf` **1000** in `YourToken` on the `Debug Contracts` tab?

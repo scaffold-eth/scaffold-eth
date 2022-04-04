@@ -18,6 +18,8 @@ const ENS = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
@@ -25,7 +27,6 @@ const ENS = ({ dialog, globalGameActions }) => {
   return (
     <div id='ENS'>
       <Terminal
-        isOpen
         initTop={window.innerHeight - 850}
         initLeft={50}
         globalGameActions={globalGameActions}

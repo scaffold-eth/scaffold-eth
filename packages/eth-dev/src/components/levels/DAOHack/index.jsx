@@ -24,6 +24,8 @@ const DAOHack = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useState(false)
@@ -34,7 +36,6 @@ const DAOHack = ({ dialog, globalGameActions }) => {
   return (
     <div id='DAOHack'>
       <Terminal
-        isOpen
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}

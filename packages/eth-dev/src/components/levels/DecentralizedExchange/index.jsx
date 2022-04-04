@@ -19,6 +19,8 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
@@ -28,7 +30,6 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
   return (
     <div id='decentralizedExchange'>
       <Terminal
-        isOpen
         initTop={window.innerHeight * 0.1}
         initLeft={window.innerWidth * 0.95 - (450 + 10)}
         globalGameActions={globalGameActions}

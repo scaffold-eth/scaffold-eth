@@ -18,6 +18,8 @@ const UnderflowBug = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
@@ -26,7 +28,6 @@ const UnderflowBug = ({ dialog, globalGameActions }) => {
   return (
     <div id='underflowBug'>
       <Terminal
-        isOpen
         globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}

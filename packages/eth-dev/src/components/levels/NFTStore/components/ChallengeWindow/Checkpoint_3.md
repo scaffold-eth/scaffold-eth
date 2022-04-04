@@ -4,15 +4,33 @@
 
 > Change the `defaultNetwork` in `packages/hardhat/hardhat.config.js` to `rinkeby`
 
+<br/>
+<br/>
+
 ![networkSelect](https://user-images.githubusercontent.com/12072395/146871168-29b3d87a-7d25-4972-9b3c-0ec8c979171b.PNG)
+
+<br/>
+<br/>
 
 🔐 Generate a **deployer address** with `yarn generate`
 
+<br/>
+<br/>
+
 ![nft7](https://user-images.githubusercontent.com/526558/124387064-7d0a0f00-dcb3-11eb-9d0c-195f93547fb9.png)
+
+<br/>
+<br/>
 
 👛 View your **deployer address** using `yarn account`
 
+<br/>
+<br/>
+
 ![nft8](https://user-images.githubusercontent.com/526558/124387068-8004ff80-dcb3-11eb-9d0f-43fba2b3b791.png)
+
+<br/>
+<br/>
 
 ⛽️ Use a faucet like [faucet.paradigm.xyz](https://faucet.paradigm.xyz/) to fund your **deployer address**.
 
@@ -25,5 +43,6 @@ yarn deploy
 ```
 
 > 💬 Hint: You can set the `defaultNetwork` in `hardhat.config.js` to `Rinkeby` OR you can `yarn deploy --network rinkeby`.
+
 <br/>
 <br/>

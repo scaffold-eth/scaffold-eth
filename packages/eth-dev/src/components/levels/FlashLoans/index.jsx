@@ -18,6 +18,8 @@ const FlashLoans = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
@@ -25,7 +27,6 @@ const FlashLoans = ({ dialog, globalGameActions }) => {
   return (
     <div id='flashLoans'>
       <Terminal
-        isOpen
         initTop={window.innerHeight - 840}
         initLeft={window.innerWidth - 530}
         globalGameActions={globalGameActions}
