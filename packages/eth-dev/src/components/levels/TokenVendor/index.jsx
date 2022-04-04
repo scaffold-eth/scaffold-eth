@@ -20,6 +20,8 @@ const TokenVendor = ({ dialog, globalGameActions }) => {
     })
     // hide terminal
     globalGameActions.terminal.hideTerminal()
+    // wait 4 seconds then show unread message notification
+    globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
   }, [])
 
   const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)

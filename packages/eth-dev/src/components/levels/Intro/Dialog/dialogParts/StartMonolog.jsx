@@ -9,23 +9,19 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/StartMonolog`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ah what a view!' />
-      ),
+      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ah what a view!' />,
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ethereum City!' />
-      ),
+      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ethereum City!' />,
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be back.' />
       ),
       choices: null
@@ -33,7 +29,7 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be home ...' />
       ),
       choices: ({
@@ -53,6 +49,8 @@ const _dialog = [
                     currentDialog,
                     dialogPathId: FIRST_CONTACT
                   })
+
+                  globalGameActions.terminal.showMessageNotification({ delayInSeconds: 2 })
                 }}
               >
                 Continue

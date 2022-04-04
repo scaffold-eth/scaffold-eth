@@ -107,12 +107,25 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Thanks!' />,
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ah man! This is great!' />
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft
+          pathToAvatar='./assets/punk_anon.png'
+          text='I think it is time to move on to the next chapter in our little adventure!'
+        />
+      ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/decentralized-staking-app'>
-              <Button className='is-warning'>Next level</Button>
+            <Link to='/decentralized-exchange'>
+              <Button className='is-warning'>Go to roof top</Button>
             </Link>
           )}
         </>

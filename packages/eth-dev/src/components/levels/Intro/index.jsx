@@ -122,8 +122,6 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
         />
       )}
 
-      {didFinishMonolog && <UnreadMessagesNotification />}
-
       <Terminal
         globalGameActions={globalGameActions}
         setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}

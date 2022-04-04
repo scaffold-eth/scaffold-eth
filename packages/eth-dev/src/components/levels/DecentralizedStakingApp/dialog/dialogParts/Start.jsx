@@ -173,7 +173,7 @@ const _dialog = [
         <>
           {isLastVisibleDialog && (
             <Link to='/token-vendor'>
-              <Button className='is-warning'>Next level</Button>
+              <Button className='is-warning'>Go back to sleep</Button>
             </Link>
           )}
         </>
