@@ -673,6 +673,34 @@ export const BUILDS = [
 
 
 export const BUILDERS = [
+
+  {
+   name: "genlyai.eth.eth",
+   role: "pikemen",
+   address: "0x2D143b3Ae28Fa31E7c821D138c58c32A30aA36Ae",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xCaC27268ae818D4E55271b76a94927E2B3D5B33F",
+   streamUrl: "http://genlyai.buidlguidl.com/"
+  },
+  {
+   name: "monyo.eth",
+   role: "pikemen",
+   address: "0x8c9D11cE64289701eFEB6A68c16e849E9A2e781d",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xB5e2e5aaaC005EE619cc61A489daB9A73851c9f4",
+   streamUrl: "http://monyo.buidlguidl.com/"
+  },
+  {
+   name: "0xdarni.eth",
+   role: "pikemen",
+   address: "0x523d007855B3543797E0d3D462CB44B601274819",
+   github: "",
+   builds: [ ],
+   streamAddress: "0x7D78028473c40d605De5B3E443089a98bBCe5eea",
+   streamUrl: "http://0xdarni.buidlguidl.com/"
+  },
   {
    name: "pontus-dev.eth",
    role: "pikemen",
