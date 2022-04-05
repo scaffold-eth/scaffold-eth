@@ -20,6 +20,7 @@ import { useThemeSwitcher, ThemeSwitcherProvider } from "react-css-theme-switche
 import { INFURA_ID, DAI_ADDRESS, DAI_ABI, NETWORK, NETWORKS, SIMPLE_STREAM_ABI, BUILDERS, BUILDS, mainStreamReader_ADDRESS, mainStreamReader_ABI } from "./constants";
 import pretty from 'pretty-time';
 import { ethers } from "ethers";
+import {getAllBuilders} from "./data/bgApi"
 
 
 /*
@@ -161,40 +162,45 @@ function App(props) {
   // Then read your DAI balance like:
   //const myMainnetDAIBalance = useContractReader({DAI: mainnetDAIContract},"DAI", "balanceOf",["0x34aA3F359A9D614239015126635CE7732c18fDF3"])
 
-  let streams = []
-  for(let b in BUILDERS){
-    if(BUILDERS[b].streamAddress) streams.push(BUILDERS[b].streamAddress)
-  }
-  //console.log("streams",streams)
+  // Builders from BGv3 Bazaar
+  const [bgBuilders, setBgBuilders] = useState([]);
+
+  useEffect(() => {
+    const getBuilders = async () => {
+      const builders = await getAllBuilders();
+      setBgBuilders(builders);
+      console.log("BUILDERS FROM BAZAAR", builders);
+    };
+
+    getBuilders();
+  }, []);
+
+  const streams = bgBuilders.reduce((acc, builder) => {
+    if (builder.stream?.streamAddress) {
+      acc.push(builder.stream.streamAddress);
+    }
+    return acc;
+  }, []);
+
+  // console.log("streams",streams)
   // keep track of a variable from the contract in the local React state:
   const streamReadResult = useContractReader({"StreamReader":mainnetStreamReaderContract},"StreamReader", "readStreams", [streams])
   //console.log("streamReadResult",streamReadResult)
 
-  const [ builderStreams, setBuilderStreams ] = useState()
+  const [ builderStreams, setBuilderStreams ] = useState({});
   useEffect(
     ()=>{
-      if(streamReadResult){
-        let finalBuilderList = {}
-        for(let b in BUILDERS){
-          let badges = []
-          for(let c in BUILDERS[b].builds){
-            let buildString = BUILDERS[b].builds[c]
-            //console.log("searching for build string ",buildString)
-            for(let d in BUILDS){
-              if(BUILDS[d].image.replace(".png","").replace(".jpg","")==buildString){
-                badges.push(
-                  <a href={BUILDS[d].branch} target="_blank"><span style={{margin:4}}>{BUILDS[d].name.substr(0,BUILDS[d].name.indexOf(" "))}</span></a>
-                )
-              }
-            }
-          }
-          finalBuilderList[BUILDERS[b].name] = {...BUILDERS[b],badges,cap:streamReadResult[b*4],frequency:streamReadResult[b*4+1],balance:streamReadResult[b*4+2],totalBalance:streamReadResult[b*4+3]}
-        }
+      if (streamReadResult) {
+        let finalBuilderList = {};
+        bgBuilders.filter(builder => !!builder.stream?.streamAddress).forEach((builder, index) => {
+          if (!builder.stream?.streamAddress) return;
+          finalBuilderList[builder.ens] = {...builder,cap:streamReadResult[index*4],frequency:streamReadResult[index*4+1],balance:streamReadResult[index*4+2],totalBalance:streamReadResult[index*4+3]}
+        })
         setBuilderStreams(finalBuilderList)
       }
     }
   ,[streamReadResult])
-  //console.log("builderStreams",builderStreams)
+  console.log("builderStreams",builderStreams)
 
   //📟 Listen for broadcast events
   const fundingEvents = useEventListener(readContracts, "StreamFunder", "FundStreams", localProvider, 1);
@@ -300,7 +306,6 @@ function App(props) {
       </div>
     )
   }*/
-
   const [ randomizedBuilds, setRandomizedBuilds ] = useState()
   useEffect(()=>{
     setRandomizedBuilds(shuffle(BUILDS))
@@ -365,38 +370,13 @@ function App(props) {
 
   }
 
-  const filterBuilders = (BUILDERS,filterBy) => {
-    let newList = []
-    for(let b in BUILDERS){
-      //console.log("BUILDERS",BUILDERS[b])
-      if(BUILDERS[b].role==filterBy){
-        newList.push(BUILDERS[b])
-      }
-    }
-    return newList
+  const filterBuilders = (builders, filterBy) => {
+    return builders.filter(builder => builder.function === filterBy);
   }
 
-
   const builderRender = (item) => {
-
-    let extraLink = ""
-    if(item.github){
-      extraLink = (
-        <a
-          href={item.github}
-          target="_blank"
-          style={{marginLeft:8}}
-        >
-          <ExportOutlined />
-        </a>
-      )
-    }
-
-
-    const STREAMWIDTH = "calc(min(80vw,620px))"
-    const stream = builderStreams && builderStreams[item.name]
-    if(stream){
-
+    const stream = builderStreams && builderStreams[item.ens];
+    if (stream) {
       // console.log("STREAM DISPLAY",stream)
 
       let streamNetPercentSeconds = stream.totalBalance && stream.cap && stream.totalBalance.mul(100).div(stream.cap)
@@ -409,25 +389,21 @@ function App(props) {
       // console.log("streamNetPercent",streamNetPercent, streamNetPercent && streamNetPercent.toNumber())
 
       let totalProgress = []
-
       const totalSeconds = streamNetPercentSeconds && stream.frequency && streamNetPercentSeconds.mul(stream.frequency)
-
       const percent = stream.cap && stream.balance && (stream.balance.mul(100).div(stream.cap)).toNumber()
-
-
       const widthOfStacks = numberOfTimesFull > 6 ? 32 : 64
 
-      for(let c=0;c<numberOfTimesFull;c++){
+      for (let c=0;c<numberOfTimesFull;c++) {
         totalProgress.push(
           <Progress percent={100} showInfo={false} style={{width:widthOfStacks,padding:4}}/>
         )
       }
+
       if(streamNetPercent && streamNetPercent.toNumber()>0){
         totalProgress.push(
           <Progress percent={streamNetPercent&&streamNetPercent.toNumber()} showInfo={false} status="active" style={{width:widthOfStacks,padding:4}}/>
         )
       }
-
 
       let adminButton = ""
       let adminDisplay = ""
@@ -464,9 +440,6 @@ function App(props) {
         )
       }
 
-
-
-
       return (
         <List.Item
           key={item.name}
@@ -494,7 +467,7 @@ function App(props) {
               </div>
 
             </div>
-            {item.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
+            {item.stream?.streamAddress?<div style={{position:"absolute",left:266,top:-6}}>
               <div style={{padding:8}}>
                 <div style={{padding:4, fontSize:14}}>
                   Ξ<Balance value={stream.totalBalance} provider={localProvider} price={false} size={14}/>
@@ -509,11 +482,11 @@ function App(props) {
             </div>:""}
 
             <div style={{position:"absolute",left:-216,top:-100}}>
-              <QRPunkBlockie withQr={false} address={item.address} scale={0.7} />
+              <QRPunkBlockie withQr={false} address={item.id} scale={0.7} />
             </div>
 
-            <div style={{marginLeft:32, marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.name}</div>
-            <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.role}</div>
+            <div style={{marginLeft:32, marginTop:32,fontSize:24,fontWeight:"bolder"}}>{item.ens}</div>
+            <div style={{marginLeft:32, fontSize:16,opacity:0.777,fontWeight:"bold"}}>{item.function}</div>
             {/*<div style={{marginLeft:-32,marginTop:32, fontSize:26,fontWeight:"bold"}}>{stream.badges}</div>*/}
 
 
@@ -709,7 +682,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"pikemen")}
+                dataSource={filterBuilders(bgBuilders,"pikemen")}
                 renderItem={builderRender}
               />
             </div>
@@ -721,7 +694,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"archer")}
+                dataSource={filterBuilders(bgBuilders,"archer")}
                 renderItem={builderRender}
               />
             </div>
@@ -732,7 +705,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"knight")}
+                dataSource={filterBuilders(bgBuilders,"knight")}
                 renderItem={builderRender}
               />
             </div>
@@ -743,7 +716,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"cleric")}
+                dataSource={filterBuilders(bgBuilders,"cleric")}
                 renderItem={builderRender}
               />
             </div>
@@ -755,7 +728,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"warlock")}
+                dataSource={filterBuilders(bgBuilders,"warlock")}
                 renderItem={builderRender}
               />
             </div>
@@ -768,7 +741,7 @@ function App(props) {
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(BUILDERS,"monk")}
+                dataSource={filterBuilders(bgBuilders,"monk")}
                 renderItem={builderRender}
               />
             </div>
