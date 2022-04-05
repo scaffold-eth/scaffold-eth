@@ -169,7 +169,6 @@ function App(props) {
     const getBuilders = async () => {
       const builders = await getAllBuilders();
       setBgBuilders(builders);
-      console.log("BUILDERS FROM BAZAAR", builders);
     };
 
     getBuilders();
@@ -200,7 +199,7 @@ function App(props) {
       }
     }
   ,[streamReadResult])
-  console.log("builderStreams",builderStreams)
+  // console.log("builderStreams",builderStreams)
 
   //📟 Listen for broadcast events
   const fundingEvents = useEventListener(readContracts, "StreamFunder", "FundStreams", localProvider, 1);
@@ -453,7 +452,7 @@ function App(props) {
           <div style={{textAlign:"left",position:"relative"}}>
             <div style={{float:"right",marginTop:16,width:100}}>
               <Button style={{marginTop:0,zIndex:1}} size="large" onClick={()=>{
-                  window.open(item.streamUrl)
+                  window.open(`https://bazaar.buidlguidl.com/builders/${item.id}`)
                   //message.success("Coming soon!")
                 }}>
                   <ReconciliationOutlined /> View Work
