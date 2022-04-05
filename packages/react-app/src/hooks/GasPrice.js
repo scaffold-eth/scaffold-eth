@@ -1,6 +1,8 @@
 import axios from "axios";
 import { usePoller } from "eth-hooks";
 import { useState } from "react";
+import { ETHERSCAN_KEY } from "../constants";
+import { ethers } from "ethers";
 
 export default function useGasPrice(targetNetwork, speed) {
   const [gasPrice, setGasPrice] = useState();
@@ -9,9 +11,9 @@ export default function useGasPrice(targetNetwork, speed) {
       setGasPrice(targetNetwork.gasPrice);
     } else {
       axios
-        .get("https://ethgasstation.info/json/ethgasAPI.json")
+        .get("https://api.etherscan.io/api?module=gastracker&action=gasoracle&apikey=" + ETHERSCAN_KEY)
         .then(response => {
-          const newGasPrice = response.data[speed || "fast"] * 100000000;
+          const newGasPrice = ethers.utils.parseUnits(response.data.result["SafeGasPrice"], "gwei")
           if (newGasPrice !== gasPrice) {
             setGasPrice(newGasPrice);
           }
@@ -20,6 +22,6 @@ export default function useGasPrice(targetNetwork, speed) {
     }
   };
 
-  usePoller(loadGasPrice, 39999);
+  usePoller(loadGasPrice, 4200);
   return gasPrice;
 }
