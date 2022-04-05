@@ -19,9 +19,9 @@ const HistoryWindow = ({
         fetch(res.default)
           .then(res => res.text())
           .then(res => setFileContentIntro(res))
-          .catch(err => console.log(err));
+          .catch(err => console.log(err))
       })
-      .catch(err => console.log(err));
+      .catch(err => console.log(err))
   }, [])
 
   return (

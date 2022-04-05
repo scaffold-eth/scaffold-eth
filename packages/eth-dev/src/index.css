@@ -1,9 +1,16 @@
 @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap');
 
+@font-face {
+	font-family: Atlantis;
+	src: url('/fonts/atlantis/AtlantisText-Bold.ttf');
+	src: url('/fonts/atlantis/AtlantisText-Bold.ttf') format('truetype');
+}
+
 body {
   margin: 0;
   font-family: 'Press Start 2P' !important;
+  /*font-family: 'Atlantis' !important;*/
 }
 
 code {

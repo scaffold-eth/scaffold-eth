@@ -24,34 +24,16 @@ import ENS from './ENS'
 import UpgradableContracts from './UpgradableContracts'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
+  // TODO:
+  /*
   const setInitialLevel = levelId => {
     console.log(`setting initial level to: ${levelId}`)
     globalGameActions.level.setCurrentLevel({ levelId })
   }
+  */
 
   // TODO:
   const [wallet, setWallet] = useState()
-
-  const setupGame = () => {
-    setInitialLevel('Intro')
-  }
-
-  useEffect(() => {
-    setupGame()
-  }, [])
-
-  const [showMessageNotification, setShowMessageNotification] = useState(false)
-  const [_showMessageNotificationInXSeconds, showMessageNotificationInXSeconds] = useState(null)
-
-  const sleep = seconds => new Promise(resolve => setTimeout(resolve, seconds * 1000))
-
-  useEffect(() => {
-    async function exec() {
-      await sleep(showMessageNotificationInXSeconds)
-      setShowMessageNotification(true)
-    }
-    exec()
-  }, [_showMessageNotificationInXSeconds])
 
   return (
     <>

@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
-import { ContractWindow, ExplanationWindow, EtherDeltaWindow } from './components'
+import { ContractWindow, ExplanationWindow, EtherDeltaWindow, ChallengeWindow } from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'DecentralizedExchange'
@@ -26,6 +26,7 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
   const [etherDeltaWindowIsVisible, setEtherDeltaWindowVisibility] = useState(false)
   const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
+  const [challengeWindowIsVisible, setChallengeWindowVisibility] = useState(false)
 
   return (
     <div id='decentralizedExchange'>
@@ -35,6 +36,7 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
         globalGameActions={globalGameActions}
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
       />
 
       <ExplanationWindow
@@ -45,11 +47,18 @@ const DecentralizedExchange = ({ dialog, globalGameActions }) => {
         setContractWindowVisibility={setContractWindowVisibility}
         setExplanationWindowVisibility={setExplanationWindowVisibility}
         setEtherDeltaWindowVisibility={setEtherDeltaWindowVisibility}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
       />
 
       <EtherDeltaWindow isOpen={etherDeltaWindowIsVisible} />
 
       <ContractWindow isOpen={contractWindowIsVisible} />
+
+      <ChallengeWindow
+        isOpen={challengeWindowIsVisible}
+        setContractWindowVisibility={setContractWindowVisibility}
+        setChallengeWindowVisibility={setChallengeWindowVisibility}
+      />
     </div>
   )
 }

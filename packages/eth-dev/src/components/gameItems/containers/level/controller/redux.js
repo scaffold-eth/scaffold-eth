@@ -1,10 +1,10 @@
 import dotProp from 'dot-prop-immutable'
 
-const initialLevel = 'intro'
-
 const stateContainerId = 'levelContainer'
 
 export const SET_CURRENT_LEVEL = `${stateContainerId}/SET_CURRENT_LEVEL`
+
+const initialLevel = 'Intro'
 
 const initialState = {
   currentLevel: initialLevel

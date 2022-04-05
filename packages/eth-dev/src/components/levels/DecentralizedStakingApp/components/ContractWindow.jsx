@@ -13,9 +13,9 @@ const ContractWindow = ({ isOpen }) => {
             fetch(res.default)
                 .then(res => res.text())
                 .then(res => setFileContent(res))
-                .catch(err => console.log(err));
+                .catch(err => console.log(err))
         })
-        .catch(err => console.log(err));
+        .catch(err => console.log(err))
     */
   })
 

@@ -23,7 +23,7 @@ const reducer = (state = initialState, action) => {
 
     switch (action.type) {
       case SET_CURRENT_BACKGROUND:
-        console.log('setting background to ' + payload.background)
+        console.log(`setting currentBackground: ${payload.background}`)
         return dotProp.set(state, 'currentBackground', payload.background)
       default:
         return state

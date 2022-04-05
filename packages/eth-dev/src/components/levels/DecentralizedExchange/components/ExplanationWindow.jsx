@@ -8,7 +8,8 @@ const ExplanationWindow = ({
   globalGameActions,
   setContractWindowVisibility,
   setExplanationWindowVisibility,
-  setEtherDeltaWindowVisibility
+  setEtherDeltaWindowVisibility,
+  setChallengeWindowVisibility
 }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
@@ -168,10 +169,10 @@ const ExplanationWindow = ({
         {currentStep <= 5 && (
           <Button
             onClick={() => {
-              if (currentStep === 3) {
+              if (currentStep === 1) {
                 setEtherDeltaWindowVisibility(true)
               }
-              if (currentStep === 4) {
+              if (currentStep > 2) {
                 setEtherDeltaWindowVisibility(false)
               }
               if (currentStep === 5) {
@@ -187,13 +188,12 @@ const ExplanationWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
               setContractWindowVisibility(false)
               setExplanationWindowVisibility(false)
-              globalGameActions.background.setCurrentBackground({ background: 'ExchangeStonks' })
+              setChallengeWindowVisibility(true)
             }}
           >
-            Done
+            Start Challenge
           </Button>
         )}
       </div>

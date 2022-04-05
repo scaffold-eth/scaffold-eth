@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import { Terminal } from '../../gameItems/components'
 import { connectController as wrapGlobalGameData } from '../../gameItems'
 
-import { ContractWindow, ExplanationWindow, EtherDeltaWindow } from './components'
+import { ExplanationWindow } from './components'
 import levelDialog from './dialog'
 
 export const LEVEL_ID = 'FlashLoans'

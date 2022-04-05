@@ -3,11 +3,17 @@ import getLocalProvider from './getLocalProvider'
 import getMainnetProvider from './getMainnetProvider'
 import checkBalancesAndSwitchNetwork from './checkBalancesAndSwitchNetwork'
 import Transactor from './Transactor'
+import getChallengeReadme from './getChallengeReadme'
+import parseGithubReadme from './parseGithubReadme'
+import splitGithubReadmeIntoSections from './splitGithubReadmeIntoSections'
 
 export {
   getTargetNetwork,
   getLocalProvider,
   getMainnetProvider,
   Transactor,
-  checkBalancesAndSwitchNetwork
+  checkBalancesAndSwitchNetwork,
+  getChallengeReadme,
+  parseGithubReadme,
+  splitGithubReadmeIntoSections
 }

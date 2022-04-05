@@ -18,6 +18,8 @@ const NFTStore = ({ dialog, globalGameActions }) => {
       initialDialogPathId: `${LEVEL_ID}/Start`,
       currentDialog: levelDialog
     })
+    // show terminal
+    globalGameActions.terminal.showTerminal()
   }, [])
 
   const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)
