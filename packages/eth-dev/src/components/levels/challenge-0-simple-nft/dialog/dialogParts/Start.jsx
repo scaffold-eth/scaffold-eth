@@ -5,14 +5,15 @@ import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PART_ID = 'GamblingContract/Start'
+export const LEVEL_ID = 'Challenge0SimpleNFT'
+export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+      dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Ok. This is the machine I was talking about.
+          I'm sending you some coordinates now. I'll call you again when you're there.
         </SpeakerLeft>
       ),
       choices: null
@@ -21,37 +22,21 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>And this is the code.</SpeakerLeft>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Can you figure out what happened?
+          0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
         </SpeakerLeft>
       ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setContractWindowVisibility,
-        setExplanationWindowVisibility
-      }) => (
+      choices: ({ isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
             <Button
               className='is-warning'
               onClick={() => {
-                setContractWindowVisibility(true)
+                globalGameActions.background.setCurrentBackground({ background: 'NiftyShop' })
                 globalGameActions.dialog.continueDialog()
-                // setExplanationWindowVisibility(true)
-                // globalGameActions.dialog.continueDialog()
               }}
             >
-              Show Contract
+              Go to coordinates
             </Button>
           )}
         </>
@@ -61,7 +46,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>What do you think?</SpeakerLeft>
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Welcome to the shop!</SpeakerLeft>
       ),
       choices: null
     }
@@ -70,26 +55,35 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          We have some more documentation that goes with this. Here, take a look.
+          As you can see, some parts are already setup.
+        </SpeakerLeft>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          What is missing now is, an interface for our members to obtain their membership badges.
         </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,
         globalGameActions,
-        setContractWindowVisibility,
-        setExplanationWindowVisibility
+        setHistoryWindowVisibility
       }) => (
         <>
           {isLastVisibleDialog && (
             <Button
               className='is-warning'
               onClick={() => {
-                // setContractWindowVisibility(true)
-                setExplanationWindowVisibility(true)
+                setHistoryWindowVisibility(true)
+                globalGameActions.dialog.continueDialog()
               }}
             >
-              Open Documentation
+              Show Documentation
             </Button>
           )}
         </>
@@ -98,7 +92,13 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Nice!</SpeakerLeft>,
+      dialog: () => <></>,
+      choices: () => <></>
+    }
+  },
+  {
+    components: {
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Greate job!</SpeakerLeft>,
       choices: null
     }
   },
@@ -106,7 +106,7 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Running these should yield us some juicy profits
+          Such an elegant solution to our problem!
         </SpeakerLeft>
       ),
       choices: null
@@ -116,14 +116,38 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          I think it's time to onboard you to some of my more ambitiuse plans ...
+          I'll advise my people to pick up their Tokens right away.
         </SpeakerLeft>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>It's late.</SpeakerLeft>,
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          You can stay at one of my apartments for now.
+        </SpeakerLeft>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'll ping you tomorrow</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to={routesMap.DAOHack.path}>
-              <Button>Continue</Button>
+            <Link to={routesMap.Challenge1DecentralizedStaking.path}>
+              <Button className='is-warning'>Go to apartment</Button>
             </Link>
           )}
         </>

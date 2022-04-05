@@ -5,13 +5,13 @@ import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
-export const DIALOG_PART_ID = 'ENS/Start'
+export const DIALOG_PART_ID = 'Challenge3Dex/Start'
 
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Welcome back!</SpeakerLeft>
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I wanted you to see this.</SpeakerLeft>
       ),
       choices: null
     }
@@ -20,8 +20,7 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Now that identification is no problem anymore things are starting to move much faster
-          around here.
+          This dish you see here has a very important role to play ...
         </SpeakerLeft>
       ),
       choices: null
@@ -31,7 +30,7 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          However a new problem has materialized as a consequence of our new found flexibility.
+          It gives us a strong connection to the city network.
         </SpeakerLeft>
       ),
       choices: null
@@ -41,7 +40,7 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Our data shows that we keep making mistakes and lossing funds by mismatching addresses.
+          A connection we need for what we are working on in the cellars underneath this building.
         </SpeakerLeft>
       ),
       choices: null
@@ -51,7 +50,33 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          People seem to keep getting confused when working with many different addresses.
+          I've but you on the whitelist. You should are now able to access it.
+        </SpeakerLeft>
+      ),
+      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <>
+          {isLastVisibleDialog && (
+            <Button
+              className='is-warning'
+              onClick={() => {
+                globalGameActions.background.setCurrentBackground({
+                  background: 'ExchangeRed'
+                })
+                globalGameActions.dialog.continueDialog()
+              }}
+            >
+              Go downstairs
+            </Button>
+          )}
+        </>
+      )
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          What do you think? pretty impressive huh?
         </SpeakerLeft>
       ),
       choices: null
@@ -61,7 +86,7 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          Is there anything we can do about that?
+          We are planning to give the whole city access to it.
         </SpeakerLeft>
       ),
       choices: null
@@ -71,7 +96,27 @@ const _dialog = [
     components: {
       dialog: () => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-          We have some more documentation that goes with this. Here, take a look.
+          In the future I believe running this will almost tripple our income.
+        </SpeakerLeft>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          But as you can see it is not working yet ...
+        </SpeakerLeft>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          I've already sent you the project files
         </SpeakerLeft>
       ),
       choices: ({
@@ -89,7 +134,7 @@ const _dialog = [
                 globalGameActions.dialog.continueDialog()
               }}
             >
-              Show documentation
+              Open files
             </Button>
           )}
         </>
@@ -104,22 +149,12 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>This will help us a lot.</SpeakerLeft>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great job, as usual</SpeakerLeft>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great!</SpeakerLeft>,
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to={routesMap.CreateWallet.path}>
-              <Button className='is-warning'>Leave rooftop</Button>
+            <Link to={routesMap.Challenge5MultiSig.path}>
+              <Button className='is-warning'>Go home</Button>
             </Link>
           )}
         </>

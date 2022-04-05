@@ -13,41 +13,38 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Ahhh...' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ahhh ...</SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Isn't she beautifull?`} />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Isn't she beautifull?</SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`We should probably head to my base. I've got everything we need there.`}
-        />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          We should probably head to my base. I've got everything we need there.
+        </SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
         return (
           <>
             {isLastVisibleDialog && (
-              <>
-                <Button
-                  onClick={() => {
-                    globalGameActions.dialog.continueDialog()
-                    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
-                  }}
-                >
-                  Continue
-                </Button>
-              </>
+              <Button
+                onClick={() => {
+                  globalGameActions.dialog.continueDialog()
+                  globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
+                }}
+              >
+                Continue
+              </Button>
             )}
           </>
         )
@@ -56,11 +53,10 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='So, do you know what a wallet is?'
-        />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          So, do you know what a wallet is?
+        </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },

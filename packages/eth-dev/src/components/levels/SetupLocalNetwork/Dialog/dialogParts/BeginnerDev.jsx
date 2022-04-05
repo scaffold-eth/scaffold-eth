@@ -11,7 +11,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Not to worry, not to worry!' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Not to worry, not to worry!</SpeakerLeft>
       ),
       choices: null
     }
@@ -19,10 +19,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`We've recently brokered a truce with on of the other gangs`}
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          We've recently brokered a truce with on of the other gangs
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -30,7 +29,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I can introduce you' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'll introduce you</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>

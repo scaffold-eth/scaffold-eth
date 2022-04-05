@@ -8,24 +8,20 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/DoesNotKnowWallets`
 const _dialog = [
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`So you don't know what a wallet is. No problem, no problem.`}
-        />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          So you don't know what a wallet is. No problem, no problem.
+        </SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='May I suggest that you head over to our friends at cryptozombies.io?'
-          />
-        </>
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          May I suggest that you head over to our friends at cryptozombies.io?
+        </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },

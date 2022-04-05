@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -10,9 +11,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text={`Ok. Let's get started.`} />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ok. Let's get started.</SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -45,13 +44,13 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Great!' />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great job, as usual!</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/create-wallet'>
+            <Link to={routesMap.CreateWallet.path}>
               <Button className='is-warning'>Drive into City</Button>
             </Link>
           )}

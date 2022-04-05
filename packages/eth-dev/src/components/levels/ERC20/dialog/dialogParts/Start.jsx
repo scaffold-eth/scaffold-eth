@@ -8,9 +8,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Here is the code:' />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Here is the code:</SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -37,23 +35,18 @@ const _dialog = [
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='What do you think?' />
-        </>
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>What do you think?</SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk_anon.png'
-            text='We have some more documentation that goes with this. Here, take a look.'
-          />
-        </>
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          We have some more documentation that goes with this. Here, take a look.
+        </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },

@@ -2,7 +2,7 @@ import React from 'react'
 import ReactMarkdown from 'react-markdown'
 import SpeechBubble from './SpeechBubble'
 
-const SpeakerRight = ({ text, pathToAvatar }) => {
+const SpeakerRight = ({ pathToAvatar, children }) => {
   return (
     <div
       style={{
@@ -26,9 +26,7 @@ const SpeakerRight = ({ text, pathToAvatar }) => {
         }}
       />
       <SpeechBubble direction='right'>
-        <div style={{ overflowWrap: 'break-word' }}>
-          <ReactMarkdown>{text}</ReactMarkdown>
-        </div>
+        <div style={{ overflowWrap: 'break-word' }}>{children}</div>
       </SpeechBubble>
     </div>
   )

@@ -12,9 +12,7 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Hello there' />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Hello there</SpeakerLeft>
       ),
       choices: null
     }
@@ -22,12 +20,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text={`I believe we haven't had the pleasure`}
-          />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          I believe we haven't had the pleasure
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -35,12 +30,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text={`What a beautiful night, don't you think?`}
-          />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          What a beautiful night, don't you think?
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -48,23 +40,16 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text={`I dont know why, but I've always preferred working in the dark ...`}
-          />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          I dont know why, but I've always preferred working in the dark ...
+        </SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='How about you?' />
-        </>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>How about you?</SpeakerLeft>,
       choices: ({
         dialog: { currentDialog },
         isLastVisibleDialog,

@@ -11,9 +11,23 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerRight pathToAvatar='./assets/punk5950.png' text='During the day' />
-        </>
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>During the day</SpeakerRight>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Hmmm ...</SpeakerLeft>,
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          I've heard about people like you.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -21,35 +35,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Hmmm ...' />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text={`I've heard about people like you.`}
-          />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text='We are different and yet alike.'
-          />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          We are different and yet alike.
+        </SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>

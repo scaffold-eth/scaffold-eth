@@ -9,20 +9,22 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/StartMonolog`
 const _dialog = [
   {
     components: {
-      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ah what a view!' />,
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>Ah what a view!</SpeakerRight>
+      ),
       choices: null
     }
   },
   {
     components: {
-      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Ethereum City!' />,
+      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png'>ETH City!</SpeakerRight>,
       choices: null
     }
   },
   {
     components: {
       dialog: () => (
-        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be back.' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>Feels good to be back.</SpeakerRight>
       ),
       choices: null
     }
@@ -30,7 +32,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerRight pathToAvatar='./assets/punk5950.png' text='Feels good to be home ...' />
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>Feels good to be home ...</SpeakerRight>
       ),
       choices: ({
         dialog: { currentDialog },

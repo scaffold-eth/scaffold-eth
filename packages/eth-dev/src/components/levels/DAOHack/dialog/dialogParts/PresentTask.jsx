@@ -1,5 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
+
+import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -10,10 +12,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk4551.png'
-          text='As faith would have it, I have something of a situation my hands'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          As faith would have it, I have something of a situation my hands
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -21,10 +22,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk4551.png'
-          text='One of my previous partners helped me setup an organiztion.'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          One of my previous partners helped me setup an organiztion.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -32,10 +32,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk4551.png'
-          text='It turns out that even though he said so hed dit not know what he was doing.'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          It turns out that even though he said so hed dit not know what he was doing.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -43,10 +42,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk4551.png'
-          text='I need someone to help me get out of this mess.'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          I need someone to help me get out of this mess.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -54,10 +52,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk4551.png'
-          text='Someone with a specific set of skills'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          Someone with a specific set of skills
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -65,7 +62,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Maybe someone like you?' />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Maybe someone like you?</SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -91,9 +88,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='What do you make of this?' />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>What do you make of this?</SpeakerLeft>
       ),
       choices: null
     }
@@ -101,12 +96,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text='We have some funds stuck in here.'
-          />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          We have some funds stuck in here.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -114,7 +106,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Can you help us rescue them?' />
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Can you help us rescue them?</SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -145,25 +137,19 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Good, good ...' />
-        </>
-      ),
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Good, good ...</SpeakerLeft>,
       choices: null
     }
   },
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text={`Let's hit the roof.`} />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Let's hit the roof</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>
           {isLastVisibleDialog && (
-            <Link to='/decentralized-exchange'>
+            <Link to={routesMap.Challenge3Dex.path}>
               <Button className='is-warning'>Take stairs to roof top</Button>
             </Link>
           )}

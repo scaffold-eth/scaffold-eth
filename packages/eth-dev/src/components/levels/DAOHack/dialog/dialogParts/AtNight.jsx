@@ -11,9 +11,23 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerRight pathToAvatar='./assets/punk5950.png' text='I also prefer the dark' />
-        </>
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>I also prefer the dark</SpeakerRight>
+      ),
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>Ahhh yes ...</SpeakerLeft>,
+      choices: null
+    }
+  },
+  {
+    components: {
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          I sensed that you and me are much alike.
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -21,9 +35,10 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='Ahhh yes ...' />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
+          If the DEFI gods are staking on our side then I believe we may a achieve great things
+          together, wouldn't you agree?
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -31,35 +46,7 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text='I sensed that you and me are much alike.'
-          />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft
-            pathToAvatar='./assets/punk4551.png'
-            text={`If the DEFI gods are staking on our side then I believe we may a achieve great things together, wouldn't you agree?`}
-          />
-        </>
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: () => (
-        <>
-          <SpeakerLeft pathToAvatar='./assets/punk4551.png' text='But more on that later.' />
-        </>
+        <SpeakerLeft pathToAvatar='./assets/punk4551.png'>But more on that later.</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
         <>

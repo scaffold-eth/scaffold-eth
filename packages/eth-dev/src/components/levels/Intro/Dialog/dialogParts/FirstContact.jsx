@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -14,37 +15,35 @@ const _dialog = [
   {
     components: {
       dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Hello old friend.' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Hello old friend.</SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Nice to see that you have not given up on this city!'
-        />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          Nice to see that you have not given up on this city!
+        </SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='What have you been up to all this time?'
-        />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          What have you been up to all this time?
+        </SpeakerLeft>
       ),
       choices: null
     }
   },
   {
     components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Why have you come back?' />
+      dialog: () => (
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Why have you come back?</SpeakerLeft>
       ),
       choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
         return (
@@ -80,72 +79,6 @@ const _dialog = [
       }
     }
   }
-  /*
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Never mind! We have more important things to deal with at the moment!'
-        />
-      ),
-      choices: null
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Can you help us?' />
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
-        return (
-          <>
-            {isLastVisibleDialog && (
-              <Button
-                className='is-warning'
-                onClick={() => globalGameActions.dialog.continueDialog()}
-              >
-                Sure! What do you need?
-              </Button>
-            )}
-          </>
-        )
-      }
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Great! First I need you to connect to the city network...'
-        />
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => {
-        return (
-          <>
-            {isLastVisibleDialog && (
-              <Link to='/setup-local-network'>
-                <Button className='is-warning'>Continue</Button>
-              </Link>
-            )}
-          </>
-        )
-      }
-    }
-  },
-  {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, actions }) => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Here, can you follow these instructions?'
-        />
-      ),
-      choices: null
-    }
-  }
-  */
 ]
 
 const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)

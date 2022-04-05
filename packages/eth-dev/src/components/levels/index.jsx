@@ -5,23 +5,28 @@ import { Background, QRPunkBlockie } from '../gameItems/components'
 
 import TemplateLevel from './TemplateLevel'
 import Intro from './Intro'
+
+import Challenge0SimpleNFT from './challenge-0-simple-nft'
+import Challenge1DecentralizedStaking from './challenge-1-decentralized-staking'
+import Challenge2TokenVendor from './challenge-2-token-vendor'
+import Challenge3Dex from './challenge-3-dex'
+import Challenge5MultiSig from './challenge-5-multi-sig'
+
 import ScaffoldEthOverview from './ScaffoldEthOverview'
 import UnderflowBug from './UnderflowBug'
 import SetupLocalNetwork from './SetupLocalNetwork'
 import CreateWallet from './CreateWallet'
 import SetupMetamask from './SetupMetamask'
 import GamblingContract from './GamblingContract'
-import Multisig from './Multisig'
-import DecentralizedExchange from './DecentralizedExchange'
-import NFTStore from './NFTStore'
-import DecentralizedStakingApp from './DecentralizedStakingApp'
-import TokenVendor from './TokenVendor'
+
 import DAOHack from './DAOHack'
 import FlashLoans from './FlashLoans'
 import ERC20 from './ERC20'
 import BondingCurves from './BondingCurves'
 import ENS from './ENS'
 import UpgradableContracts from './UpgradableContracts'
+
+import NotFound from './NotFound'
 
 const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3Modal }) => {
   // TODO:
@@ -50,6 +55,21 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           <Route exact path='/'>
             <Intro />
           </Route>
+          <Route path='/challenge-0-simple-nft'>
+            <Challenge0SimpleNFT />
+          </Route>
+          <Route path='/challenge-1-decentralized-staking'>
+            <Challenge1DecentralizedStaking />
+          </Route>
+          <Route path='/challenge-2-token-vendor'>
+            <Challenge2TokenVendor />
+          </Route>
+          <Route path='/challenge-3-dex'>
+            <Challenge3Dex />
+          </Route>
+          <Route path='/challenge-5-multi-sig'>
+            <Challenge5MultiSig />
+          </Route>
           <Route path='/scaffold-eth-overview'>
             <ScaffoldEthOverview />
           </Route>
@@ -68,21 +88,7 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           <Route path='/insecure-gambling-contract'>
             <GamblingContract />
           </Route>
-          <Route path='/multisig'>
-            <Multisig />
-          </Route>
-          <Route path='/decentralized-exchange'>
-            <DecentralizedExchange />
-          </Route>
-          <Route path='/nft-store'>
-            <NFTStore />
-          </Route>
-          <Route path='/decentralized-staking-app'>
-            <DecentralizedStakingApp />
-          </Route>
-          <Route path='/token-vendor'>
-            <TokenVendor />
-          </Route>
+
           <Route path='/dao-hack'>
             <DAOHack />
           </Route>
@@ -100,6 +106,10 @@ const Levels = ({ levelContainer: { currentLevel }, globalGameActions, loadWeb3M
           </Route>
           <Route path='/upgradable-contracts'>
             <UpgradableContracts />
+          </Route>
+
+          <Route path='*'>
+            <NotFound />
           </Route>
         </Switch>
       </BrowserRouter>

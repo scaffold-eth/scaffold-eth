@@ -1,6 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
+import { routesMap } from '../../../../../routes'
 import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -10,11 +11,10 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/BuildDapps`
 const _dialog = [
   {
     components: {
-      dialog: () => (
-        <SpeakerRight
-          pathToAvatar='./assets/punk5950.png'
-          text='I want to jump back into helping the gangs!'
-        />
+      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>
+          I want to jump back into helping the gangs!
+        </SpeakerRight>
       ),
       choices: null
     }
@@ -22,10 +22,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='I do hope you still know where you loyalty lies ...'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          I do hope you still know where you loyalty lies ...
+        </SpeakerLeft>
       ),
       choices: ({ isLastVisibleDialog, globalGameActions }) => {
         return (
@@ -45,17 +44,18 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text='No doubt about it' />,
+      dialog: () => (
+        <SpeakerRight pathToAvatar='./assets/punk5950.png'>No doubt about it</SpeakerRight>
+      ),
       choices: null
     }
   },
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text={`Well then, let's get you up to speed`}
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          Well then, let's get you up to speed
+        </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -83,10 +83,9 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Start by reconnecting to the city network'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          Start by reconnecting to the city network
+        </SpeakerLeft>
       ),
       choices: ({
         dialog: { currentDialog },
@@ -113,20 +112,22 @@ const _dialog = [
   },
   {
     components: {
-      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png' text={`I'm in!`} />,
+      dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png'>I'm in!</SpeakerRight>,
       choices: null
     }
   },
   {
     components: {
-      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='Good' />,
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Good</SpeakerLeft>,
       choices: null
     }
   },
   {
     components: {
       dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png' text='I already have a job for you' />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          I already have a job for you
+        </SpeakerLeft>
       ),
       choices: null
     }
@@ -134,16 +135,15 @@ const _dialog = [
   {
     components: {
       dialog: () => (
-        <SpeakerLeft
-          pathToAvatar='./assets/punk_anon.png'
-          text='Only if you are interested ofc ...'
-        />
+        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
+          Only if you are interested ofc ...
+        </SpeakerLeft>
       ),
       choices: ({ isLastVisibleDialog }) => {
         return (
           <>
             {isLastVisibleDialog && (
-              <Link to='/nft-store'>
+              <Link to={routesMap.Challenge0SimpleNFT.path}>
                 <Button className='is-warning'>Drive into the city</Button>
               </Link>
             )}
