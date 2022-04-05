@@ -318,7 +318,7 @@ function App(props) {
   if(cart && cart.length>0){
     for(let c in cart){
       console.log("CART ITEM",c,cart[c])
-      if(!cart[c].streamAddress){
+      if(!cart[c].stream.streamAddress){
         displayCart.push(
           <div key={c} style={{padding:22, border:"1px solid #dddddd",borderRadius:8}}>
             <div style={{marginLeft:32}}>
@@ -336,7 +336,7 @@ function App(props) {
                 }}>x</Button>
               </div>
               <div style={{fontSize:18,marginLeft:-54}}>
-                {cart[c].name}
+                {cart[c].ens}
               </div>
             </div>
           </div>
@@ -359,7 +359,6 @@ function App(props) {
                 }}>x</Button>
               </div>
               <Address hideCopy={true} punkBlockie={true} fontSize={18} address= {cart[c].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-
             </div>
           </div>
         )
@@ -410,23 +409,25 @@ function App(props) {
       if(address=="0x34aA3F359A9D614239015126635CE7732c18fDF3"||address=="0x0eb2AB241210900Aeac2fbA054dD605355fe2490"||address=="0x97843608a00e2bbc75ab0C1911387E002565DEDE"){
         adminButton = (
           <div><Button size="large" style={{zIndex:1}} onClick={()=>{
-              //window.open(item.branch)
-              //message.success("Coming soon!")
-              let copy = {...item}
-              copy.id = Math.floor(Math.random()*100000000000)
-              console.log("copy",copy)
-              setCart([...cart,copy])
-              notification.success({
-                style:{marginBottom:64},
-                message: 'Added to cart!',
-                placement: "bottomRight",
-                description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
-                    <Address hideCopy={true} punkBlockie={true} address={item.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-                  </ThemeSwitcherProvider>
-                )
-              });
-            }}>
-              <ExperimentOutlined /> Fund
+            //window.open(item.branch)
+            //message.success("Coming soon!")
+            let copy = {...item}
+            copy.address = copy.id;
+            copy.id = Math.floor(Math.random()*100000000000)
+
+            console.log("copy",copy)
+            setCart([...cart,copy])
+            notification.success({
+              style:{marginBottom:64},
+              message: 'Added to cart!',
+              placement: "bottomRight",
+              description:(<ThemeSwitcherProvider themeMap={themes} defaultTheme={prevTheme || "light"}>
+                  <Address hideCopy={true} punkBlockie={true} address={item.id} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+                </ThemeSwitcherProvider>
+              )
+            });
+          }}>
+            <ExperimentOutlined /> Fund
           </Button></div>
         )
         adminDisplay = (

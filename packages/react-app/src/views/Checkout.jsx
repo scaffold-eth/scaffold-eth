@@ -128,14 +128,14 @@ export default function Checkout({
                 }
 
                 for(let c in cart){
-                  if(cart[c].streamAddress){
+                  if(cart[c].stream.streamAddress){
                     console.log("Adding stream address ")
-                    finalAddresses.push(translateAddressesForLocal(cart[c].streamAddress))
+                    finalAddresses.push(translateAddressesForLocal(cart[c].stream.streamAddress))
                     finalReasons.push(reason)
                   }else{
                     console.log("NO STREAM, NEED TO SPLIT...")
                     finalAddresses.push("0x97843608a00e2bbc75ab0C1911387E002565DEDE")//buidlguidl.eth
-                    finalReasons.push(cart[c].name+": "+reason)
+                    finalReasons.push(cart[c].ens+": "+reason)
                   }
                 }
 
