@@ -33,6 +33,7 @@ module.exports = {
     'react/destructuring-assignment': 'off',
     'no-unused-vars': 1,
     'no-console': 'off',
-    'jsx-a11y/accessible-emoji': ['off']
+    'jsx-a11y/accessible-emoji': ['off'],
+    'import/no-cycle': 1
   }
 }
