@@ -11,6 +11,12 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 const _dialog = [
   {
     components: {
+      dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Good morning!</SpeakerLeft>,
+      choices: null
+    }
+  },
+  {
+    components: {
       dialog: () => (
         <>
           <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>

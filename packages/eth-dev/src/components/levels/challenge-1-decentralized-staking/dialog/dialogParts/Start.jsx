@@ -74,7 +74,7 @@ const _dialog = [
       dialog: ({ userPickedPositiveResponse }) => (
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
           {userPickedPositiveResponse && `Always ready for action! I think we'll get along great`}
-          {userPickedPositiveResponse && 'Grumpy, humpy!'}
+          {!userPickedPositiveResponse && 'Grumpy, humpy!'}
         </SpeakerLeft>
       ),
       choices: null
