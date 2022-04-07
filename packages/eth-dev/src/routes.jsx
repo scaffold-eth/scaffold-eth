@@ -1,3 +1,5 @@
+import React from 'react'
+
 import Intro from './components/levels/Intro'
 import Challenge0SimpleNFT from './components/levels/challenge-0-simple-nft'
 import Challenge1DecentralizedStaking from './components/levels/challenge-1-decentralized-staking'
@@ -19,188 +21,103 @@ import BondingCurves from './components/levels/BondingCurves'
 import ENS from './components/levels/ENS'
 import UpgradableContracts from './components/levels/UpgradableContracts'
 
-export const routesMap = {
-  Intro: {
-    name: 'Intro',
-    path: '/',
-    component: Intro
-  },
-  Challenge0SimpleNFT: {
-    name: 'Challenge0SimpleNFT',
-    path: '/challenge-0-simple-nft',
-    component: Challenge0SimpleNFT
-  },
-  Challenge1DecentralizedStaking: {
-    name: 'Challenge1DecentralizedStaking',
-    path: '/challenge-1-decentralized-staking',
-    component: Challenge1DecentralizedStaking
-  },
-  Challenge2TokenVendor: {
-    name: 'Challenge2TokenVendor',
-    path: '/challenge-2-token-vendor',
-    component: Challenge2TokenVendor
-  },
-  Challenge3Dex: {
-    name: 'Challenge3Dex',
-    path: '/challenge-3-dex',
-    component: Challenge3Dex
-  },
-  Challenge5MultiSig: {
-    name: 'Challenge5MultiSig',
-    path: '/challenge-5-multi-sig',
-    component: Challenge5MultiSig
-  },
-  ScaffoldEthOverview: {
-    name: 'ScaffoldEthOverview',
-    path: '/ScaffoldEthOverview',
-    component: ScaffoldEthOverview
-  },
-  UnderflowBug: {
-    name: 'UnderflowBug',
-    path: '/UnderflowBug',
-    component: UnderflowBug
-  },
-  SetupLocalNetwork: {
-    name: 'SetupLocalNetwork',
-    path: '/SetupLocalNetwork',
-    component: SetupLocalNetwork
-  },
-  CreateWallet: {
-    name: 'CreateWallet',
-    path: '/CreateWallet',
-    component: CreateWallet
-  },
-  SetupMetamask: {
-    name: 'SetupMetamask',
-    path: '/SetupMetamask',
-    component: SetupMetamask
-  },
-  GamblingContract: {
-    name: 'GamblingContract',
-    path: '/GamblingContract',
-    component: GamblingContract
-  },
-  DAOHack: {
-    name: 'DAOHack',
-    path: '/DAOHack',
-    component: DAOHack
-  },
-  FlashLoans: {
-    name: 'FlashLoans',
-    path: '/FlashLoans',
-    component: FlashLoans
-  },
-  ERC20: {
-    name: 'ERC20',
-    path: '/ERC20',
-    component: ERC20
-  },
-  BondingCurves: {
-    name: 'BondingCurves',
-    path: '/BondingCurves',
-    component: BondingCurves
-  },
-  ENS: {
-    name: 'ENS',
-    path: '/ENS',
-    component: ENS
-  },
-  UpgradableContracts: {
-    name: 'UpgradableContracts',
-    path: '/UpgradableContracts',
-    component: UpgradableContracts
-  }
-}
-
 export const routesList = [
   {
     name: 'Intro',
     path: '/',
-    component: Intro
+    component: <Intro />
   },
   {
     name: 'Challenge0SimpleNFT',
     path: '/challenge-0-simple-nft',
-    component: Challenge0SimpleNFT
+    component: <Challenge0SimpleNFT />
   },
   {
     name: 'Challenge1DecentralizedStaking',
     path: '/challenge-1-decentralized-staking',
-    component: Challenge1DecentralizedStaking
+    component: <Challenge1DecentralizedStaking />
   },
   {
     name: 'Challenge2TokenVendor',
     path: '/challenge-2-token-vendor',
-    component: Challenge2TokenVendor
+    component: <Challenge2TokenVendor />
   },
   {
     name: 'Challenge5MultiSig',
     path: '/challenge-3-multi-sig',
-    component: Challenge5MultiSig
+    component: <Challenge5MultiSig />
   },
   {
     name: 'Challenge5MultiSig',
     path: '/challenge-5-dex',
-    component: Challenge5MultiSig
+    component: <Challenge5MultiSig />
   },
   {
     name: 'ScaffoldEthOverview',
-    path: '/ScaffoldEthOverview',
-    component: ScaffoldEthOverview
+    path: '/scaffold-eth-overview',
+    component: <ScaffoldEthOverview />
   },
   {
     name: 'UnderflowBug',
-    path: '/UnderflowBug',
-    component: UnderflowBug
+    path: '/underflow-bug',
+    component: <UnderflowBug />
   },
   {
     name: 'SetupLocalNetwork',
-    path: '/SetupLocalNetwork',
-    component: SetupLocalNetwork
+    path: '/setup-local-network',
+    component: <SetupLocalNetwork />
   },
   {
     name: 'CreateWallet',
-    path: '/CreateWallet',
-    component: CreateWallet
+    path: '/create-wallet',
+    component: <CreateWallet />
   },
   {
     name: 'SetupMetamask',
-    path: '/SetupMetamask',
-    component: SetupMetamask
+    path: '/setup-metamask',
+    component: <SetupMetamask />
   },
   {
     name: 'GamblingContract',
-    path: '/GamblingContract',
-    component: GamblingContract
+    path: '/gambling-contract',
+    component: <GamblingContract />
   },
   {
     name: 'DAOHack',
-    path: '/DAOHack',
-    component: DAOHack
+    path: '/dao-hack',
+    component: <DAOHack />
   },
   {
     name: 'FlashLoans',
-    path: '/FlashLoans',
-    component: FlashLoans
+    path: '/flash-loans',
+    component: <FlashLoans />
   },
   {
     name: 'ERC20',
-    path: '/ERC20',
-    component: ERC20
+    path: '/erc20',
+    component: <ERC20 />
   },
   {
     name: 'BondingCurves',
-    path: '/BondingCurves',
-    component: BondingCurves
+    path: '/bonding-curves',
+    component: <BondingCurves />
   },
   {
     name: 'ENS',
-    path: '/ENS',
-    component: ENS
+    path: '/ens',
+    component: <ENS />
   },
   {
     name: 'UpgradableContracts',
-    path: '/UpgradableContracts',
-    component: UpgradableContracts
+    path: '/upgradable-contracts',
+    component: <UpgradableContracts />
   }
 ]
+
+const _routesMap = {}
+
+routesList.map(dunctionroute => {
+  _routesMap[routesList.name] = routesList
+})
+
+export const routesMap = _routesMap
