@@ -51,8 +51,8 @@ contract YourContract {
   }
 
   function withdraw(uint256 voteID) public {
-    require(votes[voteID].voter == msg.sender,"not your vote");
-    require(votes[voteID].open,"not open");
+    require(votes[voteID].voter == msg.sender, "not your vote");
+    require(votes[voteID].open, "not open");
     votes[voteID].open = false;
     yourToken.transfer(msg.sender, votes[voteID].amount);
   }

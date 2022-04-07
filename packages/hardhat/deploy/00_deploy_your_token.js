@@ -27,8 +27,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   // Getting a previously deployed contract
   const YourToken = await ethers.getContract("YourToken", deployer);
-  await YourToken.transfer("0x155A7De8AF0895Bda50dA4cee35a97251164e286",ethers.utils.parseEther("10"));
-  await YourToken.transfer("0x4626B0111c964088D6967f75abD33D25949dcA28",ethers.utils.parseEther("10"));
+  await YourToken.transfer(
+    "0x523d007855B3543797E0d3D462CB44B601274819", // 0xdarni.eth
+    ethers.utils.parseEther("10")
+  );
+  await YourToken.transfer(
+    "0x2c2155608df1FD06966e8AfEeA8257e9eB98609B", // second address
+    ethers.utils.parseEther("10")
+  );
   /*
 
     To take ownership of yourContract using the ownable library uncomment next line and add the

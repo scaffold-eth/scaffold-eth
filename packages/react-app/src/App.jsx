@@ -167,9 +167,10 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
-  // keep track of a variable from the contract in the local React state:
-  const currentTimestamp = useContractReader(readContracts, "YourContract", "currentTimestamp");
+  const tokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
 
+  // keep track of a variable from the contract in the local React state:
+  const currentTimestamp = useContractReader(readContracts, "YourContract", "currentTimestamp", 1);
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -202,6 +203,7 @@ function App(props) {
       console.log("🌍 DAI contract on mainnet:", mainnetContracts);
       console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
+      console.log("💵 tokenBalance", tokenBalance ? ethers.utils.formatEther(tokenBalance) : "...");
     }
   }, [
     mainnetProvider,
@@ -214,6 +216,7 @@ function App(props) {
     mainnetContracts,
     localChainId,
     myMainnetDAIBalance,
+    tokenBalance,
   ]);
 
   const loadWeb3Modal = useCallback(async () => {
@@ -334,11 +337,13 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             localProvider={localProvider}
             yourLocalBalance={yourLocalBalance}
+            tokenBalance={tokenBalance}
             price={price}
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
             purpose={false}
+            currentTimestamp={currentTimestamp}
           />
         </Route>
         <Route path="/mainnetdai">
