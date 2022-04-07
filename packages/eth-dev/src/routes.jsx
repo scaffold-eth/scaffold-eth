@@ -116,8 +116,8 @@ export const routesList = [
 
 const _routesMap = {}
 
-routesList.map(dunctionroute => {
-  _routesMap[routesList.name] = routesList
+routesList.map(route => {
+  _routesMap[route.name] = route
 })
 
 export const routesMap = _routesMap
