@@ -2,6 +2,12 @@
 
 This is the first iteration of a simple conviction voting system.
 
+Demo: [conviction-cloud.surge.sh](https://conviction-cloud.surge.sh/)
+
+Token: https://rinkeby.etherscan.io/address/0x96fCBd4C884de7CC0B923a4914C9d96465023687
+
+Contract: https://rinkeby.etherscan.io/address/0x699193408c60D3B1e7ac2e1b16317F2A6b0Cc9E7
+
 The way conviction voting work is conceptually simple:
 
 * User approves and locks an ERC20 on behalf of some string (this is effectively the vote)
