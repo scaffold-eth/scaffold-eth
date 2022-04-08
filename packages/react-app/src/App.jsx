@@ -170,7 +170,7 @@ function App(props) {
   const tokenBalance = useContractReader(readContracts, "YourToken", "balanceOf", [address]);
 
   // keep track of a variable from the contract in the local React state:
-  const currentTimestamp = useContractReader(readContracts, "YourContract", "currentTimestamp", 1);
+  const currentTimestamp = useContractReader(readContracts, "YourContract", "currentTimestamp");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
