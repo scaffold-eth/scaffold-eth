@@ -68,7 +68,7 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 📧 Learn the [Solidity globals and units](https://docs.soliditylang.org/en/latest/units-and-global-variables.html)
 
-# 🛠 Buidl
+# 🛠 Build
 
 Check out all the [active branches](https://github.com/scaffold-eth/scaffold-eth/branches/active), [open issues](https://github.com/scaffold-eth/scaffold-eth/issues), and join/fund the 🏰 [BuidlGuidl](https://BuidlGuidl.com)!
 
