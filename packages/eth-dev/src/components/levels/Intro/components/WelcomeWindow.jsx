@@ -11,10 +11,8 @@ const WelcomeWindow = ({
   setShowWelcomeWindow,
   setShowFactionSupportOverviewWindow
 }) => {
-  // const initWidth = window.innerWidth * 0.8
-  // const initHeight = window.innerHeight * 0.9
-  const initWidth = 1000
-  const initHeight = window.innerHeight * 0.6
+  const initHeight = window.innerHeight * 0.9
+  const initWidth = window.innerWidth * 0.8
 
   const audio = {
     soundtrack: new Audio('./assets/sounds/mixkit-game-level-music-689.wav'),

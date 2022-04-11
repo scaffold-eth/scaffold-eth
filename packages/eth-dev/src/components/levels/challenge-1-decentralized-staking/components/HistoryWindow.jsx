@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { Button, MarkdownContainer, WindowModal } from '../../../gameItems/components'
 
 const HistoryWindow = ({
   isOpen,
@@ -55,7 +54,7 @@ const HistoryWindow = ({
           }}
         />
 
-        <Markdown>{fileContentIntro}</Markdown>
+        <MarkdownContainer>{fileContentIntro}</MarkdownContainer>
         {showStartButton && (
           <Button
             className='is-warning'

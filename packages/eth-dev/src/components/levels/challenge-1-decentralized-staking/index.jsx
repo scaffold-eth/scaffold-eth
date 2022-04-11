@@ -53,7 +53,8 @@ const Challenge1DecentralizedStaking = ({ dialog, globalGameActions }) => {
       <ContractWindow isOpen={contractWindowIsVisible} />
 
       <ChallengeWindow
-        isOpen={challengeWindowIsVisible}
+        isOpen
+        // isOpen={challengeWindowIsVisible}
         setHistoryWindowVisibility={setHistoryWindowVisibility}
         setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}

@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { WindowModal, MarkdownContainer, Button} from '../../../gameItems/components'
 
 const ExplanationWindow = ({
   isOpen,
@@ -24,7 +23,7 @@ const ExplanationWindow = ({
           .catch(err => console.log(err))
       })
       .catch(err => console.log(err))
-  })
+  }, [])
 
   return (
     <WindowModal
@@ -57,7 +56,7 @@ const ExplanationWindow = ({
             fontSize: 16
           }}
         >
-          <Markdown>{fileContent}</Markdown>
+          <MarkdownContainer>{fileContent}</MarkdownContainer>
         </div>
         <Button
           className='is-warning'

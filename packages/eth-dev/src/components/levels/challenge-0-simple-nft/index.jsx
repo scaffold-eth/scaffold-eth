@@ -48,7 +48,8 @@ const Challenge0SimpleNFT = ({ dialog, globalGameActions }) => {
       <ContractWindow isOpen={contractWindowIsVisible} />
 
       <ChallengeWindow
-        isOpen={challengeWindowIsVisible}
+        isOpen
+        // isOpen={challengeWindowIsVisible}
         setContractWindowVisibility={setContractWindowVisibility}
         setChallengeWindowVisibility={setChallengeWindowVisibility}
       />

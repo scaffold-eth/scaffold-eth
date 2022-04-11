@@ -17,7 +17,7 @@ const ContractWindow = ({ isOpen }) => {
         })
         .catch(err => console.log(err))
     */
-  })
+  }, [])
 
   return (
     <WindowModal

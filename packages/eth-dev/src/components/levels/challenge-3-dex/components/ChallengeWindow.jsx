@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import ReactMarkdown from 'react-markdown'
-import Markdown from 'markdown-to-jsx'
 import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, WindowModal } from '../../../gameItems/components'
+import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
 import {
   getChallengeReadme,
   parseGithubReadme,
@@ -29,7 +27,7 @@ const ChallengeWindow = ({
         setChallengeSections(sections)
       })
       .catch(e => console.error(e))
-  })
+  }, [])
 
   return (
     <WindowModal
@@ -55,9 +53,10 @@ const ChallengeWindow = ({
         }}
       >
         {challengeSections.map((section, index) => {
-          return <>{currentStep >= index && <ReactMarkdown>{section}</ReactMarkdown>}</>
+          if (currentStep >= index) {
+            return <MarkdownContainer>{section}</MarkdownContainer>
+          }
         })}
-
         {currentStep < challengeSections.length && (
           <Button
             style={{ marginTop: 20, marginBottom: 40 }}

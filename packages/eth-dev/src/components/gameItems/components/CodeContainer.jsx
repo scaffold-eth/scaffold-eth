@@ -2,7 +2,7 @@ import React from 'react'
 import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
 import { synthwave84 } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
-const CodeContainer = ({ language, children }) => {
+const CodeContainer = ({ language, children, ...props }) => {
   return (
     <span style={{ fontSize: '14px' }}>
       <SyntaxHighlighter
@@ -11,6 +11,8 @@ const CodeContainer = ({ language, children }) => {
         language={language}
         showLineNumbers
         showInlineLineNumbers
+        // eslint-disable-next-line react/jsx-props-no-spreading
+        {...props}
       >
         {children}
       </SyntaxHighlighter>

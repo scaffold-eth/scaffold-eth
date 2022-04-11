@@ -17,6 +17,7 @@ import Balance from './Balance'
 import Blockie from './Blockie'
 import BytesStringInput from './BytesStringInput'
 import CodeContainer from './CodeContainer'
+import MarkdownContainer from './MarkdownContainer'
 import EtherInput from './EtherInput'
 import Header from './Header'
 import NetworkSelectDropdown from './NetworkSelectDropdown'
@@ -49,6 +50,7 @@ export {
   Blockie,
   BytesStringInput,
   CodeContainer,
+  MarkdownContainer,
   EtherInput,
   Header,
   NetworkSelectDropdown,
