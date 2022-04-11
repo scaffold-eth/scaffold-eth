@@ -26,6 +26,9 @@
     "@testing-library/user-event": "^12.1.8",
     "@uniswap/sdk": "^3.0.3",
     "@uniswap/v2-periphery": "^1.1.0-beta.0",
+    "@visx/scale": "^2.2.2",
+    "@visx/text": "^2.3.0",
+    "@visx/wordcloud": "^2.1.0",
     "@walletconnect/web3-provider": "^1.5.2",
     "antd": "4.16.0",
     "apollo-boost": "^0.4.9",
@@ -50,13 +53,15 @@
     "react": "^17.0.2",
     "react-blockies": "^1.4.1",
     "react-css-theme-switcher": "^0.2.2",
+    "react-d3-cloud": "^1.0.5",
     "react-dom": "^17.0.2",
     "react-qr-reader": "^2.2.1",
     "react-router-dom": "^5.2.0",
     "react-scripts": "4.0.0",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.1",
+    "wordcloud": "^1.2.2"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",

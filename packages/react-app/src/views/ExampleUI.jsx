@@ -1,5 +1,5 @@
 import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
@@ -13,69 +13,85 @@ export default function ExampleUI({
   mainnetProvider,
   localProvider,
   yourLocalBalance,
+  tokenBalance,
   price,
   tx,
   readContracts,
   writeContracts,
+  currentTimestamp,
 }) {
   const [amount, setAmount] = useState();
   const [vote, setVote] = useState();
+
+  useEffect(() => {
+    if (tokenBalance) console.log("Your new token balance is", ethers.utils.formatEther(tokenBalance?.toString()));
+  }, [tokenBalance]);
 
   return (
     <div>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
+      <Events
+        address={address}
+        contracts={readContracts}
+        contractName="YourContract"
+        eventName="MakeVote"
+        localProvider={localProvider}
+        mainnetProvider={mainnetProvider}
+        startBlock={1}
+        currentTimestamp={currentTimestamp}
+        tx={tx}
+        readContracts={readContracts}
+        writeContracts={writeContracts}
+      />
+
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
         <h2>Example UI:</h2>
-
-
         <Divider />
         <div style={{ margin: 8 }}>
+          <div>Your Balance: {tokenBalance ? ethers.utils.formatEther(tokenBalance) : "..."}</div>
           Amount of tokens to stake:
           <Input
             onChange={e => {
               setAmount(e.target.value);
             }}
           />
-
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
               /* look how you call setPurpose on your contract: */
               /* notice how you pass a call back for tx updates too */
-              const result = tx(writeContracts.YourToken.approve(readContracts.YourContract.address, ethers.utils.parseEther(amount)), update => {
-                console.log("📡 Transaction Update:", update);
-                if (update && (update.status === "confirmed" || update.status === 1)) {
-                  console.log(" 🍾 Transaction " + update.hash + " finished!");
-                  console.log(
-                    " ⛽️ " +
-                      update.gasUsed +
-                      "/" +
-                      (update.gasLimit || update.gas) +
-                      " @ " +
-                      parseFloat(update.gasPrice) / 1000000000 +
-                      " gwei",
-                  );
-                }
-              });
+              const result = tx(
+                writeContracts.YourToken.approve(readContracts.YourContract.address, ethers.utils.parseEther(amount)),
+                update => {
+                  console.log("📡 Transaction Update:", update);
+                  if (update && (update.status === "confirmed" || update.status === 1)) {
+                    console.log(" 🍾 Transaction " + update.hash + " finished!");
+                    console.log(
+                      " ⛽️ " +
+                        update.gasUsed +
+                        "/" +
+                        (update.gasLimit || update.gas) +
+                        " @ " +
+                        parseFloat(update.gasPrice) / 1000000000 +
+                        " gwei",
+                    );
+                  }
+                },
+              );
               console.log("awaiting metamask/web3 confirm result...", result);
               console.log(await result);
             }}
           >
             Approve
           </Button>
-
-          <div>
-          Your Vote:
-          </div>
-
+          <div>Your Vote:</div>
           <Input
             onChange={e => {
               setVote(e.target.value);
             }}
           />
-
           <Button
             style={{ marginTop: 8 }}
             onClick={async () => {
@@ -102,9 +118,6 @@ export default function ExampleUI({
           >
             Vote
           </Button>
-
-
-
         </div>
         <Divider />
         Your Address:
@@ -200,7 +213,6 @@ export default function ExampleUI({
         📑 Maybe display a list of events?
           (uncomment the event and emit line in YourContract.sol! )
       */}
-
 
       <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 256 }}>
         <Card>
