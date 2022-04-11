@@ -13,6 +13,7 @@ import SetupLocalNetwork from './components/levels/SetupLocalNetwork'
 import CreateWallet from './components/levels/CreateWallet'
 import SetupMetamask from './components/levels/SetupMetamask'
 import GamblingContract from './components/levels/GamblingContract'
+import GnosisSafe from './components/levels/GnosisSafe'
 
 import DAOHack from './components/levels/DAOHack'
 import FlashLoans from './components/levels/FlashLoans'
@@ -111,6 +112,11 @@ export const routesList = [
     name: 'UpgradableContracts',
     path: '/upgradable-contracts',
     component: <UpgradableContracts />
+  },
+  {
+    name: 'GnosisSafe',
+    path: '/gnosis-safe',
+    component: <GnosisSafe />
   }
 ]
 
