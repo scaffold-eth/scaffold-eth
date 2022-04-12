@@ -28,6 +28,8 @@ import { useBalance, useExchangePrice, useGasPrice, useLocalStorage, usePoller, 
 
 import WalletConnect from "@walletconnect/client";
 
+import { TransactionManager } from "./helpers/TransactionManager";
+
 const { confirm } = Modal;
 
 const { ethers } = require("ethers");
@@ -317,8 +319,40 @@ function App(props) {
           icon: <SendOutlined/>,
           content: <pre>{payload && JSON.stringify(payload.params, null, 2)}</pre>,
           onOk:async ()=>{
+            let result;
 
-            let result = await userProvider.send(payload.method, payload.params)
+            if (payload.method === 'eth_sendTransaction') {
+              try {
+                let signer = userProvider.getSigner();
+
+                // I'm not sure if all the Dapps send an array or not
+                let params = payload.params;
+                if (Array.isArray(params)) {
+                  params = params[0];
+                }
+
+                // Ethers uses gasLimit instead of gas
+                let gasLimit = params.gas;
+                params.gasLimit = gasLimit;
+                delete params.gas;
+
+                // Speed up transaction list is filtered by chainId
+                params.chainId = targetNetwork.chainId    
+
+                result = await signer.sendTransaction(params);
+
+                const transactionManager = new TransactionManager(userProvider, signer, true);
+                transactionManager.setTransactionResponse(result);
+              }
+              catch (error) {
+                // Fallback to original code without the speed up option
+                console.error("Coudn't create transaction which can be speed up", error);
+                result = await userProvider.send(payload.method, payload.params)
+              }
+            }
+            else {
+              result = await userProvider.send(payload.method, payload.params)
+            }
 
             //console.log("MSG:",ethers.utils.toUtf8Bytes(msg).toString())
 
@@ -332,12 +366,12 @@ function App(props) {
 
             connector.approveRequest({
               id: payload.id,
-              result: result
+              result: result.hash ? result.hash : result
             });
 
             notification.info({
               message: "Wallet Connect Transaction Sent",
-              description: result.hash,
+              description: result.hash ? result.hash : result,
               placement: "bottomRight",
             });
           },
