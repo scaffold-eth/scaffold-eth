@@ -17,6 +17,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
+  const loogieCoin = await deploy("LoogieCoin", {
+    from: deployer,
+    log: true,
+  });
+
   const metadata = await deploy("LoogieShipMetadata", {
     from: deployer,
     log: true,
@@ -27,7 +32,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     log: true,
   });
 
-  await deploy("LoogieShip", {
+  const loogieShip = await deploy("LoogieShip", {
     from: deployer,
     args: [
       "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
@@ -35,6 +40,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
       "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
       "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
       "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      loogieCoin.address,
     ],
     libraries: {
       LoogieShipMetadata: metadata.address,
@@ -42,6 +48,74 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     },
     log: true,
   });
+
+  const LoogieCoin = await ethers.getContract("LoogieCoin", deployer);
+
+  await LoogieCoin.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
+    loogieShip.address
+  );
+
+  const award1Render = await deploy("SailorLoogiesGameAward1Render", {
+    from: deployer,
+    log: true,
+  });
+
+  const award2Render = await deploy("SailorLoogiesGameAward2Render", {
+    from: deployer,
+    log: true,
+  });
+
+  const award3Render = await deploy("SailorLoogiesGameAward3Render", {
+    from: deployer,
+    log: true,
+  });
+
+  const sailorLoogiesGameAward = await deploy("SailorLoogiesGameAward", {
+    from: deployer,
+    libraries: {
+      SailorLoogiesGameAward1Render: award1Render.address,
+      SailorLoogiesGameAward2Render: award2Render.address,
+      SailorLoogiesGameAward3Render: award3Render.address,
+    },
+    log: true,
+  });
+
+  const SailorLoogiesGameAward = await ethers.getContract(
+    "SailorLoogiesGameAward",
+    deployer
+  );
+
+  const sailorLoogiesGame = await deploy("SailorLoogiesGame", {
+    from: deployer,
+    args: [
+      1648751958,
+      loogieShip.address,
+      loogieCoin.address,
+      "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
+      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
+      "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
+      "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
+      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      SailorLoogiesGameAward.address,
+    ],
+    log: true,
+  });
+
+  await LoogieCoin.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
+    sailorLoogiesGame.address
+  );
+
+  await LoogieCoin.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("BURNER_ROLE")),
+    sailorLoogiesGame.address
+  );
+
+  await SailorLoogiesGameAward.grantRole(
+    ethers.utils.keccak256(ethers.utils.toUtf8Bytes("MINTER_ROLE")),
+    sailorLoogiesGame.address
+  );
 
   /*
     To take ownership of yourContract using the ownable library uncomment next line and add the 

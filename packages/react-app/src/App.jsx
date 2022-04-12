@@ -29,7 +29,7 @@ import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, YourShips, AddCrew, Subgraph } from "./views";
+import { Home, YourShips, AddCrew, Games, Withdraws, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -54,6 +54,7 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const startTimestamp = 1648751958000;
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -161,8 +162,28 @@ function App(props) {
     console.log(`⛓ A new mainnet block is here: ${mainnetProvider._lastBlockNumber}`);
   });
 
+  if (DEBUG) console.log("address: ", address);
+  const loogieCoinBalance = useContractReader(readContracts, "LoogieCoin", "balanceOf", [address]);
+  if (DEBUG) console.log("loogieCoinBalance:", loogieCoinBalance);
+
   const [selectedShip, setSelectedShip] = useState();
   const [shipCrew, setShipCrew] = useState();
+  const [startBlock, setStartBlock] = useState();
+
+  // TODO: change to days
+  const currentDay = Math.floor((Date.now() - startTimestamp) / 1000 / 60);
+  const currentWeek = Math.floor(currentDay / 7) + 1;
+  const currentWeekDay = currentDay % 7 + 1;
+
+  useEffect(() => {
+    if (startBlock == undefined && localProvider) {
+      const updateStartBlock = async () => {
+        let latestBlock = await localProvider.getBlock();
+        setStartBlock(latestBlock.number);
+      };
+      updateStartBlock();
+    }
+  }, [localProvider]);
 
   //
   // 🧫 DEBUG 👨🏻‍🔬
@@ -251,6 +272,12 @@ function App(props) {
         <Menu.Item key="/yourShips">
           <Link to="/yourShips">Your LoogieShips</Link>
         </Menu.Item>
+        <Menu.Item key="/fishing">
+          <Link to="/fishing">Fishing</Link>
+        </Menu.Item>
+        <Menu.Item key="/withdraws">
+          <Link to="/withdraws">Prizes</Link>
+        </Menu.Item>
         <Menu.Item key="/debug">
           <Link to="/debug">Debug Contracts</Link>
         </Menu.Item>
@@ -283,6 +310,7 @@ function App(props) {
             setSelectedShip={setSelectedShip}
             shipCrew={shipCrew}
             setShipCrew={setShipCrew}
+            loogieCoinBalance={loogieCoinBalance}
           />
         </Route>
         <Route exact path="/addCrew">
@@ -299,6 +327,34 @@ function App(props) {
             setShipCrew={setShipCrew}
           />
         </Route>
+        <Route exact path="/fishing">
+          <Games
+            DEBUG={DEBUG}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            tx={tx}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            localProvider={localProvider}
+            startBlock={startBlock}
+            currentWeek={currentWeek}
+            currentDay={currentDay}
+            currentWeekDay={currentWeekDay}
+          />
+        </Route>
+        <Route exact path="/withdraws">
+          <Withdraws
+            DEBUG={DEBUG}
+            readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            localProvider={localProvider}
+            startBlock={startBlock}
+            currentWeek={currentWeek}
+            currentDay={currentDay}
+            currentWeekDay={currentWeekDay}
+          />
+        </Route>
         <Route exact path="/debug">
           {/*
                 🎛 this scaffolding is full of commonly used components
@@ -308,6 +364,33 @@ function App(props) {
 
           <Contract
             name="LoogieShip"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          <Contract
+            name="LoogieCoin"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          <Contract
+            name="SailorLoogiesGame"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          <Contract
+            name="SailorLoogiesGameAward"
             price={price}
             signer={userSigner}
             provider={localProvider}

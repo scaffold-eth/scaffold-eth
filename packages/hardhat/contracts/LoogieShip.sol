@@ -23,12 +23,17 @@ abstract contract FancyLoogiesContract {
     ) external virtual;
 }
 
+abstract contract LoogieCoinContract {
+  function mint(address to, uint256 amount) virtual public;
+}
+
 contract LoogieShip is ERC721Enumerable, IERC721Receiver {
 
   using Counters for Counters.Counter;
   Counters.Counter private _tokenIds;
 
   FancyLoogiesContract fancyLoogies;
+  LoogieCoinContract loogieCoin;
 
   address bow;
   address mustache;
@@ -48,20 +53,16 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
   mapping (uint256 => bool) public loogieMasthead;
   mapping (uint256 => bool) public loogieFlag;
 
-  mapping(uint256 => uint256) public captainById;
-  mapping(uint256 => uint256) public engineerById;
-  mapping(uint256 => uint256) public officerById;
-  mapping(uint256 => uint256) public seamanById;
-
   mapping(uint8 => mapping(uint256 => uint256)) public crewById;
 
-  constructor(address _fancyLoogies, address _bow, address _mustache, address _contactLenses, address _eyelashes) ERC721("LoogieShips", "LOOGIESHIP") {
+  constructor(address _fancyLoogies, address _bow, address _mustache, address _contactLenses, address _eyelashes, address _loogieCoin) ERC721("LoogieShips", "LOOGIESHIP") {
     // RELEASE THE LOOGIE SHIPS!
     fancyLoogies = FancyLoogiesContract(_fancyLoogies);
     bow = _bow;
     mustache = _mustache;
     contactLenses = _contactLenses;
     eyelashes = _eyelashes;
+    loogieCoin = LoogieCoinContract(_loogieCoin);
   }
 
   function mintItem()
@@ -76,6 +77,8 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
 
       uint256 id = _tokenIds.current();
       _mint(msg.sender, id);
+
+      loogieCoin.mint(msg.sender, 20000);
 
       bytes32 predictableRandom = keccak256(abi.encodePacked( id, blockhash(block.number-1), msg.sender, address(this) ));
       wheelColor[id] = bytes2(predictableRandom[3]) | ( bytes2(predictableRandom[4]) >> 8 ) | ( bytes3(predictableRandom[5]) >> 16 );
@@ -114,23 +117,29 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
 
     string memory render;
 
+    render = string(abi.encodePacked(render, LoogieShipRender.renderDefs(wheelColor[id], mastheadColor[id], flagColor[id], flagAlternativeColor[id], loogieMasthead[id], loogieFlag[id])));
+
+    render = string(abi.encodePacked(render, '<g id="loogie-ship">'));
+
     if (crewById[0][id] != 0) {
-      render = string(abi.encodePacked(render, '<g class="captain" transform="scale(0.3 0.3) translate(710 420)">', fancyLoogies.renderTokenById(crewById[0][id]), '</g>'));
+      render = string(abi.encodePacked(render, '<g id="captain" class="captain" transform="scale(0.3 0.3) translate(710 420)">', fancyLoogies.renderTokenById(crewById[0][id]), '</g>'));
     }
 
     if (crewById[2][id] != 0) {
-      render = string(abi.encodePacked(render, '<g class="officer" transform="scale(0.3 0.3) translate(405 520)">', fancyLoogies.renderTokenById(crewById[2][id]), '</g>'));
+      render = string(abi.encodePacked(render, '<g id="officer" class="officer" transform="scale(0.3 0.3) translate(405 520)">', fancyLoogies.renderTokenById(crewById[2][id]), '</g>'));
     }
 
     if (crewById[3][id] != 0) {
-      render = string(abi.encodePacked(render, '<g class="seaman" transform="scale(0.3 0.3) translate(260 -20)">', fancyLoogies.renderTokenById(crewById[3][id]), '</g>'));
+      render = string(abi.encodePacked(render, '<g id="seaman" class="seaman" transform="scale(0.3 0.3) translate(260 -20)">', fancyLoogies.renderTokenById(crewById[3][id]), '</g>'));
     }
 
     render = string(abi.encodePacked(render, LoogieShipRender.renderShip(wheelColor[id], mastheadColor[id], flagColor[id], flagAlternativeColor[id], loogieMasthead[id], loogieFlag[id])));
 
     if (crewById[1][id] != 0) {
-      render = string(abi.encodePacked(render, '<g class="engineer" transform="scale(-0.3 0.3) translate(-990 770)">', fancyLoogies.renderTokenById(crewById[1][id]), '</g>'));
+      render = string(abi.encodePacked(render, '<g id="engineer" class="engineer" transform="scale(-0.3 0.3) translate(-990 770)">', fancyLoogies.renderTokenById(crewById[1][id]), '</g>'));
     }
+
+    render = string(abi.encodePacked(render, '</g>'));
 
     return render;
   }
@@ -155,7 +164,7 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
       require(ownerOf(shipId) == from, "you can only add crew to a LoogieShip you own!");
       require(msg.sender == address(fancyLoogies), "only FancyLoogies can be part of the crew!");
       require(crew < 4, "only 4 crew member per ship!");
-      require(captainById[shipId] == 0, "the ship already have this crew member!");
+      require(crewById[crew][shipId] == 0, "the ship already have this crew member!");
 
       if (crew == 0) {
         require(fancyLoogies.hasNft(bow, tokenId), "the Captain must wear a Bow!");

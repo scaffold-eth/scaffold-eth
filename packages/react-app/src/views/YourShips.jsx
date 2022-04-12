@@ -18,6 +18,7 @@ function YourShips({
   setSelectedShip,
   shipCrew,
   setShipCrew,
+  loogieCoinBalance,
 }) {
   const [shipBalance, setShipBalance] = useState(0);
   const [yourShipBalance, setYourShipBalance] = useState(0);
@@ -88,6 +89,9 @@ function YourShips({
       <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
         <div style={{ fontSize: 16 }}>
           <p>
+            {loogieCoinBalance ? loogieCoinBalance.toString() : "0"} <strong>LoogieCoins</strong>.
+          </p>
+          <p>
             Add the crew to your <strong>LoogieShip</strong>.
           </p>
         </div>
@@ -126,7 +130,7 @@ function YourShips({
                             history.push("/addCrew");
                           }}
                         >
-                          Add Crew
+                          {shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "Go Fishing" : "Add Crew"}
                         </Button>
                         {shipCrew && shipCrew[id] && shipCrew[id]["ready"] && (
                           <CheckOutlined
