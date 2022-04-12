@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, MarkdownContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisibility }) => {
+const ExplanationWindow = ({ isOpen, continueDialog, setExplanationWindowVisibility }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
   const contentFileName = './overview/Detailed_LineByLine.md'
@@ -60,7 +59,7 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setCurrentStep(currentStep + 1)
             }}
           >
@@ -72,4 +71,4 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

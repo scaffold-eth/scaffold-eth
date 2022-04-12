@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
 import { Button, MarkdownContainer, WindowModal } from '../../../gameItems/components'
+
+import { LEVEL_ID } from '..'
 
 const ExplanationWindow = ({
   isOpen,
-  globalGameActions,
   setContractWindowVisibility,
   setExplanationWindowVisibility,
   setEtherDeltaWindowVisibility,
   setChallengeWindowVisibility
 }) => {
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useLocalStorage(`${LEVEL_ID}-currentStep`, 1)
 
   return (
     <WindowModal
@@ -200,4 +201,4 @@ const ExplanationWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

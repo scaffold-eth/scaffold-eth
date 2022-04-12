@@ -1,10 +1,9 @@
 import React, { useState } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ExplanationWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setContractWindowVisibility,
   setExplanationWindowVisibility
 }) => {
@@ -37,7 +36,6 @@ const ExplanationWindow = ({
       >
         <div
           style={{
-            // marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
@@ -67,7 +65,7 @@ const ExplanationWindow = ({
         <Button
           className='is-warning'
           onClick={() => {
-            globalGameActions.dialog.continueDialog()
+            continueDialog()
             setContractWindowVisibility(false)
             setExplanationWindowVisibility(false)
           }}
@@ -79,4 +77,4 @@ const ExplanationWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

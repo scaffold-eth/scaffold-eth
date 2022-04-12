@@ -1,44 +1,84 @@
-import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
+import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
 
 import { DetailsOnWalletsWindow, CreateWalletWindow } from './components'
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/Start'
 
 export const LEVEL_ID = 'CreateWallet'
 
-const CreateWalletLevel = ({ dialog, globalGameActions }) => {
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'City' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/Start`,
-      currentDialog: levelDialog
-    })
-    // show terminal
-    globalGameActions.terminal.showTerminal()
-  }, [])
+const CreateWalletLevel = () => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-backgroundId`,
+    backgroundIds.City
+  )
 
-  // const [createWalletWindowVisible, setCreateWalletWindowVisibility] = useState(false)
-  const [detailsOnWalletsWindowVisible, setDetailsOnWalletsWindowVisibility] = useState(false)
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
+  const [detailsOnWalletsWindowVisible, setDetailsOnWalletsWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-detailsOnWalletsWindowVisible`,
+    false
+  )
 
   return (
-    <div id='createWalletLevel'>
-      <Terminal
-        globalGameActions={globalGameActions}
-        setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
-      />
+    <>
+      <Background backgroundId={backgroundId} />
 
-      <DetailsOnWalletsWindow
-        isOpen={detailsOnWalletsWindowVisible}
-        globalGameActions={globalGameActions}
-      />
-      {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
-    </div>
+      <div id='createWalletLevel'>
+        <Terminal
+          isOpen
+          showMessageNotification={{
+            delayInSeconds: null
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
+          />
+        </Terminal>
+
+        <DetailsOnWalletsWindow
+          isOpen={detailsOnWalletsWindowVisible}
+          currentDialogIndex={currentDialogIndex}
+          setCurrentDialogIndex={setCurrentDialogIndex}
+          continueDialog={continueDialog}
+        />
+        {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(CreateWalletLevel)
+export default CreateWalletLevel

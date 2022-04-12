@@ -6,6 +6,7 @@ import Transactor from './Transactor'
 import getChallengeReadme from './getChallengeReadme'
 import parseGithubReadme from './parseGithubReadme'
 import splitGithubReadmeIntoSections from './splitGithubReadmeIntoSections'
+import enrichDialog from './enrichDialog'
 
 export {
   getTargetNetwork,
@@ -15,5 +16,6 @@ export {
   checkBalancesAndSwitchNetwork,
   getChallengeReadme,
   parseGithubReadme,
-  splitGithubReadmeIntoSections
+  splitGithubReadmeIntoSections,
+  enrichDialog
 }

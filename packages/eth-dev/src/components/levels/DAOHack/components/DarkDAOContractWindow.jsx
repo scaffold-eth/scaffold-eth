@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const DarkDAOContractWindow = ({ isOpen }) => {
@@ -49,4 +48,4 @@ const DarkDAOContractWindow = ({ isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(DarkDAOContractWindow)
+export default DarkDAOContractWindow

@@ -1,15 +1,9 @@
 import React from 'react'
 import Typist from 'react-typist'
 
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const InitChainInstructionsWindow = ({
-  isOpen,
-  dialog,
-  globalGameActions,
-  setInitChainInstructionsWindowVisibility
-}) => {
+const InitChainInstructionsWindow = ({ isOpen, continueDialog }) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}
@@ -82,7 +76,7 @@ $ yarn deploy`}
         <Button
           className='is-warning'
           onClick={() => {
-            globalGameActions.dialog.continueDialog()
+            continueDialog()
             setInitChainInstructionsWindowVisibility(false)
           }}
         >
@@ -94,4 +88,4 @@ $ yarn deploy`}
   )
 }
 
-export default wrapGlobalGameData(InitChainInstructionsWindow)
+export default InitChainInstructionsWindow

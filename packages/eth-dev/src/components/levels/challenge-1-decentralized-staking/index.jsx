@@ -1,66 +1,117 @@
-import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
+import React from 'react'
+
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
+import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
 
 import { HistoryWindow, ContractWindow, ChallengeWindow } from './components'
+
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/Start'
 
 export const LEVEL_ID = 'Challenge1DecentralizedStaking'
 
-const Challenge1DecentralizedStaking = ({ dialog, globalGameActions }) => {
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/Start`,
-      currentDialog: levelDialog
-    })
-    // hide terminal
-    globalGameActions.terminal.hideTerminal()
-    // wait 4 seconds then show unread message notification
-    globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
-  }, [])
+const Challenge1DecentralizedStaking = () => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-backgroundId`,
+    backgroundIds.Workstation
+  )
 
-  const [historyWindowIsVisible, setHistoryWindowVisibility] = useState(false)
-  const [contractWindowIsVisible, setContractWindowVisibility] = useState(false)
-  const [challengeWindowIsVisible, setChallengeWindowVisibility] = useState(false)
-  const [userPickedPositiveResponse, setUserPickedPositiveResponse] = useState(false)
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
+  const [terminalIsVisible, setTerminalIsVisible] = useLocalStorage(
+    `${LEVEL_ID}-terminalIsVisible`,
+    false
+  )
+
+  const [historyWindowIsVisible, setHistoryWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-historyWindowIsVisible`,
+    false
+  )
+  const [contractWindowIsVisible, setContractWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-contractWindowIsVisible`,
+    false
+  )
+  const [challengeWindowIsVisible, setChallengeWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-challengeWindowIsVisible`,
+    false
+  )
+  const [userPickedPositiveResponse, setUserPickedPositiveResponse] = useLocalStorage(
+    `${LEVEL_ID}-userPickedPositiveResponse`,
+    false
+  )
 
   return (
-    <div id='Challenge1DecentralizedStaking'>
-      <Terminal
-        initTop={window.innerHeight - 840}
-        initLeft={window.innerWidth - 530}
-        globalGameActions={globalGameActions}
-        setHistoryWindowVisibility={setHistoryWindowVisibility}
-        setContractWindowVisibility={setContractWindowVisibility}
-        setChallengeWindowVisibility={setChallengeWindowVisibility}
-        userPickedPositiveResponse={userPickedPositiveResponse}
-        setUserPickedPositiveResponse={setUserPickedPositiveResponse}
-      />
+    <>
+      <Background backgroundId={backgroundId} />
 
-      <HistoryWindow
-        isOpen={historyWindowIsVisible}
-        globalGameActions={globalGameActions}
-        setHistoryWindowVisibility={setHistoryWindowVisibility}
-        setContractWindowVisibility={setContractWindowVisibility}
-        setChallengeWindowVisibility={setChallengeWindowVisibility}
-      />
+      <div id='Challenge1DecentralizedStaking'>
+        <Terminal
+          isOpen={terminalIsVisible}
+          showTerminal={() => setTerminalIsVisible(true)}
+          showMessageNotification={{
+            delayInSeconds: 4
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setHistoryWindowVisibility={setHistoryWindowVisibility}
+            setContractWindowVisibility={setContractWindowVisibility}
+            setChallengeWindowVisibility={setChallengeWindowVisibility}
+            userPickedPositiveResponse={userPickedPositiveResponse}
+            setUserPickedPositiveResponse={setUserPickedPositiveResponse}
+          />
+        </Terminal>
 
-      <ContractWindow isOpen={contractWindowIsVisible} />
+        <HistoryWindow
+          isOpen={historyWindowIsVisible}
+          setHistoryWindowVisibility={setHistoryWindowVisibility}
+          setContractWindowVisibility={setContractWindowVisibility}
+          setChallengeWindowVisibility={setChallengeWindowVisibility}
+        />
 
-      <ChallengeWindow
-        isOpen
-        // isOpen={challengeWindowIsVisible}
-        setHistoryWindowVisibility={setHistoryWindowVisibility}
-        setContractWindowVisibility={setContractWindowVisibility}
-        setChallengeWindowVisibility={setChallengeWindowVisibility}
-      />
-    </div>
+        <ContractWindow isOpen={contractWindowIsVisible} />
+
+        <ChallengeWindow
+          isOpen={challengeWindowIsVisible}
+          continueDialog={continueDialog}
+          setHistoryWindowVisibility={setHistoryWindowVisibility}
+          setContractWindowVisibility={setContractWindowVisibility}
+          setChallengeWindowVisibility={setChallengeWindowVisibility}
+        />
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(Challenge1DecentralizedStaking)
+export default Challenge1DecentralizedStaking

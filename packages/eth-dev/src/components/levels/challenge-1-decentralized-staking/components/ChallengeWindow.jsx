@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
 import {
   getChallengeReadme,
@@ -9,7 +8,7 @@ import {
 
 const ChallengeWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setContractWindowVisibility,
   setChallengeWindowVisibility
 }) => {
@@ -72,7 +71,7 @@ const ChallengeWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setChallengeWindowVisibility(false)
               setContractWindowVisibility(false)
             }}
@@ -85,4 +84,4 @@ const ChallengeWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ChallengeWindow)
+export default ChallengeWindow

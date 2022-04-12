@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisibility }) => {
+const ExplanationWindow = ({ isOpen, continueDialog, setExplanationWindowVisibility }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
   return (
@@ -67,7 +66,7 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
         <Button
           className='is-warning'
           onClick={() => {
-            globalGameActions.dialog.continueDialog()
+            continueDialog()
             setExplanationWindowVisibility(false)
           }}
         >
@@ -78,4 +77,4 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

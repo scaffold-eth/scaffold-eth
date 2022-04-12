@@ -1,20 +1,50 @@
-import React, { useEffect, useState } from 'react'
-
+import React, { useState } from 'react'
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
 import {
-  Toolbelt,
+  TerminalDialogContainer,
+  Background,
   MonologWindow,
-  Terminal,
-  UnreadMessagesNotification,
   Button
 } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
-import { InitChainInstructionsWindow } from '../SetupLocalNetwork/components'
-import { WelcomeWindow, SelectLevelWindow, FactionSupportOverview } from './components'
+
+import { WelcomeWindow } from './components'
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/StartMonolog'
 
 export const LEVEL_ID = 'Intro'
 
-const IntroLevel = ({ dialog, globalGameActions }) => {
+const IntroLevel = () => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-backgroundId`,
+    backgroundIds.Workstation
+  )
+
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
   // https://mixkit.co/free-sound-effects/game/
   const audio = {
     soundtrack: new Audio('./assets/sounds/mixkit-game-level-music-689.wav'),
@@ -22,20 +52,6 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
       './assets/sounds/mixkit-quick-positive-video-game-notification-interface-265.wav'
     )
   }
-
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/StartMonolog`,
-      currentDialog: levelDialog
-    })
-    // TODO:
-    // audio.soundtrack.play()
-  }, [])
 
   const [showWelcomeWindow, setShowWelcomeWindow] = useState(false)
   const [showFactionSupportOverviewWindow, setShowFactionSupportOverviewWindow] = useState(false)
@@ -46,7 +62,6 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
   const [didFinishMonolog, setDidFinishMonolog] = useState(false)
   const finishMonolog = () => setDidFinishMonolog(true)
 
-  // TODO: abstract this into the dialog redux wrapper
   const removeMonologFromDialog = _levelDialog => {
     const dialogWithoutMonolog = _levelDialog.filter(
       part => part.dialogPathId !== `${LEVEL_ID}/StartMonolog`
@@ -54,6 +69,7 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
     return dialogWithoutMonolog
   }
 
+  /*
   useEffect(() => {
     if (didFinishMonolog) {
       globalGameActions.dialog.initDialog({
@@ -62,87 +78,58 @@ const IntroLevel = ({ dialog, globalGameActions }) => {
       })
     }
   }, [didFinishMonolog])
-
-  const [initialInstructionsWindowIsVisible, setInitChainInstructionsWindowVisibility] = useState(
-    false
-  )
+  */
 
   return (
-    <div id={`level${LEVEL_ID}`} style={{ height: '100vh', overflow: 'hidden' }}>
-      {/* !didEnterGame && !showWelcomeWindow && (
-        <div style={{ margin: '20% 30%' }}>
-          <div style={{ textAlign: 'center', marginBottom: 15 }}>
-            <i id='coin1' className='nes-icon coin is-medium' />
-            <i id='coin2' className='nes-icon coin is-medium' />
-            <i id='coin3' className='nes-icon coin is-medium' />
-          </div>
+    <>
+      <Background backgroundId={backgroundId} />
+
+      <div id={`level${LEVEL_ID}`} style={{ height: '100vh', overflow: 'hidden' }}>
+        {!showWelcomeWindow && (
           <Button
             className='is-warning'
+            style={{
+              position: 'absolute',
+              top: '28%',
+              right: '4%',
+              width: '17%'
+            }}
             onClick={() => {
               audio.click.play()
               setShowWelcomeWindow(true)
             }}
           >
-            <span style={{ marginLeft: 5, marginRight: 5 }}>Insert Coin</span>
+            <span style={{ marginLeft: 5, marginRight: 5 }}>Enter Game</span>
           </Button>
-        </div>
-          ) */}
+        )}
 
-      {!showWelcomeWindow && (
-        <Button
-          className='is-warning'
-          style={{
-            position: 'absolute',
-            top: '28%',
-            right: '4%',
-            width: '17%'
-          }}
-          onClick={() => {
-            audio.click.play()
-            setShowWelcomeWindow(true)
-          }}
-        >
-          <span style={{ marginLeft: 5, marginRight: 5 }}>Enter Game</span>
-        </Button>
-      )}
-      {!didEnterGame && showWelcomeWindow && (
-        <WelcomeWindow
-          isOpen={showWelcomeWindow}
-          enterGame={enterGame}
-          setShowWelcomeWindow={setShowWelcomeWindow}
-          setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
-        />
-      )}
+        {!didEnterGame && showWelcomeWindow && (
+          <WelcomeWindow
+            isOpen={showWelcomeWindow}
+            enterGame={enterGame}
+            setBackgroundId={setBackgroundId}
+            setShowWelcomeWindow={setShowWelcomeWindow}
+            setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
+          />
+        )}
 
-      {didEnterGame && !didFinishMonolog && !showFactionSupportOverviewWindow && (
-        <MonologWindow
-          isOpen={!didFinishMonolog}
-          globalGameActions={globalGameActions}
-          finishMonolog={finishMonolog}
-        />
-      )}
-
-      <Terminal
-        globalGameActions={globalGameActions}
-        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
-      />
-
-      <InitChainInstructionsWindow
-        isOpen={initialInstructionsWindowIsVisible}
-        globalGameActions={globalGameActions}
-        setInitChainInstructionsWindowVisibility={setInitChainInstructionsWindowVisibility}
-      />
-
-      {didEnterGame && (
-        <FactionSupportOverview
-          isOpen={showFactionSupportOverviewWindow}
-          globalGameActions={globalGameActions}
-        />
-      )}
-
-      <SelectLevelWindow isOpen={false} globalGameActions={globalGameActions} />
-    </div>
+        {didEnterGame && !didFinishMonolog && !showFactionSupportOverviewWindow && (
+          <MonologWindow isOpen={!didFinishMonolog} finishMonolog={finishMonolog}>
+            <TerminalDialogContainer
+              levelDialog={levelDialog}
+              currentDialogIndex={currentDialogIndex}
+              setCurrentDialogIndex={setCurrentDialogIndex}
+              continueDialog={continueDialog}
+              dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+              jumpToDialogPath={jumpToDialogPath}
+              setBackgroundId={setBackgroundId}
+              //
+            />
+          </MonologWindow>
+        )}
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(IntroLevel)
+export default IntroLevel

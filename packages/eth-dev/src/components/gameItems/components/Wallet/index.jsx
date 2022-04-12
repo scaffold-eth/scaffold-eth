@@ -33,7 +33,6 @@ import {
   Balance,
   FaucetHint
 } from './components'
-import { connectController } from './controller'
 
 /// 📡 What chain are your contracts deployed to?
 const cachedNetwork = window.localStorage.getItem('network')
@@ -205,4 +204,4 @@ const Wallet = ({
   )
 }
 
-export default connectController(Wallet)
+export default Wallet

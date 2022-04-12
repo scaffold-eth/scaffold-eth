@@ -14,7 +14,7 @@ import {
   ExchangeStonks
 } from './backgrounds'
 
-const backgrounds = {
+const backgroundsMap = {
   Intro: <Intro />,
   CityOutskirts: <CityOutskirts />,
   City: <City />,
@@ -28,4 +28,18 @@ const backgrounds = {
   ExchangeStonks: <ExchangeStonks />
 }
 
-export default backgrounds
+const backgroundIds = {
+  Intro: 'Intro',
+  CityOutskirts: 'CityOutskirts',
+  City: 'City',
+  CityChaos: 'CityChaos',
+  CitySkylineInsideNight: 'CitySkylineInsideNight',
+  DiceGame: 'DiceGame',
+  NiftyShop: 'NiftyShop',
+  RoofSatellite: 'RoofSatellite',
+  Workstation: 'Workstation',
+  ExchangeRed: 'ExchangeRed',
+  ExchangeStonks: 'ExchangeStonks'
+}
+
+export { backgroundsMap, backgroundIds }

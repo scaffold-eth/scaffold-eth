@@ -1,18 +1,14 @@
 import React, { useState, useEffect } from 'react'
-import { connectController } from './controller'
-import { DialogContainer } from './components'
 import { WindowModal, UnreadMessagesNotification } from '..'
 
 const Terminal = ({
   isOpen,
-  levelContainer: { currentLevel },
-  dialog,
-  showMessageNotification,
-  actions,
-  globalGameActions,
   initTop,
   initLeft,
-  ...props
+  backgroundPath,
+  showMessageNotification = {},
+  showTerminal,
+  children
 }) => {
   const initHeight = 800
   const initWidth = initHeight * 0.65
@@ -24,15 +20,14 @@ const Terminal = ({
   useEffect(() => {
     async function exec() {
       if (showMessageNotification && showMessageNotification.delayInSeconds) {
-        console.log('now waiting ' + showMessageNotification.delayInSeconds + ' seconds')
+        console.log(`now waiting ${showMessageNotification.delayInSeconds} seconds`)
         await sleep(showMessageNotification.delayInSeconds)
         console.log('now show notification')
         setShowMessageNotification(true)
-        actions.showMessageNotification({ delayInSeconds: null })
       }
     }
     exec()
-  }, [showMessageNotification?.delayInSeconds])
+  }, [showMessageNotification.delayInSeconds])
 
   useEffect(() => {
     setShowMessageNotification(false)
@@ -40,28 +35,22 @@ const Terminal = ({
 
   return (
     <>
-      {_showMessageNotification && <UnreadMessagesNotification />}
+      {_showMessageNotification && <UnreadMessagesNotification showTerminal={showTerminal} />}
 
       <WindowModal
         initTop={initTop || window.innerHeight - (initHeight + window.innerHeight * 0.05)}
-        initLeft={initLeft ||  window.innerWidth * 0.05}
+        initLeft={initLeft || window.innerWidth * 0.05}
         initHeight={initHeight}
         initWidth={initWidth}
-        backgroundPath='./assets/items/terminal_medium.png'
+        backgroundPath={backgroundPath || './assets/items/terminal_medium.png'}
         // backgroundPath='./assets/items/terminal_big.png'
         dragAreaHeightPercent={30}
         isOpen={isOpen}
       >
-        <DialogContainer
-          currentLevel={currentLevel}
-          dialog={dialog}
-          actions={actions}
-          globalGameActions={globalGameActions}
-          parentProps={{ ...props }}
-        />
+        {children}
       </WindowModal>
     </>
   )
 }
 
-export default connectController(Terminal)
+export default Terminal

@@ -1,17 +1,18 @@
-import React, { useState, useEffect } from 'react'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { LEVEL_ID } from '..'
 
 // https://docs.scaffoldeth.io/scaffold-eth/examples-branches/defi/bonding-curve
 
 const ExplanationWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setWhatIsABondingCurveWindowVisibility,
   setPriceSensitivityWindowVisibility
 }) => {
-  const [currentStep, setCurrentStep] = useState(0)
+  const [currentStep, setCurrentStep] = useLocalStorage(`${LEVEL_ID}-currentStep`, 0)
 
   return (
     <WindowModal
@@ -42,7 +43,6 @@ const ExplanationWindow = ({
             marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
-            // color: '#C9D1D9',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
             fontSize: 16
           }}
@@ -152,7 +152,7 @@ const ExplanationWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setCurrentStep(currentStep + 1)
             }}
           >
@@ -164,4 +164,4 @@ const ExplanationWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

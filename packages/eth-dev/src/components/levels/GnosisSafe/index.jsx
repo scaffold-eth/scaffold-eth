@@ -1,53 +1,96 @@
-import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
+import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
 
-import { HighLevelOverview, ExplanationWindow, RepoInstructionsWindow } from './components'
+import { RepoInstructionsWindow, HighLevelOverview, ExplanationWindow } from './components'
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/Start'
 
 export const LEVEL_ID = 'GnosisSafe'
 
-const GnosisSafe = ({ dialog, globalGameActions }) => {
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'CitySkylineInsideNight' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/Start`,
-      currentDialog: levelDialog
-    })
-    // show terminal
-    globalGameActions.terminal.showTerminal()
-  }, [])
+const GnosisSafe = () => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-backgroundId`,
+    backgroundIds.CitySkylineInsideNight
+  )
 
-  const [highLevelOverviewWindowIsVisible, setHighLevelOverviewWindowIsVisible] = useState(false)
-  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
+  const [highLevelOverviewWindowIsVisible, setHighLevelOverviewWindowIsVisible] = useLocalStorage(
+    `${LEVEL_ID}-highLevelOverviewWindowIsVisible`,
+    false
+  )
+  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-explanationWindowIsVisible`,
+    false
+  )
 
   return (
-    <div id='GnosisSafe'>
-      <Terminal
-        globalGameActions={globalGameActions}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
-      />
+    <>
+      <Background backgroundId={backgroundId} />
 
-      <RepoInstructionsWindow isOpen />
+      <div id='GnosisSafe'>
+        <Terminal
+          isOpen
+          initTop={window.innerHeight - 840}
+          initLeft={window.innerWidth - 530}
+          showMessageNotification={{
+            delayInSeconds: null
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setExplanationWindowVisibility={setExplanationWindowVisibility}
+          />
+        </Terminal>
 
-      <HighLevelOverview
-        // isOpen={highLevelOverviewWindowIsVisible}
-        isOpen
-        globalGameActions={globalGameActions}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
-      />
-      <ExplanationWindow
-        // isOpen={explanationWindowIsVisible}
-        isOpen
-        globalGameActions={globalGameActions}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
-      />
-    </div>
+        <RepoInstructionsWindow isOpen />
+
+        <HighLevelOverview
+          isOpen={highLevelOverviewWindowIsVisible}
+          continueDialog={continueDialog}
+          setExplanationWindowVisibility={setExplanationWindowVisibility}
+        />
+
+        <ExplanationWindow
+          isOpen={explanationWindowIsVisible}
+          continueDialog={continueDialog}
+          setExplanationWindowVisibility={setExplanationWindowVisibility}
+        />
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(GnosisSafe)
+export default GnosisSafe

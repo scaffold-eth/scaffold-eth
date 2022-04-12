@@ -1,9 +1,8 @@
 import React from 'react'
 
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
+const SelectLevelWindow = ({ isOpen }) => {
   const initWidth = 700
   const initHeight = initWidth
 
@@ -59,7 +58,7 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
               <Button
                 block
                 // className='is-warning'
-                onClick={() => globalGameActions.level.setCurrentLevel({ levelId })}
+                // onClick={() => setCurrentLevel({ levelId })}
               >
                 {levelId}
               </Button>
@@ -71,4 +70,4 @@ const SelectLevelWindow = ({ isOpen, globalGameActions }) => {
   )
 }
 
-export default wrapGlobalGameData(SelectLevelWindow)
+export default SelectLevelWindow

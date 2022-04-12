@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal } from '../../../gameItems/components'
 
 const SetupWindow = ({ isOpen }) => {
@@ -31,4 +30,4 @@ const SetupWindow = ({ isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(SetupWindow)
+export default SetupWindow

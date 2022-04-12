@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
 
-const HighLevelOverviewWindow = ({ isOpen, globalGameActions, setHighLevelOverviewWindowVisibility }) => {
+const HighLevelOverviewWindow = ({ isOpen, continueDialog, setHighLevelOverviewWindowVisibility }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
   const contentFileName = './overview/HighLevelOverview.md'
@@ -59,7 +58,7 @@ const HighLevelOverviewWindow = ({ isOpen, globalGameActions, setHighLevelOvervi
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setCurrentStep(currentStep + 1)
             }}
           >
@@ -71,4 +70,4 @@ const HighLevelOverviewWindow = ({ isOpen, globalGameActions, setHighLevelOvervi
   )
 }
 
-export default wrapGlobalGameData(HighLevelOverviewWindow)
+export default HighLevelOverviewWindow

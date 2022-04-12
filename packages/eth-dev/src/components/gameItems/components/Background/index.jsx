@@ -1,6 +1,5 @@
 import React from 'react'
-import { connectController } from './controller'
-import backgroundsMap from './backgroundsMap'
+import { backgroundsMap } from './backgroundsMap'
 
 const styles = {
   position: 'fixed',
@@ -14,9 +13,9 @@ const styles = {
   zIndex: -1
 }
 
-const Background = ({ currentBackground }) => {
+const Background = ({ backgroundId }) => {
   console.log({ backgroundsMap })
-  console.log({ currentBackground })
+  console.log({ backgroundId })
 
   return (
     <div
@@ -26,9 +25,9 @@ const Background = ({ currentBackground }) => {
         ...styles
       }}
     >
-      {backgroundsMap[currentBackground]}
+      {backgroundsMap[backgroundId]}
     </div>
   )
 }
 
-export default connectController(Background)
+export default Background

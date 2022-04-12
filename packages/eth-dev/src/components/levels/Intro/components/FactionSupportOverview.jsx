@@ -1,10 +1,9 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { WindowModal } from '../../../gameItems/components'
 
-const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
+const FactionSupportOverviewWindow = ({ isOpen }) => {
   const factionProgressComp = ({ factionName, progress, levels }) => {
     return (
       <>
@@ -176,4 +175,4 @@ const FactionSupportOverviewWindow = ({ isOpen, globalGameActions }) => {
   )
 }
 
-export default wrapGlobalGameData(FactionSupportOverviewWindow)
+export default FactionSupportOverviewWindow

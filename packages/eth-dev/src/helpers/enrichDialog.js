@@ -7,4 +7,4 @@ const enrichDialog = (dialog, DIALOG_PART_ID) => {
   })
 }
 
-export { enrichDialog }
+export default enrichDialog

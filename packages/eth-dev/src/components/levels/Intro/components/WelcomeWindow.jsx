@@ -1,13 +1,12 @@
 import React from 'react'
 
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { WindowModal, CodeContainer, Button } from '../../../gameItems/components'
+import { backgroundIds } from '../../../gameItems/components/Background/backgroundsMap'
+import { WindowModal, Button } from '../../../gameItems/components'
 
 const WelcomeWindow = ({
-  dialog,
-  globalGameActions,
   isOpen,
   enterGame,
+  setBackgroundId,
   setShowWelcomeWindow,
   setShowFactionSupportOverviewWindow
 }) => {
@@ -81,7 +80,7 @@ const WelcomeWindow = ({
             className='is-warning'
             onClick={() => {
               audio.click.play()
-              globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
+              setBackgroundId(backgroundIds.CityOutskirts)
               enterGame()
             }}
           >
@@ -103,8 +102,7 @@ const WelcomeWindow = ({
             onClick={() => {
               audio.click.play()
               enterGame(true)
-              globalGameActions.background.setCurrentBackground({ background: 'CityOutskirts' })
-              // setShowWelcomeWindow(false)
+              setBackgroundId(backgroundIds.CityOutskirts)
               setShowFactionSupportOverviewWindow(true)
             }}
           >
@@ -116,4 +114,4 @@ const WelcomeWindow = ({
   )
 }
 
-export default wrapGlobalGameData(WelcomeWindow)
+export default WelcomeWindow

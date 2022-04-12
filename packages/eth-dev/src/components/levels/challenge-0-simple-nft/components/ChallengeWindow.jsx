@@ -1,19 +1,20 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
+import { useLocalStorage } from 'react-use'
 import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
 import {
   getChallengeReadme,
   parseGithubReadme,
   splitGithubReadmeIntoSections
 } from '../../../../helpers'
+import { LEVEL_ID } from '..'
 
 const ChallengeWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setContractWindowVisibility,
   setChallengeWindowVisibility
 }) => {
-  const [currentStep, setCurrentStep] = useState(1)
+  const [currentStep, setCurrentStep] = useLocalStorage(`${LEVEL_ID}-currentStep`, 1)
 
   const [challengeSections, setChallengeSections] = useState([])
 
@@ -72,7 +73,7 @@ const ChallengeWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setChallengeWindowVisibility(false)
               setContractWindowVisibility(false)
             }}
@@ -85,4 +86,4 @@ const ChallengeWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ChallengeWindow)
+export default ChallengeWindow

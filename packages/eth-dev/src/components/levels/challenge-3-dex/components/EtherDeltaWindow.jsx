@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal } from '../../../gameItems/components'
 
 const EtherDeltaWindow = ({ isOpen }) => {
@@ -31,4 +30,4 @@ const EtherDeltaWindow = ({ isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(EtherDeltaWindow)
+export default EtherDeltaWindow

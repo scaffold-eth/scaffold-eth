@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const RepoInstructionsWindow = ({ isOpen }) => {
@@ -12,7 +11,7 @@ const RepoInstructionsWindow = ({ isOpen }) => {
       initWidth={750}
       backgroundPath='./assets/items/window_large.png'
       dragAreaHeightPercent={12}
-      windowTitle='Challenge5MultiSigWallet Project'
+      windowTitle='Project Files'
       isOpen={isOpen}
       windowTiteleStyle={{ top: '3.5%', left: '56%' }}
       contentContainerStyle={{ paddingTop: 0 }}
@@ -47,4 +46,4 @@ $ yarn start`}
   )
 }
 
-export default wrapGlobalGameData(RepoInstructionsWindow)
+export default RepoInstructionsWindow

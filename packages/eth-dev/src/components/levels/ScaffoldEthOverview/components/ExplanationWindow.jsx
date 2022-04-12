@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisibility }) => {
+const ExplanationWindow = ({ isOpen, continueDialog, setExplanationWindowVisibility }) => {
   const [currentStep, setCurrentStep] = useState(0)
 
   return (
@@ -77,8 +76,24 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
               </a>
             </>
           )}
+          {currentStep > 3 && (
+            <>
+              <br />
+              <br />
+              <a
+                href='https://eda.hashnode.dev/get-started-building-decentralized-applications-on-ethereum'
+                target='_blank'
+                rel='noreferrer'
+              >
+                This
+              </a>{' '}
+              article gives a good overview on the different parts that make up scaffold-eth.
+              <br />
+            </>
+          )}
         </div>
-        {currentStep <= 2 && (
+
+        {currentStep <= 3 && (
           <Button
             onClick={() => {
               setCurrentStep(currentStep + 1)
@@ -87,11 +102,11 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
             Continue
           </Button>
         )}
-        {currentStep > 2 && (
+        {currentStep > 3 && (
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setExplanationWindowVisibility(false)
               setCurrentStep(currentStep + 1)
             }}
@@ -104,4 +119,4 @@ const ExplanationWindow = ({ isOpen, globalGameActions, setExplanationWindowVisi
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

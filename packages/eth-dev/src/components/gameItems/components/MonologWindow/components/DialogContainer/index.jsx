@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import $ from 'jquery'
-import { connectController } from '../../controller'
 import { Button } from '../../..'
 
 const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, parentProps }) => {
@@ -125,4 +124,4 @@ const DialogContainer = ({ currentLevel, dialog, globalGameActions, actions, par
   )
 }
 
-export default connectController(DialogContainer)
+export default DialogContainer

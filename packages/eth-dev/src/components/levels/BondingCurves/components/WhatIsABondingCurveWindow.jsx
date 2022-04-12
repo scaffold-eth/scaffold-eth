@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal } from '../../../gameItems/components'
 
 const WhatIsABondingCurveWindow = ({ isOpen }) => {
@@ -34,4 +33,4 @@ const WhatIsABondingCurveWindow = ({ isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(WhatIsABondingCurveWindow)
+export default WhatIsABondingCurveWindow

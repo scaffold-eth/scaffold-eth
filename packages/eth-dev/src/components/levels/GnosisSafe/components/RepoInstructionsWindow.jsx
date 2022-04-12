@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const RepoInstructionsWindow = ({ isOpen }) => {
@@ -38,4 +37,4 @@ $ cd safe-contracts
   )
 }
 
-export default wrapGlobalGameData(RepoInstructionsWindow)
+export default RepoInstructionsWindow

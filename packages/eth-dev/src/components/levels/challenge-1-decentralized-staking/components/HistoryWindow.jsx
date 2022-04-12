@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, MarkdownContainer, WindowModal } from '../../../gameItems/components'
 
 const HistoryWindow = ({
   isOpen,
-  globalGameActions,
   setHistoryWindowVisibility,
   setContractWindowVisibility,
   setChallengeWindowVisibility
@@ -71,4 +69,4 @@ const HistoryWindow = ({
   )
 }
 
-export default wrapGlobalGameData(HistoryWindow)
+export default HistoryWindow

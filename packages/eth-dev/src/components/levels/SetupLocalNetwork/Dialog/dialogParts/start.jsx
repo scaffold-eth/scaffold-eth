@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
+import  { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PART_ID as SETUP_NETWORK_PATH_ID } from './SetupNetwork'
@@ -11,41 +11,37 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Can you work with this?</SpeakerLeft>
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          {isLastVisibleDialog && (
-            <>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  globalGameActions.dialog.jumpToDialogPath({
-                    currentDialog,
-                    dialogPathId: SETUP_NETWORK_PATH_ID
-                  })
-                }}
-              >
-                I know what to do
-              </Button>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  globalGameActions.dialog.jumpToDialogPath({
-                    currentDialog,
-                    dialogPathId: BEGINNER_DEV_PATH_ID
-                  })
-                }}
-              >
-                I think I need some more training
-              </Button>
-            </>
-          )}
-        </>
-      )
-    }
+    dialog: () => (
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Can you work with this?</SpeakerLeft>
+    ),
+    choices: ({ isLastVisibleDialog, jumpToDialogPath }) => (
+      <>
+        {isLastVisibleDialog && (
+          <>
+            <Button
+              className='is-warning'
+              onClick={() => {
+                jumpToDialogPath({
+                  dialogPathId: SETUP_NETWORK_PATH_ID
+                })
+              }}
+            >
+              I know what to do
+            </Button>
+            <Button
+              className='is-warning'
+              onClick={() => {
+                jumpToDialogPath({
+                  dialogPathId: BEGINNER_DEV_PATH_ID
+                })
+              }}
+            >
+              I think I need some more training
+            </Button>
+          </>
+        )}
+      </>
+    )
   }
 ]
 

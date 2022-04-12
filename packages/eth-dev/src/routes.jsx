@@ -44,13 +44,13 @@ export const routesList = [
     component: <Challenge2TokenVendor />
   },
   {
-    name: 'Challenge5MultiSig',
-    path: '/challenge-3-multi-sig',
-    component: <Challenge5MultiSig />
+    name: 'Challenge3Dex',
+    path: '/challenge-3-dex',
+    component: <Challenge3Dex />
   },
   {
     name: 'Challenge5MultiSig',
-    path: '/challenge-5-dex',
+    path: '/challenge-5-multi-sig',
     component: <Challenge5MultiSig />
   },
   {

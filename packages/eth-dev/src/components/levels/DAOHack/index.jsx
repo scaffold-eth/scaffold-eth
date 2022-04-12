@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
+import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
 
 import {
   DAOContractWindow,
@@ -9,60 +10,104 @@ import {
   FetchIntructionsWindow
 } from './components'
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/Start'
 
 export const LEVEL_ID = 'DAOHack'
 
-const DAOHack = ({ dialog, globalGameActions }) => {
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    // globalGameActions.background.setCurrentBackground({ background: 'CitySkylineInsideNight' })
-    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/Start`,
-      currentDialog: levelDialog
-    })
-    // show terminal
-    // hide terminal
-    globalGameActions.terminal.hideTerminal()
-    // wait 4 seconds then show unread message notification
-    globalGameActions.terminal.showMessageNotification({ delayInSeconds: 4 })
-  }, [])
+const DAOHack = () => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-backgroundId`,
+    backgroundIds.Workstation
+  )
 
-  const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useState(false)
-  const [darkDaoContractWindowIsVisible, setDarkDaoContractWindowVisibility] = useState(false)
-  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useState(false)
-  const [fetchIntructionsWindowIsVisible, setFetchIntructionsWindowVisibility] = useState(false)
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
+  const [daoContractWindowIsVisible, setDaoContractWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-daoContractWindowIsVisible`,
+    false
+  )
+
+  const [darkDaoContractWindowIsVisible, setDarkDaoContractWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-darkDaoContractWindowIsVisible`,
+    false
+  )
+
+  const [explanationWindowIsVisible, setExplanationWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-explanationWindowIsVisible`,
+    false
+  )
+
+  const [fetchIntructionsWindowIsVisible, setFetchIntructionsWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-fetchIntructionsWindowIsVisible`,
+    false
+  )
 
   return (
-    <div id='DAOHack'>
-      <Terminal
-        // initTop={window.innerHeight - 840}
-        // initLeft={window.innerWidth - 530}
-        globalGameActions={globalGameActions}
-        setDaoContractWindowVisibility={setDaoContractWindowVisibility}
-        setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
-      />
+    <>
+      <Background backgroundId={backgroundId} />
 
-      <DAOContractWindow isOpen={daoContractWindowIsVisible} />
-      <DarkDAOContractWindow isOpen={darkDaoContractWindowIsVisible} />
-      <FetchIntructionsWindow isOpen={fetchIntructionsWindowIsVisible} />
+      <div id='DAOHack'>
+        <Terminal
+          isOpen
+          showMessageNotification={{
+            delayInSeconds: null
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setDaoContractWindowVisibility={setDaoContractWindowVisibility}
+            setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}
+            setExplanationWindowVisibility={setExplanationWindowVisibility}
+          />
+        </Terminal>
 
-      <ExplanationWindow
-        isOpen={explanationWindowIsVisible}
-        initTop={10}
-        initLeft={10}
-        globalGameActions={globalGameActions}
-        setDaoContractWindowVisibility={setDaoContractWindowVisibility}
-        setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}
-        setExplanationWindowVisibility={setExplanationWindowVisibility}
-        setFetchIntructionsWindowVisibility={setFetchIntructionsWindowVisibility}
-      />
-    </div>
+        <DAOContractWindow isOpen={daoContractWindowIsVisible} />
+        <DarkDAOContractWindow isOpen={darkDaoContractWindowIsVisible} />
+        <FetchIntructionsWindow isOpen={fetchIntructionsWindowIsVisible} />
+
+        <ExplanationWindow
+          isOpen={explanationWindowIsVisible}
+          initTop={10}
+          initLeft={10}
+          continueDialog={continueDialog}
+          setDaoContractWindowVisibility={setDaoContractWindowVisibility}
+          setDarkDaoContractWindowVisibility={setDarkDaoContractWindowVisibility}
+          setExplanationWindowVisibility={setExplanationWindowVisibility}
+          setFetchIntructionsWindowVisibility={setFetchIntructionsWindowVisibility}
+        />
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(DAOHack)
+export default DAOHack

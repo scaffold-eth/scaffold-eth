@@ -1,6 +1,5 @@
-import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import React from 'react'
+import { CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const FetchIntructionsWindow = ({ isOpen }) => {
   return (
@@ -48,4 +47,4 @@ $ yarn start`}
   )
 }
 
-export default wrapGlobalGameData(FetchIntructionsWindow)
+export default FetchIntructionsWindow

@@ -2,61 +2,49 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import { enrichDialog } from '../../../../gameItems/containers/dialog/helpers'
+import  { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PART_ID = 'FlashLoans/Start'
 
 const _dialog = [
   {
-    components: {
-      dialog: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ok. Let's get started.</SpeakerLeft>
-      ),
-      choices: ({
-        dialog: { currentDialog },
-        isLastVisibleDialog,
-        globalGameActions,
-        setContractWindowVisibility,
-        setExplanationWindowVisibility
-      }) => (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setExplanationWindowVisibility(true)
-                globalGameActions.dialog.continueDialog()
-              }}
-            >
-              Open files
-            </Button>
-          )}
-        </>
-      )
-    }
+    dialog: () => (
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ok. Let's get started.</SpeakerLeft>
+    ),
+    choices: ({ isLastVisibleDialog, continueDialog, setExplanationWindowVisibility }) => (
+      <>
+        {isLastVisibleDialog && (
+          <Button
+            className='is-warning'
+            onClick={() => {
+              setExplanationWindowVisibility(true)
+              continueDialog()
+            }}
+          >
+            Open files
+          </Button>
+        )}
+      </>
+    )
   },
   {
-    components: {
-      dialog: () => <></>,
-      choices: () => <></>
-    }
+    dialog: () => <></>,
+    choices: () => <></>
   },
   {
-    components: {
-      dialog: () => (
-        <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great job, as usual!</SpeakerLeft>
-      ),
-      choices: ({ dialog: { currentDialog }, isLastVisibleDialog, globalGameActions }) => (
-        <>
-          {isLastVisibleDialog && (
-            <Link to={routesMap.CreateWallet.path}>
-              <Button className='is-warning'>Drive into City</Button>
-            </Link>
-          )}
-        </>
-      )
-    }
+    dialog: () => (
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great job, as usual!</SpeakerLeft>
+    ),
+    choices: ({ isLastVisibleDialog }) => (
+      <>
+        {isLastVisibleDialog && (
+          <Link to={routesMap.CreateWallet.path}>
+            <Button className='is-warning'>Drive into City</Button>
+          </Link>
+        )}
+      </>
+    )
   }
 ]
 

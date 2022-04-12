@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from 'react'
-import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import React from 'react'
+import { Button, WindowModal } from '../../../gameItems/components'
 
-const DetailsOnWalletsWindow = ({ globalGameActions, isOpen }) => {
+const DetailsOnWalletsWindow = ({ continueDialog, isOpen }) => {
   const initWidth = window.innerWidth / 2
   const initHeight = initWidth
 
@@ -60,8 +58,9 @@ const DetailsOnWalletsWindow = ({ globalGameActions, isOpen }) => {
         </div>
         <Button
           onClick={() => {
-            globalGameActions.wallet.showWallet()
-            globalGameActions.dialog.continueDialog()
+            // TODO:
+            // showWallet()
+            continueDialog()
           }}
         >
           Done
@@ -71,4 +70,4 @@ const DetailsOnWalletsWindow = ({ globalGameActions, isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(DetailsOnWalletsWindow)
+export default DetailsOnWalletsWindow

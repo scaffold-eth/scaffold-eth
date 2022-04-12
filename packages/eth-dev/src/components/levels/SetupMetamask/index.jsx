@@ -1,46 +1,85 @@
-import React, { useState, useEffect } from 'react'
-import { Terminal } from '../../gameItems/components'
-import { connectController as wrapGlobalGameData } from '../../gameItems'
+import React from 'react'
+import { useLocalStorage } from 'react-use'
+import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
+import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
 
 import { InstructionsWindow } from './components'
 import levelDialog from './dialog'
+import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/Start'
 
 export const LEVEL_ID = 'SetupMetamask'
 
-const SetupMetamaskLevel = ({ dialog, globalGameActions, loadWeb3Modal }) => {
-  useEffect(() => {
-    // load level
-    globalGameActions.level.setCurrentLevel({ levelId: LEVEL_ID })
-    // set initial level background
-    globalGameActions.background.setCurrentBackground({ background: 'Workstation' })
-    // set dialog
-    globalGameActions.dialog.initDialog({
-      initialDialogPathId: `${LEVEL_ID}/Start`,
-      currentDialog: levelDialog
-    })
-    // show terminal
-    globalGameActions.terminal.showTerminal()
-  }, [])
+const SetupMetamaskLevel = ({ loadWeb3Modal }) => {
+  // --------------------------------
+  // set initial level background
+  const [backgroundId, setBackgroundId] = useLocalStorage(
+    `${LEVEL_ID}-background`,
+    backgroundIds.Workstation
+  )
 
-  const [initialInstructionsWindowIsVisible, setInstructionsWindowVisibility] = useState(false)
+  // set initial dialog index
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
+
+  const [
+    dialogPathsVisibleToUser,
+    setDialogPathsVisibleToUser
+  ] = useLocalStorage(`${LEVEL_ID}-dialogPathsVisibleToUser`, [INITIAL_DIALOG_PART_ID])
+
+  const jumpToDialogPath = ({ dialogPathId }) => {
+    // determine new currentDialogIndex
+    let updatedCurrentDialogIndex
+    levelDialog.map((dialogPart, index) => {
+      if (!updatedCurrentDialogIndex && dialogPart.dialogPathId === dialogPathId) {
+        updatedCurrentDialogIndex = index
+      }
+    })
+    // add dialogPathId to dialogParts that are visible to the user
+    setDialogPathsVisibleToUser([...dialogPathsVisibleToUser, dialogPathId])
+    setCurrentDialogIndex(updatedCurrentDialogIndex)
+  }
+  // --------------------------------
+
+  const [initialInstructionsWindowIsVisible, setInstructionsWindowVisibility] = useLocalStorage(
+    `${LEVEL_ID}-initialInstructionsWindowIsVisible`,
+    true
+  )
 
   return (
-    <div id='setupMetamask'>
-      <Terminal
-        initTop={100}
-        initLeft={100}
-        globalGameActions={globalGameActions}
-        loadWeb3Modal={loadWeb3Modal}
-        setInstructionsWindowVisibility={setInstructionsWindowVisibility}
-      />
+    <>
+      <Background backgroundId={backgroundId} />
 
-      <InstructionsWindow
-        isOpen={initialInstructionsWindowIsVisible}
-        globalGameActions={globalGameActions}
-        setInstructionsWindowVisibility={setInstructionsWindowVisibility}
-      />
-    </div>
+      <div id='setupMetamask'>
+        <Terminal
+          isOpen
+          initTop={window.innerHeight - 840}
+          initLeft={10}
+          loadWeb3Modal={loadWeb3Modal}
+          showMessageNotification={{
+            delayInSeconds: null
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setInstructionsWindowVisibility={setInstructionsWindowVisibility}
+          />
+        </Terminal>
+
+        <InstructionsWindow
+          isOpen={initialInstructionsWindowIsVisible}
+          continueDialog={continueDialog}
+          setInstructionsWindowVisibility={setInstructionsWindowVisibility}
+        />
+      </div>
+    </>
   )
 }
 
-export default wrapGlobalGameData(SetupMetamaskLevel)
+export default SetupMetamaskLevel

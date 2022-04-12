@@ -1,57 +1,24 @@
-/* eslint-disable no-underscore-dangle */
 import React, { useCallback, useEffect, useState } from 'react'
-import { Provider as ReduxProvider } from 'react-redux'
-import { BrowserRouter, Switch, Route, Link } from 'react-router-dom'
-import { Rnd } from 'react-rnd'
 import 'antd/dist/antd.css'
-import { StaticJsonRpcProvider, JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
+import { Web3Provider } from '@ethersproject/providers'
 import Web3Modal from 'web3modal'
 import WalletConnectProvider from '@walletconnect/web3-provider'
 import { useUserAddress } from 'eth-hooks'
-import { formatEther } from '@ethersproject/units'
 import './App.less'
 
-import {
-  // usePoller,
-  useExchangePrice,
-  useGasPrice,
-  useUserProvider,
-  useContractLoader,
-  useContractReader,
-  useEventListener,
-  // useBalance,
-  useExternalContractLoader
-  // useOnBlock
-} from './hooks'
-import configureStore from './redux/configureStore'
-import {
-  getTargetNetwork,
-  getLocalProvider,
-  getMainnetProvider,
-  Transactor
-  // checkBalancesAndSwitchNetwork
-} from './helpers'
-import { INFURA_ID, DAI_ADDRESS, DAI_ABI, getNetworkByChainId, NETWORKS } from './constants'
+import { useUserProvider } from './hooks'
 
-import LevelContainer from './components/gameItems/containers/level'
+import { getLocalProvider } from './helpers'
+import { INFURA_ID, NETWORKS } from './constants'
+
 import Levels from './components/levels'
 import {
-  Terminal,
   Wallet as WalletView,
-  Toolbelt,
-  Dish,
-  AddressInput,
-  EtherInput,
-  Header,
-  Ramp,
-  ThemeSwitch,
   NetworkSelectWarning,
   NetworkSelectDropdown
 } from './components/gameItems/components'
 
 const { ethers } = require('ethers')
-
-const store = configureStore()
 
 /*
 // 📡 What chain are your contracts deployed to?
@@ -193,78 +160,33 @@ const App = props => {
   }
 
   return (
-    <ReduxProvider store={store} key='reduxProvider'>
-      <div id='app'>
-        <LevelContainer>
-          <Levels loadWeb3Modal={loadWeb3Modal} />
+    <div id='app'>
+      <Levels />
 
-          <WalletView
-            web3Modal={web3Modal}
-            address={address}
-            localProvider={localProvider}
-            userProvider={userProvider}
-            ensProvider={mainnetProvider}
-            // price={price}
-            loadWeb3Modal={loadWeb3Modal}
-            logoutOfWeb3Modal={logoutOfWeb3Modal}
-            networkSelect={networkSelect}
-          />
+      <WalletView
+        web3Modal={web3Modal}
+        address={address}
+        localProvider={localProvider}
+        userProvider={userProvider}
+        ensProvider={mainnetProvider}
+        // price={price}
+        loadWeb3Modal={loadWeb3Modal}
+        logoutOfWeb3Modal={logoutOfWeb3Modal}
+        networkSelect={networkSelect}
+      />
 
-          {/* <Dish /> */}
+      {/* <Dish /> */}
 
-          {/* <Toolbelt /> */}
+      {/* <Toolbelt /> */}
 
-          {/*
-          {networkSelectWarning}
+      {/*
+      {networkSelectWarning}
 
-          <div className='site-page-header-ghost-wrapper'>
-            <Header extra={[<span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>]} />
-          </div>
-          */}
-
-          {/*
-          <BrowserRouter>
-            <Menu style={{ textAlign:"center" }} selectedKeys={[route]} mode="horizontal">
-              <Menu.Item key="/">
-                <Link onClick={()=>{setRoute("/")}} to="/">YourContract</Link>
-              </Menu.Item>
-
-            </Menu>
-            <Switch>
-              <Route exact path="/">
-                <Contract
-                  name="YourContract"
-                  signer={userProvider.getSigner()}
-                  provider={localProvider}
-                  address={address}
-                  blockExplorer={blockExplorer}
-                />
-              </Route>
-              </Route>
-              <Route path="/mainnetdai">
-                <Contract
-                  name="DAI"
-                  customContract={mainnetDAIContract}
-                  signer={userProvider.getSigner()}
-                  provider={mainnetProvider}
-                  address={address}
-                  blockExplorer={"https://etherscan.io/"}
-                />
-              </Route>
-              <Route path="/subgraph">
-                <Subgraph
-                subgraphUri={props.subgraphUri}
-                tx={tx}
-                writeContracts={writeContracts}
-                mainnetProvider={mainnetProvider}
-                />
-              </Route>
-            </Switch>
-          </BrowserRouter>
-          */}
-        </LevelContainer>
+      <div className='site-page-header-ghost-wrapper'>
+        <Header extra={[<span style={{ verticalAlign: 'middle' }}>{networkSelect}</span>]} />
       </div>
-    </ReduxProvider>
+      */}
+    </div>
   )
 }
 

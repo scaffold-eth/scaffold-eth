@@ -1,14 +1,11 @@
 import React from 'react'
-import { connectController } from './controller'
 import { DialogContainer } from './components'
 import { WindowModal } from '..'
 
 const MonologWindow = ({
   isOpen,
-  levelContainer: { currentLevel },
   dialog,
-  actions,
-  globalGameActions,
+  children,
   ...props
 }) => {
   const initHeight = 250
@@ -25,15 +22,9 @@ const MonologWindow = ({
       isOpen={isOpen}
       style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
     >
-      <DialogContainer
-        currentLevel={currentLevel}
-        dialog={dialog}
-        actions={actions}
-        globalGameActions={globalGameActions}
-        parentProps={{ ...props }}
-      />
+      {children}
     </WindowModal>
   )
 }
 
-export default connectController(MonologWindow)
+export default MonologWindow

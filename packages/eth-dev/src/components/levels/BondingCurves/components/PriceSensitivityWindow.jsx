@@ -1,5 +1,4 @@
 import React from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal } from '../../../gameItems/components'
 
 const PriceSensitivityWindow = ({ isOpen }) => {
@@ -34,4 +33,4 @@ const PriceSensitivityWindow = ({ isOpen }) => {
   )
 }
 
-export default wrapGlobalGameData(PriceSensitivityWindow)
+export default PriceSensitivityWindow

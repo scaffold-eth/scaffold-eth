@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
 
 const InstructionsWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setInstructionsWindowVisibility
 }) => {
   const initWidth = 700
@@ -61,7 +60,7 @@ const InstructionsWindow = ({
         <Button
           className='is-warning'
           onClick={() => {
-            globalGameActions.dialog.continueDialog()
+            continueDialog()
             setInstructionsWindowVisibility(false)
           }}
         >
@@ -72,4 +71,4 @@ const InstructionsWindow = ({
   )
 }
 
-export default wrapGlobalGameData(InstructionsWindow)
+export default InstructionsWindow

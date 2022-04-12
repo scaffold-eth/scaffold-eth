@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { WindowModal, MarkdownContainer, Button } from '../../../gameItems/components'
+import { backgroundIds } from '../../../gameItems/components/Background/backgroundsMap'
 import {
   getChallengeReadme,
   parseGithubReadme,
@@ -9,7 +9,8 @@ import {
 
 const ChallengeWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
+  setBackgroundId,
   setContractWindowVisibility,
   setChallengeWindowVisibility
 }) => {
@@ -37,7 +38,7 @@ const ChallengeWindow = ({
       initWidth={window.innerWidth * 0.5}
       backgroundPath='./assets/items/window.png'
       dragAreaHeightPercent={12}
-      windowTitle='Decentralized Staking App'
+      windowTitle='DEX'
       isOpen={isOpen}
       contentContainerStyle={{ paddingTop: 0 }}
     >
@@ -71,10 +72,10 @@ const ChallengeWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setChallengeWindowVisibility(false)
               setContractWindowVisibility(false)
-              globalGameActions.background.setCurrentBackground({ background: 'ExchangeStonks' })
+              setBackgroundId(backgroundIds.ExchangeStonks)
             }}
           >
             Done
@@ -85,4 +86,4 @@ const ChallengeWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ChallengeWindow)
+export default ChallengeWindow

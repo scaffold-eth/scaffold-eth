@@ -2,9 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Typist from 'react-typist'
 import { MailOutlined } from '@ant-design/icons'
 
-import { connectController as wrapGlobalGameData } from '../..'
-
-const UnreadMessagesNotification = ({ globalGameActions }) => {
+const UnreadMessagesNotification = ({ showTerminal }) => {
   const [isVisible, setIsVisible] = useState(true)
 
   return (
@@ -31,7 +29,7 @@ const UnreadMessagesNotification = ({ globalGameActions }) => {
             }
           }}
           onClick={() => {
-            globalGameActions.terminal.showTerminal()
+            showTerminal()
             setIsVisible(false)
           }}
         >
@@ -45,4 +43,4 @@ const UnreadMessagesNotification = ({ globalGameActions }) => {
   )
 }
 
-export default wrapGlobalGameData(UnreadMessagesNotification)
+export default UnreadMessagesNotification

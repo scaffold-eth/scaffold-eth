@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { connectController as wrapGlobalGameData } from '../../../gameItems'
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
 const ExplanationWindow = ({
   isOpen,
-  globalGameActions,
+  continueDialog,
   setExplanationWindowVisibility,
   setDaoContractWindowVisibility,
   setDarkDaoContractWindowVisibility,
@@ -157,7 +156,7 @@ const ExplanationWindow = ({
           <Button
             className='is-warning'
             onClick={() => {
-              globalGameActions.dialog.continueDialog()
+              continueDialog()
               setExplanationWindowVisibility(false)
             }}
           >
@@ -169,4 +168,4 @@ const ExplanationWindow = ({
   )
 }
 
-export default wrapGlobalGameData(ExplanationWindow)
+export default ExplanationWindow

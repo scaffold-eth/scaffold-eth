@@ -1,6 +1,6 @@
+/* eslint-disable jsx-a11y/control-has-associated-label */
 import React, { useEffect } from 'react'
 import $ from 'jquery'
-import { connectController } from './controller'
 
 const styles = {
   toolbelt: {
@@ -189,4 +189,4 @@ const Toolbelt = ({ visible, actions }) => {
   )
 }
 
-export default connectController(Toolbelt)
+export default Toolbelt
