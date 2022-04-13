@@ -7,13 +7,9 @@ import { TokenEvents, MarketplaceEvents } from "../components"
 
 function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, mainnetProvider, localProvider }) {
 
-  const totalTokenSupply = useContractReader(readContracts, "YourToken", "totalSupply");
+  const yourNFTTotal = useContractReader(readContracts, "v", "balanceOf", [address]);
 
-  const yourTokenSupply = useContractReader(readContracts, "YourToken", "balanceOf", [
-    address
-  ]);
-
-  const yourNFTTotal = useContractReader(readContracts, "YourCollectible", "balanceOf", [address]);
+  const yourERC20Bal = useContractReader(readContracts, "MockERC20", "balanceOf", [address]);
 
   //state
   const [nftURI, setNFTURI] = useState("");
@@ -61,46 +57,15 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
         <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span>
       </div>
 
-      <Divider ></Divider>
-      <h2 >Your ERC20</h2>
-      {!totalTokenSupply ? <div>
-        <span style={{ marginRight: 8 }}>👷‍♀️</span>
-        You haven't deployed your contract yet, run
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn chain
-        </span> and <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          yarn deploy
-        </span> to deploy your first contract!
-      </div> : <div >
-        <span style={{ marginRight: 8 }}>🤓</span>
-        ERC20 Total token supply{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          {ethers.utils.formatEther(totalTokenSupply)}
-        </span> {" TOKENS"}
-      </div>}
-      <div >
-        {
-          yourTokenSupply ?
-            <div >YourToken/ ERC20 Balance: <span
-              className="highlight"
-              style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-            >{ethers.utils.formatEther(yourTokenSupply)}</span>{" TOKENS"}
-            </div> : ""
-        }
+      <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>💵</span>
+        Your MockERC20 balance{" "}
+        <span style={{ fontWeight: "bold", color: "purple" }}>({parseInt(yourERC20Bal)})</span>
       </div>
 
       <Divider ></Divider>
 
-      <h2 >YourCollectible/ NFT</h2>
+      <h2 >🧑‍🎨 MockERC721/ NFT</h2>
       {
         yourNFTTotal ?
           <div style={{ margin: '12px' }}>🖌️ Your NFT Balance:
@@ -111,7 +76,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
           </div> :
           ""
       }
-      <h3 >🧑‍🎨 Create NFT:</h3>
+      <h3 >Create NFT:</h3>
       <div >
         <Input onChange={e => {
           setNFTURI(e.target.value);
@@ -121,7 +86,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
         />
         <Button
           onClick={async () => {
-            const result = await tx(writeContracts.YourCollectible.safeMint(address, nftURI), update => {
+            const result = await tx(writeContracts.MockERC721.mintItem(nftURI), update => {
               console.log("📡 Transaction Update:", update);
               if (update && (update.status === "confirmed" || update.status === 1)) {
                 console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -144,7 +109,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
         <div >
           <TokenEvents
             contracts={readContracts}
-            contractName="YourCollectible"
+            contractName="MockERC721"
             eventName="Transfer"
             localProvider={localProvider}
             mainnetProvider={mainnetProvider}
@@ -155,24 +120,21 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
 
       <Divider ></Divider>
 
-      <h2 >NFT Marketplace</h2>
+      <h2 >🏯 NFT Marketplace</h2>
       <p style={{ fontWeight: 'lighter' }}>** You must use the approval pattern when using buy or bid functions. **</p>
+      <p style={{ fontWeight: 'lighter' }}>** All listings are to be bought and bid on using the mock ERC20 provided NOT Ether. **</p>
       <Row justify="center">
-        <Card style={{ width: '500px' }}>
+        <Card style={{ width: '350px' }}>
           <div >
             <h3 >🍨 List Your NFT on Marketplace:</h3>
           </div>
           <div >
-
             <Input onChange={e => {
               setListingTokenID(e.target.value);
             }}
               style={{ width: "200px" }}
               placeholder="Enter token ID to be listed"
             />
-            <div >
-              <Checkbox onChange={setPaymentBool}>Buy with ERC20?</Checkbox>
-            </div>
             <div >
               <Input onChange={e => {
                 setListingPrice(e.target.value);
@@ -194,7 +156,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
                 />
               </div>
               <Button onClick={() => {
-                const result = tx(writeContracts.YourCollectible.approve(readContracts.Marketplace.address, listingTokenID), update => {
+                const result = tx(writeContracts.MockERC721.approve(readContracts.Marketplace.address, listingTokenID), update => {
                   console.log("📡 Transaction Update:", update);
                   if (update && (update.status === "confirmed" || update.status === 1)) {
                     console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -214,10 +176,11 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
               </Button>
               <Button
                 onClick={async () => {
-                  let price = ethers.utils.parseUnits(listingPrice + '', 18)
+                  let price = listingPrice;
                   console.log(listingTokenID, price, auction, acceptERC20, bidTime)
-                  let NFTAddress = await readContracts.YourCollectible.address
-                  const result = tx(writeContracts.Marketplace.createListing(NFTAddress, listingTokenID, price, auction, bidTime), update => {
+                  let NFTAddress = await readContracts.MockERC721.address
+                  let ERC20Address = await readContracts.MockERC20.address
+                  const result = tx(writeContracts.Marketplace.createListing(NFTAddress, listingTokenID, price, ERC20Address, auction, bidTime), update => {
                     console.log("📡 Transaction Update:", update);
                     if (update && (update.status === "confirmed" || update.status === 1)) {
                       console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -253,7 +216,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
               <Button
                 onClick={async () => {
                   let nftPrice = await readContracts.Marketplace.getPrice(nftToBuy);
-                  const result = await tx(writeContracts.YourToken.approve(await readContracts.Marketplace.address, nftPrice), update => {
+                  const result = await tx(writeContracts.MockERC20.approve(await readContracts.Marketplace.address, nftPrice), update => {
                     console.log("📡 Transaction Update:", update);
                     if (update && (update.status === "confirmed" || update.status === 1)) {
                       console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -274,43 +237,24 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
               <Button
                 onClick={async () => {
                   let nftCost = await readContracts.Marketplace.getPrice(nftToBuy);
-                  console.log(nftCost); // [price, acceptERC20]
-                  // If acceptERC20 == true, do not send tx with a value. Otherwise use payable function structure.
-                  if (nftCost[1] == true) {
-                    const result = await tx(writeContracts.Marketplace.buy(nftToBuy), update => {
-                      console.log("📡 Transaction Update:", update);
-                      if (update && (update.status === "confirmed" || update.status === 1)) {
-                        console.log(" 🍾 Transaction " + update.hash + " finished!");
-                        console.log(
-                          " ⛽️ " +
-                          update.gasUsed +
-                          "/" +
-                          (update.gasLimit || update.gas) +
-                          " @ " +
-                          parseFloat(update.gasPrice) / 1000000000 +
-                          " gwei",
-                        );
-                      }
-                    });
-                    console.log("awaiting metamask/web3 confirm result...", await result);
-                  } else {
-                    const result = await tx(writeContracts.Marketplace.buy(nftToBuy, { value: nftCost[0] }), update => {
-                      console.log("📡 Transaction Update:", update);
-                      if (update && (update.status === "confirmed" || update.status === 1)) {
-                        console.log(" 🍾 Transaction " + update.hash + " finished!");
-                        console.log(
-                          " ⛽️ " +
-                          update.gasUsed +
-                          "/" +
-                          (update.gasLimit || update.gas) +
-                          " @ " +
-                          parseFloat(update.gasPrice) / 1000000000 +
-                          " gwei",
-                        );
-                      }
-                    });
-                    console.log("awaiting metamask/web3 confirm result...", await result);
-                  }
+                  console.log(nftCost);
+                  const result = await tx(writeContracts.Marketplace.buy(nftToBuy, { value: nftCost }), update => {
+                    console.log("📡 Transaction Update:", update);
+                    if (update && (update.status === "confirmed" || update.status === 1)) {
+                      console.log(" 🍾 Transaction " + update.hash + " finished!");
+                      console.log(
+                        " ⛽️ " +
+                        update.gasUsed +
+                        "/" +
+                        (update.gasLimit || update.gas) +
+                        " @ " +
+                        parseFloat(update.gasPrice) / 1000000000 +
+                        " gwei",
+                      );
+                    }
+                  });
+                  console.log("awaiting metamask/web3 confirm result...", await result);
+
                 }}>
                 Buy
               </Button>
@@ -334,9 +278,9 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
                 />
                 <Button
                   onClick={async () => {
-                    let bid = ethers.utils.parseUnits(bidAmount + '', 18)
-                    console.log(bid)
-                    const result = await tx(writeContracts.YourToken.approve(await readContracts.Marketplace.address, bid), update => {
+                    console.log(bidAmount)
+                    let MarketplaceAddress = await readContracts.Marketplace.address;
+                    const result = await tx(writeContracts.MockERC20.approve(MarketplaceAddress, bidAmount), update => {
                       console.log("📡 Transaction Update:", update);
                       if (update && (update.status === "confirmed" || update.status === 1)) {
                         console.log(" 🍾 Transaction " + update.hash + " finished!");
@@ -358,49 +302,23 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
                 </Button>
                 <Button
                   onClick={async () => {
-                    let bid = ethers.utils.parseUnits(bidAmount + '', 18)
-                    console.log(bid)
-                    const listing = await readContracts.Marketplace.getPrice(nftToBid)
-                    console.log(listing) // second value here tells whether in ERC20 or eth
-                    // if true payment in emax, else ETH
-                    if (listing[1] == true) {
-                      const result = await tx(writeContracts.Marketplace.bid(nftToBid, bid), update => {
-                        console.log("📡 Transaction Update:", update);
-                        if (update && (update.status === "confirmed" || update.status === 1)) {
-                          console.log(" 🍾 Transaction " + update.hash + " finished!");
-                          console.log(
-                            " ⛽️ " +
-                            update.gasUsed +
-                            "/" +
-                            (update.gasLimit || update.gas) +
-                            " @ " +
-                            parseFloat(update.gasPrice) / 1000000000 +
-                            " gwei",
-                          );
-                        }
-                      });
-                      console.log("awaiting metamask/web3 confirm result...", result);
-                      console.log(await result);
-                    } else {
-                      const result = await tx(writeContracts.Marketplace.bid(nftToBid, bid, { value: bid }), update => {
-                        console.log("📡 Transaction Update:", update);
-                        if (update && (update.status === "confirmed" || update.status === 1)) {
-                          console.log(" 🍾 Transaction " + update.hash + " finished!");
-                          console.log(
-                            " ⛽️ " +
-                            update.gasUsed +
-                            "/" +
-                            (update.gasLimit || update.gas) +
-                            " @ " +
-                            parseFloat(update.gasPrice) / 1000000000 +
-                            " gwei",
-                          );
-                        }
-                      });
-                      console.log("awaiting metamask/web3 confirm result...", result);
-                      console.log(await result);
-                    }
-
+                    const result = await tx(writeContracts.Marketplace.bid(nftToBid, bidAmount), update => {
+                      console.log("📡 Transaction Update:", update);
+                      if (update && (update.status === "confirmed" || update.status === 1)) {
+                        console.log(" 🍾 Transaction " + update.hash + " finished!");
+                        console.log(
+                          " ⛽️ " +
+                          update.gasUsed +
+                          "/" +
+                          (update.gasLimit || update.gas) +
+                          " @ " +
+                          parseFloat(update.gasPrice) / 1000000000 +
+                          " gwei",
+                        );
+                      }
+                    });
+                    console.log("awaiting metamask/web3 confirm result...", result);
+                    console.log(await result);
                   }}>
                   Bid
                 </Button>
@@ -414,7 +332,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
         <MarketplaceEvents
           contracts={readContracts}
           contractName="Marketplace"
-          eventName="listingCreated"
+          eventName="ListingCreated"
           localProvider={localProvider}
           mainnetProvider={mainnetProvider}
           startBlock={10118000}
@@ -431,7 +349,7 @@ function Home({ yourLocalBalance, readContracts, address, writeContracts, tx, ma
             placeholder="Listing ID to withdraw funds for"
           />
           <Button onClick={async () => {
-            const result = await tx(writeContracts.Marketplace.withdrawAfterAuction(listingIDToWithdraw), update => {
+            const result = await tx(writeContracts.Marketplace.withdraw(listingIDToWithdraw), update => {
               console.log("📡 Transaction Update:", update);
               if (update && (update.status === "confirmed" || update.status === 1)) {
                 console.log(" 🍾 Transaction " + update.hash + " finished!");

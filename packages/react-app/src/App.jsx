@@ -267,7 +267,7 @@ function App(props) {
           <Link to="/nft">NFT</Link>
         </Menu.Item>
         <Menu.Item key="/token">
-          <Link to="/token">Token</Link>
+          <Link to="/token">ERC20 Token</Link>
         </Menu.Item>
       </Menu>
 
@@ -295,7 +295,7 @@ function App(props) {
         </Route>
         <Route exact path="/nft">
           <Contract
-            name="YourCollectible"
+            name="MockERC721"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -306,7 +306,7 @@ function App(props) {
         </Route>
         <Route exact path="/token">
           <Contract
-            name="YourToken"
+            name="MockERC20"
             price={price}
             signer={userSigner}
             provider={localProvider}

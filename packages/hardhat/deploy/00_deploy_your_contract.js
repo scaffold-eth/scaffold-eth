@@ -17,15 +17,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-
-  await deploy("YourToken", {
+  await deploy("MockERC721", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
     log: true,
     waitConfirmations: 5,
   });
-  await deploy("YourCollectible", {
+  await deploy("MockERC20", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
     // args: [ "Hello", ethers.utils.parseEther("1.5") ],
@@ -41,14 +40,18 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   });
 
   // Getting a previously deployed contract
-  const YourCollectible = await ethers.getContract("YourCollectible", deployer);
-  await YourCollectible.safeMint("0x980B7aD36055942B2074C2804c6C0BfA548ac9E1", "QmT3qnz3BfZZwJb5afxkoK6JxzJfQoYV7qGjARVnLsXHgX");
-  const YourToken = await ethers.getContract("YourToken", deployer);
-  await YourToken.mint("0x980B7aD36055942B2074C2804c6C0BfA548ac9E1", ethers.utils.parseEther("100"));
+  const MockERC20 = await ethers.getContract("MockERC20", deployer);
+  await MockERC20.mint('0x21aDafAA34d250a4fa0f8A4d2E2424ABa0cEE563', 1000000)
+  await MockERC20.mint('0x980B7aD36055942B2074C2804c6C0BfA548ac9E1', 1000000)
+  await MockERC20.mint('0x8A759Cd31ac3EC1aCA025d8193a7877a07a56837', 1000000)
+  const MockERC721 = await ethers.getContract("MockERC721", deployer);
   const Marketplace = await ethers.getContract("Marketplace", deployer);
-  console.log("DEPLOYER: ", deployer)
-  await Marketplace.createCollection(YourCollectible.address, 1000);
-  await Marketplace.getCollectionProperties(YourCollectible.address)
+  await Marketplace.setNFTCollectionRoyalty(
+        MockERC721.address,
+        "YourCollectible",
+        '0x21aDafAA34d250a4fa0f8A4d2E2424ABa0cEE563',
+        1000
+    );
 
   /*
     To take ownership of yourContract using the ownable library uncomment next line and add the

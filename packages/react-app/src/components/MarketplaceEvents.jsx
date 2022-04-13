@@ -40,7 +40,7 @@ export default function MarketplaceEvents({ contracts, contractName, eventName, 
               </Col>
               <Col >
                 Auction: {item.args['isAuction'] ? (
-                  '  TRUE, Price ' + ethers.utils.formatEther(item.args['bid'])) : (
+                  '  TRUE, Price ' + ethers.utils.formatEther(item.args['price'])) : (
                   '  FALSE, Price ' + ethers.utils.formatEther(item.args['price']))}
                 {item.args['acceptEMAX'] ? ('EMAX') : ("ETH")}
               </Col>
