@@ -15,15 +15,14 @@ const _dialog = [
         Great! Let's get you connected.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog }) => {
+    choices: ({ isLastVisibleDialog, continueDialog, setWalletIsVisible }) => {
       return (
         <>
           {isLastVisibleDialog && (
             <Button
               className='is-warning'
               onClick={() => {
-                // TODO::
-                // showWallet()
+                setWalletIsVisible(true)
                 continueDialog()
               }}
             >

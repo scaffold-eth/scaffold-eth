@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-props-no-spreading */
 import React from 'react'
 
 import Intro from './components/levels/Intro'
@@ -27,102 +28,102 @@ export const routesList = [
   {
     name: 'Intro',
     path: '/',
-    component: <Intro />
+    component: props => <Intro {...props} />
   },
   {
     name: 'Challenge0SimpleNFT',
     path: '/challenge-0-simple-nft',
-    component: <Challenge0SimpleNFT />
+    component: props => <Challenge0SimpleNFT {...props} />
   },
   {
     name: 'Challenge1DecentralizedStaking',
     path: '/challenge-1-decentralized-staking',
-    component: <Challenge1DecentralizedStaking />
+    component: props => <Challenge1DecentralizedStaking {...props} />
   },
   {
     name: 'Challenge2TokenVendor',
     path: '/challenge-2-token-vendor',
-    component: <Challenge2TokenVendor />
+    component: props => <Challenge2TokenVendor {...props} />
   },
   {
     name: 'Challenge3Dex',
     path: '/challenge-3-dex',
-    component: <Challenge3Dex />
+    component: props => <Challenge3Dex {...props} />
   },
   {
     name: 'Challenge5MultiSig',
     path: '/challenge-5-multi-sig',
-    component: <Challenge5MultiSig />
+    component: props => <Challenge5MultiSig {...props} />
   },
   {
     name: 'ScaffoldEthOverview',
     path: '/scaffold-eth-overview',
-    component: <ScaffoldEthOverview />
+    component: props => <ScaffoldEthOverview {...props} />
   },
   {
     name: 'UnderflowBug',
     path: '/underflow-bug',
-    component: <UnderflowBug />
+    component: props => <UnderflowBug {...props} />
   },
   {
     name: 'SetupLocalNetwork',
     path: '/setup-local-network',
-    component: <SetupLocalNetwork />
+    component: props => <SetupLocalNetwork {...props} />
   },
   {
     name: 'CreateWallet',
     path: '/create-wallet',
-    component: <CreateWallet />
+    component: props => <CreateWallet {...props} />
   },
   {
     name: 'SetupMetamask',
     path: '/setup-metamask',
-    component: <SetupMetamask />
+    component: props => <SetupMetamask {...props} />
   },
   {
     name: 'GamblingContract',
     path: '/gambling-contract',
-    component: <GamblingContract />
+    component: props => <GamblingContract {...props} />
   },
   {
     name: 'CreateDAO',
     path: '/create-dao',
-    component: <CreateDAO />
+    component: props => <CreateDAO {...props} />
   },
   {
     name: 'DAOHack',
     path: '/dao-hack',
-    component: <DAOHack />
+    component: props => <DAOHack {...props} />
   },
   {
     name: 'FlashLoans',
     path: '/flash-loans',
-    component: <FlashLoans />
+    component: props => <FlashLoans {...props} />
   },
   {
     name: 'ERC20',
     path: '/erc20',
-    component: <ERC20 />
+    component: props => <ERC20 {...props} />
   },
   {
     name: 'BondingCurves',
     path: '/bonding-curves',
-    component: <BondingCurves />
+    component: props => <BondingCurves {...props} />
   },
   {
     name: 'ENS',
     path: '/ens',
-    component: <ENS />
+    component: props => <ENS {...props} />
   },
   {
     name: 'UpgradableContracts',
     path: '/upgradable-contracts',
-    component: <UpgradableContracts />
+    component: props => <UpgradableContracts {...props} />
   },
   {
     name: 'GnosisSafe',
     path: '/gnosis-safe',
-    component: <GnosisSafe />
+    component: props => <GnosisSafe {...props} />
   }
 ]
 

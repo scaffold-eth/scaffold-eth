@@ -9,7 +9,19 @@ import { DIALOG_PART_ID as INITIAL_DIALOG_PART_ID } from './dialog/dialogParts/S
 
 export const LEVEL_ID = 'CreateWallet'
 
-const CreateWalletLevel = () => {
+const CreateWalletLevel = props => {
+  const {
+    web3Modal,
+    address,
+    localProvider,
+    userProvider,
+    ensProvider,
+    // price,
+    loadWeb3Modal,
+    logoutOfWeb3Modal,
+    networkSelect
+  } = props
+
   // --------------------------------
   // set initial level background
   const [backgroundId, setBackgroundId] = useLocalStorage(
@@ -40,6 +52,11 @@ const CreateWalletLevel = () => {
   }
   // --------------------------------
 
+  const [walletIsVisible, setWalletIsVisible] = useLocalStorage(
+    `${LEVEL_ID}-walletIsVisible`,
+    false
+  )
+
   const [detailsOnWalletsWindowVisible, setDetailsOnWalletsWindowVisibility] = useLocalStorage(
     `${LEVEL_ID}-detailsOnWalletsWindowVisible`,
     false
@@ -66,8 +83,22 @@ const CreateWalletLevel = () => {
             setBackgroundId={setBackgroundId}
             //
             setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
+            setWalletIsVisible={setWalletIsVisible}
           />
         </Terminal>
+
+        <Wallet
+          isOpen={walletIsVisible}
+          web3Modal={web3Modal}
+          address={address}
+          localProvider={localProvider}
+          userProvider={userProvider}
+          ensProvider={ensProvider}
+          // price={price}
+          loadWeb3Modal={loadWeb3Modal}
+          logoutOfWeb3Modal={logoutOfWeb3Modal}
+          networkSelect={networkSelect}
+        />
 
         <DetailsOnWalletsWindow
           isOpen={detailsOnWalletsWindowVisible}
@@ -76,7 +107,6 @@ const CreateWalletLevel = () => {
           continueDialog={continueDialog}
         />
 
-        <Wallet isOpen />
         {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
       </div>
     </>

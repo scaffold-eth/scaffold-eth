@@ -14,7 +14,6 @@ import { INFURA_ID, NETWORKS } from './constants'
 import Levels from './components/levels'
 import ProgressTrackerWindow from './components/levels/ProgressTrackerWindow'
 import {
-  Wallet as WalletView,
   NetworkSelectWarning,
   NetworkSelectDropdown
   // Toolbelt
@@ -163,11 +162,7 @@ const App = props => {
 
   return (
     <div id='app'>
-      <Levels />
-
-      {/* <ProgressTrackerWindow isOpen /> */}
-
-      <WalletView
+      <Levels
         web3Modal={web3Modal}
         address={address}
         localProvider={localProvider}
@@ -178,6 +173,8 @@ const App = props => {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         networkSelect={networkSelect}
       />
+
+      {/* <ProgressTrackerWindow isOpen /> */}
 
       {/* <Dish /> */}
 

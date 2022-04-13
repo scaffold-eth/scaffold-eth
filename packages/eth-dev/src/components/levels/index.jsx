@@ -6,7 +6,7 @@ import NotFound from './NotFound'
 
 import { routesList } from '../../routes'
 
-const Levels = () => {
+const Levels = props => {
   return (
     <>
       {/* wallet && wallet.address && (
@@ -22,11 +22,11 @@ const Levels = () => {
             if (name === 'Intro') {
               return (
                 <Route exact path='/'>
-                  {component}
+                  {component(props)}
                 </Route>
               )
             }
-            return <Route path={path}>{component}</Route>
+            return <Route path={path}>{component(props)}</Route>
           })}
 
           <Route path='*'>

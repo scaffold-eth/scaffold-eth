@@ -22,7 +22,9 @@ export default function Account({
       key='loginbutton'
       className='is-warning'
       style={{ width: '98%' }}
-      onClick={loadWeb3Modal}
+      onClick={() => {
+        loadWeb3Modal()
+      }}
     >
       connect wallet
     </Button>

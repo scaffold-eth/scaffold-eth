@@ -95,7 +95,7 @@ export default function Wallet(props) {
   const punkSize = 45
 
   const pk = localStorage.getItem('metaPrivateKey')
-  const wallet = new ethers.Wallet(pk)
+  const wallet = pk ? new ethers.Wallet(pk) : {}
 
   if (wallet.address !== selectedAddress) {
     display = (

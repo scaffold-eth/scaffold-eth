@@ -14,7 +14,7 @@ const SetupLocalNetworkLevel = () => {
   // set initial level background
   const [backgroundId, setBackgroundId] = useLocalStorage(
     `${LEVEL_ID}-backgroundId`,
-    backgroundIds.CitySkylineInsideNight
+    backgroundIds.CityOutskirts
   )
 
   // set initial dialog index
