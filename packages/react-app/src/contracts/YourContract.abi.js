@@ -1,0 +1,22 @@
+module.exports = [
+  {
+    "anonymous": false,
+    "inputs": [
+      {
+        "indexed": false,
+        "internalType": "address",
+        "name": "sender",
+        "type": "address"
+      }
+    ],
+    "name": "Wave",
+    "type": "event"
+  },
+  {
+    "inputs": [],
+    "name": "wave",
+    "outputs": [],
+    "stateMutability": "nonpayable",
+    "type": "function"
+  }
+];
