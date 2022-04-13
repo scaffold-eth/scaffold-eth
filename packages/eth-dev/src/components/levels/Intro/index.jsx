@@ -87,11 +87,14 @@ const IntroLevel = () => {
     }
   }, [didFinishMonolog])
 
+  const [showTerminal, setShowTerminal] = useLocalStorage(`${LEVEL_ID}-showTerminal`, false)
+  const dispalyTerminal = () => setShowTerminal(true)
+
   return (
     <>
       <Background backgroundId={backgroundId} />
 
-      <div id='GnosisSafe'>
+      <div id='Intro'>
         {!showWelcomeWindow && !didEnterGame && (
           <Button
             className='is-warning'
@@ -118,25 +121,28 @@ const IntroLevel = () => {
           setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
         />
 
-        <Terminal
-          isOpen={didFinishMonolog}
-          initTop={window.innerHeight - 840}
-          initLeft={10}
-          showMessageNotification={{
-            delayInSeconds: null
-          }}
-        >
-          <TerminalDialogContainer
-            levelDialog={levelDialog}
-            currentDialogIndex={currentDialogIndex}
-            setCurrentDialogIndex={setCurrentDialogIndex}
-            continueDialog={continueDialog}
-            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
-            jumpToDialogPath={jumpToDialogPath}
-            setBackgroundId={setBackgroundId}
-            //
-          />
-        </Terminal>
+        {didFinishMonolog && (
+          <Terminal
+            isOpen={showTerminal}
+            initTop={window.innerHeight - 840}
+            initLeft={10}
+            showTerminal={dispalyTerminal}
+            showMessageNotification={{
+              delayInSeconds: showTerminal ? null : 3
+            }}
+          >
+            <TerminalDialogContainer
+              levelDialog={levelDialog}
+              currentDialogIndex={currentDialogIndex}
+              setCurrentDialogIndex={setCurrentDialogIndex}
+              continueDialog={continueDialog}
+              dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+              jumpToDialogPath={jumpToDialogPath}
+              setBackgroundId={setBackgroundId}
+              //
+            />
+          </Terminal>
+        )}
 
         <MonologWindow isOpen={didEnterGame && !didFinishMonolog} finishMonolog={finishMonolog}>
           <MonologDialogContainer
