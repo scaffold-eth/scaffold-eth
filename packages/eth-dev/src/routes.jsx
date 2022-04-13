@@ -15,6 +15,7 @@ import SetupMetamask from './components/levels/SetupMetamask'
 import GamblingContract from './components/levels/GamblingContract'
 import GnosisSafe from './components/levels/GnosisSafe'
 
+import CreateDAO from './components/levels/CreateDAO'
 import DAOHack from './components/levels/DAOHack'
 import FlashLoans from './components/levels/FlashLoans'
 import ERC20 from './components/levels/ERC20'
@@ -82,6 +83,11 @@ export const routesList = [
     name: 'GamblingContract',
     path: '/gambling-contract',
     component: <GamblingContract />
+  },
+  {
+    name: 'CreateDAO',
+    path: '/create-dao',
+    component: <CreateDAO />
   },
   {
     name: 'DAOHack',
