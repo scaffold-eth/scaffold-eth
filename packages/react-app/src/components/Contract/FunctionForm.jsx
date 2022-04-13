@@ -92,6 +92,17 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           </Tooltip>
         );
       }
+    } else if (input.type === "tuple") {
+      buttons = (
+        <Tooltip placement="right" title="All tuple elements to be in brackets [ ]. All elements in array to be written as strings with double quotes, except boolean values.">
+          <div
+            type="dashed"
+            style={{ cursor: "pointer" }}
+          >
+            🧰
+          </div>
+        </Tooltip>
+      );
     }
 
     return (
