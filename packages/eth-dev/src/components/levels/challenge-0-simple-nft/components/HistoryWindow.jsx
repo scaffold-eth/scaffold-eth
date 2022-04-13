@@ -34,7 +34,6 @@ const HistoryWindow = ({
       >
         <div
           style={{
-            // marginTop: '1%',
             marginBottom: '5%',
             color: '#16DC8C',
             fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',

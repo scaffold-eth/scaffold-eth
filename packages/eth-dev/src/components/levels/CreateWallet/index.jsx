@@ -1,7 +1,7 @@
 import React from 'react'
 import { useLocalStorage } from 'react-use'
 import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
-import { Terminal, TerminalDialogContainer, Background } from '../../gameItems/components'
+import { Background, Terminal, TerminalDialogContainer, Wallet } from '../../gameItems/components'
 
 import { DetailsOnWalletsWindow, CreateWalletWindow } from './components'
 import levelDialog from './dialog'
@@ -75,6 +75,8 @@ const CreateWalletLevel = () => {
           setCurrentDialogIndex={setCurrentDialogIndex}
           continueDialog={continueDialog}
         />
+
+        <Wallet isOpen />
         {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}
       </div>
     </>

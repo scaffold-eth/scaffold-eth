@@ -1,6 +1,6 @@
 import React from 'react'
 
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { backgroundIds } from '../../../../gameItems/components/Background/backgroundsMap'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -12,9 +12,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: ({ isLastVisibleDialog }) => (
-      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ahhh ...</SpeakerLeft>
-    ),
+    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Ahhh ...</SpeakerLeft>,
     choices: null
   },
   {

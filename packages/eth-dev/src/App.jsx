@@ -12,10 +12,12 @@ import { getLocalProvider } from './helpers'
 import { INFURA_ID, NETWORKS } from './constants'
 
 import Levels from './components/levels'
+import ProgressTrackerWindow from './components/levels/ProgressTrackerWindow'
 import {
   Wallet as WalletView,
   NetworkSelectWarning,
   NetworkSelectDropdown
+  // Toolbelt
 } from './components/gameItems/components'
 
 const { ethers } = require('ethers')
@@ -162,6 +164,8 @@ const App = props => {
   return (
     <div id='app'>
       <Levels />
+
+      <ProgressTrackerWindow isOpen />
 
       <WalletView
         web3Modal={web3Modal}

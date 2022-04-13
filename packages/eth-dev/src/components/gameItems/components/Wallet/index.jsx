@@ -4,13 +4,7 @@ import React from 'react'
 import { JsonRpcProvider, Web3Provider } from '@ethersproject/providers'
 import { formatEther } from '@ethersproject/units'
 import { WindowModal } from '..'
-import {
-  INFURA_ID,
-  DAI_ADDRESS,
-  DAI_ABI,
-  getNetworkByChainId,
-  NETWORKS
-} from '../../../../constants'
+import { INFURA_ID, getNetworkByChainId, NETWORKS } from '../../../../constants'
 import {
   usePoller,
   useExchangePrice,
@@ -51,8 +45,7 @@ const mainnetProvider =
   scaffoldEthProvider && scaffoldEthProvider._network ? scaffoldEthProvider : mainnetInfura
 
 const Wallet = ({
-  walletVisible,
-  actions,
+  isOpen,
   web3Modal,
   address,
   localProvider,
@@ -133,7 +126,7 @@ const Wallet = ({
         initWidth={340}
         backgroundPath='./assets/items/wallet.png'
         dragAreaHeightPercent={10}
-        isOpen={walletVisible}
+        isOpen={isOpen}
         contentContainerStyle={{
           padding: '4% 8% 9%'
         }}
