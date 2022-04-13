@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'Challenge2TokenVendor'
@@ -30,9 +30,7 @@ const _dialog = [
           <Button
             className='is-warning'
             onClick={() => {
-              setBackgroundId({
-                background: 'CitySkylineInsideNight'
-              })
+              setBackgroundId('CitySkylineInsideNight')
               // TODO:
               // hideTerminal()
               continueDialog()

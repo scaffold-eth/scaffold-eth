@@ -3,7 +3,11 @@ import Typist from 'react-typist'
 
 import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
 
-const InitChainInstructionsWindow = ({ isOpen, continueDialog }) => {
+const InitChainInstructionsWindow = ({
+  isOpen,
+  continueDialog,
+  setInitChainInstructionsWindowVisibility
+}) => {
   return (
     <WindowModal
       initTop={window.innerHeight * 0.02}

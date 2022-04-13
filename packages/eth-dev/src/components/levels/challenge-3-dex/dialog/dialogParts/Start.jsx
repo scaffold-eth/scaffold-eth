@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { backgroundIds } from '../../../../gameItems/components/Background/backgroundsMap'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 

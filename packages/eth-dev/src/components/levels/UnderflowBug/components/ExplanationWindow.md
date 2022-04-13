@@ -18,6 +18,10 @@ $ git checkout underflow-bug
 # install dependencies
 $ yarn
 
+# start local ethereum chain
+$ yarn chain
+
+# in second terminal
 # deploy contracts
 $ yarn deploy
 

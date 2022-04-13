@@ -57,7 +57,7 @@ const UnderflowBug = () => {
         <Terminal
           isOpen
           initTop={window.innerHeight - 840}
-          initLeft={window.innerWidth - 530}
+          initLeft={10}
           showMessageNotification={{
             delayInSeconds: null
           }}

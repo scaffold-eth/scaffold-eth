@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'Intro'
@@ -27,21 +27,25 @@ const _dialog = [
   {
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-        Seems like you haven't been as gone as you wanted everyone to believe
+        Seems like you haven't been as gone as you wanted everyone to believe ...
       </SpeakerLeft>
     ),
     choices: null
   },
   {
     dialog: () => (
-      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Here, can you work with this?</SpeakerLeft>
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'm working on a case atm.</SpeakerLeft>
     ),
+    choices: null
+  },
+  {
+    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Can you help me?</SpeakerLeft>,
     choices: ({ isLastVisibleDialog }) => {
       return (
         <>
           {isLastVisibleDialog && (
-            <Link to={routesMap.SetupLocalNetwork.path}>
-              <Button className='is-warning'>Show Instructions</Button>
+            <Link to={routesMap.UnderflowBug.path}>
+              <Button className='is-warning'>Sure</Button>
             </Link>
           )}
         </>
