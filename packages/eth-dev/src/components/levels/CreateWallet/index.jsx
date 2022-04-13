@@ -105,6 +105,10 @@ const CreateWalletLevel = props => {
           currentDialogIndex={currentDialogIndex}
           setCurrentDialogIndex={setCurrentDialogIndex}
           continueDialog={continueDialog}
+          jumpToDialogPath={jumpToDialogPath}
+          //
+          setDetailsOnWalletsWindowVisibility={setDetailsOnWalletsWindowVisibility}
+          setWalletIsVisible={setWalletIsVisible}
         />
 
         {/* <CreateWalletWindow isOpen={createWalletWindowVisible} /> */}

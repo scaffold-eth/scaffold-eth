@@ -1,8 +1,14 @@
 import React from 'react'
 import { Button, WindowModal } from '../../../gameItems/components'
 
-const DetailsOnWalletsWindow = ({ continueDialog, isOpen }) => {
-  const initWidth = window.innerWidth / 2
+const DetailsOnWalletsWindow = ({
+  isOpen,
+  continueDialog,
+  setWalletIsVisible,
+  setDetailsOnWalletsWindowVisibility,
+  jumpToDialogPath
+}) => {
+  const initWidth = 600
   const initHeight = initWidth
 
   return (
@@ -58,8 +64,9 @@ const DetailsOnWalletsWindow = ({ continueDialog, isOpen }) => {
         </div>
         <Button
           onClick={() => {
-            // TODO:
-            // showWallet()
+            setWalletIsVisible(true)
+            setDetailsOnWalletsWindowVisibility(false)
+            continueDialog()
             continueDialog()
           }}
         >

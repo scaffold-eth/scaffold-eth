@@ -71,19 +71,22 @@ const _dialog = [
             <>
               <Button
                 className='is-warning'
-                onClick={() =>
+                onClick={() => {
+                  continueDialog()
                   jumpToDialogPath({
                     dialogPathId: DOES_KNOW_WALLETS_PATH_ID
                   })
-                }
+                }}
               >
                 Yes, I'm familiar with wallets
               </Button>
               <Button
                 className='is-warning'
                 onClick={() => {
-                  continueDialog()
                   setDetailsOnWalletsWindowVisibility(true)
+                  jumpToDialogPath({
+                    dialogPathId: DOES_NOT_KNOW_WALLETS_PATH_ID
+                  })
                 }}
               >
                 What is a wallet?

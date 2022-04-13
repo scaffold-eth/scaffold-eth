@@ -1,6 +1,7 @@
 import React from 'react'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
+import DialogPartEnd from './End'
 
 export const LEVEL_ID = 'CreateWallet'
 export const DIALOG_PART_ID = `${LEVEL_ID}/DoesNotKnowWallets`
@@ -14,22 +15,7 @@ const _dialog = [
     ),
     choices: null
   },
-  {
-    dialog: () => (
-      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
-        May I suggest that you head over to our friends at cryptozombies.io?
-      </SpeakerLeft>
-    ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <a href='https://cryptozombies.io' target='_blank' rel='noreferrer'>
-            <Button className='is-warning'>Check out cryptozombies.io</Button>
-          </a>
-        )}
-      </>
-    )
-  }
+  ...DialogPartEnd
 ]
 
 const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)
