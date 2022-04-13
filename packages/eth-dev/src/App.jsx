@@ -165,7 +165,7 @@ const App = props => {
     <div id='app'>
       <Levels />
 
-      <ProgressTrackerWindow isOpen />
+      {/* <ProgressTrackerWindow isOpen /> */}
 
       <WalletView
         web3Modal={web3Modal}

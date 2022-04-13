@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react'
 import Markdown from 'markdown-to-jsx'
-import { Button, CodeContainer, WindowModal } from '../../../gameItems/components'
+import { Button, MarkdownContainer, WindowModal } from '../../../gameItems/components'
 
 const ExplanationWindow = ({
   isOpen,
@@ -55,7 +55,7 @@ const ExplanationWindow = ({
             fontSize: '16px'
           }}
         >
-          <Markdown>{fileContent}</Markdown>
+          <MarkdownContainer>{fileContent}</MarkdownContainer>
         </div>
       </div>
     </WindowModal>

@@ -104,7 +104,8 @@ const ExplanationWindow = ({ isOpen, continueDialog, setExplanationWindowVisibil
           >
             ENS guide
           </a>{' '}
-          to deploy a prvate ENS to your local Ethereum network. Then{' '}
+          to deploy a prvate ENS to your local Ethereum network. <br />
+          Then{' '}
           <a
             target='_blank'
             rel='noreferrer'
@@ -112,7 +113,7 @@ const ExplanationWindow = ({ isOpen, continueDialog, setExplanationWindowVisibil
           >
             clone a fresh scaffold-eth project
           </a>{' '}
-          and use the
+          and use the{' '}
           <a
             target='_blank'
             rel='noreferrer'

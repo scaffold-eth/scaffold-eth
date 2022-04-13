@@ -45,11 +45,11 @@ const GnosisSafe = () => {
 
   const [highLevelOverviewWindowIsVisible, setHighLevelOverviewWindowIsVisible] = useLocalStorage(
     `${LEVEL_ID}-highLevelOverviewWindowIsVisible`,
-    false
+    true
   )
   const [explanationWindowIsVisible, setExplanationWindowVisibility] = useLocalStorage(
     `${LEVEL_ID}-explanationWindowIsVisible`,
-    false
+    true
   )
 
   return (
