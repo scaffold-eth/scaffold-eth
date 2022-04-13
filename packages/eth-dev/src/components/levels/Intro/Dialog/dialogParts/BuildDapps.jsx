@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'Intro'
@@ -23,14 +23,11 @@ const _dialog = [
         I do hope you still know where you loyalty lies ...
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, globalGameActions }) => {
+    choices: ({ isLastVisibleDialog, continueDialog }) => {
       return (
         <>
           {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => globalGameActions.dialog.continueDialog()}
-            >
+            <Button className='is-warning' onClick={() => continueDialog()}>
               No doubt about it
             </Button>
           )}
@@ -50,26 +47,7 @@ const _dialog = [
         Well then, let's get you up to speed
       </SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      globalGameActions,
-      setInitChainInstructionsWindowVisibility
-    }) => {
-      return (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              onClick={() => {
-                setInitChainInstructionsWindowVisibility(true)
-                globalGameActions.dialog.continueDialog()
-              }}
-            >
-              Continue
-            </Button>
-          )}
-        </>
-      )
-    }
+    choices: null
   },
   {
     dialog: () => (
@@ -77,27 +55,19 @@ const _dialog = [
         Start by reconnecting to the city network
       </SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      globalGameActions,
-      setInitChainInstructionsWindowVisibility
-    }) => {
+    choices: ({ isLastVisibleDialog, continueDialog }) => {
       return (
         <>
           {isLastVisibleDialog && (
-            <Button
-              onClick={() => {
-                setInitChainInstructionsWindowVisibility(false)
-                globalGameActions.dialog.continueDialog()
-              }}
-            >
-              I'm in
-            </Button>
+            <Link to={routesMap.SetupLocalNetwork.path}>
+              <Button className='is-warning'>Setup Network</Button>
+            </Link>
           )}
         </>
       )
     }
-  },
+  }
+  /*
   {
     dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png'>I'm in!</SpeakerRight>,
     choices: null
@@ -130,6 +100,7 @@ const _dialog = [
       )
     }
   }
+  */
 ]
 
 const enrichedDialog = enrichDialog(_dialog, DIALOG_PART_ID)

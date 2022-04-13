@@ -18,7 +18,10 @@ const GnosisSafe = () => {
   )
 
   // set initial dialog index
-  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(
+    `${LEVEL_ID}-currentDialogIndex`,
+    0
+  )
   const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
 
   const [

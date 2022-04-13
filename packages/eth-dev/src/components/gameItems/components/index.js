@@ -1,5 +1,6 @@
 import Background from './Background'
 import MonologWindow from './MonologWindow'
+import MonologDialogContainer from './MonologDialogContainer'
 import Terminal from './Terminal'
 import TerminalDialogContainer from './TerminalDialogContainer'
 import UnreadMessagesNotification from './UnreadMessagesNotification'
@@ -34,6 +35,7 @@ import QRPunkBlockie from './QRPunkBlockie'
 export {
   Background,
   MonologWindow,
+  MonologDialogContainer,
   Terminal,
   TerminalDialogContainer,
   UnreadMessagesNotification,

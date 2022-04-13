@@ -1,5 +1,5 @@
 import React from 'react'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 import { DIALOG_PART_ID as FIRST_CONTACT } from './FirstContact'
 
@@ -25,17 +25,13 @@ const _dialog = [
     dialog: () => (
       <SpeakerRight pathToAvatar='./assets/punk5950.png'>Feels good to be home ...</SpeakerRight>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      jumpToDialogPath,
-      finishMonolog
-    }) => {
+    choices: ({ isLastVisibleDialog, jumpToDialogPath, setDidFinishMonolog }) => {
       return (
         <>
           {isLastVisibleDialog && (
             <Button
               onClick={() => {
-                if (finishMonolog) finishMonolog()
+                setDidFinishMonolog(true)
 
                 jumpToDialogPath({
                   dialogPathId: FIRST_CONTACT

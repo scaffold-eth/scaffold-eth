@@ -2,7 +2,7 @@ import React, { useEffect } from 'react'
 import $ from 'jquery'
 import { Button } from '.'
 
-const TerminalDialogContainer = ({
+const MonologDialogContainer = ({
   dialogPathsVisibleToUser,
   currentDialogIndex,
   setCurrentDialogIndex,
@@ -12,7 +12,7 @@ const TerminalDialogContainer = ({
   ...parentProps
 }) => {
   const scrollToBottom = _elementSelector => {
-    let elementSelector = `#terminalDialogContainer .content`
+    let elementSelector = `#monologDialogContainer .content`
     if (_elementSelector) elementSelector = _elementSelector
     const { scrollHeight } = $(elementSelector)[0]
     $(elementSelector).animate({ scrollTop: scrollHeight }, 'slow')
@@ -24,19 +24,19 @@ const TerminalDialogContainer = ({
 
   return (
     <div
-      id='terminalDialogContainer'
+      id='monologDialogContainer'
       style={{
         position: 'absolute',
         top: 0,
         right: 0,
         width: '100%',
-        height: '66%',
+        height: '100%',
         display: 'flex',
         flexDirection: 'column',
         alignContent: 'flex-end',
-        marginTop: '46.5%',
-        paddingLeft: '10%',
-        paddingRight: '20%'
+        marginTop: 0,
+        paddingLeft: '2%',
+        paddingRight: '2%'
       }}
     >
       <div
@@ -130,4 +130,4 @@ const TerminalDialogContainer = ({
   )
 }
 
-export default TerminalDialogContainer
+export default MonologDialogContainer

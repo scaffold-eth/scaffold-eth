@@ -1,10 +1,12 @@
-import React, { useState } from 'react'
+import React, { useEffect } from 'react'
 import { useLocalStorage } from 'react-use'
 import { backgroundIds } from '../../gameItems/components/Background/backgroundsMap'
 import {
-  TerminalDialogContainer,
   Background,
   MonologWindow,
+  MonologDialogContainer,
+  Terminal,
+  TerminalDialogContainer,
   Button
 } from '../../gameItems/components'
 
@@ -23,7 +25,10 @@ const IntroLevel = () => {
   )
 
   // set initial dialog index
-  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(`${LEVEL_ID}-dialogIndex`, 0)
+  const [currentDialogIndex, setCurrentDialogIndex] = useLocalStorage(
+    `${LEVEL_ID}-currentDialogIndex`,
+    0
+  )
   const continueDialog = () => setCurrentDialogIndex(currentDialogIndex + 1)
 
   const [
@@ -53,39 +58,41 @@ const IntroLevel = () => {
     )
   }
 
-  const [showWelcomeWindow, setShowWelcomeWindow] = useState(false)
-  const [showFactionSupportOverviewWindow, setShowFactionSupportOverviewWindow] = useState(false)
+  const [showWelcomeWindow, setShowWelcomeWindow] = useLocalStorage(
+    `${LEVEL_ID}-showWelcomeWindow`,
+    false
+  )
+  const [showFactionSupportOverviewWindow, setShowFactionSupportOverviewWindow] = useLocalStorage(
+    `${LEVEL_ID}-showFactionSupportOverviewWindow`,
+    false
+  )
 
-  const [didEnterGame, setDidEnterGame] = useState(false)
+  const [didEnterGame, setDidEnterGame] = useLocalStorage(`${LEVEL_ID}-didEnterGame`, false)
   const enterGame = () => setDidEnterGame(true)
 
-  const [didFinishMonolog, setDidFinishMonolog] = useState(false)
+  const [didFinishMonolog, setDidFinishMonolog] = useLocalStorage(
+    `${LEVEL_ID}-didFinishMonolog`,
+    false
+  )
   const finishMonolog = () => setDidFinishMonolog(true)
 
-  const removeMonologFromDialog = _levelDialog => {
-    const dialogWithoutMonolog = _levelDialog.filter(
-      part => part.dialogPathId !== `${LEVEL_ID}/StartMonolog`
-    )
-    return dialogWithoutMonolog
+  const removeMonologFromDialog = () => {
+    const arr = dialogPathsVisibleToUser.filter(e => e !== INITIAL_DIALOG_PART_ID)
+    setDialogPathsVisibleToUser(arr)
   }
 
-  /*
   useEffect(() => {
     if (didFinishMonolog) {
-      globalGameActions.dialog.initDialog({
-        initialDialogPathId: `${LEVEL_ID}/FirstContact`,
-        currentDialog: removeMonologFromDialog(levelDialog)
-      })
+      removeMonologFromDialog(levelDialog)
     }
   }, [didFinishMonolog])
-  */
 
   return (
     <>
       <Background backgroundId={backgroundId} />
 
-      <div id={`level${LEVEL_ID}`} style={{ height: '100vh', overflow: 'hidden' }}>
-        {!showWelcomeWindow && (
+      <div id='GnosisSafe'>
+        {!showWelcomeWindow && !didEnterGame && (
           <Button
             className='is-warning'
             style={{
@@ -103,30 +110,47 @@ const IntroLevel = () => {
           </Button>
         )}
 
-        {!didEnterGame && showWelcomeWindow && (
-          <WelcomeWindow
-            isOpen={showWelcomeWindow}
-            enterGame={enterGame}
-            setBackgroundId={setBackgroundId}
-            setShowWelcomeWindow={setShowWelcomeWindow}
-            setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
-          />
-        )}
+        <WelcomeWindow
+          isOpen={showWelcomeWindow && !didEnterGame}
+          setBackgroundId={setBackgroundId}
+          enterGame={enterGame}
+          setShowWelcomeWindow={setShowWelcomeWindow}
+          setShowFactionSupportOverviewWindow={setShowFactionSupportOverviewWindow}
+        />
 
-        {didEnterGame && !didFinishMonolog && !showFactionSupportOverviewWindow && (
-          <MonologWindow isOpen={!didFinishMonolog} finishMonolog={finishMonolog}>
-            <TerminalDialogContainer
-              levelDialog={levelDialog}
-              currentDialogIndex={currentDialogIndex}
-              setCurrentDialogIndex={setCurrentDialogIndex}
-              continueDialog={continueDialog}
-              dialogPathsVisibleToUser={dialogPathsVisibleToUser}
-              jumpToDialogPath={jumpToDialogPath}
-              setBackgroundId={setBackgroundId}
-              //
-            />
-          </MonologWindow>
-        )}
+        <Terminal
+          isOpen={didFinishMonolog}
+          initTop={window.innerHeight - 840}
+          initLeft={10}
+          showMessageNotification={{
+            delayInSeconds: null
+          }}
+        >
+          <TerminalDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+          />
+        </Terminal>
+
+        <MonologWindow isOpen={didEnterGame && !didFinishMonolog} finishMonolog={finishMonolog}>
+          <MonologDialogContainer
+            levelDialog={levelDialog}
+            currentDialogIndex={currentDialogIndex}
+            setCurrentDialogIndex={setCurrentDialogIndex}
+            continueDialog={continueDialog}
+            dialogPathsVisibleToUser={dialogPathsVisibleToUser}
+            jumpToDialogPath={jumpToDialogPath}
+            setBackgroundId={setBackgroundId}
+            //
+            setDidFinishMonolog={setDidFinishMonolog}
+          />
+        </MonologWindow>
       </div>
     </>
   )

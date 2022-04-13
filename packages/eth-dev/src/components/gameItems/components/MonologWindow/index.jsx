@@ -1,13 +1,7 @@
 import React from 'react'
-import { DialogContainer } from './components'
 import { WindowModal } from '..'
 
-const MonologWindow = ({
-  isOpen,
-  dialog,
-  children,
-  ...props
-}) => {
+const MonologWindow = ({ isOpen, dialog, style = {}, children }) => {
   const initHeight = 250
   const initWidth = 450
 
@@ -20,7 +14,7 @@ const MonologWindow = ({
       // backgroundPath=''
       dragAreaHeightPercent={5}
       isOpen={isOpen}
-      style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)' }}
+      style={{ backgroundColor: 'rgb(25, 218, 252, 0.2)', ...style }}
     >
       {children}
     </WindowModal>
