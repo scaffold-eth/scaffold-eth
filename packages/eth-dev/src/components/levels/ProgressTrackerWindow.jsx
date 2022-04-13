@@ -3,20 +3,16 @@ import React from 'react'
 import { WindowModal } from '../gameItems/components'
 
 const ProgressTrackerWindow = ({ isOpen }) => {
-  const initHeight = window.innerHeight * 0.9
-  const initWidth = window.innerWidth * 0.5
+  const initHeight = 600
+  const initWidth = 600
 
-  const styles = {
-    float: 'left',
-    width: '100%',
-    padding: 5,
-    backgroundColor: '#ccc'
+  const progresSstyles = {
+    color: '#fff'
   }
   return (
     <WindowModal
-      // place window in center of screen
-      initTop={window.innerHeight / 2 - initHeight / 2}
-      initLeft={window.innerWidth / 2 - initWidth / 2}
+      initTop={40}
+      initLeft={window.innerWidth - (initWidth + 40)}
       initHeight={initHeight}
       initWidth={initWidth}
       backgroundPath='./assets/items/window.png'
@@ -33,33 +29,42 @@ const ProgressTrackerWindow = ({ isOpen }) => {
           height: '100%',
           overflowY: 'auto',
           overflowX: 'hidden',
-          fontSize: '12px',
-          lineHeight: '25px'
+          fontFamily: 'Roboto, Arial, Helvetica Neue, Helvetica, sans-serif',
+          fontSize: 16,
+          lineHeight: '25px',
+          color: '#16DC8C'
         }}
       >
-        <div style={{ ...styles }}>
-          <h1 style={{ float: 'left', fontSize: 14 }}>Solidity Basics</h1>
-          <p style={{ float: 'right' }}>Progress: 4/10</p>
-        </div>
-        <div style={{ ...styles }}>
-          <p style={{ fontSize: 14 }}>Advanced Solidity Concepts</p>
-          <p style={{ float: 'right' }}>4/10</p>
-        </div>
-        <div style={{ ...styles }}>
-          <p style={{ fontSize: 14 }}>Assembly</p>
-        </div>
-        <div style={{ ...styles }}>
-          <h1 style={{ fontSize: 14 }}>Full Stack Development</h1>
-        </div>
-        <div style={{ ...styles }}>
-          <h1 style={{ fontSize: 14 }}>DEFI</h1>
-        </div>
-        <div style={{ ...styles }}>
-          <h1 style={{ fontSize: 14 }}>Smart Contract Security</h1>
-        </div>
-        <div style={{ ...styles }}>
-          <h1 style={{ fontSize: 14 }}>Tokenomics</h1>
-        </div>
+        <table style={{ width: '100%', tableLayout: 'fixed', overflowWrap: 'break-word' }}>
+          <tr>
+            <th>Topic</th>
+            <th>Progress</th>
+          </tr>
+          <tr>
+            <td>Advanced Solidity Concepts</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+          <tr>
+            <td>Assembly</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+          <tr>
+            <td>Full Stack Development</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+          <tr>
+            <td>DEFI</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+          <tr>
+            <td>Smart Contract Security</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+          <tr>
+            <td>Tokenomics</td>
+            <td style={{ ...progresSstyles }}>4/10</td>
+          </tr>
+        </table>
       </div>
     </WindowModal>
   )
