@@ -17,16 +17,116 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
 
-  await deploy("YourContract", {
+  const waitConfirmations = 5;
+
+  const subscriptionId = process.env.SUBSCRIPTION_ID; // Andrej's Subscription ID on Rinkeby is 698, but he will need to manually add consumer contract
+  const collectInterval = 60; // 1 minute, block.timestamp is in UNIX seconds
+
+  console.log(
+    `Attempting to deploy Game.sol to network number ${chainId} from ${deployer.address}`
+  );
+
+  const gameContract = await deploy("Game", {
     // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
     from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
+    args: [subscriptionId, collectInterval],
     log: true,
-    waitConfirmations: 5,
+    waitConfirmations: waitConfirmations,
   });
 
+  console.log(`Game contract deployed to ${gameContract.address}`);
+  console.log(
+    `Don't forget to add this contract as consumer at https://vrf.chain.link`
+  );
+
+  const gldInitialSupply = ethers.utils.parseEther("1000000");
+
+  console.log(
+    `Attempting to deploy GoldToken.sol to network number ${chainId} from ${deployer.address}`
+  );
+
+  const gldTokenContract = await deploy("GLDToken", {
+    from: deployer,
+    args: [gldInitialSupply, gameContract.address],
+    log: true,
+    waitConfirmations: waitConfirmations,
+  });
+
+  console.log(`GLD Token contract deployed to ${gldTokenContract.address}`);
+
+  const GameContract = await ethers.getContract("Game", deployer);
+
+  await GameContract.setGldToken(gldTokenContract.address);
+
+  console.log(
+    `Attempting to deploy NFTAvatar.sol to network number ${chainId} from ${deployer.address}`
+  );
+
+  const nftAvatarContract = await deploy("NFTAvatar", {
+    from: deployer,
+    args: [gameContract.address],
+    log: true,
+    waitConfirmations: waitConfirmations,
+  });
+
+  console.log(`NFT Avatar contract deployed to ${nftAvatarContract.address}`);
+
+  await GameContract.setNftAvatar(nftAvatarContract.address);
+
+  console.log(
+    `Attempting to deploy Keeper.sol to network number ${chainId} from ${deployer.address}`
+  );
+
+  const updateInterval = 150;
+
+  const keeperContract = await deploy("Keeper", {
+    from: deployer,
+    args: [updateInterval, gameContract.address, subscriptionId],
+    log: true,
+    waitConfirmations: waitConfirmations,
+  });
+
+  console.log(`Keeper contract deployed to ${keeperContract.address}`);
+  console.log(
+    `Don't forget to add this contract as consumer at https://vrf.chain.link`
+  );
+
+  await GameContract.setKeeper(keeperContract.address);
+
+  try {
+    await run("verify:verify", {
+      address: gameContract.address,
+      contract: "contracts/Game.sol:Game",
+      constructorArguments: [subscriptionId, collectInterval],
+    });
+
+    await run("verify:verify", {
+      address: gldTokenContract.address,
+      contract: "contracts/GoldToken.sol:GLDToken",
+      constructorArguments: [gldInitialSupply, gameContract.address],
+    });
+
+    await run("verify:verify", {
+      address: nftAvatarContract.address,
+      contract: "contracts/NFTAvatar.sol:NFTAvatar",
+      constructorArguments: [gameContract.address],
+    });
+
+    await run("verify:verify", {
+      address: keeperContract.address,
+      contract: "contracts/Keeper.sol:Keeper",
+      constructorArguments: [
+        updateInterval,
+        gameContract.address,
+        subscriptionId,
+      ],
+    });
+  } catch (error) {
+    console.error(error);
+  }
+
   // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
+  // const YourContract = await ethers.getContract("YourContract", deployer);
   /*  await YourContract.setPurpose("Hello");
   
     To take ownership of yourContract using the ownable library uncomment next line and add the 

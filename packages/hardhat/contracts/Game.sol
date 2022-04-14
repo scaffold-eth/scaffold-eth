@@ -59,9 +59,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     mapping(uint256 => address) public requestIds;
     mapping(address => uint256) public lastCollectAttempt;
 
-    constructor(address _gldToken, uint64 _subscriptionId, address _nftAvatar, uint _collectInterval) VRFConsumerBaseV2(vrfCoordinator) {
-        gldToken = GLDToken(_gldToken);
-        nftAvatar = NFTAvatar(_nftAvatar);
+    constructor(uint64 _subscriptionId, uint256 _collectInterval) VRFConsumerBaseV2(vrfCoordinator) {
         subscriptionId = _subscriptionId;
         collectInterval = _collectInterval;
         // params for Rinkeby
@@ -76,7 +74,15 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         keeper = _keeper;
     }
 
-    function setcollectInterval(uint256 _collectInterval) public onlyOwner {
+    function setGldToken(address _gldToken) public onlyOwner {
+        gldToken = GLDToken(_gldToken);
+    }
+
+    function setNftAvatar(address _nftAvatar) public onlyOwner {
+        nftAvatar = NFTAvatar(_nftAvatar);
+    }
+
+    function setCollectInterval(uint256 _collectInterval) public onlyOwner {
         collectInterval = _collectInterval;
     }
 
