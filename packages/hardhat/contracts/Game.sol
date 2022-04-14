@@ -65,7 +65,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         // params for Rinkeby
         coordinator = VRFCoordinatorV2Interface(vrfCoordinator);
         keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
-        callbackGasLimit = 100000;
+        callbackGasLimit = 1000000;
         requestConfirmations = 3;
         numWords = 1;
     }
@@ -90,8 +90,12 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         gameOn = true;
     }
 
+    function end() public onlyOwner {
+        gameOn = false;
+    }
+
     function register() public {
-        require(!gameOn, "TOO LATE");
+        require(gameOn, "TOO LATE");
         require(tx.origin != msg.sender, "NOT A CONTRACT");
         require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
 
@@ -102,7 +106,8 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
         requestIds[requestId] = tx.origin;
 
-        emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y);  
+        emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
+        emit Move(tx.origin, yourPosition[tx.origin].x, yourPosition[tx.origin].y);  
     }
 
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
