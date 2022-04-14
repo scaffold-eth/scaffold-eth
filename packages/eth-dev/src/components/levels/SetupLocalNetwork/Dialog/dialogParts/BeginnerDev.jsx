@@ -1,7 +1,7 @@
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'SetupLocalNetwork'
@@ -26,16 +26,12 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'll introduce you</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <a href='https://cryptozombies.io'>
-            <Button className='is-warning' id='cryptozombies-io'>
-              Check out cryptozombies.io
-            </Button>
-          </a>
-        )}
-      </>
+    choices: () => (
+      <a href='https://cryptozombies.io'>
+        <Button className='is-warning' id='cryptozombies-io'>
+          Check out cryptozombies.io
+        </Button>
+      </a>
     )
   }
 ]

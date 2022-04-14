@@ -23,15 +23,11 @@ const _dialog = [
         I do hope you still know where you loyalty lies ...
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog }) => {
+    choices: ({ continueDialog }) => {
       return (
-        <>
-          {isLastVisibleDialog && (
-            <Button className='is-warning' onClick={() => continueDialog()}>
-              No doubt about it
-            </Button>
-          )}
-        </>
+        <Button className='is-warning' onClick={() => continueDialog()}>
+          No doubt about it
+        </Button>
       )
     }
   },
@@ -55,17 +51,11 @@ const _dialog = [
         Start by reconnecting to the city network
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog }) => {
-      return (
-        <>
-          {isLastVisibleDialog && (
-            <Link to={routesMap.SetupLocalNetwork.path}>
-              <Button className='is-warning'>Setup Network</Button>
-            </Link>
-          )}
-        </>
-      )
-    }
+    choices: () => (
+      <Link to={routesMap.SetupLocalNetwork.path}>
+        <Button className='is-warning'>Setup Network</Button>
+      </Link>
+    )
   }
   /*
   {
@@ -88,17 +78,11 @@ const _dialog = [
         Only if you are interested ofc ...
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => {
-      return (
-        <>
-          {isLastVisibleDialog && (
-            <Link to={routesMap.Challenge0SimpleNFT.path}>
-              <Button className='is-warning'>Drive into the city</Button>
-            </Link>
-          )}
-        </>
-      )
-    }
+    choices: () => {
+      <Link to={routesMap.Challenge0SimpleNFT.path}>
+        <Button className='is-warning'>Drive into the city</Button>
+      </Link>
+    )
   }
   */
 ]

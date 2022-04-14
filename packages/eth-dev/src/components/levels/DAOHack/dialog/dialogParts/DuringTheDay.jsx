@@ -1,5 +1,5 @@
 import React from 'react'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PART_ID as PRESENT_TASK } from './PresentTask'
@@ -9,7 +9,9 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/DuringTheDay`
 
 const _dialog = [
   {
-    dialog: () => <SpeakerRight pathToAvatar='./assets/punk5950.png'>During the day</SpeakerRight>,
+    dialog: ({ isLastVisibleDialog }) => (
+      <SpeakerRight pathToAvatar='./assets/punk5950.png'>During the day</SpeakerRight>
+    ),
     choices: null
   },
   {
@@ -30,20 +32,16 @@ const _dialog = [
         We are different and yet alike.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, jumpToDialogPath }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            onClick={() => {
-              jumpToDialogPath({
-                dialogPathId: PRESENT_TASK
-              })
-            }}
-          >
-            Continue
-          </Button>
-        )}
-      </>
+    choices: ({ jumpToDialogPath }) => (
+      <Button
+        onClick={() => {
+          jumpToDialogPath({
+            dialogPathId: PRESENT_TASK
+          })
+        }}
+      >
+        Continue
+      </Button>
     )
   }
 ]

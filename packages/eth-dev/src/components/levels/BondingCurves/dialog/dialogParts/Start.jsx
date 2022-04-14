@@ -9,23 +9,19 @@ export const DIALOG_PART_ID = 'BondingCurves/Start'
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Here, take a look:</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setExplanationWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setExplanationWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Open files
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setExplanationWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Open files
+      </Button>
     )
   },
   {
@@ -34,14 +30,10 @@ const _dialog = [
         Nice! Seems like you still now your stuff!
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.UnderflowBug.path}>
-            <Button className='is-warning'>Next level</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.UnderflowBug.path}>
+        <Button className='is-warning'>Next level</Button>
+      </Link>
     )
   }
 ]

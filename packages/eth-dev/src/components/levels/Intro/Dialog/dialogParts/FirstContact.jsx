@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PART_ID as BUILD_DAPPS } from './BuildDapps'
@@ -38,33 +38,29 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Why have you come back?</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, jumpToDialogPath }) => {
+    choices: ({ jumpToDialogPath }) => {
       return (
         <>
-          {isLastVisibleDialog && (
-            <>
-              <Button
-                className='is-warning'
-                onClick={() =>
-                  jumpToDialogPath({
-                    dialogPathId: BUILD_DAPPS
-                  })
-                }
-              >
-                Build dApps
-              </Button>
-              <Button
-                className='is-warning'
-                onClick={() =>
-                  jumpToDialogPath({
-                    dialogPathId: LEARN_ABOUT_SC_SECURITY
-                  })
-                }
-              >
-                Learn about Smart Contract security
-              </Button>
-            </>
-          )}
+          <Button
+            className='is-warning'
+            onClick={() =>
+              jumpToDialogPath({
+                dialogPathId: BUILD_DAPPS
+              })
+            }
+          >
+            Build dApps
+          </Button>
+          <Button
+            className='is-warning'
+            onClick={() =>
+              jumpToDialogPath({
+                dialogPathId: LEARN_ABOUT_SC_SECURITY
+              })
+            }
+          >
+            Learn about Smart Contract security
+          </Button>
         </>
       )
     }

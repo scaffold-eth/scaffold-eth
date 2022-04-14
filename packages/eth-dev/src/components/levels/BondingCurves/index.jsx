@@ -75,6 +75,8 @@ const BondingCurves = () => {
             dialogPathsVisibleToUser={dialogPathsVisibleToUser}
             jumpToDialogPath={jumpToDialogPath}
             setBackgroundId={setBackgroundId}
+            //
+            setExplanationWindowVisibility={setExplanationWindowVisibility}
           />
         </Terminal>
 
@@ -82,6 +84,7 @@ const BondingCurves = () => {
           isOpen={explanationWindowIsVisible}
           initTop={10}
           initLeft={10}
+          continueDialog={continueDialog}
           setWhatIsABondingCurveWindowVisibility={setWhatIsABondingCurveWindowVisibility}
           setPriceSensitivityWindowVisibility={setPriceSensitivityWindowVisibility}
         />

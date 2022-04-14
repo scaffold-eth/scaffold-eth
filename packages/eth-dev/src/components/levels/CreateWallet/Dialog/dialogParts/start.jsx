@@ -35,18 +35,14 @@ const _dialog = [
       continueDialog
     }) => {
       return (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              onClick={() => {
-                setBackgroundId(backgroundIds.Workstation)
-                continueDialog()
-              }}
-            >
-              Continue
-            </Button>
-          )}
-        </>
+        <Button
+          onClick={() => {
+            setBackgroundId(backgroundIds.Workstation)
+            continueDialog()
+          }}
+        >
+          Continue
+        </Button>
       )
     }
   },
@@ -67,32 +63,28 @@ const _dialog = [
     }) => {
       return (
         <>
-          {isLastVisibleDialog && (
-            <>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  continueDialog()
-                  jumpToDialogPath({
-                    dialogPathId: DOES_KNOW_WALLETS_PATH_ID
-                  })
-                }}
-              >
-                Yes, I'm familiar with wallets
-              </Button>
-              <Button
-                className='is-warning'
-                onClick={() => {
-                  setDetailsOnWalletsWindowVisibility(true)
-                  jumpToDialogPath({
-                    dialogPathId: DOES_NOT_KNOW_WALLETS_PATH_ID
-                  })
-                }}
-              >
-                What is a wallet?
-              </Button>
-            </>
-          )}
+          <Button
+            className='is-warning'
+            onClick={() => {
+              continueDialog()
+              jumpToDialogPath({
+                dialogPathId: DOES_KNOW_WALLETS_PATH_ID
+              })
+            }}
+          >
+            Yes, I'm familiar with wallets
+          </Button>
+          <Button
+            className='is-warning'
+            onClick={() => {
+              setDetailsOnWalletsWindowVisibility(true)
+              jumpToDialogPath({
+                dialogPathId: DOES_NOT_KNOW_WALLETS_PATH_ID
+              })
+            }}
+          >
+            What is a wallet?
+          </Button>
         </>
       )
     }

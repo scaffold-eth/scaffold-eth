@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 import { backgroundIds } from '../../../../gameItems/components/Background/backgroundsMap'
 
@@ -11,7 +11,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
         I'm sending you some coordinates now. I'll call you again when you're there.
       </SpeakerLeft>
@@ -24,20 +24,16 @@ const _dialog = [
         0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setBackgroundId }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setBackgroundId(backgroundIds.NiftyShop)
-              continueDialog()
-            }}
-          >
-            Go to coordinates
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setBackgroundId }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setBackgroundId(backgroundIds.NiftyShop)
+          continueDialog()
+        }}
+      >
+        Go to coordinates
+      </Button>
     )
   },
   {
@@ -60,20 +56,16 @@ const _dialog = [
         What is missing now is, an interface for our members to obtain their membership badges.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setHistoryWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setHistoryWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Show Documentation
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setHistoryWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setHistoryWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Show Documentation
+      </Button>
     )
   },
   {
@@ -116,14 +108,10 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'll ping you tomorrow</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.Challenge1DecentralizedStaking.path}>
-            <Button className='is-warning'>Go to apartment</Button>
-          </Link>
-        )}
-      </>
+    choices: ({}) => (
+      <Link to={routesMap.Challenge1DecentralizedStaking.path}>
+        <Button className='is-warning'>Go to apartment</Button>
+      </Link>
     )
   }
 ]

@@ -7,7 +7,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <SpeakerLeft pathToAvatar='./assets/punk4551.png'>
         What I need for my people is a way to coordinate arround the funds that we have obtained
       </SpeakerLeft>
@@ -20,28 +20,24 @@ const _dialog = [
         A trustless way for the to coordinate around a specific goal.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, setExplanationWindowVisibility }) => (
+    choices: ({ setExplanationWindowVisibility }) => (
       <>
-        {isLastVisibleDialog && (
-          <>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setExplanationWindowVisibility(true)
-              }}
-            >
-              Learn about DAOs
-            </Button>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                console.log('click')
-              }}
-            >
-              Create a DAO
-            </Button>
-          </>
-        )}
+        <Button
+          className='is-warning'
+          onClick={() => {
+            setExplanationWindowVisibility(true)
+          }}
+        >
+          Learn about DAOs
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            console.log('click')
+          }}
+        >
+          Create a DAO
+        </Button>
       </>
     )
   }

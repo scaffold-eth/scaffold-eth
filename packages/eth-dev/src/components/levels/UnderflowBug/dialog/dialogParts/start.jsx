@@ -97,24 +97,16 @@ const _dialog = [
         find a way how to we could issue more tokens?
       </SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      setContractWindowVisibility,
-      setExplanationWindowVisibility
-    }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setContractWindowVisibility(true)
-              setExplanationWindowVisibility(true)
-            }}
-          >
-            Show Contract
-          </Button>
-        )}
-      </>
+    choices: ({ setContractWindowVisibility, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setContractWindowVisibility(true)
+          setExplanationWindowVisibility(true)
+        }}
+      >
+        Show Contract
+      </Button>
     )
   },
   {
@@ -153,14 +145,10 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Maybe not friends ...</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.CreateWallet.path}>
-            <Button className='is-warning'>Drive into City</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.CreateWallet.path}>
+        <Button className='is-warning'>Drive into City</Button>
+      </Link>
     )
   }
 ]

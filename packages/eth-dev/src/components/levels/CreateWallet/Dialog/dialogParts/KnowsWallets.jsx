@@ -11,26 +11,22 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/KnowsWallets`
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>
         Great! Let's get you connected.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setWalletIsVisible }) => {
+    choices: ({ continueDialog, setWalletIsVisible }) => {
       return (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setWalletIsVisible(true)
-                continueDialog()
-              }}
-            >
-              Setup Wallet
-            </Button>
-          )}
-        </>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            setWalletIsVisible(true)
+            continueDialog()
+          }}
+        >
+          Setup Wallet
+        </Button>
       )
     }
   },

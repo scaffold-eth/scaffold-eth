@@ -10,7 +10,9 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Good morning!</SpeakerLeft>,
+    dialog: ({ isLastVisibleDialog }) => (
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Good morning!</SpeakerLeft>
+    ),
     choices: null
   },
   {
@@ -24,23 +26,19 @@ const _dialog = [
         </SpeakerLeft>
       </>
     ),
-    choices: ({ isLastVisibleDialog, setBackgroundId, continueDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setBackgroundId('CitySkylineInsideNight')
-              // TODO:
-              // hideTerminal()
-              continueDialog()
-              // showMessageNotification({ delayInSeconds: 4 })
-            }}
-          >
-            Go to location
-          </Button>
-        )}
-      </>
+    choices: ({ setBackgroundId, continueDialog }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setBackgroundId('CitySkylineInsideNight')
+          // TODO:
+          // hideTerminal()
+          continueDialog()
+          // showMessageNotification({ delayInSeconds: 4 })
+        }}
+      >
+        Go to location
+      </Button>
     )
   },
   {
@@ -66,20 +64,16 @@ const _dialog = [
         ventures we are currently exploring.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setHistoryWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setHistoryWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Show Documentation
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setHistoryWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setHistoryWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Show Documentation
+      </Button>
     )
   },
   {
@@ -98,14 +92,10 @@ const _dialog = [
         I think it is time to move on to the next chapter in our little adventure!
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.Challenge3Dex.path}>
-            <Button className='is-warning'>Go to roof top</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.Challenge3Dex.path}>
+        <Button className='is-warning'>Go to roof top</Button>
+      </Link>
     )
   }
 ]

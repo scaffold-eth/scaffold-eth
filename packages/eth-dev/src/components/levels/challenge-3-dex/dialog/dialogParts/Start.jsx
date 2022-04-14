@@ -11,7 +11,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I wanted you to see this.</SpeakerLeft>
     ),
     choices: null
@@ -46,20 +46,16 @@ const _dialog = [
         I've but you on the whitelist. You should are now able to access it.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, setBackgroundId, continueDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setBackgroundId(backgroundIds.ExchangeRed)
-              continueDialog()
-            }}
-          >
-            Go downstairs
-          </Button>
-        )}
-      </>
+    choices: ({ setBackgroundId, continueDialog }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setBackgroundId(backgroundIds.ExchangeRed)
+          continueDialog()
+        }}
+      >
+        Go downstairs
+      </Button>
     )
   },
   {
@@ -100,20 +96,16 @@ const _dialog = [
         I've already sent you the project files
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setExplanationWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setExplanationWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Open files
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setExplanationWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Open files
+      </Button>
     )
   },
   {
@@ -122,14 +114,10 @@ const _dialog = [
   },
   {
     dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Great!</SpeakerLeft>,
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.Challenge5MultiSig.path}>
-            <Button className='is-warning'>Go home</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.Challenge5MultiSig.path}>
+        <Button className='is-warning'>Go home</Button>
+      </Link>
     )
   }
 ]

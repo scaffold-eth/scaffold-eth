@@ -10,7 +10,9 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/End`
 
 const _dialog = [
   {
-    dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Awesome!</SpeakerLeft>,
+    dialog: ({ isLastVisibleDialog }) => (
+      <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Awesome!</SpeakerLeft>
+    ),
     choices: null
   },
   {
@@ -33,14 +35,10 @@ const _dialog = [
         0xde0b295669a9fd93d5f28d9ec85e40f4cb697bae
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.Challenge0SimpleNFT.path}>
-            <Button className='is-warning'>Go to coordinates</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.Challenge0SimpleNFT.path}>
+        <Button className='is-warning'>Go to coordinates</Button>
+      </Link>
     )
   }
 ]

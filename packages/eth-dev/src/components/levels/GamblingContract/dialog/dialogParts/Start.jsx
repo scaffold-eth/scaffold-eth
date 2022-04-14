@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PART_ID = 'GamblingContract/Start'
@@ -28,26 +28,17 @@ const _dialog = [
         Can you figure out what happened?
       </SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      continueDialog,
-      setContractWindowVisibility,
-      setExplanationWindowVisibility
-    }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setContractWindowVisibility(true)
-              continueDialog()
-              // setExplanationWindowVisibility(true)
-            }}
-          >
-            Show Contract
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setContractWindowVisibility, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setContractWindowVisibility(true)
+          continueDialog()
+          // setExplanationWindowVisibility(true)
+        }}
+      >
+        Show Contract
+      </Button>
     )
   },
   {
@@ -62,24 +53,16 @@ const _dialog = [
         We have some more documentation that goes with this. Here, take a look.
       </SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      setContractWindowVisibility,
-      setExplanationWindowVisibility
-    }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              // setContractWindowVisibility(true)
-              setExplanationWindowVisibility(true)
-            }}
-          >
-            Open Documentation
-          </Button>
-        )}
-      </>
+    choices: ({ setContractWindowVisibility, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          // setContractWindowVisibility(true)
+          setExplanationWindowVisibility(true)
+        }}
+      >
+        Open Documentation
+      </Button>
     )
   },
   {
@@ -100,14 +83,10 @@ const _dialog = [
         I think it's time to onboard you to some of my more ambitiuse plans ...
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.DAOHack.path}>
-            <Button>Continue</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.DAOHack.path}>
+        <Button>Continue</Button>
+      </Link>
     )
   }
 ]

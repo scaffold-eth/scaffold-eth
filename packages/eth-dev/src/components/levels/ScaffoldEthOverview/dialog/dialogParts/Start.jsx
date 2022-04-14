@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PART_ID = 'ScaffoldEthOverview/Start'
@@ -12,20 +12,16 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Here, take a look:</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setExplanationWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setExplanationWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Open files
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setExplanationWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Open files
+      </Button>
     )
   },
   {
@@ -38,14 +34,10 @@ const _dialog = [
   },
   {
     dialog: () => <></>,
-    choices: isLastVisibleDialog => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.UnderflowBug.path}>
-            <Button className='is-warning'>Next level</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.UnderflowBug.path}>
+        <Button className='is-warning'>Next level</Button>
+      </Link>
     )
   }
 ]

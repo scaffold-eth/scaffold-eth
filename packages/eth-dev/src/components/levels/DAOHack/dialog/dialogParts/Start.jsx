@@ -1,5 +1,5 @@
 import React from 'react'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PART_ID as AT_NIGHT } from './AtNight'
@@ -39,30 +39,26 @@ const _dialog = [
   },
   {
     dialog: () => <SpeakerLeft pathToAvatar='./assets/punk4551.png'>How about you?</SpeakerLeft>,
-    choices: ({ isLastVisibleDialog, jumpToDialogPath }) => (
+    choices: ({ jumpToDialogPath }) => (
       <>
-        {isLastVisibleDialog && (
-          <>
-            <Button
-              onClick={() => {
-                jumpToDialogPath({
-                  dialogPathId: AT_NIGHT
-                })
-              }}
-            >
-              At night
-            </Button>
-            <Button
-              onClick={() => {
-                jumpToDialogPath({
-                  dialogPathId: DURING_THE_DAY
-                })
-              }}
-            >
-              During the day
-            </Button>
-          </>
-        )}
+        <Button
+          onClick={() => {
+            jumpToDialogPath({
+              dialogPathId: AT_NIGHT
+            })
+          }}
+        >
+          At night
+        </Button>
+        <Button
+          onClick={() => {
+            jumpToDialogPath({
+              dialogPathId: DURING_THE_DAY
+            })
+          }}
+        >
+          During the day
+        </Button>
       </>
     )
   }

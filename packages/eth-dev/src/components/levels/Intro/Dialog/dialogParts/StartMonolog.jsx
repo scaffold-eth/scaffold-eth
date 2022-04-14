@@ -25,26 +25,22 @@ const _dialog = [
     dialog: () => (
       <SpeakerRight pathToAvatar='./assets/punk5950.png'>Feels good to be home ...</SpeakerRight>
     ),
-    choices: ({ isLastVisibleDialog, jumpToDialogPath, setDidFinishMonolog }) => {
+    choices: ({ jumpToDialogPath, setDidFinishMonolog }) => {
       return (
-        <>
-          {isLastVisibleDialog && (
-            <Button
-              onClick={() => {
-                setDidFinishMonolog(true)
+        <Button
+          onClick={() => {
+            setDidFinishMonolog(true)
 
-                jumpToDialogPath({
-                  dialogPathId: FIRST_CONTACT
-                })
+            jumpToDialogPath({
+              dialogPathId: FIRST_CONTACT
+            })
 
-                // TODO:
-                // showMessageNotification({ delayInSeconds: 2 })
-              }}
-            >
-              Continue
-            </Button>
-          )}
-        </>
+            // TODO:
+            // showMessageNotification({ delayInSeconds: 2 })
+          }}
+        >
+          Continue
+        </Button>
       )
     }
   }

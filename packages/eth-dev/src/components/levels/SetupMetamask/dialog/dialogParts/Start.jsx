@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const LEVEL_ID = 'SetupMetamask'
@@ -17,36 +17,27 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Let's get you hooked up!</SpeakerLeft>
     ),
-    choices: ({
-      isLastVisibleDialog,
-      continueDialog,
-      loadWeb3Modal,
-      setInstructionsWindowVisibility
-    }) => (
+    choices: ({ continueDialog, loadWeb3Modal, setInstructionsWindowVisibility }) => (
       <>
-        {isLastVisibleDialog && (
-          <>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                continueDialog()
-                loadWeb3Modal()
-                console.log('TODO: connect to metamask')
-              }}
-            >
-              Connect to Wallet
-            </Button>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                continueDialog()
-                setInstructionsWindowVisibility(true)
-              }}
-            >
-              Setup Metamask
-            </Button>
-          </>
-        )}
+        <Button
+          className='is-warning'
+          onClick={() => {
+            continueDialog()
+            loadWeb3Modal()
+            console.log('TODO: connect to metamask')
+          }}
+        >
+          Connect to Wallet
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            continueDialog()
+            setInstructionsWindowVisibility(true)
+          }}
+        >
+          Setup Metamask
+        </Button>
       </>
     )
   },
@@ -60,14 +51,10 @@ const _dialog = [
         Now head into the city. I want to show you something.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.UnderflowBug.path}>
-            <Button className='is-warning'>Go into City</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.UnderflowBug.path}>
+        <Button className='is-warning'>Go into City</Button>
+      </Link>
     )
   }
 ]

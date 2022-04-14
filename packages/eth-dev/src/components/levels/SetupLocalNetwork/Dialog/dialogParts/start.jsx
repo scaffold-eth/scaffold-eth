@@ -1,6 +1,6 @@
 import React from 'react'
 
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 import { DIALOG_PART_ID as SETUP_NETWORK_PATH_ID } from './SetupNetwork'
@@ -16,30 +16,26 @@ const _dialog = [
     ),
     choices: ({ isLastVisibleDialog, jumpToDialogPath }) => (
       <>
-        {isLastVisibleDialog && (
-          <>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                jumpToDialogPath({
-                  dialogPathId: SETUP_NETWORK_PATH_ID
-                })
-              }}
-            >
-              I know what to do
-            </Button>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                jumpToDialogPath({
-                  dialogPathId: BEGINNER_DEV_PATH_ID
-                })
-              }}
-            >
-              I think I need some more training
-            </Button>
-          </>
-        )}
+        <Button
+          className='is-warning'
+          onClick={() => {
+            jumpToDialogPath({
+              dialogPathId: SETUP_NETWORK_PATH_ID
+            })
+          }}
+        >
+          I know what to do
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            jumpToDialogPath({
+              dialogPathId: BEGINNER_DEV_PATH_ID
+            })
+          }}
+        >
+          I think I need some more training
+        </Button>
       </>
     )
   }

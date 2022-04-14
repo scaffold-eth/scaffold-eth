@@ -66,6 +66,7 @@ $ yarn chain
 $ yarn deploy`}
         </CodeContainer>
 
+        {/*
         <div
           style={{
             padding: '10px 50px',
@@ -76,6 +77,7 @@ $ yarn deploy`}
             Scanning for local network ...
           </Typist>
         </div>
+        */}
         {/*
         <Button
           className='is-warning'
@@ -86,7 +88,7 @@ $ yarn deploy`}
         >
           Done
         </Button>
-        */}
+      */}
       </div>
     </WindowModal>
   )

@@ -1,5 +1,5 @@
 import React from 'react'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
 export const DIALOG_PART_ID = 'ERC20/Start'
@@ -10,19 +10,15 @@ const _dialog = [
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Here is the code:</SpeakerLeft>
     ),
     choices: ({ isLastVisibleDialog, continueDialog, setContractWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setContractWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Show Contract
-          </Button>
-        )}
-      </>
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setContractWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Show Contract
+      </Button>
     )
   },
   {
@@ -37,19 +33,15 @@ const _dialog = [
         We have some more documentation that goes with this. Here, take a look.
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, setExplanationWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setExplanationWindowVisibility(true)
-            }}
-          >
-            Open Documentation
-          </Button>
-        )}
-      </>
+    choices: ({ setExplanationWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setExplanationWindowVisibility(true)
+        }}
+      >
+        Open Documentation
+      </Button>
     )
   },
   {

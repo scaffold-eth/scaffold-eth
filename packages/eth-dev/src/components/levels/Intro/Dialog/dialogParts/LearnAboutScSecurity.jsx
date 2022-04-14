@@ -40,15 +40,11 @@ const _dialog = [
   },
   {
     dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Can you help me?</SpeakerLeft>,
-    choices: ({ isLastVisibleDialog }) => {
+    choices: () => {
       return (
-        <>
-          {isLastVisibleDialog && (
-            <Link to={routesMap.UnderflowBug.path}>
-              <Button className='is-warning'>Sure</Button>
-            </Link>
-          )}
-        </>
+        <Link to={routesMap.UnderflowBug.path}>
+          <Button className='is-warning'>Sure</Button>
+        </Link>
       )
     }
   }

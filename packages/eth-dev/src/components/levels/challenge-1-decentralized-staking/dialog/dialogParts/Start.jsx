@@ -2,7 +2,7 @@ import React from 'react'
 import { Link } from 'react-router-dom'
 
 import { routesMap } from '../../../../../routes'
-import  { enrichDialog } from '../../../../../helpers'
+import { enrichDialog } from '../../../../../helpers'
 import { backgroundIds } from '../../../../gameItems/components/Background/backgroundsMap'
 import { SpeakerLeft, SpeakerRight, Button } from '../../../../gameItems/components'
 
@@ -11,7 +11,7 @@ export const DIALOG_PART_ID = `${LEVEL_ID}/Start`
 
 const _dialog = [
   {
-    dialog: () => (
+    dialog: ({ isLastVisibleDialog }) => (
       <>
         <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>U up?</SpeakerLeft>
         <div style={{ marginLeft: 65, marginBottom: 10 }}>
@@ -27,39 +27,35 @@ const _dialog = [
         </div>
       </>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setUserPickedPositiveResponse }) => (
+    choices: ({ continueDialog, setUserPickedPositiveResponse }) => (
       <>
-        {isLastVisibleDialog && (
-          <>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setUserPickedPositiveResponse(true)
-                continueDialog()
-              }}
-            >
-              Yes
-            </Button>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setUserPickedPositiveResponse(false)
-                continueDialog()
-              }}
-            >
-              No, let me sleep!
-            </Button>
-            <Button
-              className='is-warning'
-              onClick={() => {
-                setUserPickedPositiveResponse(false)
-                continueDialog()
-              }}
-            >
-              Let me sleep! God damn it!
-            </Button>
-          </>
-        )}
+        <Button
+          className='is-warning'
+          onClick={() => {
+            setUserPickedPositiveResponse(true)
+            continueDialog()
+          }}
+        >
+          Yes
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            setUserPickedPositiveResponse(false)
+            continueDialog()
+          }}
+        >
+          No, let me sleep!
+        </Button>
+        <Button
+          className='is-warning'
+          onClick={() => {
+            setUserPickedPositiveResponse(false)
+            continueDialog()
+          }}
+        >
+          Let me sleep! God damn it!
+        </Button>
       </>
     )
   },
@@ -79,20 +75,16 @@ const _dialog = [
         discuss it
       </SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setBackgroundId }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setBackgroundId(backgroundIds.RoofSatellite)
-              continueDialog()
-            }}
-          >
-            Head to the roof
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setBackgroundId }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setBackgroundId(backgroundIds.RoofSatellite)
+          continueDialog()
+        }}
+      >
+        Head to the roof
+      </Button>
     )
   },
   {
@@ -113,20 +105,16 @@ const _dialog = [
     dialog: () => (
       <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>I'm sending you the files now</SpeakerLeft>
     ),
-    choices: ({ isLastVisibleDialog, continueDialog, setHistoryWindowVisibility }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Button
-            className='is-warning'
-            onClick={() => {
-              setHistoryWindowVisibility(true)
-              continueDialog()
-            }}
-          >
-            Open Files
-          </Button>
-        )}
-      </>
+    choices: ({ continueDialog, setHistoryWindowVisibility }) => (
+      <Button
+        className='is-warning'
+        onClick={() => {
+          setHistoryWindowVisibility(true)
+          continueDialog()
+        }}
+      >
+        Open Files
+      </Button>
     )
   },
   {
@@ -135,14 +123,10 @@ const _dialog = [
   },
   {
     dialog: () => <SpeakerLeft pathToAvatar='./assets/punk_anon.png'>Thanks!</SpeakerLeft>,
-    choices: ({ isLastVisibleDialog }) => (
-      <>
-        {isLastVisibleDialog && (
-          <Link to={routesMap.Challenge2TokenVendor.path}>
-            <Button className='is-warning'>Go back to sleep</Button>
-          </Link>
-        )}
-      </>
+    choices: () => (
+      <Link to={routesMap.Challenge2TokenVendor.path}>
+        <Button className='is-warning'>Go back to sleep</Button>
+      </Link>
     )
   }
 ]
