@@ -19,7 +19,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const waitConfirmations = 5;
 
-  const subscriptionId = process.env.SUBSCRIPTION_ID; // Andrej's Subscription ID on Rinkeby is 698, but he will need to manually add consumer contract
+  const subscriptionId = 2801;
   const collectInterval = 60; // 1 minute, block.timestamp is in UNIX seconds
 
   console.log(
@@ -62,12 +62,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     `Attempting to deploy NFTAvatar.sol to network number ${chainId} from ${deployer.address}`
   );
 
+  console.log("deploying nftAvatar with game contract",gameContract.address)
+
   const nftAvatarContract = await deploy("NFTAvatar", {
     from: deployer,
     args: [gameContract.address],
     log: true,
     waitConfirmations: waitConfirmations,
-  });
+    gasPrice: 3000000000, gasLimit: 4000000});
 
   console.log(`NFT Avatar contract deployed to ${nftAvatarContract.address}`);
 
@@ -84,6 +86,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     args: [updateInterval, gameContract.address, subscriptionId],
     log: true,
     waitConfirmations: waitConfirmations,
+    gasPrice: 4000000000, gasLimit: 2000000
   });
 
   console.log(`Keeper contract deployed to ${keeperContract.address}`);
@@ -93,6 +96,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   await GameContract.setKeeper(keeperContract.address);
 
+
+
+  await GameContract.start();
+/*
   try {
     await run("verify:verify", {
       address: gameContract.address,
@@ -123,14 +130,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     });
   } catch (error) {
     console.error(error);
-  }
+  }*/
 
   // Getting a previously deployed contract
   // const YourContract = await ethers.getContract("YourContract", deployer);
   /*  await YourContract.setPurpose("Hello");
-  
-    To take ownership of yourContract using the ownable library uncomment next line and add the 
-    address you want to be the owner. 
+
+    To take ownership of yourContract using the ownable library uncomment next line and add the
+    address you want to be the owner.
     // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
 
     //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!

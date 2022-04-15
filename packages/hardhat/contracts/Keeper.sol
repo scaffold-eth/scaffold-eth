@@ -44,11 +44,10 @@ contract Keeper is KeeperCompatibleInterface, Ownable, VRFConsumerBaseV2 {
 
     function performUpkeep(bytes calldata /* performData */) external override {
         // request random number
-        coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);   
+        coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
     }
 
     function fulfillRandomWords(uint256 /*requestId*/, uint256[] memory randomWords) internal override {
         gameContract.shufflePrizes(randomWords[0], randomWords[1]);
     }
 }
-

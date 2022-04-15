@@ -94,6 +94,14 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         gameOn = false;
     }
 
+    function update(address newContract) public {
+      require(gameOn, "TOO LATE");
+      health[tx.origin] = (health[tx.origin]*80)/100; //20% loss of health on contract update?!!? lol
+      require(tx.origin == msg.sender, "MUST BE AN EOA");
+      require(yourContract[tx.origin] != address(0), "MUST HAVE A CONTRACT");
+      yourContract[tx.origin] = newContract;
+    }
+
     function register() public {
         require(gameOn, "TOO LATE");
         require(tx.origin != msg.sender, "NOT A CONTRACT");
@@ -102,22 +110,50 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         yourContract[tx.origin] = msg.sender;
         health[tx.origin] = 5000;
         // ADD RANDOM SPOT HERE
-        // yourPosition[tx.origin] = 
+        // yourPosition[tx.origin] =
         uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
         requestIds[requestId] = tx.origin;
 
+        randomlyPlace();
+
         emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
-        emit Move(tx.origin, yourPosition[tx.origin].x, yourPosition[tx.origin].y);  
+        emit Move(tx.origin, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
+    }
+
+    function randomlyPlace() internal {
+
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, tx.origin, address(this) ));
+
+        uint8 index = 0;
+        uint8 x  = uint8(predictableRandom[index++]);
+        uint8 y  = uint8(predictableRandom[index++]);
+
+        Field memory field = worldMatrix[x][y];
+
+        while(field.player != address(0)){
+            x  = uint8(predictableRandom[index++]);
+            y  = uint8(predictableRandom[index++]);
+            field = worldMatrix[x][y];
+        }
+
+        worldMatrix[x][y].player = tx.origin;
+        worldMatrix[yourPosition[tx.origin].x][yourPosition[tx.origin].y].player = address(0);
+        yourPosition[tx.origin] = Position(x, y);
+        emit Move(tx.origin, x, y);
     }
 
     function fulfillRandomWords(uint256 requestId, uint256[] memory randomWords) internal override {
-        nftAvatar.mint(randomWords[0], requestIds[requestId]);   
+        nftAvatar.mint(randomWords[0], requestIds[requestId]);
 
-        emit NFTMinted(requestIds[requestId], requestId);   
+        emit NFTMinted(requestIds[requestId], requestId);
     }
 
     function currentPosition() public view returns(Position memory) {
         return yourPosition[tx.origin];
+    }
+
+    function positionOf(address player) public view returns(Position memory) {
+        return yourPosition[player];
     }
 
     function collectTokens() public {
@@ -134,7 +170,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
             gldToken.transfer(tx.origin, field.tokenAmountToCollect);
             worldMatrix[position.x][position.y].tokenAmountToCollect = 0;
             emit CollectedTokens(tx.origin, field.tokenAmountToCollect);
-        } 
+        }
 
     }
 
@@ -146,11 +182,11 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         Position memory position = yourPosition[tx.origin];
         Field memory field = worldMatrix[position.x][position.y];
         require(field.healthAmountToCollect > 0, "NOTHING TO COLLECT");
-        
+
         if(field.healthAmountToCollect > 0) {
             // increase health
             health[tx.origin] += field.healthAmountToCollect;
-            worldMatrix[position.x][position.y].healthAmountToCollect = 0; 
+            worldMatrix[position.x][position.y].healthAmountToCollect = 0;
             emit CollectedHealth(tx.origin, field.healthAmountToCollect);
         }
     }
@@ -159,7 +195,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         require(health[tx.origin] > 0, "YOU DED");
         (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
         require(x <= width && y <= height, "OUT OF BOUNDS");
-        
+
         Field memory field = worldMatrix[x][y];
 
         if(field.player == address(0)) {
@@ -172,7 +208,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
             // fight
             (/*uint attackerTokenId*/, uint attackerAttack, /*uint attackerDefence*/) = nftAvatar.getCharacterByOwner(tx.origin);
             (/*uint defenderTokenId*/, /*uint defenderAttack*/, uint defenderDefence) = nftAvatar.getCharacterByOwner(field.player);
-            
+
             if(attackerAttack > defenderDefence) {
                 health[field.player] -= (attackerAttack - defenderDefence);
             } else {
