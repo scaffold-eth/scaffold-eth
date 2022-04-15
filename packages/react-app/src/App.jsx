@@ -184,19 +184,22 @@ function App(props) {
 
   const [drops, setDrops] = useState();
 
-  useEffect(()=>{
+  useEffect(async ()=>{
     console.log("parsing dropEvents",dropEvents)
     let allDrops = []
     for(let e in dropEvents){
-      console.log("SAVE DROP",dropEvents[e])
+      const theX = dropEvents[e].args.x.toNumber()
+      const theY = dropEvents[e].args.y.toNumber()
+      const field = await readContracts.Game.worldMatrix(theX,theY)
       allDrops.push({
-        health: dropEvents[e].args.isHealth,
-        x: dropEvents[e].args.x.toNumber(),
-        y: dropEvents[e].args.y.toNumber(),
-        amount: dropEvents[e].args.amount.toNumber(),
+        health: field.healthAmountToCollect.toNumber(),
+        gold: field.tokenAmountToCollect.toNumber(),
+        x: theX,
+        y: theY,
       })
     }
-    console.log("save allDrops",allDrops)
+    console.log("Saving drops:",allDrops)
+    setDrops(allDrops)
   },[dropEvents])
 
   console.log("registerEvents",registerEvents)
@@ -231,6 +234,7 @@ function App(props) {
         health: (await readContracts.Game.health(players[p])).toNumber(),
         position: await readContracts.Game.yourPosition(players[p]),
         contract: await readContracts.Game.yourContract(players[p]),
+        gold: await readContracts.GLDToken.balanceOf(players[p]),
       }
     }
     console.log("final player info",playerInfo)
@@ -249,6 +253,26 @@ function App(props) {
     let worldUpdate = []
     for( let y=0;y<height;y++){
       for(let x=0;x<width;x++){
+
+        let goldHere = 0
+        let healthHere = 0
+        for(let d in drops){
+          if(drops[d].x == x && drops[d].y==y){
+            goldHere+=drops[d].gold
+            healthHere+=drops[d].health
+          }
+        }
+
+        let fieldDisplay = ""
+
+        if(goldHere>0){
+          fieldDisplay += "🏵"
+        }
+
+        if(healthHere>0){
+          fieldDisplay += "❤️"
+        }
+
         //look for players here...
         let playerDisplay = ""
         for(let p in players){
@@ -263,7 +287,10 @@ function App(props) {
         }
         worldUpdate.push(
           <div style={{width:squareW,height:squareH,border:'1px solid #66666',position:"absolute",left:squareW*x,top:squareH*y}}>
-            { playerDisplay ? playerDisplay : ""+x+","+y }
+            <div style={{position:"realative"}}>
+              { playerDisplay ? playerDisplay : ""+x+","+y }
+              <div style={{opacity:0.7,position:"absolute",left:squareW/2-10,top:0}}>{ fieldDisplay }</div>
+            </div>
           </div>
         )
       }
