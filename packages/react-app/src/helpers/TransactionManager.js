@@ -169,7 +169,7 @@ export class TransactionManager {
 
 		let transactionParams = {};
 
-		["type", "chainId", "nonce", "maxPriorityFeePerGas", "maxFeePerGas", "gasPrice", "gasLimit", "to", "value", "data"].forEach(param => {
+		["type", "chainId", "nonce", "maxPriorityFeePerGas", "maxFeePerGas", "gasPrice", "gasLimit", "from", "to", "value", "data"].forEach(param => {
 			this.addTransactionParamIfExists(transactionParams, param, transactionResponse[param]);
 		})
 		
