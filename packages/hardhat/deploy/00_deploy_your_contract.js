@@ -104,8 +104,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     "0x6168499c0cFfCaCD319c818142124B7A15E857ab"
   );
 
-  await VRFCoordinatorV2.addConsumer(subscriptionId, gameContract.address);
-  await VRFCoordinatorV2.addConsumer(subscriptionId, keeperContract.address);
+  //await VRFCoordinatorV2.addConsumer(subscriptionId, gameContract.address);
+  //await VRFCoordinatorV2.addConsumer(subscriptionId, keeperContract.address);
 
   await GameContract.transferOwnership(
     "0x34aA3F359A9D614239015126635CE7732c18fDF3"

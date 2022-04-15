@@ -1,5 +1,5 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.0;
+pragma solidity ^0.8.6;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./GoldToken.sol";
@@ -282,7 +282,7 @@ function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) pu
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
-    
+
     }
 
 }
