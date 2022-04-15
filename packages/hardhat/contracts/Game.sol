@@ -121,18 +121,17 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     }
 
     function randomlyPlace() internal {
-
         bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, tx.origin, address(this) ));
 
         uint8 index = 0;
-        uint8 x  = uint8(predictableRandom[index++]);
-        uint8 y  = uint8(predictableRandom[index++]);
+        uint8 x  = uint8(predictableRandom[index++])%width;
+        uint8 y  = uint8(predictableRandom[index++])%height;
 
         Field memory field = worldMatrix[x][y];
 
         while(field.player != address(0)){
-            x  = uint8(predictableRandom[index++]);
-            y  = uint8(predictableRandom[index++]);
+            x  = uint8(predictableRandom[index++])%width;
+            y  = uint8(predictableRandom[index++])%height;
             field = worldMatrix[x][y];
         }
 
