@@ -49,8 +49,8 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     uint32 immutable numWords;
 
 
-    uint8 public constant width = 10;
-    uint8 public constant height = 10;
+    uint8 public constant width = 25;
+    uint8 public constant height = 25;
     Field[width][height] public worldMatrix;
 
     mapping(address => address) public yourContract;
@@ -108,16 +108,13 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
 
         yourContract[tx.origin] = msg.sender;
-        health[tx.origin] = 5000;
-        // ADD RANDOM SPOT HERE
-        // yourPosition[tx.origin] =
+        health[tx.origin] = 500;
         uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
         requestIds[requestId] = tx.origin;
 
         randomlyPlace();
 
         emit Register(tx.origin, msg.sender, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
-        emit Move(tx.origin, yourPosition[tx.origin].x, yourPosition[tx.origin].y);
     }
 
     function randomlyPlace() internal {
@@ -190,12 +187,13 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
-    function move(MoveDirection direction) public {
+    function move(MoveDirection direction, uint8 numberOfSteps) public {
         require(health[tx.origin] > 0, "YOU DED");
-        (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
+        (uint8 x, uint8 y) = getCoordinates(direction, tx.origin, numberOfSteps);
         require(x <= width && y <= height, "OUT OF BOUNDS");
 
         Field memory field = worldMatrix[x][y];
+        health[tx.origin] -= (numberOfSteps - 1) * 5;
 
         if(field.player == address(0)) {
             // empty field
@@ -230,7 +228,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
-    function getCoordinates(MoveDirection direction, address txOrigin) internal view returns(uint8 x, uint8 y) {
+    function getCoordinates(MoveDirection direction, address txOrigin, uint8 numberOfSteps) internal view returns(uint8 x, uint8 y) {
         //       x ----->
         //      _______________
         //  y  |____|____|_____
@@ -240,26 +238,26 @@ contract Game is VRFConsumerBaseV2, Ownable  {
 
         if (direction == MoveDirection.Up) {
             x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y - 1;
+            y = yourPosition[txOrigin].y - numberOfSteps;
         }
 
         if (direction == MoveDirection.Down) {
             x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y + 1;
+            y = yourPosition[txOrigin].y + numberOfSteps;
         }
 
         if (direction == MoveDirection.Left) {
-            x = yourPosition[txOrigin].x - 1;
+            x = yourPosition[txOrigin].x - numberOfSteps;
             y = yourPosition[txOrigin].y;
         }
 
         if (direction == MoveDirection.Right) {
-            x = yourPosition[txOrigin].x + 1;
+            x = yourPosition[txOrigin].x + numberOfSteps;
             y = yourPosition[txOrigin].y;
         }
     }
 
-    function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) public {
+function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) public {
         require(msg.sender == keeper, "ONLY KEEPER CAN CALL");
 
         uint8 x;
@@ -284,6 +282,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
+    
     }
 
 }

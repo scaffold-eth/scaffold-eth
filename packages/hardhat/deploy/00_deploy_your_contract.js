@@ -62,14 +62,16 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     `Attempting to deploy NFTAvatar.sol to network number ${chainId} from ${deployer.address}`
   );
 
-  console.log("deploying nftAvatar with game contract",gameContract.address)
+  console.log("deploying nftAvatar with game contract", gameContract.address);
 
   const nftAvatarContract = await deploy("NFTAvatar", {
     from: deployer,
     args: [gameContract.address],
     log: true,
     waitConfirmations: waitConfirmations,
-    gasPrice: 3000000000, gasLimit: 4000000});
+    gasPrice: 3000000000,
+    gasLimit: 4000000,
+  });
 
   console.log(`NFT Avatar contract deployed to ${nftAvatarContract.address}`);
 
@@ -86,7 +88,8 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     args: [updateInterval, gameContract.address, subscriptionId],
     log: true,
     waitConfirmations: waitConfirmations,
-    gasPrice: 4000000000, gasLimit: 2000000
+    gasPrice: 4000000000,
+    gasLimit: 2000000,
   });
 
   console.log(`Keeper contract deployed to ${keeperContract.address}`);
@@ -96,13 +99,21 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   await GameContract.setKeeper(keeperContract.address);
 
+  const VRFCoordinatorV2 = await ethers.getContractAt(
+    "VRFCoordinatorV2",
+    "0x6168499c0cFfCaCD319c818142124B7A15E857ab"
+  );
 
+  await VRFCoordinatorV2.addConsumer(subscriptionId, gameContract.address);
+  await VRFCoordinatorV2.addConsumer(subscriptionId, keeperContract.address);
 
-  await GameContract.transferOwnership("0x34aA3F359A9D614239015126635CE7732c18fDF3");
+  await GameContract.transferOwnership(
+    "0x34aA3F359A9D614239015126635CE7732c18fDF3"
+  );
   await GameContract.setKeeper("0x34aA3F359A9D614239015126635CE7732c18fDF3");
-  
+
   //await GameContract.start();
-/*
+  /*
   try {
     await run("verify:verify", {
       address: gameContract.address,
@@ -133,7 +144,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     });
   } catch (error) {
     console.error(error);
-  }*/
+  }
 
   // Getting a previously deployed contract
   // const YourContract = await ethers.getContract("YourContract", deployer);
