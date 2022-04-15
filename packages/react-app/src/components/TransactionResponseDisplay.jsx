@@ -34,11 +34,26 @@ export default function TransactionResponseDisplay({transactionResponse, transac
 
   const getTransactionPopoverContent = () => {
     return (
-      <div>
+      <div style={{ margin: "1em"}}>
+        {isCancelTransaction(transactionResponse) && <p style={{ marginBottom: "2em"}}><b>The original transaciton was replaced by a cancel transaction - sending 0 to yourself </b></p>}
         <p><b>From:</b> {transactionResponse.from}</p>
         <p><b>To:</b> {transactionResponse.to}</p>
         <p><b>Value:</b> {ethers.utils.formatEther(BigNumber.from(transactionResponse.value).toString())} Ξ</p>
         <p><b>Hash:</b> {transactionResponse.hash}</p>
+
+        {!isCancelTransaction(transactionResponse) && <Button 
+          style={{ margin: "auto", display: "flex"}}
+          onClick={async () => {
+            await handleSpeedUp(transactionResponse.nonce, 10, true);
+          }}
+          size="large"
+          shape="round"
+          loading={loading}
+          disabled={loading}
+         >
+          Cancel
+         </Button>
+        }
       </div>);
   }
 
@@ -50,13 +65,19 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     return gasPriceGwei.substring(0,5);
   }
 
-  const handleSpeedUp = async (nonce, speedUpPercentage) => {
+  const handleSpeedUp = async (nonce, speedUpPercentage, cancelTransaction = false) => {
     setLoading(true);
 
     let newTransactionResponse;
     try {
-      newTransactionResponse = await transactionManager.speedUpTransaction(transactionResponse.nonce, 10);
-      transactionManager.log("handleSpeedUp", newTransactionResponse, transactionResponse.hash);
+      if (cancelTransaction) {
+        newTransactionResponse = await transactionManager.cancelTransaction(transactionResponse.nonce);
+      }
+      else {
+        newTransactionResponse = await transactionManager.speedUpTransaction(transactionResponse.nonce, 10);
+      }
+
+      transactionManager.log("handleSpeedUp", newTransactionResponse, transactionResponse.hash);  
     }
     catch(error){
       transactionManager.log("speedUpTransaction failed, previous transactionHash was probably comfirmed in the meantime", transactionResponse.hash, error);
@@ -72,6 +93,17 @@ export default function TransactionResponseDisplay({transactionResponse, transac
     }
   }
 
+  const isCancelTransaction = (transactionResponse) => {
+    if ((transactionResponse?.from == transactionResponse?.to) &&
+        (transactionResponse?.value == "0x") || BigNumber.from("0x0").eq(transactionResponse?.value)) {
+
+      return true;
+    }
+    else {
+      return false;
+    }
+  }
+
   return  (
     <div style={{ padding: 16 }}>
       {(confirmations == 0) &&     
@@ -80,7 +112,9 @@ export default function TransactionResponseDisplay({transactionResponse, transac
           <div>
             <Popover placement="right" content={getTransactionPopoverContent()} trigger="click">
               <Button style={{ padding: 0 }}type="link" >Transaction</Button>
-            </Popover><b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>
+            </Popover>
+            <b> {transactionResponse.nonce} </b> is pending, <b> gasPrice: {getGasPriceGwei()} </b>
+            
           </div>
         
         <Button 
@@ -93,7 +127,8 @@ export default function TransactionResponseDisplay({transactionResponse, transac
           loading={loading}
           disabled={loading}
          >
-          Speed Up 10% 
+          Speed Up {isCancelTransaction(transactionResponse) && <b> (Cancel) </b>} 10% 
+
          </Button>
         </div>
      }

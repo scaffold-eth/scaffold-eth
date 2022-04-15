@@ -111,16 +111,38 @@ export class TransactionManager {
 
 		return !(confirmations > 0);
 	}
+
+	cancelTransaction(nonce) {
+		let transactionParams = this.getSpeedUpTransactionParams(nonce, 10);
+
+		transactionParams.to = transactionParams.from;
+		transactionParams.data = "0x";
+		transactionParams.value = "0x";
+		this.log("transactionParams", transactionParams);
+
+		return this.signer.sendTransaction(transactionParams);
+	}
 	
 	speedUpTransaction(nonce, speedUpPercentage) {
 		if (!speedUpPercentage) {
 			speedUpPercentage = 10;
 		}
 
+		let transactionParams = this.getSpeedUpTransactionParams(nonce, speedUpPercentage);
+		this.log("transactionParams", transactionParams);
+
+		if (!transactionParams) {
+			return;
+		}
+
+		return this.signer.sendTransaction(transactionParams);
+	}
+
+	getSpeedUpTransactionParams(nonce, speedUpPercentage) {
 		let transactionResponse = this.getTransactionResponse(nonce);
 
 		if (!transactionResponse) {
-			return;
+			return undefined;
 		}
 
 		let transactionParams = this.getTransactionParams(transactionResponse);
@@ -137,9 +159,7 @@ export class TransactionManager {
 			transactionParams.maxFeePerGas = this.getUpdatedGasPrice(transactionParams.maxFeePerGas, speedUpPercentage);
 		}
 
-		this.log("transactionParams", transactionParams);
-
-		return this.signer.sendTransaction(transactionParams);
+		return transactionParams;
 	}
 
 	getTransactionParams(transactionResponse) {
@@ -149,7 +169,7 @@ export class TransactionManager {
 
 		let transactionParams = {};
 
-		["type", "chainId", "nonce", "maxPriorityFeePerGas", "maxFeePerGas", "gasPrice", "gasLimit", "to", "value", "data"].forEach(param => {
+		["type", "chainId", "nonce", "maxPriorityFeePerGas", "maxFeePerGas", "gasPrice", "gasLimit", "from", "to", "value", "data"].forEach(param => {
 			this.addTransactionParamIfExists(transactionParams, param, transactionResponse[param]);
 		})
 		
