@@ -7,6 +7,7 @@ import {
   useGasPrice,
   useOnBlock,
   useUserProviderAndSigner,
+  useBlockNumber
 } from "eth-hooks";
 import { useEventListener } from "eth-hooks/events/useEventListener";
 import { useExchangeEthPrice } from "eth-hooks/dapps/dex";
@@ -24,6 +25,7 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  Blockie
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -167,17 +169,110 @@ function App(props) {
     "0x34aA3F359A9D614239015126635CE7732c18fDF3",
   ]);
 
+  const blockNumber = useBlockNumber(localProvider);
+
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  //const purpose = useContractReader(readContracts, "YourContract", "purpose");
+
+  const width = useContractReader(readContracts, "Game", "width");
+  const height = useContractReader(readContracts, "Game", "height");
 
   const registerEvents = useEventListener(readContracts, "Game", "Register", localProvider, 1);
 
+  //event NewDrop(bool isHealth, uint256 amount, uint256 x, uint256 y);
+  const dropEvents = useEventListener(readContracts, "Game", "NewDrop", localProvider, 1);
+
+  const [drops, setDrops] = useState();
 
   useEffect(()=>{
+    console.log("parsing dropEvents",dropEvents)
+    let allDrops = []
+    for(let e in dropEvents){
+      console.log("SAVE DROP",dropEvents[e])
+      allDrops.push({
+        health: dropEvents[e].args.isHealth,
+        x: dropEvents[e].args.x.toNumber(),
+        y: dropEvents[e].args.y.toNumber(),
+        amount: dropEvents[e].args.amount.toNumber(),
+      })
+    }
+    console.log("save allDrops",allDrops)
+  },[dropEvents])
 
+  console.log("registerEvents",registerEvents)
+
+  const [players, setPlayers] = useState();
+
+  useEffect(()=>{
+    console.log("parsing registerEvents",registerEvents)
+    let allPlayers = []
+    for(let e in registerEvents){
+      if(!allPlayers.includes(registerEvents[e].args.txOrigin)){
+        allPlayers.push(registerEvents[e].args.txOrigin)
+      }
+    }
+    console.log("allPlayers",allPlayers)
+    setPlayers(allPlayers)
   },[registerEvents])
 
   console.log("registerEvents",registerEvents)
+
+
+
+
+  const [playerData, setPlayerData] = useState();
+
+  useEffect(async ()=>{
+    console.log("PARSE PLAYERS:::",players)
+    let playerInfo = {}
+    for(let p in players){
+      console.log("loading info for ",players[p])
+      playerInfo[players[p]] = {
+        health: (await readContracts.Game.health(players[p])).toNumber(),
+        position: await readContracts.Game.yourPosition(players[p]),
+        contract: await readContracts.Game.yourContract(players[p]),
+      }
+    }
+    console.log("final player info",playerInfo)
+    setPlayerData(playerInfo)
+  },[players, blockNumber])
+
+
+  const s = 50
+  const squareW = s
+  const squareH = s
+
+  const [worldView, setWorldView] = useState();
+
+  useEffect(() => {
+    console.log("rendering world...")
+    let worldUpdate = []
+    for( let y=0;y<height;y++){
+      for(let x=0;x<width;x++){
+        //look for players here...
+        let playerDisplay = ""
+        for(let p in players){
+          //console.log("comparing ",players[p])
+          let thisPlayerData = playerData[players[p]]
+          //console.log("thisPlayerData",thisPlayerData)
+          if(thisPlayerData && thisPlayerData.position.x==x && thisPlayerData.position.y==y){
+            playerDisplay = (
+              <Blockie address={players[p]} size={8} scale={3} />
+            )
+          }
+        }
+        worldUpdate.push(
+          <div style={{width:squareW,height:squareH,border:'1px solid #66666',position:"absolute",left:squareW*x,top:squareH*y}}>
+            { playerDisplay ? playerDisplay : ""+x+","+y }
+          </div>
+        )
+      }
+    }
+    setWorldView(worldUpdate)
+  }, [playerData]);
+
+
+
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
   console.log("🏷 Resolved austingriffith.eth as:",addressFromENS)
@@ -253,10 +348,17 @@ function App(props) {
 
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
+
+
+
+
+
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
+      <div>{ blockNumber ? "block: "+blockNumber :"loading blocknumber..."}</div>
+      <div>{ width ? width : "..."}x{ height ? height : "..."}</div>
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
@@ -288,6 +390,13 @@ function App(props) {
 
       <Switch>
         <Route exact path="/">
+
+          { players ? <pre>{JSON.stringify(players)}</pre> : "loading players..."}
+
+          <div style={{width:width*squareW,height:height*squareH,margin:"auto",border:"2px solid #333333",position:"relative"}}>
+            {worldView}
+          </div>
+
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
           <Home yourLocalBalance={yourLocalBalance} readContracts={readContracts} />
         </Route>
@@ -327,7 +436,7 @@ function App(props) {
             tx={tx}
             writeContracts={writeContracts}
             readContracts={readContracts}
-            purpose={purpose}
+            purpose={false}
           />
         </Route>
         <Route path="/mainnetdai">

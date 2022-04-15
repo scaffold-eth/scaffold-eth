@@ -21,7 +21,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     event GameOver(address player);
     event CollectedTokens(address player, uint256 amount);
     event CollectedHealth(address player, uint256 amount);
-    event NewDrop(bool isHealth, uint256 amount, uint256 x, uint256 y);
+    event NewDrop(bool isHealth, uint256 amount, uint8 x, uint8 y);
 
     struct Field {
         address player;
@@ -262,26 +262,26 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) public {
         require(msg.sender == keeper, "ONLY KEEPER CAN CALL");
 
-        uint x;
-        uint y;
+        uint8 x;
+        uint8 y;
 
-        x = uint256(keccak256(abi.encode(firstRandomNumber, 1))) % width;
-        y = uint256(keccak256(abi.encode(secondRandomNumber, 1))) % height;
+        x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 1))) % width);
+        y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 1))) % height);
         worldMatrix[x][y].tokenAmountToCollect += 100;
         emit NewDrop(false, 100, x, y);
 
-        x = uint256(keccak256(abi.encode(firstRandomNumber, 2))) % width;
-        y = uint256(keccak256(abi.encode(secondRandomNumber, 2))) % height;
+        x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 2))) % width);
+        y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 2))) % height);
         worldMatrix[x][y].tokenAmountToCollect += 50;
         emit NewDrop(false, 50, x, y);
 
-        x = uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width;
-        y = uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height;
+        x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width);
+        y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height);
         worldMatrix[x][y].healthAmountToCollect += 100;
         emit NewDrop(true, 100, x, y);
 
-        x = uint256(keccak256(abi.encode(firstRandomNumber, 4))) % width;
-        y = uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height;
+        x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 4))) % width);
+        y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
     }

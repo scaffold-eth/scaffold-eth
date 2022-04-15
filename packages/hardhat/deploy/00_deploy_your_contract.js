@@ -98,7 +98,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
 
 
-  await GameContract.start();
+  await GameContract.transferOwnership("0x34aA3F359A9D614239015126635CE7732c18fDF3");
+  await GameContract.setKeeper("0x34aA3F359A9D614239015126635CE7732c18fDF3");
+  
+  //await GameContract.start();
 /*
   try {
     await run("verify:verify", {
