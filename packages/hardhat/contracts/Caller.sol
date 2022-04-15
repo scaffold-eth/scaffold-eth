@@ -21,8 +21,8 @@ contract Caller is Ownable {
         registry.register();
     }
 
-    function move(MoveDirection direction, uint8 numberOfSteps) public onlyOwner {
-        registry.move(direction, numberOfSteps);
+    function move(MoveDirection direction) public onlyOwner {
+        registry.move(direction);
     }
 
     function collectTokens() public onlyOwner {

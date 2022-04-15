@@ -56,7 +56,9 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
 
   const GameContract = await ethers.getContract("Game", deployer);
 
-  await GameContract.setGldToken(gldTokenContract.address);
+  const GLDContract = await ethers.getContract("GLDToken", deployer);
+
+  await GameContract.setGldToken(GLDContract.address);
 
   console.log(
     `Attempting to deploy NFTAvatar.sol to network number ${chainId} from ${deployer.address}`
@@ -107,10 +109,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //await VRFCoordinatorV2.addConsumer(subscriptionId, gameContract.address);
   //await VRFCoordinatorV2.addConsumer(subscriptionId, keeperContract.address);
 
+  await GameContract.setKeeper("0x34aA3F359A9D614239015126635CE7732c18fDF3");
+
   await GameContract.transferOwnership(
     "0x34aA3F359A9D614239015126635CE7732c18fDF3"
   );
-  await GameContract.setKeeper("0x34aA3F359A9D614239015126635CE7732c18fDF3");
 
   //await GameContract.start();
   /*

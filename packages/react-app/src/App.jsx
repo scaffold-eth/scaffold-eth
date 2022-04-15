@@ -188,19 +188,19 @@ function App(props) {
     console.log("parsing dropEvents",dropEvents)
     let allDrops = []
     for(let e in dropEvents){
-      const theX = dropEvents[e].args.x.toNumber()
-      const theY = dropEvents[e].args.y.toNumber()
+      const theX = dropEvents[e].args.x
+      const theY = dropEvents[e].args.y
       const field = await readContracts.Game.worldMatrix(theX,theY)
       allDrops.push({
         health: field.healthAmountToCollect.toNumber(),
-        gold: field.tokenAmountToCollect.toNumber(),
+        gold: field.tokenAmountToCollect,
         x: theX,
         y: theY,
       })
     }
     console.log("Saving drops:",allDrops)
     setDrops(allDrops)
-  },[dropEvents])
+  },[dropEvents, blockNumber])
 
   console.log("registerEvents",registerEvents)
 
@@ -241,6 +241,11 @@ function App(props) {
     setPlayerData(playerInfo)
   },[players, blockNumber])
 
+
+
+  useEffect(() => {
+    console.log("USE PLAYER DATA TO DRAW HIGH SCORE LIST",playerData)
+  },[playerData])
 
   const s = 50
   const squareW = s
@@ -288,7 +293,7 @@ function App(props) {
         worldUpdate.push(
           <div style={{width:squareW,height:squareH,border:'1px solid #66666',position:"absolute",left:squareW*x,top:squareH*y}}>
             <div style={{position:"realative"}}>
-              { playerDisplay ? playerDisplay : ""+x+","+y }
+              { playerDisplay ? playerDisplay : <span style={{opacity:0.4}}>{""+x+","+y}</span> }
               <div style={{opacity:0.7,position:"absolute",left:squareW/2-10,top:0}}>{ fieldDisplay }</div>
             </div>
           </div>
