@@ -29,7 +29,7 @@ contract Keeper is KeeperCompatibleInterface, Ownable, VRFConsumerBaseV2 {
       // params for Rinkeby
       coordinator = VRFCoordinatorV2Interface(vrfCoordinator);
       keyHash = 0xd89b2bf150e3b9e13446986e571fb9cab24b13cea0a43ea20a6049a85cc807cc;
-      callbackGasLimit = 100000;
+      callbackGasLimit = 1000000;
       requestConfirmations = 3;
       numWords = 2;
     }
@@ -39,7 +39,7 @@ contract Keeper is KeeperCompatibleInterface, Ownable, VRFConsumerBaseV2 {
     }
 
     function checkUpkeep(bytes calldata /* checkData */) external view override returns (bool upkeepNeeded, bytes memory /* performData */) {
-        upkeepNeeded = (block.timestamp - lastTimeStamp) > interval;
+        upkeepNeeded = ((block.timestamp - lastTimeStamp) > interval) && gameContract.gameOn();
     }
 
     function performUpkeep(bytes calldata /* performData */) external override {
