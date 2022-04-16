@@ -200,8 +200,6 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         attritionDivider = newDivider;
     }
 
-    
-
 
     function move(MoveDirection direction) public {
         require(health[tx.origin] > 0, "YOU DED");

@@ -60,7 +60,7 @@ const { ethers } = require("ethers");
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
@@ -199,11 +199,11 @@ function App(props) {
         y: theY,
       })
     }
-    console.log("Saving drops:",allDrops)
+    //console.log("Saving drops:",allDrops)
     setDrops(allDrops)
   },[dropEvents, blockNumber])
 
-  console.log("registerEvents",registerEvents)
+  //console.log("registerEvents",registerEvents)
 
   const [players, setPlayers] = useState();
   const [activePlayer, setActivePlayer] = useState();
@@ -220,13 +220,11 @@ function App(props) {
         }
       }
     }
-    console.log("ACTIVE:",setActivePlayer)
+    //console.log("ACTIVE:",setActivePlayer)
     setActivePlayer(active)
-    console.log("allPlayers",allPlayers)
+    //console.log("allPlayers",allPlayers)
     setPlayers(allPlayers)
   },[registerEvents])
-
-  console.log("registerEvents",registerEvents)
 
 
 
@@ -249,11 +247,52 @@ function App(props) {
     setPlayerData(playerInfo)
   },[players, blockNumber])
 
-
+  const [highScores, setHighScores] = useState();
 
   useEffect(() => {
-    console.log("USE PLAYER DATA TO DRAW HIGH SCORE LIST",playerData)
+    //console.log("USE PLAYER DATA TO DRAW HIGH SCORE LIST::",playerData)
+
+    let playersSorted = []
+
+    console.log("players",players)
+
+    for(let p in players){
+      if(playerData[players[p]]){
+      //  console.log("player",playerData[players[p]])
+        playersSorted.push({
+          address: players[p],
+          health: playerData[players[p]].health,
+          gold: playerData[players[p]].gold
+        })
+      }
+    }
+
+    //console.log("players",playersSorted)
+    playersSorted.sort((a, b) => {
+      if(a.health <= b.health) return 1
+      else return -1
+    })
+    playersSorted.sort((a, b) => {
+      if(a.gold.lte(b.gold)) return 1
+      else return -1
+    })
+    //console.log("sorted?",playersSorted)
+    setHighScores(playersSorted)
   },[playerData])
+
+
+  const highScoreDisplay = []
+  for(let i in highScores){
+    //console.log("HIGH",highScores[i])
+    highScoreDisplay.push(
+      <div>
+        <Address value={highScores[i].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
+        <span style={{margin:16}}>{ethers.utils.formatEther(highScores[i].gold)}🏵</span>
+        <span style={{margin:16,opacity:0.77}}>{highScores[i].health}❤️</span>
+
+      </div>
+    )
+  }
 
   const s = 64
   const squareW = s
@@ -419,6 +458,17 @@ function App(props) {
             const result = tx(writeContracts.Game.move(3))
           }}>RIGHT (3)</Button>
       </div>
+
+      <div style={{padding:8}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.collectHealth())
+          }}>Collect Health</Button>
+      </div>
+      <div style={{padding:8}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.collectTokens())
+          }}>Collect Gold</Button>
+      </div>
       </div>
     )
   }else{
@@ -434,14 +484,24 @@ function App(props) {
     )
   }
 
+  let extraDisplay
+  if(DEBUG){
+    extraDisplay = (
+      <div>
+      <div>{ blockNumber ? "block: "+blockNumber :"loading blocknumber..."}</div>
+      <div>{ width ? width : "..."}x{ height ? height : "..."}</div>
+      { highScores ? <pre>{JSON.stringify(highScores)}</pre> : "loading highScores..."}
+
+      </div>
+    )
+  }
 
 
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
-      <div>{ blockNumber ? "block: "+blockNumber :"loading blocknumber..."}</div>
-      <div>{ width ? width : "..."}x{ height ? height : "..."}</div>
+      {extraDisplay}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
@@ -450,37 +510,31 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <div style={{position:"absolute",left:"20%",top:"30%"}}>
-        <Address value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-
-
-        {playerButtons}
+      <div style={{position:"absolute",left:"5%",top:"40%"}}>
+        <div style={{padding:4,}}>
+          <Address fontSize={48} value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+        </div>
+        <div style={{paddingBottom:16,fontSize:32,marginBottom:16,borderBottom:"1px solid #555555"}}>
+          #{blockNumber}
+        </div>
+        {highScoreDisplay}
+      </div>
+      <div style={{position:"absolute",right:"5%",top:"30%"}}>
+              {playerButtons}
       </div>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+          <Link to="/debug">Contracts</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
+
       </Menu>
 
       <Switch>
         <Route exact path="/">
 
-          { players ? <pre>{JSON.stringify(players)}</pre> : "loading players..."}
 
           <div style={{transform: "scale(1,0.4)"}}>
             <div style={{transform:"rotate(-45deg)",color:"#111111",fontWeight:"bold",width:width*squareW,height:height*squareH,margin:"auto",position:"relative"}}>
