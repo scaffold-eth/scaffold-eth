@@ -49,8 +49,8 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     uint32 immutable numWords;
 
 
-    uint8 public constant width = 25;
-    uint8 public constant height = 25;
+    uint8 public constant width = 24;
+    uint8 public constant height = 24;
     Field[width][height] public worldMatrix;
 
     mapping(address => address) public yourContract;
@@ -102,6 +102,9 @@ contract Game is VRFConsumerBaseV2, Ownable  {
       yourContract[tx.origin] = newContract;
     }
 
+
+
+
     function register() public {
         require(gameOn, "TOO LATE");
         require(tx.origin != msg.sender, "NOT A CONTRACT");
@@ -109,8 +112,8 @@ contract Game is VRFConsumerBaseV2, Ownable  {
 
         yourContract[tx.origin] = msg.sender;
         health[tx.origin] = 500;
-        uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
-        requestIds[requestId] = tx.origin;
+        //uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
+        //requestIds[requestId] = tx.origin;
 
         randomlyPlace();
 
@@ -187,6 +190,11 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
+    uint8 public attritionDivider = 50;
+
+    function setAttritionDivider(uint8 newDivider) public onlyOwner {
+        attritionDivider = newDivider;
+    }
 
     function move(MoveDirection direction) public {
         require(health[tx.origin] > 0, "YOU DED");
@@ -197,7 +205,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
 
         bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this)));
 
-        health[tx.origin] -= uint8(predictableRandom[0])/25;
+        health[tx.origin] -= uint8(predictableRandom[0])/attritionDivider;
 
         if(field.player == address(0)) {
             // empty field

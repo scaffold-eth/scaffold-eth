@@ -25,7 +25,8 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  Blockie
+  Blockie,
+  Address
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -247,7 +248,7 @@ function App(props) {
     console.log("USE PLAYER DATA TO DRAW HIGH SCORE LIST",playerData)
   },[playerData])
 
-  const s = 50
+  const s = 64
   const squareW = s
   const squareH = s
 
@@ -257,7 +258,7 @@ function App(props) {
     console.log("rendering world...")
     let worldUpdate = []
     for( let y=0;y<height;y++){
-      for(let x=0;x<width;x++){
+      for(let x=width-1;x>=0;x--){
 
         let goldHere = 0
         let healthHere = 0
@@ -271,11 +272,11 @@ function App(props) {
         let fieldDisplay = ""
 
         if(goldHere>0){
-          fieldDisplay += "🏵"
+          fieldDisplay = <img src="Gold_Full.svg" style={{transform:"rotate(45deg) scale(1,3)",width:60,height:60,marginLeft:15,marginTop:-45}} />
         }
 
         if(healthHere>0){
-          fieldDisplay += "❤️"
+          fieldDisplay = <img src="Health_Full.svg" style={{transform:"rotate(45deg) scale(1,3)",width:60,height:60,marginLeft:15,marginTop:-45}} />
         }
 
         //look for players here...
@@ -286,13 +287,16 @@ function App(props) {
           //console.log("thisPlayerData",thisPlayerData)
           if(thisPlayerData && thisPlayerData.position.x==x && thisPlayerData.position.y==y){
             playerDisplay = (
-              <Blockie address={players[p]} size={8} scale={3} />
+              <div style={{position:"relative"}}>
+                <Blockie address={players[p]} size={8} scale={7.5} />
+                <img src="Warrior_1.svg" style={{transform:"rotate(45deg) scale(1,3)",width:170,height:170,marginLeft:90,marginTop:-400}} />
+              </div>
             )
           }
         }
         worldUpdate.push(
-          <div style={{width:squareW,height:squareH,border:'1px solid #66666',position:"absolute",left:squareW*x,top:squareH*y}}>
-            <div style={{position:"realative"}}>
+          <div style={{width:squareW,height:squareH,padding:1,position:"absolute",left:squareW*x,top:squareH*y}}>
+            <div style={{position:"realative",height:"100%",background:(x+y)%2?"#BBBBBB":"#EEEEEE"}}>
               { playerDisplay ? playerDisplay : <span style={{opacity:0.4}}>{""+x+","+y}</span> }
               <div style={{opacity:0.7,position:"absolute",left:squareW/2-10,top:0}}>{ fieldDisplay }</div>
             </div>
@@ -399,6 +403,9 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
+      <div style={{position:"absolute",left:"20%",top:"30%"}}>
+        <Address value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+      </div>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
@@ -425,8 +432,10 @@ function App(props) {
 
           { players ? <pre>{JSON.stringify(players)}</pre> : "loading players..."}
 
-          <div style={{width:width*squareW,height:height*squareH,margin:"auto",border:"2px solid #333333",position:"relative"}}>
-            {worldView}
+          <div style={{transform: "scale(1,0.4)"}}>
+            <div style={{transform:"rotate(-45deg)",color:"#111111",fontWeight:"bold",width:width*squareW,height:height*squareH,margin:"auto",position:"relative"}}>
+              {worldView}
+            </div>
           </div>
 
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
@@ -441,6 +450,15 @@ function App(props) {
 
           <Contract
             name="Game"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          <Contract
+            name="GLDToken"
             price={price}
             signer={userSigner}
             provider={localProvider}
