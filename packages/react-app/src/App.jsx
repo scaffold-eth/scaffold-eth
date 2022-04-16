@@ -57,7 +57,7 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -206,15 +206,22 @@ function App(props) {
   console.log("registerEvents",registerEvents)
 
   const [players, setPlayers] = useState();
+  const [activePlayer, setActivePlayer] = useState();
 
   useEffect(()=>{
     console.log("parsing registerEvents",registerEvents)
     let allPlayers = []
+    let active = false
     for(let e in registerEvents){
       if(!allPlayers.includes(registerEvents[e].args.txOrigin)){
         allPlayers.push(registerEvents[e].args.txOrigin)
+        if(registerEvents[e].args.txOrigin==address){
+          active=true;
+        }
       }
     }
+    console.log("ACTIVE:",setActivePlayer)
+    setActivePlayer(active)
     console.log("allPlayers",allPlayers)
     setPlayers(allPlayers)
   },[registerEvents])
@@ -385,7 +392,47 @@ function App(props) {
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
 
+  let playerButtons
+  if(activePlayer){
+    //show controls
+    playerButtons = (
+      <div>
+      <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
 
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(0))
+          }}>UP (0)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(1))
+          }}>DOWN (1)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(2))
+          }}>LEFT (2)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(3))
+          }}>RIGHT (3)</Button>
+      </div>
+      </div>
+    )
+  }else{
+    //register button
+    playerButtons = (
+      <div>
+        <div style={{padding:4}}>
+            <Button onClick={async ()=>{
+              const result = tx(writeContracts.Game.register())
+            }}>Register</Button>
+        </div>
+      </div>
+    )
+  }
 
 
 
@@ -405,6 +452,9 @@ function App(props) {
       />
       <div style={{position:"absolute",left:"20%",top:"30%"}}>
         <Address value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+
+
+        {playerButtons}
       </div>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
@@ -522,6 +572,8 @@ function App(props) {
       </Switch>
 
       <ThemeSwitch />
+
+
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>

@@ -103,11 +103,15 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     }
 
 
+    bool public requireContract = false;
 
+    function setRequireContract(bool newValue) public onlyOwner {
+        requireContract = newValue;
+    }
 
     function register() public {
         require(gameOn, "TOO LATE");
-        require(tx.origin != msg.sender, "NOT A CONTRACT");
+        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
         require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
 
         yourContract[tx.origin] = msg.sender;
@@ -196,8 +200,12 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         attritionDivider = newDivider;
     }
 
+    
+
+
     function move(MoveDirection direction) public {
         require(health[tx.origin] > 0, "YOU DED");
+        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
         (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
         require(x <= width && y <= height, "OUT OF BOUNDS");
 
