@@ -232,7 +232,15 @@ function App(props) {
   const connectWallet = (sessionDetails)=>{
     console.log(" 📡 Connecting to Wallet Connect....",sessionDetails)
 
-    const connector = new WalletConnect(sessionDetails);
+    let connector;
+    try {
+      connector = new WalletConnect(sessionDetails);
+    }
+    catch(error) {
+      console.error("Coudn't connect to", sessionDetails, error);
+      localStorage.removeItem("walletConnectUrl");
+      return;
+    }
 
     setWallectConnectConnector(connector)
 
