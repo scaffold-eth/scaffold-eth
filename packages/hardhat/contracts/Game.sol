@@ -49,8 +49,8 @@ contract Game is VRFConsumerBaseV2, Ownable  {
     uint32 immutable numWords;
 
 
-    uint8 public constant width = 25;
-    uint8 public constant height = 25;
+    uint8 public constant width = 24;
+    uint8 public constant height = 24;
     Field[width][height] public worldMatrix;
 
     mapping(address => address) public yourContract;
@@ -102,15 +102,22 @@ contract Game is VRFConsumerBaseV2, Ownable  {
       yourContract[tx.origin] = newContract;
     }
 
+
+    bool public requireContract = false;
+
+    function setRequireContract(bool newValue) public onlyOwner {
+        requireContract = newValue;
+    }
+
     function register() public {
         require(gameOn, "TOO LATE");
-        require(tx.origin != msg.sender, "NOT A CONTRACT");
+        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
         require(yourContract[tx.origin] == address(0), "NO MORE PLZ");
 
         yourContract[tx.origin] = msg.sender;
         health[tx.origin] = 500;
-        uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
-        requestIds[requestId] = tx.origin;
+        //uint256 requestId = coordinator.requestRandomWords(keyHash, subscriptionId, requestConfirmations, callbackGasLimit, numWords);
+        //requestIds[requestId] = tx.origin;
 
         randomlyPlace();
 
@@ -187,13 +194,24 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
-    function move(MoveDirection direction, uint8 numberOfSteps) public {
+    uint8 public attritionDivider = 50;
+
+    function setAttritionDivider(uint8 newDivider) public onlyOwner {
+        attritionDivider = newDivider;
+    }
+
+
+    function move(MoveDirection direction) public {
         require(health[tx.origin] > 0, "YOU DED");
-        (uint8 x, uint8 y) = getCoordinates(direction, tx.origin, numberOfSteps);
+        if(requireContract) require(tx.origin != msg.sender, "NOT A CONTRACT");
+        (uint8 x, uint8 y) = getCoordinates(direction, tx.origin);
         require(x <= width && y <= height, "OUT OF BOUNDS");
 
         Field memory field = worldMatrix[x][y];
-        health[tx.origin] -= (numberOfSteps - 1) * 5;
+
+        bytes32 predictableRandom = keccak256(abi.encodePacked( blockhash(block.number-1), msg.sender, address(this)));
+
+        health[tx.origin] -= uint8(predictableRandom[0])/attritionDivider;
 
         if(field.player == address(0)) {
             // empty field
@@ -228,7 +246,7 @@ contract Game is VRFConsumerBaseV2, Ownable  {
         }
     }
 
-    function getCoordinates(MoveDirection direction, address txOrigin, uint8 numberOfSteps) internal view returns(uint8 x, uint8 y) {
+    function getCoordinates(MoveDirection direction, address txOrigin) internal view returns(uint8 x, uint8 y) {
         //       x ----->
         //      _______________
         //  y  |____|____|_____
@@ -238,21 +256,21 @@ contract Game is VRFConsumerBaseV2, Ownable  {
 
         if (direction == MoveDirection.Up) {
             x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y - numberOfSteps;
+            y = yourPosition[txOrigin].y - 1;
         }
 
         if (direction == MoveDirection.Down) {
             x = yourPosition[txOrigin].x;
-            y = yourPosition[txOrigin].y + numberOfSteps;
+            y = yourPosition[txOrigin].y + 1;
         }
 
         if (direction == MoveDirection.Left) {
-            x = yourPosition[txOrigin].x - numberOfSteps;
+            x = yourPosition[txOrigin].x - 1;
             y = yourPosition[txOrigin].y;
         }
 
         if (direction == MoveDirection.Right) {
-            x = yourPosition[txOrigin].x + numberOfSteps;
+            x = yourPosition[txOrigin].x + 1;
             y = yourPosition[txOrigin].y;
         }
     }
@@ -265,13 +283,13 @@ function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) pu
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 1))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 1))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 100;
-        emit NewDrop(false, 100, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 100 ether;
+        emit NewDrop(false, 100 ether, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 2))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 2))) % height);
-        worldMatrix[x][y].tokenAmountToCollect += 50;
-        emit NewDrop(false, 50, x, y);
+        worldMatrix[x][y].tokenAmountToCollect += 50 ether;
+        emit NewDrop(false, 50 ether, x, y);
 
         x = uint8(uint256(keccak256(abi.encode(firstRandomNumber, 3))) % width);
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 3))) % height);
@@ -282,7 +300,7 @@ function shufflePrizes(uint256 firstRandomNumber, uint256 secondRandomNumber) pu
         y = uint8(uint256(keccak256(abi.encode(secondRandomNumber, 4))) % height);
         worldMatrix[x][y].healthAmountToCollect += 50;
         emit NewDrop(true, 50, x, y);
-    
+
     }
 
 }

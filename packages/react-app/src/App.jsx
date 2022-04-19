@@ -25,7 +25,8 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
-  Blockie
+  Blockie,
+  Address
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
@@ -56,10 +57,10 @@ const { ethers } = require("ethers");
 */
 
 /// 📡 What chain are your contracts deployed to?
-const initialNetwork = NETWORKS.rinkeby; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
+const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
 
 // 😬 Sorry for all the console logging
-const DEBUG = true;
+const DEBUG = false;
 const NETWORKCHECK = true;
 const USE_BURNER_WALLET = true; // toggle burner wallet feature
 const USE_NETWORK_SELECTOR = false;
@@ -184,38 +185,46 @@ function App(props) {
 
   const [drops, setDrops] = useState();
 
-  useEffect(()=>{
+  useEffect(async ()=>{
     console.log("parsing dropEvents",dropEvents)
     let allDrops = []
     for(let e in dropEvents){
-      console.log("SAVE DROP",dropEvents[e])
+      const theX = dropEvents[e].args.x
+      const theY = dropEvents[e].args.y
+      const field = await readContracts.Game.worldMatrix(theX,theY)
       allDrops.push({
-        health: dropEvents[e].args.isHealth,
-        x: dropEvents[e].args.x.toNumber(),
-        y: dropEvents[e].args.y.toNumber(),
-        amount: dropEvents[e].args.amount.toNumber(),
+        health: field.healthAmountToCollect.toNumber(),
+        gold: field.tokenAmountToCollect,
+        x: theX,
+        y: theY,
       })
     }
-    console.log("save allDrops",allDrops)
-  },[dropEvents])
+    //console.log("Saving drops:",allDrops)
+    setDrops(allDrops)
+  },[dropEvents, blockNumber])
 
-  console.log("registerEvents",registerEvents)
+  //console.log("registerEvents",registerEvents)
 
   const [players, setPlayers] = useState();
+  const [activePlayer, setActivePlayer] = useState();
 
   useEffect(()=>{
     console.log("parsing registerEvents",registerEvents)
     let allPlayers = []
+    let active = false
     for(let e in registerEvents){
       if(!allPlayers.includes(registerEvents[e].args.txOrigin)){
         allPlayers.push(registerEvents[e].args.txOrigin)
+        if(registerEvents[e].args.txOrigin==address){
+          active=true;
+        }
       }
     }
-    console.log("allPlayers",allPlayers)
+    //console.log("ACTIVE:",setActivePlayer)
+    setActivePlayer(active)
+    //console.log("allPlayers",allPlayers)
     setPlayers(allPlayers)
   },[registerEvents])
-
-  console.log("registerEvents",registerEvents)
 
 
 
@@ -231,14 +240,61 @@ function App(props) {
         health: (await readContracts.Game.health(players[p])).toNumber(),
         position: await readContracts.Game.yourPosition(players[p]),
         contract: await readContracts.Game.yourContract(players[p]),
+        gold: await readContracts.GLDToken.balanceOf(players[p]),
       }
     }
     console.log("final player info",playerInfo)
     setPlayerData(playerInfo)
   },[players, blockNumber])
 
+  const [highScores, setHighScores] = useState();
 
-  const s = 50
+  useEffect(() => {
+    //console.log("USE PLAYER DATA TO DRAW HIGH SCORE LIST::",playerData)
+
+    let playersSorted = []
+
+    console.log("players",players)
+
+    for(let p in players){
+      if(playerData[players[p]]){
+      //  console.log("player",playerData[players[p]])
+        playersSorted.push({
+          address: players[p],
+          health: playerData[players[p]].health,
+          gold: playerData[players[p]].gold
+        })
+      }
+    }
+
+    //console.log("players",playersSorted)
+    playersSorted.sort((a, b) => {
+      if(a.health <= b.health) return 1
+      else return -1
+    })
+    playersSorted.sort((a, b) => {
+      if(a.gold.lte(b.gold)) return 1
+      else return -1
+    })
+    //console.log("sorted?",playersSorted)
+    setHighScores(playersSorted)
+  },[playerData])
+
+
+  const highScoreDisplay = []
+  for(let i in highScores){
+    //console.log("HIGH",highScores[i])
+    highScoreDisplay.push(
+      <div>
+        <Address value={highScores[i].address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
+        <span style={{margin:16}}>{ethers.utils.formatEther(highScores[i].gold)}🏵</span>
+        <span style={{margin:16,opacity:0.77}}>{highScores[i].health}❤️</span>
+
+      </div>
+    )
+  }
+
+  const s = 64
   const squareW = s
   const squareH = s
 
@@ -248,7 +304,27 @@ function App(props) {
     console.log("rendering world...")
     let worldUpdate = []
     for( let y=0;y<height;y++){
-      for(let x=0;x<width;x++){
+      for(let x=width-1;x>=0;x--){
+
+        let goldHere = 0
+        let healthHere = 0
+        for(let d in drops){
+          if(drops[d].x == x && drops[d].y==y){
+            goldHere+=drops[d].gold
+            healthHere+=drops[d].health
+          }
+        }
+
+        let fieldDisplay = ""
+
+        if(goldHere>0){
+          fieldDisplay = <img src="Gold_Full.svg" style={{transform:"rotate(45deg) scale(1,3)",width:60,height:60,marginLeft:15,marginTop:-45}} />
+        }
+
+        if(healthHere>0){
+          fieldDisplay = <img src="Health_Full.svg" style={{transform:"rotate(45deg) scale(1,3)",width:60,height:60,marginLeft:15,marginTop:-45}} />
+        }
+
         //look for players here...
         let playerDisplay = ""
         for(let p in players){
@@ -257,13 +333,19 @@ function App(props) {
           //console.log("thisPlayerData",thisPlayerData)
           if(thisPlayerData && thisPlayerData.position.x==x && thisPlayerData.position.y==y){
             playerDisplay = (
-              <Blockie address={players[p]} size={8} scale={3} />
+              <div style={{position:"relative"}}>
+                <Blockie address={players[p]} size={8} scale={7.5} />
+                <img src="Warrior_1.svg" style={{transform:"rotate(45deg) scale(1,3)",width:170,height:170,marginLeft:90,marginTop:-400}} />
+              </div>
             )
           }
         }
         worldUpdate.push(
-          <div style={{width:squareW,height:squareH,border:'1px solid #66666',position:"absolute",left:squareW*x,top:squareH*y}}>
-            { playerDisplay ? playerDisplay : ""+x+","+y }
+          <div style={{width:squareW,height:squareH,padding:1,position:"absolute",left:squareW*x,top:squareH*y}}>
+            <div style={{position:"realative",height:"100%",background:(x+y)%2?"#BBBBBB":"#EEEEEE"}}>
+              { playerDisplay ? playerDisplay : <span style={{opacity:0.4}}>{""+x+","+y}</span> }
+              <div style={{opacity:0.7,position:"absolute",left:squareW/2-10,top:0}}>{ fieldDisplay }</div>
+            </div>
           </div>
         )
       }
@@ -349,16 +431,77 @@ function App(props) {
   const faucetAvailable = localProvider && localProvider.connection && targetNetwork.name.indexOf("local") !== -1;
 
 
+  let playerButtons
+  if(activePlayer){
+    //show controls
+    playerButtons = (
+      <div>
+      <Address value={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize={14}/>
 
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(0))
+          }}>UP (0)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(1))
+          }}>DOWN (1)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(2))
+          }}>LEFT (2)</Button>
+      </div>
+      <div style={{padding:4}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.move(3))
+          }}>RIGHT (3)</Button>
+      </div>
 
+      <div style={{padding:8}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.collectHealth())
+          }}>Collect Health</Button>
+      </div>
+      <div style={{padding:8}}>
+          <Button onClick={async ()=>{
+            const result = tx(writeContracts.Game.collectTokens())
+          }}>Collect Gold</Button>
+      </div>
+      </div>
+    )
+  }else{
+    //register button
+    playerButtons = (
+      <div>
+        <div style={{padding:4}}>
+            <Button onClick={async ()=>{
+              const result = tx(writeContracts.Game.register())
+            }}>Register</Button>
+        </div>
+      </div>
+    )
+  }
+
+  let extraDisplay
+  if(DEBUG){
+    extraDisplay = (
+      <div>
+      <div>{ blockNumber ? "block: "+blockNumber :"loading blocknumber..."}</div>
+      <div>{ width ? width : "..."}x{ height ? height : "..."}</div>
+      { highScores ? <pre>{JSON.stringify(highScores)}</pre> : "loading highScores..."}
+
+      </div>
+    )
+  }
 
 
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
       <Header />
-      <div>{ blockNumber ? "block: "+blockNumber :"loading blocknumber..."}</div>
-      <div>{ width ? width : "..."}x{ height ? height : "..."}</div>
+      {extraDisplay}
       <NetworkDisplay
         NETWORKCHECK={NETWORKCHECK}
         localChainId={localChainId}
@@ -367,34 +510,36 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
+      <div style={{position:"absolute",left:"5%",top:"40%"}}>
+        <div style={{padding:4,}}>
+          <Address fontSize={48} value={readContracts && readContracts.Game && readContracts.Game.address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+        </div>
+        <div style={{paddingBottom:16,fontSize:32,marginBottom:16,borderBottom:"1px solid #555555"}}>
+          #{blockNumber}
+        </div>
+        {highScoreDisplay}
+      </div>
+      <div style={{position:"absolute",right:"5%",top:"30%"}}>
+              {playerButtons}
+      </div>
       <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
         <Menu.Item key="/">
           <Link to="/">App Home</Link>
         </Menu.Item>
         <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
+          <Link to="/debug">Contracts</Link>
         </Menu.Item>
-        <Menu.Item key="/hints">
-          <Link to="/hints">Hints</Link>
-        </Menu.Item>
-        <Menu.Item key="/exampleui">
-          <Link to="/exampleui">ExampleUI</Link>
-        </Menu.Item>
-        <Menu.Item key="/mainnetdai">
-          <Link to="/mainnetdai">Mainnet DAI</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
+
       </Menu>
 
       <Switch>
         <Route exact path="/">
 
-          { players ? <pre>{JSON.stringify(players)}</pre> : "loading players..."}
 
-          <div style={{width:width*squareW,height:height*squareH,margin:"auto",border:"2px solid #333333",position:"relative"}}>
-            {worldView}
+          <div style={{transform: "scale(1,0.4)"}}>
+            <div style={{transform:"rotate(-45deg)",color:"#111111",fontWeight:"bold",width:width*squareW,height:height*squareH,margin:"auto",position:"relative"}}>
+              {worldView}
+            </div>
           </div>
 
           {/* pass in any web3 props to this Home component. For example, yourLocalBalance */}
@@ -409,6 +554,15 @@ function App(props) {
 
           <Contract
             name="Game"
+            price={price}
+            signer={userSigner}
+            provider={localProvider}
+            address={address}
+            blockExplorer={blockExplorer}
+            contractConfig={contractConfig}
+          />
+          <Contract
+            name="GLDToken"
             price={price}
             signer={userSigner}
             provider={localProvider}
@@ -472,6 +626,8 @@ function App(props) {
       </Switch>
 
       <ThemeSwitch />
+
+
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
       <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
