@@ -5,7 +5,8 @@ This dapp will deploy an ERC721 contract (written in cairo) to the starknet goer
 ## Accounts
 
 When running `yarn starknet:deploy` the deploy script in `packages/hardhat/deploy/00_deploy_your_contract.js` is executed.
-The deploy script has two variables at the top:
+
+The deploy script has a `CREATE_NEW_ACCOUNT` flag at the top:
 
 ```javascript
 const CREATE_NEW_ACCOUNT = false;
@@ -14,6 +15,7 @@ const FETCH_EXISTING_ACCOUNT = !CREATE_NEW_ACCOUNT;
 
 Running the script for the first time, you'll need to create a new account.
 Deployments after that can reuse the created account.
+
 Toggle the bool flag and update the variables `const accountAddress` and `const privateKey` accordingly.
 
 ## Getting started
