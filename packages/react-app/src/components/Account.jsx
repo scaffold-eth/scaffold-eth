@@ -1,12 +1,13 @@
-import { Button } from "antd";
-import React from "react";
-import { useThemeSwitcher } from "react-css-theme-switcher";
+import React, { Fragment, useState } from "react";
 
+import { Menu, Transition } from "@headlessui/react";
+
+import { classNames, blockExplorerLink } from "../helpers";
 import Address from "./Address";
 import Balance from "./Balance";
-import Wallet from "./Wallet";
+import WalletModal from "./WalletModal";
 
-/** 
+/**
   ~ What it does? ~
 
   Displays an Address, Balance, and Wallet as one Account component,
@@ -25,7 +26,6 @@ import Wallet from "./Wallet";
     loadWeb3Modal={loadWeb3Modal}
     logoutOfWeb3Modal={logoutOfWeb3Modal}
     blockExplorer={blockExplorer}
-    isContract={boolean}
   />
 
   ~ Features ~
@@ -49,94 +49,77 @@ export default function Account({
   localProvider,
   mainnetProvider,
   price,
-  minimized,
   web3Modal,
   loadWeb3Modal,
   logoutOfWeb3Modal,
   blockExplorer,
-  isContract,
 }) {
-  const { currentTheme } = useThemeSwitcher();
+  const [walletOpen, setWalletOpen] = useState();
+  const etherscanLink = blockExplorerLink(address, blockExplorer);
 
-  const modalButtons = [];
-  if (web3Modal) {
-    if (web3Modal.cachedProvider) {
-      modalButtons.push(
-        <Button
-          key="logoutbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          onClick={logoutOfWeb3Modal}
-        >
-          logout
-        </Button>,
-      );
-    } else {
-      modalButtons.push(
-        <Button
-          key="loginbutton"
-          style={{ verticalAlign: "top", marginLeft: 8, marginTop: 4 }}
-          shape="round"
-          size="large"
-          /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
-          onClick={loadWeb3Modal}
-        >
-          connect
-        </Button>,
-      );
-    }
+  const accountNavigation = [
+    { name: "Wallet", action: () => setWalletOpen(true) },
+    { name: "View on Explorer", action: () => window.open(etherscanLink, "_blank").focus() },
+  ];
+
+  if (web3Modal?.cachedProvider) {
+    accountNavigation.push({ name: "Logout", action: logoutOfWeb3Modal });
+  } else {
+    accountNavigation.push({ name: "Connect", action: loadWeb3Modal });
   }
-  const display = minimized ? (
-    ""
-  ) : (
-    <span>
-      {web3Modal && web3Modal.cachedProvider ? (
-        <>
-          {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
-          <Balance address={address} provider={localProvider} price={price} />
-          <Wallet
-            address={address}
-            provider={localProvider}
-            signer={userSigner}
-            ensProvider={mainnetProvider}
-            price={price}
-            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-          />
-        </>
-      ) : useBurner ? (
-        ""
-      ) : isContract ? (
-        <>
-          {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
-          <Balance address={address} provider={localProvider} price={price} />
-        </>
-      ) : (
-        ""
-      )}
-      {useBurner && web3Modal && !web3Modal.cachedProvider ? (
-        <>
-          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-          <Balance address={address} provider={localProvider} price={price} />
-          <Wallet
-            address={address}
-            provider={localProvider}
-            signer={userSigner}
-            ensProvider={mainnetProvider}
-            price={price}
-            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-          />
-        </>
-      ) : (
-        <></>
-      )}
-    </span>
-  );
 
   return (
-    <div>
-      {display}
-      {modalButtons}
+    <div className="flex items-center">
+      <Menu as="div" className="ml-3 relative">
+        <div className="flex items-center inline-flex items-center pl-3.5 border border-transparent select-none text-sm text-gray-900 leading-4 font-normal rounded-full shadow-sm bg-slate-200 dark:bg-neutral-900 dark:text-white">
+          <Balance address={address} provider={localProvider} price={price} textSize="text-lg" />
+          <Menu.Button className="inline-flex items-center px-3.5 py-1.5 border border-transparent text-sm leading-4 font-medium rounded-full shadow-sm bg-slate-100 hover:border-slate-400 focus:outline-none focus:border-slate-400 dark:bg-neutral-800 dark:hover:border-gray-700 dark:focus:border-gray-700">
+            <span className="sr-only">Open user menu</span>
+            <Address
+              address={address}
+              disableAddressLink={true}
+              ensProvider={mainnetProvider}
+              blockExplorer={blockExplorer}
+            />
+          </Menu.Button>
+        </div>
+        <Transition
+          as={Fragment}
+          enter="transition ease-out duration-100"
+          enterFrom="transform opacity-0 scale-95"
+          enterTo="transform opacity-100 scale-100"
+          leave="transition ease-in duration-75"
+          leaveFrom="transform opacity-100 scale-100"
+          leaveTo="transform opacity-0 scale-95"
+        >
+          <Menu.Items className="origin-top-right absolute right-0 mt-2 w-48 rounded-md shadow-lg py-1 bg-white dark:bg-gray-900 ring-1 ring-black ring-opacity-5 focus:outline-none">
+            {accountNavigation.map(item => (
+              <Menu.Item key={item.name}>
+                {({ active }) => (
+                  <span
+                    onClick={item.action}
+                    className={classNames(
+                      active ? "bg-gray-100" : "",
+                      "cursor-pointer block px-4 py-2 text-sm text-gray-700 dark:text-white dark:hover:bg-gray-800",
+                    )}
+                  >
+                    {item.name}
+                  </span>
+                )}
+              </Menu.Item>
+            ))}
+          </Menu.Items>
+        </Transition>
+      </Menu>
+      <WalletModal
+        address={address}
+        provider={localProvider}
+        signer={userSigner}
+        ensProvider={mainnetProvider}
+        price={price}
+        open={walletOpen}
+        setOpen={setWalletOpen}
+      />
     </div>
   );
 }

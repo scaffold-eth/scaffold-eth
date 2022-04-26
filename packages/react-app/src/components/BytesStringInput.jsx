@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 const { utils, constants } = require("ethers");
 
-/** 
+/**
   ~ What it does? ~
 
   Displays input field with options to convert between STRING and BYTES32

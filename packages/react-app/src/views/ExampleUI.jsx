@@ -19,13 +19,13 @@ export default function ExampleUI({
   const [newPurpose, setNewPurpose] = useState("loading...");
 
   return (
-    <div>
+    <div className="font-normal text-gray-900 dark:text-white">
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
-        <h2>Example UI:</h2>
-        <h4>purpose: {purpose}</h4>
+        <h2 className="text-gray-900 dark:text-white">Example UI:</h2>
+        <h4 className="text-gray-900 dark:text-white">purpose: {purpose}</h4>
         <Divider />
         <div style={{ margin: 8 }}>
           <Input
@@ -72,15 +72,19 @@ export default function ExampleUI({
         />
         <Divider />
         {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
-        <div>OR</div>
+        <h2 className="text-gray-900 dark:text-white">
+          Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}
+        </h2>
+        <div className="text-gray-900 dark:text-white">OR</div>
         <Balance address={address} provider={localProvider} price={price} />
         <Divider />
-        <div>🐳 Example Whale Balance:</div>
+        <div className="text-gray-900 dark:text-white">🐳 Example Whale Balance:</div>
         <Balance balance={utils.parseEther("1000")} provider={localProvider} price={price} />
         <Divider />
         {/* use utils.formatEther to display a BigNumber: */}
-        <h2>Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}</h2>
+        <h2 className="text-gray-900 dark:text-white">
+          Your Balance: {yourLocalBalance ? utils.formatEther(yourLocalBalance) : "..."}
+        </h2>
         <Divider />
         Your Contract Address:
         <Address

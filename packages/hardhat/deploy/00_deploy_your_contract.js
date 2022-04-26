@@ -1,6 +1,7 @@
 // deploy/00_deploy_your_contract.js
 
 const { ethers } = require("hardhat");
+const { starknet } = require("hardhat");
 
 const localChainId = "31337";
 
@@ -13,52 +14,72 @@ const localChainId = "31337";
 //   );
 
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
+  /*
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
   const chainId = await getChainId();
+  */
 
-  await deploy("YourContract", {
-    // Learn more about args here: https://www.npmjs.com/package/hardhat-deploy#deploymentsdeploy
-    from: deployer,
-    // args: [ "Hello", ethers.utils.parseEther("1.5") ],
-    log: true,
-    waitConfirmations: 5,
+  console.log({ starknet });
+
+  // see: https://www.npmjs.com/package/@shardlabs/starknet-hardhat-plugin#Account
+  const accountName = "OpenZeppelin";
+
+  const CREATE_NEW_ACCOUNT = true;
+  const FETCH_EXISTING_ACCOUNT = !CREATE_NEW_ACCOUNT;
+
+  let account = null;
+
+  console.log("");
+
+  if (CREATE_NEW_ACCOUNT) {
+    console.log(`now creating account with name: ${accountName}`);
+    account = await starknet.deployAccount(accountName);
+  }
+
+  if (FETCH_EXISTING_ACCOUNT) {
+    // fetch account if already generated
+    // TODO:
+    const accountAddress =
+      "0x0358576968ff2ea1e9537e0fb8f063b4d047bb8958fdd57485782a9d37ecb9ee";
+    const privateKey =
+      "0x262f5da99e4d1a0a98e2a21eb3cd75784468ae7d38877c7d743523374070d4e";
+
+    console.log(`now fetching account at address: ${accountAddress}`);
+    account = await starknet.getAccountFromAddress(
+      accountAddress,
+      privateKey,
+      accountName
+    );
+  }
+
+  console.log(
+    "---------------------------------------------------------------------------------------"
+  );
+  console.log("account:");
+  console.log("");
+  console.log("starknetContract address:", account.starknetContract.address);
+  console.log("publicKey:", account.publicKey);
+  console.log("privateKey:", account.privateKey);
+  console.log(
+    "---------------------------------------------------------------------------------------"
+  );
+
+  console.log("now deploying contract");
+  const contractFactory = await starknet.getContractFactory("ERC721");
+  const contract = await contractFactory.deploy({
+    name: 100, // "MyNFT",
+    symbol: 100, // "MNFT",
+    base_uri: {
+      prefix: 100, // "ipfs://myNFT",
+      suffix: 100, // ".com",
+    },
   });
-
-  // Getting a previously deployed contract
-  const YourContract = await ethers.getContract("YourContract", deployer);
-  /*  await YourContract.setPurpose("Hello");
-  
-    To take ownership of yourContract using the ownable library uncomment next line and add the 
-    address you want to be the owner. 
-    // await yourContract.transferOwnership(YOUR_ADDRESS_HERE);
-
-    //const yourContract = await ethers.getContractAt('YourContract', "0xaAC799eC2d00C013f1F11c37E654e59B0429DF6A") //<-- if you want to instantiate a version of a contract at a specific address!
-  */
-
-  /*
-  //If you want to send value to an address from the deployer
-  const deployerWallet = ethers.provider.getSigner()
-  await deployerWallet.sendTransaction({
-    to: "0x34aA3F359A9D614239015126635CE7732c18fDF3",
-    value: ethers.utils.parseEther("0.001")
-  })
-  */
-
-  /*
-  //If you want to send some ETH to a contract on deploy (make your constructor payable!)
-  const yourContract = await deploy("YourContract", [], {
-  value: ethers.utils.parseEther("0.05")
-  });
-  */
-
-  /*
-  //If you want to link a library into your contract:
-  // reference: https://github.com/austintgriffith/scaffold-eth/blob/using-libraries-example/packages/hardhat/scripts/deploy.js#L19
-  const yourContract = await deploy("YourContract", [], {}, {
-   LibraryName: **LibraryAddress**
-  });
-  */
+  console.log("deployed to:", contract.address);
+  console.log(
+    "block explorer:",
+    `https://goerli.voyager.online/contract/${contract.address}`
+  );
 
   // Verify from the command line by running `yarn verify`
 
@@ -76,4 +97,4 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   //   console.error(error);
   // }
 };
-module.exports.tags = ["YourContract"];
+module.exports.tags = ["MyContracts"];

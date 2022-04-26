@@ -1,104 +1,82 @@
-import { Alert, Button } from "antd";
-import React from "react";
+import { Fragment, useState, useEffect } from "react";
+import { Transition } from "@headlessui/react";
+import { ExclamationIcon } from "@heroicons/react/solid";
+import { switchNetworks } from "../helpers";
 
 import { NETWORK } from "../constants";
 
-function NetworkDisplay({
-  NETWORKCHECK,
-  localChainId,
-  selectedChainId,
-  targetNetwork,
-  USE_NETWORK_SELECTOR,
-  logoutOfWeb3Modal,
-}) {
-  let networkDisplay = "";
-  if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
-    const networkSelected = NETWORK(selectedChainId);
-    const networkLocal = NETWORK(localChainId);
+export default function NetworkDisplay({ NETWORKCHECK, localChainId, selectedChainId, targetNetwork }) {
+  const [show, setShow] = useState(false);
+  const [title, setTitle] = useState();
+  const [body, setBody] = useState();
+
+  useEffect(() => {
+    if (NETWORKCHECK && localChainId && selectedChainId && localChainId !== selectedChainId) {
+      setNetworkErrorContent(selectedChainId, localChainId);
+      setShow(true);
+    } else {
+      setShow(false);
+    }
+  }, [NETWORKCHECK, localChainId, selectedChainId]);
+
+  const setNetworkErrorContent = (selectedChainId, localChainId) => {
     if (selectedChainId === 1337 && localChainId === 31337) {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network ID"
-            description={
-              <div>
-                You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with
-                HardHat.
-                <div>(MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337)</div>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
+      setTitle("Wrong Network ID");
+      setBody(
+        <>
+          <p>
+            You have <b>chain id 1337</b> for localhost and you need to change it to <b>31337</b> to work with HardHat.
+          </p>
+          <p className="italic">MetaMask -&gt; Settings -&gt; Networks -&gt; Chain ID -&gt; 31337</p>
+        </>,
       );
     } else {
-      networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
-          <Alert
-            message="⚠️ Wrong Network"
-            description={
-              <div>
-                You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
-                <Button
-                  onClick={async () => {
-                    const ethereum = window.ethereum;
-                    const data = [
-                      {
-                        chainId: "0x" + targetNetwork.chainId.toString(16),
-                        chainName: targetNetwork.name,
-                        nativeCurrency: targetNetwork.nativeCurrency,
-                        rpcUrls: [targetNetwork.rpcUrl],
-                        blockExplorerUrls: [targetNetwork.blockExplorer],
-                      },
-                    ];
-                    console.log("data", data);
+      const networkSelected = NETWORK(selectedChainId);
+      const networkLocal = NETWORK(localChainId);
 
-                    let switchTx;
-                    // https://docs.metamask.io/guide/rpc-api.html#other-rpc-methods
-                    try {
-                      switchTx = await ethereum.request({
-                        method: "wallet_switchEthereumChain",
-                        params: [{ chainId: data[0].chainId }],
-                      });
-                    } catch (switchError) {
-                      // not checking specific error code, because maybe we're not using MetaMask
-                      try {
-                        switchTx = await ethereum.request({
-                          method: "wallet_addEthereumChain",
-                          params: data,
-                        });
-                      } catch (addError) {
-                        // handle "add" error
-                      }
-                    }
-
-                    if (switchTx) {
-                      console.log(switchTx);
-                    }
-                  }}
-                >
-                  <b>{networkLocal && networkLocal.name}</b>
-                </Button>
-              </div>
-            }
-            type="error"
-            closable={false}
-          />
-        </div>
+      setTitle("Wrong Network");
+      setBody(
+        <>
+          <p>
+            You have <b>{networkSelected && networkSelected.name}</b> selected and you need to be on{" "}
+            <b>{networkLocal && networkLocal.name}</b>.
+          </p>
+          <div className="mt-3 flex">
+            <button
+              type="button"
+              className="pointer-events-auto text-sm font-medium text-sky-600 hover:text-sky-500"
+              onClick={() => switchNetworks(targetNetwork)}
+            >
+              Switch Network
+            </button>
+          </div>
+        </>,
       );
     }
-  } else {
-    networkDisplay = USE_NETWORK_SELECTOR ? null : (
-      <div style={{ zIndex: -1, position: "absolute", right: 154, top: 28, padding: 16, color: targetNetwork.color }}>
-        {targetNetwork.name}
+  };
+
+  return (
+    <Transition
+      show={show}
+      as={Fragment}
+      enter="transform ease-out duration-300 transition"
+      enterFrom="translate-y-2 opacity-0 sm:translate-y-0 sm:translate-x-2"
+      enterTo="translate-y-0 opacity-100 sm:translate-x-0"
+      leave="transition ease-in duration-100"
+      leaveFrom="opacity-100"
+      leaveTo="opacity-0"
+    >
+      <div className="w-96 rounded-md bg-red-50 p-4">
+        <div className="flex">
+          <div className="flex-shrink-0">
+            <ExclamationIcon className="h-5 w-5 text-red-400" aria-hidden="true" />
+          </div>
+          <div className="ml-3">
+            <h3 className="text-sm font-medium text-red-800">{title}</h3>
+            <div className="mt-2 text-sm text-red-700">{body}</div>
+          </div>
+        </div>
       </div>
-    );
-  }
-
-  console.log({ networkDisplay });
-
-  return networkDisplay;
+    </Transition>
+  );
 }
-
-export default NetworkDisplay;

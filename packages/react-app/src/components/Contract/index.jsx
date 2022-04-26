@@ -116,7 +116,8 @@ export default function Contract({
 
   return (
     <div style={{ margin: "auto", width: "70vw" }}>
-      <Card
+      <div
+        className="font-normal text-gray-900 dark:text-white"
         title={
           <div style={{ fontSize: 24 }}>
             {name}
@@ -126,12 +127,11 @@ export default function Contract({
             </div>
           </div>
         }
-        size="large"
         style={{ marginTop: 25, width: "100%" }}
         loading={contractDisplay && contractDisplay.length <= 0}
       >
         {contractIsDeployed ? contractDisplay : noContractDisplay}
-      </Card>
+      </div>
     </div>
   );
 }

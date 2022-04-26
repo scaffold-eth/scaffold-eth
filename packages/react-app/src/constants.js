@@ -17,6 +17,13 @@ export const NETWORKS = {
     blockExplorer: "",
     rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":8545",
   },
+  starknet: {
+    name: "starknet-goerli",
+    color: "#4C4C86",
+    chainId: 31337,
+    blockExplorer: "https://goerli.voyager.online/",
+    rpcUrl: "http://" + (global.window ? window.location.hostname : "localhost") + ":5000",
+  },
   mainnet: {
     name: "mainnet",
     color: "#ff8b9e",
@@ -177,7 +184,7 @@ export const NETWORKS = {
     color: "#53CBC9",
     chainId: 1284,
     blockExplorer: "https://moonscan.io",
-    rpcUrl: "https://rpc.api.moonbeam.network", 
+    rpcUrl: "https://rpc.api.moonbeam.network",
   },
   moonriver: {
     name: "moonriver",
@@ -200,7 +207,7 @@ export const NETWORKS = {
     chainId: 1281,
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
-  }
+  },
 };
 
 export const NETWORK = chainId => {

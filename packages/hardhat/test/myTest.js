@@ -3,7 +3,7 @@ const { use, expect } = require("chai");
 const { solidity } = require("ethereum-waffle");
 
 use(solidity);
-
+/*
 describe("My Dapp", function () {
   let myContract;
 
@@ -39,3 +39,4 @@ describe("My Dapp", function () {
     });
   });
 });
+*/

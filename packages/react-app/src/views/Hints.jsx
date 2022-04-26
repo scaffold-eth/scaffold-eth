@@ -15,7 +15,7 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
   );
 
   return (
-    <div>
+    <div className="font-normal text-gray-900 dark:text-white">
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>👷</span>
         Edit your <b>contract</b> in

@@ -96,9 +96,14 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
     return (
       <div style={{ margin: 2 }} key={key}>
-        <Input
+        {input.name}
+        <input
+          type="email"
+          id="email"
+          class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
           size="large"
-          placeholder={input.name ? input.type + " " + input.name : input.type}
+          //placeholder={input.name ? `${input.type} ${input.name}` : input.type}
+          placeholder={input.type}
           autoComplete="off"
           value={form[key]}
           name={key}
@@ -109,13 +114,15 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           }}
           suffix={buttons}
         />
+        {buttons}
       </div>
     );
   });
 
   const txValueInput = (
     <div style={{ margin: 2 }} key="txValueInput">
-      <Input
+      <input
+        class="border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
         placeholder="transaction value"
         onChange={e => setTxValue(e.target.value)}
         value={txValue}
@@ -166,75 +173,74 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     }
   };
 
+  const buttonAction = async () => {
+    const args = functionInfo.inputs.map((input, inputIndex) => {
+      const key = getFunctionInputKey(functionInfo, input, inputIndex);
+      let value = form[key];
+      if (input.baseType === "array") {
+        value = JSON.parse(value);
+      } else if (input.type === "bool") {
+        if (value === "true" || value === "1" || value === "0x1" || value === "0x01" || value === "0x0001") {
+          value = 1;
+        } else {
+          value = 0;
+        }
+      }
+      return value;
+    });
+
+    let result;
+    if (functionInfo.stateMutability === "view" || functionInfo.stateMutability === "pure") {
+      try {
+        const returned = await contractFunction(...args);
+        handleForm(returned);
+        result = tryToDisplayAsText(returned);
+      } catch (err) {
+        console.error(err);
+      }
+    } else {
+      const overrides = {};
+      if (txValue) {
+        overrides.value = txValue; // ethers.utils.parseEther()
+      }
+      if (gasPrice) {
+        overrides.gasPrice = gasPrice;
+      }
+      // Uncomment this if you want to skip the gas estimation for each transaction
+      // overrides.gasLimit = hexlify(1200000);
+
+      // console.log("Running with extras",extras)
+      const returned = await tx(contractFunction(...args, overrides));
+      handleForm(returned);
+      result = tryToDisplay(returned);
+    }
+
+    console.log("SETTING RESULT:", result);
+    setReturnValue(result);
+    triggerRefresh(true);
+  };
   const buttonIcon =
     functionInfo.type === "call" ? (
-      <Button style={{ marginLeft: -32 }}>Read📡</Button>
+      <button
+        onClick={buttonAction}
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      >
+        Read
+      </button>
     ) : (
-      <Button style={{ marginLeft: -32 }}>Send💸</Button>
+      <button
+        onClick={buttonAction}
+        className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
+      >
+        Send
+      </button>
     );
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key="goButton">
-      <Input
-        onChange={e => setReturnValue(e.target.value)}
-        defaultValue=""
-        bordered={false}
-        disabled
-        value={returnValue}
-        suffix={
-          <div
-            style={{ width: 50, height: 30, margin: 0 }}
-            type="default"
-            onClick={async () => {
-              const args = functionInfo.inputs.map((input, inputIndex) => {
-                const key = getFunctionInputKey(functionInfo, input, inputIndex);
-                let value = form[key];
-                if (input.baseType === "array") {
-                  value = JSON.parse(value);
-                } else if (input.type === "bool") {
-                  if (value === "true" || value === "1" || value === "0x1" || value === "0x01" || value === "0x0001") {
-                    value = 1;
-                  } else {
-                    value = 0;
-                  }
-                }
-                return value;
-              });
-
-              let result;
-              if (functionInfo.stateMutability === "view" || functionInfo.stateMutability === "pure") {
-                try {
-                  const returned = await contractFunction(...args);
-                  handleForm(returned);
-                  result = tryToDisplayAsText(returned);
-                } catch (err) {
-                  console.error(err);
-                }
-              } else {
-                const overrides = {};
-                if (txValue) {
-                  overrides.value = txValue; // ethers.utils.parseEther()
-                }
-                if (gasPrice) {
-                  overrides.gasPrice = gasPrice;
-                }
-                // Uncomment this if you want to skip the gas estimation for each transaction
-                // overrides.gasLimit = hexlify(1200000);
-
-                // console.log("Running with extras",extras)
-                const returned = await tx(contractFunction(...args, overrides));
-                handleForm(returned);
-                result = tryToDisplay(returned);
-              }
-
-              console.log("SETTING RESULT:", result);
-              setReturnValue(result);
-              triggerRefresh(true);
-            }}
-          >
-            {buttonIcon}
-          </div>
-        }
-      />
+      <div className="text-gray-900 dark:text-white">{returnValue}</div>
+      <div style={{ width: 100, height: 30, margin: 0 }} type="default">
+        {buttonIcon}
+      </div>
     </div>,
   );
 
@@ -245,14 +251,18 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           span={8}
           style={{
             textAlign: "right",
-            opacity: 0.333,
             paddingRight: 6,
             fontSize: 24,
           }}
         >
-          {functionInfo.name}
+          <h2
+            style={{ marginRight: 15 }}
+            className="inline-flex items-center px-3 py-0.5 rounded-full text-base font-normal bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white"
+          >
+            {functionInfo.name}
+          </h2>
         </Col>
-        <Col span={16}>{inputs}</Col>
+        <Col span={14}>{inputs}</Col>
       </Row>
       <Divider />
     </div>

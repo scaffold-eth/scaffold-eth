@@ -1,5 +1,4 @@
 import React from "react";
-import { Button } from "antd";
 
 // added display of 0 instead of NaN if gas price is not provided
 
@@ -21,19 +20,11 @@ import { Button } from "antd";
 
 export default function GasGauge(props) {
   return (
-    <Button
-      onClick={() => {
-        window.open("https://ethgasstation.info/");
-      }}
-      size="large"
-      shape="round"
+    <a
+      href="https://ethgasstation.info/"
+      className="inline-flex items-center px-3 py-0.5 rounded-full text-base font-normal bg-gray-100 text-gray-800 dark:bg-gray-900 dark:text-white"
     >
-      <span style={{ marginRight: 8 }}>
-        <span role="img" aria-label="fuelpump">
-          ⛽️
-        </span>
-      </span>
-      {typeof props.gasPrice === "undefined" ? 0 : parseInt(props.gasPrice, 10) / 10 ** 9}g
-    </Button>
+      ⛽️ {typeof props.gasPrice === "undefined" ? 0 : parseInt(props.gasPrice, 10) / 10 ** 9}g
+    </a>
   );
 }

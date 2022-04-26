@@ -24,8 +24,11 @@ export default function Events({ contracts, contractName, eventName, localProvid
   const events = useEventListener(contracts, contractName, eventName, localProvider, startBlock);
 
   return (
-    <div style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-      <h2>Events:</h2>
+    <div
+      className="text-gray-900 dark:text-white"
+      style={{ width: 600, margin: "auto", marginTop: 32, paddingBottom: 32 }}
+    >
+      <h2 className="text-gray-900 dark:text-white">Events:</h2>
       <List
         bordered
         dataSource={events}

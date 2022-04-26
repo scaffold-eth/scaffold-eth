@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@nomiclabs/hardhat-ethers": "npm:hardhat-deploy-ethers",
-    "@nomiclabs/hardhat-waffle": "^2.0.0",
-    "@openzeppelin/contracts": "^4.4.2",
-    "@tenderly/hardhat-tenderly": "^1.0.10",
     "@nomiclabs/hardhat-etherscan": "^3.0.1",
+    "@nomiclabs/hardhat-waffle": "^2.0.0",
+    "@openzeppelin/contracts": "4.5.0",
+    "@shardlabs/starknet-hardhat-plugin": "^0.5.3",
+    "@tenderly/hardhat-tenderly": "^1.0.10",
     "chai": "^4.2.0",
     "chalk": "^4.1.0",
     "dotenv": "^8.2.0",
@@ -24,7 +25,6 @@
     "hardhat": "2.6.0",
     "hardhat-deploy": "^0.9.0",
     "hardhat-gas-reporter": "^1.0.4",
-    "hardhat-abi-exporter": "^2.8.0",
     "node-watch": "^0.7.0",
     "qrcode-terminal": "^0.12.0",
     "ramda": "^0.27.1"
@@ -42,6 +42,9 @@
     "send": "hardhat send",
     "generate": "hardhat generate",
     "account": "hardhat account",
-    "verify": "hardhat verify"
+    "verify": "hardhat verify",
+    "starknet:compile": "npx hardhat starknet-compile --show-stack-traces",
+    "starknet:deploy": "npx hardhat starknet-deploy --starknet-network alpha-goerli",
+    "starknet:verify": "npx hardhat starknet-verify --starknet-network alpha-goerli --path ./contracts --address 0x0585feed17184d7990c57febcbb8e185f6607f49a2152c2965da5f01d373a405"
   }
 }
