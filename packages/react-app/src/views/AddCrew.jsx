@@ -2,6 +2,8 @@ import React, { useEffect, useState } from "react";
 import { Alert, Button, Card, List, Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
+import "html-midi-player";
+import ConfettiGenerator from "confetti-js";
 
 function AddCrew({
   DEBUG,
@@ -50,6 +52,26 @@ function AddCrew({
       nft: "Eyelashes",
     },
   ];
+
+  useEffect(() => {
+    if (fishingReward > 0) {
+      const confettiSettings = {
+        target: "confetti-holder",
+        props: [{ type: "svg", src: "images/fish-confetti.svg" }],
+        size: 2.5,
+        max: fishingReward / 100,
+      };
+      const confettiUpdate = new ConfettiGenerator(confettiSettings);
+      confettiUpdate.render();
+      setTimeout(
+        function (confettiUpdate) {
+          confettiUpdate.clear();
+        }.bind(this),
+        10000,
+        confettiUpdate,
+      );
+    }
+  }, [fishingReward]);
 
   useEffect(() => {
     const updateLoogieCoinAllowance = async () => {
@@ -242,8 +264,8 @@ function AddCrew({
   }, [DEBUG, address, readContracts.LoogieShip, selectedShip, updateBalances, sendingLoogies, fishingReward]);
 
   return (
-    <>
-      <div style={{ maxWidth: 1200, margin: "auto", marginTop: 0, paddingBottom: 32 }}>
+    <div style={{ backgroundColor: "#29aae1" }}>
+      <div class="add-crew" style={{ width: 1280, margin: "auto", marginTop: 0, paddingBottom: 32, paddingTop: 40 }}>
         {selectedShipPreview ? (
           <div
             className={`ship-preview ${
@@ -252,28 +274,35 @@ function AddCrew({
                 : ""
             }`}
           >
-            <Card style={{ width: 1200 }} bordered={false}>
+            <Card style={{ width: 1200, backgroundColor: "#29aae1" }} bordered={false}>
               {fishingReward > 0 ? (
-                <div style={{ height: 580, width: 878 }}>
-                  <p>
-                    <img
-                      style={{ height: 450 }}
-                      src={`/images/fish-${fishingRewardSize.toLowerCase()}.jpg`}
-                      alt={`Fish ${fishingRewardSize}`}
-                    />
-                  </p>
-                  <p style={{ fontSize: 30 }}>
-                    You got <strong>{fishingReward}</strong> LoogieCoins!!
-                  </p>
-                  <Button
-                    onClick={() => {
-                      setFishingReward(0);
-                      setSendingLoogies(false);
-                      setFishingRewardSize("");
-                    }}
-                  >
-                    Show LoogieShip
-                  </Button>
+                <div style={{ height: 580, width: 878, backgroundColor: "white", position: "relative" }}>
+                  <canvas
+                    style={{ position: "absolute", display: "block", zIndex: 100, width: 1150, height: 580 }}
+                    id="confetti-holder"
+                  />
+                  <div style={{ position: "absolute", marginLeft: 240 }}>
+                    <p style={{ marginBottom: 0 }}>
+                      <img
+                        style={{ height: 450 }}
+                        src={`/images/fish-${fishingRewardSize.toLowerCase()}.jpg`}
+                        alt={`Fish ${fishingRewardSize}`}
+                      />
+                    </p>
+                    <p style={{ fontSize: 30, marginBottom: 15 }}>
+                      You got <strong>{fishingReward}</strong> LoogieCoins!!
+                    </p>
+                    <Button
+                      style={{ zIndex: 200 }}
+                      onClick={() => {
+                        setFishingReward(0);
+                        setSendingLoogies(false);
+                        setFishingRewardSize("");
+                      }}
+                    >
+                      Show LoogieShip
+                    </Button>
+                  </div>
                 </div>
               ) : (
                 <div
@@ -302,35 +331,50 @@ function AddCrew({
                                   disabled={sendingLoogies}
                                   onClick={async () => {
                                     try {
-                                      const result = tx(writeContracts.SailorLoogiesGame.sendFishing(selectedShip), function (transaction) {
-                                        if (transaction.status) {
-                                          setLoogieCoinAllowance(loogieCoinAllowance - 3000);
-                                          setSendingLoogies(true);
-                                          console.log("TX: ", transaction);
-                                          console.log("logs: ", transaction.logs);
-                                          // week
-                                          // ethers.BigNumber.from(transaction.logs[2].topics[2]).toString()
-                                          // day
-                                          // ethers.BigNumber.from(transaction.logs[2].topics[3]).toString()
-                                          const reward = ethers.BigNumber.from(transaction.logs[2].data).toNumber();
-                                          console.log("Reward: ", reward);
-                                          setTimeout(function(reward) {
-                                            console.log("reward on timeout: ", reward);
-                                            setFishingReward(reward);
-                                            if (reward >= 6000) {
-                                              setFishingRewardSize("Big");
-                                            } else if (reward >= 4500) {
-                                              setFishingRewardSize("Medium");
-                                            } else if (reward >= 3000) {
-                                              setFishingRewardSize("Small");
-                                            } else {
-                                              setFishingRewardSize("Empty");
-                                            }
-                                          }.bind(this),13000, reward);
-                                        } else {
-                                          alert(transaction.data.message);
-                                        }
-                                      });
+                                      const result = tx(
+                                        writeContracts.SailorLoogiesGame.sendFishing(selectedShip),
+                                        function (transaction) {
+                                          if (transaction.status) {
+                                            setLoogieCoinAllowance(loogieCoinAllowance - 3000);
+                                            document.getElementById("midi-player").start();
+                                            setSendingLoogies(true);
+                                            console.log("TX: ", transaction);
+                                            console.log("logs: ", transaction.logs);
+                                            const abiCoder = new ethers.utils.AbiCoder();
+                                            const decoded = abiCoder.decode(
+                                              ["uint256", "address"],
+                                              transaction.logs[2].data,
+                                            );
+                                            // week
+                                            // ethers.BigNumber.from(transaction.logs[2].topics[2]).toString()
+                                            // day
+                                            // ethers.BigNumber.from(transaction.logs[2].topics[3]).toString()
+                                            const reward = decoded[0].toNumber();
+                                            console.log("Reward: ", reward);
+                                            setTimeout(
+                                              function (reward) {
+                                                document.getElementById("midi-player").stop();
+                                                document.getElementById("win-audio").play();
+                                                console.log("reward on timeout: ", reward);
+                                                setFishingReward(reward);
+                                                if (reward >= 6000) {
+                                                  setFishingRewardSize("Big");
+                                                } else if (reward >= 4500) {
+                                                  setFishingRewardSize("Medium");
+                                                } else if (reward >= 3000) {
+                                                  setFishingRewardSize("Small");
+                                                } else {
+                                                  setFishingRewardSize("Empty");
+                                                }
+                                              }.bind(this),
+                                              13000,
+                                              reward,
+                                            );
+                                          } else {
+                                            alert(transaction.data.message);
+                                          }
+                                        },
+                                      );
                                       console.log("awaiting metamask/web3 confirm result...", result);
                                       const result2 = await result;
                                       console.log("result2: ", result2);
@@ -418,7 +462,8 @@ function AddCrew({
         ) : (
           <div className="ship-preview">
             <Card
-              style={{ width: 515 }}
+              style={{ width: 1200, backgroundColor: "#29aae1" }}
+              bordered={false}
               title={
                 <div style={{ height: 45 }}>
                   <span style={{ fontSize: 18, marginRight: 8 }}>No LoogieShip selected</span>
@@ -429,7 +474,10 @@ function AddCrew({
         )}
       </div>
 
-      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
+      <div
+        id="your-loogies"
+        style={{ width: "auto", margin: "auto", paddingBottom: 25, paddingRight: 40, paddingLeft: 40, minHeight: 800 }}
+      >
         <div>
           <List
             grid={{
@@ -472,6 +520,8 @@ function AddCrew({
               return (
                 <List.Item key={id + "_" + item.uri + "_" + item.owner}>
                   <Card
+                    style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
+                    headStyle={{ paddingRight: 12, paddingLeft: 12 }}
                     title={
                       <div>
                         <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
@@ -618,7 +668,7 @@ function AddCrew({
                       </div>
                     }
                   >
-                    <img alt={item.id} src={item.image} />
+                    <img alt={item.id} src={item.image} width="240" />
                   </Card>
                 </List.Item>
               );
@@ -626,7 +676,11 @@ function AddCrew({
           />
         </div>
       </div>
-    </>
+      <midi-player id="midi-player" src="/thesting.mid" autoplay={true} loop="1" />
+      <audio id="win-audio">
+        <source src="/win.wav" type="audio/wav" />
+      </audio>
+    </div>
   );
 }
 

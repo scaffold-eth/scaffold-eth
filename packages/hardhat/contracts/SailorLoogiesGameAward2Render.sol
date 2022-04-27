@@ -8,7 +8,7 @@ library SailorLoogiesGameAward2Render {
     string memory render = string(abi.encodePacked(
       '<defs>',
         '<style>',
-          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-11,.cls-3{fill:none;}.cls-3{stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{fill:#4c250f;}.cls-5{fill:url(#linear-gradient-2);}.cls-6{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}.cls-7{opacity:0.35;}.cls-8{fill:#fff;}.cls-11,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10;stroke-width:6px;}.cls-9{fill:#',color,';}.cls-10{fill:#',secondaryColor,';}',
+          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-11,.cls-3{fill:none;}.cls-3{stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{fill:#4c250f;}.cls-5{fill:url(#linear-gradient-2);}.cls-6{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}.cls-7{opacity:0.35;}.cls-8{fill:#fff;}.cls-11,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10;stroke-width:6px;}.cls-9{fill:#',color,';}.cls-10{fill:#',secondaryColor,';}.cls-12{font-size:24px}',
         '</style>',
         '<linearGradient id="linear-gradient" x1="739.17" y1="132.51" x2="522.48" y2="519.29" gradientUnits="userSpaceOnUse">',
           '<stop offset="0" stop-color="#c59b6d"/>',
@@ -26,7 +26,7 @@ library SailorLoogiesGameAward2Render {
         '<path class="cls-3" d="M817.79,578H409.21a7,7,0,0,1-6.84-4.68c-19.95-65.51-81.86-67.85-94.05-73.5"/>',
         '<path class="cls-4" d="M730.9,550.67H482.77A16.68,16.68,0,0,0,466.09,534V492.87a16.68,16.68,0,0,0,16.68-16.68H730.9a16.68,16.68,0,0,0,16.68,16.68V534A16.68,16.68,0,0,0,730.9,550.67Z"/>',
         '<path class="cls-5" d="M734.29,545.24H486.17a16.68,16.68,0,0,0-16.69-16.68V487.44a16.68,16.68,0,0,0,16.69-16.68H734.29A16.68,16.68,0,0,0,751,487.44v41.12A16.68,16.68,0,0,0,734.29,545.24Z"/>',
-        '<text class="cls-6" transform="translate(487.08 505.59)">WEEK ',week,'<tspan x="42.84" y="29">REWARD ',reward,'</tspan></text>',
+        '<text class="cls-6" transform="translate(487.08 505.59)"><tspan x="35">WEEK ',week,'</tspan><tspan class="cls-12" x="35" y="29">REWARD ',reward,'</tspan></text>',
         '<g class="cls-7">',
           '<path d="M373.15,144.28l-1,.41c-4.4,2-8.14,6.08-11.21,12.29A105,105,0,0,0,373.15,144.28Z"/>',
           '<path d="M900.77,352c-28.29-17.49-60.63-37.48-90.06-52.67-.88-9.92-4.9-16.91-64.92-50.36-44.11-24.58-141.92-29-220.51-32.46-38.16-1.71-71.12-3.18-88.53-6.72-27.21-5.53-33.89-27-39.27-44.24-3.15-10.11-5.87-18.85-12.43-21.82-3.35-1.52-7.26-1.33-11.9.53A105,105,0,0,1,360.93,157c-6.34,12.82-9.82,34.63-10.39,65.23-.47,24.83,1.15,49,2,59.61-16.13,9.73-23.1,21.6-29,33.4A41.71,41.71,0,0,0,274,312.68c-.9.59-1.76,1.23-2.6,1.89-.51,9.05-.86,18.07-1.07,26.79a745.21,745.21,0,0,0,2.54,85.06c5.68-.06,10.66.06,14.78.4-4.27,2.87-8.94,6.28-13.72,10,1.31,11.71,2.84,22,4.45,30.86a122.93,122.93,0,0,1,32.71-5.55c34.09-1.37,103-16.28,169.66-30.7,55.12-11.93,107.18-23.19,134.75-25.75,8.86-.82,20.08-2.12,33.07-3.63l5.45-.63c5.25,6.37,13.32,15.69,23.1,25.38,23.68,23.47,45.6,37.87,65.14,42.82l4.1,1-.38-4.22c-.71-7.76-6.17-15.71-12-24.12-7.06-10.28-14.36-20.9-11.45-29.85,2.57-7.93,8.36-14.49,13.71-19.18,24.08-1.76,49.17-2.88,73.26-2.57,67.09.89,111.89,12.71,133.17,35.13,1.6,1.69,3.14,3.45,4.62,5.26,1.87-13.76,3.45-29.87,4.4-48.5C937.77,374.89,920,363.92,900.77,352Z"/>',

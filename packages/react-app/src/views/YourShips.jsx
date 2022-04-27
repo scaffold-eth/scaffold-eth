@@ -85,98 +85,90 @@ function YourShips({
   }, [address, yourShipBalance]);
 
   return (
-    <>
-      <div style={{ maxWidth: 820, margin: "auto", marginTop: 32, paddingBottom: 32 }}>
-        <div style={{ fontSize: 16 }}>
-          <p>
-            {loogieCoinBalance ? loogieCoinBalance.toString() : "0"} <strong>LoogieCoins</strong>.
-          </p>
-          <p>
-            Add the crew to your <strong>LoogieShip</strong>.
-          </p>
-        </div>
-      </div>
+    <div style={{ backgroundColor: "#29aae1" }}>
+      <div class="your-ships" style={{ width: 1280, margin: "auto" }}>
+        <div style={{ width: "auto", margin: "auto", padding: 25, minHeight: 800 }}>
+          <div>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 3,
+                xl: 3,
+                xxl: 3,
+              }}
+              loading={loadingShips}
+              dataSource={yourShips}
+              renderItem={item => {
+                const id = item.id.toNumber();
 
-      <div style={{ width: "auto", margin: "auto", paddingBottom: 25, minHeight: 800 }}>
-        <div>
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 2,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
-            }}
-            loading={loadingShips}
-            dataSource={yourShips}
-            renderItem={item => {
-              const id = item.id.toNumber();
-
-              return (
-                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                  <Card
-                    headStyle={{
-                      backgroundColor: shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "#60f479" : "none",
-                    }}
-                    title={
-                      <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                return (
+                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                    <Card
+                      style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
+                      headStyle={{
+                        fontWeight: "bold", backgroundColor: shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "#60f479" : "none",
+                      }}
+                      title={
+                        <div>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          <Button
+                            className="action-inline-button"
+                            onClick={() => {
+                              setSelectedShip(id);
+                              history.push("/addCrew");
+                            }}
+                          >
+                            {shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "Go Fishing" : "Add Crew"}
+                          </Button>
+                          {shipCrew && shipCrew[id] && shipCrew[id]["ready"] && (
+                            <CheckOutlined
+                              title="Ready to go fishing!"
+                              style={{
+                                cursor: "pointer",
+                                float: "right",
+                                fontSize: 30,
+                                fontWeight: "bold",
+                                color: "green",
+                              }}
+                            />
+                          )}
+                        </div>
+                      }
+                    >
+                      <img src={item.image} alt={"Loogie Ship #" + id} width="380" />
+                      <div className="transfer">
+                        <AddressInput
+                          ensProvider={mainnetProvider}
+                          placeholder="transfer to address"
+                          value={transferToAddresses[id]}
+                          onChange={newValue => {
+                            const update = {};
+                            update[id] = newValue;
+                            setTransferToAddresses({ ...transferToAddresses, ...update });
+                          }}
+                        />
                         <Button
-                          className="action-inline-button"
                           onClick={() => {
-                            setSelectedShip(id);
-                            history.push("/addCrew");
+                            tx(writeContracts.LoogieShip.transferFrom(address, transferToAddresses[id], id), function (transaction) {
+                              setUpdateBalances(updateBalances + 1);
+                            });
                           }}
                         >
-                          {shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "Go Fishing" : "Add Crew"}
+                          Transfer
                         </Button>
-                        {shipCrew && shipCrew[id] && shipCrew[id]["ready"] && (
-                          <CheckOutlined
-                            title="Ready to go fishing!"
-                            style={{
-                              cursor: "pointer",
-                              float: "right",
-                              fontSize: 30,
-                              fontWeight: "bold",
-                              color: "green",
-                            }}
-                          />
-                        )}
                       </div>
-                    }
-                  >
-                    <img src={item.image} />
-                    <div className="transfer">
-                      <AddressInput
-                        ensProvider={mainnetProvider}
-                        placeholder="transfer to address"
-                        value={transferToAddresses[id]}
-                        onChange={newValue => {
-                          const update = {};
-                          update[id] = newValue;
-                          setTransferToAddresses({ ...transferToAddresses, ...update });
-                        }}
-                      />
-                      <Button
-                        onClick={() => {
-                          tx(writeContracts.LoogieShip.transferFrom(address, transferToAddresses[id], id), function (transaction) {
-                            setUpdateBalances(updateBalances + 1);
-                          });
-                        }}
-                      >
-                        Transfer
-                      </Button>
-                    </div>
-                  </Card>
-                </List.Item>
-              );
-            }}
-          />
+                    </Card>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
         </div>
       </div>
-    </>
+    </div>
   );
 }
 

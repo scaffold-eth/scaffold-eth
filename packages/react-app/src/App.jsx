@@ -23,13 +23,14 @@ import {
   NetworkDisplay,
   FaucetHint,
   NetworkSwitch,
+  Footer,
 } from "./components";
 import { NETWORKS, ALCHEMY_KEY } from "./constants";
 import externalContracts from "./contracts/external_contracts";
 // contracts
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor, Web3ModalSetup } from "./helpers";
-import { Home, YourShips, AddCrew, Games, Withdraws, Subgraph } from "./views";
+import { Home, YourShips, AddCrew, Ranking, Fishing, Prizes, Subgraph } from "./views";
 import { useStaticJsonRPC } from "./hooks";
 
 const { ethers } = require("ethers");
@@ -265,26 +266,7 @@ function App(props) {
         logoutOfWeb3Modal={logoutOfWeb3Modal}
         USE_NETWORK_SELECTOR={USE_NETWORK_SELECTOR}
       />
-      <Menu style={{ textAlign: "center", marginTop: 40 }} selectedKeys={[location.pathname]} mode="horizontal">
-        <Menu.Item key="/">
-          <Link to="/">App Home</Link>
-        </Menu.Item>
-        <Menu.Item key="/yourShips">
-          <Link to="/yourShips">Your LoogieShips</Link>
-        </Menu.Item>
-        <Menu.Item key="/fishing">
-          <Link to="/fishing">Fishing</Link>
-        </Menu.Item>
-        <Menu.Item key="/withdraws">
-          <Link to="/withdraws">Prizes</Link>
-        </Menu.Item>
-        <Menu.Item key="/debug">
-          <Link to="/debug">Debug Contracts</Link>
-        </Menu.Item>
-        <Menu.Item key="/subgraph">
-          <Link to="/subgraph">Subgraph</Link>
-        </Menu.Item>
-      </Menu>
+
 
       <Switch>
         <Route exact path="/">
@@ -327,8 +309,8 @@ function App(props) {
             setShipCrew={setShipCrew}
           />
         </Route>
-        <Route exact path="/fishing">
-          <Games
+        <Route exact path="/ranking">
+          <Ranking
             DEBUG={DEBUG}
             writeContracts={writeContracts}
             readContracts={readContracts}
@@ -340,12 +322,28 @@ function App(props) {
             currentWeek={currentWeek}
             currentDay={currentDay}
             currentWeekDay={currentWeekDay}
+            address={address}
           />
         </Route>
-        <Route exact path="/withdraws">
-          <Withdraws
+        <Route exact path="/prizes">
+          <Prizes
             DEBUG={DEBUG}
             readContracts={readContracts}
+            mainnetProvider={mainnetProvider}
+            blockExplorer={blockExplorer}
+            localProvider={localProvider}
+            startBlock={startBlock}
+            currentWeek={currentWeek}
+            currentDay={currentDay}
+            currentWeekDay={currentWeekDay}
+          />
+        </Route>
+        <Route exact path="/fishing">
+          <Fishing
+            DEBUG={DEBUG}
+            writeContracts={writeContracts}
+            readContracts={readContracts}
+            tx={tx}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
             localProvider={localProvider}
@@ -412,8 +410,8 @@ function App(props) {
       <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10 }}>
-        <div style={{ display: "flex", flex: 1, alignItems: "center" }}>
+      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10, backgroundColor: "#b3e2f4" }}>
+        <div style={{ display: "flex", flex: 1, alignItems: "center", flexDirection: "column" }}>
           {USE_NETWORK_SELECTOR && (
             <div style={{ marginRight: 20 }}>
               <NetworkSwitch
@@ -423,6 +421,15 @@ function App(props) {
               />
             </div>
           )}
+          <div style={{ textAlign: "right", width: "100%", padding: 15, paddingBottom: 0, fontSize: 20 }}>
+            <strong>Current Week {currentWeek}</strong>
+          </div>
+          <div style={{ textAlign: "right", width: "100%", padding: 15, paddingTop: 0, paddingBottom: 0, fontSize: 20 }}>
+            <strong>Day {currentWeekDay} ({currentDay})</strong>
+          </div>
+          <div style={{ textAlign: "right", width: "100%", padding: 15, fontSize: 20 }}>
+            <strong>{loogieCoinBalance ? loogieCoinBalance.toString() : 0} LoogieCoins</strong>
+          </div>
           <Account
             useBurner={USE_BURNER_WALLET}
             address={address}
@@ -480,6 +487,7 @@ function App(props) {
           </Col>
         </Row>
       </div>
+      <Footer />
     </div>
   );
 }

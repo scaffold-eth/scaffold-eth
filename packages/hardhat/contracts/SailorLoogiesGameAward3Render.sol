@@ -8,7 +8,7 @@ library SailorLoogiesGameAward3Render {
     string memory render = string(abi.encodePacked(
       '<defs>',
         '<style>',
-          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-3{fill:none;stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{opacity:0.35;}.cls-5{fill:#fff;}.cls-5,.cls-6{stroke:#000;stroke-miterlimit:10;stroke-width:6.08px;}.cls-6{fill:#',color,';}.cls-7{fill:#',secondaryColor,';}.cls-8{fill:#4c250f;}.cls-9{fill:url(#linear-gradient-2);}.cls-10{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}',
+          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-3{fill:none;stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{opacity:0.35;}.cls-5{fill:#fff;}.cls-5,.cls-6{stroke:#000;stroke-miterlimit:10;stroke-width:6.08px;}.cls-6{fill:#',color,';}.cls-7{fill:#',secondaryColor,';}.cls-8{fill:#4c250f;}.cls-9{fill:url(#linear-gradient-2);}.cls-10{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}.cls-11{font-size:24px}',
         '</style>',
         '<linearGradient id="linear-gradient" x1="595.32" y1="132.51" x2="378.64" y2="519.29" gradientUnits="userSpaceOnUse">',
           '<stop offset="0" stop-color="#c59b6d"/>',
@@ -47,7 +47,7 @@ library SailorLoogiesGameAward3Render {
         '<circle class="cls-7" cx="188.32" cy="254.66" r="10.35"/>',
         '<path class="cls-8" d="M454.64,480.77H206.52a16.68,16.68,0,0,0-16.68-16.69V423a16.68,16.68,0,0,0,16.68-16.68H454.64A16.68,16.68,0,0,0,471.33,423v41.11A16.69,16.69,0,0,0,454.64,480.77Z"/>',
         '<path class="cls-9" d="M458,475.34H209.91a16.68,16.68,0,0,0-16.68-16.69V417.54a16.68,16.68,0,0,0,16.68-16.69H458a16.68,16.68,0,0,0,16.68,16.69v41.11A16.68,16.68,0,0,0,458,475.34Z"/>',
-        '<text class="cls-10" transform="translate(210.83 435.69)">WEEK ',week,'<tspan x="42.84" y="29">REWARD ',reward,'</tspan></text>',
+        '<text class="cls-10" transform="translate(210.83 435.69)"><tspan x="35">WEEK ',week,'</tspan><tspan class="cls-11" x="35" y="29">REWARD ',reward,'</tspan></text>',
       '</g>'
       ));
 

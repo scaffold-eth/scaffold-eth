@@ -8,7 +8,7 @@ library SailorLoogiesGameAward1Render {
     string memory render = string(abi.encodePacked(
       '<defs>',
         '<style>',
-          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-10,.cls-3{fill:none;}.cls-3{stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{fill:#4c250f;}.cls-5{fill:url(#linear-gradient-2);}.cls-6{opacity:0.35;}.cls-7{fill:#fff;}.cls-10,.cls-7,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10;}.cls-7,.cls-8,.cls-9{stroke-width:6.73px;}.cls-8{fill:#',color,';}.cls-11,.cls-9{fill:#',secondaryColor,';}.cls-10{stroke-width:6.83px;}.cls-12{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}',
+          '.cls-1{fill:#331708;}.cls-2{stroke:#4c250f;stroke-width:22px;fill:url(#linear-gradient);}.cls-2,.cls-3{stroke-linejoin:round;}.cls-10,.cls-3{fill:none;}.cls-3{stroke:#774335;stroke-linecap:round;stroke-width:20px;}.cls-4{fill:#4c250f;}.cls-5{fill:url(#linear-gradient-2);}.cls-6{opacity:0.35;}.cls-7{fill:#fff;}.cls-10,.cls-7,.cls-8,.cls-9{stroke:#000;stroke-miterlimit:10;}.cls-7,.cls-8,.cls-9{stroke-width:6.73px;}.cls-8{fill:#',color,';}.cls-11,.cls-9{fill:#',secondaryColor,';}.cls-10{stroke-width:6.83px;}.cls-12{font-size:36px;font-family:Bicyclette-Bold, Bicyclette;font-weight:700;}.cls-13{font-size:24px}',
         '</style>',
         '<linearGradient id="linear-gradient" x1="580.06" y1="132.51" x2="363.38" y2="519.29" gradientUnits="userSpaceOnUse">',
           '<stop offset="0" stop-color="#c59b6d"/>',
@@ -73,7 +73,7 @@ library SailorLoogiesGameAward1Render {
         '<path class="cls-10" d="M548.48,197.38s29.15-21.63,58.3-26.33"/>',
         '<path class="cls-10" d="M579.51,207.72s15-14.1,44.2-18.81"/>',
         '<path class="cls-10" d="M602.08,220.89s4.7-9.41,33.85-14.11"/>',
-        '<text class="cls-12" transform="translate(327.98 505.59)">WEEK ',week,'<tspan x="42.84" y="29">REWARD ',reward,'</tspan></text>',
+        '<text class="cls-12" transform="translate(327.98 505.59)"><tspan x="35">WEEK ',week,'</tspan><tspan class="cls-13" x="35" y="29">REWARD ',reward,'</tspan></text>',
       '</g>'
       ));
 

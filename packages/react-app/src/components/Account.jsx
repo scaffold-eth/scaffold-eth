@@ -69,7 +69,7 @@ export default function Account({
           size="large"
           onClick={logoutOfWeb3Modal}
         >
-          logout
+          Logout
         </Button>,
       );
     } else {
@@ -82,7 +82,7 @@ export default function Account({
           /* type={minimized ? "default" : "primary"}     too many people just defaulting to MM and having a bad time */
           onClick={loadWeb3Modal}
         >
-          connect
+          Connect
         </Button>,
       );
     }
@@ -93,16 +93,20 @@ export default function Account({
     <span>
       {web3Modal && web3Modal.cachedProvider ? (
         <>
-          {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
-          <Balance address={address} provider={localProvider} price={price} />
-          <Wallet
-            address={address}
-            provider={localProvider}
-            signer={userSigner}
-            ensProvider={mainnetProvider}
-            price={price}
-            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-          />
+          <div>
+            {address && <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />}
+          </div>
+          <div>
+            <Balance address={address} provider={localProvider} price={price} />
+            <Wallet
+              address={address}
+              provider={localProvider}
+              signer={userSigner}
+              ensProvider={mainnetProvider}
+              price={price}
+              color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+            />
+          </div>
         </>
       ) : useBurner ? (
         ""
@@ -116,16 +120,20 @@ export default function Account({
       )}
       {useBurner && web3Modal && !web3Modal.cachedProvider ? (
         <>
-          <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
-          <Balance address={address} provider={localProvider} price={price} />
-          <Wallet
-            address={address}
-            provider={localProvider}
-            signer={userSigner}
-            ensProvider={mainnetProvider}
-            price={price}
-            color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
-          />
+          <div>
+            <Address address={address} ensProvider={mainnetProvider} blockExplorer={blockExplorer} />
+          </div>
+          <div>
+            <Balance address={address} provider={localProvider} price={price} />
+            <Wallet
+              address={address}
+              provider={localProvider}
+              signer={userSigner}
+              ensProvider={mainnetProvider}
+              price={price}
+              color={currentTheme === "light" ? "#1890ff" : "#2caad9"}
+            />
+          </div>
         </>
       ) : (
         <></>
@@ -134,7 +142,7 @@ export default function Account({
   );
 
   return (
-    <div>
+    <div style={{ width: "100%", padding: 10 }}>
       {display}
       {modalButtons}
     </div>

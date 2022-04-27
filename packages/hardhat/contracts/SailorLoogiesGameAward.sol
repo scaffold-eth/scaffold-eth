@@ -65,7 +65,7 @@ contract SailorLoogiesGameAward is ERC721Enumerable, AccessControl {
                 bytes(
                       abi.encodePacked(
                           '{"name":"SailorLoogies Game Award #',id.toString(),
-                          '", "description":"SailorLoogies Game Award - Week #',week(id).toString(),
+                          '", "description":"SailorLoogies Game Award - Week #',week[id].toString(),
                           '", "external_url":"https://ship.fancyloogies.com/award/',
                           id.toString(),
                           '", "attributes": [{"trait_type": "Color", "value": "#',
@@ -101,10 +101,22 @@ contract SailorLoogiesGameAward is ERC721Enumerable, AccessControl {
     return 'Swordfish';
   }
 
+  function width(uint256 id) public view returns (string memory) {
+    if (rewardType[id] < 128) {
+      return '937';
+    }
+
+    if (rewardType[id] > 224) {
+      return '983';
+    }
+
+    return '1245';
+  }
+
   function generateSVGofTokenById(uint256 id) internal view returns (string memory) {
 
     string memory svg = string(abi.encodePacked(
-      '<svg width="1245" height="715" xmlns="http://www.w3.org/2000/svg">',
+      '<svg width="',width(id),'" height="715" xmlns="http://www.w3.org/2000/svg">',
         renderTokenById(id),
       '</svg>'
     ));

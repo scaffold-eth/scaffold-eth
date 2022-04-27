@@ -127,6 +127,8 @@ contract SailorLoogiesGame {
   }
 
   function winnerByWeek(uint256 week) public view returns (uint256) {
+    // change to days
+    uint256 diffHours = (block.timestamp - startTimestamp) / 60;
     require(week * 7 <= diffHours, "week is not finished yet!");
 
     // week 1, is from day 0 to 6, week 2, 7 to 13, and so on

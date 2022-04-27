@@ -69,9 +69,11 @@ export default function Wallet(props) {
         rotate={-90}
         style={{
           padding: 7,
+          paddingRight: 0,
+          paddingLeft: 4,
           color: props.color ? props.color : "",
           cursor: "pointer",
-          fontSize: 28,
+          fontSize: props.fontSize ? props.fontSize : 18,
           verticalAlign: "middle",
         }}
       />

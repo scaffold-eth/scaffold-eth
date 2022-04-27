@@ -1,7 +1,13 @@
-.App {
-  text-align: center;
+#root {
+  background-color: #b3e2f4;
 }
 
+.App {
+  text-align: center;
+  margin: 0 auto;
+  width: 1280px;
+  padding-left: 0;
+}
 
 body {
   margin: 0;
@@ -21,6 +27,9 @@ code {
 
 .ship-preview .ant-card-body {
   display: flex;
+  padding: 0;
+  border-radius: 20px;
+  border: 24px solid #b3e2f4;
 }
 
 .ship-preview .ant-alert {
@@ -75,4 +84,90 @@ code {
 
 .crew-member img {
   margin-top: -25px;
+}
+
+.home {
+  background-image: url(images/sunset.jpg);
+  background-position-y: 500px;
+}
+
+.your-ships, .ranking {
+  background-color: #29aae1;
+}
+
+#root .ant-menu {
+  background-color: #b3e2f4;
+}
+
+#page-header {
+  background-image: url(images/sunset.jpg);
+  background-position-y: -207px;
+}
+
+#page-header .ant-avatar-image {
+  height: 100px;
+  width: 100px;
+  border-radius: 0;
+}
+
+#page-header .ant-page-header-heading-title {
+  font-family: 'Pirata One', cursive;
+  font-size: 50px;
+  line-height: 50px;
+  color: #603813;
+}
+
+#root .ant-card-head {
+  border-bottom: 1px solid #0071bb;
+}
+
+#menu li a {
+  font-family: 'Pirata One', cursive;
+  color: #603813;
+}
+
+#menu li a:hover {
+  color: #c59b6d;
+}
+
+#menu li.ant-menu-item-selected, #menu li:hover {
+  border-bottom: 2px solid #603813;
+}
+
+#your-loogies .ant-card-body {
+  overflow: hidden;
+  width: 240px;
+  height: 240px;
+}
+
+#your-loogies .ant-card-body img {
+  width: 400px;
+  margin-top: -100px;
+  margin-left: -80px;
+}
+
+#ranking .ant-table-cell {
+  background-color: #b3e2f4;
+}
+
+#ranking thead .ant-table-cell {
+  font-weight: bold;
+}
+
+.footer {
+  padding-top: 20px;
+  padding-bottom: 20px;
+  background-image: linear-gradient(#29aae1, #0071bb);
+}
+
+.footer a {
+  color: #0e3c22;
+}
+
+.footer a:hover {
+  color: #60ea2c;
+}
+
+#midi-player {
+  display: none;
 }

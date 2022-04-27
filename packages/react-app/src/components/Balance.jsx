@@ -57,8 +57,9 @@ export default function Balance(props) {
     <span
       style={{
         verticalAlign: "middle",
-        fontSize: props.size ? props.size : 24,
+        fontSize: props.size ? props.size : 18,
         padding: 8,
+        paddingRight: 0,
         cursor: "pointer",
       }}
       onClick={() => {
