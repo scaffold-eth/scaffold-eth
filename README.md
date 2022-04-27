@@ -51,7 +51,9 @@ $ sudo npx hardhat starknet-verify --starknet-network alpha-goerli --path ./cont
 
 ## Resoucres
 
+* [starknet(https://starkware.co/starknet/)
 * [cairo-lang](https://www.cairo-lang.org/)
 * [cairo-lang docs](https://www.cairo-lang.org/docs/)
 * [scaffold-eth](https://github.com/scaffold-eth/scaffold-eth)
 * [starknet-hardhat-plugin](https://github.com/Shard-Labs/starknet-hardhat-plugin)
+* [goerli starknet block explorer](https://goerli.voyager.online/)
