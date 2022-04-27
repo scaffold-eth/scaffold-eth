@@ -51,7 +51,7 @@ $ sudo npx hardhat starknet-verify --starknet-network alpha-goerli --path ./cont
 
 ## Resoucres
 
-* [starknet(https://starkware.co/starknet/)
+* [starknet](https://starkware.co/starknet/)
 * [cairo-lang](https://www.cairo-lang.org/)
 * [cairo-lang docs](https://www.cairo-lang.org/docs/)
 * [scaffold-eth](https://github.com/scaffold-eth/scaffold-eth)
