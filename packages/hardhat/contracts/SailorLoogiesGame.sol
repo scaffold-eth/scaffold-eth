@@ -1,8 +1,6 @@
 //SPDX-License-Identifier: MIT
 pragma solidity >=0.8.0 <0.9.0;
 
-import "hardhat/console.sol";
-
 abstract contract LoogieShipContract {
   function ownerOf(uint256 id) external virtual view returns (address);
   mapping(uint8 => mapping(uint256 => uint256)) public crewById;
@@ -163,8 +161,6 @@ contract SailorLoogiesGame {
       colorUint = colorUint + _colorToUint256(nftColor);
     }
 
-    console.log("colorUint: ", colorUint);
-
     uint256 mod;
 
     if (colorUint == 0) {
@@ -173,9 +169,6 @@ contract SailorLoogiesGame {
       mod = block.number % colorUint;
     }
     // colorUint and mod go from 0 to 3060
-
-    console.log("blockNumber: ", block.number);
-    console.log("mod: ", mod);
 
     uint256 random;
 
@@ -186,21 +179,7 @@ contract SailorLoogiesGame {
     }
     // random go from 0 to 5100
 
-    console.log("random: ", random);
-
     uint256 reward = 8160 - (mod + random);
-
-    console.log("reward: ", reward);
-
-    console.log("block.timestamp: ", block.timestamp);
-
-    uint256 diffSeconds = block.timestamp - startTimestamp;
-
-    console.log("diffSeconds: ", diffSeconds);
-
-    uint256 diffHours = diffSeconds / 60;
-
-    console.log("diffHours: ", diffHours);
 
     return reward;
   }
