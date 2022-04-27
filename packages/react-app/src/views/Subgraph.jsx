@@ -91,8 +91,16 @@ function Subgraph(props) {
       </div>
 
       <div style={{ margin: 32 }}>
+        <span style={{ marginRight: 8 }}>⛓️</span>
+        Make sure your local chain is running first:
+        <span className="highlight" style={highlight}>
+          yarn chain
+        </span>
+      </div>
+
+      <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>🚮</span>
-        Clean up previous data:
+        Clean up previous data, if there is any:
         <span className="highlight" style={highlight}>
           yarn clean-graph-node
         </span>

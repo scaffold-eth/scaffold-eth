@@ -152,36 +152,6 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
-    rinkebyArbitrum: {
-      url: "https://rinkeby.arbitrum.io/rpc",
-      gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-      companionNetworks: {
-        l1: "rinkeby",
-      },
-    },
-    localArbitrum: {
-      url: "http://localhost:8547",
-      gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-      companionNetworks: {
-        l1: "localArbitrumL1",
-      },
-    },
-    localArbitrumL1: {
-      url: "http://localhost:7545",
-      gasPrice: 0,
-      accounts: {
-        mnemonic: mnemonic(),
-      },
-      companionNetworks: {
-        l2: "localArbitrum",
-      },
-    },
     optimism: {
       url: "https://mainnet.optimism.io",
       accounts: {
@@ -259,6 +229,34 @@ module.exports = {
         mnemonic: mnemonic(),
       },
     },
+    moonbeam: {
+      url: 'https://rpc.api.moonbeam.network',
+      chainId: 1284,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    moonriver: {
+      url: 'https://rpc.api.moonriver.moonbeam.network',
+      chainId: 1285,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    moonbaseAlpha: {
+      url: 'https://rpc.api.moonbase.moonbeam.network',
+      chainId: 1287,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    },
+    moonbeamDevNode: {
+      url: 'http://127.0.0.1:9933',
+      chainId: 1281,
+      accounts: {
+        mnemonic: mnemonic(),
+      },
+    }
   },
   solidity: {
     compilers: [

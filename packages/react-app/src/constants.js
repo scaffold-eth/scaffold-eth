@@ -85,35 +85,6 @@ export const NETWORKS = {
     faucet: "https://faucet.polygon.technology/",
     blockExplorer: "https://mumbai.polygonscan.com/",
   },
-  localArbitrum: {
-    name: "localArbitrum",
-    color: "#50a0ea",
-    chainId: 153869338190755,
-    blockExplorer: "",
-    rpcUrl: `http://localhost:8547`,
-  },
-  localArbitrumL1: {
-    name: "localArbitrumL1",
-    color: "#50a0ea",
-    chainId: 44010,
-    blockExplorer: "",
-    rpcUrl: `http://localhost:7545`,
-  },
-  rinkebyArbitrum: {
-    name: "Arbitrum Testnet",
-    color: "#50a0ea",
-    chainId: 421611,
-    blockExplorer: "https://rinkeby-explorer.arbitrum.io/#/",
-    rpcUrl: `https://rinkeby.arbitrum.io/rpc`,
-  },
-  arbitrum: {
-    name: "Arbitrum",
-    color: "#50a0ea",
-    chainId: 42161,
-    blockExplorer: "https://explorer.arbitrum.io/#/",
-    rpcUrl: `https://arb1.arbitrum.io/rpc`,
-    gasPrice: 0,
-  },
   localOptimismL1: {
     name: "localOptimismL1",
     color: "#f01a37",
@@ -201,6 +172,35 @@ export const NETWORKS = {
     gasPrice: 1000000000,
     faucet: "https://faucet.fantom.network/",
   },
+  moonbeam: {
+    name: "moonbeam",
+    color: "#53CBC9",
+    chainId: 1284,
+    blockExplorer: "https://moonscan.io",
+    rpcUrl: "https://rpc.api.moonbeam.network", 
+  },
+  moonriver: {
+    name: "moonriver",
+    color: "#53CBC9",
+    chainId: 1285,
+    blockExplorer: "https://moonriver.moonscan.io/",
+    rpcUrl: "https://rpc.api.moonriver.moonbeam.network",
+  },
+  moonbaseAlpha: {
+    name: "moonbaseAlpha",
+    color: "#53CBC9",
+    chainId: 1287,
+    blockExplorer: "https://moonbase.moonscan.io/",
+    rpcUrl: "https://rpc.api.moonbase.moonbeam.network",
+    faucet: "https://discord.gg/SZNP8bWHZq",
+  },
+  moonbeamDevNode: {
+    name: "moonbeamDevNode",
+    color: "#53CBC9",
+    chainId: 1281,
+    blockExplorer: "https://moonbeam-explorer.netlify.app/",
+    rpcUrl: "http://127.0.0.1:9933",
+  }
 };
 
 export const NETWORK = chainId => {
