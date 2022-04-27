@@ -690,7 +690,7 @@ body {
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   font-variant: tabular-nums;
   line-height: 1.5715;
-  background-color: #212121;
+  background-color: #41455b;
   font-feature-settings: "tnum";
 }
 [tabindex="-1"]:focus {
@@ -3970,7 +3970,7 @@ a.ant-btn-sm {
   list-style: none;
   font-feature-settings: "tnum";
   position: relative;
-  background: #212121;
+  background: #222336;
   border-radius: 4px;
 }
 .ant-card-rtl {
