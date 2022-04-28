@@ -54,6 +54,8 @@ Documentation, tutorials, challenges, and many more resources, visit: [docs.scaf
 
 # 🍦 Other Flavors
 - [scaffold-eth-typescript](https://github.com/scaffold-eth/scaffold-eth-typescript)
+- [scaffold-nextjs](https://github.com/scaffold-eth/scaffold-eth/tree/scaffold-nextjs)
+- [scaffold-chakra](https://github.com/scaffold-eth/scaffold-eth/tree/chakra-ui)
 - [eth-hooks](https://github.com/scaffold-eth/eth-hooks)
 - [eth-components](https://github.com/scaffold-eth/eth-components)
 - [scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
