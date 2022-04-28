@@ -78,10 +78,10 @@ nile compile --directory packages/nile/src/starknet-nft
 
 ```bash
 # Run all tests
-tox 
+pytest ./packages/nile/tests
 
-# Run a specific test
-tox tests/test_ERC721.py::test_initial_data
+# Run a specific test file
+pytest ./packages/nile/tests/test_ERC721.py
 ```
 
 ## Resources
