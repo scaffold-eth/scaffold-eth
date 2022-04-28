@@ -51,6 +51,14 @@ yarn deploy
 
 Documentation, tutorials, challenges, and many more resources, visit: [docs.scaffoldeth.io](https://docs.scaffoldeth.io)
 
+
+# 🍦 Other Flavors
+[scaffold-eth-typescript](https://github.com/scaffold-eth/scaffold-eth-typescript)
+[eth-hooks](https://github.com/scaffold-eth/eth-hooks)
+[eth-components](https://github.com/scaffold-eth/eth-components)
+[scaffold-eth-expo](https://github.com/scaffold-eth/scaffold-eth-expo)
+
+
 # 🔭 Learning Solidity
 
 📕 Read the docs: https://docs.soliditylang.org
