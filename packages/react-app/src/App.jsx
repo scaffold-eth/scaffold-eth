@@ -676,72 +676,72 @@ function App(props) {
             </div>
 
 
-            {headerImage("Pikemen","pikemen")}
+            {headerImage("Fullstack","pikemen")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(bgBuilders,"pikemen")}
+                dataSource={filterBuilders(bgBuilders,"fullstack")}
                 renderItem={builderRender}
               />
             </div>
 
 
-            {headerImage("Archers","archer")}
+            {headerImage("Frontend","archer")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(bgBuilders,"archer")}
+                dataSource={filterBuilders(bgBuilders,"frontend")}
                 renderItem={builderRender}
               />
             </div>
 
-            {headerImage("Knights","knight")}
+            {headerImage("Damage Dealers","knight")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(bgBuilders,"knight")}
+                dataSource={filterBuilders(bgBuilders,"damageDealer")}
                 renderItem={builderRender}
               />
             </div>
 
-            {headerImage("Clerics","cleric")}
+            {headerImage("Advisors","cleric")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(bgBuilders,"cleric")}
-                renderItem={builderRender}
-              />
-            </div>
-
-
-            {headerImage("Warlocks","warlock")}
-            <div style={{width:streamWidth,margin:"auto"}}>
-              <List
-                /*bordered*/
-                itemLayout="vertical"
-                size="large"
-                dataSource={filterBuilders(bgBuilders,"warlock")}
+                dataSource={filterBuilders(bgBuilders,"advisor")}
                 renderItem={builderRender}
               />
             </div>
 
 
-
-            {headerImage("Monks","monk")}
+            {headerImage("Artists","warlock")}
             <div style={{width:streamWidth,margin:"auto"}}>
               <List
                 /*bordered*/
                 itemLayout="vertical"
                 size="large"
-                dataSource={filterBuilders(bgBuilders,"monk")}
+                dataSource={filterBuilders(bgBuilders,"artist")}
+                renderItem={builderRender}
+              />
+            </div>
+
+
+
+            {headerImage("Support","monk")}
+            <div style={{width:streamWidth,margin:"auto"}}>
+              <List
+                /*bordered*/
+                itemLayout="vertical"
+                size="large"
+                dataSource={filterBuilders(bgBuilders,"support")}
                 renderItem={builderRender}
               />
             </div>
