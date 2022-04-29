@@ -2,9 +2,7 @@
 
 This dapp will deploy an ERC721 contract (written in cairo) to the starknet goerli alpha testnet.
 
-## Hardhat
-
-### Accounts
+## Accounts
 
 When running `yarn starknet:deploy` the deploy script in `packages/hardhat/deploy/00_deploy_your_contract.js` is executed.
 
@@ -20,7 +18,7 @@ Deployments after that can reuse the created account.
 
 Toggle the bool flag and update the variables `const accountAddress` and `const privateKey` accordingly.
 
-### Getting started
+## Getting started
 
 ```bash
 # install dependencies
@@ -43,45 +41,12 @@ $ yarn deploy
 $ yarn start
 ```
 
-### Verify contract
+## Verify contract
 
 ```bash
 $ cd starknet-mvp/packages/hardhat
 
 $ sudo npx hardhat starknet-verify --starknet-network alpha-goerli --path ./contracts/ERC721.cairo --address 0x0585feed17184d7990c57febcbb8e185f6607f49a2152c2965da5f01d373a405 --show-stack-traces
-```
-
-## Nile
-
-### Set up the project
-
-#### Create a Python virtual environment
-
-```bash
-python3 -m venv env
-source env/bin/activate
-```
-
-#### 📦 Install the requirements
-
-```bash
-pip install -r requirements.txt
-```
-
-### ⛏️ Compile
-
-```bash
-nile compile --directory packages/nile/src/starknet-nft
-```
-
-### 🌡️ Test
-
-```bash
-# Run all tests
-pytest ./packages/nile/tests
-
-# Run a specific test file
-pytest ./packages/nile/tests/test_ERC721.py
 ```
 
 ## Resources
