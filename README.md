@@ -4,7 +4,7 @@ This dapp will deploy an ERC721 contract (written in cairo) to the starknet goer
 
 ## Accounts
 
-When running `yarn starknet:deploy` the deploy script in `packages/hardhat/deploy/00_deploy_your_contract.js` is executed.
+When running `yarn deploy` the deploy script in `packages/hardhat/deploy/00_deploy_your_contract.js` is executed.
 
 The deploy script has a `CREATE_NEW_ACCOUNT` flag at the top:
 
