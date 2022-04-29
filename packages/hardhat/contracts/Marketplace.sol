@@ -1,10 +1,5 @@
 //SPDX-License-Identifier: MIT
-pragma solidity ^0.8.10;
-
-// Collection royalties
-//   Can be setup by a collection owner right after NFT contract deployment.
-//   The collection owner enters the deployment address of the collection and the
-//   collections name as it appears in the smart contract, the royalty amount, and the royalty recievers address.
+pragma solidity ^0.8.11;
 
 import "@openzeppelin/contracts/token/ERC721/extensions/IERC721Metadata.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
@@ -38,10 +33,9 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 date;
         address highestBidder;
     }
-
+    // Royalty Info
     struct Royalties {
         address _nftContract;
-        string _collectionName;
         address payoutAccount;
         uint256 royaltyAmount;
         bool exists;
@@ -63,7 +57,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
     event UpdatedPrice(uint256 indexed itemId, address owner, uint256 price);
     event NewBid(address buyer, Listing listing, uint256 newBid);
 
-    // * Listing owner modifier
+    // * Modifiers
     modifier Owned(uint256 listingId) {
         Listing memory item = listings[listingId];
         address ownerOfToken = IERC721(item.nftContract).ownerOf(item.nftId);
@@ -118,7 +112,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         );
     }
 
-    // eMax or ETH buy function
+    // IERC20 buy function
+    // Buy a listing using an ERC20 accepted by the marketplace.
     function buy(uint256 listingId) public payable nonReentrant {
         Listing memory item = listings[listingId];
         address contractAddress = item.nftContract;
@@ -129,7 +124,7 @@ contract Marketplace is ReentrancyGuard, Ownable {
         uint256 baseRoyalty = royalties[contractAddress].royaltyAmount;
         address royaltyReceiver = royalties[contractAddress].payoutAccount;
         require(msg.sender != nftSeller, "You cannot buy and NFT you are selling.");
-        require(contractAddress != address(0x0000), "Listing does not exist.");
+        require(contractAddress != address(0), "Listing does not exist.");
         require(item.isAuction == false, "This listing is designated for auction.");
 
         // validate amount sent is enough to buy NFT
@@ -138,12 +133,13 @@ contract Marketplace is ReentrancyGuard, Ownable {
             "Please submit asking price in order to complete purchase"
         );
 
-        // seller must call approve on the marketplace contract for transfer
+        // transfer NFT to the buyer
         IERC721(contractAddress).safeTransferFrom(nftSeller, msg.sender, nftId);
-
-        //console.log((price * baseRoyalty) / BPS); //just royalty amount
+        // transfer sale proceeds to seller
         IERC20(payableCurrency).transferFrom(msg.sender, nftSeller, price - ((price * baseRoyalty) / BPS)); // price - royalty
+        // transfer royalty proceeds to the royalty receiver
         IERC20(payableCurrency).transferFrom(msg.sender, royaltyReceiver, (price * baseRoyalty) / BPS); //just royalty
+
         emit Purchase(listingId, msg.sender, price);
     }
 
@@ -152,15 +148,20 @@ contract Marketplace is ReentrancyGuard, Ownable {
         return listings[listingId].price;
     }
 
+    // * Update listing price, listing cannot be on auction.
     function updatePrice(uint256 listingId, uint256 newPrice)
         public
         Owned(listingId)
     {
+        require(listings[listingId].isAuction == false, "Auction starting prices cannot be updated");
+
+        // set new price
         listings[listingId].price = newPrice;
+
         emit UpdatedPrice(listingId, msg.sender, newPrice);
     }
 
-    // * Add new bid and return funds to previous bidder.
+    // * New bid and return funds to previous bidder
     function bid(uint256 listingId, uint256 amount) public payable nonReentrant {
         Listing storage listing = listings[listingId];
         uint256 currentBid = listing.price;
@@ -174,19 +175,21 @@ contract Marketplace is ReentrancyGuard, Ownable {
             "Bid must be greater than previous bid."
         );
 
+        // ESCROW payment in the marketplace contract
         IERC20(payableCurrency).transferFrom(msg.sender, address(this), amount);
-
         // transfer current bid back to previous bidder if not empty address.
         if (listing.highestBidder != address(0))
             IERC20(payableCurrency).transferFrom(address(this), highestBidder, currentBid);
-        //update current bid values
+        // update to new bid values
         listing.highestBidder = msg.sender;
         listing.price = amount;
 
         emit NewBid(msg.sender, listing, amount);
     }
 
-    // * Transfer current bid to seller and NFT to winner
+    // * Withdraw
+    // After Auction has ended, NFT seller or highest bidder can call this function to
+    // initiate the distribution of funds to seller and royalty receiver.
     function withdraw(uint256 listingId) public nonReentrant {
         Listing storage listing = listings[listingId];
         address contractAddress = listing.nftContract;
@@ -209,13 +212,15 @@ contract Marketplace is ReentrancyGuard, Ownable {
         IERC20(payableCurrency).transfer(nftSeller, sellerAmount);
         IERC20(payableCurrency).transfer(royaltyReceiver, royaltyRecAmount);
 
-        //update listing status
+        // update listing status
         listing.isAuction = false;
 
         emit Purchase(listingId, highestBidder, endBid);
     }
 
-    // * Manual early cancellation by seller
+    // * Auction Cancel
+    // Manual cancel the auction early, only callable by NFT Owner
+    // This assumes the NFT owner is also the account which created the listing
     function auctionCancel(uint256 listingId)
         public
         Owned(listingId)
@@ -230,7 +235,8 @@ contract Marketplace is ReentrancyGuard, Ownable {
         delete listings[listingId];
     }
 
-    // * Manually remove a listing if you are the owner and the auction is set to false.
+    // * Remove Listing
+    // Manually remove a listing if you are the owner and not surrently on auction
     function removeListing(uint256 listingId) public Owned(listingId) {
         Listing storage listing = listings[listingId];
         require(listing.seller == msg.sender, "You do not own this listing.");
@@ -244,19 +250,11 @@ contract Marketplace is ReentrancyGuard, Ownable {
 
     // ============ UTILITIES ==============
 
-    // * If msg.value is greater than listing price in ETH, refund the difference
-    function refundIfOver(uint256 price) private {
-        require(msg.value >= price, "Need to send more ETH.");
-        if (msg.value > price) {
-            payable(msg.sender).transfer(msg.value - price);
-        }
-    }
-
-    // * Set royalties for a NFT collection. Owners of an NFT collection to use this function to set up
-    //   royalties for their collections. The address given will be where the collection royalties are sent to
+    // * Set Royalty info
+    // NFT collections deployer account to be the caller
+    // The payoutAccount given will be where royalties are sent
     function setNFTCollectionRoyalty(
         address contractAddress,
-        string memory collectionName,
         address payoutAccount,
         uint256 royaltyAmount
     ) public returns (bool) {
@@ -272,7 +270,6 @@ contract Marketplace is ReentrancyGuard, Ownable {
         // set royalties
         royalties[contractAddress] = Royalties(
             contractAddress,
-            collectionName,
             payoutAccount,
             royaltyAmount,
             true
@@ -281,17 +278,19 @@ contract Marketplace is ReentrancyGuard, Ownable {
         return true;
     }
 
-    // ========= Receive =============
-    // needed for contract to receive funds
-    receive() external payable {}
-
-    // ========= Only Owner =============
-
-    function inCaseERC20GetsStuck(
+    // * Remove ERC20 from contract
+    // Manually remove an ERC20 that gets sent to marketplace
+    // contract which is not the main payment token.
+    // Only callable by the contract owner.
+    function removeERC20Stuck(
         address to,
         IERC20 currency,
         uint256 amount
     ) public onlyOwner {
         IERC20(currency).transferFrom(address(this), to, amount);
     }
+
+    // ========= Receive =============
+    // Needed for contract to receive funds
+    receive() external payable {}
 }
