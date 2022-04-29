@@ -2,7 +2,7 @@
 
 This dapp will deploy an ERC721 contract (written in cairo) to the starknet goerli alpha testnet.
 
-## Hardhat 
+## Hardhat
 
 ### Accounts
 
@@ -37,7 +37,7 @@ $ cd ./packages/hardhat
 $ yarn starknet:compile
 
 # deploy contracts
-$ yarn starknet:deploy
+$ yarn deploy
 
 # start app
 $ yarn start

@@ -3,6 +3,8 @@ const { utils } = require("ethers");
 const fs = require("fs");
 const chalk = require("chalk");
 
+require("@shardlabs/starknet-hardhat-plugin");
+
 require("@nomiclabs/hardhat-waffle");
 require("@tenderly/hardhat-tenderly");
 
@@ -11,8 +13,6 @@ require("hardhat-gas-reporter");
 
 require("@nomiclabs/hardhat-ethers");
 require("@nomiclabs/hardhat-etherscan");
-
-require("@shardlabs/starknet-hardhat-plugin");
 
 const { isAddress, getAddress, formatUnits, parseUnits } = utils;
 
@@ -52,13 +52,13 @@ module.exports = {
     dockerizedVersion: "0.8.1",
     wallets: {
       MyWallet: {
-        accountName: "OpenZeppelin",
+        accountName: "MyWallet",
         modulePath:
           "starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount",
         accountPath: "~/.starknet_accounts",
       },
       AnotherWallet: {
-        accountName: "AnotherOpenZeppelin",
+        accountName: "AnotherWallet",
         modulePath:
           "starkware.starknet.wallets.open_zeppelin.OpenZeppelinAccount",
         accountPath: "~/.starknet_accounts",

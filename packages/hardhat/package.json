@@ -43,8 +43,8 @@
     "generate": "hardhat generate",
     "account": "hardhat account",
     "verify": "hardhat verify",
+    "starknet:deploy-wallet": "npx hardhat starknet-deploy-account --starknet-network alpha-goerli --wallet MyWallet",
     "starknet:compile": "npx hardhat starknet-compile --show-stack-traces",
-    "starknet:deploy": "npx hardhat starknet-deploy --starknet-network alpha-goerli",
     "starknet:verify": "npx hardhat starknet-verify --starknet-network alpha-goerli --path ./contracts --address 0x0585feed17184d7990c57febcbb8e185f6607f49a2152c2965da5f01d373a405"
   }
 }

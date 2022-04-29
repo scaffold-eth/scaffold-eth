@@ -20,12 +20,10 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const chainId = await getChainId();
   */
 
-  console.log({ starknet });
-
   // see: https://www.npmjs.com/package/@shardlabs/starknet-hardhat-plugin#Account
   const accountName = "OpenZeppelin";
 
-  const CREATE_NEW_ACCOUNT = true;
+  const CREATE_NEW_ACCOUNT = false;
   const FETCH_EXISTING_ACCOUNT = !CREATE_NEW_ACCOUNT;
 
   let account = null;
