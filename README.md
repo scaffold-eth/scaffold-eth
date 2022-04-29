@@ -1,6 +1,6 @@
 # 🏯 Simple Marketplace w/ Royalties
 
-![image](https://scaffold-eth-readme-images.s3.amazonaws.com/Screen+Shot+2022-04-13+at+11.50.39+AM.png)
+![image](https://scaffold-eth-readme-images.s3.amazonaws.com/Screen+Shot+2022-04-29+at+9.31.11+AM.png)
 
 This Marketplace template features the following:
   - `createListing`
