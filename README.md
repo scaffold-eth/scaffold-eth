@@ -35,6 +35,7 @@ $ cd ./packages/hardhat
 $ yarn starknet:compile
 
 # deploy contracts
+# (maybe you need to first create the folder /packages/hardhat/deployments)
 $ yarn deploy
 
 # start app
