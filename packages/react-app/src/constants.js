@@ -673,9 +673,17 @@ export const BUILDS = [
 
 
 export const BUILDERS = [
-
   {
-   name: "genlyai.eth.eth",
+   name: "stevenslade.eth",
+   role: "pikemen",
+   address: "0x049101ef5D69473CC0392DC619d98286eCAD5cf9",
+   github: "",
+   builds: [ ],
+   streamAddress: "0xfF12a20cB04FC55B424a63036E72533b8F3D005C",
+   streamUrl: "http://stevenslade.buidlguidl.com/"
+  },
+  {
+   name: "genlyai.eth",
    role: "pikemen",
    address: "0x2D143b3Ae28Fa31E7c821D138c58c32A30aA36Ae",
    github: "",
