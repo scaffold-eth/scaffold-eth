@@ -17,6 +17,7 @@ contract YourContract {
     constructor() {}
 
     function rollTheDice() public payable {
+        require(msg.value >= 0.01 ether && msg.value <= 0.01 ether, "Please send exactly 0.01 ETH. Thanks!");
         prize += msg.value;
         bytes32 prevHash = blockhash(block.number - 1);
         bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
