@@ -38,7 +38,7 @@ $ yarn starknet:compile
 # (maybe you need to first create the folder /packages/hardhat/deployments)
 $ yarn deploy
 
-# start app
+# start app (in top level folder)
 $ yarn start
 ```
 
