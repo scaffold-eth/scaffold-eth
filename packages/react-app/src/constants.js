@@ -177,7 +177,7 @@ export const NETWORKS = {
     color: "#53CBC9",
     chainId: 1284,
     blockExplorer: "https://moonscan.io",
-    rpcUrl: "https://rpc.api.moonbeam.network", 
+    rpcUrl: "https://rpc.api.moonbeam.network",
   },
   moonriver: {
     name: "moonriver",
@@ -200,7 +200,7 @@ export const NETWORKS = {
     chainId: 1281,
     blockExplorer: "https://moonbeam-explorer.netlify.app/",
     rpcUrl: "http://127.0.0.1:9933",
-  }
+  },
 };
 
 export const NETWORK = chainId => {
