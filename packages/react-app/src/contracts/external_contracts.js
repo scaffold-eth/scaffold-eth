@@ -1487,4 +1487,28 @@ module.exports = {
       },
     },
   },
+  69: {
+    contracts: {
+      FancyLoogie: {
+        address: "0x43693eeC62666D621ba33095090BE60d4aF6D6FA",
+        abi: FANCYLOOGIEABI,
+      },
+      Bow: {
+        address: "0x04245F3c4bfBD6Ac69cc3508285F10fF9EDB612c",
+        abi: [],
+      },
+      Mustache: {
+        address: "0x23550C801B88fC1a4C8b69EaE8C57310c4FF6482",
+        abi: [],
+      },
+      ContactLenses: {
+        address: "0x01fb3CfBB534910bBE51B0EFDDaBCe75A7dE94E2",
+        abi: [],
+      },
+      Eyelashes: {
+        address: "0x7A6D1925cdaF97295d0e401C3450e32f8c39c817",
+        abi: [],
+      },
+    },
+  },
 };

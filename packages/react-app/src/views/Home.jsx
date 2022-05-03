@@ -1,10 +1,11 @@
 import { useContractReader } from "eth-hooks";
 import React, { useEffect, useState } from "react";
+import { useHistory } from "react-router-dom";
 import { ethers } from "ethers";
-import { Button, List, Card, Spin } from "antd";
+import { Button, List, Card } from "antd";
 import { Address } from "../components";
 
-function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer }) {
+function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer, address }) {
   const priceToMint = useContractReader(readContracts, "LoogieShip", "price");
   if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
@@ -16,6 +17,8 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
   const [page, setPage] = useState(1);
   const [loadingShips, setLoadingShips] = useState(true);
   const perPage = 9;
+
+  const history = useHistory();
 
   useEffect(() => {
     const updateAllShips = async () => {
@@ -74,7 +77,7 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
               <img src="/images/ship2.svg" alt="LoogieShip" title="LoogieShip" style={{ width: 250 }} />
               <img src="/images/ship3.svg" alt="LoogieShip" title="LoogieShip" style={{ width: 250 }} />
               <p style={{ marginTop: 10 }}>
-                Each LoogieShip came with <strong>20,000 LoogieCoins!!</strong>
+                Each LoogieShip comes with <strong>20,000 LoogieCoins!!</strong>
               </p>
             </div>
           </Card>
@@ -87,8 +90,9 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
             }
           >
             <div>
-              You need 4 FancyLoogies:
-              <ul style={{ paddingLeft: 0, marginLeft: -25 , marginTop: 40 }}>
+              <p style={{ marginBottom: 0 }}>You need at least one crew member on your ship.</p>
+              <p>More crew members, more fishes they can catch!</p>
+              <ul style={{ paddingLeft: 0, marginLeft: -25, marginTop: -30 }}>
                 <li class="ant-list-item">
                   <div class="crew-member">
                     <div>
@@ -134,7 +138,7 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
                   </div>
                 </li>
               </ul>
-              <p style={{ marginTop: 50, marginBottom: 0 }}>
+              <p style={{ marginTop: 35, marginBottom: 0 }}>
                 You can mint <strong>OptmisticLoogies</strong> and <strong>FancyLoogies</strong> at <a style={{ fontSize: 22 }} href="https://www.fancyloogies.com" target="_blank">www.fancyloogies.com</a>
               </p>
             </div>
@@ -148,7 +152,7 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
             }
           >
             <div>
-              Send your LoogieShip to fish once a day.
+              Send your LoogieShip to fish three times a day.
               <img src="/images/ship-fishing1.svg" alt="LoogieShip" title="LoogieShip" style={{ width: 250 }} />
               <img src="/images/ship-fishing2.svg" alt="LoogieShip" title="LoogieShip" style={{ width: 250 }} />
               <img src="/images/ship-fishing3.svg" alt="LoogieShip" title="LoogieShip" style={{ width: 250 }} />
@@ -183,12 +187,20 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
             </p>
           </div>
           <Button
-            style={{ width: 300, fontSize: 20, height: 40 }}
+            style={{
+              width: 400,
+              fontSize: 20,
+              height: 50,
+              backgroundColor: "#60f479",
+              borderColor: "#60f479",
+              color: "black",
+              fontWeight: "bold"
+            }}
             type="primary"
             onClick={async () => {
               const priceRightNow = await readContracts.LoogieShip.price();
               try {
-                const txCur = await tx(writeContracts.LoogieShip.mintItem({ value: priceRightNow, gasLimit: 30000000 }));
+                const txCur = await tx(writeContracts.LoogieShip.mintItem({ value: priceRightNow, gasLimit: 500000 }));
                 await txCur.wait();
               } catch (e) {
                 console.log("mint failed", e);
@@ -235,6 +247,16 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
                     title={
                       <div>
                         <span style={{ fontSize: 18, marginRight: 8, fontWeight: "bold" }}>{item.name}</span>
+                        {item.owner === address && (
+                          <Button
+                            className="action-inline-button"
+                            onClick={() => {
+                              history.push("/addCrew/" + id);
+                            }}
+                          >
+                            Add Crew
+                          </Button>
+                        )}
                       </div>
                     }
                   >

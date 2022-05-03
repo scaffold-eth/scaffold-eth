@@ -164,6 +164,7 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
       require(crew < 4, "only 4 crew member per ship!");
       require(crewById[crew][shipId] == 0, "the ship already have this crew member!");
 
+      //Captain
       if (crew == 0) {
         require(fancyLoogies.hasNft(bow, tokenId), "the Captain must wear a Bow!");
       }

@@ -36,7 +36,7 @@ function Fishing({
             renderItem={item => {
               return (
                 <List.Item key={item.blockNumber + "_" + item.args.id} style={{ justifyContent: "center" }}>
-                  Week #{item.args.week.toString()} - Day #{item.args.day.toNumber() % 7 + 1} - LoogieShip #{item.args.id.toString()} - Owner: <Address address={item.args.owner} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize="16" /> - Reward: {item.args.reward.toString()} LOOC
+                  Week #{item.args.week.toString()} - Day #{item.args.day.toNumber() % 7 + 1} - Round #{item.args.round} - LoogieShip #{item.args.id.toString()} - Owner: <Address address={item.args.owner} ensProvider={mainnetProvider} blockExplorer={blockExplorer} fontSize="16" /> - Reward: {item.args.reward.toString()} LOOC
                 </List.Item>
               );
             }}

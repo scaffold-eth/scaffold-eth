@@ -170,11 +170,24 @@ function App(props) {
   const [selectedShip, setSelectedShip] = useState();
   const [shipCrew, setShipCrew] = useState();
   const [startBlock, setStartBlock] = useState();
+  const [currentDay, setCurrentDay] = useState();
+  const [currentWeek, setCurrentWeek] = useState();
+  const [currentWeekDay, setCurrentWeekDay] = useState();
 
   // TODO: change to days
-  const currentDay = Math.floor((Date.now() - startTimestamp) / 1000 / 60);
-  const currentWeek = Math.floor(currentDay / 7) + 1;
-  const currentWeekDay = currentDay % 7 + 1;
+  // const currentDay = Math.floor((Date.now() - startTimestamp) / 1000 / 3600);
+  const currentDayNumber = useContractReader(readContracts, "SailorLoogiesGame", "currentDay");
+  if (DEBUG) console.log("currentDayNumber:", currentDayNumber);
+  // const currentWeek = Math.floor(currentDay.toNumber() / 7) + 1;
+  // const currentWeekDay = currentDay.toNumber() % 7 + 1;
+
+  useEffect(() => {
+    if (currentDayNumber) {
+      setCurrentDay(currentDayNumber.toNumber());
+      setCurrentWeek(Math.floor(currentDayNumber.toNumber() / 7) + 1);
+      setCurrentWeekDay(currentDayNumber.toNumber() % 7 + 1);
+    }
+  }, [currentDayNumber]);
 
   useEffect(() => {
     if (startBlock == undefined && localProvider) {
@@ -277,6 +290,7 @@ function App(props) {
             tx={tx}
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
+            address={address}
           />
         </Route>
         <Route exact path="/yourShips">
@@ -295,7 +309,7 @@ function App(props) {
             loogieCoinBalance={loogieCoinBalance}
           />
         </Route>
-        <Route exact path="/addCrew">
+        <Route path="/addCrew/:id">
           <AddCrew
             DEBUG={DEBUG}
             writeContracts={writeContracts}
@@ -304,9 +318,7 @@ function App(props) {
             mainnetProvider={mainnetProvider}
             blockExplorer={blockExplorer}
             address={address}
-            selectedShip={selectedShip}
-            shipCrew={shipCrew}
-            setShipCrew={setShipCrew}
+            currentDay={currentDay}
           />
         </Route>
         <Route exact path="/ranking">

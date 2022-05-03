@@ -110,7 +110,7 @@ function Ranking({
 
   return (
     <div style={{ backgroundColor: "#29aae1" }}>
-      <div id="ranking" class="ranking" style={{ width: 1280, margin: "auto", padding: 25 }}>
+      <div id="ranking" class="ranking" style={{ width: 1280, margin: "auto", padding: 25, minHeight: 800 }}>
         <List
           grid={{
             gutter: 16,

@@ -34,13 +34,13 @@ contract SailorLoogiesGame {
   mapping (uint8 => address) public fancyLoogiesNftAddresses;
   uint256 public startTimestamp;
   // shipId -> day -> played
-  mapping(uint256 => mapping(uint256 => bool)) public played;
+  mapping(uint256 => mapping(uint256 => uint8)) public played;
   // shipId -> day -> reward
   mapping(uint256 => mapping(uint256 => uint256)) public rewards;
   // week -> withdraw
   mapping(uint256 => bool) public withdraws;
 
-  event Fishing(uint256 indexed id, uint256 indexed week, uint256 indexed day, uint256 reward, address owner);
+  event Fishing(uint256 indexed id, uint256 indexed week, uint256 indexed day, uint256 reward, address owner, uint8 round);
   event Withdraw(address indexed winner, uint256 indexed shipId, uint256 indexed week, uint256 rewardNftId);
 
   constructor(uint256 _startTimestamp, address _loogieShip, address _loogieCoin, address _fancyLoogies, address _bow, address _mustache, address _contactLenses, address _eyelashes, address _sailorLoogiesGameAward) {
@@ -56,7 +56,11 @@ contract SailorLoogiesGame {
   }
 
   function crewReady(uint256 id) public view returns (bool) {
-    return loogieShip.crewById(0, id) > 0 && loogieShip.crewById(1, id) > 0 && loogieShip.crewById(2, id) > 0 && loogieShip.crewById(3, id) > 0;
+    return loogieShip.crewById(0, id) > 0 || loogieShip.crewById(1, id) > 0 || loogieShip.crewById(2, id) > 0 || loogieShip.crewById(3, id) > 0;
+  }
+
+  function currentDay() public view returns (uint256) {
+    return (block.timestamp - startTimestamp) / 3600;
   }
 
   function sendFishing(uint256 id) public returns (uint256) {
@@ -64,23 +68,24 @@ contract SailorLoogiesGame {
 
     require(msg.sender == shipOwner, "only the ship owner can send the ship to fishing!");
     require(loogieCoin.balanceOf(shipOwner) >= 3000, "you need 3000 LoogieCoins to send a ship to fishing!");
+    require(crewReady(id), "you need at least one crew member on your ship!");
 
     // change to days
-    uint256 diffHours = (block.timestamp - startTimestamp) / 60;
+    uint256 diffHours = currentDay();
 
-    require(!played[id][diffHours], "already played today!");
+    require(played[id][diffHours] < 3, "only 3 fishing per day!");
 
-    played[id][diffHours] = true;
+    played[id][diffHours] += 1;
 
     loogieCoin.burn(shipOwner, 3000);
 
     uint256 reward = _calculateReward(id);
 
-    rewards[id][diffHours] = reward;
+    rewards[id][diffHours] += reward;
 
     loogieCoin.mint(shipOwner, reward);
 
-    emit Fishing(id, diffHours / 7 + 1, diffHours, reward, shipOwner);
+    emit Fishing(id, diffHours / 7 + 1, diffHours, reward, shipOwner, played[id][diffHours]);
 
     return reward;
   }
@@ -89,7 +94,7 @@ contract SailorLoogiesGame {
     require(!withdraws[week], "already withdrawn!");
 
     // change to days
-    uint256 diffHours = (block.timestamp - startTimestamp) / 60;
+    uint256 diffHours = currentDay();
 
     require(week * 7 <= diffHours, "week is not finished yet!");
 
@@ -126,7 +131,7 @@ contract SailorLoogiesGame {
 
   function winnerByWeek(uint256 week) public view returns (uint256) {
     // change to days
-    uint256 diffHours = (block.timestamp - startTimestamp) / 60;
+    uint256 diffHours = currentDay();
     require(week * 7 <= diffHours, "week is not finished yet!");
 
     // week 1, is from day 0 to 6, week 2, 7 to 13, and so on
@@ -151,14 +156,17 @@ contract SailorLoogiesGame {
 
   function _calculateReward(uint256 id) internal view returns (uint256) {
     uint256 colorUint;
+    uint8 nfts;
 
     for (uint8 i = 0; i < 4; i++) {
 
       // get related nftId for the FancyLoogie
       uint256 nftId = fancyLoogies.nftId(fancyLoogiesNftAddresses[i], loogieShip.crewById(i, id));
-      bytes3 nftColor = LoogieNftContract(fancyLoogiesNftAddresses[i]).color(nftId);
-
-      colorUint = colorUint + _colorToUint256(nftColor);
+      if (nftId > 0) {
+        bytes3 nftColor = LoogieNftContract(fancyLoogiesNftAddresses[i]).color(nftId);
+        colorUint = colorUint + _colorToUint256(nftColor);
+        nfts += 1;
+      }
     }
 
     uint256 mod;
@@ -174,12 +182,12 @@ contract SailorLoogiesGame {
 
     bytes32 predictableRandom = keccak256(abi.encodePacked( id, blockhash(block.number-1), msg.sender, address(this) ));
 
-    for(uint i=0;i<21;i++){
+    for(uint i=0;i<32;i++){
       random = random + uint8(predictableRandom[i]);
     }
-    // random go from 0 to 5100
+    // random go from 0 to 8160
 
-    uint256 reward = 8160 - (mod + random);
+    uint256 reward = random * nfts / 4 + 765 * nfts - mod;
 
     return reward;
   }

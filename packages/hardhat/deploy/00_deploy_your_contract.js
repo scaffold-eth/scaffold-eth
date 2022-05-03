@@ -15,7 +15,33 @@ const localChainId = "31337";
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
-  const chainId = await getChainId();
+  // const chainId = await getChainId();
+
+  const currentTimestamp = 1651585339;
+
+  // localhost
+  const fancyLoogieAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
+  const bowAddress = "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512";
+  const mustacheAddress = "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9";
+  const contactLensesAddress = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9";
+  const eyelashesAddress = "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0";
+
+  /*
+  // Kovan Optimism
+  const fancyLoogieAddress = "0x43693eeC62666D621ba33095090BE60d4aF6D6FA";
+  const bowAddress = "0x04245F3c4bfBD6Ac69cc3508285F10fF9EDB612c";
+  const mustacheAddress = "0x23550C801B88fC1a4C8b69EaE8C57310c4FF6482";
+  const contactLensesAddress = "0x01fb3CfBB534910bBE51B0EFDDaBCe75A7dE94E2";
+  const eyelashesAddress = "0x7A6D1925cdaF97295d0e401C3450e32f8c39c817";
+
+  /*
+  // Optimism
+  const fancyLoogieAddress = "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A";
+  const bowAddress = "0x7A6D1925cdaF97295d0e401C3450e32f8c39c817";
+  const mustacheAddress = "0x01fb3CfBB534910bBE51B0EFDDaBCe75A7dE94E2";
+  const contactLensesAddress = "0x43693eeC62666D621ba33095090BE60d4aF6D6FA";
+  const eyelashesAddress = "0x23550C801B88fC1a4C8b69EaE8C57310c4FF6482";
+  */
 
   const loogieCoin = await deploy("LoogieCoin", {
     from: deployer,
@@ -35,11 +61,11 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const loogieShip = await deploy("LoogieShip", {
     from: deployer,
     args: [
-      "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      fancyLoogieAddress,
+      bowAddress,
+      mustacheAddress,
+      contactLensesAddress,
+      eyelashesAddress,
       loogieCoin.address,
     ],
     libraries: {
@@ -89,14 +115,14 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const sailorLoogiesGame = await deploy("SailorLoogiesGame", {
     from: deployer,
     args: [
-      1648751958,
+      currentTimestamp,
       loogieShip.address,
       loogieCoin.address,
-      "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707",
-      "0xe7f1725E7734CE288F8367e1Bb143E90bb3F0512",
-      "0xCf7Ed3AccA5a467e9e704C703E8D87F634fB0Fc9",
-      "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9",
-      "0x9fE46736679d2D9a65F0992F2272dE9f3c7fa6e0",
+      fancyLoogieAddress,
+      bowAddress,
+      mustacheAddress,
+      contactLensesAddress,
+      eyelashesAddress,
       SailorLoogiesGameAward.address,
     ],
     log: true,

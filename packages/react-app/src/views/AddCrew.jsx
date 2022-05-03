@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useParams } from "react-router-dom";
 import { Alert, Button, Card, List, Menu, Dropdown } from "antd";
 import { DownOutlined } from "@ant-design/icons";
 import { ethers } from "ethers";
@@ -13,9 +14,7 @@ function AddCrew({
   mainnetProvider,
   blockExplorer,
   address,
-  selectedShip,
-  shipCrew,
-  setShipCrew,
+  currentDay,
 }) {
   const [loogieBalance, setLoogieBalance] = useState(0);
   const [yourLoogieBalance, setYourLoogieBalance] = useState(0);
@@ -28,6 +27,7 @@ function AddCrew({
   const [sendingLoogies, setSendingLoogies] = useState(false);
   const [fishingReward, setFishingReward] = useState(0);
   const [fishingRewardSize, setFishingRewardSize] = useState("");
+  const [todayPlayed, setTodayPlayed] = useState(0);
   const [page, setPage] = useState(1);
   const perPage = 4;
   const crew = [
@@ -53,11 +53,13 @@ function AddCrew({
     },
   ];
 
+  const selectedShip = useParams().id;
+
   useEffect(() => {
     if (fishingReward > 0) {
       const confettiSettings = {
         target: "confetti-holder",
-        props: [{ type: "svg", src: "images/fish-confetti.svg" }],
+        props: [{ type: "svg", src: "/images/fish-confetti.svg" }],
         size: 2.5,
         max: fishingReward / 100,
       };
@@ -72,6 +74,20 @@ function AddCrew({
       );
     }
   }, [fishingReward]);
+
+  useEffect(() => {
+    const updatePlayed = async () => {
+      if (DEBUG) console.log("Updating played...");
+      if (readContracts.SailorLoogiesGame && selectedShip && currentDay) {
+        const playedNew = await readContracts.SailorLoogiesGame.played(selectedShip, currentDay);
+        if (DEBUG) console.log("playedNew: ", playedNew);
+        setTodayPlayed(playedNew);
+      } else {
+        if (DEBUG) console.log("Contracts not defined yet.");
+      }
+    };
+    updatePlayed();
+  }, [DEBUG, selectedShip, readContracts.SailorLoogiesGame, currentDay]);
 
   useEffect(() => {
     const updateLoogieCoinAllowance = async () => {
@@ -150,7 +166,7 @@ function AddCrew({
   useEffect(() => {
     const updatePreview = async () => {
       if (DEBUG) console.log("Updating preview...");
-      if (selectedShip) {
+      if (readContracts.LoogieShip && selectedShip) {
         const shipSvg = await readContracts.LoogieShip.renderTokenById(selectedShip);
 
         let svg = `
@@ -218,7 +234,7 @@ function AddCrew({
                     fill="freeze"
                     additive="sum"/>`;
         }
-          svg += "</svg></div>";
+        svg += "</svg></div>";
 
         setSelectedShipPreview(svg);
 
@@ -229,7 +245,7 @@ function AddCrew({
           const captainTokenURI = await readContracts.FancyLoogie.tokenURI(captainId);
           const captainJsonManifestString = atob(captainTokenURI.substring(29));
           const captainJsonManifest = JSON.parse(captainJsonManifestString);
-          crew[0] = captainJsonManifest.image;
+          crew[0] = { id: captainId, image: captainJsonManifest.image };
         }
 
         const engineerId = await readContracts.LoogieShip.crewById(1, selectedShip);
@@ -237,7 +253,7 @@ function AddCrew({
           const engineerTokenURI = await readContracts.FancyLoogie.tokenURI(engineerId);
           const engineerJsonManifestString = atob(engineerTokenURI.substring(29));
           const engineerJsonManifest = JSON.parse(engineerJsonManifestString);
-          crew[1] = engineerJsonManifest.image;
+          crew[1] = { id: engineerId, image: engineerJsonManifest.image };
         }
 
         const officerId = await readContracts.LoogieShip.crewById(2, selectedShip);
@@ -245,7 +261,7 @@ function AddCrew({
           const officerTokenURI = await readContracts.FancyLoogie.tokenURI(officerId);
           const officerJsonManifestString = atob(officerTokenURI.substring(29));
           const officerJsonManifest = JSON.parse(officerJsonManifestString);
-          crew[2] = officerJsonManifest.image;
+          crew[2] = { id: officerId, image: officerJsonManifest.image };
         }
 
         const seamanId = await readContracts.LoogieShip.crewById(3, selectedShip);
@@ -253,7 +269,7 @@ function AddCrew({
           const seamanTokenURI = await readContracts.FancyLoogie.tokenURI(seamanId);
           const seamanJsonManifestString = atob(seamanTokenURI.substring(29));
           const seamanJsonManifest = JSON.parse(seamanJsonManifestString);
-          crew[3] = seamanJsonManifest.image;
+          crew[3] = { id: seamanId, image: seamanJsonManifest.image };
         }
         setSelectedCrew(crew);
       } else {
@@ -269,7 +285,7 @@ function AddCrew({
         {selectedShipPreview ? (
           <div
             className={`ship-preview ${
-              selectedCrew && selectedCrew[0] && selectedCrew[1] && selectedCrew[2] && selectedCrew[3]
+              selectedCrew && (selectedCrew[0] || selectedCrew[1] || selectedCrew[2] || selectedCrew[3])
                 ? "ready-to-fishing"
                 : ""
             }`}
@@ -318,21 +334,21 @@ function AddCrew({
                     size="large"
                     header={
                       <>
-                        <p style={{ fontSize: 20, marginTop: -40, marginBottom: 30, color: "#1890ff", fontWeight: "bold" }}>
+                        <p style={{ fontSize: 20, marginTop: -20, marginBottom: 20, color: "#1890ff", fontWeight: "bold" }}>
                           LoogieShip <strong>#{selectedShip}</strong>
                         </p>
-                        {selectedCrew && selectedCrew[0] && selectedCrew[1] && selectedCrew[2] && selectedCrew[3] ? (
+                        {selectedCrew && (selectedCrew[0] || selectedCrew[1] || selectedCrew[2] || selectedCrew[3]) ? (
                           <div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16, color: "green" }}>
-                            Ready to go fishing!
+                            Ready to go fishing!<br/>({3 - todayPlayed} left today)
                             <div style={{ marginTop: 20 }}>
                               {loogieCoinAllowance >= 3000 ? (
                                 <Button
                                   type="primary"
-                                  disabled={sendingLoogies}
+                                  disabled={sendingLoogies || todayPlayed >= 3}
                                   onClick={async () => {
                                     try {
                                       const result = tx(
-                                        writeContracts.SailorLoogiesGame.sendFishing(selectedShip),
+                                        writeContracts.SailorLoogiesGame.sendFishing(selectedShip, { gasLimit: 300000 }),
                                         function (transaction) {
                                           if (transaction.status) {
                                             setLoogieCoinAllowance(loogieCoinAllowance - 3000);
@@ -351,6 +367,7 @@ function AddCrew({
                                             // ethers.BigNumber.from(transaction.logs[2].topics[3]).toString()
                                             const reward = decoded[0].toNumber();
                                             console.log("Reward: ", reward);
+                                            setTodayPlayed(todayPlayed + 1);
                                             setTimeout(
                                               function (reward) {
                                                 document.getElementById("midi-player").stop();
@@ -388,6 +405,7 @@ function AddCrew({
                               ) : (
                                 <Button
                                   type="primary"
+                                  title="You will not be asked for a new approval on the next 10 fishing"
                                   onClick={async () => {
                                     try {
                                       tx(writeContracts.LoogieCoin.approve(readContracts.SailorLoogiesGame.address, 30000), function (transaction) {
@@ -419,9 +437,9 @@ function AddCrew({
                               <div>
                                 {selectedCrew && selectedCrew[member.number] && (
                                   <img
-                                    src={selectedCrew[member.number]}
-                                    alt={"FancyLoogie #"+shipCrew[selectedShip][member.name]}
-                                    title={"FancyLoogie #"+shipCrew[selectedShip][member.name]}
+                                    src={selectedCrew[member.number].image}
+                                    alt={"FancyLoogie #"+selectedCrew[member.number].id}
+                                    title={"FancyLoogie #"+selectedCrew[member.number].id}
                                     style={{ width: 100 }}
                                   />
                                 )}
@@ -431,13 +449,6 @@ function AddCrew({
                                 className="action-inline-button"
                                 onClick={() => {
                                   tx(writeContracts.LoogieShip.removeCrew(member.number, selectedShip), function (transaction) {
-                                    setShipCrew(prevState => ({
-                                      ...prevState,
-                                      [selectedShip]: {
-                                        ...prevState[selectedShip],
-                                        [member.name]: 0
-                                      }
-                                    }));
                                     setUpdateBalances(updateBalances + 1);
                                   });
                                 }}
@@ -474,208 +485,206 @@ function AddCrew({
         )}
       </div>
 
-      <div
-        id="your-loogies"
-        style={{ width: "auto", margin: "auto", paddingBottom: 25, paddingRight: 40, paddingLeft: 40, minHeight: 800 }}
-      >
-        <div>
-          <List
-            grid={{
-              gutter: 16,
-              xs: 1,
-              sm: 2,
-              md: 2,
-              lg: 3,
-              xl: 4,
-              xxl: 4,
-            }}
-            pagination={{
-              total: yourLoogies ? yourLoogies.length : 0,
-              defaultPageSize: perPage,
-              defaultCurrent: page,
-              onChange: currentPage => {
-                setPage(currentPage);
-              },
-              showTotal: (total, range) => `${range[0]}-${range[1]} of ${yourLoogies ? yourLoogies.length : 0} items`,
-            }}
-            loading={loadingLoogies}
-            dataSource={yourLoogies}
-            renderItem={item => {
-              const id = item.id.toNumber();
+      {yourLoogies && yourLoogies.length > 0 && (
+        <div
+          id="your-loogies"
+          style={{ width: "auto", margin: "auto", paddingBottom: 25, paddingRight: 40, paddingLeft: 40 }}
+        >
+          <div>
+            <List
+              grid={{
+                gutter: 16,
+                xs: 1,
+                sm: 2,
+                md: 2,
+                lg: 3,
+                xl: 4,
+                xxl: 4,
+              }}
+              pagination={{
+                total: yourLoogies ? yourLoogies.length : 0,
+                defaultPageSize: perPage,
+                defaultCurrent: page,
+                onChange: currentPage => {
+                  setPage(currentPage);
+                },
+                showTotal: (total, range) => `${range[0]}-${range[1]} of ${yourLoogies ? yourLoogies.length : 0} items`,
+              }}
+              loading={loadingLoogies}
+              dataSource={yourLoogies}
+              renderItem={item => {
+                const id = item.id.toNumber();
 
-              const promoteCaptain =
-                item.bow && shipCrew && shipCrew[selectedShip] && shipCrew[selectedShip]["Captain"] == 0;
-              const promoteEngineer =
-                item.mustache && shipCrew && shipCrew[selectedShip] && shipCrew[selectedShip]["Chief Engineer"] == 0;
-              const promoteOfficer =
-                item.contactLenses &&
-                shipCrew &&
-                shipCrew[selectedShip] &&
-                shipCrew[selectedShip]["Deck Officer"] == 0;
-              const promoteSeaman =
-                item.eyelashes && shipCrew && shipCrew[selectedShip] && shipCrew[selectedShip]["Seaman"] == 0;
+                const promoteCaptain = item.bow && selectedCrew && !(0 in selectedCrew);
+                const promoteEngineer = item.mustache && selectedCrew && !(1 in selectedCrew);
+                const promoteOfficer = item.contactLenses && selectedCrew && !(2 in selectedCrew);
+                const promoteSeaman = item.eyelashes && selectedCrew && !(3 in selectedCrew);
 
-              const promoteAny = promoteCaptain || promoteEngineer || promoteOfficer || promoteSeaman;
+                const promoteAny = promoteCaptain || promoteEngineer || promoteOfficer || promoteSeaman;
 
-              return (
-                <List.Item key={id + "_" + item.uri + "_" + item.owner}>
-                  <Card
-                    style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
-                    headStyle={{ paddingRight: 12, paddingLeft: 12 }}
-                    title={
-                      <div>
-                        <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
-                        {promoteAny && (
-                          <Dropdown
-                            overlay={
-                              <Menu>
-                                {promoteCaptain && (
-                                  <Menu.Item key="promote-captain">
-                                    <Button
-                                      type="primary"
-                                      className="action-inline-button promote-button"
-                                      onClick={() => {
-                                        const abiCoder = new ethers.utils.AbiCoder();
-                                        const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 0]);
-                                        tx(
-                                          writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
-                                            address,
-                                            readContracts.LoogieShip.address,
-                                            id,
-                                            encoded,
-                                          ),
-                                          function (transaction) {
-                                            setShipCrew(prevState => ({
-                                              ...prevState,
-                                              [selectedShip]: {
-                                                ...prevState[selectedShip],
-                                                ["Captain"]: id
-                                              },
-                                            }));
-                                            setUpdateBalances(updateBalances + 1);
-                                          },
-                                        );
-                                      }}
-                                    >
-                                      Captain
-                                    </Button>
-                                  </Menu.Item>
-                                )}
-                                {promoteEngineer && (
-                                  <Menu.Item key="promote-engineer">
-                                    <Button
-                                      type="primary"
-                                      className="action-inline-button promote-button"
-                                      onClick={() => {
-                                        const abiCoder = new ethers.utils.AbiCoder();
-                                        const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 1]);
-                                        tx(
-                                          writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
-                                            address,
-                                            readContracts.LoogieShip.address,
-                                            id,
-                                            encoded,
-                                          ),
-                                          function (transaction) {
-                                            setShipCrew(prevState => ({
-                                              ...prevState,
-                                              [selectedShip]: {
-                                                ...prevState[selectedShip],
-                                                ["Chief Engineer"]: id
-                                              },
-                                            }));
-                                            setUpdateBalances(updateBalances + 1);
-                                          },
-                                        );
-                                      }}
-                                    >
-                                      Chief Engineer
-                                    </Button>
-                                  </Menu.Item>
-                                )}
-                                {promoteOfficer && (
-                                  <Menu.Item key="promote-officer">
-                                    <Button
-                                      type="primary"
-                                      className="action-inline-button promote-button"
-                                      onClick={() => {
-                                        const abiCoder = new ethers.utils.AbiCoder();
-                                        const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 2]);
-                                        tx(
-                                          writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
-                                            address,
-                                            readContracts.LoogieShip.address,
-                                            id,
-                                            encoded,
-                                          ),
-                                          function (transaction) {
-                                            setShipCrew(prevState => ({
-                                              ...prevState,
-                                              [selectedShip]: {
-                                                ...prevState[selectedShip],
-                                                ["Deck Officer"]: id
-                                              },
-                                            }));
-                                            setUpdateBalances(updateBalances + 1);
-                                          },
-                                        );
-                                      }}
-                                    >
-                                      Deck Officer
-                                    </Button>
-                                  </Menu.Item>
-                                )}
-                                {promoteSeaman && (
-                                  <Menu.Item key="promote-seaman">
-                                    <Button
-                                      type="primary"
-                                      className="action-inline-button promote-button"
-                                      onClick={() => {
-                                        const abiCoder = new ethers.utils.AbiCoder();
-                                        const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 3]);
-                                        tx(
-                                          writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
-                                            address,
-                                            readContracts.LoogieShip.address,
-                                            id,
-                                            encoded,
-                                          ),
-                                          function (transaction) {
-                                            setShipCrew(prevState => ({
-                                              ...prevState,
-                                              [selectedShip]: {
-                                                ...prevState[selectedShip],
-                                                ["Seaman"]: id
-                                              },
-                                            }));
-                                            setUpdateBalances(updateBalances + 1);
-                                          },
-                                        );
-                                      }}
-                                    >
-                                      Seaman
-                                    </Button>
-                                  </Menu.Item>
-                                )}
-                              </Menu>
-                            }
-                          >
-                            <Button>
-                              Promote To <DownOutlined />
-                            </Button>
-                          </Dropdown>
-                        )}
-                      </div>
-                    }
-                  >
-                    <img alt={item.id} src={item.image} width="240" />
-                  </Card>
-                </List.Item>
-              );
-            }}
-          />
+                return (
+                  <List.Item key={id + "_" + item.uri + "_" + item.owner}>
+                    <Card
+                      style={{ backgroundColor: "#b3e2f4", border: "1px solid #0071bb", borderRadius: 10 }}
+                      headStyle={{ paddingRight: 12, paddingLeft: 12 }}
+                      title={
+                        <div>
+                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          {promoteAny && (
+                            <Dropdown
+                              overlay={
+                                <Menu>
+                                  {promoteCaptain && (
+                                    <Menu.Item key="promote-captain">
+                                      <Button
+                                        type="primary"
+                                        className="action-inline-button promote-button"
+                                        onClick={() => {
+                                          const abiCoder = new ethers.utils.AbiCoder();
+                                          const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 0]);
+                                          tx(
+                                            writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
+                                              address,
+                                              readContracts.LoogieShip.address,
+                                              id,
+                                              encoded,
+                                            ),
+                                            function (transaction) {
+                                              setUpdateBalances(updateBalances + 1);
+                                            },
+                                          );
+                                        }}
+                                      >
+                                        Captain
+                                      </Button>
+                                    </Menu.Item>
+                                  )}
+                                  {promoteEngineer && (
+                                    <Menu.Item key="promote-engineer">
+                                      <Button
+                                        type="primary"
+                                        className="action-inline-button promote-button"
+                                        onClick={() => {
+                                          const abiCoder = new ethers.utils.AbiCoder();
+                                          const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 1]);
+                                          tx(
+                                            writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
+                                              address,
+                                              readContracts.LoogieShip.address,
+                                              id,
+                                              encoded,
+                                            ),
+                                            function (transaction) {
+                                              setUpdateBalances(updateBalances + 1);
+                                            },
+                                          );
+                                        }}
+                                      >
+                                        Chief Engineer
+                                      </Button>
+                                    </Menu.Item>
+                                  )}
+                                  {promoteOfficer && (
+                                    <Menu.Item key="promote-officer">
+                                      <Button
+                                        type="primary"
+                                        className="action-inline-button promote-button"
+                                        onClick={() => {
+                                          const abiCoder = new ethers.utils.AbiCoder();
+                                          const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 2]);
+                                          tx(
+                                            writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
+                                              address,
+                                              readContracts.LoogieShip.address,
+                                              id,
+                                              encoded,
+                                            ),
+                                            function (transaction) {
+                                              setUpdateBalances(updateBalances + 1);
+                                            },
+                                          );
+                                        }}
+                                      >
+                                        Deck Officer
+                                      </Button>
+                                    </Menu.Item>
+                                  )}
+                                  {promoteSeaman && (
+                                    <Menu.Item key="promote-seaman">
+                                      <Button
+                                        type="primary"
+                                        className="action-inline-button promote-button"
+                                        onClick={() => {
+                                          const abiCoder = new ethers.utils.AbiCoder();
+                                          const encoded = abiCoder.encode(["uint256", "uint8"], [selectedShip, 3]);
+                                          tx(
+                                            writeContracts.FancyLoogie["safeTransferFrom(address,address,uint256,bytes)"](
+                                              address,
+                                              readContracts.LoogieShip.address,
+                                              id,
+                                              encoded,
+                                            ),
+                                            function (transaction) {
+                                              setUpdateBalances(updateBalances + 1);
+                                            },
+                                          );
+                                        }}
+                                      >
+                                        Seaman
+                                      </Button>
+                                    </Menu.Item>
+                                  )}
+                                </Menu>
+                              }
+                            >
+                              <Button>
+                                Promote To <DownOutlined />
+                              </Button>
+                            </Dropdown>
+                          )}
+                        </div>
+                      }
+                    >
+                      <img alt={item.id} src={item.image} width="240" />
+                    </Card>
+                  </List.Item>
+                );
+              }}
+            />
+          </div>
         </div>
+      )}
+
+      <div style={{ minHeight: 200, fontSize: 30 }}>
+        <Card
+          style={{
+            backgroundColor: "#b3e2f4",
+            border: "1px solid #0071bb",
+            borderRadius: 10,
+            width: 600,
+            margin: "0 auto",
+            textAlign: "center",
+            fontSize: 16,
+          }}
+          title={
+            <div>
+              <span style={{ fontSize: 18, marginRight: 8, fontWeight: "bold" }}>Do you need some FancyLoogies?</span>
+            </div>
+          }
+        >
+          <div>
+            <p>
+              You can mint <strong>OptmisticLoogies</strong> and <strong>FancyLoogies</strong> at
+            </p>
+            <p>
+              <a style={{ fontSize: 22 }} href="https://www.fancyloogies.com" target="_blank" rel="noreferrer">
+                www.fancyloogies.com
+              </a>
+            </p>
+          </div>
+        </Card>
       </div>
+
       <midi-player id="midi-player" src="/thesting.mid" autoplay={true} loop="1" />
       <audio id="win-audio">
         <source src="/win.wav" type="audio/wav" />

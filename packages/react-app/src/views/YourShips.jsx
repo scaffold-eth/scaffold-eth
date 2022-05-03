@@ -1,5 +1,7 @@
+import { useContractReader } from "eth-hooks";
 import React, { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { ethers } from "ethers";
 import { Button, Card, List } from "antd";
 import { CheckOutlined } from "@ant-design/icons";
 import { AddressInput } from "../components";
@@ -11,8 +13,6 @@ function YourShips({
   tx,
   mainnetProvider,
   blockExplorer,
-  updateBalances,
-  setUpdateBalances,
   address,
   selectedShip,
   setSelectedShip,
@@ -25,7 +25,15 @@ function YourShips({
   const [yourShips, setYourShips] = useState();
   const [transferToAddresses, setTransferToAddresses] = useState({});
   const [loadingShips, setLoadingShips] = useState(true);
+  const [updateBalances, setUpdateBalances] = useState(0);
   const history = useHistory();
+
+  const priceToMint = useContractReader(readContracts, "LoogieShip", "price");
+  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
+
+  const totalSupply = useContractReader(readContracts, "LoogieShip", "totalSupply");
+  if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
+  const shipsLeft = 1000 - totalSupply;
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -69,7 +77,7 @@ function YourShips({
             shipCrewUpdate[tokenId]["Deck Officer"] = officerId.toString();
             const seamanId = await readContracts.LoogieShip.crewById(3, tokenId);
             shipCrewUpdate[tokenId]["Seaman"] = seamanId.toString();
-            shipCrewUpdate[tokenId]["ready"] = captainId > 0 && engineerId > 0 && officerId > 0 && seamanId > 0;
+            shipCrewUpdate[tokenId]["ready"] = captainId > 0 || engineerId > 0 || officerId > 0 || seamanId > 0;
           } catch (e) {
             console.log(e);
           }
@@ -87,6 +95,36 @@ function YourShips({
   return (
     <div style={{ backgroundColor: "#29aae1" }}>
       <div class="your-ships" style={{ width: 1280, margin: "auto" }}>
+
+        <div style={{ paddingTop: 30 }}>
+          <Button
+            style={{
+              width: 400,
+              fontSize: 20,
+              height: 50,
+              backgroundColor: "#60f479",
+              borderColor: "#60f479",
+              color: "black",
+              fontWeight: "bold"
+            }}
+            type="primary"
+            onClick={async () => {
+              const priceRightNow = await readContracts.LoogieShip.price();
+              try {
+                const txCur = await tx(writeContracts.LoogieShip.mintItem({ value: priceRightNow, gasLimit: 500000 }));
+                await txCur.wait();
+                setUpdateBalances(updateBalances + 1);
+              } catch (e) {
+                console.log("mint failed", e);
+              }
+            }}
+          >
+            MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+          </Button>
+
+          <p style={{ fontWeight: "bold" }}>{shipsLeft} left</p>
+        </div>
+
         <div style={{ width: "auto", margin: "auto", padding: 25, minHeight: 800 }}>
           <div>
             <List
@@ -118,7 +156,7 @@ function YourShips({
                             className="action-inline-button"
                             onClick={() => {
                               setSelectedShip(id);
-                              history.push("/addCrew");
+                              history.push("/addCrew/" + id);
                             }}
                           >
                             {shipCrew && shipCrew[id] && shipCrew[id]["ready"] ? "Go Fishing" : "Add Crew"}
