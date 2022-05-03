@@ -60,8 +60,7 @@ export default function Ramp(props) {
           setModalUp("up");
         }}
       >
-        <DollarCircleOutlined style={{ color: "#52c41a" }} />{" "}
-        {typeof props.price === "undefined" ? 0 : props.price.toFixed(2)}
+        <DollarCircleOutlined style={{ color: "#52c41a" }} /> {typeof props.price === "undefined" ? 0 : props.price}
       </Button>
       <Modal
         title="Buy ETH"
