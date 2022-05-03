@@ -17,13 +17,14 @@ import { Link, Route, Switch, useLocation } from "react-router-dom";
 import "./App.css";
 import { FaucetHint, Header, NetworkDisplay, NetworkSwitch, Ramp, ThemeSwitch } from "./components";
 import { ALCHEMY_KEY, NETWORKS } from "./constants";
-import externalContracts from "./contracts/external_contracts";
 // contracts
+import externalContracts from "./contracts/external_contracts";
 import deployedContracts from "./contracts/hardhat_contracts.json";
 import { Transactor } from "./helpers";
 import web3ModalSetup from "./helpers/Web3ModalSetup";
 import { useStaticJsonRPC } from "./hooks";
 // import { ExampleUI, Hints, Home, Subgraph } from "./views";
+
 /*
     Welcome to 🏗 scaffold-eth !
 
