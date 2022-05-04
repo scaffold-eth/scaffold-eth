@@ -4,6 +4,7 @@ type Purpose @entity {
   purpose: String!
   createdAt: BigInt!
   transactionHash: String!
+  gasUsed: BigInt
 }
 
 type Sender @entity {

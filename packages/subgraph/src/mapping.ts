@@ -27,7 +27,10 @@ export function handleSetPurpose(event: SetPurpose): void {
   purpose.sender = senderString;
   purpose.createdAt = event.block.timestamp;
   purpose.transactionHash = event.transaction.hash.toHex();
-
+  if(event.receipt) {
+    purpose.gasUsed = event.receipt.gasUsed;
+  }
+  
   purpose.save();
   sender.save();
 }
