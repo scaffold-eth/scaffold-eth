@@ -7,7 +7,7 @@
 ## quickstart
 
 ```bash
-git clone https://github.com/Dours-d/scaffold-eth.git
+git clone https://github.com/Dours-d/scaffold-eth.git SymbiotHex-sweetshop
 
 cd SymbiotHex-sweetshop
 ```
