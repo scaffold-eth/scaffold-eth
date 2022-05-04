@@ -6,3 +6,6 @@
 	path = packages/services/optimism
 	url = https://github.com/ethereum-optimism/optimism
 	branch = regenesis/0.4.0
+[submodule "packages/hardhat/lib/forge-std"]
+	path = packages/hardhat/lib/forge-std
+	url = https://github.com/foundry-rs/forge-std
