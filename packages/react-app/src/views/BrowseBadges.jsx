@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Card } from 'antd'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
@@ -76,40 +76,46 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
   }
   console.log(events)
 
-  useEffect(async () => {
-    if (address) {
-      return setEventBadges([])
-    }
-    const eventsDecoded = []
-    for (const event of contractEvents) {
-      console.log(event.args.to, event.args.tokenId.toString())
-      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      let data = await contract.tokensData(event.args.tokenId)
-      const name = await mainnet.lookupAddress(event.args.to)
-      const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
+  useEffect(() => {
+    const run = async () => {
+      if (address) {
+        return setEventBadges([])
+      }
+      const eventsDecoded = []
+      for (const event of contractEvents) {
+        console.log(event.args.to, event.args.tokenId.toString())
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        let data = await contract.tokensData(event.args.tokenId)
+        const name = await mainnet.lookupAddress(event.args.to)
+        const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
 
-      console.log(event.args.to, event.args.tokenId.toString(), badge, event)
-      eventsDecoded.push(badge)
+        console.log(event.args.to, event.args.tokenId.toString(), badge, event)
+        eventsDecoded.push(badge)
+      }
+      setEventBadges(eventsDecoded)
     }
-    setEventBadges(eventsDecoded)
+    run()
   }, [address])
 
-  useEffect(async () => {
-    if (address) {
-      return setEventBadges([])
-    }
-    const eventsDecoded = []
-    for (const event of contractEvents) {
-      console.log(event.args.to, event.args.tokenId.toString())
-      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      let data = await contract.tokensData(event.args.tokenId)
-      const name = await mainnet.lookupAddress(event.args.to)
-      const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
+  useEffect(() => {
+    const run = async () => {
+      if (address) {
+        return setEventBadges([])
+      }
+      const eventsDecoded = []
+      for (const event of contractEvents) {
+        console.log(event.args.to, event.args.tokenId.toString())
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        let data = await contract.tokensData(event.args.tokenId)
+        const name = await mainnet.lookupAddress(event.args.to)
+        const badge = Object.assign({}, event.args, data, { decodedIpfsHash: toBase58(data.hash) }, event, { name })
 
-      console.log(event.args.to, event.args.tokenId.toString(), badge, event)
-      eventsDecoded.push(badge)
+        console.log(event.args.to, event.args.tokenId.toString(), badge, event)
+        eventsDecoded.push(badge)
+      }
+      setEventBadges(eventsDecoded)
     }
-    setEventBadges(eventsDecoded)
+    run()
   }, [contractEvents])
 
   return (
