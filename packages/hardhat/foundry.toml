@@ -1,0 +1,6 @@
+[default]
+src = 'contracts'
+test= 'test/foundry'
+out = 'out'
+libs = ['lib', 'node_modules']
+remappings = ['contracts=contracts']
