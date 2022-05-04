@@ -44,20 +44,23 @@ function App(props) {
   const [localProvider, setLocalProvider] = useState(null)
   const [mainnet, setMainnet] = useState(null)
 
-  useEffect(async () => {
-    const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
+  useEffect(() => {
+    const run = async () => {
+      const localProvider = new ethers.providers.StaticJsonRpcProvider('https://mainnet.optimism.io')
 
-    await localProvider.ready
+      await localProvider.ready
 
-    const mainnet = new ethers.providers.StaticJsonRpcProvider(
-      'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
-    )
+      const mainnet = new ethers.providers.StaticJsonRpcProvider(
+        'https://mainnet.infura.io/v3/1b3241e53c8d422aab3c7c0e4101de9c',
+      )
 
-    await mainnet.ready
+      await mainnet.ready
 
-    setLocalProvider(localProvider)
-    setMainnet(mainnet)
-    setLoaded(true)
+      setLocalProvider(localProvider)
+      setMainnet(mainnet)
+      setLoaded(true)
+    }
+    run()
   }, [])
 
   return (
