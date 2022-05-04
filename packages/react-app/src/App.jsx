@@ -1,6 +1,7 @@
 import 'antd/dist/antd.css'
 import React, { useEffect, useState } from 'react'
 import './App.css'
+import { Layout } from './components'
 import { BrowseBadges } from './views'
 const { ethers } = require('ethers')
 
@@ -31,7 +32,7 @@ function App(props) {
   return (
     <div className="App">
       {/* ✏️ Edit the header and change the title to your project name */}
-      {loaded && <BrowseBadges localProvider={localProvider} mainnet={mainnet} selectedChainId={10} />}
+      <Layout>{loaded && <BrowseBadges localProvider={localProvider} mainnet={mainnet} selectedChainId={10} />}</Layout>
     </div>
   )
 }
