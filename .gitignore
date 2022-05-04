@@ -1,4 +1,3 @@
-packages/subgraph/subgraph.yaml
 packages/subgraph/generated
 packages/subgraph/abis/*
 packages/hardhat/*.txt
@@ -21,7 +20,7 @@ packages/hardhat-ts/cache
 # secrets
 .secret
 
-packages/subgraph/config/config.json
+packages/subgraph/networks.json
 tenderly.yaml
 
 # dependencies
