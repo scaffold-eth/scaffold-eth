@@ -31,8 +31,8 @@ import externalContracts from './contracts/external_contracts'
 import { Transactor, Web3ModalSetup } from './helpers'
 import { Home, ExampleUI, Hints, Subgraph, BrowseBadges } from './views'
 import { useStaticJsonRPC } from './hooks'
-
-const { ethers } = require('ethers')
+import ethers from 'ethers'
+// const { ethers } = require('ethers')
 
 function App(props) {
   const contractConfig = { deployedContracts: {}, externalContracts: externalContracts || {} }
