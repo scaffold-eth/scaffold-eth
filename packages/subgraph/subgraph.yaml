@@ -1,4 +1,4 @@
-specVersion: 0.0.2
+specVersion: 0.0.4
 schema:
   file: ./src/schema.graphql
 dataSources:
@@ -6,12 +6,12 @@ dataSources:
     name: YourContract
     network: localhost
     source:
-      address: "{{localhost_YourContractAddress}}"
+      address: "0x5FbDB2315678afecb367f032d93F642f64180aa3"
       abi: YourContract
       startBlock: 1
     mapping:
       kind: ethereum/events
-      apiVersion: 0.0.5
+      apiVersion: 0.0.6
       language: wasm/assemblyscript
       entities:
         - Purpose
