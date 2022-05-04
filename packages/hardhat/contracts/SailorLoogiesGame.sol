@@ -90,8 +90,8 @@ contract SailorLoogiesGame {
     return reward;
   }
 
-  function withdrawReward(uint256 week) public returns (uint256) {
-    require(!withdraws[week], "already withdrawn!");
+  function claimReward(uint256 week) public returns (uint256) {
+    require(!withdraws[week], "already claimed!");
 
     // change to days
     uint256 diffHours = currentDay();

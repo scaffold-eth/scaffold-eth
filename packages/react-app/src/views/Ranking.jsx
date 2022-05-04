@@ -155,7 +155,7 @@ function Ranking({
                             onClick={async () => {
                               try {
                                 const result = tx(
-                                  writeContracts.SailorLoogiesGame.withdrawReward(week),
+                                  writeContracts.SailorLoogiesGame.claimReward(week),
                                   function (transaction) {
                                     if (transaction.status) {
                                       console.log("TX: ", transaction);
