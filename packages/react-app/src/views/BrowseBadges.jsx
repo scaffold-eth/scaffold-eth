@@ -36,34 +36,37 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
 
-  useEffect(async () => {
-    if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
-    if (!address) {
-      setBadges([])
-      setErrorMessage('')
-      return
-    }
-    setErrorMessage('')
-    try {
-      let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
-      const balance = await contract.balanceOf(address)
-      const badges = []
-      for (let k = 0; k < balance; k++) {
-        try {
-          const tokenId = await contract.tokenOfOwnerByIndex(address, k)
-          let data = await contract.tokensData(tokenId)
-          const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
-          badges.push(badge)
-        } catch (e) {
-          console.error(e)
-        }
+  useEffect(() => {
+    const run = async () => {
+      if (!contractRef) return setErrorMessage('chain not supported. ' + selectedChainId)
+      if (!address) {
+        setBadges([])
+        setErrorMessage('')
+        return
       }
-      console.log('badges for address', address, badges)
-      setBadges(badges)
       setErrorMessage('')
-    } catch (e) {
-      setErrorMessage(e.message)
+      try {
+        let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+        const balance = await contract.balanceOf(address)
+        const badges = []
+        for (let k = 0; k < balance; k++) {
+          try {
+            const tokenId = await contract.tokenOfOwnerByIndex(address, k)
+            let data = await contract.tokensData(tokenId)
+            const badge = Object.assign({}, data, { decodedIpfsHash: toBase58(data.hash) })
+            badges.push(badge)
+          } catch (e) {
+            console.error(e)
+          }
+        }
+        console.log('badges for address', address, badges)
+        setBadges(badges)
+        setErrorMessage('')
+      } catch (e) {
+        setErrorMessage(e.message)
+      }
     }
+    run()
   }, [address])
 
   const contracts = useContractLoader(localProvider, contractConfig, 10)
