@@ -134,7 +134,7 @@ export default function Account({
   );
 
   return (
-    <div>
+    <div style={{ "background-color": "white" }}>
       {display}
       {modalButtons}
     </div>

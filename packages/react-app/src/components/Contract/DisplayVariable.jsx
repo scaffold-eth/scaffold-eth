@@ -1,5 +1,6 @@
 import { Button, Col, Divider, Row } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
+import { SyncOutlined } from "@ant-design/icons";
 
 import { tryToDisplay } from "./utils";
 
@@ -24,12 +25,12 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
     <div>
       <Row>
         <Col
-          span={8}
+          span={6}
           style={{
             textAlign: "right",
             opacity: 0.333,
             paddingRight: 6,
-            fontSize: 24,
+            fontSize: 16,
           }}
         >
           {functionInfo.name}
@@ -39,7 +40,7 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
         </Col>
         <Col span={2}>
           <h2>
-            <Button type="link" onClick={refresh} icon="🔄" />
+            <Button type="link" style={{ fontSize: 12 }} onClick={refresh} icon={<SyncOutlined />} />
           </h2>
         </Col>
       </Row>

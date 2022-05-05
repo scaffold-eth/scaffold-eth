@@ -1,6 +1,7 @@
 import { Button, Col, Divider, Input, Row, Tooltip } from "antd";
 import React, { useState } from "react";
 import Blockies from "react-blockies";
+import { SendOutlined, NumberOutlined, BulbOutlined, ReadOutlined, SelectOutlined } from "@ant-design/icons";
 
 import { Transactor } from "../../helpers";
 import { tryToDisplay, tryToDisplayAsText } from "./utils";
@@ -41,7 +42,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               }
             }}
           >
-            #️⃣
+            <NumberOutlined />
           </div>
         </Tooltip>
       );
@@ -63,7 +64,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               }
             }}
           >
-            #️⃣
+            <NumberOutlined />
           </div>
         </Tooltip>
       );
@@ -79,7 +80,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
               setForm(formUpdate);
             }}
           >
-            ✴️
+            <BulbOutlined />
           </div>
         </Tooltip>
       );
@@ -97,7 +98,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     return (
       <div style={{ margin: 2 }} key={key}>
         <Input
-          size="large"
+          size="medium"
           placeholder={input.name ? input.type + " " + input.name : input.type}
           autoComplete="off"
           value={form[key]}
@@ -123,7 +124,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
           <div>
             <Row>
               <Col span={16}>
-                <Tooltip placement="right" title=" * 10^18 ">
+                <Tooltip placement="right" title="Choose">
                   <div
                     type="dashed"
                     style={{ cursor: "pointer" }}
@@ -132,7 +133,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                       if (floatValue) setTxValue("" + floatValue * 10 ** 18);
                     }}
                   >
-                    ✳️
+                    <SelectOutlined />
                   </div>
                 </Tooltip>
               </Col>
@@ -145,7 +146,7 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
                       setTxValue(BigNumber.from(txValue).toHexString());
                     }}
                   >
-                    #️⃣
+                    <NumberOutlined />
                   </div>
                 </Tooltip>
               </Col>
@@ -168,9 +169,13 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
 
   const buttonIcon =
     functionInfo.type === "call" ? (
-      <Button style={{ marginLeft: -32 }}>Read📡</Button>
+      <Button style={{ marginLeft: -21 }}>
+        Read <ReadOutlined />
+      </Button>
     ) : (
-      <Button style={{ marginLeft: -32 }}>Send💸</Button>
+      <Button style={{ display: "inline", marginLeft: -25 }}>
+        Send <SendOutlined />
+      </Button>
     );
   inputs.push(
     <div style={{ cursor: "pointer", margin: 2 }} key="goButton">
@@ -242,17 +247,17 @@ export default function FunctionForm({ contractFunction, functionInfo, provider,
     <div>
       <Row>
         <Col
-          span={8}
+          span={12}
           style={{
             textAlign: "right",
             opacity: 0.333,
-            paddingRight: 6,
-            fontSize: 24,
+            paddingRight: 280,
+            fontSize: 18,
           }}
         >
           {functionInfo.name}
         </Col>
-        <Col span={16}>{inputs}</Col>
+        <Col span={10}>{inputs}</Col>
       </Row>
       <Divider />
     </div>

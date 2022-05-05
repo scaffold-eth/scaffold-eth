@@ -7857,7 +7857,7 @@ tr.ant-table-expanded-row .ant-descriptions-view table {
   margin-left: 16px;
 }
 .ant-row {
-  flex-flow: row wrap;
+  flex-flow: nowrap;
 }
 .ant-row,
 .ant-row::after,
@@ -13417,6 +13417,7 @@ tr.ant-table-expanded-row .ant-descriptions-view table {
   border: 1px solid #6f6c6c;
   border-radius: 4px;
   transition: all 0.3s;
+  flex-wrap: nowrap;
 }
 .ant-input-group-addon .ant-select {
   margin: -5px -11px;

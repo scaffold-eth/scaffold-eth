@@ -1,3 +1,4 @@
+import { Avatar } from "antd";
 import { Skeleton, Typography } from "antd";
 import React from "react";
 import { useThemeSwitcher } from "react-css-theme-switcher";
@@ -74,11 +75,25 @@ export default function Address(props) {
   }
 
   return (
-    <span>
+    <session>
       <span style={{ verticalAlign: "middle" }}>
-        <Blockies seed={address.toLowerCase()} size={8} scale={props.fontSize ? props.fontSize / 7 : 4} />
+        <Avatar
+          size={25}
+          style={{
+            backgroundColor: "#87d068",
+          }}
+          /* icon={<UserOutlined />} */
+          icon={
+            <Blockies
+              seed={address.toLowerCase()}
+              size={12}
+              style={{ width: 6, height: 6 }}
+              scale={props.fontSize ? props.fontSize / 4 : 3}
+            />
+          }
+        />
       </span>
-      <span style={{ verticalAlign: "middle", paddingLeft: 5, fontSize: props.fontSize ? props.fontSize : 28 }}>
+      <span style={{ verticalAlign: "middle", paddingLeft: 8, fontSize: props.fontSize ? props.fontSize : 18 }}>
         {props.onChange ? (
           <Text editable={{ onChange: props.onChange }} copyable={{ text: address }}>
             <a
@@ -93,7 +108,7 @@ export default function Address(props) {
         ) : (
           <Text copyable={{ text: address }}>
             <a
-              style={{ color: currentTheme === "light" ? "#222222" : "#ddd" }}
+              style={{ fontSize:18, paddingRight:5, color: currentTheme === "light" ? "#222222" : "#ddd" }}
               target="_blank"
               href={etherscanLink}
               rel="noopener noreferrer"
@@ -103,6 +118,6 @@ export default function Address(props) {
           </Text>
         )}
       </span>
-    </span>
+    </session>
   );
 }

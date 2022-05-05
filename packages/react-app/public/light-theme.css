@@ -710,7 +710,7 @@ h6 {
   margin-top: 0;
   margin-bottom: 0.5em;
   color: rgba(0, 0, 0, 0.85);
-  font-weight: 500;
+  font-weight: 300;
 }
 dl,
 ol,
@@ -4012,7 +4012,7 @@ a.ant-btn-sm {
 .ant-card-head-title {
   display: inline-block;
   flex: 1;
-  padding: 16px 0;
+  padding: 12px 0;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
@@ -7767,10 +7767,10 @@ tr.ant-table-expanded-row .ant-descriptions-view table {
 }
 .ant-form-rtl.ant-form-inline .ant-form-item {
   margin-right: 0;
-  margin-left: 16px;
+  margin-left: px;
 }
 .ant-row {
-  flex-flow: row wrap;
+  flex-flow: nowrap;
 }
 .ant-row,
 .ant-row::after,
@@ -13330,6 +13330,7 @@ tr.ant-table-expanded-row .ant-descriptions-view table {
   border: 1px solid #d9d9d9;
   border-radius: 4px;
   transition: all 0.3s;
+  flex-wrap: nowrap;
 }
 .ant-input-group-addon .ant-select {
   margin: -5px -11px;
