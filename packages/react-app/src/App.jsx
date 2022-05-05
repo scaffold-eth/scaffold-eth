@@ -31,8 +31,9 @@ function App(props) {
 
   return (
     <div className="App">
-      {/* ✏️ Edit the header and change the title to your project name */}
-      <Layout>{loaded && <BrowseBadges localProvider={localProvider} mainnet={mainnet} selectedChainId={10} />}</Layout>
+      <Layout>
+        {loaded && <BrowseBadges localProvider={localProvider} mainnet={mainnet} selectedChainId={10} {...props} />}
+      </Layout>
     </div>
   )
 }

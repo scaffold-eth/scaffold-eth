@@ -5,10 +5,8 @@ import { Container } from '@mui/material'
 export default function Layout({ children }) {
   return (
     <Fragment>
-      <Container>
-        <Navbar />
-        {children}
-      </Container>
+      <Navbar />
+      <Container>{children}</Container>
     </Fragment>
   )
 }

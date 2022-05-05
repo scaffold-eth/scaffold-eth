@@ -7,6 +7,7 @@ import { useContractLoader } from 'eth-hooks'
 import { ethers } from 'ethers'
 import { TextField } from '@mui/material'
 import multihash from 'multihashes'
+import { Typography } from '@mui/material'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -125,7 +126,9 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       */}
 
       <div style={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginTop: 64, marginLeft: 20 }}>
-        <h1>Remix Rewards</h1>
+        <Typography variant={'h5'} fontWeight={700}>
+          Remix Rewards
+        </Typography>
         <div>
           <h3>
             Remix Project rewards contributors, beta testers, and UX research participants with NFTs deployed on
@@ -134,7 +137,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             Remix Reward holders are able to mint a second “Remixer” user NFT badge to give to any other user of their
             choice (friendlier UX coming soon).
             <br />
-            This feature is a way for rewarded Remix contributors to help grow our user base into a larger and more
+            This feature is a way to reward Remix contributors to help grow our user base into a larger and more
             genuine open source community of practice.
             <br />
             <br />

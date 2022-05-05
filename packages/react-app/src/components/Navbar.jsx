@@ -1,59 +1,27 @@
-import React, { useState } from 'react'
-import { AppBar, Toolbar, Box, Menu, MenuItem } from '@mui/material'
+import React from 'react'
+import { AppBar, Toolbar, Box } from '@mui/material'
 import Logo from './Logo'
-import MenuItems from './MenuItems'
-import { Typography } from '@mui/material'
 import { Container } from '@mui/material'
-
-const pages = ['Browse Badges']
+import { Button } from '@mui/material'
+import { Typography } from '@mui/material'
 
 export default function Navbar() {
-  const [anchorElNav, setAnchorElNav] = useState(null)
-  const [anchorElUser, setAnchorElUser] = useState(null)
-
-  const handleOpenNavMenu = event => {
-    setAnchorElNav(event.currentTarget)
-  }
-  const handleOpenUserMenu = event => {
-    setAnchorElUser(event.currentTarget)
-  }
   return (
     <>
-      <AppBar color="default" ele>
-        <Toolbar>
-          <Container>
-            <Box>
+      <Box sx={{ flexGrow: 1, marginBottom: 3 }}>
+        <AppBar color="inherit">
+          <Toolbar>
+            <Container>
               <Logo />
-            </Box>
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                // onClose={() => {})}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                }}
-              >
-                {pages.map(page => (
-                  <MenuItem key={page}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
-          </Container>
-        </Toolbar>
-      </AppBar>
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+                <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+                  <Typography color={'#4b4b4b'}>Browse Badges</Typography>
+                </Button>
+              </Box>
+            </Container>
+          </Toolbar>
+        </AppBar>
+      </Box>
     </>
   )
 }
