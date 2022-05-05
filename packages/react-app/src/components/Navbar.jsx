@@ -2,8 +2,7 @@ import React from 'react'
 import { AppBar, Toolbar, Box } from '@mui/material'
 import Logo from './Logo'
 import { Container } from '@mui/material'
-import { Button } from '@mui/material'
-import { Typography } from '@mui/material'
+import MenuItems from './MenuItems'
 
 export default function Navbar() {
   return (
@@ -13,11 +12,7 @@ export default function Navbar() {
           <Toolbar>
             <Container>
               <Logo />
-              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                <Button sx={{ my: 2, color: 'white', display: 'block' }}>
-                  <Typography color={'#4b4b4b'}>Browse Badges</Typography>
-                </Button>
-              </Box>
+              <MenuItems />
             </Container>
           </Toolbar>
         </AppBar>

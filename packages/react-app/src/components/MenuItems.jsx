@@ -1,13 +1,23 @@
 import React from 'react'
+import { Box, Typography, Button } from '@mui/material'
 
 export default function MenuItems() {
   return (
     <>
-      <ul>
-        <li>First Menu</li>
-        <li>Second Menu</li>
-        <li>Third Menu</li>
-      </ul>
+      <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+        <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+          <Typography color={'#4b4b4b'}>Browse Badges</Typography>
+        </Button>
+        <Button sx={{ my: 2, color: 'prima', display: 'block' }}>
+          <Typography color={'#4b4b4b'}>Browse Badges</Typography>
+        </Button>
+        <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+          <Typography color={'#4b4b4b'}>Browse Badges</Typography>
+        </Button>
+        <Button sx={{ my: 2, color: 'white', display: 'block' }}>
+          <Typography color={'#4b4b4b'}>Browse Badges</Typography>
+        </Button>
+      </Box>
     </>
   )
 }
