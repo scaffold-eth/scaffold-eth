@@ -9,3 +9,6 @@
 [submodule "packages/hardhat/lib/forge-std"]
 	path = packages/hardhat/lib/forge-std
 	url = https://github.com/foundry-rs/forge-std
+[submodule "packages/hardhat/lib/solmate"]
+	path = packages/hardhat/lib/solmate
+	url = https://github.com/Rari-Capital/solmate
