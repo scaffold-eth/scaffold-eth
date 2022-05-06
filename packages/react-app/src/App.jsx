@@ -417,7 +417,7 @@ function App(props) {
       <ThemeSwitch />
 
       {/* 👨‍💼 Your account is in the top right with a wallet at connect options */}
-      <div style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10, backgroundColor: "#b3e2f4" }}>
+      <div id="wallet" style={{ position: "fixed", textAlign: "right", right: 0, top: 0, padding: 10, backgroundColor: "#b3e2f4" }}>
         <div style={{ display: "flex", flex: 1, alignItems: "center", flexDirection: "column" }}>
           {USE_NETWORK_SELECTOR && (
             <div style={{ marginRight: 20 }}>

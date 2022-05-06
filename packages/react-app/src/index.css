@@ -102,6 +102,29 @@ code {
 #page-header {
   background-image: url(images/sunset.jpg);
   background-position-y: -207px;
+  height: 140px;
+}
+
+#root #menu {
+  text-align: right;
+  margin-top: -20px;
+  font-size: 24px;
+  background: none;
+}
+
+@media only screen and (max-width: 1700px) {
+  #page-header {
+    height: 158px;
+  }
+
+  #root #menu {
+    text-align: left;
+    margin-top: 0;
+  }
+
+  #wallet {
+    opacity: 0.7;
+  }
 }
 
 #page-header .ant-avatar-image {

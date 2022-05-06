@@ -8,7 +8,7 @@ export default function Header() {
   const location = useLocation();
 
   return (
-    <div id="page-header" style={{ height: 140 }}>
+    <div id="page-header">
       <a href="/">
         <div style={{ display: "flex", marginLeft: 20, paddingTop: 10 }}>
           <span class="ant-avatar ant-avatar-circle ant-avatar-image">
@@ -32,7 +32,6 @@ export default function Header() {
       </a>
       <Menu
         id="menu"
-        style={{ textAlign: "right", marginTop: -20, fontSize: 24, background: "none" }}
         selectedKeys={[location.pathname]}
         mode="horizontal"
       >
