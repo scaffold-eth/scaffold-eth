@@ -11,6 +11,10 @@ import multihash from 'multihashes'
 import { Typography } from '@mui/material'
 import { Box, Grid } from '@mui/material'
 import NftCard from '../components/NftCard'
+import { Paper } from '@mui/material'
+import { FormControl } from '@mui/material'
+import { InputLabel } from '@mui/material'
+import { OutlinedInput } from '@mui/material'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -22,10 +26,6 @@ export const toBase58 = contentHash => {
   let buf = multihash.fromHexString(hex)
   return multihash.toB58String(buf)
 }
-
-const BadgeBox = styled(Box)(() => ({
-  background: `url('../wave-bg.svg') no-repeat`,
-}))
 
 export default function BrowseBadges({ localProvider, mainnet, selectedChainId }) {
   const [contractEvents, setContractEvents] = useState([])
@@ -154,16 +154,19 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
           </Typography>
         </Box>
       </div>
-      <Box style={{ padding: 16, width: '100%', color: '#007aa6', paddingTop: '0px' }}>
-        <TextField
-          variant="outlined"
-          sx={{ marginTop: 2, color: '#007aa6' }}
-          label="Address or ENS name"
-          onChange={e => {
-            setAddress(e.target.value)
-          }}
-        />
-        <div>{error}</div>
+      <Box mt={8} xs={12} sm={12} md={8}>
+        <FormControl sx={{ width: '50vw' }} variant="outlined">
+          {/* <InputLabel htmlFor="addressEnsSearch">Address or ENS name</InputLabel> */}
+          <TextField
+            id="addressEnsSearch"
+            sx={{ color: '#007aa6' }}
+            label="Address or ENS name"
+            onChange={e => {
+              setAddress(e.target.value)
+            }}
+          />
+        </FormControl>
+        <Paper>{error}</Paper>
       </Box>
       <Box
         sx={{
