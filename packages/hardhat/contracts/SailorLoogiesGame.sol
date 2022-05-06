@@ -97,15 +97,12 @@ contract SailorLoogiesGame {
     require(!withdraws[week], "already claimed!");
 
     uint256 day = currentDay();
-
     require(week * 7 <= day, "week is not finished yet!");
 
     uint256 shipId = winnerByWeek(week);
-
     require(shipId > 0, "nobody wins that week!");
 
     address winner = loogieShip.ownerOf(shipId);
-
     require(winner == msg.sender, "you don't win that week!");
 
     withdraws[week] = true;
