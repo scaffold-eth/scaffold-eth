@@ -37,6 +37,8 @@ contract SailorLoogiesGame {
   mapping(uint256 => mapping(uint256 => uint8)) public played;
   // shipId -> day -> reward
   mapping(uint256 => mapping(uint256 => uint256)) public rewards;
+  // shipId -> week -> reward
+  mapping(uint256 => mapping(uint256 => uint256)) public rewardsByWeek;
   // week -> withdraw
   mapping(uint256 => bool) public withdraws;
 
@@ -60,7 +62,7 @@ contract SailorLoogiesGame {
   }
 
   function currentDay() public view returns (uint256) {
-    return (block.timestamp - startTimestamp) / 3600;
+    return (block.timestamp - startTimestamp) / 86400;
   }
 
   function sendFishing(uint256 id) public returns (uint256) {
@@ -70,22 +72,23 @@ contract SailorLoogiesGame {
     require(loogieCoin.balanceOf(shipOwner) >= 3000, "you need 3000 LoogieCoins to send a ship to fishing!");
     require(crewReady(id), "you need at least one crew member on your ship!");
 
-    // change to days
-    uint256 diffHours = currentDay();
+    uint256 day = currentDay();
 
-    require(played[id][diffHours] < 3, "only 3 fishing per day!");
+    require(played[id][day] < 3, "only 3 fishing per day!");
 
-    played[id][diffHours] += 1;
+    played[id][day] += 1;
 
     loogieCoin.burn(shipOwner, 3000);
 
     uint256 reward = _calculateReward(id);
+    rewards[id][day] += reward;
 
-    rewards[id][diffHours] += reward;
+    uint256 currentWeek = (day / 7) + 1;
+    rewardsByWeek[id][currentWeek] += reward;
 
     loogieCoin.mint(shipOwner, reward);
 
-    emit Fishing(id, diffHours / 7 + 1, diffHours, reward, shipOwner, played[id][diffHours]);
+    emit Fishing(id, currentWeek, day, reward, shipOwner, played[id][day]);
 
     return reward;
   }
@@ -93,10 +96,9 @@ contract SailorLoogiesGame {
   function claimReward(uint256 week) public returns (uint256) {
     require(!withdraws[week], "already claimed!");
 
-    // change to days
-    uint256 diffHours = currentDay();
+    uint256 day = currentDay();
 
-    require(week * 7 <= diffHours, "week is not finished yet!");
+    require(week * 7 <= day, "week is not finished yet!");
 
     uint256 shipId = winnerByWeek(week);
 
@@ -108,7 +110,7 @@ contract SailorLoogiesGame {
 
     withdraws[week] = true;
 
-    uint256 shipReward = rewardByShipAndWeek(shipId, week);
+    uint256 shipReward = rewardsByWeek[shipId][week];
 
     uint256 rewardNftId = sailorLoogiesGameAward.mintItem(winner, week, shipReward);
 
@@ -117,37 +119,17 @@ contract SailorLoogiesGame {
     return rewardNftId;
   }
 
-  function rewardByShipAndWeek(uint256 shipId, uint256 week) public view returns (uint256) {
-    // week 1, is from day 0 to 6, week 2, 7 to 13, and so on
-    // week n, is from day (n-1)*7
-
-    uint256 shipRewards;
-    for (uint256 j = (week - 1) * 7; j < week * 7; j++) {
-      shipRewards = shipRewards + rewards[shipId][j];
-    }
-
-    return shipRewards;
-  }
-
   function winnerByWeek(uint256 week) public view returns (uint256) {
-    // change to days
-    uint256 diffHours = currentDay();
-    require(week * 7 <= diffHours, "week is not finished yet!");
-
-    // week 1, is from day 0 to 6, week 2, 7 to 13, and so on
-    // week n, is from day (n-1)*7
+    uint256 day = currentDay();
+    require(week * 7 <= day, "week is not finished yet!");
 
     uint256 maxReward;
     uint256 winnerId;
 
     for (uint256 i = 1; i <= loogieShip.totalSupply(); i++) {
-      uint256 rewardsForI;
-      for (uint256 j = (week - 1) * 7; j < week * 7; j++) {
-        rewardsForI = rewardsForI + rewards[i][j];
-      }
-      if (rewardsForI > maxReward) {
+      if (rewardsByWeek[i][week] > maxReward) {
         winnerId = i;
-        maxReward = rewardsForI;
+        maxReward = rewardsByWeek[i][week];
       }
     }
 

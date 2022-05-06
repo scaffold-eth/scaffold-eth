@@ -22,7 +22,7 @@ library LoogieShipMetadata {
                       abi.encodePacked(
                           '{"name":"Loogie Ship #',id.toString(),
                           '", "description":"Loogie Ship #',id.toString(),
-                          '", "external_url":"https://ship.fancyloogies.com/ship/',
+                          '", "external_url":"https://sailor.fancyloogies.com/ship/',
                           id.toString(),
                           '", "attributes": [{"trait_type": "Flag Color", "value": "#',
                           flagColor.toColor(),

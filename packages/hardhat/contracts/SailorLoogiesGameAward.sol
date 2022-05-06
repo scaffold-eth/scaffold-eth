@@ -64,7 +64,7 @@ contract SailorLoogiesGameAward is ERC721Enumerable, AccessControl {
                       abi.encodePacked(
                           '{"name":"SailorLoogies Game Award #',id.toString(),
                           '", "description":"SailorLoogies Game Award - Week #',week[id].toString(),
-                          '", "external_url":"https://ship.fancyloogies.com/award/',
+                          '", "external_url":"https://sailor.fancyloogies.com/award/',
                           id.toString(),
                           '", "attributes": [{"trait_type": "Color", "value": "#',
                           colors[color[id]],

@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   // const chainId = await getChainId();
 
-  const currentTimestamp = 1651585339;
+  const currentTimestamp = 1651806000;
 
   // localhost
   const fancyLoogieAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";

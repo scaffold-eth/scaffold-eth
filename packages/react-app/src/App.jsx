@@ -55,7 +55,6 @@ const { ethers } = require("ethers");
 
 /// 📡 What chain are your contracts deployed to?
 const initialNetwork = NETWORKS.localhost; // <------- select your target frontend network (localhost, rinkeby, xdai, mainnet)
-const startTimestamp = 1648751958000;
 
 // 😬 Sorry for all the console logging
 const DEBUG = true;
@@ -174,12 +173,8 @@ function App(props) {
   const [currentWeek, setCurrentWeek] = useState();
   const [currentWeekDay, setCurrentWeekDay] = useState();
 
-  // TODO: change to days
-  // const currentDay = Math.floor((Date.now() - startTimestamp) / 1000 / 3600);
   const currentDayNumber = useContractReader(readContracts, "SailorLoogiesGame", "currentDay");
   if (DEBUG) console.log("currentDayNumber:", currentDayNumber);
-  // const currentWeek = Math.floor(currentDay.toNumber() / 7) + 1;
-  // const currentWeekDay = currentDay.toNumber() % 7 + 1;
 
   useEffect(() => {
     if (currentDayNumber) {

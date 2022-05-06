@@ -14,7 +14,7 @@ function Prizes({
   currentDay,
   currentWeekDay,
 }) {
-  const withdraws = useEventListener(readContracts, "SailorLoogiesGame", "Withdraw", localProvider, startBlock - 9000);
+  const withdraws = useEventListener(readContracts, "SailorLoogiesGame", "Withdraw", localProvider, startBlock - 100000);
   console.log("withdraws: ", withdraws);
 
   const [rewards, setRewards] = useState();

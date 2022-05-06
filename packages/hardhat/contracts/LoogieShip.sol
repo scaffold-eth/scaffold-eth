@@ -161,7 +161,7 @@ contract LoogieShip is ERC721Enumerable, IERC721Receiver {
 
       require(ownerOf(shipId) == from, "you can only add crew to a LoogieShip you own!");
       require(msg.sender == address(fancyLoogies), "only FancyLoogies can be part of the crew!");
-      require(crew < 4, "only 4 crew member per ship!");
+      require(crew < 4, "only 4 crew members per ship!");
       require(crewById[crew][shipId] == 0, "the ship already have this crew member!");
 
       //Captain

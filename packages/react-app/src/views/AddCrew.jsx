@@ -23,7 +23,6 @@ function AddCrew({
   const [selectedShipPreview, setSelectedShipPreview] = useState("");
   const [updateBalances, setUpdateBalances] = useState(0);
   const [selectedCrew, setSelectedCrew] = useState();
-  const [loogieCoinAllowance, setLoogieCoinAllowance] = useState(0);
   const [sendingLoogies, setSendingLoogies] = useState(false);
   const [fishingReward, setFishingReward] = useState(0);
   const [fishingRewardSize, setFishingRewardSize] = useState("");
@@ -88,23 +87,6 @@ function AddCrew({
     };
     updatePlayed();
   }, [DEBUG, selectedShip, readContracts.SailorLoogiesGame, currentDay]);
-
-  useEffect(() => {
-    const updateLoogieCoinAllowance = async () => {
-      if (DEBUG) console.log("Updating LoogieCoin allowance...");
-      if (readContracts.LoogieCoin && readContracts.SailorLoogiesGame) {
-        const loogieCoinNewAllowance = await readContracts.LoogieCoin.allowance(
-          address,
-          readContracts.SailorLoogiesGame.address,
-        );
-        if (DEBUG) console.log("loogieCoinNewAllowance: ", loogieCoinNewAllowance);
-        setLoogieCoinAllowance(loogieCoinNewAllowance);
-      } else {
-        if (DEBUG) console.log("Contracts not defined yet.");
-      }
-    };
-    updateLoogieCoinAllowance();
-  }, [DEBUG, address, readContracts.LoogieCoin, readContracts.SailorLoogiesGame]);
 
   useEffect(() => {
     const updateBalances = async () => {
@@ -341,84 +323,65 @@ function AddCrew({
                           <div style={{ fontWeight: "bold", textAlign: "center", fontSize: 16, color: "green" }}>
                             Ready to go fishing!<br/>({3 - todayPlayed} left today)
                             <div style={{ marginTop: 20 }}>
-                              {loogieCoinAllowance >= 3000 ? (
-                                <Button
-                                  type="primary"
-                                  disabled={sendingLoogies || todayPlayed >= 3}
-                                  onClick={async () => {
-                                    try {
-                                      const result = tx(
-                                        writeContracts.SailorLoogiesGame.sendFishing(selectedShip, { gasLimit: 300000 }),
-                                        function (transaction) {
-                                          if (transaction.status) {
-                                            setLoogieCoinAllowance(loogieCoinAllowance - 3000);
-                                            document.getElementById("midi-player").start();
-                                            setSendingLoogies(true);
-                                            console.log("TX: ", transaction);
-                                            console.log("logs: ", transaction.logs);
-                                            const abiCoder = new ethers.utils.AbiCoder();
-                                            const decoded = abiCoder.decode(
-                                              ["uint256", "address"],
-                                              transaction.logs[2].data,
-                                            );
-                                            // week
-                                            // ethers.BigNumber.from(transaction.logs[2].topics[2]).toString()
-                                            // day
-                                            // ethers.BigNumber.from(transaction.logs[2].topics[3]).toString()
-                                            const reward = decoded[0].toNumber();
-                                            console.log("Reward: ", reward);
-                                            setTodayPlayed(todayPlayed + 1);
-                                            setTimeout(
-                                              function (reward) {
-                                                document.getElementById("midi-player").stop();
-                                                document.getElementById("win-audio").play();
-                                                console.log("reward on timeout: ", reward);
-                                                setFishingReward(reward);
-                                                if (reward >= 6000) {
-                                                  setFishingRewardSize("Big");
-                                                } else if (reward >= 4500) {
-                                                  setFishingRewardSize("Medium");
-                                                } else if (reward >= 3000) {
-                                                  setFishingRewardSize("Small");
-                                                } else {
-                                                  setFishingRewardSize("Empty");
-                                                }
-                                              }.bind(this),
-                                              13000,
-                                              reward,
-                                            );
-                                          } else {
-                                            alert(transaction.data.message);
-                                          }
-                                        },
-                                      );
-                                      console.log("awaiting metamask/web3 confirm result...", result);
-                                      const result2 = await result;
-                                      console.log("result2: ", result2);
-                                    } catch (e) {
-                                      console.log("sendFishing failed", e);
-                                    }
-                                  }}
-                                >
-                                  Send Ship (3,000 LoogieCoins)
-                                </Button>
-                              ) : (
-                                <Button
-                                  type="primary"
-                                  title="You will not be asked for a new approval on the next 10 fishing"
-                                  onClick={async () => {
-                                    try {
-                                      tx(writeContracts.LoogieCoin.approve(readContracts.SailorLoogiesGame.address, 30000), function (transaction) {
-                                        setLoogieCoinAllowance(loogieCoinAllowance + 30000);
-                                      });
-                                    } catch (e) {
-                                      console.log("approve failed", e);
-                                    }
-                                  }}
-                                >
-                                  Approve LoogieCoin Spend (30,000)
-                                </Button>
-                              )}
+                              <Button
+                                type="primary"
+                                disabled={sendingLoogies || todayPlayed >= 3}
+                                onClick={async () => {
+                                  try {
+                                    const result = tx(
+                                      writeContracts.SailorLoogiesGame.sendFishing(selectedShip, { gasLimit: 300000 }),
+                                      function (transaction) {
+                                        if (transaction.status) {
+                                          document.getElementById("midi-player").start();
+                                          setSendingLoogies(true);
+                                          console.log("TX: ", transaction);
+                                          console.log("logs: ", transaction.logs);
+                                          const abiCoder = new ethers.utils.AbiCoder();
+                                          const decoded = abiCoder.decode(
+                                            ["uint256", "address"],
+                                            transaction.logs[2].data,
+                                          );
+                                          // week
+                                          // ethers.BigNumber.from(transaction.logs[2].topics[2]).toString()
+                                          // day
+                                          // ethers.BigNumber.from(transaction.logs[2].topics[3]).toString()
+                                          const reward = decoded[0].toNumber();
+                                          console.log("Reward: ", reward);
+                                          setTodayPlayed(todayPlayed + 1);
+                                          setTimeout(
+                                            function (reward) {
+                                              document.getElementById("midi-player").stop();
+                                              document.getElementById("win-audio").play();
+                                              console.log("reward on timeout: ", reward);
+                                              setFishingReward(reward);
+                                              if (reward >= 6000) {
+                                                setFishingRewardSize("Big");
+                                              } else if (reward >= 4500) {
+                                                setFishingRewardSize("Medium");
+                                              } else if (reward >= 3000) {
+                                                setFishingRewardSize("Small");
+                                              } else {
+                                                setFishingRewardSize("Empty");
+                                              }
+                                            }.bind(this),
+                                            13000,
+                                            reward,
+                                          );
+                                        } else {
+                                          alert(transaction.data.message);
+                                        }
+                                      },
+                                    );
+                                    console.log("awaiting metamask/web3 confirm result...", result);
+                                    const result2 = await result;
+                                    console.log("result2: ", result2);
+                                  } catch (e) {
+                                    console.log("sendFishing failed", e);
+                                  }
+                                }}
+                              >
+                                Send Ship (3,000 LoogieCoins)
+                              </Button>
                             </div>
                           </div>
                         ) : (
