@@ -2939,6 +2939,13 @@
     prop-types "^15.7.2"
     react-is "^17.0.2"
 
+"@mui/icons-material@^5.6.2":
+  version "5.6.2"
+  resolved "https://registry.yarnpkg.com/@mui/icons-material/-/icons-material-5.6.2.tgz#239c40fc5841dc7c6af7d00e4e988550de170fcd"
+  integrity sha512-9QdI7axKuBAyaGz4mtdi7Uy1j73/thqFmEuxpJHxNC7O8ADEK1Da3t2veK2tgmsXsUlAHcAG63gg+GvWWeQNqQ==
+  dependencies:
+    "@babel/runtime" "^7.17.2"
+
 "@mui/material@^5.6.1":
   version "5.6.1"
   resolved "https://registry.yarnpkg.com/@mui/material/-/material-5.6.1.tgz#b74cfbe4666586e054a28cf3df448369892085e1"
@@ -3000,13 +3007,6 @@
   dependencies:
     "@babel/runtime" "^7.17.2"
     "@emotion/cache" "^11.7.1"
-    prop-types "^15.7.2"
-
-"@mui/styled-engine@npm:@mui/styled-engine-sc@latest":
-  version "5.6.1"
-  resolved "https://registry.yarnpkg.com/@mui/styled-engine-sc/-/styled-engine-sc-5.6.1.tgz#d9505c005eeefa5c7d7ef9c03e63324db889ee09"
-  integrity sha512-BMY5Pb8YgOxvvwg9s6mPeDgzha4244/KgRmHvTVPBmvqypbiLPApR6SNyYON+1/3kLHt3TpmxrlRY3jPiZF2QQ==
-  dependencies:
     prop-types "^15.7.2"
 
 "@mui/styles@^5.6.2":
@@ -4717,6 +4717,11 @@ acorn@^8.2.4:
   version "8.4.1"
   resolved "https://registry.yarnpkg.com/acorn/-/acorn-8.4.1.tgz#56c36251fc7cabc7096adc18f05afe814321a28c"
   integrity sha512-asabaBSkEKosYKMITunzX177CXxQ4Q8BSSzMTKD+FefUhipQC70gfW5SiUDhYQ3vk8G+81HqQk7Fv9OXwwn9KA==
+
+add@^2.0.6:
+  version "2.0.6"
+  resolved "https://registry.yarnpkg.com/add/-/add-2.0.6.tgz#248f0a9f6e5a528ef2295dbeec30532130ae2235"
+  integrity sha1-JI8Kn25aUo7yKV2+7DBTITCuIjU=
 
 address@1.1.2, address@^1.0.1:
   version "1.1.2"
@@ -23721,6 +23726,11 @@ yargs@~3.10.0:
     cliui "^2.1.0"
     decamelize "^1.0.0"
     window-size "0.1.0"
+
+yarn@^1.22.18:
+  version "1.22.18"
+  resolved "https://registry.yarnpkg.com/yarn/-/yarn-1.22.18.tgz#05b822ade8c672987bab8858635145da0850f78a"
+  integrity sha512-oFffv6Jp2+BTUBItzx1Z0dpikTX+raRdqupfqzeMKnoh7WD6RuPAxcqDkMUy9vafJkrB0YaV708znpuMhEBKGQ==
 
 yocto-queue@^0.1.0:
   version "0.1.0"
