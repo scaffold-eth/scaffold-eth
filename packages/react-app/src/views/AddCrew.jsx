@@ -448,7 +448,7 @@ function AddCrew({
         )}
       </div>
 
-      {yourLoogies && yourLoogies.length > 0 && (
+      {(loadingLoogies || (yourLoogies && yourLoogies.length > 0)) && (
         <div
           id="your-loogies"
           style={{ width: "auto", margin: "auto", paddingBottom: 25, paddingRight: 40, paddingLeft: 40 }}
