@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react'
-import { Card } from 'antd'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
 import { useContractLoader } from 'eth-hooks'
@@ -10,7 +9,7 @@ import { ethers } from 'ethers'
 import { TextField } from '@mui/material'
 import multihash from 'multihashes'
 import { Typography } from '@mui/material'
-import { Box } from '@mui/material'
+import { Box, Grid } from '@mui/material'
 import NftCard from '../components/NftCard'
 
 export const toHex = ipfsHash => {
@@ -170,8 +169,9 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
         }}
+        mt={15}
       >
-        <div style={{ flexWrap: 'wrap', display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
+        <Grid container spacing={2}>
           {eventBadges.reverse().map(event => {
             console.log(event)
             const src = 'https://ipfs.io/ipfs/' + toBase58(event.hash)
@@ -187,10 +187,12 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               //     view transaction
               //   </a>
               // </Card>
-              <NftCard src={src} title={title} txLink={txLink} event={event} />
+              <Grid item xs={6} md={4} mt={-12} mb={15}>
+                <NftCard src={src} title={title} txLink={txLink} event={event} />
+              </Grid>
             )
           })}
-        </div>
+        </Grid>
       </Box>
     </div>
   )

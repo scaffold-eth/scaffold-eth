@@ -5,7 +5,7 @@ export default function NftCard(props) {
   const { src, event, title, txLink } = props
   return (
     <>
-      <Card sx={{ width: '250px' }} variant={'outlined'}>
+      <Card sx={{ width: '250px' }} variant={'outlined'} zIndex={10}>
         <CardMedia component={'img'} width={150} image={src} alt={'nftimage'} />
         <CardContent
           sx={{
