@@ -3,11 +3,15 @@ import { Card } from 'antd'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
 import { useContractLoader } from 'eth-hooks'
+import { styled } from '@mui/material/styles'
+import './view-style.css'
 
 import { ethers } from 'ethers'
 import { TextField } from '@mui/material'
 import multihash from 'multihashes'
 import { Typography } from '@mui/material'
+import { Box } from '@mui/material'
+import NftCard from '../components/NftCard'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -19,6 +23,10 @@ export const toBase58 = contentHash => {
   let buf = multihash.fromHexString(hex)
   return multihash.toB58String(buf)
 }
+
+const BadgeBox = styled(Box)(() => ({
+  background: `url('../wave-bg.svg') no-repeat`,
+}))
 
 export default function BrowseBadges({ localProvider, mainnet, selectedChainId }) {
   const [contractEvents, setContractEvents] = useState([])
@@ -126,30 +134,28 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       */}
 
       <div style={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginTop: 64, marginLeft: 20 }}>
-        <Typography variant={'h5'} fontWeight={700}>
+        <Typography variant={'h2'} fontWeight={700} sx={{ marginBottom: 5 }}>
           Remix Rewards
         </Typography>
-        <div>
-          <h3>
+        <Box>
+          <Typography variant="subtitle1" fontWeight={500} mb={3}>
             Remix Project rewards contributors, beta testers, and UX research participants with NFTs deployed on
             Optimism.
             <br />
             Remix Reward holders are able to mint a second “Remixer” user NFT badge to give to any other user of their
             choice (friendlier UX coming soon).
             <br />
-            This feature is a way to reward Remix contributors to help grow our user base into a larger and more
-            genuine open source community of practice.
-            <br />
-            <br />
-            Remix Rewards are currently not transferable. <br />
-            This feature leaves open the possibility of granting holders proportional voting power to help the community
-            decide on new features for the IDE and/or other issues governing the development of the Remix toolset.
-            <br />
-            Input a wallet address to see the Remix Rewards it holds:
-          </h3>
-        </div>
+            This feature is a way to reward Remix contributors to help grow our user base into a larger and more genuine
+            open source community of practice.
+          </Typography>
+          <Typography variant="subtitle1" fontWeight={500}>
+            Remix Rewards are currently not transferable. This feature leaves open the possibility of granting holders
+            proportional voting power to help the community decide on new features for the IDE and/or other issues
+            governing the development of the Remix toolset.
+          </Typography>
+        </Box>
       </div>
-      <div style={{ padding: 16, width: '100%', color: '#007aa6', paddingTop: '0px' }}>
+      <Box style={{ padding: 16, width: '100%', color: '#007aa6', paddingTop: '0px' }}>
         <TextField
           variant="outlined"
           sx={{ marginTop: 2, color: '#007aa6' }}
@@ -159,21 +165,12 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
           }}
         />
         <div>{error}</div>
-
-        <div style={{ flexWrap: 'wrap', display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
-          <div>
-            {badges.map(badge => {
-              const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
-              return (
-                <Card style={{ margin: '12px', width: '500px' }}>
-                  {badge.tokenType} {badge.payload}
-                  <img width={200} src={src}></img>
-                </Card>
-              )
-            })}
-          </div>
-        </div>
-
+      </Box>
+      <Box
+        sx={{
+          background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
+        }}
+      >
         <div style={{ flexWrap: 'wrap', display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
           {eventBadges.reverse().map(event => {
             console.log(event)
@@ -181,18 +178,20 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
             let title = event.name ? event.name : event.to
             return (
-              <Card title={'owner - ' + title} style={{ margin: '12px', width: '500px' }}>
-                <img width={200} src={src} />
-                {event.tokenType} {event.payload}
-                <br />
-                <a href={txLink} target="_blank" rel="noreferrer">
-                  view transaction
-                </a>
-              </Card>
+              // <Card title={'owner - ' + title} style={{ margin: '12px', width: '500px' }}>
+              //   Test
+              //   <img width={200} src={src} alt={src} />
+              //   {event.tokenType} {event.payload}
+              //   <br />
+              //   <a href={txLink} target="_blank" rel="noreferrer">
+              //     view transaction
+              //   </a>
+              // </Card>
+              <NftCard src={src} title={title} txLink={txLink} event={event} />
             )
           })}
         </div>
-      </div>
+      </Box>
     </div>
   )
 }

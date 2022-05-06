@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <>
       <Box sx={{ flexGrow: 1, marginBottom: 3 }}>
-        <AppBar color="inherit">
+        <AppBar color="inherit" elevation={1}>
           <Toolbar>
             <Logo />
             <MenuItems />

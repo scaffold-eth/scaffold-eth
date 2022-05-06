@@ -60,7 +60,11 @@
     "react-scripts": "4.0.0",
     "searchico": "^1.2.1",
     "walletlink": "^2.1.5",
-    "web3modal": "^1.9.1"
+    "web3modal": "^1.9.1",
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
+  },
+  "resolutions": {
+    "@mui/styled-engine": "npm:@mui/styled-engine-sc@latest"
   },
   "devDependencies": {
     "@apollo/client": "^3.3.21",
