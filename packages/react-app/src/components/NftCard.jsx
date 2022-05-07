@@ -1,5 +1,6 @@
 import React from 'react'
 import { Box, Button, Card, CardActions, CardMedia, CardContent, Typography } from '@mui/material'
+import InfoIcon from '@mui/icons-material/Info'
 
 export default function NftCard(props) {
   const { src, event, title, txLink } = props
@@ -8,7 +9,6 @@ export default function NftCard(props) {
       <Box
         sx={{
           maxWidth: '255px',
-          // padding: '1rem',
           position: 'relative',
           background:
             'linear-gradient(to right, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
@@ -40,6 +40,7 @@ export default function NftCard(props) {
           >
             <Button
               variant={'contained'}
+              startIcon={<InfoIcon />}
               fullWidth
               href={txLink}
               target="_blank"

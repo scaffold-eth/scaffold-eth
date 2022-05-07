@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
 import { useContractLoader } from 'eth-hooks'
-import './view-style.css'
 
 import { ethers } from 'ethers'
 import { TextField } from '@mui/material'
@@ -12,7 +11,7 @@ import { Box, Grid } from '@mui/material'
 import NftCard from '../components/NftCard'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
-import { Card } from '@mui/material'
+import AddressedCard from '../components/AddressedCard'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -125,13 +124,13 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
   }, [contractEvents])
 
   return (
-    <div style={{ paddingTop: '36px' }}>
+    <Box sx={{ paddingTop: '76px' }}>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
 
-      <div style={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginTop: 64, marginLeft: 20 }}>
-        <Typography variant={'h2'} fontWeight={700} sx={{ marginBottom: 5 }}>
+      <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
+        <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }}>
           Remix Rewards
         </Typography>
         <Box>
@@ -151,7 +150,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             governing the development of the Remix toolset.
           </Typography>
         </Box>
-      </div>
+      </Box>
       <Box mt={8} xs={12} sm={12} md={8}>
         <FormControl sx={{ width: '50vw' }} variant="outlined">
           {/* <InputLabel htmlFor="addressEnsSearch">Address or ENS name</InputLabel> */}
@@ -169,23 +168,16 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
+          height: '50vh',
         }}
         mt={15}
       >
-        <Grid container spacing={2}>
-          <div style={{ flexWrap: 'wrap', display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
-            <div>
-              {badges.map(badge => {
-                const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
-                return (
-                  <Card style={{ margin: '12px', width: '500px' }}>
-                    {badge.tokenType} {badge.payload}
-                    <img width={200} src={src}></img>
-                  </Card>
-                )
-              })}
-            </div>
-          </div>
+        <Grid container spacing={2} ml={5}>
+          {badges && badges.length > 0 ? (
+            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
+              <AddressedCard badges={badges} />
+            </Grid>
+          ) : null}
           {eventBadges.reverse().map(event => {
             console.log(event)
             const src = 'https://ipfs.io/ipfs/' + toBase58(event.hash)
@@ -199,6 +191,6 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
           })}
         </Grid>
       </Box>
-    </div>
+    </Box>
   )
 }
