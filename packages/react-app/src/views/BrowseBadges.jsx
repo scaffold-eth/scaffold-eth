@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react'
 import externalContracts from '../contracts/external_contracts'
 import { useEventListener } from 'eth-hooks/events/useEventListener'
 import { useContractLoader } from 'eth-hooks'
-import { styled } from '@mui/material/styles'
 import './view-style.css'
 
 import { ethers } from 'ethers'
@@ -13,8 +12,7 @@ import { Box, Grid } from '@mui/material'
 import NftCard from '../components/NftCard'
 import { Paper } from '@mui/material'
 import { FormControl } from '@mui/material'
-import { InputLabel } from '@mui/material'
-import { OutlinedInput } from '@mui/material'
+import { Card } from '@mui/material'
 
 export const toHex = ipfsHash => {
   let buf = multihash.fromB58String(ipfsHash)
@@ -175,6 +173,19 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
         mt={15}
       >
         <Grid container spacing={2}>
+          <div style={{ flexWrap: 'wrap', display: 'flex', width: '100%', justifyContent: 'flex-start' }}>
+            <div>
+              {badges.map(badge => {
+                const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
+                return (
+                  <Card style={{ margin: '12px', width: '500px' }}>
+                    {badge.tokenType} {badge.payload}
+                    <img width={200} src={src}></img>
+                  </Card>
+                )
+              })}
+            </div>
+          </div>
           {eventBadges.reverse().map(event => {
             console.log(event)
             const src = 'https://ipfs.io/ipfs/' + toBase58(event.hash)
