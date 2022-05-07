@@ -152,6 +152,9 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
         </Box>
       </Box>
       <Box mt={8} xs={12} sm={12} md={8}>
+        <Typography variant={'h6'} fontWeight={700} mb={3}>
+          Input a wallet address to see the Remix Rewards it holds:
+        </Typography>
         <FormControl sx={{ width: '50vw' }} variant="outlined">
           {/* <InputLabel htmlFor="addressEnsSearch">Address or ENS name</InputLabel> */}
           <TextField
@@ -184,7 +187,19 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             const txLink = 'https://optimistic.etherscan.io/tx/' + event.transactionHash
             let title = event.name ? event.name : event.to
             return (
-              <Grid item xs={6} md={4} lg={'auto'} mt={-12} mb={15}>
+              <Grid
+                item
+                xs={12}
+                md={4}
+                lg={'auto'}
+                mt={-12}
+                mb={15}
+                sx={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                }}
+              >
                 <NftCard src={src} title={title} txLink={txLink} event={event} />
               </Grid>
             )

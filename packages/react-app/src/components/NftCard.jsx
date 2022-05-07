@@ -8,26 +8,26 @@ export default function NftCard(props) {
     <>
       <Box
         sx={{
-          maxWidth: '255px',
+          maxWidth: '405px',
           position: 'relative',
           background:
             'linear-gradient(to right, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
           padding: '2px',
         }}
       >
-        <Card sx={{ width: '250px' }} variant={'outlined'} zIndex={10}>
-          <CardMedia component={'img'} width={150} image={src} alt={'nftimage'} />
+        <Card sx={{ width: '400px' }} variant={'outlined'} zIndex={10}>
+          <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
           <CardContent
             sx={{
               background:
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
             }}
           >
-            <Typography>{'Owner'}</Typography>
-            <Typography variant={'caption'} noWrap={false} fontSize={9} fontWeight={400}>
+            <Typography fontWeight={700}>{'Owner'}</Typography>
+            <Typography variant={'body2'} noWrap={false} fontWeight={400}>
               {title}
             </Typography>
-            <Typography variant={'body2'} fontWeight={400}>
+            <Typography variant={'body1'} fontWeight={700}>
               {event.tokenType} {event.payload}
             </Typography>
           </CardContent>

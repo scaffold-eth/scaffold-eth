@@ -17,15 +17,15 @@ export default function AddressedCard({ badges }) {
         {badges.map(badge => {
           const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
           return (
-            <Card sx={{ width: '250px' }} variant={'outlined'} zIndex={10}>
-              <CardMedia component={'img'} width={150} image={src} alt={'nftimage'} />
+            <Card sx={{ width: '400px' }} variant={'outlined'} zIndex={10}>
+              <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
               <CardContent
                 sx={{
                   background:
                     'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
                 }}
               >
-                <Typography variant={'body2'} fontWeight={400}>
+                <Typography variant={'h5'} fontWeight={700}>
                   {badge.tokenType} {badge.payload}
                 </Typography>
               </CardContent>
