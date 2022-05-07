@@ -75,7 +75,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       }
     }
     run()
-  }, [address])
+  }, [address, contractRef, localProvider, selectedChainId])
 
   const contracts = useContractLoader(localProvider, contractConfig, 10)
   const events = useEventListener(contracts, 'REMIX_REWARD', 'Transfer', localProvider, 1)

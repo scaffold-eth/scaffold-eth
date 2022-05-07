@@ -5,7 +5,7 @@ import { Tab } from '@mui/material'
 const menuNames = ['Browse Badges', 'Meet the Team', 'Contact Us']
 
 export default function MenuItems() {
-  const [tabValue, setTabValue] = useState()
+  const [tabValue, setTabValue] = useState(0)
   return (
     <>
       <Tabs
