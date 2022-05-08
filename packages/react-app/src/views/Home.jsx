@@ -2,6 +2,7 @@ import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
 import React from "react";
 import { Link } from "react-router-dom";
+import useMultiCall from "../hooks/useMulticall";
 
 /**
  * web3 props can be passed from '../App.jsx' into your local view component for use
@@ -9,10 +10,32 @@ import { Link } from "react-router-dom";
  * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
  * @returns react component
  **/
-function Home({ yourLocalBalance, readContracts }) {
+function Home({ yourLocalBalance, readContracts, localProvider }) {
   // you can also use hooks locally in your component of choice
   // in this case, let's keep track of 'purpose' variable from our contract
   const purpose = useContractReader(readContracts, "YourContract", "purpose");
+
+  const results = useMultiCall(
+    readContracts,
+    {
+      DAI: {
+        balanceOf: [
+          { key: "vitalik", params: ["0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"] },
+          { key: "austin", params: ["0x34aa3f359a9d614239015126635ce7732c18fdf3"] },
+        ],
+        decimals: [{ key: "DAIdecimals", params: [] }],
+      },
+      UNI: {
+        balanceOf: [
+          { key: "ghost", params: ["0xbF7877303B90297E7489AA1C067106331DfF7288"] },
+          { key: "jaxcoder", params: ["0xa4ca1b15fe81f57cb2d3f686c7b13309906cd37b"] },
+        ],
+      },
+    },
+    localProvider,
+  );
+
+  console.log({ results });
 
   return (
     <div>
