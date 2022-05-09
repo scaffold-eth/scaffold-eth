@@ -5,6 +5,7 @@ import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
 import GetIdentity from "../queries/GetIdentity";
+import GetConnections from "../queries/GetConnections";
 
 export default function ExampleUI({
   purpose,
@@ -22,9 +23,13 @@ export default function ExampleUI({
   const [inputAddress, setInputAddress] = useState("");
   const identity = GetIdentity({ address: address });
   const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
-
+  const searchedAddressConnections = GetConnections({ address: searchedAddress });
   const searchHandler = () => {
     setSearchedAddress(inputAddress);
+  };
+  const formatAddress = address => {
+    const len = address.length;
+    return address.substr(0, 5) + "..." + address.substring(len - 4, len);
   };
 
   return (
@@ -38,7 +43,7 @@ export default function ExampleUI({
           <h2>CyberConnect Example UI:</h2>
           <Divider />
           {identity && (
-            <div style={{ textAlign: "left" }}>
+            <div style={{ textAlign: "left", marginLeft: "10px" }}>
               <h3>Your profile:</h3>
 
               <Row>
@@ -68,7 +73,7 @@ export default function ExampleUI({
         {/* CyberConnect Search Address Section */}
         {searchedAddressIdentity && (
           <div>
-            <h3>Search Profile:</h3>
+            <h2>Get Address's Identity</h2>
             <Input
               placeholder="Please input an address/ens you want to search"
               onChange={e => setInputAddress(e.target.value)}
@@ -76,7 +81,7 @@ export default function ExampleUI({
             <Button style={{ margin: 8 }} onClick={searchHandler}>
               Submit
             </Button>
-            <div style={{ textAlign: "left" }}>
+            <div style={{ textAlign: "left", marginLeft: "10px" }}>
               <Row>
                 <Col span={6}>Twitter handle:</Col>
                 <Col span={18}>
@@ -95,6 +100,7 @@ export default function ExampleUI({
                 <Col span={6}>Followers:</Col>
                 <Col span={18}>{searchedAddressIdentity.followerCount}</Col>
               </Row>
+
               <Row>
                 <Col span={6}>Following:</Col>
                 <Col span={18}>{searchedAddressIdentity.followingCount}</Col>
@@ -102,6 +108,32 @@ export default function ExampleUI({
             </div>
           </div>
         )}
+        <Divider />
+        <h2>Get Address's Connections</h2>
+        <Row span={18} justify={"center"}>
+          <div style={{ paddingRight: "20px" }}>
+            <h4>Followers</h4>
+            {searchedAddressConnections &&
+              searchedAddressConnections.followers.list.map(user => {
+                return (
+                  <div key={user.address}>
+                    <div>{user.domain || formatAddress(user.address)}</div>
+                  </div>
+                );
+              })}
+          </div>
+          <div style={{ paddingLeft: "20px" }}>
+            <h4>Followings</h4>
+            {searchedAddressConnections &&
+              searchedAddressConnections.followings.list.map(user => {
+                return (
+                  <div key={user.address}>
+                    <div>{user.domain || formatAddress(user.address)}</div>
+                  </div>
+                );
+              })}
+          </div>
+        </Row>
         <Divider />
         <h2>Example UI:</h2>
         <h4>purpose: {purpose}</h4>
