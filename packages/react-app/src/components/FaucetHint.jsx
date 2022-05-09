@@ -28,7 +28,7 @@ function FaucetHint({ localProvider, targetNetwork, address }) {
     ethers.utils.formatEther(yourLocalBalance) <= 0
   ) {
     faucetHint = (
-      <div style={{ padding: 16, display: "inline-flex" }}>
+      <div style={{ position: "absolute", right: 65, top: 65 }}>
         <Button
           type="primary"
           onClick={() => {
