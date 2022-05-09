@@ -199,6 +199,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
                   justifyContent: 'center',
                   alignItems: 'center',
                 }}
+                key={title}
               >
                 <NftCard src={src} title={title} txLink={txLink} event={event} />
               </Grid>

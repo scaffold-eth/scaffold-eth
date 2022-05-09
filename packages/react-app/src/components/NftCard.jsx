@@ -8,19 +8,20 @@ export default function NftCard(props) {
     <>
       <Box
         sx={{
-          maxWidth: '405px',
           position: 'relative',
           background:
             'linear-gradient(to right, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
           padding: '2px',
         }}
+        maxWidth={300}
       >
-        <Card sx={{ width: '400px' }} variant={'outlined'} zIndex={10}>
+        <Card variant={'outlined'}>
           <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
           <CardContent
             sx={{
               background:
                 'linear-gradient(90deg, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
+              zIndex: 10,
             }}
           >
             <Typography fontWeight={700}>{'Owner'}</Typography>

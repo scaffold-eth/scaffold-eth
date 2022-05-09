@@ -16,8 +16,9 @@ export default function AddressedCard({ badges }) {
       >
         {badges.map(badge => {
           const src = 'https://ipfs.io/ipfs/' + badge.decodedIpfsHash
+          console.log({ currentBadge: badge })
           return (
-            <Card sx={{ width: '400px' }} variant={'outlined'} zIndex={10}>
+            <Card key={badge.decodedIpfsHash} sx={{ maxWidth: '400px', zIndex: 10 }} variant={'outlined'}>
               <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
               <CardContent
                 sx={{
