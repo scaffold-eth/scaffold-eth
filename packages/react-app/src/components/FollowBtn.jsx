@@ -2,7 +2,7 @@ import CyberConnect, { Env, Blockchain } from "@cyberlab/cyberconnect";
 
 const cyberConnect = new CyberConnect({
   namespace: "CyberConnect-Scaffold-Eth",
-  env: Env.PRODUCTION,
+  env: Env.STAGING,
   chain: Blockchain.ETH,
   provider: window.ethereum,
 });

@@ -18,7 +18,14 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const [searchedAddress, setSearchedAddress] = useState("0x148d59faf10b52063071eddf4aaf63a395f2d41c");
+  const [inputAddress, setInputAddress] = useState("");
   const identity = GetIdentity({ address: address });
+  const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
+
+  const searchHandler = () => {
+    setSearchedAddress(inputAddress);
+  };
 
   return (
     <div>
@@ -26,30 +33,73 @@ export default function ExampleUI({
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 500, margin: "auto", marginTop: 64 }}>
-        <h2>CyberConnect Example UI:</h2>
-        {identity && (
-          <div style={{ textAlign: "left" }}>
-            <h3>Your profile:</h3>
-            <Row>
-              <Col span={6}>Twitter handle:</Col>
-              <Col span={18}>{identity.twitter.handle ? identity.twitter.handle : "n/a"}</Col>
-            </Row>
-            <Row>
-              <Col span={6}>Address:</Col>
-              <Col span={18}>{identity.address}</Col>
-            </Row>
-            <Row>
-              <Col span={6}>Domain:</Col>
-              <Col span={18}>{identity.domain ? identity.domain : "n/a"}</Col>
-            </Row>
-            <Row>
-              <Col span={6}>Followers:</Col>
-              <Col span={18}>{identity.followerCount}</Col>
-            </Row>
-            <Row>
-              <Col span={6}>Following:</Col>
-              <Col span={18}>{identity.followingCount}</Col>
-            </Row>
+        {/* CyberConnect Profile Section */}
+        <div>
+          <h2>CyberConnect Example UI:</h2>
+          <Divider />
+          {identity && (
+            <div style={{ textAlign: "left" }}>
+              <h3>Your profile:</h3>
+
+              <Row>
+                <Col span={6}>Twitter handle:</Col>
+                <Col span={18}>{identity.twitter.handle ? identity.twitter.handle : "n/a"}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Address:</Col>
+                <Col span={18}>{identity.address}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Domain:</Col>
+                <Col span={18}>{identity.domain ? identity.domain : "n/a"}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Followers:</Col>
+                <Col span={18}>{identity.followerCount}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Following:</Col>
+                <Col span={18}>{identity.followingCount}</Col>
+              </Row>
+            </div>
+          )}
+        </div>
+        <Divider />
+        {/* CyberConnect Search Address Section */}
+        {searchedAddressIdentity && (
+          <div>
+            <h3>Search Profile:</h3>
+            <Input
+              placeholder="Please input an address/ens you want to search"
+              onChange={e => setInputAddress(e.target.value)}
+            />
+            <Button style={{ margin: 8 }} onClick={searchHandler}>
+              Submit
+            </Button>
+            <div style={{ textAlign: "left" }}>
+              <Row>
+                <Col span={6}>Twitter handle:</Col>
+                <Col span={18}>
+                  {searchedAddressIdentity.twitter.handle ? searchedAddressIdentity.twitter.handle : "n/a"}
+                </Col>
+              </Row>
+              <Row>
+                <Col span={6}>Address:</Col>
+                <Col span={18}>{searchedAddressIdentity.address}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Domain:</Col>
+                <Col span={18}>{searchedAddressIdentity.domain ? searchedAddressIdentity.domain : "n/a"}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Followers:</Col>
+                <Col span={18}>{searchedAddressIdentity.followerCount}</Col>
+              </Row>
+              <Row>
+                <Col span={6}>Following:</Col>
+                <Col span={18}>{searchedAddressIdentity.followingCount}</Col>
+              </Row>
+            </div>
           </div>
         )}
         <Divider />
