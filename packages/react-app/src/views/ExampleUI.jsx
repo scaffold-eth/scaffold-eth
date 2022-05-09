@@ -1,9 +1,10 @@
-import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch } from "antd";
+import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch, Row, Col } from "antd";
 import React, { useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
+import GetIdentity from "../queries/GetIdentity";
 
 export default function ExampleUI({
   purpose,
@@ -17,14 +18,42 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+  const identity = GetIdentity({ address: address });
 
   return (
     <div>
       {/*
         ⚙️ Here is an example UI that displays and sets the purpose in your smart contract:
       */}
-      <div style={{ border: "1px solid #cccccc", padding: 16, width: 400, margin: "auto", marginTop: 64 }}>
+      <div style={{ border: "1px solid #cccccc", padding: 16, width: 500, margin: "auto", marginTop: 64 }}>
         <h2>CyberConnect Example UI:</h2>
+        {identity && (
+          <div style={{ textAlign: "left" }}>
+            <h3>Your profile:</h3>
+            <Row>
+              <Col span={6}>Twitter handle:</Col>
+              <Col span={18}>{identity.twitter.handle ? identity.twitter.handle : "n/a"}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>Address:</Col>
+              <Col span={18}>{identity.address}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>Domain:</Col>
+              <Col span={18}>{identity.domain ? identity.domain : "n/a"}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>Followers:</Col>
+              <Col span={18}>{identity.followerCount}</Col>
+            </Row>
+            <Row>
+              <Col span={6}>Following:</Col>
+              <Col span={18}>{identity.followingCount}</Col>
+            </Row>
+          </div>
+        )}
+        <Divider />
+        <h2>Example UI:</h2>
         <h4>purpose: {purpose}</h4>
         <Divider />
         <div style={{ margin: 8 }}>
