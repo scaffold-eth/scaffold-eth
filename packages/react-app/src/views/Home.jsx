@@ -1,123 +1,109 @@
 import { useContractReader } from "eth-hooks";
 import { ethers } from "ethers";
-import React from "react";
-import { Link } from "react-router-dom";
+import { Button, Form, Input, Typography } from "antd";
+import React, { useState } from "react";
+// import { useEventListener } from "eth-hooks/events/useEventListener";
+// import { Link } from "react-router-dom";
 
-/**
- * web3 props can be passed from '../App.jsx' into your local view component for use
- * @param {*} yourLocalBalance balance on current network
- * @param {*} readContracts contracts from current chain already pre-loaded using ethers contract module. More here https://docs.ethers.io/v5/api/contract/contract/
- * @returns react component
- **/
-function Home({ yourLocalBalance, readContracts }) {
-  // you can also use hooks locally in your component of choice
-  // in this case, let's keep track of 'purpose' variable from our contract
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+const zero = ethers.BigNumber.from("0");
+
+function Home({ tx, address, typedSigner, localProvider, readContracts, writeContracts }) {
+  const [sig, setSig] = useState();
+
+  const price = useContractReader(readContracts, "YourContract", "price", []) || zero;
+  // const balance = (useContractReader(readContracts, "YourContract", "balanceOf", [address]) || zero).toNumber();
+  const size = "large";
+  const [form] = Form.useForm();
+
+  const buyTicket = async () => {
+    const result = tx(writeContracts.YourContract.buyTicket({ value: ethers.utils.parseEther("0.01") }), update => {
+      console.log("📡 Transaction Update:", update);
+      if (update && (update.status === "confirmed" || update.status === 1)) {
+        console.log(" 🍾 Transaction " + update.hash + " finished!");
+        console.log(
+          " ⛽️ " +
+            update.gasUsed +
+            "/" +
+            (update.gasLimit || update.gas) +
+            " @ " +
+            parseFloat(update.gasPrice) / 1000000000 +
+            " gwei",
+        );
+      }
+    });
+    console.log("awaiting metamask/web3 confirm result...", result);
+    console.log(await result);
+  };
+
+  const generateAdmissionSignature = async value => {
+    value = { owner: address, ...value };
+
+    const signature = await typedSigner(
+      {
+        Checkin: [
+          { name: "owner", type: "address" },
+          { name: "tokenId", type: "uint256" },
+          { name: "challenge", type: "string" },
+        ],
+      },
+      value,
+    );
+
+    console.log(value);
+    console.log(signature);
+
+    setSig(signature);
+    form.resetFields();
+  };
 
   return (
-    <div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>📝</span>
-        This Is Your App Home. You can start editing it in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/react-app/src/views/Home.jsx
-        </span>
-      </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>✏️</span>
-        Edit your smart contract{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          YourContract.sol
-        </span>{" "}
-        in{" "}
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          packages/hardhat/contracts
-        </span>
-      </div>
-      {!purpose ? (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>👷‍♀️</span>
-          You haven't deployed your contract yet, run
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn chain
-          </span>{" "}
-          and{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            yarn deploy
-          </span>{" "}
-          to deploy your first contract!
-        </div>
-      ) : (
-        <div style={{ margin: 32 }}>
-          <span style={{ marginRight: 8 }}>🤓</span>
-          The "purpose" variable from your contract is{" "}
-          <span
-            className="highlight"
-            style={{
-              marginLeft: 4,
-              /* backgroundColor: "#f9f9f9", */ padding: 4,
-              borderRadius: 4,
-              fontWeight: "bolder",
-            }}
-          >
-            {purpose}
-          </span>
-        </div>
-      )}
+    <section>
+      <div style={{ marginTop: "20px", marginBottom: "20px" }}>Hello Ticket App</div>
 
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🤖</span>
-        An example prop of your balance{" "}
-        <span style={{ fontWeight: "bold", color: "green" }}>({ethers.utils.formatEther(yourLocalBalance)})</span> was
-        passed into the
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          Home.jsx
-        </span>{" "}
-        component from
-        <span
-          className="highlight"
-          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
-        >
-          App.jsx
-        </span>
+      {/* Buy a ticket: start */}
+      <div style={{ margin: "20px auto", maxWidth: "500px", border: "1px solid" }}>
+        <div style={{ marginTop: "20px", marginBottom: "20px" }}>Buy A Ticket (1 per address)</div>
+        <div style={{ marginBottom: "20px" }}>
+          <Button type="primary" onClick={buyTicket}>
+            Buy Ticket for Ξ {ethers.utils.formatUnits(price)}
+          </Button>
+        </div>
       </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>💭</span>
-        Check out the <Link to="/hints">"Hints"</Link> tab for more tips.
+      {/* Buy a ticket: end */}
+
+      {/* Generate Admission signature: start */}
+
+      <div style={{ margin: "20px auto", maxWidth: "500px", border: "1px solid" }}>
+        <div style={{ marginTop: "20px", marginBottom: "20px" }}>Generate Admission signature</div>
+        <div style={{ marginBottom: "20px", padding: "10px" }}>
+          <Form
+            name="createBoard"
+            layout="vertical"
+            form={form}
+            initialValues={{ voterControl: "asAccessControl" }}
+            onFinish={generateAdmissionSignature}
+          >
+            <Form.Item name="tokenId" label="Ticket ID" rules={[{ required: true }]}>
+              <Input type="text" size={size} placeholder="Your ticket ID..." />
+            </Form.Item>
+            <Form.Item name="challenge" label="Admin Challenge" rules={[{ required: true }]}>
+              <Input type="text" size={size} placeholder="Admin Challenge..." />
+            </Form.Item>
+
+            <Button type="primary" onClick={() => form.submit()}>
+              Generate Signature
+            </Button>
+          </Form>
+        </div>
+
+        {sig && (
+          <div style={{ marginTop: "20px", width: "100%" }}>
+            <Typography.Text copyable={{ text: sig }}>{sig}</Typography.Text>
+          </div>
+        )}
       </div>
-      <div style={{ margin: 32 }}>
-        <span style={{ marginRight: 8 }}>🛠</span>
-        Tinker with your smart contract using the <Link to="/debug">"Debug Contract"</Link> tab.
-      </div>
-    </div>
+      {/* Generate Admission signature: end */}
+    </section>
   );
 }
 
