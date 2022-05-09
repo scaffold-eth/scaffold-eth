@@ -1,4 +1,4 @@
-import { Alert, Button } from "antd";
+import { Alert, Button, Modal } from "antd";
 import React from "react";
 
 import { NETWORK } from "../constants";
@@ -34,7 +34,7 @@ function NetworkDisplay({
       );
     } else {
       networkDisplay = (
-        <div style={{ zIndex: 2, position: "absolute", right: 0, top: 60, padding: 16 }}>
+        <Modal footer={null} title="" visible={true} closable={false}>
           <Alert
             message="⚠️ Wrong Network"
             description={
@@ -85,7 +85,7 @@ function NetworkDisplay({
             type="error"
             closable={false}
           />
-        </div>
+        </Modal>
       );
     }
   } else {
