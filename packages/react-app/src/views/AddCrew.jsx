@@ -492,7 +492,7 @@ function AddCrew({
                       headStyle={{ paddingRight: 12, paddingLeft: 12 }}
                       title={
                         <div>
-                          <span style={{ fontSize: 18, marginRight: 8 }}>{item.name}</span>
+                          <span style={{ fontSize: 16, marginRight: 8 }}>{item.name}</span>
                           {promoteAny && (
                             <Dropdown
                               overlay={
