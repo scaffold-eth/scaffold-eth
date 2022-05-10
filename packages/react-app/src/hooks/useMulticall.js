@@ -73,8 +73,6 @@ export default function useMultiCall(contracts, params = {}, provider) {
   useEffect(() => {
     if (blockNumber !== oldBlockNumber.current) {
       oldBlockNumber.current = blockNumber;
-      console.log(`******* BN`, blockNumber);
-      console.log(`Calling cb()`);
       cb();
     }
   }, [blockNumber, cb]);
