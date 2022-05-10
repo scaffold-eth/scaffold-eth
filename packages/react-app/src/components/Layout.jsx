@@ -6,9 +6,7 @@ export default function Layout({ children }) {
   return (
     <Fragment>
       <Navbar />
-      <Container maxWidth={false} sx={{}}>
-        {children}
-      </Container>
+      {children}
     </Fragment>
   )
 }

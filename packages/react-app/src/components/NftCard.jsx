@@ -13,10 +13,11 @@ export default function NftCard(props) {
             'linear-gradient(to right, #d4def4, #d9dff6, #dee1f7, #e3e2f9, #e8e4fa, #ede5fb, #f1e6fb, #f6e8fc)',
           padding: '2px',
           color: '#333333',
+          borderRadius: 5,
         }}
         maxWidth={300}
       >
-        <Card variant={'outlined'}>
+        <Card variant={'outlined'} raised sx={{ borderRadius: 5 }}>
           <CardMedia component={'img'} width={200} image={src} alt={'nftimage'} />
           <CardContent
             sx={{
@@ -26,10 +27,10 @@ export default function NftCard(props) {
             }}
           >
             <Typography fontWeight={700}>{'Owner'}</Typography>
-            <Typography variant={'body2'} noWrap={false} fontWeight={400}>
+            <Typography variant={'body2'} noWrap={false} fontWeight={400} color={'#333333'}>
               {title}
             </Typography>
-            <Typography variant={'body1'} fontWeight={700}>
+            <Typography variant={'caption'} fontWeight={700} color={'#333333'}>
               {event.tokenType} {event.payload}
             </Typography>
           </CardContent>
