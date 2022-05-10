@@ -1,16 +1,19 @@
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useCallback, useEffect, useRef } from "react";
 import { ethers } from "ethers";
 import { Multicall } from "ethereum-multicall";
-import { useOnBlock } from "eth-hooks";
+import { useBlockNumber } from "eth-hooks";
 
 const FormatTypes = ethers.utils.FormatTypes;
-// params = { "UNI": { "aggregate": [] } }
 
-export default function useMultiCall(contracts, params, provider) {
+export default function useMultiCall(contracts, params = {}, provider) {
   const [returnValues, setReturnValues] = useState({});
+  const oldBlockNumber = useRef(1);
+  const blockNumber = useBlockNumber(provider);
+
   const multicall = useMemo(() => {
     return provider ? new Multicall({ ethersProvider: provider, tryAggregate: true }) : null;
   }, [provider]);
+
   const contractCallContext = useMemo(() => {
     return Object.keys(params).reduce((acc, curr) => {
       // compile contract info here
@@ -40,26 +43,41 @@ export default function useMultiCall(contracts, params, provider) {
 
       return acc;
     }, []);
-  }, [contracts, params]);
+  }, [contracts, JSON.stringify(params)]);
 
-  console.log({ contractCallContext });
+  const cb = useCallback(async () => {
+    if (!multicall) {
+      return;
+    }
 
-  useOnBlock(provider, async () => {
-    const { results } = await multicall.call(contractCallContext);
+    try {
+      const { results } = await multicall.call(contractCallContext);
 
-    const formattedReturnValues = Object.keys(results).reduce((acc, curr) => {
-      acc[curr] = {};
+      const formattedReturnValues = Object.keys(results).reduce((acc, curr) => {
+        acc[curr] = {};
 
-      results[curr].callsReturnContext.forEach(res => {
-        const key = { [res.reference]: res.returnValues };
-        acc[curr][res.methodName] = acc[curr][res.methodName] ? { ...acc[curr][res.methodName], ...key } : key;
-      });
+        results[curr].callsReturnContext.forEach(res => {
+          const key = { [res.reference]: res.returnValues };
+          acc[curr][res.methodName] = acc[curr][res.methodName] ? { ...acc[curr][res.methodName], ...key } : key;
+        });
 
-      return acc;
-    }, {});
+        return acc;
+      }, {});
 
-    setReturnValues(formattedReturnValues);
-  });
+      setReturnValues(formattedReturnValues);
+    } catch (error) {
+      console.log(`Multicall Error:`, error);
+    }
+  }, [contractCallContext, multicall]);
+
+  useEffect(() => {
+    if (blockNumber !== oldBlockNumber.current) {
+      oldBlockNumber.current = blockNumber;
+      console.log(`******* BN`, blockNumber);
+      console.log(`Calling cb()`);
+      cb();
+    }
+  }, [blockNumber, cb]);
 
   return returnValues;
 }
