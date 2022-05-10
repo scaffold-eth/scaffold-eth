@@ -130,11 +130,11 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       */}
 
       <Box sx={{ textAlign: 'left', padding: '10px', color: '#007aa6', marginLeft: 5 }}>
-        <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }}>
+        <Typography variant={'h3'} fontWeight={700} sx={{ marginBottom: 5 }} color={'black'} fontFamily={'Noah'}>
           Remix Rewards
         </Typography>
         <Box>
-          <Typography variant="subtitle1" fontWeight={500} mb={3}>
+          <Typography variant="subtitle1" fontWeight={500} mb={3} sx={{ color: '#333333' }}>
             Remix Project rewards contributors, beta testers, and UX research participants with NFTs deployed on
             Optimism.
             <br />
@@ -144,7 +144,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
             This feature is a way to reward Remix contributors to help grow our user base into a larger and more genuine
             open source community of practice.
           </Typography>
-          <Typography variant="subtitle1" fontWeight={500}>
+          <Typography variant="subtitle1" fontWeight={500} sx={{ color: '#333333' }}>
             Remix Rewards are currently not transferable. This feature leaves open the possibility of granting holders
             proportional voting power to help the community decide on new features for the IDE and/or other issues
             governing the development of the Remix toolset.
@@ -152,7 +152,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
         </Box>
       </Box>
       <Box mt={8} xs={12} sm={12} md={8}>
-        <Typography variant={'h6'} fontWeight={700} mb={3}>
+        <Typography variant={'h6'} fontWeight={700} mb={3} sx={{ color: '#333333' }}>
           Input a wallet address to see the Remix Rewards it holds:
         </Typography>
         <FormControl sx={{ width: '50vw' }} variant="outlined">
