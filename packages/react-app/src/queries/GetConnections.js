@@ -39,9 +39,9 @@ export default function GetConnections({ address }) {
         first: 5,
       })
       .then(res => {
-        console.log("🧬🧬-CyberConnect-identity-start-🧬🧬");
+        console.log("🧬🧬-CyberConnect-connections-start-🧬🧬");
         console.log(res.identity);
-        console.log("🧬🧬-CyberConnect-identity---end-🧬🧬");
+        console.log("🧬🧬-CyberConnect-connections---end-🧬🧬");
         setConnections(res.identity);
       })
       .catch(err => {

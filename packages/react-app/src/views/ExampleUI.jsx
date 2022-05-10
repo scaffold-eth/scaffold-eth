@@ -6,6 +6,7 @@ import { SyncOutlined } from "@ant-design/icons";
 import { Address, Balance, Events } from "../components";
 import GetIdentity from "../queries/GetIdentity";
 import GetConnections from "../queries/GetConnections";
+import GetFollowStatus from "../queries/GetFollowStatus";
 
 export default function ExampleUI({
   purpose,
@@ -24,6 +25,8 @@ export default function ExampleUI({
   const identity = GetIdentity({ address: address });
   const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
   const searchedAddressConnections = GetConnections({ address: searchedAddress });
+  const searchedAddrssFollowStatus = GetFollowStatus({ address, searchedAddress });
+  console.log("searchedAddrssFollowStatus", searchedAddrssFollowStatus);
   const searchHandler = () => {
     setSearchedAddress(inputAddress);
   };
