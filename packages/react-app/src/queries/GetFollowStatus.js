@@ -8,46 +8,41 @@ const CYBERCONNECT_ENDPOINT = "https://api.cybertino.io/connect/";
 const client = new GraphQLClient(CYBERCONNECT_ENDPOINT);
 
 // You can add/remove fields in query
-export const GET_FollowStatus = gql`
-    query searchUserInfo(
-        $fromAddr: String!
-        $toAddr: String!
-        $namespace: String
-        $network: Network
-    ) {
-        connections.followStatus(
-            fromAddr: $fromAddr
-            toAddr: $toAddr
-            namespace: $namespace
-            network: $network
-        ) {
-            isFollowed
-            isFollowing
-        }
+export const GET_FOLLOWSTATUS = gql`
+  query ($fromAddr: String!, $toAddrList: [String!]!) {
+    connections(fromAddr: $fromAddr, toAddrList: $toAddrList) {
+      followStatus {
+        isFollowing
+        isFollowed
+      }
     }
-    `;
+  }
+`;
 
-export default function GetFollowStatus({ fromAddr, toAddr }) {
+export default function GetFollowStatus({ fromAddr, toAddrList }) {
   const [followStatus, setFollowStatus] = useState(undefined);
 
   useEffect(() => {
-    if (!fromAddr || !toAddr) return;
+    console.log("from addr", fromAddr);
+    console.log("To addr", toAddrList);
+    if (!fromAddr) return;
+    if (!toAddrList) return;
 
     client
-      .request(GET_FollowStatus, {
+      .request(GET_FOLLOWSTATUS, {
         fromAddr: fromAddr,
-        toAddr: toAddr,
+        toAddr: toAddrList,
       })
       .then(res => {
         console.log("🧬🧬-CyberConnect-GET_FollowStatus-start-🧬🧬");
-        console.log(res.connections[0]);
+        console.log(res.connections);
         console.log("🧬🧬-CyberConnect-GET_FollowStatus---end-🧬🧬");
-        setFollowStatus(res.connections[0]);
+        setFollowStatus(res.connections);
       })
       .catch(err => {
         console.error(err);
       });
-  }, [fromAddr, toAddr]);
+  }, [fromAddr, toAddrList]);
 
   return followStatus;
 }

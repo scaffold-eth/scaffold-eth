@@ -20,12 +20,14 @@ export default function ExampleUI({
   writeContracts,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
+
   const [searchedAddress, setSearchedAddress] = useState("0x148d59faf10b52063071eddf4aaf63a395f2d41c");
   const [inputAddress, setInputAddress] = useState("");
   const identity = GetIdentity({ address: address });
   const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
   const searchedAddressConnections = GetConnections({ address: searchedAddress });
-  const searchedAddrssFollowStatus = GetFollowStatus({ address, searchedAddress });
+  const searchedAddrssFollowStatus = GetFollowStatus({ fromAddr: address, toAddrList: [searchedAddress] });
+
   console.log("searchedAddrssFollowStatus", searchedAddrssFollowStatus);
   const searchHandler = () => {
     setSearchedAddress(inputAddress);
