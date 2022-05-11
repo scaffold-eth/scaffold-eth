@@ -31,6 +31,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
   const [badges, setBadges] = useState([])
   const [eventBadges, setEventBadges] = useState([])
   const [error, setErrorMessage] = useState('')
+
   console.log('current chain', selectedChainId)
   let contractRef
   if (
@@ -173,8 +174,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
       <Box
         sx={{
           background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          flexGrow: 1,
-          maxHeight: '50vh',
+          maxHeight: '100vh',
         }}
         mt={15}
       >
@@ -188,12 +188,24 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
           paddingLeft={3}
           rowSpacing={1}
           columnSpacing={{ xs: 1, sm: 1.3, md: 2 }}
-          // sx={{
-          //   background: 'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-          // }}
+          sx={{
+            background:
+              'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
+          }}
         >
           {badges && badges.length > 0 ? (
-            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
+            <Grid
+              item
+              md={'auto'}
+              lg={'auto'}
+              mt={-12}
+              ml={'auto'}
+              mr={'auto'}
+              sx={{
+                background:
+                  'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
+              }}
+            >
               <AddressedCard badges={badges} />
             </Grid>
           ) : null}

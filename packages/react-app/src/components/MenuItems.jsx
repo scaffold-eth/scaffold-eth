@@ -33,6 +33,17 @@ export default function MenuItems() {
             }}
           />
         )}
+        <Tab
+          label={'Head to RemixIDE'}
+          sx={{
+            fontWeight: 700,
+          }}
+          component={'a'}
+          href={'https://remix.ethereum.org'}
+          target={'_blank'}
+          rel={'noreferrer'}
+          onClick={(e, value) => setTabValue(0)}
+        />
       </Tabs>
     </>
   )
