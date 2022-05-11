@@ -19,31 +19,28 @@ export const GET_FOLLOWSTATUS = gql`
   }
 `;
 
-export default function GetFollowStatus({ fromAddr, toAddrList }) {
-  const [followStatus, setFollowStatus] = useState(undefined);
+export default function GetFollowStatus({ fromAddr, toAddr }) {
+  const [followStatus, setFollowStatus] = useState(false);
 
   useEffect(() => {
-    console.log("from addr", fromAddr);
-    console.log("To addr", toAddrList);
     if (!fromAddr) return;
-    if (!toAddrList) return;
-    if (followStatus) return;
+    if (!toAddr) return;
 
     client
       .request(GET_FOLLOWSTATUS, {
         fromAddr: fromAddr,
-        toAddrList: toAddrList,
+        toAddrList: [toAddr],
       })
       .then(res => {
-        console.log("🧬🧬-CyberConnect-GET_FollowStatus-start-🧬🧬");
-        console.log(res.connections[0]);
-        console.log("🧬🧬-CyberConnect-GET_FollowStatus---end-🧬🧬");
-        setFollowStatus(res.connections[0]);
+        console.log("🧬🧬-CyberConnect-status-start-🧬🧬");
+        console.log(res.connections[0]?.followStatus?.isFollowing);
+        console.log("🧬🧬-CyberConnect-status---end-🧬🧬");
+        setFollowStatus(res.connections[0]?.followStatus?.isFollowing);
       })
       .catch(err => {
         console.error(err);
       });
-  }, [fromAddr, toAddrList]);
+  }, [fromAddr, toAddr]);
 
   return followStatus;
 }
