@@ -19,7 +19,7 @@ export const GET_FOLLOWSTATUS = gql`
   }
 `;
 
-export default function GetFollowStatus({ fromAddr, toAddr }) {
+export default function useFollowStatus({ fromAddr, toAddr }) {
   const [followStatus, setFollowStatus] = useState(false);
 
   useEffect(() => {

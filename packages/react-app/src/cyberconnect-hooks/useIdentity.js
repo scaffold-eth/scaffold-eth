@@ -23,7 +23,7 @@ export const GET_IDENTITY = gql`
   }
 `;
 
-export default function GetIdentity({ address }) {
+export default function useIdentity({ address }) {
   const [identity, setIdentity] = useState(undefined);
 
   useEffect(() => {

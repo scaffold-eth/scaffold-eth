@@ -27,7 +27,7 @@ export const GET_CONNECTIONS = gql`
   }
 `;
 
-export default function GetConnections({ address }) {
+export default function useConnections({ address }) {
   const [connections, setConnections] = useState(undefined);
 
   useEffect(() => {

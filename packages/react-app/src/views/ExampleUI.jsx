@@ -4,9 +4,9 @@ import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
-import GetIdentity from "../queries/GetIdentity";
-import GetConnections from "../queries/GetConnections";
-import GetFollowStatus from "../queries/GetFollowStatus";
+import useIdentity from "..//cyberconnect-hooks/useIdentity";
+import useConnections from "../cyberconnect-hooks/useConnections";
+import useFollowStatus from "../cyberconnect-hooks/useFollowStatus";
 import FollowButton from "../components/FollowBtn";
 
 export default function ExampleUI({
@@ -32,10 +32,10 @@ export default function ExampleUI({
   const [connectionsAddr, setConnectionsAddr] = useState("");
   const [followAddr, setFollowAddr] = useState("");
 
-  const identity = GetIdentity({ address: address });
-  const searchedIdentity = GetIdentity({ address: identityAddr });
-  const searchedConnections = GetConnections({ address: connectionsAddr });
-  const isFollowing = GetFollowStatus({ fromAddr: address, toAddr: followAddr });
+  const identity = useIdentity({ address: address });
+  const searchedIdentity = useIdentity({ address: identityAddr });
+  const searchedConnections = useConnections({ address: connectionsAddr });
+  const isFollowing = useFollowStatus({ fromAddr: address, toAddr: followAddr });
 
   const searchIdentityHandler = () => {
     if (!identityInput) return;
@@ -77,7 +77,7 @@ export default function ExampleUI({
                 </Row>
                 <Row>
                   <Col span={6}>Address:</Col>
-                  <Col span={18}>{formatAddress(identity.address)}</Col>
+                  <Col span={18}>{identity.address}</Col>
                 </Row>
                 <Row>
                   <Col span={6}>Domain:</Col>
