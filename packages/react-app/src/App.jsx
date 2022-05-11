@@ -319,6 +319,7 @@ function App(props) {
             writeContracts={writeContracts}
             readContracts={readContracts}
             purpose={purpose}
+            injectedProvider={injectedProvider}
           />
         </Route>
         <Route path="/mainnetdai">
