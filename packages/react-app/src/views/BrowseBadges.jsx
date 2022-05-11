@@ -41,6 +41,23 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
   ) {
     contractRef = externalContracts[selectedChainId].contracts.REMIX_REWARD
   }
+  
+  /*
+   * this mint a user badge from the current selected account
+   */
+  const mintBadge = async (receiverAddress) => {
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+    mintTx = await contract.publicMint(receiverAddress)
+    await mintTx.wait()
+  }
+  
+  /*
+   * this returns the number of user badge that the selected account is allowed to mint.
+   */
+  const allowedMinting = async (currentAccount) => {
+    let contract = new ethers.Contract(contractRef.address, contractRef.abi, localProvider)
+    return await contract.allowedMinting(currentAccount)    
+  }
 
   useEffect(() => {
     const run = async () => {
