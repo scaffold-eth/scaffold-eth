@@ -19,21 +19,39 @@ export default function ExampleUI({
   tx,
   readContracts,
   writeContracts,
+  injectedProvider,
 }) {
   const [newPurpose, setNewPurpose] = useState("loading...");
 
-  const [searchedAddress, setSearchedAddress] = useState("0x148d59faf10b52063071eddf4aaf63a395f2d41c");
-  const [inputAddress, setInputAddress] = useState("");
-  const identity = GetIdentity({ address: address });
-  const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
-  const searchedAddressConnections = GetConnections({ address: searchedAddress });
-  const searchedAddrssFollowStatus = GetFollowStatus({ fromAddr: address, toAddrList: [searchedAddress] });
-  console.log("searchedAddrssFollowStatus", searchedAddrssFollowStatus);
-  console.log("window.ethereum", window.ethereum);
+  const demoAddr = "cyberlab.eth";
+  const [identityInput, setIdentityInput] = useState(demoAddr);
+  const [connectionsInput, setConnectionsInput] = useState(demoAddr);
+  const [followInput, setFollowInput] = useState(demoAddr);
 
-  const searchHandler = () => {
-    setSearchedAddress(inputAddress);
+  const [identityAddr, setIdentityAddr] = useState("");
+  const [connectionsAddr, setConnectionsAddr] = useState("");
+  const [followAddr, setFollowAddr] = useState("");
+
+  const identity = GetIdentity({ address: address });
+  const searchedIdentity = GetIdentity({ address: identityAddr });
+  const searchedConnections = GetConnections({ address: connectionsAddr });
+  const isFollowing = GetFollowStatus({ fromAddr: address, toAddr: followAddr });
+
+  const searchIdentityHandler = () => {
+    if (!identityInput) return;
+    setIdentityAddr(identityInput);
   };
+
+  const searchConnectionsHandler = () => {
+    if (!connectionsInput) return;
+    setConnectionsAddr(connectionsInput);
+  };
+
+  const searchFollowHandler = () => {
+    if (!followInput) return;
+    setFollowAddr(followInput);
+  };
+
   const formatAddress = address => {
     const len = address.length;
     return address.substr(0, 5) + "..." + address.substring(len - 4, len);
@@ -49,104 +67,130 @@ export default function ExampleUI({
         <div>
           <h2>CyberConnect Example UI:</h2>
           <Divider />
-          {identity && (
-            <div style={{ textAlign: "left", marginLeft: "10px" }}>
-              <h3>Your profile:</h3>
-
+          <div style={{ textAlign: "left", marginLeft: "10px" }}>
+            <h3>Your profile (identity):</h3>
+            {identity && (
+              <div>
+                <Row>
+                  <Col span={6}>Twitter handle:</Col>
+                  <Col span={18}>{identity.twitter?.handle ? identity.twitter.handle : "n/a"}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>Address:</Col>
+                  <Col span={18}>{formatAddress(identity.address)}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>Domain:</Col>
+                  <Col span={18}>{identity.domain ? identity.domain : "n/a"}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>Followers:</Col>
+                  <Col span={18}>{identity.followerCount}</Col>
+                </Row>
+                <Row>
+                  <Col span={6}>Following:</Col>
+                  <Col span={18}>{identity.followingCount}</Col>
+                </Row>
+              </div>
+            )}
+          </div>
+        </div>
+        <Divider />
+        <div style={{ textAlign: "left", marginLeft: "10px" }}>
+          <h3>Search a profile:</h3>
+          <Input
+            placeholder="Enter the address/ens you want to search.."
+            onChange={e => setIdentityInput(e.target.value)}
+            value={identityInput}
+          />
+          <Button style={{ margin: "8px 0px" }} onClick={searchIdentityHandler}>
+            Submit
+          </Button>
+          {searchedIdentity && (
+            <div>
               <Row>
                 <Col span={6}>Twitter handle:</Col>
-                <Col span={18}>{identity.twitter.handle ? identity.twitter.handle : "n/a"}</Col>
+                <Col span={18}>{searchedIdentity.twitter?.handle ? searchedIdentity.twitter.handle : "n/a"}</Col>
               </Row>
               <Row>
                 <Col span={6}>Address:</Col>
-                <Col span={18}>{identity.address}</Col>
+                <Col span={18}>{searchedIdentity.address}</Col>
               </Row>
               <Row>
                 <Col span={6}>Domain:</Col>
-                <Col span={18}>{identity.domain ? identity.domain : "n/a"}</Col>
+                <Col span={18}>{searchedIdentity.domain ? searchedIdentity.domain : "n/a"}</Col>
               </Row>
               <Row>
                 <Col span={6}>Followers:</Col>
-                <Col span={18}>{identity.followerCount}</Col>
+                <Col span={18}>{searchedIdentity.followerCount}</Col>
               </Row>
               <Row>
                 <Col span={6}>Following:</Col>
-                <Col span={18}>{identity.followingCount}</Col>
+                <Col span={18}>{searchedIdentity.followingCount}</Col>
               </Row>
             </div>
           )}
         </div>
         <Divider />
-        {/* CyberConnect Search Address Section */}
-        {searchedAddressIdentity && (
-          <div>
-            <h2>Get Address's Identity</h2>
-            <Input
-              placeholder="Please input an address/ens you want to search"
-              onChange={e => setInputAddress(e.target.value)}
-            />
-            <Button style={{ margin: 8 }} onClick={searchHandler}>
-              Submit
-            </Button>
-            <div style={{ textAlign: "left", marginLeft: "10px" }}>
-              <Row>
-                <Col span={6}>Twitter handle:</Col>
-                <Col span={18}>
-                  {searchedAddressIdentity.twitter.handle ? searchedAddressIdentity.twitter.handle : "n/a"}
-                </Col>
-              </Row>
-              <Row>
-                <Col span={6}>Address:</Col>
-                <Col span={18}>{searchedAddressIdentity.address}</Col>
-              </Row>
-              <Row>
-                <Col span={6}>Domain:</Col>
-                <Col span={18}>{searchedAddressIdentity.domain ? searchedAddressIdentity.domain : "n/a"}</Col>
-              </Row>
-              <Row>
-                <Col span={6}>Followers:</Col>
-                <Col span={18}>{searchedAddressIdentity.followerCount}</Col>
-              </Row>
-
-              <Row>
-                <Col span={6}>Following:</Col>
-                <Col span={18}>{searchedAddressIdentity.followingCount}</Col>
+        <div style={{ textAlign: "left", marginLeft: "10px" }}>
+          <h3>Search profile connections:</h3>
+          <Input
+            placeholder="Enter the address/ens you want to search.."
+            onChange={e => setConnectionsInput(e.target.value)}
+            value={connectionsInput}
+          />
+          <Button style={{ margin: "8px 0px" }} onClick={searchConnectionsHandler}>
+            Submit
+          </Button>
+          {searchedConnections && (
+            <div>
+              <Row span={18} justify={"center"}>
+                <div style={{ paddingRight: "20px" }}>
+                  <h4>Followers</h4>
+                  {searchedConnections &&
+                    searchedConnections.followers.list.map(user => {
+                      return (
+                        <div key={user.address}>
+                          <div>{user.domain || formatAddress(user.address)}</div>
+                        </div>
+                      );
+                    })}
+                </div>
+                <div style={{ paddingLeft: "20px" }}>
+                  <h4>Followings</h4>
+                  {searchedConnections &&
+                    searchedConnections.followings.list.map(user => {
+                      return (
+                        <div key={user.address}>
+                          <div>{user.domain || formatAddress(user.address)}</div>
+                        </div>
+                      );
+                    })}
+                </div>
               </Row>
             </div>
-            <FollowButton
-              targetAddress={searchedAddress}
-              isFollowing={searchedAddrssFollowStatus?.followStatus.isFollowing}
-            />
-          </div>
-        )}
+          )}
+        </div>
         <Divider />
-        <h2>Get Address's Connections</h2>
-        <Row span={18} justify={"center"}>
-          <div style={{ paddingRight: "20px" }}>
-            <h4>Followers</h4>
-            {searchedAddressConnections &&
-              searchedAddressConnections.followers.list.map(user => {
-                return (
-                  <div key={user.address}>
-                    <div>{user.domain || formatAddress(user.address)}</div>
-                  </div>
-                );
-              })}
+        <div style={{ textAlign: "left", marginLeft: "10px" }}>
+          <h3>Follow/Unfollow a profile:</h3>
+          <Input
+            placeholder="Enter the address/ens you want to follow/unfollow.."
+            onChange={e => setFollowInput(e.target.value)}
+            value={followInput}
+          />
+          <Button style={{ margin: "8px 0px" }} onClick={searchFollowHandler}>
+            Submit
+          </Button>
+          <div>
+            {followAddr && (
+              <FollowButton isFollowing={isFollowing} targetAddress={followAddr} injectedProvider={injectedProvider} />
+            )}
           </div>
-          <div style={{ paddingLeft: "20px" }}>
-            <h4>Followings</h4>
-            {searchedAddressConnections &&
-              searchedAddressConnections.followings.list.map(user => {
-                return (
-                  <div key={user.address}>
-                    <div>{user.domain || formatAddress(user.address)}</div>
-                  </div>
-                );
-              })}
-          </div>
-        </Row>
+        </div>
         <Divider />
-        <h2>Example UI:</h2>
+        <Divider />
+        <h2>Scaffold-eth Example UI:</h2>
         <h4>purpose: {purpose}</h4>
         <Divider />
         <div style={{ margin: 8 }}>
