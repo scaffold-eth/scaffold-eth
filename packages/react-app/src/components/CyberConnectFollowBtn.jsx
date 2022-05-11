@@ -1,6 +1,6 @@
 import CyberConnect, { Env, Blockchain } from "@cyberlab/cyberconnect";
 
-function CyberConnectFollowButton({ isFollowing, targetAddress, injectedProvider }) {
+function CyberConnectFollowButton({ isFollowing, targetAddress, injectedProvider, onSuccess }) {
   const cyberConnect = new CyberConnect({
     namespace: "CyberConnect-Scaffold-Eth",
     env: Env.PRODUCTION,
@@ -17,12 +17,16 @@ function CyberConnectFollowButton({ isFollowing, targetAddress, injectedProvider
     try {
       if (isFollowing) {
         await cyberConnect.disconnect(targetAddress);
+        if (onSuccess) {
+          onSuccess();
+        }
         alert(`Success: you've unfollowed ${targetAddress}!`);
-        window.location.reload();
       } else {
         await cyberConnect.connect(targetAddress);
+        if (onSuccess) {
+          onSuccess();
+        }
         alert(`Success: you're following ${targetAddress}!`);
-        window.location.reload();
       }
     } catch (err) {
       console.error(err.message);

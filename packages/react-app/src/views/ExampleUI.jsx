@@ -9,6 +9,8 @@ import useConnections from "../cyberconnect-hooks/useConnections";
 import useFollowStatus from "../cyberconnect-hooks/useFollowStatus";
 import CyberConnectFollowButton from "../components/CyberConnectFollowBtn";
 
+import { getFollowList } from "../queries";
+
 export default function ExampleUI({
   purpose,
   address,
@@ -34,17 +36,23 @@ export default function ExampleUI({
 
   const identity = useIdentity({ address: address });
   const searchedIdentity = useIdentity({ address: identityAddr });
-  const searchedConnections = useConnections({ address: connectionsAddr });
+  // const searchedConnections = useConnections({ address: connectionsAddr });
   const isFollowing = useFollowStatus({ fromAddr: address, toAddr: followAddr });
+
+  const [searchedConnections, setSearchedConnections] = useState(null);
 
   const searchIdentityHandler = () => {
     if (!identityInput) return;
     setIdentityAddr(identityInput);
   };
 
-  const searchConnectionsHandler = () => {
+  const searchConnectionsHandler = async () => {
     if (!connectionsInput) return;
-    setConnectionsAddr(connectionsInput);
+    // setConnectionsAddr(connectionsInput);
+    const res = await getFollowList({ address: connectionsInput });
+    if (res) {
+      setSearchedConnections(res);
+    }
   };
 
   const searchFollowHandler = () => {
@@ -148,7 +156,7 @@ export default function ExampleUI({
                 <div style={{ paddingRight: "20px" }}>
                   <h4>Followers</h4>
                   {searchedConnections &&
-                    searchedConnections.followers.list.map(user => {
+                    searchedConnections.followers?.list.map(user => {
                       return (
                         <div key={user.address}>
                           <div>{user.domain || formatAddress(user.address)}</div>
@@ -159,7 +167,7 @@ export default function ExampleUI({
                 <div style={{ paddingLeft: "20px" }}>
                   <h4>Followings</h4>
                   {searchedConnections &&
-                    searchedConnections.followings.list.map(user => {
+                    searchedConnections.followings?.list.map(user => {
                       return (
                         <div key={user.address}>
                           <div>{user.domain || formatAddress(user.address)}</div>
@@ -188,6 +196,9 @@ export default function ExampleUI({
                 isFollowing={isFollowing}
                 targetAddress={followAddr}
                 injectedProvider={injectedProvider}
+                onSuccess={() => {
+                  searchConnectionsHandler();
+                }}
               />
             )}
           </div>
