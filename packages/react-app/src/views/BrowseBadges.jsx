@@ -194,18 +194,7 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
           }}
         >
           {badges && badges.length > 0 ? (
-            <Grid
-              item
-              md={'auto'}
-              lg={'auto'}
-              mt={-12}
-              ml={'auto'}
-              mr={'auto'}
-              sx={{
-                background:
-                  'linear-gradient(90deg, #f6e8fc, #f1e6fb, #ede5fb, #e8e4fa, #e3e2f9, #dee1f7, #d9dff6, #d4def4)',
-              }}
-            >
+            <Grid item md={'auto'} lg={'auto'} mt={-12} ml={'auto'} mr={'auto'}>
               <AddressedCard badges={badges} />
             </Grid>
           ) : null}

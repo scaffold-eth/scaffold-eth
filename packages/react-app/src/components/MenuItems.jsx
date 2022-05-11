@@ -34,7 +34,7 @@ export default function MenuItems() {
           />
         )}
         <Tab
-          label={'Head to RemixIDE'}
+          label={'Head to Remix IDE'}
           sx={{
             fontWeight: 700,
           }}
