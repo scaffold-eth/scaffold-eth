@@ -7,7 +7,7 @@ import { Address, Balance, Events } from "../components";
 import GetIdentity from "../queries/GetIdentity";
 import GetConnections from "../queries/GetConnections";
 import GetFollowStatus from "../queries/GetFollowStatus";
-// import FollowButton from "../components/FollowBtn";
+import FollowButton from "../components/FollowBtn";
 
 export default function ExampleUI({
   purpose,
@@ -47,10 +47,6 @@ export default function ExampleUI({
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 500, margin: "auto", marginTop: 64 }}>
         {/* CyberConnect Profile Section */}
         <div>
-          {/* <FollowButton
-            targetAddress={searchedAddress}
-            isFollowing={searchedAddrssFollowStatus.followStatus.isFollowing}
-          /> */}
           <h2>CyberConnect Example UI:</h2>
           <Divider />
           {identity && (
@@ -117,6 +113,10 @@ export default function ExampleUI({
                 <Col span={18}>{searchedAddressIdentity.followingCount}</Col>
               </Row>
             </div>
+            <FollowButton
+              targetAddress={searchedAddress}
+              isFollowing={searchedAddrssFollowStatus?.followStatus.isFollowing}
+            />
           </div>
         )}
         <Divider />

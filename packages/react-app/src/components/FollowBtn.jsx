@@ -24,7 +24,7 @@ function FollowButton({ targetAddress, isFollowing }) {
   };
 
   return (
-    <button className="followButton" onClick={handleOnClick}>
+    <button className="followButton" onClick={handleOnClick} style={{ background: "gray" }}>
       {isFollowing ? "Unfollow" : "Follow"}
     </button>
   );

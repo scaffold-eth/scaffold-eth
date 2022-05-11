@@ -27,6 +27,7 @@ export default function GetFollowStatus({ fromAddr, toAddrList }) {
     console.log("To addr", toAddrList);
     if (!fromAddr) return;
     if (!toAddrList) return;
+    if (followStatus) return;
 
     client
       .request(GET_FOLLOWSTATUS, {
