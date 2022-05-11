@@ -7,7 +7,7 @@ import { Address, Balance, Events } from "../components";
 import useIdentity from "..//cyberconnect-hooks/useIdentity";
 import useConnections from "../cyberconnect-hooks/useConnections";
 import useFollowStatus from "../cyberconnect-hooks/useFollowStatus";
-import FollowButton from "../components/FollowBtn";
+import CyberConnectFollowButton from "../components/CyberConnectFollowBtn";
 
 export default function ExampleUI({
   purpose,
@@ -184,7 +184,11 @@ export default function ExampleUI({
           </Button>
           <div>
             {followAddr && (
-              <FollowButton isFollowing={isFollowing} targetAddress={followAddr} injectedProvider={injectedProvider} />
+              <CyberConnectFollowButton
+                isFollowing={isFollowing}
+                targetAddress={followAddr}
+                injectedProvider={injectedProvider}
+              />
             )}
           </div>
         </div>
