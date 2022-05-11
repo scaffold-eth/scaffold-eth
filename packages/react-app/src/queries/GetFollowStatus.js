@@ -31,13 +31,13 @@ export default function GetFollowStatus({ fromAddr, toAddrList }) {
     client
       .request(GET_FOLLOWSTATUS, {
         fromAddr: fromAddr,
-        toAddr: toAddrList,
+        toAddrList: toAddrList,
       })
       .then(res => {
         console.log("🧬🧬-CyberConnect-GET_FollowStatus-start-🧬🧬");
-        console.log(res.connections);
+        console.log(res.connections[0]);
         console.log("🧬🧬-CyberConnect-GET_FollowStatus---end-🧬🧬");
-        setFollowStatus(res.connections);
+        setFollowStatus(res.connections[0]);
       })
       .catch(err => {
         console.error(err);

@@ -7,6 +7,7 @@ import { Address, Balance, Events } from "../components";
 import GetIdentity from "../queries/GetIdentity";
 import GetConnections from "../queries/GetConnections";
 import GetFollowStatus from "../queries/GetFollowStatus";
+// import FollowButton from "../components/FollowBtn";
 
 export default function ExampleUI({
   purpose,
@@ -27,8 +28,9 @@ export default function ExampleUI({
   const searchedAddressIdentity = GetIdentity({ address: searchedAddress });
   const searchedAddressConnections = GetConnections({ address: searchedAddress });
   const searchedAddrssFollowStatus = GetFollowStatus({ fromAddr: address, toAddrList: [searchedAddress] });
-
   console.log("searchedAddrssFollowStatus", searchedAddrssFollowStatus);
+  console.log("window.ethereum", window.ethereum);
+
   const searchHandler = () => {
     setSearchedAddress(inputAddress);
   };
@@ -45,6 +47,10 @@ export default function ExampleUI({
       <div style={{ border: "1px solid #cccccc", padding: 16, width: 500, margin: "auto", marginTop: 64 }}>
         {/* CyberConnect Profile Section */}
         <div>
+          {/* <FollowButton
+            targetAddress={searchedAddress}
+            isFollowing={searchedAddrssFollowStatus.followStatus.isFollowing}
+          /> */}
           <h2>CyberConnect Example UI:</h2>
           <Divider />
           {identity && (

@@ -7,15 +7,15 @@ const cyberConnect = new CyberConnect({
   provider: window.ethereum,
 });
 
-function FollowButton({ address, isFollowing }) {
+function FollowButton({ targetAddress, isFollowing }) {
   const handleOnClick = async () => {
     try {
       if (isFollowing) {
-        await cyberConnect.disconnect(address);
-        alert(`Success: you've unfollowed ${address}!`);
+        await cyberConnect.disconnect(targetAddress);
+        alert(`Success: you've unfollowed ${targetAddress}!`);
       } else {
-        await cyberConnect.connect(address);
-        alert(`Success: you're following ${address}!`);
+        await cyberConnect.connect(targetAddress);
+        alert(`Success: you're following ${targetAddress}!`);
       }
       window.location.reload();
     } catch (error) {
