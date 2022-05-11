@@ -1,0 +1,4 @@
+.bgImage {
+  background: url('wave-bg.svg') no-repeat;
+  background-size: cover;
+}
