@@ -1,5 +1,5 @@
 import { Button, Card, DatePicker, Divider, Input, Progress, Slider, Spin, Switch, Row, Col } from "antd";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
@@ -33,7 +33,7 @@ export default function ExampleUI({
   const [searchedConnections, setSearchedConnections] = useState(null);
   const [isFollowing, setIsFollowing] = useState(null);
 
-  const identityHandler = async () => {
+  const fetchIdentity = async () => {
     if (!address) return;
 
     const res = await getIdentity({ address: address });
@@ -41,6 +41,11 @@ export default function ExampleUI({
       setIdentity(res);
     }
   };
+
+  useEffect(() => {
+    fetchIdentity();
+  }, [address]);
+
   const searchIdentityHandler = async () => {
     if (!identityInput) return;
     const res = await getIdentity({ address: identityInput });
@@ -82,9 +87,6 @@ export default function ExampleUI({
           <Divider />
           <div style={{ textAlign: "left", marginLeft: "10px" }}>
             <h3>Your profile (identity):</h3>
-            <Button style={{ margin: "8px 0px" }} onClick={identityHandler}>
-              Check
-            </Button>
             {identity && (
               <div>
                 <Row>
@@ -205,7 +207,7 @@ export default function ExampleUI({
                 targetAddress={followAddr}
                 injectedProvider={injectedProvider}
                 onSuccess={() => {
-                  identityHandler();
+                  fetchIdentity();
                   searchIdentityHandler();
                   searchConnectionsHandler();
                   searchFollowHandler();
