@@ -5,9 +5,9 @@ import "hardhat/console.sol";
 // import "@openzeppelin/contracts/access/Ownable.sol";
 // https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
-contract YourContract {
+contract DiceGame {
 
-    uint256 private nonce = 0;
+    uint256 public nonce = 0;
     uint256 public prize = 0;
     uint256 public lastRoll;
 
@@ -16,28 +16,40 @@ contract YourContract {
 
     constructor() {}
 
+    function fundContract() public payable {
+        resetPrize();
+    }
+
+    function resetPrize() private {
+        prize = ((address(this).balance * 10) / 100);
+    }
+
     function rollTheDice() public payable {
-        prize += msg.value;
-        bytes32 prevHash = blockhash(block.number - 1);
+        require(msg.value >= 0.002 ether, "Failed to send enough value");
+
+        bytes32 prevHash = blockhash(block.number - 1);                         
         bytes32 hash = keccak256(abi.encodePacked(prevHash, address(this), nonce));
-        uint256 roll = numberRolled(hash);
+        uint256 roll = uint256(hash) % 16;
         lastRoll = roll;
         nonce++;
 
         emit Roll(msg.sender, roll);
 
-        if (roll != 0) {
+        //Incrase prize by 40% of msg.value.  Leave remaining 60% in DiceGame contract for future prizes.
+        prize += ((msg.value * 40) / 100);
+
+        if (roll > 2 ) {
             return;
         }
-
+        
         uint256 amount = prize;
-        prize = 0;
         (bool sent, ) = msg.sender.call{value: amount}("");
         require(sent, "Failed to send Ether");
+        
+        resetPrize();
         emit Winner(msg.sender, amount);
     }
 
-    function numberRolled(bytes32 data) internal pure returns (uint256) {
-        return uint256(data) % 16;
-    }
+    //Allow the DiceGame contract to receive eth
+    receive() external payable {  }
 }

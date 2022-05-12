@@ -257,7 +257,7 @@ function App(props) {
   ]);
 
   // keep track of a variable from the contract in the local React state:
-  const purpose = useContractReader(readContracts, "YourContract", "purpose");
+  const purpose = useContractReader(readContracts, "DiceGame", "purpose");
 
   /*
   const addressFromENS = useResolveName(mainnetProvider, "austingriffith.eth");
@@ -284,11 +284,11 @@ function App(props) {
       console.log("🏠 localChainId", localChainId);
       console.log("👩‍💼 selected address:", address);
       console.log("🕵🏻‍♂️ selectedChainId:", selectedChainId);
-      console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
-      console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
+      //console.log("💵 yourLocalBalance", yourLocalBalance ? ethers.utils.formatEther(yourLocalBalance) : "...");
+      //console.log("💵 yourMainnetBalance", yourMainnetBalance ? ethers.utils.formatEther(yourMainnetBalance) : "...");
       console.log("📝 readContracts", readContracts);
-      console.log("🌍 DAI contract on mainnet:", mainnetContracts);
-      console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
+      //console.log("🌍 DAI contract on mainnet:", mainnetContracts);
+      //console.log("💵 yourMainnetDAIBalance", myMainnetDAIBalance);
       console.log("🔐 writeContracts", writeContracts);
     }
   }, [
@@ -438,7 +438,7 @@ function App(props) {
           onClick={() => {
             faucetTx({
               to: address,
-              value: ethers.utils.parseEther("0.01"),
+              value: ethers.utils.parseEther(".05"),
             });
             setFaucetClicked(true);
           }}
@@ -449,8 +449,9 @@ function App(props) {
     );
   }
 
-  const winnerEvents = useEventListener(readContracts, "YourContract", "Winner");
-  const prize = useContractReader(readContracts, "YourContract", "prize");
+  const winnerEvents = useEventListener(readContracts, "DiceGame", "Winner");
+  const rollEvents = useEventListener(readContracts, "DiceGame", "Roll");
+  const prize = useContractReader(readContracts, "DiceGame", "prize");
 
   const [diceRolled, setDiceRolled] = useState(false);
   const [diceRollImage, setDiceRollImage] = useState(null);
@@ -461,18 +462,25 @@ function App(props) {
     diceRollImg = <img style={{ width: "300px", heigth: "300px" }} src={diceImages[`${diceRollImage}.png`].default} />;
   }
 
-  const filter = readContracts.YourContract?.filters.Roll(address, null);
-  readContracts.YourContract?.on(filter, (_, value) => {
-    if (value) {
-      const numberRolled = value.toNumber().toString(16).toUpperCase();
-      setDiceRollImage(numberRolled);
-      setDiceRolled(false);
-    }
-  });
-
   const rollTheDice = async () => {
     tx(
-      writeContracts.YourContract.rollTheDice({ value: ethers.utils.parseEther("0.01"), gasLimit: 500000 }),
+      writeContracts.DiceGame.rollTheDice({ value: ethers.utils.parseEther("0.002"), gasLimit: 500000 }),
+      update => {
+        if (update?.status === "sent" || update?.status === 1) {
+          setDiceRolled(true);
+          setDiceRollImage("ROLL");
+        }
+        if (update?.status === "failed") {
+          setDiceRolled(false);
+          setDiceRollImage(null);
+        }
+      },
+    );
+  };
+
+  const riggedRoll = async () => {
+    tx(
+      writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
       update => {
         if (update?.status === "sent" || update?.status === 1) {
           setDiceRolled(true);
@@ -486,6 +494,28 @@ function App(props) {
       },
     );
   };
+
+  const riggedFilter = readContracts.DiceGame?.filters.Roll(riggedRoll.address, null);
+
+  readContracts.DiceGame?.on(riggedFilter, (_, value) => {
+    if (value) {
+      const numberRolled = value.toNumber().toString(16).toUpperCase();
+      setDiceRollImage(numberRolled);
+      setDiceRolled(false);
+    }
+  });
+
+  const filter = readContracts.DiceGame?.filters.Roll(address, null);
+
+  readContracts.DiceGame?.on(filter, (_, value) => {
+    if (value) {
+      const numberRolled = value.toNumber().toString(16).toUpperCase();
+      setDiceRollImage(numberRolled);
+      setDiceRolled(false);
+    }
+  });
+
+  const date = new Date();
 
   return (
     <div className="App">
@@ -514,70 +544,55 @@ function App(props) {
               Debug
             </Link>
           </Menu.Item>
-          <Menu.Item key="/hints">
-            <Link
-              onClick={() => {
-                setRoute("/hints");
-              }}
-              to="/hints"
-            >
-              Hints
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/exampleui">
-            <Link
-              onClick={() => {
-                setRoute("/exampleui");
-              }}
-              to="/exampleui"
-            >
-              ExampleUI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/mainnetdai">
-            <Link
-              onClick={() => {
-                setRoute("/mainnetdai");
-              }}
-              to="/mainnetdai"
-            >
-              Mainnet DAI
-            </Link>
-          </Menu.Item>
-          <Menu.Item key="/subgraph">
-            <Link
-              onClick={() => {
-                setRoute("/subgraph");
-              }}
-              to="/subgraph"
-            >
-              Subgraph
-            </Link>
-          </Menu.Item>
         </Menu>
-
+        {console.log("roll events: ", rollEvents)}
         <Switch>
           <Route exact path="/">
-            Prize: <Balance balance={prize} dollarMultiplier={price} fontSize={64} />
-            <div style={{ padding: 16 }}>
-              <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
-                Roll the dice!
-              </Button>
-            </div>
-            {diceRollImg}
-            <div style={{ width: 500, margin: "auto", marginTop: 64 }}>
-              <div>Winner Events:</div>
-              <List
-                dataSource={winnerEvents}
-                renderItem={item => {
-                  return (
-                    <List.Item key={item[0] + item[1] + item.blockNumber}>
-                      <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} /> =>
-                      <Balance balance={item.args[1]} dollarMultiplier={price} />
-                    </List.Item>
-                  );
-                }}
-              />
+            <div style={{ display: 'flex'}}>
+              <div style={{ width: 250, margin: "auto", marginTop: 64}}>
+                <div>Roll Events:</div>
+                <List style={{ height: 258, overflow: 'hidden' }}
+                  dataSource={rollEvents}
+                  renderItem={item => {
+                    return (           
+                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        &nbsp;Roll:&nbsp;{item.args[1].toNumber().toString(16).toUpperCase()}
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
+              <div id='centerWrapper' style = {{ padding: 16 }}>
+                <h2>Roll a 0, 1, or 2 to win the pot!</h2>
+                <Balance balance={prize} dollarMultiplier={price} fontSize={32} />
+                <div style={{ padding: 16, format: 'flex', flexDirection: 'row' }}>
+                  <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
+                    Roll the dice!
+                  </Button>
+                  &nbsp;&nbsp;
+                  <Button type="primary" disabled={diceRolled} onClick={riggedRoll}>
+                    Rigged Roll!
+                  </Button>
+                </div>
+                {diceRollImg}
+              </div>
+              <div style={{ width: 250, margin: "auto", marginTop: 64}}>
+
+                <div>Winner Events:</div>
+                <List style={{ height: 258, overflow: 'hidden' }}
+                  dataSource={winnerEvents}
+                  renderItem={item => {
+                    return (
+                      <List.Item key={item.args[0] + " " + item.args[1] + " " + date.getTime() + " " + item.blockNumber}>             
+                        <Address value={item.args[0]} ensProvider={mainnetProvider} fontSize={16} />
+                        <br></br>
+                        <Balance balance={item.args[1]} dollarMultiplier={price} />
+                      </List.Item>
+                    );
+                  }}
+                />
+              </div>
             </div>
           </Route>
           <Route exact path="/debug">
@@ -588,7 +603,7 @@ function App(props) {
             */}
 
             <Contract
-              name="YourContract"
+              name="DiceGame"
               price={price}
               signer={userSigner}
               provider={localProvider}
@@ -596,57 +611,14 @@ function App(props) {
               blockExplorer={blockExplorer}
               contractConfig={contractConfig}
             />
-          </Route>
-          <Route path="/hints">
-            <Hints
-              address={address}
-              yourLocalBalance={yourLocalBalance}
-              mainnetProvider={mainnetProvider}
-              price={price}
-            />
-          </Route>
-          <Route path="/exampleui">
-            <ExampleUI
-              address={address}
-              userSigner={userSigner}
-              mainnetProvider={mainnetProvider}
-              localProvider={localProvider}
-              yourLocalBalance={yourLocalBalance}
-              price={price}
-              tx={tx}
-              writeContracts={writeContracts}
-              readContracts={readContracts}
-              purpose={purpose}
-            />
-          </Route>
-          <Route path="/mainnetdai">
             <Contract
-              name="DAI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.DAI}
+              name="RiggedRoll"
+              price={price}
               signer={userSigner}
-              provider={mainnetProvider}
+              provider={localProvider}
               address={address}
-              blockExplorer="https://etherscan.io/"
+              blockExplorer={blockExplorer}
               contractConfig={contractConfig}
-              chainId={1}
-            />
-            {/*
-            <Contract
-              name="UNI"
-              customContract={mainnetContracts && mainnetContracts.contracts && mainnetContracts.contracts.UNI}
-              signer={userSigner}
-              provider={mainnetProvider}
-              address={address}
-              blockExplorer="https://etherscan.io/"
-            />
-            */}
-          </Route>
-          <Route path="/subgraph">
-            <Subgraph
-              subgraphUri={props.subgraphUri}
-              tx={tx}
-              writeContracts={writeContracts}
-              mainnetProvider={mainnetProvider}
             />
           </Route>
         </Switch>
