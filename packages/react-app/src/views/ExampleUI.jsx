@@ -4,12 +4,9 @@ import { utils } from "ethers";
 import { SyncOutlined } from "@ant-design/icons";
 
 import { Address, Balance, Events } from "../components";
-import useIdentity from "..//cyberconnect-hooks/useIdentity";
-import useConnections from "../cyberconnect-hooks/useConnections";
-import useFollowStatus from "../cyberconnect-hooks/useFollowStatus";
 import CyberConnectFollowButton from "../components/CyberConnectFollowBtn";
 
-import { getFollowList } from "../queries";
+import { getIdentity, getConnections, getFollowStatus } from "../queries";
 
 export default function ExampleUI({
   purpose,
@@ -30,34 +27,52 @@ export default function ExampleUI({
   const [connectionsInput, setConnectionsInput] = useState(demoAddr);
   const [followInput, setFollowInput] = useState(demoAddr);
 
-  const [identityAddr, setIdentityAddr] = useState("");
-  const [connectionsAddr, setConnectionsAddr] = useState("");
+  // const [identityAddr, setIdentityAddr] = useState("");
+  // const [connectionsAddr, setConnectionsAddr] = useState("");
   const [followAddr, setFollowAddr] = useState("");
 
-  const identity = useIdentity({ address: address });
-  const searchedIdentity = useIdentity({ address: identityAddr });
+  // const identity = useIdentity({ address: address });
+
+  // const searchedIdentity = useIdentity({ address: identityAddr });
   // const searchedConnections = useConnections({ address: connectionsAddr });
-  const isFollowing = useFollowStatus({ fromAddr: address, toAddr: followAddr });
-
+  // const isFollowing = getFollowStatus({ fromAddr: address, toAddr: followAddr });
+  const [identity, setIdentity] = useState(null);
+  const [searchedIdentity, setSearchedIdentity] = useState(null);
   const [searchedConnections, setSearchedConnections] = useState(null);
+  const [isFollowing, setIsFollowing] = useState(null);
 
-  const searchIdentityHandler = () => {
+  const identityHandler = async () => {
+    if (!address) return;
+
+    const res = await getIdentity({ address: address });
+    if (res) {
+      setIdentity(res);
+    }
+  };
+  const searchIdentityHandler = async () => {
     if (!identityInput) return;
-    setIdentityAddr(identityInput);
+    const res = await getIdentity({ address: identityInput });
+    if (res) {
+      setSearchedIdentity(res);
+    }
   };
 
   const searchConnectionsHandler = async () => {
     if (!connectionsInput) return;
-    // setConnectionsAddr(connectionsInput);
-    const res = await getFollowList({ address: connectionsInput });
+
+    const res = await getConnections({ address: connectionsInput });
     if (res) {
       setSearchedConnections(res);
     }
   };
 
-  const searchFollowHandler = () => {
+  const searchFollowHandler = async () => {
     if (!followInput) return;
     setFollowAddr(followInput);
+    const res = await getFollowStatus({ fromAddr: address, toAddr: followAddr });
+    if (res) {
+      setIsFollowing(res);
+    }
   };
 
   const formatAddress = address => {
@@ -77,6 +92,9 @@ export default function ExampleUI({
           <Divider />
           <div style={{ textAlign: "left", marginLeft: "10px" }}>
             <h3>Your profile (identity):</h3>
+            <Button style={{ margin: "8px 0px" }} onClick={identityHandler}>
+              Check
+            </Button>
             {identity && (
               <div>
                 <Row>
@@ -197,7 +215,10 @@ export default function ExampleUI({
                 targetAddress={followAddr}
                 injectedProvider={injectedProvider}
                 onSuccess={() => {
+                  identityHandler();
+                  searchIdentityHandler();
                   searchConnectionsHandler();
+                  searchFollowHandler();
                 }}
               />
             )}

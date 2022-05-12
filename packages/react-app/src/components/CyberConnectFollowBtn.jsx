@@ -17,16 +17,16 @@ function CyberConnectFollowButton({ isFollowing, targetAddress, injectedProvider
     try {
       if (isFollowing) {
         await cyberConnect.disconnect(targetAddress);
+        alert(`Success: you've unfollowed ${targetAddress}!`);
         if (onSuccess) {
           onSuccess();
         }
-        alert(`Success: you've unfollowed ${targetAddress}!`);
       } else {
         await cyberConnect.connect(targetAddress);
+        alert(`Success: you're following ${targetAddress}!`);
         if (onSuccess) {
           onSuccess();
         }
-        alert(`Success: you're following ${targetAddress}!`);
       }
     } catch (err) {
       console.error(err.message);
