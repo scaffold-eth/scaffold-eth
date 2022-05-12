@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 
 // small change in useEffect, display currentValue if it's provided by user
 
-/*
+/**
   ~ What it does? ~
 
   Displays input field for ETH/USD amount, with an option to convert between ETH and USD
@@ -26,7 +26,7 @@ import React, { useEffect, useState } from "react";
   - Provide value={value} to specify initial amount of ether
   - Provide placeholder="Enter amount" value for the input
   - Control input change by onChange={value => { setAmount(value);}}
-*/
+**/
 
 export default function EtherInput(props) {
   const [mode, setMode] = useState(props.price ? "USD" : "ETH");
@@ -34,41 +34,6 @@ export default function EtherInput(props) {
   const [value, setValue] = useState();
 
   const currentValue = typeof props.value !== "undefined" ? props.value : value;
-
-  const option = title => {
-    if (!props.price) return "";
-    return (
-      <div
-        style={{ cursor: "pointer" }}
-        onClick={() => {
-          if (mode === "USD") {
-            setMode("ETH");
-            setDisplay(currentValue);
-          } else {
-            setMode("USD");
-            if (currentValue) {
-              const usdValue = "" + (parseFloat(currentValue) * props.price).toFixed(2);
-              setDisplay(usdValue);
-            } else {
-              setDisplay(currentValue);
-            }
-          }
-        }}
-      >
-        {title}
-      </div>
-    );
-  };
-
-  let prefix;
-  let addonAfter;
-  if (mode === "USD") {
-    prefix = "$";
-    addonAfter = option("USD 🔀");
-  } else {
-    prefix = "Ξ";
-    addonAfter = option("ETH 🔀");
-  }
 
   useEffect(() => {
     if (!currentValue) {
@@ -80,9 +45,33 @@ export default function EtherInput(props) {
     <Input
       placeholder={props.placeholder ? props.placeholder : "amount in " + mode}
       autoFocus={props.autoFocus}
-      prefix={prefix}
+      prefix={mode === "USD" ? "$" : "Ξ"}
       value={display}
-      addonAfter={addonAfter}
+      addonAfter={
+        !props.price ? (
+          ""
+        ) : (
+          <div
+            style={{ cursor: "pointer" }}
+            onClick={() => {
+              if (mode === "USD") {
+                setMode("ETH");
+                setDisplay(currentValue);
+              } else {
+                setMode("USD");
+                if (currentValue) {
+                  const usdValue = "" + (parseFloat(currentValue) * props.price).toFixed(2);
+                  setDisplay(usdValue);
+                } else {
+                  setDisplay(currentValue);
+                }
+              }
+            }}
+          >
+            {mode === "USD" ? "USD 🔀" : "ETH 🔀"}
+          </div>
+        )
+      }
       onChange={async e => {
         const newValue = e.target.value;
         if (mode === "USD") {

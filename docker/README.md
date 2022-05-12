@@ -1,11 +1,17 @@
 # 🏄‍♂️ Using Docker
 
-Prerequisite: [Docker](https://docs.docker.com/engine/install/)/)
+Prerequisites: 
+- [Docker](https://docs.docker.com/engine/install/)
+- [Git](https://git-scm.com/)
+- Bash Shell: available in macOS by default and the vast majority of Linux distros
+
+***Note**: If you are using a Windows environment, you can use [Windows Subsystem for Linux (WSL)](https://docs.microsoft.com/en-us/windows/wsl/) or a Bash emulator like "Git BASH" (which its included in [Git for Windows](https://gitforwindows.org/)). If you use WSL take into account that you should [configure Docker to use the WSL 2 backend](https://docs.docker.com/desktop/windows/wsl/).*
+
 
 > clone/fork 🏗 scaffold-eth:
 
 ```bash
-git clone https://github.com/austintgriffith/scaffold-eth.git
+git clone https://github.com/scaffold-eth/scaffold-eth.git
 ```
 
 > [basic] run the script that sets the stack up and that's it (takes some minutes to finish):
@@ -24,7 +30,8 @@ cd scaffold-eth
 > [advanced] running front-end on a different port (eg. 8080):
 
 ```bash
-docker rm -f SCAFFOLD_ETH
+DOCKER_IMAGE=$(docker ps --filter name=SCAFFOLD_ETH -q)
+[ -z "$DOCKER_IMAGE" ] || docker rm -f SCAFFOLD_ETH
 
 docker run \
   --name SCAFFOLD_ETH \
@@ -41,7 +48,8 @@ docker run \
 > [advanced] running the container in interactive mode (must run each tool manually):
 
 ```bash
-docker rm -f SCAFFOLD_ETH
+DOCKER_IMAGE=$(docker ps --filter name=SCAFFOLD_ETH -q)
+[ -z "$DOCKER_IMAGE" ] || docker rm -f SCAFFOLD_ETH
 
 docker run \
   --name SCAFFOLD_ETH \

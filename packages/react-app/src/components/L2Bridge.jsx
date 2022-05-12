@@ -1,11 +1,12 @@
-import { utils, ethers } from "ethers";
 import { Button, Input, Form, Select, InputNumber, Table, Radio } from "antd";
 import React, { useState, useEffect } from "react";
+import { utils, ethers } from "ethers";
 import { useContractLoader, useOnBlock } from "eth-hooks";
+
 import { NETWORKS } from "../constants";
 import { Transactor } from "../helpers";
 
-/*
+/** 
 This is a component for bridging between L1 & L2
 Currently it supports Testnet deposits for Arbitrum & Optimism
 
@@ -17,7 +18,7 @@ Currently it supports Testnet deposits for Arbitrum & Optimism
      \/  \/   |_____|_|
 
 
-*/
+**/
 
 export default function L2ArbitrumBridge({ address, userSigner }) {
   const [L1EthBalance, setL1EthBalance] = useState("...");
@@ -25,7 +26,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
   const [L1Provider, setL1Provider] = useState("");
   const [L2Provider, setL2Provider] = useState("");
   const [rollup, setRollup] = useState("arbitrum");
-  const [environment, setEnvironment] = useState("test");
+  const [environment] = useState("test");
 
   const rollupConfig = {
     arbitrum: {
@@ -56,7 +57,7 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
       setL2EthBalance("...");
     }
     setProviders();
-  }, [rollup]);
+  }, [rollup, activeConfig.L1, activeConfig.L2]);
 
   const contracts = useContractLoader(userSigner, { externalContracts: L1BridgeMetadata, hardhatContracts: {} });
 
@@ -155,10 +156,6 @@ export default function L2ArbitrumBridge({ address, userSigner }) {
       console.log("something went wrong!");
     }
   }
-
-  const onReset = () => {
-    form.resetFields();
-  };
 
   const wrongNetwork = selectedChainId !== activeConfig.L1.chainId;
 

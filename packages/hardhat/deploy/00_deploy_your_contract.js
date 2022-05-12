@@ -4,6 +4,14 @@ const { ethers } = require("hardhat");
 
 const localChainId = "31337";
 
+// const sleep = (ms) =>
+//   new Promise((r) =>
+//     setTimeout(() => {
+//       console.log(`waited for ${(ms / 1000).toFixed(3)} seconds`);
+//       r();
+//     }, ms)
+//   );
+
 module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deploy } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -14,6 +22,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
     from: deployer,
     //args: [ ethers.utils.parseEther(".05") ],
     log: true,
+    waitConfirmations: 5,
   });
 
   // Getting a previously deployed contract

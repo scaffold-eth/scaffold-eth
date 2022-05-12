@@ -1,8 +1,9 @@
-import { Col, Divider, Row } from "antd";
+import { Button, Col, Divider, Row } from "antd";
 import React, { useCallback, useEffect, useState } from "react";
-import tryToDisplay from "./utils";
 
-const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh }) => {
+import { tryToDisplay } from "./utils";
+
+const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, triggerRefresh, blockExplorer }) => {
   const [variable, setVariable] = useState("");
 
   const refresh = useCallback(async () => {
@@ -34,13 +35,11 @@ const DisplayVariable = ({ contractFunction, functionInfo, refreshRequired, trig
           {functionInfo.name}
         </Col>
         <Col span={14}>
-          <h2>{tryToDisplay(variable)}</h2>
+          <h2>{tryToDisplay(variable, false, blockExplorer)}</h2>
         </Col>
         <Col span={2}>
           <h2>
-            <a href="#" onClick={refresh}>
-              🔄
-            </a>
+            <Button type="link" onClick={refresh} icon="🔄" />
           </h2>
         </Col>
       </Row>

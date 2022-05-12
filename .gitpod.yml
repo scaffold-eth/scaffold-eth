@@ -6,7 +6,7 @@ tasks:
     command: REACT_APP_PROVIDER=$(gp url 8545) yarn start
   - name: Chain
     init: gp sync-await install
-    command: yarn chain
+    command: yarn chain --hostname 0.0.0.0
     openMode: split-right
   - name: Deployment
     init: gp sync-await install
@@ -17,6 +17,7 @@ ports:
     onOpen: open-preview
   - port: 8545
     onOpen: ignore
+    visibility: public
 github:
   prebuilds:
     pullRequestsFromForks: true

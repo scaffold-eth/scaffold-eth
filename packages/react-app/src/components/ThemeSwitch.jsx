@@ -5,7 +5,7 @@ import { useThemeSwitcher } from "react-css-theme-switcher";
 export default function ThemeSwitcher() {
   const theme = window.localStorage.getItem("theme");
   const [isDarkMode, setIsDarkMode] = useState(!(!theme || theme === "light"));
-  const { switcher, currentTheme, status, themes } = useThemeSwitcher();
+  const { switcher, currentTheme, themes } = useThemeSwitcher();
 
   useEffect(() => {
     window.localStorage.setItem("theme", currentTheme);
@@ -15,11 +15,6 @@ export default function ThemeSwitcher() {
     setIsDarkMode(isChecked);
     switcher({ theme: isChecked ? themes.dark : themes.light });
   };
-
-  // Avoid theme change flicker
-  // if (status === "loading") {
-  //   return null;
-  // }
 
   return (
     <div className="main fade-in" style={{ position: "fixed", right: 8, bottom: 8 }}>
