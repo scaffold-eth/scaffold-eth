@@ -102,7 +102,7 @@ export async function getFollowStatus({ fromAddr, toAddr }) {
 
   console.log("getFollowStatus:-----------", res);
 
-  if (res && res.connections[0]?.followStatus?.isFollowing) {
+  if (res && res.connections[0]) {
     console.log("🧬🧬-CyberConnect-status-start-🧬🧬");
     console.log(res.connections[0]?.followStatus?.isFollowing);
     console.log("🧬🧬-CyberConnect-status---end-🧬🧬");

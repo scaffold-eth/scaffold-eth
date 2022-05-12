@@ -26,16 +26,8 @@ export default function ExampleUI({
   const [identityInput, setIdentityInput] = useState(demoAddr);
   const [connectionsInput, setConnectionsInput] = useState(demoAddr);
   const [followInput, setFollowInput] = useState(demoAddr);
-
-  // const [identityAddr, setIdentityAddr] = useState("");
-  // const [connectionsAddr, setConnectionsAddr] = useState("");
   const [followAddr, setFollowAddr] = useState("");
 
-  // const identity = useIdentity({ address: address });
-
-  // const searchedIdentity = useIdentity({ address: identityAddr });
-  // const searchedConnections = useConnections({ address: connectionsAddr });
-  // const isFollowing = getFollowStatus({ fromAddr: address, toAddr: followAddr });
   const [identity, setIdentity] = useState(null);
   const [searchedIdentity, setSearchedIdentity] = useState(null);
   const [searchedConnections, setSearchedConnections] = useState(null);
@@ -69,10 +61,8 @@ export default function ExampleUI({
   const searchFollowHandler = async () => {
     if (!followInput) return;
     setFollowAddr(followInput);
-    const res = await getFollowStatus({ fromAddr: address, toAddr: followAddr });
-    if (res) {
-      setIsFollowing(res);
-    }
+    const res = await getFollowStatus({ fromAddr: address, toAddr: followInput });
+    setIsFollowing(res);
   };
 
   const formatAddress = address => {
