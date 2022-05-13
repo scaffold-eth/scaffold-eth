@@ -2,8 +2,6 @@ pragma solidity >=0.8.0 <0.9.0;
 //SPDX-License-Identifier: MIT
 
 import "hardhat/console.sol";
-// import "@openzeppelin/contracts/access/Ownable.sol";
-// https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/access/Ownable.sol
 
 contract DiceGame {
 
@@ -14,9 +12,7 @@ contract DiceGame {
     event Roll(address indexed player, uint256 roll);
     event Winner(address winner, uint256 amount);
 
-    constructor() {}
-
-    function fundContract() public payable {
+    constructor() payable {
         resetPrize();
     }
 
@@ -32,11 +28,9 @@ contract DiceGame {
         uint256 roll = uint256(hash) % 16;
         lastRoll = roll;
         nonce++;
+        prize += ((msg.value * 40) / 100);
 
         emit Roll(msg.sender, roll);
-
-        //Incrase prize by 40% of msg.value.  Leave remaining 60% in DiceGame contract for future prizes.
-        prize += ((msg.value * 40) / 100);
 
         if (roll > 2 ) {
             return;
@@ -50,6 +44,5 @@ contract DiceGame {
         emit Winner(msg.sender, amount);
     }
 
-    //Allow the DiceGame contract to receive eth
     receive() external payable {  }
 }
