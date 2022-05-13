@@ -5,8 +5,10 @@ const debug = require("gulp-debug");
 var csso = require("gulp-csso");
 const autoprefixer = require("autoprefixer");
 const NpmImportPlugin = require("less-plugin-npm-import");
+const babel = require('gulp-babel');
 
-gulp.task("less", function () {
+
+gulp.task("less", gulp.parallel(function () {
   const plugins = [autoprefixer()];
 
   return gulp
@@ -25,4 +27,11 @@ gulp.task("less", function () {
       }),
     )
     .pipe(gulp.dest("./public"));
-});
+},
+  () =>
+    gulp.src('src/app.js')
+      .pipe(babel({
+        plugins: ['@babel/transform-runtime']
+      }))
+      .pipe(gulp.dest('./public'))
+  ));

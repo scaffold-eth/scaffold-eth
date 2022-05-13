@@ -16,6 +16,24 @@ export default function Hints({ yourLocalBalance, mainnetProvider, price, addres
 
   return (
     <div>
+      <div style={{ marginTop: 32, marginBottom: 32 }}>
+        <span style={{ marginRight: 8 }}>🙌</span>
+        <span style={{ marginRight: 4 }}>Checkout the documentation for CyberConnect</span>
+        <a href="https://docs.cyberconnect.me/" target="_blank" rel="noopener noreferrer">
+          here
+        </a>
+      </div>
+      <div>
+        <b> You can find all the links for </b>
+        <span
+          className="highlight"
+          style={{ marginLeft: 4, /* backgroundColor: "#f9f9f9", */ padding: 4, borderRadius: 4, fontWeight: "bolder" }}
+        >
+          <a target="_blank" rel="noopener noreferrer" href="https://link3.to/cyberconnect">
+            CyberConnect
+          </a>
+        </span>
+      </div>
       <div style={{ margin: 32 }}>
         <span style={{ marginRight: 8 }}>👷</span>
         Edit your <b>contract</b> in
