@@ -478,6 +478,7 @@ function App(props) {
     );
   };
 
+{/*
   const riggedRoll = async () => {
     tx(
       writeContracts.RiggedRoll.riggedRoll({ gasLimit: 500000 }),
@@ -504,6 +505,7 @@ function App(props) {
       setDiceRolled(false);
     }
   });
+*/}
 
   const filter = readContracts.DiceGame?.filters.Roll(address, null);
 
@@ -570,10 +572,14 @@ function App(props) {
                   <Button type="primary" disabled={diceRolled} onClick={rollTheDice}>
                     Roll the dice!
                   </Button>
+
+                {/*
                   &nbsp;&nbsp;
                   <Button type="primary" disabled={diceRolled} onClick={riggedRoll}>
                     Rigged Roll!
                   </Button>
+                */}
+
                 </div>
                 {diceRollImg}
               </div>
