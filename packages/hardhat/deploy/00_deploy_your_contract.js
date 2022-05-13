@@ -17,7 +17,7 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const { deployer } = await getNamedAccounts();
   // const chainId = await getChainId();
 
-  const currentTimestamp = 1651806000;
+  const currentTimestamp = 1651622400;
 
   // localhost
   const fancyLoogieAddress = "0x5FC8d32690cc91D4c39d9d3abcBD16989F875707";
@@ -34,7 +34,6 @@ module.exports = async ({ getNamedAccounts, deployments, getChainId }) => {
   const contactLensesAddress = "0x01fb3CfBB534910bBE51B0EFDDaBCe75A7dE94E2";
   const eyelashesAddress = "0x7A6D1925cdaF97295d0e401C3450e32f8c39c817";
 
-  /*
   // Optimism
   const fancyLoogieAddress = "0xbE7706DFA9Cc5aEEB5b26698C1bc5c43829E808A";
   const bowAddress = "0x7A6D1925cdaF97295d0e401C3450e32f8c39c817";
