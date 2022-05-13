@@ -15,6 +15,7 @@ function AddCrew({
   blockExplorer,
   address,
   currentDay,
+  loogieCoinBalance,
 }) {
   const [loogieBalance, setLoogieBalance] = useState(0);
   const [yourLoogieBalance, setYourLoogieBalance] = useState(0);

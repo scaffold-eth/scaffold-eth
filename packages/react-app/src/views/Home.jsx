@@ -6,9 +6,6 @@ import { Button, List, Card } from "antd";
 import { Address } from "../components";
 
 function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, blockExplorer, address }) {
-  const priceToMint = useContractReader(readContracts, "LoogieShip", "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
-
   const totalSupply = useContractReader(readContracts, "LoogieShip", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
   const shipsLeft = 1000 - totalSupply;
@@ -207,7 +204,7 @@ function Home({ DEBUG, readContracts, writeContracts, tx, mainnetProvider, block
               }
             }}
           >
-            MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+            MINT for Ξ0.02
           </Button>
 
           <p style={{ fontWeight: "bold" }}>{shipsLeft} left</p>

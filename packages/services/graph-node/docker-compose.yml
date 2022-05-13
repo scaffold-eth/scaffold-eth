@@ -19,6 +19,8 @@ services:
       ipfs: "ipfs:5001"
       ethereum: "localhost:http://host.docker.internal:8545"
       GRAPH_LOG: info
+    extra_hosts:
+    - "host.docker.internal:host-gateway"
   ipfs:
     image: ipfs/go-ipfs:latest
     ports:

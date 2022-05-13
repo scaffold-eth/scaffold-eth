@@ -301,7 +301,6 @@ function App(props) {
             setSelectedShip={setSelectedShip}
             shipCrew={shipCrew}
             setShipCrew={setShipCrew}
-            loogieCoinBalance={loogieCoinBalance}
           />
         </Route>
         <Route path="/addCrew/:id">
@@ -314,6 +313,7 @@ function App(props) {
             blockExplorer={blockExplorer}
             address={address}
             currentDay={currentDay}
+            loogieCoinBalance={loogieCoinBalance}
           />
         </Route>
         <Route exact path="/ranking">
@@ -432,7 +432,7 @@ function App(props) {
             <strong>Current Week {currentWeek}</strong>
           </div>
           <div style={{ textAlign: "right", width: "100%", padding: 15, paddingTop: 0, paddingBottom: 0, fontSize: 20 }}>
-            <strong>Day {currentWeekDay} ({currentDay})</strong>
+            <strong>Day {currentWeekDay}</strong>
           </div>
           <div style={{ textAlign: "right", width: "100%", padding: 15, fontSize: 20 }}>
             <strong>{loogieCoinBalance ? loogieCoinBalance.toString() : 0} LoogieCoins</strong>

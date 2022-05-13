@@ -1,15 +1,29 @@
-type Purpose @entity {
+type FishingLog @entity {
   id: ID!
-  sender: Sender!
-  purpose: String!
+  shipId: BigInt!
+  week: BigInt!
+  day: BigInt!
+  round: Int!
+  reward: BigInt!
+  owner: Bytes!
   createdAt: BigInt!
   transactionHash: String!
 }
 
-type Sender @entity {
+type Ranking @entity {
   id: ID!
-  address: Bytes!
-  purposes: [Purpose!] @derivedFrom(field: "sender")
+  week: BigInt!
+  shipId: BigInt!
+  reward: BigInt!
+  owner: Bytes!
+}
+
+type Prize @entity {
+  id: ID!
+  winner: Bytes!
+  shipId: BigInt!
+  week: BigInt!
+  rewardNftId: BigInt!
   createdAt: BigInt!
-  purposeCount: BigInt!
+  transactionHash: String!
 }

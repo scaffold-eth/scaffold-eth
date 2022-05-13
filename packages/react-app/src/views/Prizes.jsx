@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
 import { List, Card } from "antd";
-import { useEventListener } from "eth-hooks/events/useEventListener";
 import { Address } from "../components";
 
 function Prizes({
@@ -14,33 +14,43 @@ function Prizes({
   currentDay,
   currentWeekDay,
 }) {
-  const withdraws = useEventListener(readContracts, "SailorLoogiesGame", "Withdraw", localProvider, startBlock - 100000);
-  console.log("withdraws: ", withdraws);
+  const PRIZES_GRAPHQL = `
+  {
+    prizes(first: 30, orderBy: week, orderDirection: desc) {
+      id
+      week
+      shipId
+      rewardNftId
+      winner
+    }
+  }
+  `;
+  const PRIZES_GQL = gql(PRIZES_GRAPHQL);
+  const { loading, data } = useQuery(PRIZES_GQL, { pollInterval: 10000 });
 
   const [rewards, setRewards] = useState();
   const [loadingPrizes, setLoadingPrizes] = useState(true);
 
   useEffect(() => {
     const updateRewards = async () => {
-      if (readContracts.SailorLoogiesGameAward && withdraws && withdraws.length > 0) {
+      if (readContracts.SailorLoogiesGameAward && data && data.prizes.length > 0) {
         setLoadingPrizes(true);
         const rewardUpdate = [];
-        const withdrawsOrdered = withdraws.sort((a, b) => b.args.week.toNumber() - a.args.week.toNumber());
-        for (let i = 0; i < withdrawsOrdered.length; i++) {
+        for (let i = 0; i < data.prizes.length; i++) {
           try {
-            if (DEBUG) console.log("Getting award tokenId: ", withdrawsOrdered[i].args.rewardNftId.toString());
-            const tokenURI = await readContracts.SailorLoogiesGameAward.tokenURI(withdrawsOrdered[i].args.rewardNftId);
+            if (DEBUG) console.log("Getting award tokenId: ", data.prizes[i].rewardNftId.toString());
+            const tokenURI = await readContracts.SailorLoogiesGameAward.tokenURI(data.prizes[i].rewardNftId);
             if (DEBUG) console.log("tokenURI: ", tokenURI);
             const jsonManifestString = atob(tokenURI.substring(29));
 
             try {
               const jsonManifest = JSON.parse(jsonManifestString);
               rewardUpdate.push({
-                shipId: withdrawsOrdered[i].args.shipId.toNumber(),
+                shipId: data.prizes[i].shipId,
                 uri: tokenURI,
-                winner: withdrawsOrdered[i].args.winner,
-                week: withdrawsOrdered[i].args.week.toNumber(),
-                rewardNftId: withdrawsOrdered[i].args.rewardNftId.toNumber(),
+                winner: data.prizes[i].winner,
+                week: data.prizes[i].week,
+                rewardNftId: data.prizes[i].rewardNftId,
                 ...jsonManifest,
               });
             } catch (e) {
@@ -55,7 +65,7 @@ function Prizes({
       }
     };
     updateRewards();
-  }, [DEBUG, readContracts.SailorLoogiesGameAward, withdraws]);
+  }, [DEBUG, readContracts.SailorLoogiesGameAward, data]);
 
   return (
     <div style={{ backgroundColor: "#29aae1" }}>
@@ -71,7 +81,7 @@ function Prizes({
               xl: 3,
               xxl: 3,
             }}
-            loading={loadingPrizes}
+            loading={loading || loadingPrizes}
             dataSource={rewards}
             renderItem={item => {
               return (

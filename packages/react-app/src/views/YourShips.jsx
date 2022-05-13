@@ -18,7 +18,6 @@ function YourShips({
   setSelectedShip,
   shipCrew,
   setShipCrew,
-  loogieCoinBalance,
 }) {
   const [shipBalance, setShipBalance] = useState(0);
   const [yourShipBalance, setYourShipBalance] = useState(0);
@@ -27,9 +26,6 @@ function YourShips({
   const [loadingShips, setLoadingShips] = useState(true);
   const [updateBalances, setUpdateBalances] = useState(0);
   const history = useHistory();
-
-  const priceToMint = useContractReader(readContracts, "LoogieShip", "price");
-  if (DEBUG) console.log("🤗 priceToMint:", priceToMint);
 
   const totalSupply = useContractReader(readContracts, "LoogieShip", "totalSupply");
   if (DEBUG) console.log("🤗 totalSupply:", totalSupply);
@@ -119,7 +115,7 @@ function YourShips({
               }
             }}
           >
-            MINT for Ξ{priceToMint && (+ethers.utils.formatEther(priceToMint)).toFixed(4)}
+            MINT for Ξ0.02
           </Button>
 
           <p style={{ fontWeight: "bold" }}>{shipsLeft} left</p>

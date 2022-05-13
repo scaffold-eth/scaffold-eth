@@ -3,23 +3,26 @@ schema:
   file: ./src/schema.graphql
 dataSources:
   - kind: ethereum/contract
-    name: YourContract
+    name: SailorLoogiesGame
     network: localhost
     source:
-      address: "{{localhost_YourContractAddress}}"
-      abi: YourContract
+      address: "0x26B862f640357268Bd2d9E95bc81553a2Aa81D7E"
+      abi: SailorLoogiesGame
       startBlock: 1
     mapping:
       kind: ethereum/events
       apiVersion: 0.0.5
       language: wasm/assemblyscript
       entities:
-        - Purpose
-        - Sender
+        - FishingLog
+        - Ranking
+        - Prize
       abis:
-        - name: YourContract
-          file: ./abis/localhost_YourContract.json
+        - name: SailorLoogiesGame
+          file: ./abis/localhost_SailorLoogiesGame.json
       eventHandlers:
-        - event: SetPurpose(address,string)
-          handler: handleSetPurpose
+        - event: Fishing(indexed uint256,indexed uint256,indexed uint256,uint256,address,uint8)
+          handler: handleFishing
+        - event: Withdraw(indexed address,indexed uint256,indexed uint256,uint256)
+          handler: handleWithdraw
       file: ./src/mapping.ts

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { gql, useQuery } from "@apollo/client";
 import { List, Table, Button, Modal, Card } from "antd";
-import { useDebounce } from "../hooks";
-import { useEventListener } from "eth-hooks/events/useEventListener";
 import { ethers } from "ethers";
 import { Address } from "../components";
 
@@ -19,56 +18,55 @@ function Ranking({
   currentWeekDay,
   address,
 }) {
-  const rawFishing = useEventListener(readContracts, "SailorLoogiesGame", "Fishing", localProvider, startBlock - 100000);
-  console.log("rawFishing: ", rawFishing);
-  //const fishing = useDebounce(rawFishing, 1000);
+  const last3weeks = [currentWeek, currentWeek - 1, currentWeek - 2];
+
+  const RANKING_GRAPHQL = `
+    query($weeks: [BigInt]) {
+      rankings(
+        orderBy: reward,
+        orderDirection: desc,
+        where: {
+          week_in: $weeks
+        }) {
+            id
+            week
+            shipId
+            reward
+            owner
+      }
+    }
+  `;
+
+  const RANKING_GQL = gql(RANKING_GRAPHQL);
+  const { loading, data } = useQuery(RANKING_GQL, { variables: { weeks: last3weeks }, pollInterval: 10000 });
+
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [rewardId, setRewardId] = useState(0);
   const [rewardImage, setRewardImage] = useState();
   const [fishingByWeek, setFishingByWeek] = useState();
-  const [last12weeks, setLast12weeks] = useState();
 
   const handleOk = () => {
     setIsModalVisible(false);
   };
 
   useEffect(() => {
-    const updateLast12weeks = async () => {
-      if (currentWeek) {
-        let last12WeeksUpdate = [];
-        for (let i = currentWeek; i > 0 && i > currentWeek - 12; i--) {
-          last12WeeksUpdate.push(i);
-        }
-        console.log("last12WeeksUpdate: ", last12WeeksUpdate);
-        setLast12weeks(last12WeeksUpdate);
-      }
-    };
-    updateLast12weeks();
-  }, [DEBUG, currentWeek]);
-
-  useEffect(() => {
     const updateFishingByWeek = async () => {
-      if (rawFishing && rawFishing.length > 0) {
+      if (data && data.rankings.length > 0) {
         let byWeek = {};
-        rawFishing
-          .sort((a, b) => b.blockNumber - a.blockNumber)
-          .forEach(function (fishing) {
-            if (!(fishing.args.week.toNumber() in byWeek)) {
-              byWeek[fishing.args.week.toNumber()] = {};
-            }
-            if (!(fishing.args.id.toNumber() in byWeek[fishing.args.week.toNumber()])) {
-              byWeek[fishing.args.week.toNumber()][fishing.args.id.toNumber()] = {
-                rewards: 0,
-                owner: fishing.args.owner,
-              };
-            }
-            byWeek[fishing.args.week.toNumber()][fishing.args.id.toNumber()].rewards += fishing.args.reward.toNumber();
-          });
+        data.rankings.forEach(function (ranking) {
+          if (!(ranking.week in byWeek)) {
+            byWeek[ranking.week] = {};
+          }
+          byWeek[ranking.week][ranking.shipId] = {
+            rewards: ranking.reward,
+            owner: ranking.owner,
+          };
+        });
         setFishingByWeek(byWeek);
       }
     };
     updateFishingByWeek();
-  }, [DEBUG, rawFishing]);
+  }, [DEBUG, data]);
 
   useEffect(() => {
     const updateRewardImage = async () => {
@@ -121,7 +119,8 @@ function Ranking({
             xl: 3,
             xxl: 3,
           }}
-          dataSource={last12weeks}
+          dataSource={last3weeks}
+          loading={loading}
           renderItem={week => {
             let rewardsByShipSorted = [];
             if (fishingByWeek && fishingByWeek[week]) {
@@ -178,7 +177,7 @@ function Ranking({
                           >
                             Claim Prize
                           </Button>
-                      )}
+                        )}
                     </div>
                   }
                 >
@@ -195,7 +194,7 @@ function Ranking({
           onOk={handleOk}
           onCancel={handleOk}
           width={1000}
-          cancelButtonProps={{ style: { display: 'none' } }}
+          cancelButtonProps={{ style: { display: "none" } }}
         >
           <img src={rewardImage} alt={`Reward Week #{currentWeek - 1}`} width="950" />
         </Modal>
