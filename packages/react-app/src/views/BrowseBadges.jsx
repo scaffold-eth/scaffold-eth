@@ -163,8 +163,13 @@ export default function BrowseBadges({ localProvider, mainnet, selectedChainId }
               id="addressEnsSearch"
               sx={{ color: '#007aa6' }}
               label="Address or ENS name"
-              onChange={e => {
-                setAddress(e.target.value)
+              onChange={async e => {
+                const address = await mainnet.resolveName(e.target.value)
+                if (address) {
+                  setAddress(address)
+                } else {
+                  setAddress(e.target.value)
+                }
               }}
             />
           </FormControl>
