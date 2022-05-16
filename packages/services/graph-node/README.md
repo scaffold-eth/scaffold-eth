@@ -35,8 +35,9 @@ to connect to. By default, it will use `mainnet:http://host.docker.internal:8545
 in order to connect to an Ethereum node running on your host machine.
 You can replace this with anything else in `docker-compose.yaml`.
 
-> **Note for Linux users:** On Linux, `host.docker.internal` is not
-> currently supported. Instead, you will have to replace it with the
+> **Note for Linux users:** On Linux, if you have docker v20.10 and above, you will need to make
+> sure you have extra_hosts in the docker-compose.yml file. If you have a docker older than v20.10,
+> `host.docker.internal` is not supported. Instead, you will have to replace it with the
 > IP address of your Docker host (from the perspective of the Graph
 > Node container).
 > To do this, run:
